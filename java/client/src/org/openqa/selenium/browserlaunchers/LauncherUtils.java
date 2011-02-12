@@ -262,6 +262,8 @@ public class LauncherUtils {
       out.println("user_pref('network.proxy.autoconfig_url', '"
                   + pathToBrowserURL(proxyPAC.getAbsolutePath()) + "');");
     }
+    // Disable the check for being offline
+    out.println("user_pref('browser.offline', false);");
 
     // suppress authentication confirmations
     out.println("user_pref('network.http.phishy-userpass-length', 255);");

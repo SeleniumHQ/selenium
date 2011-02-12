@@ -127,7 +127,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     WebElement frame = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(frame);
 
-    assertThat(driver.findElement(By.name("id-name1")).getValue(), equalTo("name"));
+  WebElement element = driver.findElement(By.name("id-name1"));
+  assertThat(element.getValue(), equalTo("name"));
   }
 
   @Ignore(value = SELENESE, reason = "switchTo().frame(WebElement) not supported with Selenium")

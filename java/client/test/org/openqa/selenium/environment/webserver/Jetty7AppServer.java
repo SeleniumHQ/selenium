@@ -47,7 +47,7 @@ public class Jetty7AppServer implements AppServer {
   private int securePort;
   private File path;
   private File jsSrcRoot;
-  private File thirdPartyJsRoot;
+  private File thirdPartyJsRoot;                                                                          
   private final Server server;
   private WebAppContext context;
   private ContextHandlerCollection handlers;

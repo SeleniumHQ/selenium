@@ -191,6 +191,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     Response response = execute(DriverCommand.FIND_ELEMENT,
         ImmutableMap.of("using", by, "value", using));
+    System.out.println("response = " + response);
     return (WebElement) response.getValue();
   }
 

@@ -19,6 +19,7 @@
 goog.provide('Utils');
 
 goog.require('bot.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('ErrorCode');
 goog.require('Logger');
@@ -226,8 +227,22 @@ Utils.getStyleProperty = function(element, propertyName) {
 
 Utils.addToKnownElements = function(element, rawDoc) {
   var doc = webdriver.firefox.utils.unwrapFor4(rawDoc);
-  var is4 = webdriver.firefox.utils.isFirefox4();
-  var toCompareWith = is4 ? new XPCNativeWrapper(element) : element;
+
+  // Right. This is ugly. Sorry. The reasoning goes:
+  // * Finding elements normally returns a fairly "raw" object
+  // * Finding elements by JS returns a fully populated object
+  // In both cases, the elements implement the same XPCOM interfaces, but clicks
+  // that are aimed at a target frame fail for elements found using JS.
+  // Fortunately, if we _always_ wrap elements in an XPCNativeWrapper things
+  // work as expected. Except for frames. When frames are wrapped switching to
+  // a frame by passing in the element means that the element cache doesn't work
+  // as expected (I've not done much research). Consequently, we avoid wrapping
+  // elements that looks like a frame.
+
+  var isFrame = element.tagName == goog.dom.TagName.IFRAME ||
+      element.tagName == goog.dom.TagName.FRAME;
+
+  var toCompareWith = isFrame ? element : new XPCNativeWrapper(element);
 
   if (!doc.fxdriver_elements) {
     doc.fxdriver_elements = {};
@@ -238,7 +253,7 @@ Utils.addToKnownElements = function(element, rawDoc) {
       return e;
     }
   }
-  
+
   var id = Utils.getUniqueId();
   doc.fxdriver_elements[id] = toCompareWith;
 

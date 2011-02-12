@@ -43,6 +43,7 @@ function FirefoxDriver(server, enableNativeEvents, win) {
       dump(e);
     }
   }
+  goog.userAgent.GECKO = true;
 
   FirefoxDriver.listenerScript = Utils.loadUrl("resource://fxdriver/evaluate.js");
 
@@ -683,6 +684,7 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
     Logger.dumpn("Switching to frame by element: " + parameters.id['ELEMENT']);
     var element = Utils.getElementAt(parameters.id['ELEMENT'],
         currentWindow.document);
+
     if (/^i?frame$/i.test(element.tagName)) {
       newWindow = element.contentWindow;
     } else {

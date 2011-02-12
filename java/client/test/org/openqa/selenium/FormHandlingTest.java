@@ -116,7 +116,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
     WebElement input = nestedForm.findElement(By.name("x"));
     input.sendKeys(Keys.ENTER);
-    assertEquals("We Arrive Here", driver.getTitle());
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
     assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
   }
 
