@@ -106,6 +106,7 @@ task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//common/src/js/selenium:core", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
 
+task :test_atoms => ['//jsapi:atoms:run', '//jsapi:selenium_core_emulation:run', '//jsapi:selenium_core:run']
 task :test_android => ["//java/client/test/org/openqa/selenium/android:android-test:run"]
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" ]
 task :test_htmlunit => [ "//java/client/test/org/openqa/selenium/htmlunit:test:run" ]
@@ -146,6 +147,7 @@ end
 task :test_java => [
   "//java/client/test/org/openqa/selenium/support:test:run",
   "//java/client/test/org/openqa/selenium/htmlunit:test:run",
+  "test_atoms",
   "//java/client/test/org/openqa/selenium/firefox:test:run",
   "//java/client/test/org/openqa/selenium/ie:test:run",
   "//java/server/test/org/openqa/selenium/remote/server:test:run",
