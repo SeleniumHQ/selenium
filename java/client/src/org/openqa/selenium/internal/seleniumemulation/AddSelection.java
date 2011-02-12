@@ -17,26 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class AddSelection extends SeleneseCommand<Void> {
-  private final ElementFinder finder;
-  private final SeleniumSelect select;
 
-  public AddSelection(ElementFinder elementFinder, SeleniumSelect select) {
-    this.finder = elementFinder;
-    this.select = select;
+  private final JavascriptLibrary library;
+
+  public AddSelection(JavascriptLibrary library) {
+    this.library = library;
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String optionLocator) {
-    WebElement element = finder.findElement(driver, locator);
-    if (!select.isMultiple(element)) {
-      throw new SeleniumException("You may only add a selection to a select that supports multiple selections");
-    }
-    select.select(driver, locator, optionLocator, true, false);
+    SeleniumSelect select = new SeleniumSelect(library, driver, locator);
+    select.addSelection(optionLocator);
     return null;
   }
 }

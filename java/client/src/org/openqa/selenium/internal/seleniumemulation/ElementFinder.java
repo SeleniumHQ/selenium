@@ -17,76 +17,94 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
+
 import com.thoughtworks.selenium.SeleniumException;
-import org.openqa.selenium.NoSuchElementException;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
-public class ElementFinder {
-  // TODO(simon): This should not be public
-  public static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");
-  private final Map<String, LookupStrategy> lookupStrategies = Maps.newHashMap();
+import java.util.Map;
 
-  public ElementFinder() {
-    setUpElementFindingStrategies();
+public class ElementFinder {
+
+  private final String findElement;
+  private Map<String, String> additionalLocators = Maps.newHashMap();
+
+  @VisibleForTesting
+  protected ElementFinder() {
+    findElement = null;
+  }
+
+  public ElementFinder(JavascriptLibrary library) {
+    String rawScript = library.getSeleniumScript("findElement.js");
+    findElement = "return (" + rawScript + ")(arguments[0]);";
+
+    String linkTextLocator = "return (" + library.getSeleniumScript("linkLocator.js") + ").call(null, arguments[0], document)";
+
+    add("link", linkTextLocator);
   }
 
   public WebElement findElement(WebDriver driver, String locator) {
-    LookupStrategy strategy = findStrategy(locator);
-    String use = determineWebDriverLocator(locator);
+    WebElement toReturn = null;
+
+    String strategy = searchAdditionalStrategies(locator);
+    if (strategy != null) {
+      String actualLocator = locator.substring(locator.indexOf('=') + 1);
+      // TODO(simon): Recurse into child documents
+      toReturn = (WebElement) ((JavascriptExecutor) driver).executeScript(strategy, actualLocator);
+
+      if (toReturn == null) {
+        throw new SeleniumException("Element " + locator + " not found");
+      }
+
+      return toReturn;
+    }
 
     try {
-      return strategy.find(driver, use);
-    } catch (NoSuchElementException e) {
-      throw new SeleniumException("Element " + locator + " not found");
+      toReturn = findElementDirectlyIfNecessary(driver, locator);
+      if (toReturn != null) {
+        return toReturn;
+      }
+
+      return (WebElement) ((JavascriptExecutor) driver)
+          .executeScript(findElement, locator);
+    } catch (WebDriverException e) {
+      throw new SeleniumException("Element " + locator + " not found", e);
     }
   }
 
-  public void add(String strategyName, LookupStrategy lookupStrategy) {
-    lookupStrategies.put(strategyName, lookupStrategy);
+  public void add(String strategyName, String implementation) {
+    additionalLocators.put(strategyName, implementation);
   }
-   
-  public LookupStrategy findStrategy(String locator) {
-    String strategyName = "implicit";
 
-    Matcher matcher = STRATEGY_AND_VALUE_PATTERN.matcher(locator);
-    if (matcher.matches()) {
-      strategyName = matcher.group(1);
+  private String searchAdditionalStrategies(String locator) {
+    int index = locator.indexOf('=');
+    if (index == -1) {
+      return null;
     }
 
-    LookupStrategy strategy = lookupStrategies.get(strategyName);
-    if (strategy == null)
-      throw new SeleniumException("No matcher found for " + strategyName);
-
-    return strategy;
+    String key = locator.substring(0, index);
+    return additionalLocators.get(key);
   }
 
-  public String determineWebDriverLocator(String locator) {
-    String use = locator;
-
-    Matcher matcher = STRATEGY_AND_VALUE_PATTERN.matcher(locator);
-    if (matcher.matches()) {
-      use = matcher.group(2);
+  private WebElement findElementDirectlyIfNecessary(WebDriver driver, String locator) {
+    if (locator.startsWith("xpath=")) {
+      return driver.findElement(By.xpath(locator.substring("xpath=".length())));
+    }
+    if (locator.startsWith("//")) {
+      return driver.findElement(By.xpath(locator));
     }
 
-    return use;
+    if (locator.startsWith("css=")) {
+      return driver.findElement(By.cssSelector(locator.substring("css=".length())));
+    }
+
+    return null;
   }
 
-  private void setUpElementFindingStrategies() {
-    lookupStrategies.put("alt", new AltLookupStrategy());
-    lookupStrategies.put("class", new ClassLookupStrategy());
-    lookupStrategies.put("css", new CssLookupStrategy());
-    lookupStrategies.put("id", new IdLookupStrategy());
-    lookupStrategies.put("identifier", new IdentifierLookupStrategy());
-    lookupStrategies.put("implicit", new ImplicitLookupStrategy());
-    lookupStrategies.put("link", new LinkLookupStrategy());
-    lookupStrategies.put("name", new NameLookupStrategy());
-    lookupStrategies.put("xpath", new XPathLookupStrategy());
-    lookupStrategies.put("dom", new DomTraversalLookupStrategy());
-  }
 }

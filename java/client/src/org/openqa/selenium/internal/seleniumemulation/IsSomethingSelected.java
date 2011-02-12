@@ -17,23 +17,22 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.List;
-
 import org.openqa.selenium.WebDriver;
 
-import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.VALUE;
 
 public class IsSomethingSelected extends SeleneseCommand<Boolean> {
-  private final SeleniumSelect select;
+  private final JavascriptLibrary library;
+  private final String script;
 
-  public IsSomethingSelected(SeleniumSelect select) {
-    this.select = select;
+  public IsSomethingSelected(JavascriptLibrary library) {
+    this.library = library;
+    script = "return (" + library.getSeleniumScript("isSomethingSelected.js") + ").apply(null, arguments)";
   }
 
   @Override
   protected Boolean handleSeleneseCommand(WebDriver driver, String selectLocator, String ignored) {
-    List<String> values = select.getOptions(driver, selectLocator, VALUE, false);
+    Object value = library.executeScript(driver, script, selectLocator);
 
-    return values.size() > 0;
+    return Boolean.TRUE == value;
   }
 }

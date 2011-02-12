@@ -17,22 +17,32 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import com.thoughtworks.selenium.SeleniumException;
+
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class FindFirstSelectedOptionProperty extends SeleneseCommand<String> {
-  private final SeleniumSelect select;
-  private final SeleniumSelect.Property property;
 
-  public FindFirstSelectedOptionProperty(SeleniumSelect select, SeleniumSelect.Property property) {
-    this.select = select;
+  private final JavascriptLibrary library;
+  private final String property;
+
+  public FindFirstSelectedOptionProperty(JavascriptLibrary library, String property) {
+    this.library = library;
     this.property = property;
   }
 
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String selectLocator, String ignored) {
-    List<String> options = select.getOptions(driver, selectLocator, property, false);
-    return options.get(0);
+SeleniumSelect select = new SeleniumSelect(library, driver, selectLocator);
+    List<WebElement> allOptions = select.getSelectedOptions();
+
+    if (allOptions.size() == 0) {
+      throw new SeleniumException("No options are selected: " + selectLocator);
+    }
+
+    return allOptions.get(0).getAttribute(property);
   }
 }

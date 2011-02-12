@@ -22,22 +22,17 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class RemoveSelection extends SeleneseCommand<Void> {
-  private final ElementFinder elementFinder;
-  private final SeleniumSelect select;
 
-  public RemoveSelection(ElementFinder elementFinder, SeleniumSelect select) {
-    this.elementFinder = elementFinder;
-    this.select = select;
+  private final JavascriptLibrary library;
+
+  public RemoveSelection(JavascriptLibrary library) {
+    this.library = library;
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String optionLocator) {
-    WebElement element = elementFinder.findElement(driver, locator);
-    if (!select.isMultiple(element)) 
-      throw new SeleniumException("You may only remove a selection to a select that supports multiple selections");
-    
-    select.select(driver, locator, optionLocator, false, false);
-
+    SeleniumSelect select = new SeleniumSelect(library, driver, locator);
+    select.removeSelection(optionLocator);
     return null;
   }
 }

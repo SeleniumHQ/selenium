@@ -1,6 +1,19 @@
 
 java_library(name = "seleniumemulation",
   srcs = [ "*.java" ],
+  resources = [
+    { "injectableSelenium.js" : "org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" },
+    { "htmlutils.js" : "org/openqa/selenium/internal/seleniumemulation/htmlutils.js" },
+    { "//javascript/selenium-atoms:findElement" : "scripts/selenium/findElement.js" },
+    { "//javascript/selenium-atoms:findOption" : "scripts/selenium/findOption.js" },
+    { "//javascript/selenium-atoms:getAttribute" : "scripts/selenium/getAttribute.js" },
+    { "//javascript/selenium-atoms:getText" : "scripts/selenium/getText.js" },
+    { "//javascript/selenium-atoms:linkLocator" : "scripts/selenium/linkLocator.js" },
+    { "//javascript/selenium-atoms:isElementPresent" : "scripts/selenium/isElementPresent.js" },
+    { "//javascript/selenium-atoms:isSomethingSelected" : "scripts/selenium/isSomethingSelected.js" },
+    { "//javascript/selenium-atoms:isTextPresent" : "scripts/selenium/isTextPresent.js" },
+    { "//javascript/selenium-atoms:isVisible" : "scripts/selenium/isVisible.js" },
+  ],
   deps = [
     "//java/client/src/com/thoughtworks/selenium",
     "//java/client/src/org/openqa/selenium:webdriver-api",

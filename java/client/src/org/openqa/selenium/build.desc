@@ -98,15 +98,11 @@ java_library(name = "webdriver-backed-selenium",
   resources = [
     { "internal/seleniumemulation/injectableSelenium.js" : "org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" },
     { "internal/seleniumemulation/htmlutils.js" : "org/openqa/selenium/internal/seleniumemulation/htmlutils.js" },
-    { "//javascript/selenium-atoms:findElement" : "scripts/selenium/findElement.js" },
-    { "//javascript/selenium-atoms:getText" : "scripts/selenium/getText.js" },
-    { "//javascript/selenium-atoms:isElementPresent" : "scripts/selenium/isElementPresent.js" },
-    { "//javascript/selenium-atoms:isTextPresent" : "scripts/selenium/isTextPresent.js" },
-    { "//javascript/selenium-atoms:isVisible" : "scripts/selenium/isVisible.js" }
   ],
   deps = [
     ":selenium-api",
     "//java/client/src/com/thoughtworks/selenium",
+    "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
   ])
 
 java_library(name = "selenium-backed-webdriver",

@@ -21,20 +21,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class GetAttribute extends SeleneseCommand<String> {
-  private final ElementFinder finder;
+  private final String getAttribute;
+  private final JavascriptLibrary library;
 
-  public GetAttribute(ElementFinder finder) {
-    this.finder = finder;
+  public GetAttribute(JavascriptLibrary library) {
+    this.library = library;
+    getAttribute = "return (" + library.getSeleniumScript("getAttribute.js") + ").apply(null, arguments);";
   }
 
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String attributeLocator, String ignored) {
-    int attributePos = attributeLocator.lastIndexOf("@");
-    String elementLocator = attributeLocator.substring(0, attributePos);
-    String attributeName = attributeLocator.substring(attributePos + 1);
-
-    // Find the element.
-    WebElement element = finder.findElement(driver, elementLocator);
-    return element.getAttribute(attributeName);
+    return (String) library.executeScript(driver, getAttribute, attributeLocator);
   }
 }

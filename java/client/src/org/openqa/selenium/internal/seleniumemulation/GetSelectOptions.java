@@ -17,23 +17,29 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
 import java.util.List;
 
-import org.openqa.selenium.WebDriver;
-
-import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.TEXT;
 
 public class GetSelectOptions extends SeleneseCommand<String[]> {
-  private final SeleniumSelect select;
+  private final JavascriptLibrary library;
 
-  public GetSelectOptions(SeleniumSelect select) {
-    this.select = select;
+  public GetSelectOptions(JavascriptLibrary library) {
+    this.library = library;
   }
 
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String selectLocator, String ignored) {
-    List<String> allOptions = select.getOptions(driver, selectLocator, TEXT, true);
+    SeleniumSelect select = new SeleniumSelect(library, driver, selectLocator);
 
-    return allOptions.toArray(new String[allOptions.size()]);
+    List<WebElement> allOptions = select.getAllOptions();
+    String[] labels = new String[allOptions.size()];
+    for (int i = 0; i < allOptions.size(); i++) {
+      labels[i] = allOptions.get(i).getText();
+    }
+
+    return labels;
   }
 }

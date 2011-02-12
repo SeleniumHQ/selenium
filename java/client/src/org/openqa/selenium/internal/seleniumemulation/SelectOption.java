@@ -21,18 +21,19 @@ import org.openqa.selenium.WebDriver;
 
 public class SelectOption extends SeleneseCommand<Void> {
   private final AlertOverride alertOverride;
-  private final SeleniumSelect select;
+  private final JavascriptLibrary library;
 
-  public SelectOption(AlertOverride alertOverride, SeleniumSelect select) {
+  public SelectOption(AlertOverride alertOverride, JavascriptLibrary library) {
     this.alertOverride = alertOverride;
-    this.select = select;
+    this.library = library;
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String selectLocator, String optionLocator) {
     alertOverride.replaceAlertMethod(driver);
 
-    select.select(driver, selectLocator, optionLocator, true, true);
+    SeleniumSelect select = new SeleniumSelect(library, driver, selectLocator);
+    select.setSelected(optionLocator);
 
     return null;
   }

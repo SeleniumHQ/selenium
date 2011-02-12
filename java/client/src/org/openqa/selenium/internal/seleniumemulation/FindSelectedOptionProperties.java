@@ -20,19 +20,29 @@ package org.openqa.selenium.internal.seleniumemulation;
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class FindSelectedOptionProperties extends SeleneseCommand<String[]> {
-  private final SeleniumSelect select;
-  private final SeleniumSelect.Property property;
 
-  public FindSelectedOptionProperties(SeleniumSelect select, SeleniumSelect.Property property) {
-    this.select = select;
+  private JavascriptLibrary library;
+  private final String property;
+
+  public FindSelectedOptionProperties(JavascriptLibrary library, String property) {
+    this.library = library;
     this.property = property;
   }
 
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String selectLocator, String ignored) {
-    List<String> options = select.getOptions(driver, selectLocator, property, false);
-    return options.toArray(new String[options.size()]);
+    SeleniumSelect select = new SeleniumSelect(library, driver, selectLocator);
+    List<WebElement> allOptions = select.getSelectedOptions();
+    String[] values = new String[allOptions.size()];
+
+    for (int i = 0; i < allOptions.size(); i++) {
+      WebElement element = allOptions.get(i);
+      values[i] = element.getAttribute(property);
+    }
+
+    return values;
   }
 }

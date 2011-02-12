@@ -30,14 +30,11 @@ public class AddLocationStrategy extends SeleneseCommand<Void> {
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String strategyName, final String functionDefinition) {
-    elementFinder.add(strategyName, new LookupStrategy() {
-      public WebElement find(WebDriver driver, String use) {
-        return (WebElement) ((JavascriptExecutor) driver).executeScript(
-            String.format(
-                "(function(locator, inWindow, inDocument) { %s }).call(this,'%s', window, document)",
-                functionDefinition, use));
-      }
-    });
+    String strategy = String.format(
+        "return (function(locator, inWindow, inDocument) { %s }).call(null, arguments[0], window, document)",
+        functionDefinition);
+
+    elementFinder.add(strategyName, strategy); 
 
     return null;
   }

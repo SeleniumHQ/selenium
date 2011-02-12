@@ -17,121 +17,93 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
+import com.google.common.collect.Lists;
 
-import com.google.common.collect.Maps;
 import com.thoughtworks.selenium.SeleniumException;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+
 public class SeleniumSelect {
-  private final Map<String, OptionSelectStrategy> optionSelectStrategies = Maps.newHashMap();
-  private final ElementFinder finder;
 
-  public SeleniumSelect(ElementFinder finder) {
-    this.finder = finder;
-    setUpOptionFindingStrategies();
-  }
+  private final String findOption;
+  private final WebDriver driver;
+  private final WebElement select;
 
-  public static enum Property {
-    ID,
-    INDEX,
-    TEXT,
-    VALUE,
-  }
+  public SeleniumSelect(JavascriptLibrary library, WebDriver driver, String locator) {
+    this.driver = driver;
+    String findElement = "return (" + library.getSeleniumScript("findElement.js") + ").apply(null, arguments)";
+    findOption = "return (" + library.getSeleniumScript("findOption.js") + ").apply(null, arguments)";
 
-  public List<String> getOptions(WebDriver driver, String selectLocator, Property property, boolean fetchAll) {
-    WebElement element = finder.findElement(driver, selectLocator);
-    List<WebElement> options = element.findElements(By.tagName("option"));
-
-    if (options.size() == 0) {
-      throw new SeleniumException("Specified element is not a Select (has no options)");
+    select = (WebElement) library.executeScript(driver, findElement, locator);
+    if (!"select".equals(select.getTagName().toLowerCase())) {
+      throw new SeleniumException("Element is not a select element: " + locator);
     }
+  }
 
-    List<String> selectedOptions = new ArrayList<String>();
-
-    for (WebElement option : options) {
-      if (fetchAll || option.isSelected()) {
-        switch (property) {
-          case TEXT:
-            selectedOptions.add(option.getText());
-            break;
-
-          case VALUE:
-            selectedOptions.add(option.getValue());
-            break;
-
-          case ID:
-            selectedOptions.add(option.getAttribute("id"));
-            break;
-
-          case INDEX:
-            // TODO(simon): Implement this in the IE driver as "getAttribute"
-            Object result  = ((JavascriptExecutor) driver)
-                .executeScript("return arguments[0].index", option);
-            selectedOptions.add(String.valueOf(result));
-            break;
+  public void setSelected(String optionLocator) {
+    if (isMultiple()) {
+      for (WebElement opt : select.findElements(By.tagName("option"))) {
+        if (opt.isSelected()) {
+          opt.toggle();
         }
       }
     }
-
-    return selectedOptions;
+    
+    WebElement option = findOption(optionLocator);
+    option.setSelected();
   }
 
-  public boolean isMultiple(WebElement theSelect) {
-    String multiple = theSelect.getAttribute("multiple");
+  public void addSelection(String optionLocator) {
+    assertSupportsMultipleSelections();
 
-    if (multiple == null) { return false; }
-    if ("false".equals(multiple)) { return false; }
-    if ("".equals(multiple)) { return false; }
-
-    return true;
+    WebElement option = findOption(optionLocator);
+    option.setSelected();
   }
 
-  public void select(WebDriver driver, String selectLocator, String optionLocator, boolean setSelected, boolean onlyOneOption) {
-    WebElement select = finder.findElement(driver, selectLocator);
-    List<WebElement> allOptions = select.findElements(By.tagName("option"));
+  public void removeSelection(String optionLocator) {
+    assertSupportsMultipleSelections();
 
-    boolean isMultiple = isMultiple(select);
+    WebElement option = findOption(optionLocator);
+    if (option.isSelected()) {
+      option.toggle();
+    }
+  }
 
-    if (onlyOneOption && isMultiple) {
-      new RemoveAllSelections(finder).apply(driver, new String[] { selectLocator });
+  public List<WebElement> getSelectedOptions() {
+    List<WebElement> toReturn = Lists.newArrayList();
+
+    for (WebElement option : select.findElements(By.tagName("option"))) {
+      if (option.isSelected()) {
+        toReturn.add(option);
+      }
     }
 
-    Matcher matcher = ElementFinder.STRATEGY_AND_VALUE_PATTERN
-        .matcher(optionLocator);
-    String strategyName = "implicit";
-    String use = optionLocator;
+    return toReturn;
+  }
 
-    if (matcher.matches()) {
-      strategyName = matcher.group(1);
-      use = matcher.group(2);
-    }
-    if (use == null) {
-      use = "";
-    }
+  private WebElement findOption(String optionLocator) {
+    return (WebElement) ((JavascriptExecutor) driver)
+        .executeScript(findOption, select, optionLocator);
+  }
 
-    OptionSelectStrategy strategy = optionSelectStrategies.get(strategyName);
-    if (strategy == null) {
+  private void assertSupportsMultipleSelections() {
+    if (!isMultiple()) {
       throw new SeleniumException(
-          strategyName + " (from " + optionLocator + ") is not a method for selecting options");
-    }
-
-    if (!strategy.select(allOptions, use, setSelected, isMultiple)) {
-      throw new SeleniumException(optionLocator + " is not an option");
+          "You may only add a selection to a select that supports multiple selections");
     }
   }
 
-  private void setUpOptionFindingStrategies() {
-    optionSelectStrategies.put("implicit", new LabelOptionSelectStrategy());
-    optionSelectStrategies.put("id", new IdOptionSelectStrategy());
-    optionSelectStrategies.put("index", new IndexOptionSelectStrategy());
-    optionSelectStrategies.put("label", new LabelOptionSelectStrategy());
-    optionSelectStrategies.put("value", new ValueOptionSelectStrategy());
+  private boolean isMultiple() {
+    boolean multiple = "true".equals(select.getAttribute("multiple"));
+    return multiple;
+  }
+
+  public List<WebElement> getAllOptions() {
+    return select.findElements(By.tagName("option"));
   }
 }
