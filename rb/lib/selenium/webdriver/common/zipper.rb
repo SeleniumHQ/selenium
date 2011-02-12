@@ -26,29 +26,21 @@ module Selenium
       end
 
       def self.zip(path)
-        tmp_zip = Tempfile.new("webdriver-zip", :mode => File::BINARY)
+        # can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
+        Dir.mktmpdir { |tmp_dir|
+          zip_path = File.join(tmp_dir, "webdriver-zip")
 
-        begin
-          zos = Zip::ZipOutputStream.new(tmp_zip.path)
+          Zip::ZipFile.open(zip_path, Zip::ZipFile::CREATE) { |zip|
+            ::Find.find(path) do |file|
+              next if File.directory?(file)
+              entry = file.sub("#{path}/", '')
 
-          ::Find.find(path) do |file|
-            next if File.directory?(file)
-            entry = file.sub("#{path}/", '')
-
-            zos.put_next_entry(entry)
-            File.open(file, "rb") do |io|
-              zos << io.read
+              zip.add entry, file
             end
+          }
 
-          end
-
-          zos.close
-          tmp_zip.rewind
-
-          Base64.encode64(tmp_zip.read)
-        ensure
-          tmp_zip.close
-        end
+          File.open(zip_path, "rb") { |io| Base64.encode64 io.read }
+        }
       end
 
     end # Zipper

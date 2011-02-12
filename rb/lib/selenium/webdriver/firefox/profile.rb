@@ -85,15 +85,15 @@ module Selenium
         end
 
         def self.from_json(json)
-          zip_file = Tempfile.new("webdriver-profile-duplicate-#{json.hash}", :mode => File::BINARY)
-
           data = JSON.parse(json).fetch('zip')
-          zip_file << Base64.decode64(data)
-          zip_file.close
 
-          new(Zipper.unzip(zip_file.path))
-        ensure
-          zip_file.delete if zip_file
+          # can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
+          Dir.mktmpdir { |tmp_dir|
+            zip_path = File.join(tmp_dir, "webdriver-profile-duplicate-#{json.hash}")
+            File.open(zip_path, "wb") { |zip_file| zip_file << Base64.decode64(data) }
+
+            new Zipper.unzip(zip_path)
+          }
         end
 
         #
