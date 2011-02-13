@@ -73,6 +73,6 @@ java_test(name = "single",
   deps = [
     ":tests",
     "//java/server/src/org/openqa/selenium/server",
-    "//javatests/org/openqa/selenium/v1:selenium-backed-webdriver-test",
+    "//java/client/test/org/openqa/selenium/v1:selenium-backed-webdriver-test",
     "//java/client/test/org/openqa/selenium/firefox:test",
   ])
