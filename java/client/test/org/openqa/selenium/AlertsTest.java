@@ -24,8 +24,8 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_ALERTS;
 
 public class AlertsTest extends AbstractDriverTestCase {
 
@@ -39,7 +39,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
     driver.get(alertPage);
 
@@ -49,8 +49,12 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowUsersToAcceptAnAlertManually() throws InterruptedException {
+    if (!isCapableOfHandlingAlerts(driver)) {
+      return;
+    }
+
     driver.get(alertPage);
 
     driver.findElement(By.id("alert")).click();
@@ -63,8 +67,12 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowUsersToDismissAnAlertManually() {
+    if (!isCapableOfHandlingAlerts(driver)) {
+      return;
+    }
+
     driver.get(alertPage);
 
     driver.findElement(By.id("alert")).click();
@@ -77,8 +85,12 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowAUserToAcceptAPrompt() {
+    if (!isCapableOfHandlingAlerts(driver)) {
+      return;
+    }
+
     driver.get(alertPage);
 
     driver.findElement(By.id("prompt")).click();
@@ -91,8 +103,12 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowAUserToDismissAPrompt() {
+    if (!isCapableOfHandlingAlerts(driver)) {
+      return;
+    }
+    
     driver.get(alertPage);
 
     driver.findElement(By.id("prompt")).click();
@@ -105,8 +121,12 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
+    if (!isCapableOfHandlingAlerts(driver)) {
+      return;
+    }
+
     driver.get(alertPage);
 
     driver.findElement(By.id("prompt")).click();
@@ -120,8 +140,12 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowTheUserToGetTheTextOfAnAlert() {
+    if (!isCapableOfHandlingAlerts(driver)) {
+      return;
+    }
+
     driver.get(alertPage);
 
     driver.findElement(By.id("alert")).click();
@@ -135,6 +159,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @Ignore
   public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith() {
+    if (!isCapableOfHandlingAlerts(driver)) {
+      return;
+    }
+
     driver.get(alertPage);
 
     driver.findElement(By.id("alert")).click();
@@ -150,6 +178,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @Ignore
   public void testAlertShouldNotAllowAdditionalCommandsIfDimissed() {
+    if (!isCapableOfHandlingAlerts(driver)) {
+      return;
+    }
+
     driver.get(alertPage);
 
     driver.findElement(By.id("alert")).click();
@@ -173,5 +205,14 @@ public class AlertsTest extends AbstractDriverTestCase {
       e.printStackTrace();
     }
     return null;
+  }
+
+  private boolean isCapableOfHandlingAlerts(WebDriver driver) {
+    if (!(driver instanceof HasCapabilities)) {
+      return false;
+    }
+
+    Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
+    return capabilities.is(SUPPORTS_ALERTS);
   }
 }

@@ -61,6 +61,7 @@ import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
 
+
 public class DriverServlet extends HttpServlet {
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
 
@@ -132,6 +133,15 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/window_handles", GetAllWindowHandles.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+
+    postMapper.bind("/session/:sessionId/dismiss_alert", DismissAlert.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/accept_alert", AcceptAlert.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    getMapper.bind("/session/:sessionId/alert_text", GetAlertText.class)
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+    postMapper.bind("/session/:sessionId/alert_text", SetAlertText.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
 
     postMapper.bind("/session/:sessionId/url", ChangeUrl.class)
         .on(ResultType.SUCCESS, new EmptyResult());
