@@ -28,13 +28,7 @@ int ElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_w
 			// function: "function() {...}"; Wrap it in another function so we can
 			// invoke it with our arguments without polluting the current namespace.
 			std::wstring script(L"(function() { return (");
-
-			// Read in all the scripts
-			for (int j = 0; FIND_ELEMENT[j]; j++) {
-				script += FIND_ELEMENT[j];
-			}
-
-			// Now for the magic and to close things
+			script += atoms::FIND_ELEMENT;
 			script += L")})();";
 
 			ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 2);
@@ -75,13 +69,7 @@ int ElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_
 			// function: "function() {...}"; Wrap it in another function so we can
 			// invoke it with our arguments without polluting the current namespace.
 			std::wstring script(L"(function() { return (");
-
-			// Read in all the scripts
-			for (int j = 0; FIND_ELEMENTS[j]; j++) {
-				script += FIND_ELEMENTS[j];
-			}
-
-			// Now for the magic and to close things
+			script += atoms::FIND_ELEMENTS;
 			script += L")})();";
 
 			ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 2);

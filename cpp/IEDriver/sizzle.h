@@ -12,459 +12,455 @@
 // limitations under the License.
 
 /* AUTO GENERATED - DO NOT EDIT BY HAND */
-#ifndef SIZZLE_H__
-#define SIZZLE_H__
+#ifndef WEBDRIVER_SIZZLE_H_
+#define WEBDRIVER_SIZZLE_H_
 
 #include <stddef.h>  // For wchar_t.
 
 namespace webdriver {
+namespace atoms {
 
-const wchar_t* const SIZZLE[] = {
-    L"/*!\n * Sizzle CSS Selector Engine - v1.0\n *  Copyright 2009, The Dojo",
-    L" Foundation\n *  Released under the MIT, BSD, and GPL Licenses.\n *  Mo",
-    L"re information: http://sizzlejs.com/\n */\n(function(){\n\nvar chunker ",
-    L"= /((?:\\((?:\\([^()]+\\)|[^()]+)+\\)|\\[(?:\\[[^\\[\\]]*\\]|['\"][^'\"",
-    L"]*['\"]|[^\\[\\]'\"]+)+\\]|\\\\.|[^ >+~,(\\[\\\\]+)+|[>+~])(\\s*,\\s*)?",
-    L"((?:.|\\r|\\n)*)/g,\n\tdone = 0,\n\ttoString = Object.prototype.toStrin",
-    L"g,\n\thasDuplicate = false,\n\tbaseHasDuplicate = true;\n\n// Here we c",
-    L"heck if the JavaScript engine is using some sort of\n// optimization wh",
-    L"ere it does not always call our comparision\n// function. If that is th",
-    L"e case, discard the hasDuplicate value.\n//   Thus far that includes Go",
-    L"ogle Chrome.\n[0, 0].sort(function(){\n\tbaseHasDuplicate = false;\n\tr",
-    L"eturn 0;\n});\n\nvar Sizzle = function(selector, context, results, seed",
-    L") {\n\tresults = results || [];\n\tcontext = context || document;\n\n\t",
-    L"var origContext = context;\n\n\tif ( context.nodeType !== 1 && context.",
-    L"nodeType !== 9 ) {\n\t\treturn [];\n\t}\n\t\n\tif ( !selector || typeof",
-    L" selector !== \"string\" ) {\n\t\treturn results;\n\t}\n\n\tvar parts =",
-    L" [], m, set, checkSet, extra, prune = true, contextXML = Sizzle.isXML(c",
-    L"ontext),\n\t\tsoFar = selector, ret, cur, pop, i;\n\t\n\t// Reset the p",
-    L"osition of the chunker regexp (start from head)\n\tdo {\n\t\tchunker.ex",
-    L"ec(\"\");\n\t\tm = chunker.exec(soFar);\n\n\t\tif ( m ) {\n\t\t\tsoFar ",
-    L"= m[3];\n\t\t\n\t\t\tparts.push( m[1] );\n\t\t\n\t\t\tif ( m[2] ) {\n\t",
-    L"\t\t\textra = m[3];\n\t\t\t\tbreak;\n\t\t\t}\n\t\t}\n\t} while ( m );\n",
-    L"\n\tif ( parts.length > 1 && origPOS.exec( selector ) ) {\n\t\tif ( par",
-    L"ts.length === 2 && Expr.relative[ parts[0] ] ) {\n\t\t\tset = posProces",
-    L"s( parts[0] + parts[1], context );\n\t\t} else {\n\t\t\tset = Expr.rela",
-    L"tive[ parts[0] ] ?\n\t\t\t\t[ context ] :\n\t\t\t\tSizzle( parts.shift(",
-    L"), context );\n\n\t\t\twhile ( parts.length ) {\n\t\t\t\tselector = par",
-    L"ts.shift();\n\n\t\t\t\tif ( Expr.relative[ selector ] ) {\n\t\t\t\t\tse",
-    L"lector += parts.shift();\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\tset = posProcess",
-    L"( selector, set );\n\t\t\t}\n\t\t}\n\t} else {\n\t\t// Take a shortcut ",
-    L"and set the context if the root selector is an ID\n\t\t// (but not if i",
-    L"t'll be faster if the inner selector is an ID)\n\t\tif ( !seed && parts",
-    L".length > 1 && context.nodeType === 9 && !contextXML &&\n\t\t\t\tExpr.m",
-    L"atch.ID.test(parts[0]) && !Expr.match.ID.test(parts[parts.length - 1]) ",
-    L") {\n\t\t\tret = Sizzle.find( parts.shift(), context, contextXML );\n\t",
-    L"\t\tcontext = ret.expr ? Sizzle.filter( ret.expr, ret.set )[0] : ret.se",
-    L"t[0];\n\t\t}\n\n\t\tif ( context ) {\n\t\t\tret = seed ?\n\t\t\t\t{ exp",
-    L"r: parts.pop(), set: makeArray(seed) } :\n\t\t\t\tSizzle.find( parts.po",
-    L"p(), parts.length === 1 && (parts[0] === \"~\" || parts[0] === \"+\") &",
-    L"& context.parentNode ? context.parentNode : context, contextXML );\n\t",
-    L"\t\tset = ret.expr ? Sizzle.filter( ret.expr, ret.set ) : ret.set;\n\n",
-    L"\t\t\tif ( parts.length > 0 ) {\n\t\t\t\tcheckSet = makeArray(set);\n\t",
-    L"\t\t} else {\n\t\t\t\tprune = false;\n\t\t\t}\n\n\t\t\twhile ( parts.le",
-    L"ngth ) {\n\t\t\t\tcur = parts.pop();\n\t\t\t\tpop = cur;\n\n\t\t\t\tif ",
-    L"( !Expr.relative[ cur ] ) {\n\t\t\t\t\tcur = \"\";\n\t\t\t\t} else {\n",
-    L"\t\t\t\t\tpop = parts.pop();\n\t\t\t\t}\n\n\t\t\t\tif ( pop == null ) {",
-    L"\n\t\t\t\t\tpop = context;\n\t\t\t\t}\n\n\t\t\t\tExpr.relative[ cur ]( ",
-    L"checkSet, pop, contextXML );\n\t\t\t}\n\t\t} else {\n\t\t\tcheckSet = p",
-    L"arts = [];\n\t\t}\n\t}\n\n\tif ( !checkSet ) {\n\t\tcheckSet = set;\n\t",
-    L"}\n\n\tif ( !checkSet ) {\n\t\tSizzle.error( cur || selector );\n\t}\n",
-    L"\n\tif ( toString.call(checkSet) === \"[object Array]\" ) {\n\t\tif ( !",
-    L"prune ) {\n\t\t\tresults.push.apply( results, checkSet );\n\t\t} else i",
-    L"f ( context && context.nodeType === 1 ) {\n\t\t\tfor ( i = 0; checkSet[",
-    L"i] != null; i++ ) {\n\t\t\t\tif ( checkSet[i] && (checkSet[i] === true ",
-    L"|| checkSet[i].nodeType === 1 && Sizzle.contains(context, checkSet[i]))",
-    L" ) {\n\t\t\t\t\tresults.push( set[i] );\n\t\t\t\t}\n\t\t\t}\n\t\t} else",
-    L" {\n\t\t\tfor ( i = 0; checkSet[i] != null; i++ ) {\n\t\t\t\tif ( check",
-    L"Set[i] && checkSet[i].nodeType === 1 ) {\n\t\t\t\t\tresults.push( set[i",
-    L"] );\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t} else {\n\t\tmakeArray( checkSet, r",
-    L"esults );\n\t}\n\n\tif ( extra ) {\n\t\tSizzle( extra, origContext, res",
-    L"ults, seed );\n\t\tSizzle.uniqueSort( results );\n\t}\n\n\treturn resul",
-    L"ts;\n};\n\nSizzle.uniqueSort = function(results){\n\tif ( sortOrder ) {",
-    L"\n\t\thasDuplicate = baseHasDuplicate;\n\t\tresults.sort(sortOrder);\n",
-    L"\n\t\tif ( hasDuplicate ) {\n\t\t\tfor ( var i = 1; i < results.length;",
-    L" i++ ) {\n\t\t\t\tif ( results[i] === results[i-1] ) {\n\t\t\t\t\tresul",
-    L"ts.splice(i--, 1);\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n\treturn results;",
-    L"\n};\n\nSizzle.matches = function(expr, set){\n\treturn Sizzle(expr, nu",
-    L"ll, null, set);\n};\n\nSizzle.find = function(expr, context, isXML){\n",
-    L"\tvar set;\n\n\tif ( !expr ) {\n\t\treturn [];\n\t}\n\n\tfor ( var i = ",
-    L"0, l = Expr.order.length; i < l; i++ ) {\n\t\tvar type = Expr.order[i],",
-    L" match;\n\t\t\n\t\tif ( (match = Expr.leftMatch[ type ].exec( expr )) )",
-    L" {\n\t\t\tvar left = match[1];\n\t\t\tmatch.splice(1,1);\n\n\t\t\tif ( ",
-    L"left.substr( left.length - 1 ) !== \"\\\\\" ) {\n\t\t\t\tmatch[1] = (ma",
-    L"tch[1] || \"\").replace(/\\\\/g, \"\");\n\t\t\t\tset = Expr.find[ type ",
-    L"]( match, context, isXML );\n\t\t\t\tif ( set != null ) {\n\t\t\t\t\tex",
-    L"pr = expr.replace( Expr.match[ type ], \"\" );\n\t\t\t\t\tbreak;\n\t\t",
-    L"\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n\tif ( !set ) {\n\t\tset = context.getEle",
-    L"mentsByTagName(\"*\");\n\t}\n\n\treturn {set: set, expr: expr};\n};\n\n",
-    L"Sizzle.filter = function(expr, set, inplace, not){\n\tvar old = expr, r",
-    L"esult = [], curLoop = set, match, anyFound,\n\t\tisXMLFilter = set && s",
-    L"et[0] && Sizzle.isXML(set[0]);\n\n\twhile ( expr && set.length ) {\n\t",
-    L"\tfor ( var type in Expr.filter ) {\n\t\t\tif ( (match = Expr.leftMatch",
-    L"[ type ].exec( expr )) != null && match[2] ) {\n\t\t\t\tvar filter = Ex",
-    L"pr.filter[ type ], found, item, left = match[1];\n\t\t\t\tanyFound = fa",
-    L"lse;\n\n\t\t\t\tmatch.splice(1,1);\n\n\t\t\t\tif ( left.substr( left.le",
-    L"ngth - 1 ) === \"\\\\\" ) {\n\t\t\t\t\tcontinue;\n\t\t\t\t}\n\n\t\t\t\t",
-    L"if ( curLoop === result ) {\n\t\t\t\t\tresult = [];\n\t\t\t\t}\n\n\t\t",
-    L"\t\tif ( Expr.preFilter[ type ] ) {\n\t\t\t\t\tmatch = Expr.preFilter[ ",
-    L"type ]( match, curLoop, inplace, result, not, isXMLFilter );\n\n\t\t\t",
-    L"\t\tif ( !match ) {\n\t\t\t\t\t\tanyFound = found = true;\n\t\t\t\t\t} ",
-    L"else if ( match === true ) {\n\t\t\t\t\t\tcontinue;\n\t\t\t\t\t}\n\t\t",
-    L"\t\t}\n\n\t\t\t\tif ( match ) {\n\t\t\t\t\tfor ( var i = 0; (item = cur",
-    L"Loop[i]) != null; i++ ) {\n\t\t\t\t\t\tif ( item ) {\n\t\t\t\t\t\t\tfou",
-    L"nd = filter( item, match, i, curLoop );\n\t\t\t\t\t\t\tvar pass = not ^",
-    L" !!found;\n\n\t\t\t\t\t\t\tif ( inplace && found != null ) {\n\t\t\t\t",
-    L"\t\t\t\tif ( pass ) {\n\t\t\t\t\t\t\t\t\tanyFound = true;\n\t\t\t\t\t\t",
-    L"\t\t} else {\n\t\t\t\t\t\t\t\t\tcurLoop[i] = false;\n\t\t\t\t\t\t\t\t}",
-    L"\n\t\t\t\t\t\t\t} else if ( pass ) {\n\t\t\t\t\t\t\t\tresult.push( item",
-    L" );\n\t\t\t\t\t\t\t\tanyFound = true;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n",
-    L"\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\tif ( found !== undefined ) {\n\t\t\t",
-    L"\t\tif ( !inplace ) {\n\t\t\t\t\t\tcurLoop = result;\n\t\t\t\t\t}\n\n\t",
-    L"\t\t\t\texpr = expr.replace( Expr.match[ type ], \"\" );\n\n\t\t\t\t\ti",
-    L"f ( !anyFound ) {\n\t\t\t\t\t\treturn [];\n\t\t\t\t\t}\n\n\t\t\t\t\tbre",
-    L"ak;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\t// Improper expression\n\t\tif ( ",
-    L"expr === old ) {\n\t\t\tif ( anyFound == null ) {\n\t\t\t\tSizzle.error",
-    L"( expr );\n\t\t\t} else {\n\t\t\t\tbreak;\n\t\t\t}\n\t\t}\n\n\t\told = ",
-    L"expr;\n\t}\n\n\treturn curLoop;\n};\n\nSizzle.error = function( msg ) {",
-    L"\n\tthrow \"Syntax error, unrecognized expression: \" + msg;\n};\n\nvar",
-    L" Expr = Sizzle.selectors = {\n\torder: [ \"ID\", \"NAME\", \"TAG\" ],\n",
-    L"\tmatch: {\n\t\tID: /#((?:[\\w\\u00c0-\\uFFFF\\-]|\\\\.)+)/,\n\t\tCLASS",
-    L": /\\.((?:[\\w\\u00c0-\\uFFFF\\-]|\\\\.)+)/,\n\t\tNAME: /\\[name=['\"]*",
-    L"((?:[\\w\\u00c0-\\uFFFF\\-]|\\\\.)+)['\"]*\\]/,\n\t\tATTR: /\\[\\s*((?:",
-    L"[\\w\\u00c0-\\uFFFF\\-]|\\\\.)+)\\s*(?:(\\S?=)\\s*(['\"]*)(.*?)\\3|)\\s",
-    L"*\\]/,\n\t\tTAG: /^((?:[\\w\\u00c0-\\uFFFF\\*\\-]|\\\\.)+)/,\n\t\tCHILD",
-    L": /:(only|nth|last|first)-child(?:\\((even|odd|[\\dn+\\-]*)\\))?/,\n\t",
-    L"\tPOS: /:(nth|eq|gt|lt|first|last|even|odd)(?:\\((\\d*)\\))?(?=[^\\-]|$",
-    L")/,\n\t\tPSEUDO: /:((?:[\\w\\u00c0-\\uFFFF\\-]|\\\\.)+)(?:\\((['\"]?)((",
-    L"?:\\([^\\)]+\\)|[^\\(\\)]*)+)\\2\\))?/\n\t},\n\tleftMatch: {},\n\tattrM",
-    L"ap: {\n\t\t\"class\": \"className\",\n\t\t\"for\": \"htmlFor\"\n\t},\n",
-    L"\tattrHandle: {\n\t\thref: function(elem){\n\t\t\treturn elem.getAttrib",
-    L"ute(\"href\");\n\t\t}\n\t},\n\trelative: {\n\t\t\"+\": function(checkSe",
-    L"t, part){\n\t\t\tvar isPartStr = typeof part === \"string\",\n\t\t\t\ti",
-    L"sTag = isPartStr && !/\\W/.test(part),\n\t\t\t\tisPartStrNotTag = isPar",
-    L"tStr && !isTag;\n\n\t\t\tif ( isTag ) {\n\t\t\t\tpart = part.toLowerCas",
-    L"e();\n\t\t\t}\n\n\t\t\tfor ( var i = 0, l = checkSet.length, elem; i < ",
-    L"l; i++ ) {\n\t\t\t\tif ( (elem = checkSet[i]) ) {\n\t\t\t\t\twhile ( (e",
-    L"lem = elem.previousSibling) && elem.nodeType !== 1 ) {}\n\n\t\t\t\t\tch",
-    L"eckSet[i] = isPartStrNotTag || elem && elem.nodeName.toLowerCase() === ",
-    L"part ?\n\t\t\t\t\t\telem || false :\n\t\t\t\t\t\telem === part;\n\t\t\t",
-    L"\t}\n\t\t\t}\n\n\t\t\tif ( isPartStrNotTag ) {\n\t\t\t\tSizzle.filter( ",
-    L"part, checkSet, true );\n\t\t\t}\n\t\t},\n\t\t\">\": function(checkSet,",
-    L" part){\n\t\t\tvar isPartStr = typeof part === \"string\",\n\t\t\t\tele",
-    L"m, i = 0, l = checkSet.length;\n\n\t\t\tif ( isPartStr && !/\\W/.test(p",
-    L"art) ) {\n\t\t\t\tpart = part.toLowerCase();\n\n\t\t\t\tfor ( ; i < l; ",
-    L"i++ ) {\n\t\t\t\t\telem = checkSet[i];\n\t\t\t\t\tif ( elem ) {\n\t\t\t",
-    L"\t\t\tvar parent = elem.parentNode;\n\t\t\t\t\t\tcheckSet[i] = parent.n",
-    L"odeName.toLowerCase() === part ? parent : false;\n\t\t\t\t\t}\n\t\t\t\t",
-    L"}\n\t\t\t} else {\n\t\t\t\tfor ( ; i < l; i++ ) {\n\t\t\t\t\telem = che",
-    L"ckSet[i];\n\t\t\t\t\tif ( elem ) {\n\t\t\t\t\t\tcheckSet[i] = isPartStr",
-    L" ?\n\t\t\t\t\t\t\telem.parentNode :\n\t\t\t\t\t\t\telem.parentNode === ",
-    L"part;\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\tif ( isPartStr ) {\n\t\t\t\t\t",
-    L"Sizzle.filter( part, checkSet, true );\n\t\t\t\t}\n\t\t\t}\n\t\t},\n\t",
-    L"\t\"\": function(checkSet, part, isXML){\n\t\t\tvar doneName = done++, ",
-    L"checkFn = dirCheck, nodeCheck;\n\n\t\t\tif ( typeof part === \"string\"",
-    L" && !/\\W/.test(part) ) {\n\t\t\t\tpart = part.toLowerCase();\n\t\t\t\t",
-    L"nodeCheck = part;\n\t\t\t\tcheckFn = dirNodeCheck;\n\t\t\t}\n\n\t\t\tch",
-    L"eckFn(\"parentNode\", part, doneName, checkSet, nodeCheck, isXML);\n\t",
-    L"\t},\n\t\t\"~\": function(checkSet, part, isXML){\n\t\t\tvar doneName =",
-    L" done++, checkFn = dirCheck, nodeCheck;\n\n\t\t\tif ( typeof part === ",
-    L"\"string\" && !/\\W/.test(part) ) {\n\t\t\t\tpart = part.toLowerCase();",
-    L"\n\t\t\t\tnodeCheck = part;\n\t\t\t\tcheckFn = dirNodeCheck;\n\t\t\t}\n",
-    L"\n\t\t\tcheckFn(\"previousSibling\", part, doneName, checkSet, nodeChec",
-    L"k, isXML);\n\t\t}\n\t},\n\tfind: {\n\t\tID: function(match, context, is",
-    L"XML){\n\t\t\tif ( typeof context.getElementById !== \"undefined\" && !i",
-    L"sXML ) {\n\t\t\t\tvar m = context.getElementById(match[1]);\n\t\t\t\t//",
-    L" Check parentNode to catch when Blackberry 4.6 returns\n\t\t\t\t// node",
-    L"s that are no longer in the document #6963\n\t\t\t\treturn m && m.paren",
-    L"tNode ? [m] : [];\n\t\t\t}\n\t\t},\n\t\tNAME: function(match, context){",
-    L"\n\t\t\tif ( typeof context.getElementsByName !== \"undefined\" ) {\n\t",
-    L"\t\t\tvar ret = [], results = context.getElementsByName(match[1]);\n\n",
-    L"\t\t\t\tfor ( var i = 0, l = results.length; i < l; i++ ) {\n\t\t\t\t\t",
-    L"if ( results[i].getAttribute(\"name\") === match[1] ) {\n\t\t\t\t\t\tre",
-    L"t.push( results[i] );\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\treturn ret.len",
-    L"gth === 0 ? null : ret;\n\t\t\t}\n\t\t},\n\t\tTAG: function(match, cont",
-    L"ext){\n\t\t\treturn context.getElementsByTagName(match[1]);\n\t\t}\n\t}",
-    L",\n\tpreFilter: {\n\t\tCLASS: function(match, curLoop, inplace, result,",
-    L" not, isXML){\n\t\t\tmatch = \" \" + match[1].replace(/\\\\/g, \"\") + ",
-    L"\" \";\n\n\t\t\tif ( isXML ) {\n\t\t\t\treturn match;\n\t\t\t}\n\n\t\t",
-    L"\tfor ( var i = 0, elem; (elem = curLoop[i]) != null; i++ ) {\n\t\t\t\t",
-    L"if ( elem ) {\n\t\t\t\t\tif ( not ^ (elem.className && (\" \" + elem.cl",
-    L"assName + \" \").replace(/[\\t\\n]/g, \" \").indexOf(match) >= 0) ) {\n",
-    L"\t\t\t\t\t\tif ( !inplace ) {\n\t\t\t\t\t\t\tresult.push( elem );\n\t\t",
-    L"\t\t\t\t}\n\t\t\t\t\t} else if ( inplace ) {\n\t\t\t\t\t\tcurLoop[i] = ",
-    L"false;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\n\t\t\treturn false;\n\t\t},",
-    L"\n\t\tID: function(match){\n\t\t\treturn match[1].replace(/\\\\/g, \"\"",
-    L");\n\t\t},\n\t\tTAG: function(match, curLoop){\n\t\t\treturn match[1].t",
-    L"oLowerCase();\n\t\t},\n\t\tCHILD: function(match){\n\t\t\tif ( match[1]",
-    L" === \"nth\" ) {\n\t\t\t\t// parse equations like 'even', 'odd', '5', '",
-    L"2n', '3n+2', '4n-1', '-n+6'\n\t\t\t\tvar test = /(-?)(\\d*)n((?:\\+|-)?",
-    L"\\d*)/.exec(\n\t\t\t\t\tmatch[2] === \"even\" && \"2n\" || match[2] ===",
-    L" \"odd\" && \"2n+1\" ||\n\t\t\t\t\t!/\\D/.test( match[2] ) && \"0n+\" +",
-    L" match[2] || match[2]);\n\n\t\t\t\t// calculate the numbers (first)n+(l",
-    L"ast) including if they are negative\n\t\t\t\tmatch[2] = (test[1] + (tes",
-    L"t[2] || 1)) - 0;\n\t\t\t\tmatch[3] = test[3] - 0;\n\t\t\t}\n\n\t\t\t// ",
-    L"TODO: Move to normal caching system\n\t\t\tmatch[0] = done++;\n\n\t\t\t",
-    L"return match;\n\t\t},\n\t\tATTR: function(match, curLoop, inplace, resu",
-    L"lt, not, isXML){\n\t\t\tvar name = match[1].replace(/\\\\/g, \"\");\n\t",
-    L"\t\t\n\t\t\tif ( !isXML && Expr.attrMap[name] ) {\n\t\t\t\tmatch[1] = E",
-    L"xpr.attrMap[name];\n\t\t\t}\n\n\t\t\tif ( match[2] === \"~=\" ) {\n\t\t",
-    L"\t\tmatch[4] = \" \" + match[4] + \" \";\n\t\t\t}\n\n\t\t\treturn match",
-    L";\n\t\t},\n\t\tPSEUDO: function(match, curLoop, inplace, result, not){",
-    L"\n\t\t\tif ( match[1] === \"not\" ) {\n\t\t\t\t// If we're dealing with",
-    L" a complex expression, or a simple one\n\t\t\t\tif ( ( chunker.exec(mat",
-    L"ch[3]) || \"\" ).length > 1 || /^\\w/.test(match[3]) ) {\n\t\t\t\t\tmat",
-    L"ch[3] = Sizzle(match[3], null, null, curLoop);\n\t\t\t\t} else {\n\t\t",
-    L"\t\t\tvar ret = Sizzle.filter(match[3], curLoop, inplace, true ^ not);",
-    L"\n\t\t\t\t\tif ( !inplace ) {\n\t\t\t\t\t\tresult.push.apply( result, r",
-    L"et );\n\t\t\t\t\t}\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t} else if",
-    L" ( Expr.match.POS.test( match[0] ) || Expr.match.CHILD.test( match[0] )",
-    L" ) {\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\t\n\t\t\treturn match;\n\t\t}",
-    L",\n\t\tPOS: function(match){\n\t\t\tmatch.unshift( true );\n\t\t\tretur",
-    L"n match;\n\t\t}\n\t},\n\tfilters: {\n\t\tenabled: function(elem){\n\t\t",
-    L"\treturn elem.disabled === false && elem.type !== \"hidden\";\n\t\t},\n",
-    L"\t\tdisabled: function(elem){\n\t\t\treturn elem.disabled === true;\n\t",
-    L"\t},\n\t\tchecked: function(elem){\n\t\t\treturn elem.checked === true;",
-    L"\n\t\t},\n\t\tselected: function(elem){\n\t\t\t// Accessing this proper",
-    L"ty makes selected-by-default\n\t\t\t// options in Safari work properly",
-    L"\n\t\t\telem.parentNode.selectedIndex;\n\t\t\treturn elem.selected === ",
-    L"true;\n\t\t},\n\t\tparent: function(elem){\n\t\t\treturn !!elem.firstCh",
-    L"ild;\n\t\t},\n\t\tempty: function(elem){\n\t\t\treturn !elem.firstChild",
-    L";\n\t\t},\n\t\thas: function(elem, i, match){\n\t\t\treturn !!Sizzle( m",
-    L"atch[3], elem ).length;\n\t\t},\n\t\theader: function(elem){\n\t\t\tret",
-    L"urn (/h\\d/i).test( elem.nodeName );\n\t\t},\n\t\ttext: function(elem){",
-    L"\n\t\t\treturn \"text\" === elem.type;\n\t\t},\n\t\tradio: function(ele",
-    L"m){\n\t\t\treturn \"radio\" === elem.type;\n\t\t},\n\t\tcheckbox: funct",
-    L"ion(elem){\n\t\t\treturn \"checkbox\" === elem.type;\n\t\t},\n\t\tfile:",
-    L" function(elem){\n\t\t\treturn \"file\" === elem.type;\n\t\t},\n\t\tpas",
-    L"sword: function(elem){\n\t\t\treturn \"password\" === elem.type;\n\t\t}",
-    L",\n\t\tsubmit: function(elem){\n\t\t\treturn \"submit\" === elem.type;",
-    L"\n\t\t},\n\t\timage: function(elem){\n\t\t\treturn \"image\" === elem.t",
-    L"ype;\n\t\t},\n\t\treset: function(elem){\n\t\t\treturn \"reset\" === el",
-    L"em.type;\n\t\t},\n\t\tbutton: function(elem){\n\t\t\treturn \"button\" ",
-    L"=== elem.type || elem.nodeName.toLowerCase() === \"button\";\n\t\t},\n",
-    L"\t\tinput: function(elem){\n\t\t\treturn (/input|select|textarea|button",
-    L"/i).test(elem.nodeName);\n\t\t}\n\t},\n\tsetFilters: {\n\t\tfirst: func",
-    L"tion(elem, i){\n\t\t\treturn i === 0;\n\t\t},\n\t\tlast: function(elem,",
-    L" i, match, array){\n\t\t\treturn i === array.length - 1;\n\t\t},\n\t\te",
-    L"ven: function(elem, i){\n\t\t\treturn i % 2 === 0;\n\t\t},\n\t\todd: fu",
-    L"nction(elem, i){\n\t\t\treturn i % 2 === 1;\n\t\t},\n\t\tlt: function(e",
-    L"lem, i, match){\n\t\t\treturn i < match[3] - 0;\n\t\t},\n\t\tgt: functi",
-    L"on(elem, i, match){\n\t\t\treturn i > match[3] - 0;\n\t\t},\n\t\tnth: f",
-    L"unction(elem, i, match){\n\t\t\treturn match[3] - 0 === i;\n\t\t},\n\t",
-    L"\teq: function(elem, i, match){\n\t\t\treturn match[3] - 0 === i;\n\t\t",
-    L"}\n\t},\n\tfilter: {\n\t\tPSEUDO: function(elem, match, i, array){\n\t",
-    L"\t\tvar name = match[1], filter = Expr.filters[ name ];\n\n\t\t\tif ( f",
-    L"ilter ) {\n\t\t\t\treturn filter( elem, i, match, array );\n\t\t\t} els",
-    L"e if ( name === \"contains\" ) {\n\t\t\t\treturn (elem.textContent || e",
-    L"lem.innerText || Sizzle.getText([ elem ]) || \"\").indexOf(match[3]) >=",
-    L" 0;\n\t\t\t} else if ( name === \"not\" ) {\n\t\t\t\tvar not = match[3]",
-    L";\n\n\t\t\t\tfor ( var j = 0, l = not.length; j < l; j++ ) {\n\t\t\t\t",
-    L"\tif ( not[j] === elem ) {\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t}\n\t",
-    L"\t\t\t}\n\n\t\t\t\treturn true;\n\t\t\t} else {\n\t\t\t\tSizzle.error( ",
-    L"\"Syntax error, unrecognized expression: \" + name );\n\t\t\t}\n\t\t},",
-    L"\n\t\tCHILD: function(elem, match){\n\t\t\tvar type = match[1], node = ",
-    L"elem;\n\t\t\tswitch (type) {\n\t\t\t\tcase 'only':\n\t\t\t\tcase 'first",
-    L"':\n\t\t\t\t\twhile ( (node = node.previousSibling) )\t {\n\t\t\t\t\t\t",
-    L"if ( node.nodeType === 1 ) { \n\t\t\t\t\t\t\treturn false; \n\t\t\t\t\t",
-    L"\t}\n\t\t\t\t\t}\n\t\t\t\t\tif ( type === \"first\" ) { \n\t\t\t\t\t\tr",
-    L"eturn true; \n\t\t\t\t\t}\n\t\t\t\t\tnode = elem;\n\t\t\t\tcase 'last':",
-    L"\n\t\t\t\t\twhile ( (node = node.nextSibling) )\t {\n\t\t\t\t\t\tif ( n",
-    L"ode.nodeType === 1 ) { \n\t\t\t\t\t\t\treturn false; \n\t\t\t\t\t\t}\n",
-    L"\t\t\t\t\t}\n\t\t\t\t\treturn true;\n\t\t\t\tcase 'nth':\n\t\t\t\t\tvar",
-    L" first = match[2], last = match[3];\n\n\t\t\t\t\tif ( first === 1 && la",
-    L"st === 0 ) {\n\t\t\t\t\t\treturn true;\n\t\t\t\t\t}\n\t\t\t\t\t\n\t\t\t",
-    L"\t\tvar doneName = match[0],\n\t\t\t\t\t\tparent = elem.parentNode;\n\t",
-    L"\n\t\t\t\t\tif ( parent && (parent.sizcache !== doneName || !elem.nodeI",
-    L"ndex) ) {\n\t\t\t\t\t\tvar count = 0;\n\t\t\t\t\t\tfor ( node = parent.",
-    L"firstChild; node; node = node.nextSibling ) {\n\t\t\t\t\t\t\tif ( node.",
-    L"nodeType === 1 ) {\n\t\t\t\t\t\t\t\tnode.nodeIndex = ++count;\n\t\t\t\t",
-    L"\t\t\t}\n\t\t\t\t\t\t} \n\t\t\t\t\t\tparent.sizcache = doneName;\n\t\t",
-    L"\t\t\t}\n\t\t\t\t\t\n\t\t\t\t\tvar diff = elem.nodeIndex - last;\n\t\t",
-    L"\t\t\tif ( first === 0 ) {\n\t\t\t\t\t\treturn diff === 0;\n\t\t\t\t\t}",
-    L" else {\n\t\t\t\t\t\treturn ( diff % first === 0 && diff / first >= 0 )",
-    L";\n\t\t\t\t\t}\n\t\t\t}\n\t\t},\n\t\tID: function(elem, match){\n\t\t\t",
-    L"return elem.nodeType === 1 && elem.getAttribute(\"id\") === match;\n\t",
-    L"\t},\n\t\tTAG: function(elem, match){\n\t\t\treturn (match === \"*\" &&",
-    L" elem.nodeType === 1) || elem.nodeName.toLowerCase() === match;\n\t\t},",
-    L"\n\t\tCLASS: function(elem, match){\n\t\t\treturn (\" \" + (elem.classN",
-    L"ame || elem.getAttribute(\"class\")) + \" \")\n\t\t\t\t.indexOf( match ",
-    L") > -1;\n\t\t},\n\t\tATTR: function(elem, match){\n\t\t\tvar name = mat",
-    L"ch[1],\n\t\t\t\tresult = Expr.attrHandle[ name ] ?\n\t\t\t\t\tExpr.attr",
-    L"Handle[ name ]( elem ) :\n\t\t\t\t\telem[ name ] != null ?\n\t\t\t\t\t",
-    L"\telem[ name ] :\n\t\t\t\t\t\telem.getAttribute( name ),\n\t\t\t\tvalue",
-    L" = result + \"\",\n\t\t\t\ttype = match[2],\n\t\t\t\tcheck = match[4];",
-    L"\n\n\t\t\treturn result == null ?\n\t\t\t\ttype === \"!=\" :\n\t\t\t\tt",
-    L"ype === \"=\" ?\n\t\t\t\tvalue === check :\n\t\t\t\ttype === \"*=\" ?\n",
-    L"\t\t\t\tvalue.indexOf(check) >= 0 :\n\t\t\t\ttype === \"~=\" ?\n\t\t\t",
-    L"\t(\" \" + value + \" \").indexOf(check) >= 0 :\n\t\t\t\t!check ?\n\t\t",
-    L"\t\tvalue && result !== false :\n\t\t\t\ttype === \"!=\" ?\n\t\t\t\tval",
-    L"ue !== check :\n\t\t\t\ttype === \"^=\" ?\n\t\t\t\tvalue.indexOf(check)",
-    L" === 0 :\n\t\t\t\ttype === \"$=\" ?\n\t\t\t\tvalue.substr(value.length ",
-    L"- check.length) === check :\n\t\t\t\ttype === \"|=\" ?\n\t\t\t\tvalue =",
-    L"== check || value.substr(0, check.length + 1) === check + \"-\" :\n\t\t",
-    L"\t\tfalse;\n\t\t},\n\t\tPOS: function(elem, match, i, array){\n\t\t\tva",
-    L"r name = match[2], filter = Expr.setFilters[ name ];\n\n\t\t\tif ( filt",
-    L"er ) {\n\t\t\t\treturn filter( elem, i, match, array );\n\t\t\t}\n\t\t}",
-    L"\n\t}\n};\n\nvar origPOS = Expr.match.POS,\n\tfescape = function(all, n",
-    L"um){\n\t\treturn \"\\\\\" + (num - 0 + 1);\n\t};\n\nfor ( var type in E",
-    L"xpr.match ) {\n\tExpr.match[ type ] = new RegExp( Expr.match[ type ].so",
-    L"urce + (/(?![^\\[]*\\])(?![^\\(]*\\))/.source) );\n\tExpr.leftMatch[ ty",
-    L"pe ] = new RegExp( /(^(?:.|\\r|\\n)*?)/.source + Expr.match[ type ].sou",
-    L"rce.replace(/\\\\(\\d+)/g, fescape) );\n}\n\nvar makeArray = function(a",
-    L"rray, results) {\n\tarray = Array.prototype.slice.call( array, 0 );\n\n",
-    L"\tif ( results ) {\n\t\tresults.push.apply( results, array );\n\t\tretu",
-    L"rn results;\n\t}\n\t\n\treturn array;\n};\n\n// Perform a simple check ",
-    L"to determine if the browser is capable of\n// converting a NodeList to ",
-    L"an array using builtin methods.\n// Also verifies that the returned arr",
-    L"ay holds DOM nodes\n// (which is not the case in the Blackberry browser",
-    L")\ntry {\n\tArray.prototype.slice.call( document.documentElement.childN",
-    L"odes, 0 )[0].nodeType;\n\n// Provide a fallback method if it does not w",
-    L"ork\n} catch(e){\n\tmakeArray = function(array, results) {\n\t\tvar ret",
-    L" = results || [], i = 0;\n\n\t\tif ( toString.call(array) === \"[object",
-    L" Array]\" ) {\n\t\t\tArray.prototype.push.apply( ret, array );\n\t\t} e",
-    L"lse {\n\t\t\tif ( typeof array.length === \"number\" ) {\n\t\t\t\tfor (",
-    L" var l = array.length; i < l; i++ ) {\n\t\t\t\t\tret.push( array[i] );",
-    L"\n\t\t\t\t}\n\t\t\t} else {\n\t\t\t\tfor ( ; array[i]; i++ ) {\n\t\t\t",
-    L"\t\tret.push( array[i] );\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\treturn ret;",
-    L"\n\t};\n}\n\nvar sortOrder, siblingCheck;\n\nif ( document.documentElem",
-    L"ent.compareDocumentPosition ) {\n\tsortOrder = function( a, b ) {\n\t\t",
-    L"if ( a === b ) {\n\t\t\thasDuplicate = true;\n\t\t\treturn 0;\n\t\t}\n",
-    L"\n\t\tif ( !a.compareDocumentPosition || !b.compareDocumentPosition ) {",
-    L"\n\t\t\treturn a.compareDocumentPosition ? -1 : 1;\n\t\t}\n\n\t\treturn",
-    L" a.compareDocumentPosition(b) & 4 ? -1 : 1;\n\t};\n} else {\n\tsortOrde",
-    L"r = function( a, b ) {\n\t\tvar ap = [], bp = [], aup = a.parentNode, b",
-    L"up = b.parentNode,\n\t\t\tcur = aup, al, bl;\n\n\t\t// The nodes are id",
-    L"entical, we can exit early\n\t\tif ( a === b ) {\n\t\t\thasDuplicate = ",
-    L"true;\n\t\t\treturn 0;\n\n\t\t// If the nodes are siblings (or identica",
-    L"l) we can do a quick check\n\t\t} else if ( aup === bup ) {\n\t\t\tretu",
-    L"rn siblingCheck( a, b );\n\n\t\t// If no parents were found then the no",
-    L"des are disconnected\n\t\t} else if ( !aup ) {\n\t\t\treturn -1;\n\n\t",
-    L"\t} else if ( !bup ) {\n\t\t\treturn 1;\n\t\t}\n\n\t\t// Otherwise they",
-    L"'re somewhere else in the tree so we need\n\t\t// to build up a full li",
-    L"st of the parentNodes for comparison\n\t\twhile ( cur ) {\n\t\t\tap.uns",
-    L"hift( cur );\n\t\t\tcur = cur.parentNode;\n\t\t}\n\n\t\tcur = bup;\n\n",
-    L"\t\twhile ( cur ) {\n\t\t\tbp.unshift( cur );\n\t\t\tcur = cur.parentNo",
-    L"de;\n\t\t}\n\n\t\tal = ap.length;\n\t\tbl = bp.length;\n\n\t\t// Start ",
-    L"walking down the tree looking for a discrepancy\n\t\tfor ( var i = 0; i",
-    L" < al && i < bl; i++ ) {\n\t\t\tif ( ap[i] !== bp[i] ) {\n\t\t\t\tretur",
-    L"n siblingCheck( ap[i], bp[i] );\n\t\t\t}\n\t\t}\n\n\t\t// We ended some",
-    L"place up the tree so do a sibling check\n\t\treturn i === al ?\n\t\t\ts",
-    L"iblingCheck( a, bp[i], -1 ) :\n\t\t\tsiblingCheck( ap[i], b, 1 );\n\t};",
-    L"\n\n\tsiblingCheck = function( a, b, ret ) {\n\t\tif ( a === b ) {\n\t",
-    L"\t\treturn ret;\n\t\t}\n\n\t\tvar cur = a.nextSibling;\n\n\t\twhile ( c",
-    L"ur ) {\n\t\t\tif ( cur === b ) {\n\t\t\t\treturn -1;\n\t\t\t}\n\n\t\t\t",
-    L"cur = cur.nextSibling;\n\t\t}\n\n\t\treturn 1;\n\t};\n}\n\n// Utility f",
-    L"unction for retreiving the text value of an array of DOM nodes\nSizzle.",
-    L"getText = function( elems ) {\n\tvar ret = \"\", elem;\n\n\tfor ( var i",
-    L" = 0; elems[i]; i++ ) {\n\t\telem = elems[i];\n\n\t\t// Get the text fr",
-    L"om text nodes and CDATA nodes\n\t\tif ( elem.nodeType === 3 || elem.nod",
-    L"eType === 4 ) {\n\t\t\tret += elem.nodeValue;\n\n\t\t// Traverse everyt",
-    L"hing else, except comment nodes\n\t\t} else if ( elem.nodeType !== 8 ) ",
-    L"{\n\t\t\tret += Sizzle.getText( elem.childNodes );\n\t\t}\n\t}\n\n\tret",
-    L"urn ret;\n};\n\n// Check to see if the browser returns elements by name",
-    L" when\n// querying by getElementById (and provide a workaround)\n(funct",
-    L"ion(){\n\t// We're going to inject a fake input element with a specifie",
-    L"d name\n\tvar form = document.createElement(\"div\"),\n\t\tid = \"scrip",
-    L"t\" + (new Date()).getTime();\n\tform.innerHTML = \"<a name='\" + id + ",
-    L"\"'/>\";\n\n\t// Inject it into the root element, check its status, and",
-    L" remove it quickly\n\tvar root = document.documentElement;\n\troot.inse",
-    L"rtBefore( form, root.firstChild );\n\n\t// The workaround has to do add",
-    L"itional checks after a getElementById\n\t// Which slows things down for",
-    L" other browsers (hence the branching)\n\tif ( document.getElementById( ",
-    L"id ) ) {\n\t\tExpr.find.ID = function(match, context, isXML){\n\t\t\tif",
-    L" ( typeof context.getElementById !== \"undefined\" && !isXML ) {\n\t\t",
-    L"\t\tvar m = context.getElementById(match[1]);\n\t\t\t\treturn m ? m.id ",
-    L"=== match[1] || typeof m.getAttributeNode !== \"undefined\" && m.getAtt",
-    L"ributeNode(\"id\").nodeValue === match[1] ? [m] : undefined : [];\n\t\t",
-    L"\t}\n\t\t};\n\n\t\tExpr.filter.ID = function(elem, match){\n\t\t\tvar n",
-    L"ode = typeof elem.getAttributeNode !== \"undefined\" && elem.getAttribu",
-    L"teNode(\"id\");\n\t\t\treturn elem.nodeType === 1 && node && node.nodeV",
-    L"alue === match;\n\t\t};\n\t}\n\n\troot.removeChild( form );\n\troot = f",
-    L"orm = null; // release memory in IE\n})();\n\n(function(){\n\t// Check ",
-    L"to see if the browser returns only elements\n\t// when doing getElement",
-    L"sByTagName(\"*\")\n\n\t// Create a fake element\n\tvar div = document.c",
-    L"reateElement(\"div\");\n\tdiv.appendChild( document.createComment(\"\")",
-    L" );\n\n\t// Make sure no comments are found\n\tif ( div.getElementsByTa",
-    L"gName(\"*\").length > 0 ) {\n\t\tExpr.find.TAG = function(match, contex",
-    L"t){\n\t\t\tvar results = context.getElementsByTagName(match[1]);\n\n\t",
-    L"\t\t// Filter out possible comments\n\t\t\tif ( match[1] === \"*\" ) {",
-    L"\n\t\t\t\tvar tmp = [];\n\n\t\t\t\tfor ( var i = 0; results[i]; i++ ) {",
-    L"\n\t\t\t\t\tif ( results[i].nodeType === 1 ) {\n\t\t\t\t\t\ttmp.push( r",
-    L"esults[i] );\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\tresults = tmp;\n\t\t\t}",
-    L"\n\n\t\t\treturn results;\n\t\t};\n\t}\n\n\t// Check to see if an attri",
-    L"bute returns normalized href attributes\n\tdiv.innerHTML = \"<a href='#",
-    L"'></a>\";\n\tif ( div.firstChild && typeof div.firstChild.getAttribute ",
-    L"!== \"undefined\" &&\n\t\t\tdiv.firstChild.getAttribute(\"href\") !== ",
-    L"\"#\" ) {\n\t\tExpr.attrHandle.href = function(elem){\n\t\t\treturn ele",
-    L"m.getAttribute(\"href\", 2);\n\t\t};\n\t}\n\n\tdiv = null; // release m",
-    L"emory in IE\n})();\n\nif ( document.querySelectorAll ) {\n\t(function()",
-    L"{\n\t\tvar oldSizzle = Sizzle, div = document.createElement(\"div\");\n",
-    L"\t\tdiv.innerHTML = \"<p class='TEST'></p>\";\n\n\t\t// Safari can't ha",
-    L"ndle uppercase or unicode characters when\n\t\t// in quirks mode.\n\t\t",
-    L"if ( div.querySelectorAll && div.querySelectorAll(\".TEST\").length ===",
-    L" 0 ) {\n\t\t\treturn;\n\t\t}\n\t\n\t\tSizzle = function(query, context,",
-    L" extra, seed){\n\t\t\tcontext = context || document;\n\n\t\t\t// Only u",
-    L"se querySelectorAll on non-XML documents\n\t\t\t// (ID selectors don't ",
-    L"work in non-HTML documents)\n\t\t\tif ( !seed && context.nodeType === 9",
-    L" && !Sizzle.isXML(context) ) {\n\t\t\t\ttry {\n\t\t\t\t\treturn makeArr",
-    L"ay( context.querySelectorAll(query), extra );\n\t\t\t\t} catch(e){}\n\t",
-    L"\t\t}\n\t\t\n\t\t\treturn oldSizzle(query, context, extra, seed);\n\t\t",
-    L"};\n\n\t\tfor ( var prop in oldSizzle ) {\n\t\t\tSizzle[ prop ] = oldSi",
-    L"zzle[ prop ];\n\t\t}\n\n\t\tdiv = null; // release memory in IE\n\t})()",
-    L";\n}\n\n(function(){\n\tvar div = document.createElement(\"div\");\n\n",
-    L"\tdiv.innerHTML = \"<div class='test e'></div><div class='test'></div>",
-    L"\";\n\n\t// Opera can't find a second classname (in 9.6)\n\t// Also, ma",
-    L"ke sure that getElementsByClassName actually exists\n\tif ( !div.getEle",
-    L"mentsByClassName || div.getElementsByClassName(\"e\").length === 0 ) {",
-    L"\n\t\treturn;\n\t}\n\n\t// Safari caches class attributes, doesn't catc",
-    L"h changes (in 3.2)\n\tdiv.lastChild.className = \"e\";\n\n\tif ( div.ge",
-    L"tElementsByClassName(\"e\").length === 1 ) {\n\t\treturn;\n\t}\n\t\n\tE",
-    L"xpr.order.splice(1, 0, \"CLASS\");\n\tExpr.find.CLASS = function(match,",
-    L" context, isXML) {\n\t\tif ( typeof context.getElementsByClassName !== ",
-    L"\"undefined\" && !isXML ) {\n\t\t\treturn context.getElementsByClassNam",
-    L"e(match[1]);\n\t\t}\n\t};\n\n\tdiv = null; // release memory in IE\n})(",
-    L");\n\nfunction dirNodeCheck( dir, cur, doneName, checkSet, nodeCheck, i",
-    L"sXML ) {\n\tfor ( var i = 0, l = checkSet.length; i < l; i++ ) {\n\t\tv",
-    L"ar elem = checkSet[i];\n\t\tif ( elem ) {\n\t\t\telem = elem[dir];\n\t",
-    L"\t\tvar match = false;\n\n\t\t\twhile ( elem ) {\n\t\t\t\tif ( elem.siz",
-    L"cache === doneName ) {\n\t\t\t\t\tmatch = checkSet[elem.sizset];\n\t\t",
-    L"\t\t\tbreak;\n\t\t\t\t}\n\n\t\t\t\tif ( elem.nodeType === 1 && !isXML )",
-    L"{\n\t\t\t\t\telem.sizcache = doneName;\n\t\t\t\t\telem.sizset = i;\n\t",
-    L"\t\t\t}\n\n\t\t\t\tif ( elem.nodeName.toLowerCase() === cur ) {\n\t\t\t",
-    L"\t\tmatch = elem;\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\n\t\t\t\telem = elem[d",
-    L"ir];\n\t\t\t}\n\n\t\t\tcheckSet[i] = match;\n\t\t}\n\t}\n}\n\nfunction ",
-    L"dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {\n\tfor ( v",
-    L"ar i = 0, l = checkSet.length; i < l; i++ ) {\n\t\tvar elem = checkSet[",
-    L"i];\n\t\tif ( elem ) {\n\t\t\telem = elem[dir];\n\t\t\tvar match = fals",
-    L"e;\n\n\t\t\twhile ( elem ) {\n\t\t\t\tif ( elem.sizcache === doneName )",
-    L" {\n\t\t\t\t\tmatch = checkSet[elem.sizset];\n\t\t\t\t\tbreak;\n\t\t\t",
-    L"\t}\n\n\t\t\t\tif ( elem.nodeType === 1 ) {\n\t\t\t\t\tif ( !isXML ) {",
-    L"\n\t\t\t\t\t\telem.sizcache = doneName;\n\t\t\t\t\t\telem.sizset = i;\n",
-    L"\t\t\t\t\t}\n\t\t\t\t\tif ( typeof cur !== \"string\" ) {\n\t\t\t\t\t\t",
-    L"if ( elem === cur ) {\n\t\t\t\t\t\t\tmatch = true;\n\t\t\t\t\t\t\tbreak",
-    L";\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else if ( Sizzle.filter( cur, [elem] ).",
-    L"length > 0 ) {\n\t\t\t\t\t\tmatch = elem;\n\t\t\t\t\t\tbreak;\n\t\t\t\t",
-    L"\t}\n\t\t\t\t}\n\n\t\t\t\telem = elem[dir];\n\t\t\t}\n\n\t\t\tcheckSet[",
-    L"i] = match;\n\t\t}\n\t}\n}\n\nSizzle.contains = document.compareDocumen",
-    L"tPosition ? function(a, b){\n\treturn !!(a.compareDocumentPosition(b) &",
-    L" 16);\n} : function(a, b){\n\treturn a !== b && (a.contains ? a.contain",
-    L"s(b) : true);\n};\n\nSizzle.isXML = function(elem){\n\t// documentEleme",
-    L"nt is verified for cases where it doesn't yet exist\n\t// (such as load",
-    L"ing iframes in IE - #4833) \n\tvar documentElement = (elem ? elem.owner",
-    L"Document || elem : 0).documentElement;\n\treturn documentElement ? docu",
-    L"mentElement.nodeName !== \"HTML\" : false;\n};\n\nvar posProcess = func",
-    L"tion(selector, context){\n\tvar tmpSet = [], later = \"\", match,\n\t\t",
-    L"root = context.nodeType ? [context] : context;\n\n\t// Position selecto",
-    L"rs must be done after the filter\n\t// And so must :not(positional) so ",
-    L"we move all PSEUDOs to the end\n\twhile ( (match = Expr.match.PSEUDO.ex",
-    L"ec( selector )) ) {\n\t\tlater += match[0];\n\t\tselector = selector.re",
-    L"place( Expr.match.PSEUDO, \"\" );\n\t}\n\n\tselector = Expr.relative[se",
-    L"lector] ? selector + \"*\" : selector;\n\n\tfor ( var i = 0, l = root.l",
-    L"ength; i < l; i++ ) {\n\t\tSizzle( selector, root[i], tmpSet );\n\t}\n",
-    L"\n\treturn Sizzle.filter( later, tmpSet );\n};\n\n// EXPOSE\n\nwindow.S",
-    L"izzle = Sizzle;\n\n})();",
-    NULL
-};
-}
-#endif  // SIZZLE_H__
+const wchar_t* const SIZZLE =
+    L"/*!\n * Sizzle CSS Selector Engine - v1.0\n *  Copyright 2009, The Dojo "
+    L"Foundation\n *  Released under the MIT, BSD, and GPL Licenses.\n *  More"
+    L" information: http://sizzlejs.com/\n */\n(function(){\n\nvar chunker = /"
+    L"((?:\\((?:\\([^()]+\\)|[^()]+)+\\)|\\[(?:\\[[^\\[\\]]*\\]|['\"][^'\"]*['"
+    L"\"]|[^\\[\\]'\"]+)+\\]|\\\\.|[^ >+~,(\\[\\\\]+)+|[>+~])(\\s*,\\s*)?((?:."
+    L"|\\r|\\n)*)/g,\n\tdone = 0,\n\ttoString = Object.prototype.toString,\n\t"
+    L"hasDuplicate = false,\n\tbaseHasDuplicate = true;\n\n// Here we check if"
+    L" the JavaScript engine is using some sort of\n// optimization where it d"
+    L"oes not always call our comparision\n// function. If that is the case, d"
+    L"iscard the hasDuplicate value.\n//   Thus far that includes Google Chrom"
+    L"e.\n[0, 0].sort(function(){\n\tbaseHasDuplicate = false;\n\treturn 0;\n}"
+    L");\n\nvar Sizzle = function(selector, context, results, seed) {\n\tresul"
+    L"ts = results || [];\n\tcontext = context || document;\n\n\tvar origConte"
+    L"xt = context;\n\n\tif ( context.nodeType !== 1 && context.nodeType !== 9"
+    L" ) {\n\t\treturn [];\n\t}\n\t\n\tif ( !selector || typeof selector !== "
+    L"\"string\" ) {\n\t\treturn results;\n\t}\n\n\tvar parts = [], m, set, ch"
+    L"eckSet, extra, prune = true, contextXML = Sizzle.isXML(context),\n\t\tso"
+    L"Far = selector, ret, cur, pop, i;\n\t\n\t// Reset the position of the ch"
+    L"unker regexp (start from head)\n\tdo {\n\t\tchunker.exec(\"\");\n\t\tm ="
+    L" chunker.exec(soFar);\n\n\t\tif ( m ) {\n\t\t\tsoFar = m[3];\n\t\t\n\t\t"
+    L"\tparts.push( m[1] );\n\t\t\n\t\t\tif ( m[2] ) {\n\t\t\t\textra = m[3];"
+    L"\n\t\t\t\tbreak;\n\t\t\t}\n\t\t}\n\t} while ( m );\n\n\tif ( parts.lengt"
+    L"h > 1 && origPOS.exec( selector ) ) {\n\t\tif ( parts.length === 2 && Ex"
+    L"pr.relative[ parts[0] ] ) {\n\t\t\tset = posProcess( parts[0] + parts[1]"
+    L", context );\n\t\t} else {\n\t\t\tset = Expr.relative[ parts[0] ] ?\n\t"
+    L"\t\t\t[ context ] :\n\t\t\t\tSizzle( parts.shift(), context );\n\n\t\t\t"
+    L"while ( parts.length ) {\n\t\t\t\tselector = parts.shift();\n\n\t\t\t\ti"
+    L"f ( Expr.relative[ selector ] ) {\n\t\t\t\t\tselector += parts.shift();"
+    L"\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\tset = posProcess( selector, set );\n\t\t"
+    L"\t}\n\t\t}\n\t} else {\n\t\t// Take a shortcut and set the context if th"
+    L"e root selector is an ID\n\t\t// (but not if it'll be faster if the inne"
+    L"r selector is an ID)\n\t\tif ( !seed && parts.length > 1 && context.node"
+    L"Type === 9 && !contextXML &&\n\t\t\t\tExpr.match.ID.test(parts[0]) && !E"
+    L"xpr.match.ID.test(parts[parts.length - 1]) ) {\n\t\t\tret = Sizzle.find("
+    L" parts.shift(), context, contextXML );\n\t\t\tcontext = ret.expr ? Sizzl"
+    L"e.filter( ret.expr, ret.set )[0] : ret.set[0];\n\t\t}\n\n\t\tif ( contex"
+    L"t ) {\n\t\t\tret = seed ?\n\t\t\t\t{ expr: parts.pop(), set: makeArray(s"
+    L"eed) } :\n\t\t\t\tSizzle.find( parts.pop(), parts.length === 1 && (parts"
+    L"[0] === \"~\" || parts[0] === \"+\") && context.parentNode ? context.par"
+    L"entNode : context, contextXML );\n\t\t\tset = ret.expr ? Sizzle.filter( "
+    L"ret.expr, ret.set ) : ret.set;\n\n\t\t\tif ( parts.length > 0 ) {\n\t\t"
+    L"\t\tcheckSet = makeArray(set);\n\t\t\t} else {\n\t\t\t\tprune = false;\n"
+    L"\t\t\t}\n\n\t\t\twhile ( parts.length ) {\n\t\t\t\tcur = parts.pop();\n"
+    L"\t\t\t\tpop = cur;\n\n\t\t\t\tif ( !Expr.relative[ cur ] ) {\n\t\t\t\t\t"
+    L"cur = \"\";\n\t\t\t\t} else {\n\t\t\t\t\tpop = parts.pop();\n\t\t\t\t}\n"
+    L"\n\t\t\t\tif ( pop == null ) {\n\t\t\t\t\tpop = context;\n\t\t\t\t}\n\n"
+    L"\t\t\t\tExpr.relative[ cur ]( checkSet, pop, contextXML );\n\t\t\t}\n\t"
+    L"\t} else {\n\t\t\tcheckSet = parts = [];\n\t\t}\n\t}\n\n\tif ( !checkSet"
+    L" ) {\n\t\tcheckSet = set;\n\t}\n\n\tif ( !checkSet ) {\n\t\tSizzle.error"
+    L"( cur || selector );\n\t}\n\n\tif ( toString.call(checkSet) === \"[objec"
+    L"t Array]\" ) {\n\t\tif ( !prune ) {\n\t\t\tresults.push.apply( results, "
+    L"checkSet );\n\t\t} else if ( context && context.nodeType === 1 ) {\n\t\t"
+    L"\tfor ( i = 0; checkSet[i] != null; i++ ) {\n\t\t\t\tif ( checkSet[i] &&"
+    L" (checkSet[i] === true || checkSet[i].nodeType === 1 && Sizzle.contains("
+    L"context, checkSet[i])) ) {\n\t\t\t\t\tresults.push( set[i] );\n\t\t\t\t}"
+    L"\n\t\t\t}\n\t\t} else {\n\t\t\tfor ( i = 0; checkSet[i] != null; i++ ) {"
+    L"\n\t\t\t\tif ( checkSet[i] && checkSet[i].nodeType === 1 ) {\n\t\t\t\t\t"
+    L"results.push( set[i] );\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t} else {\n\t\tmake"
+    L"Array( checkSet, results );\n\t}\n\n\tif ( extra ) {\n\t\tSizzle( extra,"
+    L" origContext, results, seed );\n\t\tSizzle.uniqueSort( results );\n\t}\n"
+    L"\n\treturn results;\n};\n\nSizzle.uniqueSort = function(results){\n\tif "
+    L"( sortOrder ) {\n\t\thasDuplicate = baseHasDuplicate;\n\t\tresults.sort("
+    L"sortOrder);\n\n\t\tif ( hasDuplicate ) {\n\t\t\tfor ( var i = 1; i < res"
+    L"ults.length; i++ ) {\n\t\t\t\tif ( results[i] === results[i-1] ) {\n\t\t"
+    L"\t\t\tresults.splice(i--, 1);\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n\tretur"
+    L"n results;\n};\n\nSizzle.matches = function(expr, set){\n\treturn Sizzle"
+    L"(expr, null, null, set);\n};\n\nSizzle.find = function(expr, context, is"
+    L"XML){\n\tvar set;\n\n\tif ( !expr ) {\n\t\treturn [];\n\t}\n\n\tfor ( va"
+    L"r i = 0, l = Expr.order.length; i < l; i++ ) {\n\t\tvar type = Expr.orde"
+    L"r[i], match;\n\t\t\n\t\tif ( (match = Expr.leftMatch[ type ].exec( expr "
+    L")) ) {\n\t\t\tvar left = match[1];\n\t\t\tmatch.splice(1,1);\n\n\t\t\tif"
+    L" ( left.substr( left.length - 1 ) !== \"\\\\\" ) {\n\t\t\t\tmatch[1] = ("
+    L"match[1] || \"\").replace(/\\\\/g, \"\");\n\t\t\t\tset = Expr.find[ type"
+    L" ]( match, context, isXML );\n\t\t\t\tif ( set != null ) {\n\t\t\t\t\tex"
+    L"pr = expr.replace( Expr.match[ type ], \"\" );\n\t\t\t\t\tbreak;\n\t\t\t"
+    L"\t}\n\t\t\t}\n\t\t}\n\t}\n\n\tif ( !set ) {\n\t\tset = context.getElemen"
+    L"tsByTagName(\"*\");\n\t}\n\n\treturn {set: set, expr: expr};\n};\n\nSizz"
+    L"le.filter = function(expr, set, inplace, not){\n\tvar old = expr, result"
+    L" = [], curLoop = set, match, anyFound,\n\t\tisXMLFilter = set && set[0] "
+    L"&& Sizzle.isXML(set[0]);\n\n\twhile ( expr && set.length ) {\n\t\tfor ( "
+    L"var type in Expr.filter ) {\n\t\t\tif ( (match = Expr.leftMatch[ type ]."
+    L"exec( expr )) != null && match[2] ) {\n\t\t\t\tvar filter = Expr.filter["
+    L" type ], found, item, left = match[1];\n\t\t\t\tanyFound = false;\n\n\t"
+    L"\t\t\tmatch.splice(1,1);\n\n\t\t\t\tif ( left.substr( left.length - 1 ) "
+    L"=== \"\\\\\" ) {\n\t\t\t\t\tcontinue;\n\t\t\t\t}\n\n\t\t\t\tif ( curLoop"
+    L" === result ) {\n\t\t\t\t\tresult = [];\n\t\t\t\t}\n\n\t\t\t\tif ( Expr."
+    L"preFilter[ type ] ) {\n\t\t\t\t\tmatch = Expr.preFilter[ type ]( match, "
+    L"curLoop, inplace, result, not, isXMLFilter );\n\n\t\t\t\t\tif ( !match )"
+    L" {\n\t\t\t\t\t\tanyFound = found = true;\n\t\t\t\t\t} else if ( match =="
+    L"= true ) {\n\t\t\t\t\t\tcontinue;\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\tif "
+    L"( match ) {\n\t\t\t\t\tfor ( var i = 0; (item = curLoop[i]) != null; i++"
+    L" ) {\n\t\t\t\t\t\tif ( item ) {\n\t\t\t\t\t\t\tfound = filter( item, mat"
+    L"ch, i, curLoop );\n\t\t\t\t\t\t\tvar pass = not ^ !!found;\n\n\t\t\t\t\t"
+    L"\t\tif ( inplace && found != null ) {\n\t\t\t\t\t\t\t\tif ( pass ) {\n\t"
+    L"\t\t\t\t\t\t\t\tanyFound = true;\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t"
+    L"\t\t\tcurLoop[i] = false;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t} else if ( "
+    L"pass ) {\n\t\t\t\t\t\t\t\tresult.push( item );\n\t\t\t\t\t\t\t\tanyFound"
+    L" = true;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t"
+    L"\t\tif ( found !== undefined ) {\n\t\t\t\t\tif ( !inplace ) {\n\t\t\t\t"
+    L"\t\tcurLoop = result;\n\t\t\t\t\t}\n\n\t\t\t\t\texpr = expr.replace( Exp"
+    L"r.match[ type ], \"\" );\n\n\t\t\t\t\tif ( !anyFound ) {\n\t\t\t\t\t\tre"
+    L"turn [];\n\t\t\t\t\t}\n\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n"
+    L"\t\t// Improper expression\n\t\tif ( expr === old ) {\n\t\t\tif ( anyFou"
+    L"nd == null ) {\n\t\t\t\tSizzle.error( expr );\n\t\t\t} else {\n\t\t\t\tb"
+    L"reak;\n\t\t\t}\n\t\t}\n\n\t\told = expr;\n\t}\n\n\treturn curLoop;\n};\n"
+    L"\nSizzle.error = function( msg ) {\n\tthrow \"Syntax error, unrecognized"
+    L" expression: \" + msg;\n};\n\nvar Expr = Sizzle.selectors = {\n\torder: "
+    L"[ \"ID\", \"NAME\", \"TAG\" ],\n\tmatch: {\n\t\tID: /#((?:[\\w\\u00c0-"
+    L"\\uFFFF\\-]|\\\\.)+)/,\n\t\tCLASS: /\\.((?:[\\w\\u00c0-\\uFFFF\\-]|\\\\."
+    L")+)/,\n\t\tNAME: /\\[name=['\"]*((?:[\\w\\u00c0-\\uFFFF\\-]|\\\\.)+)['\""
+    L"]*\\]/,\n\t\tATTR: /\\[\\s*((?:[\\w\\u00c0-\\uFFFF\\-]|\\\\.)+)\\s*(?:("
+    L"\\S?=)\\s*(['\"]*)(.*?)\\3|)\\s*\\]/,\n\t\tTAG: /^((?:[\\w\\u00c0-\\uFFF"
+    L"F\\*\\-]|\\\\.)+)/,\n\t\tCHILD: /:(only|nth|last|first)-child(?:\\((even"
+    L"|odd|[\\dn+\\-]*)\\))?/,\n\t\tPOS: /:(nth|eq|gt|lt|first|last|even|odd)("
+    L"?:\\((\\d*)\\))?(?=[^\\-]|$)/,\n\t\tPSEUDO: /:((?:[\\w\\u00c0-\\uFFFF\\-"
+    L"]|\\\\.)+)(?:\\((['\"]?)((?:\\([^\\)]+\\)|[^\\(\\)]*)+)\\2\\))?/\n\t},\n"
+    L"\tleftMatch: {},\n\tattrMap: {\n\t\t\"class\": \"className\",\n\t\t\"for"
+    L"\": \"htmlFor\"\n\t},\n\tattrHandle: {\n\t\thref: function(elem){\n\t\t"
+    L"\treturn elem.getAttribute(\"href\");\n\t\t}\n\t},\n\trelative: {\n\t\t"
+    L"\"+\": function(checkSet, part){\n\t\t\tvar isPartStr = typeof part === "
+    L"\"string\",\n\t\t\t\tisTag = isPartStr && !/\\W/.test(part),\n\t\t\t\tis"
+    L"PartStrNotTag = isPartStr && !isTag;\n\n\t\t\tif ( isTag ) {\n\t\t\t\tpa"
+    L"rt = part.toLowerCase();\n\t\t\t}\n\n\t\t\tfor ( var i = 0, l = checkSet"
+    L".length, elem; i < l; i++ ) {\n\t\t\t\tif ( (elem = checkSet[i]) ) {\n\t"
+    L"\t\t\t\twhile ( (elem = elem.previousSibling) && elem.nodeType !== 1 ) {"
+    L"}\n\n\t\t\t\t\tcheckSet[i] = isPartStrNotTag || elem && elem.nodeName.to"
+    L"LowerCase() === part ?\n\t\t\t\t\t\telem || false :\n\t\t\t\t\t\telem =="
+    L"= part;\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tif ( isPartStrNotTag ) {\n\t\t\t\tS"
+    L"izzle.filter( part, checkSet, true );\n\t\t\t}\n\t\t},\n\t\t\">\": funct"
+    L"ion(checkSet, part){\n\t\t\tvar isPartStr = typeof part === \"string\","
+    L"\n\t\t\t\telem, i = 0, l = checkSet.length;\n\n\t\t\tif ( isPartStr && !"
+    L"/\\W/.test(part) ) {\n\t\t\t\tpart = part.toLowerCase();\n\n\t\t\t\tfor "
+    L"( ; i < l; i++ ) {\n\t\t\t\t\telem = checkSet[i];\n\t\t\t\t\tif ( elem )"
+    L" {\n\t\t\t\t\t\tvar parent = elem.parentNode;\n\t\t\t\t\t\tcheckSet[i] ="
+    L" parent.nodeName.toLowerCase() === part ? parent : false;\n\t\t\t\t\t}\n"
+    L"\t\t\t\t}\n\t\t\t} else {\n\t\t\t\tfor ( ; i < l; i++ ) {\n\t\t\t\t\tele"
+    L"m = checkSet[i];\n\t\t\t\t\tif ( elem ) {\n\t\t\t\t\t\tcheckSet[i] = isP"
+    L"artStr ?\n\t\t\t\t\t\t\telem.parentNode :\n\t\t\t\t\t\t\telem.parentNode"
+    L" === part;\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\tif ( isPartStr ) {\n\t\t\t"
+    L"\t\tSizzle.filter( part, checkSet, true );\n\t\t\t\t}\n\t\t\t}\n\t\t},\n"
+    L"\t\t\"\": function(checkSet, part, isXML){\n\t\t\tvar doneName = done++,"
+    L" checkFn = dirCheck, nodeCheck;\n\n\t\t\tif ( typeof part === \"string\""
+    L" && !/\\W/.test(part) ) {\n\t\t\t\tpart = part.toLowerCase();\n\t\t\t\tn"
+    L"odeCheck = part;\n\t\t\t\tcheckFn = dirNodeCheck;\n\t\t\t}\n\n\t\t\tchec"
+    L"kFn(\"parentNode\", part, doneName, checkSet, nodeCheck, isXML);\n\t\t},"
+    L"\n\t\t\"~\": function(checkSet, part, isXML){\n\t\t\tvar doneName = done"
+    L"++, checkFn = dirCheck, nodeCheck;\n\n\t\t\tif ( typeof part === \"strin"
+    L"g\" && !/\\W/.test(part) ) {\n\t\t\t\tpart = part.toLowerCase();\n\t\t\t"
+    L"\tnodeCheck = part;\n\t\t\t\tcheckFn = dirNodeCheck;\n\t\t\t}\n\n\t\t\tc"
+    L"heckFn(\"previousSibling\", part, doneName, checkSet, nodeCheck, isXML);"
+    L"\n\t\t}\n\t},\n\tfind: {\n\t\tID: function(match, context, isXML){\n\t\t"
+    L"\tif ( typeof context.getElementById !== \"undefined\" && !isXML ) {\n\t"
+    L"\t\t\tvar m = context.getElementById(match[1]);\n\t\t\t\t// Check parent"
+    L"Node to catch when Blackberry 4.6 returns\n\t\t\t\t// nodes that are no "
+    L"longer in the document #6963\n\t\t\t\treturn m && m.parentNode ? [m] : ["
+    L"];\n\t\t\t}\n\t\t},\n\t\tNAME: function(match, context){\n\t\t\tif ( typ"
+    L"eof context.getElementsByName !== \"undefined\" ) {\n\t\t\t\tvar ret = ["
+    L"], results = context.getElementsByName(match[1]);\n\n\t\t\t\tfor ( var i"
+    L" = 0, l = results.length; i < l; i++ ) {\n\t\t\t\t\tif ( results[i].getA"
+    L"ttribute(\"name\") === match[1] ) {\n\t\t\t\t\t\tret.push( results[i] );"
+    L"\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\treturn ret.length === 0 ? null : ret"
+    L";\n\t\t\t}\n\t\t},\n\t\tTAG: function(match, context){\n\t\t\treturn con"
+    L"text.getElementsByTagName(match[1]);\n\t\t}\n\t},\n\tpreFilter: {\n\t\tC"
+    L"LASS: function(match, curLoop, inplace, result, not, isXML){\n\t\t\tmatc"
+    L"h = \" \" + match[1].replace(/\\\\/g, \"\") + \" \";\n\n\t\t\tif ( isXML"
+    L" ) {\n\t\t\t\treturn match;\n\t\t\t}\n\n\t\t\tfor ( var i = 0, elem; (el"
+    L"em = curLoop[i]) != null; i++ ) {\n\t\t\t\tif ( elem ) {\n\t\t\t\t\tif ("
+    L" not ^ (elem.className && (\" \" + elem.className + \" \").replace(/[\\t"
+    L"\\n]/g, \" \").indexOf(match) >= 0) ) {\n\t\t\t\t\t\tif ( !inplace ) {\n"
+    L"\t\t\t\t\t\t\tresult.push( elem );\n\t\t\t\t\t\t}\n\t\t\t\t\t} else if ("
+    L" inplace ) {\n\t\t\t\t\t\tcurLoop[i] = false;\n\t\t\t\t\t}\n\t\t\t\t}\n"
+    L"\t\t\t}\n\n\t\t\treturn false;\n\t\t},\n\t\tID: function(match){\n\t\t\t"
+    L"return match[1].replace(/\\\\/g, \"\");\n\t\t},\n\t\tTAG: function(match"
+    L", curLoop){\n\t\t\treturn match[1].toLowerCase();\n\t\t},\n\t\tCHILD: fu"
+    L"nction(match){\n\t\t\tif ( match[1] === \"nth\" ) {\n\t\t\t\t// parse eq"
+    L"uations like 'even', 'odd', '5', '2n', '3n+2', '4n-1', '-n+6'\n\t\t\t\tv"
+    L"ar test = /(-?)(\\d*)n((?:\\+|-)?\\d*)/.exec(\n\t\t\t\t\tmatch[2] === \""
+    L"even\" && \"2n\" || match[2] === \"odd\" && \"2n+1\" ||\n\t\t\t\t\t!/\\D"
+    L"/.test( match[2] ) && \"0n+\" + match[2] || match[2]);\n\n\t\t\t\t// cal"
+    L"culate the numbers (first)n+(last) including if they are negative\n\t\t"
+    L"\t\tmatch[2] = (test[1] + (test[2] || 1)) - 0;\n\t\t\t\tmatch[3] = test["
+    L"3] - 0;\n\t\t\t}\n\n\t\t\t// TODO: Move to normal caching system\n\t\t\t"
+    L"match[0] = done++;\n\n\t\t\treturn match;\n\t\t},\n\t\tATTR: function(ma"
+    L"tch, curLoop, inplace, result, not, isXML){\n\t\t\tvar name = match[1].r"
+    L"eplace(/\\\\/g, \"\");\n\t\t\t\n\t\t\tif ( !isXML && Expr.attrMap[name] "
+    L") {\n\t\t\t\tmatch[1] = Expr.attrMap[name];\n\t\t\t}\n\n\t\t\tif ( match"
+    L"[2] === \"~=\" ) {\n\t\t\t\tmatch[4] = \" \" + match[4] + \" \";\n\t\t\t"
+    L"}\n\n\t\t\treturn match;\n\t\t},\n\t\tPSEUDO: function(match, curLoop, i"
+    L"nplace, result, not){\n\t\t\tif ( match[1] === \"not\" ) {\n\t\t\t\t// I"
+    L"f we're dealing with a complex expression, or a simple one\n\t\t\t\tif ("
+    L" ( chunker.exec(match[3]) || \"\" ).length > 1 || /^\\w/.test(match[3]) "
+    L") {\n\t\t\t\t\tmatch[3] = Sizzle(match[3], null, null, curLoop);\n\t\t\t"
+    L"\t} else {\n\t\t\t\t\tvar ret = Sizzle.filter(match[3], curLoop, inplace"
+    L", true ^ not);\n\t\t\t\t\tif ( !inplace ) {\n\t\t\t\t\t\tresult.push.app"
+    L"ly( result, ret );\n\t\t\t\t\t}\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t"
+    L"\t\t} else if ( Expr.match.POS.test( match[0] ) || Expr.match.CHILD.test"
+    L"( match[0] ) ) {\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\t\n\t\t\treturn ma"
+    L"tch;\n\t\t},\n\t\tPOS: function(match){\n\t\t\tmatch.unshift( true );\n"
+    L"\t\t\treturn match;\n\t\t}\n\t},\n\tfilters: {\n\t\tenabled: function(el"
+    L"em){\n\t\t\treturn elem.disabled === false && elem.type !== \"hidden\";"
+    L"\n\t\t},\n\t\tdisabled: function(elem){\n\t\t\treturn elem.disabled === "
+    L"true;\n\t\t},\n\t\tchecked: function(elem){\n\t\t\treturn elem.checked ="
+    L"== true;\n\t\t},\n\t\tselected: function(elem){\n\t\t\t// Accessing this"
+    L" property makes selected-by-default\n\t\t\t// options in Safari work pro"
+    L"perly\n\t\t\telem.parentNode.selectedIndex;\n\t\t\treturn elem.selected "
+    L"=== true;\n\t\t},\n\t\tparent: function(elem){\n\t\t\treturn !!elem.firs"
+    L"tChild;\n\t\t},\n\t\tempty: function(elem){\n\t\t\treturn !elem.firstChi"
+    L"ld;\n\t\t},\n\t\thas: function(elem, i, match){\n\t\t\treturn !!Sizzle( "
+    L"match[3], elem ).length;\n\t\t},\n\t\theader: function(elem){\n\t\t\tret"
+    L"urn (/h\\d/i).test( elem.nodeName );\n\t\t},\n\t\ttext: function(elem){"
+    L"\n\t\t\treturn \"text\" === elem.type;\n\t\t},\n\t\tradio: function(elem"
+    L"){\n\t\t\treturn \"radio\" === elem.type;\n\t\t},\n\t\tcheckbox: functio"
+    L"n(elem){\n\t\t\treturn \"checkbox\" === elem.type;\n\t\t},\n\t\tfile: fu"
+    L"nction(elem){\n\t\t\treturn \"file\" === elem.type;\n\t\t},\n\t\tpasswor"
+    L"d: function(elem){\n\t\t\treturn \"password\" === elem.type;\n\t\t},\n\t"
+    L"\tsubmit: function(elem){\n\t\t\treturn \"submit\" === elem.type;\n\t\t}"
+    L",\n\t\timage: function(elem){\n\t\t\treturn \"image\" === elem.type;\n\t"
+    L"\t},\n\t\treset: function(elem){\n\t\t\treturn \"reset\" === elem.type;"
+    L"\n\t\t},\n\t\tbutton: function(elem){\n\t\t\treturn \"button\" === elem."
+    L"type || elem.nodeName.toLowerCase() === \"button\";\n\t\t},\n\t\tinput: "
+    L"function(elem){\n\t\t\treturn (/input|select|textarea|button/i).test(ele"
+    L"m.nodeName);\n\t\t}\n\t},\n\tsetFilters: {\n\t\tfirst: function(elem, i)"
+    L"{\n\t\t\treturn i === 0;\n\t\t},\n\t\tlast: function(elem, i, match, arr"
+    L"ay){\n\t\t\treturn i === array.length - 1;\n\t\t},\n\t\teven: function(e"
+    L"lem, i){\n\t\t\treturn i % 2 === 0;\n\t\t},\n\t\todd: function(elem, i){"
+    L"\n\t\t\treturn i % 2 === 1;\n\t\t},\n\t\tlt: function(elem, i, match){\n"
+    L"\t\t\treturn i < match[3] - 0;\n\t\t},\n\t\tgt: function(elem, i, match)"
+    L"{\n\t\t\treturn i > match[3] - 0;\n\t\t},\n\t\tnth: function(elem, i, ma"
+    L"tch){\n\t\t\treturn match[3] - 0 === i;\n\t\t},\n\t\teq: function(elem, "
+    L"i, match){\n\t\t\treturn match[3] - 0 === i;\n\t\t}\n\t},\n\tfilter: {\n"
+    L"\t\tPSEUDO: function(elem, match, i, array){\n\t\t\tvar name = match[1],"
+    L" filter = Expr.filters[ name ];\n\n\t\t\tif ( filter ) {\n\t\t\t\treturn"
+    L" filter( elem, i, match, array );\n\t\t\t} else if ( name === \"contains"
+    L"\" ) {\n\t\t\t\treturn (elem.textContent || elem.innerText || Sizzle.get"
+    L"Text([ elem ]) || \"\").indexOf(match[3]) >= 0;\n\t\t\t} else if ( name "
+    L"=== \"not\" ) {\n\t\t\t\tvar not = match[3];\n\n\t\t\t\tfor ( var j = 0,"
+    L" l = not.length; j < l; j++ ) {\n\t\t\t\t\tif ( not[j] === elem ) {\n\t"
+    L"\t\t\t\t\treturn false;\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\treturn true;"
+    L"\n\t\t\t} else {\n\t\t\t\tSizzle.error( \"Syntax error, unrecognized exp"
+    L"ression: \" + name );\n\t\t\t}\n\t\t},\n\t\tCHILD: function(elem, match)"
+    L"{\n\t\t\tvar type = match[1], node = elem;\n\t\t\tswitch (type) {\n\t\t"
+    L"\t\tcase 'only':\n\t\t\t\tcase 'first':\n\t\t\t\t\twhile ( (node = node."
+    L"previousSibling) )\t {\n\t\t\t\t\t\tif ( node.nodeType === 1 ) { \n\t\t"
+    L"\t\t\t\t\treturn false; \n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tif ( typ"
+    L"e === \"first\" ) { \n\t\t\t\t\t\treturn true; \n\t\t\t\t\t}\n\t\t\t\t\t"
+    L"node = elem;\n\t\t\t\tcase 'last':\n\t\t\t\t\twhile ( (node = node.nextS"
+    L"ibling) )\t {\n\t\t\t\t\t\tif ( node.nodeType === 1 ) { \n\t\t\t\t\t\t\t"
+    L"return false; \n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\treturn true;\n\t\t"
+    L"\t\tcase 'nth':\n\t\t\t\t\tvar first = match[2], last = match[3];\n\n\t"
+    L"\t\t\t\tif ( first === 1 && last === 0 ) {\n\t\t\t\t\t\treturn true;\n\t"
+    L"\t\t\t\t}\n\t\t\t\t\t\n\t\t\t\t\tvar doneName = match[0],\n\t\t\t\t\t\tp"
+    L"arent = elem.parentNode;\n\t\n\t\t\t\t\tif ( parent && (parent.sizcache "
+    L"!== doneName || !elem.nodeIndex) ) {\n\t\t\t\t\t\tvar count = 0;\n\t\t\t"
+    L"\t\t\tfor ( node = parent.firstChild; node; node = node.nextSibling ) {"
+    L"\n\t\t\t\t\t\t\tif ( node.nodeType === 1 ) {\n\t\t\t\t\t\t\t\tnode.nodeI"
+    L"ndex = ++count;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t} \n\t\t\t\t\t\tparent.siz"
+    L"cache = doneName;\n\t\t\t\t\t}\n\t\t\t\t\t\n\t\t\t\t\tvar diff = elem.no"
+    L"deIndex - last;\n\t\t\t\t\tif ( first === 0 ) {\n\t\t\t\t\t\treturn diff"
+    L" === 0;\n\t\t\t\t\t} else {\n\t\t\t\t\t\treturn ( diff % first === 0 && "
+    L"diff / first >= 0 );\n\t\t\t\t\t}\n\t\t\t}\n\t\t},\n\t\tID: function(ele"
+    L"m, match){\n\t\t\treturn elem.nodeType === 1 && elem.getAttribute(\"id\""
+    L") === match;\n\t\t},\n\t\tTAG: function(elem, match){\n\t\t\treturn (mat"
+    L"ch === \"*\" && elem.nodeType === 1) || elem.nodeName.toLowerCase() === "
+    L"match;\n\t\t},\n\t\tCLASS: function(elem, match){\n\t\t\treturn (\" \" +"
+    L" (elem.className || elem.getAttribute(\"class\")) + \" \")\n\t\t\t\t.ind"
+    L"exOf( match ) > -1;\n\t\t},\n\t\tATTR: function(elem, match){\n\t\t\tvar"
+    L" name = match[1],\n\t\t\t\tresult = Expr.attrHandle[ name ] ?\n\t\t\t\t"
+    L"\tExpr.attrHandle[ name ]( elem ) :\n\t\t\t\t\telem[ name ] != null ?\n"
+    L"\t\t\t\t\t\telem[ name ] :\n\t\t\t\t\t\telem.getAttribute( name ),\n\t\t"
+    L"\t\tvalue = result + \"\",\n\t\t\t\ttype = match[2],\n\t\t\t\tcheck = ma"
+    L"tch[4];\n\n\t\t\treturn result == null ?\n\t\t\t\ttype === \"!=\" :\n\t"
+    L"\t\t\ttype === \"=\" ?\n\t\t\t\tvalue === check :\n\t\t\t\ttype === \"*="
+    L"\" ?\n\t\t\t\tvalue.indexOf(check) >= 0 :\n\t\t\t\ttype === \"~=\" ?\n\t"
+    L"\t\t\t(\" \" + value + \" \").indexOf(check) >= 0 :\n\t\t\t\t!check ?\n"
+    L"\t\t\t\tvalue && result !== false :\n\t\t\t\ttype === \"!=\" ?\n\t\t\t\t"
+    L"value !== check :\n\t\t\t\ttype === \"^=\" ?\n\t\t\t\tvalue.indexOf(chec"
+    L"k) === 0 :\n\t\t\t\ttype === \"$=\" ?\n\t\t\t\tvalue.substr(value.length"
+    L" - check.length) === check :\n\t\t\t\ttype === \"|=\" ?\n\t\t\t\tvalue ="
+    L"== check || value.substr(0, check.length + 1) === check + \"-\" :\n\t\t"
+    L"\t\tfalse;\n\t\t},\n\t\tPOS: function(elem, match, i, array){\n\t\t\tvar"
+    L" name = match[2], filter = Expr.setFilters[ name ];\n\n\t\t\tif ( filter"
+    L" ) {\n\t\t\t\treturn filter( elem, i, match, array );\n\t\t\t}\n\t\t}\n"
+    L"\t}\n};\n\nvar origPOS = Expr.match.POS,\n\tfescape = function(all, num)"
+    L"{\n\t\treturn \"\\\\\" + (num - 0 + 1);\n\t};\n\nfor ( var type in Expr."
+    L"match ) {\n\tExpr.match[ type ] = new RegExp( Expr.match[ type ].source "
+    L"+ (/(?![^\\[]*\\])(?![^\\(]*\\))/.source) );\n\tExpr.leftMatch[ type ] ="
+    L" new RegExp( /(^(?:.|\\r|\\n)*?)/.source + Expr.match[ type ].source.rep"
+    L"lace(/\\\\(\\d+)/g, fescape) );\n}\n\nvar makeArray = function(array, re"
+    L"sults) {\n\tarray = Array.prototype.slice.call( array, 0 );\n\n\tif ( re"
+    L"sults ) {\n\t\tresults.push.apply( results, array );\n\t\treturn results"
+    L";\n\t}\n\t\n\treturn array;\n};\n\n// Perform a simple check to determin"
+    L"e if the browser is capable of\n// converting a NodeList to an array usi"
+    L"ng builtin methods.\n// Also verifies that the returned array holds DOM "
+    L"nodes\n// (which is not the case in the Blackberry browser)\ntry {\n\tAr"
+    L"ray.prototype.slice.call( document.documentElement.childNodes, 0 )[0].no"
+    L"deType;\n\n// Provide a fallback method if it does not work\n} catch(e){"
+    L"\n\tmakeArray = function(array, results) {\n\t\tvar ret = results || [],"
+    L" i = 0;\n\n\t\tif ( toString.call(array) === \"[object Array]\" ) {\n\t"
+    L"\t\tArray.prototype.push.apply( ret, array );\n\t\t} else {\n\t\t\tif ( "
+    L"typeof array.length === \"number\" ) {\n\t\t\t\tfor ( var l = array.leng"
+    L"th; i < l; i++ ) {\n\t\t\t\t\tret.push( array[i] );\n\t\t\t\t}\n\t\t\t} "
+    L"else {\n\t\t\t\tfor ( ; array[i]; i++ ) {\n\t\t\t\t\tret.push( array[i] "
+    L");\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\treturn ret;\n\t};\n}\n\nvar sortOrd"
+    L"er, siblingCheck;\n\nif ( document.documentElement.compareDocumentPositi"
+    L"on ) {\n\tsortOrder = function( a, b ) {\n\t\tif ( a === b ) {\n\t\t\tha"
+    L"sDuplicate = true;\n\t\t\treturn 0;\n\t\t}\n\n\t\tif ( !a.compareDocumen"
+    L"tPosition || !b.compareDocumentPosition ) {\n\t\t\treturn a.compareDocum"
+    L"entPosition ? -1 : 1;\n\t\t}\n\n\t\treturn a.compareDocumentPosition(b) "
+    L"& 4 ? -1 : 1;\n\t};\n} else {\n\tsortOrder = function( a, b ) {\n\t\tvar"
+    L" ap = [], bp = [], aup = a.parentNode, bup = b.parentNode,\n\t\t\tcur = "
+    L"aup, al, bl;\n\n\t\t// The nodes are identical, we can exit early\n\t\ti"
+    L"f ( a === b ) {\n\t\t\thasDuplicate = true;\n\t\t\treturn 0;\n\n\t\t// I"
+    L"f the nodes are siblings (or identical) we can do a quick check\n\t\t} e"
+    L"lse if ( aup === bup ) {\n\t\t\treturn siblingCheck( a, b );\n\n\t\t// I"
+    L"f no parents were found then the nodes are disconnected\n\t\t} else if ("
+    L" !aup ) {\n\t\t\treturn -1;\n\n\t\t} else if ( !bup ) {\n\t\t\treturn 1;"
+    L"\n\t\t}\n\n\t\t// Otherwise they're somewhere else in the tree so we nee"
+    L"d\n\t\t// to build up a full list of the parentNodes for comparison\n\t"
+    L"\twhile ( cur ) {\n\t\t\tap.unshift( cur );\n\t\t\tcur = cur.parentNode;"
+    L"\n\t\t}\n\n\t\tcur = bup;\n\n\t\twhile ( cur ) {\n\t\t\tbp.unshift( cur "
+    L");\n\t\t\tcur = cur.parentNode;\n\t\t}\n\n\t\tal = ap.length;\n\t\tbl = "
+    L"bp.length;\n\n\t\t// Start walking down the tree looking for a discrepan"
+    L"cy\n\t\tfor ( var i = 0; i < al && i < bl; i++ ) {\n\t\t\tif ( ap[i] !=="
+    L" bp[i] ) {\n\t\t\t\treturn siblingCheck( ap[i], bp[i] );\n\t\t\t}\n\t\t}"
+    L"\n\n\t\t// We ended someplace up the tree so do a sibling check\n\t\tret"
+    L"urn i === al ?\n\t\t\tsiblingCheck( a, bp[i], -1 ) :\n\t\t\tsiblingCheck"
+    L"( ap[i], b, 1 );\n\t};\n\n\tsiblingCheck = function( a, b, ret ) {\n\t\t"
+    L"if ( a === b ) {\n\t\t\treturn ret;\n\t\t}\n\n\t\tvar cur = a.nextSiblin"
+    L"g;\n\n\t\twhile ( cur ) {\n\t\t\tif ( cur === b ) {\n\t\t\t\treturn -1;"
+    L"\n\t\t\t}\n\n\t\t\tcur = cur.nextSibling;\n\t\t}\n\n\t\treturn 1;\n\t};"
+    L"\n}\n\n// Utility function for retreiving the text value of an array of "
+    L"DOM nodes\nSizzle.getText = function( elems ) {\n\tvar ret = \"\", elem;"
+    L"\n\n\tfor ( var i = 0; elems[i]; i++ ) {\n\t\telem = elems[i];\n\n\t\t//"
+    L" Get the text from text nodes and CDATA nodes\n\t\tif ( elem.nodeType =="
+    L"= 3 || elem.nodeType === 4 ) {\n\t\t\tret += elem.nodeValue;\n\n\t\t// T"
+    L"raverse everything else, except comment nodes\n\t\t} else if ( elem.node"
+    L"Type !== 8 ) {\n\t\t\tret += Sizzle.getText( elem.childNodes );\n\t\t}\n"
+    L"\t}\n\n\treturn ret;\n};\n\n// Check to see if the browser returns eleme"
+    L"nts by name when\n// querying by getElementById (and provide a workaroun"
+    L"d)\n(function(){\n\t// We're going to inject a fake input element with a"
+    L" specified name\n\tvar form = document.createElement(\"div\"),\n\t\tid ="
+    L" \"script\" + (new Date()).getTime();\n\tform.innerHTML = \"<a name='\" "
+    L"+ id + \"'/>\";\n\n\t// Inject it into the root element, check its statu"
+    L"s, and remove it quickly\n\tvar root = document.documentElement;\n\troot"
+    L".insertBefore( form, root.firstChild );\n\n\t// The workaround has to do"
+    L" additional checks after a getElementById\n\t// Which slows things down "
+    L"for other browsers (hence the branching)\n\tif ( document.getElementById"
+    L"( id ) ) {\n\t\tExpr.find.ID = function(match, context, isXML){\n\t\t\ti"
+    L"f ( typeof context.getElementById !== \"undefined\" && !isXML ) {\n\t\t"
+    L"\t\tvar m = context.getElementById(match[1]);\n\t\t\t\treturn m ? m.id ="
+    L"== match[1] || typeof m.getAttributeNode !== \"undefined\" && m.getAttri"
+    L"buteNode(\"id\").nodeValue === match[1] ? [m] : undefined : [];\n\t\t\t}"
+    L"\n\t\t};\n\n\t\tExpr.filter.ID = function(elem, match){\n\t\t\tvar node "
+    L"= typeof elem.getAttributeNode !== \"undefined\" && elem.getAttributeNod"
+    L"e(\"id\");\n\t\t\treturn elem.nodeType === 1 && node && node.nodeValue ="
+    L"== match;\n\t\t};\n\t}\n\n\troot.removeChild( form );\n\troot = form = n"
+    L"ull; // release memory in IE\n})();\n\n(function(){\n\t// Check to see i"
+    L"f the browser returns only elements\n\t// when doing getElementsByTagNam"
+    L"e(\"*\")\n\n\t// Create a fake element\n\tvar div = document.createEleme"
+    L"nt(\"div\");\n\tdiv.appendChild( document.createComment(\"\") );\n\n\t//"
+    L" Make sure no comments are found\n\tif ( div.getElementsByTagName(\"*\")"
+    L".length > 0 ) {\n\t\tExpr.find.TAG = function(match, context){\n\t\t\tva"
+    L"r results = context.getElementsByTagName(match[1]);\n\n\t\t\t// Filter o"
+    L"ut possible comments\n\t\t\tif ( match[1] === \"*\" ) {\n\t\t\t\tvar tmp"
+    L" = [];\n\n\t\t\t\tfor ( var i = 0; results[i]; i++ ) {\n\t\t\t\t\tif ( r"
+    L"esults[i].nodeType === 1 ) {\n\t\t\t\t\t\ttmp.push( results[i] );\n\t\t"
+    L"\t\t\t}\n\t\t\t\t}\n\n\t\t\t\tresults = tmp;\n\t\t\t}\n\n\t\t\treturn re"
+    L"sults;\n\t\t};\n\t}\n\n\t// Check to see if an attribute returns normali"
+    L"zed href attributes\n\tdiv.innerHTML = \"<a href='#'></a>\";\n\tif ( div"
+    L".firstChild && typeof div.firstChild.getAttribute !== \"undefined\" &&\n"
+    L"\t\t\tdiv.firstChild.getAttribute(\"href\") !== \"#\" ) {\n\t\tExpr.attr"
+    L"Handle.href = function(elem){\n\t\t\treturn elem.getAttribute(\"href\", "
+    L"2);\n\t\t};\n\t}\n\n\tdiv = null; // release memory in IE\n})();\n\nif ("
+    L" document.querySelectorAll ) {\n\t(function(){\n\t\tvar oldSizzle = Sizz"
+    L"le, div = document.createElement(\"div\");\n\t\tdiv.innerHTML = \"<p cla"
+    L"ss='TEST'></p>\";\n\n\t\t// Safari can't handle uppercase or unicode cha"
+    L"racters when\n\t\t// in quirks mode.\n\t\tif ( div.querySelectorAll && d"
+    L"iv.querySelectorAll(\".TEST\").length === 0 ) {\n\t\t\treturn;\n\t\t}\n"
+    L"\t\n\t\tSizzle = function(query, context, extra, seed){\n\t\t\tcontext ="
+    L" context || document;\n\n\t\t\t// Only use querySelectorAll on non-XML d"
+    L"ocuments\n\t\t\t// (ID selectors don't work in non-HTML documents)\n\t\t"
+    L"\tif ( !seed && context.nodeType === 9 && !Sizzle.isXML(context) ) {\n\t"
+    L"\t\t\ttry {\n\t\t\t\t\treturn makeArray( context.querySelectorAll(query)"
+    L", extra );\n\t\t\t\t} catch(e){}\n\t\t\t}\n\t\t\n\t\t\treturn oldSizzle("
+    L"query, context, extra, seed);\n\t\t};\n\n\t\tfor ( var prop in oldSizzle"
+    L" ) {\n\t\t\tSizzle[ prop ] = oldSizzle[ prop ];\n\t\t}\n\n\t\tdiv = null"
+    L"; // release memory in IE\n\t})();\n}\n\n(function(){\n\tvar div = docum"
+    L"ent.createElement(\"div\");\n\n\tdiv.innerHTML = \"<div class='test e'><"
+    L"/div><div class='test'></div>\";\n\n\t// Opera can't find a second class"
+    L"name (in 9.6)\n\t// Also, make sure that getElementsByClassName actually"
+    L" exists\n\tif ( !div.getElementsByClassName || div.getElementsByClassNam"
+    L"e(\"e\").length === 0 ) {\n\t\treturn;\n\t}\n\n\t// Safari caches class "
+    L"attributes, doesn't catch changes (in 3.2)\n\tdiv.lastChild.className = "
+    L"\"e\";\n\n\tif ( div.getElementsByClassName(\"e\").length === 1 ) {\n\t"
+    L"\treturn;\n\t}\n\t\n\tExpr.order.splice(1, 0, \"CLASS\");\n\tExpr.find.C"
+    L"LASS = function(match, context, isXML) {\n\t\tif ( typeof context.getEle"
+    L"mentsByClassName !== \"undefined\" && !isXML ) {\n\t\t\treturn context.g"
+    L"etElementsByClassName(match[1]);\n\t\t}\n\t};\n\n\tdiv = null; // releas"
+    L"e memory in IE\n})();\n\nfunction dirNodeCheck( dir, cur, doneName, chec"
+    L"kSet, nodeCheck, isXML ) {\n\tfor ( var i = 0, l = checkSet.length; i < "
+    L"l; i++ ) {\n\t\tvar elem = checkSet[i];\n\t\tif ( elem ) {\n\t\t\telem ="
+    L" elem[dir];\n\t\t\tvar match = false;\n\n\t\t\twhile ( elem ) {\n\t\t\t"
+    L"\tif ( elem.sizcache === doneName ) {\n\t\t\t\t\tmatch = checkSet[elem.s"
+    L"izset];\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\n\t\t\t\tif ( elem.nodeType === 1"
+    L" && !isXML ){\n\t\t\t\t\telem.sizcache = doneName;\n\t\t\t\t\telem.sizse"
+    L"t = i;\n\t\t\t\t}\n\n\t\t\t\tif ( elem.nodeName.toLowerCase() === cur ) "
+    L"{\n\t\t\t\t\tmatch = elem;\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\n\t\t\t\telem "
+    L"= elem[dir];\n\t\t\t}\n\n\t\t\tcheckSet[i] = match;\n\t\t}\n\t}\n}\n\nfu"
+    L"nction dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {\n\tf"
+    L"or ( var i = 0, l = checkSet.length; i < l; i++ ) {\n\t\tvar elem = chec"
+    L"kSet[i];\n\t\tif ( elem ) {\n\t\t\telem = elem[dir];\n\t\t\tvar match = "
+    L"false;\n\n\t\t\twhile ( elem ) {\n\t\t\t\tif ( elem.sizcache === doneNam"
+    L"e ) {\n\t\t\t\t\tmatch = checkSet[elem.sizset];\n\t\t\t\t\tbreak;\n\t\t"
+    L"\t\t}\n\n\t\t\t\tif ( elem.nodeType === 1 ) {\n\t\t\t\t\tif ( !isXML ) {"
+    L"\n\t\t\t\t\t\telem.sizcache = doneName;\n\t\t\t\t\t\telem.sizset = i;\n"
+    L"\t\t\t\t\t}\n\t\t\t\t\tif ( typeof cur !== \"string\" ) {\n\t\t\t\t\t\ti"
+    L"f ( elem === cur ) {\n\t\t\t\t\t\t\tmatch = true;\n\t\t\t\t\t\t\tbreak;"
+    L"\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else if ( Sizzle.filter( cur, [elem] ).le"
+    L"ngth > 0 ) {\n\t\t\t\t\t\tmatch = elem;\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}"
+    L"\n\t\t\t\t}\n\n\t\t\t\telem = elem[dir];\n\t\t\t}\n\n\t\t\tcheckSet[i] ="
+    L" match;\n\t\t}\n\t}\n}\n\nSizzle.contains = document.compareDocumentPosi"
+    L"tion ? function(a, b){\n\treturn !!(a.compareDocumentPosition(b) & 16);"
+    L"\n} : function(a, b){\n\treturn a !== b && (a.contains ? a.contains(b) :"
+    L" true);\n};\n\nSizzle.isXML = function(elem){\n\t// documentElement is v"
+    L"erified for cases where it doesn't yet exist\n\t// (such as loading ifra"
+    L"mes in IE - #4833) \n\tvar documentElement = (elem ? elem.ownerDocument "
+    L"|| elem : 0).documentElement;\n\treturn documentElement ? documentElemen"
+    L"t.nodeName !== \"HTML\" : false;\n};\n\nvar posProcess = function(select"
+    L"or, context){\n\tvar tmpSet = [], later = \"\", match,\n\t\troot = conte"
+    L"xt.nodeType ? [context] : context;\n\n\t// Position selectors must be do"
+    L"ne after the filter\n\t// And so must :not(positional) so we move all PS"
+    L"EUDOs to the end\n\twhile ( (match = Expr.match.PSEUDO.exec( selector ))"
+    L" ) {\n\t\tlater += match[0];\n\t\tselector = selector.replace( Expr.matc"
+    L"h.PSEUDO, \"\" );\n\t}\n\n\tselector = Expr.relative[selector] ? selecto"
+    L"r + \"*\" : selector;\n\n\tfor ( var i = 0, l = root.length; i < l; i++ "
+    L") {\n\t\tSizzle( selector, root[i], tmpSet );\n\t}\n\n\treturn Sizzle.fi"
+    L"lter( later, tmpSet );\n};\n\n// EXPOSE\n\nwindow.Sizzle = Sizzle;\n\n})"
+    L"();";
+
+}  // namespace atoms
+}  // namespace webdriver
+
+#endif  // WEBDRIVER_SIZZLE_H_

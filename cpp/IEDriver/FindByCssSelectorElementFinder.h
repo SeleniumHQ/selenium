@@ -24,10 +24,8 @@ public:
 		}
 
 		std::wstring script(L"(function() { return function(){");
-		for (int i = 0; SIZZLE[i]; i++) {
-			script += SIZZLE[i];
-			script += L"\n";
-		}
+		script += atoms::SIZZLE;
+		script += L"\n";
 		script += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
 		script += L"if (root['querySelector']) { return root.querySelector(arguments[0]); } ";
 		script += L"var results = []; Sizzle(arguments[0], root, results);";
@@ -68,10 +66,8 @@ public:
 		}
 
 		std::wstring script(L"(function() { return function(){");
-		for (int i = 0; SIZZLE[i]; i++) {
-			script += SIZZLE[i];
-			script += L"\n";
-		}
+		script += atoms::SIZZLE;
+		script += L"\n";
 		script += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
 		script += L"if (root['querySelectorAll']) { return root.querySelectorAll(arguments[0]); } ";
 		script += L"var results = []; Sizzle(arguments[0], root, results);";

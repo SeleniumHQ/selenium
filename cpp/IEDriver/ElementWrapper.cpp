@@ -42,13 +42,7 @@ int ElementWrapper::IsDisplayed(bool *result) {
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
 	std::wstring script(L"(function() { return (");
-
-	// Read in all the scripts
-	for (int j = 0; IS_DISPLAYED[j]; j++) {
-		script += IS_DISPLAYED[j];
-	}
-
-	// Now for the magic and to close things
+	script += atoms::IS_DISPLAYED;
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
@@ -73,13 +67,7 @@ bool ElementWrapper::IsEnabled() {
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
 	std::wstring script(L"(function() { return (");
-
-	// Read in all the scripts
-	for (int j = 0; IS_ENABLED[j]; j++) {
-		script += IS_ENABLED[j];
-	}
-
-	// Now for the magic and to close things
+	script += atoms::IS_ENABLED;
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
@@ -161,13 +149,7 @@ int ElementWrapper::GetAttributeValue(std::wstring attribute_name, VARIANT *attr
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
 	std::wstring script(L"(function() { return (");
-
-	// Read in all the scripts
-	for (int j = 0; GET_ATTRIBUTE[j]; j++) {
-		script += GET_ATTRIBUTE[j];
-	}
-
-	// Now for the magic and to close things
+	script += atoms::GET_ATTRIBUTE;
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
@@ -246,13 +228,7 @@ bool ElementWrapper::IsSelected() {
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
 	std::wstring script(L"(function() { return (");
-
-	// Read in all the scripts
-	for (int j = 0; IS_SELECTED[j]; j++) {
-		script += IS_SELECTED[j];
-	}
-	
-	// Now for the magic and to close things
+	script += atoms::IS_SELECTED;
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;

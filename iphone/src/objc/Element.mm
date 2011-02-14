@@ -149,7 +149,7 @@ static NSString* const kElementIdKey = @"ELEMENT";
 }
 
 - (void)click:(NSDictionary*)ignored {
-  [self executeAtom:webdriver::CLICK
+  [self executeAtom:webdriver::atoms::CLICK
            withArgs:[NSArray arrayWithObject:[self idDictionary]]];
 }
 
@@ -157,7 +157,7 @@ static NSString* const kElementIdKey = @"ELEMENT";
 // coordinates.
 - (CGPoint)location {
   NSDictionary* result = (NSDictionary*)
-      [self executeAtom:webdriver::GET_LOCATION
+      [self executeAtom:webdriver::atoms::GET_LOCATION
                withArgs:[NSArray arrayWithObject:[self idDictionary]]];
 
   NSNumber* x = [result objectForKey:@"x"];
@@ -197,25 +197,25 @@ static NSString* const kElementIdKey = @"ELEMENT";
 }
 
 - (void)clear:(NSDictionary*)ignored {
-  [self executeAtom:webdriver::CLEAR
+  [self executeAtom:webdriver::atoms::CLEAR
            withArgs:[NSArray arrayWithObject:[self idDictionary]]];
 }
 
 - (void)submit:(NSDictionary*)ignored {
-  [self executeAtom:webdriver::SUBMIT
+  [self executeAtom:webdriver::atoms::SUBMIT
            withArgs:[NSArray arrayWithObject:[self idDictionary]]];
 }
 
 - (NSString *)text {
   return (NSString*) [self
-      executeAtom:webdriver::GET_TEXT
+      executeAtom:webdriver::atoms::GET_TEXT
          withArgs:[NSArray arrayWithObject:[self idDictionary]]];
 }
 
 - (void)sendKeys:(NSDictionary *)dict {
   NSString* stringToType =
       [[dict objectForKey:@"value"] componentsJoinedByString:@""];
-  [self executeAtom:webdriver::TYPE
+  [self executeAtom:webdriver::atoms::TYPE
            withArgs:[NSArray arrayWithObjects:[self idDictionary],
                                               stringToType, nil]];
 }
@@ -229,32 +229,32 @@ static NSString* const kElementIdKey = @"ELEMENT";
 // This method is only valid on option elements, checkboxes and radio buttons.
 - (NSNumber *)isChecked {
   return (NSNumber*) [self
-      executeAtom:webdriver::IS_SELECTED
+      executeAtom:webdriver::atoms::IS_SELECTED
          withArgs:[NSArray arrayWithObject:[self idDictionary]]];
 }
 
 // This method is only valid on option elements, checkboxes and radio buttons.
 - (void)setChecked:(NSDictionary*)ignored {
-  [self executeAtom:webdriver::SET_SELECTED
+  [self executeAtom:webdriver::atoms::SET_SELECTED
            withArgs:[NSArray arrayWithObjects:
                [self idDictionary], [NSNumber numberWithBool:YES], nil]];
 }
 
 // Like |checked| above, we should check that the element is valid.
 - (void)toggleSelected {
-  [self executeAtom:webdriver::TOGGLE
+  [self executeAtom:webdriver::atoms::TOGGLE
            withArgs:[NSArray arrayWithObject:[self idDictionary]]];
 }
 
 - (NSNumber *)isEnabled {
   return (NSNumber*) [self
-      executeAtom:webdriver::IS_ENABLED
+      executeAtom:webdriver::atoms::IS_ENABLED
          withArgs:[NSArray arrayWithObject:[self idDictionary]]];
 }
 
 - (NSNumber *)isDisplayed {
   return (NSNumber*) [self
-      executeAtom:webdriver::IS_DISPLAYED
+      executeAtom:webdriver::atoms::IS_DISPLAYED
          withArgs:[NSArray arrayWithObject:[self idDictionary]]];
 }
 
@@ -276,7 +276,7 @@ static NSString* const kElementIdKey = @"ELEMENT";
 
 // Get an attribute with the given name.
 -(id) attribute:(NSString *)name {
-  return [self executeAtom:webdriver::GET_ATTRIBUTE
+  return [self executeAtom:webdriver::atoms::GET_ATTRIBUTE
                   withArgs:[NSArray arrayWithObjects:
                       [self idDictionary], name, nil]];
 }

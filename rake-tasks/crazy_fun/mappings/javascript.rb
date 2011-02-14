@@ -26,7 +26,9 @@ class JavascriptMappings
     # Compiles a list of |js_fragments| into a C++ header file.
     # Arguments:
     #   name - A unique name for the build target.
-    #   srcs - A list of js_fragment dependencies that should be compiled.
+    #   deps - A list of js_fragment dependencies that should be compiled.
+    #   utf8 - Whether to use char or wchar_t for the generated header. Defaults
+    #          to wchar_t.
     fun.add_mapping("js_fragment_header", Javascript::CheckFragmentPreconditions.new)
     fun.add_mapping("js_fragment_header", Javascript::CreateTask.new)
     fun.add_mapping("js_fragment_header", Javascript::CreateTaskShortName.new)
@@ -256,9 +258,9 @@ module Javascript
   class GenerateHeader < BaseJs
 
     MAX_LINE_LENGTH = 80
-    MAX_STR_LENGTH = MAX_LINE_LENGTH - "    L\"\",\n".length
+    MAX_STR_LENGTH = MAX_LINE_LENGTH - "    L\"\"\n".length
 
-    def write_atom_string_literal(to_file, dir, atom)
+    def write_atom_string_literal(to_file, dir, atom, utf8)
       # Check that the |atom| task actually generates a JavaScript file.
       if (File.exists?(atom))
         atom_file = atom
@@ -268,6 +270,8 @@ module Javascript
       end
       raise StandardError,
           "#{atom_file} is not a JavaScript file" unless atom_file =~ /\.js$/
+
+      puts "Generating header for #{atom_file}"
 
       # Convert camelCase and snake_case to BIG_SNAKE_CASE
       uc = File.basename(atom_file).sub(/\.js$/, '')
@@ -287,30 +291,35 @@ module Javascript
       contents.gsub!(/"/, "\\\"")
       contents.gsub!(/'/, "'")
 
+      atom_type = utf8 ? "char" : "wchar_t"
+      max_str_length = MAX_STR_LENGTH
+      max_str_length += 1 if utf8  # Don't need the 'L' on each line for UTF8.
+      line_format = utf8 ? "    \"%s\"" : "    L\"%s\""
+
       to_file << "\n"
-      to_file << "const wchar_t* const #{atom_upper}[] = {\n"
+      to_file << "const #{atom_type}* const #{atom_upper} =\n"
 
       # Make the header file play nicely in a terminal: limit lines to 80
       # characters, but make sure we don't cut off a line in the middle
       # of an escape sequence.
-      while contents.length > MAX_STR_LENGTH do
-        diff = MAX_STR_LENGTH
+      while contents.length > max_str_length do
+        diff = max_str_length
         diff -= 1 while contents[diff-1, 1] =~ /\\/
 
         line = contents[0, diff]
         contents.slice!(0..diff - 1)
-        to_file << "    L\"#{line}\",\n"
+        to_file << line_format % line
+        to_file << "\n"
       end
 
-      to_file << "    L\"#{contents}\",\n" if contents.length > 0
-      to_file << "    NULL\n"
-      to_file << "};\n"
+      to_file << line_format % contents if contents.length > 0
+      to_file << ";\n"
     end
 
-    def generate_header(dir, name, task_name, output, js_files)
+    def generate_header(dir, name, task_name, output, js_files, utf8)
       file output => js_files do
         puts "Preparing: #{task_name} as #{output}"
-        define_guard = "#{name.upcase}_H__"
+        define_guard = "WEBDRIVER_#{name.upcase}_H_"
 
         output_dir = File.dirname(output)
         mkdir_p output_dir unless File.exists?(output_dir)
@@ -333,15 +342,19 @@ module Javascript
           out << "#ifndef #{define_guard}\n"
           out << "#define #{define_guard}\n"
           out << "\n"
-          out << "#include <stddef.h>  // For wchar_t.\n"
-          out << "\n"
+          out << "#include <stddef.h>  // For wchar_t.\n" unless utf8
+          out << "\n" unless utf8
           out << "namespace webdriver {\n"
+          out << "namespace atoms {\n"
 
           js_files.each do |js_file|
-            write_atom_string_literal(out, dir, js_file)
+            write_atom_string_literal(out, dir, js_file, utf8)
           end
 
-          out << "}\n"
+          out << "\n"
+          out << "}  // namespace atoms\n"
+          out << "}  // namespace webdriver\n"
+          out << "\n"
           out << "#endif  // #{define_guard}\n"
         end
       end
@@ -353,7 +366,8 @@ module Javascript
       js = js_name(dir, args[:name])
       output = js.sub(/\.js$/, '.h')
       task_name = task_name(dir, args[:name])
-      generate_header(dir, args[:name], task_name, output, args[:deps])
+      generate_header(dir, args[:name], task_name, output, args[:deps],
+                      args[:utf8])
       task task_name => [output]
     end
   end
@@ -377,7 +391,7 @@ module Javascript
       js = js_name(dir, args[:name])
       out = js.sub(/\.js$/, '.h')
       task_name = task_name(dir, args[:name]) + ":header"
-      generate_header(dir, args[:name], task_name, out, [js])
+      generate_header(dir, args[:name], task_name, out, [js], false)
       task task_name => [out]
     end
   end

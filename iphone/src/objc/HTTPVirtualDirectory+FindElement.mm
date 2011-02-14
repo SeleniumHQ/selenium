@@ -58,7 +58,7 @@
 
   NSDate* startTime = [NSDate dateWithTimeIntervalSinceNow:0];
   while (true) {
-    id result = [self executeAtom:webdriver::FIND_ELEMENT withArgs:args];
+    id result = [self executeAtom:webdriver::atoms::FIND_ELEMENT withArgs:args];
 
     if (![result isKindOfClass:[NSNull class]]) {
       return result;
@@ -85,8 +85,9 @@
   NSDate* startTime = [NSDate dateWithTimeIntervalSinceNow:0];
 
   while (true) {
-    NSArray* result = (NSArray*) [self executeAtom:webdriver::FIND_ELEMENTS
-                                          withArgs:args];
+    NSArray* result =
+        (NSArray*) [self executeAtom:webdriver::atoms::FIND_ELEMENTS
+                            withArgs:args];
     if ([result count] > 0) {
       return result;
     }

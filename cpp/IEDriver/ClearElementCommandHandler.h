@@ -40,13 +40,7 @@ protected:
 				// function: "function() {...}"; Wrap it in another function so we can
 				// invoke it with our arguments without polluting the current namespace.
 				std::wstring script(L"(function() { return (");
-
-				// Read in all the scripts
-				for (int j = 0; CLEAR[j]; j++) {
-					script += CLEAR[j];
-				}
-
-				// Now for the magic and to close things
+				script += atoms::CLEAR;
 				script += L")})();";
 
 				CComPtr<IHTMLDocument2> doc;

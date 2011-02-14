@@ -117,19 +117,9 @@
 
 @implementation HTTPVirtualDirectory (ExecuteScript)
 
-// Compiles a NULL terminated |atom| into a single string object.
--(NSString*) compileAtom:(const wchar_t* const[])atom {
-  std::wstring compiled(L"");
-  for (size_t i = 0; atom[i] != NULL; i++) {
-    compiled.append(std::wstring(atom[i]));
-  }
-  std::string tmp(compiled.begin(), compiled.end());
-  return [NSString stringWithUTF8String:tmp.c_str()];
-}
-
--(id) executeAtom:(const wchar_t* const[])atom
+-(id) executeAtom:(const char* const)atom
          withArgs:(NSArray*) args {
-  return [self executeJsFunction:[self compileAtom:atom]
+  return [self executeJsFunction:[NSString stringWithUTF8String:atom]
                         withArgs:args];
 }
 
@@ -147,7 +137,7 @@
 -(id) executeScript:(NSString*)script
            withArgs:(NSArray*)args {
   NSString* result = [[self viewController] jsEval:@"(%@)(%@,%@,true)",
-      [self compileAtom:webdriver::EXECUTE_SCRIPT],
+      [NSString stringWithUTF8String:webdriver::atoms::EXECUTE_SCRIPT],
       script,
       [args JSONRepresentation]];
   NSLog(@"Got result: %@", result);
@@ -177,8 +167,9 @@
 
   args = [NSArray arrayWithObjects:script, args,
       [NSNumber numberWithDouble:timeout * 1000], nil];
-  [self executeScript:[self compileAtom:webdriver::EXECUTE_ASYNC_SCRIPT]
-             withArgs:args];
+  NSString* atom =
+      [NSString stringWithUTF8String:webdriver::atoms::EXECUTE_ASYNC_SCRIPT];
+  [self executeScript:atom withArgs:args];
 
   NSDictionary* resultDict = [observer waitForData];
 
