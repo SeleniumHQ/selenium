@@ -47,7 +47,7 @@ webdriver.iphone.executeAsyncScript = function(script, args, timeout) {
         sendResponse(bot.ErrorCode.SUCCESS, value);
       },
       /*onFailure=*/function(err) {
-        sendResponse(err.code || bot.ErrorCode.UNHANDLED_JS_ERROR, {
+        sendResponse(err.code || bot.ErrorCode.UNKNOWN_ERROR, {
           'message': err.message
         });
       });
