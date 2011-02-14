@@ -285,7 +285,7 @@ file "build/ide/selenium" => "//common:js_core" do
 end
 task "rename_core" => "build/ide/selenium"
 
-task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :chrome, :selenium] do
+task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc"
    sourcepath = ""
    classpath = '.'
@@ -296,7 +296,8 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :ch
      sourcepath += File::PATH_SEPARATOR + m
    end
    p sourcepath
-   cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks"
+   cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
+   cmd << " -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal"
    if (windows?)
      cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";")
    end
