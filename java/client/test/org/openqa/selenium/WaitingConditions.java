@@ -61,6 +61,28 @@ public class WaitingConditions {
     };
   }
 
+  public static Callable<String> elementTextToEqual(
+     final WebDriver driver, final By locator, final String value) {
+    return new Callable<String>() {
+
+      public String call() throws Exception {
+        String text = driver.findElement(locator).getText();
+        if (value.equals(text)) {
+          return text;
+        }
+
+        return null;
+      }
+
+      @Override
+      public String toString() {
+        return "element text did not equal: " + value;
+      }
+    };
+  }
+
+
+
   public static Callable<String> elementTextToContain(
       final WebElement element, final String value) {
     return new Callable<String>() {

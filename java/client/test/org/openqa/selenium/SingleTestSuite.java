@@ -39,7 +39,7 @@ public class SingleTestSuite extends TestCase {
   private static final String SELENIUM = "org.openqa.selenium.v1.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = SELENIUM;
+    String driver = IE;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -55,11 +55,11 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ClickTest")
+        .onlyRun("DragAndDropTest")
 //        .method("testShouldReturnEmptyStringWhenTextIsOnlySpaces")
 //        .method("testShouldNotTrimSpacesWhenLineWraps")
         .exclude(ALL)
-        .exclude(Ignore.Driver.SELENESE)
+        .exclude(Ignore.Driver.IE)
         .outputTestNames()
         .leaveRunning()
         ;  // Yeah, this look strange :)

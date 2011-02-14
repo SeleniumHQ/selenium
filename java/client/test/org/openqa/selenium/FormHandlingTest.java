@@ -64,19 +64,19 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToSubmitForms() {
     driver.get(pages.formPage);
     driver.findElement(By.name("login")).submit();
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
   public void testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted() {
     driver.get(pages.formPage);
     driver.findElement(By.id("checky")).submit();
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
   public void testShouldSubmitAFormWhenAnyElementWihinThatFormIsSubmitted() {
     driver.get(pages.formPage);
     driver.findElement(By.xpath("//form/p")).submit();
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {

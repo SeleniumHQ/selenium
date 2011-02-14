@@ -228,6 +228,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     checkbox.toggle();
     checkbox.submit();
 
+    // TODO(simon): this should not be needed, and is only here because IE's submit returns too soon.
+    waitFor(WaitingConditions.elementTextToEqual(driver, By.xpath("//p"), "Success!"));
     assertThat(driver.findElement(By.xpath("//p")).getText(), equalTo("Success!"));
   }
 
