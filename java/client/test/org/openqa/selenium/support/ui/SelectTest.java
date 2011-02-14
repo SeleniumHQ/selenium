@@ -379,7 +379,7 @@ public class SelectTest extends MockObjectTestCase {
 
     checking(new Expectations() {{
       allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue(""));
+      allowing(element).getAttribute("multiple"); will(returnValue("false"));
       one(element).findElements(xpath1); will(returnValue(Collections.EMPTY_LIST));
       one(element).findElements(xpath2); will(returnValue(Collections.singletonList(firstOption)));
       one(firstOption).getText(); will(returnValue("foo bar"));
@@ -388,5 +388,32 @@ public class SelectTest extends MockObjectTestCase {
 
     Select select = new Select(element);
     select.selectByVisibleText("foo bar");
+  }
+
+  public void testShouldThrowAnExceptionIfThereAreNoElementsToSelect() {
+    final WebElement element = mock(WebElement.class);
+
+    checking(new Expectations() {{
+      allowing(element).getTagName(); will(returnValue("select"));
+      allowing(element).getAttribute("multiple"); will(returnValue("false"));
+      allowing(element).findElements(with(Expectations.<By>anything())); will(returnValue(Collections.<Object>emptyList()));
+    }});
+
+    Select select = new Select(element);
+
+    try {
+      select.selectByIndex(12);
+      fail("Was not meant to pass");
+    } catch (NoSuchElementException ignored) {}
+
+    try {
+      select.selectByValue("not there");
+      fail("Was not meant to pass");
+    } catch (NoSuchElementException ignored) {}
+
+    try {
+      select.selectByVisibleText("also not there");
+      fail("Was not meant to pass");
+    } catch (NoSuchElementException ignored) {}
   }
 }

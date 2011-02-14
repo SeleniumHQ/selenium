@@ -107,10 +107,14 @@ public class Select {
   public void selectByVisibleText(String text) {
     // try to find the option via XPATH ...
     List<WebElement> options = element.findElements(By.xpath(".//option[. = " + escapeQuotes(text) + "]"));
+
+    boolean matched = false;
     for (WebElement option : options) {
       option.setSelected();
       if (!isMultiple()) {  return;  }
+      matched = true;
     }
+
     if (options.size() == 0 && text.contains(" ")) {
       String subStringWithoutSpace = getLongestSubstringWithoutSpace(text);
       List<WebElement> candidates;
@@ -125,8 +129,13 @@ public class Select {
         if (text.equals(option.getText())) {
           option.setSelected();
           if (!isMultiple()) {  return;  }
+          matched = true;
         }
       }
+    }
+
+    if (!matched) {
+      throw new NoSuchElementException("Cannot locate element with text: " + text);
     }
   }
 
@@ -151,11 +160,16 @@ public class Select {
   public void selectByIndex(int index) {
     String match = String.valueOf(index);
 
+    boolean matched = false;
     for (WebElement option : getOptions()) {
       if (match.equals(option.getAttribute("index"))) {
         option.setSelected();
         if (!isMultiple()) {  return;  }
+        matched = true;
       }
+    }
+    if (!matched) {
+      throw new NoSuchElementException("Cannot locate option with index: " + index);
     }
   }
 
@@ -172,9 +186,16 @@ public class Select {
     builder.append(escapeQuotes(value));
     builder.append("]");
     List<WebElement> options = element.findElements(By.xpath(builder.toString()));
+
+    boolean matched = false;
     for (WebElement option : options) {
       option.setSelected();
       if (!isMultiple()) {  return;  }
+      matched = true;
+    }
+
+    if (!matched) {
+      throw new NoSuchElementException("Cannot locate option with value: " + value);
     }
   }
 
