@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta name="Content-Type" content="text/html; charset=utf-8" />
-<title>Class: Selenium::WebDriver::Navigation</title>
+<title>Class: Selenium::WebDriver::Keyboard</title>
 <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
@@ -23,10 +23,10 @@
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (N)</a> &raquo; 
+    <a href="../../_index.html">Index (K)</a> &raquo; 
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
-    <span class="title">Navigation</span>
+    <span class="title">Keyboard</span>
   
   
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
@@ -43,7 +43,7 @@
     
     <iframe id="search_frame"></iframe>
     
-    <div id="content"><h1>Class: Selenium::WebDriver::Navigation
+    <div id="content"><h1>Class: Selenium::WebDriver::Keyboard
   
   
   
@@ -58,7 +58,7 @@
         <ul class="fullTree">
           <li>Object</li>
           
-            <li class="next">Selenium::WebDriver::Navigation</li>
+            <li class="next">Selenium::WebDriver::Keyboard</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -74,11 +74,23 @@
   
   
     <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">rb/lib/selenium/webdriver/common/navigation.rb</dd>
+    <dd class="r2 last">rb/lib/selenium/webdriver/common/keyboard.rb</dd>
   
 </dl>
 <div class="clear"></div>
 
+
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="MODIFIERS-constant" class="">MODIFIERS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='symbol'>:control</span><span class='comma'>,</span> <span class='symbol'>:shift</span><span class='comma'>,</span> <span class='symbol'>:alt</span><span class='comma'>,</span> <span class='symbol'>:command</span><span class='comma'>,</span> <span class='symbol'>:meta</span><span class='rbracket'>]</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -93,55 +105,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#back-instance_method" title="#back (instance method)">- (Object) <strong>back</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>
-Move back a single entry in the browser&#8217;s history.
-</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#forward-instance_method" title="#forward (instance method)">- (Object) <strong>forward</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>
-Move forward a single entry in the browser&#8217;s history.
-</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Navigation) <strong>initialize</strong>(bridge) </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Keyboard) <strong>initialize</strong>(bridge) </a>
     
 
     
@@ -157,7 +121,7 @@ Move forward a single entry in the browser&#8217;s history.
 
   
     <span class="summary_desc"><div class='inline'><p>
-A new instance of Navigation.
+A new instance of Keyboard.
 </p>
 </div></span>
   
@@ -167,7 +131,7 @@ A new instance of Navigation.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#refresh-instance_method" title="#refresh (instance method)">- (Object) <strong>refresh</strong> </a>
+      <a href="#press-instance_method" title="#press (instance method)">- (Object) <strong>press</strong>(key) </a>
     
 
     
@@ -181,7 +145,7 @@ A new instance of Navigation.
 
   
     <span class="summary_desc"><div class='inline'><p>
-Refresh the current page.
+Release a modifier key.
 </p>
 </div></span>
   
@@ -191,7 +155,7 @@ Refresh the current page.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#to-instance_method" title="#to (instance method)">- (Object) <strong>to</strong>(url) </a>
+      <a href="#release-instance_method" title="#release (instance method)">- (Object) <strong>release</strong>(key) </a>
     
 
     
@@ -205,9 +169,30 @@ Refresh the current page.
 
   
     <span class="summary_desc"><div class='inline'><p>
-Navigate to the given URL.
+Release a modifier key.
 </p>
 </div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#send_keys-instance_method" title="#send_keys (instance method)">- (Object) <strong>send_keys</strong>(*keys) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -221,14 +206,14 @@ Navigate to the given URL.
     <div class="method_details first">
   <p class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Navigation (class)">Navigation</a></span></tt>) <strong>initialize</strong>(bridge) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Keyboard (class)">Keyboard</a></span></tt>) <strong>initialize</strong>(bridge) 
   
 
   
 </p><div class="docstring">
   <div class="discussion">
     <p>
-A new instance of Navigation
+A new instance of Keyboard
 </p>
 
 
@@ -247,7 +232,7 @@ A new instance of Navigation
 7</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/navigation.rb', line 5</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 5</span>
 
 <span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id bridge'>bridge</span>
@@ -265,16 +250,16 @@ A new instance of Navigation
     
     
       <div class="method_details first">
-  <p class="signature first" id="back-instance_method">
+  <p class="signature first" id="press-instance_method">
   
-    - (<tt>Object</tt>) <strong>back</strong> 
+    - (<tt>Object</tt>) <strong>press</strong>(key) 
   
 
   
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Move back a single entry in the browser&#8217;s history.
+Release a modifier key
 </p>
 
 
@@ -282,21 +267,30 @@ Move back a single entry in the browser&#8217;s history.
 </div>
 <div class="tags">
   
+  <h3>See Also:</h3>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="Keys.html" title="Selenium::WebDriver::Keys (module)">Selenium::WebDriver::Keys</a></span></li>
+    
+  </ul>
+
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+19
+20
 21
-22
-23</pre>
+22</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/navigation.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 19</span>
 
-<span class='kw'>def</span> <span class='id back'>back</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id goBack'>goBack</span>
+<span class='kw'>def</span> <span class='id press'>press</span><span class='lparen'>(</span><span class='id key'>key</span><span class='rparen'>)</span>
+  <span class='id assert_modifier'>assert_modifier</span> <span class='id key'>key</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id sendModifierKeyToActiveElement'>sendModifierKeyToActiveElement</span> <span class='const'>Keys</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='kw'>true</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -304,16 +298,16 @@ Move back a single entry in the browser&#8217;s history.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="forward-instance_method">
+  <p class="signature " id="release-instance_method">
   
-    - (<tt>Object</tt>) <strong>forward</strong> 
+    - (<tt>Object</tt>) <strong>release</strong>(key) 
   
 
   
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Move forward a single entry in the browser&#8217;s history.
+Release a modifier key
 </p>
 
 
@@ -321,21 +315,30 @@ Move forward a single entry in the browser&#8217;s history.
 </div>
 <div class="tags">
   
+  <h3>See Also:</h3>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="Keys.html" title="Selenium::WebDriver::Keys (module)">Selenium::WebDriver::Keys</a></span></li>
+    
+  </ul>
+
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-29
 30
-31</pre>
+31
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/navigation.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 30</span>
 
-<span class='kw'>def</span> <span class='id forward'>forward</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id goForward'>goForward</span>
+<span class='kw'>def</span> <span class='id release'>release</span><span class='lparen'>(</span><span class='id key'>key</span><span class='rparen'>)</span>
+  <span class='id assert_modifier'>assert_modifier</span> <span class='id key'>key</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id sendModifierKeyToActiveElement'>sendModifierKeyToActiveElement</span> <span class='const'>Keys</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='kw'>false</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -343,77 +346,27 @@ Move forward a single entry in the browser&#8217;s history.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="refresh-instance_method">
+  <p class="signature " id="send_keys-instance_method">
   
-    - (<tt>Object</tt>) <strong>refresh</strong> 
+    - (<tt>Object</tt>) <strong>send_keys</strong>(*keys) 
   
 
   
-</p><div class="docstring">
-  <div class="discussion">
-    <p>
-Refresh the current page.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
+</p><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-37
-38
-39</pre>
+9
+10
+11</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/navigation.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 9</span>
 
-<span class='kw'>def</span> <span class='id refresh'>refresh</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id refresh'>refresh</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="to-instance_method">
-  
-    - (<tt>Object</tt>) <strong>to</strong>(url) 
-  
-
-  
-</p><div class="docstring">
-  <div class="discussion">
-    <p>
-Navigate to the given URL
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-13
-14
-15</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/navigation.rb', line 13</span>
-
-<span class='kw'>def</span> <span class='id to'>to</span><span class='lparen'>(</span><span class='id url'>url</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id get'>get</span> <span class='id url'>url</span>
+<span class='kw'>def</span> <span class='id send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id keys'>keys</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id getActiveElement'>getActiveElement</span><span class='period'>.</span><span class='id send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id keys'>keys</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>

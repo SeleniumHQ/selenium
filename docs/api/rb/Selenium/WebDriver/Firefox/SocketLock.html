@@ -80,35 +80,6 @@
 <div class="clear"></div>
 
 
-  <h2>Constant Summary</h2>
-  
-    <dl class="constants">
-      
-        <dt id="HOST-constant" class="">HOST =
-          <div class="docstring">
-  <div class="discussion">
-    <p>
-Need to be really specific about what host to use
-</p>
-<p>
-On os x, &quot;localhost&quot; will resolve to 3 different addresses (see
-/etc/hosts). Ruby will loop over these and happily bind to the same port on
-each one, making it completely unusable for our purposes.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div>
-        </dt>
-        <dd><pre class="code"><span class='string val'>&quot;127.0.0.1&quot;</span>
-</pre></dd>
-      
-    </dl>
-  
-
 
 
   
@@ -196,19 +167,18 @@ A new instance of SocketLock
       <pre class="lines">
 
 
-23
-24
-25
-26</pre>
+13
+14
+15
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/socket_lock.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/socket_lock.rb', line 13</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='port identifier id'>port</span><span class='comma token'>,</span> <span class='timeout identifier id'>timeout</span><span class='rparen token'>)</span>
-  <span class='@port ivar id'>@port</span>    <span class='assign token'>=</span> <span class='port identifier id'>port</span>
-  <span class='@timeout ivar id'>@timeout</span> <span class='assign token'>=</span> <span class='timeout identifier id'>timeout</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id port'>port</span><span class='comma'>,</span> <span class='id timeout'>timeout</span><span class='rparen'>)</span>
+  <span class='ivar'>@port</span>    <span class='op'>=</span> <span class='id port'>port</span>
+  <span class='ivar'>@timeout</span> <span class='op'>=</span> <span class='id timeout'>timeout</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -234,29 +204,28 @@ A new instance of SocketLock
       <pre class="lines">
 
 
-28
-29
-30
-31
-32
-33
-34
-35
-36</pre>
+18
+19
+20
+21
+22
+23
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/socket_lock.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/socket_lock.rb', line 18</span>
 
-<span class='def def kw'>def</span> <span class='locked identifier id'>locked</span><span class='lparen token'>(</span><span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
-  <span class='lock identifier id'>lock</span>
+<span class='kw'>def</span> <span class='id locked'>locked</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+  <span class='id lock'>lock</span>
 
-  <span class='begin begin kw'>begin</span>
-    <span class='yield yield kw'>yield</span>
-  <span class='ensure ensure kw'>ensure</span>
-    <span class='release identifier id'>release</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>begin</span>
+    <span class='kw'>yield</span>
+  <span class='kw'>ensure</span>
+    <span class='id release'>release</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -267,9 +236,9 @@ A new instance of SocketLock
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 22 02:59:51 2010 by 
+  Generated on Mon Feb 14 19:23:10 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.4 (ruby-1.8.7).
+  0.6.4 (ruby-1.9.2).
 </div>
 
   </body>

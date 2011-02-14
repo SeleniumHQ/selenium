@@ -390,11 +390,10 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='@default_profile ivar id'>@default_profile</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:default_profile</span><span class='rbrack token'>]</span>
-  <span class='@secure_ssl ivar id'>@secure_ssl</span> <span class='assign token'>=</span> <span class='notop op'>!</span><span class='notop op'>!</span><span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:secure_ssl</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='ivar'>@default_profile</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:default_profile</span><span class='rbracket'>]</span>
+  <span class='ivar'>@secure_ssl</span> <span class='op'>=</span> <span class='op'>!</span><span class='op'>!</span><span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:secure_ssl</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -439,10 +438,9 @@ Returns the value of attribute pid
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 9</span>
 
-<span class='def def kw'>def</span> <span class='pid identifier id'>pid</span>
-  <span class='@pid ivar id'>@pid</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id pid'>pid</span>
+  <span class='ivar'>@pid</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -478,13 +476,12 @@ Returns the value of attribute pid
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 16</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='binary_path identifier id'>binary_path</span>
-  <span class='@binary_path ivar id'>@binary_path</span> <span class='opasgn op'>||=</span> <span class='lparen token'>(</span>
-    <span class='path identifier id'>path</span> <span class='assign token'>=</span> <span class='possible_paths identifier id'>possible_paths</span><span class='dot token'>.</span><span class='find identifier id'>find</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='f identifier id'>f</span><span class='bitor op'>|</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='exist? fid id'>exist?</span><span class='lparen token'>(</span><span class='f identifier id'>f</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
-    <span class='path identifier id'>path</span> <span class='orop op'>||</span> <span class='raise identifier id'>raise</span><span class='lparen token'>(</span><span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;Could not find Chrome binary. Make sure Chrome is installed (OS: #{Platform.os})&quot;</span><span class='rparen token'>)</span>
-  <span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id binary_path'>binary_path</span>
+  <span class='ivar'>@binary_path</span> <span class='op'>||=</span> <span class='lparen'>(</span>
+    <span class='id path'>path</span> <span class='op'>=</span> <span class='id possible_paths'>possible_paths</span><span class='period'>.</span><span class='id find'>find</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id f'>f</span><span class='op'>|</span> <span class='const'>File</span><span class='period'>.</span><span class='id exist?'>exist?</span><span class='lparen'>(</span><span class='id f'>f</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+    <span class='id path'>path</span> <span class='op'>||</span> <span class='id raise'>raise</span><span class='lparen'>(</span><span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Could not find Chrome binary. Make sure Chrome is installed (OS: </span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id os'>os</span><span class='rbrace'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -530,11 +527,10 @@ Returns the value of attribute pid
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 29</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='binary_path identifier id'>binary_path</span><span class='assign token'>=</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-  <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='assert_executable identifier id'>assert_executable</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-  <span class='@binary_path ivar id'>@binary_path</span> <span class='assign token'>=</span> <span class='path identifier id'>path</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id binary_path='>binary_path=</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+  <span class='const'>Platform</span><span class='period'>.</span><span class='id assert_executable'>assert_executable</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+  <span class='ivar'>@binary_path</span> <span class='op'>=</span> <span class='id path'>path</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -563,13 +559,12 @@ Returns the value of attribute pid
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 135</span>
 
-<span class='def def kw'>def</span> <span class='macosx_paths identifier id'>macosx_paths</span>
-  <span class='lbrack token'>[</span>
-   <span class='string val'>&quot;/Applications/Google Chrome.app/Contents/MacOS/Google Chrome&quot;</span><span class='comma token'>,</span>
-   <span class='dstring node'>&quot;#{Platform.home}/Applications/Google Chrome.app/Contents/MacOS/Google Chrome&quot;</span>
-  <span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id macosx_paths'>macosx_paths</span>
+  <span class='lbracket'>[</span>
+   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/Applications/Google Chrome.app/Contents/MacOS/Google Chrome</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id home'>home</span><span class='rbrace'>}</span><span class='tstring_content'>/Applications/Google Chrome.app/Contents/MacOS/Google Chrome</span><span class='tstring_end'>&quot;</span></span>
+  <span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -604,19 +599,18 @@ Returns the value of attribute pid
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 113</span>
 
-<span class='def def kw'>def</span> <span class='possible_paths identifier id'>possible_paths</span>
-  <span class='case case kw'>case</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:windows</span>
-    <span class='windows_paths identifier id'>windows_paths</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:macosx</span>
-    <span class='macosx_paths identifier id'>macosx_paths</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:unix</span><span class='comma token'>,</span> <span class='symbol val'>:linux</span>
-    <span class='unix_paths identifier id'>unix_paths</span>
-  <span class='else else kw'>else</span>
-    <span class='raise identifier id'>raise</span> <span class='dstring node'>&quot;unknown OS: #{Platform.os}&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id possible_paths'>possible_paths</span>
+  <span class='kw'>case</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id os'>os</span>
+  <span class='kw'>when</span> <span class='symbol'>:windows</span>
+    <span class='id windows_paths'>windows_paths</span>
+  <span class='kw'>when</span> <span class='symbol'>:macosx</span>
+    <span class='id macosx_paths'>macosx_paths</span>
+  <span class='kw'>when</span> <span class='symbol'>:unix</span><span class='comma'>,</span> <span class='symbol'>:linux</span>
+    <span class='id unix_paths'>unix_paths</span>
+  <span class='kw'>else</span>
+    <span class='id raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown OS: </span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id os'>os</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -647,15 +641,14 @@ Returns the value of attribute pid
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 126</span>
 
-<span class='def def kw'>def</span> <span class='unix_paths identifier id'>unix_paths</span>
-  <span class='lbrack token'>[</span>
-    <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='string val'>&quot;google-chrome&quot;</span><span class='rparen token'>)</span><span class='comma token'>,</span>
-    <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='string val'>&quot;chromium&quot;</span><span class='rparen token'>)</span><span class='comma token'>,</span>
-    <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='string val'>&quot;chromium-browser&quot;</span><span class='rparen token'>)</span><span class='comma token'>,</span>
-    <span class='string val'>&quot;/usr/bin/google-chrome&quot;</span>
-  <span class='rbrack token'>]</span><span class='dot token'>.</span><span class='compact identifier id'>compact</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id unix_paths'>unix_paths</span>
+  <span class='lbracket'>[</span>
+    <span class='const'>Platform</span><span class='period'>.</span><span class='id find_binary'>find_binary</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>google-chrome</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='const'>Platform</span><span class='period'>.</span><span class='id find_binary'>find_binary</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>chromium</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='const'>Platform</span><span class='period'>.</span><span class='id find_binary'>find_binary</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>chromium-browser</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/usr/bin/google-chrome</span><span class='tstring_end'>&quot;</span></span>
+  <span class='rbracket'>]</span><span class='period'>.</span><span class='id compact'>compact</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -691,20 +684,19 @@ Returns the value of attribute pid
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 142</span>
 
-<span class='def def kw'>def</span> <span class='windows_paths identifier id'>windows_paths</span>
-  <span class='paths identifier id'>paths</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span>
-    <span class='windows_registry_path identifier id'>windows_registry_path</span><span class='comma token'>,</span>
-    <span class='dstring node'>&quot;#{ENV['USERPROFILE']}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
-    <span class='dstring node'>&quot;#{ENV['USERPROFILE']}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
-    <span class='dstring node'>&quot;#{Platform.home}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
-    <span class='dstring node'>&quot;#{Platform.home}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe&quot;</span><span class='comma token'>,</span>
-  <span class='rbrack token'>]</span><span class='dot token'>.</span><span class='compact identifier id'>compact</span>
+<span class='kw'>def</span> <span class='id windows_paths'>windows_paths</span>
+  <span class='id paths'>paths</span> <span class='op'>=</span> <span class='lbracket'>[</span>
+    <span class='id windows_registry_path'>windows_registry_path</span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>USERPROFILE</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>USERPROFILE</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id home'>home</span><span class='rbrace'>}</span><span class='tstring_content'>\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id home'>home</span><span class='rbrace'>}</span><span class='tstring_content'>\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='rbracket'>]</span><span class='period'>.</span><span class='id compact'>compact</span>
 
-  <span class='paths identifier id'>paths</span><span class='dot token'>.</span><span class='map! fid id'>map!</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='path identifier id'>path</span><span class='bitor op'>|</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='cygwin_path identifier id'>cygwin_path</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span> <span class='if if_mod kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='cygwin? fid id'>cygwin?</span>
+  <span class='id paths'>paths</span><span class='period'>.</span><span class='id map!'>map!</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id path'>path</span><span class='op'>|</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id cygwin_path'>cygwin_path</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span> <span class='rbrace'>}</span> <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id cygwin?'>cygwin?</span>
 
-  <span class='paths identifier id'>paths</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id paths'>paths</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -740,20 +732,19 @@ Returns the value of attribute pid
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 156</span>
 
-<span class='def def kw'>def</span> <span class='windows_registry_path identifier id'>windows_registry_path</span>
-  <span class='require identifier id'>require</span> <span class='string val'>&quot;win32/registry&quot;</span>
+<span class='kw'>def</span> <span class='id windows_registry_path'>windows_registry_path</span>
+  <span class='id require'>require</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>win32/registry</span><span class='tstring_end'>&quot;</span></span>
 
-  <span class='reg identifier id'>reg</span> <span class='assign token'>=</span> <span class='Win32 constant id'>Win32</span><span class='colon2 op'>::</span><span class='Registry constant id'>Registry</span><span class='colon2 op'>::</span><span class='HKEY_LOCAL_MACHINE constant id'>HKEY_LOCAL_MACHINE</span><span class='dot token'>.</span><span class='open identifier id'>open</span><span class='lparen token'>(</span>
-    <span class='string val'>&quot;SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe&quot;</span><span class='rparen token'>)</span>
+  <span class='id reg'>reg</span> <span class='op'>=</span> <span class='const'>Win32</span><span class='op'>::</span><span class='const'>Registry</span><span class='op'>::</span><span class='const'>HKEY_LOCAL_MACHINE</span><span class='period'>.</span><span class='id open'>open</span><span class='lparen'>(</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 
-  <span class='reg identifier id'>reg</span><span class='lbrack token'>[</span><span class='string val'>&quot;&quot;</span><span class='rbrack token'>]</span>
-<span class='rescue rescue kw'>rescue</span> <span class='LoadError constant id'>LoadError</span>
-  <span class='comment val'># older JRuby and IronRuby does not have win32/registry</span>
-  <span class='nil nil kw'>nil</span>
-<span class='rescue rescue kw'>rescue</span> <span class='Win32 constant id'>Win32</span><span class='colon2 op'>::</span><span class='Registry constant id'>Registry</span><span class='colon2 op'>::</span><span class='Error constant id'>Error</span>
-  <span class='nil nil kw'>nil</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id reg'>reg</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+<span class='kw'>rescue</span> <span class='const'>LoadError</span>
+  <span class='comment'># older JRuby and IronRuby does not have win32/registry
+</span>  <span class='kw'>nil</span>
+<span class='kw'>rescue</span> <span class='const'>Win32</span><span class='op'>::</span><span class='const'>Registry</span><span class='op'>::</span><span class='const'>Error</span>
+  <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -789,14 +780,13 @@ Returns the value of attribute pid
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 34</span>
 
-<span class='def def kw'>def</span> <span class='launch identifier id'>launch</span><span class='lparen token'>(</span><span class='server_url identifier id'>server_url</span><span class='rparen token'>)</span>
-  <span class='create_extension identifier id'>create_extension</span>
-  <span class='create_profile identifier id'>create_profile</span>
-  <span class='launch_chrome identifier id'>launch_chrome</span> <span class='server_url identifier id'>server_url</span>
+<span class='kw'>def</span> <span class='id launch'>launch</span><span class='lparen'>(</span><span class='id server_url'>server_url</span><span class='rparen'>)</span>
+  <span class='id create_extension'>create_extension</span>
+  <span class='id create_profile'>create_profile</span>
+  <span class='id launch_chrome'>launch_chrome</span> <span class='id server_url'>server_url</span>
 
-  <span class='pid identifier id'>pid</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id pid'>pid</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -822,10 +812,9 @@ Returns the value of attribute pid
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/launcher.rb', line 42</span>
 
-<span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='stop identifier id'>stop</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id quit'>quit</span>
+  <span class='ivar'>@process</span><span class='period'>.</span><span class='id stop'>stop</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -836,9 +825,9 @@ Returns the value of attribute pid
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 22 02:59:50 2010 by 
+  Generated on Mon Feb 14 19:23:10 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.4 (ruby-1.8.7).
+  0.6.4 (ruby-1.9.2).
 </div>
 
   </body>

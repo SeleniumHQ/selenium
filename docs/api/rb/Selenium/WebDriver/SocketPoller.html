@@ -87,8 +87,7 @@
         <dt id="SOCKET_ERRORS-constant" class="">SOCKET_ERRORS =
           
         </dt>
-        <dd><pre class="code"><span class='lbrack token'>[</span><span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ECONNREFUSED constant id'>ECONNREFUSED</span><span class='comma token'>,</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ENOTCONN constant id'>ENOTCONN</span><span class='comma token'>,</span> <span class='SocketError constant id'>SocketError</span><span class='rbrack token'>]</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='const'>Errno</span><span class='op'>::</span><span class='const'>ECONNREFUSED</span><span class='comma'>,</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ENOTCONN</span><span class='comma'>,</span> <span class='const'>SocketError</span><span class='rbracket'>]</span></pre></dd>
       
     </dl>
   
@@ -219,13 +218,12 @@ A new instance of SocketPoller
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 8</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='host identifier id'>host</span><span class='comma token'>,</span> <span class='port identifier id'>port</span><span class='comma token'>,</span> <span class='timeout identifier id'>timeout</span> <span class='assign token'>=</span> <span class='integer val'>0</span><span class='comma token'>,</span> <span class='interval identifier id'>interval</span> <span class='assign token'>=</span> <span class='integer val'>0</span><span class='integer val'>.25</span><span class='rparen token'>)</span>
-  <span class='@host ivar id'>@host</span>     <span class='assign token'>=</span> <span class='host identifier id'>host</span>
-  <span class='@port ivar id'>@port</span>     <span class='assign token'>=</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='port identifier id'>port</span><span class='rparen token'>)</span>
-  <span class='@timeout ivar id'>@timeout</span>  <span class='assign token'>=</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='timeout identifier id'>timeout</span><span class='rparen token'>)</span>
-  <span class='@interval ivar id'>@interval</span> <span class='assign token'>=</span> <span class='interval identifier id'>interval</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id host'>host</span><span class='comma'>,</span> <span class='id port'>port</span><span class='comma'>,</span> <span class='id timeout'>timeout</span> <span class='op'>=</span> <span class='int'>0</span><span class='comma'>,</span> <span class='id interval'>interval</span> <span class='op'>=</span> <span class='float'>0.25</span><span class='rparen'>)</span>
+  <span class='ivar'>@host</span>     <span class='op'>=</span> <span class='id host'>host</span>
+  <span class='ivar'>@port</span>     <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id port'>port</span><span class='rparen'>)</span>
+  <span class='ivar'>@timeout</span>  <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id timeout'>timeout</span><span class='rparen'>)</span>
+  <span class='ivar'>@interval</span> <span class='op'>=</span> <span class='id interval'>interval</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -283,10 +281,9 @@ false otherwise.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 33</span>
 
-<span class='def def kw'>def</span> <span class='closed? fid id'>closed?</span>
-  <span class='with_timeout identifier id'>with_timeout</span> <span class='lbrace token'>{</span> <span class='not not kw'>not</span> <span class='listening? fid id'>listening?</span> <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id closed?'>closed?</span>
+  <span class='id with_timeout'>with_timeout</span> <span class='lbrace'>{</span> <span class='kw'>not</span> <span class='id listening?'>listening?</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -337,10 +334,9 @@ otherwise.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 22</span>
 
-<span class='def def kw'>def</span> <span class='connected? fid id'>connected?</span>
-  <span class='with_timeout identifier id'>with_timeout</span> <span class='lbrace token'>{</span> <span class='listening? fid id'>listening?</span> <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id connected?'>connected?</span>
+  <span class='id with_timeout'>with_timeout</span> <span class='lbrace'>{</span> <span class='id listening?'>listening?</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -351,9 +347,9 @@ otherwise.
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 22 02:59:51 2010 by 
+  Generated on Mon Feb 14 19:23:10 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.4 (ruby-1.8.7).
+  0.6.4 (ruby-1.9.2).
 </div>
 
   </body>

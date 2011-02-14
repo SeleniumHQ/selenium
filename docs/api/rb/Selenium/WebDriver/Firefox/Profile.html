@@ -87,84 +87,78 @@
         <dt id="ANONYMOUS_PROFILE_NAME-constant" class="">ANONYMOUS_PROFILE_NAME =
           
         </dt>
-        <dd><pre class="code"><span class='string val'>&quot;WEBDRIVER_ANONYMOUS_PROFILE&quot;</span>
-</pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>WEBDRIVER_ANONYMOUS_PROFILE</span><span class='tstring_end'>&quot;</span></span></pre></dd>
       
         <dt id="EXTENSION_NAME-constant" class="">EXTENSION_NAME =
           
         </dt>
-        <dd><pre class="code"><span class='string val'>&quot;fxdriver@googlecode.com&quot;</span>
-</pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>fxdriver@googlecode.com</span><span class='tstring_end'>&quot;</span></span></pre></dd>
       
         <dt id="WEBDRIVER_EXTENSION_PATH-constant" class="">WEBDRIVER_EXTENSION_PATH =
           
         </dt>
-        <dd><pre class="code"><span class='File constant id'>File</span><span class='dot token'>.</span><span class='expand_path identifier id'>expand_path</span><span class='lparen token'>(</span><span class='dstring node'>&quot;#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi&quot;</span><span class='rparen token'>)</span>
-</pre></dd>
+        <dd><pre class="code"><span class='const'>File</span><span class='period'>.</span><span class='id expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id root'>root</span><span class='rbrace'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/extension/webdriver.xpi</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span></pre></dd>
       
         <dt id="WEBDRIVER_PREFS-constant" class="">WEBDRIVER_PREFS =
           
         </dt>
-        <dd><pre class="code"><span class='lbrace token'>{</span>
-  <span class='symbol val'>:native_events</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'webdriver_enable_native_events'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:untrusted_certs</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'webdriver_accept_untrusted_certs'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:untrusted_issuer</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'webdriver_assume_untrusted_issuer'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:port</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'webdriver_firefox_port'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:log_file</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'webdriver.log.file'</span>
-<span class='rbrace token'>}</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='symbol'>:native_events</span>    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>webdriver_enable_native_events</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:untrusted_certs</span>  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>webdriver_accept_untrusted_certs</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:untrusted_issuer</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>webdriver_assume_untrusted_issuer</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:port</span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>webdriver_firefox_port</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:log_file</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>webdriver.log.file</span><span class='tstring_end'>'</span></span>
+<span class='rbrace'>}</span></pre></dd>
       
         <dt id="OVERRIDABLE_PREFERENCES-constant" class="">OVERRIDABLE_PREFERENCES =
           
         </dt>
-        <dd><pre class="code"><span class='lbrace token'>{</span>
-  <span class='string val'>&quot;browser.startup.page&quot;</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'0'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.startup.homepage&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'&quot;about:blank&quot;'</span>
-<span class='rbrace token'>}</span><span class='dot token'>.</span><span class='freeze identifier id'>freeze</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.startup.page</span><span class='tstring_end'>&quot;</span></span>     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>0</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.startup.homepage</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&quot;about:blank&quot;</span><span class='tstring_end'>'</span></span>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id freeze'>freeze</span></pre></dd>
       
         <dt id="DEFAULT_PREFERENCES-constant" class="">DEFAULT_PREFERENCES =
           
         </dt>
-        <dd><pre class="code"><span class='lbrace token'>{</span>
-  <span class='string val'>&quot;app.update.auto&quot;</span>                           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;app.update.enabled&quot;</span>                        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.download.manager.showWhenStarting&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.EULA.override&quot;</span>                     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'true'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.EULA.3.accepted&quot;</span>                   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'true'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.link.open_external&quot;</span>                <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'2'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.link.open_newwindow&quot;</span>               <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'2'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.safebrowsing.enabled&quot;</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.search.update&quot;</span>                     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.sessionstore.resume_from_crash&quot;</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.shell.checkDefaultBrowser&quot;</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.tabs.warnOnClose&quot;</span>                  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.tabs.warnOnOpen&quot;</span>                   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;devtools.errorconsole.enabled&quot;</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'true'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;dom.disable_open_during_load&quot;</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;dom.max_script_run_time&quot;</span>                   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'30'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;extensions.logging.enabled&quot;</span>                <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'true'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;extensions.update.enabled&quot;</span>                 <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;extensions.update.notifyUser&quot;</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;network.manage-offline-status&quot;</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;network.http.max-connections-per-server&quot;</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'10'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;security.warn_entering_secure&quot;</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;security.warn_submit_insecure&quot;</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;security.warn_entering_secure.show_once&quot;</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;security.warn_entering_weak&quot;</span>               <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;security.warn_entering_weak.show_once&quot;</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;security.warn_leaving_secure&quot;</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;security.warn_leaving_secure.show_once&quot;</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;security.warn_submit_insecure&quot;</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;security.warn_viewing_mixed&quot;</span>               <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;security.warn_viewing_mixed.show_once&quot;</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;signon.rememberSignons&quot;</span>                    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'false'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;toolkit.networkmanager.disable&quot;</span>            <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'true'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;javascript.options.showInConsole&quot;</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'true'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;browser.dom.window.dump.enabled&quot;</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'true'</span><span class='comma token'>,</span>
-  <span class='string val'>&quot;dom.report_all_js_exceptions&quot;</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;true&quot;</span>
-<span class='rbrace token'>}</span><span class='dot token'>.</span><span class='freeze identifier id'>freeze</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>app.update.auto</span><span class='tstring_end'>&quot;</span></span>                           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>app.update.enabled</span><span class='tstring_end'>&quot;</span></span>                        <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.download.manager.showWhenStarting</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.EULA.override</span><span class='tstring_end'>&quot;</span></span>                     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>true</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.EULA.3.accepted</span><span class='tstring_end'>&quot;</span></span>                   <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>true</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.link.open_external</span><span class='tstring_end'>&quot;</span></span>                <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>2</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.link.open_newwindow</span><span class='tstring_end'>&quot;</span></span>               <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>2</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.safebrowsing.enabled</span><span class='tstring_end'>&quot;</span></span>              <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.search.update</span><span class='tstring_end'>&quot;</span></span>                     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.sessionstore.resume_from_crash</span><span class='tstring_end'>&quot;</span></span>    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.shell.checkDefaultBrowser</span><span class='tstring_end'>&quot;</span></span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.tabs.warnOnClose</span><span class='tstring_end'>&quot;</span></span>                  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.tabs.warnOnOpen</span><span class='tstring_end'>&quot;</span></span>                   <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>devtools.errorconsole.enabled</span><span class='tstring_end'>&quot;</span></span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>true</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>dom.disable_open_during_load</span><span class='tstring_end'>&quot;</span></span>              <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>dom.max_script_run_time</span><span class='tstring_end'>&quot;</span></span>                   <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>30</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>extensions.logging.enabled</span><span class='tstring_end'>&quot;</span></span>                <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>true</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>extensions.update.enabled</span><span class='tstring_end'>&quot;</span></span>                 <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>extensions.update.notifyUser</span><span class='tstring_end'>&quot;</span></span>              <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>network.manage-offline-status</span><span class='tstring_end'>&quot;</span></span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>network.http.max-connections-per-server</span><span class='tstring_end'>&quot;</span></span>   <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>10</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>security.warn_entering_secure</span><span class='tstring_end'>&quot;</span></span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>security.warn_submit_insecure</span><span class='tstring_end'>&quot;</span></span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>security.warn_entering_secure.show_once</span><span class='tstring_end'>&quot;</span></span>   <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>security.warn_entering_weak</span><span class='tstring_end'>&quot;</span></span>               <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>security.warn_entering_weak.show_once</span><span class='tstring_end'>&quot;</span></span>     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>security.warn_leaving_secure</span><span class='tstring_end'>&quot;</span></span>              <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>security.warn_leaving_secure.show_once</span><span class='tstring_end'>&quot;</span></span>    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>security.warn_submit_insecure</span><span class='tstring_end'>&quot;</span></span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>security.warn_viewing_mixed</span><span class='tstring_end'>&quot;</span></span>               <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>security.warn_viewing_mixed.show_once</span><span class='tstring_end'>&quot;</span></span>     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>signon.rememberSignons</span><span class='tstring_end'>&quot;</span></span>                    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>false</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>toolkit.networkmanager.disable</span><span class='tstring_end'>&quot;</span></span>            <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>true</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>javascript.options.showInConsole</span><span class='tstring_end'>&quot;</span></span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>true</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browser.dom.window.dump.enabled</span><span class='tstring_end'>&quot;</span></span>           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>true</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>dom.report_all_js_exceptions</span><span class='tstring_end'>&quot;</span></span>              <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>true</span><span class='tstring_end'>&quot;</span></span>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id freeze'>freeze</span></pre></dd>
       
     </dl>
   
@@ -729,12 +723,11 @@ User configured profile
 </p>
 </div></h4>
       <pre class="example code">
-<span class='profile identifier id'>profile</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Firefox constant id'>Firefox</span><span class='colon2 op'>::</span><span class='Profile constant id'>Profile</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
-<span class='profile identifier id'>profile</span><span class='lbrack token'>[</span><span class='string val'>'network.proxy.http'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>'localhost'</span>
-<span class='profile identifier id'>profile</span><span class='lbrack token'>[</span><span class='string val'>'network.proxy.http_port'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='integer val'>9090</span>
+<span class='id profile'>profile</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Firefox</span><span class='op'>::</span><span class='const'>Profile</span><span class='period'>.</span><span class='id new'>new</span>
+<span class='id profile'>profile</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>network.proxy.http</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>localhost</span><span class='tstring_end'>'</span></span>
+<span class='id profile'>profile</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>network.proxy.http_port</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='int'>9090</span>
 
-<span class='driver identifier id'>driver</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='WebDriver constant id'>WebDriver</span><span class='dot token'>.</span><span class='for identifier id'>for</span> <span class='symbol val'>:firefox</span><span class='comma token'>,</span> <span class='symbol val'>:profile</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='profile identifier id'>profile</span>
-</pre>
+<span class='id driver'>driver</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id for'>for</span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:profile</span> <span class='op'>=&gt;</span> <span class='id profile'>profile</span></pre>
     
   </div>
 
@@ -763,32 +756,39 @@ User configured profile
 58
 59
 60
-61</pre>
+61
+62
+63
+64
+65</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 42</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='model identifier id'>model</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='@model ivar id'>@model</span> <span class='assign token'>=</span> <span class='verify_model identifier id'>verify_model</span><span class='lparen token'>(</span><span class='model identifier id'>model</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id model'>model</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@model</span> <span class='op'>=</span> <span class='id verify_model'>verify_model</span><span class='lparen'>(</span><span class='id model'>model</span><span class='rparen'>)</span>
 
-  <span class='model_prefs identifier id'>model_prefs</span> <span class='assign token'>=</span> <span class='read_model_prefs identifier id'>read_model_prefs</span>
+  <span class='id model_prefs'>model_prefs</span> <span class='op'>=</span> <span class='id read_model_prefs'>read_model_prefs</span>
 
-  <span class='if if kw'>if</span> <span class='model_prefs identifier id'>model_prefs</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
-    <span class='@native_events ivar id'>@native_events</span>     <span class='assign token'>=</span> <span class='DEFAULT_ENABLE_NATIVE_EVENTS constant id'>DEFAULT_ENABLE_NATIVE_EVENTS</span>
-    <span class='@secure_ssl ivar id'>@secure_ssl</span>        <span class='assign token'>=</span> <span class='DEFAULT_SECURE_SSL constant id'>DEFAULT_SECURE_SSL</span>
-    <span class='@untrusted_issuer ivar id'>@untrusted_issuer</span>  <span class='assign token'>=</span> <span class='DEFAULT_ASSUME_UNTRUSTED_ISSUER constant id'>DEFAULT_ASSUME_UNTRUSTED_ISSUER</span>
-    <span class='@load_no_focus_lib ivar id'>@load_no_focus_lib</span> <span class='assign token'>=</span> <span class='DEFAULT_LOAD_NO_FOCUS_LIB constant id'>DEFAULT_LOAD_NO_FOCUS_LIB</span>
-  <span class='else else kw'>else</span>
-    <span class='@native_events ivar id'>@native_events</span>     <span class='assign token'>=</span> <span class='model_prefs identifier id'>model_prefs</span><span class='lbrack token'>[</span><span class='WEBDRIVER_PREFS constant id'>WEBDRIVER_PREFS</span><span class='lbrack token'>[</span><span class='symbol val'>:native_events</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='string val'>&quot;true&quot;</span>
-    <span class='@secure_ssl ivar id'>@secure_ssl</span>        <span class='assign token'>=</span> <span class='model_prefs identifier id'>model_prefs</span><span class='lbrack token'>[</span><span class='WEBDRIVER_PREFS constant id'>WEBDRIVER_PREFS</span><span class='lbrack token'>[</span><span class='symbol val'>:untrusted_certs</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span> <span class='neq op'>!=</span> <span class='string val'>&quot;true&quot;</span> <span class='comment val'># FIXME: 'untrusted_certs' vs 'secure_ssl'</span>
-    <span class='@untrusted_issuer ivar id'>@untrusted_issuer</span>  <span class='assign token'>=</span> <span class='model_prefs identifier id'>model_prefs</span><span class='lbrack token'>[</span><span class='WEBDRIVER_PREFS constant id'>WEBDRIVER_PREFS</span><span class='lbrack token'>[</span><span class='symbol val'>:untrusted_issuer</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='string val'>&quot;true&quot;</span>
-    <span class='@load_no_focus_lib ivar id'>@load_no_focus_lib</span> <span class='assign token'>=</span> <span class='model_prefs identifier id'>model_prefs</span><span class='lbrack token'>[</span><span class='WEBDRIVER_PREFS constant id'>WEBDRIVER_PREFS</span><span class='lbrack token'>[</span><span class='symbol val'>:load_no_focus_lib</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='string val'>&quot;true&quot;</span> <span class='comment val'># not stored in profile atm, so will always be false.</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>if</span> <span class='id model_prefs'>model_prefs</span><span class='period'>.</span><span class='id empty?'>empty?</span>
+    <span class='ivar'>@native_events</span>     <span class='op'>=</span> <span class='const'>DEFAULT_ENABLE_NATIVE_EVENTS</span>
+    <span class='ivar'>@secure_ssl</span>        <span class='op'>=</span> <span class='const'>DEFAULT_SECURE_SSL</span>
+    <span class='ivar'>@untrusted_issuer</span>  <span class='op'>=</span> <span class='const'>DEFAULT_ASSUME_UNTRUSTED_ISSUER</span>
+    <span class='ivar'>@load_no_focus_lib</span> <span class='op'>=</span> <span class='const'>DEFAULT_LOAD_NO_FOCUS_LIB</span>
 
-  <span class='@additional_prefs ivar id'>@additional_prefs</span>  <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span>
-  <span class='@extensions ivar id'>@extensions</span>        <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+    <span class='ivar'>@additional_prefs</span>  <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='kw'>else</span>
+    <span class='comment'># TODO: clean this up
+</span>    <span class='ivar'>@native_events</span>     <span class='op'>=</span> <span class='id model_prefs'>model_prefs</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:native_events</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>true</span><span class='tstring_end'>&quot;</span></span>
+    <span class='ivar'>@secure_ssl</span>        <span class='op'>=</span> <span class='id model_prefs'>model_prefs</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:untrusted_certs</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>true</span><span class='tstring_end'>&quot;</span></span>
+    <span class='ivar'>@untrusted_issuer</span>  <span class='op'>=</span> <span class='id model_prefs'>model_prefs</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:untrusted_issuer</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>true</span><span class='tstring_end'>&quot;</span></span>
+    <span class='ivar'>@load_no_focus_lib</span> <span class='op'>=</span> <span class='id model_prefs'>model_prefs</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:load_no_focus_lib</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>true</span><span class='tstring_end'>&quot;</span></span> <span class='comment'># not stored in profile atm, so will always be false.
+</span>
+    <span class='ivar'>@additional_prefs</span>  <span class='op'>=</span> <span class='id model_prefs'>model_prefs</span>
+  <span class='kw'>end</span>
+
+  <span class='ivar'>@extensions</span>        <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -854,10 +854,9 @@ the value to set the attribute load_no_focus_lib to.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 18</span>
 
-<span class='def def kw'>def</span> <span class='load_no_focus_lib= identifier id'>load_no_focus_lib=</span><span class='lparen token'>(</span><span class='value identifier id'>value</span><span class='rparen token'>)</span>
-  <span class='@load_no_focus_lib ivar id'>@load_no_focus_lib</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id load_no_focus_lib='>load_no_focus_lib=</span><span class='lparen'>(</span><span class='id value'>value</span><span class='rparen'>)</span>
+  <span class='ivar'>@load_no_focus_lib</span> <span class='op'>=</span> <span class='id value'>value</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -897,10 +896,9 @@ Returns the value of attribute log_file
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 17</span>
 
-<span class='def def kw'>def</span> <span class='log_file identifier id'>log_file</span>
-  <span class='@log_file ivar id'>@log_file</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id log_file'>log_file</span>
+  <span class='ivar'>@log_file</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -940,10 +938,9 @@ Returns the value of attribute name
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 17</span>
 
-<span class='def def kw'>def</span> <span class='name identifier id'>name</span>
-  <span class='@name ivar id'>@name</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id name'>name</span>
+  <span class='ivar'>@name</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1004,10 +1001,9 @@ the value to set the attribute native_events to.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 18</span>
 
-<span class='def def kw'>def</span> <span class='native_events= identifier id'>native_events=</span><span class='lparen token'>(</span><span class='value identifier id'>value</span><span class='rparen token'>)</span>
-  <span class='@native_events ivar id'>@native_events</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id native_events='>native_events=</span><span class='lparen'>(</span><span class='id value'>value</span><span class='rparen'>)</span>
+  <span class='ivar'>@native_events</span> <span class='op'>=</span> <span class='id value'>value</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1068,10 +1064,9 @@ the value to set the attribute secure_ssl to.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 18</span>
 
-<span class='def def kw'>def</span> <span class='secure_ssl= identifier id'>secure_ssl=</span><span class='lparen token'>(</span><span class='value identifier id'>value</span><span class='rparen token'>)</span>
-  <span class='@secure_ssl ivar id'>@secure_ssl</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id secure_ssl='>secure_ssl=</span><span class='lparen'>(</span><span class='id value'>value</span><span class='rparen'>)</span>
+  <span class='ivar'>@secure_ssl</span> <span class='op'>=</span> <span class='id value'>value</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1097,31 +1092,32 @@ the value to set the attribute secure_ssl to.
       <pre class="lines">
 
 
-83
-84
-85
-86
 87
 88
 89
 90
 91
-92</pre>
+92
+93
+94
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 87</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='from_json identifier id'>from_json</span><span class='lparen token'>(</span><span class='json identifier id'>json</span><span class='rparen token'>)</span>
-  <span class='zip_file identifier id'>zip_file</span> <span class='assign token'>=</span> <span class='Tempfile constant id'>Tempfile</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='dstring node'>&quot;webdriver-profile-duplicate-#{json.hash}&quot;</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id from_json'>from_json</span><span class='lparen'>(</span><span class='id json'>json</span><span class='rparen'>)</span>
+  <span class='id data'>data</span> <span class='op'>=</span> <span class='const'>JSON</span><span class='period'>.</span><span class='id parse'>parse</span><span class='lparen'>(</span><span class='id json'>json</span><span class='rparen'>)</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>zip</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
 
-  <span class='zip_file identifier id'>zip_file</span> <span class='lshft op'>&lt;&lt;</span> <span class='JSON constant id'>JSON</span><span class='dot token'>.</span><span class='parse identifier id'>parse</span><span class='lparen token'>(</span><span class='json identifier id'>json</span><span class='rparen token'>)</span><span class='lbrack token'>[</span><span class='string val'>'zip'</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='unpack identifier id'>unpack</span><span class='lparen token'>(</span><span class='string val'>&quot;m&quot;</span><span class='rparen token'>)</span><span class='lbrack token'>[</span><span class='integer val'>0</span><span class='rbrack token'>]</span>
-  <span class='zip_file identifier id'>zip_file</span><span class='dot token'>.</span><span class='close identifier id'>close</span>
+  <span class='comment'># can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
+</span>  <span class='const'>Dir</span><span class='period'>.</span><span class='id mktmpdir'>mktmpdir</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id tmp_dir'>tmp_dir</span><span class='op'>|</span>
+    <span class='id zip_path'>zip_path</span> <span class='op'>=</span> <span class='const'>File</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='id tmp_dir'>tmp_dir</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>webdriver-profile-duplicate-</span><span class='embexpr_beg'>#{</span><span class='id json'>json</span><span class='period'>.</span><span class='id hash'>hash</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='const'>File</span><span class='period'>.</span><span class='id open'>open</span><span class='lparen'>(</span><span class='id zip_path'>zip_path</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>wb</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id zip_file'>zip_file</span><span class='op'>|</span> <span class='id zip_file'>zip_file</span> <span class='op'>&lt;&lt;</span> <span class='const'>Base64</span><span class='period'>.</span><span class='id decode64'>decode64</span><span class='lparen'>(</span><span class='id data'>data</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
 
-  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='Zipper constant id'>Zipper</span><span class='dot token'>.</span><span class='unzip identifier id'>unzip</span><span class='lparen token'>(</span><span class='zip_file identifier id'>zip_file</span><span class='dot token'>.</span><span class='path identifier id'>path</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='zip_file identifier id'>zip_file</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span> <span class='if if_mod kw'>if</span> <span class='zip_file identifier id'>zip_file</span>
-<span class='end end kw'>end</span>
-</pre>
+    <span class='id new'>new</span> <span class='const'>Zipper</span><span class='period'>.</span><span class='id unzip'>unzip</span><span class='lparen'>(</span><span class='id zip_path'>zip_path</span><span class='rparen'>)</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1147,10 +1143,9 @@ the value to set the attribute secure_ssl to.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 25</span>
 
-<span class='def def kw'>def</span> <span class='from_name identifier id'>from_name</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
-  <span class='ini identifier id'>ini</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id from_name'>from_name</span><span class='lparen'>(</span><span class='id name'>name</span><span class='rparen'>)</span>
+  <span class='id ini'>ini</span><span class='lbracket'>[</span><span class='id name'>name</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1176,10 +1171,9 @@ the value to set the attribute secure_ssl to.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 21</span>
 
-<span class='def def kw'>def</span> <span class='ini identifier id'>ini</span>
-  <span class='@ini ivar id'>@ini</span> <span class='opasgn op'>||=</span> <span class='ProfilesIni constant id'>ProfilesIni</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id ini'>ini</span>
+  <span class='ivar'>@ini</span> <span class='op'>||=</span> <span class='const'>ProfilesIni</span><span class='period'>.</span><span class='id new'>new</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1222,11 +1216,6 @@ Set a preference for this particular profile.
       <pre class="lines">
 
 
-99
-100
-101
-102
-103
 104
 105
 106
@@ -1237,28 +1226,32 @@ Set a preference for this particular profile.
 111
 112
 113
-114</pre>
+114
+115
+116
+117
+118
+119</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 104</span>
 
-<span class='def def kw'>def</span> <span class='aset op'>[]=</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='comma token'>,</span> <span class='value identifier id'>value</span><span class='rparen token'>)</span>
-  <span class='case case kw'>case</span> <span class='value identifier id'>value</span>
-  <span class='when when kw'>when</span> <span class='String constant id'>String</span>
-    <span class='if if kw'>if</span> <span class='Util constant id'>Util</span><span class='dot token'>.</span><span class='stringified? fid id'>stringified?</span><span class='lparen token'>(</span><span class='value identifier id'>value</span><span class='rparen token'>)</span>
-      <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;preference values must be plain strings: #{key.inspect} =&gt; #{value.inspect}&quot;</span>
-    <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id key'>key</span><span class='comma'>,</span> <span class='id value'>value</span><span class='rparen'>)</span>
+  <span class='kw'>case</span> <span class='id value'>value</span>
+  <span class='kw'>when</span> <span class='const'>String</span>
+    <span class='kw'>if</span> <span class='const'>Util</span><span class='period'>.</span><span class='id stringified?'>stringified?</span><span class='lparen'>(</span><span class='id value'>value</span><span class='rparen'>)</span>
+      <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>preference values must be plain strings: </span><span class='embexpr_beg'>#{</span><span class='id key'>key</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'> =&gt; </span><span class='embexpr_beg'>#{</span><span class='id value'>value</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
 
-    <span class='value identifier id'>value</span> <span class='assign token'>=</span> <span class='dstring node'>%{&quot;#{value}&quot;}</span>
-  <span class='when when kw'>when</span> <span class='TrueClass constant id'>TrueClass</span><span class='comma token'>,</span> <span class='FalseClass constant id'>FalseClass</span><span class='comma token'>,</span> <span class='Integer constant id'>Integer</span><span class='comma token'>,</span> <span class='Float constant id'>Float</span>
-    <span class='value identifier id'>value</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
-  <span class='else else kw'>else</span>
-    <span class='raise identifier id'>raise</span> <span class='TypeError constant id'>TypeError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;invalid preference: #{value.inspect}:#{value.class}&quot;</span>
-  <span class='end end kw'>end</span>
+    <span class='id value'>value</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>%{</span><span class='tstring_content'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id value'>value</span><span class='rbrace'>}</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>}</span></span>
+  <span class='kw'>when</span> <span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='const'>Float</span>
+    <span class='id value'>value</span> <span class='op'>=</span> <span class='id value'>value</span><span class='period'>.</span><span class='id to_s'>to_s</span>
+  <span class='kw'>else</span>
+    <span class='id raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid preference: </span><span class='embexpr_beg'>#{</span><span class='id value'>value</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id value'>value</span><span class='period'>.</span><span class='id class'>class</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='@additional_prefs ivar id'>@additional_prefs</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@additional_prefs</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id value'>value</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1289,17 +1282,16 @@ profile.
       <pre class="lines">
 
 
-135
-136
-137</pre>
+140
+141
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 135</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 140</span>
 
-<span class='def def kw'>def</span> <span class='add_extension identifier id'>add_extension</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='comma token'>,</span> <span class='name identifier id'>name</span> <span class='assign token'>=</span> <span class='extension_name_for identifier id'>extension_name_for</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-  <span class='@extensions ivar id'>@extensions</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='Extension constant id'>Extension</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id add_extension'>add_extension</span><span class='lparen'>(</span><span class='id path'>path</span><span class='comma'>,</span> <span class='id name'>name</span> <span class='op'>=</span> <span class='id extension_name_for'>extension_name_for</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='ivar'>@extensions</span><span class='lbracket'>[</span><span class='id name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Extension</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1318,21 +1310,20 @@ profile.
       <pre class="lines">
 
 
-125
-126
-127
-128
-129</pre>
+130
+131
+132
+133
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 130</span>
 
-<span class='def def kw'>def</span> <span class='add_webdriver_extension identifier id'>add_webdriver_extension</span>
-  <span class='unless unless kw'>unless</span> <span class='@extensions ivar id'>@extensions</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span><span class='lparen token'>(</span><span class='symbol val'>:webdriver</span><span class='rparen token'>)</span>
-    <span class='add_extension identifier id'>add_extension</span><span class='lparen token'>(</span><span class='WEBDRIVER_EXTENSION_PATH constant id'>WEBDRIVER_EXTENSION_PATH</span><span class='comma token'>,</span> <span class='symbol val'>:webdriver</span><span class='rparen token'>)</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id add_webdriver_extension'>add_webdriver_extension</span>
+  <span class='kw'>unless</span> <span class='ivar'>@extensions</span><span class='period'>.</span><span class='id has_key?'>has_key?</span><span class='lparen'>(</span><span class='symbol'>:webdriver</span><span class='rparen'>)</span>
+    <span class='id add_extension'>add_extension</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_EXTENSION_PATH</span><span class='comma'>,</span> <span class='symbol'>:webdriver</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1351,17 +1342,16 @@ profile.
       <pre class="lines">
 
 
-75
-76
-77</pre>
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 75</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 79</span>
 
-<span class='def def kw'>def</span> <span class='as_json identifier id'>as_json</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='lbrace token'>{</span><span class='string val'>'zip'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Zipper constant id'>Zipper</span><span class='dot token'>.</span><span class='zip identifier id'>zip</span><span class='lparen token'>(</span><span class='layout_on_disk identifier id'>layout_on_disk</span><span class='rparen token'>)</span><span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id as_json'>as_json</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>zip</span><span class='tstring_end'>'</span></span> <span class='op'>=&gt;</span> <span class='const'>Zipper</span><span class='period'>.</span><span class='id zip'>zip</span><span class='lparen'>(</span><span class='id layout_on_disk'>layout_on_disk</span><span class='rparen'>)</span><span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1380,17 +1370,16 @@ profile.
       <pre class="lines">
 
 
-155
-156
-157</pre>
+160
+161
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 155</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 160</span>
 
-<span class='def def kw'>def</span> <span class='assume_untrusted_certificate_issuer= identifier id'>assume_untrusted_certificate_issuer=</span><span class='lparen token'>(</span><span class='bool identifier id'>bool</span><span class='rparen token'>)</span>
-  <span class='@untrusted_issuer ivar id'>@untrusted_issuer</span> <span class='assign token'>=</span> <span class='bool identifier id'>bool</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id assume_untrusted_certificate_issuer='>assume_untrusted_certificate_issuer=</span><span class='lparen'>(</span><span class='id bool'>bool</span><span class='rparen'>)</span>
+  <span class='ivar'>@untrusted_issuer</span> <span class='op'>=</span> <span class='id bool'>bool</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1430,17 +1419,16 @@ profile.
       <pre class="lines">
 
 
-151
-152
-153</pre>
+156
+157
+158</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 151</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 156</span>
 
-<span class='def def kw'>def</span> <span class='assume_untrusted_certificate_issuer? fid id'>assume_untrusted_certificate_issuer?</span>
-  <span class='@untrusted_issuer ivar id'>@untrusted_issuer</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id assume_untrusted_certificate_issuer?'>assume_untrusted_certificate_issuer?</span>
+  <span class='ivar'>@untrusted_issuer</span> <span class='op'>==</span> <span class='kw'>true</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1459,33 +1447,32 @@ profile.
       <pre class="lines">
 
 
-63
-64
-65
-66
 67
 68
 69
 70
 71
 72
-73</pre>
+73
+74
+75
+76
+77</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 67</span>
 
-<span class='def def kw'>def</span> <span class='layout_on_disk identifier id'>layout_on_disk</span>
-  <span class='profile_dir identifier id'>profile_dir</span> <span class='assign token'>=</span> <span class='@model ivar id'>@model</span> <span class='question op'>?</span> <span class='create_tmp_copy identifier id'>create_tmp_copy</span><span class='lparen token'>(</span><span class='@model ivar id'>@model</span><span class='rparen token'>)</span> <span class='colon op'>:</span> <span class='Dir constant id'>Dir</span><span class='dot token'>.</span><span class='mktmpdir identifier id'>mktmpdir</span><span class='lparen token'>(</span><span class='string val'>&quot;webdriver-profile&quot;</span><span class='rparen token'>)</span>
-  <span class='FileReaper constant id'>FileReaper</span> <span class='lshft op'>&lt;&lt;</span> <span class='profile_dir identifier id'>profile_dir</span>
+<span class='kw'>def</span> <span class='id layout_on_disk'>layout_on_disk</span>
+  <span class='id profile_dir'>profile_dir</span> <span class='op'>=</span> <span class='ivar'>@model</span> <span class='op'>?</span> <span class='id create_tmp_copy'>create_tmp_copy</span><span class='lparen'>(</span><span class='ivar'>@model</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='const'>Dir</span><span class='period'>.</span><span class='id mktmpdir'>mktmpdir</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>webdriver-profile</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='const'>FileReaper</span> <span class='op'>&lt;&lt;</span> <span class='id profile_dir'>profile_dir</span>
 
-  <span class='install_extensions identifier id'>install_extensions</span><span class='lparen token'>(</span><span class='profile_dir identifier id'>profile_dir</span><span class='rparen token'>)</span>
-  <span class='delete_lock_files identifier id'>delete_lock_files</span><span class='lparen token'>(</span><span class='profile_dir identifier id'>profile_dir</span><span class='rparen token'>)</span>
-  <span class='delete_extensions_cache identifier id'>delete_extensions_cache</span><span class='lparen token'>(</span><span class='profile_dir identifier id'>profile_dir</span><span class='rparen token'>)</span>
-  <span class='update_user_prefs_in identifier id'>update_user_prefs_in</span><span class='lparen token'>(</span><span class='profile_dir identifier id'>profile_dir</span><span class='rparen token'>)</span>
+  <span class='id install_extensions'>install_extensions</span><span class='lparen'>(</span><span class='id profile_dir'>profile_dir</span><span class='rparen'>)</span>
+  <span class='id delete_lock_files'>delete_lock_files</span><span class='lparen'>(</span><span class='id profile_dir'>profile_dir</span><span class='rparen'>)</span>
+  <span class='id delete_extensions_cache'>delete_extensions_cache</span><span class='lparen'>(</span><span class='id profile_dir'>profile_dir</span><span class='rparen'>)</span>
+  <span class='id update_user_prefs_in'>update_user_prefs_in</span><span class='lparen'>(</span><span class='id profile_dir'>profile_dir</span><span class='rparen'>)</span>
 
-  <span class='profile_dir identifier id'>profile_dir</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id profile_dir'>profile_dir</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1525,17 +1512,16 @@ profile.
       <pre class="lines">
 
 
-143
-144
-145</pre>
+148
+149
+150</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 143</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 148</span>
 
-<span class='def def kw'>def</span> <span class='load_no_focus_lib? fid id'>load_no_focus_lib?</span>
-  <span class='@load_no_focus_lib ivar id'>@load_no_focus_lib</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id load_no_focus_lib?'>load_no_focus_lib?</span>
+  <span class='ivar'>@load_no_focus_lib</span> <span class='op'>==</span> <span class='kw'>true</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1575,17 +1561,16 @@ profile.
       <pre class="lines">
 
 
-139
-140
-141</pre>
+144
+145
+146</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 139</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 144</span>
 
-<span class='def def kw'>def</span> <span class='native_events? fid id'>native_events?</span>
-  <span class='@native_events ivar id'>@native_events</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id native_events?'>native_events?</span>
+  <span class='ivar'>@native_events</span> <span class='op'>==</span> <span class='kw'>true</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1604,17 +1589,16 @@ profile.
       <pre class="lines">
 
 
-116
-117
-118</pre>
+121
+122
+123</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 116</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 121</span>
 
-<span class='def def kw'>def</span> <span class='port= identifier id'>port=</span><span class='lparen token'>(</span><span class='port identifier id'>port</span><span class='rparen token'>)</span>
-  <span class='self self kw'>self</span><span class='lbrack token'>[</span><span class='WEBDRIVER_PREFS constant id'>WEBDRIVER_PREFS</span><span class='lbrack token'>[</span><span class='symbol val'>:port</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='port identifier id'>port</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id port='>port=</span><span class='lparen'>(</span><span class='id port'>port</span><span class='rparen'>)</span>
+  <span class='kw'>self</span><span class='lbracket'>[</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id port'>port</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1633,11 +1617,6 @@ profile.
       <pre class="lines">
 
 
-159
-160
-161
-162
-163
 164
 165
 166
@@ -1661,41 +1640,45 @@ profile.
 184
 185
 186
-187</pre>
+187
+188
+189
+190
+191
+192</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 159</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 164</span>
 
-<span class='def def kw'>def</span> <span class='proxy= identifier id'>proxy=</span><span class='lparen token'>(</span><span class='proxy identifier id'>proxy</span><span class='rparen token'>)</span>
-  <span class='unless unless kw'>unless</span> <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Proxy constant id'>Proxy</span>
-    <span class='raise identifier id'>raise</span> <span class='TypeError constant id'>TypeError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;expected #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}&quot;</span>
-  <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='id proxy='>proxy=</span><span class='lparen'>(</span><span class='id proxy'>proxy</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span> <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='const'>Proxy</span>
+    <span class='id raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='const'>Proxy</span><span class='period'>.</span><span class='id name'>name</span><span class='rbrace'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id proxy'>proxy</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id proxy'>proxy</span><span class='period'>.</span><span class='id class'>class</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='case case kw'>case</span> <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='type identifier id'>type</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:manual</span>
-    <span class='self self kw'>self</span><span class='lbrack token'>[</span><span class='string val'>'network.proxy.type'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='integer val'>1</span>
+  <span class='kw'>case</span> <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id type'>type</span>
+  <span class='kw'>when</span> <span class='symbol'>:manual</span>
+    <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>network.proxy.type</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='int'>1</span>
 
-    <span class='set_manual_proxy_preference identifier id'>set_manual_proxy_preference</span> <span class='string val'>&quot;ftp&quot;</span><span class='comma token'>,</span> <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='ftp identifier id'>ftp</span>
-    <span class='set_manual_proxy_preference identifier id'>set_manual_proxy_preference</span> <span class='string val'>&quot;http&quot;</span><span class='comma token'>,</span> <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='http identifier id'>http</span>
-    <span class='set_manual_proxy_preference identifier id'>set_manual_proxy_preference</span> <span class='string val'>&quot;ssl&quot;</span><span class='comma token'>,</span> <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='ssl identifier id'>ssl</span>
+    <span class='id set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ftp</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id ftp'>ftp</span>
+    <span class='id set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id http'>http</span>
+    <span class='id set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ssl</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id ssl'>ssl</span>
 
-    <span class='if if kw'>if</span> <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='no_proxy identifier id'>no_proxy</span>
-      <span class='self self kw'>self</span><span class='lbrack token'>[</span><span class='string val'>&quot;network.proxy.no_proxies_on&quot;</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='no_proxy identifier id'>no_proxy</span>
-    <span class='else else kw'>else</span>
-      <span class='self self kw'>self</span><span class='lbrack token'>[</span><span class='string val'>&quot;network.proxy.no_proxies_on&quot;</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>&quot;&quot;</span>
-    <span class='end end kw'>end</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:pac</span>
-    <span class='self self kw'>self</span><span class='lbrack token'>[</span><span class='string val'>'network.proxy.type'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='integer val'>2</span>
-    <span class='self self kw'>self</span><span class='lbrack token'>[</span><span class='string val'>'network.proxy.autoconfig_url'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='pac identifier id'>pac</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:auto_detect</span>
-    <span class='self self kw'>self</span><span class='lbrack token'>[</span><span class='string val'>'network.proxy.type'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='integer val'>4</span>
-  <span class='else else kw'>else</span>
-    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unsupported proxy type #{proxy.type}&quot;</span>
-  <span class='end end kw'>end</span>
+    <span class='kw'>if</span> <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id no_proxy'>no_proxy</span>
+      <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>network.proxy.no_proxies_on</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id no_proxy'>no_proxy</span>
+    <span class='kw'>else</span>
+      <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>network.proxy.no_proxies_on</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
+  <span class='kw'>when</span> <span class='symbol'>:pac</span>
+    <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>network.proxy.type</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='int'>2</span>
+    <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>network.proxy.autoconfig_url</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id pac'>pac</span>
+  <span class='kw'>when</span> <span class='symbol'>:auto_detect</span>
+    <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>network.proxy.type</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='int'>4</span>
+  <span class='kw'>else</span>
+    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unsupported proxy type </span><span class='embexpr_beg'>#{</span><span class='id proxy'>proxy</span><span class='period'>.</span><span class='id type'>type</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='proxy identifier id'>proxy</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id proxy'>proxy</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1735,17 +1718,16 @@ profile.
       <pre class="lines">
 
 
-147
-148
-149</pre>
+152
+153
+154</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 152</span>
 
-<span class='def def kw'>def</span> <span class='secure_ssl? fid id'>secure_ssl?</span>
-  <span class='@secure_ssl ivar id'>@secure_ssl</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id secure_ssl?'>secure_ssl?</span>
+  <span class='ivar'>@secure_ssl</span> <span class='op'>==</span> <span class='kw'>true</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1764,17 +1746,16 @@ profile.
       <pre class="lines">
 
 
-79
-80
-81</pre>
+83
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 83</span>
 
-<span class='def def kw'>def</span> <span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='as_json identifier id'>as_json</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id as_json'>as_json</span><span class='period'>.</span><span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1785,9 +1766,9 @@ profile.
 </div>
     
     <div id="footer">
-  Generated on Wed Dec 22 02:59:50 2010 by 
+  Generated on Mon Feb 14 19:23:10 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.4 (ruby-1.8.7).
+  0.6.4 (ruby-1.9.2).
 </div>
 
   </body>
