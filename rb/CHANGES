@@ -1,9 +1,11 @@
-0.1.3 (???)
+0.1.3 (2011-02-14)
 ============
 
-* Screenshot support in the IE and Remote drivers.
-* Fixed paths for IE DLLs on Cygwin.
 * Several crashing bugs fixed in the IE driver.
+* Alert API available through the remote driver.
+* Driver#refresh fixed in the IE driver.
+* Fixed paths for IE DLLs on Cygwin.
+* Screenshot support in the IE and Remote drivers.
 * Fix #1152 by avoiding IPv6 loopback.
 * Added Mouse and Keyboard classes, accessible as Driver#{mouse,keyboard}. Considered experimental (IE + HtmlUnit only at the moment).
 * Automation atoms now used extensively in the IE driver.
