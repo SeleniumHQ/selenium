@@ -41,6 +41,11 @@ public class I18nTest extends AbstractDriverTestCase {
    */
   private static final String tmunot = "\u05EA\u05DE\u05D5\u05E0\u05D5\u05EA";
 
+  /**
+   * Japanese for "Tokyo"
+   */
+  private static final String tokyo = "東京";
+
   @Ignore({HTMLUNIT, IE, FIREFOX, IPHONE})
   public void testCn() {
     driver.get(pages.chinesePage);
@@ -77,5 +82,48 @@ public class I18nTest extends AbstractDriverTestCase {
     String text = driver.findElement(By.tagName("body")) .getText();
 
     assertEquals(shalom, text);
+  }
+
+  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT}, reason="Not implemented on anything other than" 
+      + "Firefox/Linux at the moment.")
+  public void testShouldBeAbleToInputJapanese() {
+    if (!Platform.getCurrent().is(Platform.LINUX)) {
+      System.out.println("Skipping test because IME is supported on Linux only.");
+      return;
+    }
+
+    if (!(driver instanceof HasCapabilities)) {
+      System.out.println("Cannot query driver for native events capabilities -"
+          + " no point in testing IME input.");
+      return;
+    }
+
+    Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
+    if (!(Boolean) capabilities.getCapability("nativeEvents")) {
+      System.out.println("Native events are disabled, IME will not work.");
+      return;
+    }
+
+    driver.get(pages.formPage);
+
+    WebElement input = driver.findElement(By.id("working"));
+
+    // Activate IME. By default, this keycode activates IBus input for Japanese.
+    input.sendKeys(Keys.ZENKAKU_HANKAKU);
+
+    // Send the Romaji for "Tokyo". The space at the end instructs the IME to convert the word.
+    input.sendKeys("toukyou ");
+
+    String elementValue = input.getValue();
+    // Turn OFF IME input first.
+    input.sendKeys(Keys.ZENKAKU_HANKAKU);
+
+    // IME is not present. Don't fail because of that. But it should have the Romaji value
+    // instead.
+    assertTrue("The elemnt's value should either remain in Romaji or be converted properly."
+        + " It was:" + elementValue,
+        elementValue.equals(tokyo) || elementValue.equals("\uE040" + "toukyou "));
+
+
   }
 }

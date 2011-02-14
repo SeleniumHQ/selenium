@@ -114,6 +114,8 @@ guint translate_code_to_gdk_symbol(const wchar_t key_code) {
 		ret_code = GDK_KP_3;
 	} else 	if (key_code == L'\uE038') {
 		ret_code = GDK_F8;
+	} else 	if (key_code == L'\uE040') {
+	    ret_code = GDK_Zenkaku_Hankaku;
 	} else {
 		ret_code = GDK_VoidSymbol;
 	}
