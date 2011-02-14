@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 
 public class TestProxy extends InternalSelenseTestNgBase {
 	@Test public void testProxy() throws Exception {
+    selenium.setTimeout("20000");
 		selenium.open("http://www.yahoo.com/");
 		selenium.type("p", "Selenium");
 		selenium.click("search-submit");
