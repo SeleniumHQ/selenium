@@ -1,9 +1,9 @@
-
 java_test(name = "test",
   srcs = [ "*.java" ],
   deps = [
     ":server",
     "//java/client/src/org/openqa/selenium/iphone",
+    "//java/client/test/org/openqa/selenium:tests",
     "//third_party/java/junit",
   ])
 
