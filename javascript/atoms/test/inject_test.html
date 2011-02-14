@@ -20,6 +20,7 @@ limitations under the License.
   <title>Unit Tests for bot.inject</title>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
+    goog.require('bot.Error');
     goog.require('bot.ErrorCode');
     goog.require('bot.inject');
     goog.require('bot.inject.cache');
@@ -229,6 +230,21 @@ limitations under the License.
       assertTrue('No value: ' + result, 'value' in json);
       assertEquals(0, json['status']);
       assertEquals('abc123', json['value']);
+    }
+
+
+    function testShouldStringifyErrorsWhenAskedForStringResults() {
+      var result = bot.inject.executeScript(function() {
+        throw new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT, 'ouch');
+      }, [], true);
+
+      assertEquals('string', goog.typeOf(result));
+      var json = goog.json.parse(result);
+      assertTrue('No status: ' + result, 'status' in json);
+      assertTrue('No value: ' + result, 'value' in json);
+      assertEquals(bot.ErrorCode.NO_SUCH_ELEMENT, json['status']);
+      assertTrue('No message: ' + result, 'message' in json['value']);
+      assertEquals('ouch', json['value']['message']);
     }
   </script>
 </body>

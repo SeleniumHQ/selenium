@@ -170,6 +170,7 @@ bot.inject.unwrapValue = function(value, opt_doc) {
  *     is true, the result will be serialized and returned in string format.
  */
 bot.inject.executeScript = function(fn, args, opt_stringify) {
+  var ret;
   try {
     if (goog.isString(fn)) {
       fn = new Function(fn);
@@ -177,14 +178,14 @@ bot.inject.executeScript = function(fn, args, opt_stringify) {
 
     var unwrappedArgs = (/**@type {Object}*/bot.inject.unwrapValue(args));
     var result = fn.apply(null, unwrappedArgs);
-    var ret =  {
+    ret =  {
       'status': bot.ErrorCode.SUCCESS,
       'value': bot.inject.wrapValue(result)
     };
-    return opt_stringify ? goog.json.serialize(ret) : ret;
   } catch (ex) {
-    return bot.inject.wrapError_(ex);
+    ret = bot.inject.wrapError_(ex);
   }
+  return opt_stringify ? goog.json.serialize(ret) : ret;
 };
 
 
