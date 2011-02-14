@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class ClickTest extends AbstractDriverTestCase {
@@ -47,6 +48,7 @@ public class ClickTest extends AbstractDriverTestCase {
     assertEquals("Latch was reset", Boolean.TRUE, samePage);
   }
 
+  @Ignore(value = IPHONE, reason = "Frame switching is unsupported")
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -58,7 +60,8 @@ public class ClickTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore(value = {IPHONE, SELENESE},
+      reason = "iPhone: Frame switching is unsupported")
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -73,7 +76,8 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore(value = {IPHONE, SELENESE},
+      reason = "iPhone: Frame switching is unsupported")
   public void testJsLoactedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 
