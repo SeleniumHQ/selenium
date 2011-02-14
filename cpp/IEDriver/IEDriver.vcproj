@@ -685,6 +685,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RefreshCommandHandler.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ScreenshotCommandHandler.h"
 				>
 			</File>

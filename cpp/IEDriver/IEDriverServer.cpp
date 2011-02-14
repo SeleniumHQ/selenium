@@ -390,7 +390,7 @@ void IEDriverServer::PopulateCommandRepository() {
 	this->command_repository_["/session/:sessionid/url"]["POST"] = Get;
 	this->command_repository_["/session/:sessionid/forward"]["POST"] = GoForward;
 	this->command_repository_["/session/:sessionid/back"]["POST"] = GoBack;
-	//this->command_repository_["/session/:sessionid/refresh"]["POST"] = Refresh;
+	this->command_repository_["/session/:sessionid/refresh"]["POST"] = Refresh;
 	this->command_repository_["/session/:sessionid/speed"]["GET"] = GetSpeed;
 	this->command_repository_["/session/:sessionid/speed"]["POST"] = SetSpeed;
 	this->command_repository_["/session/:sessionid/execute"]["POST"] = ExecuteScript;

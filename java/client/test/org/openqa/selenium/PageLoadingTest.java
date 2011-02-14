@@ -145,7 +145,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
 
-  @Ignore({IE, SELENESE})
+  @Ignore(SELENESE)
   public void testShouldBeAbleToRefreshAPage() {
     driver.get(pages.xhtmlTestPage);
 

@@ -41,6 +41,7 @@
 #include "IsElementEnabledCommandHandler.h"
 #include "IsElementSelectedCommandHandler.h"
 #include "NewSessionCommandHandler.h"
+#include "RefreshCommandHandler.h"
 #include "ScreenshotCommandHandler.h"
 #include "SendKeysCommandHandler.h"
 #include "SetAsyncScriptTimeoutCommandHandler.h"
@@ -378,6 +379,7 @@ void BrowserManager::PopulateCommandHandlerRepository() {
 	this->command_handlers_[Get] = new GoToUrlCommandHandler;
 	this->command_handlers_[GoForward] = new GoForwardCommandHandler;
 	this->command_handlers_[GoBack] = new GoBackCommandHandler;
+	this->command_handlers_[Refresh] = new RefreshCommandHandler;
 	this->command_handlers_[GetSpeed] = new GetSpeedCommandHandler;
 	this->command_handlers_[SetSpeed] = new SetSpeedCommandHandler;
 	this->command_handlers_[ImplicitlyWait] = new SetImplicitWaitTimeoutCommandHandler;
