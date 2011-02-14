@@ -18,19 +18,31 @@ limitations under the License.
 package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 public class GetAttribute extends SeleneseCommand<String> {
   private final String getAttribute;
   private final JavascriptLibrary library;
+  private final ElementFinder finder;
 
-  public GetAttribute(JavascriptLibrary library) {
+    public GetAttribute(JavascriptLibrary library, ElementFinder finder) {
     this.library = library;
-    getAttribute = "return (" + library.getSeleniumScript("getAttribute.js") + ").apply(null, arguments);";
+        this.finder = finder;
+        getAttribute = "return (" + library.getSeleniumScript("getAttribute.js") + ").apply(null, arguments);";
   }
 
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String attributeLocator, String ignored) {
-    return (String) library.executeScript(driver, getAttribute, attributeLocator);
+    try {
+      return (String) library.executeScript(driver, getAttribute, attributeLocator);
+    } catch (WebDriverException e) {
+      int atSign = attributeLocator.lastIndexOf("@");
+      String elementLocator = attributeLocator.substring(0, atSign - 1);
+      String attributeName = attributeLocator.substring(atSign + 1);
+
+      WebElement element = finder.findElement(driver, elementLocator);
+      return element.getAttribute(attributeName);
+    }
   }
 }

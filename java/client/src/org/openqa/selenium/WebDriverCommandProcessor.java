@@ -339,7 +339,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getAllFields", new GetAllFields());
     seleneseMethods.put("getAllLinks", new GetAllLinks());
     seleneseMethods.put("getAllWindowTitles", new GetAllWindowTitles());
-    seleneseMethods.put("getAttribute", new GetAttribute(javascriptLibrary));
+    seleneseMethods.put("getAttribute", new GetAttribute(javascriptLibrary, elementFinder));
     seleneseMethods.put("getAttributeFromAllWindows", new GetAttributeFromAllWindows());
     seleneseMethods.put("getBodyText", new GetBodyText());
     seleneseMethods.put("getConfirmation", new GetConfirmation(alertOverride));
@@ -366,7 +366,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getSelectOptions", new GetSelectOptions(javascriptLibrary));
     seleneseMethods.put("getSpeed", new NoOp("0"));
     seleneseMethods.put("getTable", new GetTable(elementFinder, javascriptLibrary));
-    seleneseMethods.put("getText", new GetText(javascriptLibrary));
+    seleneseMethods.put("getText", new GetText(javascriptLibrary, elementFinder));
     seleneseMethods.put("getTitle", new GetTitle());
     seleneseMethods.put("getValue", new GetValue(elementFinder));
     seleneseMethods.put("getXpathCount", new GetXpathCount());

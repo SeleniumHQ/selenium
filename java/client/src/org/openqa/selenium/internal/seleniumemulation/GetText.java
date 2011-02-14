@@ -19,19 +19,29 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 
 public class GetText extends SeleneseCommand<String> {
   private final JavascriptLibrary library;
+  private final ElementFinder finder;
 
-  public GetText(JavascriptLibrary library) {
+  public GetText(JavascriptLibrary library, ElementFinder finder) {
     this.library = library;
+    this.finder = finder;
   }
 
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String locator, String ignored) {
     String getText = library.getSeleniumScript("getText.js");
 
-    return (String) ((JavascriptExecutor) driver).executeScript(
-        "return (" + getText + ")(arguments[0]);", locator);
+    try {
+      return (String) ((JavascriptExecutor) driver).executeScript(
+          "return (" + getText + ")(arguments[0]);", locator);
+    } catch (WebDriverException e) {
+      // TODO(simon): remove fall back for IE driver
+      WebElement element = finder.findElement(driver, locator);
+      return element.getText();
+    }
   }
 }
