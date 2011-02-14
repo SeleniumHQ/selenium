@@ -5,6 +5,7 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
 
+import org.junit.AfterClass;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;

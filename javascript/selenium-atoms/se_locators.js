@@ -44,12 +44,14 @@ core.locators.Locator;
  * @private
  */
 core.locators.parseLocator_ = function(locator) {
-  var result = locator.match(/^([A-Za-z]+)=(.+)/);
+  var result = locator.match(/^([A-Za-z]+)=.+/);
 
   if (result) {
+    var type = result[1].toLowerCase();
+    var actualLocator = locator.substring(type.length + 1);
     return {
-      'type': result[1].toLowerCase(),
-      'string': result[2]
+      'type': type,
+      'string': actualLocator
     };
   }
 

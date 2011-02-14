@@ -1065,9 +1065,11 @@ function getAncestorOrSelfWithJavascriptHref(element) {
  */
 function parse_locator(locator)
 {
-    var result = locator.match(/^([A-Za-z]+)=(.+)/);
+    var result = locator.match(/^([A-Za-z]+)=.+/);
     if (result) {
-        return { type: result[1].toLowerCase(), string: result[2] };
+        var type = result[1].toLowerCase();
+        var actualLocator = locator.substring(type.length + 1);
+        return { type: type, string: actualLocator };
     }
     return { type: 'implicit', string: locator };
 }
