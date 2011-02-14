@@ -11,7 +11,7 @@ describe "Driver" do
     driver.page_source.should match(%r[<title>XHTML Test Page</title>]i)
   end
 
-  not_compliant_on :browser => [:ie, :chrome] do
+  not_compliant_on :browser => [:chrome] do
     it "should refresh the page" do
       driver.navigate.to url_for("javascriptPage.html")
       driver.find_element(:link_text, 'Update a div').click
