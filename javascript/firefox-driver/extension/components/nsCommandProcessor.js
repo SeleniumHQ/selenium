@@ -586,13 +586,14 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
   var xulRuntime = Components.classes['@mozilla.org/xre/app-info;1'].
       getService(Components.interfaces.nsIXULRuntime);
   response.value = {
-    'browserName': 'firefox',
-    'version': appInfo.version,
-    'javascriptEnabled': true,
-    'platform': xulRuntime.OS,          // same as Platform.valueOf("name");
     'cssSelectorsEnabled': true,
+    'browserName': 'firefox',
+    'handlesAlerts': true,
+    'javascriptEnabled': true,
+    'nativeEvents': Utils.useNativeEvents(),
+    'platform': xulRuntime.OS,          // same as Platform.valueOf("name");
     'takesScreenshot': true,
-    'nativeEvents': Utils.useNativeEvents()
+    'version': appInfo.version,
   };
 
   response.send();
