@@ -20,6 +20,7 @@ BrowserWrapper::BrowserWrapper(IWebBrowser2 *browser, HWND hwnd, BrowserFactory 
 
 	::RpcStringFree(&guid_string);
 
+	this->is_closing_ = false;
 	this->wait_required_ = false;
 	this->is_navigation_started_ = false;
 	this->factory_ = factory;
@@ -357,6 +358,7 @@ VARIANT * pvarData, VARIANT * pvarHeaders, VARIANT_BOOL * pbCancel) {
 }
 
 void __stdcall BrowserWrapper::OnQuit() {
+	this->is_closing_ = true;
 	this->Quitting.raise(this->browser_id_);
 }
 

@@ -92,6 +92,8 @@ public:
 	bool wait_required(void) { return this->wait_required_; }
 	void set_wait_required(bool value) { this->wait_required_ = value; }
 
+	bool is_closing(void) { return this->is_closing_; }
+
 private:
 	void AttachEvents(void);
 	void DetachEvents(void);
@@ -106,6 +108,7 @@ private:
 	std::wstring browser_id_;
 	bool is_navigation_started_;
 	bool wait_required_;
+	bool is_closing_;
 };
 
 } // namespace webdriver

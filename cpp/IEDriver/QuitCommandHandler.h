@@ -21,10 +21,12 @@ protected:
 		std::vector<std::wstring>::iterator end = managed_browser_handles.end();
 		for (std::vector<std::wstring>::iterator it = managed_browser_handles.begin(); it != end; ++it) {
 			BrowserWrapper *browser_wrapper;
-			manager->GetManagedBrowser(*it, &browser_wrapper);
-			HRESULT hr = browser_wrapper->browser()->Quit();
-			if (FAILED(hr)) {
-				cout << "Quit failed: " << hr << "\r\n";
+			int status_code = manager->GetManagedBrowser(*it, &browser_wrapper);
+			if (status_code == SUCCESS && !browser_wrapper->is_closing()) {
+				HRESULT hr = browser_wrapper->browser()->Quit();
+				if (FAILED(hr)) {
+					cout << "Quit failed: " << hr << "\r\n";
+				}
 			}
 		}
 

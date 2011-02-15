@@ -110,6 +110,11 @@ LRESULT BrowserManager::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& b
 	return 0;
 }
 
+LRESULT BrowserManager::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+	::PostQuitMessage(0);
+	return 0;
+}
+
 LRESULT BrowserManager::OnSetCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	LPCTSTR raw_command = (LPCTSTR)lParam;
 	std::wstring json_command(raw_command);
@@ -144,17 +149,36 @@ LRESULT BrowserManager::OnGetResponse(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 
 LRESULT BrowserManager::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	BrowserWrapper *browser;
-	this->GetCurrentBrowser(&browser);
-	this->is_waiting_ = !(browser->Wait());
-	if (this->is_waiting_) {
-		// If we are still waiting, we need to wait a bit then post a message to
-		// ourselves to run the wait again. However, we can't wait using Sleep()
-		// on this thread. This call happens in a message loop, and we would be 
-		// unable to process the COM events in the browser if we put this thread
-		// to sleep.
-		DWORD thread_id;
-		HANDLE thread_handle = ::CreateThread(NULL, 0, &BrowserManager::WaitThreadProc, (LPVOID)this->m_hWnd, 0, &thread_id);
-		::CloseHandle(thread_handle);
+	int status_code = this->GetCurrentBrowser(&browser);
+	if (status_code == SUCCESS && !browser->is_closing()) {
+		this->is_waiting_ = !(browser->Wait());
+		if (this->is_waiting_) {
+			// If we are still waiting, we need to wait a bit then post a message to
+			// ourselves to run the wait again. However, we can't wait using Sleep()
+			// on this thread. This call happens in a message loop, and we would be 
+			// unable to process the COM events in the browser if we put this thread
+			// to sleep.
+			DWORD thread_id;
+			HANDLE thread_handle = ::CreateThread(NULL, 0, &BrowserManager::WaitThreadProc, (LPVOID)this->m_hWnd, 0, &thread_id);
+			::CloseHandle(thread_handle);
+		}
+	} else {
+		this->is_waiting_ = false;
+	}
+	return 0;
+}
+
+LRESULT BrowserManager::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+	LPCTSTR str = (LPCTSTR)lParam;
+	std::wstring browser_id(str);
+	std::tr1::unordered_map<std::wstring, BrowserWrapper*>::iterator found_iterator = this->managed_browsers_.find(browser_id);
+	if (found_iterator != this->managed_browsers_.end()) {
+		found_iterator->second->NewWindow.detach(this->new_browser_event_id_);
+		found_iterator->second->Quitting.detach(this->browser_quitting_event_id_);
+		this->managed_browsers_.erase(browser_id);
+		if (this->managed_browsers_.size() == 0) {
+			this->current_browser_id_ = L"";
+		}
 	}
 	return 0;
 }
@@ -346,15 +370,11 @@ void BrowserManager::NewBrowserEventHandler(BrowserWrapper *wrapper) {
 void BrowserManager::BrowserQuittingEventHandler(std::wstring browser_id) {
 	//std::string tmp(CW2A(browser_id.c_str(), CP_UTF8));
 	//std::cout << "OnQuit from " << tmp << "\r\n";
-	std::tr1::unordered_map<std::wstring, BrowserWrapper*>::iterator found_iterator = this->managed_browsers_.find(browser_id);
-	if (found_iterator != this->managed_browsers_.end()) {
-		found_iterator->second->NewWindow.detach(this->new_browser_event_id_);
-		found_iterator->second->Quitting.detach(this->browser_quitting_event_id_);
-		this->managed_browsers_.erase(browser_id);
-		if (this->managed_browsers_.size() == 0) {
-			this->current_browser_id_ = L"";
-		}
-	}
+	// Send a message to ourselves to remove the browser that is quitting from
+	// the list of managed browsers. This allows any "wait" code that runs for
+	// this browser to be synchronized, and prevents us from deleting the 
+	// browser wrapper from underneath the running wait code.
+	::SendMessage(this->m_hWnd, WD_BROWSER_QUIT, NULL, (LPARAM)browser_id.c_str());
 }
 
 void BrowserManager::PopulateElementFinderRepository(void) {

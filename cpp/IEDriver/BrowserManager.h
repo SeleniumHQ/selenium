@@ -21,6 +21,7 @@
 #define WD_GET_RESPONSE_LENGTH WM_APP + 4
 #define WD_GET_RESPONSE WM_APP + 5
 #define WD_WAIT WM_APP + 6
+#define WD_BROWSER_QUIT WM_APP + 7
 
 #define WAIT_TIME_IN_MILLISECONDS 200
 
@@ -45,22 +46,26 @@ public:
 	BEGIN_MSG_MAP(BrowserManager)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_CLOSE, OnClose)
+		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		MESSAGE_HANDLER(WD_INIT, OnInit)
 		MESSAGE_HANDLER(WD_SET_COMMAND, OnSetCommand)
 		MESSAGE_HANDLER(WD_EXEC_COMMAND, OnExecCommand)
 		MESSAGE_HANDLER(WD_GET_RESPONSE_LENGTH, OnGetResponseLength)
 		MESSAGE_HANDLER(WD_GET_RESPONSE, OnGetResponse)
 		MESSAGE_HANDLER(WD_WAIT, OnWait)
+		MESSAGE_HANDLER(WD_BROWSER_QUIT, OnBrowserQuit)
 	END_MSG_MAP()
 
 	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnInit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnSetCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnExecCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnGetResponseLength(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnGetResponse(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 	std::wstring manager_id(void) { return this->manager_id_; }
 
@@ -72,7 +77,6 @@ public:
 
 	void CreateNewBrowser(void);
 
-	void AddManagedBrowser(BrowserWrapper* browser_wrapper);
 	int GetManagedBrowser(std::wstring browser_id, BrowserWrapper **browser_wrapper);
 	int GetCurrentBrowser(BrowserWrapper **browser_wrapper);
 	void GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles);
@@ -100,6 +104,8 @@ public:
 	void set_last_known_mouse_y(long y_coordinate) { this->last_known_mouse_y_ = y_coordinate; }
 
 private:
+	void AddManagedBrowser(BrowserWrapper* browser_wrapper);
+
 	void NewBrowserEventHandler(BrowserWrapper* wrapper);
 	void BrowserQuittingEventHandler(std::wstring browser_id);
 	void DispatchCommand(void);
