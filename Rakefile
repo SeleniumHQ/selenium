@@ -8,7 +8,7 @@ require 'yaml'
 require 'net/telnet'
 
 Rake.application.instance_variable_set "@name", "go"
-verbose false
+verbose true
 
 # The CrazyFun build grammar. There's no magic here, just ruby
 require 'rake-tasks/crazy_fun'
