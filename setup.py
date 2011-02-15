@@ -100,7 +100,7 @@ _copy_ext_file("chrome", "chrome-extension.zip")
 setup(
     cmdclass={'install': install},
     name='selenium',
-    version="2.0b2",
+    version="2.0b3",
     description='Python bindings for Selenium',
     long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
