@@ -21,7 +21,7 @@ class CheckPreconditions
     if args[:arch] and !(args[:arch] == "i386" or args[:arch] == "amd64")
       raise StandardError, "arch must be i386 or amd64"
     end
-    
+
     raise StandardError, "No srcs specified" unless args[:srcs]
   end
 end
@@ -36,26 +36,26 @@ class CreateTask < Tasks
     args[:srcs].each do |src|
       file out => FileList[src]
     end
-    
+
     if (name.end_with? "#{args[:name]}:#{args[:name]}")
       name = name.sub(/:.*$/, "")
       task name => task_name(dir, args[:name])
       Rake::Task[name].out = out(dir, args)
-    end    
+    end
   end
 end
 
 class Build < Tasks
   def handle(fun, dir, args)
-    out = Gcc::out_name(dir, args) 
-    
+    out = Gcc::out_name(dir, args)
+
     file out do
       puts "Compiling: #{task_name(dir, args[:name])} as #{out}"
       is_32_bit = "amd64" != args[:arch]
       gcc(fun, dir, args[:srcs], args[:args], args[:link_args], out, is_32_bit)
     end
   end
-  
+
   def gcc(fun, dir, srcs, args, link_args, out, is_32_bit)
     if !gcc?
       copy_prebuilt(fun, out)
@@ -102,7 +102,7 @@ class Build < Tasks
     objname = src_file.split('/')[-1].sub(/\.c[p{2}]*?$/, ".o")
     cmd = "#{compiler} #{src_file} -Wall -c -fshort-wchar -fPIC -o #{obj_dir}/#{objname} "
     cmd += (is_32_bit ? " -m32" : " -m64")
-    cmd += args if args
+    cmd += ' ' + args if args
     sh cmd do |ok, res|
       if !ok
         puts "Unable to build. Aborting compilation"
@@ -116,7 +116,7 @@ end
 class CopyOutputToPrebuilt < Tasks
   def handle(fun, dir, args)
     out = Gcc::out_name(dir, args)
-    
+
     file out do
       dest = fun.find_prebuilt(out)
       cp out, dest
