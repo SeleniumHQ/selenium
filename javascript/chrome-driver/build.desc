@@ -9,3 +9,24 @@ mozilla_extension(name = "chrome-driver",
     { "**" : "./" }
   ],
   out = "chrome-extension.zip")
+
+# Used for http://src.chromium.org/svn/trunk/third_party/webdriver/atoms.h
+js_fragment_header(name = "atoms",
+  deps = [
+    "//javascript/webdriver-atoms:clear",
+    "//javascript/webdriver-atoms:execute_script",
+    "//javascript/webdriver-atoms:find_element",
+    "//javascript/webdriver-atoms:find_elements",
+    "//javascript/webdriver-atoms:get_attribute",
+    "//javascript/webdriver-atoms:get_effective_style",
+    "//javascript/webdriver-atoms:get_location",
+    "//javascript/webdriver-atoms:get_size",
+    "//javascript/webdriver-atoms:get_text",
+    "//javascript/webdriver-atoms:is_displayed",
+    "//javascript/webdriver-atoms:is_enabled",
+    "//javascript/webdriver-atoms:is_selected",
+    "//javascript/webdriver-atoms:set_selected",
+    "//javascript/webdriver-atoms:submit",
+    "//javascript/webdriver-atoms:toggle",
+  ],
+  utf8 = "true")

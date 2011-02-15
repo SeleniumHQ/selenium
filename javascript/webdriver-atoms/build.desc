@@ -38,6 +38,11 @@ js_fragment(name = "get_attribute",
   function = "webdriver.element.getAttribute",
   deps = [ ":deps" ])
 
+js_fragment(name = "get_effective_style",
+  module = "bot.dom",
+  function = "bot.dom.getEffectiveStyle",
+  deps = [ "//javascript/atoms:deps" ])
+
 js_fragment(name = "get_location",
   module = "goog.style",
   function = "goog.style.getPageOffset",
