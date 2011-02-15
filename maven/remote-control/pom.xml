@@ -43,6 +43,12 @@
             <artifactId>selenium-iphone-driver</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-support</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
         <!-- We need TestNG for SeleneseTestNgHelper ... -->
         <dependency>
             <groupId>org.testng</groupId>
@@ -92,10 +98,11 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <tasks>
-                                <!-- Extract *.js files from webdriver-backed-selenium.jar to target/classes ... -->
-                                <unjar src="../../build/java/client/src/org/openqa/selenium/webdriver-backed-selenium.jar" dest="target/classes">
+                                <!-- Extract *.js files from client-combined-nodeps.jar to target/classes ... -->
+                                <unjar src="../../build/java/client/src/org/openqa/selenium/client-combined-nodeps.jar" dest="target/classes">
                                     <patternset>
-                                        <include name="**/*.js" />
+                                        <include name="scripts/selenium/*.js" />
+                                        <include name="**/seleniumemulation/*.js" />
                                     </patternset>
                                 </unjar>
                             </tasks>
