@@ -31,18 +31,6 @@ gcc_library(name = "noblur64",
   srcs = [ "linux-specific/*.c" ],
   arch = "amd64")
 
-gcc_library(name = "imetesthandler",
-  srcs = [ "imetesthandler/linux/src/*.cpp" ],
-  args = "-I cpp/imetesthandler/common `pkg-config gtk+-2.0 ibus-1.0 --cflags`",
-  link_args = "`pkg-config gtk+-2.0 ibus-1.0 --libs`",
-  arch = "i386")
-
-gcc_library(name = "imetesthandler64",
-  srcs = [ "imetesthandler/linux/src/*.cpp" ],
-  args = "-I cpp/imetesthandler/common `pkg-config gtk+-2.0 ibus-1.0 --cflags`",
-  link_args = "`pkg-config gtk+-2.0 ibus-1.0 --libs`",
-  arch = "amd64")
-
 visualc_library(name = "ie_win32_dll",
   deps = [
     ":atoms",
