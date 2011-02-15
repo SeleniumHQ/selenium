@@ -112,6 +112,7 @@
       assertFalse(isShown(span));
     }
 
+
     function testThrowsErrorIfPassedATextNode() {
       var textNode = findElement({id: 'displayed'}).firstChild;
       var error = assertThrows("Argument to isShown must be of type Element",

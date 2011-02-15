@@ -18,7 +18,6 @@
  * into the browser, making sure to note the differences in browser keyboard
  * event handling.
  *
- *
  */
 
 goog.provide('bot.keys');

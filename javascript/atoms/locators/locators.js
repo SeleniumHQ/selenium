@@ -16,7 +16,6 @@
 /**
  * @fileoverview Element locator functions.
  *
- *
  */
 
 

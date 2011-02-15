@@ -137,6 +137,11 @@
 
     // http://code.google.com/p/selenium/issues/detail?id=1207
     function testShouldRespondCorrectlyIfElementIsHiddenMidClickSequence() {
+      if (goog.userAgent.IE) {
+        // TODO(user): Test must be async to handle focus events properly.
+        return;
+      }
+
       function runTest(expectedEvents) {
         resetClicker();
 
@@ -156,7 +161,8 @@
 
         assertTrue('Should start shown', bot.dom.isShown(clicker));
         bot.action.click(clicker);
-        assertFalse('Should end not shown', bot.dom.isShown(clicker));
+        assertFalse('Should end not shown; hid on: ' + hideOn,
+            bot.dom.isShown(clicker));
         assertArrayEquals(expectedEvents, events);
       }
 
@@ -227,12 +233,12 @@
 
       // Use a random value as we don't want to keep an old
       // misleading hash in the url.
-      var expectedEnding = Math.random();
-      var targetHref =
-        '../testdata/click_iframe.html#' + expectedEnding;
+      var testPath = window.location.pathname;
+      var targetHref = testPath.substring(0, testPath.lastIndexOf('/')) +
+          '/testdata/click_iframe.html#' + Math.random();
       clickTarget.href = targetHref;
       bot.action.click(clickTarget);
-      assertContains(expectedEnding, iframeWindow.location.href);
+      assertContains(targetHref, iframeWindow.location.href);
     }
 
 
@@ -371,15 +377,18 @@
                 border:1px solid black; padding:10px">Click Me</div>
     <script>
       var clickJacker = document.getElementById('clickJacker');
-      if (goog.userAgent.IE) {
-        clickJacker.style.filter = 'alpha(opacity=0)';
-      } else {
-        clickJacker.style.opacity = '0';
+      function setOpacity(opacity) {
+        if (goog.userAgent.IE) {
+          clickJacker.style.filter = 'alpha(opacity=' + (opacity * 100) + ')';
+        } else {
+          clickJacker.style.opacity = opacity;
+        }
       }
+      setOpacity(0);
+
       goog.events.listen(clickJacker, goog.events.EventType.CLICK,
           function(e) {
-            clickJacker.style.opacity = '1';                // Non-IE
-            clickJacker.style.filter = 'alpha(opacity=1)';  // IE 6+
+            setOpacity(1);
           });
     </script>
   </div>

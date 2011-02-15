@@ -8,10 +8,13 @@
     goog.require('bot.locators');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.product');
+    goog.require('goog.userAgent.product.isVersion');
   </script>
 </head>
 <body>
-<script type="application/javascript">
+<script>
   var TEST_CASE = goog.testing.AsyncTestCase.createAndInstall();
   var testWindow;
 
@@ -30,6 +33,17 @@
   }
 
   function testSynchronizesTimeoutsWithGivenWindow() {
+    if (goog.userAgent.product.SAFARI &&
+        goog.userAgent.getUserAgentString().search('Version/5') == -1) {
+      // Fails in Safari prior to v5.
+      return;
+    }
+
+    if (goog.userAgent.IE && !goog.userAgent.product.isVersion(8)) {
+      // Fails in IE 7.
+      return;
+    }
+
     var script = 'var callback = arguments[arguments.length - 1];' +
                  'var count = 0;' +
                  'window.setTimeout(function() {count += 1;}, 250);' +
@@ -47,9 +61,15 @@
 
 
   function testShouldExecuteInTheContextOfTheProvidedWindow() {
+    if (goog.userAgent.IE || goog.userAgent.product.SAFARI) {
+      // IE has trouble communicating with testWindow.
+      // Safari cannot execute script in testWindow's context.
+      return;
+    }
+
     TEST_CASE.waitForAsync('waiting for test window to load page');
-    goog.global.onload = function(window) {
-      assertEquals('wrong window', testWindow, window);
+    goog.global.onload = function(loadedWindow) {
+      assertEquals('wrong window', testWindow, loadedWindow);
 
       TEST_CASE.waitForAsync('bot.script.execute');
       bot.script.execute(
@@ -62,14 +82,19 @@
     testWindow.location = './testdata/script_data.html';
   }
 
-
   function testCanDetectPageUnloadEventsAndFailsTheScriptWhenTheyOccur() {
+    if (goog.userAgent.IE || goog.userAgent.product.SAFARI) {
+      // IE has trouble communicating with testWindow.
+      // Safari cannot execute script in testWindow's context.
+      return;
+    }
+
     var navigateTo = window.location.protocol + '//' + window.location.host;
     var script = 'window.location = "' + navigateTo + '"';
 
     TEST_CASE.waitForAsync('waiting for test window to load page');
-    goog.global.onload = function(window) {
-      assertEquals('wrong window', testWindow, window);
+    goog.global.onload = function(loadedWindow) {
+      assertEquals('wrong window', testWindow, loadedWindow);
 
       TEST_CASE.waitForAsync('bot.script.execute');
       bot.script.execute(script, [], 250,

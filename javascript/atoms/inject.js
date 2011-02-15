@@ -21,7 +21,6 @@
  *
  * TODO(user): Add an example
  *
- *
  */
 
 goog.provide('bot.inject');
@@ -159,15 +158,16 @@ bot.inject.unwrapValue = function(value, opt_doc) {
  * <p/>The details of how this actually gets injected for evaluation is left
  * as an implementation detail for clients of this library.
  *
- * @param {(function|string)} fn Either the function to execute, or a string
+ * @param {(function()|string)} fn Either the function to execute, or a string
  *     defining the body of an anonymous function that should be executed.
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
  * @param {boolean=} opt_stringify Whether the result should be returned as a
  *     serialized JSON string.
- * @return {{status:bot.ErrorCode, value:*}} The script result wrapped in a JSON
- *     object as defined by the WebDriver wire protocol. If opt_stringify
- *     is true, the result will be serialized and returned in string format.
+ * @return {(string|{status:bot.ErrorCode, value:*})} The script result wrapped
+ *     in a JSON object as defined by the WebDriver wire protocol. If
+ *     opt_stringify is true, the result will be serialized and returned in
+ *     string format.
  */
 bot.inject.executeScript = function(fn, args, opt_stringify) {
   var ret;

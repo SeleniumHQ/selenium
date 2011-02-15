@@ -16,7 +16,6 @@
 /**
  * @fileoverview DOM manipulation and querying routines.
  *
- *
  */
 
 goog.provide('bot.dom');
@@ -476,7 +475,6 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
  * @return {string} visible text.
  */
 bot.dom.getVisibleText = function(elem) {
-//  Logger.dump(elem);
   var lines = [''];
   bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
   lines = goog.array.map(lines, goog.string.trim);
@@ -529,7 +527,7 @@ bot.dom.hasBlockStyle_ = function(elem) {
 
 /**
  * @const
- * @@type {string}
+ * @type {string}
  * @private
  */
 bot.dom.HTML_WHITESPACE_ = '[\\s\\xa0' + String.fromCharCode(160) + ']+';
@@ -560,11 +558,15 @@ bot.dom.JUST_HTML_WHITESPACE_REGEXP_ = new RegExp(
  */
 bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines) {
   var parentElement = bot.dom.getParentElement_(textNode);
+  if (!parentElement) {
+    return;
+  }
+
   var shown = !bot.dom.isShown(parentElement);
   if (!parentElement || !bot.dom.isShown(parentElement)) {
     // Without this additional check to isShown, issue 1293 kicks into life
     // http://code.google.com/p/selenium/issues/detail?id=1293
-    // TODO(simon): This is a terrible 'fix'.
+    // TODO(user): This is a terrible 'fix'.
     bot.dom.isShown(parentElement);
     return;
   }

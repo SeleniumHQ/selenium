@@ -19,7 +19,6 @@
  * The bot.action namespace is required since these atoms would otherwise form a
  * circular dependency between bot.dom and bot.events.
  *
- *
  */
 
 goog.provide('bot.action');
@@ -457,6 +456,12 @@ bot.action.click = function(element) {
 
 
 bot.events.isFirefoxExtension = function() {
+  // Make the Closure compiler happy.
+  var Components = goog.global.Components;
+  if (!Components) {
+    return false;
+  }
+
   try {
     // Instantiate something the way that an extension could
     Components.classes['@mozilla.org/uuid-generator;1'].
