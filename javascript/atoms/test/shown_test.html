@@ -100,12 +100,17 @@
       assertFalse(isShown(zeroWidth));
     }
 
+    function testElementWithOnlyWhitespaceReturnsConsistentResults() {
+      var span = findElement({id: 'onlyWhitespace'})
+      // make sure we report the same result every time;
+      assertTrue(isShown(span))
+      assertTrue(isShown(span))
+    };
 
     function testCorrectlyDeterminesVisibilityViaDisplayStyle() {
       var span = findElement({id: 'visibleSpan'});
       assertFalse(isShown(span));
     }
-
 
     function testThrowsErrorIfPassedATextNode() {
       var textNode = findElement({id: 'displayed'}).firstChild;
@@ -310,5 +315,6 @@
 
 <iframe id="iframe" src="testdata/iframe_page.html"></iframe>
 
+<span id="onlyWhitespace">  </span>
 </body>
 </html>
