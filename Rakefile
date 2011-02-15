@@ -427,6 +427,40 @@ task :test_remote_py => [:webdriver_py, :remote_client, :'selenium-server-standa
   end
 end
 
+task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :chrome] do
+    if python? then
+        chrome_zip_build = 'build/javascript/chrome-driver/chrome-extension.zip'
+        chrome_py_home = "py/selenium/webdriver/chrome/"
+
+        firefox_py_home = "py/selenium/webdriver/firefox/"
+        xpi_zip_build = 'build/javascript/firefox-driver/webdriver.xpi'
+        
+        ie_driver = 'cpp/prebuilt/Win32/Release/IEDriver.dll' 
+        ie_py_home = "py/selenium/webdriver/ie"
+        if (windows?) then
+            xpi_zip_build = xpi_zip_build.gsub(/\//, "\\")
+            firefox_py_home = firefox_py_home .gsub(/\//, "\\")
+            chrome_zip_build = chrome_zip_build.gsub(/\//,"\\")
+            chrome_py_home = chrome_py_home.gsub(/\//, "\\")
+            ie_driver = ie_driver.gsub(/\//, "\\")
+            ie_py_home = ie_py_home.gsub(/\//, "\\")
+        end
+        
+        cp xpi_zip_build , firefox_py_home, :verbose => true
+        cp chrome_zip_build , chrome_py_home , :verbose => true
+        cp ie_driver, ie_py_home, :verbose => true
+    end
+end
+
+task :py_install => :py_prep_for_install_release do
+    sh "python setup.py install"
+end
+
+task :py_release => :py_prep_for_install_release do
+    sh "python setup.py sdist upload"
+end
+
+
 task :test_selenium_py => [:'selenium-core', :'selenium-server-standalone'] do
     if python? then
         sh "python2.6 selenium/test/py/runtests.py", :verbose => true
