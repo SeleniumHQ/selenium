@@ -549,7 +549,7 @@ bot.dom.HTML_WHITESPACE_REGEXP_ = new RegExp(
  * @private
  */
 bot.dom.JUST_HTML_WHITESPACE_REGEXP_ = new RegExp(
-    '^' + bot.dom.HTML_WHITESPACE_ + '$', 'g');
+    '^' + bot.dom.HTML_WHITESPACE_ + '$');
 
 
 
