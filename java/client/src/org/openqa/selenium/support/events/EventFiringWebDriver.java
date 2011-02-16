@@ -422,10 +422,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return delegate.isDisplayed();
     }
 
-    public void hover() {
-      delegate.hover();
-    }
-
     public Point getLocation() {
       return delegate.getLocation();
     }

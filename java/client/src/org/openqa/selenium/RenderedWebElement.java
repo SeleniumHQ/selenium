@@ -44,15 +44,6 @@ public interface RenderedWebElement extends WebElement {
   Dimension getSize();
 
   /**
-   * Simulate hovering the mouse over an element. Note that this method needs
-   * native events in order to work as expected.
-   *
-   * @deprecated Use MoveToOffsetAction instead
-   */
-  @Deprecated
-  void hover();
-
-  /**
    * Drag and drop
    *
    * @param moveRightBy how much to move to the right (negative for moving

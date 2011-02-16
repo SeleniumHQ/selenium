@@ -54,10 +54,6 @@ public class RenderedRemoteWebElement extends RemoteWebElement implements Render
     return new Dimension(width, height);
   }
 
-  public void hover() {
-    parent.execute(DriverCommand.HOVER_OVER_ELEMENT, ImmutableMap.of("id", id));
-  }
-
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {
     parent.execute(DriverCommand.DRAG_ELEMENT,
         ImmutableMap.of("id", id, "x", moveRightBy, "y", moveDownBy));

@@ -73,6 +73,10 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({IPHONE, CHROME, SELENESE, HTMLUNIT})
   public void testShouldAllowUsersToHoverOverElements() {
+    if (!hasInputDevices()) {
+      return;
+    }
+
     driver.get(pages.javascriptPage);
 
     RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("menu1"));
@@ -85,7 +89,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     assertEquals("", item.getText());
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
-    element.hover();
+    ((HasInputDevices) driver).actionsBuilder().moveToElement(element).build().perform();
 
     assertEquals("Item 1", item.getText());
   }
@@ -104,6 +108,10 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
+    if (!hasInputDevices()) {
+      return;
+    }
+
     driver.get(pages.javascriptPage);
 
     RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("menu1"));
@@ -112,7 +120,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
       return;
     }
 
-    element.hover();
+    ((HasInputDevices) driver).actionsBuilder().moveToElement(element).build().perform();
 
     RenderedWebElement target = (RenderedWebElement) driver.findElement(By.id("item1"));
     assertTrue(target.isDisplayed());
@@ -120,5 +128,13 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     String text = driver.findElement(By.id("result")).getText();
     assertTrue(text.contains("item 1"));
+  }
+
+  private boolean hasInputDevices() {
+    if (!(driver instanceof HasInputDevices)) {
+      System.out.println("Driver does not support input devices. Skipping test");
+      return false;
+    }
+    return true;
   }
 }

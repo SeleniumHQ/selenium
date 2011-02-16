@@ -20,12 +20,10 @@ limitations under the License.
 package org.openqa.selenium.htmlunit;
 
 import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.SgmlPage;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomText;
-import com.gargoylesoftware.htmlunit.html.HtmlBody;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -392,10 +390,6 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
       throw new UnsupportedOperationException(
           "Unable to select element. Tag name is: " + element.getTagName());
     }
-  }
-
-  public void hover() {
-    throw new UnsupportedOperationException("Hover is not supported by the htmlunit driver");
   }
 
   public boolean isEnabled() {

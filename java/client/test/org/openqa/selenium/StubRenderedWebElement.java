@@ -29,8 +29,6 @@ public class StubRenderedWebElement extends StubElement implements RenderedWebEl
     return null;
   }
 
-  public void hover() { }
-
   public void dragAndDropBy(int moveRightBy, int moveDownBy) { }
 
   public void dragAndDropOn(RenderedWebElement element) { }
