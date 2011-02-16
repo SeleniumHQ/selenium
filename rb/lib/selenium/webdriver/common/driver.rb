@@ -201,6 +201,26 @@ module Selenium
         bridge.executeScript(script, *args)
       end
 
+      # Execute an asynchronous piece of JavaScript in the context of the
+      # currently selected frame or window. Unlike executing
+      # execute_script (synchronous JavaScript), scripts
+      # executed with this method must explicitly signal they are finished by
+      # invoking the provided callback. This callback is always injected into the
+      # executed function as the last argument.
+      #
+      # @param [String] script
+      #   JavaSCript source to execute
+      # @param [WebDriver::Element,Integer, Float, Boolean, NilClass, String, Array] *args
+      #   Arguments to the script. May be empty.
+      #
+      # @return [WebDriver::Element,Integer,Float,Boolean,NilClass,String,Array]
+      #
+
+      def execute_async_script(script, *args)
+        bridge.executeAsyncScript(script, *args)
+      end
+
+
       #-------------------------------- sugar  --------------------------------
 
       #

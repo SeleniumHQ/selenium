@@ -22,6 +22,7 @@ class Selenium::WebDriver::Remote::Bridge
   command :goBack,                                 :post,    "session/:session_id/back"
   command :refresh,                                :post,    "session/:session_id/refresh"
   command :executeScript,                          :post,    "session/:session_id/execute"
+  command :executeAsyncScript,                     :post,    "session/:session_id/execute_async"
   command :screenshot,                             :get,     "session/:session_id/screenshot"
   command :switchToFrame,                          :post,    "session/:session_id/frame"
   command :switchToWindow,                         :post,    "session/:session_id/window"

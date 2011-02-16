@@ -223,5 +223,29 @@ describe "Driver" do
     end
   end
 
+  describe "execute async script" do
+    before {
+      driver.manage.timeouts.script_timeout = 0
+      driver.navigate.to url_for("ajaxy_page.html")
+    }
+
+    it "should be able to return arrays of primitives from async scripts" do
+      result = driver.execute_async_script "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);"
+      result.should == [nil, 123, 'abc', true, false]
+    end
+
+    it "should be able to pass multiple arguments to async scripts" do
+      result = driver.execute_async_script "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2
+      result.should == 3
+    end
+
+    it "times out if the callback is not invoked" do
+      lambda {
+        # Script is expected to be async and explicitly callback, so this should timeout.
+        driver.execute_async_script "return 1 + 2;"
+      }.should raise_error(Selenium::WebDriver::Error::TimeOutError)
+    end
+  end
+
 end
 

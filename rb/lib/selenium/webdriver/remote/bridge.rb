@@ -208,11 +208,16 @@ module Selenium
         end
 
         def executeScript(script, *args)
-          unless capabilities.javascript_enabled?
-            raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
-          end
+          assert_javascript_enabled
 
           result = execute :executeScript, {}, :script => script, :args => args
+          unwrap_script_result result
+        end
+
+        def executeAsyncScript(script, *args)
+          assert_javascript_enabled
+
+          result = execute :executeAsyncScript, {}, :script => script, :args => args
           unwrap_script_result result
         end
 
@@ -445,6 +450,11 @@ module Selenium
           ids.map { |id| Element.new self, element_id_from(id) }
         end
 
+        def assert_javascript_enabled
+          unless capabilities.javascript_enabled?
+            raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
+          end
+        end
 
         #
         # executes a command on the remote server via the REST / JSON API.
