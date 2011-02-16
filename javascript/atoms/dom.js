@@ -564,10 +564,6 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines) {
 
   var shown = !bot.dom.isShown(parentElement);
   if (!parentElement || !bot.dom.isShown(parentElement)) {
-    // Without this additional check to isShown, issue 1293 kicks into life
-    // http://code.google.com/p/selenium/issues/detail?id=1293
-    // TODO(user): This is a terrible 'fix'.
-    bot.dom.isShown(parentElement);
     return;
   }
   var text = textNode.nodeValue.replace(bot.dom.HTML_WHITESPACE_REGEXP_, ' ');
