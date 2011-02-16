@@ -261,8 +261,12 @@ class FirefoxProfile(object):
         "browser.tabs.warnOnClose": "false",
         "browser.tabs.warnOnOpen": "false",
         "dom.disable_open_during_load": "false",
+        "dom.max_script_run_time": "30",
         "extensions.update.enabled": "false",
         "extensions.update.notifyUser": "false",
+        "network.manage-offline-status": "false",
+        "security.fileuri.origin_policy": "3",
+        "security.fileuri.strict_origin_policy": "false",
         "security.warn_entering_secure": "false",
         "security.warn_submit_insecure": "false",
         "security.warn_entering_secure.show_once": "false",
@@ -275,10 +279,11 @@ class FirefoxProfile(object):
         "security.warn_viewing_mixed.show_once": "false",
         "signon.rememberSignons": "false",
         "startup.homepage_welcome_url": "\"about:blank\"",
+        "toolkit.networkmanager.disable": "true",
         "javascript.options.showInConsole": "true",
         "browser.dom.window.dump.enabled": "true",
     }
 
-    def _get_webdriver_prefs():
+    def _get_webdriver_prefs(self):
         """Gets the preferences required by webdriver."""
         return FirefoxProfile.prefs
