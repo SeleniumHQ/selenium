@@ -43,8 +43,13 @@ append "log=true" to the build command line.
 Help with 'Go'
 ==============
 
-More general help for 'go' ...
+More general, but basic, help for 'go' ...
 
    ./go --help
+
+Last word on building the bits and pieces of Selenium
+=====================================================
+
+Refer http://code.google.com/p/selenium/wiki/BuildingWebDriver
 
 
