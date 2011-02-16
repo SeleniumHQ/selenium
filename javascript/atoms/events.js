@@ -107,11 +107,12 @@ bot.events.MouseArgs;
 bot.events.newMouseEvent_ = function(element, type, opt_args) {
   var doc = goog.dom.getOwnerDocument(element);
   var win = goog.dom.getWindow(doc);
+  var pos = goog.style.getClientPosition(element);
 
   var args = opt_args || {};
   // Use string indexes so we can be compiled aggressively
-  var x = args['x'] || 0;
-  var y = args['y'] || 0;
+  var x = (args['x'] || 0) + pos.x;
+  var y = (args['y'] || 0) + pos.y;
   var button = args['button'] || bot.events.Button.LEFT;
   var canBubble = args['bubble'] || true;
   // Only useful for mouseover, mouseout, dragenter and dragexit

@@ -392,13 +392,13 @@ bot.action.click = function(element) {
   }
 
   // Guaranteed to not return null since we've verified element is shown.
-  var dimensions = goog.style.getBounds(element);
+  var size = goog.style.getSize(element);
 
   // Use string properties for indices so that the compiler does not
   // obfuscate them.
   var coords = {
-    'x': dimensions.left + (dimensions.width / 2),
-    'y': dimensions.top + (dimensions.height / 2),
+    'x': size.width / 2,
+    'y': size.height / 2,
     'button': undefined,
     'bubble': undefined,
     'alt': undefined,
