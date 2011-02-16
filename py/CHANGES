@@ -13,3 +13,6 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
+
+Selenium 2 Beta 3
+* Accept Untrusted Certificates in Firefox

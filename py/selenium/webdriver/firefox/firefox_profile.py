@@ -40,7 +40,7 @@ class FirefoxProfile(object):
     profile_ini = get_profile_ini()
 
     def __init__(self, name=ANONYMOUS_PROFILE_NAME, port=DEFAULT_PORT,
-                 template_profile=None, extension_path=None):
+                 template_profile=None, extension_path=None, accept_untrusted_cert=False):
         """Creates a FirefoxProfile.
         Args:
             name: the profile name. A new firefox profile is created if the one
@@ -60,6 +60,8 @@ class FirefoxProfile(object):
         """
         self.name = name
         self.port = port
+        self.prefs["webdriver_accept_untrusted_certs"] = accept_untrusted_cert
+
         if (extension_path is None):
             self.extension_path = os.path.join(
             os.path.dirname(__file__), 'webdriver.xpi')
