@@ -28,7 +28,39 @@ class SeleniumClientTestEnvironment
     stop_server
   end
 
+  def driver
+    @driver ||= new_driver_with_session
+  end
+
+  def in_separate_driver
+    @driver.stop
+    begin
+      @driver = new_driver_with_session
+      yield
+    ensure
+      @driver.stop
+      @driver = new_driver_with_session
+    end
+  end
+
   private
+
+  def new_driver_with_session
+    application_host = ENV['SELENIUM_APPLICATION_HOST'] || "localhost"
+    application_port = ENV['SELENIUM_APPLICATION_PORT'] || "4567"
+    url              = "http://#{application_host}:#{application_port}"
+
+    driver = Selenium::Client::Driver.new :host               => (ENV['SELENIUM_RC_HOST'] || "localhost"),
+                                          :port               => (ENV['SELENIUM_RC_PORT'] || 4444),
+                                          :browser            => (ENV['SELENIUM_BROWSER'] || "*firefox"),
+                                          :timeout_in_seconds => (ENV['SELENIUM_RC_TIMEOUT'] || 20),
+                                          :url                => url
+
+    driver.start_new_browser_session
+    driver.set_context self.class.name
+
+    driver
+  end
 
   def start_server
     @server = Selenium::Server.new(@jar, :background => true,
@@ -61,48 +93,22 @@ end # SeleniumClientTestEnvironment
 
 RSpec.configure do |config|
 
-  config.before(:suite) do
-    @test_environment = SeleniumClientTestEnvironment.new.run
-  end
-
   config.after(:suite) do
     @test_environment.stop if @test_environment
   end
 
-  config.before(:each) do
-    create_selenium_driver
-    start_new_browser_session
-  end
-
-  config.after(:each) do
-    begin
-      selenium_driver.stop
-    rescue StandardError => e
-      $stderr.puts "Could not properly close selenium session : #{e.inspect}"
-      raise e
-    end
-  end
-
-  def create_selenium_driver
-    application_host = ENV['SELENIUM_APPLICATION_HOST'] || "localhost"
-    application_port = ENV['SELENIUM_APPLICATION_PORT'] || "4567"
-    @selenium_driver = Selenium::Client::Driver.new \
-        :host => (ENV['SELENIUM_RC_HOST'] || "localhost"),
-        :port => (ENV['SELENIUM_RC_PORT'] || 4444),
-        :browser => (ENV['SELENIUM_BROWSER'] || "*firefox"),
-        :timeout_in_seconds => (ENV['SELENIUM_RC_TIMEOUT'] || 20),
-        :url => "http://#{application_host}:#{application_port}"
-  end
-
-  def start_new_browser_session
-    selenium_driver.start_new_browser_session
-    selenium_driver.set_context "Starting example '#{self.description}'"
-  end
-
   def selenium_driver
-    @selenium_driver
+    test_environment.driver
   end
   alias :page :selenium_driver
+
+  def test_environment
+    $selenium_client_test_environment ||= SeleniumClientTestEnvironment.new.run
+  end
+
+  def in_separate_driver(&blk)
+    test_environment.in_separate_driver(&blk)
+  end
 
   def should_timeout
     begin
