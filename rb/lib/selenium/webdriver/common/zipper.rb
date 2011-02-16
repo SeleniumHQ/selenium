@@ -27,7 +27,9 @@ module Selenium
 
       def self.zip(path)
         # can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
-        Dir.mktmpdir { |tmp_dir|
+        # can't use Dir.mktmpdir(&blk) because of http://jira.codehaus.org/browse/JRUBY-4082
+        tmp_dir = Dir.mktmpdir
+        begin
           zip_path = File.join(tmp_dir, "webdriver-zip")
 
           Zip::ZipFile.open(zip_path, Zip::ZipFile::CREATE) { |zip|
@@ -40,7 +42,9 @@ module Selenium
           }
 
           File.open(zip_path, "rb") { |io| Base64.encode64 io.read }
-        }
+        ensure
+          FileUtils.rm_rf tmp_dir
+        end
       end
 
     end # Zipper
