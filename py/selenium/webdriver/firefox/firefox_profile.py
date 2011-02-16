@@ -279,7 +279,6 @@ class FirefoxProfile(object):
         "browser.dom.window.dump.enabled": "true",
     }
 
-    @staticmethod
     def _get_webdriver_prefs():
         """Gets the preferences required by webdriver."""
         return FirefoxProfile.prefs
