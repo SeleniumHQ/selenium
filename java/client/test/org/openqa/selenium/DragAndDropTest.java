@@ -38,13 +38,10 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     Point expectedLocation = img.getLocation();
     drag(img, expectedLocation, 150, 200);
     assertEquals(expectedLocation, img.getLocation());
-    driver.manage().setSpeed(Speed.SLOW);
     drag(img, expectedLocation, -50, -25);
     assertEquals(expectedLocation, img.getLocation());
-    driver.manage().setSpeed(Speed.MEDIUM);
     drag(img, expectedLocation, 0, 0);
     assertEquals(expectedLocation, img.getLocation());
-    driver.manage().setSpeed(Speed.FAST);
     drag(img, expectedLocation, 1, -1);
     assertEquals(expectedLocation, img.getLocation());
   }
@@ -82,18 +79,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     img.dragAndDropBy(Integer.MAX_VALUE, Integer.MAX_VALUE);
     //We don't know where the img is dragged to , but we know it's not too
     //far, otherwise this function will not return for a long long time
-  }
-
-  @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE, CHROME, SELENESE})
-  public void testMouseSpeed() throws Exception {
-    driver.get(pages.dragAndDropPage);
-    driver.manage().setSpeed(Speed.SLOW);
-    assertEquals(Speed.SLOW, driver.manage().getSpeed());
-    driver.manage().setSpeed(Speed.MEDIUM);
-    assertEquals(Speed.MEDIUM, driver.manage().getSpeed());
-    driver.manage().setSpeed(Speed.FAST);
-    assertEquals(Speed.FAST, driver.manage().getSpeed());
   }
 
   @JavascriptEnabled

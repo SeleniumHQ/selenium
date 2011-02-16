@@ -181,8 +181,6 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(SWITCH_TO_WINDOW, post("/session/:sessionId/window"))
         .put(CLOSE, delete("/session/:sessionId/window"))
         .put(DRAG_ELEMENT, post("/session/:sessionId/element/:id/drag"))
-        .put(GET_SPEED, get("/session/:sessionId/speed"))
-        .put(SET_SPEED, post("/session/:sessionId/speed"))
         .put(GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
              get("/session/:sessionId/element/:id/css/:propertyName"))
         .put(IMPLICITLY_WAIT, post("/session/:sessionId/timeouts/implicit_wait"))

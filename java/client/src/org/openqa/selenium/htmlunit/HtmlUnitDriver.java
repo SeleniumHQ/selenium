@@ -63,7 +63,6 @@ import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.Speed;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -109,7 +108,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   private boolean enableJavascript;
   private ProxyConfig proxyConfig;
   private final BrowserVersion version;
-  private Speed speed = Speed.FAST;
   private long implicitWait = 0;
   private long scriptTimeout = 0;
   private HtmlUnitKeyboard keyboard;
@@ -1124,21 +1122,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     private String getPath() {
       return getRawUrl().getPath();
-    }
-
-    public Speed getSpeed() {
-      return HtmlUnitDriver.this.speed;
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p/>
-     * This method makes absolutely no difference to the behaviour of the htmlunit driver
-     *
-     * @param speed which is ignored.
-     */
-    public void setSpeed(Speed speed) {
-      HtmlUnitDriver.this.speed = speed;
     }
 
     private String getDomainForCookie() {

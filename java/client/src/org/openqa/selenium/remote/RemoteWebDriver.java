@@ -33,7 +33,6 @@ import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -498,16 +497,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         }
       }
       return null;
-    }
-
-    public Speed getSpeed() {
-      Response response = execute(DriverCommand.GET_SPEED);
-
-      return Speed.valueOf((String) response.getValue());
-    }
-
-    public void setSpeed(Speed speed) {
-      execute(DriverCommand.SET_SPEED, ImmutableMap.of("speed", speed));
     }
 
     public Timeouts timeouts() {

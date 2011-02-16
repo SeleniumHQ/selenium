@@ -28,7 +28,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.Speed;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -618,14 +617,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
         return new Cookie(name, cookieValue, null, null, null);
       else
         return null;
-    }
-
-    public Speed getSpeed() {
-      throw new UnsupportedOperationException();
-    }
-
-    public void setSpeed(Speed speed) {
-      throw new UnsupportedOperationException();
     }
 
     public Timeouts timeouts() {

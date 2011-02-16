@@ -151,19 +151,6 @@ webdriver.WebDriver.EventType = {
 
 
 /**
- * Enumeration of the supported input speeds.
- * @enum {number}
- * @see webdriver.WebDriver.prototype.setSpeed
- * @see webdriver.WebDriver.prototype.getSpeed
- */
-webdriver.WebDriver.Speed = {
-  SLOW: 'SLOW',
-  MEDIUM: 'MEDIUM',
-  FAST: 'FAST'
-};
-
-
-/**
  * @override
  */
 webdriver.WebDriver.prototype.disposeInternal = function() {

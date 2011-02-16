@@ -87,16 +87,6 @@ function testDragTooFar(driver) {
   });
 }
 
-
-function testMouseSpeed(driver) {
-  driver.get(TEST_PAGE.dragAndDropPage);
-  driver.setSpeed(webdriver.WebDriver.Speed.SLOW);
-  assertThat(driver.getSpeed(), equals(webdriver.WebDriver.Speed.SLOW));
-  driver.setSpeed(webdriver.WebDriver.Speed.MEDIUM);
-  assertThat(driver.getSpeed(), equals(webdriver.WebDriver.Speed.MEDIUM));
-  driver.setSpeed(webdriver.WebDriver.Speed.FAST);
-  assertThat(driver.getSpeed(), equals(webdriver.WebDriver.Speed.FAST));
-}
   </script>
 </head>
 <body>

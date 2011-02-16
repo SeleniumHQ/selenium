@@ -225,23 +225,6 @@ public interface WebDriver extends SearchContext {
     Cookie getCookieNamed(String name);
 
     /**
-     * Gets the mouse speed for drag and drop.
-     *
-     * @deprecated This method is being reviewed.
-     */
-    @Deprecated
-    Speed getSpeed();
-
-    /**
-     * Sets the speed for user input
-     *
-     * @param speed
-     * @deprecated This method is being reviewed.
-     */
-    @Deprecated
-    void setSpeed(Speed speed);
-
-    /**
      * Returns the interface for managing driver timeouts.
      */
     Timeouts timeouts();

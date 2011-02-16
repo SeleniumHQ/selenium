@@ -67,9 +67,6 @@ public interface DriverCommand {
   String EXECUTE_SCRIPT = "executeScript";
   String EXECUTE_ASYNC_SCRIPT = "executeAsyncScript";
 
-  String GET_SPEED = "getSpeed";
-  String SET_SPEED = "setSpeed";
-
   String SET_BROWSER_VISIBLE = "setBrowserVisible";
   String IS_BROWSER_VISIBLE = "isBrowserVisible";
 

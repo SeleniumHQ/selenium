@@ -29,7 +29,6 @@ import org.openqa.selenium.Mouse;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.Speed;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -514,14 +513,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public Cookie getCookieNamed(String name) {
       return options.getCookieNamed(name);  
-    }
-
-    public Speed getSpeed() {
-      return options.getSpeed();
-    }
-
-    public void setSpeed(Speed speed) {
-      options.setSpeed(speed);
     }
 
     public Timeouts timeouts() {

@@ -247,11 +247,6 @@ public class DriverServlet extends HttpServlet {
     deleteMapper.bind("/session/:sessionId/window", CloseWindow.class)
         .on(ResultType.SUCCESS, new EmptyResult());
 
-    getMapper.bind("/session/:sessionId/speed", GetMouseSpeed.class)
-        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
-    postMapper.bind("/session/:sessionId/speed", SetMouseSpeed.class)
-        .on(ResultType.SUCCESS, new EmptyResult());
-
     postMapper.bind("/session/:sessionId/timeouts/implicit_wait", ImplicitlyWait.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/timeouts/async_script", SetScriptTimeout.class)
