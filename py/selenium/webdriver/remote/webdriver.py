@@ -41,8 +41,9 @@ class WebDriver(object):
     """
 
     def __init__(self, command_executor='http://localhost:4444/wd/hub',
-                browser_name='', platform='', version='',
-                 javascript_enabled=True):
+                 browser_name='', platform='', version='',
+                 javascript_enabled=True,
+                 browser_profile=None):
         """Create a new driver that will issue commands using the wire protocol.
 
         Args:
@@ -59,6 +60,8 @@ class WebDriver(object):
               empty string.
           javascript_enabled - Whether the requested browser should support
               JavaScript.  Defaults to True.
+          browser_profile: A browser profile directory as a Base64-encoded
+              zip file.  Only used if Firefox is requested.
         """
         self.command_executor = command_executor
         if type(self.command_executor) is str:
@@ -72,7 +75,8 @@ class WebDriver(object):
         self.start_session(browser_name=browser_name,
                            platform=platform,
                            version=version,
-                           javascript_enabled=javascript_enabled)
+                           javascript_enabled=javascript_enabled,
+                           browser_profile=browser_profile)
         
     @property
     def name(self):
@@ -97,7 +101,8 @@ class WebDriver(object):
         pass
 
     def start_session(self, browser_name, platform=None, version=None,
-                      javascript_enabled=False):
+                      javascript_enabled=False,
+                      browser_profile=None):
         """Creates a new session with the desired capabilities.
 
         Args:
@@ -105,14 +110,20 @@ class WebDriver(object):
           version: Which browser version to request.
           platform: Which platform to request the browser on.
           javascript_enabled: Whether the new session should support JavaScript.
+          browser_profile: A browser profile directory as a Base64-encoded
+              zip file.  Only used if Firefox is requested.
         """
+        desiredCapabilities = {
+            'browserName': browser_name,
+            'platform': platform or 'ANY',
+            'version': version or '',
+            'javascriptEnabled': javascript_enabled
+        }
+        if browser_profile:
+          desiredCapabilities['firefox_profile'] = browser_profile
+
         response =  self.execute(Command.NEW_SESSION, {
-            'desiredCapabilities': {
-                'browserName': browser_name,
-                'platform': platform or 'ANY',
-                'version': version or '',
-                'javascriptEnabled': javascript_enabled
-            }
+           'desiredCapabilities': desiredCapabilities
         })
         self.session_id = response['sessionId']
         self.capabilities = response['value']
