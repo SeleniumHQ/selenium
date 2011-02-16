@@ -36,7 +36,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 import static org.hamcrest.MatcherAssert.assertThat;

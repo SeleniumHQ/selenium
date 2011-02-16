@@ -8,8 +8,6 @@ import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 
-import static org.openqa.selenium.browserlaunchers.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
-
 public class BrowserConfigurationOptionsTest extends TestCase {
 
   public void testInitializationWithNoOptions() {

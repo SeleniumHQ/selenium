@@ -17,14 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.CapabilityType.ROTATABLE;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_APPLICATION_CACHE;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_BROWSER_CONNECTION;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_SQL_DATABASE;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
+import static org.openqa.selenium.remote.CapabilityType.TAKES_SCREENSHOT;
+
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.browserlaunchers.CapabilityType;
 import org.openqa.selenium.remote.html5.AddApplicationCache;
 import org.openqa.selenium.remote.html5.AddBrowserConnection;
 import org.openqa.selenium.remote.html5.AddDatabaseStorage;
@@ -49,16 +59,16 @@ public class Augmenter {
   private final Map<String, AugmenterProvider> elementAugmentors = Maps.newHashMap();
 
   public Augmenter() {
-    addDriverAugmentation(CapabilityType.SUPPORTS_FINDING_BY_CSS, new AddFindsByCss());
-    addDriverAugmentation(CapabilityType.TAKES_SCREENSHOT, new AddTakesScreenshot());
-    addDriverAugmentation(CapabilityType.SUPPORTS_SQL_DATABASE, new AddDatabaseStorage());
-    addDriverAugmentation(CapabilityType.SUPPORTS_LOCATION_CONTEXT, new AddLocationContext());
-    addDriverAugmentation(CapabilityType.SUPPORTS_APPLICATION_CACHE, new AddApplicationCache());
-    addDriverAugmentation(CapabilityType.SUPPORTS_BROWSER_CONNECTION, new AddBrowserConnection());
-    addDriverAugmentation(CapabilityType.SUPPORTS_WEB_STORAGE, new AddWebStorage());
-    addDriverAugmentation(CapabilityType.ROTATABLE, new AddRotatable());
+    addDriverAugmentation(SUPPORTS_FINDING_BY_CSS, new AddFindsByCss());
+    addDriverAugmentation(TAKES_SCREENSHOT, new AddTakesScreenshot());
+    addDriverAugmentation(SUPPORTS_SQL_DATABASE, new AddDatabaseStorage());
+    addDriverAugmentation(SUPPORTS_LOCATION_CONTEXT, new AddLocationContext());
+    addDriverAugmentation(SUPPORTS_APPLICATION_CACHE, new AddApplicationCache());
+    addDriverAugmentation(SUPPORTS_BROWSER_CONNECTION, new AddBrowserConnection());
+    addDriverAugmentation(SUPPORTS_WEB_STORAGE, new AddWebStorage());
+    addDriverAugmentation(ROTATABLE, new AddRotatable());
 
-    addElementAugmentation(CapabilityType.SUPPORTS_FINDING_BY_CSS, new AddFindsChildByCss());
+    addElementAugmentation(SUPPORTS_FINDING_BY_CSS, new AddFindsChildByCss());
   }
 
   /**

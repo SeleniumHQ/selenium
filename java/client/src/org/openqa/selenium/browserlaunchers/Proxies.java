@@ -28,6 +28,7 @@ import java.util.Map;
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer;

@@ -19,7 +19,7 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.OutputType.FILE;
-import static org.openqa.selenium.browserlaunchers.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
@@ -30,9 +30,9 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
-import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;

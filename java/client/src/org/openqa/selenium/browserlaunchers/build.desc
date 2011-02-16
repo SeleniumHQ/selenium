@@ -27,7 +27,6 @@ java_library(name = "browserlaunchers",
 java_library(name = "launcher-utils",
   srcs = [
     "AsyncExecute.java",
-    "CapabilityType.java",
     "DoNotUseProxyPac.java",
     "LauncherUtils.java",
     "Proxies.java",

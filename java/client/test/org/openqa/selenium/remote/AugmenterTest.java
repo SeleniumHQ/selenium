@@ -21,7 +21,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 import org.openqa.selenium.*;
-import org.openqa.selenium.browserlaunchers.CapabilityType;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
