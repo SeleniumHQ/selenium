@@ -240,7 +240,7 @@ ruby_test(name = "rc-client-integration",
     "rb/spec/integration"
   ],
   deps = [
-    "//selenium:server-with-tests:uber",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
     ":rc-client"
   ]
 )
