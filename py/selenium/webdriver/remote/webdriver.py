@@ -379,7 +379,7 @@ class WebDriver(object):
         any IOError, else returns True. Use full paths in your filename."""
         png = self.execute(Command.SCREENSHOT)['value']
         try:
-            f = open(filename, 'w')
+            f = open(filename, 'wb')
             f.write(base64.decodestring(png))
             f.close()
         except IOError:
