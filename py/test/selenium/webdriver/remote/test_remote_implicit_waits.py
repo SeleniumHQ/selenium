@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteImplicitWaitTest.webserver = webserver
-    RemoteImplicitWaitTest.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
+    RemoteImplicitWaitTest.driver = webdriver.Remote(desired_capabilities = webdriver.DesiredCapabilities.FIREFOX)
 
 
 class RemoteImplicitWaitTest(implicit_waits_tests.ImplicitWaitTest):

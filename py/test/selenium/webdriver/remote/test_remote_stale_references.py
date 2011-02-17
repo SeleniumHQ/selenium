@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteStaleReferenceTests.webserver = webserver
-    RemoteStaleReferenceTests.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
+    RemoteStaleReferenceTests.driver = webdriver.Remote(desired_capabilities = webdriver.DesiredCapabilities.FIREFOX)
 
 
 class RemoteStaleReferenceTests(stale_reference_tests.StaleReferenceTests):

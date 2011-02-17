@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteTextHandlingTests.webserver = webserver
-    RemoteTextHandlingTests.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
+    RemoteTextHandlingTests.driver = webdriver.Remote(desired_capabilities = webdriver.DesiredCapabilities.FIREFOX)
 
 
 class RemoteTextHandlingTests(text_handling_tests.TextHandlingTests):

@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteFrameSwitchingTest.webserver = webserver
-    RemoteFrameSwitchingTest.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
+    RemoteFrameSwitchingTest.driver = webdriver.Remote(desired_capabilities = webdriver.DesiredCapabilities.FIREFOX)
 
 
 class RemoteFrameSwitchingTest(frame_switching_tests.FrameSwitchingTest):

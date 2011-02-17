@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteCorrectEventFiringTests.webserver = webserver
-    RemoteCorrectEventFiringTests.driver = webdriver.Remote( browser_name="firefox", platform="ANY")
+    RemoteCorrectEventFiringTests.driver = webdriver.Remote(desired_capabilities = webdriver.DesiredCapabilities.FIREFOX)
 
 
 class RemoteCorrectEventFiringTests(correct_event_firing_tests.CorrectEventFiringTests):

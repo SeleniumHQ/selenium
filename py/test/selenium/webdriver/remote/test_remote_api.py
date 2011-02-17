@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteApiExampleTest.webserver = webserver
-    RemoteApiExampleTest.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
+    RemoteApiExampleTest.driver = webdriver.Remote(desired_capabilities=webdriver.DesiredCapabilities.FIREFOX)
 
 
 class RemoteApiExampleTest(api_examples.ApiExampleTest):

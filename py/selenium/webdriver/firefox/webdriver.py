@@ -22,6 +22,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.firefox.firefoxlauncher import FirefoxLauncher
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.extensionconnection import ExtensionConnection
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities 
 import urllib2
 import socket
 
@@ -50,8 +51,7 @@ class WebDriver(RemoteWebDriver):
         self.browser.launch_browser(profile)
         RemoteWebDriver.__init__(self,
             command_executor=ExtensionConnection(timeout),
-            browser_name='firefox', platform='ANY', version='',
-            javascript_enabled=True)
+            desired_capabilities=DesiredCapabilities.FIREFOX)
 
     def _free_port(self):
         port = 0

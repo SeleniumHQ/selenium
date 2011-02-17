@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     ChromeDriverElementFindingTests.webserver = webserver
-    ChromeDriverElementFindingTests.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
+    ChromeDriverElementFindingTests.driver = webdriver.Remote(desired_capabilities = webdriver.DesiredCapabilities.FIREFOX)
 
 
 class ChromeDriverElementFindingTests(driver_element_finding_test.DriverElementFindingTests):

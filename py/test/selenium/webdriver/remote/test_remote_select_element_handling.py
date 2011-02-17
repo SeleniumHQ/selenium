@@ -58,7 +58,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteSelectElementHandlingTests.webserver = webserver
-    RemoteSelectElementHandlingTests.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
+    RemoteSelectElementHandlingTests.driver = webdriver.Remote(desired_capabilities = webdriver.DesiredCapabilities.FIREFOX)
 
 
 class RemoteSelectElementHandlingTests(select_element_handling_tests.SelectElementHandlingTests):

@@ -17,15 +17,14 @@ __all__ = ["WebDriver"]
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from driver import ChromeDriver
-
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 class WebDriver(RemoteWebDriver):
     def __init__(self):
         RemoteWebDriver.__init__(self,
             command_executor=ChromeDriver(custom_profile=None, 
             untrusted_certificates=False),
-            browser_name='chrome', platform='ANY', version='',
-            javascript_enabled=True)
+            desired_capabilities=DesiredCapabilities.CHROME)
     
     def start_client(self):
         self.command_executor.start()

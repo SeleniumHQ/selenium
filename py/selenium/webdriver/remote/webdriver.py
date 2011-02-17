@@ -41,28 +41,21 @@ class WebDriver(object):
     """
 
     def __init__(self, command_executor='http://localhost:4444/wd/hub',
-                 browser_name='', platform='', version='',
-                 javascript_enabled=True,
+                 desired_capabilities = None,
                  browser_profile=None):
         """Create a new driver that will issue commands using the wire protocol.
 
         Args:
           command_executor - Either a command.CommandExecutor object or a string
               that specifies the URL of a remote server to send commands to.
-          browser_name - A string indicating which browser to request a new
-              session for from the remote server.  Should be one of
-              {mobile safari|firefox|internet explorer|htmlunit|chrome}.
-          platform - A string indicating the desired platform to request from
-              the remote server. Should be one of
-              {WINDOWS|XP|VISTA|MAC|LINUX|UNIX|ANY}.
-          version - A string indicating a specific browser version to request,
-              or an empty string ot use any available browser. Defaults to the
-              empty string.
-          javascript_enabled - Whether the requested browser should support
-              JavaScript.  Defaults to True.
+          desired_capabilities - Dictionary holding predefined values for starting 
+              a browser    
           browser_profile: A browser profile directory as a Base64-encoded
               zip file.  Only used if Firefox is requested.
         """
+        if desired_capabilities is None:
+            raise WebDriverException(" Desired Capabilities can't be None")
+
         self.command_executor = command_executor
         if type(self.command_executor) is str:
             self.command_executor = RemoteConnection(command_executor)
@@ -72,11 +65,7 @@ class WebDriver(object):
         self.error_handler = ErrorHandler()
 
         self.start_client()
-        self.start_session(browser_name=browser_name,
-                           platform=platform,
-                           version=version,
-                           javascript_enabled=javascript_enabled,
-                           browser_profile=browser_profile)
+        self.start_session(desired_capabilities, browser_profile)
         
     @property
     def name(self):
@@ -100,9 +89,7 @@ class WebDriver(object):
         """
         pass
 
-    def start_session(self, browser_name, platform=None, version=None,
-                      javascript_enabled=False,
-                      browser_profile=None):
+    def start_session(self, desired_capabilities, browser_profile=None):
         """Creates a new session with the desired capabilities.
 
         Args:
@@ -113,17 +100,11 @@ class WebDriver(object):
           browser_profile: A browser profile directory as a Base64-encoded
               zip file.  Only used if Firefox is requested.
         """
-        desiredCapabilities = {
-            'browserName': browser_name,
-            'platform': platform or 'ANY',
-            'version': version or '',
-            'javascriptEnabled': javascript_enabled
-        }
         if browser_profile:
-          desiredCapabilities['firefox_profile'] = browser_profile
+          desired_capabilities['firefox_profile'] = browser_profile
 
         response =  self.execute(Command.NEW_SESSION, {
-           'desiredCapabilities': desiredCapabilities
+           'desiredCapabilities': desired_capabilities
         })
         self.session_id = response['sessionId']
         self.capabilities = response['value']

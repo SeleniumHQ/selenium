@@ -21,6 +21,7 @@ from selenium.webdriver.common.exceptions import ErrorInResponseException
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import urllib2
 from ctypes import *
 import socket
@@ -53,8 +54,7 @@ class WebDriver(RemoteWebDriver):
 
         RemoteWebDriver.__init__(self,
 			    command_executor='http://localhost:%d' % self.port,
-			    browser_name='ie',
-			    platform='WINDOWS', version='')
+			    desired_capabilities=DesiredCapabilities.INTERNETEXPLORER) 
     
     def _is_connectable(self):
         """Trys to connect to the server to see if it is running."""

@@ -57,7 +57,7 @@ def setup_module(module):
     webserver = SimpleWebServer()
     webserver.start()
     RemoteExecutingJavaScriptTests.webserver = webserver
-    RemoteExecutingJavaScriptTests.driver = webdriver.Remote(browser_name="firefox", platform="ANY")
+    RemoteExecutingJavaScriptTests.driver = webdriver.Remote(desired_capabilities = webdriver.DesiredCapabilities.FIREFOX)
 
 class RemoteExecutingJavaScriptTests(executing_javascript_test.ExecutingJavaScriptTests):
     pass
