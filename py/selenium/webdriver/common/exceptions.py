@@ -48,13 +48,13 @@ class NoSuchAttributeException(WebDriverException):
 class StaleElementReferenceException(WebDriverException):
     pass
 
-class ElementNotVisibleException(WebDriverException):
-    pass
-
 class InvalidElementStateException(WebDriverException):
     pass
 
-class ElementNotSelectableException(WebDriverException):
+class ElementNotVisibleException(InvalidElementStateException):
+    pass
+
+class ElementNotSelectableException(InvalidElementStateException):
     pass
 
 class InvalidCookieDomainException(WebDriverException):
