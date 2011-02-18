@@ -86,7 +86,7 @@ js_fragment(name = "submit",
 
 js_fragment(name = "toggle",
   module = "bot.action",
-  function = "bot.action.submit",
+  function = "bot.action.toggle",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "type",
