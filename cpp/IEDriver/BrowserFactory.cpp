@@ -279,6 +279,20 @@ void BrowserFactory::GetExecutableLocation() {
 		std::wstring executable_location;
 
 		if (this->GetRegistryValue(HKEY_LOCAL_MACHINE, location_key, L"", &executable_location)) {
+			// If the executable location in the registry has an environment
+			// variable in it, expand the environment variable to an absolute
+			// path.
+			size_t start_percent = executable_location.find(L"%");
+			if (start_percent != std::wstring::npos) {
+				size_t end_percent = executable_location.find(L"%", start_percent + 1);
+				if (end_percent != std::wstring::npos) {
+					std::wstring variable_name = executable_location.substr(start_percent + 1, end_percent - start_percent - 1);
+					DWORD variable_value_size = ::GetEnvironmentVariable(variable_name.c_str(), NULL, 0);
+					vector<WCHAR> variable_value(variable_value_size);
+					::GetEnvironmentVariable(variable_name.c_str(), &variable_value[0], variable_value_size);
+					executable_location.replace(start_percent, end_percent - start_percent + 1, &variable_value[0]); 
+				}
+			}
 			this->ie_executable_location_ = executable_location;
 			if (this->ie_executable_location_.substr(0, 1) == L"\"") {
 				this->ie_executable_location_.erase(0, 1);

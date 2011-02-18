@@ -106,6 +106,7 @@ LRESULT BrowserManager::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 }
 
 LRESULT BrowserManager::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+	delete this->factory_;
 	this->DestroyWindow();
 	return 0;
 }
