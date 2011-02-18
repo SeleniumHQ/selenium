@@ -41,9 +41,6 @@ public class AndroidDriverTestSuite extends TestCase {
     GlobalTestEnvironment.set(new AndroidTestEnvironment());
 
     return new TestSuiteBuilder()
-        .addSourceDir("android/client")
-        .addSourceDir("remote")
-        .addSourceDir("common")
         .usingDriver(AndroidDriver.class)
         .keepDriverInstance()
         .exclude(ANDROID)

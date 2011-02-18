@@ -1,4 +1,4 @@
-package org.openqa.selenium;
+package org.openqa.selenium.javascript;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
@@ -6,6 +6,11 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
+
+import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.Ignore;
+import org.openqa.selenium.JavascriptEnabled;
+import org.openqa.selenium.JavascriptExecutor;
 
 /**
  * Runs a WebDriverJS test.

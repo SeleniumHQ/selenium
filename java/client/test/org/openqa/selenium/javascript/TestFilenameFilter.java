@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,19 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.server;
+package org.openqa.selenium.javascript;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
+import java.io.File;
+import java.io.FilenameFilter;
 
-import org.openqa.selenium.TestSuiteBuilder;
-
-public class ServerTestSuite  extends TestCase {
-  public static Test suite() throws Exception {
-    return new TestSuiteBuilder()
-        .addSourceDir("java/server/test")
-        .usingNoDriver()
-        .pattern(".*UnitTest")
-        .create();
+public class TestFilenameFilter implements FilenameFilter {
+  /** @inheritDoc */
+  public boolean accept(File dir, String name) {
+    return name.endsWith("_test.html");
   }
 }

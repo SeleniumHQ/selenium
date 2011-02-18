@@ -87,7 +87,7 @@ task :common_core => [ "//common:core" ]
 task :htmlunit => [ "//java/client/src/org/openqa/selenium/htmlunit" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
-task :jsapi => "//jsapi:debug:run"
+task :'debug-server' => "//java/client/test/org/openqa/selenium/environment/webserver:webserver:run"
 task :remote => [:remote_common, :remote_server, :remote_client]
 task :remote_common => ["//java/client/src/org/openqa/selenium/remote:common"]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
@@ -106,15 +106,16 @@ task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//common/src/js/selenium:core", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
 
-task :test_atoms => ['//jsapi:atoms:run', '//jsapi:selenium_core_emulation:run', '//jsapi:selenium_core:run']
+task :test_atoms => [
+  '//javascript/atoms:test:run',
+  '//javascript/webdriver-atoms:test:run',
+  '//javascript/selenium-atoms:test:run',
+  '//javascript/selenium-core:test:run'] 
 task :test_android => ["//java/client/test/org/openqa/selenium/android:android-test:run"]
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" ]
 task :test_htmlunit => [ "//java/client/test/org/openqa/selenium/htmlunit:test:run" ]
 task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
-task :test_jsapi => [ "//jsapi:atoms:run",
-                      "//jsapi:selenium_core:run",
-                      "//jsapi:selenium_core_emulation:run" ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test:run" ]
 task :test_remote => [ "//java/server/test/org/openqa/selenium/remote/server:test:run" ]
 task :test_support => [

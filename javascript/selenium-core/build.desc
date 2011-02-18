@@ -16,6 +16,16 @@ java_library(name = "selenium-core",
     },
   ])
 
+js_test(name = "test",
+  srcs = [
+    "test/*_test.html",
+  ],
+  path = "/javascript/selenium-core/test",
+  deps = [
+    "//java/client/test/org/openqa/selenium/javascript",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ])
+
 
 rake_file(
   name = "test_runner_html",

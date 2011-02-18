@@ -8,6 +8,19 @@ js_deps(name = "deps",
   srcs = "*.js",
   deps = "//javascript/atoms:deps")
 
+js_test(name = "test",
+  srcs = [
+    "test/*_test.html",
+  ],
+  path = "/javascript/webdriver-atoms/test",
+  deps = [
+    ":deps",
+    "//java/client/test/org/openqa/selenium/javascript",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ])
+
+
+
 js_fragment(name = "clear",
   module = "bot.action",
   function = "bot.action.clear",

@@ -41,8 +41,7 @@ public class ChromeDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
     TestSuiteBuilder builder = new TestSuiteBuilder();
     builder
-        .addSourceDir("common")
-        .addSourceDir("chrome")
+        .addSourceDir("java/client/test")
         .exclude(CHROME)
         .usingDriver(ChromeDriver.class)
         .includeJavascriptTests()

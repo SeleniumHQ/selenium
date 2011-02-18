@@ -1,0 +1,9 @@
+
+java_library(name = "javascript",
+  srcs = [ "*.java" ],
+  deps = [
+    "//java/client/test/org/openqa/selenium:base",
+    "//java/client/test/org/openqa/selenium/environment",
+    "//third_party/java/junit",
+  ])
+

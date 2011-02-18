@@ -39,8 +39,7 @@ public class FirefoxDriverTestSuite extends TestCase {
 //  System.setProperty("webdriver.firefox.useExisting", "true");
 
     return new TestSuiteBuilder()
-        .addSourceDir("firefox")
-        .addSourceDir("common")
+        .addSourceDir("java/client/test")
         .usingDriver(FirefoxDriver.class)
         .exclude(FIREFOX)
         .keepDriverInstance()

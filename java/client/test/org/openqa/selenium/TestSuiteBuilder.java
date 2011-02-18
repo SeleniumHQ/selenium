@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -31,13 +30,12 @@ import java.util.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertTrue;
 
 import org.openqa.selenium.internal.InProject;
 
 public class TestSuiteBuilder {
 
-  private File baseDir;
-  private File jsTestDir;
   private Set<File> sourceDirs = new HashSet<File>();
   private Set<Ignore.Driver> ignored = new HashSet<Ignore.Driver>();
   private Class<? extends WebDriver> driverClass;
@@ -50,23 +48,18 @@ public class TestSuiteBuilder {
   private Set<String> excludePatterns = new HashSet<String>();
   private Set<String> testMethodNames = new HashSet<String>();
   private Set<String> decorators = new LinkedHashSet<String>();
-  private boolean includeJsApiTests = false;
   private boolean outputTestNames = false;
+  private File baseDir;
 
   public TestSuiteBuilder() {
     baseDir = InProject.locate("Rakefile").getParentFile();
-
-    jsTestDir = new File(baseDir, "common/test/js");
-    assertThat(jsTestDir.isDirectory(), is(true));
-
-    sourceDirs.add(new File(baseDir, "java/client/test"));
-    sourceDirs.add(new File(baseDir, "java/server/test"));
   }
 
   public TestSuiteBuilder addSourceDir(String dirName) {
-    // no-op. Bwhahahaha.
-    // TODO(simon): Delete this method.
-
+    File toAdd = new File(baseDir, dirName);
+    assertTrue("Directory does not exist:" + dirName, toAdd.exists());
+    assertTrue("Directory is not a directory:" + dirName, toAdd.isDirectory());
+    sourceDirs.add(toAdd);
     return this;
   }
 
@@ -104,10 +97,6 @@ public class TestSuiteBuilder {
     TestSuite suite = new TestSuite();
     for (File dir : sourceDirs) {
       addTestsRecursively(suite, dir);
-    }
-
-    if (includeJsApiTests && includeJavascript) {
-      addJsApiTests(suite);
     }
 
     TestSuite toReturn = new TestSuite();
@@ -150,8 +139,7 @@ public class TestSuiteBuilder {
   private void addTestsFromFile(TestSuite suite, File file) {
     Class<?> rawClass = getClassFrom(file);
     if (rawClass == null
-        || !TestCase.class.isAssignableFrom(rawClass)
-        || JsApiTestCase.class.isAssignableFrom(rawClass)) {
+        || !TestCase.class.isAssignableFrom(rawClass)) {
       return;
     }
 
@@ -291,18 +279,6 @@ public class TestSuiteBuilder {
     return this;
   }
 
-  /**
-   * Include tests for WebDriverJS; implies {@link #includeJavascriptTests()}.
-   * No tests will be run if {@link #usingNoDriver()} is set.
-   * @return A self reference.
-   * @see #includeJavascriptTests()
-   * @see #usingNoDriver()
-   */
-  public TestSuiteBuilder includeJsApiTests() {
-    this.includeJsApiTests = true;
-    return includeJavascriptTests();
-  }
-  
   public TestSuiteBuilder outputTestNames() {
     outputTestNames = true;
     
@@ -343,34 +319,6 @@ public class TestSuiteBuilder {
     return this;
   }
 
-  /**
-   * Adds the tests for the WebDriver JS API to the given TestSuite. The tests
-   * will not be added if the given WebDriver instance is not supported by
-   * WebDriverJS or if the suite is configured to run tests without a WebDriver
-   * instance.
-   *
-   * @param suite The suite to add the JS API tests to.
-   */
-  private void addJsApiTests(TestSuite suite) {
-    if (isIgnored(JsApiTestCase.class)) {
-      System.err.println("Ignoring JS API tests for " + driverClass.getName() + ": "
-                         + JsApiTestCase.class.getAnnotation(Ignore.class).reason());
-      return;
-    } else if (!withDriver) {
-      System.err.println("Skipping JS API tests: tests require a driver instance");
-      return;
-    }
-
-    for (File file : jsTestDir.listFiles(new TestFilenameFilter())) {
-      String path = file.getAbsolutePath()
-          .replace(jsTestDir.getAbsolutePath() + File.separator, "")
-          .replace(File.separator, "/");
-      TestCase test = new JsApiTestCase("/js/test/" + path);
-      suite.addTest(new DriverTestDecorator(test, driverClass,
-          /*keepDriver=*/true, /*freshDriver=*/false, /*refreshDriver=*/false));
-    }
-  }
-
   public TestSuiteBuilder pattern(String pattern) {
     patterns.add(pattern);
     return this;
@@ -381,13 +329,4 @@ public class TestSuiteBuilder {
     return this;
   }
 
-  /**
-   * Filter used to identify JS API test case files in a directory.
-   */
-  public static class TestFilenameFilter implements FilenameFilter {
-    /** @inheritDoc */
-    public boolean accept(File dir, String name) {
-      return name.endsWith("_test.html");
-    }
-  }
 }

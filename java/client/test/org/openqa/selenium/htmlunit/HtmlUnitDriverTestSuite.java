@@ -27,8 +27,7 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 public class HtmlUnitDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
-        .addSourceDir("common")
-        .addSourceDir("htmlunit")
+        .addSourceDir("java/client/test")
         .usingDriver(HtmlUnitDriver.class)
         .exclude(HTMLUNIT)
         .create();

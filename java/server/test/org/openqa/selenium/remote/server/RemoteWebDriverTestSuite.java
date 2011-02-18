@@ -50,9 +50,8 @@ public class RemoteWebDriverTestSuite extends TestCase {
 
     Test rawSuite =
         new TestSuiteBuilder()
-            .addSourceDir("common")
-            .addSourceDir("remote/client")
-            .addSourceDir("remote/server")
+            .addSourceDir("java/client/test")
+            .addSourceDir("java/server/test")
             .keepDriverInstance()
             .includeJavascriptTests()
             .usingDriver(RemoteWebDriverForTest.class)

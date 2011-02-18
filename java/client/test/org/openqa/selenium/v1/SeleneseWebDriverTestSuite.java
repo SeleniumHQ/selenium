@@ -30,7 +30,7 @@ public class SeleneseWebDriverTestSuite extends TestCase {
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
 
     return new TestSuiteBuilder()
-        .addSourceDir("common")
+        .addSourceDir("java/client/test")
         .usingDriver(SeleneseBackedWebDriver.class)
         .exclude(SELENESE)
         .includeJavascriptTests()

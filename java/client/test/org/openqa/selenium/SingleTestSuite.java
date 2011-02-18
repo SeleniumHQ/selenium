@@ -48,10 +48,6 @@ public class SingleTestSuite extends TestCase {
 //    System.setProperty("webdriver.firefox.reap_profile", "false");
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
-        .addSourceDir("common")
-        .addSourceDir("firefox")
-        .addSourceDir("selenium")
-        .addSourceDir("support")
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()

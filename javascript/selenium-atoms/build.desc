@@ -11,6 +11,17 @@ js_binary(name = "selenium-atoms",
     ":deps",
   ])
 
+js_test(name = "test",
+  srcs = [
+    "test/*_test.html",
+  ],
+  path = "/javascript/selenium-atoms/test",
+  deps = [
+    ":deps",
+    "//java/client/test/org/openqa/selenium/javascript",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ])
+
 js_fragment(name = "findElement",
   module = "core.locators",
   function = "core.locators.findElement",

@@ -10,3 +10,14 @@ js_deps(name = "deps",
     "locators/*.js",
   ])
 
+js_test(name = "test",
+  srcs = [
+    "test/*_test.html",
+  ],
+  path = "/javascript/atoms/test",
+  deps = [
+    ":deps",
+    "//java/client/test/org/openqa/selenium/javascript",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ])
+

@@ -34,8 +34,7 @@ public class InternetExplorerDriverTestSuite extends TestCase {
 
     if (Platform.getCurrent().is(WINDOWS)) {
       return new TestSuiteBuilder()
-          .addSourceDir("common")
-          .addSourceDir("jobbie")
+          .addSourceDir("java/client/test")
           .usingDriver(InternetExplorerDriver.class)
           .exclude(IE)
           .includeJavascriptTests()

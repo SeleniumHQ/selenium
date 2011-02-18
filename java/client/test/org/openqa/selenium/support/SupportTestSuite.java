@@ -28,7 +28,7 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 public class SupportTestSuite extends TestCase {
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
-        .addSourceDir("support")
+        .addSourceDir("java/client/test")
         .usingDriver(FirefoxDriver.class)
         .exclude(FIREFOX)
         .keepDriverInstance()

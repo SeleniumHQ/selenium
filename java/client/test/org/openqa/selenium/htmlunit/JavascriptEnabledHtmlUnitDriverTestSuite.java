@@ -31,8 +31,7 @@ public class JavascriptEnabledHtmlUnitDriverTestSuite extends TestCase {
 
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
-        .addSourceDir("common")
-        .addSourceDir("htmlunit")
+        .addSourceDir("java/client/test")
         .usingDriver(HtmlUnitDriverForTest.class)
         .exclude(HTMLUNIT)
         .includeJavascriptTests()

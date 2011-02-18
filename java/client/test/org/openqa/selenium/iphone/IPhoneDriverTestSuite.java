@@ -32,8 +32,7 @@ public class IPhoneDriverTestSuite extends TestCase {
 
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
-        .addSourceDir("iphone")
-        .addSourceDir("common")
+        .addSourceDir("java/client/test")
         .usingDriver(TestIPhoneSimulatorDriver.class)
         .exclude(IPHONE)
         .exclude(REMOTE)
