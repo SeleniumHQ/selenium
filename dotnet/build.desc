@@ -183,7 +183,7 @@ dotnet_library(name = "chrome",
     "third_party/csharp/dotnetzip-1.9/Ionic.Zip.Reduced.dll"
   ],
   resources = [
-    {"//chrome:chrome_extension" : "WebDriver.ChromeExt.zip"}
+    {"//javascript/chrome-driver:chrome-driver" : "WebDriver.ChromeExt.zip"}
   ],
   out = "build/dotnet/WebDriver.Chrome.dll",
   doc = "build/dotnet/WebDriver.Chrome.xml"
