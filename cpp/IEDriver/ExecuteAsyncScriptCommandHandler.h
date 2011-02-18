@@ -46,37 +46,76 @@ protected:
 
 			std::wstring script_body(CA2W(command_parameters["script"].asString().c_str(), CP_UTF8));
 
+			//std::wstring async_script = L"(function() { return function(){\n";
+			//async_script += L"document.__$webdriverPageId = '" + page_id + L"';\n";
+			//async_script += L"var timeoutId = window.setTimeout(function() {\n";
+			//async_script += L"  window.setTimeout(function() {\n";
+			//async_script += L"    document.__$webdriverAsyncTimeout = 1;\n";
+			//async_script += L"  }, 0);\n";
+			//async_script += L"}," + timeout + L");\n";
+			//async_script += L"document.__$webdriverAsyncTimeout = 0;\n";
+			//async_script += L"var callback = function(value) {\n";
+			//async_script += L"  document.__$webdriverAsyncTimeout = 0;\n";
+			//async_script += L"  document.__$webdriverAsyncScriptResult = value;\n";
+			//async_script += L"  window.clearTimeout(timeoutId);\n";
+			//async_script += L"};\n";
+			//async_script += L"var argsArray = Array.prototype.slice.call(arguments);\n";
+			//async_script += L"argsArray.push(callback);\n";
+			//async_script += L"if (document.__$webdriverAsyncScriptResult !== undefined) {\n";
+			//async_script += L"  delete document.__$webdriverAsyncScriptResult;\n";
+			//async_script += L"}\n";
+			//async_script += L"(function() {" + script_body + L"}).apply(null, argsArray);\n";
+			//async_script += L"};})();";
+
+			//std::wstring polling_script = L"(function() { return function(){\n";
+			//polling_script += L"var pendingId = '" + pending_id + L"';\n";
+			//polling_script += L"if (document.__$webdriverPageId != '" + page_id + L"') {\n";
+			//polling_script += L"  return [pendingId, -1];\n";
+			//polling_script += L"} else if ('__$webdriverAsyncScriptResult' in document) {\n";
+			//polling_script += L"  var value = document.__$webdriverAsyncScriptResult;\n";
+			//polling_script += L"  delete document.__$webdriverAsyncScriptResult;\n";
+			//polling_script += L"  return value;\n";
+			//polling_script += L"} else {\n";
+			//polling_script += L"  return [pendingId, document.__$webdriverAsyncTimeout];\n";
+			//polling_script += L"}\n";
+			//polling_script += L"};})();";
 			std::wstring async_script = L"(function() { return function(){\n";
-			async_script += L"document.__$webdriverPageId = '" + page_id + L"';\n";
+			async_script += L"document.__$webdriverAsyncExecutor = {\n";
+			async_script += L"  pageId: '" + page_id + L"',\n";
+			async_script += L"  asyncTimeout: 0\n";
+			async_script += L"};\n";
 			async_script += L"var timeoutId = window.setTimeout(function() {\n";
 			async_script += L"  window.setTimeout(function() {\n";
-			async_script += L"    document.__$webdriverAsyncTimeout = 1;\n";
+			async_script += L"    document.__$webdriverAsyncExecutor.asyncTimeout = 1;\n";
 			async_script += L"  }, 0);\n";
 			async_script += L"}," + timeout + L");\n";
-			async_script += L"document.__$webdriverAsyncTimeout = 0;\n";
 			async_script += L"var callback = function(value) {\n";
-			async_script += L"  document.__$webdriverAsyncTimeout = 0;\n";
-			async_script += L"  document.__$webdriverAsyncScriptResult = value;\n";
+			async_script += L"  document.__$webdriverAsyncExecutor.asyncTimeout = 0;\n";
+			async_script += L"  document.__$webdriverAsyncExecutor.asyncScriptResult = value;\n";
 			async_script += L"  window.clearTimeout(timeoutId);\n";
 			async_script += L"};\n";
 			async_script += L"var argsArray = Array.prototype.slice.call(arguments);\n";
 			async_script += L"argsArray.push(callback);\n";
-			async_script += L"if (document.__$webdriverAsyncScriptResult !== undefined) {\n";
-			async_script += L"  delete document.__$webdriverAsyncScriptResult;\n";
+			async_script += L"if (document.__$webdriverAsyncExecutor.asyncScriptResult !== undefined) {\n";
+			async_script += L"  delete document.__$webdriverAsyncExecutor.asyncScriptResult;\n";
 			async_script += L"}\n";
 			async_script += L"(function() {" + script_body + L"}).apply(null, argsArray);\n";
 			async_script += L"};})();";
 
 			std::wstring polling_script = L"(function() { return function(){\n";
 			polling_script += L"var pendingId = '" + pending_id + L"';\n";
-			polling_script += L"if (document.__$webdriverPageId != '" + page_id + L"') {\n";
-			polling_script += L"  return [pendingId, -1];\n";
-			polling_script += L"} else if ('__$webdriverAsyncScriptResult' in document) {\n";
-			polling_script += L"  var value = document.__$webdriverAsyncScriptResult;\n";
-			polling_script += L"  delete document.__$webdriverAsyncScriptResult;\n";
-			polling_script += L"  return value;\n";
+			polling_script += L"if ('__$webdriverAsyncExecutor' in document) {\n";
+			polling_script += L"  if (document.__$webdriverAsyncExecutor.pageId != '" + page_id + L"') {\n";
+			polling_script += L"    return [pendingId, -1];\n";
+			polling_script += L"  } else if ('asyncScriptResult' in document.__$webdriverAsyncExecutor) {\n";
+			polling_script += L"    var value = document.__$webdriverAsyncExecutor.asyncScriptResult;\n";
+			polling_script += L"    delete document.__$webdriverAsyncExecutor.asyncScriptResult;\n";
+			polling_script += L"    return value;\n";
+			polling_script += L"  } else {\n";
+			polling_script += L"    return [pendingId, document.__$webdriverAsyncExecutor.asyncTimeout];\n";
+			polling_script += L"  }\n";
 			polling_script += L"} else {\n";
-			polling_script += L"  return [pendingId, document.__$webdriverAsyncTimeout];\n";
+			polling_script += L"  return [pendingId, -1];\n";
 			polling_script += L"}\n";
 			polling_script += L"};})();";
 
@@ -106,6 +145,16 @@ protected:
 				while (true) {
 					Json::Value polling_result;
 					status_code = polling_script_wrapper->Execute();
+					if (status_code != SUCCESS) {
+						// Assume that if the polling script errors, it's because
+						// of a page reload. Note that experience shows this to
+						// happen most frequently when a refresh occurs, since
+						// the document object is not yet ready for accessing.
+						// However, this is still a big assumption,and could be faulty.
+						response->SetErrorResponse(EUNEXPECTEDJSERROR, "Page reload detected during async script");
+						break;
+					}
+
 					polling_script_wrapper->ConvertResultToJsonValue(manager, &polling_result);
 					
 					Json::UInt index = 0;
