@@ -27,22 +27,22 @@ class DesiredCapabilities(object):
 
     CHROME = {"browserName": "chrome",
                         "version": "",
-                        "platform": "any",
+                        "platform": "ANY",
                         "javascriptEnabled": True }
 
     HTMLUNIT = {"browserName": "htmlunit",
                         "version": "",
-                        "platform": "windows",
+                        "platform": "ANY",
                         "javascriptEnabled": True }
 
     IPHONE = {"browserName": "iphone",
                         "version": "",
-                        "platform": "windows",
+                        "platform": "MAC",
                         "javascriptEnabled": True }
     
     ANDROID = {"browserName": "android",
                         "version": "",
-                        "platform": "windows",
+                        "platform": "LINUX",
                         "javascriptEnabled": True }
 
 
