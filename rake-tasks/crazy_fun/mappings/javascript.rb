@@ -35,6 +35,13 @@ class JavascriptMappings
     fun.add_mapping("js_fragment_header", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment_header", Javascript::ConcatenateHeaders.new)
     fun.add_mapping("js_fragment_header", Javascript::CopyHeader.new)
+
+    fun.add_mapping("js_test", Javascript::CheckPreconditions.new)
+    fun.add_mapping("js_test", Javascript::CreateTask.new)
+    fun.add_mapping("js_test", Javascript::CreateTaskShortName.new)
+    fun.add_mapping("js_test", Javascript::AddDependencies.new)
+    fun.add_mapping("js_test", Javascript::RunTests.new)
+
   end
 end
 
@@ -393,6 +400,49 @@ module Javascript
       task_name = task_name(dir, args[:name]) + ":header"
       generate_header(dir, args[:name], task_name, out, [js], false)
       task task_name => [out]
+    end
+  end
+
+  class RunTests < BaseJs
+    def handle(fun, dir, args)
+      task_name = task_name(dir, args[:name])
+
+      desc "Run the tests for #{task_name}"
+      task "#{task_name}:run" => [task_name] do
+        puts "Testing: #{task_name}"
+
+        cp = CrazyFunJava::ClassPath.new(task_name)
+        mkdir_p 'build/test_logs'
+
+        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
+        CrazyFunJava.ant.junit(:fork => true, :forkmode =>  'once', :showoutput => true,
+                               :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
+          ant.classpath do |ant_cp|
+            cp.all.each do |jar|
+              ant_cp.pathelement(:location => jar)
+            end
+          end
+
+          sysprops = args[:sysproperties] || []
+
+          sysprops.each do |map|
+            map.each do |key, value|
+              ant.sysproperty :key => key, :value => value
+            end
+          end
+          ant.sysproperty :key => 'js.test.dir', :value => File.join(dir, 'test')
+          ant.sysproperty :key => 'js.test.url.path', :value => args[:path]
+
+
+          ant.formatter(:type => 'plain')
+          ant.formatter(:type => 'xml')
+
+          ant.test(:name => "org.openqa.selenium.javascript.ClosureTestSuite",
+                   :outfile => "TEST-" + task_name.gsub(/\/+/, "-"),
+                   :todir => 'build/test_logs')
+        end
+        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
+      end
     end
   end
 end
