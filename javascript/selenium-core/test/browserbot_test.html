@@ -46,6 +46,16 @@
         assertStyleIs('id=empty-style@style', null);
       }
 
+      function testEmptyAttributesShouldNotBeInterpretedAsBeingNull() {
+        var value = browserbot.findAttribute("id=hasAttributes@emptyAttr");
+        assertTrue(value === '');
+      }
+
+      function testShouldReturnNullWhenElementsAreMissing() {
+        var value = browserbot.findAttribute("id=hasAttributes@nope");
+        assertTrue(goog.isNull(value));  
+      }
+
     </script>
     <style type="text/css">
       #child {
@@ -61,5 +71,6 @@
       <div id="child" style="visibility: inherit;display:;">A child div</div>
     </div>
 
+    <span id="hasAttributes" emptyAttr="">This is a span</span>
   </body>
 </html>

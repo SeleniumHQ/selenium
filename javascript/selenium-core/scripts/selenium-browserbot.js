@@ -1635,7 +1635,7 @@ BrowserBot.prototype.findAttribute = function(locator) {
     // Find the element.
     var element = this.findElement(elementLocator);
     var attributeValue = bot.dom.getAttribute(element, attributeName);
-    return attributeValue ? attributeValue.toString() : null;
+    return goog.isDefAndNotNull(attributeValue) ? attributeValue.toString() : null;
 };
 
 /*
