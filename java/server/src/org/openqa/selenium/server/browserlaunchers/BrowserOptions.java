@@ -120,10 +120,13 @@ public class BrowserOptions {
   }
 
   public static File getFile(Capabilities capabilities, String key) {
-    String value = (String) capabilities.getCapability(key);
+    Object value = capabilities.getCapability(key);
     if (value == null) {
       return null;
     }
-    return new File(value);
+    if (value instanceof File) {
+      return (File) value;
+    }
+    return new File(String.valueOf(value));
   }
 }
