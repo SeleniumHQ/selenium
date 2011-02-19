@@ -88,7 +88,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
             } else if (elementOrWindow.contentWindow && elementOrWindow.contentWindow.location && elementOrWindow.contentWindow.location.href) {
                 LOG.debug("Page load location=" + elementOrWindow.contentWindow.location.href);
             } else {
-                LOG.debug("Page load location unknown, current window location=" + this.getCurrentWindow(true).location);
+                LOG.debug("Page load location unknown, current window location=" + self.getCurrentWindow(true).location);
             }
         } catch (e) {
             LOG.error("Caught an exception attempting to log location; this should get noticed soon!");
