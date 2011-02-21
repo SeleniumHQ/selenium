@@ -88,12 +88,10 @@ module Selenium
 
       def perform
         @actions.each { |receiver, method, args|
-            @devices.fetch(receiver).__send__(method, *args)
-          end
-        }
+          @devices.fetch(receiver).__send__(method, *args)
+        end
       end
 
     end # ActionBuilder
   end # WebDriver
 end # Selenium
-
