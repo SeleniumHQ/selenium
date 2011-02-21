@@ -273,6 +273,10 @@ public class CommandLine {
   }
 
   private static boolean canExecute(File file) {
+    if (file.isDirectory()) {
+      return false;
+    }
+
     if (JDK6_CAN_EXECUTE != null) {
       try {
         return (Boolean) JDK6_CAN_EXECUTE.invoke(file);
