@@ -26,8 +26,6 @@ class Selenium::WebDriver::Remote::Bridge
   command :screenshot,                             :get,     "session/:session_id/screenshot"
   command :switchToFrame,                          :post,    "session/:session_id/frame"
   command :switchToWindow,                         :post,    "session/:session_id/window"
-  command :getSpeed,                               :get,     "session/:session_id/speed"
-  command :setSpeed,                               :post,    "session/:session_id/speed"
   command :getAllCookies,                          :get,     "session/:session_id/cookie"
   command :addCookie,                              :post,    "session/:session_id/cookie"
   command :deleteAllCookies,                       :delete,  "session/:session_id/cookie"

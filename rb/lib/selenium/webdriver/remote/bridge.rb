@@ -195,14 +195,6 @@ module Selenium
           execute :getCurrentWindowHandle
         end
 
-        def setSpeed(value)
-          execute :setSpeed, {}, :speed => value
-        end
-
-        def getSpeed
-          execute :getSpeed
-        end
-
         def getScreenshot
           execute :screenshot
         end

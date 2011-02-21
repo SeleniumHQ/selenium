@@ -86,14 +86,6 @@ module Selenium
         end
       end
 
-      def speed
-        @bridge.getSpeed.downcase.to_sym
-      end
-
-      def speed=(speed)
-        @bridge.setSpeed(speed.to_s.upcase)
-      end
-
       def timeouts
         @timeouts ||= Timeouts.new(@bridge)
       end

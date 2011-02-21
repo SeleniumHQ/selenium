@@ -37,14 +37,6 @@ module Selenium
           @launcher.quit
         end
 
-        def setSpeed(value)
-          @speed = value
-        end
-
-        def getSpeed
-          @speed
-        end
-
         def findElementByCssSelector(parent, selector)
           find_element_by 'css', selector, parent
         end
