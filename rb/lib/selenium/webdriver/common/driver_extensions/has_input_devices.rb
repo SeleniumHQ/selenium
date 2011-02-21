@@ -16,6 +16,10 @@ module Selenium
           Keyboard.new @bridge
         end
 
+        def action
+          ActionBuilder.new mouse, keyboard
+        end
+
       end # HasInputDevices
     end # DriverExtensions
   end # WebDriver
