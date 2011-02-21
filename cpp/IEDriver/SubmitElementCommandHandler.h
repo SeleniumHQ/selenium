@@ -43,7 +43,6 @@ protected:
 
 					if (_wcsicmp(L"submit", type.c_str()) == 0 || _wcsicmp(L"image", type.c_str()) == 0) {
 						element_wrapper->Click();
-						browser_wrapper->set_wait_required(true);
 						handled_with_native_events = true;
 					}
 				}
@@ -68,6 +67,7 @@ protected:
 						return;
 					}
 				}
+				browser_wrapper->set_wait_required(true);
 				response->SetResponse(SUCCESS, Json::Value::null);
 				return;
 			} else {
