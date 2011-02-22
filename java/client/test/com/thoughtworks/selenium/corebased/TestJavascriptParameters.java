@@ -2,10 +2,10 @@ package com.thoughtworks.selenium.corebased;
 
 import java.util.regex.Pattern;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestJavascriptParameters extends InternalSelenseTestNgBase {
+public class TestJavascriptParameters extends InternalSelenseTestBase {
 	@Test
   public void testJavascriptParameters() throws Exception {
 		selenium.open("../tests/html/test_store_value.html");

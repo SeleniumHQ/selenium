@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-public class TestElementIndex extends InternalSelenseTestNgBase {
+public class TestElementIndex extends InternalSelenseTestBase {
 	@Test public void testElementIndex() throws Exception {
 		selenium.open("../tests/html/test_element_order.html");
 		assertEquals(selenium.getElementIndex("d2"), "1");

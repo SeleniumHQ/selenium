@@ -1,10 +1,10 @@
 package org.openqa.selenium.v1.thirdparty;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.testng.annotations.Test;
 
-public class GoogleTest extends InternalSelenseTestNgBase {
+public class GoogleTest extends InternalSelenseTestBase {
     @Test(dataProvider = "system-properties")
     public void homepage() {
         selenium.open("http://www.google.com");

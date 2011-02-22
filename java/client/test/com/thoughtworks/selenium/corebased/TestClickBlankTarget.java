@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestClickBlankTarget extends InternalSelenseTestNgBase {
+public class TestClickBlankTarget extends InternalSelenseTestBase {
 	@Test
   public void testClickBlankTarget() throws Exception {
 		selenium.open("../tests/html/Frames.html");

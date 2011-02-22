@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.testng.annotations.Test;
 
-public class SSLWellsFargoTest extends InternalSelenseTestNgBase {
+public class SSLWellsFargoTest extends InternalSelenseTestBase {
     
     @Test(dataProvider = "system-properties")
     public void testWellsFargo() {

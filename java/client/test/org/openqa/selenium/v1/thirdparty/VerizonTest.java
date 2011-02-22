@@ -1,11 +1,11 @@
 package org.openqa.selenium.v1.thirdparty;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.testng.SkipException;
 import org.testng.annotations.Test;
 
-public class VerizonTest extends InternalSelenseTestNgBase {
+public class VerizonTest extends InternalSelenseTestBase {
     private static final String TIMEOUT = "60000";
 
     @Test(dataProvider = "system-properties")

@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestTypeRichText extends InternalSelenseTestNgBase {
+public class TestTypeRichText extends InternalSelenseTestBase {
 	@Test public void testTypeRichText() throws Exception {
 		selenium.open("../tests/html/test_rich_text.html");
 		selenium.selectFrame("richtext");

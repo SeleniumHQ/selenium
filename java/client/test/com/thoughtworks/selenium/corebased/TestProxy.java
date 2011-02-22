@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-public class TestProxy extends InternalSelenseTestNgBase {
+public class TestProxy extends InternalSelenseTestBase {
 	@Test public void testProxy() throws Exception {
     selenium.setTimeout("20000");
 		selenium.open("http://www.yahoo.com/");

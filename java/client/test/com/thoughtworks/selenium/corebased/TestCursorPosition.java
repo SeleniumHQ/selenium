@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 import com.thoughtworks.selenium.SeleniumException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-public class TestCursorPosition extends InternalSelenseTestNgBase {
+public class TestCursorPosition extends InternalSelenseTestBase {
 	@Test public void testCursorPosition() throws Exception {
 		selenium.open("../tests/html/test_type_page1.html");
 		try { assertEquals(selenium.getCursorPosition("username"), "8"); fail("expected failure"); } catch (Throwable e) {}

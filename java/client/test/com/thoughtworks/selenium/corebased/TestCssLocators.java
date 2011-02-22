@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-public class TestCssLocators extends InternalSelenseTestNgBase {
+public class TestCssLocators extends InternalSelenseTestBase {
 	@Test public void testCssLocators() throws Exception {
 
 		//         Unimplemented features:

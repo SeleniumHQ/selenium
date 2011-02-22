@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestSetSpeed extends InternalSelenseTestNgBase {
+public class TestSetSpeed extends InternalSelenseTestBase {
 	@Test public void testSetSpeed() throws Exception {
 		String lastSpeed = selenium.getSpeed();
 		//  The max value in slider is 1000, but setSpeed command can set higher than this 

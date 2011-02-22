@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.testng.annotations.Test;
 
-public class YahooHttpsTest extends InternalSelenseTestNgBase {
+public class YahooHttpsTest extends InternalSelenseTestBase {
 
     @Test(dataProvider = "system-properties")
     public void testYahoo() throws Exception {

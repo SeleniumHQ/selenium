@@ -23,7 +23,10 @@ java_library(name = "test-selenium",
 java_library(name = "environment",
   srcs = [
     "SeleniumTestEnvironment.java",
+    "SeleniumAppServer.java",
   ], deps = [
+    "//java/client/src/com/thoughtworks/selenium",
+    "//java/client/src/org/openqa/selenium:webdriver-backed-selenium",
     "//java/client/test/org/openqa/selenium:base",
     "//java/client/test/org/openqa/selenium/environment",
     "//third_party/java/guava-libraries",

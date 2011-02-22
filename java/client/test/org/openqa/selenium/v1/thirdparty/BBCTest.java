@@ -1,10 +1,10 @@
 package org.openqa.selenium.v1.thirdparty;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.testng.annotations.Test;
 
-public class BBCTest extends InternalSelenseTestNgBase {
+public class BBCTest extends InternalSelenseTestBase {
     @Test(dataProvider = "system-properties")
     public void haveYourSaySignup() {
         selenium.open("http://www.bbc.co.uk/?ok");

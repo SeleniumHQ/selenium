@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestFramesClick extends InternalSelenseTestNgBase {
+public class TestFramesClick extends InternalSelenseTestBase {
 	@Test public void testFramesClick() throws Exception {
 		selenium.open("../tests/html/Frames.html");
 		selenium.selectFrame("mainFrame");

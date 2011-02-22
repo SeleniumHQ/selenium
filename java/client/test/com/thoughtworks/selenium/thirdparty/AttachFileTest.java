@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.testng.annotations.Test;
 
-public class AttachFileTest extends InternalSelenseTestNgBase {
+public class AttachFileTest extends InternalSelenseTestBase {
     
     @Test(dataProvider = "system-properties")
     public void testAttachfile() throws Throwable {

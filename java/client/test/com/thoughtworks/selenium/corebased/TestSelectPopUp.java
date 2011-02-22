@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestSelectPopUp extends InternalSelenseTestNgBase {
+public class TestSelectPopUp extends InternalSelenseTestBase {
 	@Test public void testSelectPopUp() throws Exception {
 		selenium.open("../tests/html/test_select_window.html");
 		selenium.click("popupPage");

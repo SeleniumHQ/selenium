@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestSelect extends InternalSelenseTestNgBase {
+public class TestSelect extends InternalSelenseTestBase {
 	@Test public void testSelect() throws Exception {
 		selenium.open("../tests/html/test_select.html");
 		assertTrue(selenium.isSomethingSelected("theSelect"));

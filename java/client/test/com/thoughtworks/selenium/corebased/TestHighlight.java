@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-public class TestHighlight extends InternalSelenseTestNgBase {
+public class TestHighlight extends InternalSelenseTestBase {
 	@Test public void testHighlight() throws Exception {
 		selenium.open("../tests/html/test_locators.html");
 		selenium.highlight("id1");

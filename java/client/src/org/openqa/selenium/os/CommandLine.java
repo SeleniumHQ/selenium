@@ -264,7 +264,9 @@ public class CommandLine {
       throw new IllegalStateException("Cannot quit a process that's not running: " + commandAndArgs[0]);
     }
 
-    proc.destroy();
+    if (proc != null) {
+      proc.destroy();
+    }
     postRunCleanup();
   }
 

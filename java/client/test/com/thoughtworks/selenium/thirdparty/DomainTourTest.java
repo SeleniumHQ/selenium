@@ -1,12 +1,12 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.testng.SkipException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class DomainTourTest extends InternalSelenseTestNgBase
+public class DomainTourTest extends InternalSelenseTestBase
 {
     @Test(dataProvider="siteList")
     public void testOpenThirdPartySite(String site) throws Throwable {

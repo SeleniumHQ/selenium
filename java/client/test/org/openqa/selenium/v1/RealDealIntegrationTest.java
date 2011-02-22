@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.v1;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.SeleniumLogLevels;
 import org.testng.annotations.Test;
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  * @author Paul Hammant
  * @version $Revision: 131 $
  */
-public class RealDealIntegrationTest extends InternalSelenseTestNgBase {
+public class RealDealIntegrationTest extends InternalSelenseTestBase {
 
     @Test(dataProvider = "system-properties")
     public void testWithJavaScript() {

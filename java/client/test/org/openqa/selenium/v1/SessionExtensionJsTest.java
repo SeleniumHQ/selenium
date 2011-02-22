@@ -1,7 +1,7 @@
 package org.openqa.selenium.v1;
 
 import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 import org.testng.annotations.AfterMethod;
@@ -10,7 +10,7 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-public class SessionExtensionJsTest extends InternalSelenseTestNgBase {
+public class SessionExtensionJsTest extends InternalSelenseTestBase {
 
     private Selenium privateSelenium;
     private String host, browser;

@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestGettingValueOfCheckbox extends InternalSelenseTestNgBase {
+public class TestGettingValueOfCheckbox extends InternalSelenseTestBase {
 	@Test public void testGettingValueOfCheckbox() throws Exception {
     selenium.open("../tests/html/test_submit.html");
 

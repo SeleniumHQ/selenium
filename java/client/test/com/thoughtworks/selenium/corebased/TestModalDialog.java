@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestModalDialog extends InternalSelenseTestNgBase {
+public class TestModalDialog extends InternalSelenseTestBase {
 	@Test
   public void testModalDialog() throws Exception {
 		selenium.open("../tests/html/test_modal_dialog.html");

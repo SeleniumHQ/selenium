@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-public class TestFocusOnBlur extends InternalSelenseTestNgBase {
+public class TestFocusOnBlur extends InternalSelenseTestBase {
 	@Test public void testFocusOnBlur() throws Exception {
 		selenium.open("../tests/html/test_focus_on_blur.html");
 		selenium.type("testInput", "test");

@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestVisibility extends InternalSelenseTestNgBase {
+public class TestVisibility extends InternalSelenseTestBase {
 	@Test public void testVisibility() throws Exception {
 		selenium.open("../tests/html/test_visibility.html");
 		verifyTrue(selenium.isVisible("visibleParagraph"));

@@ -29,6 +29,13 @@ public class ClickTest extends AbstractDriverTestCase {
     driver.get(appServer.whereIs("clicks.html"));
   }
 
+  @Override
+  protected void tearDown() throws Exception {
+    driver.switchTo().defaultContent();
+    
+    super.tearDown();
+  }
+
   @Ignore(SELENESE)
   public void testCanClickOnALinkAndFollowIt() {
     driver.findElement(By.id("normal")).click();

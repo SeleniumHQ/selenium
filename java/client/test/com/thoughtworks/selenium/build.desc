@@ -1,7 +1,7 @@
 
 java_test(name = "test",
   srcs = [
-    "InternalSelenseTestNgBase.java",
+    "InternalSelenseTestBase.java",
     "WaitTest.java",
     "WaitTestSuite.java",
     "SeleniumServerProxyTest.java",
@@ -17,7 +17,6 @@ java_test(name = "test",
     "//java/client/test/org/openqa/selenium/v1:environment",
     "//third_party/java/guava-libraries",
     "//third_party/java/junit",
-    "//third_party/java/testng",
   ])
 
 java_library(name = "rc-tests",
@@ -35,52 +34,49 @@ java_library(name = "rc-tests",
    ])
 
 java_test(name = "firefox-emulation-test",
-  main = "org.testng.TestNG",
-  deps = [
-    ":rc-tests",
-  ],
+  test_suite = "com.thoughtworks.selenium.WebDriverSeleniumTestSuite",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.firefox.FirefoxDriver" },
   ],
-  args = "webdriver-selenium-suite.xml")
+  deps = [
+    ":rc-tests",
+  ])
 
 java_test(name = "ie-emulation-test",
+  test_suite = "com.thoughtworks.selenium.WebDriverSeleniumTestSuite",
   deps = [
     ":rc-tests",
   ],
-  main = "org.testng.TestNG",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.ie.InternetExplorerDriver" },
   ],
-  args = "webdriver-selenium-suite.xml")
-
-java_test(name = "firefox-rc-test",
   deps = [
     ":rc-tests",
-  ],
-  main = "org.testng.TestNG",
+  ])
+
+java_test(name = "firefox-rc-test",
+  test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
     { "selenium.browser" : "*firefox" },
   ],
-  args = "testng.xml")
-
-java_test(name = "ie-rc-test",
   deps = [
     ":rc-tests",
-  ],
-  main = "org.testng.TestNG",
+  ])
+
+java_test(name = "ie-rc-test",
+  test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
     { "selenium.browser" : "*iexplore" },
   ],
-  args = "testng.xml")
-
-java_test(name = "safari-rc-test",
   deps = [
     ":rc-tests",
-  ],
-  main = "org.testng.TestNG",
+  ])
+
+java_test(name = "safari-rc-test",
+  test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
     { "selenium.browser" : "*safari" },
   ],
-  args = "testng.xml")
-
+  deps = [
+    ":rc-tests",
+  ])

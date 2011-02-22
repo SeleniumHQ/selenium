@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestElementPresent extends InternalSelenseTestNgBase {
+public class TestElementPresent extends InternalSelenseTestBase {
 	@Test public void testElementPresent() throws Exception {
 		selenium.open("../tests/html/test_element_present.html");
 		assertTrue(selenium.isElementPresent("aLink"));

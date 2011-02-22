@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestEval extends InternalSelenseTestNgBase {
+public class TestEval extends InternalSelenseTestBase {
 	@Test
   public void testEval() throws Exception {
 		selenium.open("../tests/html/test_open.html");

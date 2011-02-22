@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestRefresh extends InternalSelenseTestNgBase {
+public class TestRefresh extends InternalSelenseTestBase {
 	@Test public void testRefresh() throws Exception {
 		selenium.open("../tests/html/test_page.slow.html");
 		verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_page\\.slow\\.html$"));

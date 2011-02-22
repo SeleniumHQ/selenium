@@ -1,8 +1,0 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="selenium-tests" verbose="1">
-    <test name="selenium-tests">
-        <packages>
-            <package name="com.thoughtworks.selenium.corebased"/>
-        </packages>
-    </test>
-</suite>

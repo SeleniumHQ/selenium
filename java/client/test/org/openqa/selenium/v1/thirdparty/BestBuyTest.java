@@ -1,9 +1,9 @@
 package org.openqa.selenium.v1.thirdparty;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.testng.annotations.Test;
 
-public class BestBuyTest extends InternalSelenseTestNgBase {
+public class BestBuyTest extends InternalSelenseTestBase {
 
     public static String TIMEOUT = "30000";
 

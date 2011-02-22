@@ -1,11 +1,11 @@
 package org.openqa.selenium.v1;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertNotNull;
 
-public class CacheBlockTest extends InternalSelenseTestNgBase {
+public class CacheBlockTest extends InternalSelenseTestBase {
 
     @Test(dataProvider = "system-properties")
     public void testCacheBlock() throws Exception {

@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestSelectMultiLevelFrame extends InternalSelenseTestNgBase {
+public class TestSelectMultiLevelFrame extends InternalSelenseTestBase {
 	@Test public void testSelectMultiLevelFrame() throws Exception {
 		selenium.open("../tests/html/test_multi_level_frame.html");
 		//  Select first level frame 

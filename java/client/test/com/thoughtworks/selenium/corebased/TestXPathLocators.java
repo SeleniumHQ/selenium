@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-public class TestXPathLocators extends InternalSelenseTestNgBase {
+public class TestXPathLocators extends InternalSelenseTestBase {
 	@Test public void testXPathLocators() throws Exception {
 		selenium.open("../tests/html/test_locators.html");
 		verifyEquals(selenium.getText("xpath=//a"), "this is the first element");

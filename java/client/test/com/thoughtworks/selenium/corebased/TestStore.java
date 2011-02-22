@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-public class TestStore extends InternalSelenseTestNgBase {
+public class TestStore extends InternalSelenseTestBase {
 	@Test public void testStore() throws Exception {
 		selenium.open("../tests/html/test_verifications.html");
 		String storedHiddenValue = selenium.getValue("theHidden");

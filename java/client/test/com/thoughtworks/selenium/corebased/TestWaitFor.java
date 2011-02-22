@@ -2,10 +2,10 @@ package com.thoughtworks.selenium.corebased;
 
 import java.util.regex.Pattern;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestWaitFor extends InternalSelenseTestNgBase {
+public class TestWaitFor extends InternalSelenseTestBase {
 	@Test public void testWaitFor() throws Exception {
 		selenium.open("../tests/html/test_async_event.html");
 		assertEquals(selenium.getValue("theField"), "oldValue");

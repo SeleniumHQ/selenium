@@ -1,10 +1,10 @@
 package org.openqa.selenium.v1.thirdparty;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.testng.annotations.Test;
 
-public class DollarRentACarTest extends InternalSelenseTestNgBase {
+public class DollarRentACarTest extends InternalSelenseTestBase {
     public static String TIMEOUT = "120000";
     @Test(dataProvider = "system-properties")
     public void searchAndRent() throws InterruptedException {

@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestDragAndDrop extends InternalSelenseTestNgBase {
+public class TestDragAndDrop extends InternalSelenseTestBase {
 	@Test public void testDragAndDrop() throws Exception {
 		selenium.open("../tests/html/slider/example.html");
 		selenium.dragdrop("id=slider01", "800,0");

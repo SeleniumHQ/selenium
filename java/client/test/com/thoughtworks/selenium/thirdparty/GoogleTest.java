@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.testng.annotations.Test;
 
-public class GoogleTest extends InternalSelenseTestNgBase {
+public class GoogleTest extends InternalSelenseTestBase {
 
     @Test(dataProvider = "system-properties")
     public void testGoogle() throws Throwable {

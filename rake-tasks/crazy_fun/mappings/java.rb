@@ -427,6 +427,13 @@ module CrazyFunJava
                 name = test
               end
 
+              sysprops = args[:sysproperties] || []
+              sysprops.each do |map|
+                map.each do |key, value|
+                  ant.sysproperty :key => key, :value => value
+                end
+              end
+
               if (args[:args])
                 ant.jvmarg do |jarg|
                   jarg.line = args[:args]

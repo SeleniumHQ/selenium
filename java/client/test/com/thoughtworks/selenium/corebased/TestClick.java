@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestClick extends InternalSelenseTestNgBase {
+public class TestClick extends InternalSelenseTestBase {
 	@Test public void testClick() throws Exception {
 		selenium.open("../tests/html/test_click_page1.html");
 		verifyEquals(selenium.getText("link"), "Click here for next page");

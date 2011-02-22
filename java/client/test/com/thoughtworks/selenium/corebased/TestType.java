@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-public class TestType extends InternalSelenseTestNgBase {
+public class TestType extends InternalSelenseTestBase {
 	@Test public void testType() throws Exception {
 		selenium.open("../tests/html/test_type_page1.html");
 		verifyEquals(selenium.getValue("username"), "");

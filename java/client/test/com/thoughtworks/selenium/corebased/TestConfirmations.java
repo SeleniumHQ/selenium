@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-public class TestConfirmations extends InternalSelenseTestNgBase {
+public class TestConfirmations extends InternalSelenseTestBase {
 	@Test public void testConfirmations() throws Exception {
 		selenium.open("../tests/html/test_confirm.html");
 		selenium.chooseCancelOnNextConfirmation();

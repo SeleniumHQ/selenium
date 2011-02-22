@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestCommandError extends InternalSelenseTestNgBase {
+public class TestCommandError extends InternalSelenseTestBase {
 	@Test
   public void testCommandError() throws Exception {
 		selenium.open("../tests/html/test_verifications.html");

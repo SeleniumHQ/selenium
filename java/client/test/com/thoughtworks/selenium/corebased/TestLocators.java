@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-public class TestLocators extends InternalSelenseTestNgBase {
+public class TestLocators extends InternalSelenseTestBase {
 	@Test
   public void testLocators() throws Exception {
 		selenium.open("../tests/html/test_locators.html");

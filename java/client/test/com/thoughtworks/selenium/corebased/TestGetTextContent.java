@@ -1,9 +1,9 @@
 package com.thoughtworks.selenium.corebased;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
-import org.testng.annotations.Test;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.Test;
 
-public class TestGetTextContent extends InternalSelenseTestNgBase {
+public class TestGetTextContent extends InternalSelenseTestBase {
 	@Test public void testGetTextContent() throws Exception {
 		selenium.open("../tests/html/test_gettextcontent.html");
 		verifyTrue(selenium.isTextPresent("Text1"));

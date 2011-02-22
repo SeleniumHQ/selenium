@@ -1,10 +1,10 @@
 package org.openqa.selenium.v1.thirdparty;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.testng.annotations.Test;
 
-public class TestGomezSuppliedScripts extends InternalSelenseTestNgBase {
+public class TestGomezSuppliedScripts extends InternalSelenseTestBase {
     @Test(dataProvider = "system-properties")
     public void RC108() throws Exception {
         selenium.open("http://www.hrs.com");

@@ -1,9 +1,9 @@
 package org.openqa.selenium.v1;
 
-import com.thoughtworks.selenium.InternalSelenseTestNgBase;
+import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.testng.annotations.Test;
 
-public class TestFifteenSecondSleep extends InternalSelenseTestNgBase
+public class TestFifteenSecondSleep extends InternalSelenseTestBase
 {
    @Test(dataProvider = "system-properties")
    public void testFifteenSecondSleep() throws Throwable {
