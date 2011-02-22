@@ -35,10 +35,10 @@ java_library(name = "rc-tests",
    ])
 
 java_test(name = "firefox-emulation-test",
+  main = "org.testng.TestNG",
   deps = [
     ":rc-tests",
   ],
-  main = "org.testng.TestNG",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.firefox.FirefoxDriver" },
   ],

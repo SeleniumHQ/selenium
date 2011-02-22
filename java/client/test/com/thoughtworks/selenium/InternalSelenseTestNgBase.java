@@ -4,8 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
-
-import org.junit.AfterClass;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
@@ -14,12 +12,8 @@ import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.v1.SeleniumTestEnvironment;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Optional;
-import org.testng.annotations.Parameters;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,19 +22,13 @@ public class InternalSelenseTestNgBase extends SeleneseTestBase {
   private static Selenium staticSelenium;
 
   @BeforeTest
-  @Parameters({"selenium.url", "selenium.browser"})
-  public void startBrowser(@Optional String url, @Optional String browserString)
-      throws Exception {
+  public void startBrowser() {
     startSeleniumServer();
 
     final String browser = System.getProperty("selenium.browser", runtimeBrowserString());
     int port = getDefaultPort();
 
-    String baseUrl = System.getProperty("selenium.url");
-
-    if (url == null) {
-      baseUrl = "http://localhost:" + port + "/selenium-server/tests/";
-    }
+    String baseUrl = "http://localhost:" + port + "/selenium-server/tests/";
 
     if (getDriverClass(browser) != null) {
       selenium = new WebDriverBackedSelenium(new Supplier<WebDriver>() {
@@ -80,25 +68,22 @@ public class InternalSelenseTestNgBase extends SeleneseTestBase {
     }
   }
 
-
-  @BeforeClass
-  @Parameters({"selenium.restartSession"})
-  public void getSelenium(@Optional("false") boolean restartSession) {
+  @BeforeMethod
+  public void getSelenium() {
     selenium = staticSelenium;
-    if (restartSession) {
-      selenium.stop();
-      selenium.start();
-    }
   }
 
   @BeforeMethod
   public void returnFocusToMainWindow() {
+    if (selenium == null) {
+      return;
+    }
     selenium.selectWindow("");
   }
 
   @BeforeMethod
   public void addNecessaryJavascriptCommands() {
-    if (!(selenium instanceof WebDriverBackedSelenium)) {
+    if (selenium == null || !(selenium instanceof WebDriverBackedSelenium)) {
       return;
     }
 
