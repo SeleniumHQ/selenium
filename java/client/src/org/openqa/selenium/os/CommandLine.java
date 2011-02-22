@@ -273,7 +273,7 @@ public class CommandLine {
   }
 
   private static boolean canExecute(File file) {
-    if (file.isDirectory()) {
+    if (!file.exists() || file.isDirectory()) {
       return false;
     }
 
