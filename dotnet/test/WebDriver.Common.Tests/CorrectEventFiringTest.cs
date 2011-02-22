@@ -266,7 +266,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(Browser.IE)]
         public void SubmittingFormFromFormElementShouldFireOnSubmitForThatForm()
         {
             driver.Url = javascriptPage;
@@ -277,7 +276,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(Browser.IE)]
         public void SubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm()
         {
             driver.Url = javascriptPage;
@@ -288,7 +286,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(Browser.IE)]
         public void SubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput()
         {
             driver.Url = javascriptPage;
