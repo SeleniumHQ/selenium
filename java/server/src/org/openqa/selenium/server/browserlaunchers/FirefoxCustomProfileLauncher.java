@@ -21,7 +21,7 @@ import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
-import org.openqa.selenium.browserlaunchers.locators.Firefox2or3Locator;
+import org.openqa.selenium.browserlaunchers.locators.CombinedFirefoxLocator;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.CommandLine;
@@ -45,7 +45,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     public FirefoxCustomProfileLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) throws InvalidBrowserExecutableException {
         this(browserOptions, configuration,
                 sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
-                        "firefoxproxy", browserLaunchLocation, new Firefox2or3Locator()));
+                        "firefoxproxy", browserLaunchLocation, new CombinedFirefoxLocator()));
         if (browserInstallation == null) {
           throw new InvalidBrowserExecutableException("The specified path to the browser executable is invalid.");
         }

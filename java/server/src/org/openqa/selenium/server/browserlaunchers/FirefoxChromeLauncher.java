@@ -23,7 +23,7 @@ import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
-import org.openqa.selenium.browserlaunchers.locators.Firefox2or3Locator;
+import org.openqa.selenium.browserlaunchers.locators.CombinedFirefoxLocator;
 import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.CommandLine;
@@ -39,7 +39,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   private static final Trace LOGGER = TraceFactory.getTrace(FirefoxChromeLauncher.class);
 
   private File customProfileDir = null;
-  private String[] cmdarray;
   private boolean closed = false;
   private BrowserInstallation browserInstallation;
   private Process process = null;
@@ -51,7 +50,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     this(browserOptions, configuration,
         sessionId, ApplicationRegistry.instance()
             .browserInstallationCache().locateBrowserInstallation(
-            "chrome", browserString, new Firefox2or3Locator()));
+            "chrome", browserString, new CombinedFirefoxLocator()));
     if (browserInstallation == null) {
       throw new InvalidBrowserExecutableException(
           "The specified path to the browser executable is invalid.");
@@ -143,7 +142,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   }
 
   protected File initProfileTemplate() {
-    File firefoxProfileTemplate = null;
+    File firefoxProfileTemplate;
 
     String relativeProfile = BrowserOptions
         .getProfile(browserConfigurationOptions);
