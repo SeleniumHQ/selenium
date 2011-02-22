@@ -44,14 +44,14 @@ void BrowserWrapper::GetDocument(IHTMLDocument2 **doc) {
 			return;
 		}
 
-		CComPtr<IHTMLDocument2> doc;
-		hr = dispatch->QueryInterface(&doc);
+		CComPtr<IHTMLDocument2> dispatch_doc;
+		hr = dispatch->QueryInterface(&dispatch_doc);
 		if (FAILED(hr)) {
 			//LOGHR(WARN, hr) << "Have document but cannot cast";
 			return;
 		}
 
-		doc->get_parentWindow(&window);
+		dispatch_doc->get_parentWindow(&window);
 	} else {
 		window = this->focused_frame_window_;
 	}
@@ -111,7 +111,9 @@ std::wstring BrowserWrapper::ConvertVariantToWString(VARIANT *to_convert) {
 		case VT_I4:
 			{
 				wchar_t *buffer = (wchar_t *)malloc(sizeof(wchar_t) * MAX_DIGITS_OF_NUMBER);
-				_i64tow_s(to_convert->lVal, buffer, MAX_DIGITS_OF_NUMBER, BASE_TEN_BASE);
+				if (buffer != NULL) {
+					_i64tow_s(to_convert->lVal, buffer, MAX_DIGITS_OF_NUMBER, BASE_TEN_BASE);
+				}
 				return buffer;
 			}
 

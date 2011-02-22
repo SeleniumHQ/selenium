@@ -459,7 +459,8 @@ bool ScriptWrapper::GetEvalMethod(IHTMLDocument2* doc, DISPID* eval_id, bool* ad
 		*added = true;
 		// Start the script engine by adding a script tag to the page
 		CComPtr<IHTMLElement> script_tag;
-		hr = doc->createElement(L"span", &script_tag);
+		CComBSTR span_tag_name(L"span");
+		hr = doc->createElement(span_tag_name, &script_tag);
 		if (FAILED(hr)) {
 			//LOGHR(WARN, hr) << "Failed to create span tag";
 		}

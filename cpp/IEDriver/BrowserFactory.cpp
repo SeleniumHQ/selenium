@@ -7,9 +7,16 @@ BrowserFactory::BrowserFactory(void) {
 	this->GetExecutableLocation();
 	this->GetIEVersion();
 	this->GetOSVersion();
+	this->html_getobject_msg_ = ::RegisterWindowMessage(_T("WM_HTML_GETOBJECT"));
+
+	// Explicitly load MSAA so we know if it's installed
+	this->oleacc_instance_handle_ = ::LoadLibrary(_T("OLEACC.DLL"));
 }
 
 BrowserFactory::~BrowserFactory(void) {
+	if (this->oleacc_instance_handle_) {
+		::FreeLibrary(this->oleacc_instance_handle_);
+	}
 }
 
 DWORD BrowserFactory::LaunchBrowserProcess(int port) {
@@ -25,8 +32,12 @@ DWORD BrowserFactory::LaunchBrowserProcess(int port) {
 	url_stream << L"http://localhost:" << port << L"/";
 	std::wstring initial_url(url_stream.str());
 
+	FARPROC proc_address = 0;
 	HMODULE library_handle = ::LoadLibrary(L"ieframe.dll");
-	FARPROC proc_address = ::GetProcAddress(library_handle, "IELaunchURL");
+	if (library_handle != NULL) {
+		proc_address = ::GetProcAddress(library_handle, "IELaunchURL");
+	}
+
 	if (proc_address != 0) {
 		// If we have the IELaunchURL API, expressly use it. This will
 		// guarantee a new session. Simply using CoCreateInstance to 
@@ -68,15 +79,12 @@ void BrowserFactory::AttachToBrowser(ProcessWindowInfo *process_window_info) {
 	}
 
 	if (process_window_info->hwndBrowser != NULL) {
-		// Explicitly load MSAA so we know if it's installed
-		HINSTANCE instance_handle = ::LoadLibrary(_T("OLEACC.DLL"));
-		if (instance_handle) {
+		if (this->oleacc_instance_handle_) {
 			CComPtr<IHTMLDocument2> document;
 			LRESULT result;
-			UINT msg = ::RegisterWindowMessage(_T("WM_HTML_GETOBJECT"));
-			::SendMessageTimeout(process_window_info->hwndBrowser, msg, 0L, 0L, SMTO_ABORTIFHUNG, 1000, (PDWORD_PTR)&result);
+			::SendMessageTimeout(process_window_info->hwndBrowser, this->html_getobject_msg_, 0L, 0L, SMTO_ABORTIFHUNG, 1000, (PDWORD_PTR)&result);
 
-			LPFNOBJECTFROMLRESULT object_pointer =  reinterpret_cast<LPFNOBJECTFROMLRESULT>(::GetProcAddress(instance_handle, "ObjectFromLresult"));
+			LPFNOBJECTFROMLRESULT object_pointer =  reinterpret_cast<LPFNOBJECTFROMLRESULT>(::GetProcAddress(this->oleacc_instance_handle_, "ObjectFromLresult"));
 			if (object_pointer != NULL) {
 				HRESULT hr;
 				hr = (*object_pointer)(result, IID_IHTMLDocument2, 0, reinterpret_cast<void **>(&document));
@@ -100,7 +108,6 @@ void BrowserFactory::AttachToBrowser(ProcessWindowInfo *process_window_info) {
 				   }
 				}
 			}
-			::FreeLibrary(instance_handle);
 		}
 	} // else Active Accessibility is not installed
 }

@@ -197,7 +197,7 @@ int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *widt
 	if (result != SUCCESS || !this->IsClickPointInViewPort(containing_window_handle, left, top, element_width, element_height)) {
 		// Scroll the element into view
 		//LOG(DEBUG) << "Will need to scroll element into view";
-		HRESULT hr = this->element_->scrollIntoView(CComVariant(VARIANT_TRUE));
+		hr = this->element_->scrollIntoView(CComVariant(VARIANT_TRUE));
 		if (FAILED(hr)) {
 			// LOGHR(WARN, hr) << "Cannot scroll element into view";
 			return EOBSOLETEELEMENT;
@@ -407,8 +407,8 @@ int ElementWrapper::GetFrameOffset(long *x, long *y) {
 				// Wrap the element so we can find its location.
 				ElementWrapper *element_wrapper = new ElementWrapper(frame_element, this->browser_);
 				long frame_x, frame_y, frame_width, frame_height;
-				int result = element_wrapper->GetLocation(&frame_x, &frame_y, &frame_width, &frame_height);
-				if (result == SUCCESS) {
+				int status_code = element_wrapper->GetLocation(&frame_x, &frame_y, &frame_width, &frame_height);
+				if (status_code == SUCCESS) {
 					*x = frame_x;
 					*y = frame_y;
 				}

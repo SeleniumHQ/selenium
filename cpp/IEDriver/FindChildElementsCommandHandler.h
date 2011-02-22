@@ -50,7 +50,7 @@ protected:
 					end += 1 * CLOCKS_PER_SEC;
 				}
 
-				int status_code = SUCCESS;
+				status_code = SUCCESS;
 				do {
 					status_code = finder->FindElements(manager, parent_element_wrapper, value, &found_elements);
 					if (status_code == SUCCESS && found_elements.size() > 0) {

@@ -168,7 +168,7 @@ protected:
 		CComPtr<IHTMLDocument2> doc;
 		browser->GetDocument(&doc);
 		ScriptWrapper *object_script_wrapper = new ScriptWrapper(doc, object_script, counter);
-		for (Json::Value::iterator it = object_value.begin(); it != object_value.end(); ++it) {
+		for (it = object_value.begin(); it != object_value.end(); ++it) {
 			status_code = this->AddArgument(manager, object_script_wrapper, object_value[it.memberName()]);
 			if (status_code != SUCCESS) {
 				break;

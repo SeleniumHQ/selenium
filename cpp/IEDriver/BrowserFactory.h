@@ -42,6 +42,9 @@ private:
 	int windows_major_version_;
 	std::wstring ie_executable_location_;
 
+	UINT html_getobject_msg_;
+	HINSTANCE oleacc_instance_handle_;
+
 	void SetThreadIntegrityLevel(void);
 	void ResetThreadIntegrityLevel(void);
 

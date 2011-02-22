@@ -28,9 +28,15 @@ std::wstring IEDriverServer::CreateSession() {
 	HWND manager_window_handle = NULL;
 	HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, EVENT_NAME);
 	HANDLE thread_handle = ::CreateThread(NULL, 0, &BrowserManager::ThreadProc, (LPVOID)&manager_window_handle, 0, &thread_id);
-	::WaitForSingleObject(event_handle, INFINITE);
-	::CloseHandle(event_handle);
-	::CloseHandle(thread_handle);
+
+	if (event_handle != NULL) {
+		::WaitForSingleObject(event_handle, INFINITE);
+		::CloseHandle(event_handle);
+	}
+
+	if (thread_handle != NULL) {
+		::CloseHandle(thread_handle);
+	}
 
 	::SendMessage(manager_window_handle, WD_INIT, (WPARAM)this->port_, NULL);
 

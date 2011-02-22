@@ -161,7 +161,9 @@ LRESULT BrowserManager::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 			// to sleep.
 			DWORD thread_id;
 			HANDLE thread_handle = ::CreateThread(NULL, 0, &BrowserManager::WaitThreadProc, (LPVOID)this->m_hWnd, 0, &thread_id);
-			::CloseHandle(thread_handle);
+			if (thread_handle != NULL) {
+				::CloseHandle(thread_handle);
+			}
 		}
 	} else {
 		this->is_waiting_ = false;
@@ -210,8 +212,10 @@ DWORD WINAPI BrowserManager::ThreadProc(LPVOID lpParameter) {
 	// window is ready for messages.
 	*window_handle = manager_handle;
 	HANDLE event_handle = ::OpenEvent(EVENT_ALL_ACCESS, FALSE, EVENT_NAME);
-	::SetEvent(event_handle);
-	::CloseHandle(event_handle);
+	if (event_handle != NULL) {
+		::SetEvent(event_handle);
+		::CloseHandle(event_handle);
+	}
 
     // Run the message loop
 	MSG msg;

@@ -85,44 +85,50 @@ public:
 
 		CComPtr<IHTMLDocument2> doc;
 		browser->GetDocument(&doc);
-		ScriptWrapper *script_wrapper = new ScriptWrapper(doc, query, 2);
-		script_wrapper->AddArgument(criteria);
-		if (parent_wrapper) {
-			// Use a copy for the parent element?
-			CComPtr<IHTMLElement> parent(parent_wrapper->element());
-			IHTMLElement* parent_element_copy;
-			parent.CopyTo(&parent_element_copy);
-			script_wrapper->AddArgument(parent_element_copy);
-		}
+		try {
+			// Wrapped in a try-catch block to ensure that the ScriptWrappers
+			// allocated here will be properly disposed of by virtue of scope
+			// of the try-catch block if an exception occurs.
+			ScriptWrapper *script_wrapper = new ScriptWrapper(doc, query, 2);
+			script_wrapper->AddArgument(criteria);
+			if (parent_wrapper) {
+				// Use a copy for the parent element?
+				CComPtr<IHTMLElement> parent(parent_wrapper->element());
+				IHTMLElement* parent_element_copy;
+				parent.CopyTo(&parent_element_copy);
+				script_wrapper->AddArgument(parent_element_copy);
+			}
 
-		result = script_wrapper->Execute();
-		CComVariant snapshot = script_wrapper->result();
+			result = script_wrapper->Execute();
+			CComVariant snapshot = script_wrapper->result();
 
-		std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].snapshotLength;}})();";
-		ScriptWrapper *get_element_count_script_wrapper = new ScriptWrapper(doc, get_element_count_script, 1);
-		get_element_count_script_wrapper->AddArgument(snapshot);
-		result = get_element_count_script_wrapper->Execute();
-		if (result == SUCCESS) {
-			if (!get_element_count_script_wrapper->ResultIsInteger()) {
-				result = EUNEXPECTEDJSERROR;
-			} else {
-				long length = get_element_count_script_wrapper->result().lVal;
-				std::wstring get_next_element_script(L"(function(){return function() {return arguments[0].iterateNext();}})();");
-				for (long i = 0; i < length; ++i) {
-					ScriptWrapper *get_element_script_wrapper = new ScriptWrapper(doc, get_next_element_script, 2);
-					get_element_script_wrapper->AddArgument(snapshot);
-					get_element_script_wrapper->AddArgument(i);
-					result = get_element_script_wrapper->Execute();
-					Json::Value json_element;
-					get_element_script_wrapper->ConvertResultToJsonValue(manager, &json_element);
-					found_elements->append(json_element);
-					delete get_element_script_wrapper;
+			std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].snapshotLength;}})();";
+			ScriptWrapper *get_element_count_script_wrapper = new ScriptWrapper(doc, get_element_count_script, 1);
+			get_element_count_script_wrapper->AddArgument(snapshot);
+			result = get_element_count_script_wrapper->Execute();
+			if (result == SUCCESS) {
+				if (!get_element_count_script_wrapper->ResultIsInteger()) {
+					result = EUNEXPECTEDJSERROR;
+				} else {
+					long length = get_element_count_script_wrapper->result().lVal;
+					std::wstring get_next_element_script(L"(function(){return function() {return arguments[0].iterateNext();}})();");
+					for (long i = 0; i < length; ++i) {
+						ScriptWrapper *get_element_script_wrapper = new ScriptWrapper(doc, get_next_element_script, 2);
+						get_element_script_wrapper->AddArgument(snapshot);
+						get_element_script_wrapper->AddArgument(i);
+						result = get_element_script_wrapper->Execute();
+						Json::Value json_element;
+						get_element_script_wrapper->ConvertResultToJsonValue(manager, &json_element);
+						found_elements->append(json_element);
+						delete get_element_script_wrapper;
+					}
 				}
 			}
-		}
 
-		delete get_element_count_script_wrapper;
-		delete script_wrapper;
+			delete get_element_count_script_wrapper;
+			delete script_wrapper;
+		} catch(...) {
+		}
 
 		return result;
 	}

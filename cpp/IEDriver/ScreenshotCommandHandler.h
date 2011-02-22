@@ -96,8 +96,8 @@ private:
 		this->image_ = new CImage();
 		this->image_->Create(width, height, 16);
 		HDC device_context_handle = this->image_->GetDC();
-		hr = ::PrintWindow(content_window_handle, device_context_handle, PW_CLIENTONLY);
-		if (FAILED(hr)) {
+		BOOL result = ::PrintWindow(content_window_handle, device_context_handle, PW_CLIENTONLY);
+		if (!result) {
 			// Could not draw.
 			// LOG(WARN) << "PrintWindow failed";
 			this->image_->ReleaseDC();
@@ -162,7 +162,7 @@ private:
 
 		char *data_array = new char[length + 1];
 		if (!::Base64Encode(reinterpret_cast<BYTE*>(::GlobalLock(global_memory_handle)), (int)statstg.cbSize.QuadPart, data_array, &length, ATL_BASE64_FLAG_NOCRLF)) {
-			delete data_array;
+			delete[] data_array;
 			::GlobalUnlock(global_memory_handle);
 			// LOG(WARN) << "Failure encoding to base64";
 			return E_FAIL;
@@ -170,7 +170,7 @@ private:
 		data_array[length] = '\0';
 		data = data_array;
 
-		delete data_array;
+		delete[] data_array;
 		::GlobalUnlock(global_memory_handle);
 
 		return S_OK;
