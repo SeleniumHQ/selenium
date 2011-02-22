@@ -118,6 +118,14 @@ public class CommandLine {
     }
   }
 
+  /**
+   * Find the executable by scanning the file system and the PATH. In the case
+   * of Windows this method allows common executable endings (".com", ".bat" and
+   * ".exe") to be omitted.
+   *
+   * @param named The name of the executable to find
+   * @return The absolute path to the executable, or null if no match is made.
+   */
   public static String findExecutable(String named) {
     File file = new File(named);
     if (canExecute(file)) {
