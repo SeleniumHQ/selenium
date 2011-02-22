@@ -211,6 +211,12 @@ LocatorBuilders.add('link', function(e) {
         return null;
     });
 
+LocatorBuilders.add('css', function(e, opt_contextNode) {
+        var dom = new DomPredictionHelper();
+        var path = dom.predictCss([e], []);
+        return "css=" + path;
+    });
+
 LocatorBuilders.add('name', function(e) {
         if (e.name) {
             return e.name;

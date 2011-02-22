@@ -48,6 +48,8 @@ limitations under the License.
 <!--  <script type="application/x-javascript" src="chrome://selenium-ide/content/eventManager.js"/>-->
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-handlers.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/google-diff/diff_match_patch.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selectorgadget/dom.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/application.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/storedHistory.js"/>
