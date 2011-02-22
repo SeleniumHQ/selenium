@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -37,12 +39,22 @@ public class GetAttribute extends SeleneseCommand<String> {
     try {
       return (String) library.executeScript(driver, getAttribute, attributeLocator);
     } catch (WebDriverException e) {
-      int atSign = attributeLocator.lastIndexOf("@");
-      String elementLocator = attributeLocator.substring(0, atSign - 1);
-      String attributeName = attributeLocator.substring(atSign + 1);
+      String[] nameAndAttribute = getNameAndAttribute(attributeLocator);
 
-      WebElement element = finder.findElement(driver, elementLocator);
-      return element.getAttribute(attributeName);
+      WebElement element = finder.findElement(driver, nameAndAttribute[0]);
+      return element.getAttribute(nameAndAttribute[1]);
     }
+  }
+
+  @VisibleForTesting
+  protected String[] getNameAndAttribute(String attributeLocator) {
+    int atSign = attributeLocator.lastIndexOf("@");
+
+    String[] toReturn = new String[2];
+
+    toReturn[0] = attributeLocator.substring(0, atSign);
+    toReturn[1] = attributeLocator.substring(atSign + 1);
+
+    return toReturn;
   }
 }
