@@ -299,7 +299,7 @@ public class CommandLine {
 
   private static Method findJdk6CanExecuteMethod() {
     try {
-      return File.class.getMethod("setWritable", Boolean.class);
+      return File.class.getMethod("canExecute");
     } catch (NoSuchMethodException e) {
       return null;
     }
