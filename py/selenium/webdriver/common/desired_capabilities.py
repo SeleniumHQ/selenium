@@ -32,6 +32,10 @@ class DesiredCapabilities(object):
 
     HTMLUNIT = {"browserName": "htmlunit",
                         "version": "",
+                        "platform": "ANY" }
+                        
+    HTMLUNITWITHJS = {"browserName": "htmlunit",
+                        "version": "firefox",
                         "platform": "ANY",
                         "javascriptEnabled": True }
 
