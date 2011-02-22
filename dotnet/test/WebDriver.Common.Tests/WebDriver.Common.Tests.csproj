@@ -64,6 +64,7 @@
     <Compile Include="Browser.cs" />
     <Compile Include="ByTest.cs" />
     <Compile Include="ChildrenFindingTest.cs" />
+    <Compile Include="ClickTest.cs" />
     <Compile Include="CookieImplementationTest.cs" />
     <Compile Include="CookieTest.cs" />
     <Compile Include="CorrectEventFiringTest.cs" />

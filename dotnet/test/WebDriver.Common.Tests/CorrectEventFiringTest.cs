@@ -90,10 +90,10 @@ namespace OpenQA.Selenium
             string text = driver.FindElement(By.Id("result")).Text;
 
             int lastIndex = -1;
-            List<string> eventList = new List<string>() {"mousedown", "focus", "mouseup", "click"};
-            foreach(string eventName in eventList)
+            List<string> eventList = new List<string>() { "mousedown", "focus", "mouseup", "click" };
+            foreach (string eventName in eventList)
             {
-                int index =  text.IndexOf(eventName);
+                int index = text.IndexOf(eventName);
 
                 Assert.IsTrue(index != -1, eventName + " did not fire at all");
                 Assert.IsTrue(index > lastIndex, eventName + " did not fire in the correct order");
@@ -224,6 +224,129 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("theworks"));
             element.SendKeys("foo");
             AssertEventFired("focus");
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.IPhone, "Input elements are blurred when the keyboard is closed.")]
+        public void SendingKeysToAFocusedElementShouldNotBlurThatElement()
+        {
+            driver.Url = javascriptPage;
+            IWebElement element = driver.FindElement(By.Id("theworks"));
+            element.Click();
+
+            //Wait until focused
+            bool focused = false;
+            IWebElement result = driver.FindElement(By.Id("result"));
+            for (int i = 0; i < 5; ++i)
+            {
+                string fired = result.Text;
+                if (fired.Contains("focus"))
+                {
+                    focused = true;
+                    break;
+                }
+                try
+                {
+                    System.Threading.Thread.Sleep(200);
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+            if (!focused)
+            {
+                Assert.Fail("Clicking on element didn't focus it in time - can't proceed so failing");
+            }
+
+            element.SendKeys("a");
+            AssertEventNotFired("blur");
+        }
+
+        [Test]
+        [Category("Javascript")]
+        //[IgnoreBrowser(Browser.IE)]
+        public void SubmittingFormFromFormElementShouldFireOnSubmitForThatForm()
+        {
+            driver.Url = javascriptPage;
+            IWebElement formElement = driver.FindElement(By.Id("submitListeningForm"));
+            formElement.Submit();
+            AssertEventFired("form-onsubmit");
+        }
+
+        [Test]
+        [Category("Javascript")]
+        //[IgnoreBrowser(Browser.IE)]
+        public void SubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm()
+        {
+            driver.Url = javascriptPage;
+            IWebElement submit = driver.FindElement(By.Id("submitListeningForm-submit"));
+            submit.Submit();
+            AssertEventFired("form-onsubmit");
+        }
+
+        [Test]
+        [Category("Javascript")]
+        //[IgnoreBrowser(Browser.IE)]
+        public void SubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput()
+        {
+            driver.Url = javascriptPage;
+            IWebElement submit = driver.FindElement(By.Id("submitListeningForm-submit"));
+            submit.Submit();
+            AssertEventFired("form-onsubmit");
+            AssertEventNotFired("text-onclick");
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.Chrome, "Does not yet support file uploads")]
+        [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
+        public void UploadingFileShouldFireOnChangeEvent()
+        {
+            driver.Url = formsPage;
+            IWebElement uploadElement = driver.FindElement(By.Id("upload"));
+            IWebElement result = driver.FindElement(By.Id("fileResults"));
+            Assert.AreEqual(string.Empty, result.Text);
+
+            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
+            inputFileWriter.WriteLine("Hello world");
+            inputFileWriter.Close();
+
+            uploadElement.SendKeys(inputFile.FullName);
+            // Shift focus to something else because send key doesn't make the focus leave
+            driver.FindElement(By.TagName("body")).Click();
+
+            inputFile.Delete();
+            Assert.AreEqual("changed", result.Text);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        public void ShouldReportTheXAndYCoordinatesWhenClicking()
+        {
+            driver.Url = javascriptPage;
+
+            IWebElement element = driver.FindElement(By.Id("eventish"));
+            element.Click();
+
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(2));
+            string clientX = driver.FindElement(By.Id("clientX")).Text;
+            string clientY = driver.FindElement(By.Id("clientY")).Text;
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(0));
+
+            Assert.AreNotEqual("0", clientX);
+            Assert.AreNotEqual("0", clientY);
+        }
+
+        private void AssertEventNotFired(string eventName)
+        {
+            IWebElement result = driver.FindElement(By.Id("result"));
+            string text = result.Text;
+            Assert.IsFalse(text.Contains(eventName), eventName + " fired: " + text);
         }
 
         private void ClickOnElementWhichRecordsEvents()
