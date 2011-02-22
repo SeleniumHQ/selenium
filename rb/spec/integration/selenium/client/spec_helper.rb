@@ -94,7 +94,7 @@ end # SeleniumClientTestEnvironment
 RSpec.configure do |config|
 
   config.after(:suite) do
-    @test_environment.stop if @test_environment
+    $selenium_client_test_environment && $selenium_client_test_environment.stop
   end
 
   def selenium_driver
