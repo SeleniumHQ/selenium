@@ -43,27 +43,18 @@ protected:
 				browser_wrapper->GetDocument(&doc);
 
 				Json::Value location_array;
-				try {
-					// Wrapped in a try-catch block to ensure that the ScriptWrappers
-					// allocated here will be properly disposed of by virtue of scope
-					// of the try-catch block if an exception occurs.
-					ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
-					script_wrapper->AddArgument(element_wrapper);
-					status_code = script_wrapper->Execute();
+				ScriptWrapper script_wrapper(doc, script, 1);
+				script_wrapper.AddArgument(element_wrapper);
+				status_code = script_wrapper.Execute();
 
-					// TODO (JimEvans): Find a way to collapse this and the atom
-					// call into a single JS function.
-					std::wstring location_script(L"(function() { return function(){ return [arguments[0].x, arguments[0].y];};})();");
-					ScriptWrapper *location_script_wrapper = new ScriptWrapper(doc, location_script, 1);
-					location_script_wrapper->AddArgument(script_wrapper->result());
-					status_code = location_script_wrapper->Execute();
+				// TODO (JimEvans): Find a way to collapse this and the atom
+				// call into a single JS function.
+				std::wstring location_script(L"(function() { return function(){ return [arguments[0].x, arguments[0].y];};})();");
+				ScriptWrapper location_script_wrapper(doc, location_script, 1);
+				location_script_wrapper.AddArgument(script_wrapper.result());
+				status_code = location_script_wrapper.Execute();
 
-					location_script_wrapper->ConvertResultToJsonValue(manager, &location_array);
-
-					delete location_script_wrapper;
-					delete script_wrapper;
-				} catch(...) {
-				}
+				location_script_wrapper.ConvertResultToJsonValue(manager, &location_array);
 
 				Json::UInt index = 0;
 				Json::Value response_value;

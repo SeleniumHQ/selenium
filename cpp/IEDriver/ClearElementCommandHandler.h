@@ -45,10 +45,9 @@ protected:
 
 				CComPtr<IHTMLDocument2> doc;
 				browser_wrapper->GetDocument(&doc);
-				ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
-				script_wrapper->AddArgument(element_wrapper);
-				status_code = script_wrapper->Execute();
-				delete script_wrapper;
+				ScriptWrapper script_wrapper(doc, script, 1);
+				script_wrapper.AddArgument(element_wrapper);
+				status_code = script_wrapper.Execute();
 				if (status_code != SUCCESS) {
 					response->SetErrorResponse(EUNHANDLEDERROR, "Element is no longer valid");
 					return;

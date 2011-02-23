@@ -124,11 +124,10 @@ bool ScriptWrapper::ResultIsArray() {
 	// property defined will be seen as arrays instead of objects.
 	if (type_name == L"JScriptTypeInfo") {
 		const std::wstring script = L"(function() { return function(){ return arguments[0] && arguments[0].hasOwnProperty('length') && typeof arguments[0] === 'object' && typeof arguments[0].length === 'number';};})();";
-		// ScriptWrapper *is_array_wrapper = new ScriptWrapper(this->browser_, script, 1);
-		ScriptWrapper *is_array_wrapper = new ScriptWrapper(this->script_engine_host_, script, 1);
-		is_array_wrapper->AddArgument(this->result_);
-		is_array_wrapper->Execute();
-		return is_array_wrapper->result().boolVal == VARIANT_TRUE;
+		ScriptWrapper is_array_wrapper(this->script_engine_host_, script, 1);
+		is_array_wrapper.AddArgument(this->result_);
+		is_array_wrapper.Execute();
+		return is_array_wrapper.result().boolVal == VARIANT_TRUE;
 	}
 
 	return false;
@@ -378,9 +377,9 @@ std::wstring ScriptWrapper::GetResultObjectTypeName() {
 int ScriptWrapper::GetPropertyNameList(std::wstring *property_names) {
 	// Loop through the properties, appending the name of each one to the string.
 	std::wstring get_names_script(L"(function(){return function() { var name_list = ''; for (var name in arguments[0]) { if (name_list.length > 0) name_list+= ','; name_list += name } return name_list;}})();");
-	ScriptWrapper *get_names_script_wrapper = new ScriptWrapper(this->script_engine_host_, get_names_script, 1);
-	get_names_script_wrapper->AddArgument(this->result_);
-	int get_names_result = get_names_script_wrapper->Execute();
+	ScriptWrapper get_names_script_wrapper(this->script_engine_host_, get_names_script, 1);
+	get_names_script_wrapper.AddArgument(this->result_);
+	int get_names_result = get_names_script_wrapper.Execute();
 
 	if (get_names_result != SUCCESS) {
 		return get_names_result;
@@ -388,27 +387,25 @@ int ScriptWrapper::GetPropertyNameList(std::wstring *property_names) {
 
 	// Expect the return type to be an integer. A non-integer means this was
 	// not an array after all.
-	if (!get_names_script_wrapper->ResultIsString()) {
+	if (!get_names_script_wrapper.ResultIsString()) {
 		return EUNEXPECTEDJSERROR;
 	}
 
-	*property_names = get_names_script_wrapper->result().bstrVal;
-	delete get_names_script_wrapper;
+	*property_names = get_names_script_wrapper.result().bstrVal;
 	return SUCCESS;
 }
 
 int ScriptWrapper::GetPropertyValue(BrowserManager *manager, std::wstring property_name, Json::Value *property_value){
 	std::wstring get_value_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
-	ScriptWrapper *get_value_script_wrapper = new ScriptWrapper(this->script_engine_host_, get_value_script, 2);
-	get_value_script_wrapper->AddArgument(this->result_);
-	get_value_script_wrapper->AddArgument(property_name);
-	int get_value_result = get_value_script_wrapper->Execute();
+	ScriptWrapper get_value_script_wrapper(this->script_engine_host_, get_value_script, 2);
+	get_value_script_wrapper.AddArgument(this->result_);
+	get_value_script_wrapper.AddArgument(property_name);
+	int get_value_result = get_value_script_wrapper.Execute();
 	if (get_value_result != SUCCESS) {
 		return get_value_result;
 	}
 
-	int property_value_status = get_value_script_wrapper->ConvertResultToJsonValue(manager, property_value);
-	delete get_value_script_wrapper;
+	int property_value_status = get_value_script_wrapper.ConvertResultToJsonValue(manager, property_value);
 	return SUCCESS;
 }
 
@@ -416,9 +413,9 @@ int ScriptWrapper::GetArrayLength(long *length) {
 	// Prepare an array for the Javascript execution, containing only one
 	// element - the original returned array from a JS execution.
 	std::wstring get_length_script(L"(function(){return function() {return arguments[0].length;}})();");
-	ScriptWrapper *get_length_script_wrapper = new ScriptWrapper(this->script_engine_host_, get_length_script, 1);
-	get_length_script_wrapper->AddArgument(this->result_);
-	int length_result = get_length_script_wrapper->Execute();
+	ScriptWrapper get_length_script_wrapper(this->script_engine_host_, get_length_script, 1);
+	get_length_script_wrapper.AddArgument(this->result_);
+	int length_result = get_length_script_wrapper.Execute();
 
 	if (length_result != SUCCESS) {
 		return length_result;
@@ -426,27 +423,25 @@ int ScriptWrapper::GetArrayLength(long *length) {
 
 	// Expect the return type to be an integer. A non-integer means this was
 	// not an array after all.
-	if (!get_length_script_wrapper->ResultIsInteger()) {
+	if (!get_length_script_wrapper.ResultIsInteger()) {
 		return EUNEXPECTEDJSERROR;
 	}
 
-	*length = get_length_script_wrapper->result().lVal;
-	delete get_length_script_wrapper;
+	*length = get_length_script_wrapper.result().lVal;
 	return SUCCESS;
 }
 
 int ScriptWrapper::GetArrayItem(BrowserManager *manager, long index, Json::Value *item){
 	std::wstring get_array_item_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
-	ScriptWrapper *get_array_item_script_wrapper = new ScriptWrapper(this->script_engine_host_, get_array_item_script, 2);
-	get_array_item_script_wrapper->AddArgument(this->result_);
-	get_array_item_script_wrapper->AddArgument(index);
-	int get_item_result = get_array_item_script_wrapper->Execute();
+	ScriptWrapper get_array_item_script_wrapper(this->script_engine_host_, get_array_item_script, 2);
+	get_array_item_script_wrapper.AddArgument(this->result_);
+	get_array_item_script_wrapper.AddArgument(index);
+	int get_item_result = get_array_item_script_wrapper.Execute();
 	if (get_item_result != SUCCESS) {
 		return get_item_result;
 	}
 
-	int array_item_status = get_array_item_script_wrapper->ConvertResultToJsonValue(manager, item);
-	delete get_array_item_script_wrapper;
+	int array_item_status = get_array_item_script_wrapper.ConvertResultToJsonValue(manager, item);
 	return SUCCESS;
 }
 

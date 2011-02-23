@@ -30,7 +30,7 @@ namespace webdriver {
 
 class BrowserWrapper : public IDispEventSimpleImpl<1, BrowserWrapper, &DIID_DWebBrowserEvents2> {
 public:
-	BrowserWrapper(IWebBrowser2* browser, HWND hwnd, BrowserFactory *factory);
+	BrowserWrapper(IWebBrowser2* browser, HWND hwnd, BrowserFactory& factory);
 	virtual ~BrowserWrapper(void);
 
 	BrowserWrapperEvent<BrowserWrapper*> NewWindow;
@@ -103,7 +103,7 @@ private:
 
 	CComPtr<IHTMLWindow2> focused_frame_window_;
 	CComPtr<IWebBrowser2> browser_;
-	BrowserFactory *factory_;
+	BrowserFactory factory_;
 	HWND window_handle_;
 	std::wstring browser_id_;
 	bool is_navigation_started_;

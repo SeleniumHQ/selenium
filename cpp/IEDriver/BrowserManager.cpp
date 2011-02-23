@@ -95,7 +95,6 @@ LRESULT BrowserManager::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	this->PopulateCommandHandlerRepository();
 	this->PopulateElementFinderRepository();
 	this->current_browser_id_ = L"";
-	this->factory_ = new BrowserFactory;
 	this->current_command_ = new WebDriverCommand;
 	this->serialized_response_ = L"";
 	this->speed_ = 0;
@@ -106,7 +105,6 @@ LRESULT BrowserManager::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 }
 
 LRESULT BrowserManager::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-	delete this->factory_;
 	this->DestroyWindow();
 	return 0;
 }
@@ -290,12 +288,12 @@ void BrowserManager::AddManagedBrowser(BrowserWrapper *browser_wrapper) {
 }
 
 void BrowserManager::CreateNewBrowser(void) {
-	DWORD dwProcId = this->factory_->LaunchBrowserProcess(this->port_);
+	DWORD dwProcId = this->factory_.LaunchBrowserProcess(this->port_);
 	ProcessWindowInfo process_window_info;
 	process_window_info.dwProcessId = dwProcId;
 	process_window_info.hwndBrowser = NULL;
 	process_window_info.pBrowser = NULL;
-	this->factory_->AttachToBrowser(&process_window_info);
+	this->factory_.AttachToBrowser(&process_window_info);
 	BrowserWrapper *wrapper = new BrowserWrapper(process_window_info.pBrowser, process_window_info.hwndBrowser, this->factory_);
 	this->AddManagedBrowser(wrapper);
 }

@@ -117,7 +117,7 @@ private:
 	std::tr1::unordered_map<std::wstring, ElementWrapper*> managed_elements_;
 	std::tr1::unordered_map<std::wstring, ElementFinder*> element_finders_;
 
-	BrowserFactory *factory_;
+	BrowserFactory factory_;
 	std::wstring current_browser_id_;
 
 	int speed_;

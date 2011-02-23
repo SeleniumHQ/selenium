@@ -48,15 +48,13 @@ int ElementWrapper::IsDisplayed(bool *result) {
 
 	CComPtr<IHTMLDocument2> doc;
 	this->browser_->GetDocument(&doc);
-	ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
-	script_wrapper->AddArgument(this->element_);
-	status_code = script_wrapper->Execute();
+	ScriptWrapper script_wrapper(doc, script, 1);
+	script_wrapper.AddArgument(this->element_);
+	status_code = script_wrapper.Execute();
 
 	if (status_code == SUCCESS) {
-		*result = script_wrapper->result().boolVal == VARIANT_TRUE;
+		*result = script_wrapper.result().boolVal == VARIANT_TRUE;
 	}
-
-	delete script_wrapper;
 
 	return status_code;
 }
@@ -73,15 +71,13 @@ bool ElementWrapper::IsEnabled() {
 
 	CComPtr<IHTMLDocument2> doc;
 	this->browser_->GetDocument(&doc);
-	ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
-	script_wrapper->AddArgument(this->element_);
-	int status_code = script_wrapper->Execute();
+	ScriptWrapper script_wrapper(doc, script, 1);
+	script_wrapper.AddArgument(this->element_);
+	int status_code = script_wrapper.Execute();
 
 	if (status_code == SUCCESS) {
-		result = script_wrapper->result().boolVal == VARIANT_TRUE;
+		result = script_wrapper.result().boolVal == VARIANT_TRUE;
 	}
-
-	delete script_wrapper;
 
 	return result;
 }
@@ -155,16 +151,14 @@ int ElementWrapper::GetAttributeValue(std::wstring attribute_name, VARIANT *attr
 
 	CComPtr<IHTMLDocument2> doc;
 	this->browser_->GetDocument(&doc);
-	ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 2);
-	script_wrapper->AddArgument(this->element_);
-	script_wrapper->AddArgument(attribute_name);
-	status_code = script_wrapper->Execute();
+	ScriptWrapper script_wrapper(doc, script, 2);
+	script_wrapper.AddArgument(this->element_);
+	script_wrapper.AddArgument(attribute_name);
+	status_code = script_wrapper.Execute();
 
 	if (status_code == SUCCESS) {
-		::VariantCopy(attribute_value, &script_wrapper->result());
+		::VariantCopy(attribute_value, &script_wrapper.result());
 	}
-
-	delete script_wrapper;
 
 	return SUCCESS;
 }
@@ -234,12 +228,12 @@ bool ElementWrapper::IsSelected() {
 
 	CComPtr<IHTMLDocument2> doc;
 	this->browser_->GetDocument(&doc);
-	ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
-	script_wrapper->AddArgument(this->element_);
-	int status_code = script_wrapper->Execute();
+	ScriptWrapper script_wrapper(doc, script, 1);
+	script_wrapper.AddArgument(this->element_);
+	int status_code = script_wrapper.Execute();
 
-	if (status_code == SUCCESS && script_wrapper->ResultIsBoolean()) {
-		selected = script_wrapper->result().boolVal == VARIANT_TRUE;
+	if (status_code == SUCCESS && script_wrapper.ResultIsBoolean()) {
+		selected = script_wrapper.result().boolVal == VARIANT_TRUE;
 	}
 
 	return selected;
@@ -398,12 +392,11 @@ int ElementWrapper::GetFrameOffset(long *x, long *y) {
 				// a frame or an iframe). Then get the x and y coordinates of
 				// that frame element.
 				std::wstring script = L"(function(){ return function() { return arguments[0].frameElement };})();";
-				ScriptWrapper *script_wrapper = new ScriptWrapper(frame_doc, script, 1);
+				ScriptWrapper script_wrapper(frame_doc, script, 1);
 				CComVariant window_variant(frame_window);
-				script_wrapper->AddArgument(window_variant);
-				script_wrapper->Execute();
-				CComQIPtr<IHTMLElement> frame_element(script_wrapper->result().pdispVal);
-				delete script_wrapper;
+				script_wrapper.AddArgument(window_variant);
+				script_wrapper.Execute();
+				CComQIPtr<IHTMLElement> frame_element(script_wrapper.result().pdispVal);
 
 				// Wrap the element so we can find its location.
 				ElementWrapper *element_wrapper = new ElementWrapper(frame_element, this->browser_);

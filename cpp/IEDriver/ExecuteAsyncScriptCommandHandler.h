@@ -128,23 +128,23 @@ protected:
 
 			CComPtr<IHTMLDocument2> doc;
 			browser_wrapper->GetDocument(&doc);
-			ScriptWrapper *async_script_wrapper = new ScriptWrapper(doc, async_script, json_args.size());
+			ScriptWrapper async_script_wrapper(doc, async_script, json_args.size());
 			status_code = this->PopulateArgumentArray(manager, async_script_wrapper, json_args);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Error setting arguments for script");
 				return;
 			}
 
-			status_code = async_script_wrapper->Execute();
+			status_code = async_script_wrapper.Execute();
 
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "JavaScript error in async script.");
 				return;
 			} else {
-				ScriptWrapper *polling_script_wrapper = new ScriptWrapper(doc, polling_script, 0);
+				ScriptWrapper polling_script_wrapper(doc, polling_script, 0);
 				while (true) {
 					Json::Value polling_result;
-					status_code = polling_script_wrapper->Execute();
+					status_code = polling_script_wrapper.Execute();
 					if (status_code != SUCCESS) {
 						// Assume that if the polling script errors, it's because
 						// of a page reload. Note that experience shows this to
@@ -155,7 +155,7 @@ protected:
 						break;
 					}
 
-					polling_script_wrapper->ConvertResultToJsonValue(manager, &polling_result);
+					polling_script_wrapper.ConvertResultToJsonValue(manager, &polling_result);
 					
 					Json::UInt index = 0;
 					std::string narrow_pending_id(CW2A(pending_id.c_str(), CP_UTF8));
@@ -175,8 +175,6 @@ protected:
 					}
 				}
 
-				delete polling_script_wrapper;
-				delete async_script_wrapper;
 				return;
 			}
 		}

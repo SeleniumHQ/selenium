@@ -6,7 +6,7 @@
 
 namespace webdriver {
 
-BrowserWrapper::BrowserWrapper(IWebBrowser2 *browser, HWND hwnd, BrowserFactory *factory) {
+BrowserWrapper::BrowserWrapper(IWebBrowser2 *browser, HWND hwnd, BrowserFactory& factory) {
 	// NOTE: COM should be initialized on this thread, so we
 	// could use CoCreateGuid() and StringFromGUID2() instead.
 	UUID guid;
@@ -180,11 +180,9 @@ int BrowserWrapper::DeleteCookie(std::wstring cookie_name) {
 
 	CComPtr<IHTMLDocument2> doc;
 	this->GetDocument(&doc);
-	ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
-	script_wrapper->AddArgument(cookie_name);
-	int status_code = script_wrapper->Execute();
-	delete script_wrapper;
-
+	ScriptWrapper script_wrapper(doc, script, 1);
+	script_wrapper.AddArgument(cookie_name);
+	int status_code = script_wrapper.Execute();
 	return status_code;
 }
 
@@ -195,7 +193,7 @@ bool BrowserWrapper::IsHtmlPage(IHTMLDocument2* doc) {
 	}
 
 	std::wstring document_type_key_name(L"");
-	if (this->factory_->GetRegistryValue(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice", L"Progid", &document_type_key_name)) {
+	if (this->factory_.GetRegistryValue(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice", L"Progid", &document_type_key_name)) {
 		// Look for the user-customization under Vista/Windows 7 first. If it's
 		// IE, set the document friendly name lookup key to 'htmlfile'. If not,
 		// set it to blank so that we can look up the proper HTML type.
@@ -215,13 +213,13 @@ bool BrowserWrapper::IsHtmlPage(IHTMLDocument2* doc) {
 		// value of which should contain the browser-specific friendly name of
 		// the MIME type for HTML documents, which is what 
 		// IHTMLDocument2::get_mimeType() returns.
-		if (!this->factory_->GetRegistryValue(HKEY_CLASSES_ROOT, L".htm", L"", &document_type_key_name)) {
+		if (!this->factory_.GetRegistryValue(HKEY_CLASSES_ROOT, L".htm", L"", &document_type_key_name)) {
 			return false;
 		}
 	}
 
 	std::wstring mime_type_name;
-	if (!this->factory_->GetRegistryValue(HKEY_CLASSES_ROOT, document_type_key_name, L"", &mime_type_name)) {
+	if (!this->factory_.GetRegistryValue(HKEY_CLASSES_ROOT, document_type_key_name, L"", &mime_type_name)) {
 		return false;
 	}
 
@@ -349,7 +347,7 @@ HWND BrowserWrapper::GetWindowHandle() {
 	}
 
 	if (this->window_handle_ == NULL) {
-		this->window_handle_ = this->factory_->GetTabWindowHandle(this->browser_);
+		this->window_handle_ = this->factory_.GetTabWindowHandle(this->browser_);
 	}
 
 	return this->window_handle_;
@@ -370,7 +368,7 @@ void __stdcall BrowserWrapper::NewWindow3(IDispatch **ppDisp, VARIANT_BOOL * pbC
 	// the events of the new browser window opened by the user action.
 	// This will not allow us to handle windows created by the JavaScript
 	// showModalDialog function().
-	IWebBrowser2 *browser = this->factory_->CreateBrowser();
+	IWebBrowser2 *browser = this->factory_.CreateBrowser();
 	BrowserWrapper *new_window_wrapper = new BrowserWrapper(browser, NULL, this->factory_);
 	*ppDisp = browser;
 	this->NewWindow.raise(new_window_wrapper);

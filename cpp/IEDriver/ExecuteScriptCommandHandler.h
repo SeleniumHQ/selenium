@@ -36,29 +36,28 @@ protected:
 
 			CComPtr<IHTMLDocument2> doc;
 			browser_wrapper->GetDocument(&doc);
-			ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, json_args.size());
+			ScriptWrapper script_wrapper(doc, script, json_args.size());
 			status_code = this->PopulateArgumentArray(manager, script_wrapper, json_args);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Error setting arguments for script");
 				return;
 			}
 
-			status_code = script_wrapper->Execute();
+			status_code = script_wrapper.Execute();
 
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "JavaScript error");
 				return;
 			} else {
 				Json::Value script_result;
-				script_wrapper->ConvertResultToJsonValue(manager, &script_result);
+				script_wrapper.ConvertResultToJsonValue(manager, &script_result);
 				response->SetResponse(SUCCESS, script_result);
-				delete script_wrapper;
 				return;
 			}
 		}
 	}
 
-	int ExecuteScriptCommandHandler::PopulateArgumentArray(BrowserManager *manager, ScriptWrapper *script_wrapper, Json::Value json_args) {
+	int ExecuteScriptCommandHandler::PopulateArgumentArray(BrowserManager *manager, ScriptWrapper& script_wrapper, Json::Value json_args) {
 		int status_code = SUCCESS;
 		for (UINT arg_index = 0; arg_index < json_args.size(); ++arg_index) {
 			Json::Value arg = json_args[arg_index];
@@ -71,20 +70,20 @@ protected:
 		return status_code;
 	}
 
-	int ExecuteScriptCommandHandler::AddArgument(BrowserManager *manager, ScriptWrapper *script_wrapper, Json::Value arg) {
+	int ExecuteScriptCommandHandler::AddArgument(BrowserManager *manager, ScriptWrapper& script_wrapper, Json::Value arg) {
 		int status_code = SUCCESS;
 		if (arg.isString()) {
 			std::wstring value(CA2W(arg.asString().c_str(), CP_UTF8));
-			script_wrapper->AddArgument(value);
+			script_wrapper.AddArgument(value);
 		} else if (arg.isInt()) {
 			int int_number(arg.asInt());
-			script_wrapper->AddArgument(int_number);
+			script_wrapper.AddArgument(int_number);
 		} else if (arg.isDouble()) {
 			double dbl_number(arg.asDouble());
-			script_wrapper->AddArgument(dbl_number);
+			script_wrapper.AddArgument(dbl_number);
 		} else if (arg.isBool()) {
 			bool bool_arg(arg.asBool());
-			script_wrapper->AddArgument(bool_arg);
+			script_wrapper.AddArgument(bool_arg);
 		} else if (arg.isArray()) {
 			this->WalkArray(manager, script_wrapper, arg);
 		} else if (arg.isObject()) {
@@ -94,7 +93,7 @@ protected:
 				ElementWrapper *element_wrapper;
 				status_code = this->GetElement(manager, element_id, &element_wrapper);
 				if (status_code == SUCCESS) {
-					script_wrapper->AddArgument(element_wrapper);
+					script_wrapper.AddArgument(element_wrapper);
 				}
 			} else {
 				this->WalkObject(manager, script_wrapper, arg);
@@ -104,7 +103,7 @@ protected:
 		return status_code;
 	}
 
-	int ExecuteScriptCommandHandler::WalkArray(BrowserManager *manager, ScriptWrapper *script_wrapper, Json::Value array_value) {
+	int ExecuteScriptCommandHandler::WalkArray(BrowserManager *manager, ScriptWrapper& script_wrapper, Json::Value array_value) {
 		int status_code = SUCCESS;
 		Json::UInt array_size = array_value.size();
 		std::wstring array_script = L"(function(){ return function() { return [";
@@ -124,7 +123,7 @@ protected:
 
 		CComPtr<IHTMLDocument2> doc;
 		browser->GetDocument(&doc);
-		ScriptWrapper *array_script_wrapper = new ScriptWrapper(doc, array_script, array_size);
+		ScriptWrapper array_script_wrapper(doc, array_script, array_size);
 		for (Json::UInt index = 0; index < array_size; ++index) {
 			status_code = this->AddArgument(manager, array_script_wrapper, array_value[index]);
 			if (status_code != SUCCESS) {
@@ -133,18 +132,17 @@ protected:
 		}
 		
 		if (status_code == SUCCESS) {
-			status_code = array_script_wrapper->Execute();
+			status_code = array_script_wrapper.Execute();
 		}
 
 		if (status_code == SUCCESS) {
-			script_wrapper->AddArgument(array_script_wrapper->result());
+			script_wrapper.AddArgument(array_script_wrapper.result());
 		}
 
-		delete array_script_wrapper;
 		return status_code;
 	}
 
-	int ExecuteScriptCommandHandler::WalkObject(BrowserManager *manager, ScriptWrapper *script_wrapper, Json::Value object_value) {
+	int ExecuteScriptCommandHandler::WalkObject(BrowserManager *manager, ScriptWrapper& script_wrapper, Json::Value object_value) {
 		int status_code = SUCCESS;
 		Json::Value::iterator it(object_value.begin());
 		int counter(0);
@@ -167,7 +165,7 @@ protected:
 
 		CComPtr<IHTMLDocument2> doc;
 		browser->GetDocument(&doc);
-		ScriptWrapper *object_script_wrapper = new ScriptWrapper(doc, object_script, counter);
+		ScriptWrapper object_script_wrapper(doc, object_script, counter);
 		for (it = object_value.begin(); it != object_value.end(); ++it) {
 			status_code = this->AddArgument(manager, object_script_wrapper, object_value[it.memberName()]);
 			if (status_code != SUCCESS) {
@@ -176,13 +174,12 @@ protected:
 		}
 
 		if (status_code == SUCCESS) {
-			status_code = object_script_wrapper->Execute();
+			status_code = object_script_wrapper.Execute();
 		}
 
 		if (status_code == SUCCESS) {
-			script_wrapper->AddArgument(object_script_wrapper->result());
+			script_wrapper.AddArgument(object_script_wrapper.result());
 		}
-		delete object_script_wrapper;
 		return status_code;
 	}
 };

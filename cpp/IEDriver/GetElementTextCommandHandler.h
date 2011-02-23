@@ -41,16 +41,14 @@ protected:
 
 				CComPtr<IHTMLDocument2> doc;
 				browser_wrapper->GetDocument(&doc);
-				ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
-				script_wrapper->AddArgument(element_wrapper->element());
-				status_code = script_wrapper->Execute();
+				ScriptWrapper script_wrapper(doc, script, 1);
+				script_wrapper.AddArgument(element_wrapper->element());
+				status_code = script_wrapper.Execute();
 
 				CComVariant text_variant;
 				if (status_code == SUCCESS) {
-					::VariantCopy(&text_variant, &script_wrapper->result());
+					::VariantCopy(&text_variant, &script_wrapper.result());
 				}
-
-				delete script_wrapper;
 
 				if (status_code == SUCCESS) {
 					std::wstring text(browser_wrapper->ConvertVariantToWString(&text_variant));

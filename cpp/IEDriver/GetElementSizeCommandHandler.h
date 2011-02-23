@@ -43,27 +43,18 @@ protected:
 				browser_wrapper->GetDocument(&doc);
 
 				Json::Value size_array;
-				try {
-					// Wrapped in a try-catch block to ensure that the ScriptWrappers
-					// allocated here will be properly disposed of by virtue of scope
-					// of the try-catch block if an exception occurs.
-					ScriptWrapper *script_wrapper = new ScriptWrapper(doc, script, 1);
-					script_wrapper->AddArgument(element_wrapper);
-					status_code = script_wrapper->Execute();
+				ScriptWrapper script_wrapper(doc, script, 1);
+				script_wrapper.AddArgument(element_wrapper);
+				status_code = script_wrapper.Execute();
 
-					// TODO (JimEvans): Find a way to collapse this and the atom
-					// call into a single JS function.
-					std::wstring size_script(L"(function() { return function(){ return [arguments[0].width, arguments[0].height];};})();");
-					ScriptWrapper *size_script_wrapper = new ScriptWrapper(doc, size_script, 1);
-					size_script_wrapper->AddArgument(script_wrapper->result());
-					status_code = size_script_wrapper->Execute();
+				// TODO (JimEvans): Find a way to collapse this and the atom
+				// call into a single JS function.
+				std::wstring size_script(L"(function() { return function(){ return [arguments[0].width, arguments[0].height];};})();");
+				ScriptWrapper size_script_wrapper(doc, size_script, 1);
+				size_script_wrapper.AddArgument(script_wrapper.result());
+				status_code = size_script_wrapper.Execute();
 
-					size_script_wrapper->ConvertResultToJsonValue(manager, &size_array);
-
-					delete size_script_wrapper;
-					delete script_wrapper;
-				} catch (...) {
-				}
+				size_script_wrapper.ConvertResultToJsonValue(manager, &size_array);
 
 				Json::UInt index = 0;
 				Json::Value response_value;
