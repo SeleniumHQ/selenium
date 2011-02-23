@@ -169,13 +169,22 @@ LRESULT BrowserManager::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 	return 0;
 }
 
+LRESULT BrowserManager::OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+	IWebBrowser2* browser = this->factory_.CreateBrowser();
+	BrowserWrapper* new_window_wrapper = new BrowserWrapper(browser, NULL, this->m_hWnd);
+	this->AddManagedBrowser(new_window_wrapper);
+	LPSTREAM* stream = (LPSTREAM*)lParam;
+	HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2, browser, stream);
+	return 0;
+}
+
 LRESULT BrowserManager::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	LPCTSTR str = (LPCTSTR)lParam;
 	std::wstring browser_id(str);
+	delete[] str;
 	std::tr1::unordered_map<std::wstring, BrowserWrapper*>::iterator found_iterator = this->managed_browsers_.find(browser_id);
 	if (found_iterator != this->managed_browsers_.end()) {
-		found_iterator->second->NewWindow.detach(this->new_browser_event_id_);
-		found_iterator->second->Quitting.detach(this->browser_quitting_event_id_);
+		//delete found_iterator->second;
 		this->managed_browsers_.erase(browser_id);
 		if (this->managed_browsers_.size() == 0) {
 			this->current_browser_id_ = L"";
@@ -279,9 +288,6 @@ void BrowserManager::GetManagedBrowserHandles(std::vector<std::wstring> *managed
 
 void BrowserManager::AddManagedBrowser(BrowserWrapper *browser_wrapper) {
 	this->managed_browsers_[browser_wrapper->browser_id()] = browser_wrapper;
-	
-	this->new_browser_event_id_ = browser_wrapper->NewWindow.attach(this, &BrowserManager::NewBrowserEventHandler);
-	this->browser_quitting_event_id_ = browser_wrapper->Quitting.attach(this, &BrowserManager::BrowserQuittingEventHandler);
 	if (this->current_browser_id_ == L"") {
 		this->current_browser_id_ = browser_wrapper->browser_id();
 	}
@@ -294,7 +300,7 @@ void BrowserManager::CreateNewBrowser(void) {
 	process_window_info.hwndBrowser = NULL;
 	process_window_info.pBrowser = NULL;
 	this->factory_.AttachToBrowser(&process_window_info);
-	BrowserWrapper *wrapper = new BrowserWrapper(process_window_info.pBrowser, process_window_info.hwndBrowser, this->factory_);
+	BrowserWrapper *wrapper = new BrowserWrapper(process_window_info.pBrowser, process_window_info.hwndBrowser, this->m_hWnd);
 	this->AddManagedBrowser(wrapper);
 }
 
@@ -360,24 +366,6 @@ int BrowserManager::GetElementFinder(std::wstring mechanism, ElementFinder **fin
 
 	*finder = found_iterator->second;
 	return SUCCESS;
-}
-
-void BrowserManager::NewBrowserEventHandler(BrowserWrapper *wrapper) {
-	//std::string tmp(CW2A(wrapper->browser_id().c_str(), CP_UTF8));
-	//std::cout << "NewWindow found with id " << tmp << "\r\n";
-	if (this->managed_browsers_.find(wrapper->browser_id()) == this->managed_browsers_.end()) {
-		this->AddManagedBrowser(wrapper);
-	}
-}
-
-void BrowserManager::BrowserQuittingEventHandler(std::wstring browser_id) {
-	//std::string tmp(CW2A(browser_id.c_str(), CP_UTF8));
-	//std::cout << "OnQuit from " << tmp << "\r\n";
-	// Send a message to ourselves to remove the browser that is quitting from
-	// the list of managed browsers. This allows any "wait" code that runs for
-	// this browser to be synchronized, and prevents us from deleting the 
-	// browser wrapper from underneath the running wait code.
-	::SendMessage(this->m_hWnd, WD_BROWSER_QUIT, NULL, (LPARAM)browser_id.c_str());
 }
 
 void BrowserManager::PopulateElementFinderRepository(void) {

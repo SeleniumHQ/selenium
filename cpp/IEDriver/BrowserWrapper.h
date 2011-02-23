@@ -10,16 +10,10 @@
 #include <string>
 #include "json.h"
 #include "BrowserFactory.h"
-#include "BrowserWrapperEvent.h"
 #include "CommandValues.h"
 #include "ErrorCodes.h"
+#include "messages.h"
 #include "ScriptWrapper.h"
-
-#define SCRIPT_ARGTYPE_STRING 0
-#define SCRIPT_ARGTYPE_INT 1
-#define SCRIPT_ARGTYPE_DOUBLE 2
-#define SCRIPT_ARGTYPE_BOOL 3
-#define SCRIPT_ARGTYPE_ELEMENT 4
 
 #define BASE_TEN_BASE 10
 #define MAX_DIGITS_OF_NUMBER 22
@@ -30,11 +24,8 @@ namespace webdriver {
 
 class BrowserWrapper : public IDispEventSimpleImpl<1, BrowserWrapper, &DIID_DWebBrowserEvents2> {
 public:
-	BrowserWrapper(IWebBrowser2* browser, HWND hwnd, BrowserFactory& factory);
+	BrowserWrapper(IWebBrowser2* browser, HWND hwnd, HWND browser_manager_handle);
 	virtual ~BrowserWrapper(void);
-
-	BrowserWrapperEvent<BrowserWrapper*> NewWindow;
-	BrowserWrapperEvent<std::wstring> Quitting;
 
 	static inline _ATL_FUNC_INFO* BeforeNavigate2Info() {
 		static _ATL_FUNC_INFO kBeforeNavigate2 = { CC_STDCALL, VT_EMPTY, 7,
@@ -105,6 +96,7 @@ private:
 	CComPtr<IWebBrowser2> browser_;
 	BrowserFactory factory_;
 	HWND window_handle_;
+	HWND browser_manager_handle_;
 	std::wstring browser_id_;
 	bool is_navigation_started_;
 	bool wait_required_;

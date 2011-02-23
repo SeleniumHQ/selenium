@@ -6,7 +6,7 @@
 
 namespace webdriver {
 
-BrowserWrapper::BrowserWrapper(IWebBrowser2 *browser, HWND hwnd, BrowserFactory& factory) {
+BrowserWrapper::BrowserWrapper(IWebBrowser2 *browser, HWND hwnd, HWND browser_manager_handle) {
 	// NOTE: COM should be initialized on this thread, so we
 	// could use CoCreateGuid() and StringFromGUID2() instead.
 	UUID guid;
@@ -24,8 +24,8 @@ BrowserWrapper::BrowserWrapper(IWebBrowser2 *browser, HWND hwnd, BrowserFactory&
 	this->is_closing_ = false;
 	this->wait_required_ = false;
 	this->is_navigation_started_ = false;
-	this->factory_ = factory;
 	this->window_handle_ = hwnd;
+	this->browser_manager_handle_ = browser_manager_handle;
 	this->browser_ = browser;
 	this->focused_frame_window_ = NULL;
 	this->AttachEvents();
@@ -360,7 +360,9 @@ VARIANT * pvarData, VARIANT * pvarHeaders, VARIANT_BOOL * pbCancel) {
 
 void __stdcall BrowserWrapper::OnQuit() {
 	this->is_closing_ = true;
-	this->Quitting.raise(this->browser_id_);
+	LPWSTR message_payload = new WCHAR[this->browser_id_.size() + 1];
+	wcscpy_s(message_payload, this->browser_id_.size() + 1, this->browser_id_.c_str());
+	::PostMessage(this->browser_manager_handle_, WD_BROWSER_QUIT, NULL, (LPARAM)message_payload);
 }
 
 void __stdcall BrowserWrapper::NewWindow3(IDispatch **ppDisp, VARIANT_BOOL * pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl) {
@@ -368,10 +370,11 @@ void __stdcall BrowserWrapper::NewWindow3(IDispatch **ppDisp, VARIANT_BOOL * pbC
 	// the events of the new browser window opened by the user action.
 	// This will not allow us to handle windows created by the JavaScript
 	// showModalDialog function().
-	IWebBrowser2 *browser = this->factory_.CreateBrowser();
-	BrowserWrapper *new_window_wrapper = new BrowserWrapper(browser, NULL, this->factory_);
+	IWebBrowser2* browser;
+	LPSTREAM message_payload;
+	::SendMessage(this->browser_manager_handle_, WD_BROWSER_NEW_WINDOW, NULL, (LPARAM)&message_payload);
+	HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IWebBrowser2, (void**)&browser);
 	*ppDisp = browser;
-	this->NewWindow.raise(new_window_wrapper);
 }
 
 void __stdcall BrowserWrapper::DocumentComplete(IDispatch *pDisp, VARIANT *URL) {

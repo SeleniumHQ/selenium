@@ -11,17 +11,10 @@
 #include "BrowserWrapper.h"
 #include "ElementWrapper.h"
 #include "ElementFinder.h"
+#include "messages.h"
 #include "WebDriverCommand.h"
 #include "WebDriverCommandHandler.h"
 #include "WebDriverResponse.h"
-
-#define WD_INIT WM_APP + 1
-#define WD_SET_COMMAND WM_APP + 2
-#define WD_EXEC_COMMAND WM_APP + 3
-#define WD_GET_RESPONSE_LENGTH WM_APP + 4
-#define WD_GET_RESPONSE WM_APP + 5
-#define WD_WAIT WM_APP + 6
-#define WD_BROWSER_QUIT WM_APP + 7
 
 #define WAIT_TIME_IN_MILLISECONDS 200
 
@@ -53,6 +46,7 @@ public:
 		MESSAGE_HANDLER(WD_GET_RESPONSE_LENGTH, OnGetResponseLength)
 		MESSAGE_HANDLER(WD_GET_RESPONSE, OnGetResponse)
 		MESSAGE_HANDLER(WD_WAIT, OnWait)
+		MESSAGE_HANDLER(WD_BROWSER_NEW_WINDOW, OnBrowserNewWindow)
 		MESSAGE_HANDLER(WD_BROWSER_QUIT, OnBrowserQuit)
 	END_MSG_MAP()
 
@@ -65,6 +59,7 @@ public:
 	LRESULT OnGetResponseLength(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnGetResponse(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 	std::wstring manager_id(void) { return this->manager_id_; }
@@ -107,7 +102,6 @@ private:
 	void AddManagedBrowser(BrowserWrapper* browser_wrapper);
 
 	void NewBrowserEventHandler(BrowserWrapper* wrapper);
-	void BrowserQuittingEventHandler(std::wstring browser_id);
 	void DispatchCommand(void);
 
 	void PopulateCommandHandlerRepository(void);

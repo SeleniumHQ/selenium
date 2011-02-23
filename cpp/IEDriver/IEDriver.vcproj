@@ -465,10 +465,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BrowserWrapperEvent.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ClearElementCommandHandler.h"
 				>
 			</File>
@@ -654,6 +650,10 @@
 			</File>
 			<File
 				RelativePath=".\jsxpath.h"
+				>
+			</File>
+			<File
+				RelativePath=".\messages.h"
 				>
 			</File>
 			<File
