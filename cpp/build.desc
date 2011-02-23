@@ -33,7 +33,6 @@ gcc_library(name = "noblur64",
 
 visualc_library(name = "ie_win32_dll",
   deps = [
-    ":atoms",
     ":ie_result_type_cpp",
     ":sizzle"
   ],
@@ -45,7 +44,6 @@ visualc_library(name = "ie_win32_dll",
 
 visualc_library(name = "ie_x64_dll",
   deps = [
-    ":atoms",
     ":ie_result_type_cpp",
     ":sizzle"
   ],
@@ -57,7 +55,6 @@ visualc_library(name = "ie_x64_dll",
 
 visualc_library(name = "ielegacy_win32_dll",
   deps = [
-    ":atoms",
     ":ie_result_type_cpp",
     ":sizzle"
   ],
@@ -69,7 +66,6 @@ visualc_library(name = "ielegacy_win32_dll",
 
 visualc_library(name = "ielegacy_x64_dll",
   deps = [
-    ":atoms",
     ":ie_result_type_cpp",
     ":sizzle"
   ],

@@ -1,10 +1,14 @@
 #include "StdAfx.h"
 #include <regex>
 #include "IEDriverServer.h"
+#include "logging.h"
 
 namespace webdriver {
 
 IEDriverServer::IEDriverServer(int port) {
+	// It's possible to set the log level at compile time using this:
+    LOG::Level("FATAL");
+    LOG(INFO) << "Starting IE Driver server on port: " << port;
 	this->port_ = port;
 	this->PopulateCommandRepository();
 }

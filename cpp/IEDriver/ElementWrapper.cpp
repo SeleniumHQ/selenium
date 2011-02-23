@@ -3,6 +3,7 @@
 #include "BrowserWrapper.h"
 #include "atoms.h"
 #include "interactions.h"
+#include "logging.h"
 
 namespace webdriver {
 
@@ -173,7 +174,7 @@ int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *widt
 	HRESULT hr = this->element_->QueryInterface(&node);
 
     if (FAILED(hr)) {
-		//LOGHR(WARN, hr) << "Cannot cast html element to node";
+		LOGHR(WARN, hr) << "Cannot cast html element to node";
 		return ENOSUCHELEMENT;
     }
 
@@ -196,10 +197,10 @@ int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *widt
 	result = this->GetLocation(&left, &top, &element_width, &element_height);
 	if (result != SUCCESS || !this->IsClickPointInViewPort(containing_window_handle, left, top, element_width, element_height)) {
 		// Scroll the element into view
-		//LOG(DEBUG) << "Will need to scroll element into view";
+		LOG(DEBUG) << "Will need to scroll element into view";
 		hr = this->element_->scrollIntoView(CComVariant(VARIANT_TRUE));
 		if (FAILED(hr)) {
-			// LOGHR(WARN, hr) << "Cannot scroll element into view";
+		    LOGHR(WARN, hr) << "Cannot scroll element into view";
 			return EOBSOLETEELEMENT;
 		}
 
@@ -213,7 +214,7 @@ int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *widt
 		}
 	}
 
-	//LOG(DEBUG) << "(x, y, w, h): " << left << ", " << top << ", " << element_width << ", " << element_height << endl;
+	LOG(DEBUG) << "(x, y, w, h): " << left << ", " << top << ", " << element_width << ", " << element_height << endl;
 
 	*x = left;
 	*y = top;
@@ -292,14 +293,14 @@ int ElementWrapper::GetLocation(long *x, long *y, long *width, long *height) {
 	CComPtr<IHTMLElement2> element2;
 	HRESULT hr = this->element_->QueryInterface(&element2);
 	if (FAILED(hr)) {
-		//LOGHR(WARN, hr) << "Unable to cast element to correct type";
+		LOGHR(WARN, hr) << "Unable to cast element to correct type";
 		return EOBSOLETEELEMENT;
 	}
 
     CComPtr<IHTMLRect> rect;
 	hr = element2->getBoundingClientRect(&rect);
     if (FAILED(hr)) {
-		//LOGHR(WARN, hr) << "Cannot figure out where the element is on screen";
+		LOGHR(WARN, hr) << "Cannot figure out where the element is on screen";
 		return EUNHANDLEDERROR;
     }
 
@@ -345,20 +346,20 @@ int ElementWrapper::GetFrameOffset(long *x, long *y) {
     CComPtr<IDispatch> owner_doc_dispatch;
     hr = node->get_ownerDocument(&owner_doc_dispatch);
 	if (FAILED(hr)) {
-		//LOG(WARN) << "Unable to locate owning document";
+		LOG(WARN) << "Unable to locate owning document";
 		return ENOSUCHDOCUMENT;
 	}
 
     CComQIPtr<IHTMLDocument2> owner_doc(owner_doc_dispatch);
 	if (!owner_doc) {
-		//LOG(WARN) << "Found document but it's not the expected type";
+		LOG(WARN) << "Found document but it's not the expected type";
 		return ENOSUCHDOCUMENT;
 	}
 
 	CComPtr<IHTMLWindow2> owner_doc_window;
 	hr = owner_doc->get_parentWindow(&owner_doc_window);
 	if (!owner_doc_window) {
-		//LOG(WARN) << "Unable to get parent window";
+		LOG(WARN) << "Unable to get parent window";
 		return ENOSUCHDOCUMENT;
 	}
 
@@ -425,7 +426,7 @@ bool ElementWrapper::IsClickPointInViewPort(HWND containing_window_handle, long 
 
 	WINDOWINFO window_info;
 	if (!::GetWindowInfo(containing_window_handle, &window_info)) {
-		//LOG(WARN) << "Cannot determine size of window";
+		LOG(WARN) << "Cannot determine size of window";
 		return false;
 	}
 

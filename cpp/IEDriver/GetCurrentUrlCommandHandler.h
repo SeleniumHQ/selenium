@@ -2,6 +2,7 @@
 #define WEBDRIVER_IE_GETCURRENTURLCOMMANDHANDLER_H_
 
 #include "BrowserManager.h"
+#include "logging.h"
 
 namespace webdriver {
 
@@ -33,7 +34,7 @@ protected:
 		CComBSTR url;
 		HRESULT hr = doc->get_URL(&url);
 		if (FAILED(hr)) {
-			//LOGHR(WARN, hr) << "Unable to get current URL";
+			LOGHR(WARN, hr) << "Unable to get current URL";
 			response->SetResponse(SUCCESS, "");
 			return;
 		}

@@ -2,6 +2,7 @@
 #define WEBDRIVER_IE_TOGGLEELEMENTCOMMANDHANDLER_H_
 
 #include "BrowserManager.h"
+#include "logging.h"
 
 namespace webdriver {
 
@@ -35,7 +36,7 @@ protected:
 				CComBSTR tag_name;
 				HRESULT hr = element_wrapper->element()->get_tagName(&tag_name);
 				if (FAILED(hr)) {
-					// LOGHR(WARN, hr) << "Unable to get tag name";
+					LOGHR(WARN, hr) << "Unable to get tag name";
 					response->SetErrorResponse(ENOSUCHELEMENT, "Unable to get tag name");
 					return;
 				}
@@ -59,7 +60,7 @@ protected:
 				if (tag_name == L"OPTION") {
 					CComQIPtr<IHTMLOptionElement> option(element_wrapper->element());
 					if (!option) {
-						//LOG(ERROR) << "Cannot convert an element to an option, even though the tag name is right";
+						LOG(ERROR) << "Cannot convert an element to an option, even though the tag name is right";
 						response->SetErrorResponse(ENOSUCHELEMENT, "Cannot convert an element to an option, even though the tag name is right");
 						return;
 					}
@@ -67,7 +68,7 @@ protected:
 					VARIANT_BOOL selected;
 					hr = option->get_selected(&selected);
 					if (FAILED(hr)) {
-						//LOGHR(WARN, hr) << "Cannot tell whether or not the element is selected";
+						LOGHR(WARN, hr) << "Cannot tell whether or not the element is selected";
 						response->SetErrorResponse(ENOSUCHELEMENT, "Cannot tell whether or not the element is selected");
 						return;
 					}
@@ -79,7 +80,7 @@ protected:
 					}
 
 					if (FAILED(hr)) {
-						//LOGHR(WARN, hr) << "Failed to set selection";
+						LOGHR(WARN, hr) << "Failed to set selection";
 						response->SetErrorResponse(EEXPECTEDERROR, "Failed to set selection");
 						return;
 					}
@@ -87,14 +88,14 @@ protected:
 					//Looks like we'll need to fire the event on the select element and not the option. Assume for now that the parent node is a select. Which is dumb
 					CComQIPtr<IHTMLDOMNode> node(element_wrapper->element());
 					if (!node) {
-						//LOG(WARN) << "Current element is not an DOM node";
+						LOG(WARN) << "Current element is not an DOM node";
 						response->SetErrorResponse(ENOSUCHELEMENT, "Current element is not an DOM node");
 						return;
 					}
 					CComPtr<IHTMLDOMNode> parent;
 					hr = node->get_parentNode(&parent);
 					if (FAILED(hr)) {
-						//LOGHR(WARN, hr) << "Cannot get parent node";
+						LOGHR(WARN, hr) << "Cannot get parent node";
 						response->SetErrorResponse(ENOSUCHELEMENT, "cannot get parent node");
 						return;
 					}

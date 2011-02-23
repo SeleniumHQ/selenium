@@ -48,11 +48,12 @@ public class SingleTestSuite extends TestCase {
 //    System.setProperty("webdriver.firefox.reap_profile", "false");
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
+        .addSourceDir("java/client/test")
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("DragAndDropTest")
-//        .method("testShouldReturnEmptyStringWhenTextIsOnlySpaces")
+        .onlyRun("PageLoadingTest")
+//        .method("testShouldBeAbleToRefreshAPage")
 //        .method("testShouldNotTrimSpacesWhenLineWraps")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)

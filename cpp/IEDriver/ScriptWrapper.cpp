@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "ScriptWrapper.h"
 #include "BrowserManager.h"
+#include "logging.h"
 
 namespace webdriver {
 
@@ -147,7 +148,7 @@ int ScriptWrapper::Execute() {
 	//CComPtr<IHTMLDocument2> doc;
 	//this->browser_->GetDocument(&doc);
 	//if (!doc) {
-	//	// LOG(WARN) << "Unable to get document reference";
+	//	LOG(WARN) << "Unable to get document reference";
 	//	return EUNEXPECTEDJSERROR;
 	//}
 
@@ -164,7 +165,7 @@ int ScriptWrapper::Execute() {
 	bool ok = this->GetEvalMethod(this->script_engine_host_, &eval_id, &added);
 
 	if (!ok) {
-		// LOG(WARN) << "Unable to locate eval method";
+		LOG(WARN) << "Unable to locate eval method";
 		if (added) { 
 			// this->RemoveScript(doc); 
 			this->RemoveScript(this->script_engine_host_); 
@@ -176,7 +177,7 @@ int ScriptWrapper::Execute() {
 	if (!this->CreateAnonymousFunction(script_engine, eval_id, &this->script_, &temp_function)) {
 		// Debug level since this is normally the point we find out that 
 		// a page refresh has occured. *sigh*
-		//LOG(DEBUG) << "Cannot create anonymous function: " << _bstr_t(script) << endl;
+//		LOG(DEBUG) << "Cannot create anonymous function: " << _bstr_t(script) << endl;
 		if (added) { 
 			// this->RemoveScript(doc); 
 			this->RemoveScript(this->script_engine_host_); 
@@ -204,7 +205,7 @@ int ScriptWrapper::Execute() {
 			//this->RemoveScript(doc); 
 			this->RemoveScript(this->script_engine_host_); 
 		}
-		//LOGHR(DEBUG, hr) << "Cannot locate call method on anonymous function: " << _bstr_t(script) << endl;
+//		LOGHR(DEBUG, hr) << "Cannot locate call method on anonymous function: " << _bstr_t(script) << endl;
 		return EUNEXPECTEDJSERROR;
 	}
 
@@ -226,7 +227,7 @@ int ScriptWrapper::Execute() {
 			//this->RemoveScript(doc); 
 			this->RemoveScript(this->script_engine_host_); 
 		}
-		//LOGHR(WARN, hr) << "Cannot get parent window";
+		LOGHR(WARN, hr) << "Cannot get parent window";
 		return EUNEXPECTEDJSERROR;
 	}
 	_variant_t *vargs = new _variant_t[nargs + 1];
@@ -250,9 +251,9 @@ int ScriptWrapper::Execute() {
 	if (FAILED(hr)) {
 		CComBSTR errorDescription(exception.bstrDescription);
 		if (DISP_E_EXCEPTION == hr)  {
-			//LOG(INFO) << "Exception message was: " << _bstr_t(exception.bstrDescription);
+			LOG(INFO) << "Exception message was: " << _bstr_t(exception.bstrDescription);
 		} else {
-			//LOGHR(DEBUG, hr) << "Failed to execute: " << _bstr_t(script);
+//			LOGHR(DEBUG, hr) << "Failed to execute: " << _bstr_t(script);
 			if (added) { 
 				// this->RemoveScript(doc); 
 				this->RemoveScript(this->script_engine_host_); 
@@ -462,7 +463,7 @@ bool ScriptWrapper::GetEvalMethod(IHTMLDocument2* doc, DISPID* eval_id, bool* ad
 		CComBSTR span_tag_name(L"span");
 		hr = doc->createElement(span_tag_name, &script_tag);
 		if (FAILED(hr)) {
-			//LOGHR(WARN, hr) << "Failed to create span tag";
+			LOGHR(WARN, hr) << "Failed to create span tag";
 		}
 		CComBSTR element_html(L"<span id='__webdriver_private_span'>&nbsp;<script defer></script></span>");
 		script_tag->put_innerHTML(element_html);
@@ -509,9 +510,9 @@ bool ScriptWrapper::CreateAnonymousFunction(IDispatch* script_engine, DISPID eva
 	HRESULT hr = script_engine->Invoke(eval_id, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, result, &exception, 0);
 	if (FAILED(hr)) {
 		if (DISP_E_EXCEPTION == hr) {
-			// LOGHR(INFO, hr) << "Exception message was: " << _bstr_t(exception.bstrDescription) << ": " << _bstr_t(script);
+			LOGHR(INFO, hr) << "Exception message was: " << _bstr_t(exception.bstrDescription) << ": " << _bstr_t(script);
 		} else {
-			// LOGHR(DEBUG, hr) << "Failed to compile: " << script;
+			LOGHR(DEBUG, hr) << "Failed to compile: " << script;
 		}
 
 		if (result) {
@@ -540,7 +541,7 @@ void ScriptWrapper::RemoveScript(IHTMLDocument2 *doc) {
 	CComBSTR id(L"__webdriver_private_span");
 	HRESULT hr = doc3->getElementById(id, &element);
 	if (FAILED(hr)) {
-		// LOGHR(WARN, hr) << "Cannot find the script tag. Bailing.";
+		LOGHR(WARN, hr) << "Cannot find the script tag. Bailing.";
 		return;
 	}
 
@@ -550,18 +551,18 @@ void ScriptWrapper::RemoveScript(IHTMLDocument2 *doc) {
 		CComPtr<IHTMLElement> body;
 		hr = doc->get_body(&body);
 		if (FAILED(hr)) {
-			// LOGHR(WARN, hr) << "Cannot locate body of document";
+			LOGHR(WARN, hr) << "Cannot locate body of document";
 			return;
 		}
 		CComQIPtr<IHTMLDOMNode> body_node(body);
 		if (!body_node) {
-			// LOG(WARN) << "Cannot cast body to a standard html node";
+			LOG(WARN) << "Cannot cast body to a standard html node";
 			return;
 		}
 		CComPtr<IHTMLDOMNode> removed;
 		hr = body_node->removeChild(element_node, &removed);
 		if (FAILED(hr)) {
-			// LOGHR(DEBUG, hr) << "Cannot remove child node. Shouldn't matter. Bailing";
+			LOGHR(DEBUG, hr) << "Cannot remove child node. Shouldn't matter. Bailing";
 		}
 	}
 }

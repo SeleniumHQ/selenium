@@ -2,6 +2,7 @@
 #define WEBDRIVER_IE_GETPAGESOURCECOMMANDHANDLER_H_
 
 #include "BrowserManager.h"
+#include "logging.h"
 
 namespace webdriver {
 
@@ -39,7 +40,7 @@ protected:
 		CComPtr<IHTMLElement> document_element;
 		HRESULT hr = doc3->get_documentElement(&document_element);
 		if (FAILED(hr)) {
-			//LOGHR(WARN, hr) << "Unable to get document element from page";
+			LOGHR(WARN, hr) << "Unable to get document element from page";
 			response->SetResponse(SUCCESS, "");
 			return;
 		}
@@ -47,7 +48,7 @@ protected:
 		CComBSTR html;
 		hr = document_element->get_outerHTML(&html);
 		if (FAILED(hr)) {
-			//LOGHR(WARN, hr) << "Have document element but cannot read source.";
+			LOGHR(WARN, hr) << "Have document element but cannot read source.";
 			response->SetResponse(SUCCESS, "");
 			return;
 		}

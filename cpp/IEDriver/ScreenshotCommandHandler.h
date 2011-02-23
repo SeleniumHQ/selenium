@@ -2,6 +2,7 @@
 #define WEBDRIVER_IE_SCREENSHOTCOMMANDHANDLER_H_
 
 #include "BrowserManager.h"
+#include "logging.h"
 #include <atlimage.h>
 #include <atlenc.h>
 
@@ -44,13 +45,13 @@ private:
 	bool ScreenshotCommandHandler::FindContentWindow(HWND tab_window_handle, HWND* content_window_handle_pointer) {
 		HWND shell_window_handle = ::FindWindowEx(tab_window_handle, 0, _T("Shell DocObject View"), NULL);
 		if (shell_window_handle == NULL) {
-			// LOG(WARN) << "Could not find shell view";
+			LOG(WARN) << "Could not find shell view";
 			return false;
 		}
 
 		HWND content_window_handle = ::FindWindowEx(shell_window_handle, 0, _T("Internet Explorer_Server"), NULL);
 		if (content_window_handle == NULL) {
-			// LOG(WARN) << "Could not find 'Internet Explorer_Server'";
+			LOG(WARN) << "Could not find 'Internet Explorer_Server'";
 			return false;
 		}
 
@@ -66,26 +67,26 @@ private:
 		CComPtr<IServiceProvider> service_provider;
 		HRESULT hr = browser->QueryInterface(&service_provider);
 		if (FAILED(hr)) {
-			// LOG(WARN) << "Query for IServiceProvider failed: " << hr;
+			LOG(WARN) << "Query for IServiceProvider failed: " << hr;
 			return hr;
 		}
 
 		CComPtr<IOleWindow> window_pointer;
 		hr = service_provider->QueryService(SID_SShellBrowser, &window_pointer);
 		if (FAILED(hr)) {
-			// LOG(WARN) << "QueryService for ShellBrowser failed: " << hr;
+			LOG(WARN) << "QueryService for ShellBrowser failed: " << hr;
 			return hr;
 		}
 
 		HWND tab_window_handle;
 		hr = window_pointer->GetWindow(&tab_window_handle);
 		if (FAILED(hr)) {
-			// LOG(WARN) << "Could not get window: " << hr;
+			LOG(WARN) << "Could not get window: " << hr;
 			return hr;
 		}
 
 		if (!this->FindContentWindow(tab_window_handle, &content_window_handle)) {
-			// LOG(WARN) << "Could not find content hwnd";
+			LOG(WARN) << "Could not find content hwnd";
 			return E_FAIL;
 		}
 
@@ -99,7 +100,7 @@ private:
 		BOOL result = ::PrintWindow(content_window_handle, device_context_handle, PW_CLIENTONLY);
 		if (!result) {
 			// Could not draw.
-			// LOG(WARN) << "PrintWindow failed";
+			LOG(WARN) << "PrintWindow failed";
 			this->image_->ReleaseDC();
 			return hr;
 		}
@@ -110,7 +111,7 @@ private:
 
 	bool ScreenshotCommandHandler::GetImageSize(SIZE* size_pointer) {
 		if (this->image_ == NULL) {
-			// LOG(WARN) << "GetSize called without an image";
+			LOG(WARN) << "GetSize called without an image";
 			return false;
 		}
 		size_pointer->cx = this->image_->GetWidth();
@@ -127,13 +128,13 @@ private:
 		CComPtr<IStream> stream;
 		HRESULT hr = ::CreateStreamOnHGlobal(NULL, TRUE, &stream);
 		if (FAILED(hr)) {
-			// LOG(WARN) << "Error creating IStream" << hr;
+			LOGHR(WARN, hr) << "Error creating IStream";
 			return hr;
 		}
 
 		hr = this->image_->Save(stream, Gdiplus::ImageFormatPNG);
 		if (FAILED(hr)) {
-			// LOG(WARN) << "Saving image failed" << hr;
+			LOGHR(WARN, hr) << "Saving image failed";
 			return hr;
 		}
 
@@ -141,14 +142,14 @@ private:
 		STATSTG statstg;
 		hr = stream->Stat(&statstg, STATFLAG_DEFAULT);
 		if (FAILED(hr)) {
-			// LOG(WARN) << "No stat on stream" << hr;
+			LOGHR(WARN, hr) << "No stat on stream";
 			return hr;
 		}
 
 		HGLOBAL global_memory_handle = NULL;
 		hr = ::GetHGlobalFromStream(stream, &global_memory_handle);
 		if (FAILED(hr)) {
-			// LOG(WARN) << "No HGlobal in stream" << hr;
+		    LOGHR(WARN, hr) << "No HGlobal in stream";
 			return hr;
 		}
 
@@ -156,7 +157,7 @@ private:
 		// LOG(INFO) << "Size of stream: " << statstg.cbSize.QuadPart;
 		int length = ::Base64EncodeGetRequiredLength((int)statstg.cbSize.QuadPart, ATL_BASE64_FLAG_NOCRLF);
 		if (length <= 0) {
-			// LOG(WARN) << "Got zero or negative length from base64 required length";
+			LOG(WARN) << "Got zero or negative length from base64 required length";
 			return E_FAIL;
 		}
 
@@ -164,7 +165,7 @@ private:
 		if (!::Base64Encode(reinterpret_cast<BYTE*>(::GlobalLock(global_memory_handle)), (int)statstg.cbSize.QuadPart, data_array, &length, ATL_BASE64_FLAG_NOCRLF)) {
 			delete[] data_array;
 			::GlobalUnlock(global_memory_handle);
-			// LOG(WARN) << "Failure encoding to base64";
+			LOG(WARN) << "Failure encoding to base64";
 			return E_FAIL;
 		}
 		data_array[length] = '\0';

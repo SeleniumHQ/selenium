@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "BrowserWrapper.h"
 #include "cookies.h"
+#include "logging.h"
 #include <comutil.h>
 
 namespace webdriver {
@@ -40,14 +41,14 @@ void BrowserWrapper::GetDocument(IHTMLDocument2 **doc) {
 		CComPtr<IDispatch> dispatch;
 		HRESULT hr = this->browser_->get_Document(&dispatch);
 		if (FAILED(hr)) {
-			//LOGHR(DEBUG, hr) << "Unable to get document";
+			LOGHR(DEBUG, hr) << "Unable to get document";
 			return;
 		}
 
 		CComPtr<IHTMLDocument2> dispatch_doc;
 		hr = dispatch->QueryInterface(&dispatch_doc);
 		if (FAILED(hr)) {
-			//LOGHR(WARN, hr) << "Have document but cannot cast";
+			LOGHR(WARN, hr) << "Have document but cannot cast";
 			return;
 		}
 
@@ -59,7 +60,7 @@ void BrowserWrapper::GetDocument(IHTMLDocument2 **doc) {
 	if (window) {
 		bool result = this->GetDocumentFromWindow(window, doc);
 		if (!result) {
-			//LOGHR(WARN, hr) << "Cannot get document";
+			LOG(WARN) << "Cannot get document";
 		}
 	}
 }
@@ -72,21 +73,21 @@ std::wstring BrowserWrapper::GetTitle() {
 	CComPtr<IDispatch> dispatch;
 	HRESULT hr = this->browser_->get_Document(&dispatch);
 	if (FAILED(hr)) {
-		//LOGHR(DEBUG, hr) << "Unable to get document";
+		LOGHR(DEBUG, hr) << "Unable to get document";
 		return L"";
 	}
 
 	CComPtr<IHTMLDocument2> doc;
 	hr = dispatch->QueryInterface(&doc);
 	if (FAILED(hr)) {
-		//LOGHR(WARN, hr) << "Have document but cannot cast";
+		LOGHR(WARN, hr) << "Have document but cannot cast";
 		return L"";
 	}
 
 	CComBSTR title;
 	hr = doc->get_title(&title);
 	if (FAILED(hr)) {
-		//LOGHR(WARN, hr) << "Unable to get document title";
+		LOGHR(WARN, hr) << "Unable to get document title";
 		return L"";
 	}
 

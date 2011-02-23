@@ -2,8 +2,9 @@
 #define WEBDRIVER_IE_SENDKEYSCOMMANDHANDLER_H_
 
 #include <ctime>
-#include "interactions.h"
 #include "BrowserManager.h"
+#include "interactions.h"
+#include "logging.h"
 
 const LPCTSTR fileDialogNames[] = {
 	_T("#32770"),
@@ -140,7 +141,7 @@ private:
 		}
 
 		if (!dialog_window_handle || (dialog_window_handle == ie_main_window_handle)) {
-			//LOG(WARN) << "No dialog found";
+			LOG(WARN) << "No dialog found";
 			return false;
 		}
 
@@ -188,11 +189,11 @@ private:
 				}
 			}
 
-//			LOG(ERROR) << "Unable to set value of file input dialog";
+			LOG(ERROR) << "Unable to set value of file input dialog";
 			return false;
 		}
 
-		//LOG(WARN) << "No edit found";
+		LOG(WARN) << "No edit found";
 		return false;
 	}
 
