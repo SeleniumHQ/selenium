@@ -631,3 +631,16 @@ bot.dom.getOpacityNonIE_ = function(elem) {
   }
   return elemOpacity;
 };
+
+
+/**
+ * Scrolls the element into the client's view and returns its position
+ * relative to the client viewport.
+ *
+ * @param {!Element} element The element to use.
+ * @param {!goog.math.Coordinate} The coordinate of the element.
+ */
+bot.dom.getLocationInView = function(element) {
+  element.scrollIntoView();
+  return goog.style.getClientPosition();
+};

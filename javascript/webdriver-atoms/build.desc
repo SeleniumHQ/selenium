@@ -61,6 +61,11 @@ js_fragment(name = "get_location",
   function = "goog.style.getPageOffset",
   deps = [ "//javascript/atoms:deps" ])
 
+js_fragment(name = "get_location_in_view",
+  module = "bot.dom",
+  function = "bot.dom.getLocationInView",
+  deps = [ "//javascript/atoms:deps" ])
+
 # TODO(simon): I'm not convinced this is right
 js_fragment(name = "get_size",
   module = "goog.style",
