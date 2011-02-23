@@ -332,10 +332,10 @@ int IEDriverServer::LookupCommand(std::string uri, std::string http_verb, std::w
 		std::vector<std::string> locator_param_names;
 		std::string url_candidate = (*it).first;
 		size_t param_start_pos = url_candidate.find_first_of(":");
-		while (param_start_pos != std::string.npos) {
-			size_t param_len = std::string.npos;
+		while (param_start_pos != std::string::npos) {
+			size_t param_len = std::string::npos;
 			size_t param_end_pos = url_candidate.find_first_of("/", param_start_pos);
-			if (param_end_pos != std::string.npos) {
+			if (param_end_pos != std::string::npos) {
 				param_len = param_end_pos - param_start_pos;
 			}
 
