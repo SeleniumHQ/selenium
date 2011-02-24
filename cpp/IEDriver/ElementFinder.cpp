@@ -8,7 +8,7 @@ ElementFinder::ElementFinder(std::wstring locator) {
 	this->locator_ = locator;
 }
 
-ElementFinder::~ElementFinder(void) {
+ElementFinder::~ElementFinder() {
 }
 
 int ElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_wrapper, std::wstring criteria, Json::Value *found_element) {

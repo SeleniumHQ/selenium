@@ -81,7 +81,7 @@ public:
 	void RemoveManagedElement(std::wstring element_id);
 	void ListManagedElements(void);
 
-	int GetElementFinder(std::wstring mechanism, ElementFinder **finder);
+	int GetElementFinder(std::wstring mechanism, std::tr1::shared_ptr<ElementFinder>* finder);
 
 	int speed(void) { return this->speed_; }
 	void set_speed(int speed) { this->speed_ = speed; }
@@ -109,7 +109,7 @@ private:
 
 	std::tr1::unordered_map<std::wstring, BrowserWrapper*> managed_browsers_;
 	std::tr1::unordered_map<std::wstring, ElementWrapper*> managed_elements_;
-	std::tr1::unordered_map<std::wstring, ElementFinder*> element_finders_;
+	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementFinder>> element_finders_;
 
 	BrowserFactory factory_;
 	std::wstring current_browser_id_;

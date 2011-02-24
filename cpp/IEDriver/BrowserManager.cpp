@@ -358,8 +358,8 @@ void BrowserManager::ListManagedElements() {
 	}
 }
 
-int BrowserManager::GetElementFinder(std::wstring mechanism, ElementFinder **finder) {
-	std::tr1::unordered_map<std::wstring, ElementFinder*>::iterator found_iterator = this->element_finders_.find(mechanism);
+int BrowserManager::GetElementFinder(std::wstring mechanism, std::tr1::shared_ptr<ElementFinder>* finder) {
+	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementFinder>>::const_iterator found_iterator = this->element_finders_.find(mechanism);
 	if (found_iterator == this->element_finders_.end()) {
 		return EUNHANDLEDERROR;
 	}
@@ -371,14 +371,14 @@ int BrowserManager::GetElementFinder(std::wstring mechanism, ElementFinder **fin
 void BrowserManager::PopulateElementFinderRepository(void) {
 	// TODO (JimEvans): This is left over from a previous method of finding
 	// elements. This needs to be completely refactored.
-	this->element_finders_[L"id"] = new ElementFinder(L"id");
-	this->element_finders_[L"name"] = new ElementFinder(L"name");
-	this->element_finders_[L"tag name"] = new ElementFinder(L"tagName");
-	this->element_finders_[L"link text"] = new ElementFinder(L"linkText");
-	this->element_finders_[L"partial link text"] = new ElementFinder(L"partialLinkText");
-	this->element_finders_[L"class name"] = new ElementFinder(L"className");
-	this->element_finders_[L"xpath"] = new FindByXPathElementFinder(L"xpath");
-	this->element_finders_[L"css selector"] = new FindByCssSelectorElementFinder(L"css");
+	this->element_finders_[L"id"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"id"));
+	this->element_finders_[L"name"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"name"));
+	this->element_finders_[L"tag name"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"tagName"));
+	this->element_finders_[L"link text"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"linkText"));
+	this->element_finders_[L"partial link text"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"partialLinkText"));
+	this->element_finders_[L"class name"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"className"));
+	this->element_finders_[L"xpath"] = std::tr1::shared_ptr<ElementFinder>(new FindByXPathElementFinder(L"xpath"));
+	this->element_finders_[L"css selector"] = std::tr1::shared_ptr<ElementFinder>(new FindByCssSelectorElementFinder(L"css"));
 }
 
 void BrowserManager::PopulateCommandHandlerRepository() {

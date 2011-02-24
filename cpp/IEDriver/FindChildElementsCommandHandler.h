@@ -29,7 +29,7 @@ protected:
 			std::wstring mechanism = CA2W(command_parameters["using"].asString().c_str(), CP_UTF8);
 			std::wstring value = CA2W(command_parameters["value"].asString().c_str(), CP_UTF8);
 
-			ElementFinder *finder;
+			std::tr1::shared_ptr<ElementFinder> finder;
 			int status_code = manager->GetElementFinder(mechanism, &finder);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unknown finder mechanism: " + command_parameters["using"].asString());
