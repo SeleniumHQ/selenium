@@ -641,6 +641,10 @@ bot.dom.getOpacityNonIE_ = function(elem) {
  * @param {!goog.math.Coordinate} The coordinate of the element.
  */
 bot.dom.getLocationInView = function(element) {
-  element.scrollIntoView();
-  return goog.style.getClientPosition();
+  var node = element;
+  while (node && node.parentNode && node.parentNode != document) {
+    goog.style.scrollIntoContainerView(node, node.parentNode, true);
+    node = node.parentNode;
+  }
+  return goog.style.getClientPosition(element);
 };
