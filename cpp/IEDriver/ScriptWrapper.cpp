@@ -505,7 +505,7 @@ bool ScriptWrapper::CreateAnonymousFunction(IDispatch* script_engine, DISPID eva
 	HRESULT hr = script_engine->Invoke(eval_id, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, result, &exception, 0);
 	if (FAILED(hr)) {
 		if (DISP_E_EXCEPTION == hr) {
-			LOGHR(INFO, hr) << "Exception message was: " << _bstr_t(exception.bstrDescription) << ": " << _bstr_t(script);
+			LOGHR(INFO, hr) << "Exception message was: " << _bstr_t(exception.bstrDescription) << ": " << script;
 		} else {
 			LOGHR(DEBUG, hr) << "Failed to compile: " << script;
 		}
