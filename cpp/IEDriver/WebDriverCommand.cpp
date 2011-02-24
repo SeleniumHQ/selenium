@@ -6,7 +6,7 @@ namespace webdriver {
 WebDriverCommand::WebDriverCommand() : command_value_(0) {
 }
 
-WebDriverCommand::~WebDriverCommand(void) {
+WebDriverCommand::~WebDriverCommand() {
 }
 
 void WebDriverCommand::Populate(std::string json_command) {

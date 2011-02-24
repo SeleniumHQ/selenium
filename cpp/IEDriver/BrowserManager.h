@@ -101,7 +101,6 @@ public:
 private:
 	void AddManagedBrowser(BrowserWrapper* browser_wrapper);
 
-	void NewBrowserEventHandler(BrowserWrapper* wrapper);
 	void DispatchCommand(void);
 
 	void PopulateCommandHandlerRepository(void);
@@ -109,7 +108,7 @@ private:
 
 	std::tr1::unordered_map<std::wstring, BrowserWrapper*> managed_browsers_;
 	std::tr1::unordered_map<std::wstring, ElementWrapper*> managed_elements_;
-	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementFinder>> element_finders_;
+	std::map<std::wstring, std::tr1::shared_ptr<ElementFinder>> element_finders_;
 
 	BrowserFactory factory_;
 	std::wstring current_browser_id_;
@@ -121,11 +120,11 @@ private:
 	std::wstring manager_id_;
 	int port_;
 
-	WebDriverCommand *current_command_;
+	WebDriverCommand current_command_;
 	std::wstring serialized_response_;
 	int new_browser_event_id_;
 	int browser_quitting_event_id_;
-	std::tr1::unordered_map<int, WebDriverCommandHandler*> command_handlers_;
+	std::map<int, std::tr1::shared_ptr<WebDriverCommandHandler>> command_handlers_;
 	bool is_waiting_;
 
 	long last_known_mouse_x_;
