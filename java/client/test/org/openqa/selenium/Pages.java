@@ -53,6 +53,7 @@ public class Pages {
   public String bodyTypingPage;
   public String formSelectionPage;
   public String selectableItemsPage;
+  public String underscorePage;
   public String ajaxyPage;
 
   public Pages(AppServer appServer) {
@@ -90,5 +91,6 @@ public class Pages {
     bodyTypingPage = appServer.whereIs("bodyTypingTest.html");
     formSelectionPage = appServer.whereIs("formSelectionPage.html");
     selectableItemsPage = appServer.whereIs("selectableItems.html");
+    underscorePage = appServer.whereIs("underscore.html");
   }
 }
