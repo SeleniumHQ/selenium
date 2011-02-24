@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium;
 
 import org.openqa.selenium.net.Urls;
+import org.testng.collections.Lists;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -33,6 +34,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Sends commands and retrieves results via HTTP.
@@ -282,7 +284,7 @@ public class HttpCommandProcessor implements CommandProcessor {
      * @return the string array resulting from parsing this string
      */
     public static String[] parseCSV(String input) {
-        ArrayList output = new ArrayList();
+        List<String> output = Lists.newArrayList();
         StringBuffer sb = new StringBuffer();
         for(int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
@@ -300,7 +302,7 @@ public class HttpCommandProcessor implements CommandProcessor {
             }  
         }
         output.add(sb.toString());
-        return (String[]) output.toArray(new String[output.size()]);
+        return output.toArray(new String[output.size()]);
     }
     
     public Number getNumber(String commandName, String[] args) {

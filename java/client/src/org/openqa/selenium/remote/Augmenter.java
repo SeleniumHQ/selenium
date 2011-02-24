@@ -182,6 +182,7 @@ public class Augmenter {
     return handler;
   }
 
+  @SuppressWarnings({"unchecked"})
   protected <X> X create(CompoundHandler handler, X from) {
     if (handler.isNeedingApplication()) {
       Enhancer enhancer = new Enhancer();

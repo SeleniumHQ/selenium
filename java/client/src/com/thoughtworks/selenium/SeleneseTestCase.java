@@ -187,6 +187,7 @@ public class SeleneseTestCase extends TestCase {
     /**
      * @deprecated Use {@link #isCaptureScreenShotOnFailure()} instead
      */
+    @Deprecated
     protected boolean isCaptureScreetShotOnFailure() {
         return isCaptureScreenShotOnFailure();
     }
@@ -203,6 +204,7 @@ public class SeleneseTestCase extends TestCase {
     /**
      * @deprecated Use {@link #setCaptureScreenShotOnFailure(boolean)} instead
      */
+    @Deprecated
     protected void setCaptureScreetShotOnFailure(boolean b) {
         setCaptureScreenShotOnFailure(b);
     }

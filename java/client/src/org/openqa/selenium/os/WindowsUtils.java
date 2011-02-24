@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Lists;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.internal.NullTrace;
 import org.openqa.selenium.internal.Trace;
@@ -503,7 +504,7 @@ public class WindowsUtils {
   }
 
   public static boolean doesRegistryValueExist(String key) {
-    List<String> args = new ArrayList();
+    List<String> args = Lists.newArrayList();
     args.add("query");
 
     if (isRegExeVersion1()) {

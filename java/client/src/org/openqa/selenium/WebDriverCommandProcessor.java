@@ -183,15 +183,6 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     this.scriptMutator = new CompoundMutator(baseUrl);
   }
 
-  /**
-   * @return the instance of webdriver that this processor is wrapping.
-   * @deprecated Use {#getWrappedDriver} instead.
-   */
-  @Deprecated
-  public WebDriver getUnderlyingWebDriver() {
-    return driver;
-  }
-
   public WebDriver getWrappedDriver() {
     return driver;
   }

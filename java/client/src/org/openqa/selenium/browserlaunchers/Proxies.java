@@ -78,6 +78,7 @@ public class Proxies {
     }
   }
 
+  @SuppressWarnings({"unchecked"})
   public static Proxy extractProxy(Capabilities capabilities) {
     Object rawProxy = capabilities.getCapability(PROXY);
     Proxy proxy = null;
@@ -85,7 +86,6 @@ public class Proxies {
       if (rawProxy instanceof Proxy) {
         proxy = (Proxy) rawProxy;
       } else if (rawProxy instanceof Map) {
-        //noinspection unchecked
         proxy = new Proxy((Map<String, ?>) rawProxy);
       }
     }

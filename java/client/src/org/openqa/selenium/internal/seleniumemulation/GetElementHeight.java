@@ -31,6 +31,6 @@ public class GetElementHeight extends SeleneseCommand<Number> {
   @Override
   protected Number handleSeleneseCommand(WebDriver driver, String locator, String ignored) {
     Dimension size = ((RenderedWebElement) finder.findElement(driver, locator)).getSize();
-    return (int) size.getHeight();
+    return size.getHeight();
   }
 }

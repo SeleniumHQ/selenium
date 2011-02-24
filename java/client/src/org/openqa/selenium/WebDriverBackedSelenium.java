@@ -30,15 +30,7 @@ public class WebDriverBackedSelenium extends DefaultSelenium implements WrapsDri
     super(new WebDriverCommandProcessor(baseUrl, baseDriver));
   }
 
-  /**
-   * @deprecated Use {@link #getWrappedDriver()} instead.
-   */
-  @Deprecated
-  public WebDriver getUnderlyingWebDriver() {
-    return getWrappedDriver();
-  }
-
   public WebDriver getWrappedDriver() {
-    return ((WebDriverCommandProcessor) commandProcessor).getUnderlyingWebDriver();
+    return ((WrapsDriver) commandProcessor).getWrappedDriver();
   }
 }

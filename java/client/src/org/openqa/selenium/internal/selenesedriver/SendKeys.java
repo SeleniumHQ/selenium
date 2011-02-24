@@ -21,7 +21,6 @@ import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.Map;
 
 public class SendKeys extends ElementFunction<Void> {
@@ -50,11 +49,7 @@ public class SendKeys extends ElementFunction<Void> {
   }
 
   private String convertToFileUrl(String toType) {
-    try {
-      return new File(toType).toURL().toString();
-    } catch (MalformedURLException e) {
-      throw new SeleniumException("Cannot convert file to file url: " + toType);
-    }
+    return new File(toType).toURI().toString();
   }
 
   private boolean isFileInput(Selenium selenium, String locator) {

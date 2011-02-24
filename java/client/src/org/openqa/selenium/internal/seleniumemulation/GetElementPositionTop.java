@@ -31,6 +31,6 @@ public class GetElementPositionTop extends SeleneseCommand<Number> {
   @Override
   protected Number handleSeleneseCommand(WebDriver driver, String locator, String value) {
     Point location = ((RenderedWebElement) finder.findElement(driver, locator)).getLocation();
-    return (int) location.getY();
+    return location.getY();
   }
 }
