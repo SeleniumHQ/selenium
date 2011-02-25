@@ -123,9 +123,9 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
     }
 
     public WebDriver defaultContent() {
-      // is this even possible to do on the iphone?
-      throw new UnsupportedOperationException(
-    		  "Frame switching is not supported on the iPhone");
+      // The iphone driver does not support frame switching, so we're always
+      // focused on the default content.
+      return IPhoneDriver.this;
     }
 
     public WebElement activeElement() {
