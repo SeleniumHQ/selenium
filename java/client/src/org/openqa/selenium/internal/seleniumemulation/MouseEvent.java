@@ -21,20 +21,24 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class MouseEvent extends SeleneseCommand<Void> {
-  private final ElementFinder finder;
+  private final ElementFinder elementFinder;
   private final JavascriptLibrary js;
   private final String type;
+  private final String fire;
 
-  public MouseEvent(ElementFinder finder, JavascriptLibrary js, String type) {
-    this.finder = finder;
+  public MouseEvent(ElementFinder elementFinder, JavascriptLibrary js, String type) {
+    this.elementFinder = elementFinder;
     this.js = js;
+    fire = "return (" + js.getSeleniumScript("fireEvent.js") + ").apply(null, arguments);";
     this.type = type;
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
-    WebElement element = finder.findElement(driver, locator);
-    js.callEmbeddedSelenium(driver, "triggerMouseEvent", element, type, true);
+    WebElement element = elementFinder.findElement(driver, locator);
+
+    js.executeScript(driver, fire, element, type);
+
     return null;
   }
 }

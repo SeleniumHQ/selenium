@@ -32,6 +32,17 @@ js_fragment(name = "findOption",
   function = "core.select.option.findOption",
   srcs = [":deps"])
 
+js_fragment(name = "fireEvent",
+  module = "core.events",
+  function = "core.events.fire",
+  srcs = [":deps"])
+
+js_fragment(name = "fireEventAt",
+  module = "core.events",
+  function = "core.events.fireAt",
+  srcs = [":deps"])
+
+
 js_fragment(name = "getAttribute",
   module = "core.element",
   function = "core.element.getAttribute",
@@ -66,3 +77,9 @@ js_fragment(name = "isVisible",
   module = "core.browserbot",
   function = "core.browserbot.isVisible",
   srcs = [":deps"])
+
+js_fragment(name = "type",
+  module = "core.events",
+  function = "core.events.setValue",
+  srcs = [":deps"])
+

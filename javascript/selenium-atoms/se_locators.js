@@ -176,13 +176,18 @@ core.locators.findElementOrNull = function(locator, opt_win) {
  * is given, a "best guess" is made. If the locator starts with "//" it is
  * assumed to be xpath, otherwise it is assumed to be either a name or an id.
  *
- * @param {string} locator The selenium locator to use.
+ * @param {string|!Element} locator The selenium locator to use.
  * @param {Document=} opt_doc The document to start the search from.
  * @param {Window=} opt_win The optional window to start the search from.
  * @return {!Element} The located element.
  * @throws {core.Error} If no element can be located.
  */
 core.locators.findElement = function(locator, opt_doc, opt_win) {
+  // Fast path out
+  if (!goog.isString(locator)) {
+    return locator;
+  }
+
   var win = opt_win || bot.window_;
   var element = core.locators.findElementOrNull(locator, win);
   if (element == null) {

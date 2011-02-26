@@ -107,6 +107,13 @@ limitations under the License.
     function testShouldRecurseIntoSubFramesInTheSameDomain() {
       
     }
+
+    function testShouldReturnTheElementIfPassedInAsTheLocator() {
+        var element = bot.locators.findElement({id: 'classy'});
+        var found = core.locators.findElement(element);
+
+        assertEquals(element, found);
+    }
   </script>
 </head>
 <body>

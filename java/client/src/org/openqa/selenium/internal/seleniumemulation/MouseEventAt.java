@@ -24,17 +24,20 @@ public class MouseEventAt extends SeleneseCommand<Void> {
   private final ElementFinder finder;
   private final JavascriptLibrary js;
   private final String type;
+  private final String fire;
 
   public MouseEventAt(ElementFinder finder, JavascriptLibrary js, String type) {
     this.finder = finder;
     this.js = js;
     this.type = type;
+    fire = "return (" + js.getSeleniumScript("fireEventAt.js") + ").apply(null, arguments);";
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String coordString) {
     WebElement element = finder.findElement(driver, locator);
-    js.callEmbeddedSelenium(driver, "triggerMouseEventAt", element, type, coordString);
+    
+    js.executeScript(driver, fire, element, type, coordString);
     
     return null;
   }

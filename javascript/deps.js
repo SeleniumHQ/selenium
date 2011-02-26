@@ -50,7 +50,7 @@ goog.addDependency("../../../javascript/firefox-driver/js/logging.js", ['Logger'
 goog.addDependency("../../../javascript/firefox-driver/js/modals.js", ['webdriver.modals'], ['Logger', 'Timer', 'webdriver.firefox.utils']);
 goog.addDependency("../../../javascript/firefox-driver/js/preconditions.js", ['webdriver.preconditions'], ['bot.dom', 'Utils']);
 goog.addDependency("../../../javascript/firefox-driver/js/timer.js", ['Timer'], []);
-goog.addDependency("../../../javascript/firefox-driver/js/utils.js", ['Utils'], ['bot.dom', 'goog.style', 'ErrorCode', 'Logger']);
+goog.addDependency("../../../javascript/firefox-driver/js/utils.js", ['Utils'], ['bot.dom', 'goog.dom.TagName', 'goog.style', 'ErrorCode', 'Logger']);
 goog.addDependency("../../../javascript/firefox-driver/js/utils_exports.js", [], []);
 goog.addDependency("../../../javascript/jsunit/app/jsUnitCore.js", [], []);
 goog.addDependency("../../../javascript/jsunit/app/jsUnitMockTimeout.js", [], []);
@@ -61,6 +61,7 @@ goog.addDependency("../../../javascript/jsunit/app/jsUnitVersionCheck.js", [], [
 goog.addDependency("../../../javascript/jsunit/app/xbDebug.js", [], []);
 goog.addDependency("../../../javascript/selenium-atoms/browserbot.js", ['core.browserbot'], ['bot.locators', 'bot.dom', 'core.locators', 'core.patternMatcher']);
 goog.addDependency("../../../javascript/selenium-atoms/core.js", ['core.Error'], []);
+goog.addDependency("../../../javascript/selenium-atoms/events.js", ['core.events'], ['bot.dom', 'bot.events', 'core.Error', 'core.locators', 'goog.dom.TagName']);
 goog.addDependency("../../../javascript/selenium-atoms/filters.js", ['core.filters'], ['bot.dom', 'core.Error', 'goog.array']);
 goog.addDependency("../../../javascript/selenium-atoms/locator_strategies.js", ['core.LocatorStrategies'], ['bot.inject.cache', 'bot.locators', 'core.Error', 'core.filters', 'goog.string']);
 goog.addDependency("../../../javascript/selenium-atoms/pattern_matcher.js", ['core.patternMatcher'], []);

@@ -1,0 +1,96 @@
+<html>
+<head>
+    <title>event_firing_test</title>
+    <script type="text/javascript" src="../../webdriver-bootstrap.js"></script>
+    <script type="text/javascript">
+        goog.require('goog.events');
+        goog.require('goog.testing.jsunit');
+        goog.require('core.events');
+        goog.require('bot.locators');
+    </script>
+
+    <script type="text/javascript">
+        var fired;
+
+        function setUp() {
+          fired = false;
+        }
+
+        function addListener(element, eventName) {
+          goog.events.listenOnce(element, eventName, function() {
+            fired = true;
+          });
+        }
+
+        function testShouldFireCustomEvents() {
+          var element = bot.locators.findElement({id: 'target'});
+          addListener(element, 'magic');
+
+          core.events.fire('id=target', 'magic');
+
+          assertTrue(fired);
+        }
+
+        function testShouldFireEventsWhenArgumentIsAnElement() {
+          var element = bot.locators.findElement({id: 'target'});
+            addListener(element, 'magic');
+
+          core.events.fire(element, 'magic');
+
+          assertTrue(fired);
+        }
+
+        function testCanFireAnEventAtASpecificLocationRelativeToAnElement() {
+          var mouseTarget = bot.locators.findElement({id: 'location'});
+          var clickLocation = goog.style.getBounds(mouseTarget);
+
+          var offsetX = 5;
+          var offsetY = 7;
+
+          var fired = false;
+          goog.events.listenOnce(mouseTarget, goog.events.EventType.MOUSEUP, function(e) {
+            fired = true;
+            assertEquals(clickLocation.left + offsetX, e.clientX);
+            assertEquals(clickLocation.top + offsetY, e.clientY);
+          });
+
+          core.events.fireAt(
+              'id=location', 'mouseup', offsetX + ',' + offsetY);
+
+          assertTrue(fired);
+        }
+
+        function testFiringEventsAtAParticularLocationWillDefaultToTopLeft() {
+          var mouseTarget = bot.locators.findElement({id: 'location'});
+          var clickLocation = goog.style.getBounds(mouseTarget);
+
+
+          var fired = false;
+          goog.events.listenOnce(mouseTarget, goog.events.EventType.MOUSEUP, function(e) {
+            fired = true;
+            assertEquals(clickLocation.left, e.clientX);
+            assertEquals(clickLocation.top, e.clientY);
+          });
+
+          core.events.fireAt('id=location', goog.events.EventType.MOUSEUP);
+
+          assertTrue(fired);
+        }
+
+        function testCanOverrideTheValueOfAnInputElement() {
+            var expected = "i like cheese";
+            core.events.setValue("id=location", expected);
+
+          var element = bot.locators.findElement({id: 'location'});
+          assertEquals(expected, element.value);
+        }
+    </script>
+</head>
+<body>
+  <p id="target">This is the target</p>
+
+  <form action="#" action="get">
+    <label for="location">Click me:</label><input id="location" /><br/>
+  </form>
+</body>
+</html>

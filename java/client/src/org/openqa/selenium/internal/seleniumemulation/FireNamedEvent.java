@@ -24,17 +24,20 @@ public class FireNamedEvent extends SeleneseCommand<Void> {
   private final ElementFinder elementFinder;
   private final JavascriptLibrary js;
   private final String name;
+  private final String fire;
 
   public FireNamedEvent(ElementFinder elementFinder, JavascriptLibrary js, String name) {
     this.elementFinder = elementFinder;
     this.js = js;
     this.name = name;
+    fire = "return (" + js.getSeleniumScript("fireEvent.js") + ").apply(null, arguments);";
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String ignored) {
     WebElement element = elementFinder.findElement(driver, locator);
-    js.callEmbeddedSelenium(driver, "doFireEvent", element, name);
+
+    js.executeScript(driver, fire, element, name);
 
     return null;
   }

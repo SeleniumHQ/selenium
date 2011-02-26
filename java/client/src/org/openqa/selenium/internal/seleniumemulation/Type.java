@@ -27,12 +27,14 @@ public class Type extends SeleneseCommand<Void> {
   private final JavascriptLibrary js;
   private final ElementFinder finder;
   private final KeyState state;
+  private final String type;
 
   public Type(AlertOverride alertOverride, JavascriptLibrary js, ElementFinder finder, KeyState state) {
     this.alertOverride = alertOverride;
     this.js = js;
     this.finder = finder;
     this.state = state;
+    type = "return (" + js.getSeleniumScript("type.js") + ").apply(null, arguments);";
   }
 
   @Override
@@ -42,7 +44,7 @@ public class Type extends SeleneseCommand<Void> {
     if (state.controlKeyDown || state.altKeyDown || state.metaKeyDown)
       throw new SeleniumException("type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
 
-    String type = state.shiftKeyDown ? value.toUpperCase() : value;
+    String valueToUse = state.shiftKeyDown ? value.toUpperCase() : value;
 
     WebElement element = finder.findElement(driver, locator);
 
@@ -51,14 +53,14 @@ public class Type extends SeleneseCommand<Void> {
     String elementType = element.getAttribute("type");
     if ("input".equals(tagName.toLowerCase()) &&
         elementType != null && "file".equals(elementType.toLowerCase())) {
-      element.sendKeys(value);
+      element.sendKeys(valueToUse);
       return null;
     }
 
     if(driver instanceof JavascriptExecutor && ((JavascriptExecutor) driver).isJavascriptEnabled()) {
-        js.callEmbeddedSelenium(driver, "replaceText", element, type);
+        js.executeScript(driver, type, element, valueToUse);
     } else {
-        element.sendKeys(type);
+        element.sendKeys(valueToUse);
     }
 
     return null;

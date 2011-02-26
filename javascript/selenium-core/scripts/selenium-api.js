@@ -461,6 +461,7 @@ Selenium.prototype.doShiftKeyDown = function() {
    *
    */
    this.browserbot.shiftKeyDown = true;
+   core.events.shiftKeyDown_ = true;
 };
 
 Selenium.prototype.doShiftKeyUp = function() {
@@ -469,6 +470,7 @@ Selenium.prototype.doShiftKeyUp = function() {
    *
    */
    this.browserbot.shiftKeyDown = false;
+   core.events.shiftKeyDown_ = false;
 };
 
 Selenium.prototype.doMetaKeyDown = function() {
@@ -477,6 +479,7 @@ Selenium.prototype.doMetaKeyDown = function() {
    *
    */
    this.browserbot.metaKeyDown = true;
+   core.events.metaKeyDown_ = true;
 };
 
 Selenium.prototype.doMetaKeyUp = function() {
@@ -485,6 +488,7 @@ Selenium.prototype.doMetaKeyUp = function() {
    *
    */
    this.browserbot.metaKeyDown = false;
+   core.events.metaKeyDown_ = false;
 };
 
 Selenium.prototype.doAltKeyDown = function() {
@@ -493,6 +497,7 @@ Selenium.prototype.doAltKeyDown = function() {
    *
    */
    this.browserbot.altKeyDown = true;
+   core.events.altKeyDown_ = true;
 };
 
 Selenium.prototype.doAltKeyUp = function() {
@@ -501,6 +506,7 @@ Selenium.prototype.doAltKeyUp = function() {
    *
    */
    this.browserbot.altKeyDown = false;
+   core.events.altKeyDown_ = false;
 };
 
 Selenium.prototype.doControlKeyDown = function() {
@@ -509,6 +515,7 @@ Selenium.prototype.doControlKeyDown = function() {
    *
    */
    this.browserbot.controlKeyDown = true;
+   core.events.controlKeyDown_ = true;
 };
 
 Selenium.prototype.doControlKeyUp = function() {
@@ -517,6 +524,7 @@ Selenium.prototype.doControlKeyUp = function() {
    *
    */
    this.browserbot.controlKeyDown = false;
+   core.events.controlKeyDown_ = false;
 };
 
 Selenium.prototype.doKeyDown = function(locator, keySequence) {
@@ -736,12 +744,10 @@ Selenium.prototype.doType = function(locator, value) {
    if (this.browserbot.controlKeyDown || this.browserbot.altKeyDown || this.browserbot.metaKeyDown) {
         throw new SeleniumError("type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
     }
-        // TODO fail if it can't be typed into.
+	
     var element = this.browserbot.findElement(locator);
-    if (this.browserbot.shiftKeyDown) {
-        value = new String(value).toUpperCase();
-    }
-    this.browserbot.replaceText(element, value);
+
+	core.events.setValue(element, value);
 };
 
 Selenium.prototype.doTypeKeys = function(locator, value) {

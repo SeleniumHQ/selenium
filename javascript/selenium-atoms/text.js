@@ -142,8 +142,7 @@ core.text.normalizeSpaces_ = function(text) {
  * @return {string} The text content of the located element.
  */
 core.text.getText = function(locator) {
-  var element = goog.isString(locator) ?
-      core.locators.findElement(locator) : locator;
+  var element = core.locators.findElement(locator);
 
   var text;
   var isRecentFirefox =

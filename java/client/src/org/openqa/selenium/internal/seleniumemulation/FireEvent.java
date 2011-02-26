@@ -23,16 +23,19 @@ import org.openqa.selenium.WebElement;
 public class FireEvent extends SeleneseCommand<Void> {
   private final ElementFinder elementFinder;
   private final JavascriptLibrary js;
+  private final String fire;
 
   public FireEvent(ElementFinder elementFinder, JavascriptLibrary js) {
     this.elementFinder = elementFinder;
     this.js = js;
+    fire = "return (" + js.getSeleniumScript("fireEvent.js") + ").apply(null, arguments);";
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
     WebElement element = elementFinder.findElement(driver, locator);
-    js.callEmbeddedSelenium(driver, "doFireEvent", element, value);
+
+    js.executeScript(driver, fire, element, value);
 
     return null;
   }
