@@ -166,6 +166,15 @@ LocatorBuilders.prototype.xpathHtmlElement = function(name) {
 }
 
 LocatorBuilders.prototype.relativeXPathFromParent = function(current) {
+    var index = this.getNodeNbr(current);
+    var currentPath = '/' + this.xpathHtmlElement(current.nodeName.toLowerCase());
+    if (index > 0) {
+        currentPath += '[' + (index + 1) + ']';
+    }
+    return currentPath;
+};
+
+LocatorBuilders.prototype.getNodeNbr = function(current) {
     var childNodes = current.parentNode.childNodes;
     var total = 0;
     var index = -1;
@@ -178,12 +187,27 @@ LocatorBuilders.prototype.relativeXPathFromParent = function(current) {
             total++;
         }
     }
-    var currentPath = '/' + this.xpathHtmlElement(current.nodeName.toLowerCase());
-    if (total > 1 && index >= 0) {
-        currentPath += '[' + (index + 1) + ']';
+    return index;
+};
+
+LocatorBuilders.prototype.getCSSSubPath = function(e) {
+    var css_attributes = ['id','name', 'class', 'type', 'alt', 'title', 'value'];
+    for (var i = 0; i < css_attributes.length; i++) {
+        var attr = css_attributes[i];
+        var value = e.getAttribute(attr);
+        if (value) {
+            if (attr == 'id')
+                return '#' + value;
+            if (attr == 'class')
+                return e.nodeName.toLowerCase() + '.' + value.replace(" ", ".").replace("..", ".");
+            return e.nodeName.toLowerCase() + '[' + attr + '=' + value + ']';
+        }
     }
-    return currentPath;
-}
+    if (this.getNodeNbr(e))
+        return e.nodeName.toLowerCase() + ':nth(' + this.getNodeNbr(e) + ')';
+    else
+        return e.nodeName.toLowerCase();
+};
 
 /*
  * ===== builders =====
@@ -211,17 +235,21 @@ LocatorBuilders.add('link', function(e) {
         return null;
     });
 
-LocatorBuilders.add('css', function(e, opt_contextNode) {
-        var dom = new DomPredictionHelper();
-        var path = dom.predictCss([e], []);
-        return "css=" + path;
-    });
-
 LocatorBuilders.add('name', function(e) {
         if (e.name) {
             return e.name;
         }
         return null;
+    });
+
+LocatorBuilders.add('css', function(e) {
+        var current = e;
+        var sub_path = this.getCSSSubPath(e);
+        while (this.findElement("css=" + sub_path) != e && current.nodeName.toLowerCase() != 'html') {
+          sub_path = this.getCSSSubPath(current.parentNode) + ' > ' + sub_path;
+          current = current.parentNode;
+        }
+        return "css=" + sub_path;
     });
 
 /*
