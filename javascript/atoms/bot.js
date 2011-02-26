@@ -30,7 +30,12 @@ goog.provide('bot');
  * @type {!Window}
  * @private
  */
-bot.window_ = goog.global;
+try {
+  bot.window_ = window;
+} catch (ignored) {
+  // We only reach this place in a firefox extension.
+  bot.window_ = goog.global;
+}
 
 
 /**
