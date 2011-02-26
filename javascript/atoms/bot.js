@@ -24,13 +24,12 @@ goog.provide('bot');
 
 /**
  * Frameworks using the atoms keep track of which window or frame is currently
- * being used for command execution. This may change independently of
- * goog.global, even though this provides a sensible default value.
+ * being used for command execution.
  *
  * @type {!Window}
  * @private
  */
-bot.window_ = goog.global;
+bot.window_ = window;
 
 
 /**
