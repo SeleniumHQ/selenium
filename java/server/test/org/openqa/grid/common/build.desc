@@ -1,0 +1,7 @@
+
+java_test(name = "test",
+  srcs = [ "*.java" ],
+  deps = [
+    "//java/server/src/org/openqa/grid/common",
+    "//third_party/java/junit",
+  ])
