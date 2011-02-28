@@ -162,7 +162,7 @@ public class WindowsProxyManager {
     } else {
       File proxyPAC = Proxies.makeProxyPAC(customProxyPACDir, port, options);
 
-      String newURL = "file://" + proxyPAC.getAbsolutePath().replace('\\', '/');
+      String newURL = proxyPAC.toURI().toString();
       settings =
           new HudsuckrSettings(oldSettings.connection, true, false, true, false, "(null)", "(null)",
               newURL);
