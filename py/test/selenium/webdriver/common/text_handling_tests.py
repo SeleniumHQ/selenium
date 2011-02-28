@@ -18,6 +18,7 @@
 
 import os
 import re
+import pytest
 import tempfile
 import time
 import shutil
@@ -139,6 +140,7 @@ class TextHandlingTests(unittest.TestCase):
         self.assertEqual(text, "")
   
     def testShouldReturnEmptyStringWhenTagIsSelfClosing(self):
+        pytest.skip("Skipping till issue 1225 is fixed")
         self._loadPage("xhtmlTest")
 
         text = self.driver.find_element(by=By.ID, value="self-closed").text
