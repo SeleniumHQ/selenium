@@ -135,7 +135,8 @@ module Selenium
           def macosx_paths
             [
              "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-             "#{Platform.home}/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+             "#{Platform.home}/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+             Platform.find_binary("Google Chrome")
             ]
           end
 

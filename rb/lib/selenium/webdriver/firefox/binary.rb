@@ -100,7 +100,7 @@ module Selenium
           def path
             @path ||= case Platform.os
                       when :macosx
-                        "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
+                        macosx_path
                       when :windows
                         windows_path
                       when :linux, :unix
@@ -122,6 +122,13 @@ module Selenium
 
           def windows_path
             windows_registry_path || likely_windows_path || Platform.find_binary("firefox")
+          end
+
+          def macosx_path
+            path = "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
+            path = Platform.find_binary("firefox-bin") unless File.exist?(path)
+
+            path
           end
 
           def windows_registry_path
