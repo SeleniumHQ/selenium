@@ -1,0 +1,10 @@
+
+java_library(name = "selenium",
+  srcs = [ "**/*.java" ],
+  deps = [
+    "//java/client/src/org/openqa/selenium:webdriver-api",
+    "//java/client/src/org/openqa/selenium/firefox",
+    "//java/server/src/org/openqa/selenium/remote/server",
+    "//java/server/src/org/openqa/selenium/server",
+    "//java/server/src/org/openqa/grid",
+  ])

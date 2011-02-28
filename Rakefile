@@ -84,7 +84,7 @@ task :all => [:'selenium-java', :'android']
 task :all_zip => [:'selenium-java_zip']
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
-task :grid => [ "//java/server/src/org/openqa/grid" ]
+task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
 task :htmlunit => [ "//java/client/src/org/openqa/selenium/htmlunit" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
@@ -117,7 +117,8 @@ task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" 
 task :test_htmlunit => [ "//java/client/test/org/openqa/selenium/htmlunit:test:run" ]
 task :test_grid => [
   "//java/server/test/org/openqa/grid/common:test:run",
-  "//java/server/test/org/openqa/grid:test:run"
+  "//java/server/test/org/openqa/grid:test:run",
+  "//java/server/test/org/openqa/grid/e2e:test:run"
 ]
 task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
@@ -158,6 +159,7 @@ task :test_java => [
   "//java/client/test/org/openqa/selenium/ie:test:run",
   "//java/server/test/org/openqa/selenium/remote/server:test:run",
   :test_selenium,
+  "test_grid"
 # Can't be sure that android is installed.
 #  :test_android,
 # Chrome isn't stable enough to include here.

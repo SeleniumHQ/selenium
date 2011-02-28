@@ -138,9 +138,7 @@ public class Hub {
 
 			server = new Server(port);
 
-//			ContextHandlerCollection contexts = new ContextHandlerCollection();
-
-      WebAppContext root = new WebAppContext("Selenium Grid 2", "/");
+      WebAppContext root = new WebAppContext(System.getProperty("java.io.tmpdir"), "/");
       root.addServlet(new ServletHolder(new ConsoleServlet(registry)), "/grid/console/*");
 			root.addServlet(new ServletHolder(new RegistrationServlet(registry)), "/grid/register/*");
 			root.addServlet(new ServletHolder(new DriverServlet(registry)), "/grid/driver/*");

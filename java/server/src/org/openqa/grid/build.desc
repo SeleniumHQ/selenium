@@ -4,6 +4,9 @@ java_library(name = "grid",
     "internal/**/*.java",
     "web/**/*.java"
   ],
+  resources = [
+    "images/",
+  ],
   deps = [
     "//java/server/src/org/openqa/grid/common",
     "//third_party/java/apache-httpclient",
