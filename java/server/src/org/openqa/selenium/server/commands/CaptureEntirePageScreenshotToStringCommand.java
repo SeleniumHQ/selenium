@@ -1,10 +1,6 @@
 package org.openqa.selenium.server.commands;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.IOHelper;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 
@@ -13,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Capture a screenshot of the in-browser canvas. The entire web page is rendered not
@@ -25,7 +22,7 @@ import java.util.List;
 public class CaptureEntirePageScreenshotToStringCommand extends Command {
 
     public static final String ID = "captureEntirePageScreenshotToString";
-    private static final Trace LOGGER = TraceFactory.getTrace(CaptureScreenshotToStringCommand.class);
+    private static final Logger log = Logger.getLogger(CaptureScreenshotToStringCommand.class.getName());
     
     private final String kwargs;
     private final String sessionId;
@@ -49,7 +46,7 @@ public class CaptureEntirePageScreenshotToStringCommand extends Command {
         InputStream inputStream = null;
 
         filePath = screenshotFilePath();
-        LOGGER.debug("Capturing page screenshot for session " + sessionId + " under '" + filePath + "'");
+        log.fine("Capturing page screenshot for session " + sessionId + " under '" + filePath + "'");
         capturePageScreenshot(filePath);
 
         try {

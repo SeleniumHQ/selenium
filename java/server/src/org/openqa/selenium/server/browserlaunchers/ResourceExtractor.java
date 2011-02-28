@@ -11,8 +11,6 @@ import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.internal.NullTrace;
-import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.io.FileHandler;
 
 import java.io.File;
@@ -24,12 +22,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 
 public class ResourceExtractor {
-    private static Trace log = new NullTrace();
+    private static Logger log = Logger.getLogger(ResourceExtractor.class.getName());
 
     public static File extractResourcePath(Class cl, String resourcePath, File dest)
             throws IOException {
@@ -61,7 +60,7 @@ public class ResourceExtractor {
         ZipFile z = new ZipFile(jarFile, ZipFile.OPEN_READ);
         String zipStyleResourcePath = resourcePath.substring(1) + "/"; 
         ZipEntry ze = z.getEntry(zipStyleResourcePath);
-        log.debug( "Extracting "+resourcePath+" to " + dest.getAbsolutePath() );
+        log.fine( "Extracting "+resourcePath+" to " + dest.getAbsolutePath() );
         if (ze != null) {
             // DGF If it's a directory, then we need to look at all the entries
             for (Enumeration entries = z.entries(); entries.hasMoreElements();) {
@@ -84,7 +83,7 @@ public class ResourceExtractor {
         }
     }
 
-  public static void traceWith(Trace log) {
+  public static void traceWith(Logger log) {
     ResourceExtractor.log = log;
   }
 

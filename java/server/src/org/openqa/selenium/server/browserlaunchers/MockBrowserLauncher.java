@@ -6,8 +6,6 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.DefaultRemoteCommand;
 import org.openqa.selenium.server.RemoteCommand;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -18,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.logging.Logger;
 
 public class MockBrowserLauncher implements BrowserLauncher, Runnable {
 
@@ -26,8 +25,8 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
     private static final String CHINESE_TEXT = "\u4E2D\u6587";
     private static final String KOREAN_TEXT = "\uC5F4\uC5D0";
     private static final String ROMANCE_TEXT = "\u00FC\u00F6\u00E4\u00DC\u00D6\u00C4 \u00E7\u00E8\u00E9 \u00BF\u00F1 \u00E8\u00E0\u00F9\u00F2";
-    static Trace log = TraceFactory.getTrace(MockBrowserLauncher.class);
-    private final String sessionId;
+    static Logger log = Logger.getLogger(MockBrowserLauncher.class.getName());
+  private final String sessionId;
     private Thread browser;
     private boolean interrupted = false;
     private String uniqueId;

@@ -26,8 +26,8 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.openqa.selenium.internal.Trace; import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
@@ -55,9 +55,9 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 	private int cleanUpCycle = -1;
 	private int timeOut = -1;
 
-	private static final Trace log = TraceFactory.getTrace(RemoteProxy.class);
+	private static final Logger log = Logger.getLogger(RemoteProxy.class.getName());
 
-	// the URL the remote listen on.
+  // the URL the remote listen on.
 	protected URL remoteURL;
 
 	private Map<String, Object> config;
@@ -133,7 +133,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 		for (Map<String, Object> capability : capabilities) {
 			Object maxInstance = capability.get(MAX_INSTANCES);
 			if (maxInstance == null) {
-				log.warn("Max instance not specified. Using default = 1 instance");
+				log.warning("Max instance not specified. Using default = 1 instance");
 				maxInstance = "1";
 			}
 			int value = new Integer(maxInstance.toString()).intValue();
@@ -144,7 +144,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
 		if (this instanceof TimeoutListener) {
 			if (cleanUpCycle > 0 && timeOut > 0) {
-				log.debug("starting cleanup thread");
+				log.fine("starting cleanup thread");
 				new Thread(new CleanUpThread(this)).start();
 			}
 		}
@@ -163,12 +163,12 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
 		public void run() {
 
-			log.debug("cleanup thread starting...");
+			log.fine("cleanup thread starting...");
 			while (!proxy.stop) {
 				try {
 					Thread.sleep(cleanUpCycle);
 				} catch (InterruptedException e) {
-					log.error("clean up thread died. " + e.getMessage());
+					log.severe("clean up thread died. " + e.getMessage());
 				}
 
 				for (TestSlot slot : testSlots) {
@@ -178,13 +178,13 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 							long inactivity = session.getInactivityTime();
 							boolean hasTimedOut = inactivity > timeOut;
 							if (hasTimedOut) {
-								log.warn("session " + session + " has TIMED OUT and will be released");
+								log.warning("session " + session + " has TIMED OUT and will be released");
 								((TimeoutListener) proxy).beforeRelease(session);
 								session.terminate();
 							}
 						}
 					} catch (Throwable t) {
-						log.warn("Error executing the timeout when cleaning up slot " + slot + t.getMessage());
+						log.warning("Error executing the timeout when cleaning up slot " + slot + t.getMessage());
 					}
 				}
 			}
@@ -295,11 +295,11 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 		try {
 			String proxyClass = request.getRemoteProxyClass();
 			if (proxyClass == null) {
-				log.debug("No proxy class. Using default");
+				log.fine("No proxy class. Using default");
 				proxyClass = RemoteProxy.class.getCanonicalName();
 			}
 			Class<?> clazz = Class.forName(proxyClass);
-			log.debug("Using class " + clazz.getName());
+			log.fine("Using class " + clazz.getName());
 			Object[] args = new Object[] { request };
 			Class<?>[] argsClass = new Class[] { RegistrationRequest.class };
 			Constructor<?> c = clazz.getConstructor(argsClass);

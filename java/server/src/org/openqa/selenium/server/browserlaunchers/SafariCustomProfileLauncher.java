@@ -26,8 +26,6 @@ import org.openqa.selenium.browserlaunchers.MacProxyManager;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.SafariLocator;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.server.ApplicationRegistry;
@@ -38,11 +36,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
-  private final static Trace LOGGER = TraceFactory.getTrace(SafariCustomProfileLauncher.class);
+  private final static Logger log = Logger.getLogger(SafariCustomProfileLauncher.class.getName());
 
   private static final String REDIRECT_TO_GO_TO_SELENIUM = "redirect_to_go_to_selenium.htm";
 
@@ -68,7 +68,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     this.browserInstallation = locateSafari(browserLaunchLocation);
 
     if (browserInstallation == null) {
-      LOGGER.error("The specified path to the browser executable is invalid.");
+      log.severe("The specified path to the browser executable is invalid.");
       throw new InvalidBrowserExecutableException(
           "The specified path to the browser executable is invalid.");
     }
@@ -102,13 +102,13 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
       final String redirectHtmlFileName;
 
       redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
-      LOGGER.info("Launching Safari to visit '" + url + "' via '" + redirectHtmlFileName + "'...");
+      log.info("Launching Safari to visit '" + url + "' via '" + redirectHtmlFileName + "'...");
       cmdarray = new String[]{
           browserInstallation.launcherFilePath(),
           redirectHtmlFileName
       };
     } else {
-      LOGGER.info("Launching Safari ...");
+      log.info("Launching Safari ...");
       cmdarray = new String[]{
           browserInstallation.launcherFilePath(),
           "-url",
@@ -134,10 +134,10 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     if (process == null) {
       return;
     }
-    LOGGER.info("Killing Safari...");
+    log.info("Killing Safari...");
     exitValue = AsyncExecute.killProcess(process);
     if (exitValue == 0) {
-      LOGGER.warn("Safari seems to have ended on its own (did we kill the real browser???)");
+      log.warning("Safari seems to have ended on its own (did we kill the real browser???)");
     }
     closed = true;
 
@@ -145,11 +145,11 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
       File sessionCookieFile = new File(originalCookieFilePath);
       boolean success = sessionCookieFile.delete();
       if (success) {
-        LOGGER.info("Session's cookie file deleted.");
+        log.info("Session's cookie file deleted.");
       } else {
-        LOGGER.info("Session's cookie *not* deleted.");
+        log.info("Session's cookie *not* deleted.");
       }
-      LOGGER.info("Trying to restore originalCookieFile...");
+      log.info("Trying to restore originalCookieFile...");
       originalCookieFile = new File(originalCookieFilePath);
       LauncherUtils.copySingleFile(backedUpCookieFile, originalCookieFile);
     }
@@ -178,11 +178,11 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
       }
     }
 
-    LOGGER.info("originalCookieFilePath: " + originalCookieFilePath);
+    log.info("originalCookieFilePath: " + originalCookieFilePath);
 
     String backedUpCookieFilePath = customProfileDir.toString() + "/Cookies.plist";
     backedUpCookieFile = new File(backedUpCookieFilePath);
-    LOGGER.info("backedUpCookieFilePath: " + backedUpCookieFilePath);
+    log.info("backedUpCookieFilePath: " + backedUpCookieFilePath);
 
     if (originalCookieFile.exists()) {
       LauncherUtils.copySingleFile(originalCookieFile, backedUpCookieFile);
@@ -212,7 +212,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         try {
           fileOutputStream.close();
         } catch (IOException e) {
-          LOGGER.warn("Ignoring exception while closing HTML redirection stream", e);
+          log.log(Level.WARNING, "Ignoring exception while closing HTML redirection stream", e);
         }
       }
     }

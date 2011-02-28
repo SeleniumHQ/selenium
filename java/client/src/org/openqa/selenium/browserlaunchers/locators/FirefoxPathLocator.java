@@ -19,18 +19,17 @@ limitations under the License.
 package org.openqa.selenium.browserlaunchers.locators;
 
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 public class FirefoxPathLocator implements BrowserLocator {
   private static final String[] commonNames = new String[] {
       "firefox",
       "firefox-bin",
   };
-  private static final Trace LOGGER = TraceFactory.getTrace(FirefoxPathLocator.class);
+  private static final Logger log = Logger.getLogger(FirefoxPathLocator.class.getName());
 
 
   public BrowserInstallation findBrowserLocation() {
@@ -41,7 +40,7 @@ public class FirefoxPathLocator implements BrowserLocator {
       }
 
       if (LauncherUtils.isScriptFile(new File(executable))) {
-       LOGGER.warn("Caution: '" + executable + "': file is a script file, not a real executable." +
+       log.warning("Caution: '" + executable + "': file is a script file, not a real executable." +
            " The browser environment is no longer fully under RC control");
       }
 

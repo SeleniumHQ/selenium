@@ -1,22 +1,18 @@
 package org.openqa.selenium.server;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Logger;
 
 /**
  * Utility class for java.io annoyances.
  */
 public class IOHelper {
 
-    private static final Trace LOGGER = TraceFactory.getTrace(IOHelper.class);
+    private static final Logger log = Logger.getLogger(IOHelper.class.getName());
     private static final int DEFAULT_COPY_BUFFER_SIZE = 1024;
 
     public static void close(InputStream stream) {
@@ -26,7 +22,7 @@ public class IOHelper {
         try {
             stream.close();
         } catch (IOException e) {
-            LOGGER.info("Ignoring exception while closing " + stream);
+            log.info("Ignoring exception while closing " + stream);
         }
     }
 

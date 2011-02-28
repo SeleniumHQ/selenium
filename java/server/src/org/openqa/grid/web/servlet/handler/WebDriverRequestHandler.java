@@ -19,12 +19,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Response;
-import org.openqa.selenium.internal.Trace; import org.openqa.selenium.internal.TraceFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.internal.GridException;
@@ -33,9 +33,9 @@ import org.openqa.grid.internal.TestSession;
 
 public class WebDriverRequestHandler extends RequestHandler {
 
-	private static final Trace log = TraceFactory.getTrace(WebDriverRequestHandler.class);
+	private static final Logger log = Logger.getLogger(WebDriverRequestHandler.class.getName());
 
-	protected WebDriverRequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
+  protected WebDriverRequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
 		super(request, response, registry);
 	}
 
@@ -114,7 +114,7 @@ public class WebDriverRequestHandler extends RequestHandler {
 		try {
 			session.forward(getRequest(), getResponse(), getRequestBody(), false);
 		} catch (IOException e) {
-			log.warn("Error forwarding the request " + e.getMessage());
+			log.warning("Error forwarding the request " + e.getMessage());
 			return null;
 		}
 
@@ -122,7 +122,7 @@ public class WebDriverRequestHandler extends RequestHandler {
 			String location = ((Response) getResponse()).getHeader("Location");
 			return extractSession(location);
 		} else {
-			log.warn("Error, header should contain Location");
+			log.warning("Error, header should contain Location");
 			return null;
 		}
 

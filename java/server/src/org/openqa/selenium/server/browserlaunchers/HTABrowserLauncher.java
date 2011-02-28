@@ -9,8 +9,6 @@ import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
@@ -21,12 +19,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 //EB - Why doesn't this class extend AbstractBrowserLauncher
 //DGF - because it would override every method of ABL.
 public class HTABrowserLauncher implements BrowserLauncher {
-    static Trace log = TraceFactory.getTrace(HTABrowserLauncher.class);
-    private String sessionId;
+    static Logger log = Logger.getLogger(HTABrowserLauncher.class.getName());
+  private String sessionId;
     private File dir;
     private String htaCommandPath;
     private Process htaProcess;
@@ -136,7 +135,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
     	if (iexploreProcess != null) {
     		int exitValue = AsyncExecute.killProcess(iexploreProcess);
             if (exitValue == 0) {
-                log.warn("Embedded iexplore seems to have ended on its own (did we kill the real browser???)");
+                log.warning("Embedded iexplore seems to have ended on its own (did we kill the real browser???)");
             }
     	}
     	if (htaProcess == null) return;

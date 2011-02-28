@@ -22,8 +22,8 @@ import static org.openqa.grid.common.RegistrationRequest.BROWSER;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.openqa.selenium.internal.Trace; import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.grid.internal.GridException;
 
 /**
@@ -37,9 +37,9 @@ import org.openqa.grid.internal.GridException;
  */
 public class DefaultCapabilityMatcher implements CapabilityMatcher {
 
-	private static final Trace log = TraceFactory.getTrace(DefaultCapabilityMatcher.class);
+	private static final Logger log = Logger.getLogger(DefaultCapabilityMatcher.class.getName());
 
-	private final List<String> web = new ArrayList<String>();
+  private final List<String> web = new ArrayList<String>();
 	private final List<String> win32 = new ArrayList<String>();
 
 	// criterias.add("platform");
@@ -63,7 +63,7 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
 			return matchesAtLeastKeys(win32, currentCapability, requestedCapability);
 		} else {
 			String msg = "DefaultCapabilityMatcher cannot work with capability " + requestedCapability;
-			log.warn(msg);
+			log.warning(msg);
 			throw new GridException(msg);
 		}
 

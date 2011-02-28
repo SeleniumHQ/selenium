@@ -2,8 +2,6 @@ package org.openqa.selenium.server;
 
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
@@ -17,6 +15,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Manages browser sessions, their creation, and their closure.
@@ -32,7 +32,7 @@ public class BrowserSessionFactory {
     private static final long DEFAULT_CLEANUP_INTERVAL = 300000; // 5 minutes.
     private static final long DEFAULT_MAX_IDLE_SESSION_TIME = 600000; // 10 minutes
 
-    private static Trace LOGGER = TraceFactory.getTrace(BrowserSessionFactory.class);
+    private static Logger log = Logger.getLogger(BrowserSessionFactory.class.getName());
 
     // cached, unused, already-launched browser sessions.
     protected final Set<BrowserSessionInfo> availableSessions =
@@ -115,13 +115,13 @@ public class BrowserSessionFactory {
         }
 
         if (useCached) {
-            LOGGER.info("grabbing available session...");
+            log.info("grabbing available session...");
             sessionInfo = grabAvailableSession(browserString, startURL);
         }
 
         // couldn't find one in the cache, or not reusing sessions.
         if (null == sessionInfo) {
-            LOGGER.info("creating new remote session");
+            log.info("creating new remote session");
             sessionInfo = createNewRemoteSession(browserString, startURL, extensionJs,
                     browserConfigurations, ensureClean, configuration);
         }
@@ -269,15 +269,15 @@ public class BrowserSessionFactory {
         String browserString = inputString;
         if (configuration.getForcedBrowserMode() != null) {
             browserString = configuration.getForcedBrowserMode();
-            LOGGER.info("overriding browser mode w/ forced browser mode setting: " + browserString);
+            log.info("overriding browser mode w/ forced browser mode setting: " + browserString);
         }
         if (configuration.getProxyInjectionModeArg() && browserString.equals("*iexplore")) {
-            LOGGER.warn("running in proxy injection mode, but you used a *iexplore browser string; this is " +
+            log.warning("running in proxy injection mode, but you used a *iexplore browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *piiexplore...");
             browserString = "*piiexplore";
         } else if (configuration.getProxyInjectionModeArg() && (browserString.equals("*firefox")
                 || browserString.equals("*firefox2") || browserString.equals("*firefox3"))) {
-            LOGGER.warn("running in proxy injection mode, but you used a " + browserString + " browser string; this is " +
+            log.warning("running in proxy injection mode, but you used a " + browserString + " browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *pifirefox...");
             browserString = "*pifirefox";
         }
@@ -364,7 +364,7 @@ public class BrowserSessionFactory {
         
         sessionInfo = new BrowserSessionInfo(sessionId, browserString, startURL, launcher, queueSet);
         SeleniumDriverResourceHandler.setLastSessionId(sessionId);
-        LOGGER.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
+        log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
                 
         LoggingManager.perSessionLogHandler().setThreadToSessionMapping(Thread.currentThread().getId(), sessionId);
         LoggingManager.perSessionLogHandler().copyThreadTempLogsToSessionLogs(sessionId, Thread.currentThread().getId());
@@ -386,7 +386,7 @@ public class BrowserSessionFactory {
              * This session is unlikely to be of any practical use so we need to make sure we close the browser
              * and clear all session data.
              */
-            LOGGER.error("Failed to start new browser session, shutdown browser and clear all session data", e);
+            log.log(Level.SEVERE, "Failed to start new browser session, shutdown browser and clear all session data", e);
             shutdownBrowserAndClearSessionData(sessionInfo);
             throw new RemoteCommandException("Error while launching browser", "", e);
         }

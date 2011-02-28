@@ -32,11 +32,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.net.Urls;
 
 
@@ -46,7 +43,7 @@ import org.openqa.selenium.net.Urls;
  * @author nelsons
  */
 public class FrameGroupCommandQueueSet {
-    private static final Trace LOGGER = TraceFactory.getTrace(FrameGroupCommandQueueSet.class);
+    private static final Logger log = Logger.getLogger(FrameGroupCommandQueueSet.class.getName());
 
     static private final Map<String, FrameGroupCommandQueueSet> queueSets = new ConcurrentHashMap<String, FrameGroupCommandQueueSet>();
     static private Lock dataLock = new ReentrantLock(); //
@@ -240,7 +237,7 @@ public class FrameGroupCommandQueueSet {
 
     /** Deletes the specified FrameGroupCommandQueueSet */
     static public void clearQueueSet(String sessionId) {
-      LOGGER.debug("clearing queue set");
+      log.fine("clearing queue set");
       FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.queueSets.get(sessionId);
       if (null != queue) {
         queue.endOfLife();
@@ -251,12 +248,12 @@ public class FrameGroupCommandQueueSet {
     public CommandQueue getCommandQueue(String uniqueId) {
       CommandQueue q = uniqueIdToCommandQueue.get(uniqueId);
       if (q==null) {
-        LOGGER.debug("---------allocating new CommandQueue for " + uniqueId);
+        log.fine("---------allocating new CommandQueue for " + uniqueId);
 
     		q = new CommandQueue(sessionId, uniqueId, millisecondDelayBetweenOperations.get(), configuration);
         uniqueIdToCommandQueue.put(uniqueId, q);
       } else {
-        LOGGER.debug("---------retrieving CommandQueue for " + uniqueId);
+        log.fine("---------retrieving CommandQueue for " + uniqueId);
       }
       return uniqueIdToCommandQueue.get(uniqueId);
     }
@@ -539,7 +536,7 @@ public class FrameGroupCommandQueueSet {
         for (String matchingFrameAddress = null; timeoutInSeconds >= 0; timeoutInSeconds--) {
             dataLock.lock();
             try {
-                LOGGER.debug("waiting for window '" + waitingForThisWindowName
+                log.fine("waiting for window '" + waitingForThisWindowName
                         + "' local frame '" + waitingForThisLocalFrame
                         + "' for " + timeoutInSeconds + " more secs");
 
@@ -547,7 +544,7 @@ public class FrameGroupCommandQueueSet {
                         frameAddressToJustLoaded.keySet(),
                         waitingForThisWindowName, waitingForThisLocalFrame);
                 if (null != matchingFrameAddress) {
-                    LOGGER.debug("wait is over: window '" + waitingForThisWindowName
+                    log.fine("wait is over: window '" + waitingForThisWindowName
                             + "' was seen at last (" + matchingFrameAddress + ")");
                     /*
                      * Remove it from the list of matching frame addresses
@@ -582,9 +579,9 @@ public class FrameGroupCommandQueueSet {
         long deadline = now + (numSeconds * 1000);
         while(now < deadline) {
           try {
-            LOGGER.debug("waiting for condition for " + (deadline-now) + " more ms");
+            log.fine("waiting for condition for " + (deadline-now) + " more ms");
             result = condition.await(deadline - now, TimeUnit.MILLISECONDS);
-            LOGGER.debug("got condition? : " + result);
+            log.fine("got condition? : " + result);
             now = deadline;
           } catch (InterruptedException ie) {
             now = System.currentTimeMillis();
@@ -728,11 +725,11 @@ public class FrameGroupCommandQueueSet {
         dataLock.lock();
         try {       
           if (justLoaded) {
-            LOGGER.debug(frameAddress + " marked as just loaded");
+            log.fine(frameAddress + " marked as just loaded");
             frameAddressToJustLoaded.put(frameAddress, true);
           }
           else {
-            LOGGER.debug(frameAddress + " marked as NOT just loaded");
+            log.fine(frameAddress + " marked as NOT just loaded");
             frameAddressToJustLoaded.remove(frameAddress);
           }
           resultArrivedOnAnyQueue.signalAll();
@@ -751,7 +748,7 @@ public class FrameGroupCommandQueueSet {
       this.currentSeleniumWindowName = frameAddress.getWindowName();
       this.currentLocalFrameAddress = frameAddress.getLocalFrameAddress();
       markWhetherJustLoaded(uniqueId, false);
-      LOGGER.debug("Current uniqueId set to " + uniqueId + ", frameAddress = " + frameAddress);
+      log.fine("Current uniqueId set to " + uniqueId + ", frameAddress = " + frameAddress);
     }
 
     public static FrameAddress makeFrameAddress(String seleniumWindowName, String localFrameAddress) {
@@ -780,7 +777,7 @@ public class FrameGroupCommandQueueSet {
 //    }
 
     public void reset(String baseUrl) {
-      LOGGER.debug("resetting frame group");
+      log.fine("resetting frame group");
       if (proxyInjectionMode) {
         // shut down all but the primary top level connection
         List<FrameAddress> newOrphans = new LinkedList<FrameAddress>(); 
@@ -792,11 +789,11 @@ public class FrameGroupCommandQueueSet {
               continue;
             }
             if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)) {
-              LOGGER.debug("Trying to close " + frameAddress);
+              log.fine("Trying to close " + frameAddress);
               try {
                   q.doCommandWithoutWaitingForAResponse("close", "", "");
               } catch (WindowClosedException e) {
-                  LOGGER.debug("Window was already closed");
+                  log.fine("Window was already closed");
               }
             }
             orphanedQueues.add(q);
@@ -820,7 +817,7 @@ public class FrameGroupCommandQueueSet {
       try {
         doCommand("open", openUrl.toString(), ""); // will close out subframes
       } catch (RemoteCommandException rce) {  
-        LOGGER.debug("RemoteCommandException in reset: " + rce.getMessage());
+        log.fine("RemoteCommandException in reset: " + rce.getMessage());
       }
     }
     
@@ -828,7 +825,7 @@ public class FrameGroupCommandQueueSet {
       for (File file : tempFilesForSession) {
         boolean deleteSuccessful = file.delete();
         if (!deleteSuccessful) {
-            LOGGER.warn("temp file for session " + sessionId
+            log.warning("temp file for session " + sessionId
                 + " not deleted " + file.getAbsolutePath());
         }
       }
@@ -864,7 +861,7 @@ public class FrameGroupCommandQueueSet {
             }
             throw new RuntimeException("unexpected return " + booleanResult + " from boolean command " + command);
         }
-        LOGGER.debug("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
+        log.fine("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
         return result;
     }
     

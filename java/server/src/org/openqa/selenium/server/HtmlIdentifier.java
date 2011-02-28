@@ -36,15 +36,11 @@ package org.openqa.selenium.server;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
+import java.util.logging.Logger;
 
 public class HtmlIdentifier {
-    static Trace log = TraceFactory.getTrace(HtmlIdentifier.class);
-    private static List<Rule> rules = new ArrayList<Rule>();
+    static Logger log = Logger.getLogger(HtmlIdentifier.class.getName());
+  private static List<Rule> rules = new ArrayList<Rule>();
     private static final int INJECTION_THRESHOLD = 200;
     
     static {
@@ -78,15 +74,15 @@ public class HtmlIdentifier {
     public static boolean shouldBeInjected(String path, String contentType, String contentPreview) {
         int score = 0;
 
-        log.debug("shouldBeInjected(\"" + path + "\", \"" + contentType + "\", \"...\")");
+        log.fine("shouldBeInjected(\"" + path + "\", \"" + contentType + "\", \"...\")");
 
         for (Rule rule : rules) {
             int scoreDelta = rule.score(path, contentType, contentPreview);
-            log.debug("    applied rule " + rule + ": " + scoreDelta);
+            log.fine("    applied rule " + rule + ": " + scoreDelta);
             score += scoreDelta;
         }
         boolean shouldInject = (score > INJECTION_THRESHOLD);
-        log.debug("    total : " + score + ">" + INJECTION_THRESHOLD + "?  (should " + (shouldInject ? "" : "not ") + "inject)");
+        log.fine("    total : " + score + ">" + INJECTION_THRESHOLD + "?  (should " + (shouldInject ? "" : "not ") + "inject)");
         return shouldInject;
     }
 

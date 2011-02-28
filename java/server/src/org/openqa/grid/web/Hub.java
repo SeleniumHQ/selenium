@@ -21,13 +21,13 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.openqa.selenium.internal.Trace; import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.ConsoleServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
@@ -44,9 +44,9 @@ import org.openqa.grid.web.servlet.ResourceServlet;
  */
 public class Hub {
 
-	private static final Trace log = TraceFactory.getTrace(Hub.class);
+	private static final Logger log = Logger.getLogger(Hub.class.getName());
 
-	private int port;
+  private int port;
 	private String host;
 	private Server server;
 	private Registry registry;

@@ -31,12 +31,10 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 
 /**
  * This is the main entry point into the Cybervillains CA.
@@ -62,8 +60,8 @@ import org.openqa.selenium.internal.TraceFactory;
  */
 public class KeyStoreManager {
 	
-  static Trace log = TraceFactory.getTrace(KeyStoreManager.class);
-	private final String CERTMAP_SER_FILE = "certmap.ser";
+  static Logger log = Logger.getLogger(KeyStoreManager.class.getName());
+  private final String CERTMAP_SER_FILE = "certmap.ser";
 	private final String SUBJMAP_SER_FILE = "subjmap.ser";
 	
 	private final String EXPORTED_CERT_NAME = "cybervillainsCA.cer";
@@ -277,14 +275,14 @@ public class KeyStoreManager {
 		{
 			try
 			{
-				log.debug("Keystore or signing cert & keypair not found.  Generating...");
+				log.fine("Keystore or signing cert & keypair not found.  Generating...");
 				
 				KeyPair caKeypair = getRSAKeyPair();
 				caPrivKey = caKeypair.getPrivate();  			
 				signingCert = CertificateCreator.createTypicalMasterCert(caKeypair);
 				
-				log.debug("Done generating signing cert");
-				log.debug(String.valueOf(signingCert));
+				log.fine("Done generating signing cert");
+				log.fine(String.valueOf(signingCert));
 				
 				_ks.load(null, _keystorepass);
 				
@@ -296,7 +294,7 @@ public class KeyStoreManager {
 				OutputStream os = new FileOutputStream(caKsFile);
 				_ks.store(os, _keystorepass);
 				
-				log.debug("Wrote JKS keystore to: " +
+				log.fine("Wrote JKS keystore to: " +
 						caKsFile.getAbsolutePath());
 				
 				// also export a .cer that can be imported as a trusted root
@@ -308,7 +306,7 @@ public class KeyStoreManager {
 				
 				byte[] buf = signingCert.getEncoded();
 				
-				log.debug("Wrote signing cert to: " + signingCertFile.getAbsolutePath());
+				log.fine("Wrote signing cert to: " + signingCertFile.getAbsolutePath());
 				
 				cerOut.write(buf);
 				cerOut.flush();
@@ -319,14 +317,14 @@ public class KeyStoreManager {
 			}
 			catch(Exception e)
 			{
-				log.error("Fatal error creating/storing keystore or signing cert.", e);
+				log.log(Level.SEVERE, "Fatal error creating/storing keystore or signing cert.", e);
 				throw new Error(e);
 			}
 		}
 		else
 		{
-			log.debug("Successfully loaded keystore.");
-			log.debug(String.valueOf(_caCert));
+			log.fine("Successfully loaded keystore.");
+			log.fine(String.valueOf(_caCert));
 			
 		}
 		

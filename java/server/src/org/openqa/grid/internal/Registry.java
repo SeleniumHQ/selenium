@@ -26,14 +26,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 
 import org.openqa.grid.internal.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 
 /**
  * Kernel of the grid. Keeps track of what's happening, what's free/used and
@@ -43,9 +42,9 @@ public class Registry {
 
 	private Prioritizer prioritizer = null;
 
-	private static final Trace log = TraceFactory.getTrace(Registry.class);
+	private static final Logger log = Logger.getLogger(Registry.class.getName());
 
-	private List<RequestHandler> newSessionRequests = new ArrayList<RequestHandler>();
+  private List<RequestHandler> newSessionRequests = new ArrayList<RequestHandler>();
 
 	private static Registry INSTANCE = null;// new Registry();
 	private Hub hub;
@@ -151,7 +150,7 @@ public class Registry {
 							boolean ok = activeTestSessions.add(session);
 							request.bindSession(session);
 							if (!ok) {
-								log.error("Error adding session : " + session);
+								log.severe("Error adding session : " + session);
 							}
 							break;
 						}
@@ -160,7 +159,7 @@ public class Registry {
 				for (RequestHandler req : matched) {
 					boolean ok = newSessionRequests.remove(req);
 					if (!ok) {
-						log.error("Bug removing request " + req);
+						log.severe("Bug removing request " + req);
 					}
 				}
 			} catch (InterruptedException e) {
@@ -198,7 +197,7 @@ public class Registry {
 				return;
 			}
 		}
-		log.warn("Tried to release session with internal key " + internalKey + " but couldn't find it.");
+		log.warning("Tried to release session with internal key " + internalKey + " but couldn't find it.");
 	}
 
 	/**
@@ -226,11 +225,11 @@ public class Registry {
 	 * @param proxy
 	 */
 	public void add(RemoteProxy proxy) {
-		log.debug("adding  " + proxy);
+		log.fine("adding  " + proxy);
 		try {
 			lock.lock();
 			if (proxies.contains(proxy) || registeringProxies.contains(proxy)) {
-				log.warn("proxy " + proxy + " was already present.");
+				log.warning("proxy " + proxy + " was already present.");
 				return;
 			} else {
 				registeringProxies.add(proxy);
@@ -247,7 +246,7 @@ public class Registry {
 				((RegistrationListener) proxy).beforeRegistration();
 			}
 		} catch (Throwable t) {
-			log.error("Error running the registration listener on " + proxy + ", " + t.getMessage());
+			log.severe("Error running the registration listener on " + proxy + ", " + t.getMessage());
 			t.printStackTrace();
 			listenerOk = false;
 		}

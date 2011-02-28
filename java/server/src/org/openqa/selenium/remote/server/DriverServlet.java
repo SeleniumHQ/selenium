@@ -18,13 +18,13 @@ limitations under the License.
 package org.openqa.selenium.remote.server;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.server.handler.*;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
 import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
@@ -84,7 +84,7 @@ public class DriverServlet extends HttpServlet {
 
     DriverSessions driverSessions = (DriverSessions) attribute;
 
-    ServletLogTo logger = getLogger();
+    Logger logger = getLogger();
 
     setupMappings(driverSessions, logger);
 
@@ -102,11 +102,11 @@ public class DriverServlet extends HttpServlet {
     }
   }
 
-  protected ServletLogTo getLogger() {
-    return new ServletLogTo();
+  protected Logger getLogger() {
+    return Logger.getLogger(getClass().getName());
   }
 
-  private void setupMappings(DriverSessions driverSessions, ServletLogTo logger) {
+  private void setupMappings(DriverSessions driverSessions, Logger logger) {
     getMapper = new UrlMapper(driverSessions, logger);
     postMapper = new UrlMapper(driverSessions, logger);
     deleteMapper = new UrlMapper(driverSessions, logger);
@@ -360,45 +360,4 @@ public class DriverServlet extends HttpServlet {
     }
   }
 
-  private class ServletLogTo implements Trace {
-    public void log(String message) {
-      DriverServlet.this.log(message);
-    }
-
-    public void info(String message) {
-      log("INFO: " + message);
-    }
-
-    public void warn(Throwable e) {
-      DriverServlet.this.log("WARN: ", e);
-    }
-
-    public void warn(String message) {
-      log("WARN: " + message);
-    }
-
-    public void warn(String message, Throwable throwable) {
-      DriverServlet.this.log("WARN: " + message, throwable);
-    }
-
-    public void error(String message, Throwable throwable) {
-      DriverServlet.this.log("ERROR: " + message, throwable);
-    }
-
-    public void error(String message) {
-      log("ERROR: " + message);
-    }
-
-    public void debug(Throwable e) {
-      DriverServlet.this.log("DEBUG: ", e);
-    }
-
-    public void debug(String message) {
-      log("DEBUG: " + message);
-    }
-
-    public void debug(String message, Throwable throwable) {
-      DriverServlet.this.log("DEBUG: " + message, throwable);
-    }
-  }
 }

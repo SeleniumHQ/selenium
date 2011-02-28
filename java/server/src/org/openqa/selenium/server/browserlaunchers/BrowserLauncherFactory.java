@@ -18,14 +18,13 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,7 +35,7 @@ import java.util.regex.Pattern;
  */
 public class BrowserLauncherFactory {
 
-  private static Trace LOGGER = TraceFactory.getTrace(BrowserLauncherFactory.class);
+  private static Logger log = Logger.getLogger(BrowserLauncherFactory.class.getName());
 
   private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*?custom( .*)?$");
 
@@ -95,13 +94,13 @@ public class BrowserLauncherFactory {
           executablePath = result.customLauncher();
           browserOptions = BrowserOptions.setExecutablePath(browserOptions, executablePath);
         }
-        LOGGER.debug("Requested browser string '" + browser + "' matches *" + key + " ");
+        log.fine("Requested browser string '" + browser + "' matches *" + key + " ");
         return createBrowserLauncher(supportedBrowsers.get(key), executablePath, sessionId,
             configuration, browserOptions);
       }
     }
 
-    LOGGER.debug("Requested browser string '" + browser
+    log.fine("Requested browser string '" + browser
                  + "' does not match any known browser, treating it as a custom browser...");
     Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
     if (CustomMatcher.find()) {

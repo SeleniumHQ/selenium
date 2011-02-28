@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.remote.server.rest;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
@@ -27,7 +26,6 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +42,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ResultConfig {
 
@@ -53,11 +53,11 @@ public class ResultConfig {
   private final Map<ResultType, Set<Result>> resultToRender =
       new HashMap<ResultType, Set<Result>>();
   private final String url;
-  private final Trace logger;
+  private final Logger log;
 
-  public ResultConfig(String url, Class<? extends Handler> handlerClazz, DriverSessions sessions, Trace logger) {
+  public ResultConfig(String url, Class<? extends Handler> handlerClazz, DriverSessions sessions, Logger log) {
     this.url = url;
-    this.logger = logger;
+    this.log = log;
     if (url == null || handlerClazz == null) {
       throw new IllegalArgumentException("You must specify the handler and the url");
     }
@@ -157,23 +157,23 @@ public class ResultConfig {
     ResultType result;
 
     try {
-      logger.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
+      log.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
       result = handler.handle();
       addHandlerAttributesToRequest(request, handler);
-      logger.info("Done: " + pathInfo);
+      log.info("Done: " + pathInfo);
     } catch (Exception e) {
       result = ResultType.EXCEPTION;
-      logger.warn(e);
+      log.log(Level.WARNING, "Exception thrown", e);
       
       Throwable toUse = getRootExceptionCause(e);
 
-      logger.warn("Exception: " + toUse.getMessage());
+      log.warning("Exception: " + toUse.getMessage());
       request.setAttribute("exception", toUse);
       if (handler instanceof WebDriverHandler) {
         request.setAttribute("screen", ((WebDriverHandler) handler).getScreenshot());
       }
     } catch (Error e) {
-      logger.info("Error: " + e.getMessage());
+      log.info("Error: " + e.getMessage());
       result = ResultType.EXCEPTION;
       request.setAttribute("exception", e);
     }

@@ -5,17 +5,16 @@
 package org.openqa.selenium.os;
 
 import java.lang.reflect.Field;
+import java.util.logging.Logger;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.internal.NullTrace;
-import org.openqa.selenium.internal.Trace;
 
 import static org.openqa.selenium.Platform.WINDOWS;
 
 /** Handy utilities for managing Unix/Linux processes */
 public class UnixUtils {
     
-    static Trace log = new NullTrace();
+    static Logger log = Logger.getLogger(UnixUtils.class.getName());
     
     /** retrieves the pid */
     public static int getProcessId(Process p) {
@@ -34,13 +33,13 @@ public class UnixUtils {
     
     /** runs "kill -9" on the specified pid */
     public static void kill9(Integer pid) {
-        log.debug("kill -9 " + pid);
+        log.fine("kill -9 " + pid);
 
         CommandLine command = new CommandLine("kill", "-9", pid.toString());
         command.execute();
         String result = command.getStdOut();
         int output = command.getExitCode();
-        log.debug(String.valueOf(output));
+        log.fine(String.valueOf(output));
         if (!command.isSuccessful()) {
             throw new RuntimeException("exec return code " + result + ": " + output);
         }

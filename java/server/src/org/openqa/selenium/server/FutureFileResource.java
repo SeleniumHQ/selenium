@@ -18,12 +18,10 @@ import java.io.*;
 import java.net.*;
 import java.net.URI;
 import java.security.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.*;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.*;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 
 
 /* ------------------------------------------------------------ */
@@ -49,8 +47,8 @@ import org.openqa.selenium.internal.TraceFactory;
  */
 public class FutureFileResource extends URLResource
 {
-	private static Trace log = TraceFactory.getTrace(Credential.class);
-    private static boolean __checkAliases;
+	private static Logger log = Logger.getLogger(Credential.class.getName());
+  private static boolean __checkAliases;
     static
     {
         __checkAliases=
@@ -185,13 +183,13 @@ public class FutureFileResource extends URLResource
                 
                 if (_alias!=null)
                 {
-                    log.debug("ALIAS abs="+abs);
-                    log.debug("ALIAS can="+can);
+                    log.fine("ALIAS abs="+abs);
+                    log.fine("ALIAS can="+can);
                 }
             }
             catch(Exception e)
             {
-                log.warn(LogSupport.EXCEPTION,e);
+                log.log(Level.WARNING, LogSupport.EXCEPTION,e);
                 return getURL();
             }                
         }

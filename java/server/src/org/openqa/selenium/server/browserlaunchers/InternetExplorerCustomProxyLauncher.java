@@ -24,8 +24,6 @@ import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
@@ -33,10 +31,12 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher {
 
-  private static final Trace LOGGER = TraceFactory.getTrace(InternetExplorerCustomProxyLauncher.class);
+  private static final Logger log = Logger.getLogger(InternetExplorerCustomProxyLauncher.class.getName());
 
   private File customProxyPACDir;
   private String[] cmdarray;
@@ -69,7 +69,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
   public void launch(String url) {
     try {
       setupSystem(url);
-      LOGGER.info("Launching Internet Explorer...");
+      log.info("Launching Internet Explorer...");
       CommandLine exe = new CommandLine(cmdarray);
       process = exe.executeAsync();
     } catch (IOException e) {
@@ -128,8 +128,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
       } catch (RuntimeException e) {
         if (taskKillException != null) {
-          LOGGER.error("Couldn't delete custom IE proxy directory", e);
-          LOGGER.error("Perhaps IE proxy delete error was caused by this exception",
+          log.log(Level.SEVERE, "Couldn't delete custom IE proxy directory", e);
+          log.log(Level.SEVERE, "Perhaps IE proxy delete error was caused by this exception",
               taskKillException);
           throw new RuntimeException("Couldn't delete custom IE " +
                                      "proxy directory, presumably because task kill failed; " +

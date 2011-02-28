@@ -22,11 +22,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
-import org.openqa.selenium.internal.NullTrace;
-import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.os.CommandLine;
 //import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
 
@@ -42,7 +41,7 @@ import org.openqa.selenium.os.CommandLine;
  *
  */
 public class MacProxyManager {
-    static Trace log = new NullTrace();
+    static Logger log = Logger.getLogger(MacProxyManager.class.getName());
     
     private static final Pattern SCUTIL_LINE = Pattern.compile("^  (\\S+) : (.*)$");
     private static final Pattern NETWORKSETUP_LISTORDER_LINE = Pattern.compile("\\(Hardware Port: ([^,]*), Device: ([^\\)]*)\\)");
@@ -108,7 +107,7 @@ public class MacProxyManager {
                     System.getProperty("os.arch"), files);
             if (guess != null) {
                 File guessedLocation = new File(defaultLocation.getParentFile(), guess);
-                log.warn("Couldn't find 'networksetup' in expected location; we're taking " +
+                log.warning("Couldn't find 'networksetup' in expected location; we're taking " +
             		"a guess and using " + guessedLocation.getAbsolutePath() + 
             		" instead.  Please create a symlink called 'networksetup' to make " +
             		"this warning go away.");
@@ -133,23 +132,23 @@ public class MacProxyManager {
             }
         }
         if (candidates.isEmpty()) {
-            log.debug("No networksetup candidates found");
+            log.fine("No networksetup candidates found");
             return null;
         }
         if (candidates.size() == 1) {
-            log.debug("One networksetup candidate found");
+            log.fine("One networksetup candidate found");
             return candidates.iterator().next();
         }
-        log.debug("Multiple networksetup candidates found: " + candidates);
+        log.fine("Multiple networksetup candidates found: " + candidates);
         // uh-oh.  There's no 'networksetup' and more than one 'networksetup-*'
         // we'll have to take a guess!
         String[] versionParts = osVersion.split("\\.");
         if (versionParts.length < 2) {
-            log.debug("OS version seems to be invalid: " + osVersion);
+            log.fine("OS version seems to be invalid: " + osVersion);
             return null;
         }
         if (!"10".equals(versionParts[0])) {
-            log.debug("OS version doesn't seem to be 10.*: " + osVersion);
+            log.fine("OS version doesn't seem to be 10.*: " + osVersion);
             return null;
         }
         CodeName codeName;
@@ -157,12 +156,12 @@ public class MacProxyManager {
             codeName = CodeName.minorVersion(versionParts[1]);
             String possibleCandidate = "networksetup-"+codeName.name().toLowerCase();
             if (candidates.contains(possibleCandidate)) {
-                log.debug("This seems to be " + codeName + ", so we'll use " + possibleCandidate);
+                log.fine("This seems to be " + codeName + ", so we'll use " + possibleCandidate);
                 return possibleCandidate;
             }
-            log.debug("This seems to be " + codeName + ", but there's no " + possibleCandidate);
+            log.fine("This seems to be " + codeName + ", but there's no " + possibleCandidate);
         } catch (IllegalArgumentException e) {
-            log.debug("Couldn't find code name for OS version " + osVersion);
+            log.fine("Couldn't find code name for OS version " + osVersion);
             return null;
         }
         // DGF when we know there's multiple candidates, but none of them match, should we just pick one?
@@ -211,7 +210,7 @@ public class MacProxyManager {
     private MacNetworkSettings getCurrentNetworkSettings() {
         getPrimaryNetworkServiceName();
         String output = runNetworkSetup("-getwebproxy", networkService);
-        log.debug(output);
+        log.fine(output);
       Map<String,String> dictionary =
           Maps.parseDictionary(output.toString(), NETWORKSETUP_LINE, false);
         String strEnabled = verifyKey("Enabled", dictionary, "networksetup", output);
@@ -233,7 +232,7 @@ public class MacProxyManager {
     
     private String[] getCurrentProxyBypassDomains() {
         String output = runNetworkSetup("-getproxybypassdomains", networkService);
-        log.debug(output);
+        log.fine(output);
         if (output == null) {
             throw new MacNetworkSetupException("-getproxybypassdomains had no output");
         }
@@ -277,11 +276,11 @@ public class MacProxyManager {
         // TODO This would be faster (but harder to test?) if we just launched scutil once
         // and communicated with it line-by-line using stdin/stdout
         String output = runScutil("show State:/Network/Global/IPv4");
-        log.debug(output);
+        log.fine(output);
       Map<String,String> dictionary = Maps.parseDictionary(output.toString(), SCUTIL_LINE, false);
         String primaryInterface = verifyKey("PrimaryInterface", dictionary, "scutil", output);
         output = runNetworkSetup("-listnetworkserviceorder");
-        log.debug(output);
+        log.fine(output);
       dictionary = Maps.parseDictionary(output.toString(), NETWORKSETUP_LISTORDER_LINE, true);
         String userDefinedName = verifyKey(primaryInterface, dictionary, "networksetup -listnetworksetuporder", output); 
         networkService = userDefinedName;

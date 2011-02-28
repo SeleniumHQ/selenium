@@ -1,5 +1,10 @@
 package org.openqa.selenium.browserlaunchers;
 
+import com.google.common.base.Throwables;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.net.Urls;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,22 +17,16 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.google.common.base.Throwables;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.NullTrace;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.net.Urls;
 
 /**
  * Various static utility functions used to launch browsers
  */
 public class LauncherUtils {
 
-  static Trace log = new NullTrace();
+  static Logger log = Logger.getLogger(LauncherUtils.class.getName());
 
   /**
    * creates an empty temp directory for managing a browser profile

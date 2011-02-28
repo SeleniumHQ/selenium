@@ -17,6 +17,7 @@ limitations under the License.
 package org.openqa.grid.selenium.proxy;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,8 +27,6 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 
 
 public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListener {
@@ -36,9 +35,9 @@ public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListen
 		super(request);
 	}
 
-	private static final Trace log = TraceFactory.getTrace(SeleniumRemoteProxy.class);
+	private static final Logger log = Logger.getLogger(SeleniumRemoteProxy.class.getName());
 
-	@Override
+  @Override
 	public void beforeRelease(TestSession session) {
 		// release the resources remotly.
 		if (session.getExternalKey() == null) {
@@ -53,7 +52,7 @@ public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListen
 			ok = false;
 		}
 		if (!ok) {
-			log.warn("Error releasing the resources on timeout for session " + session);
+			log.warning("Error releasing the resources on timeout for session " + session);
 		}
 
 	}

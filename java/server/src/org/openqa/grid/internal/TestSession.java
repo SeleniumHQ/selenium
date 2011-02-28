@@ -36,8 +36,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,6 +52,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when
@@ -66,9 +65,9 @@ import java.util.UUID;
  */
 public class TestSession {
 
-	private static final Trace log = TraceFactory.getTrace(TestSession.class);
+	private static final Logger log = Logger.getLogger(TestSession.class.getName());
 
-	private final String internalKey;
+  private final String internalKey;
 	private final TestSlot slot;
 	private String externalKey = null;
 	private long lastActivity;
@@ -430,7 +429,7 @@ public class TestSession {
 		} catch (Throwable e) {
 			ok = false;
 			// corrupted or the something else already sent the DELETE.
-			log.error("Error releasing. Server corrupted ?");
+			log.severe("Error releasing. Server corrupted ?");
 		}
 		return ok;
 	}
@@ -461,7 +460,7 @@ public class TestSession {
 		} catch (Throwable e) {
 			ok = false;
 			// corrupted or the something else already sent the DELETE.
-			log.error("Error releasing. Server corrupted ?");
+			log.severe("Error releasing. Server corrupted ?");
 		}
 		return ok;
 

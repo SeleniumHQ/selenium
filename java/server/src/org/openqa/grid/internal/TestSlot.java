@@ -21,8 +21,8 @@ import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 
-import org.openqa.selenium.internal.Trace; import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 
@@ -41,9 +41,9 @@ import org.openqa.grid.internal.utils.CapabilityMatcher;
  */
 public class TestSlot {
 
-	private static final Trace log = TraceFactory.getTrace(TestSlot.class);
+	private static final Logger log = Logger.getLogger(TestSlot.class.getName());
 
-	private final Map<String, Object> capabilities;
+  private final Map<String, Object> capabilities;
 	private final RemoteProxy proxy;
 	private final CapabilityMatcher matcher;
 	private TestSession currentSession;
@@ -186,13 +186,13 @@ public class TestSlot {
 		try {
 			if (proxy instanceof TestSessionListener) {
 				if (showWarning && proxy.getMaxNumberOfConcurrentTestSessions() != 1) {
-					log.warn("WARNING : using a afterSession on a proxy that can support multiple tests is risky.");
+					log.warning("WARNING : using a afterSession on a proxy that can support multiple tests is risky.");
 					showWarning = false;
 				}
 				((TestSessionListener) proxy).afterSession(currentSession);
 			}
 		} catch (Throwable t) {
-			log.error("Error running afterSession for " + currentSession + " the test slot is now dead.");
+			log.severe("Error running afterSession for " + currentSession + " the test slot is now dead.");
 			t.printStackTrace();
 			return;
 		}

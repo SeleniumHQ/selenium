@@ -6,15 +6,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
+import java.util.logging.Logger;
 
 public class RobotRetriever {
 
-    private static final Trace LOGGER = TraceFactory.getTrace(RobotRetriever.class);
+    private static final Logger log = Logger.getLogger(RobotRetriever.class.getName());
     private static Robot robot;
 
     private static class Retriever implements Callable<Robot> {
@@ -33,7 +29,7 @@ public class RobotRetriever {
             return robot;
         }
         robotRetriever = new FutureTask<Robot>(new Retriever());
-        LOGGER.info("Creating Robot");
+        log.info("Creating Robot");
         retrieverThread = new Thread(robotRetriever, "robotRetriever");
         retrieverThread.start();
         robot = robotRetriever.get(10, TimeUnit.SECONDS);

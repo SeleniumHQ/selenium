@@ -16,20 +16,21 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
+
+import java.util.logging.Logger;
 
 class SessionCleaner extends Thread {
 
   private final DriverSessions driverSessions;
   private final int timeoutMs;
-  private final Trace trace;
+  private final Logger log;
   private volatile boolean running = true;
 
-  SessionCleaner(DriverSessions driverSessions, Trace trace, int sessionTimeOutInMs) {
+  SessionCleaner(DriverSessions driverSessions, Logger log, int sessionTimeOutInMs) {
     super("DriverServlet Session Cleaner");
-    this.trace = trace;
+    this.log = log;
     timeoutMs = sessionTimeOutInMs;
     this.driverSessions = driverSessions;
   }
@@ -43,7 +44,7 @@ class SessionCleaner extends Thread {
       try {
         Thread.sleep(timeoutMs / 10);
       } catch (InterruptedException e) {
-        trace.info("Exiting session cleaner thread");
+        log.info("Exiting session cleaner thread");
       }
     }
   }
@@ -64,7 +65,7 @@ class SessionCleaner extends Thread {
         deleteSession.setSessionId(sessionId.toString());
         try {
           deleteSession.call();
-          trace.info("Session " + session + " deleted due to timeout");
+          log.info("Session " + session + " deleted due to timeout");
         } catch (Exception e) {
           throw new RuntimeException(e);
         }

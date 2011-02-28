@@ -4,13 +4,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BrowserResponseSequencer {
-	static Trace log = TraceFactory.getTrace(BrowserResponseSequencer.class);
-	int num = 0;
+	static Logger log = Logger.getLogger(BrowserResponseSequencer.class.getName());
+  int num = 0;
 	final Lock lock;
 	final Condition numIncreased;
 	final String uniqueId;
@@ -36,15 +35,15 @@ public class BrowserResponseSequencer {
 		try {
 			while(true) {
 				if (num >= expected) return;
-				log.debug("Waiting "+uniqueId+", expected sequence number " + expected + ", was " + num + ".");
+				log.fine("Waiting "+uniqueId+", expected sequence number " + expected + ", was " + num + ".");
 				boolean timedOut = false;
 				try {
 					timedOut = !numIncreased.await(5, TimeUnit.SECONDS);
 				} catch (InterruptedException e) {
-					log.debug("interrupted", e);
+					log.log(Level.FINE, "interrupted", e);
 				}
 				if (timedOut) {
-					log.warn(uniqueId + " expected sequence number " + expected + ", was " + num + ".  Continuing anyway");
+					log.warning(uniqueId + " expected sequence number " + expected + ", was " + num + ".  Continuing anyway");
 					num++;
 					numIncreased.signalAll();
 				}

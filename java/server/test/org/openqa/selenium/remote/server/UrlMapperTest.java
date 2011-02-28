@@ -24,14 +24,17 @@ import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
 
+import java.util.logging.Logger;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class UrlMapperTest extends TestCase {
+  private final static Logger log = Logger.getLogger(UrlMapperTest.class.getName());
 
   public void testShouldBePossibleToBindAHandler() throws Exception {
-    UrlMapper mapper = new UrlMapper(new DefaultDriverSessions(), new NullLogTo());
+    UrlMapper mapper = new UrlMapper(new DefaultDriverSessions(), log);
 
     mapper.bind("/foo", StubHandler.class);
 
@@ -42,7 +45,7 @@ public class UrlMapperTest extends TestCase {
 
   public void testShouldInjectDependenciesViaTheConstructor() throws Exception {
     DriverSessions sessions = new DefaultDriverSessions();
-    UrlMapper mapper = new UrlMapper(sessions, new NullLogTo());
+    UrlMapper mapper = new UrlMapper(sessions, log);
     mapper.bind("/example", SessionHandler.class);
 
     ResultConfig config = mapper.getConfig("/example");

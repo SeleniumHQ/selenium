@@ -2,7 +2,6 @@
 java_library(name = "common",
   srcs = [ "*.java" ],
   deps = [
-    "//java/client/src/org/openqa/selenium/internal:logging",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
   ])

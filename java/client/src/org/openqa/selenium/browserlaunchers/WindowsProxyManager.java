@@ -21,22 +21,22 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.internal.NullTrace;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.os.WindowsRegistryException;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.remote.CapabilityType;
 
 
 public class WindowsProxyManager {
-  private static Trace log = new NullTrace();
+  private static Logger log = Logger.getLogger(WindowsProxyManager.class.getName());
   protected static final String REG_KEY_BACKUP_READY = "BackupReady";
 
   // All Cookies end in ".txt"
@@ -175,7 +175,7 @@ public class WindowsProxyManager {
     try {
       WindowsUtils.writeBooleanRegistryValue(RegKey.AUTOPROXY_RESULT_CACHE.key, false);
     } catch (WindowsRegistryException ex) {
-      log.debug(
+      log.log(Level.FINE,
           "Couldn't modify autoproxy result cache; this often fails on Vista, but it's merely a nice-to-have",
           ex);
     }
@@ -185,7 +185,7 @@ public class WindowsProxyManager {
       WindowsUtils.writeStringRegistryValue(RegKey.MIME_EXCLUSION_LIST_FOR_CACHE.key,
           "multipart/mixed multipart/x-mixed-replace multipart/x-byteranges text/html");
     } catch (WindowsRegistryException ex) {
-      log.debug(
+      log.log(Level.FINE,
           "Couldn't disable caching of html; this often fails on Vista, but it's merely a nice-to-have",
           ex);
     }
@@ -292,7 +292,7 @@ public class WindowsProxyManager {
     File cookieDir = getCookieDir();
     done = hideCookies(cookieDir, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
     if (!done) {
-      log.warn("Could not hide pre-existing cookies using either the" +
+      log.warning("Could not hide pre-existing cookies using either the" +
                "WinXP directory structure or the Vista directory structure");
     }
   }
@@ -311,7 +311,7 @@ public class WindowsProxyManager {
       try {
         FileHandler.copy(cookieDir, hiddenCookieDir, cookieSuffix);
       } catch (IOException e) {
-        log.warn("Unable to back up original cookies. Continuing");
+        log.warning("Unable to back up original cookies. Continuing");
         // We used to ignore this, continue to do so
       }
       log.info("Deleting original cookies...");
@@ -333,7 +333,7 @@ public class WindowsProxyManager {
     File cookieDir = getCookieDir();
     done = restoreCookies(cookieDir, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
     if (!done) {
-      log.warn("Could not restore pre-existing cookies, using either the" +
+      log.warning("Could not restore pre-existing cookies, using either the" +
                "WinXp directory structure or the Vista directory structure");
     }
   }
@@ -355,7 +355,7 @@ public class WindowsProxyManager {
       try {
         FileHandler.copy(hiddenCookieDir, cookieDir);
       } catch (IOException e) {
-        log.warn("Unable to restore cookies.", e);
+        log.log(Level.WARNING, "Unable to restore cookies.", e);
         // We used to ignore this, so just keep on trucking
       }
       FileHandler.delete(hiddenCookieDir);
@@ -378,7 +378,7 @@ public class WindowsProxyManager {
         for (File file : list) {
           boolean success = file.delete();
           if (!success) {
-            log.warn("Could not delete file " + file.getAbsolutePath());
+            log.warning("Could not delete file " + file.getAbsolutePath());
           }
         }
       } else {
@@ -398,7 +398,7 @@ public class WindowsProxyManager {
     prefs.putBoolean(REG_KEY_BACKUP_READY, backupReady);
   }
 
-  public static void traceWith(Trace log) {
+  public static void traceWith(Logger log) {
     WindowsProxyManager.log = log;
   }
 
@@ -532,18 +532,18 @@ public class WindowsProxyManager {
 
   private String runHudsuckr(String... args) {
     String path = extractHudsuckr().getAbsolutePath();
-    log.debug("Running hudsuckr: " + path);
+    log.fine("Running hudsuckr: " + path);
     try {
     CommandLine command = new CommandLine(path, args);
     command.execute();
-    log.debug("Executed successfully");
+    log.fine("Executed successfully");
     String output = command.getStdOut();
     if (!command.isSuccessful()) {
       throw new RuntimeException("exec return code " + command.getExitCode() + ": " + output);
     }
     return output;
     } catch (RuntimeException e) {
-      log.warn("Failed to execute hudsuckr successfully: ", e);
+      log.log(Level.WARNING, "Failed to execute hudsuckr successfully: ", e);
     }
     return null;
   }

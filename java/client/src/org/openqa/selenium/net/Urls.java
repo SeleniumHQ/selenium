@@ -2,16 +2,15 @@
 package org.openqa.selenium.net;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.NullTrace;
-import org.openqa.selenium.internal.Trace;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.logging.Logger;
 
 public class Urls {
-  private static Trace log = new NullTrace();
+  private static Logger log = Logger.getLogger(Urls.class.getName());
 
   /**
    * Strips the specified URL so it only includes a protocal, hostname and
@@ -24,7 +23,7 @@ public class Urls {
       URL u = new URL(url);
       String path = u.getPath();
       if (path != null && !"".equals(path) && !path.endsWith("/")) {
-        log.warn("It looks like your baseUrl (" + url
+        log.warning("It looks like your baseUrl (" + url
                  + ") is pointing to a file, not a directory (it doesn't end with a /).  We're going to have to strip off the last part of the pathname.");
       }
       return u.getProtocol() + "://" + u.getAuthority();

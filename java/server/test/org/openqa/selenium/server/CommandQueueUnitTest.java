@@ -5,10 +5,6 @@ import junit.framework.TestCase;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
@@ -24,9 +20,9 @@ public class CommandQueueUnitTest extends TestCase {
     private static final int defaultTimeout = 7;
     private static final int retryTimeout = 5;
 
-    private static final Trace log = TraceFactory.getTrace(CommandQueueUnitTest.class);
+    private static final Logger log = Logger.getLogger(CommandQueueUnitTest.class.getName());
 
-    private CommandQueue cq;
+  private CommandQueue cq;
     private RemoteControlConfiguration configuration;
 
     @Override

@@ -22,10 +22,10 @@ import junit.framework.TestCase;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Logger;
 
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -36,7 +36,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 public class ResultConfigTest extends TestCase {
-  private Trace logger = new NullLogTo();
+  private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
 
   public void testShouldMatchBasicUrls() throws Exception {
     ResultConfig config = new ResultConfig("/fish", StubHandler.class, null, logger);

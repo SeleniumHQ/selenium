@@ -6,5 +6,4 @@ java_library(name = "net",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:webdriver-api",
-    "//java/client/src/org/openqa/selenium/internal:logging",
   ])

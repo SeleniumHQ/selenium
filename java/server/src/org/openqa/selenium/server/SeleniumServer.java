@@ -17,17 +17,6 @@
 
 package org.openqa.selenium.server;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.BindException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Properties;
-
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.http.HashUserRealm;
 import org.openqa.jetty.http.HttpContext;
@@ -38,20 +27,27 @@ import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.jetty.util.MultiException;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
-import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
 import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
 import org.openqa.selenium.server.log.LoggingManager;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.BindException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Properties;
 
 import static java.lang.String.format;
 import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
@@ -199,11 +195,6 @@ public class SeleniumServer implements SslCertificateGenerator {
 
         configuration = RemoteControlLauncher.parseLauncherOptions(args);
         checkArgsSanity(configuration);
-
-        ResourceExtractor.traceWith(new JettyLoggingTrace(ResourceExtractor.class));
-        WindowsProxyManager.traceWith(new JettyLoggingTrace(WindowsProxyManager.class));
-        WindowsUtils.traceWith(new JettyLoggingTrace(WindowsUtils.class));
-        TraceFactory.setGenerator(new JettyLoggingGenerator());
 
         System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
         seleniumProxy = new SeleniumServer(slowResourceProperty(), configuration);

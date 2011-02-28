@@ -10,18 +10,16 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.IO;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 
 public class InjectionHelper {
-    static Trace log = TraceFactory.getTrace(InjectionHelper.class);
-    private static boolean failOnError = true;
+    static Logger log = Logger.getLogger(InjectionHelper.class.getName());
+  private static boolean failOnError = true;
     private static boolean browserSideLogEnabled = true;
     private static boolean INJECT_SCRIPT_TAGS = true;
     private static boolean tryToInjectInHead = false;
@@ -55,7 +53,7 @@ public class InjectionHelper {
             jsStateInitializersBySessionId.remove(sessionId);
             sessionIdToUniqueId.put(sessionId, uniqueId);
         }
-        log.debug("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer);
+        log.fine("Saving JavaScript state for session " + sessionId + "/" + uniqueId + " " + jsVarName + ": " + jsStateInitializer);
         if (!jsStateInitializersBySessionId.containsKey(sessionId)) {
             jsStateInitializersBySessionId.put(sessionId, new HashMap<String, String>());
         }
@@ -82,7 +80,7 @@ public class InjectionHelper {
             final String jsStateInitializer = entry.getValue();
             sb.append(jsStateInitializer)
             .append('\n');
-            log.debug("Restoring JavaScript state for session " + sessionId + "/" + uniqueId
+            log.fine("Restoring JavaScript state for session " + sessionId + "/" + uniqueId
                     + ": key=" + jsVarName + ": " + jsStateInitializer);
         }
         return sb.toString();
@@ -123,7 +121,7 @@ public class InjectionHelper {
                 }
                 log.info("failOnError is false, ignoring problems: "
                         + e.getMessage());
-                log.debug("Ignored exception", e);
+                log.log(Level.FINE, "Ignored exception", e);
             }
         }
         contentTransformations.put(key, sb.toString());
@@ -207,12 +205,12 @@ public class InjectionHelper {
 
         long bytesCopied = len;
 
-        log.debug(url + " (InjectionHelper looking)");
+        log.fine(url + " (InjectionHelper looking)");
         if (!isKnownToBeHtml) {
             bytesCopied += ModifiedIO.copy(in, out);
         }
         else {
-            log.debug("injecting...");
+            log.fine("injecting...");
             response.removeField("Content-Length"); // added js will make it wrong, lead to page getting truncated
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             if (INJECT_SCRIPT_TAGS) {
@@ -308,7 +306,7 @@ public class InjectionHelper {
             for (String beforeRegexp : contentTransformations.keySet()) {
                 String after = contentTransformations.get(beforeRegexp);
                 if (after==null) {
-                    log.warn("no transformation seen for key " + beforeRegexp);
+                    log.warning("no transformation seen for key " + beforeRegexp);
                 }
                 else {
                     try {
@@ -396,7 +394,7 @@ public class InjectionHelper {
     public static boolean addUserJsInjectionFile(String fileName) {
         File f = new File(fileName);
         if (!f.canRead()) {
-            log.error("cannot read user JavaScript injection file " + fileName);
+            log.severe("cannot read user JavaScript injection file " + fileName);
             return false;
         }
         userJsInjectionFiles.add(fileName);

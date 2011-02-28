@@ -25,11 +25,12 @@ import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openqa.selenium.internal.Trace; import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.grid.internal.GridException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -63,9 +64,9 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 	private final Lock lock = new ReentrantLock();
 	private final Condition sessionHasBeenAssigned = lock.newCondition();
 
-	private static final Trace log = TraceFactory.getTrace(RequestHandler.class);
+	private static final Logger log = Logger.getLogger(RequestHandler.class.getName());
 
-	/**
+  /**
 	 * Detect what kind of protocol ( selenium1 vs webdriver ) is used by the
 	 * request and create the associated handler.
 	 * 
@@ -151,7 +152,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 				forwardRequest(session, this);
 
 			} catch (Throwable t) {
-				log.warn("cannot forward the request " + t.getMessage(), t);
+				log.log(Level.WARNING, "cannot forward the request " + t.getMessage(), t);
 				session.terminate();
 				throw new GridException("cannot forward the request " + t.getMessage(), t);
 			}
@@ -200,12 +201,12 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 		if (p instanceof TestSessionListener) {
 			if (showWarning && p.getMaxNumberOfConcurrentTestSessions() != 1) {
 				showWarning = false;
-				log.warn("WARNING : using a beforeSession on a proxy that can support multiple tests is risky.");
+				log.warning("WARNING : using a beforeSession on a proxy that can support multiple tests is risky.");
 			}
 			try {
 				((TestSessionListener) p).beforeSession(session);
 			} catch (Throwable t) {
-				log.error("Error running the beforeSessionListener : " + t.getMessage());
+				log.severe("Error running the beforeSessionListener : " + t.getMessage());
 				t.printStackTrace();
 				session.terminate();
 			}

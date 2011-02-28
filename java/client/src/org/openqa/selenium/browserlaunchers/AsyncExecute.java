@@ -17,11 +17,12 @@
 
 package org.openqa.selenium.browserlaunchers;
 
-import org.openqa.selenium.internal.NullTrace;
-import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.os.ProcessUtils;
-import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.UnixUtils;
+import org.openqa.selenium.os.WindowsUtils;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Spawn a process and return the process handle so you can close it yourself
@@ -31,7 +32,7 @@ import org.openqa.selenium.os.UnixUtils;
  */
 public class AsyncExecute {
 
-  static Trace log = new NullTrace();
+  static Logger log = Logger.getLogger(AsyncExecute.class.getName());
 
   /**
    * Sleeps without explicitly throwing an InterruptedException
@@ -78,7 +79,7 @@ public class AsyncExecute {
         UnixUtils.kill9(process);
         exitValue = ProcessUtils.waitForProcessDeath(process, 10000);
       } catch (Exception e) {
-        log.error("Process refused to die after 10 seconds, and couldn't kill9 it", e);
+        log.log(Level.SEVERE, "Process refused to die after 10 seconds, and couldn't kill9 it", e);
         throw new RuntimeException(
             "Process refused to die after 10 seconds, and couldn't kill9 it: " + e.getMessage(),
             ex);

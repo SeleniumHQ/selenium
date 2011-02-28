@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.server;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
+import java.util.logging.Logger;
 
 /**
  * <p>Holds the command to be next run in the browser</p>
@@ -30,8 +27,8 @@ import org.openqa.selenium.internal.TraceFactory;
  */
 public class CommandResultHolder {
 
-    private static final Trace logger = TraceFactory.getTrace(CommandResultHolder.class);
-	private static final String poisonResult = "CommandResultHolder.POISON";
+    private static final Logger log = Logger.getLogger(CommandResultHolder.class.getName());
+  private static final String poisonResult = "CommandResultHolder.POISON";
 	protected static final String CMD_TIMED_OUT_MSG = "ERROR: Command timed out";
 	protected static final String CMD_NULL_RESULT_MSG = "ERROR: Got a null result";
 
@@ -52,7 +49,7 @@ public class CommandResultHolder {
      */
     public String getResult() {
       String result;
-      logger.debug(hdr() + "called");
+      log.fine(hdr() + "called");
 
       // wait until data arrives before the timeout
       result = holder.pollToGetContentUntilTimeout();
@@ -69,7 +66,7 @@ public class CommandResultHolder {
       if (CMD_TIMED_OUT_MSG.equals(result)) {
           msg.append(" after ").append(holder.getTimeoutInSeconds()).append(" seconds.");
       }
-      logger.debug(msg.toString());
+      log.fine(msg.toString());
 
       return result;
     }

@@ -1,9 +1,5 @@
 package org.openqa.selenium.server.commands;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.RobotRetriever;
 
 import javax.imageio.ImageIO;
@@ -16,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Captures a full screen shot of the current screen using the java.awt.Robot class.
@@ -23,7 +21,7 @@ import java.util.concurrent.TimeoutException;
 public class CaptureScreenshotCommand extends Command {
 
     public static final String ID = "captureScreenshot";
-    private static final Trace LOGGER = TraceFactory.getTrace(CaptureScreenshotCommand.class);
+    private static final Logger log = Logger.getLogger(CaptureScreenshotCommand.class.getName());
 
     private final File file;
     
@@ -47,7 +45,7 @@ public class CaptureScreenshotCommand extends Command {
             captureSystemScreenshot();
             return "OK";
         } catch (Exception e) {
-            LOGGER.error("Problem capturing screenshot", e);
+            log.log(Level.SEVERE, "Problem capturing screenshot", e);
             return "ERROR: Problem capturing screenshot: " + e.getMessage();
         }
     }

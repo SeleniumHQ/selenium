@@ -1,12 +1,10 @@
 package org.openqa.selenium.server.commands;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.FrameGroupCommandQueueSet;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Command delegated "as-is" to Selenium Core.
@@ -15,7 +13,7 @@ public class SeleniumCoreCommand extends Command {
 
 
     public static final String CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID = "captureEntirePageScreenshot";
-    private static final Trace LOGGER = TraceFactory.getTrace(SeleniumCoreCommand.class);
+    private static final Logger log = Logger.getLogger(SeleniumCoreCommand.class.getName());
     private final String id;
     private final List<String> values;
     private final String sessionId;
@@ -30,16 +28,16 @@ public class SeleniumCoreCommand extends Command {
         final FrameGroupCommandQueueSet queue;
         final String response;
 
-        LOGGER.debug("Executing '" + id + "' selenium core command on session " + sessionId);
+        log.fine("Executing '" + id + "' selenium core command on session " + sessionId);
         try {
-            LOGGER.debug("Session " + sessionId + " going to doCommand(" + id + ','+ values.get(0) + ','+ values.get(1) + ")");
+            log.fine("Session " + sessionId + " going to doCommand(" + id + ','+ values.get(0) + ','+ values.get(1) + ")");
             queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
             response =  queue.doCommand(id, values.get(0), values.get(1));
-            LOGGER.debug("Got result: " + response + " on session " + sessionId);
+            log.fine("Got result: " + response + " on session " + sessionId);
             
             return response;
         } catch (Exception e) {
-            LOGGER.error("Exception running '" + id + " 'command on session " + sessionId, e);
+            log.log(Level.SEVERE, "Exception running '" + id + " 'command on session " + sessionId, e);
             return "ERROR Server Exception: " + e.getMessage();
         }
     }

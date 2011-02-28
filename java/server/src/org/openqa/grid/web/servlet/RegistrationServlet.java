@@ -19,13 +19,13 @@ package org.openqa.grid.web.servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openqa.selenium.internal.Trace; import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -40,8 +40,8 @@ import org.openqa.grid.internal.RemoteProxy;
 public class RegistrationServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -8670670577712086527L;
-	private static final Trace log = TraceFactory.getTrace(RegistrationServlet.class);
-	private Registry registry;
+	private static final Logger log = Logger.getLogger(RegistrationServlet.class.getName());
+  private Registry registry;
 
 	public RegistrationServlet() {
 		throw new IllegalAccessError("use the constructor that set the registry.");
@@ -67,7 +67,7 @@ public class RegistrationServlet extends HttpServlet {
 			registrationRequest.append(line);
 		}
 		rd.close();
-		log.debug("getting the following registration request  : " + registrationRequest.toString());
+		log.fine("getting the following registration request  : " + registrationRequest.toString());
 
 		RegistrationRequest server = RegistrationRequest.getNewInstance(registrationRequest.toString());
 		final RemoteProxy proxy = RemoteProxy.getNewInstance(server);
@@ -76,7 +76,7 @@ public class RegistrationServlet extends HttpServlet {
 		new Thread(new Runnable() {
 			public void run() {
 				registry.add(proxy);
-				log.debug("proxy added " + proxy.getRemoteURL());
+				log.fine("proxy added " + proxy.getRemoteURL());
 			}
 		}).start();
 	}

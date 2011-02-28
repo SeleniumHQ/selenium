@@ -5,7 +5,6 @@ java_library(name = "cybervillains",
   ],
   deps = [
     "//java/server/src/org/openqa/jetty",
-    "//java/client/src/org/openqa/selenium/internal:logging",
     "//third_party/java/bcprov",
   ])
 

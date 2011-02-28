@@ -20,11 +20,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openqa.selenium.internal.Trace; import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
@@ -37,9 +37,9 @@ import org.openqa.grid.internal.TestSession;
  */
 public class Selenium1RequestHandler extends RequestHandler {
 
-	private static final Trace log = TraceFactory.getTrace(Selenium1RequestHandler.class);
+	private static final Logger log = Logger.getLogger(Selenium1RequestHandler.class.getName());
 
-	Selenium1RequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
+  Selenium1RequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
 		super(request, response, registry);
 		if (getRequestBody() == null) {
 			throw new InstantiationError("Cannot create a selenium1 request handler from a request without body");
@@ -123,7 +123,7 @@ public class Selenium1RequestHandler extends RequestHandler {
 			}
 			responseBody = session.forward(getRequest(), getResponse(), builder.toString(), true);
 		} catch (IOException e) {
-			log.warn("Error forwarding the request " + e.getMessage());
+			log.warning("Error forwarding the request " + e.getMessage());
 			return null;
 		}
 		if (responseBody != null && responseBody.startsWith("OK,")) {

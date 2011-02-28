@@ -38,9 +38,10 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import cybervillains.ca.KeyStoreManager;
-import org.apache.commons.logging.Log;
 import org.openqa.jetty.http.HttpConnection;
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.http.HttpException;
@@ -54,16 +55,11 @@ import org.openqa.jetty.http.SocketListener;
 import org.openqa.jetty.http.SslListener;
 import org.openqa.jetty.http.handler.AbstractHttpHandler;
 import org.openqa.jetty.jetty.Server;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.IO;
 import org.openqa.jetty.util.InetAddrPort;
-import org.openqa.jetty.util.LineInput;
-import org.openqa.jetty.util.LogSupport;
 import org.openqa.jetty.util.StringMap;
 import org.openqa.jetty.util.URI;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
 import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
@@ -81,9 +77,9 @@ import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
  * @version $Id: ProxyHandler.java,v 1.34 2005/10/05 13:32:59 gregwilkins Exp $
  */
 public class ProxyHandler extends AbstractHttpHandler {
-    private static Trace log = TraceFactory.getTrace(ProxyHandler.class);
+    private static Logger log = Logger.getLogger(ProxyHandler.class.getName());
 
-    protected Set<String> _proxyHostsWhiteList;
+  protected Set<String> _proxyHostsWhiteList;
     protected Set<String> _proxyHostsBlackList;
     protected int _tunnelTimeoutMs = 250;
     private boolean _anonymous = false;
@@ -356,7 +352,7 @@ public class ProxyHandler extends AbstractHttpHandler {
           response.getOutputStream().close();
         }
         catch (Exception e) {
-            log.debug("Could not proxy " + uri, e);
+            log.log(Level.FINE, "Could not proxy " + uri, e);
             if (!response.isCommitted())
                 response.sendError(HttpResponse.__400_Bad_Request, "Could not proxy " + uri + "\n" + e);
         }
@@ -388,7 +384,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         CaptureNetworkTrafficCommand.Entry entry = new CaptureNetworkTrafficCommand.Entry(request.getMethod(), url.toString());
         entry.addRequestHeaders(request);
 
-        log.debug("PROXY URL=" + url);
+        log.fine("PROXY URL=" + url);
 
         URLConnection connection = url.openConnection();
         if(System.getProperty("http.proxyHost") != null &&
@@ -514,7 +510,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             response.setReason(http.getResponseMessage());
 
             String contentType = http.getContentType();
-            log.debug("Content-Type is: " + contentType);
+            log.fine("Content-Type is: " + contentType);
         }
 
         if (proxy_in == null) {
@@ -619,7 +615,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             try {
                 getSslRelayOrCreateNew(new URI(uri), new InetAddrPort(443), server);
             } catch (Exception e) {
-                log.error("Could not pre-create logging SSL relay for " + uri, e);
+                log.log(Level.SEVERE, "Could not pre-create logging SSL relay for " + uri, e);
             }
         }
         fakeCertsGenerated = true;
@@ -630,7 +626,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         URI uri = request.getURI();
 
         try {
-            log.debug("CONNECT: " + uri);
+            log.fine("CONNECT: " + uri);
             InetAddrPort addrPort;
             // When logging, we'll attempt to send messages to hosts that don't exist
             if (uri.toString().endsWith(".selenium.doesnotexist:443")) {
@@ -683,7 +679,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             }
         }
         catch (Exception e) {
-            log.debug("error during handleConnect", e);
+            log.log(Level.FINE, "error during handleConnect", e);
             response.sendError(HttpResponse.__500_Internal_Server_Error, e.toString());
         }
     }
@@ -785,7 +781,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             return new HttpTunnel(socket, null, null);
         }
         catch (IOException e) {
-            log.debug(e);
+            log.log(Level.FINE, "Exception thrown", e);
             response.sendError(HttpResponse.__400_Bad_Request);
             return null;
         }

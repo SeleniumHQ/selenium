@@ -21,21 +21,23 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
+
+import java.util.logging.Logger;
 
 /**
  * @author Kristian Rosenvold
  */
 public class SessionCleanerTest extends TestCase {
+  private final static Logger log = Logger.getLogger(SessionCleanerTest.class.getName());
 
   public void testCleanup() throws Exception {
     DriverSessions defaultDriverSessions = getDriverSessions();
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     assertEquals(2, defaultDriverSessions.getSessions().size());
-    SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, new NullLogTo(), 10);
+    SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, log, 10);
     waitForAllSessionsToExpire();
     sessionCleaner.checkExpiry();
     assertEquals(0, defaultDriverSessions.getSessions().size());
@@ -46,7 +48,7 @@ public class SessionCleanerTest extends TestCase {
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     assertEquals(2, defaultDriverSessions.getSessions().size());
-    SessionCleaner sessionCleaner = new TestSessionCleaner(defaultDriverSessions, new NullLogTo(), 10);
+    SessionCleaner sessionCleaner = new TestSessionCleaner(defaultDriverSessions, log, 10);
     sessionCleaner.start();
     waitForAllSessionsToExpire();
     synchronized (sessionCleaner) {
@@ -61,8 +63,8 @@ public class SessionCleanerTest extends TestCase {
   }
 
   class TestSessionCleaner extends SessionCleaner {
-    TestSessionCleaner(DriverSessions driverSessions, Trace trace, int sessionTimeOutInMs) {
-      super(driverSessions, trace, sessionTimeOutInMs);
+    TestSessionCleaner(DriverSessions driverSessions, Logger log, int sessionTimeOutInMs) {
+      super(driverSessions, log, sessionTimeOutInMs);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class SessionCleanerTest extends TestCase {
     DriverSessions defaultDriverSessions = getDriverSessions();
     SessionId firstSession = defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
-    SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, new NullLogTo(), 10);
+    SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, log, 10);
     waitForAllSessionsToExpire();
     defaultDriverSessions.get(firstSession).updateLastAccessTime();
     sessionCleaner.checkExpiry();

@@ -23,8 +23,6 @@ import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.GoogleChromeLocator;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -35,6 +33,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Browser launcher for Google Chrome.
@@ -49,7 +49,7 @@ import java.util.Map;
  */
 public class GoogleChromeLauncher extends AbstractBrowserLauncher {
 
-    private static final Trace LOGGER = TraceFactory.getTrace(GoogleChromeLauncher.class);
+    private static final Logger log = Logger.getLogger(GoogleChromeLauncher.class.getName());
 
     private BrowserInstallation browserInstallation;
 
@@ -71,7 +71,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
 
     @Override
     protected void launch(String url) {
-        LOGGER.info("Launching Google Chrome...");
+        log.info("Launching Google Chrome...");
 
         createProfile(sessionId, url);
         final String[] cmdArray = createCommandArray(url);
@@ -80,7 +80,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
     }
 
     public void close() {
-        LOGGER.info("Killing Google Chrome...");
+        log.info("Killing Google Chrome...");
 
         if (process == null) {
             return;
@@ -88,14 +88,14 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
 
         int exitValue = AsyncExecute.killProcess(process);
         if (exitValue == 0) {
-            LOGGER.warn("Google Chrome seems to have ended on its own.");
+            log.warning("Google Chrome seems to have ended on its own.");
         }
 
         try {
             LauncherUtils.recursivelyDeleteDir(customProfileDir);
         } catch (RuntimeException e) {
             final String errorMessage = "Couldn't delete custom profile directory";
-            LOGGER.error(errorMessage, e);
+            log.log(Level.SEVERE, errorMessage, e);
             throw new RuntimeException(errorMessage, e);
         }
     }
@@ -116,7 +116,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
             customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
         } catch (RuntimeException e) {
             final String errorMessage = "Couldn't create custom profile directory";
-            LOGGER.error(errorMessage, e);
+            log.log(Level.SEVERE, errorMessage, e);
             throw new RuntimeException(errorMessage, e);
         }
 
@@ -154,7 +154,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
             out.close();
         } catch (IOException e) {
             final String errorMessage = "Couldn't create preferences file";
-            LOGGER.error(errorMessage, e);
+            log.log(Level.SEVERE, errorMessage, e);
             throw new RuntimeException(errorMessage, e);
         }
     }

@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.server;
 
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
+import java.util.logging.Logger;
 
 /**
  * <p>Holds the command to be next run in the browser</p>
@@ -28,8 +27,8 @@ import org.openqa.selenium.internal.TraceFactory;
  */
 public class CommandHolder {
 
-    private static final Trace logger = TraceFactory.getTrace(CommandHolder.class);
-    private static final int defaultTimeout = 10; // seconds
+    private static final Logger log = Logger.getLogger(CommandHolder.class.getName());
+  private static final int defaultTimeout = 10; // seconds
     private static final RemoteCommand poisonCommand
             = new DefaultRemoteCommand("CommandHolder.POISION", "", "");
     protected static final String RETRY_CMD_STRING = "retryLast";
@@ -60,7 +59,7 @@ public class CommandHolder {
     public RemoteCommand getCommand() {
         RemoteCommand command;
 
-        logger.debug(hdr() + "called");
+        log.fine(hdr() + "called");
         command = queue.pollToGetContentUntilTimeout();
         if (null == command) {
             // if there is no new command, send a retryLast.
@@ -72,13 +71,13 @@ public class CommandHolder {
             // if the queue was poisoned, just exit with a null command.
             command = null;
         }
-        logger.debug(hdr() + "-> " + ((null == command) ? "null" : command.toString()));
+        log.fine(hdr() + "-> " + ((null == command) ? "null" : command.toString()));
 
         return command;
     }
 
     public boolean putCommand(RemoteCommand cmd) {
-        logger.debug(hdr());
+        log.fine(hdr());
         return queue.putContent(cmd);
     }
 
@@ -91,7 +90,7 @@ public class CommandHolder {
     }
 
     public void poisonPollers() {
-        logger.debug(hdr() + " poisoning pollers");
+        log.fine(hdr() + " poisoning pollers");
         queue.poisonPollers();
     }
 

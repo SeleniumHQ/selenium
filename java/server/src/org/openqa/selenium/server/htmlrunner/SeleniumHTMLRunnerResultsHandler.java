@@ -12,17 +12,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.http.HttpException;
 import org.openqa.jetty.http.HttpHandler;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.StringUtil;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 
 /**
  * Handles results of HTMLRunner (aka TestRunner, FITRunner) in automatic mode.
@@ -34,9 +31,9 @@ import org.openqa.selenium.internal.TraceFactory;
  */
 @SuppressWarnings("serial")
 public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
-    static Trace log = TraceFactory.getTrace(SeleniumHTMLRunnerResultsHandler.class);
-    
-    HttpContext context;
+    static Logger log = Logger.getLogger(SeleniumHTMLRunnerResultsHandler.class.getName());
+
+  HttpContext context;
     List<HTMLResultsListener> listeners;
     boolean started = false;
     

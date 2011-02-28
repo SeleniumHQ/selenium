@@ -3,15 +3,3 @@ java_library(name = "codecs",
   srcs = [
     "Base64Encoder.java",
   ])
-
-java_library(name = "logging",
-  srcs = [
-    "NullTrace.java",
-    "NullTraceGenerator.java",
-    "Trace.java",
-    "TraceFactory.java",
-  ],
-  deps = [
-    "//third_party/java/guava-libraries",
-  ])
-

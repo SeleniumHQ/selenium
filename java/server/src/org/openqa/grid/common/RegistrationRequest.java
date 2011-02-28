@@ -21,13 +21,12 @@ import com.google.common.collect.Maps;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 
 import java.security.InvalidParameterException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -43,10 +42,10 @@ public class RegistrationRequest {
 	private List<Map<String, Object>> capabilities = Lists.newArrayList();
 	private Map<String, Object> configuration = Maps.newHashMap();
 	
-	private static final Trace log = TraceFactory.getTrace(RegistrationRequest.class);
-	
+	private static final Logger log = Logger.getLogger(RegistrationRequest.class.getName());
 
-	// some special param for capability
+
+  // some special param for capability
 	public static final String APP = "applicationName";
 	public static final String MAX_INSTANCES = "maxInstances";
 	public static final String BROWSER = "browserName";
@@ -145,7 +144,7 @@ public class RegistrationRequest {
 		try {
 			return Integer.parseInt(o.toString());
 		} catch (Throwable t) {
-			log.warn("Error." + name + " is supposed to be an int. Keeping default of " + defaultValue);
+			log.warning("Error." + name + " is supposed to be an int. Keeping default of " + defaultValue);
 			return defaultValue;
 		}
 

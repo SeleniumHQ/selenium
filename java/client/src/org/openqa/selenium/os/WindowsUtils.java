@@ -16,6 +16,13 @@
  */
 package org.openqa.selenium.os;
 
+import com.google.common.collect.Lists;
+import org.openqa.selenium.Platform;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -26,17 +33,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.google.common.collect.Lists;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.internal.NullTrace;
-import org.openqa.selenium.internal.Trace;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 import static org.openqa.selenium.Platform.WINDOWS;
 
@@ -44,7 +44,7 @@ public class WindowsUtils {
 
   public static Boolean regVersion1 = null;
   
-  private static Trace log = new NullTrace();
+  private static Logger log = Logger.getLogger(WindowsUtils.class.getName());
   private static final boolean THIS_IS_WINDOWS = Platform.getCurrent().is(WINDOWS);
   private static String wmic = null;
   private static File wbem = null;
@@ -65,7 +65,7 @@ public class WindowsUtils {
 
   }
 
-  public static void traceWith(Trace log) {
+  public static void traceWith(Logger log) {
     WindowsUtils.log = log;
   }
 
@@ -86,7 +86,7 @@ public class WindowsUtils {
     try {
       killByName(name);
     } catch (WindowsRegistryException e) {
-      log.warn(e);
+      log.log(Level.WARNING, "Exception thrown", e);
     }
   }
 
@@ -149,7 +149,7 @@ public class WindowsUtils {
         errorMessage.append(cmdarray[i]);
         errorMessage.append('\'');
       }
-      log.warn(errorMessage.toString());
+      log.warning(errorMessage.toString());
     }
   }
 
@@ -330,7 +330,7 @@ public class WindowsUtils {
         return wmic;
       }
     }
-    log.warn("Couldn't find wmic! Hope it's on the path...");
+    log.warning("Couldn't find wmic! Hope it's on the path...");
     wmic = "wmic";
     return wmic;
   }
@@ -347,7 +347,7 @@ public class WindowsUtils {
     File systemRoot = findSystemRoot();
     wbem = new File(systemRoot, "system32/wbem");
     if (!wbem.exists()) {
-      log.error("Couldn't find wbem!");
+      log.severe("Couldn't find wbem!");
       return null;
     }
     return wbem;
@@ -368,7 +368,7 @@ public class WindowsUtils {
       taskkill = taskkillExe.getAbsolutePath();
       return taskkill;
     }
-    log.warn("Couldn't find taskkill! Hope it's on the path...");
+    log.warning("Couldn't find taskkill! Hope it's on the path...");
     taskkill = "taskkill";
     return taskkill;
   }
@@ -397,7 +397,7 @@ public class WindowsUtils {
     if (reg != null) {
       return reg;
     }
-    log.error("OS Version: " + System.getProperty("os.version"));
+    log.severe("OS Version: " + System.getProperty("os.version"));
     throw new WindowsRegistryException("Couldn't find reg.exe!\n" +
                                        "Please download it from Microsoft and install it in a standard location.\n"
                                        +

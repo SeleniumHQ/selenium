@@ -1,11 +1,9 @@
 package org.openqa.selenium.server.mock;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.RemoteCommand;
 import org.openqa.selenium.server.WindowClosedException;
+
+import java.util.logging.Logger;
 
 import static junit.framework.Assert.fail;
 
@@ -16,8 +14,8 @@ import static junit.framework.Assert.fail;
  *
  */
 public class MockPIFrame {
-    static Trace log = TraceFactory.getTrace(MockPIFrame.class);
-    final String driverUrl;
+    static Logger log = Logger.getLogger(MockPIFrame.class.getName());
+  final String driverUrl;
     final String sessionId;
     final String uniqueId;
     String localFrameAddress;

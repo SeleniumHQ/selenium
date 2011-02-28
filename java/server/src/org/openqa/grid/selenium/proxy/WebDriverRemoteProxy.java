@@ -18,14 +18,14 @@ package org.openqa.grid.selenium.proxy;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.TestSession;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
+
+import java.util.logging.Logger;
 
 
 public class WebDriverRemoteProxy extends WebRemoteProxy  {
-	private static final Trace log = TraceFactory.getTrace(WebDriverRemoteProxy.class);
+	private static final Logger log = Logger.getLogger(WebDriverRemoteProxy.class.getName());
 
-	public WebDriverRemoteProxy(RegistrationRequest request) {
+  public WebDriverRemoteProxy(RegistrationRequest request) {
 		super(request);
 	}
 
@@ -38,7 +38,7 @@ public class WebDriverRemoteProxy extends WebRemoteProxy  {
 		System.err.println("timing out " + session);
 		boolean ok = session.sendDeleteSessionRequest();
 		if (!ok) {
-			log.warn("Error releasing the resources on timeout for session " + session);
+			log.warning("Error releasing the resources on timeout for session " + session);
 		}
 	}
 

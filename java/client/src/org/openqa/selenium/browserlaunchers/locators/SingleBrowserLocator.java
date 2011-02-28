@@ -1,19 +1,18 @@
 package org.openqa.selenium.browserlaunchers.locators;
 
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
-import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.WindowsUtils;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * Discovers a valid browser installation on local system.
  */
 public abstract class SingleBrowserLocator implements BrowserLocator {
 
-    private static final Trace LOGGER = TraceFactory.getTrace(BrowserLocator.class);
+    private static final Logger log = Logger.getLogger(BrowserLocator.class.getName());
 
     public BrowserInstallation findBrowserLocationOrFail() {
         final BrowserInstallation location;
@@ -29,7 +28,7 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
     public BrowserInstallation findBrowserLocation() {
         final BrowserInstallation defaultPath;
 
-        LOGGER.debug("Discovering " + browserName() + "...");
+        log.fine("Discovering " + browserName() + "...");
         defaultPath = findAtADefaultLocation();
         if (null != defaultPath) {
             return defaultPath;
@@ -136,16 +135,16 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
         if (null == launcher) {
             return  null;
         }
-        LOGGER.debug("Checking whether " + browserName() + " launcher at :'" + launcher + "' is valid...");
+        log.fine("Checking whether " + browserName() + " launcher at :'" + launcher + "' is valid...");
         if (!launcher.exists()) {
             return null;
         }
 
         if (LauncherUtils.isScriptFile(launcher)) {
-            LOGGER.warn("Caution: '" + launcher.getAbsolutePath() +"': file is a script file, not a real executable.  The browser environment is no longer fully under RC control");
+            log.warning("Caution: '" + launcher.getAbsolutePath() +"': file is a script file, not a real executable.  The browser environment is no longer fully under RC control");
         }
 
-        LOGGER.debug("Discovered valid " + browserName() + " launcher  : '" + launcher + "'");
+        log.fine("Discovered valid " + browserName() + " launcher  : '" + launcher + "'");
 
 
         return new BrowserInstallation(launcher.getAbsolutePath(), computeLibraryPath(launcher));

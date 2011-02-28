@@ -5,10 +5,6 @@ import junit.framework.TestCase;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
@@ -17,7 +13,7 @@ import org.openqa.selenium.testworker.TrackableThread;
 
 public class CommandResultHolderUnitTest extends TestCase {
 
-  private static Trace log = TraceFactory.getTrace(CommandResultHolderUnitTest.class);
+  private static Logger log = Logger.getLogger(CommandResultHolderUnitTest.class.getName());
 
   private static final String sessionId = "1";
   private static final String testResult = "OK";
@@ -62,7 +58,7 @@ public class CommandResultHolderUnitTest extends TestCase {
 		@Override
 		public Object go() throws Throwable {
 			String result = holder.getResult();
-	        log.debug(Thread.currentThread().getName() + " got result: " + result);
+	        log.fine(Thread.currentThread().getName() + " got result: " + result);
 	        return result;
 		}
 	};

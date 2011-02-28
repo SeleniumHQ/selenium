@@ -20,7 +20,6 @@ package org.openqa.selenium.server;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
-
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.http.HttpConnection;
 import org.openqa.jetty.http.HttpException;
@@ -33,8 +32,6 @@ import org.openqa.jetty.util.StringUtil;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
@@ -50,7 +47,7 @@ import org.openqa.selenium.server.commands.SeleniumCoreCommand;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.log.LoggingManager;
 
-import java.awt.Robot;
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,6 +67,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A Jetty handler that takes care of remote Selenium requests.
@@ -83,7 +82,7 @@ import java.util.Vector;
  */
 @SuppressWarnings("serial")
 public class SeleniumDriverResourceHandler extends ResourceHandler {
-  static final Trace LOGGER = TraceFactory.getTrace(SeleniumDriverResourceHandler.class);
+  static final Logger log = Logger.getLogger(SeleniumDriverResourceHandler.class.getName());
   static Log browserSideLog =
       LogFactory.getLog(SeleniumDriverResourceHandler.class.getName() + ".browserSideLog");
 
@@ -141,7 +140,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         LoggingManager.perSessionLogHandler()
             .setThreadToSessionMapping(Thread.currentThread().getId(), sessionId);
       }
-      LOGGER.debug("req: " + req);
+      log.fine("req: " + req);
       // If this is a browser requesting work for the first time...
       if (cmd != null) {
         handleCommandRequest(req, res, cmd, sessionId);
@@ -153,14 +152,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
           || -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")) {
         // ignore failure to find these items...
       } else {
-        LOGGER.debug("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
+        log.fine("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
         req.setHandled(false);
       }
     } catch (RuntimeException e) {
       if (looksLikeBrowserLaunchFailedBecauseFileNotFound(e)) {
         String apparentFile = extractNameOfFileThatCouldntBeFound(e);
         if (apparentFile != null) {
-          LOGGER.error("Could not start browser; it appears that " + apparentFile
+          log.severe("Could not start browser; it appears that " + apparentFile
                        + " is missing or inaccessible");
         }
       }
@@ -230,7 +229,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     if (justLoaded) {
       sb.append(" NEW");
     }
-    LOGGER.debug(sb.toString());
+    log.fine(sb.toString());
   }
 
   private void respond(HttpResponse res, RemoteCommand sc, String uniqueId) throws IOException {
@@ -238,10 +237,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
     if (sc != null) {
       writer.write(sc.toString());
-      LOGGER.debug("res to " + uniqueId +
+      log.fine("res to " + uniqueId +
                    ": " + sc.toString());
     } else {
-      LOGGER.debug("res empty");
+      log.fine("res empty");
     }
     for (int pad = 998 - buf.size(); pad-- > 0;) {
       writer.write(" ");
@@ -411,7 +410,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   }
 
   public String doCommand(String cmd, Vector<String> values, String sessionId, HttpResponse res) {
-    LOGGER.info("Command request: " + cmd + values.toString() + " on session " + sessionId);
+    log.info("Command request: " + cmd + values.toString() + " on session " + sessionId);
     String results = null;
     // handle special commands
     switch (SpecialCommand.getValue(cmd)) {
@@ -482,7 +481,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
           RobotRetriever.getRobot().keyPress(Integer.parseInt(values.get(0)));
           results = "OK";
         } catch (Exception e) {
-          LOGGER.error("Problem during keyDown: ", e);
+          log.log(Level.SEVERE, "Problem during keyDown: ", e);
           results = "ERROR: Problem during keyDown: " + e.getMessage();
         }
         break;
@@ -491,7 +490,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
           RobotRetriever.getRobot().keyRelease(Integer.parseInt(values.get(0)));
           results = "OK";
         } catch (Exception e) {
-          LOGGER.error("Problem during keyUp: ", e);
+          log.log(Level.SEVERE, "Problem during keyUp: ", e);
           results = "ERROR: Problem during keyUp: " + e.getMessage();
         }
         break;
@@ -504,7 +503,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
           r.keyRelease(keycode);
           results = "OK";
         } catch (Exception e) {
-          LOGGER.error("Problem during keyDown: ", e);
+          log.log(Level.SEVERE, "Problem during keyDown: ", e);
           results = "ERROR: Problem during keyDown: " + e.getMessage();
         }
         // TODO typeKeysNative.  Requires converting String to array of keycodes.
@@ -596,7 +595,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         results = new SeleniumCoreCommand(cmd, values, sessionId).execute();
     }
 
-    LOGGER.info(commandResultsLogMessage(cmd, sessionId, results));
+    log.info(commandResultsLogMessage(cmd, sessionId, results));
     return results;
 
   }
@@ -625,7 +624,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
       if (domain == null) {
         setDomain(sessionId, urlDomain);
       } else if (!url.startsWith(domain)) {
-        LOGGER.warn("you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
+        log.warning("you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
                     + "this may lead to a 'Permission denied' from the browser (unless it is running as *iehta or *chrome,\n"
                     + "or alternatively the selenium server is running in proxy injection mode)");
       }
@@ -750,11 +749,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   }
 
   private void shutDown(HttpResponse res) {
-    LOGGER.info("Shutdown command received");
+    log.info("Shutdown command received");
 
     Runnable initiateShutDown = new Runnable() {
       public void run() {
-        LOGGER.info("initiating shutdown");
+        log.info("initiating shutdown");
         AsyncExecute.sleepTight(500);
         System.exit(0);
       }

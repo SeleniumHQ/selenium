@@ -17,24 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-import org.openqa.selenium.internal.Trace;
 import org.openqa.selenium.remote.server.DriverSessions;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class UrlMapper {
 
   private final Map<ResultType, Renderer> globals = new LinkedHashMap<ResultType, Renderer>();
   private final Set<ResultConfig> configs = new LinkedHashSet<ResultConfig>();
   private final DriverSessions sessions;
-  private final Trace logger;
+  private final Logger log;
 
-  public UrlMapper(DriverSessions sessions, Trace logger) {
+  public UrlMapper(DriverSessions sessions, Logger log) {
     this.sessions = sessions;
-    this.logger = logger;
+    this.log = log;
   }
 
   public ResultConfig bind(String url, Class<? extends Handler> handlerClazz) {
@@ -43,7 +43,7 @@ public class UrlMapper {
       configs.remove(existingConfig);
     }
 
-    ResultConfig config = new ResultConfig(url, handlerClazz, sessions, logger);
+    ResultConfig config = new ResultConfig(url, handlerClazz, sessions, log);
     configs.add(config);
     for (Map.Entry<ResultType, Renderer> entry : globals.entrySet()) {
       config.on(entry.getKey(), entry.getValue());

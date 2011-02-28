@@ -5,8 +5,6 @@
 package org.openqa.selenium.server.htmlrunner;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.Trace;
-import org.openqa.selenium.internal.TraceFactory;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.*;
@@ -19,6 +17,8 @@ import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Runs HTML Selenium test suites.
@@ -29,8 +29,8 @@ import java.io.IOException;
  */
 public class HTMLLauncher implements HTMLResultsListener {
 
-    static Trace log = TraceFactory.getTrace(HTMLLauncher.class);
-    private SeleniumServer remoteControl;
+    static Logger log = Logger.getLogger(HTMLLauncher.class.getName());
+  private SeleniumServer remoteControl;
     private HTMLTestResults results;
 
 	public HTMLLauncher(SeleniumServer remoteControl) {
@@ -97,7 +97,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         }
     	long timeoutInMs = 1000l * timeoutInSeconds;
         if (timeoutInMs < 0) {
-            log.warn("Looks like the timeout overflowed, so resetting it to the maximum.");
+            log.warning("Looks like the timeout overflowed, so resetting it to the maximum.");
             timeoutInMs = Long.MAX_VALUE;
         }
         
@@ -207,7 +207,7 @@ public class HTMLLauncher implements HTMLResultsListener {
             result = launcher.runHTMLSuite(browser, startURL, suite, results, 600, multiWindow);
             passed &= "PASSED".equals(result);
           } catch (Throwable e) {
-            log.warn("Test of browser failed: " + browser, e);
+            log.log(Level.WARNING, "Test of browser failed: " + browser, e);
             passed = false;
           }
         }
