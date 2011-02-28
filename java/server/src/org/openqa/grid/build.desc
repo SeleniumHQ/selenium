@@ -1,0 +1,12 @@
+
+java_library(name = "grid",
+  srcs = [
+    "internal/**/*.java",
+    "web/**/*.java"
+  ],
+  deps = [
+    "//java/server/src/org/openqa/grid/common",
+    "//third_party/java/apache-httpclient",
+    "//third_party/java/jetty",
+  ])
+

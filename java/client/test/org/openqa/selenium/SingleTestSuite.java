@@ -34,12 +34,13 @@ public class SingleTestSuite extends TestCase {
   private static final String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
   private static final String HTML_UNIT_JS = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
   private static final String IE = "org.openqa.selenium.ie.InternetExplorerDriver";
+  private static final String IPHONE = "org.openqa.selenium.iphone.IPhoneDriver";
   private static final String REMOTE = "org.openqa.selenium.remote.server.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
   private static final String REMOTE_IE = "org.openqa.selenium.remote.server.RemoteWebDriverIeTestSuite$RemoteIeWebDriverForTest";
   private static final String SELENIUM = "org.openqa.selenium.v1.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = IPHONE;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -56,9 +57,9 @@ public class SingleTestSuite extends TestCase {
 //        .method("testShouldBeAbleToRefreshAPage")
 //        .method("testShouldNotTrimSpacesWhenLineWraps")
         .exclude(ALL)
-        .exclude(Ignore.Driver.IE)
+        .exclude(Ignore.Driver.IPHONE)
         .outputTestNames()
-        .leaveRunning()
+//        .leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver) || REMOTE_IE.equals(driver)) {

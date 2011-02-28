@@ -84,6 +84,7 @@ task :all => [:'selenium-java', :'android']
 task :all_zip => [:'selenium-java_zip']
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
+task :grid => [ "//java/server/src/org/openqa/grid" ]
 task :htmlunit => [ "//java/client/src/org/openqa/selenium/htmlunit" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
@@ -114,6 +115,10 @@ task :test_atoms => [
 task :test_android => ["//java/client/test/org/openqa/selenium/android:android-test:run"]
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" ]
 task :test_htmlunit => [ "//java/client/test/org/openqa/selenium/htmlunit:test:run" ]
+task :test_grid => [
+  "//java/server/test/org/openqa/grid/common:test:run",
+  "//java/server/test/org/openqa/grid:test:run"
+]
 task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test:run" ]

@@ -1,0 +1,12 @@
+
+java_test(name = "test",
+  srcs = [
+    "internal/**/*.java",
+    "plugin/**/*.java",
+  ],
+  main = "org.testng.TestNG",
+  args = "grid-tests.xml",
+  deps = [
+    "//java/server/src/org/openqa/grid",
+    "//third_party/java/testng",
+  ])
