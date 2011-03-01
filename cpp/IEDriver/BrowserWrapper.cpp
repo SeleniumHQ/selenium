@@ -35,7 +35,7 @@ BrowserWrapper::~BrowserWrapper(void) {
 }
 
 void BrowserWrapper::GetDocument(IHTMLDocument2 **doc) {
-	IHTMLWindow2 *window;
+	CComPtr<IHTMLWindow2> window;
 
 	if (this->focused_frame_window_ == NULL) {
 		CComPtr<IDispatch> dispatch;
@@ -230,7 +230,6 @@ bool BrowserWrapper::IsHtmlPage(IHTMLDocument2* doc) {
 int BrowserWrapper::SetFocusedFrameByElement(IHTMLElement *frame_element) {
 	HRESULT hr = S_OK;
 	if (!frame_element) {
-		this->focused_frame_window_.Detach();
 		this->focused_frame_window_ = NULL;
 		return SUCCESS;
 	}
@@ -248,7 +247,7 @@ int BrowserWrapper::SetFocusedFrameByElement(IHTMLElement *frame_element) {
 		return ENOSUCHFRAME;
 	}
 
-	this->focused_frame_window_ = interim_result.Detach();
+	this->focused_frame_window_ = interim_result;
 	return SUCCESS;
 }
 
@@ -290,7 +289,7 @@ int BrowserWrapper::SetFocusedFrameByName(std::wstring frame_name) {
 		return ENOSUCHFRAME;
 	}
 
-	this->focused_frame_window_ = interim_result.Detach();
+	this->focused_frame_window_ = interim_result;
 	return SUCCESS;
 }
 
@@ -332,7 +331,7 @@ int BrowserWrapper::SetFocusedFrameByIndex(int frame_index) {
 		return ENOSUCHFRAME;
 	}
 
-	this->focused_frame_window_ = interim_result.Detach();
+	this->focused_frame_window_ = interim_result;
 	return SUCCESS;
 }
 
@@ -393,7 +392,6 @@ void __stdcall BrowserWrapper::DocumentComplete(IDispatch *pDisp, VARIANT *URL) 
 	// the way we expect it to.
 	CComPtr<IDispatch> dispatch(this->browser_);
 	if (dispatch.IsEqualObject(pDisp) && this->focused_frame_window_ != NULL) {
-		this->focused_frame_window_.Detach();
 		this->focused_frame_window_ = NULL;
 	}
 }
