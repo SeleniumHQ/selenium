@@ -101,7 +101,7 @@ class WebDriver(object):
               zip file.  Only used if Firefox is requested.
         """
         if browser_profile:
-          desired_capabilities['firefox_profile'] = browser_profile
+          desired_capabilities['firefox_profile'] = browser_profile.encoded
 
         response =  self.execute(Command.NEW_SESSION, {
            'desiredCapabilities': desired_capabilities
