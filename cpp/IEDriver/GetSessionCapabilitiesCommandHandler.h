@@ -21,6 +21,8 @@ protected:
 		capabilities["javascriptEnabled"] = true;
 		capabilities["platform"] = "WINDOWS";
 		capabilities["nativeEvents"] = true;
+		capabilities["cssSelectorsEnabled"] = true;
+		capabilities["takesScreenshot"] = true;
 		response->SetResponse(SUCCESS, capabilities);
 	}
 };
