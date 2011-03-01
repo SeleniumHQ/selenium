@@ -20,12 +20,19 @@ webdriver::IEDriverServer* StartServer(int port) {
 		char* options[] = { "listening_ports", buffer, "access_control_list", "-0.0.0.0/0,+127.0.0.1", "enable_keep_alive", "yes", NULL };
 		server = new webdriver::IEDriverServer(port);
 		ctx = mg_start(event_handler, (const char **)options);
+        if (ctx == NULL) {
+            delete server;
+            server = NULL;
+        }
 	}
 	return server;
 }
 
 void StopServer(webdriver::IEDriverServer *myserver) {
-	mg_stop(ctx);
+    if (ctx) {
+	    mg_stop(ctx);
+        ctx = NULL;
+    }
 	delete server;
 	server = NULL;
 }
