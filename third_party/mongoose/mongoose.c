@@ -811,7 +811,16 @@ static int pthread_cond_signal(pthread_cond_t *cv) {
 static int pthread_cond_broadcast(pthread_cond_t *cv) {
   // Implementation with PulseEvent() has race condition, see
   // http://www.cs.wustl.edu/~schmidt/win32-cv-1.html
-  return PulseEvent(cv->broadcast) == 0 ? -1 : 0;
+  // return PulseEvent(cv->broadcast) == 0 ? -1 : 0;
+
+  // [KirillJacobson] PulseEvent causes ms_stop() function to hang when the
+  // process runs in the VisualStudio debugger (observed on Windows XP SP3,
+  // VS 2008)
+  //
+  // MSDN states that PulseEvent() "function is unreliable and should 
+  // not be used. It exists mainly for backward compatibility"
+  // http://msdn.microsoft.com/en-us/library/ms684914%28v=vs.85%29.aspx
+  return SetEvent(cv->broadcast) == 0 ? -1 : 0;
 }
 
 static int pthread_cond_destroy(pthread_cond_t *cv) {
