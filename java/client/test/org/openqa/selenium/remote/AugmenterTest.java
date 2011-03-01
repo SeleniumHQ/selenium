@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_BROWSER_CONNECTION;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
 public class AugmenterTest {
@@ -185,6 +186,15 @@ public class AugmenterTest {
     assertTrue(returned instanceof MyInterface);
   }
 
+  @Test
+  public void shouldCopyFieldsFromTemplateInstanceIntoChildInstance() {
+    ChildRemoteDriver driver = new ChildRemoteDriver();
+    driver.setMagicNumber(3);
+    driver = (ChildRemoteDriver) new Augmenter().augment(driver);
+
+    assertEquals(3, driver.getMagicNumber());
+  }
+
   private static class StubExecutor implements CommandExecutor {
     private final Capabilities capabilities;
     private final List<Data> expected = Lists.newArrayList();
@@ -248,6 +258,25 @@ public class AugmenterTest {
 
     public WebElement findElementById(String id) {
       throw new NoSuchElementException("Boom");
+    }
+  }
+
+  public static class ChildRemoteDriver extends RemoteWebDriver {
+    private int magicNumber;
+
+    @Override
+    public Capabilities getCapabilities() {
+      DesiredCapabilities caps = DesiredCapabilities.firefox();
+      caps.setCapability(SUPPORTS_BROWSER_CONNECTION, true);
+      return caps;
+    }
+
+    public int getMagicNumber() {
+      return magicNumber;
+    }
+
+    public void setMagicNumber(int magicNumber) {
+      this.magicNumber = magicNumber;
     }
   }
 }

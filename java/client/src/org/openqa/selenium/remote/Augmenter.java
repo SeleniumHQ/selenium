@@ -26,6 +26,7 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_SQL_DATABASE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 import static org.openqa.selenium.remote.CapabilityType.TAKES_SCREENSHOT;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -41,6 +42,7 @@ import org.openqa.selenium.remote.html5.AddDatabaseStorage;
 import org.openqa.selenium.remote.html5.AddLocationContext;
 import org.openqa.selenium.remote.html5.AddWebStorage;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -127,10 +129,32 @@ public class Augmenter {
     CompoundHandler handler = determineAugmentation(driver, augmentors);
     RemoteWebDriver remote = create(handler, (RemoteWebDriver) driver);
 
-    remote.setCommandExecutor(((RemoteWebDriver) driver).getCommandExecutor());
-    remote.setElementConverter(((RemoteWebDriver) driver).getElementConverter());
+    copyFields(driver.getClass(), driver, remote);
 
     return remote;
+  }
+
+  private void copyFields(Class<?> clazz, Object source, Object target) {
+    if (Object.class.equals(clazz)) {
+      // Stop!
+      return;
+    }
+
+    for (Field field : clazz.getDeclaredFields()) {
+      copyField(source, target, field);
+    }
+
+    copyFields(clazz.getSuperclass(), source, target);
+  }
+
+  private void copyField(Object source, Object target, Field field) {
+    try {
+      field.setAccessible(true);
+      Object value = field.get(source);
+      field.set(target, value);
+    } catch (IllegalAccessException e) {
+      throw Throwables.propagate(e);
+    }
   }
 
   /**
@@ -153,6 +177,8 @@ public class Augmenter {
 
     CompoundHandler handler = determineAugmentation(parent, augmentors);
     RemoteWebElement remote = create(handler, element);
+
+    copyFields(element.getClass(), element, remote);
 
     remote.setId(element.getId());
     remote.setParent(parent);
