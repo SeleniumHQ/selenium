@@ -143,14 +143,6 @@ bool ScriptWrapper::ResultIsObject() {
 
 int ScriptWrapper::Execute() {
 	VARIANT result;
-
-	//CComPtr<IHTMLDocument2> doc;
-	//this->browser_->GetDocument(&doc);
-	//if (!doc) {
-	//	LOG(WARN) << "Unable to get document reference";
-	//	return EUNEXPECTEDJSERROR;
-	//}
-
 	CComPtr<IDispatch> script_engine;
 	HRESULT hr = this->script_engine_host_->get_Script(&script_engine);
 	if (FAILED(hr)) {
@@ -160,13 +152,11 @@ int ScriptWrapper::Execute() {
 
 	DISPID eval_id;
 	bool added;
-	//bool ok = this->GetEvalMethod(doc, &eval_id, &added);
 	bool ok = this->GetEvalMethod(this->script_engine_host_, &eval_id, &added);
 
 	if (!ok) {
 		LOG(WARN) << "Unable to locate eval method";
 		if (added) { 
-			// this->RemoveScript(doc); 
 			this->RemoveScript(this->script_engine_host_); 
 		}
 		return EUNEXPECTEDJSERROR;
@@ -176,9 +166,8 @@ int ScriptWrapper::Execute() {
 	if (!this->CreateAnonymousFunction(script_engine, eval_id, &this->script_, &temp_function)) {
 		// Debug level since this is normally the point we find out that 
 		// a page refresh has occured. *sigh*
-//		LOG(DEBUG) << "Cannot create anonymous function: " << _bstr_t(script) << endl;
+		// LOG(DEBUG) << "Cannot create anonymous function: " << _bstr_t(script) << endl;
 		if (added) { 
-			// this->RemoveScript(doc); 
 			this->RemoveScript(this->script_engine_host_); 
 		}
 		return EUNEXPECTEDJSERROR;
@@ -189,7 +178,6 @@ int ScriptWrapper::Execute() {
 		::VariantClear(&result);
 		result.vt = VT_EMPTY;
 		if (added) { 
-			//this->RemoveScript(doc); 
 			this->RemoveScript(this->script_engine_host_); 
 		}
 		return SUCCESS;
@@ -201,7 +189,6 @@ int ScriptWrapper::Execute() {
 	hr = temp_function.pdispVal->GetIDsOfNames(IID_NULL, &call_member_name, 1, LOCALE_USER_DEFAULT, &call_member_id);
 	if (FAILED(hr)) {
 		if (added) { 
-			//this->RemoveScript(doc); 
 			this->RemoveScript(this->script_engine_host_); 
 		}
 //		LOGHR(DEBUG, hr) << "Cannot locate call method on anonymous function: " << _bstr_t(script) << endl;
@@ -219,12 +206,10 @@ int ScriptWrapper::Execute() {
 	call_parameters.cArgs = nargs + 1;
 
 	CComPtr<IHTMLWindow2> win;
-	//hr = doc->get_parentWindow(&win);
 	hr = this->script_engine_host_->get_parentWindow(&win);
 	if (FAILED(hr)) {
 		if (added) { 
-			//this->RemoveScript(doc); 
-			this->RemoveScript(this->script_engine_host_); 
+			this->RemoveScript(this->script_engine_host_);
 		}
 		LOGHR(WARN, hr) << "Cannot get parent window";
 		return EUNEXPECTEDJSERROR;
@@ -241,23 +226,19 @@ int ScriptWrapper::Execute() {
 	}
 
 	call_parameters.rgvarg = vargs;
-
+	int return_code = SUCCESS;
 	EXCEPINFO exception;
 	memset(&exception, 0, sizeof exception);
 	hr = temp_function.pdispVal->Invoke(call_member_id, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &call_parameters, 
 		&result,
 		&exception, 0);
+
 	if (FAILED(hr)) {
-		CComBSTR errorDescription(exception.bstrDescription);
-		if (DISP_E_EXCEPTION == hr)  {
-			LOG(INFO) << "Exception message was: " << _bstr_t(exception.bstrDescription);
+		if (DISP_E_EXCEPTION == hr) {
+			CComBSTR error_description(exception.bstrDescription ? exception.bstrDescription : L"EUNEXPECTEDJSERROR");
+			LOG(INFO) << "Exception message was: " << error_description;
 		} else {
-//			LOGHR(DEBUG, hr) << "Failed to execute: " << _bstr_t(script);
-			if (added) { 
-				// this->RemoveScript(doc); 
-				this->RemoveScript(this->script_engine_host_); 
-			}
-			return EUNEXPECTEDJSERROR;
+			// LOGHR(DEBUG, hr) << "Failed to execute: " << _bstr_t(script);
 		}
 
 		::VariantClear(&result);
@@ -267,7 +248,7 @@ int ScriptWrapper::Execute() {
 		} else {
 			result.bstrVal = ::SysAllocStringByteLen(NULL, 0);
 		}
-		wcout << _bstr_t(exception.bstrDescription) << endl;
+		return_code = EUNEXPECTEDJSERROR;
 	}
 
 	// If the script returned an IHTMLElement, we need to copy it to make it valid.
@@ -282,13 +263,12 @@ int ScriptWrapper::Execute() {
 	this->result_ = result;
 
 	if (added) { 
-		//this->RemoveScript(doc); 
 		this->RemoveScript(this->script_engine_host_); 
 	}
 
 	delete[] vargs;
 
-	return SUCCESS;
+	return return_code;
 }
 
 int ScriptWrapper::ConvertResultToJsonValue(BrowserManager *manager, Json::Value *value) {
