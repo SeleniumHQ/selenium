@@ -45,10 +45,12 @@ DWORD BrowserFactory::LaunchBrowserProcess(int port) {
 		// handling impossible.
 		::IELaunchURL(initial_url.c_str(), &proc_info, NULL);
 	} else {
-		LPWSTR url = new WCHAR[initial_url.size() + 1];
-		wcscpy_s(url, initial_url.size() + 1, initial_url.c_str());
-		url[initial_url.size()] = L'\0';
-		::CreateProcess(this->ie_executable_location_.c_str(), url, NULL, NULL, FALSE, 0, NULL, NULL, &start_info, &proc_info);
+		std::wstring executable_and_url = this->ie_executable_location_ + L" " + initial_url;
+		LPWSTR command_line = new WCHAR[executable_and_url.size() + 1];
+		wcscpy_s(command_line, executable_and_url.size() + 1, executable_and_url.c_str());
+		command_line[executable_and_url.size()] = L'\0';
+		::CreateProcess(NULL, command_line, NULL, NULL, FALSE, 0, NULL, NULL, &start_info, &proc_info);
+		delete[] command_line;
 	}
 
 	process_id = proc_info.dwProcessId;
