@@ -120,9 +120,9 @@ limitations under the License.
       assertEquals('body', webdriver.element.getAttribute(element, 'name'));
     }
 
-    function testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
+    function testShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet() {
       var notInput = bot.locators.findElement({id: 'has_id'});
-      assertNull(webdriver.element.getAttribute(notInput, 'disabled'));
+      assertEquals("false", webdriver.element.getAttribute(notInput, 'disabled'));
 
       var enabled =  bot.locators.findElement({id: 'normal'});
       assertEquals("false", webdriver.element.getAttribute(enabled, 'disabled'));

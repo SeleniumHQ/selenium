@@ -56,6 +56,14 @@ limitations under the License.
       assertEquals('tasty', bot.dom.getProperty(e, 'class'));
       assertEquals('tasty', bot.dom.getProperty(e, 'className'));
     }
+
+    function testShouldHaveDefaultValueOfFalseForDisabledProperty() {
+      var working = bot.locators.findElement({id: 'not_disabled'});
+      var disabled = bot.locators.findElement({id: 'is_disabled'});
+
+      assertFalse(bot.dom.getProperty(working, 'disabled'));
+      assertTrue(bot.dom.getProperty(disabled, 'disabled'));
+    }
   </script>
 </head>
 <body>
@@ -70,6 +78,8 @@ limitations under the License.
       <option id="peas"  value="peas" selected>Mushy Peas</option>
       <option value="gravy">Gravy</option>
     </select>
+    <input id="is_disabled" name="foo" disabled />    
   </form>
+  <p id="not_disabled">This paragraph can check for the disabled property.</p>
 </body>
 </html>

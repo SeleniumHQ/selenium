@@ -71,6 +71,24 @@ bot.dom.PROPERTY_ALIASES_ = {
 
 
 /**
+ * A list of boolean properties that are defined for all elements
+ * according to the HTML5 spec. If any of these are missing when
+ * calling 'getProperty' they default to false.
+ *
+ * http://dev.w3.org/html5/spec/Overview.html#elements-in-the-dom
+ *
+ * @const
+ * @private
+ */
+bot.dom.BOOLEAN_PROPERTIES_ = [
+  'checked',
+  'disabled',
+  'draggable',
+  'hidden'
+];
+
+
+/**
  * Looks up the given property (not to be confused with an attribute) on the
  * given element. The following properties are aliased so that they return the
  * values expected by users:
@@ -86,7 +104,13 @@ bot.dom.PROPERTY_ALIASES_ = {
  */
 bot.dom.getProperty = function(element, propertyName) {
   var key = bot.dom.PROPERTY_ALIASES_[propertyName] || propertyName;
-  return element[key];
+
+  var value = element[key];
+  if (!goog.isDef(value) &&
+      goog.array.contains(bot.dom.BOOLEAN_PROPERTIES_, key)) {
+      return false;
+  }
+  return value;
 };
 
 
