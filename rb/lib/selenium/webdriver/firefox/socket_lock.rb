@@ -1,5 +1,3 @@
-require "fcntl"
-
 module Selenium
   module WebDriver
     module Firefox
