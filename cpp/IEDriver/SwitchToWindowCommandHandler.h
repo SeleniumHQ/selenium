@@ -14,13 +14,14 @@ public:
 	}
 
 protected:
-	void ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (command_parameters.find("name") == command_parameters.end()) {
+	void ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, Json::Value>::const_iterator name_parameter_iterator = command_parameters.find("name");
+		if (name_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: name");
 			return;
 		} else {
 			std::wstring found_browser_handle = L"";
-			std::string desired_name = command_parameters["name"].asString();
+			std::string desired_name = name_parameter_iterator->second.asString();
 
 			std::vector<std::wstring> handle_list;
 			manager->GetManagedBrowserHandles(&handle_list);

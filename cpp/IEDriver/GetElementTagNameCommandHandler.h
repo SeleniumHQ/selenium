@@ -14,12 +14,13 @@ public:
 	}
 
 protected:
-	void GetElementTagNameCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (locator_parameters.find("id") == locator_parameters.end()) {
+	void GetElementTagNameCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
+		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
 			return;
 		} else {
-			std::wstring element_id(CA2W(locator_parameters["id"].c_str(), CP_UTF8));
+			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
 			ElementWrapper *element_wrapper;
 			int status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {

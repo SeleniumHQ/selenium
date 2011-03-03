@@ -14,12 +14,13 @@ public:
 	}
 
 protected:
-	void SetImplicitWaitTimeoutCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (command_parameters.find("ms") == command_parameters.end()) {
+	void SetImplicitWaitTimeoutCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, Json::Value>::const_iterator ms_parameter_iterator = command_parameters.find("ms");
+		if (ms_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: ms");
 			return;
 		} else {
-			int timeout = command_parameters["ms"].asInt();
+			int timeout = ms_parameter_iterator->second.asInt();
 			manager->set_implicit_wait_timeout(timeout);
 			response->SetResponse(SUCCESS, Json::Value::null);
 		}

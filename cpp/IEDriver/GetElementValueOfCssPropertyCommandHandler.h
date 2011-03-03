@@ -35,16 +35,18 @@ public:
 	}
 
 protected:
-	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (locator_parameters.find("id") == locator_parameters.end()) {
+	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
+		std::map<std::string, std::string>::const_iterator property_name_parameter_iterator = locator_parameters.find("propertyName");
+		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
 			return;
-		} else if (locator_parameters.find("propertyName") == locator_parameters.end()) {
+		} else if (property_name_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: propertyName");
 			return;
 		} else {
-			std::wstring element_id(CA2W(locator_parameters["id"].c_str(), CP_UTF8));
-			std::wstring name(CA2W(locator_parameters["propertyName"].c_str(), CP_UTF8));
+			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
+			std::wstring name(CA2W(property_name_parameter_iterator->second.c_str(), CP_UTF8));
 
 			BrowserWrapper *browser_wrapper;
 			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
@@ -69,7 +71,7 @@ protected:
 	}
 
 private:
-	std::wstring MangleColour(LPCWSTR property_name, std::wstring to_mangle) {
+	std::wstring MangleColour(LPCWSTR property_name, const std::wstring& to_mangle) {
 		if (wcsstr(property_name, L"color") == NULL) {
 			return to_mangle;
 		}

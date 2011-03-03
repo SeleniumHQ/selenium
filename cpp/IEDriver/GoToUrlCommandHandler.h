@@ -14,8 +14,9 @@ public:
 	}
 
 protected:
-	void GoToUrlCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (command_parameters.find("url") == command_parameters.end()) {
+	void GoToUrlCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, Json::Value>::const_iterator url_parameter_iterator = command_parameters.find("url");
+		if (url_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: url");
 			return;
 		} else {
@@ -25,7 +26,7 @@ protected:
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
-			std::string url = command_parameters["url"].asString();
+			std::string url = url_parameter_iterator->second.asString();
 			CComVariant url_variant(url.c_str());
 			CComVariant dummy;
 

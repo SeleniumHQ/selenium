@@ -15,14 +15,14 @@ public:
 	}
 
 protected:
-	void AddCookieCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response)
-	{
-		if (command_parameters.find("cookie") == command_parameters.end()) {
+	void AddCookieCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, Json::Value>::const_iterator cookie_parameter_iterator = command_parameters.find("cookie");
+		if (cookie_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: cookie");
 			return;
 		}
 
-		Json::Value cookie_value = command_parameters["cookie"];
+		Json::Value cookie_value = cookie_parameter_iterator->second;
 		std::string cookie_string(cookie_value["name"].asString() + "=" + cookie_value["value"].asString() + "; ");
 		cookie_value.removeMember("name");
 		cookie_value.removeMember("value");

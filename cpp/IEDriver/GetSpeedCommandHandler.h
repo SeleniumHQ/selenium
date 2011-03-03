@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void GetSpeedCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
+	void GetSpeedCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		int speed = manager->speed();
 		switch (speed) {
 		  case 1000:

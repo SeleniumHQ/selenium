@@ -14,13 +14,14 @@ public:
 	}
 
 protected:
-	void ClickElementCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (locator_parameters.find("id") == locator_parameters.end()) {
+	void ClickElementCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
+		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
 			return;
 		} else {
 			int status_code = SUCCESS;
-			std::wstring element_id(CA2W(locator_parameters["id"].c_str(), CP_UTF8));
+			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
 
 			BrowserWrapper *browser_wrapper;
 			status_code = manager->GetCurrentBrowser(&browser_wrapper);

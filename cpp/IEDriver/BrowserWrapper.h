@@ -67,10 +67,10 @@ public:
 	HWND GetWindowHandle(void);
 	std::wstring GetTitle(void);
 	std::wstring GetCookies(void);
-	int AddCookie(std::wstring cookie);
-	int DeleteCookie(std::wstring cookie_name);
+	int AddCookie(const std::wstring& cookie);
+	int DeleteCookie(const std::wstring& cookie_name);
 	int SetFocusedFrameByIndex(int frame_index);
-	int SetFocusedFrameByName(std::wstring frame_name);
+	int SetFocusedFrameByName(const std::wstring& frame_name);
 	int SetFocusedFrameByElement(IHTMLElement *frame_element);
 	HWND GetActiveDialogWindowHandle(void);
 	bool IsFrameFocused(void);

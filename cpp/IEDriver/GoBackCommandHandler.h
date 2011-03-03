@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void GoBackCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
+	void GoBackCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		BrowserWrapper *browser_wrapper;
 		int status_code = manager->GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {

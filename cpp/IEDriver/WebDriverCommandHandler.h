@@ -20,11 +20,11 @@ class WebDriverCommandHandler {
 public:
 	WebDriverCommandHandler(void);
 	virtual ~WebDriverCommandHandler(void);
-	void Execute(BrowserManager* manager, WebDriverCommand& command, WebDriverResponse* response);
+	void Execute(BrowserManager* manager, const WebDriverCommand& command, WebDriverResponse* response);
 
 protected:
-	virtual void ExecuteInternal(BrowserManager* manager, std::map<std::string, std::string> locatorParameters, std::map<std::string, Json::Value> commandParameters, WebDriverResponse* response);
-	int GetElement(BrowserManager* manager, std::wstring element_id, ElementWrapper** element_wrapper);
+	virtual void ExecuteInternal(BrowserManager* manager, const std::map<std::string, std::string>& locatorParameters, const std::map<std::string, Json::Value>& commandParameters, WebDriverResponse* response);
+	int GetElement(BrowserManager* manager, const std::wstring& element_id, ElementWrapper** element_wrapper);
 };
 
 } // namespace webdriver

@@ -150,7 +150,7 @@ std::wstring BrowserWrapper::GetCookies() {
 	return cookie_string;
 }
 
-int BrowserWrapper::AddCookie(std::wstring cookie) {
+int BrowserWrapper::AddCookie(const std::wstring& cookie) {
 	CComBSTR cookie_bstr(cookie.c_str());
 
 	CComPtr<IHTMLDocument2> doc;
@@ -171,7 +171,7 @@ int BrowserWrapper::AddCookie(std::wstring cookie) {
 	return SUCCESS;
 }
 
-int BrowserWrapper::DeleteCookie(std::wstring cookie_name) {
+int BrowserWrapper::DeleteCookie(const std::wstring& cookie_name) {
 	// Construct the delete cookie script
 	std::wstring script;
 	for (int i = 0; DELETECOOKIES[i]; i++) {
@@ -251,7 +251,7 @@ int BrowserWrapper::SetFocusedFrameByElement(IHTMLElement *frame_element) {
 	return SUCCESS;
 }
 
-int BrowserWrapper::SetFocusedFrameByName(std::wstring frame_name) {
+int BrowserWrapper::SetFocusedFrameByName(const std::wstring& frame_name) {
 	CComPtr<IHTMLDocument2> doc;
 	this->GetDocument(&doc);
 

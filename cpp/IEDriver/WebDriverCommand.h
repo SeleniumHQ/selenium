@@ -15,8 +15,8 @@ public:
 	void Populate(std::string json_command);
 
 	int command_value(void) { return this->command_value_; }
-	std::map<std::string, std::string> locator_parameters(void) { return this->locator_parameters_; }
-	std::map<std::string, Json::Value> command_parameters(void) { return this->command_parameters_; }
+	std::map<std::string, std::string> locator_parameters(void) const { return this->locator_parameters_; }
+	std::map<std::string, Json::Value> command_parameters(void) const { return this->command_parameters_; }
 
 private:
 	int command_value_;

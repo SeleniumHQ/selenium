@@ -14,18 +14,20 @@ public:
 	}
 
 protected:
-	virtual void ExecuteScriptCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (command_parameters.find("script") == command_parameters.end()) {
+	virtual void ExecuteScriptCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, Json::Value>::const_iterator script_parameter_iterator = command_parameters.find("script");
+		std::map<std::string, Json::Value>::const_iterator args_parameter_iterator = command_parameters.find("args");
+		if (script_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: script");
 			return;
-		} else if (command_parameters.find("args") == command_parameters.end()) {
+		} else if (args_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: args");
 			return;
 		} else {
-			std::wstring script_body(CA2W(command_parameters["script"].asString().c_str(), CP_UTF8));
+			std::wstring script_body(CA2W(script_parameter_iterator->second.asString().c_str(), CP_UTF8));
 			const std::wstring script = L"(function() { return function(){" + script_body + L"};})();";
 
-			Json::Value json_args(command_parameters["args"]);
+			Json::Value json_args(args_parameter_iterator->second);
 
 			BrowserWrapper *browser_wrapper;
 			int status_code = manager->GetCurrentBrowser(&browser_wrapper);

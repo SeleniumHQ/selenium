@@ -15,28 +15,31 @@ public:
 	}
 
 protected:
-	void FindChildElementsCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (locator_parameters.find("id") == locator_parameters.end()) {
+	void FindChildElementsCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
+		std::map<std::string, Json::Value>::const_iterator using_parameter_iterator = command_parameters.find("using");
+		std::map<std::string, Json::Value>::const_iterator value_parameter_iterator = command_parameters.find("value");
+		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
 			return;
-		} else if (command_parameters.find("using") == command_parameters.end()) {
+		} else if (using_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: using");
 			return;
-		} else if (command_parameters.find("value") == command_parameters.end()) {
+		} else if (value_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: value");
 			return;
 		} else {
-			std::wstring mechanism = CA2W(command_parameters["using"].asString().c_str(), CP_UTF8);
-			std::wstring value = CA2W(command_parameters["value"].asString().c_str(), CP_UTF8);
+			std::wstring mechanism = CA2W(using_parameter_iterator->second.asString().c_str(), CP_UTF8);
+			std::wstring value = CA2W(value_parameter_iterator->second.asString().c_str(), CP_UTF8);
 
 			std::tr1::shared_ptr<ElementFinder> finder;
 			int status_code = manager->GetElementFinder(mechanism, &finder);
 			if (status_code != SUCCESS) {
-				response->SetErrorResponse(status_code, "Unknown finder mechanism: " + command_parameters["using"].asString());
+				response->SetErrorResponse(status_code, "Unknown finder mechanism: " + using_parameter_iterator->second.asString());
 				return;
 			}
 
-			std::wstring element_id(CA2W(locator_parameters["id"].c_str(), CP_UTF8));
+			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
 
 			ElementWrapper *parent_element_wrapper;
 			status_code = this->GetElement(manager, element_id, &parent_element_wrapper);

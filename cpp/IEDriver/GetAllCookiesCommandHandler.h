@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void GetAllCookiesCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
+	void GetAllCookiesCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		Json::Value response_value(Json::arrayValue);
 		BrowserWrapper *browser_wrapper;
 		int status_code = manager->GetCurrentBrowser(&browser_wrapper);

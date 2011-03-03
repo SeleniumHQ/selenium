@@ -10,14 +10,14 @@ WebDriverCommandHandler::WebDriverCommandHandler() {
 WebDriverCommandHandler::~WebDriverCommandHandler() {
 }
 
-void WebDriverCommandHandler::Execute(BrowserManager* manager, WebDriverCommand& command, WebDriverResponse* response) {
+void WebDriverCommandHandler::Execute(BrowserManager* manager, const WebDriverCommand& command, WebDriverResponse* response) {
 	this->ExecuteInternal(manager, command.locator_parameters(), command.command_parameters(), response);
 }
 
-void WebDriverCommandHandler::ExecuteInternal(BrowserManager* manager, std::map<std::string,std::string> locatorParameters, std::map<std::string, Json::Value> commandParameters, WebDriverResponse* response) {
+void WebDriverCommandHandler::ExecuteInternal(BrowserManager* manager, const std::map<std::string,std::string>& locatorParameters, const std::map<std::string, Json::Value>& commandParameters, WebDriverResponse* response) {
 }
 
-int WebDriverCommandHandler::GetElement(BrowserManager* manager, std::wstring element_id, ElementWrapper** element_wrapper) {
+int WebDriverCommandHandler::GetElement(BrowserManager* manager, const std::wstring& element_id, ElementWrapper** element_wrapper) {
 	int status_code = EOBSOLETEELEMENT;
 	ElementWrapper* candidate_wrapper;
 	int result = manager->GetManagedElement(element_id, &candidate_wrapper);

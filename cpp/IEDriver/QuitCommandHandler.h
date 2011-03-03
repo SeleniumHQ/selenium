@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void QuitCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
+	void QuitCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::vector<std::wstring> managed_browser_handles;
 		manager->GetManagedBrowserHandles(&managed_browser_handles);
 

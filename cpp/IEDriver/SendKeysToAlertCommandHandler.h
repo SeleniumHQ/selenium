@@ -16,8 +16,9 @@ public:
 	{
 	}
 protected:
-	void SendKeysToAlertCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (command_parameters.find("text") == command_parameters.end()) {
+	void SendKeysToAlertCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, Json::Value>::const_iterator text_parameter_iterator = command_parameters.find("text");
+		if (text_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: text");
 			return;
 		}
@@ -44,7 +45,7 @@ protected:
 			if (text_box_handle == NULL) {
 				response->SetErrorResponse(EUNHANDLEDERROR, "Could not find text box");
 			} else {
-				std::wstring text(CA2W(command_parameters["text"].asString().c_str(), CP_UTF8));
+				std::wstring text(CA2W(text_parameter_iterator->second.asString().c_str(), CP_UTF8));
 				::SendMessage(text_box_handle, WM_SETTEXT, NULL, (LPARAM)text.c_str());
 				response->SetResponse(SUCCESS, Json::Value::null);
 			}

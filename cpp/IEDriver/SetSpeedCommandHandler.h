@@ -14,12 +14,13 @@ public:
 	}
 
 protected:
-	void SetSpeedCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (command_parameters.find("speed") == command_parameters.end()) {
+	void SetSpeedCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, Json::Value>::const_iterator speed_parameter_iterator = command_parameters.find("speed");
+		if (speed_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: speed");
 			return;
 		} else {
-			std::string speed = command_parameters["speed"].asString();
+			std::string speed = speed_parameter_iterator->second.asString();
 			if (strcmp(speed.c_str(), SPEED_SLOW) == 0) {
 				manager->set_speed(1000);
 			} else if (strcmp(speed.c_str(), SPEED_MEDIUM) == 0) {

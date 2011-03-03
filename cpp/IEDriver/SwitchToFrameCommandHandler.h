@@ -14,9 +14,9 @@ public:
 	}
 
 protected:
-	void SwitchToFrameCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
+	void SwitchToFrameCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		Json::Value frame_id = Json::Value::null;
-		std::map<std::string, Json::Value>::iterator it = command_parameters.find("id");
+		std::map<std::string, Json::Value>::const_iterator it = command_parameters.find("id");
 		// TODO: When issue 1133 is fixed, the else block in the following code
 		// should be uncommented.
 		if (it != command_parameters.end()) {

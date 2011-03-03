@@ -72,16 +72,16 @@ public:
 
 	void CreateNewBrowser(void);
 
-	int GetManagedBrowser(std::wstring browser_id, BrowserWrapper **browser_wrapper);
+	int GetManagedBrowser(const std::wstring& browser_id, BrowserWrapper **browser_wrapper);
 	int GetCurrentBrowser(BrowserWrapper **browser_wrapper);
 	void GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles);
 
 	void AddManagedElement(IHTMLElement *element, ElementWrapper **element_wrapper);
-	int GetManagedElement(std::wstring element_id, ElementWrapper **element_wrapper);
-	void RemoveManagedElement(std::wstring element_id);
+	int GetManagedElement(const std::wstring& element_id, ElementWrapper **element_wrapper);
+	void RemoveManagedElement(const std::wstring& element_id);
 	void ListManagedElements(void);
 
-	int GetElementFinder(std::wstring mechanism, std::tr1::shared_ptr<ElementFinder>* finder);
+	int GetElementFinder(const std::wstring& mechanism, std::tr1::shared_ptr<ElementFinder>* finder);
 
 	int speed(void) { return this->speed_; }
 	void set_speed(int speed) { this->speed_ = speed; }

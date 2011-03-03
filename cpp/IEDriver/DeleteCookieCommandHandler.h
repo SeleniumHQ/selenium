@@ -14,13 +14,14 @@ public:
 	}
 
 protected:
-	void DeleteCookieCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (locator_parameters.find("name") == locator_parameters.end()) {
+	void DeleteCookieCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, std::string>::const_iterator name_parameter_iterator = locator_parameters.find("name");
+		if (name_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: name");
 			return;
 		}
 
-		std::wstring cookie_name(CA2W(locator_parameters["name"].c_str(), CP_UTF8));
+		std::wstring cookie_name(CA2W(name_parameter_iterator->second.c_str(), CP_UTF8));
 		BrowserWrapper *browser_wrapper;
 		int status_code = manager->GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {

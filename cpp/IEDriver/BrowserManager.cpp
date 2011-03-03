@@ -262,12 +262,12 @@ int BrowserManager::GetCurrentBrowser(BrowserWrapper **browser_wrapper) {
 	return this->GetManagedBrowser(this->current_browser_id_, browser_wrapper);
 }
 
-int BrowserManager::GetManagedBrowser(std::wstring browser_id, BrowserWrapper **browser_wrapper) {
+int BrowserManager::GetManagedBrowser(const std::wstring& browser_id, BrowserWrapper **browser_wrapper) {
 	if (browser_id == L"") {
 		return ENOSUCHDRIVER;
 	}
 
-	std::tr1::unordered_map<std::wstring, BrowserWrapper*>::iterator found_iterator = this->managed_browsers_.find(browser_id);
+	std::tr1::unordered_map<std::wstring, BrowserWrapper*>::const_iterator found_iterator = this->managed_browsers_.find(browser_id);
 	if (found_iterator == this->managed_browsers_.end()) {
 		return ENOSUCHDRIVER;
 	}
@@ -279,7 +279,7 @@ int BrowserManager::GetManagedBrowser(std::wstring browser_id, BrowserWrapper **
 void BrowserManager::GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles) {
 	// TODO: Enumerate windows looking for browser windows
 	// created by showModalDialog().
-	std::tr1::unordered_map<std::wstring, BrowserWrapper*>::iterator it = this->managed_browsers_.begin();
+	std::tr1::unordered_map<std::wstring, BrowserWrapper*>::const_iterator it = this->managed_browsers_.begin();
 	for (; it != this->managed_browsers_.end(); ++it) {
 		managed_browser_handles->push_back(it->first);
 	}
@@ -303,8 +303,8 @@ void BrowserManager::CreateNewBrowser(void) {
 	this->AddManagedBrowser(wrapper);
 }
 
-int BrowserManager::GetManagedElement(std::wstring element_id, ElementWrapper **element_wrapper) {
-	std::tr1::unordered_map<std::wstring, ElementWrapper*>::iterator found_iterator = this->managed_elements_.find(element_id);
+int BrowserManager::GetManagedElement(const std::wstring& element_id, ElementWrapper **element_wrapper) {
+	std::tr1::unordered_map<std::wstring, ElementWrapper*>::const_iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator == this->managed_elements_.end()) {
 		return ENOSUCHELEMENT;
 	}
@@ -340,7 +340,7 @@ void BrowserManager::AddManagedElement(IHTMLElement *element, ElementWrapper **e
 	}
 }
 
-void BrowserManager::RemoveManagedElement(std::wstring element_id) {
+void BrowserManager::RemoveManagedElement(const std::wstring& element_id) {
 	std::tr1::unordered_map<std::wstring, ElementWrapper*>::iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator != this->managed_elements_.end()) {
 		ElementWrapper *element_wrapper = found_iterator->second;
@@ -357,7 +357,7 @@ void BrowserManager::ListManagedElements() {
 	}
 }
 
-int BrowserManager::GetElementFinder(std::wstring mechanism, std::tr1::shared_ptr<ElementFinder>* finder) {
+int BrowserManager::GetElementFinder(const std::wstring& mechanism, std::tr1::shared_ptr<ElementFinder>* finder) {
 	std::map<std::wstring, std::tr1::shared_ptr<ElementFinder>>::const_iterator found_iterator = this->element_finders_.find(mechanism);
 	if (found_iterator == this->element_finders_.end()) {
 		return EUNHANDLEDERROR;

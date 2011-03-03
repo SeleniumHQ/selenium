@@ -15,12 +15,13 @@ public:
 	}
 
 protected:
-	void MouseClickCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
-		if (command_parameters.find("button") == command_parameters.end()) {
+	void MouseClickCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		std::map<std::string, Json::Value>::const_iterator button_parameter_iterator = command_parameters.find("button");
+		if (button_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: button");
 			return;
 		} else {
-			int button(command_parameters["button"].asInt());
+			int button(button_parameter_iterator->second.asInt());
 			BrowserWrapper *browser_wrapper;
 			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {

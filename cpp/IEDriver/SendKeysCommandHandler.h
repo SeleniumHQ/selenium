@@ -32,19 +32,21 @@ public:
 	}
 
 protected:
-	void SendKeysCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response)
+	void SendKeysCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response)
 	{
-		if (locator_parameters.find("id") == locator_parameters.end()) {
+		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
+		std::map<std::string, Json::Value>::const_iterator value_parameter_iterator = command_parameters.find("value");
+		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
 			return;
-		} else if (command_parameters.find("value") == command_parameters.end()) {
+		} else if (value_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: value");
 			return;
 		} else {
-			std::wstring element_id(CA2W(locator_parameters["id"].c_str(), CP_UTF8));
+			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
 
 			std::wstring keys(L"");
-			Json::Value key_array(command_parameters["value"]);
+			Json::Value key_array(value_parameter_iterator->second);
 			for (unsigned int i = 0; i < key_array.size(); ++i ) {
 				std::string key(key_array[i].asString());
 				keys.append(CA2W(key.c_str(), CP_UTF8));

@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void GetSessionCapabilitiesCommandHandler::ExecuteInternal(BrowserManager *manager, std::map<std::string, std::string> locator_parameters, std::map<std::string, Json::Value> command_parameters, WebDriverResponse * response) {
+	void GetSessionCapabilitiesCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		Json::Value capabilities;
 		capabilities["browserName"] = "internet explorer";
 		capabilities["version"] = "0";
