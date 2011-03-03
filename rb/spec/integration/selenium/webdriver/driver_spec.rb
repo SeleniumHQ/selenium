@@ -19,7 +19,9 @@ describe "Driver" do
       driver.navigate.refresh
       driver.find_element(:id, 'dynamo').text.should == "What's for dinner?"
     end
+  end
 
+  not_compliant_on :browser => :ie do
     it "should save a screenshot" do
       driver.navigate.to url_for("xhtmlTest.html")
       path = "screenshot_tmp.png"
