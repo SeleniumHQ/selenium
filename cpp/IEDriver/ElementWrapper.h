@@ -12,7 +12,7 @@ class BrowserWrapper;
 
 class ElementWrapper {
 public:
-	ElementWrapper(IHTMLElement *element, BrowserWrapper *browser);
+	ElementWrapper(IHTMLElement *element, HWND containing_window_handle);
 	virtual ~ElementWrapper(void);
 	Json::Value ConvertToJson(void);
 	int GetLocationOnceScrolledIntoView(long *x, long *y, long *width, long *height);
@@ -34,10 +34,11 @@ private:
 	int GetLocation(long *x, long *y, long *width, long *height);
 	bool IsClickPointInViewPort(HWND containing_window_handle, long x, long y, long width, long height);
 	int GetFrameOffset(long *x, long *y);
+	int GetContainingDocument(IHTMLDocument2** doc);
 
 	std::wstring element_id_;
 	IHTMLElement *element_;
-	BrowserWrapper *browser_;
+	HWND containing_window_handle_;
 };
 
 } // namespace webdriver

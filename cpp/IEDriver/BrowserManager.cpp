@@ -334,7 +334,7 @@ void BrowserManager::AddManagedElement(IHTMLElement *element, ElementWrapper **e
 	if (!element_already_managed) {
 		BrowserWrapper *current_browser;
 		this->GetCurrentBrowser(&current_browser);
-		ElementWrapper *new_wrapper = new ElementWrapper(element, current_browser);
+		ElementWrapper *new_wrapper = new ElementWrapper(element, current_browser->GetWindowHandle());
 		this->managed_elements_[new_wrapper->element_id()] = new_wrapper;
 		*element_wrapper = new_wrapper;
 	}

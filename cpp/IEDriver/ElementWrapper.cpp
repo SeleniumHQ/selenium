@@ -7,7 +7,7 @@
 
 namespace webdriver {
 
-ElementWrapper::ElementWrapper(IHTMLElement *element, BrowserWrapper *browser) {
+ElementWrapper::ElementWrapper(IHTMLElement *element, HWND containing_window_handle) {
 	// NOTE: COM should be initialized on this thread, so we
 	// could use CoCreateGuid() and StringFromGUID2() instead.
 	UUID guid;
@@ -23,7 +23,8 @@ ElementWrapper::ElementWrapper(IHTMLElement *element, BrowserWrapper *browser) {
 	::RpcStringFree(&guid_string);
 
 	this->element_ = element;
-	this->browser_ = browser;
+	this->containing_window_handle_ = containing_window_handle;
+	//this->browser_ = browser;
 }
 
 ElementWrapper::~ElementWrapper(void) {
@@ -47,7 +48,7 @@ int ElementWrapper::IsDisplayed(bool *result) {
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
-	this->browser_->GetDocument(&doc);
+	this->GetContainingDocument(&doc);
 	ScriptWrapper script_wrapper(doc, script, 1);
 	script_wrapper.AddArgument(this->element_);
 	status_code = script_wrapper.Execute();
@@ -70,7 +71,7 @@ bool ElementWrapper::IsEnabled() {
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
-	this->browser_->GetDocument(&doc);
+	this->GetContainingDocument(&doc);
 	ScriptWrapper script_wrapper(doc, script, 1);
 	script_wrapper.AddArgument(this->element_);
 	int status_code = script_wrapper.Execute();
@@ -83,7 +84,6 @@ bool ElementWrapper::IsEnabled() {
 }
 
 int ElementWrapper::Click() {
-	HWND containing_window_handle(this->browser_->GetWindowHandle());
 	long x = 0, y = 0, w = 0, h = 0;
 	int status_code = this->GetLocationOnceScrolledIntoView(&x, &y, &w, &h);
 
@@ -92,12 +92,12 @@ int ElementWrapper::Click() {
 		long click_y = y + (h ? h / 2 : 0);
 
 		// Create a mouse move, mouse down, mouse up OS event
-		LRESULT result = mouseMoveTo(containing_window_handle, 10, x, y, click_x, click_y);
+		LRESULT result = mouseMoveTo(this->containing_window_handle_, 10, x, y, click_x, click_y);
 		if (result != SUCCESS) {
 			return static_cast<int>(result);
 		}
 		
-		result = clickAt(containing_window_handle, click_x, click_y, MOUSEBUTTON_LEFT);
+		result = clickAt(this->containing_window_handle_, click_x, click_y, MOUSEBUTTON_LEFT);
 		if (result != SUCCESS) {
 			return static_cast<int>(result);
 		}
@@ -108,7 +108,6 @@ int ElementWrapper::Click() {
 }
 
 int ElementWrapper::Hover() {
-	HWND containing_window_handle(this->browser_->GetWindowHandle());
 	long x = 0, y = 0, w = 0, h = 0;
 	int status_code = this->GetLocationOnceScrolledIntoView(&x, &y, &w, &h);
 
@@ -117,13 +116,12 @@ int ElementWrapper::Hover() {
 		long click_y = y + (h ? h / 2 : 0);
 
 		// Create a mouse move, mouse down, mouse up OS event
-		LRESULT lresult = mouseMoveTo(containing_window_handle, 100, 0, 0, click_x, click_y);
+		LRESULT lresult = mouseMoveTo(this->containing_window_handle_, 100, 0, 0, click_x, click_y);
 	}
 	return status_code;
 }
 
 int ElementWrapper::DragBy(int offset_x, int offset_y, int drag_speed) {
-	HWND containing_window_handle(this->browser_->GetWindowHandle());
 	long x = 0, y = 0, w = 0, h = 0;
 	int status_code = this->GetLocationOnceScrolledIntoView(&x, &y, &w, &h);
 
@@ -132,9 +130,9 @@ int ElementWrapper::DragBy(int offset_x, int offset_y, int drag_speed) {
 		long click_y = y + (h ? h / 2 : 0);
 
 		// Create a mouse move, mouse down, mouse up OS event
-		LRESULT lresult = mouseDownAt(containing_window_handle, click_x, click_y, MOUSEBUTTON_LEFT);
-		lresult = mouseMoveTo(containing_window_handle, (long)drag_speed, click_x, click_y, click_x + offset_x, click_y + offset_y);
-		lresult = mouseUpAt(containing_window_handle, click_x + offset_x, click_y + offset_y, MOUSEBUTTON_LEFT);
+		LRESULT lresult = mouseDownAt(this->containing_window_handle_, click_x, click_y, MOUSEBUTTON_LEFT);
+		lresult = mouseMoveTo(this->containing_window_handle_, (long)drag_speed, click_x, click_y, click_x + offset_x, click_y + offset_y);
+		lresult = mouseUpAt(this->containing_window_handle_, click_x + offset_x, click_y + offset_y, MOUSEBUTTON_LEFT);
 	}
 	return status_code;
 }
@@ -150,7 +148,7 @@ int ElementWrapper::GetAttributeValue(std::wstring attribute_name, VARIANT *attr
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
-	this->browser_->GetDocument(&doc);
+	this->GetContainingDocument(&doc);
 	ScriptWrapper script_wrapper(doc, script, 2);
 	script_wrapper.AddArgument(this->element_);
 	script_wrapper.AddArgument(attribute_name);
@@ -186,10 +184,10 @@ int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *widt
         return EELEMENTNOTENABLED;
     }
 
-	HWND containing_window_handle(this->browser_->GetWindowHandle());
+	//HWND containing_window_handle(this->browser_->GetWindowHandle());
 	long top = 0, left = 0, element_width = 0, element_height = 0;
 	result = this->GetLocation(&left, &top, &element_width, &element_height);
-	if (result != SUCCESS || !this->IsClickPointInViewPort(containing_window_handle, left, top, element_width, element_height)) {
+	if (result != SUCCESS || !this->IsClickPointInViewPort(this->containing_window_handle_, left, top, element_width, element_height)) {
 		// Scroll the element into view
 		LOG(DEBUG) << "Will need to scroll element into view";
 		hr = this->element_->scrollIntoView(CComVariant(VARIANT_TRUE));
@@ -203,7 +201,7 @@ int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *widt
 			return result;
 		}
 
-		if (!this->IsClickPointInViewPort(containing_window_handle, left, top, element_width, element_height)) {
+		if (!this->IsClickPointInViewPort(this->containing_window_handle_, left, top, element_width, element_height)) {
 			return EELEMENTNOTDISPLAYED;
 		}
 	}
@@ -227,7 +225,7 @@ bool ElementWrapper::IsSelected() {
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
-	this->browser_->GetDocument(&doc);
+	this->GetContainingDocument(&doc);
 	ScriptWrapper script_wrapper(doc, script, 1);
 	script_wrapper.AddArgument(this->element_);
 	int status_code = script_wrapper.Execute();
@@ -399,7 +397,7 @@ int ElementWrapper::GetFrameOffset(long *x, long *y) {
 				CComQIPtr<IHTMLElement> frame_element(script_wrapper.result().pdispVal);
 
 				// Wrap the element so we can find its location.
-				ElementWrapper *element_wrapper = new ElementWrapper(frame_element, this->browser_);
+				ElementWrapper *element_wrapper = new ElementWrapper(frame_element, this->containing_window_handle_);
 				long frame_x, frame_y, frame_width, frame_height;
 				int status_code = element_wrapper->GetLocation(&frame_x, &frame_y, &frame_width, &frame_height);
 				if (status_code == SUCCESS) {
@@ -437,6 +435,21 @@ bool ElementWrapper::IsClickPointInViewPort(HWND containing_window_handle, long 
 		return false;
 	}
 	return true;
+}
+
+int ElementWrapper::GetContainingDocument(IHTMLDocument2** doc) {
+	CComPtr<IDispatch> dispatch_doc;
+	HRESULT hr = this->element_->get_document(&dispatch_doc);
+	if (FAILED(hr)) {
+		return ENOSUCHDOCUMENT;
+	}
+
+	hr = dispatch_doc.QueryInterface<IHTMLDocument2>(doc);
+	if (FAILED(hr)) {
+		return ENOSUCHDOCUMENT;
+	}
+
+	return SUCCESS;
 }
 
 } // namespace webdriver
