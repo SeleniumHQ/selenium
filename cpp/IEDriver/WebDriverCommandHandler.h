@@ -24,7 +24,7 @@ public:
 
 protected:
 	virtual void ExecuteInternal(BrowserManager* manager, const std::map<std::string, std::string>& locatorParameters, const std::map<std::string, Json::Value>& commandParameters, WebDriverResponse* response);
-	int GetElement(BrowserManager* manager, const std::wstring& element_id, ElementWrapper** element_wrapper);
+	int GetElement(BrowserManager* manager, const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper);
 };
 
 } // namespace webdriver

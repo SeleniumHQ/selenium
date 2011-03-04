@@ -43,7 +43,7 @@ protected:
 
 			Json::Value found_element;
 			do {
-				status_code = finder->FindElement(manager, NULL, value, &found_element);
+				status_code = finder->FindElement(manager, std::tr1::shared_ptr<ElementWrapper>(), value, &found_element);
 				if (status_code == SUCCESS) {
 					break;
 				}

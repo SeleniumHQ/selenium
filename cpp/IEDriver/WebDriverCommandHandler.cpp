@@ -17,9 +17,9 @@ void WebDriverCommandHandler::Execute(BrowserManager* manager, const WebDriverCo
 void WebDriverCommandHandler::ExecuteInternal(BrowserManager* manager, const std::map<std::string,std::string>& locatorParameters, const std::map<std::string, Json::Value>& commandParameters, WebDriverResponse* response) {
 }
 
-int WebDriverCommandHandler::GetElement(BrowserManager* manager, const std::wstring& element_id, ElementWrapper** element_wrapper) {
+int WebDriverCommandHandler::GetElement(BrowserManager* manager, const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
 	int status_code = EOBSOLETEELEMENT;
-	ElementWrapper* candidate_wrapper;
+	std::tr1::shared_ptr<ElementWrapper> candidate_wrapper;
 	int result = manager->GetManagedElement(element_id, &candidate_wrapper);
 	if (result != SUCCESS) {
 		status_code = 404;

@@ -44,7 +44,7 @@ void ScriptWrapper::AddArgument(const bool argument) {
 	this->AddArgument(dest_argument);
 }
 
-void ScriptWrapper::AddArgument(ElementWrapper *argument) {
+void ScriptWrapper::AddArgument(std::tr1::shared_ptr<ElementWrapper> argument) {
 	this->AddArgument(argument->element());
 }
 
@@ -326,7 +326,7 @@ int ScriptWrapper::ConvertResultToJsonValue(BrowserManager *manager, Json::Value
 			*value = result_object;
 		} else {
 			IHTMLElement *node = (IHTMLElement*) this->result_.pdispVal;
-			ElementWrapper *element_wrapper;
+			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
 			manager->AddManagedElement(node, &element_wrapper);
 			*value = element_wrapper->ConvertToJson();
 		}

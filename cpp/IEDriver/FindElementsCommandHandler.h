@@ -43,7 +43,7 @@ protected:
 
 			Json::Value found_elements(Json::arrayValue);
 			do {
-				status_code = finder->FindElements(manager, NULL, value, &found_elements);
+				status_code = finder->FindElements(manager, std::tr1::shared_ptr<ElementWrapper>(), value, &found_elements);
 				if (status_code == SUCCESS && found_elements.size() > 0) {
 					break;
 				} else {

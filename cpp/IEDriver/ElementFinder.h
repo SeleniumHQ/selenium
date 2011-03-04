@@ -17,8 +17,8 @@ class ElementFinder
 public:
 	ElementFinder(std::wstring locator);
 	virtual ~ElementFinder(void);
-	virtual int FindElement(BrowserManager *manager, ElementWrapper *parent_wrapper, const std::wstring& criteria, Json::Value *found_element);
-	virtual int FindElements(BrowserManager *manager, ElementWrapper *parent_wrapper, const std::wstring& criteria, Json::Value *found_elements);
+	virtual int FindElement(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element);
+	virtual int FindElements(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements);
 
 private:
 	std::wstring locator_;

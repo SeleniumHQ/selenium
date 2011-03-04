@@ -35,11 +35,11 @@ protected:
 				return;
 			}
 
-			ElementWrapper *element_wrapper;
+			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
 			status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS)
 			{
-				ElementWrapper *other_element_wrapper;
+				std::tr1::shared_ptr<ElementWrapper> other_element_wrapper;
 				status_code = this->GetElement(manager, other_element_id, &other_element_wrapper);
 				if (status_code == SUCCESS) {
 					response->SetResponse(SUCCESS, (element_wrapper->element() == other_element_wrapper->element()));

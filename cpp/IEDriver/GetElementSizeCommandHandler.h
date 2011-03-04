@@ -28,9 +28,8 @@ protected:
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
-			//HWND hwnd = browser_wrapper->GetWindowHandle();
 
-			ElementWrapper *element_wrapper;
+			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
 			status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				// The atom is just the definition of an anonymous

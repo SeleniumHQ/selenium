@@ -30,7 +30,7 @@ public:
 	void AddArgument(const int argument);
 	void AddArgument(const double argument);
 	void AddArgument(const bool argument);
-	void AddArgument(ElementWrapper *argument);
+	void AddArgument(std::tr1::shared_ptr<ElementWrapper> argument);
 	void AddArgument(IHTMLElement *argument);
 	void AddArgument(VARIANT argument);
 

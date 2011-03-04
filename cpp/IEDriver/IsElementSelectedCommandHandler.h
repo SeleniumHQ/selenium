@@ -36,7 +36,7 @@ protected:
 			script += atoms::IS_SELECTED;
 			script += L")})();";
 
-			ElementWrapper *element_wrapper;
+			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
 			status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				bool is_selected = element_wrapper->IsSelected();

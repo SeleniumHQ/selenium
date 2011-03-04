@@ -92,7 +92,7 @@ protected:
 			if (arg.isMember("ELEMENT")) {
 				std::wstring element_id(CA2W(arg["ELEMENT"].asString().c_str(), CP_UTF8));
 
-				ElementWrapper *element_wrapper;
+				std::tr1::shared_ptr<ElementWrapper> element_wrapper;
 				status_code = this->GetElement(manager, element_id, &element_wrapper);
 				if (status_code == SUCCESS) {
 					script_wrapper.AddArgument(element_wrapper);

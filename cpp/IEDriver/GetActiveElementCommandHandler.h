@@ -40,7 +40,7 @@ protected:
 		if (element) {
 			IHTMLElement* dom_element;
 			element.CopyTo(&dom_element);
-			ElementWrapper *element_wrapper;
+			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
 			manager->AddManagedElement(dom_element, &element_wrapper);
 			response->SetResponse(SUCCESS, element_wrapper->ConvertToJson());
 		}

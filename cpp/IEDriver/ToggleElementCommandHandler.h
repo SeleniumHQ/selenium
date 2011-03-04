@@ -30,7 +30,7 @@ protected:
 				return;
 			}
 
-			ElementWrapper *element_wrapper;
+			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
 			status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				// It only makes sense to toggle check boxes or options in a multi-select

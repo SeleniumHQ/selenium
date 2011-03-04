@@ -303,8 +303,8 @@ void BrowserManager::CreateNewBrowser(void) {
 	this->AddManagedBrowser(wrapper);
 }
 
-int BrowserManager::GetManagedElement(const std::wstring& element_id, ElementWrapper **element_wrapper) {
-	std::tr1::unordered_map<std::wstring, ElementWrapper*>::const_iterator found_iterator = this->managed_elements_.find(element_id);
+int BrowserManager::GetManagedElement(const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
+	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>>::const_iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator == this->managed_elements_.end()) {
 		return ENOSUCHELEMENT;
 	}
@@ -313,7 +313,7 @@ int BrowserManager::GetManagedElement(const std::wstring& element_id, ElementWra
 	return SUCCESS;
 }
 
-void BrowserManager::AddManagedElement(IHTMLElement *element, ElementWrapper **element_wrapper) {
+void BrowserManager::AddManagedElement(IHTMLElement *element, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
 	// TODO: This method needs much work. If we are already managing a
 	// given element, we don't want to assign it a new ID, but to find
 	// out if we're managing it already, we need to compare to all of 
@@ -322,7 +322,7 @@ void BrowserManager::AddManagedElement(IHTMLElement *element, ElementWrapper **e
 	// new managed element may take longer and longer as we have no
 	// good algorithm for removing dead elements from the map.
 	bool element_already_managed(false);
-	std::tr1::unordered_map<std::wstring, ElementWrapper*>::iterator it = this->managed_elements_.begin();
+	std::tr1::unordered_map<std::wstring,std::tr1::shared_ptr<ElementWrapper>>::iterator it = this->managed_elements_.begin();
 	for (; it != this->managed_elements_.end(); ++it) {
 		if (it->second->element() == element) {
 			*element_wrapper = it->second;
@@ -334,23 +334,22 @@ void BrowserManager::AddManagedElement(IHTMLElement *element, ElementWrapper **e
 	if (!element_already_managed) {
 		BrowserWrapper *current_browser;
 		this->GetCurrentBrowser(&current_browser);
-		ElementWrapper *new_wrapper = new ElementWrapper(element, current_browser->GetWindowHandle());
+		std::tr1::shared_ptr<ElementWrapper> new_wrapper(new ElementWrapper(element, current_browser->GetWindowHandle()));
 		this->managed_elements_[new_wrapper->element_id()] = new_wrapper;
 		*element_wrapper = new_wrapper;
 	}
 }
 
 void BrowserManager::RemoveManagedElement(const std::wstring& element_id) {
-	std::tr1::unordered_map<std::wstring, ElementWrapper*>::iterator found_iterator = this->managed_elements_.find(element_id);
+	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>>::iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator != this->managed_elements_.end()) {
-		ElementWrapper *element_wrapper = found_iterator->second;
+		std::tr1::shared_ptr<ElementWrapper> element_wrapper = found_iterator->second;
 		this->managed_elements_.erase(element_id);
-		delete element_wrapper;
 	}
 }
 
 void BrowserManager::ListManagedElements() {
-	std::tr1::unordered_map<std::wstring, ElementWrapper*>::iterator it = this->managed_elements_.begin();
+	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>>::iterator it = this->managed_elements_.begin();
 	for (; it != this->managed_elements_.end(); ++it) {
 		std::string id(CW2A(it->first.c_str(), CP_UTF8));
 		std::cout << id << "\n";

@@ -21,7 +21,7 @@ protected:
 			return;
 		} else {
 			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
-			ElementWrapper *element_wrapper;
+			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
 			int status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				CComBSTR temp;

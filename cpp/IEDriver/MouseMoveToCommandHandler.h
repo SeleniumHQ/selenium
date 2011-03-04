@@ -64,7 +64,7 @@ protected:
 
 private:
 	int MouseMoveToCommandHandler::GetElementCoordinates(BrowserManager *manager, const std::wstring& element_id, bool get_element_origin, long *x_coordinate, long *y_coordinate) {
-		ElementWrapper *target_element;
+		std::tr1::shared_ptr<ElementWrapper> target_element;
 		int status_code = this->GetElement(manager, element_id, &target_element);
 		if (status_code != SUCCESS) {
 			return status_code;

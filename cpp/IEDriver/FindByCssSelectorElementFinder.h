@@ -14,7 +14,7 @@ public:
 	virtual ~FindByCssSelectorElementFinder(void) {
 	}
 
-	int FindByCssSelectorElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
+	int FindByCssSelectorElementFinder::FindElement(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
 		int result = ENOSUCHELEMENT;
 
 		BrowserWrapper *browser;
@@ -55,7 +55,7 @@ public:
 		return result;
 	}
 
-	int FindByCssSelectorElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
+	int FindByCssSelectorElementFinder::FindElements(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
 		int result = ENOSUCHELEMENT;
 
 		BrowserWrapper *browser;

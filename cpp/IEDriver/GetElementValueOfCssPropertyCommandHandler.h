@@ -55,7 +55,7 @@ protected:
 				return;
 			}
 
-			ElementWrapper *element_wrapper;
+			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
 			status_code = this->GetElement(manager, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				std::wstring value(this->GetPropertyValue(browser_wrapper, element_wrapper->element(), name.c_str()));

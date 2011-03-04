@@ -41,7 +41,7 @@ protected:
 
 			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
 
-			ElementWrapper *parent_element_wrapper;
+			std::tr1::shared_ptr<ElementWrapper> parent_element_wrapper;
 			status_code = this->GetElement(manager, element_id, &parent_element_wrapper);
 
 			if (status_code == SUCCESS) {

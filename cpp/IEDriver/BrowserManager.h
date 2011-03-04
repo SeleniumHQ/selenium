@@ -76,8 +76,8 @@ public:
 	int GetCurrentBrowser(BrowserWrapper **browser_wrapper);
 	void GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles);
 
-	void AddManagedElement(IHTMLElement *element, ElementWrapper **element_wrapper);
-	int GetManagedElement(const std::wstring& element_id, ElementWrapper **element_wrapper);
+	void AddManagedElement(IHTMLElement *element, std::tr1::shared_ptr<ElementWrapper>* element_wrapper);
+	int GetManagedElement(const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper);
 	void RemoveManagedElement(const std::wstring& element_id);
 	void ListManagedElements(void);
 
@@ -107,7 +107,7 @@ private:
 	void PopulateElementFinderRepository(void);
 
 	std::tr1::unordered_map<std::wstring, BrowserWrapper*> managed_browsers_;
-	std::tr1::unordered_map<std::wstring, ElementWrapper*> managed_elements_;
+	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>> managed_elements_;
 	std::map<std::wstring, std::tr1::shared_ptr<ElementFinder>> element_finders_;
 
 	BrowserFactory factory_;

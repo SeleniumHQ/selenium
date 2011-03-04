@@ -41,7 +41,7 @@ protected:
 			} else {
 				std::wstring frame_element_id(CA2W(element_id.asString().c_str(), CP_UTF8));
 
-				ElementWrapper *frame_element_wrapper;
+				std::tr1::shared_ptr<ElementWrapper> frame_element_wrapper;
 				status_code = this->GetElement(manager, frame_element_id, &frame_element_wrapper);
 				if (status_code == SUCCESS) {
 					status_code = browser_wrapper->SetFocusedFrameByElement(frame_element_wrapper->element());
