@@ -20,7 +20,7 @@ protected:
 
 		std::vector<std::wstring>::iterator end = managed_browser_handles.end();
 		for (std::vector<std::wstring>::iterator it = managed_browser_handles.begin(); it != end; ++it) {
-			BrowserWrapper *browser_wrapper;
+			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 			int status_code = manager->GetManagedBrowser(*it, &browser_wrapper);
 			if (status_code == SUCCESS && !browser_wrapper->is_closing()) {
 				HRESULT hr = browser_wrapper->browser()->Quit();

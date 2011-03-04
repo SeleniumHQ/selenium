@@ -26,7 +26,7 @@ protected:
 			std::vector<std::wstring> handle_list;
 			manager->GetManagedBrowserHandles(&handle_list);
 			for (unsigned int i = 0; i < handle_list.size(); ++i) {
-				BrowserWrapper *browser_wrapper;
+				std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 				int get_handle_loop_status_code = manager->GetManagedBrowser(handle_list[i], &browser_wrapper);
 				if (get_handle_loop_status_code == SUCCESS) {
 					std::string browser_name = this->GetWindowName(browser_wrapper->browser());
@@ -48,7 +48,7 @@ protected:
 				return;
 			} else {
 				// Reset the path to the focused frame before switching window context.
-				BrowserWrapper *current_browser;
+				std::tr1::shared_ptr<BrowserWrapper> current_browser;
 				int status_code = manager->GetCurrentBrowser(&current_browser);
 				if (status_code == SUCCESS) {
 					current_browser->SetFocusedFrameByElement(NULL);

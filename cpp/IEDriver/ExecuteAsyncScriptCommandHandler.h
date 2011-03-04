@@ -88,7 +88,7 @@ protected:
 			polling_script += L"}\n";
 			polling_script += L"};})();";
 
-			BrowserWrapper *browser_wrapper;
+			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");

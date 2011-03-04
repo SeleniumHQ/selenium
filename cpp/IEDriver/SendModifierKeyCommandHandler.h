@@ -27,7 +27,7 @@ protected:
 		} else {
 			bool press_key(is_down_parameter_iterator->second.asBool());
 			std::wstring key(CA2W(value_parameter_iterator->second.asCString(), CP_UTF8));
-			BrowserWrapper *browser_wrapper;
+			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 			manager->GetCurrentBrowser(&browser_wrapper);
 			HWND window_handle = browser_wrapper->GetWindowHandle();
 			if (press_key) {

@@ -17,7 +17,7 @@ public:
 	int FindByXPathElementFinder::FindElement(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
 		int result = ENOSUCHELEMENT;
 
-		BrowserWrapper *browser;
+		std::tr1::shared_ptr<BrowserWrapper> browser;
 		result = manager->GetCurrentBrowser(&browser);
 		if (result != SUCCESS) {
 			return result;
@@ -63,7 +63,7 @@ public:
 	int FindByXPathElementFinder::FindElements(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
 		int result = ENOSUCHELEMENT;
 
-		BrowserWrapper *browser;
+		std::tr1::shared_ptr<BrowserWrapper> browser;
 		result = manager->GetCurrentBrowser(&browser);
 		if (result != SUCCESS) {
 			return result;
@@ -124,7 +124,7 @@ public:
 	}
 
 private:
-	int FindByXPathElementFinder::InjectXPathEngine(BrowserWrapper *browser_wrapper) 
+	int FindByXPathElementFinder::InjectXPathEngine(std::tr1::shared_ptr<BrowserWrapper> browser_wrapper) 
 	{
 		// Inject the XPath engine
 		std::wstring script;

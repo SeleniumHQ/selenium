@@ -146,7 +146,7 @@ LRESULT BrowserManager::OnGetResponse(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 }
 
 LRESULT BrowserManager::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-	BrowserWrapper *browser;
+	std::tr1::shared_ptr<BrowserWrapper> browser;
 	int status_code = this->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS && !browser->is_closing()) {
 		this->is_waiting_ = !(browser->Wait());
@@ -170,7 +170,7 @@ LRESULT BrowserManager::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 
 LRESULT BrowserManager::OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	IWebBrowser2* browser = this->factory_.CreateBrowser();
-	BrowserWrapper* new_window_wrapper = new BrowserWrapper(browser, NULL, this->m_hWnd);
+	std::tr1::shared_ptr<BrowserWrapper> new_window_wrapper(new BrowserWrapper(browser, NULL, this->m_hWnd));
 	this->AddManagedBrowser(new_window_wrapper);
 	LPSTREAM* stream = (LPSTREAM*)lParam;
 	HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2, browser, stream);
@@ -181,7 +181,7 @@ LRESULT BrowserManager::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 	LPCTSTR str = (LPCTSTR)lParam;
 	std::wstring browser_id(str);
 	delete[] str;
-	std::tr1::unordered_map<std::wstring, BrowserWrapper*>::iterator found_iterator = this->managed_browsers_.find(browser_id);
+	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<BrowserWrapper>>::iterator found_iterator = this->managed_browsers_.find(browser_id);
 	if (found_iterator != this->managed_browsers_.end()) {
 		//delete found_iterator->second;
 		this->managed_browsers_.erase(browser_id);
@@ -245,7 +245,7 @@ void BrowserManager::DispatchCommand() {
 		std::tr1::shared_ptr<WebDriverCommandHandler> command_handler = found_iterator->second;
 		command_handler->Execute(this, this->current_command_, &response);
 
-		BrowserWrapper *browser;
+		std::tr1::shared_ptr<BrowserWrapper> browser;
 		int status_code = this->GetCurrentBrowser(&browser);
 		if (status_code == SUCCESS) {
 			this->is_waiting_ = browser->wait_required();
@@ -258,16 +258,16 @@ void BrowserManager::DispatchCommand() {
 	this->serialized_response_ = response.Serialize();
 }
 
-int BrowserManager::GetCurrentBrowser(BrowserWrapper **browser_wrapper) {
+int BrowserManager::GetCurrentBrowser(std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper) {
 	return this->GetManagedBrowser(this->current_browser_id_, browser_wrapper);
 }
 
-int BrowserManager::GetManagedBrowser(const std::wstring& browser_id, BrowserWrapper **browser_wrapper) {
+int BrowserManager::GetManagedBrowser(const std::wstring& browser_id, std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper) {
 	if (browser_id == L"") {
 		return ENOSUCHDRIVER;
 	}
 
-	std::tr1::unordered_map<std::wstring, BrowserWrapper*>::const_iterator found_iterator = this->managed_browsers_.find(browser_id);
+	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<BrowserWrapper>>::const_iterator found_iterator = this->managed_browsers_.find(browser_id);
 	if (found_iterator == this->managed_browsers_.end()) {
 		return ENOSUCHDRIVER;
 	}
@@ -279,13 +279,13 @@ int BrowserManager::GetManagedBrowser(const std::wstring& browser_id, BrowserWra
 void BrowserManager::GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles) {
 	// TODO: Enumerate windows looking for browser windows
 	// created by showModalDialog().
-	std::tr1::unordered_map<std::wstring, BrowserWrapper*>::const_iterator it = this->managed_browsers_.begin();
+	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<BrowserWrapper>>::const_iterator it = this->managed_browsers_.begin();
 	for (; it != this->managed_browsers_.end(); ++it) {
 		managed_browser_handles->push_back(it->first);
 	}
 }
 
-void BrowserManager::AddManagedBrowser(BrowserWrapper *browser_wrapper) {
+void BrowserManager::AddManagedBrowser(std::tr1::shared_ptr<BrowserWrapper> browser_wrapper) {
 	this->managed_browsers_[browser_wrapper->browser_id()] = browser_wrapper;
 	if (this->current_browser_id_ == L"") {
 		this->current_browser_id_ = browser_wrapper->browser_id();
@@ -299,7 +299,7 @@ void BrowserManager::CreateNewBrowser(void) {
 	process_window_info.hwndBrowser = NULL;
 	process_window_info.pBrowser = NULL;
 	this->factory_.AttachToBrowser(&process_window_info);
-	BrowserWrapper *wrapper = new BrowserWrapper(process_window_info.pBrowser, process_window_info.hwndBrowser, this->m_hWnd);
+	std::tr1::shared_ptr<BrowserWrapper> wrapper(new BrowserWrapper(process_window_info.pBrowser, process_window_info.hwndBrowser, this->m_hWnd));
 	this->AddManagedBrowser(wrapper);
 }
 
@@ -332,7 +332,7 @@ void BrowserManager::AddManagedElement(IHTMLElement *element, std::tr1::shared_p
 	}
 
 	if (!element_already_managed) {
-		BrowserWrapper *current_browser;
+		std::tr1::shared_ptr<BrowserWrapper> current_browser;
 		this->GetCurrentBrowser(&current_browser);
 		std::tr1::shared_ptr<ElementWrapper> new_wrapper(new ElementWrapper(element, current_browser->GetWindowHandle()));
 		this->managed_elements_[new_wrapper->element_id()] = new_wrapper;

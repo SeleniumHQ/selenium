@@ -12,7 +12,7 @@ ElementFinder::~ElementFinder() {
 }
 
 int ElementFinder::FindElement(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
-	BrowserWrapper *browser;
+	std::tr1::shared_ptr<BrowserWrapper> browser;
 	int status_code = manager->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		std::wstring criteria_object_script = L"(function() { return function(){ return  { " + this->locator_ + L" : \"" + criteria + L"\" }; };})();";
@@ -52,7 +52,7 @@ int ElementFinder::FindElement(BrowserManager *manager, std::tr1::shared_ptr<Ele
 }
 
 int ElementFinder::FindElements(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
-	BrowserWrapper *browser;
+	std::tr1::shared_ptr<BrowserWrapper> browser;
 	int status_code = manager->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		std::wstring criteria_object_script = L"(function() { return function(){ return  { " + this->locator_ + L" : \"" + criteria + L"\" }; };})();";

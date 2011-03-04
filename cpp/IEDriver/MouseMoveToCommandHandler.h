@@ -45,7 +45,7 @@ protected:
 				end_y += yoffset_parameter_iterator->second.asInt();
 			}
 
-			BrowserWrapper *browser_wrapper;
+			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 			status_code = manager->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get current browser");

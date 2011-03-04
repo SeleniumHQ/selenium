@@ -29,7 +29,7 @@ protected:
 
 			Json::Value json_args(args_parameter_iterator->second);
 
-			BrowserWrapper *browser_wrapper;
+			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
@@ -120,7 +120,7 @@ protected:
 		}
 		array_script += L"];}})();";
 
-		BrowserWrapper *browser;
+		std::tr1::shared_ptr<BrowserWrapper> browser;
 		manager->GetCurrentBrowser(&browser);
 
 		CComPtr<IHTMLDocument2> doc;
@@ -162,7 +162,7 @@ protected:
 		}
 		object_script += L"};}})();";
 
-		BrowserWrapper *browser;
+		std::tr1::shared_ptr<BrowserWrapper> browser;
 		manager->GetCurrentBrowser(&browser);
 
 		CComPtr<IHTMLDocument2> doc;

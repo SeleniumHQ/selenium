@@ -52,7 +52,7 @@ protected:
 				keys.append(CA2W(key.c_str(), CP_UTF8));
 			}
 
-			BrowserWrapper *browser_wrapper;
+			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");

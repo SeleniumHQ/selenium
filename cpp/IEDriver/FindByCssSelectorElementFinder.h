@@ -17,7 +17,7 @@ public:
 	int FindByCssSelectorElementFinder::FindElement(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
 		int result = ENOSUCHELEMENT;
 
-		BrowserWrapper *browser;
+		std::tr1::shared_ptr<BrowserWrapper> browser;
 		result = manager->GetCurrentBrowser(&browser);
 		if (result != SUCCESS) {
 			return result;
@@ -58,7 +58,7 @@ public:
 	int FindByCssSelectorElementFinder::FindElements(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
 		int result = ENOSUCHELEMENT;
 
-		BrowserWrapper *browser;
+		std::tr1::shared_ptr<BrowserWrapper> browser;
 		result = manager->GetCurrentBrowser(&browser);
 		if (result != SUCCESS) {
 			return result;

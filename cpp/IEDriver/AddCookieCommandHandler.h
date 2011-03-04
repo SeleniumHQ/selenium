@@ -68,7 +68,7 @@ protected:
 			cookie_string += "path=" + path.asString() + "; ";
 		}
 
-		BrowserWrapper *browser_wrapper;
+		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 		manager->GetCurrentBrowser(&browser_wrapper);
 
 		std::wstring cookie(CA2W(cookie_string.c_str(), CP_UTF8));

@@ -20,7 +20,7 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter: url");
 			return;
 		} else {
-			BrowserWrapper *browser_wrapper;
+			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");

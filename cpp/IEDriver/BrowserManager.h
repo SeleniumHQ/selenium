@@ -72,8 +72,8 @@ public:
 
 	void CreateNewBrowser(void);
 
-	int GetManagedBrowser(const std::wstring& browser_id, BrowserWrapper **browser_wrapper);
-	int GetCurrentBrowser(BrowserWrapper **browser_wrapper);
+	int GetManagedBrowser(const std::wstring& browser_id, std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper);
+	int GetCurrentBrowser(std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper);
 	void GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles);
 
 	void AddManagedElement(IHTMLElement *element, std::tr1::shared_ptr<ElementWrapper>* element_wrapper);
@@ -99,14 +99,14 @@ public:
 	void set_last_known_mouse_y(const long y_coordinate) { this->last_known_mouse_y_ = y_coordinate; }
 
 private:
-	void AddManagedBrowser(BrowserWrapper* browser_wrapper);
+	void AddManagedBrowser(std::tr1::shared_ptr<BrowserWrapper> browser_wrapper);
 
 	void DispatchCommand(void);
 
 	void PopulateCommandHandlerRepository(void);
 	void PopulateElementFinderRepository(void);
 
-	std::tr1::unordered_map<std::wstring, BrowserWrapper*> managed_browsers_;
+	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<BrowserWrapper>> managed_browsers_;
 	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>> managed_elements_;
 	std::map<std::wstring, std::tr1::shared_ptr<ElementFinder>> element_finders_;
 

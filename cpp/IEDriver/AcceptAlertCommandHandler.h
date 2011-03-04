@@ -15,7 +15,7 @@ public:
 
 protected:
 	void AcceptAlertCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		BrowserWrapper* browser_wrapper;
+		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 		manager->GetCurrentBrowser(&browser_wrapper);
 		// This sleep is required to give IE time to draw the dialog.
 		::Sleep(100);

@@ -23,7 +23,7 @@ protected:
 			return;
 		}
 
-		BrowserWrapper* browser_wrapper;
+		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 		manager->GetCurrentBrowser(&browser_wrapper);
 		// This sleep is required to give IE time to draw the dialog.
 		::Sleep(100);
