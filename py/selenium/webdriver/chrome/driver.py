@@ -14,7 +14,7 @@
 # limitations under the License.
 from __future__ import with_statement
 import os
-from selenium.webdriver.common.exceptions import RemoteDriverServerException
+from selenium.common.exceptions import RemoteDriverServerException
 from selenium.webdriver.remote import utils
 import subprocess
 import httplib

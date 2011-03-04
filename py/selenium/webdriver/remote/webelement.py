@@ -16,7 +16,7 @@
 """WebElement implementation."""
 from command import Command
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.exceptions import NoSuchAttributeException
+from selenium.common.exceptions import NoSuchAttributeException
 
 
 class WebElement(object):

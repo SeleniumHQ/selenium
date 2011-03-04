@@ -116,6 +116,7 @@ setup(
                      'Programming Language :: Python'],
     package_dir={
         'selenium': 'py/selenium',
+        'selenium.common': 'py/selenium/common',
         'selenium.test': 'py/test',
         'selenium.test.selenium': 'py/test/selenium',
         'selenium.test.selenium.webdriver': 'py/test/selenium/webdriver',
@@ -132,6 +133,7 @@ setup(
         'selenium.webdriver.remote': 'py/selenium/webdriver/remote',
     },
     packages=['selenium',
+              'selenium.common',
               'selenium.test',
               'selenium.test.selenium',
               'selenium.test.selenium.webdriver',

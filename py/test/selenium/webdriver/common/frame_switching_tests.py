@@ -22,8 +22,8 @@ import tempfile
 import time
 import shutil
 import unittest
-from selenium.webdriver.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.exceptions import NoSuchFrameException
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchFrameException
 
 
 def not_available_on_remote(func):

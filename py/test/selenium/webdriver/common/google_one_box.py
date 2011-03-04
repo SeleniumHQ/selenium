@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from selenium.webdriver.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException
 from results_page import ResultsPage
 from page_loader import require_loaded
 class GoogleOneBox(object):

@@ -23,8 +23,8 @@ import time
 import shutil
 import unittest
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.exceptions import WebDriverException
-from selenium.webdriver.common.exceptions import TimeoutException
+from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
 
 class ExecutingAsyncJavaScriptTests(unittest.TestCase):

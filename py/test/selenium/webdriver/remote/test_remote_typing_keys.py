@@ -49,7 +49,7 @@ def setup_module(module):
     except:
         print ("Starting the remote driver server")
         RemoteTypingTests.server_proc = subprocess.Popen(
-            "java -jar build/remote/server/server-standalone.jar",
+            "java -jar build/java/server/src/org/openqa/selenium/server/server-standalone.jar",
             shell=True)
 
         assert wait_for_server(url, 10), "can't connect"

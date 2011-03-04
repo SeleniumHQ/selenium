@@ -22,12 +22,12 @@ import tempfile
 import time
 import shutil
 import unittest
-from selenium.webdriver.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.exceptions import NoSuchFrameException
-from selenium.webdriver.common.exceptions import InvalidElementStateException
-from selenium.webdriver.common.exceptions import ElementNotSelectableException
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchFrameException
+from selenium.common.exceptions import InvalidElementStateException
+from selenium.common.exceptions import ElementNotSelectableException
 
-from selenium.webdriver.common.exceptions import WebDriverException 
+from selenium.common.exceptions import WebDriverException 
 
 
 class FormHandlingTests(unittest.TestCase):

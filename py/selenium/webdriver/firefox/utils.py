@@ -21,7 +21,7 @@ import os
 import platform
 import tempfile
 import zipfile
-from selenium.webdriver.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException
 
 LOGGER = logging.getLogger(__name__)
 

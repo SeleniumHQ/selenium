@@ -22,8 +22,8 @@ import tempfile
 import time
 import shutil
 import unittest
-from selenium.webdriver.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.exceptions import ElementNotVisibleException
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.common.by import By
 
 

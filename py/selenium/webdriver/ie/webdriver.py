@@ -17,7 +17,7 @@
 
 import base64
 import httplib
-from selenium.webdriver.common.exceptions import ErrorInResponseException
+from selenium.common.exceptions import ErrorInResponseException
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.remote.webelement import WebElement
