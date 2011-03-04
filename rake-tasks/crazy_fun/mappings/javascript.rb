@@ -36,6 +36,12 @@ class JavascriptMappings
     fun.add_mapping("js_fragment_header", Javascript::ConcatenateHeaders.new)
     fun.add_mapping("js_fragment_header", Javascript::CopyHeader.new)
 
+    fun.add_mapping("js_fragment_java", Javascript::CheckFragmentPreconditions.new)
+    fun.add_mapping("js_fragment_java", Javascript::CreateTask.new)
+    fun.add_mapping("js_fragment_java", Javascript::CreateTaskShortName.new)
+    fun.add_mapping("js_fragment_java", Javascript::AddDependencies.new)
+    fun.add_mapping("js_fragment_java", Javascript::ConcatenateJava.new)
+
     fun.add_mapping("js_test", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_test", Javascript::CreateTask.new)
     fun.add_mapping("js_test", Javascript::CreateTaskShortName.new)
@@ -262,12 +268,26 @@ module Javascript
     end
   end
 
-  class GenerateHeader < BaseJs
+  class GenerateAtoms < BaseJs
 
     MAX_LINE_LENGTH = 80
     MAX_STR_LENGTH = MAX_LINE_LENGTH - "    L\"\"\n".length
+    COPYRIGHT =
+          "// Copyright 2011 WebDriver committers\n" +
+          "// Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+          "// you may not use this file except in compliance with the License.\n" +
+          "// You may obtain a copy of the License at\n" +
+          "//\n" +
+          "//     http://www.apache.org/licenses/LICENSE-2.0\n" +
+          "//\n" +
+          "// Unless required by applicable law or agreed to in writing, software\n" +
+          "// distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+          "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+          "// See the License for the specific language governing permissions and\n" +
+          "// limitations under the License.\n"
 
-    def write_atom_string_literal(to_file, dir, atom, utf8)
+
+    def write_atom_string_literal(to_file, dir, atom, utf8, language)
       # Check that the |atom| task actually generates a JavaScript file.
       if (File.exists?(atom))
         atom_file = atom
@@ -298,13 +318,21 @@ module Javascript
       contents.gsub!(/"/, "\\\"")
       contents.gsub!(/'/, "'")
 
-      atom_type = utf8 ? "char" : "wchar_t"
-      max_str_length = MAX_STR_LENGTH
-      max_str_length += 1 if utf8  # Don't need the 'L' on each line for UTF8.
-      line_format = utf8 ? "    \"%s\"" : "    L\"%s\""
+      if language == "cpp"
+        atom_type = utf8 ? "char" : "wchar_t"
+        max_str_length = MAX_STR_LENGTH
+        max_str_length += 1 if utf8  # Don't need the 'L' on each line for UTF8.
+        line_format = utf8 ? "    \"%s\"" : "    L\"%s\""
 
-      to_file << "\n"
-      to_file << "const #{atom_type}* const #{atom_upper} =\n"
+        to_file << "\n"
+        to_file << "const #{atom_type}* const #{atom_upper} =\n"
+      end
+      if language == "java"
+        max_str_length = MAX_STR_LENGTH - 2
+        line_format = "      \"\%s\" +"
+        to_file << "\n"
+        to_file << "  public static final String #{atom_upper} =\n"
+      end
 
       # Make the header file play nicely in a terminal: limit lines to 80
       # characters, but make sure we don't cut off a line in the middle
@@ -323,6 +351,32 @@ module Javascript
       to_file << ";\n"
     end
 
+    def generate_java(dir, name, task_name, output, js_files)
+      file output => js_files do
+        puts "Preparing: #{task_name} as #{output}"
+        output_dir = File.dirname(output)
+        mkdir_p output_dir unless File.exists?(output_dir)
+
+        File.open(output, 'w') do |out|
+          out << COPYRIGHT
+          out << "\n"
+          out << "/* AUTO GENERATED - DO NOT EDIT!*/\n"
+          out << "\n"
+          out << "package webdriver;\n"
+          out << "\n"
+          out << "public class Atoms {\n"
+
+          js_files.each do |js_file|
+            write_atom_string_literal(out, dir, js_file, false, "java")
+          end
+
+          out << "\n"
+          out << "}"
+          out << "\n"
+       end
+      end
+    end
+
     def generate_header(dir, name, task_name, output, js_files, utf8)
       file output => js_files do
         puts "Preparing: #{task_name} as #{output}"
@@ -332,18 +386,7 @@ module Javascript
         mkdir_p output_dir unless File.exists?(output_dir)
 
         File.open(output, 'w') do |out|
-          out << "// Copyright 2011 WebDriver committers\n"
-          out << "// Licensed under the Apache License, Version 2.0 (the \"License\");\n"
-          out << "// you may not use this file except in compliance with the License.\n"
-          out << "// You may obtain a copy of the License at\n"
-          out << "//\n"
-          out << "//     http://www.apache.org/licenses/LICENSE-2.0\n"
-          out << "//\n"
-          out << "// Unless required by applicable law or agreed to in writing, software\n"
-          out << "// distributed under the License is distributed on an \"AS IS\" BASIS,\n"
-          out << "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n"
-          out << "// See the License for the specific language governing permissions and\n"
-          out << "// limitations under the License.\n"
+          out << COPYRIGHT
           out << "\n"
           out << "/* AUTO GENERATED - DO NOT EDIT BY HAND */\n"
           out << "#ifndef #{define_guard}\n"
@@ -355,7 +398,7 @@ module Javascript
           out << "namespace atoms {\n"
 
           js_files.each do |js_file|
-            write_atom_string_literal(out, dir, js_file, utf8)
+            write_atom_string_literal(out, dir, js_file, utf8, "cpp")
           end
 
           out << "\n"
@@ -368,7 +411,7 @@ module Javascript
     end
   end
 
-  class ConcatenateHeaders < GenerateHeader
+  class ConcatenateHeaders < GenerateAtoms
     def handle(fun, dir, args)
       js = js_name(dir, args[:name])
       output = js.sub(/\.js$/, '.h')
@@ -378,11 +421,21 @@ module Javascript
       task task_name => [output]
     end
   end
-  
+
+  class ConcatenateJava < GenerateAtoms
+    def handle(fun, dir, args)
+      js = js_name(dir, args[:name])
+      output = js.sub(/\.js$/, '.java')
+      task_name = task_name(dir, args[:name])
+      generate_java(dir, args[:name], task_name, output, args[:deps])
+      task task_name => [output]
+    end
+  end
+
   class CopyHeader < BaseJs
     def handle(fun, dir, args)
       return unless args[:out]
-      
+
       js = js_name(dir, args[:name])
       output = js.sub(/\.js$/, '.h')
       task_name = task_name(dir, args[:name])
@@ -393,7 +446,7 @@ module Javascript
     end
   end
 
-  class CreateHeader < GenerateHeader
+  class CreateHeader < GenerateAtoms
     def handle(fun, dir, args)
       js = js_name(dir, args[:name])
       out = js.sub(/\.js$/, '.h')
@@ -432,7 +485,6 @@ module Javascript
           end
           ant.sysproperty :key => 'js.test.dir', :value => File.join(dir, 'test')
           ant.sysproperty :key => 'js.test.url.path', :value => args[:path]
-
 
           ant.formatter(:type => 'plain')
           ant.formatter(:type => 'xml')
