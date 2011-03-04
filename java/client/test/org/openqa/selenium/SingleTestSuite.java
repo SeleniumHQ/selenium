@@ -17,11 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.ALL;
+import static org.openqa.selenium.net.PortProber.findFreePort;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 
-import static org.openqa.selenium.Ignore.Driver.ALL;
-import static org.openqa.selenium.net.PortProber.findFreePort;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestCase {
@@ -39,8 +42,23 @@ public class SingleTestSuite extends TestCase {
   private static final String REMOTE_IE = "org.openqa.selenium.remote.server.RemoteWebDriverIeTestSuite$RemoteIeWebDriverForTest";
   private static final String SELENIUM = "org.openqa.selenium.v1.SeleneseBackedWebDriver";
 
+  private static final Map<String, Ignore.Driver> EXCLUSIONS_BY_DRIVER =
+      new HashMap<String, Ignore.Driver>() {{
+        put(CHROME, Ignore.Driver.CHROME);
+        put(CHROME_TEST, Ignore.Driver.CHROME);
+        put(FIREFOX, Ignore.Driver.FIREFOX);
+        put(FIREFOX_TEST, Ignore.Driver.FIREFOX);
+        put(HTML_UNIT, Ignore.Driver.HTMLUNIT);
+        put(HTML_UNIT_JS, Ignore.Driver.HTMLUNIT);
+        put(IE, Ignore.Driver.IE);
+        put(IPHONE, Ignore.Driver.IPHONE);
+        put(REMOTE, Ignore.Driver.REMOTE);
+        put(REMOTE_IE, Ignore.Driver.IE);
+        put(SELENIUM, Ignore.Driver.SELENESE);
+      }};
+
   public static Test suite() throws Exception {
-    String driver = IPHONE;
+    String driver = SELENIUM;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -53,11 +71,11 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("PageLoadingTest")
+        .onlyRun("AtomsInjectionTest")
 //        .method("testShouldBeAbleToRefreshAPage")
 //        .method("testShouldNotTrimSpacesWhenLineWraps")
         .exclude(ALL)
-        .exclude(Ignore.Driver.IPHONE)
+        .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
         .outputTestNames()
 //        .leaveRunning()
         ;  // Yeah, this look strange :)

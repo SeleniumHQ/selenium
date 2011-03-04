@@ -239,7 +239,13 @@ module Javascript
 
         # Naming convention is CamelCase, not snake_case
         name = args[:name].gsub(/_(.)/) {|match| $1.upcase}
-        wrapper = "function(){%output%; return _.apply(null,arguments);}"
+
+        # Wrap the output in two functions. The outer function ensures the
+        # compiled fragment never pollutes the global scope by using its
+        # own scope on each invocation.
+        #     See http://code.google.com/p/selenium/issues/detail?id=1333
+        wrapper = "function(){%output%; return this._.apply(null,arguments);}"
+        wrapper = "function(){return #{wrapper}.apply({}, arguments);}"
 
         # TODO(simon): Don't hard code things. That's Not Smart
         cmd = calcdeps +

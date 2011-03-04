@@ -152,6 +152,7 @@ if (windows?)
 end
 
 task :test_java => [
+  "//java/client/test/org/openqa/selenium/atoms:test:run",
   "//java/client/test/org/openqa/selenium/support:test:run",
   "//java/client/test/org/openqa/selenium/htmlunit:test:run",
   "test_atoms",

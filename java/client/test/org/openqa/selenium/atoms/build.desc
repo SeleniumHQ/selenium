@@ -1,0 +1,10 @@
+java_test(name = "test",
+  srcs = [ "*.java" ],
+  resources = [
+    { "//javascript/webdriver-atoms:execute_script" : "scripts/executeScript.js" }
+  ],
+  deps = [
+    "//third_party/java/guava-libraries",
+    "//third_party/java/htmlunit",
+    "//third_party/java/junit",
+  ])

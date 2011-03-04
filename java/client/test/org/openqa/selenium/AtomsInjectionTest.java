@@ -17,11 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
 public class AtomsInjectionTest extends AbstractDriverTestCase {
-  @Ignore
+
+  /** http://code.google.com/p/selenium/issues/detail?id=1333 */
+  @Ignore(value = {IE, SELENESE},
+      reason = "Selenium executes script in the context of the Selenium window, so the test " +
+          "script will fail with a ReferenceError.")
+  @JavascriptEnabled
   public void testInjectingAtomShouldNotTrampleOnUnderscoreGlobal() {
     driver.get(pages.underscorePage);
     driver.findElement(By.tagName("body"));
-    assertEquals(1, ((JavascriptExecutor)driver).executeScript("return _[0];"));
+    assertEquals("123", ((JavascriptExecutor)driver).executeScript("return _.join('');"));
   }
 }
