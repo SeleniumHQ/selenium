@@ -9,7 +9,7 @@ WebDriverCommand::WebDriverCommand() : command_value_(0) {
 WebDriverCommand::~WebDriverCommand() {
 }
 
-void WebDriverCommand::Populate(std::string json_command) {
+void WebDriverCommand::Populate(const std::string& json_command) {
 	// Clear the existing maps.
 	this->command_parameters_.clear();
 	this->locator_parameters_.clear();

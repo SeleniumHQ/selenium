@@ -52,7 +52,7 @@ std::wstring IEDriverServer::CreateSession() {
 	return manager_id;
 }
 
-void IEDriverServer::ShutDownSession(std::wstring session_id) {
+void IEDriverServer::ShutDownSession(const std::wstring& session_id) {
 	std::map<std::wstring, HWND>::iterator it = this->sessions_.find(session_id);
 	if (it != this->sessions_.end()) {
 		::SendMessage(it->second, WM_CLOSE, NULL, NULL);
@@ -134,7 +134,7 @@ int IEDriverServer::ProcessRequest(struct mg_connection *conn, const struct mg_r
 	return return_code;
 }
 
-std::wstring IEDriverServer::SendCommandToManager(std::wstring session_id, std::wstring serialized_command) {
+std::wstring IEDriverServer::SendCommandToManager(const std::wstring& session_id, const std::wstring& serialized_command) {
 	// Sending a command consists of four actions:
 	// 1. Setting the command to be executed
 	// 2. Executing the command
@@ -165,7 +165,7 @@ std::wstring IEDriverServer::SendCommandToManager(std::wstring session_id, std::
 	return serialized_response;
 }
 
-int IEDriverServer::SendResponseToBrowser(struct mg_connection *conn, const struct mg_request_info *request_info, std::wstring serialized_response) {
+int IEDriverServer::SendResponseToBrowser(struct mg_connection *conn, const struct mg_request_info *request_info, const std::wstring& serialized_response) {
 	int return_code = 0;
 	if (serialized_response.size() > 0) {
 		WebDriverResponse response;
@@ -218,7 +218,7 @@ void IEDriverServer::SendWelcomePage(struct mg_connection* connection,
 // not covered in the JSON protocol.
 void IEDriverServer::SendHttpOk(struct mg_connection* connection,
                 const struct mg_request_info* request_info,
-				std::wstring body) {
+				const std::wstring& body) {
 	std::string narrow_body(CW2A(body.c_str(), CP_UTF8));
 	std::ostringstream out;
 	out << "HTTP/1.1 200 OK\r\n"
@@ -236,7 +236,7 @@ void IEDriverServer::SendHttpOk(struct mg_connection* connection,
 
 void IEDriverServer::SendHttpBadRequest(struct mg_connection* const connection,
                         const struct mg_request_info* const request_info,
-				        std::wstring body) {
+				        const std::wstring& body) {
 	std::string narrow_body(CW2A(body.c_str(), CP_UTF8));
 	std::ostringstream out;
 	out << "HTTP/1.1 400 Bad Request\r\n"
@@ -254,7 +254,7 @@ void IEDriverServer::SendHttpBadRequest(struct mg_connection* const connection,
 
 void IEDriverServer::SendHttpInternalError(struct mg_connection* connection,
                            const struct mg_request_info* request_info,
-						   std::wstring body) {
+						   const std::wstring& body) {
 	std::string narrow_body(CW2A(body.c_str(), CP_UTF8));
 	std::ostringstream out;
 	out << "HTTP/1.1 500 Internal Server Error\r\n"
@@ -272,7 +272,7 @@ void IEDriverServer::SendHttpInternalError(struct mg_connection* connection,
 
 void IEDriverServer::SendHttpNotFound(struct mg_connection* const connection,
                       const struct mg_request_info* const request_info,
-				      std::wstring body) {
+				      const std::wstring& body) {
 	std::string narrow_body(CW2A(body.c_str(), CP_UTF8));
 	std::ostringstream out;
 	out << "HTTP/1.1 404 Not Found\r\n"
@@ -290,7 +290,7 @@ void IEDriverServer::SendHttpNotFound(struct mg_connection* const connection,
 
 void IEDriverServer::SendHttpMethodNotAllowed(struct mg_connection* connection,
 							const struct mg_request_info* request_info,
-							std::wstring allowed_methods) {
+							const std::wstring& allowed_methods) {
 	std::string narrow_body(CW2A(allowed_methods.c_str(), CP_UTF8));
 	std::ostringstream out;
 	out << "HTTP/1.1 405 Method Not Allowed\r\n"
@@ -303,7 +303,7 @@ void IEDriverServer::SendHttpMethodNotAllowed(struct mg_connection* connection,
 
 void IEDriverServer::SendHttpNotImplemented(struct mg_connection* connection,
 							const struct mg_request_info* request_info,
-							std::string body) {
+							const std::string& body) {
 	std::ostringstream out;
 	out << "HTTP/1.1 501 Not Implemented\r\n"
 		<< "Content-Type: text/html\r\n"
@@ -315,7 +315,7 @@ void IEDriverServer::SendHttpNotImplemented(struct mg_connection* connection,
 
 void IEDriverServer::SendHttpSeeOther(struct mg_connection* connection,
 							const struct mg_request_info* request_info,
-							std::string location) {
+							const std::string& location) {
 	std::ostringstream out;
 	out << "HTTP/1.1 303 See Other\r\n"
 		<< "Location: " << location << "\r\n"
@@ -325,9 +325,9 @@ void IEDriverServer::SendHttpSeeOther(struct mg_connection* connection,
 	mg_write(connection, out.str().c_str(), out.str().size());
 }
 
-int IEDriverServer::LookupCommand(std::string uri, std::string http_verb, std::wstring *session_id, std::wstring *locator) {
+int IEDriverServer::LookupCommand(const std::string& uri, const std::string& http_verb, std::wstring *session_id, std::wstring *locator) {
 	int value = NoCommand;
-	std::map<std::string, map<std::string, int>>::iterator it = this->command_repository_.begin();
+	std::map<std::string, map<std::string, int>>::const_iterator it = this->command_repository_.begin();
 	for (; it != this->command_repository_.end(); ++it) {
 		std::vector<std::string> locator_param_names;
 		std::string url_candidate = (*it).first;
@@ -355,8 +355,9 @@ int IEDriverServer::LookupCommand(std::string uri, std::string http_verb, std::w
 		std::tr1::regex matcher("^" + url_candidate + "$");
 		std::tr1::match_results<std::string::const_iterator> matches;
 		if (std::tr1::regex_search(uri_start, uri_end, matches, matcher)) {
-			if (it->second.find(http_verb) != it->second.end()) {
-				value = it->second[http_verb];
+			map<std::string, int>::const_iterator verb_iterator = it->second.find(http_verb);
+			if (verb_iterator != it->second.end()) {
+				value = verb_iterator->second;
 				std::string param = "{";
 				size_t param_count = locator_param_names.size();
 				for (unsigned int i = 0; i < param_count; i++) {
@@ -376,7 +377,7 @@ int IEDriverServer::LookupCommand(std::string uri, std::string http_verb, std::w
 				locator->append(wide_param);
 				break;
 			} else {
-				std::map<std::string, int>::iterator verb_iterator = it->second.begin();
+				verb_iterator = it->second.begin();
 				for (; verb_iterator != it->second.end(); ++verb_iterator) {
 					if (locator->size() != 0) {
 						locator->append(L",");

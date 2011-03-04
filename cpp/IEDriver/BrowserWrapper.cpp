@@ -293,7 +293,7 @@ int BrowserWrapper::SetFocusedFrameByName(const std::wstring& frame_name) {
 	return SUCCESS;
 }
 
-int BrowserWrapper::SetFocusedFrameByIndex(int frame_index) {
+int BrowserWrapper::SetFocusedFrameByIndex(const int frame_index) {
 	CComPtr<IHTMLDocument2> doc;
 	this->GetDocument(&doc);
 

@@ -62,13 +62,13 @@ public:
 	LRESULT OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-	std::wstring manager_id(void) { return this->manager_id_; }
+	std::wstring manager_id(void) const { return this->manager_id_; }
 
 	static DWORD WINAPI ThreadProc(LPVOID lpParameter);
 	static DWORD WINAPI WaitThreadProc(LPVOID lpParameter);
 
-	std::wstring current_browser_id(void) { return this->current_browser_id_; }
-	void set_current_browser_id(std::wstring browser_id) { this->current_browser_id_ = browser_id; }
+	std::wstring current_browser_id(void) const { return this->current_browser_id_; }
+	void set_current_browser_id(const std::wstring& browser_id) { this->current_browser_id_ = browser_id; }
 
 	void CreateNewBrowser(void);
 
@@ -83,20 +83,20 @@ public:
 
 	int GetElementFinder(const std::wstring& mechanism, std::tr1::shared_ptr<ElementFinder>* finder);
 
-	int speed(void) { return this->speed_; }
-	void set_speed(int speed) { this->speed_ = speed; }
+	int speed(void) const { return this->speed_; }
+	void set_speed(const int speed) { this->speed_ = speed; }
 
-	int implicit_wait_timeout(void) { return this->implicit_wait_timeout_; }
-	void set_implicit_wait_timeout(int timeout) { this->implicit_wait_timeout_ = timeout; }
+	int implicit_wait_timeout(void) const { return this->implicit_wait_timeout_; }
+	void set_implicit_wait_timeout(const int timeout) { this->implicit_wait_timeout_ = timeout; }
 
-	int async_script_timeout(void) { return this->async_script_timeout_; }
-	void set_async_script_timeout(int timeout) { this->async_script_timeout_ = timeout; }
+	int async_script_timeout(void) const { return this->async_script_timeout_; }
+	void set_async_script_timeout(const int timeout) { this->async_script_timeout_ = timeout; }
 
-	long last_known_mouse_x(void) { return this->last_known_mouse_x_; }
-	void set_last_known_mouse_x(long x_coordinate) { this->last_known_mouse_x_ = x_coordinate; }
+	long last_known_mouse_x(void) const { return this->last_known_mouse_x_; }
+	void set_last_known_mouse_x(const long x_coordinate) { this->last_known_mouse_x_ = x_coordinate; }
 
-	long last_known_mouse_y(void) { return this->last_known_mouse_y_; }
-	void set_last_known_mouse_y(long y_coordinate) { this->last_known_mouse_y_ = y_coordinate; }
+	long last_known_mouse_y(void) const { return this->last_known_mouse_y_; }
+	void set_last_known_mouse_y(const long y_coordinate) { this->last_known_mouse_y_ = y_coordinate; }
 
 private:
 	void AddManagedBrowser(BrowserWrapper* browser_wrapper);

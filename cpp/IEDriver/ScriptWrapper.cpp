@@ -5,9 +5,7 @@
 
 namespace webdriver {
 
-// ScriptWrapper::ScriptWrapper(BrowserWrapper *browser, std::wstring script, unsigned long argument_count) {
 ScriptWrapper::ScriptWrapper(IHTMLDocument2 *document, std::wstring script, unsigned long argument_count) {
-	// this->browser_ = browser;
 	this->script_engine_host_ = document;
 	this->script_ = script;
 	this->argument_count_ = argument_count;
@@ -26,22 +24,22 @@ ScriptWrapper::~ScriptWrapper(void) {
 	::SafeArrayDestroy(this->argument_array_);
 }
 
-void ScriptWrapper::AddArgument(std::wstring argument) {
+void ScriptWrapper::AddArgument(const std::wstring& argument) {
 	CComVariant dest_argument(argument.c_str());
 	this->AddArgument(dest_argument);
 }
 
-void ScriptWrapper::AddArgument(int argument) {
+void ScriptWrapper::AddArgument(const int argument) {
 	CComVariant dest_argument((long)argument);
 	this->AddArgument(dest_argument);
 }
 
-void ScriptWrapper::AddArgument(double argument) {
+void ScriptWrapper::AddArgument(const double argument) {
 	CComVariant dest_argument(argument);
 	this->AddArgument(dest_argument);
 }
 
-void ScriptWrapper::AddArgument(bool argument) {
+void ScriptWrapper::AddArgument(const bool argument) {
 	CComVariant dest_argument(argument);
 	this->AddArgument(dest_argument);
 }
@@ -163,7 +161,7 @@ int ScriptWrapper::Execute() {
 	}
 
 	CComVariant temp_function;
-	if (!this->CreateAnonymousFunction(script_engine, eval_id, &this->script_, &temp_function)) {
+	if (!this->CreateAnonymousFunction(script_engine, eval_id, this->script_, &temp_function)) {
 		// Debug level since this is normally the point we find out that 
 		// a page refresh has occured. *sigh*
 		// LOG(DEBUG) << "Cannot create anonymous function: " << _bstr_t(script) << endl;
@@ -375,7 +373,7 @@ int ScriptWrapper::GetPropertyNameList(std::wstring *property_names) {
 	return SUCCESS;
 }
 
-int ScriptWrapper::GetPropertyValue(BrowserManager *manager, std::wstring property_name, Json::Value *property_value){
+int ScriptWrapper::GetPropertyValue(BrowserManager *manager, const std::wstring& property_name, Json::Value *property_value){
 	std::wstring get_value_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
 	ScriptWrapper get_value_script_wrapper(this->script_engine_host_, get_value_script, 2);
 	get_value_script_wrapper.AddArgument(this->result_);
@@ -471,8 +469,8 @@ bool ScriptWrapper::GetEvalMethod(IHTMLDocument2* doc, DISPID* eval_id, bool* ad
 	return true;
 }
 
-bool ScriptWrapper::CreateAnonymousFunction(IDispatch* script_engine, DISPID eval_id, const std::wstring *script, VARIANT* result) {
-	CComVariant script_variant(script->c_str());
+bool ScriptWrapper::CreateAnonymousFunction(IDispatch* script_engine, DISPID eval_id, const std::wstring& script, VARIANT* result) {
+	CComVariant script_variant(script.c_str());
 	DISPPARAMS parameters = {0};
 	memset(&parameters, 0, sizeof parameters);
 	parameters.cArgs      = 1;
@@ -485,9 +483,9 @@ bool ScriptWrapper::CreateAnonymousFunction(IDispatch* script_engine, DISPID eva
 	HRESULT hr = script_engine->Invoke(eval_id, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, result, &exception, 0);
 	if (FAILED(hr)) {
 		if (DISP_E_EXCEPTION == hr) {
-			LOGHR(INFO, hr) << "Exception message was: " << _bstr_t(exception.bstrDescription) << ": " << script;
+			LOGHR(INFO, hr) << "Exception message was: " << _bstr_t(exception.bstrDescription) << ": " << _bstr_t(script_variant);
 		} else {
-			LOGHR(DEBUG, hr) << "Failed to compile: " << script;
+			LOGHR(DEBUG, hr) << "Failed to compile: " << _bstr_t(script_variant);
 		}
 
 		if (result) {

@@ -14,7 +14,7 @@ WebDriverResponse::WebDriverResponse(std::string session_id) {
 WebDriverResponse::~WebDriverResponse(void) {
 }
 
-void WebDriverResponse::Deserialize(std::wstring json) {
+void WebDriverResponse::Deserialize(const std::wstring& json) {
 	Json::Value response_object;
 	Json::Reader reader;
 	std::string input(CW2A(json.c_str(), CP_UTF8));
@@ -35,12 +35,12 @@ std::wstring WebDriverResponse::Serialize(void) {
 	return response;
 }
 
-void WebDriverResponse::SetResponse(int status_code, Json::Value response_value) {
+void WebDriverResponse::SetResponse(const int status_code, const Json::Value& response_value) {
 	this->status_code_ = status_code;
 	this->m_value = response_value;
 }
 
-void WebDriverResponse::SetErrorResponse(int status_code, std::string message) {
+void WebDriverResponse::SetErrorResponse(const int status_code, const std::string& message) {
 	this->status_code_ = status_code;
 	this->m_value["message"] = message;
 }

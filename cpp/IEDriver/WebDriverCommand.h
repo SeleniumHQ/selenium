@@ -12,9 +12,9 @@ class WebDriverCommand {
 public:
 	WebDriverCommand();
 	virtual ~WebDriverCommand(void);
-	void Populate(std::string json_command);
+	void Populate(const std::string& json_command);
 
-	int command_value(void) { return this->command_value_; }
+	int command_value(void) const { return this->command_value_; }
 	std::map<std::string, std::string> locator_parameters(void) const { return this->locator_parameters_; }
 	std::map<std::string, Json::Value> command_parameters(void) const { return this->command_parameters_; }
 

@@ -26,10 +26,10 @@ public:
 	VARIANT result() { return this->result_; }
 	void set_result(VARIANT value) { ::VariantCopy(&this->result_, &value); }
 
-	void AddArgument(std::wstring argument);
-	void AddArgument(int argument);
-	void AddArgument(double argument);
-	void AddArgument(bool argument);
+	void AddArgument(const std::wstring& argument);
+	void AddArgument(const int argument);
+	void AddArgument(const double argument);
+	void AddArgument(const bool argument);
 	void AddArgument(ElementWrapper *argument);
 	void AddArgument(IHTMLElement *argument);
 	void AddArgument(VARIANT argument);
@@ -52,14 +52,13 @@ private:
 	int GetArrayLength(long *length);
 	int GetArrayItem(BrowserManager *manager, long index, Json::Value *item);
 	int GetPropertyNameList(std::wstring *property_names);
-	int GetPropertyValue(BrowserManager *manager, std::wstring property_name, Json::Value *property_value);
+	int GetPropertyValue(BrowserManager *manager, const std::wstring& property_name, Json::Value *property_value);
 	std::wstring GetResultObjectTypeName(void);
 	bool GetEvalMethod(IHTMLDocument2* doc, DISPID* eval_id, bool* added);
-	bool CreateAnonymousFunction(IDispatch* script_engine, DISPID eval_id, const std::wstring *script, VARIANT* result);
+	bool CreateAnonymousFunction(IDispatch* script_engine, DISPID eval_id, const std::wstring& script, VARIANT* result);
 	void RemoveScript(IHTMLDocument2* doc);
 
-	// BrowserWrapper *browser_;
-	IHTMLDocument2 *script_engine_host_;
+	CComPtr<IHTMLDocument2> script_engine_host_;
 	unsigned long argument_count_;
 	std::wstring script_;
 	long current_arg_index_;

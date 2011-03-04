@@ -16,7 +16,7 @@ public:
 	virtual ~ElementWrapper(void);
 	Json::Value ConvertToJson(void);
 	int GetLocationOnceScrolledIntoView(long *x, long *y, long *width, long *height);
-	int GetAttributeValue(std::wstring attribute_name, VARIANT *attribute_value);
+	int GetAttributeValue(const std::wstring& attribute_name, VARIANT *attribute_value);
 	int IsDisplayed(bool *result);
 	bool IsEnabled(void);
 	bool IsSelected(void);
@@ -24,20 +24,20 @@ public:
 	bool IsRadioButton(void);
 	int Click(void);
 	int Hover(void);
-	int DragBy(int offset_x, int offset_y, int drag_speed);
+	int DragBy(const int offset_x, const int offset_y, const int drag_speed);
 	void FireEvent(IHTMLDOMNode* fire_event_on, LPCWSTR event_name);
 
-	std::wstring element_id(void) { return this->element_id_; }
+	std::wstring element_id(void) const { return this->element_id_; }
 	IHTMLElement *element(void) { return this->element_; }
 
 private:
 	int GetLocation(long *x, long *y, long *width, long *height);
-	bool IsClickPointInViewPort(HWND containing_window_handle, long x, long y, long width, long height);
+	bool IsClickPointInViewPort(const long x, const long y, const long width, const long height);
 	int GetFrameOffset(long *x, long *y);
 	int GetContainingDocument(IHTMLDocument2** doc);
 
 	std::wstring element_id_;
-	IHTMLElement *element_;
+	CComPtr<IHTMLElement> element_;
 	HWND containing_window_handle_;
 };
 

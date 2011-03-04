@@ -11,7 +11,7 @@ ElementFinder::ElementFinder(std::wstring locator) {
 ElementFinder::~ElementFinder() {
 }
 
-int ElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_wrapper, std::wstring criteria, Json::Value *found_element) {
+int ElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
 	BrowserWrapper *browser;
 	int status_code = manager->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
@@ -51,7 +51,7 @@ int ElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_w
 	return status_code;
 }
 
-int ElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_wrapper, std::wstring criteria, Json::Value *found_elements) {
+int ElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
 	BrowserWrapper *browser;
 	int status_code = manager->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {

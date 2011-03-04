@@ -69,7 +69,7 @@ public:
 	std::wstring GetCookies(void);
 	int AddCookie(const std::wstring& cookie);
 	int DeleteCookie(const std::wstring& cookie_name);
-	int SetFocusedFrameByIndex(int frame_index);
+	int SetFocusedFrameByIndex(const int frame_index);
 	int SetFocusedFrameByName(const std::wstring& frame_name);
 	int SetFocusedFrameByElement(IHTMLElement *frame_element);
 	HWND GetActiveDialogWindowHandle(void);
@@ -78,12 +78,12 @@ public:
 	std::wstring ConvertVariantToWString(VARIANT *to_convert);
 
 	IWebBrowser2 *browser(void) { return this->browser_; }
-	std::wstring browser_id(void) { return this->browser_id_; }
+	std::wstring browser_id(void) const { return this->browser_id_; }
 
-	bool wait_required(void) { return this->wait_required_; }
-	void set_wait_required(bool value) { this->wait_required_ = value; }
+	bool wait_required(void) const { return this->wait_required_; }
+	void set_wait_required(const bool value) { this->wait_required_ = value; }
 
-	bool is_closing(void) { return this->is_closing_; }
+	bool is_closing(void) const { return this->is_closing_; }
 
 private:
 	void AttachEvents(void);

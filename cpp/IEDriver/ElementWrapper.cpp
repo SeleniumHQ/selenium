@@ -24,7 +24,6 @@ ElementWrapper::ElementWrapper(IHTMLElement *element, HWND containing_window_han
 
 	this->element_ = element;
 	this->containing_window_handle_ = containing_window_handle;
-	//this->browser_ = browser;
 }
 
 ElementWrapper::~ElementWrapper(void) {
@@ -121,7 +120,7 @@ int ElementWrapper::Hover() {
 	return status_code;
 }
 
-int ElementWrapper::DragBy(int offset_x, int offset_y, int drag_speed) {
+int ElementWrapper::DragBy(const int offset_x, const int offset_y, const int drag_speed) {
 	long x = 0, y = 0, w = 0, h = 0;
 	int status_code = this->GetLocationOnceScrolledIntoView(&x, &y, &w, &h);
 
@@ -137,7 +136,7 @@ int ElementWrapper::DragBy(int offset_x, int offset_y, int drag_speed) {
 	return status_code;
 }
 
-int ElementWrapper::GetAttributeValue(std::wstring attribute_name, VARIANT *attribute_value) {
+int ElementWrapper::GetAttributeValue(const std::wstring& attribute_name, VARIANT *attribute_value) {
 	int status_code = SUCCESS;
 
 	// The atom is just the definition of an anonymous
@@ -184,10 +183,9 @@ int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *widt
         return EELEMENTNOTENABLED;
     }
 
-	//HWND containing_window_handle(this->browser_->GetWindowHandle());
 	long top = 0, left = 0, element_width = 0, element_height = 0;
 	result = this->GetLocation(&left, &top, &element_width, &element_height);
-	if (result != SUCCESS || !this->IsClickPointInViewPort(this->containing_window_handle_, left, top, element_width, element_height)) {
+	if (result != SUCCESS || !this->IsClickPointInViewPort(left, top, element_width, element_height)) {
 		// Scroll the element into view
 		LOG(DEBUG) << "Will need to scroll element into view";
 		hr = this->element_->scrollIntoView(CComVariant(VARIANT_TRUE));
@@ -201,7 +199,7 @@ int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *widt
 			return result;
 		}
 
-		if (!this->IsClickPointInViewPort(this->containing_window_handle_, left, top, element_width, element_height)) {
+		if (!this->IsClickPointInViewPort(left, top, element_width, element_height)) {
 			return EELEMENTNOTDISPLAYED;
 		}
 	}
@@ -411,12 +409,12 @@ int ElementWrapper::GetFrameOffset(long *x, long *y) {
 	return SUCCESS;
 }
 
-bool ElementWrapper::IsClickPointInViewPort(HWND containing_window_handle, long x, long y, long width, long height) {
+bool ElementWrapper::IsClickPointInViewPort(const long x, const long y, const long width, const long height) {
 	long click_x = x + (width / 2);
 	long click_y = y + (height / 2);
 
 	WINDOWINFO window_info;
-	if (!::GetWindowInfo(containing_window_handle, &window_info)) {
+	if (!::GetWindowInfo(this->containing_window_handle_, &window_info)) {
 		LOG(WARN) << "Cannot determine size of window";
 		return false;
 	}

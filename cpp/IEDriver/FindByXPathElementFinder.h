@@ -14,7 +14,7 @@ public:
 	virtual ~FindByXPathElementFinder(void) {
 	}
 
-	int FindByXPathElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_wrapper, std::wstring criteria, Json::Value *found_element) {
+	int FindByXPathElementFinder::FindElement(BrowserManager *manager, ElementWrapper *parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
 		int result = ENOSUCHELEMENT;
 
 		BrowserWrapper *browser;
@@ -60,7 +60,7 @@ public:
 		return result;
 	}
 
-	int FindByXPathElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_wrapper, std::wstring criteria, Json::Value *found_elements) {
+	int FindByXPathElementFinder::FindElements(BrowserManager *manager, ElementWrapper *parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
 		int result = ENOSUCHELEMENT;
 
 		BrowserWrapper *browser;

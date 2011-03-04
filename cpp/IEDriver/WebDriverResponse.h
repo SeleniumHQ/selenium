@@ -14,14 +14,14 @@ public:
 	WebDriverResponse(std::string session_id);
 	virtual ~WebDriverResponse(void);
 	std::wstring Serialize(void);
-	void Deserialize(std::wstring json);
+	void Deserialize(const std::wstring& json);
 
-	int status_code(void) { return this->status_code_; }
+	int status_code(void) const { return this->status_code_; }
 
-	Json::Value value(void) { return this->m_value; }
+	Json::Value value(void) const { return this->m_value; }
 
-	void SetResponse(int status_code, Json::Value response_value);
-	void SetErrorResponse(int error_code, std::string message);
+	void SetResponse(const int status_code, const Json::Value& response_value);
+	void SetErrorResponse(const int error_code, const std::string& message);
 
 private:
 	int status_code_;

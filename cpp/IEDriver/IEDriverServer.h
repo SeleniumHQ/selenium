@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <map>
-//#include <regex>
 #include <sstream>
 #include <string>
 #include "mongoose.h"
@@ -20,26 +19,26 @@ public:
 	IEDriverServer(int port);
 	virtual ~IEDriverServer(void);
 	int ProcessRequest(struct mg_connection *conn, const struct mg_request_info *request_info);
-	int session_count(void) { return static_cast<int>(this->sessions_.size()); }
-	int port(void) { return this->port_; }
+	int session_count(void) const { return static_cast<int>(this->sessions_.size()); }
+	int port(void) const { return this->port_; }
 
 private:
-	int LookupCommand(std::string uri, std::string http_verb, std::wstring *session_id, std::wstring *locator);
+	int LookupCommand(const std::string& uri, const std::string& http_verb, std::wstring *session_id, std::wstring *locator);
 	std::wstring CreateSession(void);
-	void ShutDownSession(std::wstring session_id);
+	void ShutDownSession(const std::wstring& session_id);
 	std::wstring ReadRequestBody(struct mg_connection *conn, const struct mg_request_info *request_info);
-	std::wstring SendCommandToManager(std::wstring session_id, std::wstring serialized_command);
-	int SendResponseToBrowser(struct mg_connection *conn, const struct mg_request_info *request_info, std::wstring serialized_response);
+	std::wstring SendCommandToManager(const std::wstring& session_id, const std::wstring& serialized_command);
+	int SendResponseToBrowser(struct mg_connection *conn, const struct mg_request_info *request_info, const std::wstring& serialized_response);
 	void PopulateCommandRepository(void);
 
 	void SendWelcomePage(mg_connection *connection, const mg_request_info *request_info);
-	void SendHttpOk(mg_connection *connection, const mg_request_info *request_info, std::wstring body);
-	void SendHttpBadRequest(mg_connection *connection, const mg_request_info *request_info, std::wstring body);
-	void SendHttpInternalError(mg_connection *connection, const mg_request_info *request_info, std::wstring body);
-	void SendHttpMethodNotAllowed(mg_connection *connection, const mg_request_info *request_info, std::wstring allowed_methods);
-	void SendHttpNotFound(mg_connection *connection, const mg_request_info *request_info, std::wstring body);
-	void SendHttpNotImplemented(mg_connection *connection, const mg_request_info *request_info, std::string body);
-	void SendHttpSeeOther(mg_connection *connection, const mg_request_info *request_info, std::string location);
+	void SendHttpOk(mg_connection *connection, const mg_request_info *request_info, const std::wstring& body);
+	void SendHttpBadRequest(mg_connection *connection, const mg_request_info *request_info, const std::wstring& body);
+	void SendHttpInternalError(mg_connection *connection, const mg_request_info *request_info, const std::wstring& body);
+	void SendHttpMethodNotAllowed(mg_connection *connection, const mg_request_info *request_info, const std::wstring& allowed_methods);
+	void SendHttpNotFound(mg_connection *connection, const mg_request_info *request_info, const std::wstring& body);
+	void SendHttpNotImplemented(mg_connection *connection, const mg_request_info *request_info, const std::string& body);
+	void SendHttpSeeOther(mg_connection *connection, const mg_request_info *request_info, const std::string& location);
 
 	int port_;
 	std::map<std::string, std::map<std::string, int>> command_repository_;
