@@ -17,13 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class AtomsInjectionTest extends AbstractDriverTestCase {
 
   /** http://code.google.com/p/selenium/issues/detail?id=1333 */
-  @Ignore(value = {IE, SELENESE},
+  @Ignore(value = SELENESE,
       reason = "Selenium executes script in the context of the Selenium window, so the test " +
           "script will fail with a ReferenceError.")
   @JavascriptEnabled
