@@ -96,7 +96,8 @@ module Selenium
         end
 
         def create_driver
-          if driver == :remote
+          case driver
+          when :remote
             begin
               require 'selenium/webdriver/remote/http/persistent'
               STDERR.puts "INFO: using net-http-persistent"
@@ -105,11 +106,15 @@ module Selenium
               http_client = Selenium::WebDriver::Remote::Http::Default.new
             end
 
-            instance = WebDriver::Driver.for(
-              :remote,
+            instance = WebDriver::Driver.for(:remote,
               :desired_capabilities => remote_capabilities,
               :url                  => remote_server.webdriver_url,
               :http_client          => http_client
+            )
+          when :chromedriver
+            instance = WebDriver::Driver.for(:remote,
+              :url                  => "http://localhost:9515",
+              :desired_capabilities => :chrome
             )
           else
             instance = WebDriver::Driver.for driver

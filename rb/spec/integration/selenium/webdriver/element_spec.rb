@@ -108,7 +108,7 @@ describe "Element" do
     size.height.should > 0
   end
 
-  not_compliant_on :browser => :chrome do
+  not_compliant_on :browser => [:chrome, :chromedriver] do
     it "should drag and drop" do
       driver.navigate.to url_for("dragAndDropTest.html")
 
