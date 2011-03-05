@@ -20,13 +20,14 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 import junit.framework.TestCase;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
  * Test the determineBrowserVersion method.
  */
-public class TestCapabilitiesParsing extends TestCase {
+public class HtmlUnitCapabilitiesTest extends TestCase {
   public void testConfigurationViaDirectCapabilities() {
     DesiredCapabilities ie7Capabilities =
         new DesiredCapabilities("internet explorer", "7", Platform.ANY);
@@ -68,5 +69,17 @@ public class TestCapabilitiesParsing extends TestCase {
     assertEquals(HtmlUnitDriver.determineBrowserVersion(ie7Capabilities),
         BrowserVersion.INTERNET_EXPLORER_7);
   }
+
+   public void testHtmlUnitReportsCapabilities() {
+     HtmlUnitDriver driver = new HtmlUnitDriver(true);
+     Capabilities jsEnabled = driver.getCapabilities();
+     driver.quit();
+
+     driver = new HtmlUnitDriver(false);
+     Capabilities jsDisabled = driver.getCapabilities();
+
+     assertTrue(jsEnabled.isJavascriptEnabled());
+     assertFalse(jsDisabled.isJavascriptEnabled());
+   }
 
 }
