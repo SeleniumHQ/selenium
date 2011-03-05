@@ -1,7 +1,7 @@
 module Selenium
   module WebDriver
     class Element
-      include Find
+      include SearchContext
 
       attr_reader :bridge
 

@@ -11,7 +11,6 @@ module Selenium
       #
 
       class Bridge
-        include Find
         include BridgeHelper
 
         #

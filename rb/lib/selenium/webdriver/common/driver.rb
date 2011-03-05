@@ -11,7 +11,7 @@ module Selenium
     #
 
     class Driver
-      include Find
+      include SearchContext
 
       class << self
 

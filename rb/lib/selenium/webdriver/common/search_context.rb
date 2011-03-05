@@ -1,6 +1,6 @@
 module Selenium
   module WebDriver
-    module Find
+    module SearchContext
 
       FINDERS = {
         :class             => 'ClassName',
