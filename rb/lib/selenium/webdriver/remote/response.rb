@@ -54,6 +54,8 @@ module Selenium
           return unless server_trace = @payload['value']['stackTrace']
 
           backtrace = server_trace.map do |frame|
+            next unless frame.kind_of?(Hash)
+
             file = frame['fileName']
             line = frame['lineNumber']
             meth = frame['methodName']
@@ -63,7 +65,7 @@ module Selenium
             end
 
             "[remote server] #{file}:#{line}:in `#{meth}'"
-          end
+          end.compact
 
           ex.set_backtrace(backtrace + ex.backtrace)
         end
