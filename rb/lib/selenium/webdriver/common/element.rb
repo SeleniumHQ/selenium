@@ -25,7 +25,7 @@ module Selenium
       alias_method :eql?, :==
 
       def hash
-        ref.hash
+        @id.hash ^ @bridge.hash
       end
 
       #
@@ -282,7 +282,7 @@ module Selenium
       alias_method :[], :attribute
 
       #
-      # for Find and execute_script
+      # for SearchContext and execute_script
       #
       # @api private
       #
