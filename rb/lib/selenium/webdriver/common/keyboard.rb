@@ -1,5 +1,7 @@
 module Selenium
   module WebDriver
+
+    # @api private
     class Keyboard
 
       def initialize(bridge)

@@ -1,5 +1,7 @@
 module Selenium
   module WebDriver
+
+    # @api private
     class Mouse
 
       def initialize(bridge)
