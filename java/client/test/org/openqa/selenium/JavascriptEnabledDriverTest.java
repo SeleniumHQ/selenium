@@ -263,7 +263,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore({IPHONE, SELENESE})
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
     driver.get(pages.javascriptPage);
 
