@@ -536,9 +536,25 @@ such cookie visible to the current page.''').
 
   resources.append(
       SessionResource('/session/:sessionId/element').
-      Post('Search for an element on the page, starting from the document root.'
-           ' The located element will be returned as a WebElement JSON '
-           'object.').
+      Post('''Search for an element on the page, starting from the document \
+root. The located element will be returned as a WebElement JSON object. \
+The table below lists the locator strategies that each server should support. \
+Each locator must return the first matching element located in the DOM.
+
+|| *Strategy* || *Description* ||
+|| class name || Returns an element whose class name contains the search \
+value; compound class names are not permitted. ||
+|| css || Returns an element matching a CSS selector. ||
+|| id || Returns an element whose ID attribute matches the search value. ||
+|| name || Returns an element whose NAME attribute matches the search value. ||
+|| link text || Returns an anchor element whose visible text matches the \
+search value. ||
+|| partial link text || Returns an anchor element whose visible text \
+partially matches the search value. ||
+|| tag name || Returns an element whose tag name matches the search value. ||
+|| xpath || Returns an element matching an XPath expression. ||
+
+''').
       AddJsonParameter('using', '{string}', 'The locator strategy to use.').
       AddJsonParameter('value', '{string}', 'The The search target.').
       SetReturnType('{ELEMENT:string}',
@@ -550,8 +566,25 @@ such cookie visible to the current page.''').
 
   resources.append(
       SessionResource('/session/:sessionId/elements').
-      Post('Search for multiple elements on the page, starting from the document root. The located '
-           'elements will be returned as a WebElement JSON objects.').
+      Post('''Search for multiple elements on the page, starting from the \
+document root. The located elements will be returned as a WebElement JSON \
+objects. The table below lists the locator strategies that each server should \
+support. Elements should be returned in the order located in the DOM.
+
+|| *Strategy* || *Description* ||
+|| class name || Returns all elements whose class name contains the search \
+value; compound class names are not permitted. ||
+|| css || Returns all elements matching a CSS selector. ||
+|| id || Returns all elements whose ID attribute matches the search value. ||
+|| name || Returns all elements whose NAME attribute matches the search value. ||
+|| link text || Returns all anchor elements whose visible text matches the \
+search value. ||
+|| partial link text || Returns all anchor elements whose visible text \
+partially matches the search value. ||
+|| tag name || Returns all elements whose tag name matches the search value. ||
+|| xpath || Returns all elements matching an XPath expression. ||
+
+''').
       AddJsonParameter('using', '{string}', 'The locator strategy to use.').
       AddJsonParameter('value', '{string}', 'The The search target.').
       SetReturnType('{Array.<{ELEMENT:string}>}',
@@ -577,9 +610,29 @@ undefined.'''))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/element').
-      Post('Search for an element on the page, starting from the identified '
-           'element. The located '
-           'element will be returned as a WebElement JSON object.').
+      Post('''Search for an element on the page, starting from the identified \
+element. The located element will be returned as a WebElement JSON object. \
+The table below lists the locator strategies that each server should support. \
+Each locator must return the first matching element located in the DOM.
+
+|| *Strategy* || *Description* ||
+|| class name || Returns an element whose class name contains the search \
+value; compound class names are not permitted. ||
+|| css || Returns an element matching a CSS selector. ||
+|| id || Returns an element whose ID attribute matches the search value. ||
+|| name || Returns an element whose NAME attribute matches the search value. ||
+|| link text || Returns an anchor element whose visible text matches the \
+search value. ||
+|| partial link text || Returns an anchor element whose visible text \
+partially matches the search value. ||
+|| tag name || Returns an element whose tag name matches the search value. ||
+|| xpath || Returns an element matching an XPath expression. The provided \
+XPath expression must be applied to the server "as is"; if the expression is \
+not relative to the element root, the server should not modify it. \
+Consequently, an XPath query may return elements not contained in the root \
+element's subtree. ||
+
+''').
       AddJsonParameter('using', '{string}', 'The locator strategy to use.').
       AddJsonParameter('value', '{string}', 'The The search target.').
       SetReturnType('{ELEMENT:string}',
@@ -593,7 +646,27 @@ undefined.'''))
       ElementResource('/session/:sessionId/element/:id/elements').
       Post('''Search for multiple elements on the page, starting from the \
 identified element. The located elements will be returned as a WebElement \
-JSON objects.''').
+JSON objects. The table below lists the locator strategies that each server \
+should support. Elements should be returned in the order located in the DOM.
+
+|| *Strategy* || *Description* ||
+|| class name || Returns all elements whose class name contains the search \
+value; compound class names are not permitted. ||
+|| css || Returns all elements matching a CSS selector. ||
+|| id || Returns all elements whose ID attribute matches the search value. ||
+|| name || Returns all elements whose NAME attribute matches the search value. ||
+|| link text || Returns all anchor elements whose visible text matches the \
+search value. ||
+|| partial link text || Returns all anchor elements whose visible text \
+partially matches the search value. ||
+|| tag name || Returns all elements whose tag name matches the search value. ||
+|| xpath || Returns all elements matching an XPath expression. The provided \
+XPath expression must be applied to the server "as is"; if the expression is \
+not relative to the element root, the server should not modify it. \
+Consequently, an XPath query may return elements not contained in the root \
+element's subtree. ||
+
+''').
       AddJsonParameter('using', '{string}', 'The locator strategy to use.').
       AddJsonParameter('value', '{string}', 'The The search target.').
       SetReturnType('{Array.<{ELEMENT:string}>}',
@@ -1001,8 +1074,8 @@ location for correctly generating native events.''').
 communicate with remote instances
 #labels WebDriver
 <wiki:comment>
-==============================================================================
-==============================================================================
+========================================================
+========================================================
 
 DO NOT EDIT THIS WIKI PAGE THROUGH THE UI.
 
@@ -1016,8 +1089,8 @@ $ svn update --depth=files ./trunk
 $ python ./trunk/wire.py > ./wiki/JsonWireProtocol.wiki
 $ svn commit ./trunk/wire.py ./wiki/JsonWireProtocol.wiki
 
-==============================================================================
-==============================================================================
+========================================================
+========================================================
 </wiki:comment>
 
 <font size=6>*The !WebDriver Wire Protocol*</font>
