@@ -43,11 +43,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLCollection;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 
-import net.sourceforge.htmlunit.corejs.javascript.Function;
-import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
-import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
-import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
-import net.sourceforge.htmlunit.corejs.javascript.Undefined;
+import net.sourceforge.htmlunit.corejs.javascript.*;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.browserlaunchers.Proxies;
@@ -418,18 +414,25 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     return String.valueOf(System.identityHashCode(currentWindow.getTopWindow()));
   }
 
-  public Object executeScript(String script, Object... args) {
+  public Object executeScript(String script, final Object... args) {
     HtmlPage page = getPageToInjectScriptInto();
 
-    Object[] parameters = new Object[args.length];
-
-    for (int i = 0; i < args.length; i++) {
-      parameters[i] = parseArgumentIntoJavsacriptParameter(args[i]);
-    }
-
-    script = "function() {" + script + "};";
+    script = "function() {" + script + "\n};";
     ScriptResult result = page.executeJavaScript(script);
     Function func = (Function) result.getJavaScriptResult();
+
+    final Scriptable scope = (Scriptable) page.getEnclosingWindow().getScriptObject();
+
+    final Object[] parameters = new Object[args.length];
+    final ContextAction action = new ContextAction() {
+      public Object run(final Context context) {
+        for (int i = 0; i < args.length; i++) {
+          parameters[i] = parseArgumentIntoJavsacriptParameter(context, scope, args[i]);
+        }
+        return null;
+      }
+    };
+    webClient.getJavaScriptEngine().getContextFactory().call(action);
 
     result = page.executeJavaScriptFunctionIfPossible(
         func,
@@ -456,19 +459,19 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     final Page lastPage = lastPage();
-	if (!(lastPage instanceof HtmlPage)) {
+    if (!(lastPage instanceof HtmlPage)) {
       throw new UnsupportedOperationException("Cannot execute JS against a plain text page");
+    } else if (!gotPage) {
+      // just to make ExecutingJavascriptTest.testShouldThrowExceptionIfExecutingOnNoPage happy
+      // but does this limitation make sense?
+      throw new WebDriverException("Can't execute JavaScript before a page has been loaded!");
     }
-	else if (!gotPage) {
-	  // just to make ExecutingJavascriptTest.testShouldThrowExceptionIfExecutingOnNoPage happy
-	  // but does this limitation make sense?
-	  throw new WebDriverException("Can't execute JavaScript before a page has been loaded!");
-	}
 
     return (HtmlPage) lastPage;
   }
 
-  private Object parseArgumentIntoJavsacriptParameter(Object arg) {
+  private Object parseArgumentIntoJavsacriptParameter(
+      Context context, Scriptable scope, Object arg) {
     if (!(arg instanceof HtmlUnitWebElement ||
           arg instanceof HtmlElement || // special case the underlying type
           arg instanceof Number ||
@@ -489,9 +492,9 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     } else if (arg instanceof Collection<?>) {
       List<Object> list = new ArrayList<Object>();
       for (Object o : (Collection<?>) arg) {
-        list.add(parseArgumentIntoJavsacriptParameter(o));
+        list.add(parseArgumentIntoJavsacriptParameter(context, scope, o));
       }
-      return list.toArray();
+      return context.newArray(scope, list.toArray());
     } else {
       return arg;
     }

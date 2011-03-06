@@ -58,7 +58,7 @@ public class SingleTestSuite extends TestCase {
       }};
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = HTML_UNIT_JS;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -71,7 +71,7 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("AtomsInjectionTest")
+        .onlyRun("ExecutingJavascriptTest")
 //        .method("testShouldBeAbleToRefreshAPage")
 //        .method("testShouldNotTrimSpacesWhenLineWraps")
         .exclude(ALL)

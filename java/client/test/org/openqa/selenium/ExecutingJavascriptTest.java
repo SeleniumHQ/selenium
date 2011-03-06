@@ -33,7 +33,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+//import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -144,7 +144,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IE, SELENESE, IPHONE, HTMLUNIT})
+  @Ignore({IE, SELENESE, IPHONE})
   public void testShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -169,7 +169,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IE, SELENESE, IPHONE, HTMLUNIT})
+  @Ignore({IE, SELENESE, IPHONE})
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -513,5 +513,19 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     String text = (String) executeScript("return document.alerts.shift()");
 
     assertEquals("hello world", text);
+  }
+
+  @JavascriptEnabled
+  @Ignore(SELENESE)
+  public void testCanHandleAnArrayOfElementsAsAnObjectArray() {
+    driver.get(pages.formPage);
+
+    List<WebElement> forms = driver.findElements(By.tagName("form"));
+    Object[] args = new Object[] { forms };
+
+    String name = (String) ((JavascriptExecutor) driver).executeScript(
+        "return arguments[0][0].tagName", args);
+
+    assertEquals("form", name.toLowerCase());
   }
 }
