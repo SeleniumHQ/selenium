@@ -45,7 +45,7 @@ module Selenium
         private
 
         def execute(*extra_args)
-          args = [self.class.path, "-no-remote", "--verbose"] + extra_args
+          args = [self.class.path, "-no-remote"] + extra_args
           @process = ChildProcess.build(*args)
           @process.io.inherit! if $DEBUG
           @process.start
