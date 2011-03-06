@@ -64,6 +64,10 @@ module Selenium
               file = "#{class_name}(#{file})"
             end
 
+            if meth.nil? || meth.empty?
+              meth = 'unknown'
+            end
+
             "[remote server] #{file}:#{line}:in `#{meth}'"
           end.compact
 
