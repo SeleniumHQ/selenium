@@ -107,6 +107,7 @@ DrivenPromptService.prototype.signalOpenModal_ = function(parent, text) {
 };
 
 DrivenPromptService.prototype.alert = function(aParent, aDialogTitle, aText) {
+  Logger.dumpn("calling alert");
   this.signalOpenModal_(aParent, aText);
 
   return this.originalPromptService_.alert(aParent, aDialogTitle, aText);
@@ -171,10 +172,34 @@ DrivenPromptService.prototype.asyncPromptAuth = function(aParent, aChannel, aCal
   return this.originalPromptService_.asyncPromptAuth(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel,checkValue)
 };
 
+// nsIObserver
+DrivenPromptService.prototype.observe = function(aSubject, aTopic, aData) {
+  Logger.dumpn("Prompt service observing: " + aSubject);
+  return this.originalPromptService_.observe(aSubject, aTopic, aData);
+}
+
+
 DrivenPromptService.prototype.QueryInterface = function(iid) {
-  if (iid.equals(CI.nsIPromptService2)||
-      iid.equals(CI.nsIPromptService) ||
-      iid.equals(CI.nsISupports)) {
+  var supported = function(toCheck, iid, possibleMatch) {
+    if (!iid.equals(possibleMatch)) {
+      return false;
+    }
+
+    try {
+      toCheck.QueryInterface(possibleMatch);
+      return true;
+    } catch (ignored) {
+      return false;
+    }
+  };
+
+  var matched = false;
+  matched |= supported(this.originalPromptService_, iid, CI.nsIObserver);
+  matched |= supported(this.originalPromptService_, iid, CI.nsIPromptService);
+  matched |= supported(this.originalPromptService_, iid, CI.nsIPromptService2);
+  matched |= supported(this.originalPromptService_, iid, CI.nsISupports);
+
+  if (matched) {
     return this;
   }
 
