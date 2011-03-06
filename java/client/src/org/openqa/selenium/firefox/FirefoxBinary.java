@@ -75,7 +75,6 @@ public class FirefoxBinary {
 
     List<String> commands = new ArrayList<String>();
     commands.add(getExecutable().getPath());
-    commands.add("--verbose");
     commands.addAll(Arrays.asList(commandLineFlags));
     ProcessBuilder builder = new ProcessBuilder(commands);
     builder.redirectErrorStream(true);
