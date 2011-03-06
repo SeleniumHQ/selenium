@@ -8,7 +8,6 @@ describe "WebDriver::TargetLocator" do
     # TODO: expectations?
   end
 
-  not_compliant_on :browser => :ie do
     it "should switch to a frame by Element" do
       driver.navigate.to url_for("iframes.html")
 
@@ -18,6 +17,7 @@ describe "WebDriver::TargetLocator" do
       # TODO: expectations?
     end
 
+  not_compliant_on :browser => :ie do
     it "should switch to a window and back when given a block" do
       driver.navigate.to url_for("xhtmlTest.html")
 
