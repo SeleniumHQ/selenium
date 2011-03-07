@@ -335,7 +335,7 @@ module Javascript
       end
       if language == "java"
         max_str_length = MAX_STR_LENGTH - 2
-        line_format = "      \"\%s\" +"
+        line_format = "      \"\%s\""
         to_file << "\n"
         to_file << "  public static final String #{atom_upper} =\n"
       end
@@ -350,7 +350,7 @@ module Javascript
         line = contents[0, diff]
         contents.slice!(0..diff - 1)
         to_file << line_format % line
-        to_file << "\n"
+        to_file << " +\n"
       end
 
       to_file << line_format % contents if contents.length > 0
