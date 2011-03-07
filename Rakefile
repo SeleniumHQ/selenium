@@ -228,8 +228,8 @@ dll(:name => "libwebdriver_firefox_so",
     :src  => FileList.new('cpp/webdriver-interactions/*_linux*.cpp') +
              FileList.new('cpp/webdriver-firefox/*.cpp'),
     :arch => "i386",
-    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I cpp/webdriver-interactions -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
-    :link_args => "-fno-rtti -fno-exceptions -shared  -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt ",
+    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I cpp/webdriver-interactions -I cpp/imehandler/common -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
+    :link_args => "-Wall -fno-rtti -fno-exceptions -shared  -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt `pkg-config gtk+-2.0 --libs`",
     :prebuilt => "cpp/prebuilt/i386/libwebdriver-firefox.so",
     :out  => "cpp/i386/libwebdriver-firefox.so")
 
@@ -255,9 +255,9 @@ end
 
 dll(:name => "libwebdriver_firefox_so64",
     :src  => FileList.new('cpp/webdriver-interactions/*_linux*.cpp') +
-             FileList.new('cpp/webdriver-firefox/native_events.cpp'),
+             FileList.new('cpp/webdriver-firefox/*.cpp'),
     :arch => "amd64",
-    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I cpp/webdriver-interactions #{local_gecko_include} `pkg-config gtk+-2.0 --cflags` ",
+    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I cpp/webdriver-interactions -I cpp/imehandler/common #{local_gecko_include} `pkg-config gtk+-2.0 --cflags` ",
     :link_args => "-Wall -Os #{local_gecko_libs} -lrt `pkg-config gtk+-2.0 --libs` -fno-rtti -fno-exceptions -shared  -fPIC",
     :prebuilt => "cpp/prebuilt/amd64/libwebdriver-firefox.so",
     :out  => "cpp/amd64/libwebdriver-firefox.so")

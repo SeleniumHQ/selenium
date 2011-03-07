@@ -1131,6 +1131,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     public Timeouts timeouts() {
       return new HtmlUnitTimeouts();
     }
+
+    public ImeHandler ime() {
+      throw new UnsupportedOperationException("Cannot input IME using HtmlUnit.");
+    }
   }
 
   class HtmlUnitTimeouts implements Timeouts {

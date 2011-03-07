@@ -41,6 +41,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class FirefoxBinary {
   private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";
+  private static final String IME_IBUS_HANDLER_LIBRARY_NAME = "libibushandler.so";
 
   private final Map<String, String> extraEnv = new HashMap<String, String>();
   private final Executable executable;
@@ -117,6 +118,7 @@ public class FirefoxBinary {
     String existingLdLibPath = System.getenv("LD_LIBRARY_PATH");
     // The returned new ld lib path is terminated with ':'
     String newLdLibPath = extractAndCheck(profileDir, NO_FOCUS_LIBRARY_NAME, "x86", "amd64");
+    newLdLibPath += extractAndCheck(profileDir, IME_IBUS_HANDLER_LIBRARY_NAME, "x86", "amd64");
     if (existingLdLibPath != null && !existingLdLibPath.equals("")) {
       newLdLibPath += existingLdLibPath;
     }

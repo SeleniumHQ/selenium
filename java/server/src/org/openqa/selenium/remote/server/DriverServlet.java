@@ -311,6 +311,17 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/buttonup", MouseUp.class)
         .on(ResultType.SUCCESS, new EmptyResult());
+
+    getMapper.bind("/session/:sessionId/ime/available_engines", ImeGetAvailableEngines.class)
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+    getMapper.bind("/session/:sessionId/ime/active_engine", ImeGetActiveEngine.class)
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+    getMapper.bind("/session/:sessionId/ime/activated", ImeIsActivated.class)
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+    postMapper.bind("/session/:sessionId/ime/deactivate", ImeDeactivate.class)
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+    postMapper.bind("/session/:sessionId/ime/activate", ImeActivateEngine.class)
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
   }
 
   protected ResultConfig addNewGetMapping(String path, Class<? extends Handler> implementationClass) {

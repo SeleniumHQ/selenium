@@ -228,6 +228,12 @@ public interface WebDriver extends SearchContext {
      * Returns the interface for managing driver timeouts.
      */
     Timeouts timeouts();
+
+    /**
+     * Returns the interface for controlling IME engines to generate
+     * complex-script input.
+     */
+    ImeHandler ime();
   }
 
   /**
@@ -377,5 +383,55 @@ public interface WebDriver extends SearchContext {
      * Refresh the current page
      */
     void refresh();
+  }
+
+  /**
+   * An interface for managing input methods.
+   */
+  interface ImeHandler {
+    /**
+     * All available engines on the machine. To use an engine, it has to be activated.
+     * @return list of available IME engines.
+     * @throws ImeNotAvailableException if the host does not support IME.
+     */
+    List<String> getAvailableEngines();
+
+    /**
+     * Get the name of the active IME engine. The name string is platform-specific.
+     * @return name of the active IME engine.
+     * @throws ImeNotAvailableException if the host does not support IME.
+     */
+    String getActiveEngine();
+
+    /**
+     * Indicates whether IME input active at the moment (not if it's available).
+     * @return true if IME input is available and currently active, false otherwise.
+     * @throws ImeNotAvailableException if the host does not support IME.
+     */
+    boolean isActivated();
+
+    /**
+     * De-activate IME input (turns off the currently activated engine). Note that getActiveEngine
+     * may still return the name of the engine but isActivated will return false.
+     * @throws ImeNotAvailableException if the host does not support IME.
+     */
+    void deactivate();
+
+    /**
+     * Make an engines that is available (appears on the list returned by getAvailableEngines)
+     * active. After this call, the only loaded engine on the IME daemon will be this one and the
+     * input sent using sendKeys will be converted by the engine.
+     * Noteh that this is a platform-independent method of activating IME
+     * (the platform-specific way being using keyboard shortcuts).
+
+     *
+     * @param engine name of engine to activate.
+     * @return true if engine was loaded successfully, false if the engine is not an available one
+     * or IME activation failed.
+     * @throws ImeNotAvailableException if the host does not support IME.
+     * @throws ImeActivationFailedException if the engine is not available or if activation failed
+     * for other reasons.
+     */
+    boolean activateEngine(String engine);
   }
 }

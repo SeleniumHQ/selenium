@@ -60,6 +60,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.UnsupportedOperationException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -621,6 +622,10 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
     public Timeouts timeouts() {
       return new AndroidTimeouts();
+    }
+
+    public ImeHandler ime() {
+      throw new UnsupportedOperationException("Not implementing IME input just yet.");
     }
   }
 

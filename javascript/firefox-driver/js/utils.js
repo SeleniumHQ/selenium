@@ -1317,3 +1317,28 @@ Utils.findByCss = function(rootNode, theDocument, selector, singular, respond, e
       executeScript(respond, params);
     }
 };
+
+Utils.convertNSIArrayToNative = function(arrayToConvert) {
+  var returnArray = [];
+
+  if (arrayToConvert == null) {
+    return returnArray;
+  }
+  
+  returnArray.length = arrayToConvert.length;
+
+  // Copy the contents of the array as each string is nsISupportsString,
+  // not a native Javascript type.
+  var enginesEnumerator = arrayToConvert.enumerate();
+  var returnArrayIndex = 0;
+  while (enginesEnumerator.hasMoreElements()) {
+    var CI = Components.interfaces;
+
+    var currentEngine = enginesEnumerator.getNext();
+    var engineString = currentEngine.QueryInterface(CI.nsISupportsCString);
+    returnArray[returnArrayIndex] = engineString.toString();
+    returnArrayIndex += 1;
+  }
+
+  return returnArray;
+};

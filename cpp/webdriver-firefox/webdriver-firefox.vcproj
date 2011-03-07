@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;;&quot;$(SolutionDir)cpp\imehandler\common&quot;"
 				PreprocessorDefinitions="XP_WIN;XP_WIN32"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -194,7 +194,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)third_party\gecko-1.9.0.11\win32\include&quot;;&quot;$(SolutionDir)cpp\webdriver-interactions&quot;;&quot;$(SolutionDir)cpp\imehandler\common&quot;"
 				PreprocessorDefinitions="XP_WIN;XP_WIN32"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -332,6 +332,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\library_loading.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\native_events.cpp"
 				>
 			</File>
@@ -346,11 +350,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\gecko18\nsIAccessibleDocument.h"
+				RelativePath=".\gecko19\nsIAccessibleDocument.h"
 				>
 			</File>
 			<File
-				RelativePath=".\gecko19\nsIAccessibleDocument.h"
+				RelativePath=".\gecko18\nsIAccessibleDocument.h"
 				>
 			</File>
 			<File

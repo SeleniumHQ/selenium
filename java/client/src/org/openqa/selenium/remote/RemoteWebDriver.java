@@ -502,21 +502,51 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public Timeouts timeouts() {
       return new RemoteTimeouts();
     }
-  }
 
-  protected class RemoteTimeouts implements Timeouts {
-
-    public Timeouts implicitlyWait(long time, TimeUnit unit) {
-      execute(DriverCommand.IMPLICITLY_WAIT, ImmutableMap.of("ms",
-          TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit)));
-      return this;
+    public ImeHandler ime() {
+      return new RemoteInputMethodManager();
     }
 
-    public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-      execute(DriverCommand.SET_SCRIPT_TIMEOUT,
-          ImmutableMap.of("ms", TimeUnit.MILLISECONDS.convert(time, unit)));
-      return this;
-    }
+    protected class RemoteInputMethodManager implements WebDriver.ImeHandler {
+      public List<String> getAvailableEngines() {
+        Response response = execute(DriverCommand.IME_GET_AVAILABLE_ENGINES);
+        return (List<String>) response.getValue();
+      }
+
+      public String getActiveEngine() {
+        Response response = execute(DriverCommand.IME_GET_ACTIVE_ENGINE);
+        return (String) response.getValue();
+      }
+
+      public boolean isActivated() {
+        Response response = execute(DriverCommand.IME_IS_ACTIVATED);
+        return (Boolean) response.getValue();
+      }
+
+      public void deactivate() {
+        execute(DriverCommand.IME_DEACTIVATE);
+      }
+
+      public boolean activateEngine(String engine) {
+        Response response = execute(DriverCommand.IME_ACTIVATE_ENGINE, ImmutableMap.of("engine", engine));
+        return (Boolean) response.getValue();
+      }
+    } // RemoteInputMethodManager class
+
+    protected class RemoteTimeouts implements Timeouts {
+
+      public Timeouts implicitlyWait(long time, TimeUnit unit) {
+        execute(DriverCommand.IMPLICITLY_WAIT, ImmutableMap.of("ms",
+            TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit)));
+        return this;
+      }
+
+      public Timeouts setScriptTimeout(long time, TimeUnit unit) {
+        execute(DriverCommand.SET_SCRIPT_TIMEOUT,
+            ImmutableMap.of("ms", TimeUnit.MILLISECONDS.convert(time, unit)));
+        return this;
+      }
+    } // timeouts class.
   }
 
   private class RemoteNavigation implements Navigation {

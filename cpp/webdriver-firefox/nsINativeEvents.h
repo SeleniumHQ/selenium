@@ -1,5 +1,5 @@
 /*
- * DO NOT EDIT.  THIS FILE IS GENERATED FROM firefox/src/cpp/webdriver-firefox/nsINativeEvents.idl
+ * DO NOT EDIT.  THIS FILE IS GENERATED FROM nsINativeEvents.idl
  */
 
 #ifndef __gen_nsINativeEvents_h__
@@ -8,6 +8,18 @@
 
 #ifndef __gen_nsISupports_h__
 #include "nsISupports.h"
+#endif
+
+#ifndef __gen_nsIArray_h__
+#include "nsIArray.h"
+#endif
+
+#ifndef __gen_nsIMutableArray_h__
+#include "nsIMutableArray.h"
+#endif
+
+#ifndef __gen_nsISupportsPrimitives_h__
+#include "nsISupportsPrimitives.h"
 #endif
 
 /* For IDL files that don't want to include root IDL files. */
@@ -45,6 +57,21 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   /* void hasUnhandledEvents (in nsISupports aNode, out boolean hasEvents); */
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents) = 0;
 
+  /* void imeGetAvailableEngines (out nsIArray enginesList); */
+  NS_SCRIPTABLE NS_IMETHOD ImeGetAvailableEngines(nsIArray **enginesList) = 0;
+
+  /* void imeActivateEngine (in string engine, out boolean activationSucceeded); */
+  NS_SCRIPTABLE NS_IMETHOD ImeActivateEngine(const char *engine, PRBool *activationSucceeded) = 0;
+
+  /* void imeIsActivated (out boolean isActive); */
+  NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive) = 0;
+
+  /* void imeGetActiveEngine (out AString activeEngine); */
+  NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine) = 0;
+
+  /* void imeDeactivate (); */
+  NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void) = 0;
+
 };
 
   NS_DEFINE_STATIC_IID_ACCESSOR(nsINativeEvents, NS_INATIVEEVENTS_IID)
@@ -56,7 +83,12 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button); \
   NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button); \
   NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button); \
-  NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents); 
+  NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents); \
+  NS_SCRIPTABLE NS_IMETHOD ImeGetAvailableEngines(nsIArray **enginesList); \
+  NS_SCRIPTABLE NS_IMETHOD ImeActivateEngine(const char *engine, PRBool *activationSucceeded); \
+  NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive); \
+  NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine); \
+  NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSINATIVEEVENTS(_to) \
@@ -65,7 +97,12 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to Click(aNode, x, y, button); } \
   NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to MousePress(aNode, x, y, button); } \
   NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to MouseRelease(anode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents) { return _to HasUnhandledEvents(aNode, hasEvents); } 
+  NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents) { return _to HasUnhandledEvents(aNode, hasEvents); } \
+  NS_SCRIPTABLE NS_IMETHOD ImeGetAvailableEngines(nsIArray **enginesList) { return _to ImeGetAvailableEngines(enginesList); } \
+  NS_SCRIPTABLE NS_IMETHOD ImeActivateEngine(const char *engine, PRBool *activationSucceeded) { return _to ImeActivateEngine(engine, activationSucceeded); } \
+  NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive) { return _to ImeIsActivated(isActive); } \
+  NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine) { return _to ImeGetActiveEngine(activeEngine); } \
+  NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void) { return _to ImeDeactivate(); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSINATIVEEVENTS(_to) \
@@ -74,7 +111,12 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->Click(aNode, x, y, button); } \
   NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->MousePress(aNode, x, y, button); } \
   NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->MouseRelease(anode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents) { return !_to ? NS_ERROR_NULL_POINTER : _to->HasUnhandledEvents(aNode, hasEvents); } 
+  NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents) { return !_to ? NS_ERROR_NULL_POINTER : _to->HasUnhandledEvents(aNode, hasEvents); } \
+  NS_SCRIPTABLE NS_IMETHOD ImeGetAvailableEngines(nsIArray **enginesList) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeGetAvailableEngines(enginesList); } \
+  NS_SCRIPTABLE NS_IMETHOD ImeActivateEngine(const char *engine, PRBool *activationSucceeded) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeActivateEngine(engine, activationSucceeded); } \
+  NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeIsActivated(isActive); } \
+  NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeGetActiveEngine(activeEngine); } \
+  NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeDeactivate(); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
@@ -140,6 +182,36 @@ NS_IMETHODIMP nsNativeEvents::MouseRelease(nsISupports *anode, PRInt32 x, PRInt3
 
 /* void hasUnhandledEvents (in nsISupports aNode, out boolean hasEvents); */
 NS_IMETHODIMP nsNativeEvents::HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void imeGetAvailableEngines (out nsIArray enginesList); */
+NS_IMETHODIMP nsNativeEvents::ImeGetAvailableEngines(nsIArray **enginesList)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void imeActivateEngine (in string engine, out boolean activationSucceeded); */
+NS_IMETHODIMP nsNativeEvents::ImeActivateEngine(const char *engine, PRBool *activationSucceeded)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void imeIsActivated (out boolean isActive); */
+NS_IMETHODIMP nsNativeEvents::ImeIsActivated(PRBool *isActive)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void imeGetActiveEngine (out AString activeEngine); */
+NS_IMETHODIMP nsNativeEvents::ImeGetActiveEngine(nsAString & activeEngine)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void imeDeactivate (); */
+NS_IMETHODIMP nsNativeEvents::ImeDeactivate()
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }

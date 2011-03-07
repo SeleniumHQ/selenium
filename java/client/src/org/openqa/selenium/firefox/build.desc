@@ -6,7 +6,9 @@ java_library(name = "firefox",
   resources = [
     "//javascript/firefox-driver:webdriver",
     { "//cpp:noblur" : "x86/x_ignore_nofocus.so" },
-    { "//cpp:noblur64" : "amd64/x_ignore_nofocus.so" }
+    { "//cpp:noblur64" : "amd64/x_ignore_nofocus.so" },
+    { "//cpp:imehandler" : "x86/libibushandler.so" },
+    { "//cpp:imehandler64" : "amd64/libibushandler.so" }
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/io",

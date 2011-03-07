@@ -218,6 +218,13 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(MOVE_TO, post("/session/:sessionId/moveto"))
         .put(SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT, post("/session/:sessionId/modifier"))
 
+        // IME related commands.
+        .put(IME_GET_AVAILABLE_ENGINES, get("/session/:sessionId/ime/available_engines"))
+        .put(IME_GET_ACTIVE_ENGINE, get("/session/:sessionId/ime/active_engine"))
+        .put(IME_IS_ACTIVATED, get("/session/:sessionId/ime/activated"))
+        .put(IME_DEACTIVATE, post("/session/:sessionId/ime/deactivate"))
+        .put(IME_ACTIVATE_ENGINE, post("/session/:sessionId/ime/activate"))
+
         .build();
   }
 

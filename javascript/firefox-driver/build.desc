@@ -22,6 +22,7 @@ mozilla_extension(name = "webdriver",
   ],
   resources = [
     { "//cpp:firefox_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
+    { "//cpp:imehandler_dll" : "platform/WINNT_x86-msvc/components/imehandler.dll" },
     { "//cpp:libwebdriver_firefox_so" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
     { "//cpp:libwebdriver_firefox_so64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
     { ":atoms" : "resource/modules/atoms.js" },

@@ -518,6 +518,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     public Timeouts timeouts() {
       return new EventFiringTimeouts(options.timeouts());
     }
+
+    public ImeHandler ime() {
+      throw new UnsupportedOperationException("Driver does not support IME interactions");
+    }
   }
 
   private class EventFiringTimeouts implements Timeouts {

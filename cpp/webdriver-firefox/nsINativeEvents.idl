@@ -1,4 +1,7 @@
 #include "nsISupports.idl"
+#include "nsIArray.idl"
+#include "nsIMutableArray.idl"
+#include "nsISupportsPrimitives.idl"
 
 [scriptable, uuid(5A86850B-F376-4ae6-860D-53A441CAFCE4)]
 interface nsINativeEvents : nsISupports
@@ -20,4 +23,21 @@ void mouseRelease(in nsISupports anode, in long x, in long y, in long button);
 
 /* Check if there are unhandled keyboard events. */
 void hasUnhandledEvents(in nsISupports aNode, out boolean hasEvents);
+
+/* Input methods interactions */
+/* List of IME engines available for use on this machine (comma-separated) */
+void imeGetAvailableEngines(out nsIArray enginesList);
+
+/* Activate the engine - cause it to produce IME input. */
+void imeActivateEngine(in string engine, out boolean activationSucceeded);
+
+/* Query whether IME input is active or not. */
+void imeIsActivated(out boolean isActive);
+
+/* Get the active engine. May return a value even if the engine is not
+ * activated. */
+void imeGetActiveEngine(out AString activeEngine);
+
+/* De-activate IME input. */
+void imeDeactivate();
 };

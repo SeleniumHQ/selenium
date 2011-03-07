@@ -261,6 +261,16 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/screenshot').
       on(Request.Method.GET, Dispatcher.executeAs('screenshot'));
 
+  this.bind_('/session/:sessionId/ime/available_engines').
+      on(Request.Method.GET, Dispatcher.executeAs('imeGetAvailableEngines'));
+  this.bind_('/session/:sessionId/ime/active_engine').
+      on(Request.Method.GET, Dispatcher.executeAs('imeGetActiveEngine'));
+  this.bind_('/session/:sessionId/ime/activated').
+      on(Request.Method.GET, Dispatcher.executeAs('imeIsActivated'));
+  this.bind_('/session/:sessionId/ime/deactivate').
+      on(Request.Method.POST, Dispatcher.executeAs('imeDeactivate'));
+  this.bind_('/session/:sessionId/ime/activate').
+      on(Request.Method.POST, Dispatcher.executeAs('imeActivateEngine'));
 
   // --------------------------------------------------------------------------
   // Firefox extensions to the wire protocol.

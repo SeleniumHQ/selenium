@@ -843,7 +843,7 @@ FirefoxDriver.prototype.getCookies = function(respond) {
       'path': cookie.path,
       'domain': cookie.host,
       'secure': cookie.isSecure,
-      'expiry': expires,
+      'expiry': expires
     });
   }
 
@@ -957,3 +957,77 @@ FirefoxDriver.prototype.setAlertValue = function(respond, parameters) {
       webdriver.modals.errback(respond));
 };
 
+
+// IME library mapping
+FirefoxDriver.prototype.imeGetAvailableEngines = function(respond) {
+  var obj = Utils.getNativeEvents();
+  var engines = {};
+
+  try {
+    obj.imeGetAvailableEngines(engines);
+    var returnArray = Utils.convertNSIArrayToNative(engines.value);
+
+    respond.value = returnArray;
+  } catch (e) {
+    throw new WebDriverError(ErrorCode.IME_NOT_AVAILABLE,
+        "IME not available on the host: " + e);
+  }
+  respond.send();
+};
+
+FirefoxDriver.prototype.imeGetActiveEngine = function(respond) {
+  var obj = Utils.getNativeEvents();
+  var activeEngine = {};
+  try {
+    obj.imeGetActiveEngine(activeEngine);
+    respond.value = activeEngine.value;
+  } catch (e) {
+    throw new WebDriverError(ErrorCode.IME_NOT_AVAILABLE,
+        "IME not available on the host: " + e);
+  }    
+  respond.send();
+};
+
+FirefoxDriver.prototype.imeIsActivated = function(respond) {
+  var obj = Utils.getNativeEvents();
+  var isActive = {};
+  try {
+    obj.imeIsActivated(isActive);
+    respond.value = isActive.value;
+  } catch (e) {
+    throw new WebDriverError(ErrorCode.IME_NOT_AVAILABLE,
+        "IME not available on the host: " + e);
+  }
+  respond.send();
+};
+
+FirefoxDriver.prototype.imeDeactivate = function(respond) {
+  var obj = Utils.getNativeEvents();
+  try {
+    obj.imeDeactivate();
+  } catch (e) {
+    throw new WebDriverError(ErrorCode.IME_NOT_AVAILABLE,
+        "IME not available on the host: " + e);
+  }
+  
+  respond.send();
+};
+
+FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
+  var obj = Utils.getNativeEvents();
+  var successfulActivation = {};
+  var engineToActivate = parameters['engine'];
+  try {
+    obj.imeActivateEngine(engineToActivate, successfulActivation);
+  } catch (e) {
+    throw new WebDriverError(ErrorCode.IME_NOT_AVAILABLE,
+        "IME not available on the host: " + e);
+  }
+
+  if (! successfulActivation.value) {
+    throw new WebDriverError(ErrorCode.IME_ENGINE_ACTIVATION_FAILED,
+        "Activation of engine failed: " + engineToActivate);
+  }
+  respond.value = successfulActivation.value; 
+  respond.send();
+};

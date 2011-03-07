@@ -1,6 +1,8 @@
 package org.openqa.selenium.remote;
 
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.ImeActivationFailedException;
+import org.openqa.selenium.ImeNotAvailableException;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -37,6 +39,8 @@ public class ErrorCodes {
   public static final int UNABLE_TO_SET_COOKIE = 25;
   public static final int ASYNC_SCRIPT_TIMEOUT = 28;
   public static final int INVALID_ELEMENT_COORDINATES = 29;
+  public static final int IME_NOT_AVAILABLE = 30;
+  public static final int IME_ENGINE_ACTIVATION_FAILED = 31;
 
   // The following error codes are derived straight from HTTP return codes.
   public static final int METHOD_NOT_ALLOWED = 405;
@@ -81,6 +85,10 @@ public class ErrorCodes {
         return TimeoutException.class;
       case INVALID_ELEMENT_COORDINATES:
         return InvalidCoordinatesException.class;
+      case IME_NOT_AVAILABLE:
+        return ImeNotAvailableException.class;
+      case IME_ENGINE_ACTIVATION_FAILED:
+        return ImeActivationFailedException.class;
       default:
         return WebDriverException.class;
     }
