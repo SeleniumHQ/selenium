@@ -31,6 +31,25 @@ gcc_library(name = "noblur64",
   srcs = [ "linux-specific/*.c" ],
   arch = "amd64")
 
+gcc_library(name = "imehandler",
+  srcs = [ "imehandler/linux/src/*.cpp" ],
+  args = "-rdynamic -I cpp/imehandler/common `pkg-config gtk+-2.0 ibus-1.0 --cflags`",
+  link_args = "`pkg-config gtk+-2.0 ibus-1.0 --libs`",
+  arch = "i386")
+
+gcc_library(name = "imehandler64",
+  srcs = [ "imehandler/linux/src/*.cpp" ],
+  args = "-rdynamic -I cpp/imehandler/common `pkg-config gtk+-2.0 ibus-1.0 --cflags`",
+  link_args = "`pkg-config gtk+-2.0 ibus-1.0 --libs`",
+  arch = "amd64")
+
+visualc_library(name = "imehandler_dll",
+  platform = "Win32",
+  solution = "WebDriver.sln",
+  target = "imehandler",
+  out = "Win32/Release/imehandler.dll"
+)
+
 visualc_library(name = "ie_win32_dll",
   deps = [
     ":ie_result_type_cpp",

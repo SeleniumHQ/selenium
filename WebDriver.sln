@@ -74,6 +74,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.Core.Tests", "dotn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.WebDriverBackedSelenium.Tests", "dotnet\test\Selenium.WebDriverBackedSelenium.Tests\Selenium.WebDriverBackedSelenium.Tests.csproj", "{68CF4628-4148-4627-ACA1-D4C225365D3F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imehandler", "cpp\imehandler\imehandler.vcproj", "{37F9EF6B-F69C-4764-9687-C63C608C476B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -430,6 +432,20 @@ Global
 		{68CF4628-4148-4627-ACA1-D4C225365D3F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{68CF4628-4148-4627-ACA1-D4C225365D3F}.Release|Win32.ActiveCfg = Release|Any CPU
 		{68CF4628-4148-4627-ACA1-D4C225365D3F}.Release|x64.ActiveCfg = Release|Any CPU
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Debug|.NET.ActiveCfg = Debug|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Debug|Win32.Build.0 = Debug|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Debug|x64.ActiveCfg = Debug|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Release|.NET.ActiveCfg = Release|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Release|Any CPU.ActiveCfg = Release|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Release|Win32.ActiveCfg = Release|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Release|Win32.Build.0 = Release|Win32
+		{37F9EF6B-F69C-4764-9687-C63C608C476B}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
