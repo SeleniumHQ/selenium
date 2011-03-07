@@ -13,15 +13,10 @@ mozilla_extension(name = "selenium-ide",
     { "src/content" : "chrome"},
     { "src/skin" : "chrome" },
     { "src/locale" : "chrome" },
-    { ":rename_core" : "chrome/content"},
+    { "../../javascript/selenium-core" : "chrome/content"},
     { "src/chrome/icons" : "chrome" },
-    { "//javascript/selenium-atoms" : "chrome/content/selenium/scripts/atoms.js"},
-    { "//third_party/js/sizzle" : "chrome/content/selenium/lib/sizzle.js" }
+    { "//javascript/selenium-atoms" : "chrome/content/selenium-core/scripts/atoms.js"},
+    { "//third_party/js/sizzle" : "chrome/content/selenium-core/lib/sizzle.js" }
   ],
   chrome = "src/chrome.manifest.production",
   install = "src/install.rdf")
-
-rake_task(name = "rename_core",
-  task_name = "rename_core",
-  out = "build/ide/selenium")
-

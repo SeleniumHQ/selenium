@@ -45,13 +45,13 @@ function Debugger(editor) {
 		
 		const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
 	    .getService(Components.interfaces.mozIJSSubScriptLoader);
-		//subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/selenium-logging.js', this.runner);
+		//subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/selenium-logging.js', this.runner);
 
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.runner);
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-commandhandlers.js', this.runner);
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-executionloop.js', this.runner);
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-browserbot.js', this.runner);
-		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-testrunner-original.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-api.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-commandhandlers.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-executionloop.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-browserbot.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-testrunner-original.js', this.runner);
 
 		if (this.editor.getOptions().userExtensionsURL) {
 			try {

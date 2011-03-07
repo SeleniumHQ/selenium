@@ -28,23 +28,23 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/dnd-observers.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/preferences.js"/>
   <!-- import misc.js before tools.js, because both declare a Log object -->
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/misc.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/util.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/xmltoken.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/dom.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/xpath.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/xpath/misc.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/xpath/util.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/xpath/xmltoken.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/xpath/dom.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/xpath/xpath.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/xhtml-entities.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/selenium-browserdetect.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/lib/prototype.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/lib/sizzle.js"/> 
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/atoms.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/htmlutils.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/xmlextras.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/ui-element.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/find_matching_child.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/selenium-browserbot.js"/>
-  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/selenium-logging.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/scripts/selenium-browserdetect.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/lib/prototype.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/lib/sizzle.js"/> 
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/scripts/atoms.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/scripts/htmlutils.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/scripts/xmlextras.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/scripts/ui-element.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/scripts/find_matching_child.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/scripts/selenium-browserbot.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium-core/scripts/selenium-logging.js"/>
 <!--  <script type="application/x-javascript" src="chrome://selenium-ide/content/eventManager.js"/>-->
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-handlers.js"/>

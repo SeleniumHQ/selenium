@@ -9,7 +9,9 @@ js_deps(name = "deps",
 js_binary(name = "selenium-atoms",
   deps = [
     ":deps",
-  ])
+  ],
+  out = "build/javascript/selenium-atoms/selenium-atoms.js"
+  )
 
 js_test(name = "test",
   srcs = [
