@@ -126,7 +126,7 @@ namespace OpenQA.Selenium.Firefox
                 this.ModifyLinkLibraryPath(profile);
             }
 
-            StringBuilder commandLineArgs = new StringBuilder("--verbose");
+            StringBuilder commandLineArgs = new StringBuilder();
             foreach (string commandLineArg in commandLineArguments)
             {
                 commandLineArgs.Append(" ").Append(commandLineArg);
