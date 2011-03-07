@@ -47,7 +47,7 @@ module Selenium
       #
       # Find all elements matching the given arguments
       #
-      # @see Find#find_element
+      # @see SearchContext#find_element
       #
       # @param [:class, :class_name, :id, :link_text, :link, :partial_link_text, :name, :tag_name, :xpath] how
       # @param [String] what
@@ -90,6 +90,6 @@ module Selenium
         end
       end
 
-    end # Find
+    end # SearchContext
   end # WebDriver
 end # Selenium

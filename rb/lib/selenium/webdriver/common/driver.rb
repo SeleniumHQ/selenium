@@ -4,7 +4,7 @@ module Selenium
     #
     # The main class through which you control the browser.
     #
-    # @see Find
+    # @see SearchContext
     # @see Navigation
     # @see TargetLocator
     # @see Options
@@ -263,9 +263,8 @@ module Selenium
 
 
       #
-      # for Find
-      #
       # @api private
+      # @see SearchContext
       #
 
       def ref
