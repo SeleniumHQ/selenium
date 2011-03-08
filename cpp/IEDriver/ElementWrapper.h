@@ -34,7 +34,8 @@ private:
 	int GetLocation(long *x, long *y, long *width, long *height);
 	bool IsClickPointInViewPort(const long x, const long y, const long width, const long height);
 	int GetFrameOffset(long *x, long *y);
-	int GetContainingDocument(IHTMLDocument2** doc);
+	int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
+	int GetParentDocument(IHTMLWindow2* parent_window, IHTMLDocument2** parent_doc);
 
 	std::wstring element_id_;
 	CComPtr<IHTMLElement> element_;

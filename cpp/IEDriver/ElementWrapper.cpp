@@ -47,7 +47,7 @@ int ElementWrapper::IsDisplayed(bool *result) {
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
-	this->GetContainingDocument(&doc);
+	this->GetContainingDocument(false, &doc);
 	ScriptWrapper script_wrapper(doc, script, 1);
 	script_wrapper.AddArgument(this->element_);
 	status_code = script_wrapper.Execute();
@@ -70,7 +70,7 @@ bool ElementWrapper::IsEnabled() {
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
-	this->GetContainingDocument(&doc);
+	this->GetContainingDocument(false, &doc);
 	ScriptWrapper script_wrapper(doc, script, 1);
 	script_wrapper.AddArgument(this->element_);
 	int status_code = script_wrapper.Execute();
@@ -147,7 +147,7 @@ int ElementWrapper::GetAttributeValue(const std::wstring& attribute_name, VARIAN
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
-	this->GetContainingDocument(&doc);
+	this->GetContainingDocument(false, &doc);
 	ScriptWrapper script_wrapper(doc, script, 2);
 	script_wrapper.AddArgument(this->element_);
 	script_wrapper.AddArgument(attribute_name);
@@ -223,7 +223,7 @@ bool ElementWrapper::IsSelected() {
 	script += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
-	this->GetContainingDocument(&doc);
+	this->GetContainingDocument(false, &doc);
 	ScriptWrapper script_wrapper(doc, script, 1);
 	script_wrapper.AddArgument(this->element_);
 	int status_code = script_wrapper.Execute();
@@ -330,24 +330,14 @@ int ElementWrapper::GetLocation(long *x, long *y, long *width, long *height) {
 }
 
 int ElementWrapper::GetFrameOffset(long *x, long *y) {
-    CComPtr<IHTMLDOMNode2> node;
-	HRESULT hr = this->element_->QueryInterface(&node);
-
-    CComPtr<IDispatch> owner_doc_dispatch;
-    hr = node->get_ownerDocument(&owner_doc_dispatch);
-	if (FAILED(hr)) {
-		LOG(WARN) << "Unable to locate owning document";
-		return ENOSUCHDOCUMENT;
-	}
-
-    CComQIPtr<IHTMLDocument2> owner_doc(owner_doc_dispatch);
-	if (!owner_doc) {
-		LOG(WARN) << "Found document but it's not the expected type";
-		return ENOSUCHDOCUMENT;
+    CComPtr<IHTMLDocument2> owner_doc;
+	int status_code = this->GetContainingDocument(true, &owner_doc);
+	if (status_code != SUCCESS) {
+		return status_code;
 	}
 
 	CComPtr<IHTMLWindow2> owner_doc_window;
-	hr = owner_doc->get_parentWindow(&owner_doc_window);
+	HRESULT hr = owner_doc->get_parentWindow(&owner_doc_window);
 	if (!owner_doc_window) {
 		LOG(WARN) << "Unable to get parent window";
 		return ENOSUCHDOCUMENT;
@@ -357,7 +347,7 @@ int ElementWrapper::GetFrameOffset(long *x, long *y) {
 	hr = owner_doc_window->get_parent(&parent_window);
 	if (parent_window && !owner_doc_window.IsEqualObject(parent_window)) {
 		CComPtr<IHTMLDocument2> parent_doc;
-		hr = parent_window->get_document(&parent_doc);
+		status_code = this->GetParentDocument(parent_window, &parent_doc);
 
 		CComPtr<IHTMLFramesCollection2> frames;
 		hr = parent_doc->get_frames(&frames);
@@ -395,9 +385,9 @@ int ElementWrapper::GetFrameOffset(long *x, long *y) {
 				CComQIPtr<IHTMLElement> frame_element(script_wrapper.result().pdispVal);
 
 				// Wrap the element so we can find its location.
-				ElementWrapper *element_wrapper = new ElementWrapper(frame_element, this->containing_window_handle_);
+				ElementWrapper element_wrapper(frame_element, this->containing_window_handle_);
 				long frame_x, frame_y, frame_width, frame_height;
-				int status_code = element_wrapper->GetLocation(&frame_x, &frame_y, &frame_width, &frame_height);
+				int status_code = element_wrapper.GetLocation(&frame_x, &frame_y, &frame_width, &frame_height);
 				if (status_code == SUCCESS) {
 					*x = frame_x;
 					*y = frame_y;
@@ -435,18 +425,61 @@ bool ElementWrapper::IsClickPointInViewPort(const long x, const long y, const lo
 	return true;
 }
 
-int ElementWrapper::GetContainingDocument(IHTMLDocument2** doc) {
+int ElementWrapper::GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc) {
+	HRESULT hr = S_OK;
 	CComPtr<IDispatch> dispatch_doc;
-	HRESULT hr = this->element_->get_document(&dispatch_doc);
-	if (FAILED(hr)) {
-		return ENOSUCHDOCUMENT;
+	if (use_dom_node) {
+		CComPtr<IHTMLDOMNode2> node;
+		hr = this->element_->QueryInterface(&node);
+		if (FAILED(hr)) {
+			LOG(WARN) << "Unable to cast element to IHTMLDomNode2";
+			return ENOSUCHDOCUMENT;
+		}
+
+		hr = node->get_ownerDocument(&dispatch_doc);
+		if (FAILED(hr)) {
+			LOG(WARN) << "Unable to locate owning document";
+			return ENOSUCHDOCUMENT;
+		}
+	} else {
+		hr = this->element_->get_document(&dispatch_doc);
+		if (FAILED(hr)) {
+			LOG(WARN) << "Unable to locate document property";
+			return ENOSUCHDOCUMENT;
+		}
+
 	}
 
 	hr = dispatch_doc.QueryInterface<IHTMLDocument2>(doc);
 	if (FAILED(hr)) {
+		LOG(WARN) << "Found document but it's not the expected type";
 		return ENOSUCHDOCUMENT;
 	}
 
+	return SUCCESS;
+}
+
+int ElementWrapper::GetParentDocument(IHTMLWindow2* parent_window, IHTMLDocument2** parent_doc) {
+	HRESULT hr = parent_window->get_document(parent_doc);
+	if (hr == E_ACCESSDENIED) {
+		// Cross-domain documents may throw Access Denied. If so,
+		// get the document through the IWebBrowser2 interface.
+		CComPtr<IWebBrowser2> window_browser;
+		CComQIPtr<IServiceProvider> service_provider(parent_window);
+		hr = service_provider->QueryService(IID_IWebBrowserApp, &window_browser);
+		if (FAILED(hr)) {
+			return ENOSUCHDOCUMENT;
+		}
+		CComQIPtr<IDispatch> parent_doc_dispatch;
+		hr = window_browser->get_Document(&parent_doc_dispatch);
+		if (FAILED(hr)) {
+			return ENOSUCHDOCUMENT;
+		}
+		hr = parent_doc_dispatch->QueryInterface<IHTMLDocument2>(parent_doc);
+		if (FAILED(hr)) {
+			return ENOSUCHDOCUMENT;
+		}
+	}
 	return SUCCESS;
 }
 
