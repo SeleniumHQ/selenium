@@ -420,6 +420,54 @@ the client as !WebElement JSON objects.''').
       SetReturnType('{string}', 'The screenshot as a base64 encoded PNG.'))
 
   resources.append(
+      SessionResource('/session/:sessionId/ime/available_engines').
+      Get('List all available engines on the machine. To use an engine, it has to be present in this list.').
+      AddError('ImeNotAvailableException', 'If the host does not support IME').
+      SetReturnType('{Array.<string>}', 'A list of available engines').
+      SetJavadoc('java/org/openqa/selenium/WebDriver.ImeHandler.html#getAvailableEngines()',
+        'WebDriver.ImeHandler#getAvailableEngines()'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/ime/active_engine').
+      Get('Get the name of the active IME engine. The name string is platform specific.').
+      AddError('ImeNotAvailableException', 'If the host does not support IME').
+      SetReturnType('{string}', 'The name of the active IME engine.').
+      SetJavadoc('java/org/openqa/selenium/WebDriver.ImeHandler.html#getActiveEngine()',
+        'WebDriver.ImeHandler#getActiveEngine()'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/ime/activated').
+      Get('Indicates whether IME input is active at the moment (not if it\'s available.').
+      AddError('ImeNotAvailableException', 'If the host does not support IME').
+      SetReturnType('{boolean}',
+                    'true if IME input is available and currently active, false otherwise').
+      SetJavadoc('java/org/openqa/selenium/WebDriver.ImeHandler.html#isActivated()',
+        'WebDriver.ImeHandler#isActivated()'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/ime/deactivate').
+      Post('De-activates the currently-active IME engine.').
+      AddError('ImeNotAvailableException', 'If the host does not support IME').
+      SetJavadoc('java/org/openqa/selenium/WebDriver.ImeHandler.html#deactivate()',
+        'WebDriver.ImeHandler#deactivate()'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/ime/activate').
+      Post('''Make an engines that is available (appears on the list
+returned by getAvailableEngines) active. After this call, the engine will
+be added to the list of engines loaded in the IME daemon and the input sent
+using sendKeys will be converted by the active engine.
+Note that this is a platform-independent method of activating IME
+(the platform-specific way being using keyboard shortcuts''').
+      AddJsonParameter('engine', '{string}',
+                       'Name of the engine to activate.').
+      AddError('ImeActivationFailedException',
+               'If the engine is not available or if the activation fails for other reasons.').
+      AddError('ImeNotAvailableException', 'If the host does not support IME').
+      SetJavadoc('java/org/openqa/selenium/WebDriver.ImeHandler.html#activateEngine(java.lang.String)',
+        'WebDriver.ImeHandler#activateEngine(java.lang.String)'))
+
+  resources.append(
       SessionResource('/session/:sessionId/frame').
       Post('''Change focus to another frame on the page. If the frame ID is \
 `null`, the server
