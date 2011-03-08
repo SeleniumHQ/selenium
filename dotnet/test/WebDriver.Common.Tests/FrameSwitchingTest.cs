@@ -331,7 +331,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Button to delete frame does not appear clickable to IE")]
         [IgnoreBrowser(Browser.Chrome)]
         public void ShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs()
         {
