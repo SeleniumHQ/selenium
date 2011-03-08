@@ -223,8 +223,8 @@ const char* const CLEAR =
     ".fireEvent(\"onchange\",b)}else a.dispatchEvent(b)}}}var Y=\"_\".split(\""
     ".\"),Z=l;!(Y[0]in Z)&&Z.execScript&&Z.execScript(\"var \"+Y[0]);for(var $"
     ";Y.length&&($=Y.shift());)if(!Y.length&&Xa!==undefined)Z[$]=Xa;else Z=Z[$"
-    "]?Z[$]:Z[$]={};; return this._.apply(null,arguments);}.apply({}, argument"
-    "s);}";
+    "]?Z[$]:Z[$]={};; return this._.apply(null,arguments);}.apply({navigator:t"
+    "ypeof window!='undefined'?window.navigator:null}, arguments);}";
 
 const char* const CLICK =
     "function(){return function(){var i,m=this;\nfunction n(a){var b=typeof a;"
@@ -539,7 +539,8 @@ const char* const CLICK =
     "urn K(d,\"A\")},true))&&a.href&&Hb(a)}}}}}}\nvar Y=\"_\".split(\".\"),Z=m"
     ";!(Y[0]in Z)&&Z.execScript&&Z.execScript(\"var \"+Y[0]);for(var $;Y.lengt"
     "h&&($=Y.shift());)if(!Y.length&&Ib!==undefined)Z[$]=Ib;else Z=Z[$]?Z[$]:Z"
-    "[$]={};; return this._.apply(null,arguments);}.apply({}, arguments);}";
+    "[$]={};; return this._.apply(null,arguments);}.apply({navigator:typeof wi"
+    "ndow!='undefined'?window.navigator:null}, arguments);}";
 
 const char* const EXECUTE_SCRIPT =
     "function(){return function(){var h=this;\nfunction i(a){var b=typeof a;if"
@@ -631,7 +632,8 @@ const char* const EXECUTE_SCRIPT =
     "ka,d,a);d=a.join(\"\")}else d=d;return d}var Y=\"_\".split(\".\"),Z=h;!(Y"
     "[0]in Z)&&Z.execScript&&Z.execScript(\"var \"+Y[0]);for(var $;Y.length&&("
     "$=Y.shift());)if(!Y.length&&X!==undefined)Z[$]=X;else Z=Z[$]?Z[$]:Z[$]={}"
-    ";; return this._.apply(null,arguments);}.apply({}, arguments);}";
+    ";; return this._.apply(null,arguments);}.apply({navigator:typeof window!="
+    "'undefined'?window.navigator:null}, arguments);}";
 
 const char* const FIND_ELEMENT =
     "function(){return function(){var h=this;\nfunction i(a){var b=typeof a;if"
@@ -832,7 +834,8 @@ const char* const FIND_ELEMENT =
     "egy: \"+c);}var Y=\"_\".split(\".\"),Z=h;!(Y[0]in Z)&&Z.execScript&&Z.exe"
     "cScript(\"var \"+Y[0]);for(var $;Y.length&&($=Y.shift());)if(!Y.length&&U"
     "a!==undefined)Z[$]=Ua;else Z=Z[$]?Z[$]:Z[$]={};; return this._.apply(null"
-    ",arguments);}.apply({}, arguments);}";
+    ",arguments);}.apply({navigator:typeof window!='undefined'?window.navigato"
+    "r:null}, arguments);}";
 
 const char* const FIND_ELEMENTS =
     "function(){return function(){var h=this;\nfunction i(a){var b=typeof a;if"
@@ -1033,7 +1036,8 @@ const char* const FIND_ELEMENTS =
     "egy: \"+c);}var Y=\"_\".split(\".\"),Z=h;!(Y[0]in Z)&&Z.execScript&&Z.exe"
     "cScript(\"var \"+Y[0]);for(var $;Y.length&&($=Y.shift());)if(!Y.length&&U"
     "a!==undefined)Z[$]=Ua;else Z=Z[$]?Z[$]:Z[$]={};; return this._.apply(null"
-    ",arguments);}.apply({}, arguments);}";
+    ",arguments);}.apply({navigator:typeof window!='undefined'?window.navigato"
+    "r:null}, arguments);}";
 
 const char* const GET_ATTRIBUTE =
     "function(){return function(){var e=this;\nfunction f(a){var c=typeof a;if"
@@ -1121,7 +1125,8 @@ const char* const GET_ATTRIBUTE =
     ":null}var X=\"_\".split(\".\"),Y=e;!(X[0]in Y)&&Y.execScript&&Y.execScrip"
     "t(\"var \"+X[0]);for(var Z;X.length&&(Z=X.shift());)if(!X.length&&W!==und"
     "efined)Y[Z]=W;else Y=Y[Z]?Y[Z]:Y[Z]={};; return this._.apply(null,argumen"
-    "ts);}.apply({}, arguments);}";
+    "ts);}.apply({navigator:typeof window!='undefined'?window.navigator:null},"
+    " arguments);}";
 
 const char* const GET_LOCATION =
     "function(){return function(){var g=this;function h(a,b){function c(){}c.p"
@@ -1178,7 +1183,8 @@ const char* const GET_LOCATION =
     "d.y-=b.scrollTop}}return d}var P=\"_\".split(\".\"),U=g;!(P[0]in U)&&U.ex"
     "ecScript&&U.execScript(\"var \"+P[0]);for(var V;P.length&&(V=P.shift());)"
     "if(!P.length&&O!==undefined)U[V]=O;else U=U[V]?U[V]:U[V]={};; return this"
-    "._.apply(null,arguments);}.apply({}, arguments);}";
+    "._.apply(null,arguments);}.apply({navigator:typeof window!='undefined'?wi"
+    "ndow.navigator:null}, arguments);}";
 
 const char* const GET_TEXT =
     "function(){return function(){var g=this;\nfunction i(a){var b=typeof a;if"
@@ -1324,7 +1330,8 @@ const char* const GET_TEXT =
     "a,b);b=da(b,n);return n(b.join(\"\\n\"))}var Y=\"_\".split(\".\"),Z=g;!(Y"
     "[0]in Z)&&Z.execScript&&Z.execScript(\"var \"+Y[0]);for(var $;Y.length&&("
     "$=Y.shift());)if(!Y.length&&Ca!==undefined)Z[$]=Ca;else Z=Z[$]?Z[$]:Z[$]="
-    "{};; return this._.apply(null,arguments);}.apply({}, arguments);}";
+    "{};; return this._.apply(null,arguments);}.apply({navigator:typeof window"
+    "!='undefined'?window.navigator:null}, arguments);}";
 
 const char* const IS_DISPLAYED =
     "function(){return function(){var g=this;\nfunction h(a){var b=typeof a;if"
@@ -1454,7 +1461,8 @@ const char* const IS_DISPLAYED =
     "a=V(a))b*=ua(a);return b};var va=X,Y=\"_\".split(\".\"),Z=g;!(Y[0]in Z)&&"
     "Z.execScript&&Z.execScript(\"var \"+Y[0]);for(var $;Y.length&&($=Y.shift("
     "));)if(!Y.length&&va!==undefined)Z[$]=va;else Z=Z[$]?Z[$]:Z[$]={};; retur"
-    "n this._.apply(null,arguments);}.apply({}, arguments);}";
+    "n this._.apply(null,arguments);}.apply({navigator:typeof window!='undefin"
+    "ed'?window.navigator:null}, arguments);}";
 
 const char* const IS_ENABLED =
     "function(){return function(){var e=this;function f(a,b){function c(){}c.p"
@@ -1510,7 +1518,8 @@ const char* const IS_ENABLED =
     "e);return true}String.fromCharCode(160);var Q=P,R=\"_\".split(\".\"),W=e;"
     "!(R[0]in W)&&W.execScript&&W.execScript(\"var \"+R[0]);for(var X;R.length"
     "&&(X=R.shift());)if(!R.length&&Q!==undefined)W[X]=Q;else W=W[X]?W[X]:W[X]"
-    "={};; return this._.apply(null,arguments);}.apply({}, arguments);}";
+    "={};; return this._.apply(null,arguments);}.apply({navigator:typeof windo"
+    "w!='undefined'?window.navigator:null}, arguments);}";
 
 const char* const IS_SELECTED =
     "function(){return function(){var e=this;function f(a,b){function c(){}c.p"
@@ -1555,7 +1564,8 @@ const char* const IS_SELECTED =
     "urn!!a[b]}var S=\"_\".split(\".\"),T=e;!(S[0]in T)&&T.execScript&&T.execS"
     "cript(\"var \"+S[0]);for(var U;S.length&&(U=S.shift());)if(!S.length&&R!="
     "=undefined)T[U]=R;else T=T[U]?T[U]:T[U]={};; return this._.apply(null,arg"
-    "uments);}.apply({}, arguments);}";
+    "uments);}.apply({navigator:typeof window!='undefined'?window.navigator:nu"
+    "ll}, arguments);}";
 
 const char* const SET_SELECTED =
     "function(){return function(){var l=this;\nfunction m(a){var b=typeof a;if"
@@ -1769,7 +1779,8 @@ const char* const SET_SELECTED =
     "ctable element: \"+a.tagName);}var Y=\"_\".split(\".\"),Z=l;!(Y[0]in Z)&&"
     "Z.execScript&&Z.execScript(\"var \"+Y[0]);for(var $;Y.length&&($=Y.shift("
     "));)if(!Y.length&&Xa!==undefined)Z[$]=Xa;else Z=Z[$]?Z[$]:Z[$]={};; retur"
-    "n this._.apply(null,arguments);}.apply({}, arguments);}";
+    "n this._.apply(null,arguments);}.apply({navigator:typeof window!='undefin"
+    "ed'?window.navigator:null}, arguments);}";
 
 const char* const SUBMIT =
     "function(){return function(){var l=this;\nfunction m(a){var b=typeof a;if"
@@ -1902,7 +1913,8 @@ const char* const SUBMIT =
     "it()}\nvar Y=\"_\".split(\".\"),Z=l;!(Y[0]in Z)&&Z.execScript&&Z.execScri"
     "pt(\"var \"+Y[0]);for(var $;Y.length&&($=Y.shift());)if(!Y.length&&sa!==u"
     "ndefined)Z[$]=sa;else Z=Z[$]?Z[$]:Z[$]={};; return this._.apply(null,argu"
-    "ments);}.apply({}, arguments);}";
+    "ments);}.apply({navigator:typeof window!='undefined'?window.navigator:nul"
+    "l}, arguments);}";
 
 const char* const TOGGLE =
     "function(){return function(){var l=this;\nfunction m(a){var b=typeof a;if"
@@ -2118,7 +2130,8 @@ const char* const TOGGLE =
     "Y=\"_\".split(\".\"),Z=l;!(Y[0]in Z)&&Z.execScript&&Z.execScript(\"var \""
     "+Y[0]);\nfor(var $;Y.length&&($=Y.shift());)if(!Y.length&&Xa!==undefined)"
     "Z[$]=Xa;else Z=Z[$]?Z[$]:Z[$]={};; return this._.apply(null,arguments);}."
-    "apply({}, arguments);}";
+    "apply({navigator:typeof window!='undefined'?window.navigator:null}, argum"
+    "ents);}";
 
 const char* const TYPE =
     "function(){return function(){var k=this;\nfunction aa(a){var b=typeof a;i"
@@ -2394,7 +2407,8 @@ const char* const TYPE =
     "});for(var f in W){e=f;b[W[e]]&&rb(a,e,b)}}var Y=\"_\".split(\".\"),Z=k;!"
     "(Y[0]in Z)&&Z.execScript&&Z.execScript(\"var \"+Y[0]);for(var $;Y.length&"
     "&($=Y.shift());)if(!Y.length&&sb!==undefined)Z[$]=sb;else Z=Z[$]?Z[$]:Z[$"
-    "]={};; return this._.apply(null,arguments);}.apply({}, arguments);}";
+    "]={};; return this._.apply(null,arguments);}.apply({navigator:typeof wind"
+    "ow!='undefined'?window.navigator:null}, arguments);}";
 
 const char* const EXECUTE_ASYNC_SCRIPT =
     "function(){return function(){var k,n=this;function p(){}\nfunction q(a){v"
@@ -2585,7 +2599,8 @@ const char* const EXECUTE_ASYNC_SCRIPT =
     "ssage})})}var Y=\"_\".split(\".\"),Z=n;!(Y[0]in Z)&&Z.execScript&&Z.execS"
     "cript(\"var \"+Y[0]);for(var $;Y.length&&($=Y.shift());)if(!Y.length&&qb!"
     "==undefined)Z[$]=qb;else Z=Z[$]?Z[$]:Z[$]={};; return this._.apply(null,a"
-    "rguments);}.apply({}, arguments);}";
+    "rguments);}.apply({navigator:typeof window!='undefined'?window.navigator:"
+    "null}, arguments);}";
 
 }  // namespace atoms
 }  // namespace webdriver

@@ -242,10 +242,19 @@ module Javascript
 
         # Wrap the output in two functions. The outer function ensures the
         # compiled fragment never pollutes the global scope by using its
-        # own scope on each invocation.
+        # own scope on each invocation. We must import window.navigator into
+        # this unique scope since Closure's goog.userAgent package assumes
+        # the navigator is defined from goog.global. Normally, this would be
+        # window, but we are explicitly defining the fragment so that
+        # goog.global is _not_ window.
         #     See http://code.google.com/p/selenium/issues/detail?id=1333
+        #
+        # TODO(jleyba): It should be possible to compile an atom optimized for
+        #   a specific user agent.
         wrapper = "function(){%output%; return this._.apply(null,arguments);}"
-        wrapper = "function(){return #{wrapper}.apply({}, arguments);}"
+        wrapper = "function(){return #{wrapper}.apply({" +
+                  "navigator:typeof window!='undefined'?window.navigator:null" +
+                  "}, arguments);}"
 
         # TODO(simon): Don't hard code things. That's Not Smart
         cmd = calcdeps +
