@@ -15,7 +15,6 @@
 	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/support/events/events.jar"/>
 	<classpathentry kind="lib" path="../build/java/server/src/org/openqa/jetty/jetty.jar"/>
 	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/browserlaunchers/launcher-utils.jar"/>
-	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/internal/logging.jar"/>
 	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/remote/remote.jar"/>
 	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/webdriver-api.jar"/>
 	<classpathentry kind="lib" path="../build/java/server/src/org/openqa/selenium/remote/server/server.jar"/>
