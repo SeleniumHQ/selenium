@@ -426,12 +426,10 @@ public interface WebDriver extends SearchContext {
 
      *
      * @param engine name of engine to activate.
-     * @return true if engine was loaded successfully, false if the engine is not an available one
-     * or IME activation failed.
      * @throws ImeNotAvailableException if the host does not support IME.
      * @throws ImeActivationFailedException if the engine is not available or if activation failed
      * for other reasons.
      */
-    boolean activateEngine(String engine);
+    void activateEngine(String engine);
   }
 }

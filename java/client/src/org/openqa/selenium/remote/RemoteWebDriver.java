@@ -527,9 +527,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         execute(DriverCommand.IME_DEACTIVATE);
       }
 
-      public boolean activateEngine(String engine) {
-        Response response = execute(DriverCommand.IME_ACTIVATE_ENGINE, ImmutableMap.of("engine", engine));
-        return (Boolean) response.getValue();
+      public void activateEngine(String engine) {
+        execute(DriverCommand.IME_ACTIVATE_ENGINE, ImmutableMap.of("engine", engine));
       }
     } // RemoteInputMethodManager class
 

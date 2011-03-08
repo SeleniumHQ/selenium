@@ -40,8 +40,7 @@ public class ImeActivateEngine extends WebDriverHandler implements JsonParameter
   public ResultType call() throws Exception {
     response = newResponse();
 
-    boolean couldActivate = getDriver().manage().ime().activateEngine(engine);
-    response.setValue(couldActivate);
+    getDriver().manage().ime().activateEngine(engine);
 
     return ResultType.SUCCESS;
   }

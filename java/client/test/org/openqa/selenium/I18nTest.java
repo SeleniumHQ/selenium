@@ -119,8 +119,7 @@ public class I18nTest extends AbstractDriverTestCase {
 
     assertTrue(engines.contains(desiredEngine));
 
-    boolean activationResult = ime.activateEngine(desiredEngine);
-    assertTrue(activationResult);
+    ime.activateEngine(desiredEngine);
 
     int totalWaits = 0;
     while (! ime.isActivated() && (totalWaits < 10)) {

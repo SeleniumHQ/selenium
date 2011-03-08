@@ -1027,7 +1027,6 @@ FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
   if (! successfulActivation.value) {
     throw new WebDriverError(ErrorCode.IME_ENGINE_ACTIVATION_FAILED,
         "Activation of engine failed: " + engineToActivate);
-  }
-  respond.value = successfulActivation.value; 
+  } 
   respond.send();
 };
