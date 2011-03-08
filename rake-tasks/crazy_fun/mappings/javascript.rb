@@ -350,7 +350,10 @@ module Javascript
         line = contents[0, diff]
         contents.slice!(0..diff - 1)
         to_file << line_format % line
-        to_file << " +\n"
+        if language == "java"
+          to_file << " +"
+        end
+        to_file << "\n"
       end
 
       to_file << line_format % contents if contents.length > 0
