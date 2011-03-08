@@ -58,7 +58,7 @@ public class SingleTestSuite extends TestCase {
       }};
 
   public static Test suite() throws Exception {
-    String driver = HTML_UNIT_JS;
+    String driver = FIREFOX_TEST;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -71,13 +71,12 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ExecutingJavascriptTest")
-//        .method("testShouldBeAbleToRefreshAPage")
-//        .method("testShouldNotTrimSpacesWhenLineWraps")
+        .onlyRun("FrameSwitchingTest")
+        .method("testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs")
         .exclude(ALL)
         .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
         .outputTestNames()
-//        .leaveRunning()
+        .leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver) || REMOTE_IE.equals(driver)) {

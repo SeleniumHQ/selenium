@@ -109,7 +109,6 @@ webdriver.modals.getText = function(driver, timeout, callback, unused) {
 webdriver.modals.setValue = function(driver, timeout, value, callback, errback) {
   webdriver.modals.findModal_(function(modal) {
     var textbox = modal.document.getElementById('loginTextbox');
-    Logger.dump(textbox);
     textbox.value = value;
     callback();
   }, errback, timeout);
@@ -125,4 +124,44 @@ webdriver.modals.errback = function(respond) {
 
 webdriver.modals.success = function(respond) {
   return goog.bind(respond.send, respond);
+};
+
+webdriver.modals.findAssociatedDriver_ = function(window) {
+  var ww = CC["@mozilla.org/embedcomp/window-watcher;1"].getService(CI["nsIWindowWatcher"]);
+
+  var parent = window ? window : ww.activeWindow;
+  if (parent.wrappedJSObject) {
+    parent = parent.wrappedJSObject;
+  }
+  var top = parent.top;
+
+  // Now iterate over all open browsers to find the one we belong to
+  var wm = CC["@mozilla.org/appshell/window-mediator;1"].getService(CI["nsIWindowMediator"]);
+  var allWindows = wm.getEnumerator("navigator:browser");
+  while (allWindows.hasMoreElements()) {
+    var chrome = allWindows.getNext().QueryInterface(CI.nsIDOMWindow);
+    if (chrome.content == window) {
+      return chrome.fxdriver;
+    }
+  }
+
+  // There's no meaningful way we can reach this.
+  Logger.dumpn('Unable to find the associated driver');
+  return undefined;
+};
+
+webdriver.modals.signalOpenModal = function(parent, text) {
+  // Try to grab the top level window
+  var driver = webdriver.modals.findAssociatedDriver_(parent);
+
+  if (driver && driver.response_) {
+    webdriver.modals.setFlag(driver, text);
+
+    var res = driver.response_;
+    res.value = {
+      text: text
+    };
+    res.statusCode = ErrorCode.MODAL_DIALOG_OPENED;
+    res.send();
+  }
 };

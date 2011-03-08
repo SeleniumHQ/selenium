@@ -3,30 +3,164 @@
 
 const CC = Components.classes;
 const CI = Components.interfaces;
+const CR = Components.results;
+const CU = Components.utils;
+
+CU.import("resource://gre/modules/XPCOMUtils.jsm");
+
+var EXCLUDED_NAMES = [
+  'QueryInterface',
+  'alert',
+  'alertCheck',
+  'confirm',
+  'confirmCheck',
+  'confirmEx',
+  'getPrompt',
+  'prompt',
+  'promptPassword',
+  'promptUsernameAndPassword',
+  'select'
+];
+
+function addInterfaces(to, delegate, interfaces) {
+  goog.array.forEach(interfaces, function(iid) {
+    try {
+      var queried = delegate.QueryInterface(iid);
+      for (var i in queried) {
+        if (!goog.array.contains(EXCLUDED_NAMES,  i.toString())) {
+          Logger.dumpn("adding: " + i);
+          to[i] = queried[i];
+        }
+      }
+    } catch (ignored) {}
+  });
+}
+
+// Implementation of nsIPrompt
+function ObservingAlert(parentWindow, delegate) {
+  Components.utils.import('resource://fxdriver/modules/utils.js');
+
+  Logger.dumpn("Woohoo");
+
+  this.parentWindow_ = parentWindow;
+
+  var interfaces = [CI.nsIPrompt, CI.nsIAuthPrompt, CI.nsIAuthPrompt2, CI.nsIWritablePropertyBag2];
+
+  addInterfaces(this, delegate, interfaces);
+
+  this.delegate_ = delegate;
+  this.QueryInterface = webdriver.firefox.utils.queryInterface(this, interfaces);
+}
+
+ObservingAlert.prototype.alert = function(dialogTitle, text) {
+  Logger.dumpn("Opening alert in alert service");
+  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  this.delegate_.alert(dialogTitle, text);
+};
+
+ObservingAlert.prototype.alertCheck = function(dialogTitle, text, checkMsg, checkValue) {
+  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  this.delegate_.alertCheck(dialogTitle, text, checkMsg,  checkValue);
+};
+
+ObservingAlert.prototype.confirm = function(dialogTitle, text) {
+  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  return this.delegate_.confirm(dialogTitle, text);
+};
+
+ObservingAlert.prototype.confirmCheck = function(dialogTitle, text, checkMsg, checkValue) {
+  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  return this.delegate_.confirmCheck(dialogTitle, text, checkMsg,  checkValue);
+};
+
+ObservingAlert.prototype.confirmEx = function(dialogTitle, text,
+    buttonFlags, button0Title, button1Title, button2Title,
+    checkMsg, checkValue) {
+  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  return this.delegate_.confirmEx(dialogTitle, text,
+      buttonFlags, button0Title, button1Title, button2Title,
+      checkMsg, checkValue);
+};
+
+ObservingAlert.prototype.prompt = function(dialogTitle, text, value, checkMsg, checkValue) {
+  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  return this.delegate_.prompt(dialogTitle, text, value, checkMsg, checkValue);
+};
+
+ObservingAlert.prototype.promptPassword = function(dialogTitle, text, password, checkMsg, checkValue) {
+  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  return this.delegate_.promptPassword(dialogTitle, text, password, checkMsg, checkValue);
+};
+
+ObservingAlert.prototype.promptUsernameAndPassword = function(dialogTitle, text, username, password, checkMsg, checkValue) {
+  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+
+  return this.delegate_.promptUsernameAndPassword(dialogTitle, text, username, password, checkMsg, checkValue);
+};
+
+ObservingAlert.prototype.select = function(dialogTitle, text, count, selectList, outSelection) {
+  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+
+  return this.delegate_.select(dialogTitle, text, count, selectList, outSelection);
+};
+
 
 // Spoof implementation
 function DrivenPromptService() {
   Components.utils.import('resource://fxdriver/modules/utils.js');
 
-  // as defined in nsPromptService.h: used in firefox 3.x
-  var NSPROMPTSERVICE_CID = "{A2112D6A-0E28-421f-B46A-25C0B308CBD0}";
-  // as defined in nsPrompter.js: used in firefox 4.x
-  var NSPROMPTER_CID = "{7ad1b327-6dfa-46ec-9234-f2a620ea7e00}";
+  Logger.dumpn("Spoofing prompt service");
 
-  // Keep a reference to the original service
-  if (Components.classesByID[NSPROMPTSERVICE_CID]) {
-    Logger.dumpn("Locating original service using Firefox 3.x CID");
-    var originalService = Components.classesByID[NSPROMPTSERVICE_CID].getService();
-    this.originalPromptService_ =
-        originalService.QueryInterface(CI.nsIPromptService2);
-  } else if (Components.classesByID[NSPROMPTER_CID]) {
-    Logger.dumpn("Locating original service using Firefox 4.x CID");
-    this.originalPromptService_ = Components.classesByID[NSPROMPTER_CID].getService().QueryInterface(CI.nsIPromptService2);
-  } else {
+  // @mozilla.org/prompter;1
+  var prompters = [
+    "{1c978d25-b37f-43a8-a2d6-0c7a239ead87}" // nsPrompter.js: Firefox 4 late betas onwards
+  ];
+
+  // @mozilla.org/embedcomp/prompt-service;
+  var promptServices = [
+    "{7ad1b327-6dfa-46ec-9234-f2a620ea7e00}", // nsPrompter.js: Firefox 4 betas
+    "{A2112D6A-0E28-421f-B46A-25C0B308CBD0}"  // nsPromptService.h: Firefox 3.x
+  ];
+
+  var findImplementation = function(interfaceName, cids) {
+    for (var i = 0; i < cids.length; i++) {
+      var impl = Components.classesByID[cids[i]];
+      if (!impl) { continue; }
+
+      var service = impl.getService();
+      if (!service) { continue; }
+
+      try {
+        var toReturn = service.QueryInterface(interfaceName);
+        Logger.dumpn("Found implementation at: " + cids[i]);
+        return toReturn;
+      } catch (ignored) {}
+    }
+
+    return null;
+  };
+
+  // Keep a reference to the original service. Check for the most recent version of Firefox first
+  var originalPromptService_ = findImplementation(CI.nsIPromptService2, promptServices);
+  var originalPrompter_ = findImplementation(CI.nsIPromptFactory, prompters);
+
+  if (!originalPromptService_) {
     Logger.dumpn("Unable to locate original prompt service");
   }
 
-  Logger.dumpn("Spoofing prompt service");
+  if (!originalPrompter_) {
+    Logger.dumpn("Unable to locate original prompter");
+  }
+
+  this.delegate_ = originalPrompter_ ? originalPrompter_ : originalPromptService_;
+
+  var interfaces = [CI.nsIPromptFactory, CI.nsIPromptService, CI.nsIPromptService2];
+  addInterfaces(this, this.delegate_, interfaces);
+
+  this.QueryInterface = webdriver.firefox.utils.queryInterface(this,
+    [CI.nsIPromptFactory, CI.nsIPromptService, CI.nsIPromptService2]);
+
+  Logger.dumpn("Finished initializing spoofed prompt service");
 }
 
 // Constants from nsIPromtService.idl
@@ -66,148 +200,105 @@ DrivenPromptService.prototype = {
       * this.BUTTON_POS_1)
 };
 
-DrivenPromptService.prototype.findAssociatedDriver_ = function(window) {
-  var ww = CC["@mozilla.org/embedcomp/window-watcher;1"].getService(CI["nsIWindowWatcher"]);
-
-  var parent = window ? window : ww.activeWindow;
-  if (parent.wrappedJSObject) {
-    parent = parent.wrappedJSObject;
-  }
-  var top = parent.top;
-
-  // Now iterate over all open browsers to find the one we belong to
-  var wm = CC["@mozilla.org/appshell/window-mediator;1"].getService(CI["nsIWindowMediator"]);
-  var allWindows = wm.getEnumerator("navigator:browser");
-  while (allWindows.hasMoreElements()) {
-    var chrome = allWindows.getNext().QueryInterface(CI.nsIDOMWindow);
-    if (chrome.content == window) {
-      return chrome.fxdriver;
-    }
-  }
-
-  // There's no meaningful way we can reach this.
-  Logger.dumpn('Unable to find the associated driver');
-  return undefined;
-};
-
-DrivenPromptService.prototype.signalOpenModal_ = function(parent, text) {
-  // Try to grab the top level window
-  var driver = this.findAssociatedDriver_(parent);
-
-  if (driver && driver.response_) {
-    webdriver.modals.setFlag(driver, text);
-
-    var res = driver.response_;
-    res.value = {
-      text: text
-    };
-    res.statusCode = ErrorCode.MODAL_DIALOG_OPENED;
-    res.send();
-  }
-};
 
 DrivenPromptService.prototype.alert = function(aParent, aDialogTitle, aText) {
-  Logger.dumpn("calling alert");
-  this.signalOpenModal_(aParent, aText);
+  webdriver.modals.signalOpenModal(aParent, aText);
 
-  return this.originalPromptService_.alert(aParent, aDialogTitle, aText);
+  var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
+  return service.alert(aParent, aDialogTitle, aText);
 };
 
 DrivenPromptService.prototype.alertCheck =
 function(aParent, aDialogTitle, aText, aCheckMsg, aCheckState) {
-  this.signalOpenModal_(aParent, aText);
+  webdriver.modals.signalOpenModal(aParent, aText);
 
-  return this.originalPromptService_.alertCheck(aParent, aDialogTitle, aText, aCheckMsg, aCheckState);
+  var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
+  return service.alertCheck(aParent, aDialogTitle, aText, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.confirm = function(aParent, aDialogTitle, aText) {
-  this.signalOpenModal_(aParent, aText);
+  webdriver.modals.signalOpenModal(aParent, aText);
 
-  return this.originalPromptService_.confirm(aParent, aDialogTitle, aText);
+  var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
+  return service.confirm(aParent, aDialogTitle, aText);
 };
 
 DrivenPromptService.prototype.confirmCheck =
 function(aParent, aDialogTitle, aText, aCheckMsg, aCheckState) {
-  this.signalOpenModal_(aParent, aText);
+  webdriver.modals.signalOpenModal(aParent, aText);
 
-  return this.originalPromptService_.confirmCheck(aParent, aDialogTitle, aText, aCheckMsg, aCheckState);
+  var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
+  return service.confirmCheck(aParent, aDialogTitle, aText, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.confirmEx =
 function(aParent, aDialogTitle, aText, aButtonFlags, aButton0Title, aButton1Title, aButton2Title, aCheckMsg, aCheckState) {
-  this.signalOpenModal_(aParent, aText);
+  webdriver.modals.signalOpenModal(aParent, aText);
 
-  return this.originalPromptService_.confirmEx(aParent, aDialogTitle, aText, aButtonFlags, aButton0Title, aButton1Title, aButton2Title, aCheckMsg, aCheckState);
+  var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
+  return service.confirmEx(aParent, aDialogTitle, aText, aButtonFlags, aButton0Title, aButton1Title, aButton2Title, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.prompt =
 function(aParent, aDialogTitle, aText, aValue, aCheckMsg, aCheckState) {
-  this.signalOpenModal_(aParent, aText);
-  return this.originalPromptService_.prompt(aParent, aDialogTitle, aText, aValue, aCheckMsg, aCheckState);
+  webdriver.modals.signalOpenModal(aParent, aText);
+
+  var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
+  return service.prompt(aParent, aDialogTitle, aText, aValue, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.promptUsernameAndPassword =
 function(aParent, aDialogTitle, aText, aUsername, aPassword, aCheckMsg, aCheckState) {
-  return this.originalPromptService_.promptUsernameAndPassword(aParent, aDialogTitle, aText, aUsername, aPassword, aCheckMsg, aCheckState);
+  var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
+  return service.promptUsernameAndPassword(aParent, aDialogTitle, aText, aUsername, aPassword, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.promptPassword =
 function(aParent, aDialogTitle, aText, aPassword, aCheckMsg, aCheckState) {
-  return this.originalPromptService_.promptPassword(aParent, aDialogTitle, aText, aPassword, aCheckMsg, aCheckState);
+  var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
+  return service.promptPassword(aParent, aDialogTitle, aText, aPassword, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.select =
 function(aParent, aDialogTitle, aText, aCount, aSelectList, aOutSelection) {
-  return this.originalPromptService_.select(aParent, aDialogTitle, aText, aCount, aSelectList, aOutSelection);
+  var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
+  return service.select(aParent, aDialogTitle, aText, aCount, aSelectList, aOutSelection);
 };
 
 
 // nsIPromptService2 functions
 DrivenPromptService.prototype.promptAuth = function(aParent, aChannel, level, authInfo, checkboxLabel, checkValue) {
-  this.signalOpenModal_(aParent, aText);
-  return this.originalPromptService_.promptAuth(aParent, aChannel, level, authInfo, checkboxLabel, checkValue);
+  webdriver.modals.signalOpenModal(aParent, aText);
+
+  var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
+  return service.promptAuth(aParent, aChannel, level, authInfo, checkboxLabel, checkValue);
 };
 
 DrivenPromptService.prototype.asyncPromptAuth = function(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel,checkValue) {
-  return this.originalPromptService_.asyncPromptAuth(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel,checkValue)
+  webdriver.modals.signalOpenModal(aParent, aText);
+
+  var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
+  return service.asyncPromptAuth(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel,checkValue)
+};
+
+
+// nsIPromptFactory
+DrivenPromptService.prototype.getPrompt = function (domWin, iid) {
+  var factory = this.delegate_.QueryInterface(CI.nsIPromptFactory);
+  var rawPrompt = factory.getPrompt(domWin, iid);
+  
+  return new ObservingAlert(domWin, rawPrompt);
 };
 
 // nsIObserver
 DrivenPromptService.prototype.observe = function(aSubject, aTopic, aData) {
-  Logger.dumpn("Prompt service observing: " + aSubject);
-  return this.originalPromptService_.observe(aSubject, aTopic, aData);
-}
-
-
-DrivenPromptService.prototype.QueryInterface = function(iid) {
-  var supported = function(toCheck, iid, possibleMatch) {
-    if (!iid.equals(possibleMatch)) {
-      return false;
-    }
-
-    try {
-      toCheck.QueryInterface(possibleMatch);
-      return true;
-    } catch (ignored) {
-      return false;
-    }
-  };
-
-  var matched = false;
-  matched |= supported(this.originalPromptService_, iid, CI.nsIObserver);
-  matched |= supported(this.originalPromptService_, iid, CI.nsIPromptService);
-  matched |= supported(this.originalPromptService_, iid, CI.nsIPromptService2);
-  matched |= supported(this.originalPromptService_, iid, CI.nsISupports);
-
-  if (matched) {
-    return this;
-  }
-
-  Logger.dumpn("Asked to cast to unknown iid: " + iid);
-  throw Components.results.NS_ERROR_NO_INTERFACE;
+  return this.delegate_.observe(aSubject, aTopic, aData);
 };
 
-const PROMPT_CONTRACT_ID = "@mozilla.org/embedcomp/prompt-service;1";
+
+const PROMPT_SERVICE_CONTRACT_ID = "@mozilla.org/embedcomp/prompt-service;1";
+const PROMPTER_CONTRACT_ID = "@mozilla.org/prompter;1";
+
 // This is defined by us
 const DRIVEN_PROMPT_SERVICE_CLASS_ID = Components.ID('{e26dbdcd-d3ba-4ded-88c3-6cb07ee3e9e0}');
 
@@ -235,7 +326,9 @@ PromptServiceSpoofModule.prototype.registerSelf = function(aCompMgr, aFileSpec, 
   }
   aCompMgr = aCompMgr.QueryInterface(CI.nsIComponentRegistrar);
   aCompMgr.registerFactoryLocation(
-      DRIVEN_PROMPT_SERVICE_CLASS_ID, "Driven prompt service", PROMPT_CONTRACT_ID, aFileSpec, aLocation, aType);
+      DRIVEN_PROMPT_SERVICE_CLASS_ID, "Driven prompt service", PROMPT_SERVICE_CONTRACT_ID, aFileSpec, aLocation, aType);
+  aCompMgr.registerFactoryLocation(
+      DRIVEN_PROMPT_SERVICE_CLASS_ID, "Driven prompter service", PROMPTER_CONTRACT_ID, aFileSpec, aLocation, aType);
 };
 
 PromptServiceSpoofModule.prototype.unregisterSelf = function(aCompMgr, aLocation, aType) {

@@ -26,10 +26,39 @@ goog.provide('webdriver.firefox.utils');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('goog.array');
+goog.require('Logger');
 
 
 var CC = Components.classes;
 var CI = Components.interfaces;
+var CR = Components.results;
+
+
+webdriver.firefox.utils.queryInterface = function(self, iids) {
+  return function(iid) {
+    if (!iid) {
+      return CR.NS_ERROR_NO_INTERFACE;
+    }
+
+    if (iid.equals(CI.nsISupports)) {
+      return self;
+    }
+
+    var match = goog.array.reduce(iids, function(result, curr) {
+      if (!curr) {
+        return result;
+      }
+
+      return result || curr.equals(iid);
+    }, false);
+
+    if (match) {
+      return self;
+    }
+    throw CR.NS_ERROR_NO_INTERFACE;
+  };
+};
 
 
 webdriver.firefox.utils.windowMediator = function() {

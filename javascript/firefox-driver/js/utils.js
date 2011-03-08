@@ -1031,6 +1031,17 @@ Utils.wrapResult = function(result, doc) {
         return array;
       }
 
+      try {
+        var nodeList = result.QueryInterface(CI.nsIDOMNodeList);
+        var array = [];
+        for (var i = 0; i < nodeList.length; i++) {
+          array.push(Utils.wrapResult(result.item(i), doc));
+        }
+        return array;
+      } catch (ignored) {
+        Logger.dumpn(ignored);
+      }
+
       var convertedObj = {};
       for (var prop in result) {
         convertedObj[prop] = Utils.wrapResult(result[prop], doc);
