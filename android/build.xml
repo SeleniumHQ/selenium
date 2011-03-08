@@ -49,7 +49,6 @@
     <copy file="${build.location}/java/server/src/org/openqa/jetty/jetty.jar" tofile="libs/jetty.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/base.jar" tofile="libs/base.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/internal/codecs.jar" tofile="libs/codecs.jar" />
-    <copy file="${build.location}/java/client/src/org/openqa/selenium/internal/logging.jar" tofile="libs/logging.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/webdriver-api.jar" tofile="libs/webdriver-api.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/remote/common.jar" tofile="libs/webdriver-common.jar" />
     <copy
