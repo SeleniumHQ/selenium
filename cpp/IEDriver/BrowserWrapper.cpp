@@ -32,6 +32,7 @@ BrowserWrapper::BrowserWrapper(IWebBrowser2 *browser, HWND hwnd, HWND browser_ma
 }
 
 BrowserWrapper::~BrowserWrapper(void) {
+	this->DetachEvents();
 }
 
 void BrowserWrapper::GetDocument(IHTMLDocument2 **doc) {

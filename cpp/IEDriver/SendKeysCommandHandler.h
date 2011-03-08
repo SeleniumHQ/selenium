@@ -95,11 +95,12 @@ protected:
 					key_data.text = keys.c_str();
 					key_data.ieProcId = ie_process_id;
 
-					DWORD thread_id;
-					::CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) &SendKeysCommandHandler::SetFileValue, (void *) &key_data, 0, &thread_id);
+					unsigned int thread_id;
+					HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &SendKeysCommandHandler::SetFileValue, (void *) &key_data, 0, &thread_id));
 
 					element->click();
 					// We're now blocked until the dialog closes.
+					::CloseHandle(thread_handle);
 					return;
 				}
 
@@ -115,7 +116,8 @@ protected:
 		}
 	}
 private:
-	static WORD WINAPI SendKeysCommandHandler::SetFileValue(FileNameData *data) {
+	static unsigned int WINAPI SendKeysCommandHandler::SetFileValue(void *file_data) {
+		FileNameData* data = reinterpret_cast<FileNameData*>(file_data);
 		::Sleep(100);
 		HWND ie_main_window_handle = data->main;
 		HWND dialog_window_handle = ::GetLastActivePopup(ie_main_window_handle);

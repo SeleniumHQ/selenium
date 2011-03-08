@@ -156,8 +156,8 @@ LRESULT BrowserManager::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 			// on this thread. This call happens in a message loop, and we would be 
 			// unable to process the COM events in the browser if we put this thread
 			// to sleep.
-			DWORD thread_id;
-			HANDLE thread_handle = ::CreateThread(NULL, 0, &BrowserManager::WaitThreadProc, (LPVOID)this->m_hWnd, 0, &thread_id);
+			unsigned int thread_id;
+			HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &BrowserManager::WaitThreadProc, (void *)this->m_hWnd, 0, &thread_id));
 			if (thread_handle != NULL) {
 				::CloseHandle(thread_handle);
 			}
@@ -183,7 +183,6 @@ LRESULT BrowserManager::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 	delete[] str;
 	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<BrowserWrapper>>::iterator found_iterator = this->managed_browsers_.find(browser_id);
 	if (found_iterator != this->managed_browsers_.end()) {
-		//delete found_iterator->second;
 		this->managed_browsers_.erase(browser_id);
 		if (this->managed_browsers_.size() == 0) {
 			this->current_browser_id_ = L"";
@@ -192,7 +191,7 @@ LRESULT BrowserManager::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 	return 0;
 }
 
-DWORD WINAPI BrowserManager::WaitThreadProc(LPVOID lpParameter) {
+unsigned int WINAPI BrowserManager::WaitThreadProc(LPVOID lpParameter) {
 	HWND window_handle = (HWND)lpParameter;
 	::Sleep(WAIT_TIME_IN_MILLISECONDS);
 	::PostMessage(window_handle, WD_WAIT, NULL, NULL);
@@ -200,7 +199,7 @@ DWORD WINAPI BrowserManager::WaitThreadProc(LPVOID lpParameter) {
 }
 
 
-DWORD WINAPI BrowserManager::ThreadProc(LPVOID lpParameter) {
+unsigned int WINAPI BrowserManager::ThreadProc(LPVOID lpParameter) {
 	// Optional TODO: Create a struct to pass in via lpParameter
 	// instead of just a pointer to an HWND. That way, we could
 	// pass the mongoose server port via a single call, rather than

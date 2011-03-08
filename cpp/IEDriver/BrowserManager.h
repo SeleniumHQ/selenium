@@ -64,8 +64,8 @@ public:
 
 	std::wstring manager_id(void) const { return this->manager_id_; }
 
-	static DWORD WINAPI ThreadProc(LPVOID lpParameter);
-	static DWORD WINAPI WaitThreadProc(LPVOID lpParameter);
+	static unsigned int WINAPI ThreadProc(LPVOID lpParameter);
+	static unsigned int WINAPI WaitThreadProc(LPVOID lpParameter);
 
 	std::wstring current_browser_id(void) const { return this->current_browser_id_; }
 	void set_current_browser_id(const std::wstring& browser_id) { this->current_browser_id_ = browser_id; }
@@ -122,8 +122,6 @@ private:
 
 	WebDriverCommand current_command_;
 	std::wstring serialized_response_;
-	int new_browser_event_id_;
-	int browser_quitting_event_id_;
 	std::map<int, std::tr1::shared_ptr<WebDriverCommandHandler>> command_handlers_;
 	bool is_waiting_;
 

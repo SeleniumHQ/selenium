@@ -28,11 +28,10 @@ IEDriverServer::~IEDriverServer(void) {
 }
 
 std::wstring IEDriverServer::CreateSession() {
-	DWORD thread_id;
+	unsigned int thread_id;
 	HWND manager_window_handle = NULL;
 	HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, EVENT_NAME);
-	HANDLE thread_handle = ::CreateThread(NULL, 0, &BrowserManager::ThreadProc, (LPVOID)&manager_window_handle, 0, &thread_id);
-
+	HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &BrowserManager::ThreadProc, (void *)&manager_window_handle, 0, &thread_id));
 	if (event_handle != NULL) {
 		::WaitForSingleObject(event_handle, INFINITE);
 		::CloseHandle(event_handle);
@@ -55,7 +54,17 @@ std::wstring IEDriverServer::CreateSession() {
 void IEDriverServer::ShutDownSession(const std::wstring& session_id) {
 	std::map<std::wstring, HWND>::iterator it = this->sessions_.find(session_id);
 	if (it != this->sessions_.end()) {
+		DWORD process_id;
+		DWORD thread_id = ::GetWindowThreadProcessId(it->second, &process_id);
+		HANDLE thread_handle = ::OpenThread(SYNCHRONIZE, FALSE, thread_id);
 		::SendMessage(it->second, WM_CLOSE, NULL, NULL);
+		if (thread_handle != NULL) {
+			DWORD wait_result = ::WaitForSingleObject(thread_handle, 30000);
+			if (wait_result != WAIT_OBJECT_0) {
+				LOG(DEBUG) << "Waiting for thread to end returned " << wait_result;
+			}
+			::CloseHandle(thread_handle);
+		}
 		this->sessions_.erase(session_id);
 	}
 }
