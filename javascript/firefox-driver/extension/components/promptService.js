@@ -28,7 +28,6 @@ function addInterfaces(to, delegate, interfaces) {
       var queried = delegate.QueryInterface(iid);
       for (var i in queried) {
         if (!goog.array.contains(EXCLUDED_NAMES,  i.toString())) {
-          Logger.dumpn("adding: " + i);
           to[i] = queried[i];
         }
       }
