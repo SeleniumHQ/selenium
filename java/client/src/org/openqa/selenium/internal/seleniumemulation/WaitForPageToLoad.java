@@ -49,7 +49,10 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
       public boolean until() {
         try {
           Object result = ((JavascriptExecutor) driver).executeScript(
-              "return document['readyState'] ? 'complete' == document.readyState : true");
+              // TODO(simon): Extract the readystate jar and use that
+              "if (document['readyState']) { return 'complete' == document.readyState; }\n" +
+              "if (document.all) { return document.all.length > 0; }\n" +
+              "return true;");
           if (result != null && result instanceof Boolean && (Boolean) result) {
             long now = System.currentTimeMillis();
             if (now - started > timeToWait) {
