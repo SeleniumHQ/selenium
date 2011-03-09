@@ -27,6 +27,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
@@ -51,6 +52,19 @@ public class JettyService extends Service {
 
   private PowerManager.WakeLock wakeLock;
 
+  private final IBinder binder = new WebDriverBinder();
+  
+  public class WebDriverBinder extends Binder {
+	  public JettyService getService() {
+		  return JettyService.this;
+	  }
+  }
+  
+  @Override
+  public IBinder onBind(Intent intent) {
+    return binder;
+  }
+  
   /**
    * Android Service Start
    * 
@@ -58,30 +72,8 @@ public class JettyService extends Service {
    */
   @Override
   public void onStart(Intent intent, int startId) {
-    if (server!= null && server.isRunning()) {
-      Toast.makeText(JettyService.this, R.string.jetty_already_started, Toast.LENGTH_SHORT).show();
-      return;
-    }
-
-    try {
-      // Get a wake lock to stop the cpu going to sleep
-      PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-      wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "IJetty");
-      wakeLock.acquire();
-
-      AndroidDriver.setContext(this);
-
-      startJetty();
-
-      notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-      Toast.makeText(JettyService.this, R.string.jetty_started, Toast.LENGTH_SHORT).show();
-
-      Logger.log(Log.INFO, LOG_TAG, "Jetty started");
-      super.onStart(intent, startId);
-    } catch (Exception e) {
-      Logger.log(Log.ERROR, LOG_TAG, "Error starting jetty" + e);
-      Toast.makeText(this, getText(R.string.jetty_not_started), Toast.LENGTH_SHORT).show();
-    }
+    startServer();
+    super.onStart(intent, startId);
   }
 
 
@@ -118,11 +110,6 @@ public class JettyService extends Service {
   public void onLowMemory() {
     Logger.log(Log.INFO, LOG_TAG, "Low on memory");
     super.onLowMemory();
-  }
-
-  @Override
-  public IBinder onBind(Intent intent) {
-    return null;
   }
 
   /**
@@ -187,16 +174,39 @@ public class JettyService extends Service {
     }
   }
 
-  protected void startJetty() throws Exception {
-    System.setProperty("org.mortbay.log.class", "org.mortbay.log.AndroidLog");
-    server = new Server();
+  public void startServer() {
+    if (server!= null && server.isRunning()) {
+      Toast.makeText(JettyService.this, R.string.jetty_already_started, Toast.LENGTH_SHORT).show();
+      return;
+    }
 
-    configureConnectors();
-    configureHandlers();
+    try {
+      // Get a wake lock to stop the cpu going to sleep
+      PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+      wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "IJetty");
+      wakeLock.acquire();
 
-    server.start();
+      AndroidDriver.setContext(this);
 
-    HttpGenerator.setServerVersion("WebDriver jetty");
+      System.setProperty("org.mortbay.log.class", "org.mortbay.log.AndroidLog");
+      server = new Server();
+
+      configureConnectors();
+      configureHandlers();
+
+      server.start();
+
+      HttpGenerator.setServerVersion("WebDriver jetty");
+
+      notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+      Toast.makeText(JettyService.this, R.string.jetty_started, Toast.LENGTH_SHORT).show();
+
+      Logger.log(Log.INFO, LOG_TAG, "Jetty started");
+    } catch (Exception e) {
+      Logger.log(Log.ERROR, LOG_TAG, "Error starting jetty" + e);
+      Toast.makeText(this, getText(R.string.jetty_not_started), Toast.LENGTH_SHORT).show();
+      throw new RuntimeException("Jetty failed to start!");
+    }
   }
 
   protected void stopJetty() throws Exception {

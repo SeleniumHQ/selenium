@@ -20,12 +20,17 @@ package org.openqa.selenium.android.app;
 import com.google.common.collect.Iterables;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
@@ -41,6 +46,7 @@ import org.openqa.selenium.android.intents.IntentReceiver;
 import org.openqa.selenium.android.intents.IntentReceiver.IntentReceiverListener;
 import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
 import org.openqa.selenium.android.intents.IntentSender;
+import org.openqa.selenium.android.server.JettyService;
 import org.openqa.selenium.android.sessions.SessionCookieManager;
 
 import java.io.ByteArrayOutputStream;
@@ -61,9 +67,19 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
   private WebDriverWebView currentView;
   private WebViewManager viewManager = new WebViewManager();  
   private final IntentReceiverRegistrar intentReg;
-  
 
   private final IntentSender sender = new IntentSender(this);
+  private boolean bound;
+  
+  private ServiceConnection mConnection = new ServiceConnection() {
+    public void onServiceConnected(ComponentName className, IBinder service) {
+      bound = true;
+    }
+
+    public void onServiceDisconnected(ComponentName arg0) {
+      bound = false;
+    }
+  };
 
   public void sendIntent(String action, Object... args) {
     sender.broadcast(action, args);
@@ -119,6 +135,22 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
     
     initIntentReceivers();
   }
+  
+  @Override
+  protected void onStart() {
+	  super.onStart();
+	  Intent intent = new Intent(this, JettyService.class);
+	  bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+  }
+
+  @Override
+  protected void onStop() {
+    super.onStop();
+    if (bound) {
+    	unbindService(mConnection);
+    	bound = false;
+	  }
+	}
 
   private void displayProgressBar() {
     // Request the progress bar to be shown in the title and set it to 0
