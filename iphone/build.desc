@@ -1,6 +1,7 @@
 
 js_fragment_header(name = "atoms",
   deps = [
+    "//javascript/iphone-driver:execute_async_script",
     "//javascript/webdriver-atoms:clear",
     "//javascript/webdriver-atoms:click",
     "//javascript/webdriver-atoms:execute_script",
@@ -16,7 +17,6 @@ js_fragment_header(name = "atoms",
     "//javascript/webdriver-atoms:submit",
     "//javascript/webdriver-atoms:toggle",
     "//javascript/webdriver-atoms:type",
-    "//iphone/src/js:execute_async_script",
   ],
   out = "iphone/src/objc/atoms.h",
   utf8 = "true")

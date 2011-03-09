@@ -266,7 +266,6 @@ module Javascript
             "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" " <<
             "-p third_party/closure/goog/ " <<
             "-p javascript " <<
-            "-p iphone/src/js " <<
             "-i #{temp} "
 
         mkdir_p File.dirname(output)
