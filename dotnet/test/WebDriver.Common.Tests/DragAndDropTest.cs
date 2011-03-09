@@ -20,13 +20,10 @@ namespace OpenQA.Selenium
             IRenderedWebElement img = (IRenderedWebElement)driver.FindElement(By.Id("test1"));
             Point expectedLocation = drag(img, img.Location, 150, 200);
             Assert.AreEqual(expectedLocation, img.Location);
-            driver.Manage().Speed = Speed.Slow;
             expectedLocation = drag(img, img.Location, -50, -25);
             Assert.AreEqual(expectedLocation, img.Location);
-            driver.Manage().Speed = Speed.Medium;
             expectedLocation = drag(img, img.Location, 0, 0);
             Assert.AreEqual(expectedLocation, img.Location);
-            driver.Manage().Speed = Speed.Fast;
             expectedLocation = drag(img, img.Location, 1, -1);
             Assert.AreEqual(expectedLocation, img.Location);
         }
@@ -80,22 +77,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Chrome)]
-        public void MouseSpeed()
-        {
-            driver.Url = dragAndDropPage;
-            driver.Manage().Speed = Speed.Slow;
-            Assert.AreEqual(Speed.Slow, driver.Manage().Speed);
-            driver.Manage().Speed = Speed.Medium;
-            Assert.AreEqual(Speed.Medium, driver.Manage().Speed);
-            driver.Manage().Speed = Speed.Fast;
-            Assert.AreEqual(Speed.Fast, driver.Manage().Speed);
-        }
-
-        [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE, "Location property not taking scroll position into account")]
         [IgnoreBrowser(Browser.Chrome)]
         public void ShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort()
         {
