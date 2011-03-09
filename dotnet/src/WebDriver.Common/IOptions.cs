@@ -32,6 +32,7 @@ namespace OpenQA.Selenium
         /// Gets or sets a value representing the speed with which user interactions 
         /// take place in the browser.
         /// </summary>
+        [Obsolete("This property will be removed in a future release.")]
         Speed Speed { get; set; }
 
         /// <summary>

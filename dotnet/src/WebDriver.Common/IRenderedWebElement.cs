@@ -64,6 +64,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <remarks>The <see cref="Hover"/> method requires native events to be enabled
         /// in order to work as expected.</remarks>
+        [Obsolete("This method will be removed in a future release. Please use the user interactions API instead.")]
         void Hover();
         
         /// <summary>
