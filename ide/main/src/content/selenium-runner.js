@@ -377,34 +377,39 @@ function showElement(locator) {
             }
         }
         if (e) {
-            var flasher = Components.classes["@mozilla.org/inspector/flasher;1"].createInstance()
-                .QueryInterface(Components.interfaces.inIFlasher);
-            flasher.color = "#88ff88";
-            flasher.thickness = 2;
-            flasher.invert = false;
+            if (navigator.appVersion.indexOf("Mac") != -1) {
+                //Samit: Enh: Provide this functionality on Macs by using the builtin highlight function since flasher component is not supported on Mac
+                // see the dom inspector bug for more info - https://bugzilla.mozilla.org/show_bug.cgi?id=368608
+                highlight(e);
+            }else {
+                var flasher = Components.classes["@mozilla.org/inspector/flasher;1"].createInstance()
+                    .QueryInterface(Components.interfaces.inIFlasher);
+                flasher.color = "#88ff88";
+                flasher.thickness = 2;
+                flasher.invert = false;
 
-            flasher.scrollElementIntoView(e);
-            flasher.drawElementOutline(e);
+                flasher.scrollElementIntoView(e);
+                flasher.drawElementOutline(e);
 
-            var flashIndex = 0;
+                var flashIndex = 0;
 
-            function animateFlasher() {
-                var timeout = 0;
-                if (flashIndex % 2 == 0) {
-                    flasher.repaintElement(e);
-                    timeout = 300;
-                } else {
-                    flasher.drawElementOutline(e);
-                    timeout = 300;
+                function animateFlasher() {
+                    var timeout = 0;
+                    if (flashIndex % 2 == 0) {
+                        flasher.repaintElement(e);
+                        timeout = 300;
+                    } else {
+                        flasher.drawElementOutline(e);
+                        timeout = 300;
+                    }
+                    flashIndex++;
+                    if (flashIndex < 3) {
+                        setTimeout(animateFlasher, timeout);
+                    }
                 }
-                flashIndex++;
-                if (flashIndex < 3) {
-                    setTimeout(animateFlasher, timeout);
-                }
+
+                setTimeout(animateFlasher, 300);
             }
-
-            setTimeout(animateFlasher, 300);
-
         } else {
             LOG.error("locator not found: " + locator);
         }

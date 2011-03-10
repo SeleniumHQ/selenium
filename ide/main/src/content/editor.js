@@ -194,12 +194,6 @@ function Editor(window) {
 
     this.oldtc = null;
     this.alreadySaved = false;
-    
-    // macs can't currently show 'find' elements. well, they can find, but can't display
-    // see the dom inspector bug for more info - https://bugzilla.mozilla.org/show_bug.cgi?id=368608
-    if (navigator.appVersion.indexOf("Mac")!=-1) {
-        document.getElementById("findElementButton").hidden = true;
-    }
 }
 
 Editor.prototype.saveTC = function(){
