@@ -42,6 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UnableToSetCookieException.cs" />
+    <Compile Include="InvalidCookieDomainException.cs" />
+    <Compile Include="ICapabilities.cs" />
+    <Compile Include="IHasCapabilities.cs" />
+    <Compile Include="UnhandledAlertException.cs" />
+    <Compile Include="NoAlertPresentException.cs" />
     <Compile Include="IAlert.cs" />
     <Compile Include="IHasInputDevices.cs" />
     <Compile Include="IKeyboard.cs" />

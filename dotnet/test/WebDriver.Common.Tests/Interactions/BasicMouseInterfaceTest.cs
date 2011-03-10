@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium.Interactions
 {
-    [Ignore]
     [TestFixture]
     public class BasicMouseInterfaceTest : DriverTestFixture
     {
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowDraggingElementWithMouseMovesItToAnotherList()
         {
             PerformDragAndDropWithMouse();
@@ -18,10 +21,15 @@ namespace OpenQA.Selenium.Interactions
             Assert.AreEqual(6, dragInto.FindElements(By.TagName("li")).Count);
         }
 
-        // This test is very similar to testDraggingElementWithMouse. The only
+        // This test is very similar to DraggingElementWithMouse. The only
         // difference is that this test also verifies the correct events were fired.
         [Test]
-        public void testDraggingElementWithMouseFiresEvents()
+        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
+        public void DraggingElementWithMouseFiresEvents()
         {
             PerformDragAndDropWithMouse();
             IWebElement dragReporter = driver.FindElement(By.Id("dragging_reports"));
@@ -30,6 +38,11 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowDragAndDrop()
         {
             driver.Url = droppableItems;
@@ -66,6 +79,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [Ignore("DoubleClick not yet implemented in common native events code")]
         public void ShouldAllowDoubleClick()
         {
             driver.Url = javascriptPage;
@@ -79,6 +93,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [Ignore("ContextClick not yet implemented in common native events code")]
         public void ShouldAllowContextClick()
         {
             driver.Url = javascriptPage;
@@ -92,6 +107,11 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowMoveAndClick()
         {
             driver.Url = javascriptPage;
@@ -105,6 +125,11 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldNotMoveToANullLocator()
         {
             driver.Url = javascriptPage;

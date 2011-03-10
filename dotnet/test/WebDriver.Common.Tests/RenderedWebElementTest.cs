@@ -74,11 +74,18 @@ namespace OpenQA.Selenium
                 Assert.Ignore("Skipping test: Simulating hover needs native events");
             }
 
+            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
+            if (inputDevicesDriver == null)
+            {
+                return;
+            }
+
             IRenderedWebElement item = (IRenderedWebElement)driver.FindElement(By.Id("item1"));
             Assert.AreEqual("", item.Text);
 
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
             element.Hover();
+            //inputDevicesDriver.ActionBuilder.MoveToElement(element).Build().Perform();
 
             item = (IRenderedWebElement)driver.FindElement(By.Id("item1"));
             Assert.AreEqual("Item 1", item.Text);
@@ -108,8 +115,6 @@ namespace OpenQA.Selenium
             {
                 Assert.Ignore("Skipping test: Simulating hover needs native events");
             }
-
-            element.Hover();
 
             IRenderedWebElement target = (IRenderedWebElement)driver.FindElement(By.Id("item1"));
             Assert.IsTrue(target.Displayed);

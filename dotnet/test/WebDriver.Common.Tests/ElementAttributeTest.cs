@@ -19,9 +19,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "Issue 758")]
-        [IgnoreBrowser(Browser.IE, "Issue 758")]
-        public void ShouldReturnNullWhenGettingSrcAttributeOfInvalidImgTag() 
+        public void ShouldReturnNullWhenGettingSrcAttributeOfInvalidImgTag()
         {
             driver.Url = simpleTestPage;
             IWebElement img = driver.FindElement(By.Id("invalidImgTag"));
@@ -257,5 +255,34 @@ namespace OpenQA.Selenium
             Assert.AreEqual("2", td2.GetAttribute("colspan"), "td2 colspan should be 2");
         }
 
+        // This is a test-case re-creating issue 900.
+        [Test]
+        public void ShouldReturnValueOfOnClickAttribute()
+        {
+            driver.Url = javascriptPage;
+
+            IWebElement mouseclickDiv = driver.FindElement(By.Id("mouseclick"));
+
+            string onClickValue = mouseclickDiv.GetAttribute("onclick");
+            string expectedOnClickValue = "displayMessage('mouse click');";
+            List<string> acceptableOnClickValues = new List<string>();
+            acceptableOnClickValues.Add("javascript:" + expectedOnClickValue);
+            acceptableOnClickValues.Add("function anonymous()\n{\n" + expectedOnClickValue + "\n}");
+            acceptableOnClickValues.Add("function onclick()\n{\n" + expectedOnClickValue + "\n}");
+            Assert.IsTrue(acceptableOnClickValues.Contains(onClickValue));
+
+            IWebElement mousedownDiv = driver.FindElement(By.Id("mousedown"));
+            Assert.IsNull(mousedownDiv.GetAttribute("onclick"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "IE7 Does not support SVG")]
+        [IgnoreBrowser(Browser.IPhone, "SVG elements crash the iWebDriver app (issue 1134)")]
+        public void testGetAttributeDoesNotReturnAnObjectForSvgProperties()
+        {
+            driver.Url = svgPage;
+            IWebElement svgElement = driver.FindElement(By.Id("rotate"));
+            Assert.AreEqual("rotate(30)", svgElement.GetAttribute("transform"));
+        }
     }
 }

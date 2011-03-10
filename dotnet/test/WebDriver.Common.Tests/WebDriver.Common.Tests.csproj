@@ -67,6 +67,8 @@
     <Compile Include="ClickTest.cs" />
     <Compile Include="CookieImplementationTest.cs" />
     <Compile Include="CookieTest.cs" />
+    <Compile Include="AtomsInjectionTest.cs" />
+    <Compile Include="SlowLoadingPageTest.cs" />
     <Compile Include="CorrectEventFiringTest.cs" />
     <Compile Include="DragAndDropTest.cs" />
     <Compile Include="DriverElementFindingTest.cs" />

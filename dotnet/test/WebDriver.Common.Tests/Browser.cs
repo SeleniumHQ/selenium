@@ -10,6 +10,7 @@ namespace OpenQA.Selenium
         Chrome,
         ChromeNonWindows,
         Remote, 
-        IPhone
+        IPhone,
+        Android
     }
 }

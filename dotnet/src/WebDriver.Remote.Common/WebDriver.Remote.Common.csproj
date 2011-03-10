@@ -56,7 +56,6 @@
     <Compile Include="DriverCommand.cs" />
     <Compile Include="ErrorResponse.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="ICapabilities.cs" />
     <Compile Include="ICommandExecutor.cs" />
     <Compile Include="JsonConverters\CharArrayJsonConverter.cs" />
     <Compile Include="JsonConverters\CookieJsonConverter.cs" />

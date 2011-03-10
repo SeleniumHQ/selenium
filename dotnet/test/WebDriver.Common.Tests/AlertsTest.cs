@@ -148,7 +148,7 @@ namespace OpenQA.Selenium
         [Test]
         [Ignore]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith()
+        public void ShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith()
         {
             driver.Url = alertPage;
 
@@ -166,6 +166,21 @@ namespace OpenQA.Selenium
 
             // but the next call should be good.
             Assert.AreEqual("Testing Alerts", driver.Title);
+        }
+
+
+        [Test]
+        [Ignore]
+        [ExpectedException(typeof(NoAlertPresentException))]
+        public void AlertShouldNotAllowAdditionalCommandsIfDimissed()
+        {
+            driver.Url = alertPage;
+
+            driver.FindElement(By.Id("alert")).Click();
+
+            IAlert alert = driver.SwitchTo().Alert();
+            alert.Dismiss();
+            string text = alert.Text;
         }
 
         //private Alert switchToAlert(WebDriver driver) {

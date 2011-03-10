@@ -39,41 +39,6 @@ namespace OpenQA.Selenium
             Assert.AreEqual("Fish and chips!", newText);
         }
 
-        //    public void ShouldAllowTheUserToOkayConfirmAlerts() {
-        //		driver.Url = (alertPage);
-        //		driver.FindElement(By.Id("confirm").Click();
-        //		driver.switchTo().alert().accept();
-        //		assertEquals("Hello WebDriver", driver.Title);
-        //	}
-        //
-        //	public void ShouldAllowUserToDismissAlerts() {
-        //		driver.Url = (alertPage);
-        //		driver.FindElement(By.Id("confirm").Click();
-        //
-        //		driver.switchTo().alert().dimiss();
-        //		assertEquals("Testing Alerts", driver.Title);
-        //	}
-        //
-        //	public void ShouldBeAbleToGetTheTextOfAnAlert() {
-        //		driver.Url = (alertPage);
-        //		driver.FindElement(By.Id("confirm").Click();
-        //
-        //		String alertText = driver.switchTo().alert().Text;
-        //		assertEquals("Are you sure?", alertText);
-        //	}
-        //
-        //	public void ShouldThrowAnExceptionIfAnAlertIsBeingDisplayedAndTheUserAttemptsToCarryOnRegardless() {
-        //		driver.Url = (alertPage);
-        //		driver.FindElement(By.Id("confirm").Click();
-        //
-        //		try {
-        //			driver.Url = (simpleTestPage);
-        //			fail("Expected the alert not to allow further progress");
-        //		} catch (UnhandledAlertException e) {
-        //			// This is good
-        //		}
-        //	}
-
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "JavaScript execution is asynchronous with the driver in IE")]
@@ -277,6 +242,7 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.IE)]
+        [NeedsFreshDriver(AfterTest = true)]
         public void ShouldBeAbleToClickALinkThatClosesAWindow()
         {
             driver.Url = javascriptPage;

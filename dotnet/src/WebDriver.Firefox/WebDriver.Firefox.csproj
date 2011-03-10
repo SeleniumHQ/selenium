@@ -86,7 +86,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>if exist $(SolutionDir)build\firefox\webdriver.xpi copy /y $(SolutionDir)build\firefox\webdriver.xpi $(TargetDir)
+    <PostBuildEvent>if exist $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi copy /y $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi $(TargetDir)
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

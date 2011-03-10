@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium.Interactions
 {
-    [Ignore]
     [TestFixture]
     public class CombinedInputActionsTest : DriverTestFixture
     {
         [Test]
+        [IgnoreBrowser(Browser.IE, "Shift-click implementation not complete")]
+        [IgnoreBrowser(Browser.Firefox, "Shift-click implementation not complete")]
+        [IgnoreBrowser(Browser.Chrome, "Shift-click implementation not complete")]
+        [IgnoreBrowser(Browser.Remote, "Shift-click implementation not complete")]
+        [IgnoreBrowser(Browser.IPhone, "Shift-click implementation not complete")]
+        [IgnoreBrowser(Browser.Android, "Shift-click implementation not complete")]
         public void ShouldAllowClickingOnFormElements()
         {
             driver.Url = formSelectionPage;
@@ -34,6 +38,12 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Control-click implementation not complete")]
+        [IgnoreBrowser(Browser.Firefox, "Control-click implementation not complete")]
+        [IgnoreBrowser(Browser.Chrome, "Control-click implementation not complete")]
+        [IgnoreBrowser(Browser.Remote, "Control-click implementation not complete")]
+        [IgnoreBrowser(Browser.IPhone, "Control-click implementation not complete")]
+        [IgnoreBrowser(Browser.Android, "Control-click implementation not complete")]
         public void ShouldAllowSelectingMultipleItems()
         {
             driver.Url = selectableItemsPage;

@@ -31,5 +31,16 @@ namespace OpenQA.Selenium
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Size elementSize = elem.Size;
         }
+
+        [Test]
+        [Category("Javascript")]
+        [ExpectedException(typeof(StaleElementReferenceException))]
+        public void ShouldNotCrashWhenQueryingTheAttributeOfAStaleElement()
+        {
+            driver.Url = xhtmlTestPage;
+            IWebElement heading = driver.FindElement(By.XPath("//h1"));
+            driver.Url = simpleTestPage;
+            string className = heading.GetAttribute("class");
+        }
     }
 }

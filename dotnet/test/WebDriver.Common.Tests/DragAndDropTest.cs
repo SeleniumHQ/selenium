@@ -85,7 +85,19 @@ namespace OpenQA.Selenium
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
             int height = Convert.ToInt32(js.ExecuteScript("return window.outerHeight;"));
             int width = Convert.ToInt32(js.ExecuteScript("return window.outerWidth;"));
+            bool mustUseOffsetHeight = width == 0 && height == 0;
+            if (mustUseOffsetHeight)
+            {
+                width = Convert.ToInt32(js.ExecuteScript("return document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth;"));
+                height = Convert.ToInt32(js.ExecuteScript("return document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;"));
+            }
+
             js.ExecuteScript("window.resizeTo(300, 300);");
+            if (mustUseOffsetHeight)
+            {
+                width = width + 300 - Convert.ToInt32(js.ExecuteScript("return document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth;"));
+                height = height + 300 - Convert.ToInt32(js.ExecuteScript("return document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;"));
+            }
 
             try
             {

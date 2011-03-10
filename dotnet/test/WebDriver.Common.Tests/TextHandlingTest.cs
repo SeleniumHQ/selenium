@@ -150,7 +150,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnEmptystringWhenTextIsOnlySpaces()
+        public void ShouldReturnEmptyStringWhenTextIsOnlySpaces()
         {
             driver.Url = (xhtmlTestPage);
 
@@ -159,7 +159,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnEmptystringWhenTextIsEmpty()
+        public void ShouldReturnEmptyStringWhenTextIsEmpty()
         {
             driver.Url = (xhtmlTestPage);
 
@@ -168,7 +168,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnEmptystringWhenTagIsSelfClosing()
+        public void ShouldReturnEmptyStringWhenTagIsSelfClosing()
         {
             driver.Url = (xhtmlTestPage);
 
@@ -177,9 +177,21 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        //[IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Chrome)]
+        public void ShouldNotTrimSpacesWhenLineWraps()
+        {
+            driver.Url = simpleTestPage;
+
+            string text = driver.FindElement(By.XPath("//table/tbody/tr[1]/td[1]")).Text;
+            Assert.AreEqual("beforeSpace afterSpace", text);
+        }
+
+        [Test]
         public void ShouldHandleSiblingBlockLevelElements()
         {
-            driver.Url = (simpleTestPage);
+            driver.Url = simpleTestPage;
 
             string text = driver.FindElement(By.Id("twoblocks")).Text;
 
@@ -223,7 +235,7 @@ namespace OpenQA.Selenium
         [Test]
         public void GetTextWithLineBreakForInlineElement()
         {
-            driver.Url = (simpleTestPage);
+            driver.Url = simpleTestPage;
 
             IWebElement label = driver.FindElement(By.Id("label1"));
             string labelText = label.Text;
@@ -242,6 +254,27 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(string.Empty, empty);
             Assert.AreEqual("sub-element that is explicitly visible", explicitText);
+        }
+
+        [Test]
+        public void ShouldGetTextFromTableCells()
+        {
+            driver.Url = tables;
+
+            IWebElement tr = driver.FindElement(By.Id("hidden_text"));
+            String text = tr.Text;
+
+            Assert.IsTrue(text.Contains("some text"));
+            Assert.IsFalse(text.Contains("some more text"));
+        }
+
+        [Test]
+        public void ShouldGetTextWhichIsAValidJSONObject()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement element = driver.FindElement(By.Id("simpleJsonText"));
+            Assert.AreEqual("{a=\"b\", c=1, d=true}", element.Text);
+            //assertEquals("{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.getText());
         }
     }
 }

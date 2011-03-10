@@ -40,12 +40,13 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void FindElementsByXPathWhenNoMatch()
+        public void FindingElementsOnElementByXPathShouldFindTopLevelElements()
         {
-            driver.Url = nestedPage;
-            IWebElement element = driver.FindElement(By.Name("form2"));
-            ReadOnlyCollection<IWebElement> children = element.FindElements(By.XPath("select/x"));
-            Assert.AreEqual(0, children.Count);
+            driver.Url = simpleTestPage;
+            IWebElement parent = driver.FindElement(By.Id("multiline"));
+            ReadOnlyCollection<IWebElement> allParaElements = driver.FindElements(By.XPath("//p"));
+            ReadOnlyCollection<IWebElement> children = parent.FindElements(By.XPath("//p"));
+            Assert.AreEqual(allParaElements.Count, children.Count);
         }
 
         [Test]
@@ -59,15 +60,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        //[IgnoreBrowser(Browser.IE, "Issue 278.")]
-        //[IgnoreBrowser(Browser.HtmlUnit, "Issue 278.")]
-        public void FindingElementsOnElementByXPathShouldFindTopLevelElements()
+        public void FindElementsByXPathWhenNoMatch()
         {
-            driver.Url = simpleTestPage;
-            IWebElement parent = driver.FindElement(By.Id("multiline"));
-            ReadOnlyCollection<IWebElement> allParaElements = driver.FindElements(By.XPath("//p"));
-            ReadOnlyCollection<IWebElement> children = parent.FindElements(By.XPath("//p"));
-            Assert.AreEqual(allParaElements.Count, children.Count);
+            driver.Url = nestedPage;
+            IWebElement element = driver.FindElement(By.Name("form2"));
+            ReadOnlyCollection<IWebElement> children = element.FindElements(By.XPath("select/x"));
+            Assert.AreEqual(0, children.Count);
         }
 
         [Test]
@@ -246,7 +244,6 @@ namespace OpenQA.Selenium
             IJavaScriptExecutor javascriptDriver = driver as IJavaScriptExecutor;
             IFindsByCssSelector cssSelectorDriver = driver as IFindsByCssSelector;
 
-            // return (cssSelectorDriver != null) && (javascriptDriver != null) && ((bool)javascriptDriver.ExecuteScript("return document['querySelector'] !== undefined;"));
             return (cssSelectorDriver != null) && (javascriptDriver != null);
         }
     }

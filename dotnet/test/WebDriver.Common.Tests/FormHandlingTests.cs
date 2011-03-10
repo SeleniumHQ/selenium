@@ -258,6 +258,30 @@ namespace OpenQA.Selenium
             Assert.AreEqual(inputFile.Name, outputFile.Name);
             inputFile.Delete();
         }
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver does not yet support file uploads")]
+        public void ShouldBeAbleToUploadTheSameFileTwice()
+        {
+            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
+            inputFileWriter.WriteLine("Hello world");
+            inputFileWriter.Close();
+
+            driver.Url = formsPage;
+            IWebElement uploadElement = driver.FindElement(By.Id("upload"));
+            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.Value));
+
+            uploadElement.SendKeys(inputFile.FullName);
+            uploadElement.Submit();
+
+            driver.Url = formsPage;
+            uploadElement = driver.FindElement(By.Id("upload"));
+            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.Value));
+
+            uploadElement.SendKeys(inputFile.FullName);
+            uploadElement.Submit();
+            // If we get this far, then we're all good.
+        }
 
         [Test]
         [ExpectedException(typeof(NotSupportedException))]

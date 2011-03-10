@@ -193,7 +193,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual(3, result);
         }
 
-        //[Test]
+        [Test]
         public void ShouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse()
         {
             string script =

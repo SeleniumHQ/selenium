@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OpenQA.Selenium.Remote
+namespace OpenQA.Selenium
 {
     /// <summary>
     /// Capabilities of the browser that you are going to use

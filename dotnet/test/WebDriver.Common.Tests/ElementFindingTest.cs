@@ -230,6 +230,40 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldFindElementByLinkTextContainingEqualsSign()
+        {
+            driver.Url = xhtmlTestPage;
+            IWebElement element = driver.FindElement(By.LinkText("Link=equalssign"));
+            Assert.AreEqual("linkWithEqualsSign", element.GetAttribute("id"));
+        }
+
+        [Test]
+        public void ShouldFindElementByPartialLinkTextContainingEqualsSign()
+        {
+            driver.Url = xhtmlTestPage;
+            IWebElement element = driver.FindElement(By.PartialLinkText("Link="));
+            Assert.AreEqual("linkWithEqualsSign", element.GetAttribute("id"));
+        }
+
+        [Test]
+        public void testShouldFindElementsByLinkTextContainingEqualsSign()
+        {
+            driver.Url = xhtmlTestPage;
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.LinkText("Link=equalssign"));
+            Assert.AreEqual(1, elements.Count);
+            Assert.AreEqual("linkWithEqualsSign", elements[0].GetAttribute("id"));
+        }
+
+        [Test]
+        public void testShouldFindElementsByPartialLinkTextContainingEqualsSign()
+        {
+            driver.Url = xhtmlTestPage;
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.PartialLinkText("Link="));
+            Assert.AreEqual(1, elements.Count);
+            Assert.AreEqual("linkWithEqualsSign", elements[0].GetAttribute("id"));
+        }
+
+        [Test]
         public void ShouldBeAbleToFindMultipleElementsByName()
         {
             driver.Url = nestedPage;
@@ -323,7 +357,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldfindElementsBasedOnTagName()
+        public void ShouldFindElementsBasedOnTagName()
         {
             driver.Url = formsPage;
 
@@ -429,13 +463,21 @@ namespace OpenQA.Selenium
             driver.FindElements(By.CssSelector("p"));
         }
 
+        [Test]
+        public void FindingByXPathShouldNotIncludeParentElementIfSameTagType()
+        {
+            driver.Url = xhtmlTestPage;
+            IWebElement parent = driver.FindElement(By.Id("my_span"));
+
+            Assert.AreEqual(2, parent.FindElements(By.TagName("div")).Count);
+            Assert.AreEqual(2, parent.FindElements(By.TagName("span")).Count);
+        }
+
         private bool SupportsSelectorApi()
         {
             IJavaScriptExecutor javascriptDriver = driver as IJavaScriptExecutor;
             IFindsByCssSelector cssSelectorDriver = driver as IFindsByCssSelector;
             return (cssSelectorDriver != null) && (javascriptDriver != null);
-            //return driver is IFindsByCssSelector &&
-            //    (bool)((IJavaScriptExecutor)driver).ExecuteScript("return document['querySelector'] !== undefined;");
         }
     }
 }

@@ -51,13 +51,15 @@ namespace OpenQA.Selenium
         public string tables = EnvironmentManager.Instance.UrlBuilder.WhereIs("tables.html");
         public string deletingFrame = EnvironmentManager.Instance.UrlBuilder.WhereIs("deletingFrame.htm");
         public string ajaxyPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("ajaxy_page.html");
-        public string sleepingPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleeping.html");
+        public string sleepingPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep");
+        public string slowIframes = EnvironmentManager.Instance.UrlBuilder.WhereIs("slow_loading_iframes.html");
         public string draggableLists = EnvironmentManager.Instance.UrlBuilder.WhereIs("draggableLists.html");
         public string droppableItems = EnvironmentManager.Instance.UrlBuilder.WhereIs("droppableItems.html");
         public string alertPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("alerts.html");
         public string bodyTypingPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("bodyTypingTest.html");
         public string formSelectionPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("formSelectionPage.html");
         public string selectableItemsPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("selectableItems.html");
+        public string underscorePage = EnvironmentManager.Instance.UrlBuilder.WhereIs("underscore.html");
 
         protected IWebDriver driver;
 
