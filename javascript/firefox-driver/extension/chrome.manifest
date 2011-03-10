@@ -33,3 +33,7 @@ contract @googlecode.com/webdriver/wdsession;1 {e193dc71-5b1d-4fea-b4c2-ec71f455
 component {b54195d3-841e-47df-b709-edf1bc4c7166} components/sessionstore.js
 contract @googlecode.com/webdriver/wdsessionstoreservice;1 {b54195d3-841e-47df-b709-edf1bc4c7166}
 
+binary-component platform/WINNT_x86-msvc/components/webdriver-firefox.dll ABI=WINNT_x86-msvc
+binary-component platform/WINNT_x86-msvc/components/imehandler.dll ABI=WINNT_x86-msvc
+binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox.so ABI=Linux_x86-gcc3
+binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so ABI=Linux_x86_64-gcc3
