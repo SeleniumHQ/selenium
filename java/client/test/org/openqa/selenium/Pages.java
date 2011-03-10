@@ -55,6 +55,7 @@ public class Pages {
   public String selectableItemsPage;
   public String underscorePage;
   public String ajaxyPage;
+  public String multipleSelection;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -85,12 +86,13 @@ public class Pages {
     slowIframes = appServer.whereIs("slow_loading_iframes.html");
     html5Page = appServer.whereIs("html5Page.html");
     tables = appServer.whereIs("tables.html");
-	  deletingFrame = appServer.whereIs("deletingFrame.htm");
+    deletingFrame = appServer.whereIs("deletingFrame.htm");
     draggableLists = appServer.whereIs("draggableLists.html");
     droppableItems = appServer.whereIs("droppableItems.html");
     bodyTypingPage = appServer.whereIs("bodyTypingTest.html");
     formSelectionPage = appServer.whereIs("formSelectionPage.html");
     selectableItemsPage = appServer.whereIs("selectableItems.html");
     underscorePage = appServer.whereIs("underscore.html");
+    multipleSelection = appServer.whereIs("multiple_select.html");
   }
 }
