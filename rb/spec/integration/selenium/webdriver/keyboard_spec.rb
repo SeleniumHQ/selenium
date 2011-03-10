@@ -16,21 +16,6 @@ module Selenium
           driver.find_element(:id => "result").text.should be_empty
         end
 
-        it "can press and release modifier keys" do
-          driver.navigate.to url_for("javascriptPage.html")
-
-          event_input = driver.find_element(:id => "theworks")
-          keylogger   = driver.find_element(:id => "result")
-
-          driver.mouse.click event_input
-
-          driver.keyboard.press :shift
-          keylogger.text.should =~ /keydown$/
-
-          driver.keyboard.release :shift
-          keylogger.text.should =~ /keyup$/
-        end
-
         it "can send keys with shift pressed" do
           driver.navigate.to url_for("javascriptPage.html")
 
@@ -52,6 +37,24 @@ module Selenium
         end
       end
 
-    end
-  end
-end
+      compliant_on :browser => nil do
+        it "can press and release modifier keys" do
+          driver.navigate.to url_for("javascriptPage.html")
+
+          event_input = driver.find_element(:id => "theworks")
+          keylogger   = driver.find_element(:id => "result")
+
+          driver.mouse.click event_input
+
+          driver.keyboard.press :shift
+          keylogger.text.should =~ /keydown$/
+
+          driver.keyboard.release :shift
+          keylogger.text.should =~ /keyup$/
+        end
+      end
+
+
+    end # Keyboard
+  end # WebDriver
+end # Selenium
