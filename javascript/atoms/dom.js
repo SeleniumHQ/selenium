@@ -23,9 +23,11 @@ goog.provide('bot.dom');
 goog.require('bot');
 goog.require('bot.locators.xpath');
 goog.require('goog.array');
+goog.require('goog.dom');
 goog.require('goog.dom.NodeIterator');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('goog.math.Rect');
 goog.require('goog.math.Size');
 goog.require('goog.string');
 goog.require('goog.style');
@@ -656,19 +658,114 @@ bot.dom.getOpacityNonIE_ = function(elem) {
   return elemOpacity;
 };
 
+/**
+ * Scrolls the scrollable element so that the region is fully visible.
+ * If the region is too large, it will be aligned to the top-left of the
+ * scrollable element. The region should be relative to the scrollable
+ * element's current scroll position.
+ *
+ * @param {!goog.math.Rect} region The region to use.
+ * @param {!Element} scrollable The scrollable element to scroll.
+ * @private
+ */
+bot.dom.scrollRegionIntoView_ = function(region, scrollable) {
+  scrollable.scrollLeft += Math.min(
+      region.left, Math.max(region.left - region.width, 0));
+  scrollable.scrollTop += Math.min(
+      region.top, Math.max(region.top - region.height, 0));
+};
+
+/**
+ * Scrolls the region of an element into the container's view. If the
+ * region is too large to fit in the view, it will be aligned to the
+ * top-left of the container.
+ *
+ * The element and container should be attached to the current document.
+ *
+ * @param {!Element} elem The element to use.
+ * @param {!goog.math.Rect} elemRegion The region relative to the element to be
+ *     scrolled into view.
+ * @param {!Element} container A container of the given element.
+ * @private
+ */
+bot.dom.scrollElementRegionIntoContainerView_ = function(elem, elemRegion,
+                                                         container) {
+  // Based largely from goog.style.scrollIntoContainerView.
+  var elemPos = goog.style.getPageOffset(elem);
+  var containerPos = goog.style.getPageOffset(container);
+  var containerBorder = goog.style.getBorderBox(container);
+  
+  // Relative pos. of the element's border box to the container's content box.
+  var relX = elemPos.x + elemRegion.left - containerPos.x -
+             containerBorder.left;
+  var relY = elemPos.y + elemRegion.top - containerPos.y - containerBorder.top;
+  
+  // How much the element can move in the container.
+  var spaceX = container.clientWidth - elemRegion.width;
+  var spaceY = container.clientHeight - elemRegion.height;
+  
+  bot.dom.scrollRegionIntoView_(new goog.math.Rect(relX, relY, spaceX, spaceY),
+                                container);
+};
+
+/**
+ * Scrolls the element into the client's view. If the element or region is
+ * too large to fit in the view, it will be aligned to the top-left of the
+ * container.
+ *
+ * The element should be attached to the current document.
+ *
+ * @param {!Element} elem The element to use.
+ * @param {!goog.math.Rect} elemRegion The region relative to the element to be
+ *     scrolled into view.
+ * @private
+ */
+bot.dom.scrollElementRegionIntoClientView_ = function(elem, elemRegion) {
+  // Scroll the containers.
+  var container = elem.parentNode;
+  while (container &&
+         container != document.body &&
+         container != document.documentElement) {
+    bot.dom.scrollElementRegionIntoContainerView_(elem, elemRegion, container);
+    container = container.parentNode;
+  }
+  
+  // Scroll the actual window.
+  var elemPageOffset = goog.style.getPageOffset(elem);
+  var viewportSize = goog.dom.getViewportSize();
+  var region = new goog.math.Rect(
+      elemPageOffset.x + elemRegion.left - document.body.scrollLeft,
+      elemPageOffset.y + elemRegion.top - document.body.scrollTop,
+      viewportSize.width - elemRegion.width,
+      viewportSize.height - elemRegion.height);
+  bot.dom.scrollRegionIntoView_(region, document.body);
+};
 
 /**
  * Scrolls the element into the client's view and returns its position
- * relative to the client viewport.
+ * relative to the client viewport. If the element or region is too
+ * large to fit in the view, it will be aligned to the top-left of the
+ * container.
  *
- * @param {!Element} element The element to use.
- * @param {!goog.math.Coordinate} The coordinate of the element.
+ * The element should be attached to the current document.
+ *
+ * @param {!Element} elem The element to use.
+ * @param {!goog.math.Rect=} opt_elemRegion The region relative to the element
+ *     to be scrolled into view.
+ * @return {!goog.math.Coordinate} The coordinate of the element in client
+ *     space.
  */
-bot.dom.getLocationInView = function(element) {
-  var node = element;
-  while (node && node.parentNode && node.parentNode != document) {
-    goog.style.scrollIntoContainerView(node, node.parentNode, true);
-    node = node.parentNode;
+bot.dom.getLocationInView = function(elem, opt_elemRegion) {
+  var elemRegion;
+  if (opt_elemRegion) {
+    elemRegion = new goog.math.Rect(
+        opt_elemRegion.left, opt_elemRegion.top,
+        opt_elemRegion.width, opt_elemRegion.height);
+  } else {
+    elemRegion = new goog.math.Rect(0, 0, elem.offsetWidth, elem.offsetHeight);
   }
-  return goog.style.getClientPosition(element);
+  bot.dom.scrollElementRegionIntoClientView_(elem, elemRegion);
+  var elemClientPos = goog.style.getClientPosition(elem);
+  return new goog.math.Coordinate(elemClientPos.x + elemRegion.left,
+                                  elemClientPos.y + elemRegion.top);
 };
