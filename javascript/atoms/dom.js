@@ -721,24 +721,29 @@ bot.dom.scrollElementRegionIntoContainerView_ = function(elem, elemRegion,
  * @private
  */
 bot.dom.scrollElementRegionIntoClientView_ = function(elem, elemRegion) {
+  var doc = goog.dom.getOwnerDocument(elem);
+
   // Scroll the containers.
   var container = elem.parentNode;
   while (container &&
-         container != document.body &&
-         container != document.documentElement) {
+         container != doc.body &&
+         container != doc.documentElement) {
     bot.dom.scrollElementRegionIntoContainerView_(elem, elemRegion, container);
     container = container.parentNode;
   }
   
   // Scroll the actual window.
   var elemPageOffset = goog.style.getPageOffset(elem);
-  var viewportSize = goog.dom.getViewportSize();
+
+  var viewportSize = goog.dom.getDomHelper(doc).getViewportSize();
+
   var region = new goog.math.Rect(
-      elemPageOffset.x + elemRegion.left - document.body.scrollLeft,
-      elemPageOffset.y + elemRegion.top - document.body.scrollTop,
+      elemPageOffset.x + elemRegion.left - doc.body.scrollLeft,
+      elemPageOffset.y + elemRegion.top - doc.body.scrollTop,
       viewportSize.width - elemRegion.width,
       viewportSize.height - elemRegion.height);
-  bot.dom.scrollRegionIntoView_(region, document.body);
+
+  bot.dom.scrollRegionIntoView_(region, doc.body);
 };
 
 /**
