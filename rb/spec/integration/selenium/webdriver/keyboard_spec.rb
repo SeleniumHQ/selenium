@@ -35,9 +35,7 @@ module Selenium
         it "raises an UnsupportedOperationError if the pressed key is not a modifier key" do
           lambda { driver.keyboard.press :return }.should raise_error(Error::UnsupportedOperationError)
         end
-      end
 
-      compliant_on :browser => nil do
         it "can press and release modifier keys" do
           driver.navigate.to url_for("javascriptPage.html")
 
@@ -53,7 +51,6 @@ module Selenium
           keylogger.text.should =~ /keyup$/
         end
       end
-
 
     end # Keyboard
   end # WebDriver
