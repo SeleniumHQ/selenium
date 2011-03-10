@@ -15,7 +15,6 @@ public:
 	}
 
 	virtual ~ScreenshotCommandHandler(void) {
-		delete this->image_;
 	}
 
 protected:
@@ -23,6 +22,7 @@ protected:
 		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
 		manager->GetCurrentBrowser(&browser_wrapper);
 		
+		this->image_ = new CImage();
 		HRESULT hr = this->CaptureBrowser(browser_wrapper->browser());
 		if (FAILED(hr)) {
 			response->SetResponse(SUCCESS, "");
@@ -37,6 +37,7 @@ protected:
 		}
 
 		response->SetResponse(SUCCESS, base64_screenshot);
+		delete this->image_;
 	}
 
 private:
@@ -94,7 +95,6 @@ private:
 		::GetWindowRect(content_window_handle, &window_rect);
 		int width = window_rect.right - window_rect.left;
 		int height = window_rect.bottom - window_rect.top;
-		this->image_ = new CImage();
 		this->image_->Create(width, height, 16);
 		HDC device_context_handle = this->image_->GetDC();
 		BOOL result = ::PrintWindow(content_window_handle, device_context_handle, PW_CLIENTONLY);
