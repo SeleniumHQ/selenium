@@ -17,8 +17,8 @@
 
 package com.thoughtworks.selenium;
 
+import com.google.common.collect.Lists;
 import org.openqa.selenium.net.Urls;
-import org.testng.collections.Lists;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -32,7 +32,6 @@ import java.net.URL;
 import java.net.ConnectException;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
