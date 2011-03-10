@@ -30,6 +30,7 @@ java_library(name = "selenium",
     ":wait",
     "//java/client/src/com/thoughtworks/selenium/condition",
     "//java/client/src/org/openqa/selenium/net",
+    "//third_party/java/guava-libraries",
     "//third_party/java/junit",
     "//third_party/java/testng",
   ])
