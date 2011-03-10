@@ -43,7 +43,7 @@ namespace OpenQA.Selenium.Support.UI
 
             // let check if it's a multiple
             string attribute = element.GetAttribute("multiple");
-            this.IsMultiple = !string.IsNullOrEmpty(attribute) && string.Compare(attribute, "multiple", StringComparison.OrdinalIgnoreCase) == 0;
+            this.IsMultiple = !string.IsNullOrEmpty(attribute);
         }
 
         /// <summary>
