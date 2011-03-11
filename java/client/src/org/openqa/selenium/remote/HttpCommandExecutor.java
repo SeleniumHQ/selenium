@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -49,6 +50,7 @@ import org.openqa.selenium.net.Urls;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -247,8 +249,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         httpMethod.addHeader("Content-Type", "application/json; charset=utf-8");
       }
 
-      HttpResponse response = null;
-      response = client.execute(targetHost, httpMethod, context);
+      HttpResponse response = fallBackExecute(context, httpMethod);
 
       response = followRedirects(client, context, response, /* redirect count */0);
 
@@ -263,6 +264,22 @@ public class HttpCommandExecutor implements CommandExecutor {
       } else {
         throw e;
       }
+    }
+  }
+
+  private HttpResponse fallBackExecute(HttpContext context, HttpUriRequest httpMethod) throws IOException {
+    try {
+      return client.execute(targetHost, httpMethod, context);
+    } catch (BindException e) {
+      // If we get this, there's a chance we've used all the emphemeral sockets
+      // Sleep for a bit to let the OS reclaim them, then try the request again.
+      try {
+        Thread.sleep(2000);
+      } catch (InterruptedException ie) {
+        throw Throwables.propagate(ie);
+      }
+
+      return client.execute(targetHost, httpMethod, context); 
     }
   }
 
