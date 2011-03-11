@@ -21,15 +21,17 @@
   </xsl:template>
 
   <xsl:template match="ui:someButton">
-    <button>
+    <input type="submit">
       <xsl:attribute name="id">
         <xsl:value-of select="@id" />
       </xsl:attribute>
       <xsl:attribute name="name">
         <xsl:value-of select="@name" />
       </xsl:attribute>
-      <xsl:value-of select="normalize-space(.)"/>
-    </button>
+      <xsl:attribute name="value">
+        <xsl:value-of select="normalize-space(.)"/>
+      </xsl:attribute>
+    </input>
   </xsl:template>
 
 </xsl:stylesheet>
