@@ -20,8 +20,24 @@ class JavascriptMappings
     fun.add_mapping("js_fragment", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_fragment", Javascript::CreateTask.new)
     fun.add_mapping("js_fragment", Javascript::CreateTaskShortName.new)
-    fun.add_mapping("js_fragment", Javascript::AddDependencies.new)
+    fun.add_mapping("js_fragment", Javascript::CreateExportFile.new)
     fun.add_mapping("js_fragment", Javascript::CompileFragment.new)
+    fun.add_mapping("js_fragment", Javascript::CompileFragment.new('android', [
+        'goog.userAgent.ASSUME_MOBILE_WEBKIT=true',
+        'goog.userAgent.product.ASSUME_ANDROID=true',
+    ]))
+    fun.add_mapping("js_fragment", Javascript::CompileFragment.new('chrome', [
+        'goog.userAgent.ASSUME_WEBKIT=true',
+        'goog.userAgent.product.ASSUME_CHROME=true',
+    ]))
+    fun.add_mapping("js_fragment", Javascript::CompileFragment.new('ie', [
+        'goog.userAgent.ASSUME_IE=true',
+    ]))
+    fun.add_mapping("js_fragment", Javascript::CompileFragment.new('ios', [
+        # We use the same fragments for iPad and iPhone, so just compile a
+        # generic mobile webkit.
+        'goog.userAgent.ASSUME_MOBILE_WEBKIT=true',
+    ]))
 
     # Compiles a list of |js_fragments| into a C++ header file.
     # Arguments:
@@ -219,26 +235,56 @@ module Javascript
     end    
   end
 
-  class CompileFragment < BaseJs
+  class BaseCompileFragment < BaseJs
+    def exports_name(dir, name)
+      js_name(dir, name).sub(/\.js$/, "_exports.js")
+    end
+  end
+
+  class CreateExportFile < BaseCompileFragment
     def handle(fun, dir, args)
-      output = js_name(dir, args[:name])
+      name = exports_name(dir, args[:name])
 
-      file output do
-        puts "Compiling: #{task_name(dir, args[:name])} as #{output}"
+      mkdir_p File.dirname(name)
 
-        temp = "#{output}.tmp.js"
-
-        mkdir_p File.dirname(output)
-        js_files = build_deps(output, Rake::Task[output], []).uniq
-
-        rm_f "#{output}.tmp"
-
-        File.open(temp, "w") do |file|
+      file name do
+        puts "Generating export file for #{args[:function]}"
+        File.open(name, "w") do |file|
           file << "goog.require('#{args[:module]}'); goog.exportSymbol('_', #{args[:function]});"
         end
+      end
 
-        # Naming convention is CamelCase, not snake_case
-        name = args[:name].gsub(/_(.)/) {|match| $1.upcase}
+      task = Rake::Task[name]
+      add_dependencies(task, dir, args[:deps])
+    end
+  end
+
+  class CompileFragment < BaseCompileFragment
+    def initialize(target_platform=nil, defines=nil)
+      super()
+      if !target_platform.nil? && defines.nil?
+        raise StandardError,
+          "Fragment platform target #{target_platform} does not have any goog.defines!"
+      end
+      @target_platform=target_platform
+      @defines=defines
+    end
+
+    def handle(fun, dir, args)
+      exports = exports_name(dir, args[:name])
+      output = js_name(dir, args[:name])
+      name = task_name(dir, args[:name])
+      defines = ""
+
+      if !@target_platform.nil?
+        output = output.sub(/\.js$/, "_#{@target_platform}.js")
+        name += ":#{@target_platform}"
+        defines = @defines.collect {|d| "-f \"--define=#{d}\" "}
+        defines = defines.join
+      end
+
+      file output => [exports] do
+        puts "Compiling #{name} as #{output}"
 
         # Wrap the output in two functions. The outer function ensures the
         # compiled fragment never pollutes the global scope by using its
@@ -248,15 +294,11 @@ module Javascript
         # window, but we are explicitly defining the fragment so that
         # goog.global is _not_ window.
         #     See http://code.google.com/p/selenium/issues/detail?id=1333
-        #
-        # TODO(jleyba): It should be possible to compile an atom optimized for
-        #   a specific user agent.
         wrapper = "function(){%output%; return this._.apply(null,arguments);}"
         wrapper = "function(){return #{wrapper}.apply({" +
                   "navigator:typeof window!='undefined'?window.navigator:null" +
                   "}, arguments);}"
 
-        # TODO(simon): Don't hard code things. That's Not Smart
         cmd = calcdeps +
             "-o compiled " <<
             "-f \"--create_name_map_files=true\" " <<
@@ -264,21 +306,22 @@ module Javascript
             "-f \"--js_output_file=#{output}\" " <<
             "-f \"--output_wrapper='#{wrapper}'\" " <<
             "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" " <<
+            "#{defines} " <<
             "-p third_party/closure/goog/ " <<
             "-p javascript " <<
-            "-i #{temp} "
+            "-i #{exports} "
 
         mkdir_p File.dirname(output)
-
         execute cmd
-
-        rm_f temp
-
-        # Strip out the license comments.
-        result = IO.read(output)
-        result = result.gsub(/\/\*.*?\*\//m, '')
-        File.open(output, 'w') do |f| f.write(result); end
       end
+
+      output_task = Rake::Task[output]
+      add_dependencies(output_task, dir, args[:srcs])
+      add_dependencies(output_task, dir, args[:deps])
+
+      desc "Compile and optimize #{output}"
+      task name => [output]
+      Rake::Task[name].out = output
     end
   end
 
@@ -314,8 +357,13 @@ module Javascript
 
       puts "Generating header for #{atom_file}"
 
-      # Convert camelCase and snake_case to BIG_SNAKE_CASE
       uc = File.basename(atom_file).sub(/\.js$/, '')
+
+      # If this is a browser optimized atom, drop the browser identifier
+      # from the name: foo_ie.js => foo.js, bar_android.js => bar.js
+      uc.sub!(/_(android|chrome|ie|ios)$/, '')
+
+      # Convert camelCase and snake_case to BIG_SNAKE_CASE
       uc.gsub!(/(.)([A-Z][a-z]+)/, '\1_\2')
       uc.gsub!(/([a-z0-9])([A-Z])/, '\1_\2')
       atom_upper = uc.upcase
