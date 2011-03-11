@@ -56,13 +56,18 @@ public class ElementFinder {
     if (strategy != null) {
       String actualLocator = locator.substring(locator.indexOf('=') + 1);
       // TODO(simon): Recurse into child documents
-      toReturn = (WebElement) ((JavascriptExecutor) driver).executeScript(strategy, actualLocator);
 
-      if (toReturn == null) {
+      try {
+        toReturn = (WebElement) ((JavascriptExecutor) driver).executeScript(strategy, actualLocator);
+
+        if (toReturn == null) {
+          throw new SeleniumException("Element " + locator + " not found");
+        }
+
+        return toReturn;
+      } catch (WebDriverException e) {
         throw new SeleniumException("Element " + locator + " not found");
       }
-
-      return toReturn;
     }
 
     try {

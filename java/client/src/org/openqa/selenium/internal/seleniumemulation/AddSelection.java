@@ -22,14 +22,16 @@ import org.openqa.selenium.WebDriver;
 public class AddSelection extends SeleneseCommand<Void> {
 
   private final JavascriptLibrary library;
+  private final ElementFinder finder;
 
-  public AddSelection(JavascriptLibrary library) {
+  public AddSelection(JavascriptLibrary library, ElementFinder finder) {
     this.library = library;
+    this.finder = finder;
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String optionLocator) {
-    SeleniumSelect select = new SeleniumSelect(library, driver, locator);
+    SeleniumSelect select = new SeleniumSelect(library, finder, driver, locator);
     select.addSelection(optionLocator);
     return null;
   }

@@ -34,12 +34,12 @@ public class SeleniumSelect {
   private final WebDriver driver;
   private final WebElement select;
 
-  public SeleniumSelect(JavascriptLibrary library, WebDriver driver, String locator) {
+  public SeleniumSelect(JavascriptLibrary library, ElementFinder finder, WebDriver driver, String locator) {
     this.driver = driver;
-    String findElement = "return (" + library.getSeleniumScript("findElement.js") + ").apply(null, arguments)";
+
     findOption = "return (" + library.getSeleniumScript("findOption.js") + ").apply(null, arguments)";
 
-    select = (WebElement) library.executeScript(driver, findElement, locator);
+    select = finder.findElement(driver, locator);
     if (!"select".equals(select.getTagName().toLowerCase())) {
       throw new SeleniumException("Element is not a select element: " + locator);
     }

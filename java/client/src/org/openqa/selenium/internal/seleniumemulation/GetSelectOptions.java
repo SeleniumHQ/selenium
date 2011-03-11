@@ -25,14 +25,16 @@ import java.util.List;
 
 public class GetSelectOptions extends SeleneseCommand<String[]> {
   private final JavascriptLibrary library;
+  private final ElementFinder finder;
 
-  public GetSelectOptions(JavascriptLibrary library) {
+  public GetSelectOptions(JavascriptLibrary library, ElementFinder finder) {
     this.library = library;
+    this.finder = finder;
   }
 
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String selectLocator, String ignored) {
-    SeleniumSelect select = new SeleniumSelect(library, driver, selectLocator);
+    SeleniumSelect select = new SeleniumSelect(library, finder, driver, selectLocator);
 
     List<WebElement> allOptions = select.getAllOptions();
     String[] labels = new String[allOptions.size()];

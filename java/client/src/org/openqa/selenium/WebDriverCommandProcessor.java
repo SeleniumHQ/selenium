@@ -303,7 +303,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
 
     // Note the we use the names used by the CommandProcessor
     seleneseMethods.put("addLocationStrategy", new AddLocationStrategy(elementFinder));
-    seleneseMethods.put("addSelection", new AddSelection(javascriptLibrary));
+    seleneseMethods.put("addSelection", new AddSelection(javascriptLibrary, elementFinder));
     seleneseMethods.put("altKeyDown", new AltKeyDown(keyState));
     seleneseMethods.put("altKeyUp", new AltKeyUp(keyState));
     seleneseMethods.put("assignId", new AssignId(javascriptLibrary, elementFinder));
@@ -346,15 +346,15 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getExpression", new GetExpression());
     seleneseMethods.put("getHtmlSource", new GetHtmlSource());
     seleneseMethods.put("getLocation", new GetLocation());
-    seleneseMethods.put("getSelectedId", new FindFirstSelectedOptionProperty(javascriptLibrary, "id"));
-    seleneseMethods.put("getSelectedIds", new FindSelectedOptionProperties(javascriptLibrary, "id"));
-    seleneseMethods.put("getSelectedIndex", new FindFirstSelectedOptionProperty(javascriptLibrary, "index"));
-    seleneseMethods.put("getSelectedIndexes", new FindSelectedOptionProperties(javascriptLibrary, "index"));
-    seleneseMethods.put("getSelectedLabel", new FindFirstSelectedOptionProperty(javascriptLibrary, "text"));
-    seleneseMethods.put("getSelectedLabels", new FindSelectedOptionProperties(javascriptLibrary, "text"));
-    seleneseMethods.put("getSelectedValue", new FindFirstSelectedOptionProperty(javascriptLibrary, "value"));
-    seleneseMethods.put("getSelectedValues", new FindSelectedOptionProperties(javascriptLibrary, "value"));
-    seleneseMethods.put("getSelectOptions", new GetSelectOptions(javascriptLibrary));
+    seleneseMethods.put("getSelectedId", new FindFirstSelectedOptionProperty(javascriptLibrary, elementFinder, "id"));
+    seleneseMethods.put("getSelectedIds", new FindSelectedOptionProperties(javascriptLibrary, elementFinder, "id"));
+    seleneseMethods.put("getSelectedIndex", new FindFirstSelectedOptionProperty(javascriptLibrary, elementFinder, "index"));
+    seleneseMethods.put("getSelectedIndexes", new FindSelectedOptionProperties(javascriptLibrary, elementFinder, "index"));
+    seleneseMethods.put("getSelectedLabel", new FindFirstSelectedOptionProperty(javascriptLibrary, elementFinder, "text"));
+    seleneseMethods.put("getSelectedLabels", new FindSelectedOptionProperties(javascriptLibrary, elementFinder, "text"));
+    seleneseMethods.put("getSelectedValue", new FindFirstSelectedOptionProperty(javascriptLibrary, elementFinder, "value"));
+    seleneseMethods.put("getSelectedValues", new FindSelectedOptionProperties(javascriptLibrary, elementFinder, "value"));
+    seleneseMethods.put("getSelectOptions", new GetSelectOptions(javascriptLibrary, elementFinder));
     seleneseMethods.put("getSpeed", new NoOp("0"));
     seleneseMethods.put("getTable", new GetTable(elementFinder, javascriptLibrary));
     seleneseMethods.put("getText", new GetText(javascriptLibrary, elementFinder));
@@ -390,9 +390,9 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("openWindow", new OpenWindow(new GetEval(scriptMutator)));
     seleneseMethods.put("refresh", new Refresh());
     seleneseMethods.put("removeAllSelections", new RemoveAllSelections(elementFinder));
-    seleneseMethods.put("removeSelection", new RemoveSelection(javascriptLibrary));
+    seleneseMethods.put("removeSelection", new RemoveSelection(javascriptLibrary, elementFinder));
     seleneseMethods.put("runScript", new RunScript(scriptMutator));
-    seleneseMethods.put("select", new SelectOption(alertOverride, javascriptLibrary));
+    seleneseMethods.put("select", new SelectOption(alertOverride, javascriptLibrary, elementFinder));
     seleneseMethods.put("selectFrame", new SelectFrame(windows));
     seleneseMethods.put("selectWindow", new SelectWindow(windows));
     seleneseMethods.put("setBrowserLogLevel", new NoOp(null));

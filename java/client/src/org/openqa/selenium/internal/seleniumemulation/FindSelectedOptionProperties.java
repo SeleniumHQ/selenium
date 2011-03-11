@@ -25,16 +25,19 @@ import org.openqa.selenium.WebElement;
 public class FindSelectedOptionProperties extends SeleneseCommand<String[]> {
 
   private JavascriptLibrary library;
+  private final ElementFinder finder;
   private final String property;
 
-  public FindSelectedOptionProperties(JavascriptLibrary library, String property) {
+  public FindSelectedOptionProperties(JavascriptLibrary library, ElementFinder finder, 
+      String property) {
     this.library = library;
+    this.finder = finder;
     this.property = property;
   }
 
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String selectLocator, String ignored) {
-    SeleniumSelect select = new SeleniumSelect(library, driver, selectLocator);
+    SeleniumSelect select = new SeleniumSelect(library, finder, driver, selectLocator);
     List<WebElement> allOptions = select.getSelectedOptions();
     String[] values = new String[allOptions.size()];
 
