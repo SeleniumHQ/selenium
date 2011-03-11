@@ -140,7 +140,9 @@ function Editor(window) {
         });
 
 	this.document = document;
-        this.initMenus();
+    this.recordButton = document.getElementById("record-button");
+    this.recordMenuItem = document.getElementById("menu_record");
+    this.initMenus();
 	this.app.initOptions();
 	this.loadExtensions();
 	this.loadSeleniumAPI();
@@ -172,11 +174,9 @@ function Editor(window) {
 
     this.app.newTestSuite();
     if (this.app.options.recordOnOpen && this.app.options.recordOnOpen == 'true') {
-      document.getElementById("record-button").checked = true;
       this.toggleRecordingEnabled(true);
     } else {
-      document.getElementById("record-button").checked = false;
-      this.toggleRecordingEnabled(false);      
+      this.toggleRecordingEnabled(false);
     }
 
 	this.updateViewTabs();
@@ -246,6 +246,7 @@ Editor.controller = {
         case "cmd_selenium_testcase_clear":
         case "cmd_selenium_rollup":
         case "cmd_selenium_reload":
+        case "cmd_selenium_record":
 			return true;
 		default:
 			return false;
@@ -280,6 +281,8 @@ Editor.controller = {
             return editor.app.isPlayable() && (editor.selDebugger.state == Debugger.PLAYING || editor.selDebugger.state == Debugger.PAUSED);
 		case "cmd_selenium_step":
             return editor.app.isPlayable() && editor.selDebugger.state == Debugger.PAUSED;
+        case "cmd_selenium_record":
+            return true;
 		default:
 			return false;
 		}
@@ -325,13 +328,15 @@ Editor.controller = {
             }
             break;
         case "cmd_selenium_reload":
-        	
         	try{
         		editor.reload();
         	}catch(e){
         		alert('Reload error : '+e);
         	}
-        	break;    
+        	break;
+        case "cmd_selenium_record":
+            editor.toggleRecordingEnabled();
+            break;
 		default:
 		}
 	},
@@ -502,11 +507,19 @@ Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 };
 
 Editor.prototype.toggleRecordingEnabled = function(enabled) {
+    if (arguments.length == 0) {
+        enabled = !this.recordingEnabled;
+    }
 	this.recordingEnabled = enabled;
-    $("record-button").checked = enabled;
+    this.recordButton.checked = enabled;
+    this.recordMenuItem.setAttribute('checked', enabled);
     var tooltip = Editor.getString("recordButton.tooltip." + (enabled ? "on" : "off"));
-    document.getElementById("record-button").setAttribute("tooltiptext", tooltip);
+    this.recordButton.setAttribute("tooltiptext", tooltip);
 };
+
+Editor.prototype.setRecordingEnabled = function(enabled) {
+	this.toggleRecordingEnabled(enabled);
+}
 
 Editor.prototype.onUnloadDocument = function(doc) {
     this.log.debug("onUnloadDocument");
@@ -820,11 +833,6 @@ Editor.prototype.toggleView = function(view) {
 Editor.prototype.showAlert = function(message) {
 	this.errorMessage = message;
 	//	window.alert(message);
-}
-
-Editor.prototype.setRecordingEnabled = function(enabled) {
-	document.getElementById("record-button").checked = enabled;
-	this.toggleRecordingEnabled(enabled);
 }
 
 /*

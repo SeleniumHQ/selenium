@@ -116,7 +116,6 @@ Debugger.prototype.getLog = function() {
 }
 
 Debugger.prototype.start = function(complete, useLastWindow) {
-	document.getElementById("record-button").checked = false;
 	this.editor.toggleRecordingEnabled(false);
 
 	this.log.debug("start");
@@ -140,7 +139,6 @@ Debugger.prototype.start = function(complete, useLastWindow) {
 };
 
 Debugger.prototype.executeCommand = function(command) {
-	document.getElementById("record-button").checked = false;
 	this.editor.toggleRecordingEnabled(false);
 
 	this.init();
@@ -156,7 +154,6 @@ Debugger.prototype.pause = function() {
 }
 
 Debugger.prototype.doContinue = function(step) {
-	document.getElementById("record-button").checked = false;
 	this.editor.toggleRecordingEnabled(false);
 
 	this.log.debug("doContinue: pause=" + step);

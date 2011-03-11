@@ -88,6 +88,7 @@ limitations under the License.
     <command id="cmd_selenium_testcase_clear" oncommand="goDoCommand('cmd_selenium_testcase_clear')"/>
     <command id="cmd_selenium_rollup" oncommand="goDoCommand('cmd_selenium_rollup')"/>
     <command id="cmd_selenium_reload" oncommand="goDoCommand('cmd_selenium_reload')"/>
+    <command id="cmd_selenium_record" oncommand="goDoCommand('cmd_selenium_record')"/>
   </commandset>
 <!--  <commandset id="stateUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="alert('commandupdate: window.editor=' + window.editor);if (window.editor) { editor.updateSeleniumCommands() }"/>-->
   <commandset id="seleniumIDEUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="if (window.editor) { window.editor.updateSeleniumCommands() }"/>
@@ -180,8 +181,8 @@ limitations under the License.
     </menupopup>
   </menu>
   <menu id="runMenu" label="&runMenu.label;" accesskey="A"><!-- Samit: Enh: Provide the actions available from the toolbar and context menus via the normal menu -->
-    <menupopup id="run-popup" onpopupshowing="document.getElementById('menu_record').setAttribute('checked', $('record-button').checked);">
-      <menuitem id="menu_record" label="&recordButton.tooltip;" type="checkbox" checked="true" oncommand="window.editor.toggleRecordingEnabled(document.getElementById('menu_record').getAttribute('checked'));" accesskey="R"/>
+    <menupopup id="run-popup">
+      <menuitem id="menu_record" label="&recordButton.tooltip;" type="checkbox" checked="true" command="cmd_selenium_record" accesskey="R"/>
       <menuseparator/>
       <menuitem label="&playSuiteButton.tooltip;" command="cmd_selenium_play_suite" accesskey="P"/>
       <menuitem label="&playButton.tooltip;" command="cmd_selenium_play"/>
