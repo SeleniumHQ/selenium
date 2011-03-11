@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import logging
+import socket
 import string
 import urllib2
 import urlparse
@@ -114,6 +115,20 @@ class RemoteConnection(object):
     """
 
     def __init__(self, remote_server_addr):
+        # Attempt to resolve the hostname and get an IP address.
+        parsed_url = urlparse.urlparse(remote_server_addr)
+        if parsed_url.hostname:
+            try:
+                netloc = socket.gethostbyname(parsed_url.hostname)
+                if parsed_url.port:
+                    netloc += ':%d' % parsed_url.port
+                remote_server_addr = urlparse.urlunparse(
+                    (parsed_url.scheme, netloc, parsed_url.path,
+                     parsed_url.params, parsed_url.query, parsed_url.fragment))
+            except socket.gaierror:
+                LOGGER.info('Could not get IP address for host: %s' %
+                            parsed_url.hostname)
+
         self._url = remote_server_addr
         self._commands = {
             Command.NEW_SESSION: ('POST', '/session'),

@@ -40,7 +40,7 @@ class WebDriver(object):
           this instance's session.
     """
 
-    def __init__(self, command_executor='http://localhost:4444/wd/hub',
+    def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
                  desired_capabilities = None,
                  browser_profile=None):
         """Create a new driver that will issue commands using the wire protocol.
@@ -375,4 +375,3 @@ class WebDriver(object):
         """Gets the screenshot of the current window as a base64 encoded string which 
         is useful in embedded images in HTML."""
         return self.execute(Command.SCREENSHOT)['value']
-
