@@ -245,10 +245,9 @@ module Javascript
     def handle(fun, dir, args)
       name = exports_name(dir, args[:name])
 
-      mkdir_p File.dirname(name)
-
       file name do
         puts "Generating export file for #{args[:function]}"
+        mkdir_p File.dirname(name)
         File.open(name, "w") do |file|
           file << "goog.require('#{args[:module]}'); goog.exportSymbol('_', #{args[:function]});"
         end
