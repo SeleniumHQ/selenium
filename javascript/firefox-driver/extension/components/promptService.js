@@ -39,8 +39,6 @@ function addInterfaces(to, delegate, interfaces) {
 function ObservingAlert(parentWindow, delegate) {
   Components.utils.import('resource://fxdriver/modules/utils.js');
 
-  Logger.dumpn("Woohoo");
-
   this.parentWindow_ = parentWindow;
 
   var interfaces = [CI.nsIPrompt, CI.nsIAuthPrompt, CI.nsIAuthPrompt2, CI.nsIWritablePropertyBag2];
@@ -52,7 +50,6 @@ function ObservingAlert(parentWindow, delegate) {
 }
 
 ObservingAlert.prototype.alert = function(dialogTitle, text) {
-  Logger.dumpn("Opening alert in alert service");
   webdriver.modals.signalOpenModal(this.parentWindow_, text);
   this.delegate_.alert(dialogTitle, text);
 };
