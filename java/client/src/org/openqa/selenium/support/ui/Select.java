@@ -47,9 +47,7 @@ public class Select {
 
     this.element = element;
 
-    String value = element.getAttribute("multiple");
-    isMulti = value != null && "multiple".equals(value.toLowerCase());
-
+    this.isMulti = element.getAttribute("multiple") != null;
   }
 
   /**

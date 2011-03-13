@@ -44,27 +44,33 @@ public class SelectTest extends MockObjectTestCase {
   }
 
   public void testShouldIndicateThatASelectCanSupportMultipleOptions() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      exactly(1).of(element).getAttribute("multiple"); will(returnValue("multiple"));
-    }});
-
-    Select select = new Select(element);
+    Select select = selectElementWithMultipleEqualTo("multiple");
+    assertTrue(select.isMultiple());
+  }
+  
+  public void testShouldIndicateThatASelectCanSupportMultipleOptionsWithSomeValueForMultiple() {
+    Select select = selectElementWithMultipleEqualTo("truemaybe");
+    assertTrue(select.isMultiple());
+  }
+  
+  public void testShouldIndicateThatASelectCanSupportMultipleOptionsWithNoValueForMultiple() {
+    Select select = selectElementWithMultipleEqualTo("");
     assertTrue(select.isMultiple());
   }
 
   public void testShouldNotIndicateThatANormalSelectSupportsMulitpleOptions() {
+    assertFalse(nonMultiSelect().isMultiple());
+  }
+  
+  private Select selectElementWithMultipleEqualTo(final String value) {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
       allowing(element).getTagName(); will(returnValue("select"));
-      exactly(1).of(element).getAttribute("multiple"); will(returnValue(null));
+      exactly(1).of(element).getAttribute("multiple"); will(returnValue(value));
     }});
 
-    Select select = new Select(element);
-    assertFalse(select.isMultiple());
+    return new Select(element);
   }
 
   public void testShouldReturnAllOptionsWhenAsked() {
@@ -220,20 +226,16 @@ public class SelectTest extends MockObjectTestCase {
   }
 
   public void testShouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      exactly(1).of(element).getAttribute("multiple"); will(returnValue(""));
-    }});
-
-    Select select = new Select(element);
     try {
-      select.deselectAll();
+      nonMultiSelect().deselectAll();
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
+  }
+
+  private Select nonMultiSelect() {
+    return selectElementWithMultipleEqualTo(null);
   }
 
   public void testShouldAllowUserToDeselectOptionsByVisibleText() {
