@@ -246,7 +246,7 @@ module Javascript
       name = exports_name(dir, args[:name])
 
       file name do
-        puts "Generating export file for #{args[:function]}"
+        puts "Generating export file for #{args[:function]} at #{name}"
         mkdir_p File.dirname(name)
         File.open(name, "w") do |file|
           file << "goog.require('#{args[:module]}'); goog.exportSymbol('_', #{args[:function]});"
