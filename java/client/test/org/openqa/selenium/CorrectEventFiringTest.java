@@ -215,8 +215,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, IPHONE},
-      reason = "Chrome: Non-native event firing is broken in .\n"
+  @Ignore(value = {SELENESE, IPHONE, CHROME},
+      reason = "Chrome: Issue 440.\n"
                + "  Selenese: Fails when running in firefox.\n"
                + "  iPhone: sendKeys implementation is incorrect")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
@@ -226,16 +226,16 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     }
 
     driver.get(pages.javascriptPage);
-  	WebElement element = driver.findElement(By.id("theworks"));
-  	element.sendKeys("foo");
-  	WebElement element2 = driver.findElement(By.id("changeable"));
-  	element2.sendKeys("bar");
-  	assertEventFired("blur");
+    WebElement element = driver.findElement(By.id("theworks"));
+    element.sendKeys("foo");
+    WebElement element2 = driver.findElement(By.id("changeable"));
+    element2.sendKeys("bar");
+    assertEventFired("blur");
   }
   
   @JavascriptEnabled
   @Ignore(value = {SELENESE, CHROME, IPHONE, ANDROID},
-      reason = ": Non-native event firing is broken in Chrome.\n"
+      reason = "Chrome: Issue 440.\n"
                + "  Selenese: Fails when running in firefox.\n"
                + "  iPhone: sendKeys implementation is incorrect")
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
@@ -244,15 +244,16 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
       return;
     }
     
-  	driver.get(pages.javascriptPage);
-  	WebElement element = driver.findElement(By.id("theworks"));
-  	element.sendKeys("foo");
-  	assertEventFired("focus");
+    driver.get(pages.javascriptPage);
+    WebElement element = driver.findElement(By.id("theworks"));
+    element.sendKeys("foo");
+    assertEventFired("focus");
   }
   
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE},
-      reason = "iPhone: input elements are blurred when the keyboard is closed")
+  @Ignore(value = {IPHONE, SELENESE, CHROME},
+      reason = "Chrome: Issue 440.\n" +
+          "iPhone: input elements are blurred when the keyboard is closed")
   public void testSendingKeysToAFocusedElementShouldNotBlurThatElement() {
     if (browserNeedsFocusOnThisOs(driver)) {
       System.out.println("Skipping this test because browser demands focus");
@@ -287,7 +288,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE})
+  @Ignore({IE, SELENESE, CHROME})
   public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement formElement = driver.findElement(By.id("submitListeningForm"));
@@ -296,7 +297,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE})
+  @Ignore({IE, SELENESE, CHROME})
   public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
@@ -305,7 +306,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled 
-  @Ignore({IE, SELENESE})
+  @Ignore({IE, SELENESE, CHROME})
   public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));

@@ -137,7 +137,8 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 //                "        "));
 //    }
 
-  @Ignore(value = {SELENESE, IPHONE, IE}, reason = "iPhone: sendKeys is broken")
+  @Ignore(value = {SELENESE, IPHONE, IE, CHROME}, reason = "iPhone: sendKeys is broken\n" +
+      "Chrome: Issue 440")
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
@@ -153,7 +154,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(seenText, equalTo(expectedText));
   }
 
-  @Ignore(SELENESE)
+  @Ignore(value = {SELENESE, CHROME}, reason = "Chrome: Issue 440")
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("working"));

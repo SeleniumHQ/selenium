@@ -153,8 +153,9 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME_NON_WINDOWS, IPHONE},
-      reason = "iPhone: sendKeys not implemented correctly")
+  @Ignore(value = {CHROME, IPHONE},
+      reason = "iPhone: sendKeys not implemented correctly\n" +
+          "Chrome: Issue 440")
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("change")).sendKeys("foo");

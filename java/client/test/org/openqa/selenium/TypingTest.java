@@ -29,10 +29,10 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
+@Ignore(value = CHROME, reason = "Issue 440")
 public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
-  @Ignore(CHROME_NON_WINDOWS)
   public void testShouldFireKeyPressEvents() {
     driver.get(pages.javascriptPage);
 
@@ -44,7 +44,6 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(CHROME_NON_WINDOWS)
   public void testShouldFireKeyDownEvents() {
     driver.get(pages.javascriptPage);
 
@@ -56,7 +55,6 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(CHROME_NON_WINDOWS)
   public void testShouldFireKeyUpEvents() {
     driver.get(pages.javascriptPage);
 

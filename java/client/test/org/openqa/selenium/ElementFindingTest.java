@@ -23,6 +23,7 @@ import java.util.concurrent.Callable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -108,6 +109,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(value = CHROME, reason = "Issue 1394")
   public void testShouldBeAbleToFindChildrenOfANode() {
     driver.get(pages.xhtmlTestPage);
     List<WebElement> elements = driver.findElements(By.xpath("/html/head"));

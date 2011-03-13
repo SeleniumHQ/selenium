@@ -32,8 +32,6 @@ import org.apache.commons.io.FileUtils;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-//import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -356,7 +354,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, FIREFOX, REMOTE, SELENESE})
+  @Ignore
   public void testShouldBeAbleToPassAnArrayAsAdditionalArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
