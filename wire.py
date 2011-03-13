@@ -592,7 +592,7 @@ Each locator must return the first matching element located in the DOM.
 || *Strategy* || *Description* ||
 || class name || Returns an element whose class name contains the search \
 value; compound class names are not permitted. ||
-|| css || Returns an element matching a CSS selector. ||
+|| css selector || Returns an element matching a CSS selector. ||
 || id || Returns an element whose ID attribute matches the search value. ||
 || name || Returns an element whose NAME attribute matches the search value. ||
 || link text || Returns an anchor element whose visible text matches the \
@@ -622,7 +622,7 @@ support. Elements should be returned in the order located in the DOM.
 || *Strategy* || *Description* ||
 || class name || Returns all elements whose class name contains the search \
 value; compound class names are not permitted. ||
-|| css || Returns all elements matching a CSS selector. ||
+|| css selector || Returns all elements matching a CSS selector. ||
 || id || Returns all elements whose ID attribute matches the search value. ||
 || name || Returns all elements whose NAME attribute matches the search value. ||
 || link text || Returns all anchor elements whose visible text matches the \
@@ -666,7 +666,7 @@ Each locator must return the first matching element located in the DOM.
 || *Strategy* || *Description* ||
 || class name || Returns an element whose class name contains the search \
 value; compound class names are not permitted. ||
-|| css || Returns an element matching a CSS selector. ||
+|| css selector || Returns an element matching a CSS selector. ||
 || id || Returns an element whose ID attribute matches the search value. ||
 || name || Returns an element whose NAME attribute matches the search value. ||
 || link text || Returns an anchor element whose visible text matches the \
@@ -700,7 +700,7 @@ should support. Elements should be returned in the order located in the DOM.
 || *Strategy* || *Description* ||
 || class name || Returns all elements whose class name contains the search \
 value; compound class names are not permitted. ||
-|| css || Returns all elements matching a CSS selector. ||
+|| css selector || Returns all elements matching a CSS selector. ||
 || id || Returns all elements whose ID attribute matches the search value. ||
 || name || Returns all elements whose NAME attribute matches the search value. ||
 || link text || Returns all anchor elements whose visible text matches the \
