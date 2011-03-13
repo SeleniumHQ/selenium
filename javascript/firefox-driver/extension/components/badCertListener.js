@@ -235,7 +235,7 @@ WdCertOverrideService.prototype.QueryInterface = function(aIID) {
   }
 
   throw Components.results.NS_ERROR_NO_INTERFACE;
-}
+};
 
 // Service contract ID which we override
 const CERTOVERRIDE_CONTRACT_ID = "@mozilla.org/security/certoverride;1";
@@ -284,13 +284,39 @@ WDBadCertListenerModule.prototype.unregisterSelf = function(
   aCompMgr.unregisterFactoryLocation(DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID, aLocation);
 };
 
+const FACTORY = {
+  createInstance: function (aOuter, aIID) {
+    if (aOuter != null)
+      throw Components.results.NS_ERROR_NO_AGGREGATION;
+
+    if (service != undefined) {
+      return service;
+    }
+
+    var raw = new WdCertOverrideService();
+
+    var mainThread = CC["@mozilla.org/thread-manager;1"].getService().mainThread;
+    var proxyManager = CC["@mozilla.org/xpcomproxy;1"]
+        .getService(CI.nsIProxyObjectManager);
+
+    // 5 == NS_PROXY_ALWAYS | NS_PROXY_SYNC
+    service = proxyManager.getProxyForObject(mainThread,
+                CI.nsICertOverrideService, raw, 5);
+
+    return service;
+  }
+};
+
+WdCertOverrideService.prototype._xpcom_factory = FACTORY;
+
 WDBadCertListenerModule.prototype.getClassObject = function(
     aCompMgr, aCID, aIID) {
   if (!aIID.equals(Components.interfaces.nsIFactory))
     throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
-  if (aCID.equals(DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID))
-    return WDCertOverrideFactory;
+  if (aCID.equals(DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID)) {
+    return FACTORY;
+  }
 
   throw Components.results.NS_ERROR_NO_INTERFACE;
 };
@@ -308,6 +334,7 @@ function NSGetModule(comMgr, fileSpec) {
     return new WDBadCertListenerModule();
   }
 }
+
 
 WdCertOverrideService.prototype.classID = DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID;
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
