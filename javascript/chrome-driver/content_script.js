@@ -398,7 +398,7 @@ function getElement(lookupBy, lookupValue, id) {
   case "tag name":
     elements = getElementsByXPath(root + "//" + lookupValue);
     break;
-  case "css":
+  case "css selector":
     elements = parent.querySelectorAll(lookupValue);
     break;
   case "xpath":
