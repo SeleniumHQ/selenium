@@ -65,7 +65,7 @@ public class WebApplicationContext extends ServletHttpContext implements Externa
     private static Log log= LogFactory.getLog(WebApplicationContext.class);
 
     /* ------------------------------------------------------------ */
-    private String _defaultsDescriptor= "org/mortbay/jetty/servlet/webdefault.xml";
+    private String _defaultsDescriptor= "org/openqa/jetty/jetty/servlet/webdefault.xml";
     private String _war;
     private boolean _extract;
     private boolean _ignorewebjetty;

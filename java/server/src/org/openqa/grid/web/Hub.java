@@ -15,24 +15,23 @@ limitations under the License.
  */
 package org.openqa.grid.web;
 
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.servlet.Servlet;
-
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.webapp.WebAppContext;
+import com.google.common.collect.Maps;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.ConsoleServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
 import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
+import org.openqa.jetty.http.SocketListener;
+import org.openqa.jetty.jetty.Server;
+import org.openqa.jetty.jetty.servlet.WebApplicationContext;
+
+import javax.servlet.Servlet;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -50,7 +49,7 @@ public class Hub {
 	private String host;
 	private Server server;
 	private Registry registry;
-	private Map<String, Servlet> extraServlet = new HashMap<String, Servlet>();
+	private Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
 	private static Hub INSTANCE = new Hub(4444, Registry.getInstance());
 
 	public static Hub getInstance() {
@@ -69,32 +68,27 @@ public class Hub {
 	public static void main(String[] args) throws Exception {
 		Hub hub = Hub.getInstance();
 		for (String s : args) {
-			Servlet servlet = hub.createServlet(s);
+			Class<? extends Servlet> servletClass = hub.createServlet(s);
 			if (s != null) {
-				String path = "/grid/admin/" + servlet.getClass().getSimpleName() + "/*";
-				log.info("binding " + servlet.getClass().getCanonicalName() + " to " + path);
-				hub.addServlet(path, servlet);
+				String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
+				log.info("binding " + servletClass.getCanonicalName() + " to " + path);
+				hub.addServlet(path, servletClass);
 			}
 		}
 		hub.start();
 
 	}
 
-	private Servlet createServlet(String className) {
+	private Class<? extends Servlet> createServlet(String className) {
 		try {
-			Class<?> clazz = Class.forName(className);
-			return (Servlet) clazz.newInstance();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			return Class.forName(className).asSubclass(Servlet.class);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	private void addServlet(String key, Servlet s) {
+	private void addServlet(String key, Class<? extends Servlet> s) {
 		extraServlet.put(key, s);
 	}
 
@@ -130,26 +124,29 @@ public class Hub {
 		this.port = port;
 		this.registry = registry;
 		registry.setHub(this);
-
 	}
 
 	private void initServer() {
 		try {
 
-			server = new Server(port);
+			server = new Server();
+      SocketListener socketListener = new SocketListener();
+      socketListener.setMaxIdleTimeMs(60000);
+      socketListener.setPort(port);
+      server.addListener(socketListener);
 
-      WebAppContext root = new WebAppContext(System.getProperty("java.io.tmpdir"), "/");
-      root.addServlet(new ServletHolder(new ConsoleServlet(registry)), "/grid/console/*");
-			root.addServlet(new ServletHolder(new RegistrationServlet(registry)), "/grid/register/*");
-			root.addServlet(new ServletHolder(new DriverServlet(registry)), "/grid/driver/*");
-			root.addServlet(new ServletHolder(new DriverServlet(registry)), "/selenium-server/driver/*");
-			root.addServlet(new ServletHolder(new ResourceServlet()), "/resources/*");
+      WebApplicationContext root = server.addWebApplication("", ".");
+      root.setAttribute(Registry.KEY, registry);
 
-			for (String path : extraServlet.keySet()) {
-				root.addServlet(new ServletHolder(extraServlet.get(path)), path);
-			}
+      root.addServlet("/grid/console/*", ConsoleServlet.class.getName());
+      root.addServlet("/grid/register/*", RegistrationServlet.class.getName());
+      root.addServlet("/grid/driver/*", DriverServlet.class.getName());
+      root.addServlet("/selenium-server/driver/*", DriverServlet.class.getName());
+      root.addServlet("/resources/*", ResourceServlet.class.getName());
 
-			server.setHandler(root);
+      for (Map.Entry<String, Class<? extends Servlet>> entry : extraServlet.entrySet()) {
+        root.addServlet(entry.getKey(), entry.getValue().getName());
+      }
 
 		} catch (Throwable e) {
 			throw new RuntimeException("Error initializing the hub" + e.getMessage(), e);
@@ -165,8 +162,8 @@ public class Hub {
 	}
 
 	public void start() throws Exception {
-		initServer();
-		server.start();
+    initServer();
+    server.start();
 	}
 
 	public void stop() throws Exception {

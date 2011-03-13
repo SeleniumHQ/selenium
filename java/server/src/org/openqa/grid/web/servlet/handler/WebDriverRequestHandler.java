@@ -15,21 +15,20 @@ limitations under the License.
  */
 package org.openqa.grid.web.servlet.handler;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.jetty.server.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.internal.GridException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
+import org.openqa.jetty.jetty.servlet.ServletHttpResponse;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class WebDriverRequestHandler extends RequestHandler {
 
@@ -65,7 +64,7 @@ public class WebDriverRequestHandler extends RequestHandler {
 	/**
 	 * extract the session xxx from http://host:port/a/b/c/session/xxx/...
 	 * 
-	 * @param loc
+	 * @param path The path to the session
 	 * @return the session key provided by the remote., or null if the url
 	 *         didn't contain a session id
 	 */
@@ -119,7 +118,7 @@ public class WebDriverRequestHandler extends RequestHandler {
 		}
 
 		if (getResponse().containsHeader("Location")) {
-			String location = ((Response) getResponse()).getHeader("Location");
+      String location = ((ServletHttpResponse) getResponse()).getHttpResponse().getField("Location");
 			return extractSession(location);
 		} else {
 			log.warning("Error, header should contain Location");
@@ -127,5 +126,4 @@ public class WebDriverRequestHandler extends RequestHandler {
 		}
 
 	}
-
 }

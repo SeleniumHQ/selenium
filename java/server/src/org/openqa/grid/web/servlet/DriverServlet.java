@@ -31,17 +31,16 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
  * 
  * 
  */
-public class DriverServlet extends HttpServlet {
+public class DriverServlet extends RegistryBasedServlet {
 
 	private static final long serialVersionUID = -1693540182205547227L;
-	private Registry registry;
 
 	public DriverServlet() {
-		throw new IllegalAccessError("use  DriverServlet(Registry registry)");
+		this(null);
 	}
 
 	public DriverServlet(Registry registry) {
-		this.registry = registry;
+    super(registry);
 	}
 
 	@Override
@@ -60,8 +59,7 @@ public class DriverServlet extends HttpServlet {
 	}
 
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		RequestHandler req = RequestHandler.createHandler(request, response, registry);
+		RequestHandler req = RequestHandler.createHandler(request, response, getRegistry());
 		req.process();
 	}
-
 }

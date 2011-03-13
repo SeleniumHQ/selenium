@@ -89,7 +89,7 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
   <servlet>
     <servlet-name>default</servlet-name>
-    <servlet-class>org.mortbay.jetty.servlet.Default</servlet-class>
+    <servlet-class>org.openqa.jetty.jetty.servlet.Default</servlet-class>
     <init-param>
       <param-name>acceptRanges</param-name>
       <param-value>true</param-value>
@@ -225,7 +225,6 @@
   <servlet-mapping> <servlet-name>jsp</servlet-name> <url-pattern>*.jspf</url-pattern> </servlet-mapping>
   <servlet-mapping> <servlet-name>jsp</servlet-name> <url-pattern>*.jspx</url-pattern> </servlet-mapping>
   <servlet-mapping> <servlet-name>jsp</servlet-name> <url-pattern>*.xsp</url-pattern> </servlet-mapping>
-
 
   <!-- ==================================================================== -->
   <!-- Dynamic Servlet Invoker.                                             -->

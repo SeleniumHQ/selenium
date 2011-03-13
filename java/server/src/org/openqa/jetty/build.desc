@@ -6,9 +6,11 @@ java_library(name = "jetty",
   resources = [
     { "http/mime.properties" : "org/openqa/jetty/http/mime.properties" },
     { "http/encoding.properties" : "org/openqa/jetty/http/encoding.properties" },
+    { "jetty/servlet/webdefault.xml" : "org/openqa/jetty/jetty/servlet/webdefault.xml" },
   ],
   deps = [
     "//third_party/java/commons-logging",
+    "//third_party/java/jasper",
     "//third_party/java/mx4j",
     "//third_party/java/servlet-api"
   ])

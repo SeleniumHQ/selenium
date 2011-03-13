@@ -8,8 +8,8 @@ java_library(name = "grid",
     "images/",
   ],
   deps = [
+    "//java/server/src/org/openqa/jetty",
     "//java/server/src/org/openqa/grid/common",
     "//third_party/java/apache-httpclient",
-    "//third_party/java/jetty",
   ])
 

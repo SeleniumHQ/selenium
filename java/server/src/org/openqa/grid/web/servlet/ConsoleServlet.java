@@ -37,18 +37,16 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
  * 
  * 
  */
-public class ConsoleServlet extends HttpServlet {
+public class ConsoleServlet extends RegistryBasedServlet {
 
 	private static final long serialVersionUID = 8484071790930378855L;
-	private Registry registry;
 
 	public ConsoleServlet() {
-		throw new IllegalAccessError("use the contructor that set the registry.");
+    this(null);
 	}
 
 	public ConsoleServlet(Registry registry) {
-		this.registry = registry;
-
+    super(registry);
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -81,11 +79,11 @@ public class ConsoleServlet extends HttpServlet {
 		builder.append("<body>");
 		builder.append("<H1>Grid 2.0 Hub</H1>");
 
-		for (RemoteProxy proxy : registry.getAllProxies()) {
+		for (RemoteProxy proxy : getRegistry().getAllProxies()) {
 			builder.append(proxy.getHtmlRender().renderSummary());
 		}
 
-		List<RequestHandler> l = registry.getNewSessionRequests();
+		List<RequestHandler> l = getRegistry().getNewSessionRequests();
 
 		builder.append(l.size() + " requests waiting for a slot to be free.");
 

@@ -137,7 +137,7 @@ public class ServletHttpResponse implements HttpServletResponse
     
     
     /* ------------------------------------------------------------ */
-    HttpResponse getHttpResponse()
+    public HttpResponse getHttpResponse()
     {
         return _httpResponse;
     }

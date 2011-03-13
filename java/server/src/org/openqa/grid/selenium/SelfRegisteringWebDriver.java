@@ -19,11 +19,11 @@ package org.openqa.grid.selenium;
 import java.io.File;
 import java.net.URL;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.selenium.utils.NetworkUtil;
+import org.openqa.jetty.http.SocketListener;
+import org.openqa.jetty.jetty.Server;
+import org.openqa.jetty.jetty.servlet.WebApplicationContext;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -59,14 +59,12 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 	@Override
 	public void launchRemoteServer() throws Exception {
 		Server server = new Server();
-		WebAppContext context = new WebAppContext();
-		context.setWar(".");
-		context.setContextPath("");
-		server.setHandler(context);
-		context.addServlet(DriverServlet.class, getRemoteURL().getPath() + "/*");
-		SelectChannelConnector connector = new SelectChannelConnector();
-		connector.setPort(getRemoteURL().getPort());
-		server.addConnector(connector);
+    SocketListener listener = new SocketListener();
+    listener.setPort(getRemoteURL().getPort());
+    server.addListener(listener);
+
+    WebApplicationContext context = server.addWebApplication("", ".");
+    context.addServlet(getRemoteURL().getPath() + "/*", DriverServlet.class.getName());
 		server.start();
 	}
 

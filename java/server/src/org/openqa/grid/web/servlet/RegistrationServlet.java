@@ -37,18 +37,17 @@ import org.openqa.grid.internal.RemoteProxy;
  * 
  * 
  */
-public class RegistrationServlet extends HttpServlet {
+public class RegistrationServlet extends RegistryBasedServlet {
 
 	private static final long serialVersionUID = -8670670577712086527L;
 	private static final Logger log = Logger.getLogger(RegistrationServlet.class.getName());
-  private Registry registry;
 
 	public RegistrationServlet() {
-		throw new IllegalAccessError("use the constructor that set the registry.");
+		this(null);
 	}
 
 	public RegistrationServlet(Registry registry) {
-		this.registry = registry;
+    super(registry);
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -75,7 +74,7 @@ public class RegistrationServlet extends HttpServlet {
 
 		new Thread(new Runnable() {
 			public void run() {
-				registry.add(proxy);
+				getRegistry().add(proxy);
 				log.fine("proxy added " + proxy.getRemoteURL());
 			}
 		}).start();
@@ -86,6 +85,5 @@ public class RegistrationServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.setStatus(200);
 		response.getWriter().print(content);
-
 	}
 }

@@ -40,6 +40,8 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
  */
 public class Registry {
 
+  public static final String KEY = Registry.class.getName();
+
 	private Prioritizer prioritizer = null;
 
 	private static final Logger log = Logger.getLogger(Registry.class.getName());
@@ -59,7 +61,8 @@ public class Registry {
 	private Thread matcherThread;
 	private boolean stop = false;
 
-	private Registry() {
+
+  private Registry() {
 		matcherThread = new Thread(new Runnable() {
 			public void run() {
 				try {
