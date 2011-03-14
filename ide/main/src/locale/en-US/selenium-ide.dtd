@@ -28,6 +28,7 @@
 <!ENTITY recordButton.tooltip "Record">
 <!ENTITY baseURL.label "Base URL">
 <!ENTITY baseURLTextbox.tooltip "Enter the URL of the website you are testing. Used for playing &quot;open&quot; command.">
+<!ENTITY resetWindowCmd.label "Reset IDE Window">
 
 <!ENTITY fileMenu.label "File">
 <!ENTITY runMenu.label "Actions">

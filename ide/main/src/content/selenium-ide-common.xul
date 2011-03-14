@@ -199,12 +199,12 @@ limitations under the License.
   </menu>
   <menu id="optionsMenu" label="&optionsMenu.label;" accesskey="O">
     <menupopup id="options-popup" onpopupshowing="window.editor.onPopupOptions()">
-      <menuitem label="&optionsCmd.label;" oncommand="window.editor.openSeleniumIDEPreferences();" accesskey="O"/>
-      <menu label="&formatCmd.label;" accesskey="F">
+      <menuitem label="&optionsCmd.label;" oncommand="window.editor.openSeleniumIDEPreferences();" accesskey="O" insertbefore="menu-reset-window" />
+      <menu label="&formatCmd.label;" accesskey="F" insertbefore="menu-reset-window">
         <menupopup id="popup_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.app.getCurrentFormat())" oncommand="window.editor.app.setCurrentFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
         </menupopup>
       </menu>
-      <menu id="clipboardFormatMenu" label="&clipboardFormatCmd.label;">
+      <menu id="clipboardFormatMenu" label="&clipboardFormatCmd.label;" insertbefore="menu-reset-window">
         <menupopup id="popup_clipboard_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.app.clipboardFormat)" oncommand="window.editor.app.setClipboardFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
         </menupopup>
       </menu>

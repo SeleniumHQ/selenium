@@ -601,6 +601,19 @@ Editor.prototype._isSameWindow = function(w1, w2) {
     }
 }
 
+//Samit: Enh: Provide a way to reset the window size and position in the rare case that you have to change to a smaller monitor and you cannot access the lower pane
+Editor.prototype.resetWindow = function() {
+    if (this instanceof StandaloneEditor) {
+        try {
+            window.restore();
+            window.resizeTo(400,520);
+            window.moveTo(0,0);
+        }catch(err) {
+            alert("Error: [" + err + "] while trying to reset window size and position.");
+        }
+    }
+}
+
 Editor.prototype.addCommand = function(command,target,value,window,insertBeforeLastCommand) {
     this.log.debug("addCommand: command=" + command + ", target=" + target + ", value=" + value + " window.name=" + window.name);
     if (this.lastWindow) {

@@ -28,6 +28,7 @@
 <!ENTITY recordButton.tooltip "Gravar">
 <!ENTITY baseURL.label "URL Base">
 <!ENTITY baseURLTextbox.tooltip "Informe a URL do website a ser testado. Este valor é usado para executar o comando &quot;open.&quot;">
+<!ENTITY resetWindowCmd.label "Reset Janela IDE">
 
 <!ENTITY fileMenu.label "Arquivo">
 <!ENTITY runMenu.label "Ações">

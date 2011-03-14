@@ -28,6 +28,7 @@
 <!ENTITY recordButton.tooltip "テストの記録">
 <!ENTITY baseURL.label "Base URL">
 <!ENTITY baseURLTextbox.tooltip "テストを実施するWebサイトの URL を入力してください。&quot;open&quot; コマンドの実行に使われます。">
+<!ENTITY resetWindowCmd.label "リセットIDEのウィンドウ">
 
 <!ENTITY fileMenu.label "ファイル">
 <!ENTITY runMenu.label "アクション">

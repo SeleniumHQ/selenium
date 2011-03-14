@@ -55,7 +55,11 @@ limitations under the License.
       <menu id="fileMenu" />
       <menu id="menu_edit" />
       <menu id="runMenu" />
-      <menu id="optionsMenu" />
+      <menu id="optionsMenu">
+        <menupopup id="options-popup">
+          <menuitem id="menu-reset-window" label="&resetWindowCmd.label;" oncommand="window.editor.resetWindow();" accesskey="R"/>
+        </menupopup>
+      </menu>
       <menu id="windowMenu"/>
       <menu id="helpMenu">
         <menupopup id="menu_HelpPopup">

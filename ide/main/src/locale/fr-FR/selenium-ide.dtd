@@ -28,6 +28,7 @@
 <!ENTITY recordButton.tooltip "Enregistrer">
 <!ENTITY baseURL.label "Base URL">
 <!ENTITY baseURLTextbox.tooltip "Saisissez l'URL du site que vous testez. Utilis&#233;e pour ex&#233;cuter la commande &quot;open&quot;.">
+<!ENTITY resetWindowCmd.label "Fenêtre IDE Reset">
 
 <!ENTITY fileMenu.label "Fichier">
 <!ENTITY runMenu.label "Actions">

@@ -28,6 +28,7 @@
 <!ENTITY recordButton.tooltip "Spela in">
 <!ENTITY baseURL.label "Bas-URL">
 <!ENTITY baseURLTextbox.tooltip "Ange URL till webbplatsen du testar. Används för att spela upp kommandot &quot;open&quot;.">
+<!ENTITY resetWindowCmd.label "Återställ IDE Fönster">
 
 <!ENTITY fileMenu.label "Arkiv">
 <!ENTITY runMenu.label "Aktiviteter">
