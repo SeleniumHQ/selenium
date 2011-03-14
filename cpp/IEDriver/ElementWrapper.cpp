@@ -257,24 +257,24 @@ bool ElementWrapper::IsRadioButton() {
 	return _wcsicmp((LPCWSTR)((BSTR)type_name), L"radio") == 0;
 }
 
-void ElementWrapper::FireEvent(IHTMLDOMNode* fire_event_on, LPCWSTR event_name) {
+void ElementWrapper::FireEvent(const std::wstring& event_name) {
+	CComQIPtr<IHTMLDOMNode> fire_event_on(this->element_);
 	CComPtr<IDispatch> dispatch;
 	this->element_->get_document(&dispatch);
 	CComQIPtr<IHTMLDocument4> doc(dispatch);
 
 	CComPtr<IHTMLEventObj> event_object;
-	CComVariant empty;
-	doc->createEventObject(&empty, &event_object);
+	doc->createEventObject(NULL, &event_object);
 
 	CComVariant eventref;
-	V_VT(&eventref) = VT_DISPATCH;
-	V_DISPATCH(&eventref) = event_object;
+	eventref.vt = VT_DISPATCH;
+	eventref.pdispVal = event_object;
 
-	CComBSTR on_change(event_name);
+	CComBSTR event_name_bstr(event_name.c_str());
 	VARIANT_BOOL cancellable;
 
 	CComQIPtr<IHTMLElement3> element3(fire_event_on);
-	element3->fireEvent(on_change, &eventref, &cancellable);
+	element3->fireEvent(event_name_bstr, &eventref, &cancellable);
 }
 
 int ElementWrapper::GetLocation(long *x, long *y, long *width, long *height) {
