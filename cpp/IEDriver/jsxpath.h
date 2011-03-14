@@ -154,7 +154,7 @@ L"var cd=function(dd,ed,fd){this.node=dd;this.nodeType=2;this.nodeValue=dd.nodeV
 L"if(jd.match(kd))ld.unshift(kd);}\n",
 L"return ld;}],'ancestor-or-self':[true,function(qd,rd,sd,_,td,ud,vd){do{if(ud&&rd.nodeType==1){ud.reserveDelByNode(rd,vd,true);}\n",
 L"if(qd.match(rd))sd.unshift(rd);}\n",
-L"while(rd=rd.parentNode)return sd;}],attribute:[false,function(wd,xd,yd){var zd=xd.attributes;if(zd){ /*@cc_on \n",
+L"while(rd=rd.parentNode);return sd;}],attribute:[false,function(wd,xd,yd){var zd=xd.attributes;if(zd){ /*@cc_on \n",
 L"var Ad=xd.sourceIndex;@*/if((wd.notOnlyElement&&wd.type==0)||wd.name=='*'){for(var i=0,attr;attr=zd[i];i++){ /*@cc_on @if(@_jscript)if(attr.nodeValue){yd.push(new cd(attr,xd,Ad));}@else @*/ \n",
 L"yd.push(attr);/*@end @*/ }}\n",
 L"else{var Bd=zd.getNamedItem(wd.name); /*@cc_on @if(@_jscript)if(Bd&&Bd.nodeValue){Bd=new cd(Bd,xd,Ad);;@else @*/ \n",
