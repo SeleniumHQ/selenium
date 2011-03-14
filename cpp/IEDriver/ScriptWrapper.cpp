@@ -141,12 +141,33 @@ bool ScriptWrapper::ResultIsObject() {
 
 int ScriptWrapper::Execute() {
 	VARIANT result;
+	CComPtr<IDispatch> script_engine;
+	HRESULT hr = this->script_engine_host_->get_Script(&script_engine);
+	if (FAILED(hr)) {
+		// LOGHR(WARN, hr) << "Cannot obtain script engine";
+		return EUNEXPECTEDJSERROR;
+	}
+
+	DISPID eval_id;
+	bool added;
+	bool ok = this->GetEvalMethod(this->script_engine_host_, &eval_id, &added);
+
+	if (!ok) {
+		LOG(WARN) << "Unable to locate eval method";
+		if (added) { 
+			this->RemoveScript(this->script_engine_host_); 
+		}
+		return EUNEXPECTEDJSERROR;
+	}
 
 	CComVariant temp_function;
-	if (!this->CreateAnonymousFunction(&temp_function)) {
+	if (!this->CreateAnonymousFunction(script_engine, eval_id, this->script_, &temp_function)) {
 		// Debug level since this is normally the point we find out that 
 		// a page refresh has occured. *sigh*
 		// LOG(DEBUG) << "Cannot create anonymous function: " << _bstr_t(script) << endl;
+		if (added) { 
+			this->RemoveScript(this->script_engine_host_); 
+		}
 		return EUNEXPECTEDJSERROR;
 	}
 
@@ -154,14 +175,20 @@ int ScriptWrapper::Execute() {
 		// No return value that we care about
 		::VariantClear(&result);
 		result.vt = VT_EMPTY;
+		if (added) { 
+			this->RemoveScript(this->script_engine_host_); 
+		}
 		return SUCCESS;
 	}
 
 	// Grab the "call" method out of the returned function
 	DISPID call_member_id;
 	OLECHAR FAR* call_member_name = L"call";
-	HRESULT hr = temp_function.pdispVal->GetIDsOfNames(IID_NULL, &call_member_name, 1, LOCALE_USER_DEFAULT, &call_member_id);
+	hr = temp_function.pdispVal->GetIDsOfNames(IID_NULL, &call_member_name, 1, LOCALE_USER_DEFAULT, &call_member_id);
 	if (FAILED(hr)) {
+		if (added) { 
+			this->RemoveScript(this->script_engine_host_); 
+		}
 //		LOGHR(DEBUG, hr) << "Cannot locate call method on anonymous function: " << _bstr_t(script) << endl;
 		return EUNEXPECTEDJSERROR;
 	}
@@ -179,6 +206,9 @@ int ScriptWrapper::Execute() {
 	CComPtr<IHTMLWindow2> win;
 	hr = this->script_engine_host_->get_parentWindow(&win);
 	if (FAILED(hr)) {
+		if (added) { 
+			this->RemoveScript(this->script_engine_host_);
+		}
 		LOGHR(WARN, hr) << "Cannot get parent window";
 		return EUNEXPECTEDJSERROR;
 	}
@@ -230,6 +260,10 @@ int ScriptWrapper::Execute() {
 
 	this->result_ = result;
 
+	if (added) { 
+		this->RemoveScript(this->script_engine_host_); 
+	}
+
 	delete[] vargs;
 
 	return return_code;
@@ -238,10 +272,8 @@ int ScriptWrapper::Execute() {
 int ScriptWrapper::ConvertResultToJsonValue(BrowserManager *manager, Json::Value *value) {
 	int status_code = SUCCESS;
 	if (this->ResultIsString()) { 
-		std::string string_value("");
-		if (this->result_.bstrVal) {
-			string_value = CW2A(this->result_.bstrVal, CP_UTF8);
-		}
+		std::string string_value;
+		string_value = CW2A(this->result_.bstrVal, CP_UTF8);
 		*value = string_value;
 	} else if (this->ResultIsInteger()) {
 		*value = this->result_.lVal;
@@ -391,37 +423,121 @@ int ScriptWrapper::GetArrayItem(BrowserManager *manager, long index, Json::Value
 	return SUCCESS;
 }
 
-bool ScriptWrapper::CreateAnonymousFunction(VARIANT *result) {
-	CComBSTR function_eval_script(L"window.document.__webdriver_script_fn = ");
-	function_eval_script.Append(this->script_.c_str());
-	CComBSTR code(function_eval_script);
-	CComBSTR lang(L"JScript");
-	CComVariant exec_script_result;
-	CComPtr<IHTMLWindow2> window;
-	HRESULT hr = this->script_engine_host_->get_parentWindow(&window);
+bool ScriptWrapper::GetEvalMethod(IHTMLDocument2* doc, DISPID* eval_id, bool* added) {
+	CComPtr<IDispatch> script_engine;
+	doc->get_Script(&script_engine);
+
+	OLECHAR FAR* eval_method_name = L"eval";
+	HRESULT hr = script_engine->GetIDsOfNames(IID_NULL, &eval_method_name, 1, LOCALE_USER_DEFAULT, eval_id);
 	if (FAILED(hr)) {
-		return false;
+		*added = true;
+		// Start the script engine by adding a script tag to the page
+		CComPtr<IHTMLElement> script_tag;
+		CComBSTR span_tag_name(L"span");
+		hr = doc->createElement(span_tag_name, &script_tag);
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Failed to create span tag";
+		}
+		CComBSTR element_html(L"<span id='__webdriver_private_span'>&nbsp;<script defer></script></span>");
+		script_tag->put_innerHTML(element_html);
+
+		CComPtr<IHTMLElement> body;
+		hr = doc->get_body(&body);
+		if (FAILED(hr) || body == NULL) {
+			// We have no body element, so there's nothing more we can do here.
+			// TODO: This may be a transient state of affairs. A wait-and-retry
+			// approach may be successful, but a timeout would be required.
+			return false;
+		}
+
+		CComQIPtr<IHTMLDOMNode> node(body);
+		CComQIPtr<IHTMLDOMNode> script_node(script_tag);
+
+		CComPtr<IHTMLDOMNode> generated_child;
+		node->appendChild(script_node, &generated_child);
+
+		script_engine.Release();
+		doc->get_Script(&script_engine);
+		hr = script_engine->GetIDsOfNames(IID_NULL, &eval_method_name, 1, LOCALE_USER_DEFAULT, eval_id);
+
+		if (FAILED(hr)) {
+			this->RemoveScript(doc);
+			return false;
+		}
 	}
 
-	hr = window->execScript(code, lang, &exec_script_result);
-	if (FAILED(hr)) {
-		return false;
-	}
+	return true;
+}
 
-	OLECHAR FAR* function_object_name(L"__webdriver_script_fn");
-	DISPID dispid_function_object;
-	hr = this->script_engine_host_->GetIDsOfNames(IID_NULL, &function_object_name, 1, LOCALE_USER_DEFAULT, &dispid_function_object);
-	if (FAILED(hr)) {
-		return false;
-	}
+bool ScriptWrapper::CreateAnonymousFunction(IDispatch* script_engine, DISPID eval_id, const std::wstring& script, VARIANT* result) {
+	CComVariant script_variant(script.c_str());
+	DISPPARAMS parameters = {0};
+	memset(&parameters, 0, sizeof parameters);
+	parameters.cArgs      = 1;
+	parameters.rgvarg     = &script_variant;
+	parameters.cNamedArgs = 0;
 
-	// get the value of eval result
-	DISPPARAMS no_args_dispatch_parameters = { NULL, NULL, 0, 0 };
-	hr = this->script_engine_host_->Invoke(dispid_function_object, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_PROPERTYGET, &no_args_dispatch_parameters, result, NULL, NULL);
+	EXCEPINFO exception;
+	memset(&exception, 0, sizeof exception);
+
+	HRESULT hr = script_engine->Invoke(eval_id, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, result, &exception, 0);
 	if (FAILED(hr)) {
+		if (DISP_E_EXCEPTION == hr) {
+			LOGHR(INFO, hr) << "Exception message was: " << _bstr_t(exception.bstrDescription) << ": " << _bstr_t(script_variant);
+		} else {
+			LOGHR(DEBUG, hr) << "Failed to compile: " << _bstr_t(script_variant);
+		}
+
+		if (result) {
+			result->vt = VT_USERDEFINED;
+			if (exception.bstrDescription != NULL) {
+				result->bstrVal = ::SysAllocStringByteLen((char*)exception.bstrDescription, ::SysStringByteLen(exception.bstrDescription));
+			} else {
+				result->bstrVal = ::SysAllocStringByteLen(NULL, 0);
+			}
+		}
+
 		return false;
 	}
 
 	return true;
 }
+
+void ScriptWrapper::RemoveScript(IHTMLDocument2 *doc) {
+	CComQIPtr<IHTMLDocument3> doc3(doc);
+
+	if (!doc3) {
+		return;
+	}
+
+	CComPtr<IHTMLElement> element;
+	CComBSTR id(L"__webdriver_private_span");
+	HRESULT hr = doc3->getElementById(id, &element);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Cannot find the script tag. Bailing.";
+		return;
+	}
+
+	CComQIPtr<IHTMLDOMNode> element_node(element);
+
+	if (element_node) {
+		CComPtr<IHTMLElement> body;
+		hr = doc->get_body(&body);
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Cannot locate body of document";
+			return;
+		}
+		CComQIPtr<IHTMLDOMNode> body_node(body);
+		if (!body_node) {
+			LOG(WARN) << "Cannot cast body to a standard html node";
+			return;
+		}
+		CComPtr<IHTMLDOMNode> removed;
+		hr = body_node->removeChild(element_node, &removed);
+		if (FAILED(hr)) {
+			LOGHR(DEBUG, hr) << "Cannot remove child node. Shouldn't matter. Bailing";
+		}
+	}
+}
+
 } // namespace webdriver

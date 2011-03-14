@@ -54,7 +54,9 @@ private:
 	int GetPropertyNameList(std::wstring *property_names);
 	int GetPropertyValue(BrowserManager *manager, const std::wstring& property_name, Json::Value *property_value);
 	std::wstring GetResultObjectTypeName(void);
-	bool CreateAnonymousFunction(VARIANT* result);
+	bool GetEvalMethod(IHTMLDocument2* doc, DISPID* eval_id, bool* added);
+	bool CreateAnonymousFunction(IDispatch* script_engine, DISPID eval_id, const std::wstring& script, VARIANT* result);
+	void RemoveScript(IHTMLDocument2* doc);
 
 	CComPtr<IHTMLDocument2> script_engine_host_;
 	unsigned long argument_count_;

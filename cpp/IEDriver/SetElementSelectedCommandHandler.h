@@ -68,7 +68,8 @@ protected:
 							element_wrapper->element()->setAttribute(attribute_name, attribute_value, 0);
 
 							if (currently_selected != element_wrapper->IsSelected()) {
-								element_wrapper->FireEvent(L"onchange");
+								CComQIPtr<IHTMLDOMNode> element_node(element_wrapper->element());
+								element_wrapper->FireEvent(element_node, L"onchange");
 							}
 							response->SetResponse(SUCCESS, Json::Value::null);
 							return;
@@ -77,17 +78,14 @@ protected:
 							if (option) {
 								option->put_selected(VARIANT_TRUE);
 
-								// Looks like we'll need to fire the event on the select
-								// element and not the option. Assume for now that the 
-								// parent node is a select. Which is dumb.
-								CComPtr<IHTMLElement> parent_element;
-								HRESULT hr = element_wrapper->element()->get_parentElement(&parent_element);
-
-								std::tr1::shared_ptr<ElementWrapper> parent_wrapper;
-								manager->AddManagedElement(parent_element, &parent_wrapper);
+								// Looks like we'll need to fire the event on the select element and not
+								// the option. Assume for now that the parent node is a select. Which is dumb.
+								CComQIPtr<IHTMLDOMNode> option_node(element_wrapper->element());
+								CComPtr<IHTMLDOMNode> parent;
+								option_node->get_parentNode(&parent);
 
 								if (currently_selected != element_wrapper->IsSelected()) {
-									parent_wrapper->FireEvent(L"onchange");
+									element_wrapper->FireEvent(parent, L"onchange");
 								}
 								response->SetResponse(SUCCESS, Json::Value::null);
 								return;

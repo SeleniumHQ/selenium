@@ -86,15 +86,22 @@ protected:
 						return;
 					}
 
-					// Looks like we'll need to fire the event on the select 
-					// element and not the option. Assume for now that the 
-					// parent node is a select. Which is dumb.
-					CComPtr<IHTMLElement> parent_element;
-					hr = element_wrapper->element()->get_parentElement(&parent_element);
-					std::tr1::shared_ptr<ElementWrapper> parent_wrapper;
-					manager->AddManagedElement(parent_element, &parent_wrapper);
-					parent_wrapper->FireEvent(L"onchange");
+					//Looks like we'll need to fire the event on the select element and not the option. Assume for now that the parent node is a select. Which is dumb
+					CComQIPtr<IHTMLDOMNode> node(element_wrapper->element());
+					if (!node) {
+						LOG(WARN) << "Current element is not an DOM node";
+						response->SetErrorResponse(ENOSUCHELEMENT, "Current element is not an DOM node");
+						return;
+					}
+					CComPtr<IHTMLDOMNode> parent;
+					hr = node->get_parentNode(&parent);
+					if (FAILED(hr)) {
+						LOGHR(WARN, hr) << "Cannot get parent node";
+						response->SetErrorResponse(ENOSUCHELEMENT, "cannot get parent node");
+						return;
+					}
 
+					element_wrapper->FireEvent(parent, L"onchange");
 					response->SetResponse(SUCCESS, element_wrapper->IsSelected());
 				} else {
 					// Element is not an OPTION element, and it's not visible.
