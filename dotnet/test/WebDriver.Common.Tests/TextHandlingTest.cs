@@ -168,6 +168,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [Ignore("Issue #1225. Issue in the automation atom.")]
         public void ShouldReturnEmptyStringWhenTagIsSelfClosing()
         {
             driver.Url = (xhtmlTestPage);
@@ -178,7 +179,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        //[IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Chrome)]
         public void ShouldNotTrimSpacesWhenLineWraps()
         {

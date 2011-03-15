@@ -36,6 +36,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Remote, "Remote server does not handle encoded characters properly")]
         public void ShouldAcceptInvalidUrlsUsingStrings()
         {
             INavigation navigation;
@@ -89,7 +90,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Refresh does not work for IE")]
         public void ShouldRefreshPage()
         {
             driver.Url = javascriptPage;
