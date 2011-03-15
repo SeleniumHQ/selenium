@@ -93,7 +93,7 @@ std::wstring IEDriverServer::ReadRequestBody(struct mg_connection *conn, const s
 		int output_buffer_size = ::MultiByteToWideChar(CP_UTF8, 0, &input_buffer[0], -1, NULL, 0);
 		vector<TCHAR> output_buffer(output_buffer_size);
 		::MultiByteToWideChar(CP_UTF8, 0, &input_buffer[0], -1, &output_buffer[0], output_buffer_size);
-		request_body.append(&output_buffer[0], bytes_read);
+		request_body.append(&output_buffer[0], output_buffer_size);
 	}
 
 	return request_body;
