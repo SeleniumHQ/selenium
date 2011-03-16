@@ -99,7 +99,8 @@ public class SeleniumSelect {
   }
 
   private boolean isMultiple() {
-    boolean multiple = "true".equals(select.getAttribute("multiple"));
+    String multipleValue = select.getAttribute("multiple");
+    boolean multiple = "true".equals(multipleValue) || "multiple".equals(multipleValue);
     return multiple;
   }
 

@@ -21,7 +21,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Models a SELECT tag, providing helper methods to select and deselect options.
@@ -47,7 +49,8 @@ public class Select {
 
     this.element = element;
 
-    this.isMulti = element.getAttribute("multiple") != null;
+    String value = element.getAttribute("multiple");
+    isMulti = value != null;
   }
 
   /**

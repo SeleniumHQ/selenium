@@ -18,6 +18,7 @@ limitations under the License.
 package com.thoughtworks.selenium;
 
 import com.thoughtworks.selenium.corebased.TestAddLocationStrategy;
+import com.thoughtworks.selenium.corebased.TestAddSelection;
 import com.thoughtworks.selenium.corebased.TestCheckUncheck;
 import com.thoughtworks.selenium.corebased.TestCommandError;
 import com.thoughtworks.selenium.corebased.TestComments;
@@ -56,6 +57,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     TestAddLocationStrategy.class,
+    TestAddSelection.class,
     TestCheckUncheck.class,
     TestCommandError.class,
     TestComments.class,

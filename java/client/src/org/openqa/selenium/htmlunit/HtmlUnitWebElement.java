@@ -22,6 +22,7 @@ package org.openqa.selenium.htmlunit;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.SgmlPage;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
@@ -84,6 +85,8 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
   private static final String[] blockLevelsTagNames =
       {"p", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "div", "noscript",
        "blockquote", "form", "hr", "table", "fieldset", "address", "ul", "ol", "pre", "br"};
+  private static final String[] booleanAttributes = {"checked", "selected", "multiple"};
+
   private String toString;
 
   public HtmlUnitWebElement(HtmlUnitDriver parent, HtmlElement element) {
@@ -286,11 +289,15 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     if ("disabled".equals(lowerName)) {
       return isEnabled() ? "false" : "true";
     }
-    if ("selected".equals(lowerName)) {
-      return (value.equalsIgnoreCase("selected") ? "true" : null);
-    }
-    if ("checked".equals(lowerName)) {
-      return (value.equalsIgnoreCase("checked") ? "true" : null);
+
+    for (String booleanAttribute: booleanAttributes) {
+      if (booleanAttribute.equals(lowerName)) {
+        if (value.equals(DomElement.ATTRIBUTE_NOT_DEFINED)) {
+          return null;
+        }
+
+        return "true";
+      }
     }
     if ("index".equals(lowerName) && element instanceof HtmlOption) {
       HtmlSelect select = ((HtmlOption) element).getEnclosingSelect();

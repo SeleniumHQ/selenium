@@ -23,5 +23,8 @@ public class SelectLargeTest extends AbstractDriverTestCase {
     assertEquals(2, picked.size());
     assertEquals("select_2", picked.get(0).getAttribute("id"));
     assertEquals("select_3", picked.get(1).getAttribute("id"));
+
+    selection.deselectAll();
+    assertEquals(0, selection.getAllSelectedOptions().size());
   }
 }

@@ -43,25 +43,6 @@ public class SelectTest extends MockObjectTestCase {
     }
   }
 
-  public void testShouldIndicateThatASelectCanSupportMultipleOptions() {
-    Select select = selectElementWithMultipleEqualTo("multiple");
-    assertTrue(select.isMultiple());
-  }
-  
-  public void testShouldIndicateThatASelectCanSupportMultipleOptionsWithSomeValueForMultiple() {
-    Select select = selectElementWithMultipleEqualTo("truemaybe");
-    assertTrue(select.isMultiple());
-  }
-  
-  public void testShouldIndicateThatASelectCanSupportMultipleOptionsWithNoValueForMultiple() {
-    Select select = selectElementWithMultipleEqualTo("");
-    assertTrue(select.isMultiple());
-  }
-
-  public void testShouldNotIndicateThatANormalSelectSupportsMulitpleOptions() {
-    assertFalse(nonMultiSelect().isMultiple());
-  }
-  
   private Select selectElementWithMultipleEqualTo(final String value) {
     final WebElement element = mock(WebElement.class);
 
@@ -71,6 +52,22 @@ public class SelectTest extends MockObjectTestCase {
     }});
 
     return new Select(element);
+  }
+
+  public void testShouldIndicateThatASelectCanSupportMultipleOptions() {
+    Select select = selectElementWithMultipleEqualTo("multiple");
+    assertTrue(select.isMultiple());
+  }
+
+  public void testShouldIndicateThatASelectCanSupportMultipleOptionsWithEmptyMultipleAttribute() {
+    Select select = selectElementWithMultipleEqualTo("");
+    assertTrue(select.isMultiple());
+  }
+
+  public void testShouldNotIndicateThatANormalSelectSupportsMulitpleOptions() {
+    Select select = selectElementWithMultipleEqualTo(null);
+
+    assertFalse(select.isMultiple());
   }
 
   public void testShouldReturnAllOptionsWhenAsked() {
@@ -226,16 +223,13 @@ public class SelectTest extends MockObjectTestCase {
   }
 
   public void testShouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections() {
+    Select select = selectElementWithMultipleEqualTo(null);
     try {
-      nonMultiSelect().deselectAll();
+      select.deselectAll();
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-  }
-
-  private Select nonMultiSelect() {
-    return selectElementWithMultipleEqualTo(null);
   }
 
   public void testShouldAllowUserToDeselectOptionsByVisibleText() {
