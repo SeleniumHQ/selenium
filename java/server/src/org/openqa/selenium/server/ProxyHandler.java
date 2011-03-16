@@ -657,7 +657,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                 }
 
                 // Create the tunnel
-                HttpTunnel tunnel = newHttpTunnel(request, response, InetAddress.getLocalHost(), port, timeoutMs);
+                HttpTunnel tunnel = newHttpTunnel(request, response, InetAddress.getByName(null), port, timeoutMs);
 
                 if (tunnel != null) {
                     // TODO - need to setup semi-busy loop for IE.
