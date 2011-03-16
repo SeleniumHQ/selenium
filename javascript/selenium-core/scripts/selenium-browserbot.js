@@ -1151,7 +1151,7 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
     if (this.proxyInjectionMode) {
         return window;
     }
-    var testWindow = this.currentWindow;
+    var testWindow = core.firefox.unwrap(this.currentWindow);
     if (!doNotModify) {
         this._modifyWindow(testWindow);
         LOG.debug("getCurrentWindow newPageLoaded = false");
@@ -1169,9 +1169,6 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
  */
 BrowserBot.prototype.getUserWindow = function() {
     var userWindow = this.getCurrentWindow(true);
-    
-    userWindow = core.firefox.unwrap(userWindow);
-    
     return userWindow;
 };
 
