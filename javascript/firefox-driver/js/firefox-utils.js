@@ -83,7 +83,6 @@ webdriver.firefox.utils.getChromeWindow = function(win) {
 };
 
 
-// TODO(simon): Roll this out throughout the codebase before Firefox 4 is released.
 // This method closely follows unwrapNode() from mozmill-tests
 /**
  * Unwraps a something which is wrapped into a XPCNativeWrapper or XrayWrapper.

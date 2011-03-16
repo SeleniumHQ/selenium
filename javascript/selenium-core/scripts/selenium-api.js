@@ -1159,7 +1159,7 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
     *                timeout will be used. See the setTimeout() command.
     */
     if (! timeout) {
-        var timeout = this.defaultTimeout;
+        timeout = this.defaultTimeout;
     }
     var timeoutTime = getTimeoutTime(timeout);
     

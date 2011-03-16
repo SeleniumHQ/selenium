@@ -675,6 +675,8 @@ BrowserBot.prototype.getCurrentPage = function() {
 BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
     var self = this;
 
+    windowToModify = core.firefox.unwrap(windowToModify);
+
     windowToModify.seleniumAlert = windowToModify.alert;
 
     windowToModify.alert = function(alert) {
@@ -1168,9 +1170,7 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
 BrowserBot.prototype.getUserWindow = function() {
     var userWindow = this.getCurrentWindow(true);
     
-    if (userWindow.wrappedJSObject) {
-        userWindow = userWindow.wrappedJSObject;
-    }
+    userWindow = core.firefox.unwrap(userWindow);
     
     return userWindow;
 };
@@ -1405,6 +1405,7 @@ BrowserBot.prototype.findElementOrNull = function(locator, win) {
         win = this.getCurrentWindow();
     }
     var element = this.findElementRecursive(locator.type, locator.string, win.document, win);
+    element = core.firefox.unwrap(element);
 
     if (element != null) {
         return this.browserbot.highlight(element);
@@ -1725,6 +1726,7 @@ BrowserBot.prototype.replaceText = function(element, stringValue) {
 BrowserBot.prototype.submit = function(formElement) {
     var actuallySubmit = true;
     this._modifyElementTarget(formElement);
+    
     if (formElement.onsubmit) {
         if (browserVersion.isHTA) {
             // run the code in the correct window so alerts are handled correctly even in HTA mode
@@ -2069,12 +2071,12 @@ BrowserBot.prototype.locateElementByUIElement.is_fuzzy_match = function(node, ta
 
 function MozillaBrowserBot(frame) {
     BrowserBot.call(this, frame);
-};
+}
 objectExtend(MozillaBrowserBot.prototype, BrowserBot.prototype);
 
 function KonquerorBrowserBot(frame) {
     BrowserBot.call(this, frame);
-};
+}
 objectExtend(KonquerorBrowserBot.prototype, BrowserBot.prototype);
 
 KonquerorBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
