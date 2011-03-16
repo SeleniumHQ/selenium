@@ -33,7 +33,7 @@ require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 
-version = "2.0b2"
+version = "2.0b3"
 ide_version = "1.0.11"
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -107,11 +107,11 @@ task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//common/src/js/selenium:core", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
 
-task :test_atoms => [
+task :test_javascript => [
   '//javascript/atoms:test:run',
   '//javascript/webdriver-atoms:test:run',
   '//javascript/selenium-atoms:test:run',
-  '//javascript/selenium-core:test:run'] 
+  '//javascript/selenium-core:test:run']
 task :test_android => ["//java/client/test/org/openqa/selenium/android:android-test:run"]
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" ]
 task :test_htmlunit => [ "//java/client/test/org/openqa/selenium/htmlunit:test:run" ]
@@ -155,7 +155,6 @@ task :test_java => [
   "//java/client/test/org/openqa/selenium/atoms:test:run",
   "//java/client/test/org/openqa/selenium/support:test:run",
   "//java/client/test/org/openqa/selenium/htmlunit:test:run",
-  "test_atoms",
   "//java/client/test/org/openqa/selenium/firefox:test:run",
   "//java/client/test/org/openqa/selenium/ie:test:run",
   "//java/server/test/org/openqa/selenium/remote/server:test:run",
@@ -184,7 +183,7 @@ task :test_dotnet => [
   "//dotnet:firefox-test"
 ]
 
-task :test => [ :test_java, :test_rb ]
+task :test => [ :test_javascript, :test_java, :test_rb ]
 if (msbuild_installed?)
   task :test => [ :test_dotnet ]
 end
