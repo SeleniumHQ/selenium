@@ -2266,7 +2266,11 @@ function eval_locator(locator, inDocument, opt_contextNode)
             results.push(element);
         }
     }
-    
+
+    // Unwrap each of the elements in the result
+    for (var i = 0; i < results.length; i++) {
+      results[i] = core.firefox.unwrap(results[i]);
+    }
     return results;
 }
 
