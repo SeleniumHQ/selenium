@@ -1,0 +1,20 @@
+
+js_binary(name = "webdriver-inject",
+  deps = [
+    ":deps"
+  ])
+
+js_deps(name = "deps",
+  srcs = "find_element.js",
+  deps = "//javascript/atoms:deps")
+
+js_test(name = "test",
+  srcs = [
+    "test/*_test.html",
+  ],
+  path = "/javascript/webdriver-atoms/inject/test",
+  deps = [
+    ":deps",
+    "//java/client/test/org/openqa/selenium/javascript",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ])
