@@ -11,9 +11,9 @@ import java.util.List;
  */
 public class SelectLargeTest extends AbstractDriverTestCase {
   public void testMultipleSelectShouldBePossibleIfMulitpleAttributeEmpty() {
-    driver.get(pages.multipleSelection);
+    driver.get(pages.formPage);
 
-    WebElement selectElement = driver.findElement(By.name("sel"));
+    WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
 
     Select selection = new Select(selectElement);
     selection.selectByIndex(1);
@@ -21,8 +21,8 @@ public class SelectLargeTest extends AbstractDriverTestCase {
 
     List<WebElement> picked = selection.getAllSelectedOptions();
     assertEquals(2, picked.size());
-    assertEquals("select_2", picked.get(0).getAttribute("id"));
-    assertEquals("select_3", picked.get(1).getAttribute("id"));
+    assertEquals("multi_2", picked.get(0).getAttribute("id"));
+    assertEquals("multi_3", picked.get(1).getAttribute("id"));
 
     selection.deselectAll();
     assertEquals(0, selection.getAllSelectedOptions().size());
