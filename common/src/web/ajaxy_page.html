@@ -67,7 +67,11 @@
 
       window.setTimeout(function() {
         while (listeners.length) {
-          listeners.shift().call(null, div[textProperty]);
+          try {
+            listeners.shift()(div[textProperty]);
+          } catch (e) {
+            butter[textProperty] = "Exception seen: " + e;
+          }
         }
       }, 500);
     }

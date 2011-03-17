@@ -209,7 +209,7 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     assertEquals("There should only be 1 DIV at this point, which is used for the butter message",
         1, getNumDivElements());
 
-    driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
+    driver.manage().timeouts().setScriptTimeout(15, TimeUnit.SECONDS);
     String text = (String) executor.executeAsyncScript(
         "var callback = arguments[arguments.length - 1];"
         + "window.registerListener(arguments[arguments.length - 1]);");
