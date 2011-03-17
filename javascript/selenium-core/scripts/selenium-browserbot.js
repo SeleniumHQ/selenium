@@ -1167,7 +1167,7 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
     }
     testWindow = this._handleClosedSubFrame(testWindow, doNotModify);
     bot.window_ = testWindow;
-    return testWindow;
+    return core.firefox.unwrap(testWindow);
 };
 
 /**
@@ -1268,7 +1268,7 @@ BrowserBot.prototype._registerAllLocatorFunctions = function() {
 };
 
 BrowserBot.prototype.getDocument = function() {
-    return this.getCurrentWindow().document;
+    return core.firefox.unwrap(this.getCurrentWindow().document);
 };
 
 BrowserBot.prototype.getTitle = function() {
@@ -1423,7 +1423,7 @@ BrowserBot.prototype.findElementOrNull = function(locator, win) {
 BrowserBot.prototype.findElement = function(locator, win) {
     var element = this.findElementOrNull(locator, win);
     if (element == null) throw new SeleniumError("Element " + locator + " not found");
-    return element;
+    return core.firefox.unwrap(element);
 };
 
 
@@ -1442,10 +1442,11 @@ BrowserBot.prototype.findElementsLikeWebDriver = function(how, using, root) {
   var toReturn = '';
 
   for (var i = 0; i < all.length - 1; i++) {
-    toReturn += bot.inject.cache.addElement(all[i]) + ',';
+    toReturn += bot.inject.cache.addElement(core.firefox.unwrap(all[i])) + ',';
   }
-  if (all[all.length -1]) {
-    toReturn += bot.inject.cache.addElement(all[all.length - 1]);
+  if (all[all.length - 1]) {
+    var last = core.firefox.unwrap(all[all.length - 1]);
+    toReturn += bot.inject.cache.addElement(core.firefox.unwrap(all[all.length - 1]));
   }
 
   return toReturn;

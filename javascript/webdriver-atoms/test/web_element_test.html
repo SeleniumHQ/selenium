@@ -147,6 +147,12 @@ limitations under the License.
       var para = bot.locators.findElement({id: 'has_id'});
       assertEquals('This has an ID', webdriver.element.getText(para));
     }
+
+    function testWillReturnValueOfIndexForAnOptionEvenIfNotDeclared() {
+      var select = bot.locators.findElement({id: 'multi'});
+      var options = bot.locators.findElements({tagName: 'option'});
+      assertEquals("1", webdriver.element.getAttribute(options[1], 'index'));
+    }
   </script>
 </head>
 <body id="body" style="" name="body">
@@ -168,6 +174,10 @@ limitations under the License.
   <select multiple='multiple' name="multi">
     <option id="selected-option" selected=true>Selected</option>
     <option id="unselected-option">Unselected</option>
+    <option>Ham</option>
+    <option selected="selected">Sausages</option>
+    <option>Onion gravy</option>
+    </select>
   </select>
 
 </form>

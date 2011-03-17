@@ -21,10 +21,10 @@ RemoteRunnerTest.prototype.setUp = function() {
         return {
             style: {}
         };
-    }
+    };
     document.commands = {
         commandList: {}
-    }
+    };
     
     Selenium = function() {
         return {
@@ -40,7 +40,7 @@ RemoteRunnerTest.prototype.setUp = function() {
             getSpecialTestValue: function() { return "foo"; },
             isSpecialTestBoolean: function() { return true; }
         }
-    }
+    };
     
     Selenium.createForWindow = function() {
         return new Selenium();
@@ -56,7 +56,7 @@ RemoteRunnerTest.prototype.setUp = function() {
             getBaseUrl: function() { return "http://localhost:4444/";},
             getSessionId: function() { return "123456"; }
         }
-    }
+    };
     
     xhrs = [];
     xhr = null;
