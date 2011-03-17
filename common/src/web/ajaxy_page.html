@@ -66,9 +66,8 @@
       butter[textProperty] = 'Done!';
 
       window.setTimeout(function() {
-        butter.innerText = '';
         while (listeners.length) {
-          listeners.shift().call(null, div.innerText);
+          listeners.shift().call(null, div[textProperty]);
         }
       }, 500);
     }
