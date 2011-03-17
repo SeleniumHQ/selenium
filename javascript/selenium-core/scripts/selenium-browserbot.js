@@ -103,7 +103,10 @@ var BrowserBot = function(topLevelApplicationWindow) {
         var e;
         
         if (this.pageLoadError) {
-            LOG.error("isNewPageLoaded found an old pageLoadError");
+            LOG.error("isNewPageLoaded found an old pageLoadError: " + this.pageLoadError);
+            if (this.pageLoadError.stack) {
+              LOG.warn("Stack is: " + this.pageLoadError.stack);
+            }
             e = this.pageLoadError;
             this.pageLoadError = null;
             throw e;
@@ -672,10 +675,15 @@ BrowserBot.prototype.getCurrentPage = function() {
     return this;
 };
 
-BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
+BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(originalWindow, browserBot) {
     var self = this;
 
-    windowToModify = core.firefox.unwrap(windowToModify);
+    // Apparently, Firefox 4 makes it possible to unwrap an object to find that
+    // there's nothing in it.
+    var windowToModify = core.firefox.unwrap(originalWindow);
+    if (!windowToModify) {
+      windowToModify = originalWindow;
+    }
 
     windowToModify.seleniumAlert = windowToModify.alert;
 

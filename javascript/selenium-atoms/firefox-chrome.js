@@ -18,10 +18,9 @@ core.firefox.unwrap = function(thing) {
     try {
       return XPCNativeWrapper.unwrap(thing);
     } catch(e) {
-      //Unwrapping will fail for JS literals - numbers, for example. Catch
+      // Unwrapping will fail for JS literals - numbers, for example. Catch
       // the exception and proceed, it will eventually be returend as-is.
     }
-
   }
 
   if (thing['wrappedJSObject']) {
