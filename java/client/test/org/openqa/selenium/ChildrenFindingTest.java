@@ -57,13 +57,14 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
 
   public void testFindElementByXPathWhenNoMatch() {
     driver.get(pages.nestedPage);
+
     WebElement element = driver.findElement(By.name("form2"));
     try {
       element.findElement(By.xpath("select/x"));
-    } catch (NoSuchElementException e) {
-      return;
+      fail("Did not expect to find element");
+    } catch (NoSuchElementException ignored) {
+      // this is expected
     }
-    fail();
   }
 
   @Ignore(value = SELENESE, reason = "Selenium expects xpaths to start with a leading //")
