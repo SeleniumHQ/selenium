@@ -15,14 +15,16 @@
 <script>
   var butter = document.getElementById('update_butter');
 
+  var textProperty = butter['innerText'] ? 'innerText' : 'textContent';
+
   var listeners = [];
   function registerListener(fn) {
     listeners.push(fn);
   }
 
   function updateDom() {
-    butter.style.display = '';
-    butter.innerText = 'Updating';
+    butter.style.display = 'block';
+    butter[textProperty] = 'Updating';
     disableForm();
     tick();
   }
@@ -42,9 +44,9 @@
   }
 
   function tick() {
-    var length = butter.innerText.substring('Updating'.length).length;
+    var length = butter[textProperty].substring('Updating'.length).length;
     if (length != 10) {
-      butter.innerText += '.';
+      butter[textProperty] += '.';
       window.setTimeout(tick, 500);
     } else {
       enableForm();
@@ -56,12 +58,12 @@
           break;
         }
       }
-      div.innerText = document.forms[0].typer.value;
+      div[textProperty] = document.forms[0].typer.value;
       div.className = 'label';
       document.forms[0].typer.value = '';
       document.body.appendChild(div);
 
-      butter.innerText = 'Done!';
+      butter[textProperty] = 'Done!';
 
       window.setTimeout(function() {
         butter.innerText = '';
