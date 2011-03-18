@@ -655,8 +655,14 @@ FirefoxDriver.prototype.findChildElements = function(respond, parameters) {
 FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
   var currentWindow = webdriver.firefox.utils.unwrapXpcOnly(respond.session.getWindow());
 
+  var switchingToDefault = !goog.isDef(parameters.id) || goog.isNull(parameters.id);
+  if ((!currentWindow || currentWindow.closed) && !switchingToDefault) {
+    // By definition there will be no child frames.
+    respond.sendError(new WebDriverError(ErrorCode.NO_SUCH_FRAME, "Current window is closed"));
+  }
+
   var newWindow = null;
-  if (!goog.isDef(parameters.id) || goog.isNull(parameters.id)) {
+  if (switchingToDefault) {
     Logger.dumpn("Switching to default content (topmost frame)");
     newWindow = respond.session.getBrowser().contentWindow;
   } else if (goog.isString(parameters.id)) {

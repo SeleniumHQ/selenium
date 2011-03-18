@@ -154,13 +154,20 @@ var DelayedCommand = function(driver, command, response, opt_sleepDelay) {
   this.sleepDelay_ = opt_sleepDelay || DelayedCommand.DEFAULT_SLEEP_DELAY;
 
   var activeWindow = response.session.getWindow();
+
   try {
-    var webNav = activeWindow.
-        QueryInterface(Components.interfaces.nsIInterfaceRequestor).
-        getInterface(Components.interfaces.nsIWebNavigation);
-    this.loadGroup_ = webNav.
-        QueryInterface(Components.interfaces.nsIInterfaceRequestor).
-        getInterface(Components.interfaces.nsILoadGroup);
+    if (!activeWindow || activeWindow.closed) {
+      this.loadGroup_ = {
+        isPending: function() { return false; }
+      };
+    } else {
+      var webNav = activeWindow.
+          QueryInterface(Components.interfaces.nsIInterfaceRequestor).
+          getInterface(Components.interfaces.nsIWebNavigation);
+      this.loadGroup_ = webNav.
+          QueryInterface(Components.interfaces.nsIInterfaceRequestor).
+          getInterface(Components.interfaces.nsILoadGroup);
+    }
   } catch (ex) {
     // Well this sucks. This can happen if the DOM gets trashed or if the window
     // is unexpectedly closed. We need to report this error to the user so they
