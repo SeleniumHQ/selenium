@@ -20,6 +20,8 @@ package org.openqa.selenium.android.sessions;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriverException;
 
+import com.google.common.collect.Sets;
+
 import android.content.Context;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -30,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class that manages cookies the webview.
@@ -68,34 +71,26 @@ public class SessionCookieManager {
     }
     return result;
   }
-  
+    
   /**
    * Gets all cookies associated to a URL.
    * 
    * @param url
    * @return A string containing comma separated cookies
    */
-  public String getAllCookiesAsString(String url) {
-    StringBuilder cookiesBuilder = new StringBuilder();
-    boolean first = true;
+  public Set<Cookie> getAllCookies(String url) {
+    Set<Cookie> cookieSet = Sets.newHashSet();
     List<String> domains;
     try {
       domains = getDomainsFromUrl(new URL(url));
     } catch (MalformedURLException e) {
       throw new WebDriverException("Error while adding cookie. " + e);
     }
+    
     for (String domain : domains) {
-      String cookies = cookieManager.getCookie(domain);
-      if (cookies != null && cookies.length() > 0) {
-        if (!first) {
-          cookiesBuilder.append(COOKIE_SEPARATOR);
-        } else {
-          first = false;
-        }
-        cookiesBuilder.append(cookies);
-      }
+      cookieSet.addAll(getCookies(domain));
     }
-    return cookiesBuilder.toString();
+    return cookieSet;
   }
 
   /**

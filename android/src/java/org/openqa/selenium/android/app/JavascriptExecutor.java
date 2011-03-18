@@ -17,21 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
-import android.util.Log;
-
-import org.openqa.selenium.android.Logger;
-import org.openqa.selenium.android.intents.Action;
+import org.openqa.selenium.android.ActivityController;
 
 /**
  * Class that wraps synchronization housekeeping of execution of JavaScript code within WebView.
  */
 public class JavascriptExecutor {
   private String javascriptResult;
-  private final WebDriverActivity context;
   private final WebDriverWebView webview;
 
-  public JavascriptExecutor(WebDriverActivity context, WebDriverWebView webview) {
-    this.context = context;
+  public JavascriptExecutor(WebDriverWebView webview) {
     this.webview = webview;
   }
   
@@ -43,7 +38,6 @@ public class JavascriptExecutor {
    * @param jsCode JavaScript code to execute.
    */
   public void executeJS(String jsCode) {
-    javascriptResult = Action.NOT_DONE_INDICATOR;
     webview.loadUrl("javascript:" + jsCode);
   }
   
@@ -54,7 +48,8 @@ public class JavascriptExecutor {
    */
   public void resultAvailable(String result) {
     javascriptResult = result;
-    context.sendIntent(Action.JAVASCRIPT_RESULT_AVAILABLE, result);
+    ActivityController.updateResult(result);
+    ActivityController.done();
   }
   
   public String getResult() {

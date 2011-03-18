@@ -21,7 +21,7 @@ import android.graphics.Bitmap;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import org.openqa.selenium.android.intents.Action;
+import org.openqa.selenium.android.ActivityController;
 
 /**
  * This class overrides WebView default behavior when loading new URL. It makes sure that the URL
@@ -43,7 +43,9 @@ final class WebDriverWebViewClient extends WebViewClient {
     context.setCurrentUrl(url);
     context.setLastUrlLoaded(url);
     context.setPageHasStartedLoading(true);
-    context.sendIntent(Action.PAGE_STARTED_LOADING);
+    
+    ActivityController.getInstance().notifyPageStartedLoading();
+    //context.sendIntent(Action.PAGE_STARTED_LOADING);
   }
 
   @Override
@@ -55,7 +57,8 @@ final class WebDriverWebViewClient extends WebViewClient {
     // If it is a html fragment or the current url loaded, the page is
     // not reloaded and the onProgessChanged function is not called.
     if (url.contains("#") && context.currentUrl().equals(url.split("#")[0])) {
-      context.sendIntent(Action.PAGE_LOADED);
+      //context.sendIntent(Action.PAGE_LOADED);
+      ActivityController.done();
     }
   }
 

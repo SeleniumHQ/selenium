@@ -71,13 +71,13 @@ public class JavascriptDomAccessor {
       "  for (var e in doc.androiddriver_elements) {" +
       "    if (doc.androiddriver_elements[e] == result[i]) {" +
       "      found = true;" +
-      "      indices.push(e);" +
+      "      indices.push(parseInt(e));" +
       "    }" +
       "  }" +
       "  if (found == false) {" +
       "    doc.androiddriver_next_id ++;" +
       "    doc.androiddriver_elements[doc.androiddriver_next_id] = result[i];" +
-      "    indices.push( doc.androiddriver_next_id);" +
+      "    indices.push(parseInt(doc.androiddriver_next_id));" +
       "  }" +
       "}";
 
@@ -109,12 +109,12 @@ public class JavascriptDomAccessor {
       return getElementByXPath(".//*[@id='" + using + "']", elementId);
     }
     // TODO(berrada): by default do document.getElementById. Check "contains", and only 
-	// fall back to xpath if that fails. Closure has the ordering code (goog.dom, I think)
+	  // fall back to xpath if that fails. Closure has the ordering code (goog.dom, I think)
     String toExecute =
         initCacheJs() + 
         CONTEXT_NODE + 
         "var result = [];" +
-        "if (document.getElementById) {" +
+        "if (contextNode.getElementById) {" +
         "  var element = document.getElementById(arguments[0]);" +
         "  if (element != null) {" +
         "    result.push(element);" +
@@ -772,14 +772,17 @@ public class JavascriptDomAccessor {
       return elements;
     }
     try {
-      for (Object indexes : ids) {
-        if (Integer.parseInt(String.valueOf(indexes)) > 0) {
-          elements.add(new AndroidWebElement(driver, String.valueOf(indexes)));
+      for (int index : ids) {
+        if (index > 0) {
+          elements.add(new AndroidWebElement(driver, String.valueOf(index)));
         }
       }
       return elements;
     } catch (NumberFormatException e) {
       throw new InternalError("Javascript injection failed. Got result: " + ids);
+    } catch (ClassCastException e) {
+      Logger.log(Log.DEBUG, "WD", "ID: " + ids.get(0));
+      throw e;
     }
   }
 
@@ -787,6 +790,7 @@ public class JavascriptDomAccessor {
     List<Object> result = new ArrayList<Object>();
     for (int i = 0; i < MAX_XPATH_ATTEMPTS; i++) {
       Object scriptResult = driver.executeScript(toExecute, using, elementId);
+      Logger.log(Log.DEBUG, "WD", "GOT JAVASCRIPT RESULT: " + scriptResult);
       if (scriptResult instanceof String && ((String) scriptResult).startsWith(FAILED)) {
         try {
           Logger.log(Log.DEBUG, LOG_TAG, "executeAndRetry Script: " + toExecute);

@@ -31,8 +31,7 @@ limitations under the License.
         <action android:name="android.intent.action.MAIN" />
       </intent-filter>
     </activity>
-    <service android:name="org.openqa.selenium.android.server.JettyService"
-      android:process=":remote" />
+    <service android:enabled="true" android:name="org.openqa.selenium.android.server.JettyService"/>
   </application>
 
   <uses-permission android:name="android.permission.INTERNET" />
@@ -49,5 +48,5 @@ limitations under the License.
   <uses-permission android:name="android.permission.SET_DEBUG_APP" />
   <uses-permission android:name="android.permission.WRITE_SETTINGS" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+  <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />  
 </manifest>

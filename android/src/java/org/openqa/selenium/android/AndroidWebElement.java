@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import android.graphics.Point;
-import android.os.SystemClock;
-import android.view.MotionEvent;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -27,16 +27,15 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.android.intents.Action;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.WrapsDriver;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import android.graphics.Point;
+import android.os.SystemClock;
+import android.view.MotionEvent;
 
 /**
  * Represents an Android HTML element.
@@ -49,10 +48,12 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
 
   private final AndroidDriver driver;
   private final String elementId;
+  private ActivityController controller;
 
   public AndroidWebElement(AndroidDriver driver, String elementId) {
     this.driver = driver;
     this.elementId = elementId;
+    controller = ActivityController.getInstance();
   }
 
   public AndroidWebElement(AndroidDriver driver) {
@@ -73,12 +74,10 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     MotionEvent upEvent = MotionEvent.obtain(downEvent.getDownTime(),
         SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, center.x, center.y, 0);
     
-    driver.sendIntent(Action.SEND_MOTION_EVENT, downEvent, upEvent);
+    controller.sendMotionEvent(downEvent, upEvent);
     // If the page started loading we should wait
     // until the page is done loading.
-    if (driver.pageHasStartedLoading()) {
-      driver.waitUntilPageFinishedLoading();
-    }
+    controller.blockIfPageIsLoading();
   }
   
   public JavascriptDomAccessor getDomAccessor() {
@@ -92,12 +91,8 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
         || "img".equalsIgnoreCase(tagName)) {   
       this.click();
     } else {
-      driver.resetPageHasLoaded();
-      driver.resetPageHasStartedLoading();
       getDomAccessor().submit(elementId);
-      if (driver.pageHasStartedLoading()) {
-        driver.waitUntilPageFinishedLoading();
-      }
+      controller.blockIfPageIsLoading();
     }
   }
 
@@ -110,18 +105,17 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     if (value == null || value.length() == 0) {
       return;
     }
-    CharSequence[] serilizableArgs = new CharSequence[value.length() + 1];
-    serilizableArgs[0] = value;
-    for (int i = 1; i < serilizableArgs.length; i++) {
-      serilizableArgs[i] = Keys.BACK_SPACE;
+    CharSequence[] keys = new CharSequence[value.length() + 1];
+    keys[0] = value;
+    for (int i = 1; i < keys.length; i++) {
+      keys[i] = Keys.BACK_SPACE;
     }
     // focus on the element
     this.click();
-    driver.waitUntilEditableAreaFocused();
-    driver.sendIntent(Action.SEND_KEYS, serilizableArgs);
-    if (driver.pageHasStartedLoading()) {
-      driver.waitUntilPageFinishedLoading();
-    }
+    controller.waitUntilEditableAreaFocused();
+    controller.sendKeys(keys);
+    //driver.sendIntent(Action.SEND_KEYS, serilizableArgs);
+    controller.blockIfPageIsLoading();
   }
 
   public void sendKeys(CharSequence... value) {
@@ -131,18 +125,17 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     if (!isEnabled()) {
       throw new UnsupportedOperationException("Cannot send keys to disabled element.");
     }
-    CharSequence[] serializableArgs = new CharSequence[value.length + 1];
-    serializableArgs[0] = getValue();
+    CharSequence[] keys = new CharSequence[value.length + 1];
+    keys[0] = getValue();
     for (int i = 0; i < value.length; i++) {
-      serializableArgs[i + 1] = value[i].toString();
+      keys[i + 1] = value[i].toString();
     }
+    
     // focus on the element
     this.click();
-    driver.waitUntilEditableAreaFocused();
-    driver.sendIntent(Action.SEND_KEYS, serializableArgs);
-    if (driver.pageHasStartedLoading()) {
-      driver.waitUntilPageFinishedLoading();
-    }
+    controller.waitUntilEditableAreaFocused();
+    controller.sendKeys(keys);
+    controller.blockIfPageIsLoading();
   }
   
   public String getTagName() {

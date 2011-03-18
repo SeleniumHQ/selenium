@@ -17,13 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
@@ -33,13 +40,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.android.intents.Action;
-import org.openqa.selenium.android.intents.FutureExecutor;
-import org.openqa.selenium.android.intents.IntentReceiver;
-import org.openqa.selenium.android.intents.IntentReceiver.IntentReceiverListener;
 import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
-import org.openqa.selenium.android.intents.IntentSender;
-import org.openqa.selenium.android.sessions.SessionCookieManager;
 import org.openqa.selenium.android.util.JsUtil;
 import org.openqa.selenium.android.util.SimpleTimer;
 import org.openqa.selenium.html5.BrowserConnection;
@@ -54,28 +55,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
 import android.util.Log;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Sets;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.UnsupportedOperationException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByName, FindsByXPath, TakesScreenshot,
-    IntentReceiverListener, Rotatable, BrowserConnection {
+    Rotatable, BrowserConnection {
 
   public static final String LOG_TAG = AndroidDriver.class.getName();
   
   // Timeouts in milliseconds
-  public static final long INTENT_TIMEOUT = 10000L;
   public static final long LOADING_TIMEOUT = 30000L;
   public static final long START_LOADING_TIMEOUT = 800L;
   public static final long WAIT_FOR_RESPONSE_TIMEOUT = 20000L;
@@ -90,37 +77,19 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private final IntentReceiverRegistrar intentRegistrar;
   private final AndroidWebElement element;
   private final JavascriptDomAccessor domAccessor;
-  private final IntentSender sender;
-
-  private volatile boolean pageHasLoaded = false;
-  private volatile boolean pageHasStartedLoading = false;
-  private volatile boolean editableAreaIsFocused = false;
-
-  private volatile String jsResult;
+  
   private String currentFrame;
   private long implicitWait = 0;
   private long asyncScriptTimeout = 0;
-
+  private ActivityController controller = ActivityController.getInstance();
+  
   public AndroidDriver() {
     // By default currentFrame is the root, i.e. window
     currentFrame = "window";
     intentRegistrar = new IntentReceiverRegistrar(getContext());
     timer = new SimpleTimer();
-    sender = new IntentSender(getContext());
-    // TODO(berrada): This object is stateless, think about isolating the JS and
-    // provide helper functions.
     domAccessor = new JavascriptDomAccessor(this);
     element = new AndroidWebElement(this);
-    initIntentReceivers();
-  }
-
-  private void initIntentReceivers() {    
-    IntentReceiver receiver = new IntentReceiver();
-    receiver.setListener(this);
-    intentRegistrar.registerReceiver(receiver, Action.JAVASCRIPT_RESULT_AVAILABLE);
-    intentRegistrar.registerReceiver(receiver, Action.PAGE_LOADED);
-    intentRegistrar.registerReceiver(receiver, Action.PAGE_STARTED_LOADING);
-    intentRegistrar.registerReceiver(receiver, Action.EDITABLE_AERA_FOCUSED);
   }
 
   public JavascriptDomAccessor getDomAccessor() {
@@ -128,15 +97,15 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
   
   public String getCurrentUrl() {
-    return (String) sendIntent(Action.GET_URL);
+    return controller.getCurrentUrl();
   }
 
   public String getTitle() {
-    return (String) sendIntent(Action.GET_TITLE);
+    return controller.getTitle();
   }
 
   public void get(String url) {
-    doNavigation(Action.NAVIGATE, url);
+    controller.get(url);
   }
 
   public String getPageSource() {
@@ -145,14 +114,12 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public void close() {
-    // Delete the current session. Android driver does not support multisessions
-    // closing is equivalent to quit().
     quit();
   }
 
   public void quit() {
     intentRegistrar.unregisterAllReceivers();
-    sendIntent(Action.ACTIVITY_QUIT);
+    controller.quit();
   }
 
   public WebElement findElement(By by) {
@@ -232,16 +199,11 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public Set<String> getWindowHandles() {
-    String result = (String) sendIntent(Action.GET_ALL_WINDOW_HANDLES);
-    Iterable<String> iterable = Splitter.on(",")
-        .trimResults()
-        .omitEmptyStrings()
-        .split(result.substring(1, result.length() -1));
-    return Sets.newHashSet(iterable);
+    return controller.getAllWindowHandles();
   }
 
   public String getWindowHandle() {
-    return (String) sendIntent(Action.GET_CURRENT_WINDOW_HANDLE);
+    return controller.getWindowHandle();
   }
 
   public TargetLocator switchTo() {
@@ -315,10 +277,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     }
 
     public WebDriver window(String nameOrHandle) {
-      boolean success = (Boolean) sendIntent(Action.SWITCH_TO_WINDOW, nameOrHandle);
-      if (!success) {
-        throw new NoSuchWindowException(String.format("Invalid window name \"%s\".", nameOrHandle));
-      }
+      controller.switchToWindow(nameOrHandle);
       return AndroidDriver.this;
     }
     
@@ -378,7 +337,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public Navigation navigate() {
-    return new AndroidNavigation(this);
+    return new AndroidNavigation();
   }
   
   public boolean isJavascriptEnabled() {
@@ -386,19 +345,18 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public Object executeScript(String script, Object... args) {
-    String jsFunction = embedScriptInJsFunction(script, false, args);
-    executeJavascriptInWebView(jsFunction);
-
-    // jsResult is updated by the intent receiver when the JS result is ready. 
-    Object res = checkResultAndConvert(jsResult);
-    return res;
+    return executeJavascript(script, false, args);
   }
 
   public Object executeAsyncScript(String script, Object... args) {
-    String jsFunction = embedScriptInJsFunction(script, true, args);
-    executeJavascriptInWebView(jsFunction);
+    return executeJavascript(script, true, args);
+  }
+  
+  private Object executeJavascript(String script, boolean sync, Object... args) {
+    String jsFunction = embedScriptInJsFunction(script, sync, args);
+    String jsResult = executeJavascriptInWebView(jsFunction);
 
-    // jsResult is updated by the intent receiver when the JS result is ready.
+    // jsResult is updated by the intent receiver when the JS result is ready. 
     Object res = checkResultAndConvert(jsResult);
     return res;
   }
@@ -493,20 +451,8 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
    * 
    * @param args the Javascript to be executed
    */
-  private void executeJavascriptInWebView(Object... args) {
-    jsResult = Action.NOT_DONE_INDICATOR;
-    timer.start();
-    sendIntent(Action.EXECUTE_JAVASCRIPT, args);
-    
-    FutureExecutor.executeFuture(new Callable<Void>() {
-      public Void call() {
-        while (Action.NOT_DONE_INDICATOR.equals(jsResult)) {
-          Sleeper.sleepQuietly(10);
-        }
-        return null;
-      }
-    }, WAIT_FOR_RESPONSE_TIMEOUT);
-    timer.stop("ExecuteJavascript");
+  private String executeJavascriptInWebView(String script) {
+    return controller.executeJavascript(script);
   }
 
   /**
@@ -516,7 +462,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
    * @return java objects like long, double, String, boolean, Array, Map
    */
   protected Object checkResultAndConvert(String jsResult) {
-    // TODO(berrada): Prepare the JSON to return in the JS
+    Logger.log(Log.DEBUG, "WD", "JS RESULR : " + jsResult);
     if (jsResult == null) {
       return null;
     } else if (jsResult.startsWith(ERROR)) {
@@ -542,10 +488,12 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
   protected Object processJsonObject(Object res) throws JSONException {
     if (res instanceof JSONArray) {
+      Logger.log(Log.DEBUG, "WD", "JSONARRAY : " + res.toString());
       return convertJsonArray2List((JSONArray) res);
     } else if ("undefined".equals(res)) {
       return null;
     }
+    Logger.log(Log.DEBUG, "WD", "NOT JSONARRAY : " + res.toString());
     return res;
   }
 
@@ -580,44 +528,27 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private class AndroidOptions implements Options {
     
     public void addCookie(Cookie cookie) {
-      sendIntent(Action.ADD_COOKIE,
-          cookie.getName(), cookie.getValue(), cookie.getPath());
+       controller.addCookie(cookie.getName(), cookie.getValue(), cookie.getPath());
     }
 
     public void deleteCookieNamed(String name) {
-      sendIntent(Action.REMOVE_COOKIE, name, "", "");
+      controller.removeCookie(name);
     }
 
     public void deleteCookie(Cookie cookie) {
-      sendIntent(Action.REMOVE_COOKIE, cookie.getName(), "", cookie.getPath());
+      controller.removeCookie(cookie.getName());
     }
 
     public void deleteAllCookies() {
-      sendIntent(Action.REMOVE_ALL_COOKIES, "", "", "");
+      controller.removeAllCookies();
     }
 
     public Set<Cookie> getCookies() {
-      Set<Cookie> cookies = new HashSet<Cookie>();
-      String cookieString = (String) sendIntent(Action.GET_ALL_COOKIES, "", "", "");
-
-      if (cookieString != null) {
-        for (String cookie : cookieString.split(SessionCookieManager.COOKIE_SEPARATOR)) {
-          String[] cookieValues = cookie.split("=");
-          if (cookieValues.length >= 2) {
-            cookies.add(new Cookie(cookieValues[0].trim(), cookieValues[1], null, null, null));
-          }
-        }
-      }
-      return cookies;
+      return controller.getCookies();
     }
 
     public Cookie getCookieNamed(String name) {
-      String cookieValue = (String) sendIntent(Action.GET_COOKIE, name, "", "");
-
-      if (cookieValue.length() > 0)
-        return new Cookie(name, cookieValue, null, null, null);
-      else
-        return null;
+      return controller.getCookie(name);
     }
 
     public Timeouts timeouts() {
@@ -640,105 +571,19 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
       return this;
     }
   }
-  
-  public void doNavigation(String intentName) {
-    doNavigation(intentName, null);
-  }
-  
-  private void doNavigation(String intentName, String url) {
-    timer.start();
-    sendIntent(intentName, url);
-    waitUntilPageFinishedLoading();
-    currentFrame = "window";
-    timer.stop(intentName);
-  }
-  
-  public void waitUntilPageFinishedLoading() {
-    FutureExecutor.executeFuture(new Callable<Void>() {
-      public Void call() throws Exception {
-        while (!pageHasLoaded) {
-          Sleeper.sleepQuietly(50);
-        }
-        return null;
-      }
-      
-    }, LOADING_TIMEOUT);
-  }
-  
-  public void waitUntilEditableAreaFocused() {
-    FutureExecutor.executeFuture(new Callable<Void>() {
-      public Void call() throws Exception {
-        while (!editableAreaIsFocused) {
-          Sleeper.sleepQuietly(50);
-        }
-        return null;
-      }
-      
-    }, FOCUS_TIMEOUT);
-  }
-  
+
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-    byte[] rawPng = (byte[]) sendIntent(Action.TAKE_SCREENSHOT);
+    byte[] rawPng = controller.takeScreenshot();
     String base64Png = new Base64Encoder().encode(rawPng);
     return target.convertFromBase64Png(base64Png);
   }
 
   public ScreenOrientation getOrientation() {
-    return (ScreenOrientation) sendIntent(Action.GET_SCREEN_ORIENTATION);
+    return controller.getScreenOrientation();
   }
 
   public void rotate(ScreenOrientation orientation) {
-    sendIntent(Action.ROTATE_SCREEN, orientation);
-  }
-  
-  public Object sendIntent(String action, Object... args) {
-    resetPageHasLoaded();
-    resetPageHasStartedLoading();
-    editableAreaIsFocused = false;
-    sender.broadcast(action, args);
-    return FutureExecutor.executeFuture(sender, INTENT_TIMEOUT);
-  }
-
-  public Object onReceiveBroadcast(String action, Object... args) {
-    if (Action.JAVASCRIPT_RESULT_AVAILABLE.equals(action)) {
-      jsResult = (String) args[0];
-    } else if (Action.PAGE_LOADED.equals(action)) {
-      pageHasLoaded = true;
-    } else if (Action.PAGE_STARTED_LOADING.equals(action)) {
-      pageHasStartedLoading = true;
-    } else if (Action.EDITABLE_AERA_FOCUSED.equals(action)) {
-      editableAreaIsFocused = true;
-    }
-    return null;
-  }
-  
-  public void resetPageHasLoaded() {
-    pageHasLoaded = false;
-  }
-  
-  public boolean pageHasLoaded() {
-    return pageHasLoaded;
-  }
-  
-  public void resetPageHasStartedLoading() {
-    pageHasStartedLoading = false;
-  }
-  
-  public boolean pageHasStartedLoading() {
-    // Wait 500 ms to detect is a page has started loading
-    long timeout = System.currentTimeMillis() + 500;
-    while (!pageHasStartedLoading) {
-      if (System.currentTimeMillis() > timeout) {
-        break;
-      }
-      try {
-        Thread.sleep(50);
-      } catch (InterruptedException e) {
-        // Restore the interrupted status
-        Thread.currentThread().interrupt();
-      }
-    }
-    return pageHasStartedLoading;
+    controller.rotate(orientation);
   }
 
   public boolean isOnline() {

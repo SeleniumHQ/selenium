@@ -17,7 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
-import com.google.common.collect.Iterables;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Set;
+
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.android.Logger;
+import org.openqa.selenium.android.ActivityController;
+import org.openqa.selenium.android.events.TouchScreen;
+import org.openqa.selenium.android.events.WebViewAction;
+import org.openqa.selenium.android.server.JettyService;
+import org.openqa.selenium.android.server.WebDriverBinder;
+import org.openqa.selenium.android.sessions.SessionCookieManager;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -30,32 +43,18 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.webkit.CookieManager;
 
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.android.Logger;
-import org.openqa.selenium.android.events.TouchScreen;
-import org.openqa.selenium.android.events.WebViewAction;
-import org.openqa.selenium.android.intents.Action;
-import org.openqa.selenium.android.intents.IntentReceiver;
-import org.openqa.selenium.android.intents.IntentReceiver.IntentReceiverListener;
-import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
-import org.openqa.selenium.android.intents.IntentSender;
-import org.openqa.selenium.android.server.JettyService;
-import org.openqa.selenium.android.sessions.SessionCookieManager;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 /**
  * Main application activity.
  */
-public class WebDriverActivity extends Activity implements IntentReceiverListener {
+public class WebDriverActivity extends Activity {
   private static final String LOG_TAG = WebDriverActivity.class.getName();
 
   // Use for control redirect, contains the last url loaded (updated after each redirect)
@@ -66,28 +65,51 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
   private SessionCookieManager sessionCookieManager;
   private WebDriverWebView currentView;
   private WebViewManager viewManager = new WebViewManager();  
-  private final IntentReceiverRegistrar intentReg;
 
-  private final IntentSender sender = new IntentSender(this);
   private boolean bound;
+  private JettyService jettyService;
+  private Intent jettyIntent;
+  
+  private static final int CMD_SEND_KEYS = 1;
+  private static final int CMD_NAVIGATE_TO = 2;
+  private static final int CMD_EXECUTE_SCRIPT = 3;
+  private static final int CMD_SWITCH_TO_VIEW = 4;
+  private static final int CMD_NAVIGATE_DIRECTION = 5;
+  private static final int CMD_RELOAD = 6;
+  private static final int CMD_SEND_TOUCH = 7;
+  
+  private final Handler handler = new Handler() {
+    @Override
+    public void handleMessage(Message msg) {
+      if (msg.what == CMD_SEND_KEYS) {
+        WebViewAction.sendKeys(currentView, (CharSequence[]) msg.obj);
+      } else if (msg.what == CMD_NAVIGATE_TO) {
+        currentView.navigateTo((String) msg.obj);
+      } else if (msg.what == CMD_EXECUTE_SCRIPT) {
+        currentView.executeJavascript((String) msg.obj);
+      } else if (msg.what == CMD_SWITCH_TO_VIEW) {
+        switchToWebView(viewManager.getView((String) msg.obj));
+      } else if (msg.what == CMD_NAVIGATE_DIRECTION) {
+        currentView.goBackOrForward((Integer) msg.obj);
+      } else if (msg.what == CMD_RELOAD) {
+        currentView.reload();
+      } else if (msg.what == CMD_SEND_TOUCH) {
+        MotionEvent[] events = (MotionEvent[]) msg.obj;
+        TouchScreen.sendMotion(currentView, events[0], events[1]);
+      }
+    }
+  };
   
   private ServiceConnection mConnection = new ServiceConnection() {
     public void onServiceConnected(ComponentName className, IBinder service) {
       bound = true;
+      jettyService = ((WebDriverBinder) service).getService();
     }
 
     public void onServiceDisconnected(ComponentName arg0) {
       bound = false;
     }
   };
-
-  public void sendIntent(String action, Object... args) {
-    sender.broadcast(action, args);
-  }
-  
-  public WebDriverActivity() {
-    intentReg = new IntentReceiverRegistrar(this);
-  }
 
   public void setCurrentUrl(String url) {
     currentUrl = url;  
@@ -120,6 +142,15 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    new Thread(new Runnable() {
+      public void run() {
+        jettyIntent = new Intent(WebDriverActivity.this, JettyService.class);
+        bindService(jettyIntent, mConnection, Context.BIND_AUTO_CREATE);
+        ActivityController s = ActivityController.getInstance();
+        s.setActivity(WebDriverActivity.this);
+      }
+    }).start();
+    
     displayProgressBar();
     final WebDriverWebView newView = new WebDriverWebView(this);
     currentView = newView;
@@ -132,25 +163,7 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
     sessionCookieManager = new SessionCookieManager(this);
     CookieManager cookieManager = CookieManager.getInstance();
     cookieManager.removeAllCookie();
-    
-    initIntentReceivers();
   }
-  
-  @Override
-  protected void onStart() {
-	  super.onStart();
-	  Intent intent = new Intent(this, JettyService.class);
-	  bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-  }
-
-  @Override
-  protected void onStop() {
-    super.onStop();
-    if (bound) {
-    	unbindService(mConnection);
-    	bound = false;
-	  }
-	}
 
   private void displayProgressBar() {
     // Request the progress bar to be shown in the title and set it to 0
@@ -158,102 +171,101 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
     setProgressBarVisibility(true);
   }
 
-  private void initIntentReceivers() {
-    IntentReceiver intentWithResult = new IntentReceiver();
-    intentWithResult.setListener(this);
-    intentReg.registerReceiver(intentWithResult, Action.GET_TITLE);
-    intentReg.registerReceiver(intentWithResult, Action.GET_URL);
-    intentReg.registerReceiver(intentWithResult, Action.TAKE_SCREENSHOT);
-    intentReg.registerReceiver(intentWithResult, Action.NAVIGATE_BACK);
-    intentReg.registerReceiver(intentWithResult, Action.NAVIGATE_FORWARD);
-    intentReg.registerReceiver(intentWithResult, Action.REFRESH);
-    intentReg.registerReceiver(intentWithResult, Action.NAVIGATE);
-    intentReg.registerReceiver(intentWithResult, Action.EXECUTE_JAVASCRIPT);
-    intentReg.registerReceiver(intentWithResult, Action.SEND_KEYS);
-    intentReg.registerReceiver(intentWithResult, Action.SEND_MOTION_EVENT);
-    intentReg.registerReceiver(intentWithResult, Action.ADD_COOKIE);
-    intentReg.registerReceiver(intentWithResult, Action.GET_ALL_COOKIES);
-    intentReg.registerReceiver(intentWithResult, Action.GET_COOKIE);
-    intentReg.registerReceiver(intentWithResult, Action.REMOVE_ALL_COOKIES);
-    intentReg.registerReceiver(intentWithResult, Action.REMOVE_COOKIE);
-    intentReg.registerReceiver(intentWithResult, Action.ROTATE_SCREEN);
-    intentReg.registerReceiver(intentWithResult, Action.GET_SCREEN_ORIENTATION);
-    intentReg.registerReceiver(intentWithResult, Action.SWITCH_TO_WINDOW);
-    intentReg.registerReceiver(intentWithResult, Action.GET_CURRENT_WINDOW_HANDLE);
-    intentReg.registerReceiver(intentWithResult, Action.GET_ALL_WINDOW_HANDLES);
-  }
-
   @Override
   protected void onDestroy() {
-    intentReg.unregisterAllReceivers();
+    if (bound) {
+      jettyService.stopService(jettyIntent);
+      unbindService(mConnection);
+      bound = false;
+    }
     this.getWindow().closeAllPanels();
     super.onDestroy();
   }
   
-  public Object onReceiveBroadcast(String action, Object... args) {
-    if (Action.GET_URL.equals(action)) {
-      return currentView.getUrl();
-    } else if (Action.GET_TITLE.equals(action)) {
-      return currentView.getTitle();
-    } else if (Action.TAKE_SCREENSHOT.equals(action)) {
-      return takeScreenshot();
-    } else if (Action.NAVIGATE.equals(action)) {
-      currentView.navigateTo((String) args[0]);
-    } else if (Action.NAVIGATE_BACK.equals(action)) {
-      currentView.goBackOrForward(-1);
-    } else if (Action.NAVIGATE_FORWARD.equals(action)) {
-      currentView.goBackOrForward(1);
-    } else if (Action.REFRESH.equals(action)) {
-      currentView.reload();
-    } else if (Action.EXECUTE_JAVASCRIPT.equals(action)) {
-      if (args.length == 1) {
-        currentView.executeJavascript((String) args[0]);
-      } else {
-        throw new IllegalArgumentException("Error while trying to execute Javascript." +
-        "SingleSessionActivity.executeJS takes one argument, but received: "
-            + (args == null ? 0 : args.length));
-      }
-    } else if (Action.ADD_COOKIE.equals(action)) {
-      Cookie cookie = new Cookie((String) args[0], (String) args[1], (String) args[2]);
-      sessionCookieManager.addCookie(currentView.getUrl(), cookie);
-    } else if (Action.GET_ALL_COOKIES.equals(action)) {
-      return sessionCookieManager.getAllCookiesAsString(currentView.getUrl());
-    } else if (Action.GET_COOKIE.equals(action)) {
-      return sessionCookieManager.getCookie(currentView.getUrl(), (String) args[0]);
-    } else if (Action.REMOVE_ALL_COOKIES.equals(action)) {
-      sessionCookieManager.removeAllCookies(currentView.getUrl());
-    } else if (Action.REMOVE_COOKIE.equals(action)) {
-      sessionCookieManager.remove(currentView.getUrl(), (String) args[0]);
-    } else if (Action.SEND_MOTION_EVENT.equals(action)) {
-      TouchScreen.sendMotion(currentView, (MotionEvent) args[0], (MotionEvent) args[1]);
-      return true;
-    } else if (Action.SEND_KEYS.equals(action)) {
-      CharSequence[] inputKeys = new CharSequence[args.length];
-      for (int i = 0; i < inputKeys.length; i++) {
-        inputKeys[i] = args[i].toString();
-      }
-      WebViewAction.sendKeys(currentView, inputKeys);
-    } else if (Action.ROTATE_SCREEN.equals(action)) {
-      this.setRequestedOrientation(getAndroidScreenOrientation((ScreenOrientation) args[0]));
-    } else if (Action.GET_SCREEN_ORIENTATION.equals(action)) {
-      return getScreenOrientation();
-    } else if (Action.SWITCH_TO_WINDOW.equals(action)) {
-      return switchToWebView(viewManager.getView((String) args[0]));
-    } else if (Action.GET_CURRENT_WINDOW_HANDLE.equals(action)) {
-      return currentView.getWindowHandle();
-    } else if (Action.GET_ALL_WINDOW_HANDLES.equals(action)) {
-      return  Iterables.toString(viewManager.getAllHandles());
-    }
-    return null;
+  public void navigateTo(String url) {
+    Message msg = handler.obtainMessage(CMD_NAVIGATE_TO);
+    msg.obj = url;
+    handler.sendMessage(msg);
   }
   
-  private boolean switchToWebView(WebDriverWebView webview) {
+  public String getCurrentUrl() {
+    return currentView.getUrl();
+  }
+  
+  public String getPageTitle() {
+    return currentView.getTitle();
+  }
+  
+  public void injectScript(final String script) {
+    Message msg = handler.obtainMessage(CMD_EXECUTE_SCRIPT);
+    msg.obj = script;
+    handler.sendMessage(msg);  }
+  
+  public Set<String> getAllWindowHandles() {
+    return  viewManager.getAllHandles();
+  }
+  
+  public String getWindowHandle() {
+    return currentView.getWindowHandle();   
+  }
+  
+  public void switchToWindow(final String name) {
+    Message msg = handler.obtainMessage(CMD_SWITCH_TO_VIEW);
+    msg.obj = name;
+    handler.sendMessage(msg);  }
+  
+  public void addCookie(final String name, final String value, final String path) {
+    Cookie cookie = new Cookie(name, value, path);
+    sessionCookieManager.addCookie(currentView.getUrl(), cookie);
+  }
+  
+  public void removeCookie(final String name) {
+    sessionCookieManager.remove(currentView.getUrl(), name);
+  }
+  
+  public void removeAllCookies() {
+    sessionCookieManager.removeAllCookies(currentView.getUrl());
+  }
+  
+  public Set<Cookie> getCookies() {
+    return sessionCookieManager.getAllCookies(currentView.getUrl());
+  }
+  
+  public Cookie getCookie(final String name) {
+    return sessionCookieManager.getCookie(currentView.getUrl(), name);
+  }
+  
+  public void rotate(ScreenOrientation orientation) {
+    setRequestedOrientation(getAndroidScreenOrientation(orientation));
+  }
+  
+  public void navigateBackOrForward(int direction) {
+    Message msg = handler.obtainMessage(CMD_NAVIGATE_DIRECTION);
+    msg.obj = direction;
+    handler.sendMessage(msg);  }
+  
+  public void refresh() {
+    Message msg = handler.obtainMessage(CMD_RELOAD);
+    handler.sendMessage(msg); 
+  }
+  
+  public void sendMotionToScreen(MotionEvent down, MotionEvent up) {
+    Message msg = handler.obtainMessage(CMD_SEND_TOUCH);
+    msg.obj = new MotionEvent[]{down, up};
+    handler.sendMessage(msg);  }
+  
+  public void sendKeys(CharSequence[] inputKeys) {
+    Message msg = handler.obtainMessage(CMD_SEND_KEYS);
+    msg.obj = inputKeys;
+    handler.sendMessage(msg);  
+  }
+  
+  private void switchToWebView(WebDriverWebView webview) {
     if (webview == null) {
-      return false;
+      throw new NoSuchWindowException("No Such window");
     }
     currentView = webview;
     setContentView(webview);
-    return true;
   }
   
   private int getAndroidScreenOrientation(ScreenOrientation orientation) {
@@ -266,7 +278,7 @@ public class WebDriverActivity extends Activity implements IntentReceiverListene
   /**
    * @return the current layout orientation of webview.
    */
-  private ScreenOrientation getScreenOrientation() {
+  public ScreenOrientation getScreenOrientation() {
     int width = currentView.getWidth();
     int height = currentView.getHeight();
     if (width > height) {

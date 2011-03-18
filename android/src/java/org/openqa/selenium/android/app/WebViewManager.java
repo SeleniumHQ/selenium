@@ -21,8 +21,11 @@ import com.google.common.collect.Sets;
 
 import java.util.Set;
 
+import org.openqa.selenium.android.ActivityController;
+
 public class WebViewManager {
   private Set<WebDriverWebView> views = Sets.newHashSet();
+  private ActivityController controller = ActivityController.getInstance();
   
   public WebDriverWebView getView(String nameOrHandle) {
     WebDriverWebView toReturn = searchForViewByHandle(nameOrHandle);
@@ -71,7 +74,8 @@ public class WebViewManager {
   
   private WebDriverWebView searchForViewByWindowName(String windowName) {
     for (final WebDriverWebView view : views) {
-      String name = view.getWindowName();
+      String name = 
+        controller.executeJavascript("window.webdriver.resultMethod(window.name);");
       if (name != null && name.equals(windowName)) {
         return view;
       }

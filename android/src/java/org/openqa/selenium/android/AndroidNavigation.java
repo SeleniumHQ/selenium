@@ -17,35 +17,34 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import org.openqa.selenium.WebDriver.Navigation;
-import org.openqa.selenium.android.intents.Action;
-
 import java.net.URL;
 
+import org.openqa.selenium.WebDriver.Navigation;
+
 public class AndroidNavigation implements Navigation {
-  private AndroidDriver driver;
+  private ActivityController controller;
   
-  public AndroidNavigation(AndroidDriver driver) {
-    this.driver = driver;
+  public AndroidNavigation() {
+    controller = ActivityController.getInstance();
   }
   
   public void back() {
-    driver.doNavigation(Action.NAVIGATE_BACK);
+    controller.navigateBackOrForward(-1);
   }
 
   public void forward() {
-    driver.doNavigation(Action.NAVIGATE_FORWARD);
+    controller.navigateBackOrForward(1);
   }
 
   public void refresh() {
-    driver.doNavigation(Action.REFRESH);
+    controller.refresh();
   }
 
   public void to(String url) {
-    driver.get(url);
+    controller.get(url);
   }
 
   public void to(URL url) {
-    driver.get(url.toString());
+    controller.get(url.toString());
   }
 }

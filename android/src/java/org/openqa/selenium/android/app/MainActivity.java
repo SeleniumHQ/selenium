@@ -17,26 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
+import org.openqa.selenium.android.Logger;
+import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import org.openqa.selenium.android.Logger;
-import org.openqa.selenium.android.intents.Action;
-import org.openqa.selenium.android.intents.IntentReceiver;
-import org.openqa.selenium.android.intents.IntentReceiver.IntentReceiverListener;
-import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
-import org.openqa.selenium.android.server.JettyService;
-
 /**
  * Main activity. Loads program configuration and starts the UI.
  */
-public class MainActivity extends Activity implements IntentReceiverListener {
-
-  public static final int DEFAULT_REQUEST_CODE = 1001;
-  private final IntentReceiverRegistrar intentReg;
-  private Intent jettyService;
-  
+public class MainActivity extends Activity {  
   // Debug parameter to activate and desactivate debug mode.
   // For instance if using the command line do:
   // $./adb shell am start -a android.intent.action.MAIN -n \
@@ -47,10 +38,6 @@ public class MainActivity extends Activity implements IntentReceiverListener {
   public static final String DEBUG_MODE_ARG = "debug";
   private boolean debugMode;
 
-  public MainActivity() {
-    intentReg = new IntentReceiverRegistrar(this);
-  }
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -60,51 +47,11 @@ public class MainActivity extends Activity implements IntentReceiverListener {
       debugMode = Boolean.parseBoolean(debugArg);
       Logger.setDebugMode(debugMode);
     }
-    
-    jettyService = new Intent(this, JettyService.class);
-    startService(jettyService);
-    startMainScreen();
-    initIntentReceivers();
-  }
-
-  @Override
-  protected void onDestroy() {
-    intentReg.unregisterAllReceivers();
-    this.stopService(jettyService);
-    super.onDestroy();
-  }
-
-  private void initIntentReceivers() {
-    IntentReceiver intentWithResult = new IntentReceiver();
-    intentWithResult.setListener(this);
-    intentReg.registerReceiver(intentWithResult, Action.ACTIVITY_QUIT);
-  }
-
-  /**
-   * This event is invoked when activity exits current view.
-   * In any way the view that corresponds to the working mode should
-   * be reloaded.
-   * 
-   * @param requestCode The original request code that the view had been
-   *    initialized with. If view exited as a result of a working mode change
-   *    this should be equal to {@link #DEFAULT_REQUEST_CODE}.
-   */
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode != DEFAULT_REQUEST_CODE)
-      return;
     startMainScreen();
   }
   
   private void startMainScreen() {
     Intent startActivity = new Intent(this, WebDriverActivity.class);
-    this.startActivityForResult(startActivity, DEFAULT_REQUEST_CODE);
-  }
-
-  public Object onReceiveBroadcast(String action, Object... args) {
-    if (Action.ACTIVITY_QUIT.equals(action)) {
-      this.finishActivity(DEFAULT_REQUEST_CODE);
-    }
-    return null;
+    startActivity(startActivity);
   }
 }

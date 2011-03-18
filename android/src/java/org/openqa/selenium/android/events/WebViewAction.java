@@ -20,11 +20,13 @@ package org.openqa.selenium.android.events;
 import com.google.common.collect.Lists;
 
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.webkit.WebView;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.android.Logger;
 import org.openqa.selenium.android.Platform;
 
 import java.lang.reflect.InvocationTargetException;
@@ -110,6 +112,7 @@ public class WebViewAction {
     }
     try {
       for (KeyEvent event : keyEvents) {
+        Logger.log(Log.DEBUG, "WD", "DISPATCHING: " + event.describeContents());
         webview.dispatchKeyEvent(event);
       }
     } finally {

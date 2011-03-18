@@ -17,17 +17,23 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.openqa.selenium.android.Logger;
+import org.openqa.selenium.android.ActivityController;
+import org.openqa.selenium.android.Sleeper;
+
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import org.openqa.selenium.android.Sleeper;
-import org.openqa.selenium.android.intents.Action;
-
-import java.util.UUID;
 
 public class WebDriverWebView extends WebView {
   private final WebChromeClient chromeClient;
@@ -38,10 +44,12 @@ public class WebDriverWebView extends WebView {
   
   public WebDriverWebView(Context context) {
     super(context);
+    Logger.log(Log.DEBUG, "WD", "WDWV THREAD: " + Thread.currentThread().getName());
+
     this.context = (WebDriverActivity) context;
     chromeClient = new WebDriverWebChromeClient((WebDriverActivity) context);
     viewClient = new WebDriverWebViewClient((WebDriverActivity) context);
-    javascriptExecutor = new JavascriptExecutor((WebDriverActivity) context, this);
+    javascriptExecutor = new JavascriptExecutor(this);
     initWebViewSettings();
   }
   
@@ -55,8 +63,8 @@ public class WebDriverWebView extends WebView {
    * @param url URL to navigate to.
    */
   public void navigateTo(String url) {
-    if (url == null) {
-      context.sendIntent(Action.PAGE_LOADED);
+     if (url == null) {
+      ActivityController.done();
       return;
     }
     //use for redirect control
@@ -74,20 +82,13 @@ public class WebDriverWebView extends WebView {
     }
   }
   
-  public String getWindowName() {
-    javascriptExecutor.executeJS("window.webdriver.resultMethod(window.name);");
-    while (Action.NOT_DONE_INDICATOR.equals(javascriptExecutor.getResult())) {
-      Sleeper.sleepQuietly(20);
-    }
-    return javascriptExecutor.getResult();
-  }
-  
   @Override
   protected void onFocusChanged(boolean focused, int direction,
       Rect previouslyFocusedRect) {
     super.onFocusChanged(focused, direction, previouslyFocusedRect);
     if (!focused) {  // When a text area is focused, webview's focus is false
-      context.sendIntent(Action.EDITABLE_AERA_FOCUSED);
+      ActivityController.getInstance();
+      ActivityController.done();
     }
   }
   
@@ -121,5 +122,45 @@ public class WebDriverWebView extends WebView {
     settings.setGeolocationEnabled(true);
     settings.setSaveFormData(true);
     settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+  }
+  
+  /**
+   * Subscriber class to be notified when the underlying WebView loads new content or changes
+   * title.
+   */
+  final class WebDriverWebChromeClient extends WebChromeClient {
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final WebDriverActivity context;
+    
+    public WebDriverWebChromeClient(WebDriverActivity context) {
+      this.context = context;  
+    }
+    
+    @Override
+    public void onCloseWindow(WebView window) {
+      context.viewManager().removeView((WebDriverWebView) window);
+      super.onCloseWindow(window);
+    }
+
+    @Override
+    public boolean onCreateWindow(
+        WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
+      WebDriverWebView newView = new WebDriverWebView(context);
+      WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+      transport.setWebView(newView);
+      resultMsg.sendToTarget();
+      context.viewManager().addView(newView);
+      return true;
+    }
+
+    @Override
+    public void onProgressChanged(WebView view, int newProgress) {
+      context.setProgress(newProgress * 100);  
+      if (newProgress == 100 && context.lastUrlLoaded() != null
+          && context.lastUrlLoaded().equals(view.getUrl())) {
+        ActivityController.done();
+      }
+    }
+    
   }
 }
