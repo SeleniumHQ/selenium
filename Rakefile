@@ -403,7 +403,8 @@ task :test_firefox_py => [:webdriver_py, :firefox, "//javascript/firefox-driver:
   end
 end
 
-task :test_remote_py => [:webdriver_py, :remote_client, :'selenium-server-standalone'] do
+task :test_remote_py => [:webdriver_py, :remote_client, :'selenium-server-standalone',
+                         '//java/server/test/org/openqa/selenium/remote/server/auth:server:uber'] do
   if python? then
     py_setup = "build/python/bin/python " + 'setup.py build'
     py_test_path = 'build/python/bin/py.test'

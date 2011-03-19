@@ -122,6 +122,11 @@ class RemoteConnection(object):
                 netloc = socket.gethostbyname(parsed_url.hostname)
                 if parsed_url.port:
                     netloc += ':%d' % parsed_url.port
+                if parsed_url.username:
+                    auth = parsed_url.username
+                    if parsed_url.password:
+                      auth += ':%s' % parsed_url.password
+                    netloc = '%s@%s' % (auth, netloc)
                 remote_server_addr = urlparse.urlunparse(
                     (parsed_url.scheme, netloc, parsed_url.path,
                      parsed_url.params, parsed_url.query, parsed_url.fragment))
