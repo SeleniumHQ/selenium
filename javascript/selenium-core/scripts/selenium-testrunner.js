@@ -59,7 +59,7 @@ objectExtend(HtmlTestRunner.prototype, {
                 }, this), 50);
                 return;
             }
-            selenium = Selenium.createForWindow(appWindow);
+            selenium = Selenium.createForWindow(core.firefox.unwrap(appWindow));
             this._registerCommandHandlers();
         }
         this.controlPanel.setHighlightOption();
@@ -80,7 +80,7 @@ objectExtend(HtmlTestRunner.prototype, {
         if (this.controlPanel.isMultiWindowMode()) {
             return this._getSeparateApplicationWindow();
         }
-        return sel$('selenium_myiframe').contentWindow;
+        return core.firefox.unwrap(sel$('selenium_myiframe').contentWindow);
     },
 
     _getSeparateApplicationWindow: function () {
@@ -170,11 +170,11 @@ objectExtend(SeleniumFrame.prototype, {
     },
 
     getWindow : function() {
-        return this.frame.contentWindow;
+        return core.firefox.unwrap(this.frame.contentWindow);
     },
 
     getDocument : function() {
-        return this.frame.contentWindow.document;
+      return this.getWindow().document;
     },
 
     _handleLoad: function() {
@@ -433,7 +433,7 @@ var AbstractResultAwareRow = classCreate();
 objectExtend(AbstractResultAwareRow.prototype, {
 
     initialize: function(trElement) {
-        this.trElement = trElement;
+        this.trElement = core.firefox.unwrap(trElement);
     },
 
     setStatus: function(status) {
@@ -472,7 +472,7 @@ objectExtend(TitleRow.prototype, AbstractResultAwareRow.prototype);
 objectExtend(TitleRow.prototype, {
 
     initialize: function(trElement) {
-        this.trElement = trElement;
+        this.trElement = core.firefox.unwrap(trElement);
         trElement.className = "title";
     }
 
@@ -540,10 +540,10 @@ objectExtend(HtmlTestSuiteRow.prototype, AbstractResultAwareRow.prototype);
 objectExtend(HtmlTestSuiteRow.prototype, {
 
     initialize: function(trElement, testFrame, htmlTestSuite) {
-        this.trElement = trElement;
-        this.testFrame = testFrame;
+        this.trElement = core.firefox.unwrap(trElement);
+        this.testFrame = core.firefox.unwrap(testFrame);
         this.htmlTestSuite = htmlTestSuite;
-        this.link = trElement.getElementsByTagName("a")[0];
+        this.link = core.firefox.unwrap(trElement.getElementsByTagName("a")[0]);
         this.link.onclick = fnBindAsEventListener(this._onClick, this);
     },
 

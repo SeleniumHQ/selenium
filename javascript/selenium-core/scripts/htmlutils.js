@@ -862,6 +862,7 @@ function openSeparateApplicationWindow(url, suppressMozillaWarning) {
         LOG.error(errorMessage);
         throw new Error("Couldn't open app window; is the pop-up blocker enabled?");
     }
+    appWindow = core.firefox.unwrap(appWindow);
     try {
         var windowHeight = 500;
         if (window.outerHeight) {
