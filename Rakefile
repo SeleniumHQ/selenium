@@ -171,6 +171,7 @@ task :test_rb => [
   "//rb:rc-client-unit-test",
   "//rb:firefox-test",
   "//rb:remote-test",
+  "//rb:rc-client-integration-test",
  ("//rb:ie-test" if windows?),
 #  "//rb:chrome-test"  # Just not stable enough
 ].compact
