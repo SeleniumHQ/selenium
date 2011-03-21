@@ -13,6 +13,12 @@
       <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Remote.xml" xmlns="" />
       <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Remote.Common.dll" xmlns="" />
       <DocumentationSource sourceFile="$(DocSourceDirectory)\WebDriver.Remote.Common.xml" xmlns="" />
+      <DocumentationSource sourceFile="$(DocSourceDirectory)\Webdriver.Support.dll" />
+      <DocumentationSource sourceFile="$(DocSourceDirectory)\Webdriver.Support.xml" />
+      <DocumentationSource sourceFile="$(DocSourceDirectory)\Selenium.WebDriverBackedSelenium.dll" />
+      <DocumentationSource sourceFile="$(DocSourceDirectory)\Selenium.WebDriverBackedSelenium.xml" />
+      <DocumentationSource sourceFile="$(DocSourceDirectory)\ThoughtWorks.Selenium.Core.dll" />
+      <DocumentationSource sourceFile="$(DocSourceDirectory)\ThoughtWorks.Selenium.Core.xml" />
     </DocumentationSources>
   </PropertyGroup>
 </Project>
