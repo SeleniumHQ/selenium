@@ -37,14 +37,6 @@ module Selenium
           @launcher.quit
         end
 
-        def findElementByCssSelector(parent, selector)
-          find_element_by 'css', selector, parent
-        end
-
-        def findElementsByCssSelector(parent, selector)
-          find_elements_by 'css', selector, parent
-        end
-
         def getAllCookies
           execute :getCookies
         end
