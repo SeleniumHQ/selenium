@@ -36,7 +36,6 @@ core.firefox.unwrap = function(thing) {
   } catch(e) {
     // Unwrapping will fail for JS literals - numbers, for example. Catch
     // the exception and proceed, it will eventually be returned as-is.
-    alert(e);
   }
 
   return thing;
