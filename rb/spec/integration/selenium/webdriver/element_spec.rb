@@ -122,22 +122,6 @@ describe "Element" do
     end
   end
 
-  compliant_on :platform => :windows, :browser => :firefox do
-    it "should hover over elements" do
-      driver.navigate.to url_for("javascriptPage.html")
-
-      element = driver.find_element(:id, 'menu1')
-      item    = driver.find_element(:id, 'item1')
-
-      item.text.should == ""
-
-      # driver.execute_script("arguments[0].style.background = 'green'", element)
-      element.hover
-
-      item.text.should == "Item 1"
-    end
-  end
-
   it "should get css property" do
     driver.navigate.to url_for("javascriptPage.html")
     driver.find_element(:id, "green-parent").style("background-color").should == "#008000"

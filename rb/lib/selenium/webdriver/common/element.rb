@@ -196,14 +196,6 @@ module Selenium
       end
 
       #
-      # Hover over this element. Not applicable to all browsers.
-      #
-
-      def hover
-        bridge.hoverOverElement @id
-      end
-
-      #
       # Get the location of this element.
       #
       # @return [WebDriver::Point]

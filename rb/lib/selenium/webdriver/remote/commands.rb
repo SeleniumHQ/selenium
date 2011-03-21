@@ -54,7 +54,6 @@ class Selenium::WebDriver::Remote::Bridge
   command :getElementLocation,                     :get,     "session/:session_id/element/:id/location"
   command :getElementLocationOnceScrolledIntoView, :get,     "session/:session_id/element/:id/location_in_view"
   command :getElementSize,                         :get,     "session/:session_id/element/:id/size"
-  command :hoverOverElement,                       :post,    "session/:session_id/element/:id/hover"
   command :dragElement,                            :post,    "session/:session_id/element/:id/drag"
   command :getElementValueOfCssProperty,           :get,     "session/:session_id/element/:id/css/:property_name"
   command :close,                                  :delete,  "session/:session_id/window"

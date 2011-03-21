@@ -407,10 +407,6 @@ module Selenium
         end
         alias_method :switchToActiveElement, :getActiveElement
 
-        def hoverOverElement(element)
-          execute :hoverOverElement, :id => element
-        end
-
         def dragElement(element, rigth_by, down_by)
           execute :dragElement, {:id => element}, :x => rigth_by, :y => down_by
         end

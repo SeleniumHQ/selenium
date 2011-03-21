@@ -5,7 +5,7 @@
 * Search PATH for Firefox / Chrome on OS X as well.
 * Bump dependencies for ffi and childprocess (#1356).
 * Find module renamed to SearchContext
-* Options#{speed,speed=} removed.
+* Deprecated methods Driver#hover and Options#{speed,speed=} removed.
 * Improve IE driver stability, IE9 support
 * Added basic ActionBuilder and HasInputDevices#action. Not applicable for all browsers.
 * Added Driver#execute_async_script
