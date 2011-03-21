@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta name="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Class: Selenium::WebDriver::Element</title>
 <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
@@ -71,7 +71,7 @@
   
     
       <dt class="r2">Includes:</dt>
-      <dd class="r2"><span class='object_link'><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></dd>
+      <dd class="r2"><span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></dd>
       
     
   
@@ -92,8 +92,8 @@
   
   
   
-  <h3 class="inherited">Constants included from <span class='object_link'><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Find.html#FINDERS-constant" title="Selenium::WebDriver::Find::FINDERS (constant)">FINDERS</a></span></p>
+  <h3 class="inherited">Constants included from <span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="SearchContext.html#FINDERS-constant" title="Selenium::WebDriver::SearchContext::FINDERS (constant)">FINDERS</a></span></p>
 
   <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
@@ -378,30 +378,6 @@ Is the element enabled?.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#hover-instance_method" title="#hover (instance method)">- (Object) <strong>hover</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>
-Hover over this element.
-</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (Element) <strong>initialize</strong>(bridge, id) </a>
     
 
@@ -512,7 +488,7 @@ scrolled into view.
 
   
     <span class="summary_desc"><div class='inline'><p>
-for Find and execute_script.
+for SearchContext and execute_script.
 </p>
 </div></span>
   
@@ -796,8 +772,8 @@ Get the value of this element.
   
   
   
-  <h3 class="inherited">Methods included from <span class='object_link'><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Find.html#find_element-instance_method" title="Selenium::WebDriver::Find#find_element (method)">#find_element</a></span>, <span class='object_link'><a href="Find.html#find_elements-instance_method" title="Selenium::WebDriver::Find#find_elements (method)">#find_elements</a></span></p>
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="SearchContext.html#find_element-instance_method" title="Selenium::WebDriver::SearchContext#find_element (method)">#find_element</a></span>, <span class='object_link'><a href="SearchContext.html#find_elements-instance_method" title="Selenium::WebDriver::SearchContext#find_elements (method)">#find_elements</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -959,12 +935,12 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
       <pre class="lines">
 
 
-311
-312
-313</pre>
+303
+304
+305</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 311</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 303</span>
 
 <span class='kw'>def</span> <span class='id as_json'>as_json</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='lbrace'>{</span> <span class='symbol'>:ELEMENT</span> <span class='op'>=&gt;</span> <span class='ivar'>@id</span> <span class='rbrace'>}</span>
@@ -1272,12 +1248,12 @@ number of pixels to drag down
       <pre class="lines">
 
 
-245
-246
-247</pre>
+237
+238
+239</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 245</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 237</span>
 
 <span class='kw'>def</span> <span class='id drag_and_drop_by'>drag_and_drop_by</span><span class='lparen'>(</span><span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span><span class='rparen'>)</span>
   <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id dragElement'>dragElement</span> <span class='ivar'>@id</span><span class='comma'>,</span> <span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span>
@@ -1326,18 +1302,18 @@ Drag and drop this element on the given element
       <pre class="lines">
 
 
-255
-256
-257
-258
-259
-260
-261
-262
-263</pre>
+247
+248
+249
+250
+251
+252
+253
+254
+255</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 255</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 247</span>
 
 <span class='kw'>def</span> <span class='id drag_and_drop_on'>drag_and_drop_on</span><span class='lparen'>(</span><span class='id other'>other</span><span class='rparen'>)</span>
   <span class='id current_location'>current_location</span> <span class='op'>=</span> <span class='id location'>location</span><span class='lparen'>(</span><span class='rparen'>)</span>
@@ -1426,46 +1402,7 @@ Is the element enabled?
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id hash'>hash</span>
-  <span class='id ref'>ref</span><span class='period'>.</span><span class='id hash'>hash</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="hover-instance_method">
-  
-    - (<tt>Object</tt>) <strong>hover</strong> 
-  
-
-  
-</p><div class="docstring">
-  <div class="discussion">
-    <p>
-Hover over this element. Not applicable to all browsers.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-202
-203
-204</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 202</span>
-
-<span class='kw'>def</span> <span class='id hover'>hover</span>
-  <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id hoverOverElement'>hoverOverElement</span> <span class='ivar'>@id</span>
+  <span class='ivar'>@id</span><span class='period'>.</span><span class='id hash'>hash</span> <span class='op'>^</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id hash'>hash</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1537,12 +1474,12 @@ Get the location of this element.
       <pre class="lines">
 
 
-212
-213
-214</pre>
+204
+205
+206</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 212</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 204</span>
 
 <span class='kw'>def</span> <span class='id location'>location</span>
   <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id getElementLocation'>getElementLocation</span> <span class='ivar'>@id</span>
@@ -1590,12 +1527,12 @@ scrolled into view.
       <pre class="lines">
 
 
-222
-223
-224</pre>
+214
+215
+216</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 222</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 214</span>
 
 <span class='kw'>def</span> <span class='id location_once_scrolled_into_view'>location_once_scrolled_into_view</span>
   <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id getElementLocationOnceScrolledIntoView'>getElementLocationOnceScrolledIntoView</span> <span class='ivar'>@id</span>
@@ -1619,7 +1556,7 @@ scrolled into view.
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 <p>
-for Find and execute_script
+for SearchContext and execute_script
 </p>
 
 
@@ -1633,12 +1570,12 @@ for Find and execute_script
       <pre class="lines">
 
 
-290
-291
-292</pre>
+282
+283
+284</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 290</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 282</span>
 
 <span class='kw'>def</span> <span class='id ref'>ref</span>
   <span class='ivar'>@id</span>
@@ -1868,12 +1805,12 @@ Get the size of this element
       <pre class="lines">
 
 
-232
-233
-234</pre>
+224
+225
+226</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 232</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 224</span>
 
 <span class='kw'>def</span> <span class='id size'>size</span>
   <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id getElementSize'>getElementSize</span> <span class='ivar'>@id</span>
@@ -2100,12 +2037,12 @@ Convert to a WebElement JSON Object for transmission over the wire.
       <pre class="lines">
 
 
-301
-302
-303</pre>
+293
+294
+295</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 301</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 293</span>
 
 <span class='kw'>def</span> <span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
   <span class='id as_json'>as_json</span><span class='period'>.</span><span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
@@ -2211,9 +2148,9 @@ Get the value of this element
 </div>
     
     <div id="footer">
-  Generated on Mon Feb 14 19:23:10 2011 by 
+  Generated on Mon Mar 21 18:49:51 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.4 (ruby-1.9.2).
+  0.6.5 (ruby-1.9.2).
 </div>
 
   </body>

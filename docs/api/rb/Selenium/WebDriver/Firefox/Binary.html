@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta name="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Class: Selenium::WebDriver::Firefox::Binary</title>
 <link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
@@ -79,7 +79,19 @@
 </dl>
 <div class="clear"></div>
 
+<div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This class is part of a private API.</strong> 
+  You should avoid using this class if possible, as it may be removed or be changed in the future.
+</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
   <h2>Constant Summary</h2>
   
     <dl class="constants">
@@ -278,7 +290,7 @@
 <span class='kw'>def</span> <span class='id path'>path</span>
   <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='kw'>case</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id os'>os</span>
             <span class='kw'>when</span> <span class='symbol'>:macosx</span>
-              <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/Applications/Firefox.app/Contents/MacOS/firefox-bin</span><span class='tstring_end'>&quot;</span></span>
+              <span class='id macosx_path'>macosx_path</span>
             <span class='kw'>when</span> <span class='symbol'>:windows</span>
               <span class='id windows_path'>windows_path</span>
             <span class='kw'>when</span> <span class='symbol'>:linux</span><span class='comma'>,</span> <span class='symbol'>:unix</span>
@@ -478,9 +490,9 @@
 </div>
     
     <div id="footer">
-  Generated on Mon Feb 14 19:23:09 2011 by 
+  Generated on Mon Mar 21 18:49:50 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.4 (ruby-1.9.2).
+  0.6.5 (ruby-1.9.2).
 </div>
 
   </body>

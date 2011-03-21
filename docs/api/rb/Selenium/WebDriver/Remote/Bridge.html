@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta name="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Class: Selenium::WebDriver::Remote::Bridge</title>
 <link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
@@ -71,7 +71,7 @@
   
     
       <dt class="r2">Includes:</dt>
-      <dd class="r2"><span class='object_link'><a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">BridgeHelper</a></span>, <span class='object_link'><a href="../Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></dd>
+      <dd class="r2"><span class='object_link'><a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">BridgeHelper</a></span></dd>
       
     
   
@@ -85,7 +85,19 @@
 </dl>
 <div class="clear"></div>
 
-<div id="subclasses">
+<div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This class is part of a private API.</strong> 
+  You should avoid using this class if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="../Android/Bridge.html" title="Selenium::WebDriver::Android::Bridge (class)">Android::Bridge</a></span>, <span class='object_link'><a href="../Chrome/Bridge.html" title="Selenium::WebDriver::Chrome::Bridge (class)">Chrome::Bridge</a></span>, <span class='object_link'><a href="../Firefox/Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (class)">Firefox::Bridge</a></span>, <span class='object_link'><a href="../IE/Bridge.html" title="Selenium::WebDriver::IE::Bridge (class)">IE::Bridge</a></span>, <span class='object_link'><a href="../IPhone/Bridge.html" title="Selenium::WebDriver::IPhone::Bridge (class)">IPhone::Bridge</a></span></p>
 </div>
@@ -107,13 +119,6 @@
   
   
   
-  
-  
-  
-  
-  <h3 class="inherited">Constants included from <span class='object_link'><a href="../Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Find.html#FINDERS-constant" title="Selenium::WebDriver::Find::FINDERS (constant)">FINDERS</a></span></p>
-
   <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
@@ -564,6 +569,27 @@ alerts.
   <span class="summary_signature">
     
       <a href="#elementEquals-instance_method" title="#elementEquals (instance method)">- (Object) <strong>elementEquals</strong>(element, other) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#executeAsyncScript-instance_method" title="#executeAsyncScript (instance method)">- (Object) <strong>executeAsyncScript</strong>(script, *args) </a>
     
 
     
@@ -1303,27 +1329,6 @@ finding elements.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#getSpeed-instance_method" title="#getSpeed (instance method)">- (Object) <strong>getSpeed</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#getTitle-instance_method" title="#getTitle (instance method)">- (Object) <strong>getTitle</strong> </a>
     
 
@@ -1412,27 +1417,6 @@ navigation.
   <span class="summary_signature">
     
       <a href="#goForward-instance_method" title="#goForward (instance method)">- (Object) <strong>goForward</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#hoverOverElement-instance_method" title="#hoverOverElement (instance method)">- (Object) <strong>hoverOverElement</strong>(element) </a>
     
 
     
@@ -1797,27 +1781,6 @@ Returns the current session ID.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#setSpeed-instance_method" title="#setSpeed (instance method)">- (Object) <strong>setSpeed</strong>(value) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#setVisible-instance_method" title="#setVisible (instance method)">- (Object) <strong>setVisible</strong>(bool) </a>
     
 
@@ -1954,16 +1917,6 @@ Returns the current session ID.
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">BridgeHelper</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="../BridgeHelper.html#element_id_from-instance_method" title="Selenium::WebDriver::BridgeHelper#element_id_from (method)">#element_id_from</a></span>, <span class='object_link'><a href="../BridgeHelper.html#parse_cookie_string-instance_method" title="Selenium::WebDriver::BridgeHelper#parse_cookie_string (method)">#parse_cookie_string</a></span>, <span class='object_link'><a href="../BridgeHelper.html#unwrap_script_result-instance_method" title="Selenium::WebDriver::BridgeHelper#unwrap_script_result (method)">#unwrap_script_result</a></span></p>
-
-  
-  
-  
-  
-  
-  
-  
-  <h3 class="inherited">Methods included from <span class='object_link'><a href="../Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Find.html#find_element-instance_method" title="Selenium::WebDriver::Find#find_element (method)">#find_element</a></span>, <span class='object_link'><a href="../Find.html#find_elements-instance_method" title="Selenium::WebDriver::Find#find_elements (method)">#find_elements</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -2046,6 +1999,7 @@ an instance of Remote::Capabilities describing the capabilities you want
       <pre class="lines">
 
 
+43
 44
 45
 46
@@ -2071,11 +2025,10 @@ an instance of Remote::Capabilities describing the capabilities you want
 66
 67
 68
-69
-70</pre>
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id opts'>opts</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id dup'>dup</span>
@@ -2141,12 +2094,12 @@ Returns the value of attribute capabilities
       <pre class="lines">
 
 
+33
 34
-35
-36</pre>
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id capabilities'>capabilities</span>
   <span class='ivar'>@capabilities</span>
@@ -2183,12 +2136,12 @@ Returns the value of attribute context
       <pre class="lines">
 
 
+32
 33
-34
-35</pre>
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id context'>context</span>
   <span class='ivar'>@context</span>
@@ -2225,12 +2178,12 @@ Returns the value of attribute http
       <pre class="lines">
 
 
+32
 33
-34
-35</pre>
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id http'>http</span>
   <span class='ivar'>@http</span>
@@ -2328,12 +2281,12 @@ the appropriate http verb, such as :get, :post, or :delete
       <pre class="lines">
 
 
+28
 29
-30
-31</pre>
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id command'>command</span><span class='lparen'>(</span><span class='id name'>name</span><span class='comma'>,</span> <span class='id verb'>verb</span><span class='comma'>,</span> <span class='id url'>url</span><span class='rparen'>)</span>
   <span class='const'>COMMANDS</span><span class='lbracket'>[</span><span class='id name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id url'>url</span><span class='period'>.</span><span class='id freeze'>freeze</span><span class='rbracket'>]</span>
@@ -2373,12 +2326,12 @@ alerts
       <pre class="lines">
 
 
+114
 115
-116
-117</pre>
+116</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 114</span>
 
 <span class='kw'>def</span> <span class='id acceptAlert'>acceptAlert</span>
   <span class='id execute'>execute</span> <span class='symbol'>:acceptAlert</span>
@@ -2401,12 +2354,12 @@ alerts
       <pre class="lines">
 
 
-219
-220
-221</pre>
+215
+216
+217</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 219</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 215</span>
 
 <span class='kw'>def</span> <span class='id addCookie'>addCookie</span><span class='lparen'>(</span><span class='id cookie'>cookie</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:addCookie</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:cookie</span> <span class='op'>=&gt;</span> <span class='id cookie'>cookie</span>
@@ -2429,12 +2382,12 @@ alerts
       <pre class="lines">
 
 
+71
 72
-73
-74</pre>
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 71</span>
 
 <span class='kw'>def</span> <span class='id browser'>browser</span>
   <span class='ivar'>@browser</span> <span class='op'>||=</span> <span class='ivar'>@capabilities</span><span class='period'>.</span><span class='id browser_name'>browser_name</span><span class='period'>.</span><span class='id gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> </span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>_</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id to_sym'>to_sym</span>
@@ -2457,12 +2410,12 @@ alerts
       <pre class="lines">
 
 
-377
-378
-379</pre>
+373
+374
+375</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 377</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 373</span>
 
 <span class='kw'>def</span> <span class='id clearElement'>clearElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:clearElement</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -2485,12 +2438,12 @@ alerts
       <pre class="lines">
 
 
-305
-306
-307</pre>
+301
+302
+303</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 305</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 301</span>
 
 <span class='kw'>def</span> <span class='id click'>click</span>
   <span class='id execute'>execute</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:button</span> <span class='op'>=&gt;</span> <span class='int'>0</span>
@@ -2513,12 +2466,12 @@ alerts
       <pre class="lines">
 
 
-301
-302
-303</pre>
+297
+298
+299</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 301</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 297</span>
 
 <span class='kw'>def</span> <span class='id clickElement'>clickElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:clickElement</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -2541,12 +2494,12 @@ alerts
       <pre class="lines">
 
 
+181
 182
-183
-184</pre>
+183</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 182</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 181</span>
 
 <span class='kw'>def</span> <span class='id close'>close</span>
   <span class='id execute'>execute</span> <span class='symbol'>:close</span>
@@ -2569,12 +2522,12 @@ alerts
       <pre class="lines">
 
 
-313
-314
-315</pre>
+309
+310
+311</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 313</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 309</span>
 
 <span class='kw'>def</span> <span class='id contextClick'>contextClick</span>
   <span class='id execute'>execute</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:button</span> <span class='op'>=&gt;</span> <span class='int'>2</span>
@@ -2597,15 +2550,15 @@ alerts
       <pre class="lines">
 
 
+87
 88
 89
 90
 91
-92
-93</pre>
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id create_session'>create_session</span><span class='lparen'>(</span><span class='id desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
   <span class='id resp'>resp</span> <span class='op'>=</span> <span class='id raw_execute'>raw_execute</span> <span class='symbol'>:newSession</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:desiredCapabilities</span> <span class='op'>=&gt;</span> <span class='id desired_capabilities'>desired_capabilities</span>
@@ -2631,12 +2584,12 @@ alerts
       <pre class="lines">
 
 
-231
-232
-233</pre>
+227
+228
+229</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 231</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 227</span>
 
 <span class='kw'>def</span> <span class='id deleteAllCookies'>deleteAllCookies</span>
   <span class='id execute'>execute</span> <span class='symbol'>:deleteAllCookies</span>
@@ -2659,12 +2612,12 @@ alerts
       <pre class="lines">
 
 
-223
-224
-225</pre>
+219
+220
+221</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 223</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 219</span>
 
 <span class='kw'>def</span> <span class='id deleteCookie'>deleteCookie</span><span class='lparen'>(</span><span class='id name'>name</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:deleteCookieNamed</span><span class='comma'>,</span> <span class='symbol'>:name</span> <span class='op'>=&gt;</span> <span class='id name'>name</span>
@@ -2687,12 +2640,12 @@ alerts
       <pre class="lines">
 
 
+118
 119
-120
-121</pre>
+120</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 119</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 118</span>
 
 <span class='kw'>def</span> <span class='id dismissAlert'>dismissAlert</span>
   <span class='id execute'>execute</span> <span class='symbol'>:dismissAlert</span>
@@ -2715,12 +2668,12 @@ alerts
       <pre class="lines">
 
 
-309
-310
-311</pre>
+305
+306
+307</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 309</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 305</span>
 
 <span class='kw'>def</span> <span class='id doubleClick'>doubleClick</span>
   <span class='id execute'>execute</span> <span class='symbol'>:doubleClick</span>
@@ -2743,12 +2696,12 @@ alerts
       <pre class="lines">
 
 
-418
-419
-420</pre>
+410
+411
+412</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 418</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 410</span>
 
 <span class='kw'>def</span> <span class='id dragElement'>dragElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id rigth_by'>rigth_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:dragElement</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:x</span> <span class='op'>=&gt;</span> <span class='id rigth_by'>rigth_by</span><span class='comma'>,</span> <span class='symbol'>:y</span> <span class='op'>=&gt;</span> <span class='id down_by'>down_by</span>
@@ -2771,12 +2724,12 @@ alerts
       <pre class="lines">
 
 
+75
 76
-77
-78</pre>
+77</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 76</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 75</span>
 
 <span class='kw'>def</span> <span class='id driver_extensions'>driver_extensions</span>
   <span class='lbracket'>[</span><span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasInputDevices</span><span class='comma'>,</span> <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span><span class='rbracket'>]</span>
@@ -2799,15 +2752,49 @@ alerts
       <pre class="lines">
 
 
-422
-423
-424</pre>
+414
+415
+416</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 422</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 414</span>
 
 <span class='kw'>def</span> <span class='id elementEquals'>elementEquals</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id other'>other</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:elementEquals</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span><span class='period'>.</span><span class='id ref'>ref</span><span class='comma'>,</span> <span class='symbol'>:other</span> <span class='op'>=&gt;</span> <span class='id other'>other</span><span class='period'>.</span><span class='id ref'>ref</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="executeAsyncScript-instance_method">
+  
+    - (<tt>Object</tt>) <strong>executeAsyncScript</strong>(script, *args) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+208
+209
+210
+211
+212
+213</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 208</span>
+
+<span class='kw'>def</span> <span class='id executeAsyncScript'>executeAsyncScript</span><span class='lparen'>(</span><span class='id script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id assert_javascript_enabled'>assert_javascript_enabled</span>
+
+  <span class='id result'>result</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:executeAsyncScript</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:script</span> <span class='op'>=&gt;</span> <span class='id script'>script</span><span class='comma'>,</span> <span class='symbol'>:args</span> <span class='op'>=&gt;</span> <span class='id args'>args</span>
+  <span class='id unwrap_script_result'>unwrap_script_result</span> <span class='id result'>result</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2827,22 +2814,18 @@ alerts
       <pre class="lines">
 
 
-210
-211
-212
-213
-214
-215
-216
-217</pre>
+201
+202
+203
+204
+205
+206</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 210</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 201</span>
 
 <span class='kw'>def</span> <span class='id executeScript'>executeScript</span><span class='lparen'>(</span><span class='id script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='id capabilities'>capabilities</span><span class='period'>.</span><span class='id javascript_enabled?'>javascript_enabled?</span>
-    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>UnsupportedOperationError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>underlying webdriver instance does not support javascript</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  <span class='id assert_javascript_enabled'>assert_javascript_enabled</span>
 
   <span class='id result'>result</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:executeScript</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:script</span> <span class='op'>=&gt;</span> <span class='id script'>script</span><span class='comma'>,</span> <span class='symbol'>:args</span> <span class='op'>=&gt;</span> <span class='id args'>args</span>
   <span class='id unwrap_script_result'>unwrap_script_result</span> <span class='id result'>result</span>
@@ -2876,12 +2859,12 @@ finding elements
       <pre class="lines">
 
 
-237
-238
-239</pre>
+233
+234
+235</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 237</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 233</span>
 
 <span class='kw'>def</span> <span class='id findElementByClassName'>findElementByClassName</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id class_name'>class_name</span><span class='rparen'>)</span>
   <span class='id find_element_by'>find_element_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>class name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id class_name'>class_name</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -2904,12 +2887,12 @@ finding elements
       <pre class="lines">
 
 
-245
-246
-247</pre>
+241
+242
+243</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 245</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 241</span>
 
 <span class='kw'>def</span> <span class='id findElementByCssSelector'>findElementByCssSelector</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id selector'>selector</span><span class='rparen'>)</span>
   <span class='id find_element_by'>find_element_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>css selector</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id selector'>selector</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -2932,12 +2915,12 @@ finding elements
       <pre class="lines">
 
 
-253
-254
-255</pre>
+249
+250
+251</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 253</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 249</span>
 
 <span class='kw'>def</span> <span class='id findElementById'>findElementById</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id id'>id</span><span class='rparen'>)</span>
   <span class='id find_element_by'>find_element_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>id</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id id'>id</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -2960,12 +2943,12 @@ finding elements
       <pre class="lines">
 
 
-261
-262
-263</pre>
+257
+258
+259</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 261</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 257</span>
 
 <span class='kw'>def</span> <span class='id findElementByLinkText'>findElementByLinkText</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id link_text'>link_text</span><span class='rparen'>)</span>
   <span class='id find_element_by'>find_element_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>link text</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id link_text'>link_text</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -2988,12 +2971,12 @@ finding elements
       <pre class="lines">
 
 
-277
-278
-279</pre>
+273
+274
+275</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 277</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 273</span>
 
 <span class='kw'>def</span> <span class='id findElementByName'>findElementByName</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id name'>name</span><span class='rparen'>)</span>
   <span class='id find_element_by'>find_element_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id name'>name</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3016,12 +2999,12 @@ finding elements
       <pre class="lines">
 
 
-269
-270
-271</pre>
+265
+266
+267</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 269</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 265</span>
 
 <span class='kw'>def</span> <span class='id findElementByPartialLinkText'>findElementByPartialLinkText</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id link_text'>link_text</span><span class='rparen'>)</span>
   <span class='id find_element_by'>find_element_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>partial link text</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id link_text'>link_text</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3044,12 +3027,12 @@ finding elements
       <pre class="lines">
 
 
-285
-286
-287</pre>
+281
+282
+283</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 285</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 281</span>
 
 <span class='kw'>def</span> <span class='id findElementByTagName'>findElementByTagName</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id tag_name'>tag_name</span><span class='rparen'>)</span>
   <span class='id find_element_by'>find_element_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>tag name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id tag_name'>tag_name</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3072,12 +3055,12 @@ finding elements
       <pre class="lines">
 
 
-293
-294
-295</pre>
+289
+290
+291</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 293</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 289</span>
 
 <span class='kw'>def</span> <span class='id findElementByXpath'>findElementByXpath</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id xpath'>xpath</span><span class='rparen'>)</span>
   <span class='id find_element_by'>find_element_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>xpath</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id xpath'>xpath</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3100,12 +3083,12 @@ finding elements
       <pre class="lines">
 
 
-241
-242
-243</pre>
+237
+238
+239</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 241</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 237</span>
 
 <span class='kw'>def</span> <span class='id findElementsByClassName'>findElementsByClassName</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id class_name'>class_name</span><span class='rparen'>)</span>
   <span class='id find_elements_by'>find_elements_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>class name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id class_name'>class_name</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3128,12 +3111,12 @@ finding elements
       <pre class="lines">
 
 
-249
-250
-251</pre>
+245
+246
+247</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 249</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 245</span>
 
 <span class='kw'>def</span> <span class='id findElementsByCssSelector'>findElementsByCssSelector</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id selector'>selector</span><span class='rparen'>)</span>
   <span class='id find_elements_by'>find_elements_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>css selector</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id selector'>selector</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3156,12 +3139,12 @@ finding elements
       <pre class="lines">
 
 
-257
-258
-259</pre>
+253
+254
+255</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 257</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 253</span>
 
 <span class='kw'>def</span> <span class='id findElementsById'>findElementsById</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id id'>id</span><span class='rparen'>)</span>
   <span class='id find_elements_by'>find_elements_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>id</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id id'>id</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3184,12 +3167,12 @@ finding elements
       <pre class="lines">
 
 
-265
-266
-267</pre>
+261
+262
+263</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 265</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 261</span>
 
 <span class='kw'>def</span> <span class='id findElementsByLinkText'>findElementsByLinkText</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id link_text'>link_text</span><span class='rparen'>)</span>
   <span class='id find_elements_by'>find_elements_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>link text</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id link_text'>link_text</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3212,12 +3195,12 @@ finding elements
       <pre class="lines">
 
 
-281
-282
-283</pre>
+277
+278
+279</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 281</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 277</span>
 
 <span class='kw'>def</span> <span class='id findElementsByName'>findElementsByName</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id name'>name</span><span class='rparen'>)</span>
   <span class='id find_elements_by'>find_elements_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id name'>name</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3240,12 +3223,12 @@ finding elements
       <pre class="lines">
 
 
-273
-274
-275</pre>
+269
+270
+271</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 273</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 269</span>
 
 <span class='kw'>def</span> <span class='id findElementsByPartialLinkText'>findElementsByPartialLinkText</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id link_text'>link_text</span><span class='rparen'>)</span>
   <span class='id find_elements_by'>find_elements_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>partial link text</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id link_text'>link_text</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3268,12 +3251,12 @@ finding elements
       <pre class="lines">
 
 
-289
-290
-291</pre>
+285
+286
+287</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 289</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 285</span>
 
 <span class='kw'>def</span> <span class='id findElementsByTagName'>findElementsByTagName</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id tag_name'>tag_name</span><span class='rparen'>)</span>
   <span class='id find_elements_by'>find_elements_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>tag name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id tag_name'>tag_name</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3296,12 +3279,12 @@ finding elements
       <pre class="lines">
 
 
-297
-298
-299</pre>
+293
+294
+295</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 297</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 293</span>
 
 <span class='kw'>def</span> <span class='id findElementsByXpath'>findElementsByXpath</span><span class='lparen'>(</span><span class='id parent'>parent</span><span class='comma'>,</span> <span class='id xpath'>xpath</span><span class='rparen'>)</span>
   <span class='id find_elements_by'>find_elements_by</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>xpath</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id xpath'>xpath</span><span class='comma'>,</span> <span class='id parent'>parent</span>
@@ -3324,12 +3307,12 @@ finding elements
       <pre class="lines">
 
 
+94
 95
-96
-97</pre>
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 95</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 94</span>
 
 <span class='kw'>def</span> <span class='id get'>get</span><span class='lparen'>(</span><span class='id url'>url</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:get</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:url</span> <span class='op'>=&gt;</span> <span class='id url'>url</span>
@@ -3356,12 +3339,12 @@ finding elements
       <pre class="lines">
 
 
-409
-410
-411</pre>
+405
+406
+407</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 409</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 405</span>
 
 <span class='kw'>def</span> <span class='id getActiveElement'>getActiveElement</span>
   <span class='const'>Element</span><span class='period'>.</span><span class='id new'>new</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id element_id_from'>element_id_from</span><span class='lparen'>(</span><span class='id execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:getActiveElement</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -3384,12 +3367,12 @@ finding elements
       <pre class="lines">
 
 
+126
 127
-128
-129</pre>
+128</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 127</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 126</span>
 
 <span class='kw'>def</span> <span class='id getAlertText'>getAlertText</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getAlertText</span>
@@ -3412,12 +3395,12 @@ finding elements
       <pre class="lines">
 
 
-227
-228
-229</pre>
+223
+224
+225</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 227</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 223</span>
 
 <span class='kw'>def</span> <span class='id getAllCookies'>getAllCookies</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getAllCookies</span>
@@ -3440,12 +3423,12 @@ finding elements
       <pre class="lines">
 
 
+98
 99
-100
-101</pre>
+100</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id getCapabilities'>getCapabilities</span>
   <span class='const'>Capabilities</span><span class='period'>.</span><span class='id json_create'>json_create</span> <span class='id execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:getCapabilities</span><span class='rparen'>)</span>
@@ -3468,12 +3451,12 @@ finding elements
       <pre class="lines">
 
 
+142
 143
-144
-145</pre>
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 143</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id getCurrentUrl'>getCurrentUrl</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getCurrentUrl</span>
@@ -3496,12 +3479,12 @@ finding elements
       <pre class="lines">
 
 
+193
 194
-195
-196</pre>
+195</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 194</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 193</span>
 
 <span class='kw'>def</span> <span class='id getCurrentWindowHandle'>getCurrentWindowHandle</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getCurrentWindowHandle</span>
@@ -3524,12 +3507,12 @@ finding elements
       <pre class="lines">
 
 
-343
-344
-345</pre>
+339
+340
+341</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 343</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 339</span>
 
 <span class='kw'>def</span> <span class='id getElementAttribute'>getElementAttribute</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id name'>name</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getElementAttribute</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span><span class='comma'>,</span> <span class='symbol'>:name</span> <span class='op'>=&gt;</span> <span class='id name'>name</span>
@@ -3552,14 +3535,14 @@ finding elements
       <pre class="lines">
 
 
-355
-356
-357
-358
-359</pre>
+351
+352
+353
+354
+355</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 355</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 351</span>
 
 <span class='kw'>def</span> <span class='id getElementLocation'>getElementLocation</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id data'>data</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:getElementLocation</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -3584,14 +3567,14 @@ finding elements
       <pre class="lines">
 
 
-361
-362
-363
-364
-365</pre>
+357
+358
+359
+360
+361</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 361</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 357</span>
 
 <span class='kw'>def</span> <span class='id getElementLocationOnceScrolledIntoView'>getElementLocationOnceScrolledIntoView</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id data'>data</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:getElementLocationOnceScrolledIntoView</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -3616,14 +3599,14 @@ finding elements
       <pre class="lines">
 
 
-367
-368
-369
-370
-371</pre>
+363
+364
+365
+366
+367</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 367</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 363</span>
 
 <span class='kw'>def</span> <span class='id getElementSize'>getElementSize</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id data'>data</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:getElementSize</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -3648,12 +3631,12 @@ finding elements
       <pre class="lines">
 
 
-339
-340
-341</pre>
+335
+336
+337</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 339</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 335</span>
 
 <span class='kw'>def</span> <span class='id getElementTagName'>getElementTagName</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getElementTagName</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -3676,12 +3659,12 @@ finding elements
       <pre class="lines">
 
 
-351
-352
-353</pre>
+347
+348
+349</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 351</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 347</span>
 
 <span class='kw'>def</span> <span class='id getElementText'>getElementText</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getElementText</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -3704,12 +3687,12 @@ finding elements
       <pre class="lines">
 
 
-347
-348
-349</pre>
+343
+344
+345</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 347</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 343</span>
 
 <span class='kw'>def</span> <span class='id getElementValue'>getElementValue</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getElementValue</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -3732,12 +3715,12 @@ finding elements
       <pre class="lines">
 
 
-405
-406
-407</pre>
+401
+402
+403</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 405</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 401</span>
 
 <span class='kw'>def</span> <span class='id getElementValueOfCssProperty'>getElementValueOfCssProperty</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id prop'>prop</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getElementValueOfCssProperty</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span><span class='comma'>,</span> <span class='symbol'>:property_name</span> <span class='op'>=&gt;</span> <span class='id prop'>prop</span>
@@ -3760,12 +3743,12 @@ finding elements
       <pre class="lines">
 
 
+150
 151
-152
-153</pre>
+152</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 151</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 150</span>
 
 <span class='kw'>def</span> <span class='id getPageSource'>getPageSource</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getPageSource</span>
@@ -3788,43 +3771,15 @@ finding elements
       <pre class="lines">
 
 
-206
-207
-208</pre>
+197
+198
+199</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 206</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 197</span>
 
 <span class='kw'>def</span> <span class='id getScreenshot'>getScreenshot</span>
   <span class='id execute'>execute</span> <span class='symbol'>:screenshot</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="getSpeed-instance_method">
-  
-    - (<tt>Object</tt>) <strong>getSpeed</strong> 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-202
-203
-204</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 202</span>
-
-<span class='kw'>def</span> <span class='id getSpeed'>getSpeed</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getSpeed</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -3844,12 +3799,12 @@ finding elements
       <pre class="lines">
 
 
+146
 147
-148
-149</pre>
+148</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 146</span>
 
 <span class='kw'>def</span> <span class='id getTitle'>getTitle</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getTitle</span>
@@ -3872,12 +3827,12 @@ finding elements
       <pre class="lines">
 
 
+154
 155
-156
-157</pre>
+156</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 155</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 154</span>
 
 <span class='kw'>def</span> <span class='id getVisible'>getVisible</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getVisible</span>
@@ -3900,12 +3855,12 @@ finding elements
       <pre class="lines">
 
 
+189
 190
-191
-192</pre>
+191</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 190</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 189</span>
 
 <span class='kw'>def</span> <span class='id getWindowHandles'>getWindowHandles</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getWindowHandles</span>
@@ -3939,12 +3894,12 @@ navigation
       <pre class="lines">
 
 
+134
 135
-136
-137</pre>
+136</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 135</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 134</span>
 
 <span class='kw'>def</span> <span class='id goBack'>goBack</span>
   <span class='id execute'>execute</span> <span class='symbol'>:goBack</span>
@@ -3967,43 +3922,15 @@ navigation
       <pre class="lines">
 
 
+138
 139
-140
-141</pre>
+140</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 139</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 138</span>
 
 <span class='kw'>def</span> <span class='id goForward'>goForward</span>
   <span class='id execute'>execute</span> <span class='symbol'>:goForward</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="hoverOverElement-instance_method">
-  
-    - (<tt>Object</tt>) <strong>hoverOverElement</strong>(element) 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-414
-415
-416</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 414</span>
-
-<span class='kw'>def</span> <span class='id hoverOverElement'>hoverOverElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:hoverOverElement</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -4023,12 +3950,12 @@ navigation
       <pre class="lines">
 
 
-389
-390
-391</pre>
+385
+386
+387</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 389</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 385</span>
 
 <span class='kw'>def</span> <span class='id isElementDisplayed'>isElementDisplayed</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:isElementDisplayed</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -4051,12 +3978,12 @@ navigation
       <pre class="lines">
 
 
-381
-382
-383</pre>
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 381</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id isElementEnabled'>isElementEnabled</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:isElementEnabled</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -4079,12 +4006,12 @@ navigation
       <pre class="lines">
 
 
-385
-386
-387</pre>
+381
+382
+383</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 385</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 381</span>
 
 <span class='kw'>def</span> <span class='id isElementSelected'>isElementSelected</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:isElementSelected</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -4107,12 +4034,12 @@ navigation
       <pre class="lines">
 
 
-317
-318
-319</pre>
+313
+314
+315</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 317</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 313</span>
 
 <span class='kw'>def</span> <span class='id mouseDown'>mouseDown</span>
   <span class='id execute'>execute</span> <span class='symbol'>:mouseDown</span>
@@ -4135,18 +4062,18 @@ navigation
       <pre class="lines">
 
 
+321
+322
+323
+324
 325
 326
 327
 328
-329
-330
-331
-332
-333</pre>
+329</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 325</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 321</span>
 
 <span class='kw'>def</span> <span class='id mouseMoveTo'>mouseMoveTo</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id x'>x</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id params'>params</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='id element'>element</span> <span class='rbrace'>}</span>
@@ -4175,12 +4102,12 @@ navigation
       <pre class="lines">
 
 
-321
-322
-323</pre>
+317
+318
+319</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 321</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 317</span>
 
 <span class='kw'>def</span> <span class='id mouseUp'>mouseUp</span>
   <span class='id execute'>execute</span> <span class='symbol'>:mouseUp</span>
@@ -4203,13 +4130,13 @@ navigation
       <pre class="lines">
 
 
+176
 177
 178
-179
-180</pre>
+179</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 177</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 176</span>
 
 <span class='kw'>def</span> <span class='id quit'>quit</span>
   <span class='id execute'>execute</span> <span class='symbol'>:quit</span>
@@ -4233,12 +4160,12 @@ navigation
       <pre class="lines">
 
 
+185
 186
-187
-188</pre>
+187</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 186</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 185</span>
 
 <span class='kw'>def</span> <span class='id refresh'>refresh</span>
   <span class='id execute'>execute</span> <span class='symbol'>:refresh</span>
@@ -4261,12 +4188,12 @@ navigation
       <pre class="lines">
 
 
-373
-374
-375</pre>
+369
+370
+371</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 373</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 369</span>
 
 <span class='kw'>def</span> <span class='id sendKeysToElement'>sendKeysToElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id string'>string</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:sendKeysToElement</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:value</span> <span class='op'>=&gt;</span> <span class='id string'>string</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='regexp_end'>/u</span></span><span class='rparen'>)</span><span class='rbrace'>}</span>
@@ -4289,12 +4216,12 @@ navigation
       <pre class="lines">
 
 
-335
-336
-337</pre>
+331
+332
+333</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 335</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 331</span>
 
 <span class='kw'>def</span> <span class='id sendModifierKeyToActiveElement'>sendModifierKeyToActiveElement</span><span class='lparen'>(</span><span class='id key'>key</span><span class='comma'>,</span> <span class='id down'>down</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:sendModifierKeyToActiveElement</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:value</span> <span class='op'>=&gt;</span> <span class='id key'>key</span><span class='comma'>,</span> <span class='symbol'>:isdown</span> <span class='op'>=&gt;</span> <span class='id down'>down</span>
@@ -4328,12 +4255,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
+83
 84
-85
-86</pre>
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id session_id'>session_id</span>
   <span class='ivar'>@session_id</span> <span class='op'>||</span> <span class='id raise'>raise</span><span class='lparen'>(</span><span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>no current session exists</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -4356,12 +4283,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
+122
 123
-124
-125</pre>
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 123</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 122</span>
 
 <span class='kw'>def</span> <span class='id setAlertValue'>setAlertValue</span><span class='lparen'>(</span><span class='id keys'>keys</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:setAlertValue</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:text</span> <span class='op'>=&gt;</span> <span class='id keys'>keys</span><span class='period'>.</span><span class='id to_s'>to_s</span>
@@ -4384,12 +4311,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
-401
-402
-403</pre>
+397
+398
+399</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 401</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 397</span>
 
 <span class='kw'>def</span> <span class='id setElementSelected'>setElementSelected</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:setElementSelected</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -4412,12 +4339,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
+102
 103
-104
-105</pre>
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 103</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id setImplicitWaitTimeout'>setImplicitWaitTimeout</span><span class='lparen'>(</span><span class='id milliseconds'>milliseconds</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:setImplicitWaitTimeout</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:ms</span> <span class='op'>=&gt;</span> <span class='id milliseconds'>milliseconds</span>
@@ -4440,43 +4367,15 @@ Returns the current session ID.
       <pre class="lines">
 
 
+106
 107
-108
-109</pre>
+108</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 107</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 106</span>
 
 <span class='kw'>def</span> <span class='id setScriptTimeout'>setScriptTimeout</span><span class='lparen'>(</span><span class='id milliseconds'>milliseconds</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:setScriptTimeout</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:ms</span> <span class='op'>=&gt;</span> <span class='id milliseconds'>milliseconds</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="setSpeed-instance_method">
-  
-    - (<tt>Object</tt>) <strong>setSpeed</strong>(value) 
-  
-
-  
-</p><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-198
-199
-200</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 198</span>
-
-<span class='kw'>def</span> <span class='id setSpeed'>setSpeed</span><span class='lparen'>(</span><span class='id value'>value</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:setSpeed</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:speed</span> <span class='op'>=&gt;</span> <span class='id value'>value</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -4496,12 +4395,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
+158
 159
-160
-161</pre>
+160</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 159</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 158</span>
 
 <span class='kw'>def</span> <span class='id setVisible'>setVisible</span><span class='lparen'>(</span><span class='id bool'>bool</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:setVisible</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id bool'>bool</span>
@@ -4524,12 +4423,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
-393
-394
-395</pre>
+389
+390
+391</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 393</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 389</span>
 
 <span class='kw'>def</span> <span class='id submitElement'>submitElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:submitElement</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -4552,12 +4451,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
+170
 171
-172
-173</pre>
+172</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 171</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 170</span>
 
 <span class='kw'>def</span> <span class='id switchToDefaultContent'>switchToDefaultContent</span>
   <span class='id execute'>execute</span> <span class='symbol'>:switchToFrame</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='kw'>nil</span>
@@ -4580,12 +4479,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
+166
 167
-168
-169</pre>
+168</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 167</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 166</span>
 
 <span class='kw'>def</span> <span class='id switchToFrame'>switchToFrame</span><span class='lparen'>(</span><span class='id id'>id</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:switchToFrame</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id id'>id</span>
@@ -4608,12 +4507,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
+162
 163
-164
-165</pre>
+164</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 163</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 162</span>
 
 <span class='kw'>def</span> <span class='id switchToWindow'>switchToWindow</span><span class='lparen'>(</span><span class='id name'>name</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:switchToWindow</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:name</span> <span class='op'>=&gt;</span> <span class='id name'>name</span>
@@ -4636,12 +4535,12 @@ Returns the current session ID.
       <pre class="lines">
 
 
-397
-398
-399</pre>
+393
+394
+395</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 397</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 393</span>
 
 <span class='kw'>def</span> <span class='id toggleElement'>toggleElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:toggleElement</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
@@ -4656,9 +4555,9 @@ Returns the current session ID.
 </div>
     
     <div id="footer">
-  Generated on Mon Feb 14 19:23:09 2011 by 
+  Generated on Mon Mar 21 18:49:50 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.4 (ruby-1.9.2).
+  0.6.5 (ruby-1.9.2).
 </div>
 
   </body>

@@ -23,7 +23,16 @@ h2 small { font-weight: normal; font-size: 0.7em; display: block; float: right; 
 .docstring h1 { font-size: 1.2em; }
 .docstring h2 { font-size: 1.1em; }
 .docstring h3, .docstring h4 { font-size: 1em; border-bottom: 0; padding-top: 10px; }
-.docstring .object_link { font-family: monospace; }
+.summary_desc .object_link, .docstring .object_link { font-family: monospace; }
+
+/* style for <ul> */
+#filecontents li > p, .docstring li > p { margin: 0px; }
+#filecontents ul, .docstring ul { padding-left: 20px; }
+/* style for <dl> */
+#filecontents dl, .docstring dl { border: 1px solid #ccc; }
+#filecontents dt, .docstring dt { background: #ddd; font-weight: bold; padding: 3px 5px; }
+#filecontents dd, .docstring dd { padding: 5px 0px; margin-left: 18px; }
+#filecontents dd > p, .docstring dd > p { margin: 0px; }
 
 .note { 
   color: #222;
@@ -252,8 +261,8 @@ li.r2 { background: #fafafa; }
   -webkit-border-radius: 2px;
 }
 
-#content ul.summary li.deprecated a:link, 
-#content ul.summary li.deprecated a:visited { text-decoration: line-through; font-style: italic; }
+#content ul.summary li.deprecated .summary_signature a:link,
+#content ul.summary li.deprecated .summary_signature a:visited { text-decoration: line-through; font-style: italic; }
 
 #toc { 
   padding: 20px; padding-right: 30px; border: 1px solid #ddd; float: right; background: #fff; margin-left: 20px; margin-bottom: 20px;
@@ -307,4 +316,3 @@ pre.code .id.backref,
 pre.code .id.nth_ref { color: #6D79DE; }
 pre.code .regexp, .dregexp { color: #036A07; }
 pre.code a { border-bottom: 1px dotted #bbf; }
-

@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta name="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Class: Selenium::WebDriver::Driver</title>
 <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
@@ -71,7 +71,7 @@
   
     
       <dt class="r2">Includes:</dt>
-      <dd class="r2"><span class='object_link'><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></dd>
+      <dd class="r2"><span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></dd>
       
     
   
@@ -97,7 +97,7 @@ The main class through which you control the browser.
   <h3>See Also:</h3>
   <ul class="see">
     
-      <li><span class='object_link'><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></li>
+      <li><span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></li>
     
       <li><span class='object_link'><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></span></li>
     
@@ -116,8 +116,8 @@ The main class through which you control the browser.
   
   
   
-  <h3 class="inherited">Constants included from <span class='object_link'><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Find.html#FINDERS-constant" title="Selenium::WebDriver::Find::FINDERS (constant)">FINDERS</a></span></p>
+  <h3 class="inherited">Constants included from <span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="SearchContext.html#FINDERS-constant" title="Selenium::WebDriver::SearchContext::FINDERS (constant)">FINDERS</a></span></p>
 
 
   
@@ -266,6 +266,31 @@ Close the current window, or the browser if no windows are left.
   
     <span class="summary_desc"><div class='inline'><p>
 Get the URL of the current page.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#execute_async_script-instance_method" title="#execute_async_script (instance method)">- (WebDriver::Element, ...) <strong>execute_async_script</strong>(script, *args) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Execute an asynchronous piece of JavaScript in the context of the currently
+selected frame or window.
 </p>
 </div></span>
   
@@ -475,10 +500,7 @@ Quit the browser.
   <span class="private note title">Private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-for Find.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -635,8 +657,8 @@ Get the window handles of open browser windows.
   
   
   
-  <h3 class="inherited">Methods included from <span class='object_link'><a href="Find.html" title="Selenium::WebDriver::Find (module)">Find</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Find.html#find_element-instance_method" title="Selenium::WebDriver::Find#find_element (method)">#find_element</a></span>, <span class='object_link'><a href="Find.html#find_elements-instance_method" title="Selenium::WebDriver::Find#find_elements (method)">#find_elements</a></span></p>
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="SearchContext.html#find_element-instance_method" title="Selenium::WebDriver::SearchContext#find_element (method)">#find_element</a></span>, <span class='object_link'><a href="SearchContext.html#find_elements-instance_method" title="Selenium::WebDriver::SearchContext#find_elements (method)">#find_elements</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -853,16 +875,16 @@ or selector
       <pre class="lines">
 
 
-236
-237
-238
-239
-240
-241
-242</pre>
+256
+257
+258
+259
+260
+261
+262</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 236</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 256</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id sel'>sel</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id sel'>sel</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id sel'>sel</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
@@ -889,12 +911,12 @@ or selector
       <pre class="lines">
 
 
-255
-256
-257</pre>
+274
+275
+276</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 255</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 274</span>
 
 <span class='kw'>def</span> <span class='id browser'>browser</span>
   <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id browser'>browser</span>
@@ -917,12 +939,12 @@ or selector
       <pre class="lines">
 
 
-259
-260
-261</pre>
+278
+279
+280</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 259</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 278</span>
 
 <span class='kw'>def</span> <span class='id capabilities'>capabilities</span>
   <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id capabilities'>capabilities</span>
@@ -1017,6 +1039,100 @@ Get the URL of the current page
 
 <span class='kw'>def</span> <span class='id current_url'>current_url</span>
   <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id getCurrentUrl'>getCurrentUrl</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="execute_async_script-instance_method">
+  
+    - (<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>, ...) <strong>execute_async_script</strong>(script, *args) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Execute an asynchronous piece of JavaScript in the context of the currently
+selected frame or window. Unlike executing execute_script (synchronous
+JavaScript), scripts executed with this method must explicitly signal they
+are finished by invoking the provided callback. This callback is always
+injected into the executed function as the last argument.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>)</span>
+      
+      
+        <span class='name'>script</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+JavaSCript source to execute
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>NilClass</tt>, <tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>, <tt>Array</tt>)</span>
+      
+      
+        <span class='name'>*args</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+Arguments to the script. May be empty.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>, <tt>Integer</tt>, <tt>Float</tt>, <tt>Boolean</tt>, <tt>NilClass</tt>, <tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>, <tt>Array</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+219
+220
+221</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 219</span>
+
+<span class='kw'>def</span> <span class='id execute_async_script'>execute_async_script</span><span class='lparen'>(</span><span class='id script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id executeAsyncScript'>executeAsyncScript</span><span class='lparen'>(</span><span class='id script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1407,27 +1523,31 @@ Quit the browser
   <strong>This method is part of a private API.</strong> 
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-for Find
-</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+  <h3>See Also:</h3>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></li>
+    
+  </ul>
+
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-251
-252
-253</pre>
+270
+271
+272</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 251</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 270</span>
 
 <span class='kw'>def</span> <span class='id ref'>ref</span>
   <span class='kw'>nil</span>
@@ -1767,9 +1887,9 @@ Get the window handles of open browser windows.
 </div>
     
     <div id="footer">
-  Generated on Mon Feb 14 19:23:09 2011 by 
+  Generated on Mon Mar 21 18:49:50 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.4 (ruby-1.9.2).
+  0.6.5 (ruby-1.9.2).
 </div>
 
   </body>
