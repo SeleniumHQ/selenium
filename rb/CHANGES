@@ -1,5 +1,8 @@
+0.1.5 (???)
+==================
+
 0.1.4 (2011-03-21)
-===========
+==================
 
 * Support for Firefox 4.
 * Search PATH for Firefox / Chrome on OS X as well.
