@@ -58,18 +58,6 @@ class FirefoxBinary(object):
         except socket.error:
             return False
 
-    def _wait_till_running(self):
-        macAndLinuxLockFile = os.path.join(self.profile.path, ".parentlock")
-        windowsLockFile = os.path.join(self.profile.path, "parent.lock")
-        exists = os.path.exists(macAndLinuxLockFile) or os.path.exists(windowsLockFile)
-        count = 0
-        while not exists:
-            time.sleep(1)
-            if count == 30:
-                raise WebDriverException("Firefox Hasnt started")
-            exists = os.path.exists(macAndLinuxLockFile) or os.path.exists(windowsLockFile)
-        self.kill()
-   
     def _wait_until_connectable(self):
         """Blocks until the extension is connectable in the firefox."""
         count = 0
