@@ -1,290 +1,42 @@
-# Copyright 2008-2009 WebDriver committers
-# Copyright 2008-2009 Google Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-"""Firefox Profile management."""
-
-import ConfigParser
-import logging
-import os
-import re
-import base64
-from cStringIO import StringIO
-import shutil
-import subprocess
 import tempfile
+import os
+import logging
 import zipfile
-import utils
+import shutil
 
-DEFAULT_PORT = 7055
-ANONYMOUS_PROFILE_NAME = "WEBDRIVER_ANONYMOUS_PROFILE"
-LOGGER = logging.getLogger(__name__)
-
-def get_profile_ini():
-    app_data_dir = utils.get_firefox_app_data_dir()
-    profile_ini = ConfigParser.SafeConfigParser()
-    profile_ini.read(os.path.join(app_data_dir, "profiles.ini"))
-    return profile_ini
-
+WEBDRIVER_EXT = "webdriver.xpi"
+EXTENSION_NAME = "fxdriver@googlecode.com"
 
 class FirefoxProfile(object):
-    """Represents a firefox profile."""
-    profile_ini = get_profile_ini()
 
-    def __init__(self, name=ANONYMOUS_PROFILE_NAME, port=DEFAULT_PORT,
-                 template_profile=None, extension_path=None, accept_untrusted_cert=False):
-        """Creates a FirefoxProfile.
-        Args:
-            name: the profile name. A new firefox profile is created if the one
-                  specified doesn't exist.
-            port: the port webdriver extension listens on for command
-            template_profile: if not none, the content of the specified profile
-                will be copied from this directory.
-            extension_path: the source of the webdriver extension
-
-        Usage:
-            -- Get a profile with a given name:
-               profile = FirefoxProfile("profile_name")
-            -- Get a new created profile:
-               profile = FirefoxProfile()
-            -- Get a new created profile with content copied from "/some/path":
-               profile = FirefoxProfile(template_profile="/some/path")
-        """
-        self.name = name
-        self.port = port
-        self.prefs["webdriver_accept_untrusted_certs"] = accept_untrusted_cert
-
-        if (extension_path is None):
-            self.extension_path = os.path.join(
-            os.path.dirname(__file__), 'webdriver.xpi')
-        else:
-            self.extension_path = extension_path
-        if name == ANONYMOUS_PROFILE_NAME:
-            self._create_anonymous_profile(template_profile)
-            self._refresh_ini()
-        else:
-            self.initialize()
-
-    def _create_anonymous_profile(self, template_profile):
-        self.anonymous_profile_dir = tempfile.mkdtemp()
-        if template_profile is not None and os.path.exists(template_profile):
-            self._copy_profile_source(template_profile)
-        self._update_user_preference()
-        self.add_extension(extension_zip_path=self.extension_path)
-        self._launch_in_silent()
-
-    def initialize(self):
-        self.remove_lock_file()
-        self.add_extension(True, extension_zip_path=self.extension_path)
-        self._update_user_preference(pref = {"webdriver.firefox_port" :  self.port})
-
-    def _copy_profile_source(self, source_path):
-        """Copy the profile content from source_path source_path."""
-        LOGGER.info("Copying profile from '%s' to '%s'"
-                     % (source_path, self.path))
-        try:
-            shutil.rmtree(self.path)
-            shutil.copytree(source_path, self.path)
-            self._launch_in_silent()
-        except OSError, err:
-            raise Exception("Errors in copying profile: %s" % err)
-
-    def add_extension(self, force_create=True, extension_zip_path=None):
-        """Adds the webdriver extension to this profile.
-
-           If force_create is True, the fxdriver extension is updated if a
-           new version is accessable. The old extension is untouched if the
-           new version is unavailable, but it might be deleted if the new
-           version is accessable but the upgrade fails.
-
-           If force_create is False, nothing will happen if the extension
-           directory exists and otherwise a new extension will be installed.
-
-           The sources of a new extension are (in the order of preference)
-           (1) zipped file webdriver-extension.zip in the current directory,
-               which can be created using 'rake firefox_xpi' in
-               %webdriver_directory%, and
-           (2) zipped files pointed by extension_zip_path, and
-           (3) unzipped files specified by environment variable WEBDRIVER;
-               these unzipped files must include the generated xpt files,
-               see %webdriver_directory%/firefox/prebuilt, or run
-               'rake firefox_xpi' and use the built files generated in
-               %webdriver_directory%/build
-
-           Default value of force_create is True. This enables users to
-           install new extension by attaching new extension as specified; if
-           no files is specified, no installation will be performed even when
-           force_creat is True.
-        """
-
-        extension_dir = os.path.join(self.path,
-                                     "extensions", "fxdriver@googlecode.com")
-        LOGGER.debug("extension_dir : %s" % extension_dir)
-
-        if force_create or not os.path.exists(extension_dir):
-            extension_source_path = utils.unzip_to_temp_dir(
-                "webdriver.xpi")
-
-            if (extension_source_path is None or
-                not os.path.exists(extension_source_path)):
-                extension_source_path = utils.unzip_to_temp_dir(
-                    extension_zip_path)
-
-            if (extension_source_path is None or
-                not os.path.exists(extension_source_path)):
-                webdriver_dir = os.getenv("WEBDRIVER")
-                if webdriver_dir is not None:
-                    extension_source_path = os.path.join(
-                        webdriver_dir, "firefox", "src", "extension")
-
-            if (extension_source_path is None or
-                not os.path.exists(extension_source_path)):
-                raise Exception(
-                    "No extension found at %s" % extension_source_path)
-
-            LOGGER.debug("extension_source_path : %s" % extension_source_path)
-            LOGGER.info("Copying extension from '%s' to '%s'"
-                % (extension_source_path, extension_dir))
-            try:
-                if os.path.exists(extension_dir):
-                    shutil.rmtree(extension_dir)
-                else:
-                    #copytree()'s behavior on linux makes me to write these
-                    #two lines to ensure that the parent directory exists,
-                    #although it is not required according to the documentation
-                    os.makedirs(extension_dir)
-                    shutil.rmtree(extension_dir)
-                shutil.copytree(extension_source_path, extension_dir)
-                LOGGER.info("Extenstion has been copied from '%s' to '%s'"
-                    % (extension_source_path, extension_dir))
-            except OSError, err:
-                LOGGER.info("Fail to install firefox extension. %s" % err)
-
-        else:
-            LOGGER.info("No extension installation required.")
-
-    def remove_lock_file(self):
-        for lock_file in [".parentlock", "lock", "parent.lock"]:
-            try:
-                os.remove(os.path.join(self.path, lock_file))
-            except OSError:
-                pass
-    
-    @property
-    def encoded(self):
-        """
-        A zipped, base64 encoded string of profile directory
-        for use with remote WebDriver JSON wire protocol
-        """
-        
-        fp = StringIO()
-        zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
-        path_root = len(self.path) + 1 # account for trailing slash
-        for base, dirs, files in os.walk(self.path):
-           for fyle in files:
-              filename = os.path.join(base, fyle)
-              zipped.write(filename, filename[path_root:])
-        zipped.close()
-        return base64.encodestring(fp.getvalue())
-
-    @property
-    def path(self):
-        if "anonymous_profile_dir" in self.__dict__:
-            return self.anonymous_profile_dir
-        section = self._get_ini_section()
-        assert section is not None, "Profile doesn't exist in profiles.ini"
-        return os.path.join(utils.get_firefox_app_data_dir(),
-                            self.profile_ini.get(section, "Path"))
-
-    @staticmethod
-    def _refresh_ini():
-        FirefoxProfile.profile_ini = get_profile_ini()
-
-    def _launch_in_silent(self):
-        os.environ["XRE_PROFILE_PATH"] = self.anonymous_profile_dir
-        subprocess.Popen([utils.get_firefox_start_cmd(), "-silent"]).wait()
-
-    def set_preferences(self, name, value):
-        """
-        Set a preference in about:config via user.js. Format is name, value.
-        For example, set_preference("app.update.auto", "false")
-        """
-        self._update_user_preference(pref = { name : value })
-
-    def get_preferences(self):
-        """ Return our list of preferences that we have set in about:config """
-        return self.prefs
-
-    def _update_user_preference(self, pref=None):
-        """Updates the user.js with the configurations needed by webdriver."""
-        preference = self._get_webdriver_prefs()
-        user_pref_file_name = os.path.join(self.path, "user.js")
-        try:
-            user_pref_file = open(user_pref_file_name)
-            for line in user_pref_file:
-                match = re.match(r'user_pref\("(\.*?)","(\.*?)"', line)
-                if match:
-                    preference[match.group(1)] = match.group(2)
-        except IOError:
-            LOGGER.debug("user.js doesn't exist, creating one...")
-        #preference.update(self._get_webdriver_prefs())
-        if pref:
-            preference.update(pref)
-        
-        user_pref_file = open(user_pref_file_name, "w")
-        for key, value in preference.items():
-            user_pref_file.write('user_pref("%s", %s);\n' % (key, value))
-        user_pref_file.close()
-        LOGGER.info('user_pref after update:')
-        LOGGER.info(preference)
-
-    def _delete_profile_if_exist(self):
-        section = self._get_ini_section()
-        if not section:
-            return
-        LOGGER.info("deleting %s" % self.path)
-        shutil.rmtree(self.path)
-
-    def _get_ini_section(self):
-        for section in self.profile_ini.sections():
-            try:
-                if self.profile_ini.get(section, "Name") == self.name:
-                    return section
-            except ConfigParser.NoOptionError:
-                pass
-        return None
-
-    prefs = {
+    ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
+    DEFAULT_PREFERENCES = {
         "app.update.auto": "false",
         "app.update.enabled": "false",
+        "browser.startup.page" : "0",
         "browser.download.manager.showWhenStarting": "false",
         "browser.EULA.override": "true",
         "browser.EULA.3.accepted": "true",
         "browser.link.open_external": "2",
         "browser.link.open_newwindow": "2",
+        "browser.offline": "false",
         "browser.safebrowsing.enabled": "false",
         "browser.search.update": "false",
         "browser.sessionstore.resume_from_crash": "false",
         "browser.shell.checkDefaultBrowser": "false",
-        "browser.startup.page": "0",
         "browser.tabs.warnOnClose": "false",
         "browser.tabs.warnOnOpen": "false",
+        "browser.startup.page": "0",
+        "startup.homepage_welcome_url": "\"about:blank\"",
+        "devtools.errorconsole.enabled": "true",
         "dom.disable_open_during_load": "false",
         "dom.max_script_run_time": "30",
+        "extensions.logging.enabled": "true",
         "extensions.update.enabled": "false",
         "extensions.update.notifyUser": "false",
         "network.manage-offline-status": "false",
+        "network.http.max-connections-per-server": "10",
+        "prompts.tab_modal.enabled": "false",
         "security.fileuri.origin_policy": "3",
         "security.fileuri.strict_origin_policy": "false",
         "security.warn_entering_secure": "false",
@@ -298,12 +50,116 @@ class FirefoxProfile(object):
         "security.warn_viewing_mixed": "false",
         "security.warn_viewing_mixed.show_once": "false",
         "signon.rememberSignons": "false",
-        "startup.homepage_welcome_url": "\"about:blank\"",
-        "toolkit.networkmanager.disable": "true",
+        "toolkit.networkmanager.disable": "true",    
         "javascript.options.showInConsole": "true",
         "browser.dom.window.dump.enabled": "true",
-    }
+        "webdriver_accept_untrusted_certs": "true"
+        }
 
-    def _get_webdriver_prefs(self):
-        """Gets the preferences required by webdriver."""
-        return FirefoxProfile.prefs
+    def __init__(self,profile_directory=None):
+        """ Initialises a new instance of a Firefox Profile
+            args:
+                profile_directory: Directory of profile that you want to use. 
+                                This defaults to None and will create a new
+                                directory when object is created.
+        """
+        self.profile_dir = profile_directory
+        if self.profile_dir is None:
+            self.profile_dir = self._create_tempfolder()
+        self.extensionsDir = os.path.join(self.profile_dir, "extensions")
+        self.userPrefs = os.path.join(self.profile_dir, "user.js")
+
+    #Public Methods
+    def set_preference(self, key, value): 
+        """ sets the preference that we want in the profile."""
+        self.DEFAULT_PREFERENCES[key] = str(value)
+
+    def add_extension(self, extension=WEBDRIVER_EXT):
+        self._install_extension(extension)
+
+    def update_preferences(self):
+        self._write_user_prefs(self.DEFAULT_PREFERENCES)
+    
+    #Properties
+
+    @property
+    def path(self):
+        """ Gets the profile directory that is currently being used"""
+        return self.profile_dir
+
+    @property
+    def port(self):
+        """ Gets the port that WebDriver is working on"""
+        return self._port
+
+    @port.setter
+    def port(self, port):
+        """ Sets the port that WebDriver will be running on """
+        self._port = port
+        self.DEFAULT_PREFERENCES["webdriver_firefox_port"] =  str(self._port)
+
+    @property
+    def accept_untrusted_certs(self):
+        return bool(self.DEFAULT_PREFERENCES["webdriver_accept_untrusted_certs"])
+
+    @accept_untrusted_certs.setter
+    def accept_untrusted_certs(self, value):
+        self.DEFAULT_PREFERENCES["webdriver_accept_untrusted_certs"] = str(value)
+
+    #Private Methods
+
+    def _create_tempfolder(self):
+        """ Creates a temp folder to store User.js and the extension """
+        return tempfile.mkdtemp()
+
+    def _write_user_prefs(self, user_prefs):
+        """ writes the current user prefs dictionary to disk """
+        f = open(self.userPrefs, "w") 
+        for pref in user_prefs.keys():
+            f.write('user_pref("%s", %s);\n' % (pref, user_prefs[pref]))
+
+        f.close()
+
+    def _install_extension(self, extension):
+        tempdir = tempfile.mkdtemp()
+        
+        if extension == WEBDRIVER_EXT:
+            extension = os.path.join(os.path.dirname(__file__), WEBDRIVER_EXT)
+            ext_dir = os.path.join(self.extensionsDir, EXTENSION_NAME)
+            
+        
+        xpi = zipfile.ZipFile(extension)
+
+        #Get directories ready
+        for file_in_xpi in xpi.namelist():
+            name = file_in_xpi.replace("\\", os.path.sep).replace("/", os.path.sep)
+            dest = os.path.join(tempdir, name)
+            if (name.endswith(os.path.sep) and not os.path.exists(dest)):
+                os.makedirs(dest)
+
+        #Copy files
+        for file_in_xpi in xpi.namelist():
+            name = file_in_xpi.replace("\\", os.path.sep).replace("/", os.path.sep)
+            dest = os.path.join(tempdir, name)
+            if not (name.endswith(os.path.sep)):
+                outfile = open(dest, 'wb')
+                outfile.write(xpi.read(file_in_xpi))
+                outfile.close()
+
+        if ext_dir is None:
+            installrdf_file = open(os.path.join(tempdir,"install.idf"), "r")
+            installrdf = installrdf_file.readlines()
+            installrdf_file.close()
+            ext_dir = os.path.join(
+                self.extensionsDir, self._read_id_from_install_rdf(installrdf))
+
+        #if not os.path.exists(ext_dir):
+        #    os.makedirs(ext_dir)
+
+        shutil.copytree(tempdir, ext_dir)
+
+    def _read_id_from_install_rdf(self, installrdf):
+        
+        
+        return id_
+

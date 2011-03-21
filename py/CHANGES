@@ -18,3 +18,6 @@ Selenium 2 Beta 3
 * Accept Untrusted Certificates in Firefox
 * Fixed Screenshots
 * Added DesiredCapabilities to simplify choosing Drivers
+* Fixed Firefox Profile creation
+* Added Firefox 4 support
+
