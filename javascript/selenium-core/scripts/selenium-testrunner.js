@@ -433,7 +433,7 @@ var AbstractResultAwareRow = classCreate();
 objectExtend(AbstractResultAwareRow.prototype, {
 
     initialize: function(trElement) {
-        this.trElement = trElement;
+        this.trElement = core.firefox.unwrap(trElement);
     },
 
     setStatus: function(status) {
@@ -543,7 +543,7 @@ objectExtend(HtmlTestSuiteRow.prototype, {
         this.trElement = trElement;
         this.testFrame = testFrame;
         this.htmlTestSuite = htmlTestSuite;
-        this.link = trElement.getElementsByTagName("a")[0];
+        this.link = core.firefox.unwrap(trElement.getElementsByTagName("a")[0]);
         this.link.onclick = fnBindAsEventListener(this._onClick, this);
     },
 
