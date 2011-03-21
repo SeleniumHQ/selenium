@@ -26,26 +26,26 @@ Python Client
 Java Server
 -----------
 
-Download the server from http://selenium.googlecode.com/files/selenium-server-standalone-2.0a4.jar
+Download the server from http://selenium.googlecode.com/files/selenium-server-standalone-2.0b3.jar
 ::
 
-    java -jar selenium-server-standalone-2.0a4.jar
+    java -jar selenium-server-standalone-2.0b3.jar
 
 Example
 =======
 ::
 
-    from selenium.remote import connect
-    from selenium import FIREFOX
+    from selenium import webdriver 
     from selenium.common.exceptions import NoSuchElementException
-    from time import sleep
+    from selenium.common.keys import Keys
+    from time 
 
-    browser = connect(FIREFOX) # Get local session of firefox
+    browser = webdriver.Firefox() # Get local session of firefox
     browser.get("http://www.yahoo.com") # Load page
-    assert browser.get_title() == "Yahoo!"
+    assert browser.title == "Yahoo!"
     elem = browser.find_element_by_name("p") # Find the query box
-    elem.send_keys("selenium\n")
-    sleep(0.2) # Let the page load, will be added to the API
+    elem.send_keys("selenium" + Keys.RETURN)
+    time.sleep(0.2) # Let the page load, will be added to the API
     try:
         browser.find_element_by_xpath("//a[contains(@href,'http://seleniumhq.org')]")
     except NoSuchElementException:
