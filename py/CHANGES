@@ -20,4 +20,4 @@ Selenium 2 Beta 3
 * Added DesiredCapabilities to simplify choosing Drivers
 * Fixed Firefox Profile creation
 * Added Firefox 4 support
-
+* DocStrings Improvements
