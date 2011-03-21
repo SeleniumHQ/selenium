@@ -157,22 +157,20 @@ describe "Driver" do
       element.text.should == "Foo"
     end
 
-    not_compliant_on :browser => :ie do
-      it "should unwrap elements in deep objects" do
-        driver.navigate.to url_for("xhtmlTest.html")
-        result = driver.execute_script(<<-SCRIPT)
-          var e1 = document.getElementById('id1');
-          var body = document.body;
+    it "should unwrap elements in deep objects" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      result = driver.execute_script(<<-SCRIPT)
+        var e1 = document.getElementById('id1');
+        var body = document.body;
 
-          return {
-            elements: {'body' : body, other: [e1] }
-          };
-        SCRIPT
+        return {
+          elements: {'body' : body, other: [e1] }
+        };
+      SCRIPT
 
-        result.should be_kind_of(Hash)
-        result['elements']['body'].should be_kind_of(WebDriver::Element)
-        result['elements']['other'].first.should be_kind_of(WebDriver::Element)
-      end
+      result.should be_kind_of(Hash)
+      result['elements']['body'].should be_kind_of(WebDriver::Element)
+      result['elements']['other'].first.should be_kind_of(WebDriver::Element)
     end
 
     it "should return booleans" do

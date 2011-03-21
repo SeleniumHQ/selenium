@@ -15,15 +15,13 @@ describe "Navigation" do
     driver.find_element(:id, 'greeting').text.should == "Success!"
   end
 
-  not_compliant_on :browser => :ie do
-    it "should refresh the page" do
-      driver.navigate.to url_for("javascriptPage.html")
-      driver.find_element(:xpath, '//a[text() = "Change the page title!"]').click
-      driver.title.should == "Changed"
+  it "should refresh the page" do
+    driver.navigate.to url_for("javascriptPage.html")
+    driver.find_element(:xpath, '//a[text() = "Change the page title!"]').click
+    driver.title.should == "Changed"
 
-      driver.navigate.refresh
-      driver.title.should == "Testing Javascript"
-    end
+    driver.navigate.refresh
+    driver.title.should == "Testing Javascript"
   end
 end
 
