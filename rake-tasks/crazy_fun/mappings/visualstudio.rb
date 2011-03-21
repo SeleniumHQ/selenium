@@ -25,9 +25,16 @@ module CrazyFunDotNet
       # Default parameters to csc.exe that we will use.
       # These should decline as more functionality is added
       # to the Albacore csc task.
+      # TODO (JimEvans): Visual Studio 2010 migration.
+      # Add a "/nostdlib+" element to the params array.
       params = ["/nologo",
                 "/noconfig",
                 "/filealign:512"]
+
+      # TODO (JimEvans): Visual Studio 2010 migration.
+      # Insert an mscorlib reference, since we compile with the
+      # nostdlib flag enabled.
+      # args[:refs].insert(0, "mscorlib.dll")
 
       embedded_resources = []
       buildable_references = resolve_buildable_targets(args[:refs])
@@ -36,8 +43,13 @@ module CrazyFunDotNet
         puts "Compiling: #{task_name} as #{full_path}"
         FileUtils.mkdir_p output_dir
 
-        references = resolve_references(dir, args[:refs])
-        to_copy = flag_references_to_copy(references)
+        framework_ver = "3.5"
+        unless args[:framework_ver].nil?
+          framework_ver = args[:framework_ver]
+        end
+
+        to_copy = []
+        references = resolve_references(dir, args[:refs], framework_ver, to_copy)
 
         # For each resource key-value pair in the resources Hash, assume
         # the key to the hash represents the name of the file to embed
@@ -55,6 +67,8 @@ module CrazyFunDotNet
           end
         end
 
+        # TODO (JimEvans): Visual Studio 2010 migration.
+        # Change :net35 to :net40
         csc_task.use :net35
         csc_task.parameters params
         csc_task.compile FileList[[dir, args[:srcs]].join(File::SEPARATOR)]
@@ -80,32 +94,62 @@ module CrazyFunDotNet
     end
 
     private
-    def resolve_references(dir, refs)
+    def resolve_references(dir, refs, framework_ver, assemblies_to_copy)
       references = []
       unless refs.nil?
         refs.each do |reference|
           reference_task_name = task_name(dir, reference)
-          if Rake::Task.task_defined?(reference_task_name)
+
+          if Rake::Task.task_defined? reference_task_name
             references << Rake::Task[reference_task_name].out
           else
-            references << reference
+            if reference.include? "/"
+              assemblies_to_copy << reference
+              references << reference
+            else
+              references << resolve_framework_reference(reference, framework_ver)
+            end
           end
         end
       end
       return references
     end
 
-    def flag_references_to_copy(refs)
-      output_dir = 'build/dotnet'
-      to_copy = []
-      unless refs.nil?
-        refs.each do |reference|
-          if reference.include?("/") && !reference.start_with?(output_dir)
-            to_copy << reference
-          end
+    def get_reference_assemblies_dir()
+      @reference_assemblies_dir ||= (
+        program_files_dir = find_environment_variable(['ProgramFiles(x86)', 'programfiles(x86)', 'PROGRAMFILES(X86)'], "C:/Program Files (x86)")
+        unless File.exists? program_files_dir
+          program_files_dir = find_environment_variable(['ProgramFiles', 'programfiles', 'PROGRAMFILES'], "C:/Program Files")
         end
+        File.join(program_files_dir, 'Reference Assemblies', 'Microsoft', 'Framework')
+      )
+    end
+
+    def get_framework_dir()
+      @framework_dir ||= (
+        windows_dir = find_environment_variable(['WinDir', 'windir', 'WINDIR'], "C:/Windows")
+        File.join(windows_dir, 'Microsoft.NET', 'Framework')
+      )
+    end
+
+    def resolve_framework_reference(ref, version)
+      if version == "3.5"
+        assembly = File.join(get_reference_assemblies_dir(), "v" + version, ref)
+        unless File.exists? assembly
+          assembly = File.join(get_framework_dir(), "v2.0.50727", ref)
+        end
+
+        return assembly.to_s
       end
-      return to_copy
+      return File.join(get_reference_assemblies_dir(), '.NETFramework', "v" + version, ref).to_s
+    end
+
+    def find_environment_variable(possible_vars, fallback)
+      var_name = possible_vars.find { |e| ENV[e] }
+      if var_name.nil?
+        return fallback
+      end
+      return ENV[var_name]
     end
 
     def resolve_buildable_targets(target_candidates)
@@ -157,6 +201,10 @@ module CrazyFunVisualC
          
          target_task = task task_name => full_path
       else
+        # TODO (JimEvans): Visual Studio 2010 migration.
+        # Change :net35 to :net40. Optionally change build.desc
+        # files to refer to the .vcxproj files for the individual
+        # C++ projects, and resolve the project name here.
         target_task = msbuild task_name do |msb|
           puts "Compiling: #{task_name} as #{desc_path}"
           msb.use :net35
