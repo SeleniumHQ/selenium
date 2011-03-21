@@ -25,6 +25,8 @@
 <!ENTITY stepButton.tooltip "Step">
 <!ENTITY speedSliderFast.label "Fast">
 <!ENTITY speedSliderFaster.label "Faster">
+<!ENTITY speedSliderFastest.label "Fastest">
+<!ENTITY speedSliderSlowest.label "Slowest">
 <!ENTITY speedSliderSlower.label "Slower">
 <!ENTITY speedSliderSlow.label "Slow">
 <!ENTITY recordButton.tooltip "Record">
