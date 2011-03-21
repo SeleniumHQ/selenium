@@ -323,6 +323,7 @@ module Selenium
           "extensions.update.notifyUser"              => 'false',
           "network.manage-offline-status"             => 'false',
           "network.http.max-connections-per-server"   => '10',
+          "prompts.tab_modal.enabled"                 => "false",
           "security.warn_entering_secure"             => 'false',
           "security.warn_submit_insecure"             => 'false',
           "security.warn_entering_secure.show_once"   => 'false',
