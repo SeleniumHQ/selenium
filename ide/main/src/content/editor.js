@@ -142,6 +142,7 @@ function Editor(window) {
 	this.document = document;
     this.recordButton = document.getElementById("record-button");
     this.recordMenuItem = document.getElementById("menu_record");
+    this.speedMaxInterval = parseInt(document.getElementById("speedSlider").getAttribute("maxpos"));
     this.initMenus();
 	this.app.initOptions();
 	this.loadExtensions();
@@ -248,6 +249,14 @@ Editor.controller = {
         case "cmd_selenium_reload":
         case "cmd_selenium_record":
 			return true;
+        case "cmd_selenium_speed_fastest":
+            return true;
+        case "cmd_selenium_speed_faster":
+            return true;
+        case "cmd_selenium_speed_slower":
+            return true;
+        case "cmd_selenium_speed_slowest":
+            return true;
 		default:
 			return false;
 		}
@@ -283,6 +292,14 @@ Editor.controller = {
             return editor.app.isPlayable() && editor.selDebugger.state == Debugger.PAUSED;
         case "cmd_selenium_record":
             return true;
+        case "cmd_selenium_speed_fastest":
+            return editor.getInterval() > 0;
+        case "cmd_selenium_speed_faster":
+            return editor.getInterval() > 0;
+        case "cmd_selenium_speed_slower":
+            return editor.getInterval() < this.speedMaxInterval;
+        case "cmd_selenium_speed_slowest":
+            return editor.getInterval() < this.speedMaxInterval;
 		default:
 			return false;
 		}
@@ -336,6 +353,18 @@ Editor.controller = {
         	break;
         case "cmd_selenium_record":
             editor.toggleRecordingEnabled();
+            break;
+        case "cmd_selenium_speed_fastest":
+            editor.updateInterval(-1000);
+            break;
+        case "cmd_selenium_speed_faster":
+            editor.updateInterval(-100);
+            break;
+        case "cmd_selenium_speed_slower":
+            editor.updateInterval(100);
+            break;
+        case "cmd_selenium_speed_slowest":
+            editor.updateInterval(1000);
             break;
 		default:
 		}
@@ -1004,9 +1033,8 @@ Editor.prototype.cleanupAutoComplete = function() {
 
 Editor.prototype.updateInterval = function(milliseconds) {  //Samit: Enh: Support for speed slider from menu
     var newpos = this.getInterval() + milliseconds;
-    var maxpos = parseInt(document.getElementById("speedSlider").getAttribute("maxpos"));
-    if (newpos > maxpos) {
-        newpos = maxpos;
+    if (newpos > this.speedMaxInterval) {
+        newpos = this.speedMaxInterval;
     }
     if (newpos < 0) {
         newpos = 0;
