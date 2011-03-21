@@ -189,8 +189,10 @@ limitations under the License.
       <menuitem label="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
       <menuitem label="&stepButton.tooltip;" command="cmd_selenium_step"/>
       <menuseparator/>
-      <menuitem label="&speedSliderFast.label;" oncommand="window.editor.updateInterval(-100)" accesskey="+"/>
-      <menuitem label="&speedSliderSlow.label;" oncommand="window.editor.updateInterval(100)" accesskey="-"/>
+      <menuitem label="&speedSliderFast.label;" oncommand="window.editor.updateInterval(-100)"/>
+        <menuitem label="&speedSliderFaster.label;" oncommand="window.editor.updateInterval(-100)" accesskey="+"/>
+        <menuitem label="&speedSliderSlower.label;" oncommand="window.editor.updateInterval(100)" accesskey="-"/>
+      <menuitem label="&speedSliderSlow.label;" oncommand="window.editor.updateInterval(100)"/>
       <menuseparator/>
       <menuitem label="&contextMenu.breakpoint.label;" oncommand="window.editor.treeView.setBreakpoint()" accesskey="B"/>
       <menuitem label="&contextMenu.startpoint.label;" oncommand="window.editor.treeView.setStartPoint()" accesskey="S"/>

@@ -24,6 +24,8 @@
 <!ENTITY pauseButton.tooltip "Pause / Resume">
 <!ENTITY stepButton.tooltip "Step">
 <!ENTITY speedSliderFast.label "Fast">
+<!ENTITY speedSliderFaster.label "Faster">
+<!ENTITY speedSliderSlower.label "Slower">
 <!ENTITY speedSliderSlow.label "Slow">
 <!ENTITY recordButton.tooltip "Record">
 <!ENTITY baseURL.label "Base URL">
