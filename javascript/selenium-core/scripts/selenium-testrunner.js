@@ -49,30 +49,37 @@ objectExtend(HtmlTestRunner.prototype, {
         if (logLevel) {
             LOG.setLogLevelThreshold(logLevel);
         }
+
+        var self = this;
         if (selenium == null) {
-            var appWindow = this._getApplicationWindow();
+            var appWindow = self._getApplicationWindow();
             try { appWindow.location; }
             catch (e) { 
                 // when reloading, we may be pointing at an old window (Perm Denied)
                 setTimeout(fnBind(function() {
-                    this.loadSuiteFrame();
+                    self.loadSuiteFrame();
                 }, this), 50);
                 return;
             }
-            selenium = Selenium.createForWindow(appWindow);
-            this._registerCommandHandlers();
+
+            // TODO(simon): This gets things working on Firefox 4, but's not an ideal solution
+            window.setTimeout(function() {
+              selenium = Selenium.createForWindow(appWindow);
+              self._registerCommandHandlers();
+              self.loadSuiteFrame();
+            }, 250);
+            return;
         }
-        this.controlPanel.setHighlightOption();
-        var testSuiteName = this.controlPanel.getTestSuiteName();
-        var self = this;
+        self.controlPanel.setHighlightOption();
+        var testSuiteName = self.controlPanel.getTestSuiteName();
         if (testSuiteName) {
             suiteFrame.load(testSuiteName, function() {setTimeout(fnBind(self._onloadTestSuite, self), 50)} );
             selenium.browserbot.baseUrl = absolutify(testSuiteName, window.location.href);
         }
         // DGF or should we use the old default?
         // selenium.browserbot.baseUrl = window.location.href;
-        if (this.controlPanel.getBaseUrl()) {
-            selenium.browserbot.baseUrl = this.controlPanel.getBaseUrl();
+        if (self.controlPanel.getBaseUrl()) {
+            selenium.browserbot.baseUrl = self.controlPanel.getBaseUrl();
         }
     },
 
