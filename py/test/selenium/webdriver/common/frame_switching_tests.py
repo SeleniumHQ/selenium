@@ -156,20 +156,6 @@ class FrameSwitchingTest(unittest.TestCase):
       except NoSuchFrameException:
         pass
 
-    def testThatWeCanSwitchToFrameByIndex(self):
-        self._loadPage("frameset")
-        self.driver.switch_to_frame(2)
-        checkbox = self.driver.find_element_by_id("checky")
-        checkbox.toggle()
-        checkbox.submit()
-
-    def testThatWeCanSwitchFrameByName(self):
-        self._loadPage("frameset")
-        self.driver.switch_to_frame("third")
-        checkbox = self.driver.find_element_by_id("checky")
-        checkbox.toggle()
-        checkbox.submit()
-    
     # disabled till we use the Java Webserver
     #def testThatWeStillReferToTheSameFrameOnceItHasBeenSelected(self):
     #    self._loadPage("frameset")
@@ -231,26 +217,6 @@ class FrameSwitchingTest(unittest.TestCase):
     #    hello = self.driver.find_element_by_id('greeting')
     #    self.assertEqual(hello.text, "Success!")
     #    self.driver.switch_to_default_content()
-
-    def testShouldThrowAnExceptinWhenAFrameCannotBeFound(self):
-        self._loadPage("xhtmlTest")
-        try:
-            self.driver.switch_to_frame("nothing here")
-            self.fail("Expected a NoSuchFrameException to have been thrown")
-        except NoSuchFrameException, nsfe:
-            pass
-        except Exception, e:
-            self.fail("Expected NoSuchFrameException but got " + str(type(e)))
-
-    def testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex(self):
-        self._loadPage("xhtmlTest")
-        try:
-            self.driver.switch_to_frame(27)
-            self.fail("Expected a NoSuchFrameException to have been thrown")
-        except NoSuchFrameException, nsfe:
-            pass
-        except Exception, e:
-            self.fail("Expected NoSuchFrameException but got " + str(type(e)))
 
     def testShouldReturnFrameTitleNotWindowTitle(self):
         self._loadPage("frameset")
