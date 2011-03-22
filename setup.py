@@ -60,47 +60,16 @@ def find_longdesc():
     print("WARNING: Can't find index.rst")
     return ""
 
-
-def _copy_ext_file(driver, name):
-    filename = join("build", driver, name)
-    if not isfile(filename):
-        return 0
-    dest = join(driver, "src", "py")
-    copy(filename, dest)
-    return 1
-
-
-def _copy_ie_dlls():
-    num_copied = 0
-    dll = "InternetExplorerDriver.dll"
-    for platform in ("Win32", "x64"):
-        filename = join("jobbie", "prebuilt", platform, "Release", dll)
-        if not isfile(filename):
-            continue
-        arch = platform[-2:]
-        dest = join("jobbie", "src", "py", dll.replace(".dll", arch + ".dll"))
-        copy(filename, dest)
-        num_copied += 1
-
-    return num_copied == 2
-
 if sys.version_info >= (3,):
     src_root = setup_python3()
 else:
     src_root = "."
 
-# FIXME: We silently fail since on sdist this will work and on install will
-# fail, find a better way
-_copy_ext_file("firefox", "webdriver.xpi")
-# FIXME: We need to find a solution for x64, currently IMO the zip contains the
-# Win32 dll
-_copy_ext_file("chrome", "chrome-extension.zip")
-#_copy_ie_dlls()
 
 setup(
     cmdclass={'install': install},
     name='selenium',
-    version="2.0b3",
+    version="2.0b4dev",
     description='Python bindings for Selenium',
     long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
