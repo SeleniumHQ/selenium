@@ -13,10 +13,10 @@ import socket
 
 class WebDriver(RemoteWebDriver):
 
-    def __init__(self, fx_profile=None, firefox_binary=None, timeout=30):
+    def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30):
 
         self.binary = firefox_binary
-        self.profile = fx_profile
+        self.profile = firefox_profile
 
         if self.profile is None:
             self.profile = FirefoxProfile()
