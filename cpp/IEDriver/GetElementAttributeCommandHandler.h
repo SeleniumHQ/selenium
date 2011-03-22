@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_GETELEMENTATTRIBUTECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETELEMENTATTRIBUTECOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void GetElementAttributeCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void GetElementAttributeCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		std::map<std::string, std::string>::const_iterator name_parameter_iterator = locator_parameters.find("name");
 		if (id_parameter_iterator == locator_parameters.end()) {
@@ -28,14 +28,14 @@ protected:
 			std::wstring name(CA2W(name_parameter_iterator->second.c_str(), CP_UTF8));
 
 			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
 
 			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
-			status_code = this->GetElement(manager, element_id, &element_wrapper);
+			status_code = this->GetElement(session, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				CComVariant value_variant;
 				status_code = element_wrapper->GetAttributeValue(name, &value_variant);

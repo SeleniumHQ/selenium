@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_ISELEMENTSELECTEDCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_ISELEMENTSELECTEDCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void IsElementSelectedCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void IsElementSelectedCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
@@ -23,7 +23,7 @@ protected:
 			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
 
 			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
@@ -37,7 +37,7 @@ protected:
 			script += L")})();";
 
 			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
-			status_code = this->GetElement(manager, element_id, &element_wrapper);
+			status_code = this->GetElement(session, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				bool is_selected = element_wrapper->IsSelected();
 				response->SetResponse(SUCCESS, is_selected);

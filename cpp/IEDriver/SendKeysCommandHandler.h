@@ -2,7 +2,7 @@
 #define WEBDRIVER_IE_SENDKEYSCOMMANDHANDLER_H_
 
 #include <ctime>
-#include "BrowserManager.h"
+#include "Session.h"
 #include "interactions.h"
 #include "logging.h"
 
@@ -32,7 +32,7 @@ public:
 	}
 
 protected:
-	void SendKeysCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response)
+	void SendKeysCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response)
 	{
 		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		std::map<std::string, Json::Value>::const_iterator value_parameter_iterator = command_parameters.find("value");
@@ -53,7 +53,7 @@ protected:
 			}
 
 			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
@@ -63,7 +63,7 @@ protected:
 			::GetClassName(window_handle, pszClassName, 25);
 
 			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
-			status_code = this->GetElement(manager, element_id, &element_wrapper);
+			status_code = this->GetElement(session, element_id, &element_wrapper);
 
 			if (status_code == SUCCESS) {
 				bool displayed;
@@ -106,7 +106,7 @@ protected:
 
 				this->WaitUntilElementFocused(element);
 
-				sendKeys(window_handle, keys.c_str(), manager->speed());
+				sendKeys(window_handle, keys.c_str(), session->speed());
 				response->SetResponse(SUCCESS, Json::Value::null);
 				return;
 			} else {

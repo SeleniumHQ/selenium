@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_FINDBYXPATHELEMENTFINDER_H_
 #define WEBDRIVER_IE_FINDBYXPATHELEMENTFINDER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 #include "jsxpath.h"
 
 namespace webdriver {
@@ -14,11 +14,11 @@ public:
 	virtual ~FindByXPathElementFinder(void) {
 	}
 
-	int FindByXPathElementFinder::FindElement(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
+	int FindByXPathElementFinder::FindElement(Session* session, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
 		int result = ENOSUCHELEMENT;
 
 		std::tr1::shared_ptr<BrowserWrapper> browser;
-		result = manager->GetCurrentBrowser(&browser);
+		result = session->GetCurrentBrowser(&browser);
 		if (result != SUCCESS) {
 			return result;
 		}
@@ -53,18 +53,18 @@ public:
 			if (!script_wrapper.ResultIsElement()) {
 				result = ENOSUCHELEMENT;
 			} else {
-				result = script_wrapper.ConvertResultToJsonValue(manager, found_element);
+				result = script_wrapper.ConvertResultToJsonValue(session, found_element);
 			}
 		}
 
 		return result;
 	}
 
-	int FindByXPathElementFinder::FindElements(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
+	int FindByXPathElementFinder::FindElements(Session* session, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
 		int result = ENOSUCHELEMENT;
 
 		std::tr1::shared_ptr<BrowserWrapper> browser;
-		result = manager->GetCurrentBrowser(&browser);
+		result = session->GetCurrentBrowser(&browser);
 		if (result != SUCCESS) {
 			return result;
 		}
@@ -114,7 +114,7 @@ public:
 					get_element_script_wrapper.AddArgument(i);
 					result = get_element_script_wrapper.Execute();
 					Json::Value json_element;
-					get_element_script_wrapper.ConvertResultToJsonValue(manager, &json_element);
+					get_element_script_wrapper.ConvertResultToJsonValue(session, &json_element);
 					found_elements->append(json_element);
 				}
 			}

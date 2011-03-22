@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_ADDCOOKIECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_ADDCOOKIECOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 #include <ctime>
 
 namespace webdriver {
@@ -15,7 +15,7 @@ public:
 	}
 
 protected:
-	void AddCookieCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void AddCookieCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::map<std::string, Json::Value>::const_iterator cookie_parameter_iterator = command_parameters.find("cookie");
 		if (cookie_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: cookie");
@@ -69,7 +69,7 @@ protected:
 		}
 
 		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-		manager->GetCurrentBrowser(&browser_wrapper);
+		session->GetCurrentBrowser(&browser_wrapper);
 
 		std::wstring cookie(CA2W(cookie_string.c_str(), CP_UTF8));
 		int status_code = browser_wrapper->AddCookie(cookie);

@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_ACCEPTALERTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_ACCEPTALERTCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,9 +14,9 @@ public:
 	}
 
 protected:
-	void AcceptAlertCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void AcceptAlertCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-		manager->GetCurrentBrowser(&browser_wrapper);
+		session->GetCurrentBrowser(&browser_wrapper);
 		// This sleep is required to give IE time to draw the dialog.
 		::Sleep(100);
 		HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
@@ -62,7 +62,7 @@ protected:
 
 private:
 	static BOOL CALLBACK AcceptAlertCommandHandler::FindOKButton(HWND hwnd, LPARAM arg) {
-		HWND *dialog_handle = (HWND*)arg;
+		HWND* dialog_handle = (HWND*)arg;
 		int control_id = ::GetDlgCtrlID(hwnd);
 		if (control_id == IDOK) {
 			*dialog_handle = hwnd;
@@ -72,7 +72,7 @@ private:
 	}
 
 	static BOOL CALLBACK AcceptAlertCommandHandler::FindCancelButton(HWND hwnd, LPARAM arg) {
-		HWND *dialog_handle = (HWND*)arg;
+		HWND* dialog_handle = (HWND*)arg;
 		int control_id = ::GetDlgCtrlID(hwnd);
 		if (control_id == IDCANCEL) {
 			*dialog_handle = hwnd;

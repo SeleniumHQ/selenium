@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_QUITCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_QUITCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,14 +14,14 @@ public:
 	}
 
 protected:
-	void QuitCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void QuitCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::vector<std::wstring> managed_browser_handles;
-		manager->GetManagedBrowserHandles(&managed_browser_handles);
+		session->GetManagedBrowserHandles(&managed_browser_handles);
 
 		std::vector<std::wstring>::iterator end = managed_browser_handles.end();
 		for (std::vector<std::wstring>::iterator it = managed_browser_handles.begin(); it != end; ++it) {
 			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-			int status_code = manager->GetManagedBrowser(*it, &browser_wrapper);
+			int status_code = session->GetManagedBrowser(*it, &browser_wrapper);
 			if (status_code == SUCCESS && !browser_wrapper->is_closing()) {
 				HRESULT hr = browser_wrapper->browser()->Quit();
 				if (FAILED(hr)) {

@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_GOTOURLCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GOTOURLCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,14 +14,14 @@ public:
 	}
 
 protected:
-	void GoToUrlCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void GoToUrlCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::map<std::string, Json::Value>::const_iterator url_parameter_iterator = command_parameters.find("url");
 		if (url_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: url");
 			return;
 		} else {
 			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;

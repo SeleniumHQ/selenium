@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>
 #include "mongoose.h"
-#include "BrowserManager.h"
+#include "Session.h"
 
 #define SERVER_DEFAULT_PAGE "<html><head><title>WebDriver</title></head><body><p id='main'>This is the initial start page for the IE WebDriver.</p></body></html>"
 
@@ -27,7 +27,7 @@ private:
 	std::wstring CreateSession(void);
 	void ShutDownSession(const std::wstring& session_id);
 	std::wstring ReadRequestBody(struct mg_connection *conn, const struct mg_request_info *request_info);
-	std::wstring SendCommandToManager(const std::wstring& session_id, const std::wstring& serialized_command);
+	std::wstring SendCommandToSession(const std::wstring& session_id, const std::wstring& serialized_command);
 	int SendResponseToBrowser(struct mg_connection *conn, const struct mg_request_info *request_info, const std::wstring& serialized_response);
 	void PopulateCommandRepository(void);
 

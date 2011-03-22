@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "atoms.h"
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -11,9 +11,9 @@ ElementFinder::ElementFinder(std::wstring locator) {
 ElementFinder::~ElementFinder() {
 }
 
-int ElementFinder::FindElement(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
+int ElementFinder::FindElement(Session* session, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
 	std::tr1::shared_ptr<BrowserWrapper> browser;
-	int status_code = manager->GetCurrentBrowser(&browser);
+	int status_code = session->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		std::wstring criteria_object_script = L"(function() { return function(){ return  { " + this->locator_ + L" : \"" + criteria + L"\" }; };})();";
 		CComPtr<IHTMLDocument2> doc;
@@ -40,7 +40,7 @@ int ElementFinder::FindElement(BrowserManager *manager, std::tr1::shared_ptr<Ele
 
 			status_code = script_wrapper.Execute();
 			if (status_code == SUCCESS && script_wrapper.ResultIsElement()) {
-				script_wrapper.ConvertResultToJsonValue(manager, found_element);
+				script_wrapper.ConvertResultToJsonValue(session, found_element);
 			} else {
 				status_code = ENOSUCHELEMENT;
 			}
@@ -51,9 +51,9 @@ int ElementFinder::FindElement(BrowserManager *manager, std::tr1::shared_ptr<Ele
 	return status_code;
 }
 
-int ElementFinder::FindElements(BrowserManager *manager, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
+int ElementFinder::FindElements(Session* session, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
 	std::tr1::shared_ptr<BrowserWrapper> browser;
-	int status_code = manager->GetCurrentBrowser(&browser);
+	int status_code = session->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		std::wstring criteria_object_script = L"(function() { return function(){ return  { " + this->locator_ + L" : \"" + criteria + L"\" }; };})();";
 		CComPtr<IHTMLDocument2> doc;
@@ -81,7 +81,7 @@ int ElementFinder::FindElements(BrowserManager *manager, std::tr1::shared_ptr<El
 			status_code = script_wrapper.Execute();
 			if (status_code == SUCCESS) {
 				if (script_wrapper.ResultIsArray() || script_wrapper.ResultIsElementCollection()) {
-					script_wrapper.ConvertResultToJsonValue(manager, found_elements);
+					script_wrapper.ConvertResultToJsonValue(session, found_elements);
 				}
 			}
 		}

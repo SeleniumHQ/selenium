@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_GETELEMENTVALUEOFCSSPROPERTYCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETELEMENTVALUEOFCSSPROPERTYCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 #define BSTR_VALUE(method, css_name)     if (_wcsicmp(css_name, property_name) == 0) { CComBSTR bstr; method(&bstr); result_str = (BSTR)bstr; return result_str;}
 #define VARIANT_VALUE(method, css_name)  if (_wcsicmp(css_name, property_name) == 0) { CComVariant var; method(&var); result_str = this->MangleColour(property_name, browser_wrapper->ConvertVariantToWString(&var)); return result_str;}
@@ -35,7 +35,7 @@ public:
 	}
 
 protected:
-	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		std::map<std::string, std::string>::const_iterator property_name_parameter_iterator = locator_parameters.find("propertyName");
 		if (id_parameter_iterator == locator_parameters.end()) {
@@ -49,14 +49,14 @@ protected:
 			std::wstring name(CA2W(property_name_parameter_iterator->second.c_str(), CP_UTF8));
 
 			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
 
 			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
-			status_code = this->GetElement(manager, element_id, &element_wrapper);
+			status_code = this->GetElement(session, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				std::wstring value(this->GetPropertyValue(browser_wrapper, element_wrapper->element(), name.c_str()));
 

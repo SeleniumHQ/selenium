@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_SCREENSHOTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SCREENSHOTCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 #include "logging.h"
 #include <atlimage.h>
 #include <atlenc.h>
@@ -18,9 +18,9 @@ public:
 	}
 
 protected:
-	void ScreenshotCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void ScreenshotCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-		manager->GetCurrentBrowser(&browser_wrapper);
+		session->GetCurrentBrowser(&browser_wrapper);
 		
 		this->image_ = new CImage();
 		HRESULT hr = this->CaptureBrowser(browser_wrapper->browser());

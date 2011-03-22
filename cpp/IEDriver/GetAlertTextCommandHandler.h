@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_GETALERTTEXTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETALERTTEXTCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,9 +14,9 @@ public:
 	}
 
 protected:
-	void GetAlertTextCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void GetAlertTextCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-		manager->GetCurrentBrowser(&browser_wrapper);
+		session->GetCurrentBrowser(&browser_wrapper);
 		// This sleep is required to give IE time to draw the dialog.
 		::Sleep(100);
 		HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();

@@ -1,5 +1,5 @@
-#ifndef WEBDRIVER_IE_BROWSERMANAGER_H_
-#define WEBDRIVER_IE_BROWSERMANAGER_H_
+#ifndef WEBDRIVER_IE_SESSION_H_
+#define WEBDRIVER_IE_SESSION_H_
 
 #include "StdAfx.h"
 #include <Objbase.h>
@@ -32,11 +32,11 @@ namespace webdriver {
 // want to synchronize access to the command handler. For that we
 // use SendMessage() most of the time, and SendMessage() requires
 // a window handle.
-class BrowserManager : public CWindowImpl<BrowserManager> {
+class Session : public CWindowImpl<Session> {
 public:
 	DECLARE_WND_CLASS(L"WebDriverWndClass")
 
-	BEGIN_MSG_MAP(BrowserManager)
+	BEGIN_MSG_MAP(Session)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_CLOSE, OnClose)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
@@ -62,7 +62,7 @@ public:
 	LRESULT OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-	std::wstring manager_id(void) const { return this->manager_id_; }
+	std::wstring session_id(void) const { return this->session_id_; }
 
 	static unsigned int WINAPI ThreadProc(LPVOID lpParameter);
 	static unsigned int WINAPI WaitThreadProc(LPVOID lpParameter);
@@ -117,7 +117,7 @@ private:
 	int implicit_wait_timeout_;
 	int async_script_timeout_;
 
-	std::wstring manager_id_;
+	std::wstring session_id_;
 	int port_;
 
 	WebDriverCommand current_command_;
@@ -131,4 +131,4 @@ private:
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_BROWSERMANAGER_H_
+#endif // WEBDRIVER_IE_SESSION_H_

@@ -29,9 +29,9 @@ IEDriverServer::~IEDriverServer(void) {
 
 std::wstring IEDriverServer::CreateSession() {
 	unsigned int thread_id;
-	HWND manager_window_handle = NULL;
+	HWND session_window_handle = NULL;
 	HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, EVENT_NAME);
-	HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &BrowserManager::ThreadProc, (void *)&manager_window_handle, 0, &thread_id));
+	HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &Session::ThreadProc, (void *)&session_window_handle, 0, &thread_id));
 	if (event_handle != NULL) {
 		::WaitForSingleObject(event_handle, INFINITE);
 		::CloseHandle(event_handle);
@@ -41,14 +41,14 @@ std::wstring IEDriverServer::CreateSession() {
 		::CloseHandle(thread_handle);
 	}
 
-	::SendMessage(manager_window_handle, WD_INIT, (WPARAM)this->port_, NULL);
+	::SendMessage(session_window_handle, WD_INIT, (WPARAM)this->port_, NULL);
 
 	vector<TCHAR> window_text_buffer(37);
-	::GetWindowText(manager_window_handle, &window_text_buffer[0], 37);
-	std::wstring manager_id = &window_text_buffer[0];
+	::GetWindowText(session_window_handle, &window_text_buffer[0], 37);
+	std::wstring session_id = &window_text_buffer[0];
 
-	this->sessions_[manager_id] = manager_window_handle;
-	return manager_id;
+	this->sessions_[session_id] = session_window_handle;
+	return session_id;
 }
 
 void IEDriverServer::ShutDownSession(const std::wstring& session_id) {
@@ -131,7 +131,7 @@ int IEDriverServer::ProcessRequest(struct mg_connection *conn, const struct mg_r
 			std::wstring command_value = command_value_stream.str();
 
 			std::wstring serialized_command = L"{ \"command\" : " + command_value + L", \"locator\" : " + locator_parameters + L", \"parameters\" : " + request_body + L" }";
-			std::wstring serialized_response = this->SendCommandToManager(session_id, serialized_command);
+			std::wstring serialized_response = this->SendCommandToSession(session_id, serialized_command);
 			if (command == Quit) {
 				this->ShutDownSession(session_id);
 			}
@@ -143,7 +143,7 @@ int IEDriverServer::ProcessRequest(struct mg_connection *conn, const struct mg_r
 	return return_code;
 }
 
-std::wstring IEDriverServer::SendCommandToManager(const std::wstring& session_id, const std::wstring& serialized_command) {
+std::wstring IEDriverServer::SendCommandToSession(const std::wstring& session_id, const std::wstring& serialized_command) {
 	// Sending a command consists of four actions:
 	// 1. Setting the command to be executed
 	// 2. Executing the command
@@ -155,20 +155,20 @@ std::wstring IEDriverServer::SendCommandToManager(const std::wstring& session_id
 		return L"{ status : 404, sessionId : \"" + session_id + L"\", value : \"session " + session_id + L" does not exist\" }";
 	}
 
-	HWND manager_window_handle = it->second;
-	::SendMessage(manager_window_handle, WD_SET_COMMAND, NULL, (LPARAM)serialized_command.c_str());
-	::PostMessage(manager_window_handle, WD_EXEC_COMMAND, NULL, NULL);
+	HWND session_window_handle = it->second;
+	::SendMessage(session_window_handle, WD_SET_COMMAND, NULL, (LPARAM)serialized_command.c_str());
+	::PostMessage(session_window_handle, WD_EXEC_COMMAND, NULL, NULL);
 	
-	int response_length = (int)::SendMessage(manager_window_handle, WD_GET_RESPONSE_LENGTH, NULL, NULL);
+	int response_length = (int)::SendMessage(session_window_handle, WD_GET_RESPONSE_LENGTH, NULL, NULL);
 	while (response_length == 0) {
 		// Sleep a short time to prevent thread starvation on single-core machines.
 		::Sleep(10);
-		response_length = (int)::SendMessage(manager_window_handle, WD_GET_RESPONSE_LENGTH, NULL, NULL);
+		response_length = (int)::SendMessage(session_window_handle, WD_GET_RESPONSE_LENGTH, NULL, NULL);
 	}
 
 	// Must add one to the length to handle the terminating character.
 	std::vector<TCHAR> response_buffer(response_length + 1);
-	::SendMessage(manager_window_handle, WD_GET_RESPONSE, NULL, (LPARAM)&response_buffer[0]);
+	::SendMessage(session_window_handle, WD_GET_RESPONSE, NULL, (LPARAM)&response_buffer[0]);
 	std::wstring serialized_response(&response_buffer[0]);
 	response_buffer.clear();
 	return serialized_response;

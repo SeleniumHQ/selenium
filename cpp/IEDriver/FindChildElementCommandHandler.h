@@ -2,7 +2,7 @@
 #define WEBDRIVER_IE_FINDCHILDELEMENTCOMMANDHANDLER_H_
 
 #include <ctime>
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -15,7 +15,7 @@ public:
 	}
 
 protected:
-	void FindChildElementCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void FindChildElementCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		std::map<std::string, Json::Value>::const_iterator using_parameter_iterator = command_parameters.find("using");
 		std::map<std::string, Json::Value>::const_iterator value_parameter_iterator = command_parameters.find("value");
@@ -33,7 +33,7 @@ protected:
 			std::wstring value = CA2W(value_parameter_iterator->second.asString().c_str(), CP_UTF8);
 
 			std::tr1::shared_ptr<ElementFinder> finder;
-			int status_code = manager->GetElementFinder(mechanism, &finder);
+			int status_code = session->GetElementFinder(mechanism, &finder);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unknown finder mechanism: " + using_parameter_iterator->second.asString());
 				return;
@@ -42,19 +42,19 @@ protected:
 			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
 
 			std::tr1::shared_ptr<ElementWrapper> parent_element_wrapper;
-			status_code = this->GetElement(manager, element_id, &parent_element_wrapper);
+			status_code = this->GetElement(session, element_id, &parent_element_wrapper);
 
 			if (status_code == SUCCESS) {
 				Json::Value found_element;
 
-				int timeout(manager->implicit_wait_timeout());
+				int timeout(session->implicit_wait_timeout());
 				clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
 				if (timeout > 0 && timeout < 1000) {
 					end += 1 * CLOCKS_PER_SEC;
 				}
 
 				do {
-					status_code = finder->FindElement(manager, parent_element_wrapper, value, &found_element);
+					status_code = finder->FindElement(session, parent_element_wrapper, value, &found_element);
 					if (status_code == SUCCESS) {
 						break;
 					}

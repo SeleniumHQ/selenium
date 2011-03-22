@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_REFRESHCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_REFRESHCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,9 +14,9 @@ public:
 	}
 
 protected:
-	void RefreshCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void RefreshCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-		int status_code = manager->GetCurrentBrowser(&browser_wrapper);
+		int status_code = session->GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;

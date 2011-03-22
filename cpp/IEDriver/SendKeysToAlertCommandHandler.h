@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_SENDKEYSTOALERTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SENDKEYSTOALERTCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -16,7 +16,7 @@ public:
 	{
 	}
 protected:
-	void SendKeysToAlertCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void SendKeysToAlertCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::map<std::string, Json::Value>::const_iterator text_parameter_iterator = command_parameters.find("text");
 		if (text_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: text");
@@ -24,7 +24,7 @@ protected:
 		}
 
 		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-		manager->GetCurrentBrowser(&browser_wrapper);
+		session->GetCurrentBrowser(&browser_wrapper);
 		// This sleep is required to give IE time to draw the dialog.
 		::Sleep(100);
 		HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();

@@ -12,12 +12,12 @@ namespace webdriver {
 // circular include files.
 class BrowserWrapper;
 class ElementWrapper;
-class BrowserManager;
+class Session;
 
 class ScriptWrapper
 {
 public:
-	ScriptWrapper(IHTMLDocument2 *document, std::wstring script, unsigned long argument_count);
+	ScriptWrapper(IHTMLDocument2* document, std::wstring script, unsigned long argument_count);
 	~ScriptWrapper(void);
 
 	std::wstring script() { return this->script_; }
@@ -31,7 +31,7 @@ public:
 	void AddArgument(const double argument);
 	void AddArgument(const bool argument);
 	void AddArgument(std::tr1::shared_ptr<ElementWrapper> argument);
-	void AddArgument(IHTMLElement *argument);
+	void AddArgument(IHTMLElement* argument);
 	void AddArgument(VARIANT argument);
 
 	bool ResultIsEmpty(void);
@@ -46,13 +46,13 @@ public:
 	bool ResultIsIDispatch(void);
 
 	int Execute(void);
-	int ConvertResultToJsonValue(BrowserManager *manager, Json::Value *value);
+	int ConvertResultToJsonValue(Session* session, Json::Value* value);
 
 private:
-	int GetArrayLength(long *length);
-	int GetArrayItem(BrowserManager *manager, long index, Json::Value *item);
-	int GetPropertyNameList(std::wstring *property_names);
-	int GetPropertyValue(BrowserManager *manager, const std::wstring& property_name, Json::Value *property_value);
+	int GetArrayLength(long* length);
+	int GetArrayItem(Session* session, long index, Json::Value* item);
+	int GetPropertyNameList(std::wstring* property_names);
+	int GetPropertyValue(Session* session, const std::wstring& property_name, Json::Value* property_value);
 	std::wstring GetResultObjectTypeName(void);
 	bool CreateAnonymousFunction(VARIANT* result);
 
@@ -60,7 +60,7 @@ private:
 	unsigned long argument_count_;
 	std::wstring script_;
 	long current_arg_index_;
-	SAFEARRAY *argument_array_;
+	SAFEARRAY* argument_array_;
 	VARIANT result_;
 };
 

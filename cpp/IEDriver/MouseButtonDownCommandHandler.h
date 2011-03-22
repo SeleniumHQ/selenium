@@ -2,7 +2,7 @@
 #define WEBDRIVER_IE_MOUSEBUTTONDOWNCOMMANDHANDLER_H_
 
 #include "interactions.h"
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -15,15 +15,15 @@ public:
 	}
 
 protected:
-	void MouseButtonDownCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void MouseButtonDownCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-		int status_code = manager->GetCurrentBrowser(&browser_wrapper);
+		int status_code = session->GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get current browser");
 		}
 
 		HWND browser_window_handle = browser_wrapper->GetWindowHandle();
-		mouseDownAt(browser_window_handle, manager->last_known_mouse_x(), manager->last_known_mouse_y(), MOUSEBUTTON_LEFT);
+		mouseDownAt(browser_window_handle, session->last_known_mouse_x(), session->last_known_mouse_y(), MOUSEBUTTON_LEFT);
 		response->SetResponse(SUCCESS, Json::Value::null);
 	}
 };

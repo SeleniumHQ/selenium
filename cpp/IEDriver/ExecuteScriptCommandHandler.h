@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_EXECUTESCRIPTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_EXECUTESCRIPTCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	virtual void ExecuteScriptCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	virtual void ExecuteScriptCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::map<std::string, Json::Value>::const_iterator script_parameter_iterator = command_parameters.find("script");
 		std::map<std::string, Json::Value>::const_iterator args_parameter_iterator = command_parameters.find("args");
 		if (script_parameter_iterator == command_parameters.end()) {
@@ -30,7 +30,7 @@ protected:
 			Json::Value json_args(args_parameter_iterator->second);
 
 			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-			int status_code = manager->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
@@ -39,7 +39,7 @@ protected:
 			CComPtr<IHTMLDocument2> doc;
 			browser_wrapper->GetDocument(&doc);
 			ScriptWrapper script_wrapper(doc, script, json_args.size());
-			status_code = this->PopulateArgumentArray(manager, script_wrapper, json_args);
+			status_code = this->PopulateArgumentArray(session, script_wrapper, json_args);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Error setting arguments for script");
 				return;
@@ -52,18 +52,18 @@ protected:
 				return;
 			} else {
 				Json::Value script_result;
-				script_wrapper.ConvertResultToJsonValue(manager, &script_result);
+				script_wrapper.ConvertResultToJsonValue(session, &script_result);
 				response->SetResponse(SUCCESS, script_result);
 				return;
 			}
 		}
 	}
 
-	int ExecuteScriptCommandHandler::PopulateArgumentArray(BrowserManager *manager, ScriptWrapper& script_wrapper, Json::Value json_args) {
+	int ExecuteScriptCommandHandler::PopulateArgumentArray(Session* session, ScriptWrapper& script_wrapper, Json::Value json_args) {
 		int status_code = SUCCESS;
 		for (UINT arg_index = 0; arg_index < json_args.size(); ++arg_index) {
 			Json::Value arg = json_args[arg_index];
-			status_code = this->AddArgument(manager, script_wrapper, arg);
+			status_code = this->AddArgument(session, script_wrapper, arg);
 			if (status_code != SUCCESS) {
 				break;
 			}
@@ -72,7 +72,7 @@ protected:
 		return status_code;
 	}
 
-	int ExecuteScriptCommandHandler::AddArgument(BrowserManager *manager, ScriptWrapper& script_wrapper, Json::Value arg) {
+	int ExecuteScriptCommandHandler::AddArgument(Session* session, ScriptWrapper& script_wrapper, Json::Value arg) {
 		int status_code = SUCCESS;
 		if (arg.isString()) {
 			std::wstring value(CA2W(arg.asString().c_str(), CP_UTF8));
@@ -87,25 +87,25 @@ protected:
 			bool bool_arg(arg.asBool());
 			script_wrapper.AddArgument(bool_arg);
 		} else if (arg.isArray()) {
-			this->WalkArray(manager, script_wrapper, arg);
+			this->WalkArray(session, script_wrapper, arg);
 		} else if (arg.isObject()) {
 			if (arg.isMember("ELEMENT")) {
 				std::wstring element_id(CA2W(arg["ELEMENT"].asString().c_str(), CP_UTF8));
 
 				std::tr1::shared_ptr<ElementWrapper> element_wrapper;
-				status_code = this->GetElement(manager, element_id, &element_wrapper);
+				status_code = this->GetElement(session, element_id, &element_wrapper);
 				if (status_code == SUCCESS) {
 					script_wrapper.AddArgument(element_wrapper);
 				}
 			} else {
-				this->WalkObject(manager, script_wrapper, arg);
+				this->WalkObject(session, script_wrapper, arg);
 			}
 		}
 
 		return status_code;
 	}
 
-	int ExecuteScriptCommandHandler::WalkArray(BrowserManager *manager, ScriptWrapper& script_wrapper, Json::Value array_value) {
+	int ExecuteScriptCommandHandler::WalkArray(Session* session, ScriptWrapper& script_wrapper, Json::Value array_value) {
 		int status_code = SUCCESS;
 		Json::UInt array_size = array_value.size();
 		std::wstring array_script = L"(function(){ return function() { return [";
@@ -121,13 +121,13 @@ protected:
 		array_script += L"];}})();";
 
 		std::tr1::shared_ptr<BrowserWrapper> browser;
-		manager->GetCurrentBrowser(&browser);
+		session->GetCurrentBrowser(&browser);
 
 		CComPtr<IHTMLDocument2> doc;
 		browser->GetDocument(&doc);
 		ScriptWrapper array_script_wrapper(doc, array_script, array_size);
 		for (Json::UInt index = 0; index < array_size; ++index) {
-			status_code = this->AddArgument(manager, array_script_wrapper, array_value[index]);
+			status_code = this->AddArgument(session, array_script_wrapper, array_value[index]);
 			if (status_code != SUCCESS) {
 				break;
 			}
@@ -144,7 +144,7 @@ protected:
 		return status_code;
 	}
 
-	int ExecuteScriptCommandHandler::WalkObject(BrowserManager *manager, ScriptWrapper& script_wrapper, Json::Value object_value) {
+	int ExecuteScriptCommandHandler::WalkObject(Session* session, ScriptWrapper& script_wrapper, Json::Value object_value) {
 		int status_code = SUCCESS;
 		Json::Value::iterator it(object_value.begin());
 		int counter(0);
@@ -163,13 +163,13 @@ protected:
 		object_script += L"};}})();";
 
 		std::tr1::shared_ptr<BrowserWrapper> browser;
-		manager->GetCurrentBrowser(&browser);
+		session->GetCurrentBrowser(&browser);
 
 		CComPtr<IHTMLDocument2> doc;
 		browser->GetDocument(&doc);
 		ScriptWrapper object_script_wrapper(doc, object_script, counter);
 		for (it = object_value.begin(); it != object_value.end(); ++it) {
-			status_code = this->AddArgument(manager, object_script_wrapper, object_value[it.memberName()]);
+			status_code = this->AddArgument(session, object_script_wrapper, object_value[it.memberName()]);
 			if (status_code != SUCCESS) {
 				break;
 			}

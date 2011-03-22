@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_GETSPEEDCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETSPEEDCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,8 +14,8 @@ public:
 	}
 
 protected:
-	void GetSpeedCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		int speed = manager->speed();
+	void GetSpeedCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+		int speed = session->speed();
 		switch (speed) {
 		  case 1000:
 			response->SetResponse(SUCCESS, "SLOW");

@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "BrowserManager.h"
+#include "Session.h"
 #include "AddCookieCommandHandler.h"
 #include "ClickElementCommandHandler.h"
 #include "ClearElementCommandHandler.h"
@@ -68,7 +68,7 @@
 
 namespace webdriver {
 
-LRESULT BrowserManager::OnInit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+LRESULT Session::OnInit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	// If we wanted to be a little more clever, we could create a struct 
 	// containing the HWND and the port number and pass them into the
 	// ThreadProc via lpParameter and avoid this message handler altogether.
@@ -76,7 +76,7 @@ LRESULT BrowserManager::OnInit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 	return 0;
 }
 
-LRESULT BrowserManager::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+LRESULT Session::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	// NOTE: COM should be initialized on this thread, so we
 	// could use CoCreateGuid() and StringFromGUID2() instead.
 	UUID guid;
@@ -87,10 +87,10 @@ LRESULT BrowserManager::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	// RPC_WSTR is currently typedef'd in RpcDce.h (pulled in by rpc.h)
 	// as unsigned short*. It needs to be typedef'd as wchar_t* 
 	wchar_t* cast_guid_string = reinterpret_cast<wchar_t*>(guid_string);
-	this->manager_id_ = cast_guid_string;
+	this->session_id_ = cast_guid_string;
 
 	::RpcStringFree(&guid_string);
-	this->SetWindowText(this->manager_id_.c_str());
+	this->SetWindowText(this->session_id_.c_str());
 
 	this->PopulateCommandHandlerRepository();
 	this->PopulateElementFinderRepository();
@@ -103,17 +103,17 @@ LRESULT BrowserManager::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	return 0;
 }
 
-LRESULT BrowserManager::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+LRESULT Session::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	this->DestroyWindow();
 	return 0;
 }
 
-LRESULT BrowserManager::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+LRESULT Session::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	::PostQuitMessage(0);
 	return 0;
 }
 
-LRESULT BrowserManager::OnSetCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+LRESULT Session::OnSetCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	LPCTSTR raw_command = (LPCTSTR)lParam;
 	std::wstring json_command(raw_command);
 
@@ -123,12 +123,12 @@ LRESULT BrowserManager::OnSetCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	return 0;
 }
 
-LRESULT BrowserManager::OnExecCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+LRESULT Session::OnExecCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	this->DispatchCommand();
 	return 0;
 }
 
-LRESULT BrowserManager::OnGetResponseLength(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+LRESULT Session::OnGetResponseLength(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	size_t response_length = 0;
 	if (!this->is_waiting_) {
 		response_length = this->serialized_response_.size();
@@ -136,7 +136,7 @@ LRESULT BrowserManager::OnGetResponseLength(UINT uMsg, WPARAM wParam, LPARAM lPa
 	return response_length;
 }
 
-LRESULT BrowserManager::OnGetResponse(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+LRESULT Session::OnGetResponse(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	LPWSTR str = (LPWSTR)lParam;
 	wcscpy_s(str, this->serialized_response_.size() + 1, this->serialized_response_.c_str());
 
@@ -145,7 +145,7 @@ LRESULT BrowserManager::OnGetResponse(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 	return 0;
 }
 
-LRESULT BrowserManager::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+LRESULT Session::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	std::tr1::shared_ptr<BrowserWrapper> browser;
 	int status_code = this->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS && !browser->is_closing()) {
@@ -157,7 +157,7 @@ LRESULT BrowserManager::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 			// unable to process the COM events in the browser if we put this thread
 			// to sleep.
 			unsigned int thread_id;
-			HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &BrowserManager::WaitThreadProc, (void *)this->m_hWnd, 0, &thread_id));
+			HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &Session::WaitThreadProc, (void *)this->m_hWnd, 0, &thread_id));
 			if (thread_handle != NULL) {
 				::CloseHandle(thread_handle);
 			}
@@ -168,7 +168,7 @@ LRESULT BrowserManager::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 	return 0;
 }
 
-LRESULT BrowserManager::OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+LRESULT Session::OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	IWebBrowser2* browser = this->factory_.CreateBrowser();
 	std::tr1::shared_ptr<BrowserWrapper> new_window_wrapper(new BrowserWrapper(browser, NULL, this->m_hWnd));
 	this->AddManagedBrowser(new_window_wrapper);
@@ -177,7 +177,7 @@ LRESULT BrowserManager::OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lPar
 	return 0;
 }
 
-LRESULT BrowserManager::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+LRESULT Session::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	LPCTSTR str = (LPCTSTR)lParam;
 	std::wstring browser_id(str);
 	delete[] str;
@@ -191,7 +191,7 @@ LRESULT BrowserManager::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 	return 0;
 }
 
-unsigned int WINAPI BrowserManager::WaitThreadProc(LPVOID lpParameter) {
+unsigned int WINAPI Session::WaitThreadProc(LPVOID lpParameter) {
 	HWND window_handle = (HWND)lpParameter;
 	::Sleep(WAIT_TIME_IN_MILLISECONDS);
 	::PostMessage(window_handle, WD_WAIT, NULL, NULL);
@@ -199,7 +199,7 @@ unsigned int WINAPI BrowserManager::WaitThreadProc(LPVOID lpParameter) {
 }
 
 
-unsigned int WINAPI BrowserManager::ThreadProc(LPVOID lpParameter) {
+unsigned int WINAPI Session::ThreadProc(LPVOID lpParameter) {
 	// Optional TODO: Create a struct to pass in via lpParameter
 	// instead of just a pointer to an HWND. That way, we could
 	// pass the mongoose server port via a single call, rather than
@@ -207,15 +207,15 @@ unsigned int WINAPI BrowserManager::ThreadProc(LPVOID lpParameter) {
 	HWND *window_handle = (HWND *)lpParameter;
 	DWORD error = 0;
 	HRESULT hr = ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-	BrowserManager manager;
-	HWND manager_handle = manager.Create(HWND_MESSAGE, CWindow::rcDefault);
-	if (manager_handle == NULL) {
+	Session new_session;
+	HWND session_window_handle = new_session.Create(HWND_MESSAGE, CWindow::rcDefault);
+	if (session_window_handle == NULL) {
 		error = ::GetLastError();
 	}
 
 	// Return the HWND back through lpParameter, and signal that the
 	// window is ready for messages.
-	*window_handle = manager_handle;
+	*window_handle = session_window_handle;
 	HANDLE event_handle = ::OpenEvent(EVENT_ALL_ACCESS, FALSE, EVENT_NAME);
 	if (event_handle != NULL) {
 		::SetEvent(event_handle);
@@ -233,8 +233,8 @@ unsigned int WINAPI BrowserManager::ThreadProc(LPVOID lpParameter) {
 	return 0;
 }
 
-void BrowserManager::DispatchCommand() {
-	std::string session_id = CW2A(this->manager_id_.c_str(), CP_UTF8);
+void Session::DispatchCommand() {
+	std::string session_id = CW2A(this->session_id_.c_str(), CP_UTF8);
 	WebDriverResponse response(session_id);
 	std::map<int, std::tr1::shared_ptr<WebDriverCommandHandler>>::const_iterator found_iterator = this->command_handlers_.find(this->current_command_.command_value());
 
@@ -257,11 +257,11 @@ void BrowserManager::DispatchCommand() {
 	this->serialized_response_ = response.Serialize();
 }
 
-int BrowserManager::GetCurrentBrowser(std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper) {
+int Session::GetCurrentBrowser(std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper) {
 	return this->GetManagedBrowser(this->current_browser_id_, browser_wrapper);
 }
 
-int BrowserManager::GetManagedBrowser(const std::wstring& browser_id, std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper) {
+int Session::GetManagedBrowser(const std::wstring& browser_id, std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper) {
 	if (browser_id == L"") {
 		return ENOSUCHDRIVER;
 	}
@@ -275,7 +275,7 @@ int BrowserManager::GetManagedBrowser(const std::wstring& browser_id, std::tr1::
 	return SUCCESS;
 }
 
-void BrowserManager::GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles) {
+void Session::GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles) {
 	// TODO: Enumerate windows looking for browser windows
 	// created by showModalDialog().
 	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<BrowserWrapper>>::const_iterator it = this->managed_browsers_.begin();
@@ -284,14 +284,14 @@ void BrowserManager::GetManagedBrowserHandles(std::vector<std::wstring> *managed
 	}
 }
 
-void BrowserManager::AddManagedBrowser(std::tr1::shared_ptr<BrowserWrapper> browser_wrapper) {
+void Session::AddManagedBrowser(std::tr1::shared_ptr<BrowserWrapper> browser_wrapper) {
 	this->managed_browsers_[browser_wrapper->browser_id()] = browser_wrapper;
 	if (this->current_browser_id_ == L"") {
 		this->current_browser_id_ = browser_wrapper->browser_id();
 	}
 }
 
-void BrowserManager::CreateNewBrowser(void) {
+void Session::CreateNewBrowser(void) {
 	DWORD dwProcId = this->factory_.LaunchBrowserProcess(this->port_);
 	ProcessWindowInfo process_window_info;
 	process_window_info.dwProcessId = dwProcId;
@@ -302,7 +302,7 @@ void BrowserManager::CreateNewBrowser(void) {
 	this->AddManagedBrowser(wrapper);
 }
 
-int BrowserManager::GetManagedElement(const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
+int Session::GetManagedElement(const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
 	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>>::const_iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator == this->managed_elements_.end()) {
 		return ENOSUCHELEMENT;
@@ -312,7 +312,7 @@ int BrowserManager::GetManagedElement(const std::wstring& element_id, std::tr1::
 	return SUCCESS;
 }
 
-void BrowserManager::AddManagedElement(IHTMLElement *element, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
+void Session::AddManagedElement(IHTMLElement *element, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
 	// TODO: This method needs much work. If we are already managing a
 	// given element, we don't want to assign it a new ID, but to find
 	// out if we're managing it already, we need to compare to all of 
@@ -339,7 +339,7 @@ void BrowserManager::AddManagedElement(IHTMLElement *element, std::tr1::shared_p
 	}
 }
 
-void BrowserManager::RemoveManagedElement(const std::wstring& element_id) {
+void Session::RemoveManagedElement(const std::wstring& element_id) {
 	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>>::iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator != this->managed_elements_.end()) {
 		std::tr1::shared_ptr<ElementWrapper> element_wrapper = found_iterator->second;
@@ -347,7 +347,7 @@ void BrowserManager::RemoveManagedElement(const std::wstring& element_id) {
 	}
 }
 
-void BrowserManager::ListManagedElements() {
+void Session::ListManagedElements() {
 	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>>::iterator it = this->managed_elements_.begin();
 	for (; it != this->managed_elements_.end(); ++it) {
 		std::string id(CW2A(it->first.c_str(), CP_UTF8));
@@ -355,7 +355,7 @@ void BrowserManager::ListManagedElements() {
 	}
 }
 
-int BrowserManager::GetElementFinder(const std::wstring& mechanism, std::tr1::shared_ptr<ElementFinder>* finder) {
+int Session::GetElementFinder(const std::wstring& mechanism, std::tr1::shared_ptr<ElementFinder>* finder) {
 	std::map<std::wstring, std::tr1::shared_ptr<ElementFinder>>::const_iterator found_iterator = this->element_finders_.find(mechanism);
 	if (found_iterator == this->element_finders_.end()) {
 		return EUNHANDLEDERROR;
@@ -365,7 +365,7 @@ int BrowserManager::GetElementFinder(const std::wstring& mechanism, std::tr1::sh
 	return SUCCESS;
 }
 
-void BrowserManager::PopulateElementFinderRepository(void) {
+void Session::PopulateElementFinderRepository(void) {
 	// TODO (JimEvans): This is left over from a previous method of finding
 	// elements. This needs to be completely refactored.
 	this->element_finders_[L"id"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"id"));
@@ -378,7 +378,7 @@ void BrowserManager::PopulateElementFinderRepository(void) {
 	this->element_finders_[L"css selector"] = std::tr1::shared_ptr<ElementFinder>(new FindByCssSelectorElementFinder(L"css"));
 }
 
-void BrowserManager::PopulateCommandHandlerRepository() {
+void Session::PopulateCommandHandlerRepository() {
 	this->command_handlers_[NoCommand] = std::tr1::shared_ptr<WebDriverCommandHandler>(new WebDriverCommandHandler);
 	this->command_handlers_[GetCurrentWindowHandle] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetCurrentWindowHandleCommandHandler);
 	this->command_handlers_[GetWindowHandles] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetAllWindowHandlesCommandHandler);

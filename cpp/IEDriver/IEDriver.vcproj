@@ -359,10 +359,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BrowserManager.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\BrowserWrapper.cpp"
 				>
 			</File>
@@ -380,6 +376,10 @@
 			</File>
 			<File
 				RelativePath=".\ScriptWrapper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Session.cpp"
 				>
 			</File>
 			<File
@@ -454,10 +454,6 @@
 			</File>
 			<File
 				RelativePath=".\BrowserFactory.h"
-				>
-			</File>
-			<File
-				RelativePath=".\BrowserManager.h"
 				>
 			</File>
 			<File
@@ -708,7 +704,11 @@
 				RelativePath=".\SendModifierKeyCommandHandler.h"
 				>
 			</File>
-			<File
+      <File
+				RelativePath=".\Session.h"
+				>
+      </File>
+      <File
 				RelativePath=".\SetAsyncScriptTimeoutCommandHandler.h"
 				>
 			</File>

@@ -13,18 +13,18 @@ namespace webdriver {
 
 // Forward declaration of classes to avoid
 // circular include files.
-class BrowserManager;
+class Session;
 class ElementWrapper;
 
 class WebDriverCommandHandler {
 public:
 	WebDriverCommandHandler(void);
 	virtual ~WebDriverCommandHandler(void);
-	void Execute(BrowserManager* manager, const WebDriverCommand& command, WebDriverResponse* response);
+	void Execute(Session* session, const WebDriverCommand& command, WebDriverResponse* response);
 
 protected:
-	virtual void ExecuteInternal(BrowserManager* manager, const std::map<std::string, std::string>& locatorParameters, const std::map<std::string, Json::Value>& commandParameters, WebDriverResponse* response);
-	int GetElement(BrowserManager* manager, const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper);
+	virtual void ExecuteInternal(Session* session, const std::map<std::string, std::string>& locatorParameters, const std::map<std::string, Json::Value>& commandParameters, WebDriverResponse* response);
+	int GetElement(Session* session, const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper);
 };
 
 } // namespace webdriver

@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_GETALLWINDOWHANDLESCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETALLWINDOWHANDLESCOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,10 +14,10 @@ public:
 	}
 
 protected:
-	void GetAllWindowHandlesCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void GetAllWindowHandlesCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		Json::Value handles(Json::arrayValue);
 		std::vector<std::wstring> handle_list;
-		manager->GetManagedBrowserHandles(&handle_list);
+		session->GetManagedBrowserHandles(&handle_list);
 		for (unsigned int i = 0; i < handle_list.size(); ++i) {
 			std::string handle(CW2A(handle_list[i].c_str(), CP_UTF8));
 			handles.append(handle);

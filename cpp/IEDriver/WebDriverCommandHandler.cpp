@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "WebDriverCommandHandler.h"
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -10,17 +10,17 @@ WebDriverCommandHandler::WebDriverCommandHandler() {
 WebDriverCommandHandler::~WebDriverCommandHandler() {
 }
 
-void WebDriverCommandHandler::Execute(BrowserManager* manager, const WebDriverCommand& command, WebDriverResponse* response) {
-	this->ExecuteInternal(manager, command.locator_parameters(), command.command_parameters(), response);
+void WebDriverCommandHandler::Execute(Session* session, const WebDriverCommand& command, WebDriverResponse* response) {
+	this->ExecuteInternal(session, command.locator_parameters(), command.command_parameters(), response);
 }
 
-void WebDriverCommandHandler::ExecuteInternal(BrowserManager* manager, const std::map<std::string,std::string>& locatorParameters, const std::map<std::string, Json::Value>& commandParameters, WebDriverResponse* response) {
+void WebDriverCommandHandler::ExecuteInternal(Session* session, const std::map<std::string,std::string>& locatorParameters, const std::map<std::string, Json::Value>& commandParameters, WebDriverResponse* response) {
 }
 
-int WebDriverCommandHandler::GetElement(BrowserManager* manager, const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
+int WebDriverCommandHandler::GetElement(Session* session, const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
 	int status_code = EOBSOLETEELEMENT;
 	std::tr1::shared_ptr<ElementWrapper> candidate_wrapper;
-	int result = manager->GetManagedElement(element_id, &candidate_wrapper);
+	int result = session->GetManagedElement(element_id, &candidate_wrapper);
 	if (result != SUCCESS) {
 		status_code = 404;
 	} else {
@@ -50,7 +50,7 @@ int WebDriverCommandHandler::GetElement(BrowserManager* manager, const std::wstr
 		}
 
 		if (status_code != SUCCESS) {
-			manager->RemoveManagedElement(element_id);
+			session->RemoveManagedElement(element_id);
 		}
 	}
 

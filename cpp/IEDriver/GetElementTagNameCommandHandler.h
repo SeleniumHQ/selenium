@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_GETELEMENTTAGNAMECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETELEMENTTAGNAMECOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void GetElementTagNameCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void GetElementTagNameCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
@@ -22,7 +22,7 @@ protected:
 		} else {
 			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
 			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
-			int status_code = this->GetElement(manager, element_id, &element_wrapper);
+			int status_code = this->GetElement(session, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				CComBSTR temp;
 				element_wrapper->element()->get_tagName(&temp);

@@ -1,7 +1,7 @@
 #ifndef WEBDRIVER_IE_SWITCHTOFRAMECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SWITCHTOFRAMECOMMANDHANDLER_H_
 
-#include "BrowserManager.h"
+#include "Session.h"
 
 namespace webdriver {
 
@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void SwitchToFrameCommandHandler::ExecuteInternal(BrowserManager *manager, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void SwitchToFrameCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
 		Json::Value frame_id = Json::Value::null;
 		std::map<std::string, Json::Value>::const_iterator it = command_parameters.find("id");
 		// TODO: When issue 1133 is fixed, the else block in the following code
@@ -26,7 +26,7 @@ protected:
 		//	return;
 		}
 		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
-		int status_code = manager->GetCurrentBrowser(&browser_wrapper);
+		int status_code = session->GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
@@ -42,7 +42,7 @@ protected:
 				std::wstring frame_element_id(CA2W(element_id.asString().c_str(), CP_UTF8));
 
 				std::tr1::shared_ptr<ElementWrapper> frame_element_wrapper;
-				status_code = this->GetElement(manager, frame_element_id, &frame_element_wrapper);
+				status_code = this->GetElement(session, frame_element_id, &frame_element_wrapper);
 				if (status_code == SUCCESS) {
 					status_code = browser_wrapper->SetFocusedFrameByElement(frame_element_wrapper->element());
 				}

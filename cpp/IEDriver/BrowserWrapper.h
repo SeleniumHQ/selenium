@@ -24,7 +24,7 @@ namespace webdriver {
 
 class BrowserWrapper : public IDispEventSimpleImpl<1, BrowserWrapper, &DIID_DWebBrowserEvents2> {
 public:
-	BrowserWrapper(IWebBrowser2* browser, HWND hwnd, HWND browser_manager_handle);
+	BrowserWrapper(IWebBrowser2* browser, HWND hwnd, HWND session_handle);
 	virtual ~BrowserWrapper(void);
 
 	static inline _ATL_FUNC_INFO* BeforeNavigate2Info() {
@@ -56,14 +56,14 @@ public:
 		SINK_ENTRY_INFO(1, DIID_DWebBrowserEvents2, DISPID_NEWWINDOW3, NewWindow3, NewWindow3Info())
 	END_SINK_MAP()
 
-	STDMETHOD_(void, BeforeNavigate2)(IDispatch * pObject, VARIANT * pvarUrl, VARIANT * pvarFlags,
-		VARIANT * pvarTargetFrame, VARIANT * pvarData, VARIANT * pvarHeaders, VARIANT_BOOL * pbCancel);
-	STDMETHOD_(void, DocumentComplete)(IDispatch *pDisp,VARIANT *URL);
+	STDMETHOD_(void, BeforeNavigate2)(IDispatch* pObject, VARIANT* pvarUrl, VARIANT* pvarFlags,
+		VARIANT* pvarTargetFrame, VARIANT* pvarData, VARIANT* pvarHeaders, VARIANT_BOOL* pbCancel);
+	STDMETHOD_(void, DocumentComplete)(IDispatch* pDisp, VARIANT* URL);
 	STDMETHOD_(void, OnQuit)();
-	STDMETHOD_(void, NewWindow3)(IDispatch **ppDisp, VARIANT_BOOL * pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl);
+	STDMETHOD_(void, NewWindow3)(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl);
 
 	bool Wait(void);
-	void GetDocument(IHTMLDocument2 **doc);
+	void GetDocument(IHTMLDocument2** doc);
 	HWND GetWindowHandle(void);
 	std::wstring GetTitle(void);
 	std::wstring GetCookies(void);
@@ -71,13 +71,13 @@ public:
 	int DeleteCookie(const std::wstring& cookie_name);
 	int SetFocusedFrameByIndex(const int frame_index);
 	int SetFocusedFrameByName(const std::wstring& frame_name);
-	int SetFocusedFrameByElement(IHTMLElement *frame_element);
+	int SetFocusedFrameByElement(IHTMLElement* frame_element);
 	HWND GetActiveDialogWindowHandle(void);
 	bool IsFrameFocused(void);
 
-	std::wstring ConvertVariantToWString(VARIANT *to_convert);
+	std::wstring ConvertVariantToWString(VARIANT* to_convert);
 
-	IWebBrowser2 *browser(void) { return this->browser_; }
+	IWebBrowser2* browser(void) { return this->browser_; }
 	std::wstring browser_id(void) const { return this->browser_id_; }
 
 	bool wait_required(void) const { return this->wait_required_; }
@@ -88,15 +88,15 @@ public:
 private:
 	void AttachEvents(void);
 	void DetachEvents(void);
-	bool IsDocumentNavigating(IHTMLDocument2 *doc);
-	bool IsHtmlPage(IHTMLDocument2 *doc);
-	bool GetDocumentFromWindow(IHTMLWindow2 *window, IHTMLDocument2 **doc);
+	bool IsDocumentNavigating(IHTMLDocument2* doc);
+	bool IsHtmlPage(IHTMLDocument2* doc);
+	bool GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc);
 
 	CComPtr<IHTMLWindow2> focused_frame_window_;
 	CComPtr<IWebBrowser2> browser_;
 	BrowserFactory factory_;
 	HWND window_handle_;
-	HWND browser_manager_handle_;
+	HWND session_handle_;
 	std::wstring browser_id_;
 	bool is_navigation_started_;
 	bool wait_required_;

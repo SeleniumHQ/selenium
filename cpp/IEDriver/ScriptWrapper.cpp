@@ -1,11 +1,11 @@
 #include "StdAfx.h"
 #include "ScriptWrapper.h"
-#include "BrowserManager.h"
+#include "Session.h"
 #include "logging.h"
 
 namespace webdriver {
 
-ScriptWrapper::ScriptWrapper(IHTMLDocument2 *document, std::wstring script, unsigned long argument_count) {
+ScriptWrapper::ScriptWrapper(IHTMLDocument2* document, std::wstring script, unsigned long argument_count) {
 	this->script_engine_host_ = document;
 	this->script_ = script;
 	this->argument_count_ = argument_count;
@@ -48,7 +48,7 @@ void ScriptWrapper::AddArgument(std::tr1::shared_ptr<ElementWrapper> argument) {
 	this->AddArgument(argument->element());
 }
 
-void ScriptWrapper::AddArgument(IHTMLElement *argument) {
+void ScriptWrapper::AddArgument(IHTMLElement* argument) {
 	CComVariant dest_argument(argument);
 	this->AddArgument(dest_argument);
 }
@@ -182,7 +182,7 @@ int ScriptWrapper::Execute() {
 		LOGHR(WARN, hr) << "Cannot get parent window";
 		return EUNEXPECTEDJSERROR;
 	}
-	_variant_t *vargs = new _variant_t[nargs + 1];
+	_variant_t* vargs = new _variant_t[nargs + 1];
 	::VariantCopy(&(vargs[nargs]), &CComVariant(win));
 
 	long index;
@@ -235,7 +235,7 @@ int ScriptWrapper::Execute() {
 	return return_code;
 }
 
-int ScriptWrapper::ConvertResultToJsonValue(BrowserManager *manager, Json::Value *value) {
+int ScriptWrapper::ConvertResultToJsonValue(Session* session, Json::Value* value) {
 	int status_code = SUCCESS;
 	if (this->ResultIsString()) { 
 		std::string string_value("");
@@ -260,7 +260,7 @@ int ScriptWrapper::ConvertResultToJsonValue(BrowserManager *manager, Json::Value
 
 			for (long i = 0; i < length; ++i) {
 				Json::Value array_item_result;
-				int array_item_status = this->GetArrayItem(manager, i, &array_item_result);
+				int array_item_status = this->GetArrayItem(session, i, &array_item_result);
 				result_array[i] = array_item_result;
 			}
 			*value = result_array;
@@ -287,15 +287,15 @@ int ScriptWrapper::ConvertResultToJsonValue(BrowserManager *manager, Json::Value
 
 			for (size_t i = 0; i < property_names.size(); ++i) {
 				Json::Value property_value_result;
-				int property_value_status = this->GetPropertyValue(manager, property_names[i], &property_value_result);
+				int property_value_status = this->GetPropertyValue(session, property_names[i], &property_value_result);
 				std::string name(CW2A(property_names[i].c_str(), CP_UTF8));
 				result_object[name] = property_value_result;
 			}
 			*value = result_object;
 		} else {
-			IHTMLElement *node = (IHTMLElement*) this->result_.pdispVal;
+			IHTMLElement* node = (IHTMLElement*) this->result_.pdispVal;
 			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
-			manager->AddManagedElement(node, &element_wrapper);
+			session->AddManagedElement(node, &element_wrapper);
 			*value = element_wrapper->ConvertToJson();
 		}
 	} else {
@@ -320,7 +320,7 @@ std::wstring ScriptWrapper::GetResultObjectTypeName() {
 	return name;
 }
 
-int ScriptWrapper::GetPropertyNameList(std::wstring *property_names) {
+int ScriptWrapper::GetPropertyNameList(std::wstring* property_names) {
 	// Loop through the properties, appending the name of each one to the string.
 	std::wstring get_names_script(L"(function(){return function() { var name_list = ''; for (var name in arguments[0]) { if (name_list.length > 0) name_list+= ','; name_list += name } return name_list;}})();");
 	ScriptWrapper get_names_script_wrapper(this->script_engine_host_, get_names_script, 1);
@@ -341,7 +341,7 @@ int ScriptWrapper::GetPropertyNameList(std::wstring *property_names) {
 	return SUCCESS;
 }
 
-int ScriptWrapper::GetPropertyValue(BrowserManager *manager, const std::wstring& property_name, Json::Value *property_value){
+int ScriptWrapper::GetPropertyValue(Session* session, const std::wstring& property_name, Json::Value *property_value){
 	std::wstring get_value_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
 	ScriptWrapper get_value_script_wrapper(this->script_engine_host_, get_value_script, 2);
 	get_value_script_wrapper.AddArgument(this->result_);
@@ -351,11 +351,11 @@ int ScriptWrapper::GetPropertyValue(BrowserManager *manager, const std::wstring&
 		return get_value_result;
 	}
 
-	int property_value_status = get_value_script_wrapper.ConvertResultToJsonValue(manager, property_value);
+	int property_value_status = get_value_script_wrapper.ConvertResultToJsonValue(session, property_value);
 	return SUCCESS;
 }
 
-int ScriptWrapper::GetArrayLength(long *length) {
+int ScriptWrapper::GetArrayLength(long* length) {
 	// Prepare an array for the Javascript execution, containing only one
 	// element - the original returned array from a JS execution.
 	std::wstring get_length_script(L"(function(){return function() {return arguments[0].length;}})();");
@@ -377,7 +377,7 @@ int ScriptWrapper::GetArrayLength(long *length) {
 	return SUCCESS;
 }
 
-int ScriptWrapper::GetArrayItem(BrowserManager *manager, long index, Json::Value *item){
+int ScriptWrapper::GetArrayItem(Session* session, long index, Json::Value* item){
 	std::wstring get_array_item_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
 	ScriptWrapper get_array_item_script_wrapper(this->script_engine_host_, get_array_item_script, 2);
 	get_array_item_script_wrapper.AddArgument(this->result_);
@@ -387,11 +387,11 @@ int ScriptWrapper::GetArrayItem(BrowserManager *manager, long index, Json::Value
 		return get_item_result;
 	}
 
-	int array_item_status = get_array_item_script_wrapper.ConvertResultToJsonValue(manager, item);
+	int array_item_status = get_array_item_script_wrapper.ConvertResultToJsonValue(session, item);
 	return SUCCESS;
 }
 
-bool ScriptWrapper::CreateAnonymousFunction(VARIANT *result) {
+bool ScriptWrapper::CreateAnonymousFunction(VARIANT* result) {
 	CComBSTR function_eval_script(L"window.document.__webdriver_script_fn = ");
 	function_eval_script.Append(this->script_.c_str());
 	CComBSTR code(function_eval_script);

@@ -6,7 +6,7 @@
 
 namespace webdriver {
 
-BrowserWrapper::BrowserWrapper(IWebBrowser2 *browser, HWND hwnd, HWND browser_manager_handle) {
+BrowserWrapper::BrowserWrapper(IWebBrowser2* browser, HWND hwnd, HWND session_handle) {
 	// NOTE: COM should be initialized on this thread, so we
 	// could use CoCreateGuid() and StringFromGUID2() instead.
 	UUID guid;
@@ -25,7 +25,7 @@ BrowserWrapper::BrowserWrapper(IWebBrowser2 *browser, HWND hwnd, HWND browser_ma
 	this->wait_required_ = false;
 	this->is_navigation_started_ = false;
 	this->window_handle_ = hwnd;
-	this->browser_manager_handle_ = browser_manager_handle;
+	this->session_handle_ = session_handle;
 	this->browser_ = browser;
 	this->focused_frame_window_ = NULL;
 	this->AttachEvents();
@@ -35,7 +35,7 @@ BrowserWrapper::~BrowserWrapper(void) {
 	this->DetachEvents();
 }
 
-void BrowserWrapper::GetDocument(IHTMLDocument2 **doc) {
+void BrowserWrapper::GetDocument(IHTMLDocument2** doc) {
 	CComPtr<IHTMLWindow2> window;
 
 	if (this->focused_frame_window_ == NULL) {
@@ -96,7 +96,7 @@ std::wstring BrowserWrapper::GetTitle() {
 	return title_string;
 }
 
-std::wstring BrowserWrapper::ConvertVariantToWString(VARIANT *to_convert) {
+std::wstring BrowserWrapper::ConvertVariantToWString(VARIANT* to_convert) {
 	VARTYPE type = to_convert->vt;
 
 	switch(type) {
@@ -112,7 +112,7 @@ std::wstring BrowserWrapper::ConvertVariantToWString(VARIANT *to_convert) {
 	
 		case VT_I4:
 			{
-				wchar_t *buffer = (wchar_t *)malloc(sizeof(wchar_t) * MAX_DIGITS_OF_NUMBER);
+				wchar_t* buffer = (wchar_t*)malloc(sizeof(wchar_t) * MAX_DIGITS_OF_NUMBER);
 				if (buffer != NULL) {
 					_i64tow_s(to_convert->lVal, buffer, MAX_DIGITS_OF_NUMBER, BASE_TEN_BASE);
 				}
@@ -353,8 +353,8 @@ HWND BrowserWrapper::GetWindowHandle() {
 	return this->window_handle_;
 }
 
-void __stdcall BrowserWrapper::BeforeNavigate2(IDispatch * pObject, VARIANT * pvarUrl, VARIANT * pvarFlags, VARIANT * pvarTargetFrame,
-VARIANT * pvarData, VARIANT * pvarHeaders, VARIANT_BOOL * pbCancel) {
+void __stdcall BrowserWrapper::BeforeNavigate2(IDispatch* pObject, VARIANT* pvarUrl, VARIANT* pvarFlags, VARIANT* pvarTargetFrame,
+VARIANT* pvarData, VARIANT* pvarHeaders, VARIANT_BOOL* pbCancel) {
 	// std::cout << "BeforeNavigate2\r\n";
 }
 
@@ -362,22 +362,22 @@ void __stdcall BrowserWrapper::OnQuit() {
 	this->is_closing_ = true;
 	LPWSTR message_payload = new WCHAR[this->browser_id_.size() + 1];
 	wcscpy_s(message_payload, this->browser_id_.size() + 1, this->browser_id_.c_str());
-	::PostMessage(this->browser_manager_handle_, WD_BROWSER_QUIT, NULL, (LPARAM)message_payload);
+	::PostMessage(this->session_handle_, WD_BROWSER_QUIT, NULL, (LPARAM)message_payload);
 }
 
-void __stdcall BrowserWrapper::NewWindow3(IDispatch **ppDisp, VARIANT_BOOL * pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl) {
+void __stdcall BrowserWrapper::NewWindow3(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl) {
 	// Handle the NewWindow3 event to allow us to immediately hook
 	// the events of the new browser window opened by the user action.
 	// This will not allow us to handle windows created by the JavaScript
 	// showModalDialog function().
 	IWebBrowser2* browser;
 	LPSTREAM message_payload;
-	::SendMessage(this->browser_manager_handle_, WD_BROWSER_NEW_WINDOW, NULL, (LPARAM)&message_payload);
+	::SendMessage(this->session_handle_, WD_BROWSER_NEW_WINDOW, NULL, (LPARAM)&message_payload);
 	HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IWebBrowser2, (void**)&browser);
 	*ppDisp = browser;
 }
 
-void __stdcall BrowserWrapper::DocumentComplete(IDispatch *pDisp, VARIANT *URL) {
+void __stdcall BrowserWrapper::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
 	// Flag the browser as navigation having started.
 	// std::cout << "DocumentComplete\r\n";
 	this->is_navigation_started_ = true;
