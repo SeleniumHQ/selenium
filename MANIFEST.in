@@ -1,18 +1,11 @@
 prune *
-recursive-include common/src/web *.dll *.js *.gif *.html *.cs *.xhtml
-recursive-include common/src/web *.txt *.Config
 recursive-include py/selenium/webdriver *.py
 recursive-include py/selenium/webdriver/common *.py
 recursive-include py/selenium/common *.py
-recursive-include py/test/selenium/webdriver/common *.py
 recursive-include py/selenium/webdriver/chrome *.py *.zip
-recursive-include py/test/selenium/webdriver/chrome *.py
 recursive-include py/selenium/webdriver/firefox *.py *.xpi
-recursive-include py/test/selenium/webdriver/firefox *.py
 recursive-include py/selenium/webdriver/ie *.py *.dll
-recursive-include py/test/selenium/webdriver/ie *.py
 recursive-include py/selenium/webdriver/remote *.py
-recursive-include py/test/selenium/webdriver/remote *.py
 include py/selenium/selenium.py
 include py/selenium/__init__.py
 include __init__.py
