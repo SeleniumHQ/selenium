@@ -8,6 +8,9 @@ class VisualStudioMappings
 
     fun.add_mapping("dotnet_library", CrazyFunDotNet::DotNetLibrary.new)
 
+    fun.add_mapping("dotnet_docs", CrazyFunDotNet::GenerateDotNetDocs.new)
+    fun.add_mapping("dotnet_docs", CrazyFunDotNet::MoveDotNetHelpFile.new)
+
     fun.add_mapping("dotnet_test", CrazyFunDotNet::DotNetLibrary.new)
     fun.add_mapping("dotnet_test", CrazyFunDotNet::RunDotNetTests.new)
   end
@@ -180,6 +183,84 @@ module CrazyFunDotNet
 
       add_dependencies(target, dir, args[:deps])
       add_dependencies(target, dir, ["#{task_name}"])
+    end
+  end
+
+  class GenerateDotNetDocs < Tasks
+    def handle(fun, dir, args)
+      task_name = task_name(dir, args[:name])
+      desc "Generate documentation for #{task_name}"
+
+      web_documentation_path = File.join(File.dirname(args[:out]), args[:website])
+      web_documentation_path_desc = web_documentation_path.gsub("/", Platform.dir_separator)
+
+      doc_sources = resolve_doc_sources(dir, args[:srcs])
+
+      target_task = msbuild task_name do |msb|
+        puts "Generating help website: at #{web_documentation_path_desc}"
+
+        if ENV['DXROOT'].nil?
+          puts "Sandcastle documentation tools not found. Documentation will not be created."
+          return
+        end
+
+        if ENV['SHFBROOT'].nil?
+          puts "Sandcastle Help File Builder not found. Documentation will not be created."
+          return
+        end
+
+        # TODO (JimEvans): Visual Studio 2010 migration.
+        # Change :net35 to :net40.
+        msb.use :net35
+        msb.properties = {
+          "OutputPath" => File.expand_path(web_documentation_path).gsub("/", Platform.dir_separator), 
+          "DocumentationSources" => build_doc_sources_parameter(doc_sources),
+          "HtmlHelpName" => File.basename(args[:out], File.extname(args[:out])),
+          "HelpTitle" => File.basename(args[:out], File.extname(args[:out]))
+        }
+        msb.targets ["CoreCleanHelp", "CoreBuildHelp"]
+        msb.solution = File.join(dir, args[:project]).gsub("/", Platform.dir_separator)
+        msb.parameters "/nologo"
+        msb.verbosity = "quiet"
+      end
+    end
+
+    def resolve_doc_sources(dir, doc_source_targets)
+      doc_sources = []
+      doc_source_targets.each do |doc_source_target|
+        doc_source_task_name = task_name(dir, doc_source_target)
+        if Rake::Task.task_defined? doc_source_task_name
+          assembly_doc_source = File.expand_path(Rake::Task[doc_source_task_name].out)
+          xml_doc_source = assembly_doc_source.chomp(File.extname(assembly_doc_source)) + ".xml"
+          doc_sources << assembly_doc_source
+          doc_sources << xml_doc_source
+        end
+      end
+      return doc_sources
+    end
+
+    def build_doc_sources_parameter(doc_sources)
+      doc_sources_parameter = ""
+      doc_sources.each do |doc_source|
+        if File.exists? doc_source
+          doc_sources_parameter << "<DocumentationSource sourceFile='#{doc_source.gsub("/", Platform.dir_separator)}' xmlns='' />"
+        else
+          puts "WARNING: Could not find #{doc_source}. Documentation will not include these objects."
+        end
+      end
+      return doc_sources_parameter
+    end
+  end
+
+  class MoveDotNetHelpFile < Tasks
+    def handle(fun, dir, args)
+      task_name = task_name(dir, args[:name])
+      help_file_path_desc = args[:out].gsub("/", Platform.dir_separator)
+      web_documentation_path = File.join(File.dirname(args[:out]), args[:website])
+      file task_name do
+        puts "Generating help file: at #{help_file_path_desc}"
+        mv File.join(web_documentation_path, File.basename(args[:out])), File.dirname(args[:out])
+      end
     end
   end
 end

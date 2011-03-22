@@ -327,3 +327,20 @@ dotnet_test(name = "webdriverbackedselenium-test",
   ],
   project = "Selenium.WebDriverBackedSelenium.Tests.nunit"
 )
+
+dotnet_docs(name = "docs",
+  srcs = [
+    ":common",
+    ":remote-common",
+    ":remote",
+    ":ie",
+    ":firefox",
+    ":chrome",
+    ":support",
+    ":core",
+    ":webdriverbackedselenium"
+  ],
+  project = "docgen/docs.shfbproj",
+  website = "web",
+  out = "build/docs/dotnet/WebDriver.chm"
+)
