@@ -99,7 +99,23 @@ class DriverElementFindingTests(unittest.TestCase):
         self._loadPage("nestedElements")
         elements = self.driver.find_elements_by_tag_name("a")
         self.assertEqual(12, len(elements))
-    
+
+    def testShouldBeAbleToFindAnElementByCssSelector(self):
+        self._loadPage("xhtmlTest")
+        element = self.driver.find_element_by_css_selector("div.content")
+        self.assertEqual("div", element.tag_name)
+        self.assertEqual("content", element.get_attribute("class"))
+
+    def testShouldBeAbleToFindMultipleElementsByCssSelector(self):
+        self._loadPage("frameset")
+        elements = self.driver.find_elements_by_css_selector("frame")
+        self.assertEqual(7, len(elements))
+
+        elements = self.driver.find_elements_by_css_selector("frame#sixth")
+        self.assertEqual(1, len(elements))
+        self.assertEqual("frame", elements[0].tag_name)
+        self.assertEqual("sixth", elements[0].get_attribute("id"))
+
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
  

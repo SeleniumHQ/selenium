@@ -143,6 +143,19 @@ class ChildrenFindingTests(unittest.TestCase):
         elements = parent.find_elements_by_tag_name("a")
         self.assertEqual(2, len(elements))
 
+    def testShouldBeAbleToFindAnElementByCssSelector(self):
+        self._loadPage("nestedElements")
+        parent = self.driver.find_element_by_name("form2")
+        element = parent.find_element_by_css_selector('*[name="selectomatic"]')
+        self.assertEqual("2", element.get_attribute("id"))
+
+    def testShouldBeAbleToFindMultipleElementsByCssSelector(self):
+        self._loadPage("nestedElements")
+        parent = self.driver.find_element_by_name("form2")
+        elements = parent.find_elements_by_css_selector(
+            '*[name="selectomatic"]')
+        self.assertEqual(2, len(elements))
+
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
  
