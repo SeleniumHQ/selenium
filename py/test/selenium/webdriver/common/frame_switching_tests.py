@@ -37,6 +37,125 @@ def not_available_on_remote(func):
 
 class FrameSwitchingTest(unittest.TestCase):
 
+    def testShouldBeAbleToSwitchToAFrameByItsIndex(self):
+      self._loadPage("frameset")
+      self.driver.switch_to_frame(2)
+      element = self.driver.find_element_by_id("email")
+      self.assertEquals("email", element.get_attribute("type"))
+
+    def testShouldBeAbleToSwitchToAnIframeByItsIndex(self):
+      self._loadPage("iframes")
+      self.driver.switch_to_frame(0)
+      element = self.driver.find_element_by_id("id-name1")
+      self.assertEquals("id", element.value)
+
+    def testShouldBeAbleToSwitchToAFrameByItsName(self):
+      self._loadPage("frameset")
+      self.driver.switch_to_frame("fourth")
+      element = self.driver.find_element_by_tag_name("frame")
+      self.assertEquals("child1", element.get_attribute("name"))
+
+    def testShouldBeAbleToSwitchToAnIframeByItsName(self):
+      self._loadPage("iframes")
+      self.driver.switch_to_frame("iframe1-name");
+      element = self.driver.find_element_by_name("id-name1")
+      self.assertEquals("name", element.value)
+
+    def testShouldBeAbleToSwitchToAFrameByItsID(self):
+      self._loadPage("frameset")
+      self.driver.switch_to_frame("fifth")
+      element = self.driver.find_element_by_name("windowOne")
+      self.assertEquals("Open new window", element.text)
+
+    def testShouldBeAbleToSwitchToAnIframeByItsID(self):
+      self._loadPage("iframes")
+      self.driver.switch_to_frame("iframe1");
+      element = self.driver.find_element_by_name("id-name1")
+      self.assertEquals("name", element.value)
+
+    def testShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement(self):
+      self._loadPage("frameset")
+      frame = self.driver.find_element_by_name("third")
+      self.driver.switch_to_frame(frame)
+      element = self.driver.find_element_by_id("email")
+      self.assertEquals("email", element.get_attribute("type"))
+
+    def testShouldBeAbleToSwitchToAnIFrameUsingAPreviouslyLocatedWebElement(self):
+      self._loadPage("iframes")
+      frame = self.driver.find_element_by_tag_name("iframe")
+      self.driver.switch_to_frame(frame)
+      element = self.driver.find_element_by_name("id-name1")
+      self.assertEquals("name", element.value)
+
+    def testShouldEnsureElementIsAFrameBeforeSwitching(self):
+      self._loadPage("frameset")
+      frame = self.driver.find_element_by_tag_name("frameset")
+      try:
+        self.driver.switch_to_frame(frame)
+        self.fail()
+      except NoSuchFrameException:
+        pass
+
+    def testFrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame(self):
+      self._loadPage("frameset")
+      self.driver.switch_to_frame("sixth")
+      element = self.driver.find_element_by_id("iframe_page_heading")
+      self.assertEquals("This is the heading", element.text)
+
+      try:
+        self.driver.switch_to_frame("third")
+        self.fail()
+      except NoSuchFrameException:
+        pass
+
+      self.driver.switch_to_default_content()
+      self.driver.switch_to_frame("third")
+
+      try:
+        self.driver.switch_to_frame("third")
+        self.fail()
+      except NoSuchFrameException:
+        pass
+
+      # Now make sure we can go back.
+      self.driver.switch_to_default_content()
+      self.driver.switch_to_frame("sixth")
+      element = self.driver.find_element_by_id("iframe_page_heading")
+      self.assertEquals("This is the heading", element.text)
+
+    def testShouldBeAbleToSelectChildFrames(self):
+      self._loadPage("frameset")
+      self.driver.switch_to_frame("sixth")
+      self.driver.switch_to_frame(0)
+      element = self.driver.find_element_by_id("id-name1")
+      self.assertEquals("id", element.value)
+
+    def testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames(self):
+      self._loadPage("frameset")
+      self.driver.switch_to_frame("fourth")
+
+      try:
+        self.driver.switch_to_frame("second")
+        self.fail("Expected NoSuchFrameException")
+      except NoSuchFrameException:
+        pass
+
+    def testShouldThrowAnExceptionWhenAFrameCannotBeFound(self):
+      self._loadPage("xhtmlTest")
+      try:
+        self.driver.switch_to_frame("nothing here")
+        self.fail("Should not have been able to switch")
+      except NoSuchFrameException:
+        pass
+
+    def testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex(self):
+      self._loadPage("xhtmlTest")
+      try:
+        self.driver.switch_to_frame(27)
+        self.fail("Should not have been able to switch")
+      except NoSuchFrameException:
+        pass
+
     def testThatWeCanSwitchToFrameByIndex(self):
         self._loadPage("frameset")
         self.driver.switch_to_frame(2)
