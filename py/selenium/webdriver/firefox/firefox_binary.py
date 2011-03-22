@@ -44,7 +44,7 @@ class FirefoxBinary(object):
         os.environ["MOZ_CRASHREPORTER_DISABLE"] = "1"
         os.environ["MOZ_NO_REMOTE"] = "1"
         os.environ["NO_EM_RESTART"] = "1"
-        Popen([self._start_cmd, "-silent"]).wait()
+        Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=PIPE).wait()
         self.process = Popen([self._start_cmd], stdout=PIPE, stderr=PIPE)
 
     def is_connectable(self):
