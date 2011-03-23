@@ -15,9 +15,9 @@ public:
 	}
 
 protected:
-	void FindElementsCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::map<std::string, Json::Value>::const_iterator using_parameter_iterator = command_parameters.find("using");
-		std::map<std::string, Json::Value>::const_iterator value_parameter_iterator = command_parameters.find("value");
+	void FindElementsCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
+		ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
 		if (using_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: using");
 			return;
@@ -43,7 +43,7 @@ protected:
 
 			Json::Value found_elements(Json::arrayValue);
 			do {
-				status_code = finder->FindElements(session, std::tr1::shared_ptr<ElementWrapper>(), value, &found_elements);
+				status_code = finder->FindElements(session, ElementHandle(), value, &found_elements);
 				if (status_code == SUCCESS && found_elements.size() > 0) {
 					break;
 				} else {

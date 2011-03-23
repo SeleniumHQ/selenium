@@ -14,8 +14,8 @@ public:
 	}
 
 protected:
-	void SetSpeedCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::map<std::string, Json::Value>::const_iterator speed_parameter_iterator = command_parameters.find("speed");
+	void SetSpeedCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		ParametersMap::const_iterator speed_parameter_iterator = command_parameters.find("speed");
 		if (speed_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: speed");
 			return;

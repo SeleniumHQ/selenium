@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void GetSpeedCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void GetSpeedCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		int speed = session->speed();
 		switch (speed) {
 		  case 1000:

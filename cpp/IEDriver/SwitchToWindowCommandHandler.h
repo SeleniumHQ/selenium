@@ -14,8 +14,8 @@ public:
 	}
 
 protected:
-	void ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::map<std::string, Json::Value>::const_iterator name_parameter_iterator = command_parameters.find("name");
+	void ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("name");
 		if (name_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: name");
 			return;
@@ -26,7 +26,7 @@ protected:
 			std::vector<std::wstring> handle_list;
 			session->GetManagedBrowserHandles(&handle_list);
 			for (unsigned int i = 0; i < handle_list.size(); ++i) {
-				std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+				BrowserHandle browser_wrapper;
 				int get_handle_loop_status_code = session->GetManagedBrowser(handle_list[i], &browser_wrapper);
 				if (get_handle_loop_status_code == SUCCESS) {
 					std::string browser_name = this->GetWindowName(browser_wrapper->browser());
@@ -48,7 +48,7 @@ protected:
 				return;
 			} else {
 				// Reset the path to the focused frame before switching window context.
-				std::tr1::shared_ptr<BrowserWrapper> current_browser;
+				BrowserHandle current_browser;
 				int status_code = session->GetCurrentBrowser(&current_browser);
 				if (status_code == SUCCESS) {
 					current_browser->SetFocusedFrameByElement(NULL);

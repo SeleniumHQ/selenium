@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		std::string current_handle(CW2A(session->current_browser_id().c_str(), CP_UTF8));
 		response->SetResponse(SUCCESS, current_handle);
 	}

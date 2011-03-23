@@ -14,9 +14,9 @@ public:
 	}
 
 protected:
-	virtual void ExecuteScriptCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::map<std::string, Json::Value>::const_iterator script_parameter_iterator = command_parameters.find("script");
-		std::map<std::string, Json::Value>::const_iterator args_parameter_iterator = command_parameters.find("args");
+	virtual void ExecuteScriptCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		ParametersMap::const_iterator script_parameter_iterator = command_parameters.find("script");
+		ParametersMap::const_iterator args_parameter_iterator = command_parameters.find("args");
 		if (script_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: script");
 			return;
@@ -25,11 +25,11 @@ protected:
 			return;
 		} else {
 			std::wstring script_body(CA2W(script_parameter_iterator->second.asString().c_str(), CP_UTF8));
-			const std::wstring script = L"(function() { return function(){" + script_body + L"};})();";
+			const std::wstring script_source = L"(function() { return function(){" + script_body + L"};})();";
 
 			Json::Value json_args(args_parameter_iterator->second);
 
-			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+			BrowserHandle browser_wrapper;
 			int status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
@@ -38,7 +38,7 @@ protected:
 
 			CComPtr<IHTMLDocument2> doc;
 			browser_wrapper->GetDocument(&doc);
-			ScriptWrapper script_wrapper(doc, script, json_args.size());
+			ScriptWrapper script_wrapper(doc, script_source, json_args.size());
 			status_code = this->PopulateArgumentArray(session, script_wrapper, json_args);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Error setting arguments for script");
@@ -92,7 +92,7 @@ protected:
 			if (arg.isMember("ELEMENT")) {
 				std::wstring element_id(CA2W(arg["ELEMENT"].asString().c_str(), CP_UTF8));
 
-				std::tr1::shared_ptr<ElementWrapper> element_wrapper;
+				ElementHandle element_wrapper;
 				status_code = this->GetElement(session, element_id, &element_wrapper);
 				if (status_code == SUCCESS) {
 					script_wrapper.AddArgument(element_wrapper);
@@ -120,7 +120,7 @@ protected:
 		}
 		array_script += L"];}})();";
 
-		std::tr1::shared_ptr<BrowserWrapper> browser;
+		BrowserHandle browser;
 		session->GetCurrentBrowser(&browser);
 
 		CComPtr<IHTMLDocument2> doc;
@@ -162,7 +162,7 @@ protected:
 		}
 		object_script += L"};}})();";
 
-		std::tr1::shared_ptr<BrowserWrapper> browser;
+		BrowserHandle browser;
 		session->GetCurrentBrowser(&browser);
 
 		CComPtr<IHTMLDocument2> doc;

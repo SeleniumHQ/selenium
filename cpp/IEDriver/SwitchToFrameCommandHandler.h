@@ -14,9 +14,9 @@ public:
 	}
 
 protected:
-	void SwitchToFrameCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void SwitchToFrameCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		Json::Value frame_id = Json::Value::null;
-		std::map<std::string, Json::Value>::const_iterator it = command_parameters.find("id");
+		ParametersMap::const_iterator it = command_parameters.find("id");
 		// TODO: When issue 1133 is fixed, the else block in the following code
 		// should be uncommented.
 		if (it != command_parameters.end()) {
@@ -25,7 +25,7 @@ protected:
 		//	response->SetErrorResponse(400, "Missing parameter: id");
 		//	return;
 		}
-		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+		BrowserHandle browser_wrapper;
 		int status_code = session->GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
@@ -41,7 +41,7 @@ protected:
 			} else {
 				std::wstring frame_element_id(CA2W(element_id.asString().c_str(), CP_UTF8));
 
-				std::tr1::shared_ptr<ElementWrapper> frame_element_wrapper;
+				ElementHandle frame_element_wrapper;
 				status_code = this->GetElement(session, frame_element_id, &frame_element_wrapper);
 				if (status_code == SUCCESS) {
 					status_code = browser_wrapper->SetFocusedFrameByElement(frame_element_wrapper->element());

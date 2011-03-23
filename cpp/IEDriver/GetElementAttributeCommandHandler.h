@@ -14,9 +14,9 @@ public:
 	}
 
 protected:
-	void GetElementAttributeCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
-		std::map<std::string, std::string>::const_iterator name_parameter_iterator = locator_parameters.find("name");
+	void GetElementAttributeCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
+		LocatorMap::const_iterator name_parameter_iterator = locator_parameters.find("name");
 		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
 			return;
@@ -27,14 +27,14 @@ protected:
 			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
 			std::wstring name(CA2W(name_parameter_iterator->second.c_str(), CP_UTF8));
 
-			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+			BrowserHandle browser_wrapper;
 			int status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
 
-			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
+			ElementHandle element_wrapper;
 			status_code = this->GetElement(session, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				CComVariant value_variant;

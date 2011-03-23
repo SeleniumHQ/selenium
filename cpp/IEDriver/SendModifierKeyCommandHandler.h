@@ -15,9 +15,9 @@ public:
 	}
 
 protected:
-	void SendModifierKeyCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::map<std::string, Json::Value>::const_iterator value_parameter_iterator = command_parameters.find("value");
-		std::map<std::string, Json::Value>::const_iterator is_down_parameter_iterator = command_parameters.find("isdown");
+	void SendModifierKeyCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
+		ParametersMap::const_iterator is_down_parameter_iterator = command_parameters.find("isdown");
 		if (value_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: value");
 			return;
@@ -27,7 +27,7 @@ protected:
 		} else {
 			bool press_key(is_down_parameter_iterator->second.asBool());
 			std::wstring key(CA2W(value_parameter_iterator->second.asCString(), CP_UTF8));
-			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+			BrowserHandle browser_wrapper;
 			session->GetCurrentBrowser(&browser_wrapper);
 			HWND window_handle = browser_wrapper->GetWindowHandle();
 			if (press_key) {

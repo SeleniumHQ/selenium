@@ -17,9 +17,9 @@ public:
 	}
 
 protected:
-	void ExecuteAsyncScriptCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::map<std::string, Json::Value>::const_iterator script_parameter_iterator = command_parameters.find("script");
-		std::map<std::string, Json::Value>::const_iterator args_parameter_iterator = command_parameters.find("args");
+	void ExecuteAsyncScriptCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		ParametersMap::const_iterator script_parameter_iterator = command_parameters.find("script");
+		ParametersMap::const_iterator args_parameter_iterator = command_parameters.find("args");
 		if (script_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: script");
 			return;
@@ -88,7 +88,7 @@ protected:
 			polling_script += L"}\n";
 			polling_script += L"};})();";
 
-			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+			BrowserHandle browser_wrapper;
 			int status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");

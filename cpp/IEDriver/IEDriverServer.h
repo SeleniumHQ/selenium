@@ -23,6 +23,10 @@ public:
 	int port(void) const { return this->port_; }
 
 private:
+	typedef std::map<std::string, int> VerbMap;
+	typedef std::map<std::string, VerbMap> UrlMap;
+	typedef std::map<std::wstring, HWND> SessionMap;
+
 	int LookupCommand(const std::string& uri, const std::string& http_verb, std::wstring *session_id, std::wstring *locator);
 	std::wstring CreateSession(void);
 	void ShutDownSession(const std::wstring& session_id);
@@ -41,8 +45,8 @@ private:
 	void SendHttpSeeOther(mg_connection *connection, const mg_request_info *request_info, const std::string& location);
 
 	int port_;
-	std::map<std::string, std::map<std::string, int>> command_repository_;
-	std::map<std::wstring, HWND> sessions_;
+	UrlMap commands_;
+	SessionMap sessions_;
 };
 
 } //namespace WebDriver

@@ -14,10 +14,10 @@ public:
 	virtual ~FindByXPathElementFinder(void) {
 	}
 
-	int FindByXPathElementFinder::FindElement(Session* session, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
+	int FindByXPathElementFinder::FindElement(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
 		int result = ENOSUCHELEMENT;
 
-		std::tr1::shared_ptr<BrowserWrapper> browser;
+		BrowserHandle browser;
 		result = session->GetCurrentBrowser(&browser);
 		if (result != SUCCESS) {
 			return result;
@@ -60,10 +60,10 @@ public:
 		return result;
 	}
 
-	int FindByXPathElementFinder::FindElements(Session* session, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
+	int FindByXPathElementFinder::FindElements(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
 		int result = ENOSUCHELEMENT;
 
-		std::tr1::shared_ptr<BrowserWrapper> browser;
+		BrowserHandle browser;
 		result = session->GetCurrentBrowser(&browser);
 		if (result != SUCCESS) {
 			return result;
@@ -124,12 +124,12 @@ public:
 	}
 
 private:
-	int FindByXPathElementFinder::InjectXPathEngine(std::tr1::shared_ptr<BrowserWrapper> browser_wrapper) 
+	int FindByXPathElementFinder::InjectXPathEngine(BrowserHandle browser_wrapper) 
 	{
 		// Inject the XPath engine
-		std::wstring script;
+		std::wstring script_source;
 		for (int i = 0; XPATHJS[i]; i++) {
-			script += XPATHJS[i];
+			script_source += XPATHJS[i];
 		}
 
 		//std::string jsx(CW2A(script.c_str(), CP_UTF8));
@@ -137,7 +137,7 @@ private:
 
 		CComPtr<IHTMLDocument2> doc;
 		browser_wrapper->GetDocument(&doc);
-		ScriptWrapper script_wrapper(doc, script, 0);
+		ScriptWrapper script_wrapper(doc, script_source, 0);
 		int status_code = script_wrapper.Execute();
 
 		return status_code;

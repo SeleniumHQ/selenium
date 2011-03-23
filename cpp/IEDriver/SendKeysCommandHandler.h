@@ -32,10 +32,10 @@ public:
 	}
 
 protected:
-	void SendKeysCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response)
+	void SendKeysCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response)
 	{
-		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
-		std::map<std::string, Json::Value>::const_iterator value_parameter_iterator = command_parameters.find("value");
+		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
+		ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
 		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
 			return;
@@ -52,7 +52,7 @@ protected:
 				keys.append(CA2W(key.c_str(), CP_UTF8));
 			}
 
-			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+			BrowserHandle browser_wrapper;
 			int status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
@@ -62,7 +62,7 @@ protected:
 			TCHAR pszClassName[25];
 			::GetClassName(window_handle, pszClassName, 25);
 
-			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
+			ElementHandle element_wrapper;
 			status_code = this->GetElement(session, element_id, &element_wrapper);
 
 			if (status_code == SUCCESS) {

@@ -42,13 +42,13 @@ int ElementWrapper::IsDisplayed(bool *result) {
 	// The atom is just the definition of an anonymous
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
-	std::wstring script(L"(function() { return (");
-	script += atoms::IS_DISPLAYED;
-	script += L")})();";
+	std::wstring script_source(L"(function() { return (");
+	script_source += atoms::IS_DISPLAYED;
+	script_source += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
 	this->GetContainingDocument(false, &doc);
-	ScriptWrapper script_wrapper(doc, script, 1);
+	ScriptWrapper script_wrapper(doc, script_source, 1);
 	script_wrapper.AddArgument(this->element_);
 	status_code = script_wrapper.Execute();
 
@@ -65,13 +65,13 @@ bool ElementWrapper::IsEnabled() {
 	// The atom is just the definition of an anonymous
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
-	std::wstring script(L"(function() { return (");
-	script += atoms::IS_ENABLED;
-	script += L")})();";
+	std::wstring script_source(L"(function() { return (");
+	script_source += atoms::IS_ENABLED;
+	script_source += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
 	this->GetContainingDocument(false, &doc);
-	ScriptWrapper script_wrapper(doc, script, 1);
+	ScriptWrapper script_wrapper(doc, script_source, 1);
 	script_wrapper.AddArgument(this->element_);
 	int status_code = script_wrapper.Execute();
 
@@ -142,13 +142,13 @@ int ElementWrapper::GetAttributeValue(const std::wstring& attribute_name, VARIAN
 	// The atom is just the definition of an anonymous
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
-	std::wstring script(L"(function() { return (");
-	script += atoms::GET_ATTRIBUTE;
-	script += L")})();";
+	std::wstring script_source(L"(function() { return (");
+	script_source += atoms::GET_ATTRIBUTE;
+	script_source += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
 	this->GetContainingDocument(false, &doc);
-	ScriptWrapper script_wrapper(doc, script, 2);
+	ScriptWrapper script_wrapper(doc, script_source, 2);
 	script_wrapper.AddArgument(this->element_);
 	script_wrapper.AddArgument(attribute_name);
 	status_code = script_wrapper.Execute();
@@ -218,13 +218,13 @@ bool ElementWrapper::IsSelected() {
 	// The atom is just the definition of an anonymous
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
-	std::wstring script(L"(function() { return (");
-	script += atoms::IS_SELECTED;
-	script += L")})();";
+	std::wstring script_source(L"(function() { return (");
+	script_source += atoms::IS_SELECTED;
+	script_source += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
 	this->GetContainingDocument(false, &doc);
-	ScriptWrapper script_wrapper(doc, script, 1);
+	ScriptWrapper script_wrapper(doc, script_source, 1);
 	script_wrapper.AddArgument(this->element_);
 	int status_code = script_wrapper.Execute();
 
@@ -372,8 +372,8 @@ int ElementWrapper::GetFrameOffset(long *x, long *y) {
 				// containing window (which is itself an HTML element, either
 				// a frame or an iframe). Then get the x and y coordinates of
 				// that frame element.
-				std::wstring script = L"(function(){ return function() { return arguments[0].frameElement };})();";
-				ScriptWrapper script_wrapper(frame_doc, script, 1);
+				std::wstring script_source = L"(function(){ return function() { return arguments[0].frameElement };})();";
+				ScriptWrapper script_wrapper(frame_doc, script_source, 1);
 				CComVariant window_variant(frame_window);
 				script_wrapper.AddArgument(window_variant);
 				script_wrapper.Execute();
@@ -382,7 +382,7 @@ int ElementWrapper::GetFrameOffset(long *x, long *y) {
 				// Wrap the element so we can find its location.
 				ElementWrapper element_wrapper(frame_element, this->containing_window_handle_);
 				long frame_x, frame_y, frame_width, frame_height;
-				int status_code = element_wrapper.GetLocation(&frame_x, &frame_y, &frame_width, &frame_height);
+				status_code = element_wrapper.GetLocation(&frame_x, &frame_y, &frame_width, &frame_height);
 				if (status_code == SUCCESS) {
 					*x = frame_x;
 					*y = frame_y;

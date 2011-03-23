@@ -72,12 +72,12 @@ public:
 
 	void CreateNewBrowser(void);
 
-	int GetManagedBrowser(const std::wstring& browser_id, std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper);
-	int GetCurrentBrowser(std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper);
+	int GetManagedBrowser(const std::wstring& browser_id, BrowserHandle* browser_wrapper);
+	int GetCurrentBrowser(BrowserHandle* browser_wrapper);
 	void GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles);
 
-	void AddManagedElement(IHTMLElement *element, std::tr1::shared_ptr<ElementWrapper>* element_wrapper);
-	int GetManagedElement(const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper);
+	void AddManagedElement(IHTMLElement *element, ElementHandle* element_wrapper);
+	int GetManagedElement(const std::wstring& element_id, ElementHandle* element_wrapper);
 	void RemoveManagedElement(const std::wstring& element_id);
 	void ListManagedElements(void);
 
@@ -99,16 +99,21 @@ public:
 	void set_last_known_mouse_y(const long y_coordinate) { this->last_known_mouse_y_ = y_coordinate; }
 
 private:
-	void AddManagedBrowser(std::tr1::shared_ptr<BrowserWrapper> browser_wrapper);
+	typedef std::tr1::unordered_map<std::wstring, BrowserHandle> BrowserMap;
+	typedef std::tr1::unordered_map<std::wstring, ElementHandle> ElementMap;
+	typedef std::map<std::wstring, ElementFinderHandle> ElementFinderMap;
+	typedef std::map<int, CommandHandlerHandle> CommandHandlerMap;
+
+	void AddManagedBrowser(BrowserHandle browser_wrapper);
 
 	void DispatchCommand(void);
 
-	void PopulateCommandHandlerRepository(void);
-	void PopulateElementFinderRepository(void);
+	void PopulateCommandHandlerMap(void);
+	void PopulateElementFinderMap(void);
 
-	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<BrowserWrapper>> managed_browsers_;
-	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>> managed_elements_;
-	std::map<std::wstring, std::tr1::shared_ptr<ElementFinder>> element_finders_;
+	BrowserMap managed_browsers_;
+	ElementMap managed_elements_;
+	ElementFinderMap element_finders_;
 
 	BrowserFactory factory_;
 	std::wstring current_browser_id_;
@@ -122,7 +127,7 @@ private:
 
 	WebDriverCommand current_command_;
 	std::wstring serialized_response_;
-	std::map<int, std::tr1::shared_ptr<WebDriverCommandHandler>> command_handlers_;
+	CommandHandlerMap command_handlers_;
 	bool is_waiting_;
 
 	long last_known_mouse_x_;

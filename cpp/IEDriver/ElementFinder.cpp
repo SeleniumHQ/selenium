@@ -11,8 +11,8 @@ ElementFinder::ElementFinder(std::wstring locator) {
 ElementFinder::~ElementFinder() {
 }
 
-int ElementFinder::FindElement(Session* session, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
-	std::tr1::shared_ptr<BrowserWrapper> browser;
+int ElementFinder::FindElement(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
+	BrowserHandle browser;
 	int status_code = session->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		std::wstring criteria_object_script = L"(function() { return function(){ return  { " + this->locator_ + L" : \"" + criteria + L"\" }; };})();";
@@ -28,11 +28,11 @@ int ElementFinder::FindElement(Session* session, std::tr1::shared_ptr<ElementWra
 			// The atom is just the definition of an anonymous
 			// function: "function() {...}"; Wrap it in another function so we can
 			// invoke it with our arguments without polluting the current namespace.
-			std::wstring script(L"(function() { return (");
-			script += atoms::FIND_ELEMENT;
-			script += L")})();";
+			std::wstring script_source(L"(function() { return (");
+			script_source += atoms::FIND_ELEMENT;
+			script_source += L")})();";
 
-			ScriptWrapper script_wrapper(doc, script, 2);
+			ScriptWrapper script_wrapper(doc, script_source, 2);
 			script_wrapper.AddArgument(criteria_object);
 			if (parent_wrapper) {
 				script_wrapper.AddArgument(parent_wrapper->element());
@@ -51,8 +51,8 @@ int ElementFinder::FindElement(Session* session, std::tr1::shared_ptr<ElementWra
 	return status_code;
 }
 
-int ElementFinder::FindElements(Session* session, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
-	std::tr1::shared_ptr<BrowserWrapper> browser;
+int ElementFinder::FindElements(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
+	BrowserHandle browser;
 	int status_code = session->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		std::wstring criteria_object_script = L"(function() { return function(){ return  { " + this->locator_ + L" : \"" + criteria + L"\" }; };})();";
@@ -68,11 +68,11 @@ int ElementFinder::FindElements(Session* session, std::tr1::shared_ptr<ElementWr
 			// The atom is just the definition of an anonymous
 			// function: "function() {...}"; Wrap it in another function so we can
 			// invoke it with our arguments without polluting the current namespace.
-			std::wstring script(L"(function() { return (");
-			script += atoms::FIND_ELEMENTS;
-			script += L")})();";
+			std::wstring script_source(L"(function() { return (");
+			script_source += atoms::FIND_ELEMENTS;
+			script_source += L")})();";
 
-			ScriptWrapper script_wrapper(doc, script, 2);
+			ScriptWrapper script_wrapper(doc, script_source, 2);
 			script_wrapper.AddArgument(criteria_object);
 			if (parent_wrapper) {
 				script_wrapper.AddArgument(parent_wrapper->element());

@@ -22,6 +22,8 @@ using namespace std;
 
 namespace webdriver {
 
+typedef std::tr1::shared_ptr<BrowserWrapper> BrowserHandle;
+
 class BrowserWrapper : public IDispEventSimpleImpl<1, BrowserWrapper, &DIID_DWebBrowserEvents2> {
 public:
 	BrowserWrapper(IWebBrowser2* browser, HWND hwnd, HWND session_handle);

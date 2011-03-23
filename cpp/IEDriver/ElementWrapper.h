@@ -42,6 +42,8 @@ private:
 	HWND containing_window_handle_;
 };
 
+typedef std::tr1::shared_ptr<ElementWrapper> ElementHandle;
+
 } // namespace webdriver
 
 #endif // WEBDRIVER_IE_ELEMENTWRAPPER_H_

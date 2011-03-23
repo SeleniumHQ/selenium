@@ -14,12 +14,12 @@ void WebDriverCommandHandler::Execute(Session* session, const WebDriverCommand& 
 	this->ExecuteInternal(session, command.locator_parameters(), command.command_parameters(), response);
 }
 
-void WebDriverCommandHandler::ExecuteInternal(Session* session, const std::map<std::string,std::string>& locatorParameters, const std::map<std::string, Json::Value>& commandParameters, WebDriverResponse* response) {
+void WebDriverCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse* response) {
 }
 
-int WebDriverCommandHandler::GetElement(Session* session, const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
+int WebDriverCommandHandler::GetElement(Session* session, const std::wstring& element_id, ElementHandle* element_wrapper) {
 	int status_code = EOBSOLETEELEMENT;
-	std::tr1::shared_ptr<ElementWrapper> candidate_wrapper;
+	ElementHandle candidate_wrapper;
 	int result = session->GetManagedElement(element_id, &candidate_wrapper);
 	if (result != SUCCESS) {
 		status_code = 404;

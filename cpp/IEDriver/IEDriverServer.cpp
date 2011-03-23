@@ -16,7 +16,7 @@ IEDriverServer::IEDriverServer(int port) {
 IEDriverServer::~IEDriverServer(void) {
 	if (this->sessions_.size() > 0) {
 		vector<std::wstring> session_ids;
-		std::map<std::wstring, HWND>::iterator it = this->sessions_.begin();
+		SessionMap::iterator it = this->sessions_.begin();
 		for (; it != this->sessions_.end(); ++it) {
 			session_ids.push_back(it->first);
 		}
@@ -52,7 +52,7 @@ std::wstring IEDriverServer::CreateSession() {
 }
 
 void IEDriverServer::ShutDownSession(const std::wstring& session_id) {
-	std::map<std::wstring, HWND>::iterator it = this->sessions_.find(session_id);
+	SessionMap::iterator it = this->sessions_.find(session_id);
 	if (it != this->sessions_.end()) {
 		DWORD process_id;
 		DWORD thread_id = ::GetWindowThreadProcessId(it->second, &process_id);
@@ -149,7 +149,7 @@ std::wstring IEDriverServer::SendCommandToSession(const std::wstring& session_id
 	// 2. Executing the command
 	// 3. Waiting for the response to be populated
 	// 4. Retrieving the response
-	std::map<std::wstring, HWND>::iterator it = this->sessions_.find(session_id);
+	SessionMap::iterator it = this->sessions_.find(session_id);
 	if (it == this->sessions_.end()) {
 		// Hand-code the response for an invalid session id
 		return L"{ status : 404, sessionId : \"" + session_id + L"\", value : \"session " + session_id + L" does not exist\" }";
@@ -336,8 +336,8 @@ void IEDriverServer::SendHttpSeeOther(struct mg_connection* connection,
 
 int IEDriverServer::LookupCommand(const std::string& uri, const std::string& http_verb, std::wstring *session_id, std::wstring *locator) {
 	int value = NoCommand;
-	std::map<std::string, map<std::string, int>>::const_iterator it = this->command_repository_.begin();
-	for (; it != this->command_repository_.end(); ++it) {
+	UrlMap::const_iterator it = this->commands_.begin();
+	for (; it != this->commands_.end(); ++it) {
 		std::vector<std::string> locator_param_names;
 		std::string url_candidate = (*it).first;
 		size_t param_start_pos = url_candidate.find_first_of(":");
@@ -364,7 +364,7 @@ int IEDriverServer::LookupCommand(const std::string& uri, const std::string& htt
 		std::tr1::regex matcher("^" + url_candidate + "$");
 		std::tr1::match_results<std::string::const_iterator> matches;
 		if (std::tr1::regex_search(uri_start, uri_end, matches, matcher)) {
-			map<std::string, int>::const_iterator verb_iterator = it->second.find(http_verb);
+			VerbMap::const_iterator verb_iterator = it->second.find(http_verb);
 			if (verb_iterator != it->second.end()) {
 				value = verb_iterator->second;
 				std::string param = "{";
@@ -401,71 +401,71 @@ int IEDriverServer::LookupCommand(const std::string& uri, const std::string& htt
 }
 
 void IEDriverServer::PopulateCommandRepository() {
-	this->command_repository_["/session"]["POST"] = NewSession;
-	this->command_repository_["/session/:sessionid"]["GET"] = GetSessionCapabilities;
-	this->command_repository_["/session/:sessionid"]["DELETE"] = Quit;
-	this->command_repository_["/session/:sessionid/window_handle"]["GET"] = GetCurrentWindowHandle;
-	this->command_repository_["/session/:sessionid/window_handles"]["GET"] = GetWindowHandles;
-	this->command_repository_["/session/:sessionid/url"]["GET"] = GetCurrentUrl;
-	this->command_repository_["/session/:sessionid/url"]["POST"] = Get;
-	this->command_repository_["/session/:sessionid/forward"]["POST"] = GoForward;
-	this->command_repository_["/session/:sessionid/back"]["POST"] = GoBack;
-	this->command_repository_["/session/:sessionid/refresh"]["POST"] = Refresh;
-	this->command_repository_["/session/:sessionid/speed"]["GET"] = GetSpeed;
-	this->command_repository_["/session/:sessionid/speed"]["POST"] = SetSpeed;
-	this->command_repository_["/session/:sessionid/execute"]["POST"] = ExecuteScript;
-	this->command_repository_["/session/:sessionid/execute_async"]["POST"] = ExecuteAsyncScript;
-	this->command_repository_["/session/:sessionid/screenshot"]["GET"] = Screenshot;
-	this->command_repository_["/session/:sessionid/frame"]["POST"] = SwitchToFrame;
-	this->command_repository_["/session/:sessionid/window"]["POST"] = SwitchToWindow;
-	this->command_repository_["/session/:sessionid/window"]["DELETE"] = Close;
-	this->command_repository_["/session/:sessionid/cookie"]["GET"] = GetAllCookies;
-	this->command_repository_["/session/:sessionid/cookie"]["POST"] = AddCookie;
-	this->command_repository_["/session/:sessionid/cookie"]["DELETE"] = DeleteAllCookies;
-	this->command_repository_["/session/:sessionid/cookie/:name"]["DELETE"] = DeleteCookie;
-	this->command_repository_["/session/:sessionid/source"]["GET"] = GetPageSource;
-	this->command_repository_["/session/:sessionid/title"]["GET"] = GetTitle;
-	this->command_repository_["/session/:sessionid/element"]["POST"] = FindElement;
-	this->command_repository_["/session/:sessionid/elements"]["POST"] = FindElements;
-	this->command_repository_["/session/:sessionid/timeouts/implicit_wait"]["POST"] = ImplicitlyWait;
-	this->command_repository_["/session/:sessionid/timeouts/async_script"]["POST"] = SetAsyncScriptTimeout;
-	this->command_repository_["/session/:sessionid/element/active"]["POST"] = GetActiveElement;
-	this->command_repository_["/session/:sessionid/element/:id/element"]["POST"] = FindChildElement;
-	this->command_repository_["/session/:sessionid/element/:id/elements"]["POST"] = FindChildElements;
-	this->command_repository_["/session/:sessionid/element/:id"]["GET"] = DescribeElement;
-	this->command_repository_["/session/:sessionid/element/:id/click"]["POST"] = ClickElement;
-	this->command_repository_["/session/:sessionid/element/:id/text"]["GET"] = GetElementText;
-	this->command_repository_["/session/:sessionid/element/:id/submit"]["POST"] = SubmitElement;
-	this->command_repository_["/session/:sessionid/element/:id/value"]["GET"] = GetElementValue;
-	this->command_repository_["/session/:sessionid/element/:id/value"]["POST"] = SendKeysToElement;
-	this->command_repository_["/session/:sessionid/element/:id/name"]["GET"] = GetElementTagName;
-	this->command_repository_["/session/:sessionid/element/:id/clear"]["POST"] = ClearElement;
-	this->command_repository_["/session/:sessionid/element/:id/selected"]["GET"] = IsElementSelected;
-	this->command_repository_["/session/:sessionid/element/:id/selected"]["POST"] = SetElementSelected;
-	this->command_repository_["/session/:sessionid/element/:id/toggle"]["POST"] = ToggleElement;
-	this->command_repository_["/session/:sessionid/element/:id/enabled"]["GET"] = IsElementEnabled;
-	this->command_repository_["/session/:sessionid/element/:id/displayed"]["GET"] = IsElementDisplayed;
-	this->command_repository_["/session/:sessionid/element/:id/location"]["GET"] = GetElementLocation;
-	this->command_repository_["/session/:sessionid/element/:id/location_in_view"]["GET"] = GetElementLocationOnceScrolledIntoView;
-	this->command_repository_["/session/:sessionid/element/:id/size"]["GET"] = GetElementSize;
-	this->command_repository_["/session/:sessionid/element/:id/css/:propertyName"]["GET"] = GetElementValueOfCssProperty;
-	this->command_repository_["/session/:sessionid/element/:id/attribute/:name"]["GET"] = GetElementAttribute;
-	this->command_repository_["/session/:sessionid/element/:id/equals/:other"]["GET"] = ElementEquals;
-	this->command_repository_["/session/:sessionid/element/:id/hover"]["POST"] = HoverOverElement;
-	this->command_repository_["/session/:sessionid/element/:id/drag"]["POST"] = DragElement;
-	this->command_repository_["/session/:sessionid/screenshot"]["GET"] = Screenshot;
+	this->commands_["/session"]["POST"] = NewSession;
+	this->commands_["/session/:sessionid"]["GET"] = GetSessionCapabilities;
+	this->commands_["/session/:sessionid"]["DELETE"] = Quit;
+	this->commands_["/session/:sessionid/window_handle"]["GET"] = GetCurrentWindowHandle;
+	this->commands_["/session/:sessionid/window_handles"]["GET"] = GetWindowHandles;
+	this->commands_["/session/:sessionid/url"]["GET"] = GetCurrentUrl;
+	this->commands_["/session/:sessionid/url"]["POST"] = Get;
+	this->commands_["/session/:sessionid/forward"]["POST"] = GoForward;
+	this->commands_["/session/:sessionid/back"]["POST"] = GoBack;
+	this->commands_["/session/:sessionid/refresh"]["POST"] = Refresh;
+	this->commands_["/session/:sessionid/speed"]["GET"] = GetSpeed;
+	this->commands_["/session/:sessionid/speed"]["POST"] = SetSpeed;
+	this->commands_["/session/:sessionid/execute"]["POST"] = ExecuteScript;
+	this->commands_["/session/:sessionid/execute_async"]["POST"] = ExecuteAsyncScript;
+	this->commands_["/session/:sessionid/screenshot"]["GET"] = Screenshot;
+	this->commands_["/session/:sessionid/frame"]["POST"] = SwitchToFrame;
+	this->commands_["/session/:sessionid/window"]["POST"] = SwitchToWindow;
+	this->commands_["/session/:sessionid/window"]["DELETE"] = Close;
+	this->commands_["/session/:sessionid/cookie"]["GET"] = GetAllCookies;
+	this->commands_["/session/:sessionid/cookie"]["POST"] = AddCookie;
+	this->commands_["/session/:sessionid/cookie"]["DELETE"] = DeleteAllCookies;
+	this->commands_["/session/:sessionid/cookie/:name"]["DELETE"] = DeleteCookie;
+	this->commands_["/session/:sessionid/source"]["GET"] = GetPageSource;
+	this->commands_["/session/:sessionid/title"]["GET"] = GetTitle;
+	this->commands_["/session/:sessionid/element"]["POST"] = FindElement;
+	this->commands_["/session/:sessionid/elements"]["POST"] = FindElements;
+	this->commands_["/session/:sessionid/timeouts/implicit_wait"]["POST"] = ImplicitlyWait;
+	this->commands_["/session/:sessionid/timeouts/async_script"]["POST"] = SetAsyncScriptTimeout;
+	this->commands_["/session/:sessionid/element/active"]["POST"] = GetActiveElement;
+	this->commands_["/session/:sessionid/element/:id/element"]["POST"] = FindChildElement;
+	this->commands_["/session/:sessionid/element/:id/elements"]["POST"] = FindChildElements;
+	this->commands_["/session/:sessionid/element/:id"]["GET"] = DescribeElement;
+	this->commands_["/session/:sessionid/element/:id/click"]["POST"] = ClickElement;
+	this->commands_["/session/:sessionid/element/:id/text"]["GET"] = GetElementText;
+	this->commands_["/session/:sessionid/element/:id/submit"]["POST"] = SubmitElement;
+	this->commands_["/session/:sessionid/element/:id/value"]["GET"] = GetElementValue;
+	this->commands_["/session/:sessionid/element/:id/value"]["POST"] = SendKeysToElement;
+	this->commands_["/session/:sessionid/element/:id/name"]["GET"] = GetElementTagName;
+	this->commands_["/session/:sessionid/element/:id/clear"]["POST"] = ClearElement;
+	this->commands_["/session/:sessionid/element/:id/selected"]["GET"] = IsElementSelected;
+	this->commands_["/session/:sessionid/element/:id/selected"]["POST"] = SetElementSelected;
+	this->commands_["/session/:sessionid/element/:id/toggle"]["POST"] = ToggleElement;
+	this->commands_["/session/:sessionid/element/:id/enabled"]["GET"] = IsElementEnabled;
+	this->commands_["/session/:sessionid/element/:id/displayed"]["GET"] = IsElementDisplayed;
+	this->commands_["/session/:sessionid/element/:id/location"]["GET"] = GetElementLocation;
+	this->commands_["/session/:sessionid/element/:id/location_in_view"]["GET"] = GetElementLocationOnceScrolledIntoView;
+	this->commands_["/session/:sessionid/element/:id/size"]["GET"] = GetElementSize;
+	this->commands_["/session/:sessionid/element/:id/css/:propertyName"]["GET"] = GetElementValueOfCssProperty;
+	this->commands_["/session/:sessionid/element/:id/attribute/:name"]["GET"] = GetElementAttribute;
+	this->commands_["/session/:sessionid/element/:id/equals/:other"]["GET"] = ElementEquals;
+	this->commands_["/session/:sessionid/element/:id/hover"]["POST"] = HoverOverElement;
+	this->commands_["/session/:sessionid/element/:id/drag"]["POST"] = DragElement;
+	this->commands_["/session/:sessionid/screenshot"]["GET"] = Screenshot;
 
-	this->command_repository_["/session/:sessionid/accept_alert"]["POST"] = AcceptAlert;
-	this->command_repository_["/session/:sessionid/dismiss_alert"]["POST"] = DismissAlert;
-	this->command_repository_["/session/:sessionid/alert_text"]["GET"] = GetAlertText;
-	this->command_repository_["/session/:sessionid/alert_text"]["POST"] = SendKeysToAlert;
+	this->commands_["/session/:sessionid/accept_alert"]["POST"] = AcceptAlert;
+	this->commands_["/session/:sessionid/dismiss_alert"]["POST"] = DismissAlert;
+	this->commands_["/session/:sessionid/alert_text"]["GET"] = GetAlertText;
+	this->commands_["/session/:sessionid/alert_text"]["POST"] = SendKeysToAlert;
 
-	this->command_repository_["/session/:sessionid/modifier"]["POST"] = SendModifierKey;
-	this->command_repository_["/session/:sessionid/moveto"]["POST"] = MouseMoveTo;
-	this->command_repository_["/session/:sessionid/click"]["POST"] = MouseClick;
-	this->command_repository_["/session/:sessionid/doubleclick"]["POST"] = MouseDoubleClick;
-	this->command_repository_["/session/:sessionid/buttondown"]["POST"] = MouseButtonDown;
-	this->command_repository_["/session/:sessionid/buttonup"]["POST"] = MouseButtonUp;
+	this->commands_["/session/:sessionid/modifier"]["POST"] = SendModifierKey;
+	this->commands_["/session/:sessionid/moveto"]["POST"] = MouseMoveTo;
+	this->commands_["/session/:sessionid/click"]["POST"] = MouseClick;
+	this->commands_["/session/:sessionid/doubleclick"]["POST"] = MouseDoubleClick;
+	this->commands_["/session/:sessionid/buttondown"]["POST"] = MouseButtonDown;
+	this->commands_["/session/:sessionid/buttonup"]["POST"] = MouseButtonUp;
 
 	/*
 	commandDictionary.Add(DriverCommand.DefineDriverMapping, new CommandInfo(CommandInfo.PostCommand, "/config/drivers"));

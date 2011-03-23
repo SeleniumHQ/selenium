@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void GetAllWindowHandlesCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
+	void GetAllWindowHandlesCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		Json::Value handles(Json::arrayValue);
 		std::vector<std::wstring> handle_list;
 		session->GetManagedBrowserHandles(&handle_list);

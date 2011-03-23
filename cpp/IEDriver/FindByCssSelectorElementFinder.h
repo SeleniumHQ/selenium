@@ -14,27 +14,27 @@ public:
 	virtual ~FindByCssSelectorElementFinder(void) {
 	}
 
-	int FindByCssSelectorElementFinder::FindElement(Session* session, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
+	int FindByCssSelectorElementFinder::FindElement(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_element) {
 		int result = ENOSUCHELEMENT;
 
-		std::tr1::shared_ptr<BrowserWrapper> browser;
+		BrowserHandle browser;
 		result = session->GetCurrentBrowser(&browser);
 		if (result != SUCCESS) {
 			return result;
 		}
 
-		std::wstring script(L"(function() { return function(){");
-		script += atoms::SIZZLE;
-		script += L"\n";
-		script += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
-		script += L"if (root['querySelector']) { return root.querySelector(arguments[0]); } ";
-		script += L"var results = []; Sizzle(arguments[0], root, results);";
-		script += L"return results.length > 0 ? results[0] : null;";
-		script += L"};})();";
+		std::wstring script_source(L"(function() { return function(){");
+		script_source += atoms::SIZZLE;
+		script_source += L"\n";
+		script_source += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
+		script_source += L"if (root['querySelector']) { return root.querySelector(arguments[0]); } ";
+		script_source += L"var results = []; Sizzle(arguments[0], root, results);";
+		script_source += L"return results.length > 0 ? results[0] : null;";
+		script_source += L"};})();";
 
 		CComPtr<IHTMLDocument2> doc;
 		browser->GetDocument(&doc);
-		ScriptWrapper script_wrapper(doc, script, 2);
+		ScriptWrapper script_wrapper(doc, script_source, 2);
 		script_wrapper.AddArgument(criteria);
 		if (parent_wrapper) {
 			CComPtr<IHTMLElement> parent(parent_wrapper->element());
@@ -55,28 +55,28 @@ public:
 		return result;
 	}
 
-	int FindByCssSelectorElementFinder::FindElements(Session* session, std::tr1::shared_ptr<ElementWrapper> parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
+	int FindByCssSelectorElementFinder::FindElements(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_elements) {
 		int result = ENOSUCHELEMENT;
 
-		std::tr1::shared_ptr<BrowserWrapper> browser;
+		BrowserHandle browser;
 		result = session->GetCurrentBrowser(&browser);
 		if (result != SUCCESS) {
 			return result;
 		}
 
-		std::wstring script(L"(function() { return function(){");
-		script += atoms::SIZZLE;
-		script += L"\n";
-		script += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
-		script += L"if (root['querySelectorAll']) { return root.querySelectorAll(arguments[0]); } ";
-		script += L"var results = []; Sizzle(arguments[0], root, results);";
-		script += L"return results;";
-		script += L"};})();";
+		std::wstring script_source(L"(function() { return function(){");
+		script_source += atoms::SIZZLE;
+		script_source += L"\n";
+		script_source += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
+		script_source += L"if (root['querySelectorAll']) { return root.querySelectorAll(arguments[0]); } ";
+		script_source += L"var results = []; Sizzle(arguments[0], root, results);";
+		script_source += L"return results;";
+		script_source += L"};})();";
 
 		CComPtr<IHTMLDocument2> doc;
 		browser->GetDocument(&doc);
 
-		ScriptWrapper script_wrapper(doc, script, 2);
+		ScriptWrapper script_wrapper(doc, script_source, 2);
 		script_wrapper.AddArgument(criteria);
 		if (parent_wrapper) {
 			// Use a copy for the parent element?

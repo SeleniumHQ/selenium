@@ -15,10 +15,10 @@ public:
 	}
 
 protected:
-	void MouseMoveToCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::map<std::string, Json::Value>::const_iterator element_parameter_iterator = command_parameters.find("element");
-		std::map<std::string, Json::Value>::const_iterator xoffset_parameter_iterator = command_parameters.find("xoffset");
-		std::map<std::string, Json::Value>::const_iterator yoffset_parameter_iterator = command_parameters.find("yoffset");
+	void MouseMoveToCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		ParametersMap::const_iterator element_parameter_iterator = command_parameters.find("element");
+		ParametersMap::const_iterator xoffset_parameter_iterator = command_parameters.find("xoffset");
+		ParametersMap::const_iterator yoffset_parameter_iterator = command_parameters.find("yoffset");
 		bool element_specified(element_parameter_iterator != command_parameters.end());
 		bool offset_specified((xoffset_parameter_iterator != command_parameters.end()) && (yoffset_parameter_iterator != command_parameters.end()));
 		if (!element_specified && !offset_specified) {
@@ -45,7 +45,7 @@ protected:
 				end_y += yoffset_parameter_iterator->second.asInt();
 			}
 
-			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+			BrowserHandle browser_wrapper;
 			status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get current browser");
@@ -64,7 +64,7 @@ protected:
 
 private:
 	int MouseMoveToCommandHandler::GetElementCoordinates(Session* session, const std::wstring& element_id, bool get_element_origin, long *x_coordinate, long *y_coordinate) {
-		std::tr1::shared_ptr<ElementWrapper> target_element;
+		ElementHandle target_element;
 		int status_code = this->GetElement(session, element_id, &target_element);
 		if (status_code != SUCCESS) {
 			return status_code;

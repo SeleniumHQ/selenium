@@ -14,8 +14,8 @@ public:
 	}
 
 protected:
-	void GetActiveElementCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+	void GetActiveElementCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		BrowserHandle browser_wrapper;
 		int status_code = session->GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
@@ -40,7 +40,7 @@ protected:
 		if (element) {
 			IHTMLElement* dom_element;
 			element.CopyTo(&dom_element);
-			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
+			ElementHandle element_wrapper;
 			session->AddManagedElement(dom_element, &element_wrapper);
 			response->SetResponse(SUCCESS, element_wrapper->ConvertToJson());
 		}

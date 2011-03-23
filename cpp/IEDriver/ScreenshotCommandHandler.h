@@ -18,8 +18,8 @@ public:
 	}
 
 protected:
-	void ScreenshotCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+	void ScreenshotCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		BrowserHandle browser_wrapper;
 		session->GetCurrentBrowser(&browser_wrapper);
 		
 		this->image_ = new CImage();

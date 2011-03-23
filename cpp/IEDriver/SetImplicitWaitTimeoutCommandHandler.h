@@ -14,8 +14,8 @@ public:
 	}
 
 protected:
-	void SetImplicitWaitTimeoutCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::map<std::string, Json::Value>::const_iterator ms_parameter_iterator = command_parameters.find("ms");
+	void SetImplicitWaitTimeoutCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		ParametersMap::const_iterator ms_parameter_iterator = command_parameters.find("ms");
 		if (ms_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: ms");
 			return;

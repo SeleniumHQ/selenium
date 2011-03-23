@@ -3,6 +3,7 @@
 
 #include <string>
 #include "json.h"
+#include "ElementWrapper.h"
 
 using namespace std;
 
@@ -11,16 +12,15 @@ namespace webdriver {
 // Forward declaration of classes to avoid
 // circular include files.
 class BrowserWrapper;
-class ElementWrapper;
 class Session;
 
 class ScriptWrapper
 {
 public:
-	ScriptWrapper(IHTMLDocument2* document, std::wstring script, unsigned long argument_count);
+	ScriptWrapper(IHTMLDocument2* document, std::wstring script_source, unsigned long argument_count);
 	~ScriptWrapper(void);
 
-	std::wstring script() { return this->script_; }
+	std::wstring script_source() { return this->script_source_; }
 	unsigned long argument_count() { return this->argument_count_; }
 	SAFEARRAY* arguments() { return this->argument_array_; }
 	VARIANT result() { return this->result_; }
@@ -30,7 +30,7 @@ public:
 	void AddArgument(const int argument);
 	void AddArgument(const double argument);
 	void AddArgument(const bool argument);
-	void AddArgument(std::tr1::shared_ptr<ElementWrapper> argument);
+	void AddArgument(ElementHandle argument);
 	void AddArgument(IHTMLElement* argument);
 	void AddArgument(VARIANT argument);
 
@@ -58,7 +58,7 @@ private:
 
 	CComPtr<IHTMLDocument2> script_engine_host_;
 	unsigned long argument_count_;
-	std::wstring script_;
+	std::wstring script_source_;
 	long current_arg_index_;
 	SAFEARRAY* argument_array_;
 	VARIANT result_;

@@ -5,9 +5,9 @@
 
 namespace webdriver {
 
-ScriptWrapper::ScriptWrapper(IHTMLDocument2* document, std::wstring script, unsigned long argument_count) {
+ScriptWrapper::ScriptWrapper(IHTMLDocument2* document, std::wstring script_source, unsigned long argument_count) {
 	this->script_engine_host_ = document;
-	this->script_ = script;
+	this->script_source_ = script_source;
 	this->argument_count_ = argument_count;
 	this->current_arg_index_ = 0;
 
@@ -44,7 +44,7 @@ void ScriptWrapper::AddArgument(const bool argument) {
 	this->AddArgument(dest_argument);
 }
 
-void ScriptWrapper::AddArgument(std::tr1::shared_ptr<ElementWrapper> argument) {
+void ScriptWrapper::AddArgument(ElementHandle argument) {
 	this->AddArgument(argument->element());
 }
 
@@ -121,8 +121,8 @@ bool ScriptWrapper::ResultIsArray() {
 	// IMPORTANT: Using this script, user-defined objects with a length
 	// property defined will be seen as arrays instead of objects.
 	if (type_name == L"JScriptTypeInfo") {
-		const std::wstring script = L"(function() { return function(){ return arguments[0] && arguments[0].hasOwnProperty('length') && typeof arguments[0] === 'object' && typeof arguments[0].length === 'number';};})();";
-		ScriptWrapper is_array_wrapper(this->script_engine_host_, script, 1);
+		const std::wstring script_source = L"(function() { return function(){ return arguments[0] && arguments[0].hasOwnProperty('length') && typeof arguments[0] === 'object' && typeof arguments[0].length === 'number';};})();";
+		ScriptWrapper is_array_wrapper(this->script_engine_host_, script_source, 1);
 		is_array_wrapper.AddArgument(this->result_);
 		is_array_wrapper.Execute();
 		return is_array_wrapper.result().boolVal == VARIANT_TRUE;
@@ -294,7 +294,7 @@ int ScriptWrapper::ConvertResultToJsonValue(Session* session, Json::Value* value
 			*value = result_object;
 		} else {
 			IHTMLElement* node = (IHTMLElement*) this->result_.pdispVal;
-			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
+			ElementHandle element_wrapper;
 			session->AddManagedElement(node, &element_wrapper);
 			*value = element_wrapper->ConvertToJson();
 		}
@@ -393,7 +393,7 @@ int ScriptWrapper::GetArrayItem(Session* session, long index, Json::Value* item)
 
 bool ScriptWrapper::CreateAnonymousFunction(VARIANT* result) {
 	CComBSTR function_eval_script(L"window.document.__webdriver_script_fn = ");
-	function_eval_script.Append(this->script_.c_str());
+	function_eval_script.Append(this->script_source_.c_str());
 	CComBSTR code(function_eval_script);
 	CComBSTR lang(L"JScript");
 	CComVariant exec_script_result;

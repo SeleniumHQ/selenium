@@ -15,8 +15,8 @@ public:
 	}
 
 protected:
-	void MouseButtonDownCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+	void MouseButtonDownCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		BrowserHandle browser_wrapper;
 		int status_code = session->GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get current browser");

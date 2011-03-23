@@ -174,14 +174,14 @@ int BrowserWrapper::AddCookie(const std::wstring& cookie) {
 
 int BrowserWrapper::DeleteCookie(const std::wstring& cookie_name) {
 	// Construct the delete cookie script
-	std::wstring script;
+	std::wstring script_source;
 	for (int i = 0; DELETECOOKIES[i]; i++) {
-		script += DELETECOOKIES[i];
+		script_source += DELETECOOKIES[i];
 	}
 
 	CComPtr<IHTMLDocument2> doc;
 	this->GetDocument(&doc);
-	ScriptWrapper script_wrapper(doc, script, 1);
+	ScriptWrapper script_wrapper(doc, script_source, 1);
 	script_wrapper.AddArgument(cookie_name);
 	int status_code = script_wrapper.Execute();
 	return status_code;

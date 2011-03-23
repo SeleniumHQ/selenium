@@ -92,8 +92,8 @@ LRESULT Session::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 	::RpcStringFree(&guid_string);
 	this->SetWindowText(this->session_id_.c_str());
 
-	this->PopulateCommandHandlerRepository();
-	this->PopulateElementFinderRepository();
+	this->PopulateCommandHandlerMap();
+	this->PopulateElementFinderMap();
 	this->current_browser_id_ = L"";
 	this->serialized_response_ = L"";
 	this->speed_ = 0;
@@ -146,7 +146,7 @@ LRESULT Session::OnGetResponse(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 }
 
 LRESULT Session::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-	std::tr1::shared_ptr<BrowserWrapper> browser;
+	BrowserHandle browser;
 	int status_code = this->GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS && !browser->is_closing()) {
 		this->is_waiting_ = !(browser->Wait());
@@ -170,7 +170,7 @@ LRESULT Session::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 
 LRESULT Session::OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	IWebBrowser2* browser = this->factory_.CreateBrowser();
-	std::tr1::shared_ptr<BrowserWrapper> new_window_wrapper(new BrowserWrapper(browser, NULL, this->m_hWnd));
+	BrowserHandle new_window_wrapper(new BrowserWrapper(browser, NULL, this->m_hWnd));
 	this->AddManagedBrowser(new_window_wrapper);
 	LPSTREAM* stream = (LPSTREAM*)lParam;
 	HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2, browser, stream);
@@ -181,7 +181,7 @@ LRESULT Session::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 	LPCTSTR str = (LPCTSTR)lParam;
 	std::wstring browser_id(str);
 	delete[] str;
-	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<BrowserWrapper>>::iterator found_iterator = this->managed_browsers_.find(browser_id);
+	BrowserMap::iterator found_iterator = this->managed_browsers_.find(browser_id);
 	if (found_iterator != this->managed_browsers_.end()) {
 		this->managed_browsers_.erase(browser_id);
 		if (this->managed_browsers_.size() == 0) {
@@ -236,15 +236,15 @@ unsigned int WINAPI Session::ThreadProc(LPVOID lpParameter) {
 void Session::DispatchCommand() {
 	std::string session_id = CW2A(this->session_id_.c_str(), CP_UTF8);
 	WebDriverResponse response(session_id);
-	std::map<int, std::tr1::shared_ptr<WebDriverCommandHandler>>::const_iterator found_iterator = this->command_handlers_.find(this->current_command_.command_value());
+	CommandHandlerMap::const_iterator found_iterator = this->command_handlers_.find(this->current_command_.command_value());
 
 	if (found_iterator == this->command_handlers_.end()) {
 		response.SetErrorResponse(501, "Command not implemented");
 	} else {
-		std::tr1::shared_ptr<WebDriverCommandHandler> command_handler = found_iterator->second;
+		CommandHandlerHandle command_handler = found_iterator->second;
 		command_handler->Execute(this, this->current_command_, &response);
 
-		std::tr1::shared_ptr<BrowserWrapper> browser;
+		BrowserHandle browser;
 		int status_code = this->GetCurrentBrowser(&browser);
 		if (status_code == SUCCESS) {
 			this->is_waiting_ = browser->wait_required();
@@ -257,16 +257,16 @@ void Session::DispatchCommand() {
 	this->serialized_response_ = response.Serialize();
 }
 
-int Session::GetCurrentBrowser(std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper) {
+int Session::GetCurrentBrowser(BrowserHandle* browser_wrapper) {
 	return this->GetManagedBrowser(this->current_browser_id_, browser_wrapper);
 }
 
-int Session::GetManagedBrowser(const std::wstring& browser_id, std::tr1::shared_ptr<BrowserWrapper>* browser_wrapper) {
+int Session::GetManagedBrowser(const std::wstring& browser_id, BrowserHandle* browser_wrapper) {
 	if (browser_id == L"") {
 		return ENOSUCHDRIVER;
 	}
 
-	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<BrowserWrapper>>::const_iterator found_iterator = this->managed_browsers_.find(browser_id);
+	BrowserMap::const_iterator found_iterator = this->managed_browsers_.find(browser_id);
 	if (found_iterator == this->managed_browsers_.end()) {
 		return ENOSUCHDRIVER;
 	}
@@ -278,13 +278,13 @@ int Session::GetManagedBrowser(const std::wstring& browser_id, std::tr1::shared_
 void Session::GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles) {
 	// TODO: Enumerate windows looking for browser windows
 	// created by showModalDialog().
-	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<BrowserWrapper>>::const_iterator it = this->managed_browsers_.begin();
+	BrowserMap::const_iterator it = this->managed_browsers_.begin();
 	for (; it != this->managed_browsers_.end(); ++it) {
 		managed_browser_handles->push_back(it->first);
 	}
 }
 
-void Session::AddManagedBrowser(std::tr1::shared_ptr<BrowserWrapper> browser_wrapper) {
+void Session::AddManagedBrowser(BrowserHandle browser_wrapper) {
 	this->managed_browsers_[browser_wrapper->browser_id()] = browser_wrapper;
 	if (this->current_browser_id_ == L"") {
 		this->current_browser_id_ = browser_wrapper->browser_id();
@@ -298,12 +298,12 @@ void Session::CreateNewBrowser(void) {
 	process_window_info.hwndBrowser = NULL;
 	process_window_info.pBrowser = NULL;
 	this->factory_.AttachToBrowser(&process_window_info);
-	std::tr1::shared_ptr<BrowserWrapper> wrapper(new BrowserWrapper(process_window_info.pBrowser, process_window_info.hwndBrowser, this->m_hWnd));
+	BrowserHandle wrapper(new BrowserWrapper(process_window_info.pBrowser, process_window_info.hwndBrowser, this->m_hWnd));
 	this->AddManagedBrowser(wrapper);
 }
 
-int Session::GetManagedElement(const std::wstring& element_id, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
-	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>>::const_iterator found_iterator = this->managed_elements_.find(element_id);
+int Session::GetManagedElement(const std::wstring& element_id, ElementHandle* element_wrapper) {
+	ElementMap::const_iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator == this->managed_elements_.end()) {
 		return ENOSUCHELEMENT;
 	}
@@ -312,7 +312,7 @@ int Session::GetManagedElement(const std::wstring& element_id, std::tr1::shared_
 	return SUCCESS;
 }
 
-void Session::AddManagedElement(IHTMLElement *element, std::tr1::shared_ptr<ElementWrapper>* element_wrapper) {
+void Session::AddManagedElement(IHTMLElement *element, ElementHandle* element_wrapper) {
 	// TODO: This method needs much work. If we are already managing a
 	// given element, we don't want to assign it a new ID, but to find
 	// out if we're managing it already, we need to compare to all of 
@@ -321,7 +321,7 @@ void Session::AddManagedElement(IHTMLElement *element, std::tr1::shared_ptr<Elem
 	// new managed element may take longer and longer as we have no
 	// good algorithm for removing dead elements from the map.
 	bool element_already_managed(false);
-	std::tr1::unordered_map<std::wstring,std::tr1::shared_ptr<ElementWrapper>>::iterator it = this->managed_elements_.begin();
+	ElementMap::iterator it = this->managed_elements_.begin();
 	for (; it != this->managed_elements_.end(); ++it) {
 		if (it->second->element() == element) {
 			*element_wrapper = it->second;
@@ -331,32 +331,32 @@ void Session::AddManagedElement(IHTMLElement *element, std::tr1::shared_ptr<Elem
 	}
 
 	if (!element_already_managed) {
-		std::tr1::shared_ptr<BrowserWrapper> current_browser;
+		BrowserHandle current_browser;
 		this->GetCurrentBrowser(&current_browser);
-		std::tr1::shared_ptr<ElementWrapper> new_wrapper(new ElementWrapper(element, current_browser->GetWindowHandle()));
+		ElementHandle new_wrapper(new ElementWrapper(element, current_browser->GetWindowHandle()));
 		this->managed_elements_[new_wrapper->element_id()] = new_wrapper;
 		*element_wrapper = new_wrapper;
 	}
 }
 
 void Session::RemoveManagedElement(const std::wstring& element_id) {
-	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>>::iterator found_iterator = this->managed_elements_.find(element_id);
+	ElementMap::iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator != this->managed_elements_.end()) {
-		std::tr1::shared_ptr<ElementWrapper> element_wrapper = found_iterator->second;
+		ElementHandle element_wrapper = found_iterator->second;
 		this->managed_elements_.erase(element_id);
 	}
 }
 
 void Session::ListManagedElements() {
-	std::tr1::unordered_map<std::wstring, std::tr1::shared_ptr<ElementWrapper>>::iterator it = this->managed_elements_.begin();
+	ElementMap::iterator it = this->managed_elements_.begin();
 	for (; it != this->managed_elements_.end(); ++it) {
 		std::string id(CW2A(it->first.c_str(), CP_UTF8));
 		std::cout << id << "\n";
 	}
 }
 
-int Session::GetElementFinder(const std::wstring& mechanism, std::tr1::shared_ptr<ElementFinder>* finder) {
-	std::map<std::wstring, std::tr1::shared_ptr<ElementFinder>>::const_iterator found_iterator = this->element_finders_.find(mechanism);
+int Session::GetElementFinder(const std::wstring& mechanism, ElementFinderHandle* finder) {
+	ElementFinderMap::const_iterator found_iterator = this->element_finders_.find(mechanism);
 	if (found_iterator == this->element_finders_.end()) {
 		return EUNHANDLEDERROR;
 	}
@@ -365,84 +365,84 @@ int Session::GetElementFinder(const std::wstring& mechanism, std::tr1::shared_pt
 	return SUCCESS;
 }
 
-void Session::PopulateElementFinderRepository(void) {
+void Session::PopulateElementFinderMap(void) {
 	// TODO (JimEvans): This is left over from a previous method of finding
 	// elements. This needs to be completely refactored.
-	this->element_finders_[L"id"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"id"));
-	this->element_finders_[L"name"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"name"));
-	this->element_finders_[L"tag name"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"tagName"));
-	this->element_finders_[L"link text"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"linkText"));
-	this->element_finders_[L"partial link text"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"partialLinkText"));
-	this->element_finders_[L"class name"] = std::tr1::shared_ptr<ElementFinder>(new ElementFinder(L"className"));
-	this->element_finders_[L"xpath"] = std::tr1::shared_ptr<ElementFinder>(new FindByXPathElementFinder(L"xpath"));
-	this->element_finders_[L"css selector"] = std::tr1::shared_ptr<ElementFinder>(new FindByCssSelectorElementFinder(L"css"));
+	this->element_finders_[L"id"] = ElementFinderHandle(new ElementFinder(L"id"));
+	this->element_finders_[L"name"] = ElementFinderHandle(new ElementFinder(L"name"));
+	this->element_finders_[L"tag name"] = ElementFinderHandle(new ElementFinder(L"tagName"));
+	this->element_finders_[L"link text"] = ElementFinderHandle(new ElementFinder(L"linkText"));
+	this->element_finders_[L"partial link text"] = ElementFinderHandle(new ElementFinder(L"partialLinkText"));
+	this->element_finders_[L"class name"] = ElementFinderHandle(new ElementFinder(L"className"));
+	this->element_finders_[L"xpath"] = ElementFinderHandle(new FindByXPathElementFinder(L"xpath"));
+	this->element_finders_[L"css selector"] = ElementFinderHandle(new FindByCssSelectorElementFinder(L"css"));
 }
 
-void Session::PopulateCommandHandlerRepository() {
-	this->command_handlers_[NoCommand] = std::tr1::shared_ptr<WebDriverCommandHandler>(new WebDriverCommandHandler);
-	this->command_handlers_[GetCurrentWindowHandle] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetCurrentWindowHandleCommandHandler);
-	this->command_handlers_[GetWindowHandles] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetAllWindowHandlesCommandHandler);
-	this->command_handlers_[SwitchToWindow] = std::tr1::shared_ptr<WebDriverCommandHandler>(new SwitchToWindowCommandHandler);
-	this->command_handlers_[SwitchToFrame] = std::tr1::shared_ptr<WebDriverCommandHandler>(new SwitchToFrameCommandHandler);
-	this->command_handlers_[Get] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GoToUrlCommandHandler);
-	this->command_handlers_[GoForward] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GoForwardCommandHandler);
-	this->command_handlers_[GoBack] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GoBackCommandHandler);
-	this->command_handlers_[Refresh] = std::tr1::shared_ptr<WebDriverCommandHandler>(new RefreshCommandHandler);
-	this->command_handlers_[GetSpeed] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetSpeedCommandHandler);
-	this->command_handlers_[SetSpeed] = std::tr1::shared_ptr<WebDriverCommandHandler>(new SetSpeedCommandHandler);
-	this->command_handlers_[ImplicitlyWait] = std::tr1::shared_ptr<WebDriverCommandHandler>(new SetImplicitWaitTimeoutCommandHandler);
-	this->command_handlers_[SetAsyncScriptTimeout] = std::tr1::shared_ptr<WebDriverCommandHandler>(new SetAsyncScriptTimeoutCommandHandler);
-	this->command_handlers_[NewSession] = std::tr1::shared_ptr<WebDriverCommandHandler>(new NewSessionCommandHandler);
-	this->command_handlers_[GetSessionCapabilities] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetSessionCapabilitiesCommandHandler);
-	this->command_handlers_[Close] = std::tr1::shared_ptr<WebDriverCommandHandler>(new CloseWindowCommandHandler);
-	this->command_handlers_[Quit] = std::tr1::shared_ptr<WebDriverCommandHandler>(new QuitCommandHandler);
-	this->command_handlers_[GetTitle] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetTitleCommandHandler);
-	this->command_handlers_[GetPageSource] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetPageSourceCommandHandler);
-	this->command_handlers_[GetCurrentUrl] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetCurrentUrlCommandHandler);
-	this->command_handlers_[ExecuteAsyncScript] = std::tr1::shared_ptr<WebDriverCommandHandler>(new ExecuteAsyncScriptCommandHandler);
-	this->command_handlers_[ExecuteScript] = std::tr1::shared_ptr<WebDriverCommandHandler>(new ExecuteScriptCommandHandler);
-	this->command_handlers_[GetActiveElement] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetActiveElementCommandHandler);
-	this->command_handlers_[FindElement] = std::tr1::shared_ptr<WebDriverCommandHandler>(new FindElementCommandHandler);
-	this->command_handlers_[FindElements] = std::tr1::shared_ptr<WebDriverCommandHandler>(new FindElementsCommandHandler);
-	this->command_handlers_[FindChildElement] = std::tr1::shared_ptr<WebDriverCommandHandler>(new FindChildElementCommandHandler);
-	this->command_handlers_[FindChildElements] = std::tr1::shared_ptr<WebDriverCommandHandler>(new FindChildElementsCommandHandler);
-	this->command_handlers_[GetElementTagName] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetElementTagNameCommandHandler);
-	this->command_handlers_[GetElementLocation] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetElementLocationCommandHandler);
-	this->command_handlers_[GetElementSize] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetElementSizeCommandHandler);
-	this->command_handlers_[GetElementLocationOnceScrolledIntoView] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetElementLocationOnceScrolledIntoViewCommandHandler);
-	this->command_handlers_[GetElementAttribute] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetElementAttributeCommandHandler);
-	this->command_handlers_[GetElementText] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetElementTextCommandHandler);
-	this->command_handlers_[GetElementValueOfCssProperty] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetElementValueOfCssPropertyCommandHandler);
-	this->command_handlers_[GetElementValue] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetElementValueCommandHandler);
-	this->command_handlers_[ClickElement] = std::tr1::shared_ptr<WebDriverCommandHandler>(new ClickElementCommandHandler);
-	this->command_handlers_[ClearElement] = std::tr1::shared_ptr<WebDriverCommandHandler>(new ClearElementCommandHandler);
-	this->command_handlers_[SubmitElement] = std::tr1::shared_ptr<WebDriverCommandHandler>(new SubmitElementCommandHandler);
-	this->command_handlers_[ToggleElement] = std::tr1::shared_ptr<WebDriverCommandHandler>(new ToggleElementCommandHandler);
-	this->command_handlers_[HoverOverElement] = std::tr1::shared_ptr<WebDriverCommandHandler>(new HoverOverElementCommandHandler);
-	this->command_handlers_[DragElement] = std::tr1::shared_ptr<WebDriverCommandHandler>(new DragElementCommandHandler);
-	this->command_handlers_[SetElementSelected] = std::tr1::shared_ptr<WebDriverCommandHandler>(new SetElementSelectedCommandHandler);
-	this->command_handlers_[IsElementDisplayed] = std::tr1::shared_ptr<WebDriverCommandHandler>(new IsElementDisplayedCommandHandler);
-	this->command_handlers_[IsElementSelected] = std::tr1::shared_ptr<WebDriverCommandHandler>(new IsElementSelectedCommandHandler);
-	this->command_handlers_[IsElementEnabled] = std::tr1::shared_ptr<WebDriverCommandHandler>(new IsElementEnabledCommandHandler);
-	this->command_handlers_[SendKeysToElement] = std::tr1::shared_ptr<WebDriverCommandHandler>(new SendKeysCommandHandler);
-	this->command_handlers_[ElementEquals] = std::tr1::shared_ptr<WebDriverCommandHandler>(new ElementEqualsCommandHandler);
-	this->command_handlers_[AddCookie] = std::tr1::shared_ptr<WebDriverCommandHandler>(new AddCookieCommandHandler);
-	this->command_handlers_[GetAllCookies] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetAllCookiesCommandHandler);
-	this->command_handlers_[DeleteCookie] = std::tr1::shared_ptr<WebDriverCommandHandler>(new DeleteCookieCommandHandler);
-	this->command_handlers_[DeleteAllCookies] = std::tr1::shared_ptr<WebDriverCommandHandler>(new DeleteAllCookiesCommandHandler);
-	this->command_handlers_[Screenshot] = std::tr1::shared_ptr<WebDriverCommandHandler>(new ScreenshotCommandHandler);
+void Session::PopulateCommandHandlerMap() {
+	this->command_handlers_[NoCommand] = CommandHandlerHandle(new WebDriverCommandHandler);
+	this->command_handlers_[GetCurrentWindowHandle] = CommandHandlerHandle(new GetCurrentWindowHandleCommandHandler);
+	this->command_handlers_[GetWindowHandles] = CommandHandlerHandle(new GetAllWindowHandlesCommandHandler);
+	this->command_handlers_[SwitchToWindow] = CommandHandlerHandle(new SwitchToWindowCommandHandler);
+	this->command_handlers_[SwitchToFrame] = CommandHandlerHandle(new SwitchToFrameCommandHandler);
+	this->command_handlers_[Get] = CommandHandlerHandle(new GoToUrlCommandHandler);
+	this->command_handlers_[GoForward] = CommandHandlerHandle(new GoForwardCommandHandler);
+	this->command_handlers_[GoBack] = CommandHandlerHandle(new GoBackCommandHandler);
+	this->command_handlers_[Refresh] = CommandHandlerHandle(new RefreshCommandHandler);
+	this->command_handlers_[GetSpeed] = CommandHandlerHandle(new GetSpeedCommandHandler);
+	this->command_handlers_[SetSpeed] = CommandHandlerHandle(new SetSpeedCommandHandler);
+	this->command_handlers_[ImplicitlyWait] = CommandHandlerHandle(new SetImplicitWaitTimeoutCommandHandler);
+	this->command_handlers_[SetAsyncScriptTimeout] = CommandHandlerHandle(new SetAsyncScriptTimeoutCommandHandler);
+	this->command_handlers_[NewSession] = CommandHandlerHandle(new NewSessionCommandHandler);
+	this->command_handlers_[GetSessionCapabilities] = CommandHandlerHandle(new GetSessionCapabilitiesCommandHandler);
+	this->command_handlers_[Close] = CommandHandlerHandle(new CloseWindowCommandHandler);
+	this->command_handlers_[Quit] = CommandHandlerHandle(new QuitCommandHandler);
+	this->command_handlers_[GetTitle] = CommandHandlerHandle(new GetTitleCommandHandler);
+	this->command_handlers_[GetPageSource] = CommandHandlerHandle(new GetPageSourceCommandHandler);
+	this->command_handlers_[GetCurrentUrl] = CommandHandlerHandle(new GetCurrentUrlCommandHandler);
+	this->command_handlers_[ExecuteAsyncScript] = CommandHandlerHandle(new ExecuteAsyncScriptCommandHandler);
+	this->command_handlers_[ExecuteScript] = CommandHandlerHandle(new ExecuteScriptCommandHandler);
+	this->command_handlers_[GetActiveElement] = CommandHandlerHandle(new GetActiveElementCommandHandler);
+	this->command_handlers_[FindElement] = CommandHandlerHandle(new FindElementCommandHandler);
+	this->command_handlers_[FindElements] = CommandHandlerHandle(new FindElementsCommandHandler);
+	this->command_handlers_[FindChildElement] = CommandHandlerHandle(new FindChildElementCommandHandler);
+	this->command_handlers_[FindChildElements] = CommandHandlerHandle(new FindChildElementsCommandHandler);
+	this->command_handlers_[GetElementTagName] = CommandHandlerHandle(new GetElementTagNameCommandHandler);
+	this->command_handlers_[GetElementLocation] = CommandHandlerHandle(new GetElementLocationCommandHandler);
+	this->command_handlers_[GetElementSize] = CommandHandlerHandle(new GetElementSizeCommandHandler);
+	this->command_handlers_[GetElementLocationOnceScrolledIntoView] = CommandHandlerHandle(new GetElementLocationOnceScrolledIntoViewCommandHandler);
+	this->command_handlers_[GetElementAttribute] = CommandHandlerHandle(new GetElementAttributeCommandHandler);
+	this->command_handlers_[GetElementText] = CommandHandlerHandle(new GetElementTextCommandHandler);
+	this->command_handlers_[GetElementValueOfCssProperty] = CommandHandlerHandle(new GetElementValueOfCssPropertyCommandHandler);
+	this->command_handlers_[GetElementValue] = CommandHandlerHandle(new GetElementValueCommandHandler);
+	this->command_handlers_[ClickElement] = CommandHandlerHandle(new ClickElementCommandHandler);
+	this->command_handlers_[ClearElement] = CommandHandlerHandle(new ClearElementCommandHandler);
+	this->command_handlers_[SubmitElement] = CommandHandlerHandle(new SubmitElementCommandHandler);
+	this->command_handlers_[ToggleElement] = CommandHandlerHandle(new ToggleElementCommandHandler);
+	this->command_handlers_[HoverOverElement] = CommandHandlerHandle(new HoverOverElementCommandHandler);
+	this->command_handlers_[DragElement] = CommandHandlerHandle(new DragElementCommandHandler);
+	this->command_handlers_[SetElementSelected] = CommandHandlerHandle(new SetElementSelectedCommandHandler);
+	this->command_handlers_[IsElementDisplayed] = CommandHandlerHandle(new IsElementDisplayedCommandHandler);
+	this->command_handlers_[IsElementSelected] = CommandHandlerHandle(new IsElementSelectedCommandHandler);
+	this->command_handlers_[IsElementEnabled] = CommandHandlerHandle(new IsElementEnabledCommandHandler);
+	this->command_handlers_[SendKeysToElement] = CommandHandlerHandle(new SendKeysCommandHandler);
+	this->command_handlers_[ElementEquals] = CommandHandlerHandle(new ElementEqualsCommandHandler);
+	this->command_handlers_[AddCookie] = CommandHandlerHandle(new AddCookieCommandHandler);
+	this->command_handlers_[GetAllCookies] = CommandHandlerHandle(new GetAllCookiesCommandHandler);
+	this->command_handlers_[DeleteCookie] = CommandHandlerHandle(new DeleteCookieCommandHandler);
+	this->command_handlers_[DeleteAllCookies] = CommandHandlerHandle(new DeleteAllCookiesCommandHandler);
+	this->command_handlers_[Screenshot] = CommandHandlerHandle(new ScreenshotCommandHandler);
 
-	this->command_handlers_[AcceptAlert] = std::tr1::shared_ptr<WebDriverCommandHandler>(new AcceptAlertCommandHandler);
-	this->command_handlers_[DismissAlert] = std::tr1::shared_ptr<WebDriverCommandHandler>(new DismissAlertCommandHandler);
-	this->command_handlers_[GetAlertText] = std::tr1::shared_ptr<WebDriverCommandHandler>(new GetAlertTextCommandHandler);
-	this->command_handlers_[SendKeysToAlert] = std::tr1::shared_ptr<WebDriverCommandHandler>(new SendKeysToAlertCommandHandler);
+	this->command_handlers_[AcceptAlert] = CommandHandlerHandle(new AcceptAlertCommandHandler);
+	this->command_handlers_[DismissAlert] = CommandHandlerHandle(new DismissAlertCommandHandler);
+	this->command_handlers_[GetAlertText] = CommandHandlerHandle(new GetAlertTextCommandHandler);
+	this->command_handlers_[SendKeysToAlert] = CommandHandlerHandle(new SendKeysToAlertCommandHandler);
 
-	this->command_handlers_[SendModifierKey] = std::tr1::shared_ptr<WebDriverCommandHandler>(new SendModifierKeyCommandHandler);
-	this->command_handlers_[MouseMoveTo] = std::tr1::shared_ptr<WebDriverCommandHandler>(new MouseMoveToCommandHandler);
-	this->command_handlers_[MouseClick] = std::tr1::shared_ptr<WebDriverCommandHandler>(new MouseClickCommandHandler);
-	this->command_handlers_[MouseDoubleClick] = std::tr1::shared_ptr<WebDriverCommandHandler>(new MouseDoubleClickCommandHandler);
-	this->command_handlers_[MouseButtonDown] = std::tr1::shared_ptr<WebDriverCommandHandler>(new MouseButtonDownCommandHandler);
-	this->command_handlers_[MouseButtonUp] = std::tr1::shared_ptr<WebDriverCommandHandler>(new MouseButtonUpCommandHandler);
+	this->command_handlers_[SendModifierKey] = CommandHandlerHandle(new SendModifierKeyCommandHandler);
+	this->command_handlers_[MouseMoveTo] = CommandHandlerHandle(new MouseMoveToCommandHandler);
+	this->command_handlers_[MouseClick] = CommandHandlerHandle(new MouseClickCommandHandler);
+	this->command_handlers_[MouseDoubleClick] = CommandHandlerHandle(new MouseDoubleClickCommandHandler);
+	this->command_handlers_[MouseButtonDown] = CommandHandlerHandle(new MouseButtonDownCommandHandler);
+	this->command_handlers_[MouseButtonUp] = CommandHandlerHandle(new MouseButtonUpCommandHandler);
 }
 
 } // namespace webdriver

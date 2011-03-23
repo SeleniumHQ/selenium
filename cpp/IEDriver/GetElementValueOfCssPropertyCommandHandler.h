@@ -35,9 +35,9 @@ public:
 	}
 
 protected:
-	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(Session* session, const std::map<std::string, std::string>& locator_parameters, const std::map<std::string, Json::Value>& command_parameters, WebDriverResponse * response) {
-		std::map<std::string, std::string>::const_iterator id_parameter_iterator = locator_parameters.find("id");
-		std::map<std::string, std::string>::const_iterator property_name_parameter_iterator = locator_parameters.find("propertyName");
+	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
+		LocatorMap::const_iterator property_name_parameter_iterator = locator_parameters.find("propertyName");
 		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
 			return;
@@ -48,14 +48,14 @@ protected:
 			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
 			std::wstring name(CA2W(property_name_parameter_iterator->second.c_str(), CP_UTF8));
 
-			std::tr1::shared_ptr<BrowserWrapper> browser_wrapper;
+			BrowserHandle browser_wrapper;
 			int status_code = session->GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
 
-			std::tr1::shared_ptr<ElementWrapper> element_wrapper;
+			ElementHandle element_wrapper;
 			status_code = this->GetElement(session, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				std::wstring value(this->GetPropertyValue(browser_wrapper, element_wrapper->element(), name.c_str()));
@@ -86,7 +86,7 @@ private:
 		return to_mangle;
 	}
 
-	std::wstring GetElementValueOfCssPropertyCommandHandler::GetPropertyValue(std::tr1::shared_ptr<BrowserWrapper> browser_wrapper, IHTMLElement *element, LPCWSTR property_name) {
+	std::wstring GetElementValueOfCssPropertyCommandHandler::GetPropertyValue(BrowserHandle browser_wrapper, IHTMLElement *element, LPCWSTR property_name) {
 		std::wstring result_str(L"");
 		CComQIPtr<IHTMLElement2> styled(element);
 		if (!styled) {
