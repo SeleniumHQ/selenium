@@ -31,6 +31,14 @@ class FirefoxLauncherTests (unittest.TestCase):
         self.webdriver.close()
         self.webdriver.quit()
 
+    def test_we_can_launch_multiple_firefox_instances(self):
+        self.webdriver1 = webdriver.Firefox()
+        self.webdriver2 = webdriver.Firefox()
+        self.webdriver3 = webdriver.Firefox()
+        self.webdriver1.quit()
+        self.webdriver2.quit()
+        self.webdriver3.quit()
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     unittest.main()
