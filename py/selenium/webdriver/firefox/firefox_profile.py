@@ -3,6 +3,7 @@ import os
 import logging
 import zipfile
 import shutil
+import re
 
 WEBDRIVER_EXT = "webdriver.xpi"
 EXTENSION_NAME = "fxdriver@googlecode.com"
@@ -10,7 +11,7 @@ EXTENSION_NAME = "fxdriver@googlecode.com"
 class FirefoxProfile(object):
 
     ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
-    DEFAULT_PREFERENCES = {
+    default_preferences = {
         "app.update.auto": "false",
         "app.update.enabled": "false",
         "browser.startup.page" : "0",
@@ -66,19 +67,26 @@ class FirefoxProfile(object):
         self.profile_dir = profile_directory
         if self.profile_dir is None:
             self.profile_dir = self._create_tempfolder()
+        else:
+            newprof = tempfile.gettempdir() + "webdriver-py-profilecopy"
+            if os.path.exists(newprof):
+                os.remove(newprof)
+            shutil.copytree(self.profile_dir, newprof)
+            self.profile_dir = newprof
+            self._read_existing_userjs()
         self.extensionsDir = os.path.join(self.profile_dir, "extensions")
         self.userPrefs = os.path.join(self.profile_dir, "user.js")
 
     #Public Methods
     def set_preference(self, key, value): 
         """ sets the preference that we want in the profile."""
-        self.DEFAULT_PREFERENCES[key] = str(value)
+        self.default_preferences[key] = str(value)
 
     def add_extension(self, extension=WEBDRIVER_EXT):
         self._install_extension(extension)
 
     def update_preferences(self):
-        self._write_user_prefs(self.DEFAULT_PREFERENCES)
+        self._write_user_prefs(self.default_preferences)
     
     #Properties
 
@@ -96,15 +104,15 @@ class FirefoxProfile(object):
     def port(self, port):
         """ Sets the port that WebDriver will be running on """
         self._port = port
-        self.DEFAULT_PREFERENCES["webdriver_firefox_port"] =  str(self._port)
+        self.default_preferences["webdriver_firefox_port"] =  str(self._port)
 
     @property
     def accept_untrusted_certs(self):
-        return bool(self.DEFAULT_PREFERENCES["webdriver_accept_untrusted_certs"])
+        return bool(self.default_preferences["webdriver_accept_untrusted_certs"])
 
     @accept_untrusted_certs.setter
     def accept_untrusted_certs(self, value):
-        self.DEFAULT_PREFERENCES["webdriver_accept_untrusted_certs"] = str(value)
+        self.default_preferences["webdriver_accept_untrusted_certs"] = str(value)
 
     #Private Methods
 
@@ -119,6 +127,14 @@ class FirefoxProfile(object):
             f.write('user_pref("%s", %s);\n' % (pref, user_prefs[pref]))
 
         f.close()
+
+    def _read_existing_userjs(self):
+        f = open(os.path.join(self.profile_dir, 'user.js'), "r")
+        tmp_usr = f.readlines()
+        f.close()
+        for usr in tmp_usr:
+            matches = re.search('user_pref\("(.*)",\s(.*)\)', usr)
+            self.default_preferences[matches.group(1)] = matches.group(2)
 
     def _install_extension(self, extension):
         tempdir = tempfile.mkdtemp()
