@@ -31,33 +31,33 @@ class WebElement(object):
     @property
     def tag_name(self):
         """Gets this element's tagName property."""
-        return self.execute(Command.GET_ELEMENT_TAG_NAME)['value']
+        return self._execute(Command.GET_ELEMENT_TAG_NAME)['value']
 
     @property
     def text(self):
         """Gets the text of the element."""
-        return self.execute(Command.GET_ELEMENT_TEXT)['value']
+        return self._execute(Command.GET_ELEMENT_TEXT)['value']
 
     def click(self):
         """Clicks the element."""
-        self.execute(Command.CLICK_ELEMENT)
+        self._execute(Command.CLICK_ELEMENT)
 
     def submit(self):
         """Submits a form."""
-        self.execute(Command.SUBMIT_ELEMENT)
+        self._execute(Command.SUBMIT_ELEMENT)
 
     @property
     def value(self):
         """Gets the value of the element's value attribute."""
-        return self.execute(Command.GET_ELEMENT_VALUE)['value']
+        return self._execute(Command.GET_ELEMENT_VALUE)['value']
 
     def clear(self):
         """Clears the text if it's a text entry element."""
-        self.execute(Command.CLEAR_ELEMENT)
+        self._execute(Command.CLEAR_ELEMENT)
 
     def get_attribute(self, name):
         """Gets the attribute value."""
-        resp = self.execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
+        resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
         attributeValue = ''
         if resp['value'] is None:
             attributeValue = None
@@ -70,20 +70,20 @@ class WebElement(object):
 
     def toggle(self):
         """Toggles the element state."""
-        resp = self.execute(Command.TOGGLE_ELEMENT)
+        resp = self._execute(Command.TOGGLE_ELEMENT)
         return resp['value']
 
     def is_selected(self):
         """Whether the element is selected."""
-        return self.execute(Command.IS_ELEMENT_SELECTED)['value']
+        return self._execute(Command.IS_ELEMENT_SELECTED)['value']
 
     def select(self):
         """Selects an element."""
-        self.execute(Command.SET_ELEMENT_SELECTED)
+        self._execute(Command.SET_ELEMENT_SELECTED)
 
     def is_enabled(self):
         """Whether the element is enabled."""
-        return self.execute(Command.IS_ELEMENT_ENABLED)['value']
+        return self._execute(Command.IS_ELEMENT_ENABLED)['value']
 
     def find_element_by_id(self, id_):
         """Finds element by id."""
@@ -144,21 +144,21 @@ class WebElement(object):
 
     def send_keys(self, *value):
         """Simulates typing into the element."""
-        self.execute(Command.SEND_KEYS_TO_ELEMENT, {'value': value})
+        self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value': value})
 
     # RenderedWebElement Items
     def is_displayed(self):
         """Whether the element would be visible to a user"""
-        return self.execute(Command.IS_ELEMENT_DISPLAYED)['value']
+        return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
 
     @property
     def size(self):
         """ Returns the size of the element """
-        return self.execute(Command.GET_ELEMENT_SIZE)['value']
+        return self._execute(Command.GET_ELEMENT_SIZE)['value']
 
     def value_of_css_property(self, property_name):
         """ Returns the value of a CSS property """
-        return self.execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
+        return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
                         {'propertyName': property_name})['value']
 
     @property
@@ -170,11 +170,11 @@ class WebElement(object):
         return self._id
 
     # Private Methods
-    def execute(self, command, params=None):
+    def _execute(self, command, params=None):
         """Executes a command against the underlying HTML element.
 
         Args:
-          command: The name of the command to execute as a string.
+          command: The name of the command to _execute as a string.
           params: A dictionary of named parameters to send with the command.
 
         Returns:
@@ -186,9 +186,9 @@ class WebElement(object):
         return self._parent.execute(command, params)
 
     def find_element(self, by=By.ID, value=None):
-        return self.execute(Command.FIND_CHILD_ELEMENT,
+        return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by, "value": value})['value']
 
     def find_elements(self, by=By.ID, value=None):
-        return self.execute(Command.FIND_CHILD_ELEMENTS,
+        return self._execute(Command.FIND_CHILD_ELEMENTS,
                              {"using": by, "value": value})['value']
