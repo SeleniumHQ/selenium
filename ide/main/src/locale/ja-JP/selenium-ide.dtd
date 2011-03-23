@@ -24,6 +24,10 @@
 <!ENTITY pauseButton.tooltip "一時停止/再開">
 <!ENTITY stepButton.tooltip "1ステップ実行">
 <!ENTITY speedSliderFast.label "Fast">
+<!ENTITY speedSliderFaster.label "高速化">
+<!ENTITY speedSliderFastest.label "最速">
+<!ENTITY speedSliderSlowest.label "遅い">
+<!ENTITY speedSliderSlower.label "遅い">
 <!ENTITY speedSliderSlow.label "Slow">
 <!ENTITY recordButton.tooltip "テストの記録">
 <!ENTITY baseURL.label "Base URL">

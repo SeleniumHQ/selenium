@@ -24,6 +24,10 @@
 <!ENTITY pauseButton.tooltip "Pausar / Reiniciar">
 <!ENTITY stepButton.tooltip "Iterar">
 <!ENTITY speedSliderFast.label "Fast">
+<!ENTITY speedSliderFaster.label "Mais rápido">
+<!ENTITY speedSliderFastest.label "O mais rápido">
+<!ENTITY speedSliderSlowest.label "O mais lento">
+<!ENTITY speedSliderSlower.label "Mais lento">
 <!ENTITY speedSliderSlow.label "Slow">
 <!ENTITY recordButton.tooltip "Gravar">
 <!ENTITY baseURL.label "URL Base">

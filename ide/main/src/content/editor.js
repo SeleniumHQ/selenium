@@ -248,13 +248,9 @@ Editor.controller = {
         case "cmd_selenium_rollup":
         case "cmd_selenium_reload":
         case "cmd_selenium_record":
-			return true;
         case "cmd_selenium_speed_fastest":
-            return true;
         case "cmd_selenium_speed_faster":
-            return true;
         case "cmd_selenium_speed_slower":
-            return true;
         case "cmd_selenium_speed_slowest":
             return true;
 		default:
@@ -297,9 +293,9 @@ Editor.controller = {
         case "cmd_selenium_speed_faster":
             return editor.getInterval() > 0;
         case "cmd_selenium_speed_slower":
-            return editor.getInterval() < this.speedMaxInterval;
+            return editor.getInterval() < editor.speedMaxInterval;
         case "cmd_selenium_speed_slowest":
-            return editor.getInterval() < this.speedMaxInterval;
+            return editor.getInterval() < editor.speedMaxInterval;
 		default:
 			return false;
 		}
@@ -465,6 +461,16 @@ Editor.prototype.updateSeleniumCommands = function() {
     , "cmd_selenium_step"
     , "cmd_selenium_rollup"
     , "cmd_selenium_reload"].forEach(function(cmd) {
+        goUpdateCommand(cmd);
+    });
+};
+
+Editor.prototype.updateSeleniumActionCommands = function() {
+    this.log.debug("updateSeleniumActionCommands");
+    [ "cmd_selenium_speed_faster"
+    , "cmd_selenium_speed_fastest"
+    , "cmd_selenium_speed_slower"
+    , "cmd_selenium_speed_slowest" ].forEach(function(cmd) {
         goUpdateCommand(cmd);
     });
 };

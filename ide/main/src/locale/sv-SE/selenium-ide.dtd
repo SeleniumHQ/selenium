@@ -24,6 +24,10 @@
 <!ENTITY pauseButton.tooltip "Paus / Återgå">
 <!ENTITY stepButton.tooltip "Stega">
 <!ENTITY speedSliderFast.label "Fast">
+<!ENTITY speedSliderFaster.label "Snabbare">
+<!ENTITY speedSliderFastest.label "Snabbast">
+<!ENTITY speedSliderSlowest.label "Långsammast">
+<!ENTITY speedSliderSlower.label "Långsammare">
 <!ENTITY speedSliderSlow.label "Slow">
 <!ENTITY recordButton.tooltip "Spela in">
 <!ENTITY baseURL.label "Bas-URL">
