@@ -362,11 +362,11 @@ int Session::GetElementFindMethod(const std::wstring& mechanism, std::wstring* t
 	return SUCCESS;
 }
 
-int Session::LocateElement(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) const {
+int Session::LocateElement(const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) const {
 	return this->element_finder().FindElement(*this, parent_wrapper, mechanism, criteria, found_element);
 }
 
-int Session::LocateElements(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) const {
+int Session::LocateElements(const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) const {
 	return this->element_finder().FindElements(*this, parent_wrapper, mechanism, criteria, found_elements);
 }
 

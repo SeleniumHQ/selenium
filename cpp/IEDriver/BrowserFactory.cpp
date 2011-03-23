@@ -178,8 +178,7 @@ void BrowserFactory::ResetThreadIntegrityLevel() {
 	::RevertToSelf();
 }
 
-HWND BrowserFactory::GetTabWindowHandle(IWebBrowser2 *browser)
- {
+HWND BrowserFactory::GetTabWindowHandle(IWebBrowser2* browser) {
 	ProcessWindowInfo process_window_info;
 	process_window_info.pBrowser = browser;
 	process_window_info.hwndBrowser = NULL;
@@ -311,7 +310,7 @@ void BrowserFactory::GetExecutableLocation() {
 	}
 }
 
-bool BrowserFactory::GetRegistryValue(HKEY root_key, std::wstring subkey, std::wstring value_name, std::wstring *value) {
+bool BrowserFactory::GetRegistryValue(const HKEY root_key, const std::wstring& subkey, const std::wstring& value_name, std::wstring *value) {
 	bool value_retrieved(false);
 	DWORD required_buffer_size;
 	HKEY key_handle;

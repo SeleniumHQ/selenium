@@ -82,8 +82,8 @@ public:
 	void ListManagedElements(void);
 
 	int GetElementFindMethod(const std::wstring& mechanism, std::wstring* translation) const;
-	int LocateElement(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) const;
-	int LocateElements(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) const;
+	int LocateElement(const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) const;
+	int LocateElements(const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) const;
 
 	int speed(void) const { return this->speed_; }
 	void set_speed(const int speed) { this->speed_ = speed; }

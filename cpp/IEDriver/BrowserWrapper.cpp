@@ -426,7 +426,7 @@ bool BrowserWrapper::Wait() {
 	return !is_navigating;
 }
 
-bool BrowserWrapper::IsDocumentNavigating(IHTMLDocument2 *doc) {
+bool BrowserWrapper::IsDocumentNavigating(IHTMLDocument2* doc) {
 	bool is_navigating = true;
 	// Starting WaitForDocumentComplete()
 	is_navigating = this->is_navigation_started_;
@@ -489,7 +489,7 @@ bool BrowserWrapper::IsDocumentNavigating(IHTMLDocument2 *doc) {
 	return is_navigating;
 }
 
-bool BrowserWrapper::GetDocumentFromWindow(IHTMLWindow2 *window, IHTMLDocument2 **doc) {
+bool BrowserWrapper::GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc) {
 	HRESULT hr = window->get_document(doc);
 	if (SUCCEEDED(hr)) {
 		return true;

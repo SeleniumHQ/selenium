@@ -20,8 +20,8 @@ public:
 	ScriptWrapper(IHTMLDocument2* document, std::wstring script_source, unsigned long argument_count);
 	~ScriptWrapper(void);
 
-	std::wstring source_code() { return this->source_code_; }
-	unsigned long argument_count() { return this->argument_count_; }
+	std::wstring source_code() const { return this->source_code_; }
+	unsigned long argument_count() const { return this->argument_count_; }
 	SAFEARRAY* arguments() { return this->argument_array_; }
 	VARIANT result() { return this->result_; }
 	void set_result(VARIANT value) { ::VariantCopy(&this->result_, &value); }
