@@ -40,15 +40,6 @@ class CookieTest(unittest.TestCase):
         self.driver.delete_cookie("foo")
         self.assertFalse(self.driver.get_cookies())
 
-    @require_online
-    def testGetGoogleCookie(self):
-        self.driver.get("http://www.google.com")
-        cookies = self.driver.get_cookies()
-        cookie = [c for c in cookies if c['name'] == 'PREF']
-        self.assertTrue(len(cookie) > 0)
-        self.assertEquals("PREF", cookie[0]["name"])
-        self.assertTrue("google" in cookie[0]["domain"])
-
     def _loadPage(self, name):
         self.driver.get(self._pageURL(name))
 
