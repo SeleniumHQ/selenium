@@ -18,9 +18,9 @@ public:
 	}
 
 protected:
-	void ScreenshotCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void ScreenshotCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		BrowserHandle browser_wrapper;
-		session->GetCurrentBrowser(&browser_wrapper);
+		session.GetCurrentBrowser(&browser_wrapper);
 		
 		this->image_ = new CImage();
 		HRESULT hr = this->CaptureBrowser(browser_wrapper->browser());
@@ -61,7 +61,7 @@ private:
 		return true;
 	}
 
-	HRESULT ScreenshotCommandHandler::CaptureBrowser(IWebBrowser2 *browser) {
+	HRESULT ScreenshotCommandHandler::CaptureBrowser(IWebBrowser2* browser) {
 		// Get the browser HWND.
 		HWND content_window_handle;
 
@@ -155,7 +155,7 @@ private:
 
 		// TODO: What if the file is bigger than max_int?
 		// LOG(INFO) << "Size of stream: " << statstg.cbSize.QuadPart;
-		int length = ::Base64EncodeGetRequiredLength((int)statstg.cbSize.QuadPart, ATL_BASE64_FLAG_NOCRLF);
+		int length = ::Base64EncodeGetRequiredLength(static_cast<int>(statstg.cbSize.QuadPart), ATL_BASE64_FLAG_NOCRLF);
 		if (length <= 0) {
 			LOG(WARN) << "Got zero or negative length from base64 required length";
 			return E_FAIL;

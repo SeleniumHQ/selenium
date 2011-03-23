@@ -72,18 +72,18 @@ public:
 
 	void CreateNewBrowser(void);
 
-	int GetManagedBrowser(const std::wstring& browser_id, BrowserHandle* browser_wrapper);
-	int GetCurrentBrowser(BrowserHandle* browser_wrapper);
-	void GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles);
+	int GetManagedBrowser(const std::wstring& browser_id, BrowserHandle* browser_wrapper) const;
+	int GetCurrentBrowser(BrowserHandle* browser_wrapper) const;
+	void GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles) const;
 
+	int GetManagedElement(const std::wstring& element_id, ElementHandle* element_wrapper) const;
 	void AddManagedElement(IHTMLElement* element, ElementHandle* element_wrapper);
-	int GetManagedElement(const std::wstring& element_id, ElementHandle* element_wrapper);
 	void RemoveManagedElement(const std::wstring& element_id);
 	void ListManagedElements(void);
 
-	int GetElementFindMethod(const std::wstring& mechanism, std::wstring* translation);
-	int LocateElement(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element);
-	int LocateElements(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements);
+	int GetElementFindMethod(const std::wstring& mechanism, std::wstring* translation) const;
+	int LocateElement(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) const;
+	int LocateElements(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) const;
 
 	int speed(void) const { return this->speed_; }
 	void set_speed(const int speed) { this->speed_ = speed; }
@@ -99,6 +99,8 @@ public:
 
 	long last_known_mouse_y(void) const { return this->last_known_mouse_y_; }
 	void set_last_known_mouse_y(const long y_coordinate) { this->last_known_mouse_y_ = y_coordinate; }
+
+	ElementFinder element_finder(void) const { return this->element_finder_; }
 
 private:
 	typedef std::tr1::unordered_map<std::wstring, BrowserHandle> BrowserMap;

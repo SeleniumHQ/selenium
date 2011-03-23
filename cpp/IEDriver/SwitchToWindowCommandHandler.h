@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("name");
 		if (name_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: name");
@@ -24,10 +24,10 @@ protected:
 			std::string desired_name = name_parameter_iterator->second.asString();
 
 			std::vector<std::wstring> handle_list;
-			session->GetManagedBrowserHandles(&handle_list);
+			session.GetManagedBrowserHandles(&handle_list);
 			for (unsigned int i = 0; i < handle_list.size(); ++i) {
 				BrowserHandle browser_wrapper;
-				int get_handle_loop_status_code = session->GetManagedBrowser(handle_list[i], &browser_wrapper);
+				int get_handle_loop_status_code = session.GetManagedBrowser(handle_list[i], &browser_wrapper);
 				if (get_handle_loop_status_code == SUCCESS) {
 					std::string browser_name = this->GetWindowName(browser_wrapper->browser());
 					if (browser_name == desired_name) {
@@ -49,13 +49,14 @@ protected:
 			} else {
 				// Reset the path to the focused frame before switching window context.
 				BrowserHandle current_browser;
-				int status_code = session->GetCurrentBrowser(&current_browser);
+				int status_code = session.GetCurrentBrowser(&current_browser);
 				if (status_code == SUCCESS) {
 					current_browser->SetFocusedFrameByElement(NULL);
 				}
 
-				session->set_current_browser_id(found_browser_handle);
-				status_code = session->GetCurrentBrowser(&current_browser);
+				Session& mutable_session = const_cast<Session&>(session);
+				mutable_session.set_current_browser_id(found_browser_handle);
+				status_code = session.GetCurrentBrowser(&current_browser);
 				current_browser->set_wait_required(true);
 				response->SetResponse(SUCCESS, Json::Value::null);
 			}

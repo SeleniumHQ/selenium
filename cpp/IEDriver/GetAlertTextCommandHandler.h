@@ -14,9 +14,9 @@ public:
 	}
 
 protected:
-	void GetAlertTextCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void GetAlertTextCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		BrowserHandle browser_wrapper;
-		session->GetCurrentBrowser(&browser_wrapper);
+		session.GetCurrentBrowser(&browser_wrapper);
 		// This sleep is required to give IE time to draw the dialog.
 		::Sleep(100);
 		HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();

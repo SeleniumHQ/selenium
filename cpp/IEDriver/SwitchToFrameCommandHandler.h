@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void SwitchToFrameCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void SwitchToFrameCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		Json::Value frame_id = Json::Value::null;
 		ParametersMap::const_iterator it = command_parameters.find("id");
 		// TODO: When issue 1133 is fixed, the else block in the following code
@@ -26,7 +26,7 @@ protected:
 		//	return;
 		}
 		BrowserHandle browser_wrapper;
-		int status_code = session->GetCurrentBrowser(&browser_wrapper);
+		int status_code = session.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;

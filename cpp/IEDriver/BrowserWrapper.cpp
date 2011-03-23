@@ -96,43 +96,6 @@ std::wstring BrowserWrapper::GetTitle() {
 	return title_string;
 }
 
-std::wstring BrowserWrapper::ConvertVariantToWString(VARIANT* to_convert) {
-	VARTYPE type = to_convert->vt;
-
-	switch(type) {
-		case VT_BOOL:
-			return to_convert->boolVal == VARIANT_TRUE ? L"true" : L"false";
-
-		case VT_BSTR:
-			if (!to_convert->bstrVal) {
-				return L"";
-			}
-			
-			return to_convert->bstrVal;
-	
-		case VT_I4:
-			{
-				wchar_t* buffer = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * MAX_DIGITS_OF_NUMBER));
-				if (buffer != NULL) {
-					_i64tow_s(to_convert->lVal, buffer, MAX_DIGITS_OF_NUMBER, BASE_TEN_BASE);
-				}
-				return buffer;
-			}
-
-		case VT_EMPTY:
-			return L"";
-
-		case VT_NULL:
-			// TODO(shs96c): This should really return NULL.
-			return L"";
-
-		// This is lame
-		case VT_DISPATCH:
-			return L"";
-	}
-	return L"";
-}
-
 std::wstring BrowserWrapper::GetCookies() {
 	CComPtr<IHTMLDocument2> doc;
 	this->GetDocument(&doc);

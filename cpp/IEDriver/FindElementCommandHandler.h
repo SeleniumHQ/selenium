@@ -15,7 +15,7 @@ public:
 	}
 
 protected:
-	void FindElementCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void FindElementCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
 		ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
 		if (using_parameter_iterator == command_parameters.end()) {
@@ -29,13 +29,13 @@ protected:
 			std::wstring value = CA2W(value_parameter_iterator->second.asString().c_str(), CP_UTF8);
 
 			std::wstring mechanism_translation;
-			int status_code = session->GetElementFindMethod(mechanism, &mechanism_translation);
+			int status_code = session.GetElementFindMethod(mechanism, &mechanism_translation);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unknown finder mechanism: " + using_parameter_iterator->second.asString());
 				return;
 			}
 
-			int timeout(session->implicit_wait_timeout());
+			int timeout(session.implicit_wait_timeout());
 			clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
 			if (timeout > 0 && timeout < 1000) {
 				end += 1 * CLOCKS_PER_SEC;
@@ -43,7 +43,7 @@ protected:
 
 			Json::Value found_element;
 			do {
-				status_code = session->LocateElement(ElementHandle(), mechanism_translation, value, &found_element);
+				status_code = session.LocateElement(ElementHandle(), mechanism_translation, value, &found_element);
 				if (status_code == SUCCESS) {
 					break;
 				}

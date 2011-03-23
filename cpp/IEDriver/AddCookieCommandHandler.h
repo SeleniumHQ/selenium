@@ -15,7 +15,7 @@ public:
 	}
 
 protected:
-	void AddCookieCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void AddCookieCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		ParametersMap::const_iterator cookie_parameter_iterator = command_parameters.find("cookie");
 		if (cookie_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: cookie");
@@ -69,7 +69,7 @@ protected:
 		}
 
 		BrowserHandle browser_wrapper;
-		session->GetCurrentBrowser(&browser_wrapper);
+		session.GetCurrentBrowser(&browser_wrapper);
 
 		std::wstring cookie(CA2W(cookie_string.c_str(), CP_UTF8));
 		int status_code = browser_wrapper->AddCookie(cookie);

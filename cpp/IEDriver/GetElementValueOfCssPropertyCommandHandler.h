@@ -4,7 +4,7 @@
 #include "Session.h"
 
 #define BSTR_VALUE(method, css_name)     if (_wcsicmp(css_name, property_name) == 0) { CComBSTR bstr; method(&bstr); result_str = (BSTR)bstr; return result_str;}
-#define VARIANT_VALUE(method, css_name)  if (_wcsicmp(css_name, property_name) == 0) { CComVariant var; method(&var); result_str = this->MangleColour(property_name, browser_wrapper->ConvertVariantToWString(&var)); return result_str;}
+#define VARIANT_VALUE(method, css_name)  if (_wcsicmp(css_name, property_name) == 0) { CComVariant var; method(&var); result_str = this->MangleColour(property_name, this->ConvertVariantToWString(&var)); return result_str;}
 #define ADD_COLOR(index, name, hex)		this->colour_names_hex_code_map[index][0] = name; this->colour_names_hex_code_map[index][1] = hex;
 
 namespace webdriver {
@@ -35,7 +35,7 @@ public:
 	}
 
 protected:
-	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		LocatorMap::const_iterator property_name_parameter_iterator = locator_parameters.find("propertyName");
 		if (id_parameter_iterator == locator_parameters.end()) {
@@ -49,7 +49,7 @@ protected:
 			std::wstring name(CA2W(property_name_parameter_iterator->second.c_str(), CP_UTF8));
 
 			BrowserHandle browser_wrapper;
-			int status_code = session->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;

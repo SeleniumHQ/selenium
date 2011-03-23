@@ -15,7 +15,7 @@ public:
 	}
 
 protected:
-	void MouseMoveToCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void MouseMoveToCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		ParametersMap::const_iterator element_parameter_iterator = command_parameters.find("element");
 		ParametersMap::const_iterator xoffset_parameter_iterator = command_parameters.find("xoffset");
 		ParametersMap::const_iterator yoffset_parameter_iterator = command_parameters.find("yoffset");
@@ -27,8 +27,8 @@ protected:
 		} else {
 			int status_code = SUCCESS;
 
-			long start_x = session->last_known_mouse_x();
-			long start_y = session->last_known_mouse_y();
+			long start_x = session.last_known_mouse_x();
+			long start_y = session.last_known_mouse_y();
 
 			long end_x = start_x;
 			long end_y = start_y;
@@ -46,16 +46,17 @@ protected:
 			}
 
 			BrowserHandle browser_wrapper;
-			status_code = session->GetCurrentBrowser(&browser_wrapper);
+			status_code = session.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get current browser");
 			}
 
 			HWND browser_window_handle = browser_wrapper->GetWindowHandle();
-			LRESULT move_result = mouseMoveTo(browser_window_handle, session->speed(), start_x, start_y, end_x, end_y);
+			LRESULT move_result = mouseMoveTo(browser_window_handle, session.speed(), start_x, start_y, end_x, end_y);
 
-			session->set_last_known_mouse_x(end_x);
-			session->set_last_known_mouse_y(end_y);
+			Session& mutable_session = const_cast<Session&>(session);
+			mutable_session.set_last_known_mouse_x(end_x);
+			mutable_session.set_last_known_mouse_y(end_y);
 
 			response->SetResponse(SUCCESS, Json::Value::null);
 			return;
@@ -63,7 +64,7 @@ protected:
 	}
 
 private:
-	int MouseMoveToCommandHandler::GetElementCoordinates(Session* session, const std::wstring& element_id, bool get_element_origin, long *x_coordinate, long *y_coordinate) {
+	int MouseMoveToCommandHandler::GetElementCoordinates(const Session& session, const std::wstring& element_id, bool get_element_origin, long *x_coordinate, long *y_coordinate) {
 		ElementHandle target_element;
 		int status_code = this->GetElement(session, element_id, &target_element);
 		if (status_code != SUCCESS) {

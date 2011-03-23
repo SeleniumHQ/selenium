@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void GetSessionCapabilitiesCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void GetSessionCapabilitiesCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		Json::Value capabilities;
 		capabilities["browserName"] = "internet explorer";
 		capabilities["version"] = "0";

@@ -235,7 +235,7 @@ int ScriptWrapper::Execute() {
 	return return_code;
 }
 
-int ScriptWrapper::ConvertResultToJsonValue(Session* session, Json::Value* value) {
+int ScriptWrapper::ConvertResultToJsonValue(const Session& session, Json::Value* value) {
 	int status_code = SUCCESS;
 	if (this->ResultIsString()) { 
 		std::string string_value("");
@@ -293,9 +293,10 @@ int ScriptWrapper::ConvertResultToJsonValue(Session* session, Json::Value* value
 			}
 			*value = result_object;
 		} else {
+			Session& mutable_session = const_cast<Session&>(session);
 			IHTMLElement* node = reinterpret_cast<IHTMLElement*>(this->result_.pdispVal);
 			ElementHandle element_wrapper;
-			session->AddManagedElement(node, &element_wrapper);
+			mutable_session.AddManagedElement(node, &element_wrapper);
 			*value = element_wrapper->ConvertToJson();
 		}
 	} else {
@@ -341,7 +342,7 @@ int ScriptWrapper::GetPropertyNameList(std::wstring* property_names) {
 	return SUCCESS;
 }
 
-int ScriptWrapper::GetPropertyValue(Session* session, const std::wstring& property_name, Json::Value* property_value){
+int ScriptWrapper::GetPropertyValue(const Session& session, const std::wstring& property_name, Json::Value* property_value){
 	std::wstring get_value_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
 	ScriptWrapper get_value_script_wrapper(this->script_engine_host_, get_value_script, 2);
 	get_value_script_wrapper.AddArgument(this->result_);
@@ -377,7 +378,7 @@ int ScriptWrapper::GetArrayLength(long* length) {
 	return SUCCESS;
 }
 
-int ScriptWrapper::GetArrayItem(Session* session, long index, Json::Value* item){
+int ScriptWrapper::GetArrayItem(const Session& session, long index, Json::Value* item){
 	std::wstring get_array_item_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
 	ScriptWrapper get_array_item_script_wrapper(this->script_engine_host_, get_array_item_script, 2);
 	get_array_item_script_wrapper.AddArgument(this->result_);

@@ -14,9 +14,9 @@ public:
 	}
 
 protected:
-	void GetActiveElementCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void GetActiveElementCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		BrowserHandle browser_wrapper;
-		int status_code = session->GetCurrentBrowser(&browser_wrapper);
+		int status_code = session.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
@@ -38,10 +38,11 @@ protected:
 		}
 
 		if (element) {
+			Session& mutable_session = const_cast<Session&>(session);
 			IHTMLElement* dom_element;
 			element.CopyTo(&dom_element);
 			ElementHandle element_wrapper;
-			session->AddManagedElement(dom_element, &element_wrapper);
+			mutable_session.AddManagedElement(dom_element, &element_wrapper);
 			response->SetResponse(SUCCESS, element_wrapper->ConvertToJson());
 		}
 	}

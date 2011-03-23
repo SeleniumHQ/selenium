@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void GetElementLocationCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void GetElementLocationCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
@@ -23,7 +23,7 @@ protected:
 			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
 
 			BrowserHandle browser_wrapper;
-			int status_code = session->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;

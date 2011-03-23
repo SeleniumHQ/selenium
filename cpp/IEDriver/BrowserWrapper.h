@@ -77,8 +77,6 @@ public:
 	HWND GetActiveDialogWindowHandle(void);
 	bool IsFrameFocused(void);
 
-	std::wstring ConvertVariantToWString(VARIANT* to_convert);
-
 	IWebBrowser2* browser(void) { return this->browser_; }
 	std::wstring browser_id(void) const { return this->browser_id_; }
 

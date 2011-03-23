@@ -23,11 +23,12 @@ public:
 
 	WebDriverCommandHandler(void);
 	virtual ~WebDriverCommandHandler(void);
-	void Execute(Session* session, const WebDriverCommand& command, WebDriverResponse* response);
+	void Execute(const Session& session, const WebDriverCommand& command, WebDriverResponse* response);
 
 protected:
-	virtual void ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse* response);
-	int GetElement(Session* session, const std::wstring& element_id, ElementHandle* element_wrapper);
+	virtual void ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse* response);
+	int GetElement(const Session& session, const std::wstring& element_id, ElementHandle* element_wrapper);
+	std::wstring ConvertVariantToWString(VARIANT* to_convert);
 };
 
 typedef std::tr1::shared_ptr<WebDriverCommandHandler> CommandHandlerHandle;

@@ -46,13 +46,13 @@ public:
 	bool ResultIsIDispatch(void);
 
 	int Execute(void);
-	int ConvertResultToJsonValue(Session* session, Json::Value* value);
+	int ConvertResultToJsonValue(const Session& session, Json::Value* value);
 
 private:
 	int GetArrayLength(long* length);
-	int GetArrayItem(Session* session, long index, Json::Value* item);
+	int GetArrayItem(const Session& session, long index, Json::Value* item);
 	int GetPropertyNameList(std::wstring* property_names);
-	int GetPropertyValue(Session* session, const std::wstring& property_name, Json::Value* property_value);
+	int GetPropertyValue(const Session& session, const std::wstring& property_name, Json::Value* property_value);
 	std::wstring GetResultObjectTypeName(void);
 	bool CreateAnonymousFunction(VARIANT* result);
 

@@ -14,10 +14,10 @@ public:
 	}
 
 protected:
-	void GetAllWindowHandlesCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void GetAllWindowHandlesCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		Json::Value handles(Json::arrayValue);
 		std::vector<std::wstring> handle_list;
-		session->GetManagedBrowserHandles(&handle_list);
+		session.GetManagedBrowserHandles(&handle_list);
 		for (unsigned int i = 0; i < handle_list.size(); ++i) {
 			std::string handle(CW2A(handle_list[i].c_str(), CP_UTF8));
 			handles.append(handle);

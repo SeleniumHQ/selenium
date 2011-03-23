@@ -14,9 +14,9 @@ public:
 	}
 
 protected:
-	void GoBackCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void GoBackCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		BrowserHandle browser_wrapper;
-		int status_code = session->GetCurrentBrowser(&browser_wrapper);
+		int status_code = session.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;

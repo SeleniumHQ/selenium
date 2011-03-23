@@ -32,7 +32,7 @@ public:
 	}
 
 protected:
-	void SendKeysCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response)
+	void SendKeysCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response)
 	{
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
@@ -53,7 +53,7 @@ protected:
 			}
 
 			BrowserHandle browser_wrapper;
-			int status_code = session->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
@@ -106,7 +106,7 @@ protected:
 
 				this->WaitUntilElementFocused(element);
 
-				sendKeys(window_handle, keys.c_str(), session->speed());
+				sendKeys(window_handle, keys.c_str(), session.speed());
 				response->SetResponse(SUCCESS, Json::Value::null);
 				return;
 			} else {

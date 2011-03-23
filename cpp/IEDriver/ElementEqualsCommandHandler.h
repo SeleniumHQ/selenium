@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void ElementEqualsCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void ElementEqualsCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		LocatorMap::const_iterator other_parameter_iterator = locator_parameters.find("other");
 		if (id_parameter_iterator == locator_parameters.end()) {
@@ -29,7 +29,7 @@ protected:
 			std::wstring other_element_id(CA2W(other_parameter_iterator->second.c_str(), CP_UTF8));
 
 			BrowserHandle browser_wrapper;
-			int status_code = session->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;

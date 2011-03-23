@@ -12,9 +12,9 @@ ElementFinder::ElementFinder() {
 ElementFinder::~ElementFinder() {
 }
 
-int ElementFinder::FindElement(Session* session, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) {
+int ElementFinder::FindElement(const Session& session, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) {
 	BrowserHandle browser;
-	int status_code = session->GetCurrentBrowser(&browser);
+	int status_code = session.GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		if (mechanism == L"css") {
 			return this->FindElementByCssSelector(session, parent_wrapper, criteria, found_element);
@@ -58,9 +58,9 @@ int ElementFinder::FindElement(Session* session, ElementHandle parent_wrapper, c
 	return status_code;
 }
 
-int ElementFinder::FindElements(Session* session, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) {
+int ElementFinder::FindElements(const Session& session, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) {
 	BrowserHandle browser;
-	int status_code = session->GetCurrentBrowser(&browser);
+	int status_code = session.GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		if (mechanism == L"css") {
 			return this->FindElementsByCssSelector(session, parent_wrapper, criteria, found_elements);
@@ -102,11 +102,11 @@ int ElementFinder::FindElements(Session* session, ElementHandle parent_wrapper, 
 	return status_code;
 }
 
-int ElementFinder::FindElementByCssSelector(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element) {
+int ElementFinder::FindElementByCssSelector(const Session& session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element) {
 	int result = ENOSUCHELEMENT;
 
 	BrowserHandle browser;
-	result = session->GetCurrentBrowser(&browser);
+	result = session.GetCurrentBrowser(&browser);
 	if (result != SUCCESS) {
 		return result;
 	}
@@ -143,11 +143,11 @@ int ElementFinder::FindElementByCssSelector(Session* session, ElementHandle pare
 	return result;
 }
 
-int ElementFinder::FindElementsByCssSelector(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements) {
+int ElementFinder::FindElementsByCssSelector(const Session& session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements) {
 	int result = ENOSUCHELEMENT;
 
 	BrowserHandle browser;
-	result = session->GetCurrentBrowser(&browser);
+	result = session.GetCurrentBrowser(&browser);
 	if (result != SUCCESS) {
 		return result;
 	}
@@ -202,11 +202,11 @@ int ElementFinder::FindElementsByCssSelector(Session* session, ElementHandle par
 	return result;
 }
 
-int ElementFinder::FindElementByXPath(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element) {
+int ElementFinder::FindElementByXPath(const Session& session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element) {
 	int result = ENOSUCHELEMENT;
 
 	BrowserHandle browser;
-	result = session->GetCurrentBrowser(&browser);
+	result = session.GetCurrentBrowser(&browser);
 	if (result != SUCCESS) {
 		return result;
 	}
@@ -248,11 +248,11 @@ int ElementFinder::FindElementByXPath(Session* session, ElementHandle parent_wra
 	return result;
 }
 
-int ElementFinder::FindElementsByXPath(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements) {
+int ElementFinder::FindElementsByXPath(const Session& session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements) {
 	int result = ENOSUCHELEMENT;
 
 	BrowserHandle browser;
-	result = session->GetCurrentBrowser(&browser);
+	result = session.GetCurrentBrowser(&browser);
 	if (result != SUCCESS) {
 		return result;
 	}

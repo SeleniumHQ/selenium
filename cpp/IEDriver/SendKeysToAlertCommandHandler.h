@@ -16,7 +16,7 @@ public:
 	{
 	}
 protected:
-	void SendKeysToAlertCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void SendKeysToAlertCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		ParametersMap::const_iterator text_parameter_iterator = command_parameters.find("text");
 		if (text_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: text");
@@ -24,7 +24,7 @@ protected:
 		}
 
 		BrowserHandle browser_wrapper;
-		session->GetCurrentBrowser(&browser_wrapper);
+		session.GetCurrentBrowser(&browser_wrapper);
 		// This sleep is required to give IE time to draw the dialog.
 		::Sleep(100);
 		HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();

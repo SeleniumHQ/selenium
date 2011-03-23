@@ -14,8 +14,8 @@ public:
 	}
 
 protected:
-	void GetSpeedCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
-		int speed = session->speed();
+	void GetSpeedCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		int speed = session.speed();
 		switch (speed) {
 		  case 1000:
 			response->SetResponse(SUCCESS, "SLOW");

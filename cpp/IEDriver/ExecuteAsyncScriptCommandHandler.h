@@ -17,7 +17,7 @@ public:
 	}
 
 protected:
-	void ExecuteAsyncScriptCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void ExecuteAsyncScriptCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		ParametersMap::const_iterator script_parameter_iterator = command_parameters.find("script");
 		ParametersMap::const_iterator args_parameter_iterator = command_parameters.find("args");
 		if (script_parameter_iterator == command_parameters.end()) {
@@ -41,7 +41,7 @@ protected:
 
 			Json::Value json_args(args_parameter_iterator->second);
 
-			int timeout_value = session->async_script_timeout();
+			int timeout_value = session.async_script_timeout();
 			wchar_t timeout_buffer[12] = {0};
 			_itow_s(timeout_value, &timeout_buffer[0], 12, 10);
 			std::wstring timeout = &timeout_buffer[0];
@@ -89,7 +89,7 @@ protected:
 			polling_script += L"};})();";
 
 			BrowserHandle browser_wrapper;
-			int status_code = session->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;

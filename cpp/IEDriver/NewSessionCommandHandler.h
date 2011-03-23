@@ -14,9 +14,10 @@ public:
 	}
 
 protected:
-	void NewSessionCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
-		session->CreateNewBrowser();
-		std::string id = CW2A(session->session_id().c_str(), CP_UTF8);
+	void NewSessionCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		Session& mutable_session = const_cast<Session&>(session);
+		mutable_session.CreateNewBrowser();
+		std::string id = CW2A(session.session_id().c_str(), CP_UTF8);
 		response->SetResponse(303, "/session/" + id);
 	}
 };

@@ -14,14 +14,14 @@ public:
 	}
 
 protected:
-	void GoToUrlCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void GoToUrlCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		ParametersMap::const_iterator url_parameter_iterator = command_parameters.find("url");
 		if (url_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: url");
 			return;
 		} else {
 			BrowserHandle browser_wrapper;
-			int status_code = session->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;

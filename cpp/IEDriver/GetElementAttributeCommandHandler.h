@@ -14,7 +14,7 @@ public:
 	}
 
 protected:
-	void GetElementAttributeCommandHandler::ExecuteInternal(Session* session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+	void GetElementAttributeCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		LocatorMap::const_iterator name_parameter_iterator = locator_parameters.find("name");
 		if (id_parameter_iterator == locator_parameters.end()) {
@@ -28,7 +28,7 @@ protected:
 			std::wstring name(CA2W(name_parameter_iterator->second.c_str(), CP_UTF8));
 
 			BrowserHandle browser_wrapper;
-			int status_code = session->GetCurrentBrowser(&browser_wrapper);
+			int status_code = session.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
@@ -44,7 +44,7 @@ protected:
 					return;
 				} else {
 					if (value_variant.vt != VT_EMPTY && value_variant.vt != VT_NULL) {
-						std::wstring value(browser_wrapper->ConvertVariantToWString(&value_variant));
+						std::wstring value(this->ConvertVariantToWString(&value_variant));
 						std::string value_str(CW2A(value.c_str(), CP_UTF8));
 						response->SetResponse(SUCCESS, value_str);
 						return;

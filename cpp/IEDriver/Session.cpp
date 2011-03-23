@@ -240,7 +240,7 @@ void Session::DispatchCommand() {
 		response.SetErrorResponse(501, "Command not implemented");
 	} else {
 		CommandHandlerHandle command_handler = found_iterator->second;
-		command_handler->Execute(this, this->current_command_, &response);
+		command_handler->Execute(*this, this->current_command_, &response);
 
 		BrowserHandle browser;
 		int status_code = this->GetCurrentBrowser(&browser);
@@ -255,11 +255,11 @@ void Session::DispatchCommand() {
 	this->serialized_response_ = response.Serialize();
 }
 
-int Session::GetCurrentBrowser(BrowserHandle* browser_wrapper) {
+int Session::GetCurrentBrowser(BrowserHandle* browser_wrapper) const {
 	return this->GetManagedBrowser(this->current_browser_id_, browser_wrapper);
 }
 
-int Session::GetManagedBrowser(const std::wstring& browser_id, BrowserHandle* browser_wrapper) {
+int Session::GetManagedBrowser(const std::wstring& browser_id, BrowserHandle* browser_wrapper) const {
 	if (browser_id == L"") {
 		return ENOSUCHDRIVER;
 	}
@@ -273,7 +273,7 @@ int Session::GetManagedBrowser(const std::wstring& browser_id, BrowserHandle* br
 	return SUCCESS;
 }
 
-void Session::GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles) {
+void Session::GetManagedBrowserHandles(std::vector<std::wstring>* managed_browser_handles) const {
 	// TODO: Enumerate windows looking for browser windows
 	// created by showModalDialog().
 	BrowserMap::const_iterator it = this->managed_browsers_.begin();
@@ -300,7 +300,7 @@ void Session::CreateNewBrowser(void) {
 	this->AddManagedBrowser(wrapper);
 }
 
-int Session::GetManagedElement(const std::wstring& element_id, ElementHandle* element_wrapper) {
+int Session::GetManagedElement(const std::wstring& element_id, ElementHandle* element_wrapper) const {
 	ElementMap::const_iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator == this->managed_elements_.end()) {
 		return ENOSUCHELEMENT;
@@ -310,7 +310,7 @@ int Session::GetManagedElement(const std::wstring& element_id, ElementHandle* el
 	return SUCCESS;
 }
 
-void Session::AddManagedElement(IHTMLElement *element, ElementHandle* element_wrapper) {
+void Session::AddManagedElement(IHTMLElement* element, ElementHandle* element_wrapper) {
 	// TODO: This method needs much work. If we are already managing a
 	// given element, we don't want to assign it a new ID, but to find
 	// out if we're managing it already, we need to compare to all of 
@@ -352,7 +352,7 @@ void Session::ListManagedElements() {
 	}
 }
 
-int Session::GetElementFindMethod(const std::wstring& mechanism, std::wstring* translation) {
+int Session::GetElementFindMethod(const std::wstring& mechanism, std::wstring* translation) const {
 	ElementFindMethodMap::const_iterator found_iterator = this->element_find_methods_.find(mechanism);
 	if (found_iterator == this->element_find_methods_.end()) {
 		return EUNHANDLEDERROR;
@@ -362,12 +362,12 @@ int Session::GetElementFindMethod(const std::wstring& mechanism, std::wstring* t
 	return SUCCESS;
 }
 
-int Session::LocateElement(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) {
-	return this->element_finder_.FindElement(this, parent_wrapper, mechanism, criteria, found_element);
+int Session::LocateElement(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) const {
+	return this->element_finder().FindElement(*this, parent_wrapper, mechanism, criteria, found_element);
 }
 
-int Session::LocateElements(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements){
-	return this->element_finder_.FindElements(this, parent_wrapper, mechanism, criteria, found_elements);
+int Session::LocateElements(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) const {
+	return this->element_finder().FindElements(*this, parent_wrapper, mechanism, criteria, found_elements);
 }
 
 void Session::PopulateElementFinderMethods(void) {
