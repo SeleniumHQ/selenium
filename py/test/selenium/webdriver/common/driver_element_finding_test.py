@@ -103,7 +103,7 @@ class DriverElementFindingTests(unittest.TestCase):
     def testShouldBeAbleToFindAnElementByCssSelector(self):
         self._loadPage("xhtmlTest")
         element = self.driver.find_element_by_css_selector("div.content")
-        self.assertEqual("div", element.tag_name)
+        self.assertEqual("div", element.tag_name.lower())
         self.assertEqual("content", element.get_attribute("class"))
 
     def testShouldBeAbleToFindMultipleElementsByCssSelector(self):
@@ -113,7 +113,7 @@ class DriverElementFindingTests(unittest.TestCase):
 
         elements = self.driver.find_elements_by_css_selector("frame#sixth")
         self.assertEqual(1, len(elements))
-        self.assertEqual("frame", elements[0].tag_name)
+        self.assertEqual("frame", elements[0].tag_name.lower())
         self.assertEqual("sixth", elements[0].get_attribute("id"))
 
     def _pageURL(self, name):
