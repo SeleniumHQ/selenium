@@ -70,7 +70,7 @@ class FirefoxProfile(object):
         else:
             newprof = tempfile.gettempdir() + "webdriver-py-profilecopy"
             if os.path.exists(newprof):
-                os.remove(newprof)
+                shutil.rmtree(newprof)
             shutil.copytree(self.profile_dir, newprof)
             self.profile_dir = newprof
             self._read_existing_userjs()
