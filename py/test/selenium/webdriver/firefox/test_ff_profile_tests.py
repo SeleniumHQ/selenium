@@ -32,7 +32,6 @@ class FirefoxProfileTest(unittest.TestCase):
         webserver = SimpleWebServer()
         webserver.start()
         self.webserver = webserver
-        self.driver = webdriver.Firefox()
 
     def test_that_we_can_accept_a_profile(self):
         self.profile1 = webdriver.FirefoxProfile()
@@ -45,6 +44,8 @@ class FirefoxProfileTest(unittest.TestCase):
         title = self.driver.title
         self.assertEquals("Hello WebDriver", title)
 
+    def tearDown(self):
+        self.driver.quit()
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
