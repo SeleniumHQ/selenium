@@ -203,7 +203,7 @@
     <Compile Include="Internal\SeleniumEmulation\GetCssCount.cs" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy /y $(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\injectableSelenium.js $(TargetDir)
-copy /y $(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\htmlutils.js $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>copy /y "$(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\injectableSelenium.js" "$(TargetDir)"
+copy /y "$(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\htmlutils.js" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
