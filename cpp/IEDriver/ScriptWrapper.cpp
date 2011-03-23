@@ -7,7 +7,7 @@ namespace webdriver {
 
 ScriptWrapper::ScriptWrapper(IHTMLDocument2* document, std::wstring script_source, unsigned long argument_count) {
 	this->script_engine_host_ = document;
-	this->script_source_ = script_source;
+	this->source_code_ = script_source;
 	this->argument_count_ = argument_count;
 	this->current_arg_index_ = 0;
 
@@ -393,7 +393,7 @@ int ScriptWrapper::GetArrayItem(Session* session, long index, Json::Value* item)
 
 bool ScriptWrapper::CreateAnonymousFunction(VARIANT* result) {
 	CComBSTR function_eval_script(L"window.document.__webdriver_script_fn = ");
-	function_eval_script.Append(this->script_source_.c_str());
+	function_eval_script.Append(this->source_code_.c_str());
 	CComBSTR code(function_eval_script);
 	CComBSTR lang(L"JScript");
 	CComVariant exec_script_result;

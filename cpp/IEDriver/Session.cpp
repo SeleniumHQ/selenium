@@ -10,8 +10,6 @@
 #include "ElementEqualsCommandHandler.h"
 #include "ExecuteAsyncScriptCommandHandler.h"
 #include "ExecuteScriptCommandHandler.h"
-#include "FindByCssSelectorElementFinder.h"
-#include "FindByXPathElementFinder.h"
 #include "FindChildElementCommandHandler.h"
 #include "FindChildElementsCommandHandler.h"
 #include "FindElementCommandHandler.h"
@@ -92,8 +90,8 @@ LRESULT Session::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 	::RpcStringFree(&guid_string);
 	this->SetWindowText(this->session_id_.c_str());
 
-	this->PopulateCommandHandlerMap();
-	this->PopulateElementFinderMap();
+	this->PopulateCommandHandlers();
+	this->PopulateElementFinderMethods();
 	this->current_browser_id_ = L"";
 	this->serialized_response_ = L"";
 	this->speed_ = 0;
@@ -114,7 +112,7 @@ LRESULT Session::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandl
 }
 
 LRESULT Session::OnSetCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-	LPCTSTR raw_command = (LPCTSTR)lParam;
+	LPCTSTR raw_command = reinterpret_cast<LPCTSTR>(lParam);
 	std::wstring json_command(raw_command);
 
 	// JsonCpp only understands narrow strings, so we have to convert.
@@ -137,7 +135,7 @@ LRESULT Session::OnGetResponseLength(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 }
 
 LRESULT Session::OnGetResponse(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-	LPWSTR str = (LPWSTR)lParam;
+	LPWSTR str = reinterpret_cast<LPWSTR>(lParam);
 	wcscpy_s(str, this->serialized_response_.size() + 1, this->serialized_response_.c_str());
 
 	// Reset the serialized response for the next command.
@@ -172,13 +170,13 @@ LRESULT Session::OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 	IWebBrowser2* browser = this->factory_.CreateBrowser();
 	BrowserHandle new_window_wrapper(new BrowserWrapper(browser, NULL, this->m_hWnd));
 	this->AddManagedBrowser(new_window_wrapper);
-	LPSTREAM* stream = (LPSTREAM*)lParam;
+	LPSTREAM* stream = reinterpret_cast<LPSTREAM*>(lParam);
 	HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2, browser, stream);
 	return 0;
 }
 
 LRESULT Session::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-	LPCTSTR str = (LPCTSTR)lParam;
+	LPCTSTR str = reinterpret_cast<LPCTSTR>(lParam);
 	std::wstring browser_id(str);
 	delete[] str;
 	BrowserMap::iterator found_iterator = this->managed_browsers_.find(browser_id);
@@ -192,7 +190,7 @@ LRESULT Session::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 }
 
 unsigned int WINAPI Session::WaitThreadProc(LPVOID lpParameter) {
-	HWND window_handle = (HWND)lpParameter;
+	HWND window_handle = reinterpret_cast<HWND>(lpParameter);
 	::Sleep(WAIT_TIME_IN_MILLISECONDS);
 	::PostMessage(window_handle, WD_WAIT, NULL, NULL);
 	return 0;
@@ -204,7 +202,7 @@ unsigned int WINAPI Session::ThreadProc(LPVOID lpParameter) {
 	// instead of just a pointer to an HWND. That way, we could
 	// pass the mongoose server port via a single call, rather than
 	// having to send an init message after the window is created.
-	HWND *window_handle = (HWND *)lpParameter;
+	HWND *window_handle = reinterpret_cast<HWND*>(lpParameter);
 	DWORD error = 0;
 	HRESULT hr = ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 	Session new_session;
@@ -342,7 +340,6 @@ void Session::AddManagedElement(IHTMLElement *element, ElementHandle* element_wr
 void Session::RemoveManagedElement(const std::wstring& element_id) {
 	ElementMap::iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator != this->managed_elements_.end()) {
-		ElementHandle element_wrapper = found_iterator->second;
 		this->managed_elements_.erase(element_id);
 	}
 }
@@ -355,30 +352,36 @@ void Session::ListManagedElements() {
 	}
 }
 
-int Session::GetElementFinder(const std::wstring& mechanism, ElementFinderHandle* finder) {
-	ElementFinderMap::const_iterator found_iterator = this->element_finders_.find(mechanism);
-	if (found_iterator == this->element_finders_.end()) {
+int Session::GetElementFindMethod(const std::wstring& mechanism, std::wstring* translation) {
+	ElementFindMethodMap::const_iterator found_iterator = this->element_find_methods_.find(mechanism);
+	if (found_iterator == this->element_find_methods_.end()) {
 		return EUNHANDLEDERROR;
 	}
 
-	*finder = found_iterator->second;
+	*translation = found_iterator->second;
 	return SUCCESS;
 }
 
-void Session::PopulateElementFinderMap(void) {
-	// TODO (JimEvans): This is left over from a previous method of finding
-	// elements. This needs to be completely refactored.
-	this->element_finders_[L"id"] = ElementFinderHandle(new ElementFinder(L"id"));
-	this->element_finders_[L"name"] = ElementFinderHandle(new ElementFinder(L"name"));
-	this->element_finders_[L"tag name"] = ElementFinderHandle(new ElementFinder(L"tagName"));
-	this->element_finders_[L"link text"] = ElementFinderHandle(new ElementFinder(L"linkText"));
-	this->element_finders_[L"partial link text"] = ElementFinderHandle(new ElementFinder(L"partialLinkText"));
-	this->element_finders_[L"class name"] = ElementFinderHandle(new ElementFinder(L"className"));
-	this->element_finders_[L"xpath"] = ElementFinderHandle(new FindByXPathElementFinder(L"xpath"));
-	this->element_finders_[L"css selector"] = ElementFinderHandle(new FindByCssSelectorElementFinder(L"css"));
+int Session::LocateElement(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) {
+	return this->element_finder_.FindElement(this, parent_wrapper, mechanism, criteria, found_element);
 }
 
-void Session::PopulateCommandHandlerMap() {
+int Session::LocateElements(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements){
+	return this->element_finder_.FindElements(this, parent_wrapper, mechanism, criteria, found_elements);
+}
+
+void Session::PopulateElementFinderMethods(void) {
+	this->element_find_methods_[L"id"] = L"id";
+	this->element_find_methods_[L"name"] = L"name";
+	this->element_find_methods_[L"tag name"] = L"tagName";
+	this->element_find_methods_[L"link text"] = L"linkText";
+	this->element_find_methods_[L"partial link text"] = L"partialLinkText";
+	this->element_find_methods_[L"class name"] = L"className";
+	this->element_find_methods_[L"xpath"] = L"xpath";
+	this->element_find_methods_[L"css selector"] = L"css";
+}
+
+void Session::PopulateCommandHandlers() {
 	this->command_handlers_[NoCommand] = CommandHandlerHandle(new WebDriverCommandHandler);
 	this->command_handlers_[GetCurrentWindowHandle] = CommandHandlerHandle(new GetCurrentWindowHandleCommandHandler);
 	this->command_handlers_[GetWindowHandles] = CommandHandlerHandle(new GetAllWindowHandlesCommandHandler);

@@ -40,7 +40,7 @@ protected:
 					CComBSTR type_name;
 					input->get_type(&type_name);
 
-					std::wstring type((BSTR)type_name);
+					std::wstring type(type_name);
 
 					if (_wcsicmp(L"submit", type.c_str()) == 0 || _wcsicmp(L"image", type.c_str()) == 0) {
 						element_wrapper->Click();

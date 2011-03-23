@@ -92,7 +92,7 @@ std::wstring BrowserWrapper::GetTitle() {
 		return L"";
 	}
 
-	std::wstring title_string = (BSTR)title;
+	std::wstring title_string(title);
 	return title_string;
 }
 
@@ -108,11 +108,11 @@ std::wstring BrowserWrapper::ConvertVariantToWString(VARIANT* to_convert) {
 				return L"";
 			}
 			
-			return (BSTR)to_convert->bstrVal;
+			return to_convert->bstrVal;
 	
 		case VT_I4:
 			{
-				wchar_t* buffer = (wchar_t*)malloc(sizeof(wchar_t) * MAX_DIGITS_OF_NUMBER);
+				wchar_t* buffer = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * MAX_DIGITS_OF_NUMBER));
 				if (buffer != NULL) {
 					_i64tow_s(to_convert->lVal, buffer, MAX_DIGITS_OF_NUMBER, BASE_TEN_BASE);
 				}
@@ -224,7 +224,7 @@ bool BrowserWrapper::IsHtmlPage(IHTMLDocument2* doc) {
 		return false;
 	}
 
-	std::wstring type_string((BSTR)type);
+	std::wstring type_string(type);
 	return type_string == mime_type_name;
 }
 
@@ -362,7 +362,7 @@ void __stdcall BrowserWrapper::OnQuit() {
 	this->is_closing_ = true;
 	LPWSTR message_payload = new WCHAR[this->browser_id_.size() + 1];
 	wcscpy_s(message_payload, this->browser_id_.size() + 1, this->browser_id_.c_str());
-	::PostMessage(this->session_handle_, WD_BROWSER_QUIT, NULL, (LPARAM)message_payload);
+	::PostMessage(this->session_handle_, WD_BROWSER_QUIT, NULL, reinterpret_cast<LPARAM>(message_payload));
 }
 
 void __stdcall BrowserWrapper::NewWindow3(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl) {
@@ -373,7 +373,7 @@ void __stdcall BrowserWrapper::NewWindow3(IDispatch** ppDisp, VARIANT_BOOL* pbCa
 	IWebBrowser2* browser;
 	LPSTREAM message_payload;
 	::SendMessage(this->session_handle_, WD_BROWSER_NEW_WINDOW, NULL, (LPARAM)&message_payload);
-	HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IWebBrowser2, (void**)&browser);
+	HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IWebBrowser2, reinterpret_cast<void**>(&browser));
 	*ppDisp = browser;
 }
 
@@ -562,7 +562,7 @@ HWND BrowserWrapper::GetActiveDialogWindowHandle() {
 	ProcessWindowInfo process_win_info;
 	process_win_info.dwProcessId = process_id;
 	process_win_info.hwndBrowser = NULL;
-	::EnumWindows(&BrowserFactory::FindDialogWindowForProcess, (LPARAM)&process_win_info);
+	::EnumWindows(&BrowserFactory::FindDialogWindowForProcess, reinterpret_cast<LPARAM>(&process_win_info));
 	if (process_win_info.hwndBrowser != NULL) {
 		active_dialog_handle = process_win_info.hwndBrowser;
 	}

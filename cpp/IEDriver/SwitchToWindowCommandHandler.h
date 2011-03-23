@@ -84,7 +84,7 @@ private:
 		CComBSTR window_name;
 		hr = window->get_name(&window_name);
 		if (window_name) {
-			name = CW2A((BSTR)window_name, CP_UTF8);
+			name = CW2A(window_name, CP_UTF8);
 		}
 		return name;
 	}

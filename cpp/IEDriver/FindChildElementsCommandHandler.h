@@ -32,8 +32,8 @@ protected:
 			std::wstring mechanism = CA2W(using_parameter_iterator->second.asString().c_str(), CP_UTF8);
 			std::wstring value = CA2W(value_parameter_iterator->second.asString().c_str(), CP_UTF8);
 
-			std::tr1::shared_ptr<ElementFinder> finder;
-			int status_code = session->GetElementFinder(mechanism, &finder);
+			std::wstring mechanism_translation;
+			int status_code = session->GetElementFindMethod(mechanism, &mechanism_translation);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unknown finder mechanism: " + using_parameter_iterator->second.asString());
 				return;
@@ -55,7 +55,7 @@ protected:
 
 				status_code = SUCCESS;
 				do {
-					status_code = finder->FindElements(session, parent_element_wrapper, value, &found_elements);
+					status_code = session->LocateElements(parent_element_wrapper, mechanism_translation, value, &found_elements);
 					if (status_code == SUCCESS && found_elements.size() > 0) {
 						break;
 					}

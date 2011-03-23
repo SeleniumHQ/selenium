@@ -517,14 +517,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FindByCssSelectorElementFinder.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FindByXPathElementFinder.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FindChildElementCommandHandler.h"
 				>
 			</File>
@@ -704,11 +696,11 @@
 				RelativePath=".\SendModifierKeyCommandHandler.h"
 				>
 			</File>
-      <File
+			<File
 				RelativePath=".\Session.h"
 				>
-      </File>
-      <File
+			</File>
+			<File
 				RelativePath=".\SetAsyncScriptTimeoutCommandHandler.h"
 				>
 			</File>

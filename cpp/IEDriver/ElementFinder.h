@@ -12,19 +12,20 @@ namespace webdriver {
 // circular include files.
 class Session;
 
-class ElementFinder
-{
+class ElementFinder {
 public:
-	ElementFinder(std::wstring locator);
+	ElementFinder();
 	virtual ~ElementFinder(void);
-	virtual int FindElement(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_element);
-	virtual int FindElements(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_elements);
+	virtual int FindElement(Session* session, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value *found_element);
+	virtual int FindElements(Session* session, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value *found_elements);
 
 private:
-	std::wstring locator_;
+	int FindElementByCssSelector(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_element);
+	int ElementFinder::FindElementsByCssSelector(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_elements);
+	int FindElementByXPath(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_element);
+	int FindElementsByXPath(Session* session, ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value *found_elements);
+	int InjectXPathEngine(BrowserHandle browser_wrapper);
 };
-
-typedef std::tr1::shared_ptr<ElementFinder> ElementFinderHandle;
 
 } // namespace webdriver
 

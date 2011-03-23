@@ -20,7 +20,7 @@ public:
 	ScriptWrapper(IHTMLDocument2* document, std::wstring script_source, unsigned long argument_count);
 	~ScriptWrapper(void);
 
-	std::wstring script_source() { return this->script_source_; }
+	std::wstring source_code() { return this->source_code_; }
 	unsigned long argument_count() { return this->argument_count_; }
 	SAFEARRAY* arguments() { return this->argument_array_; }
 	VARIANT result() { return this->result_; }
@@ -58,7 +58,7 @@ private:
 
 	CComPtr<IHTMLDocument2> script_engine_host_;
 	unsigned long argument_count_;
-	std::wstring script_source_;
+	std::wstring source_code_;
 	long current_arg_index_;
 	SAFEARRAY* argument_array_;
 	VARIANT result_;

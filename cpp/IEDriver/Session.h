@@ -76,12 +76,14 @@ public:
 	int GetCurrentBrowser(BrowserHandle* browser_wrapper);
 	void GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles);
 
-	void AddManagedElement(IHTMLElement *element, ElementHandle* element_wrapper);
+	void AddManagedElement(IHTMLElement* element, ElementHandle* element_wrapper);
 	int GetManagedElement(const std::wstring& element_id, ElementHandle* element_wrapper);
 	void RemoveManagedElement(const std::wstring& element_id);
 	void ListManagedElements(void);
 
-	int GetElementFinder(const std::wstring& mechanism, std::tr1::shared_ptr<ElementFinder>* finder);
+	int GetElementFindMethod(const std::wstring& mechanism, std::wstring* translation);
+	int LocateElement(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element);
+	int LocateElements(ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements);
 
 	int speed(void) const { return this->speed_; }
 	void set_speed(const int speed) { this->speed_ = speed; }
@@ -101,22 +103,24 @@ public:
 private:
 	typedef std::tr1::unordered_map<std::wstring, BrowserHandle> BrowserMap;
 	typedef std::tr1::unordered_map<std::wstring, ElementHandle> ElementMap;
-	typedef std::map<std::wstring, ElementFinderHandle> ElementFinderMap;
+	typedef std::map<std::wstring, std::wstring> ElementFindMethodMap;
 	typedef std::map<int, CommandHandlerHandle> CommandHandlerMap;
 
 	void AddManagedBrowser(BrowserHandle browser_wrapper);
 
 	void DispatchCommand(void);
 
-	void PopulateCommandHandlerMap(void);
-	void PopulateElementFinderMap(void);
+	void PopulateCommandHandlers(void);
+	void PopulateElementFinderMethods(void);
 
 	BrowserMap managed_browsers_;
 	ElementMap managed_elements_;
-	ElementFinderMap element_finders_;
+	ElementFindMethodMap element_find_methods_;
 
 	BrowserFactory factory_;
 	std::wstring current_browser_id_;
+
+	ElementFinder element_finder_;
 
 	int speed_;
 	int implicit_wait_timeout_;

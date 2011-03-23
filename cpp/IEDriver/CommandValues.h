@@ -3,8 +3,7 @@
 
 namespace webdriver {
 
-enum CommandValue
-{
+enum CommandValue {
 	NoCommand,
 	NewSession,
 	GetSessionCapabilities,
