@@ -147,7 +147,7 @@ std::wstring BrowserWrapper::GetCookies() {
 		cookie = L"";
 	}
 
-	std::wstring cookie_string((BSTR)cookie);
+	std::wstring cookie_string(cookie);
 	return cookie_string;
 }
 
@@ -228,7 +228,7 @@ bool BrowserWrapper::IsHtmlPage(IHTMLDocument2* doc) {
 	return type_string == mime_type_name;
 }
 
-int BrowserWrapper::SetFocusedFrameByElement(IHTMLElement *frame_element) {
+int BrowserWrapper::SetFocusedFrameByElement(IHTMLElement* frame_element) {
 	HRESULT hr = S_OK;
 	if (!frame_element) {
 		this->focused_frame_window_ = NULL;

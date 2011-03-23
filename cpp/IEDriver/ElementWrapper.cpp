@@ -7,7 +7,7 @@
 
 namespace webdriver {
 
-ElementWrapper::ElementWrapper(IHTMLElement *element, HWND containing_window_handle) {
+ElementWrapper::ElementWrapper(IHTMLElement* element, HWND containing_window_handle) {
 	// NOTE: COM should be initialized on this thread, so we
 	// could use CoCreateGuid() and StringFromGUID2() instead.
 	UUID guid;
@@ -36,7 +36,7 @@ Json::Value ElementWrapper::ConvertToJson() {
 	return json_wrapper;
 }
 
-int ElementWrapper::IsDisplayed(bool *result) {
+int ElementWrapper::IsDisplayed(bool* result) {
 	int status_code = SUCCESS;
 
 	// The atom is just the definition of an anonymous
@@ -136,7 +136,7 @@ int ElementWrapper::DragBy(const int offset_x, const int offset_y, const int dra
 	return status_code;
 }
 
-int ElementWrapper::GetAttributeValue(const std::wstring& attribute_name, VARIANT *attribute_value) {
+int ElementWrapper::GetAttributeValue(const std::wstring& attribute_name, VARIANT* attribute_value) {
 	int status_code = SUCCESS;
 
 	// The atom is just the definition of an anonymous
@@ -160,7 +160,7 @@ int ElementWrapper::GetAttributeValue(const std::wstring& attribute_name, VARIAN
 	return SUCCESS;
 }
 
-int ElementWrapper::GetLocationOnceScrolledIntoView(long *x, long *y, long *width, long *height) {
+int ElementWrapper::GetLocationOnceScrolledIntoView(long* x, long* y, long* width, long* height) {
     CComPtr<IHTMLDOMNode2> node;
 	HRESULT hr = this->element_->QueryInterface(&node);
 
@@ -243,7 +243,8 @@ bool ElementWrapper::IsCheckBox() {
 
 	CComBSTR type_name;
 	input->get_type(&type_name);
-	return _wcsicmp((LPCWSTR)((BSTR)type_name), L"checkbox") == 0;
+	std::wstring std_type_name(type_name);
+	return _wcsicmp(std_type_name.c_str(), L"checkbox") == 0;
 }
 
 bool ElementWrapper::IsRadioButton() {
@@ -254,7 +255,8 @@ bool ElementWrapper::IsRadioButton() {
 
 	CComBSTR type_name;
 	input->get_type(&type_name);
-	return _wcsicmp((LPCWSTR)((BSTR)type_name), L"radio") == 0;
+	std::wstring std_type_name(type_name);
+	return _wcsicmp(std_type_name.c_str(), L"radio") == 0;
 }
 
 void ElementWrapper::FireEvent(IHTMLDOMNode* fire_event_on, const std::wstring& event_name) {
@@ -272,7 +274,7 @@ void ElementWrapper::FireEvent(IHTMLDOMNode* fire_event_on, const std::wstring& 
 	element3->fireEvent(event_name_bstr, &eventref, &cancellable);
 }
 
-int ElementWrapper::GetLocation(long *x, long *y, long *width, long *height) {
+int ElementWrapper::GetLocation(long* x, long* y, long* width, long* height) {
 	*x = 0, *y = 0, *width = 0, *height = 0;
 
 	CComPtr<IHTMLElement2> element2;
@@ -324,7 +326,7 @@ int ElementWrapper::GetLocation(long *x, long *y, long *width, long *height) {
 	return SUCCESS;
 }
 
-int ElementWrapper::GetFrameOffset(long *x, long *y) {
+int ElementWrapper::GetFrameOffset(long* x, long* y) {
     CComPtr<IHTMLDocument2> owner_doc;
 	int status_code = this->GetContainingDocument(true, &owner_doc);
 	if (status_code != SUCCESS) {

@@ -189,7 +189,7 @@ int ScriptWrapper::Execute() {
 	for (int i = 0; i < nargs; i++) {
 		index = i;
 		CComVariant v;
-		::SafeArrayGetElement(this->argument_array_, &index, (void*) &v);
+		::SafeArrayGetElement(this->argument_array_, &index, reinterpret_cast<void*>(&v));
 		::VariantCopy(&(vargs[nargs - 1 - i]), &v);
 	}
 
@@ -212,7 +212,7 @@ int ScriptWrapper::Execute() {
 		::VariantClear(&result);
 		result.vt = VT_USERDEFINED;
 		if (exception.bstrDescription != NULL) {
-			result.bstrVal = ::SysAllocStringByteLen((char*)exception.bstrDescription, ::SysStringByteLen(exception.bstrDescription));
+			result.bstrVal = ::SysAllocStringByteLen(reinterpret_cast<char*>(exception.bstrDescription), ::SysStringByteLen(exception.bstrDescription));
 		} else {
 			result.bstrVal = ::SysAllocStringByteLen(NULL, 0);
 		}
@@ -223,7 +223,7 @@ int ScriptWrapper::Execute() {
 	if(VT_DISPATCH == result.vt) {
 		CComQIPtr<IHTMLElement> element(result.pdispVal);
 		if(element) {
-			IHTMLElement* &dom_element = * (IHTMLElement**) &(result.pdispVal);
+			IHTMLElement* &dom_element = *(reinterpret_cast<IHTMLElement**>(&result.pdispVal));
 			element.CopyTo(&dom_element);
 		}
 	}
@@ -293,7 +293,7 @@ int ScriptWrapper::ConvertResultToJsonValue(Session* session, Json::Value* value
 			}
 			*value = result_object;
 		} else {
-			IHTMLElement* node = (IHTMLElement*) this->result_.pdispVal;
+			IHTMLElement* node = reinterpret_cast<IHTMLElement*>(this->result_.pdispVal);
 			ElementHandle element_wrapper;
 			session->AddManagedElement(node, &element_wrapper);
 			*value = element_wrapper->ConvertToJson();
@@ -341,7 +341,7 @@ int ScriptWrapper::GetPropertyNameList(std::wstring* property_names) {
 	return SUCCESS;
 }
 
-int ScriptWrapper::GetPropertyValue(Session* session, const std::wstring& property_name, Json::Value *property_value){
+int ScriptWrapper::GetPropertyValue(Session* session, const std::wstring& property_name, Json::Value* property_value){
 	std::wstring get_value_script(L"(function(){return function() {return arguments[0][arguments[1]];}})();"); 
 	ScriptWrapper get_value_script_wrapper(this->script_engine_host_, get_value_script, 2);
 	get_value_script_wrapper.AddArgument(this->result_);

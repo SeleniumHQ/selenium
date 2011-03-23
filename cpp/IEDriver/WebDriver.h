@@ -10,11 +10,11 @@ extern "C" {
 #endif
 
 webdriver::IEDriverServer* server = NULL;
-static void * event_handler(enum mg_event event_raised, 
-							struct mg_connection *conn, 
-							const struct mg_request_info *request_info);
+static void* event_handler(enum mg_event event_raised, 
+							struct mg_connection* conn, 
+							const struct mg_request_info* request_info);
 
-struct mg_context *ctx = NULL;
+struct mg_context* ctx = NULL;
 int handler_result_code;
 EXPORT webdriver::IEDriverServer* StartServer(int port);
 EXPORT void StopServer(webdriver::IEDriverServer* myserver);

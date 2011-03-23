@@ -31,7 +31,7 @@ std::wstring IEDriverServer::CreateSession() {
 	unsigned int thread_id;
 	HWND session_window_handle = NULL;
 	HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, EVENT_NAME);
-	HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &Session::ThreadProc, (void *)&session_window_handle, 0, &thread_id));
+	HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &Session::ThreadProc, reinterpret_cast<void*>(&session_window_handle), 0, &thread_id));
 	if (event_handle != NULL) {
 		::WaitForSingleObject(event_handle, INFINITE);
 		::CloseHandle(event_handle);
@@ -41,7 +41,7 @@ std::wstring IEDriverServer::CreateSession() {
 		::CloseHandle(thread_handle);
 	}
 
-	::SendMessage(session_window_handle, WD_INIT, (WPARAM)this->port_, NULL);
+	::SendMessage(session_window_handle, WD_INIT, static_cast<WPARAM>(this->port_), NULL);
 
 	vector<TCHAR> window_text_buffer(37);
 	::GetWindowText(session_window_handle, &window_text_buffer[0], 37);
@@ -69,7 +69,7 @@ void IEDriverServer::ShutDownSession(const std::wstring& session_id) {
 	}
 }
 
-std::wstring IEDriverServer::ReadRequestBody(struct mg_connection *conn, const struct mg_request_info *request_info) {
+std::wstring IEDriverServer::ReadRequestBody(struct mg_connection* conn, const struct mg_request_info* request_info) {
 	std::wstring request_body = L"";
 	int content_length = 0;
 	for (int header_index = 0; header_index < 64; ++header_index) {
@@ -99,7 +99,7 @@ std::wstring IEDriverServer::ReadRequestBody(struct mg_connection *conn, const s
 	return request_body;
 }
 
-int IEDriverServer::ProcessRequest(struct mg_connection *conn, const struct mg_request_info *request_info) {
+int IEDriverServer::ProcessRequest(struct mg_connection* conn, const struct mg_request_info* request_info) {
 	int return_code = NULL;
 	std::string http_verb = request_info->request_method;
 	std::wstring request_body = L"{}";
@@ -174,7 +174,7 @@ std::wstring IEDriverServer::SendCommandToSession(const std::wstring& session_id
 	return serialized_response;
 }
 
-int IEDriverServer::SendResponseToBrowser(struct mg_connection *conn, const struct mg_request_info *request_info, const std::wstring& serialized_response) {
+int IEDriverServer::SendResponseToBrowser(struct mg_connection* conn, const struct mg_request_info* request_info, const std::wstring& serialized_response) {
 	int return_code = 0;
 	if (serialized_response.size() > 0) {
 		WebDriverResponse response;
@@ -334,12 +334,12 @@ void IEDriverServer::SendHttpSeeOther(struct mg_connection* connection,
 	mg_write(connection, out.str().c_str(), out.str().size());
 }
 
-int IEDriverServer::LookupCommand(const std::string& uri, const std::string& http_verb, std::wstring *session_id, std::wstring *locator) {
+int IEDriverServer::LookupCommand(const std::string& uri, const std::string& http_verb, std::wstring* session_id, std::wstring* locator) {
 	int value = NoCommand;
 	UrlMap::const_iterator it = this->commands_.begin();
 	for (; it != this->commands_.end(); ++it) {
 		std::vector<std::string> locator_param_names;
-		std::string url_candidate = (*it).first;
+		std::string url_candidate = it->first;
 		size_t param_start_pos = url_candidate.find_first_of(":");
 		while (param_start_pos != std::string::npos) {
 			size_t param_len = std::string::npos;

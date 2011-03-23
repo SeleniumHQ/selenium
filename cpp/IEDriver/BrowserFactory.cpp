@@ -7,10 +7,10 @@ BrowserFactory::BrowserFactory(void) {
 	this->GetExecutableLocation();
 	this->GetIEVersion();
 	this->GetOSVersion();
-	this->html_getobject_msg_ = ::RegisterWindowMessage(_T("WM_HTML_GETOBJECT"));
+	this->html_getobject_msg_ = ::RegisterWindowMessage(L"WM_HTML_GETOBJECT");
 
 	// Explicitly load MSAA so we know if it's installed
-	this->oleacc_instance_handle_ = ::LoadLibrary(_T("OLEACC.DLL"));
+	this->oleacc_instance_handle_ = ::LoadLibrary(L"OLEACC.DLL");
 }
 
 BrowserFactory::~BrowserFactory(void) {
@@ -24,9 +24,9 @@ DWORD BrowserFactory::LaunchBrowserProcess(int port) {
 	STARTUPINFO start_info;
 	PROCESS_INFORMATION proc_info;
 
-	::ZeroMemory( &start_info, sizeof(start_info) );
+	::ZeroMemory(&start_info, sizeof(start_info));
     start_info.cb = sizeof(start_info);
-	::ZeroMemory( &proc_info, sizeof(proc_info) );
+	::ZeroMemory(&proc_info, sizeof(proc_info));
 
 	std::wstringstream url_stream;
 	url_stream << L"http://localhost:" << port << L"/";
@@ -70,11 +70,11 @@ DWORD BrowserFactory::LaunchBrowserProcess(int port) {
 	return process_id;
 }
 
-void BrowserFactory::AttachToBrowser(ProcessWindowInfo *process_window_info) {
+void BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info) {
 	while (process_window_info->hwndBrowser == NULL) {
 		// TODO: create a timeout for this. We shouldn't need it, since
 		// we got a valid process ID, but we should bulletproof it.
-		::EnumWindows(&BrowserFactory::FindBrowserWindow, (LPARAM)process_window_info);
+		::EnumWindows(&BrowserFactory::FindBrowserWindow, reinterpret_cast<LPARAM>(process_window_info));
 		if (process_window_info->hwndBrowser == NULL) {
 			::Sleep(250);
 		}
@@ -89,7 +89,7 @@ void BrowserFactory::AttachToBrowser(ProcessWindowInfo *process_window_info) {
 			LPFNOBJECTFROMLRESULT object_pointer =  reinterpret_cast<LPFNOBJECTFROMLRESULT>(::GetProcAddress(this->oleacc_instance_handle_, "ObjectFromLresult"));
 			if (object_pointer != NULL) {
 				HRESULT hr;
-				hr = (*object_pointer)(result, IID_IHTMLDocument2, 0, reinterpret_cast<void **>(&document));
+				hr = (*object_pointer)(result, IID_IHTMLDocument2, 0, reinterpret_cast<void**>(&document));
 				if (SUCCEEDED(hr)) {
 				   CComPtr<IHTMLWindow2> window;
 				   hr = document->get_parentWindow(&window);
@@ -98,10 +98,10 @@ void BrowserFactory::AttachToBrowser(ProcessWindowInfo *process_window_info) {
 						CComQIPtr<IServiceProvider> provider(window);
 						if (provider) {
 							CComPtr<IServiceProvider> child_provider;
-							hr = provider->QueryService(SID_STopLevelBrowser, IID_IServiceProvider, reinterpret_cast<void **>(&child_provider));
+							hr = provider->QueryService(SID_STopLevelBrowser, IID_IServiceProvider, reinterpret_cast<void**>(&child_provider));
 							if (SUCCEEDED(hr)) {
 								IWebBrowser2* browser;
-								hr = child_provider->QueryService(SID_SWebBrowserApp, IID_IWebBrowser2, reinterpret_cast<void **>(&browser));
+								hr = child_provider->QueryService(SID_SWebBrowserApp, IID_IWebBrowser2, reinterpret_cast<void**>(&browser));
 								if (SUCCEEDED(hr)) {
 									process_window_info->pBrowser = browser;
 								}
@@ -116,7 +116,7 @@ void BrowserFactory::AttachToBrowser(ProcessWindowInfo *process_window_info) {
 
 IWebBrowser2* BrowserFactory::CreateBrowser() {
 	// TODO: Error and exception handling and return value checking.
-	IWebBrowser2 *browser;
+	IWebBrowser2* browser;
 	if (this->windows_major_version_ >= 6) {
 		// Only Windows Vista and above have mandatory integrity levels.
 		this->SetThreadIntegrityLevel();
@@ -129,7 +129,7 @@ IWebBrowser2* BrowserFactory::CreateBrowser() {
 		context = context | CLSCTX_ENABLE_CLOAKING;
 	}
 
-	::CoCreateInstance(CLSID_InternetExplorer, NULL, context, IID_IWebBrowser2, (void**)&browser);
+	::CoCreateInstance(CLSID_InternetExplorer, NULL, context, IID_IWebBrowser2, reinterpret_cast<void**>(&browser));
 	browser->put_Visible(VARIANT_TRUE);
 
 	if (this->windows_major_version_ >= 6) {
@@ -186,10 +186,10 @@ HWND BrowserFactory::GetTabWindowHandle(IWebBrowser2 *browser)
 
 	HWND hwnd = NULL;
 	CComQIPtr<IServiceProvider> service_provider;
-	HRESULT hr = browser->QueryInterface(IID_IServiceProvider, reinterpret_cast<void **>(&service_provider));
+	HRESULT hr = browser->QueryInterface(IID_IServiceProvider, reinterpret_cast<void**>(&service_provider));
 	if (SUCCEEDED(hr)) {
 		CComPtr<IOleWindow> window;
-		hr = service_provider->QueryService(SID_SShellBrowser, IID_IOleWindow, reinterpret_cast<void **>(&window));
+		hr = service_provider->QueryService(SID_SShellBrowser, IID_IOleWindow, reinterpret_cast<void**>(&window));
 		if (SUCCEEDED(hr)) {
 			// This gets the TabWindowClass window in IE 7 and 8,
 			// and the top-level window frame in IE 6. The window
@@ -226,7 +226,7 @@ BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
 }
 
 BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
-	ProcessWindowInfo *process_window_info = (ProcessWindowInfo *)arg;
+	ProcessWindowInfo *process_window_info = reinterpret_cast<ProcessWindowInfo*>(arg);
 
 	// Could this be an Internet Explorer Server window?
 	// 25 == "Internet Explorer_Server\0"
@@ -253,7 +253,7 @@ BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
 }
 
 BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) {
-	ProcessWindowInfo *process_win_info = (ProcessWindowInfo *)arg;
+	ProcessWindowInfo* process_win_info = reinterpret_cast<ProcessWindowInfo*>(arg);
 
 	// Could this be an dialog window?
 	// 7 == "#32770\0"
@@ -318,7 +318,7 @@ bool BrowserFactory::GetRegistryValue(HKEY root_key, std::wstring subkey, std::w
 	if (ERROR_SUCCESS == ::RegOpenKeyEx(root_key, subkey.c_str(), 0, KEY_QUERY_VALUE, &key_handle)) {
 		if (ERROR_SUCCESS == ::RegQueryValueEx(key_handle, value_name.c_str(), NULL, NULL, NULL, &required_buffer_size)) {
 			std::vector<TCHAR> value_buffer(required_buffer_size);
-			if (ERROR_SUCCESS == ::RegQueryValueEx(key_handle, value_name.c_str(), NULL, NULL, (LPBYTE)&value_buffer[0], &required_buffer_size)) {
+			if (ERROR_SUCCESS == ::RegQueryValueEx(key_handle, value_name.c_str(), NULL, NULL, reinterpret_cast<LPBYTE>(&value_buffer[0]), &required_buffer_size)) {
 				*value = &value_buffer[0];
 				value_retrieved = true;
 			}
@@ -340,7 +340,7 @@ void BrowserFactory::GetIEVersion() {
 	::GetFileVersionInfo(this->ie_executable_location_.c_str(), dummy, length, &version_buffer[0]);
 
 	UINT page_count;
-	BOOL query_result = ::VerQueryValue(&version_buffer[0], L"\\VarFileInfo\\Translation", (LPVOID*) &lpTranslate, &page_count);
+	BOOL query_result = ::VerQueryValue(&version_buffer[0], L"\\VarFileInfo\\Translation", reinterpret_cast<void**>(&lpTranslate), &page_count);
     
 	wchar_t sub_block[MAX_PATH];
     _snwprintf_s(sub_block, MAX_PATH, MAX_PATH,

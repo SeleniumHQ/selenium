@@ -19,7 +19,7 @@ namespace webdriver {
 struct ProcessWindowInfo {
 	DWORD dwProcessId;
 	HWND hwndBrowser;
-	IWebBrowser2 *pBrowser;
+	IWebBrowser2* pBrowser;
 };
 
 class BrowserFactory {
@@ -29,9 +29,9 @@ public:
 
 	DWORD LaunchBrowserProcess(int port);
 	IWebBrowser2* CreateBrowser();
-	void AttachToBrowser(ProcessWindowInfo *procWinInfo);
+	void AttachToBrowser(ProcessWindowInfo* procWinInfo);
 	HWND GetTabWindowHandle(IWebBrowser2* pBrowser);
-	bool GetRegistryValue(HKEY root_key, std::wstring subkey, std::wstring value_name, std::wstring *value);
+	bool GetRegistryValue(HKEY root_key, std::wstring subkey, std::wstring value_name, std::wstring* value);
 
 	static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
 	static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
