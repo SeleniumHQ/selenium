@@ -40,6 +40,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.android.app.WebDriverActivity;
 import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
 import org.openqa.selenium.android.util.JsUtil;
 import org.openqa.selenium.android.util.SimpleTimer;
@@ -74,7 +75,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   
   private static Context context;
   private final SimpleTimer timer;
-  private final IntentReceiverRegistrar intentRegistrar;
   private final AndroidWebElement element;
   private final JavascriptDomAccessor domAccessor;
   
@@ -86,10 +86,13 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public AndroidDriver() {
     // By default currentFrame is the root, i.e. window
     currentFrame = "window";
-    intentRegistrar = new IntentReceiverRegistrar(getContext());
     timer = new SimpleTimer();
     domAccessor = new JavascriptDomAccessor(this);
     element = new AndroidWebElement(this);
+    
+    Intent startActivity = new Intent(context, WebDriverActivity.class);
+    startActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    context.startActivity(startActivity);
   }
 
   public JavascriptDomAccessor getDomAccessor() {
@@ -118,7 +121,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public void quit() {
-    intentRegistrar.unregisterAllReceivers();
     controller.quit();
   }
 

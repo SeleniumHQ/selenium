@@ -17,28 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.android.server;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.FileDescriptor;
-import java.io.IOException;
-import java.io.InputStream;
-
-import android.app.NotificationManager;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Binder;
-import android.os.Debug;
-import android.os.IBinder;
-import android.os.IInterface;
-import android.os.Parcel;
-import android.os.PowerManager;
-import android.os.RemoteException;
-import android.util.Log;
-import android.widget.Toast;
-import com.google.common.io.ByteStreams;
 import org.eclipse.jetty.http.HttpGenerator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
@@ -49,6 +34,17 @@ import org.openqa.selenium.android.AndroidDriver;
 import org.openqa.selenium.android.Logger;
 import org.openqa.selenium.android.Platform;
 import org.openqa.selenium.android.app.R;
+
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.os.IBinder;
+import android.os.PowerManager;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.common.io.ByteStreams;
 
 public class JettyService extends Service {
   private static final String LOG_TAG = JettyService.class.getName();

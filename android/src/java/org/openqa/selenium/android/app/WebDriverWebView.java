@@ -21,15 +21,11 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.openqa.selenium.android.Logger;
 import org.openqa.selenium.android.ActivityController;
-import org.openqa.selenium.android.Sleeper;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
