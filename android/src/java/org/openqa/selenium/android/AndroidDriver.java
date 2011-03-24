@@ -462,7 +462,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
    * @return java objects like long, double, String, boolean, Array, Map
    */
   protected Object checkResultAndConvert(String jsResult) {
-    Logger.log(Log.DEBUG, "WD", "JS RESULR : " + jsResult);
     if (jsResult == null) {
       return null;
     } else if (jsResult.startsWith(ERROR)) {
@@ -488,12 +487,10 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
   protected Object processJsonObject(Object res) throws JSONException {
     if (res instanceof JSONArray) {
-      Logger.log(Log.DEBUG, "WD", "JSONARRAY : " + res.toString());
       return convertJsonArray2List((JSONArray) res);
     } else if ("undefined".equals(res)) {
       return null;
     }
-    Logger.log(Log.DEBUG, "WD", "NOT JSONARRAY : " + res.toString());
     return res;
   }
 

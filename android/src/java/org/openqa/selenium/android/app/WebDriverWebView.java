@@ -44,8 +44,6 @@ public class WebDriverWebView extends WebView {
   
   public WebDriverWebView(Context context) {
     super(context);
-    Logger.log(Log.DEBUG, "WD", "WDWV THREAD: " + Thread.currentThread().getName());
-
     this.context = (WebDriverActivity) context;
     chromeClient = new WebDriverWebChromeClient((WebDriverActivity) context);
     viewClient = new WebDriverWebViewClient((WebDriverActivity) context);

@@ -23,7 +23,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.android.app.WebDriverActivity;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class ActivityController {
@@ -87,7 +86,6 @@ public class ActivityController {
   
   public static void done () {
     synchronized (syncObject) {
-      Logger.log(Log.DEBUG, "WD", "SHARED OBJECT NOTIFIED");
       done = true;
       syncObject.notify(); 
     }

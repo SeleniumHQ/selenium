@@ -781,7 +781,6 @@ public class JavascriptDomAccessor {
     } catch (NumberFormatException e) {
       throw new InternalError("Javascript injection failed. Got result: " + ids);
     } catch (ClassCastException e) {
-      Logger.log(Log.DEBUG, "WD", "ID: " + ids.get(0));
       throw e;
     }
   }
