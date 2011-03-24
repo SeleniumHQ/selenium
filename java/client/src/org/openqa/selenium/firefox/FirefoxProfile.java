@@ -106,7 +106,8 @@ public class FirefoxProfile {
       return;
     }
 
-    ClasspathExtension extension = new ClasspathExtension(FirefoxProfile.class, "/webdriver.xpi");
+    ClasspathExtension extension = new ClasspathExtension(FirefoxProfile.class,
+        "/" + getClass().getPackage().getName().replace(".", "/") + "/webdriver.xpi");
     addExtension("webdriver", extension);
   }
 
