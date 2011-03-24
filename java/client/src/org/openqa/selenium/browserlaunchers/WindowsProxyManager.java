@@ -221,6 +221,12 @@ public class WindowsProxyManager {
     // Disable prompting & running signed ActiveX controls that haven't already been enabled.
     WindowsUtils.writeIntRegistryValue(RegKey.DOWNLOAD_SIGNED_ACTIVEX.key, 3);
 
+    // Prevent the "Did you notice the Information Bar?" pop-up  when visiting a site that has ActiveX.
+    WindowsUtils.writeIntRegistryValue(RegKey.DISPLAY_INFORMATION_BAR_PROMPT.key, 0);
+
+    // Prevent the "This script is running slowly.  Do you want to stop it?" pop-up on pages with slow scripts.
+    WindowsUtils.writeIntRegistryValue(RegKey.MAX_SCRIPT_STATEMENTS.key, Integer.MAX_VALUE);
+
     // DGF Don't manage proxy settings the IE4 way; use hudsuckr instead
 //        if (WindowsUtils.doesRegistryValueExist(RegKey.PROXY_OVERRIDE.key)) {
 //            WindowsUtils.deleteRegistryValue(RegKey.PROXY_OVERRIDE.key);
@@ -447,6 +453,12 @@ public class WindowsProxyManager {
         String.class),
     DOWNLOAD_SIGNED_ACTIVEX(REG_KEY_BASE
                         + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1001",
+        int.class),
+    DISPLAY_INFORMATION_BAR_PROMPT(REG_KEY_BASE
+                        + "\\Software\\Microsoft\\Internet Explorer\\InformationBar\\FirstTime",
+        int.class),
+    MAX_SCRIPT_STATEMENTS(REG_KEY_BASE
+                        + "\\Software\\Microsoft\\Internet Explorer\\Styles\\MaxScriptStatements",
         int.class),
 
     //DGF Don't manage proxy settings the IE4 way; use hudsuckr instead
