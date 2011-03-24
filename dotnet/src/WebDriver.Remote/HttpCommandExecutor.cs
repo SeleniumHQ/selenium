@@ -13,6 +13,7 @@ namespace OpenQA.Selenium.Remote
     public class HttpCommandExecutor : ICommandExecutor
     {
         private const string JsonMimeType = "application/json";
+        private const string ContentTypeHeader = JsonMimeType + ";charset=utf-8";
         private const string RequestAcceptHeader = JsonMimeType + ", image/png";
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
@@ -72,7 +73,7 @@ namespace OpenQA.Selenium.Remote
             {
                 string payload = commandToExecute.ParametersAsJsonString;
                 byte[] data = Encoding.UTF8.GetBytes(payload);
-                request.ContentType = JsonMimeType;
+                request.ContentType = ContentTypeHeader;
                 System.IO.Stream requestStream = request.GetRequestStream();
                 requestStream.Write(data, 0, data.Length);
                 requestStream.Close();

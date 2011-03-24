@@ -19,7 +19,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE, "Test will run, but requires the Chinese language pack which may hang the test")]
         public void ShouldBeAbleToReadChinese()
         {
             driver.Url = chinesePage;
@@ -27,7 +26,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Test will run, but requires the Chinese language pack which may hang the test")]
         public void ShouldBeAbleToEnterHebrewTextFromLeftToRight()
         {
             driver.Url = chinesePage;
@@ -39,7 +37,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Test will run, but requires the Chinese language pack which may hang the test")]
         public void ShouldBeAbleToEnterHebrewTextFromRightToLeft()
         {
             driver.Url = chinesePage;
