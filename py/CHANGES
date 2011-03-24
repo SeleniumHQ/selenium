@@ -21,3 +21,7 @@ Selenium 2 Beta 3
 * Fixed Firefox Profile creation
 * Added Firefox 4 support
 * DocStrings Improvements
+
+Selenium 2 Beta 4
+* Fix for using existing Firefox Profiles
+* Alerts Support in IE
