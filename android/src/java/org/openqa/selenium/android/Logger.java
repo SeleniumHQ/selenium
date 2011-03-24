@@ -24,7 +24,7 @@ import android.util.Log;
  */
 public class Logger {
   // Set to false for release apk, true when debugging.
-  private static boolean debug = true;
+  private static boolean debug = false;
 
   // Should be left to true in release apk.
   public static final boolean ERROR = true;
