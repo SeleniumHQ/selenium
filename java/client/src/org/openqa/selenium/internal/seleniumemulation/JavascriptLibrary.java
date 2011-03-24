@@ -32,7 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class JavascriptLibrary {
-  private static final String PREFIX = "/scripts/selenium/";
+  private static final String PREFIX = "/" + JavascriptLibrary.class.getPackage()
+      .getName().replace(".", "/") + "/";
 
   private static final String injectableSelenium =
       "/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js";
