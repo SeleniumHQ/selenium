@@ -17,6 +17,7 @@
 
 goog.provide('bot.locators.xpath');
 
+goog.require('bot');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.xml');
@@ -31,13 +32,47 @@ goog.require('goog.dom.xml');
  *     such element could be found.
  */
 bot.locators.xpath.single = function(target, root) {
-  try {
-    var node = goog.dom.xml.selectSingleNode(root, target);
-  } catch (e) {
-    // selectSingleNode throws when the document object
-    // is not defined in the context in which it executes.
+  // Note: This code was copied from Closure (goog.dom.xml.selectSingleNode)
+  // since the current implementation refers 'document' which is not defined
+  // in the context of the Firefox extension (XPathResult isn't defined as well).
+  function selectSingleNode(node, path) {
+    var doc = goog.dom.getOwnerDocument(node);
+
+    if (node.selectSingleNode) {
+      if (doc.setProperty) {
+        doc.setProperty('SelectionLanguage', 'XPath');
+      }
+      return node.selectSingleNode(path);
+    } else if (doc.implementation.hasFeature('XPath', '3.0')) {
+      var resolver = doc.createNSResolver(doc.documentElement);
+      var resultType;
+      if (typeof XPathResult != 'undefined') {
+        resultType = XPathResult.FIRST_ORDERED_NODE_TYPE;
+      } else {
+        // XPathResult is not defined in the Firefox extension context.
+        // It's possible to access it using
+        // Components.interfaces.nsIDOMXPathResult. Another option would be to
+        // define it to be 9, according to the standard:
+        // http://www.w3.org/TR/DOM-Level-3-XPath/ecma-script-binding.html
+        if (!bot.isFirefoxExtension()) {
+          // The document supports XPath, however XPathResult is not defined
+          // and this is not happening inside a Firefox extension. This is
+          // an unfamiliar case, indicate.
+          throw Error("Document claims it supports XPath yet XPathResult " +
+            "is not defined. Please report this to Selenium developers");
+        }
+        resultType = Components.interfaces.nsIDOMXPathResult.
+            FIRST_ORDERED_NODE_TYPE;
+      }
+      var result = doc.evaluate(path, node, resolver,
+          resultType, null);
+      return result.singleNodeValue;
+    }
     return null;
-  }
+  };
+
+  var node = selectSingleNode(root, target);
+
   if (!node) {
     return null;
   }

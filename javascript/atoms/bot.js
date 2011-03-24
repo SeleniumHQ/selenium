@@ -56,3 +56,20 @@ bot.getWindow = function() {
 bot.setWindow = function(win) {
   bot.window_ = win;
 };
+
+bot.isFirefoxExtension = function() {
+  // Make the Closure compiler happy.
+  var Components = goog.global.Components;
+  if (!Components) {
+    return false;
+  }
+
+  try {
+    // Instantiate something the way that an extension could
+    Components.classes['@mozilla.org/uuid-generator;1'].
+        getService(Components.interfaces.nsIUUIDGenerator);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};

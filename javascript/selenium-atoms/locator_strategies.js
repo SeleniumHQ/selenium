@@ -186,10 +186,18 @@ core.LocatorStrategies.xpath_ = function(locator, opt_doc) {
   var trailingSlash = goog.string.endsWith(locator, '/');
   var selector = {'xpath': locator};
 
+  try {
+    var element = bot.locators.findElement(selector, opt_doc);
+    if (element || !trailingSlash) {
+      return element;
+    }
+  } catch (e) {
+    if (!trailingSlash) {
+      throw e;
+    }
 
-  var element = bot.locators.findElement(selector, opt_doc);
-  if (element || !trailingSlash) {
-    return element;
+    // The exception from the xpath engine *may* have been because of
+    // the trailing slash. If there was a trailing slash, fall through.
   }
 
   selector = {'xpath': locator.substring(0, locator.length - 1)};

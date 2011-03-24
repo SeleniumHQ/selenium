@@ -23,6 +23,7 @@
 
 goog.provide('bot.action');
 
+goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
@@ -440,7 +441,7 @@ bot.action.click = function(element) {
       bot.events.fire(element, goog.events.EventType.CLICK, coords);
 
   if ((goog.userAgent.IE || goog.userAgent.GECKO) &&
-      !bot.events.isFirefoxExtension()) {
+      !bot.isFirefoxExtension()) {
     if (performDefault) {
       var anchor = /**@type {Element}*/ (goog.dom.getAncestor(element,
           function(e) {
@@ -453,25 +454,6 @@ bot.action.click = function(element) {
     }
   }
 };
-
-
-bot.events.isFirefoxExtension = function() {
-  // Make the Closure compiler happy.
-  var Components = goog.global.Components;
-  if (!Components) {
-    return false;
-  }
-
-  try {
-    // Instantiate something the way that an extension could
-    Components.classes['@mozilla.org/uuid-generator;1'].
-        getService(Components.interfaces.nsIUUIDGenerator);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
 
 /**
  * Explicitly follows the href of an anchor.

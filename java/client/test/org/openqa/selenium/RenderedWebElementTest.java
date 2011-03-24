@@ -106,6 +106,16 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  public void testCorrectlyDetectMapElementsAreShown() {
+    driver.get(pages.mapVisibilityPage);
+
+    WebElement area = driver.findElement(By.id("mtgt_unnamed_0"));
+
+    boolean isShown = ((RenderedWebElement) area).isDisplayed();
+    assertTrue("The element and the enclosing map should be considered shown.", isShown);
+  }
+
+  @JavascriptEnabled
   @Ignore
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     if (!hasInputDevices()) {
