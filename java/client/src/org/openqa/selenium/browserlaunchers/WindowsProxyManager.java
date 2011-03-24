@@ -163,6 +163,10 @@ public class WindowsProxyManager {
       File proxyPAC = Proxies.makeProxyPAC(customProxyPACDir, port, options);
 
       String newURL = proxyPAC.toURI().toString();
+      // The URL may start "file:/" whereas it needs to start "file://" on XP
+      if (newURL.startsWith("file") && !newURL.startsWith("file://")) {
+        newURL = newURL.replace("file:/", "file://");
+      }
       settings =
           new HudsuckrSettings(oldSettings.connection, true, false, true, false, "(null)", "(null)",
               newURL);
