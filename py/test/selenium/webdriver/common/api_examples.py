@@ -178,7 +178,7 @@ class ApiExampleTest (unittest.TestCase):
         elem = self.driver.find_element_by_id("id1")
         attr = elem.get_attribute("href")
         # IE returns full URL
-        if self.driver.name == "IE":
+        if self.driver.name == "internet explorer":
             attr = attr[-1]
         self.assertEquals("#", attr)
 
