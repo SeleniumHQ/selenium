@@ -118,7 +118,6 @@ class FirefoxBinary(object):
         else:
             # Maybe iceweasel (Debian) is another candidate...
             for ffname in ["firefox2", "firefox", "firefox-3.0", "firefox-4.0"]:
-                LOGGER.debug("Searching for '%s'...", ffname)
                 start_cmd = self.which(ffname)
                 if start_cmd is not None:
                     break
