@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
+import static org.openqa.selenium.android.app.R.raw.is_displayed_android;
+import android.R;
 import android.graphics.Point;
 import android.util.Log;
 
@@ -26,6 +28,10 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -736,19 +742,24 @@ public class JavascriptDomAccessor {
         "}";
   }
   
-  private static String isDisplayedJs() {
-    return 
-        "var isDisplayed = true;" +
-        "var body = document.body; " +
-        "var aParent = element;" +
-        "while(aParent && aParent!= body) {" +
-        "  if((aParent.style && (aParent.style.display == 'none'" +
-            "|| aParent.style.visibility == 'hidden'))" +
-            "|| (element.type && (element.type == 'hidden'))) {" +
-        "    isDisplayed = false;  " +
-        "  }" +
-        "  aParent = aParent.parentNode; " +
-        "}";
+  private String isDisplayedJs() {
+    InputStream is = driver.getContext().getResources()
+        .openRawResource(is_displayed_android);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    StringBuilder builder = new StringBuilder();
+    String line = null;
+    try {
+      while ((line = reader.readLine()) != null) {
+        builder.append(line);
+      }
+      reader.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    
+    String isDisplayed = builder.toString();
+    
+    return "var isDisplayed = (" + isDisplayed + ")(element);";
   }
 
   private Point parseCoordinate(String result) {
@@ -789,7 +800,6 @@ public class JavascriptDomAccessor {
     List<Object> result = new ArrayList<Object>();
     for (int i = 0; i < MAX_XPATH_ATTEMPTS; i++) {
       Object scriptResult = driver.executeScript(toExecute, using, elementId);
-      Logger.log(Log.DEBUG, "WD", "GOT JAVASCRIPT RESULT: " + scriptResult);
       if (scriptResult instanceof String && ((String) scriptResult).startsWith(FAILED)) {
         try {
           Logger.log(Log.DEBUG, LOG_TAG, "executeAndRetry Script: " + toExecute);
