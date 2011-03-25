@@ -31,7 +31,7 @@ class WebElement(object):
     @property
     def tag_name(self):
         """Gets this element's tagName property."""
-        return self._execute(Command.GET_ELEMENT_TAG_NAME)['value']
+        return self._execute(Command.GET_ELEMENT_TAG_NAME)['value'
 
     @property
     def text(self):
@@ -154,7 +154,12 @@ class WebElement(object):
     @property
     def size(self):
         """ Returns the size of the element """
-        return self._execute(Command.GET_ELEMENT_SIZE)['value']
+        size = self._execute(Command.GET_ELEMENT_SIZE)['value']
+        if size.has_key("hCode"):
+            del size["hCode"]
+        if size.has_key("class"):
+            del size["class"]
+        return size
 
     def value_of_css_property(self, property_name):
         """ Returns the value of a CSS property """
