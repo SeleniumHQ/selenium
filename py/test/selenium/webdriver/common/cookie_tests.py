@@ -54,7 +54,7 @@ class CookieTest(unittest.TestCase):
         cookie = self.driver.get_cookie(key)
         self.assertEquals("set", cookie["value"])
 
-    def testGetAllCookies(self)
+    def testGetAllCookies(self):
         key1 = "key_%d" % int(random.random()*10000000)
         key2 = "key_%d" % int(random.random()*10000000)
     
