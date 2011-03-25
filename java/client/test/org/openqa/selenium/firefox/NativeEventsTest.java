@@ -38,7 +38,7 @@ public class NativeEventsTest extends AbstractDriverTestCase {
       return;
     }
 
-    assertTrue("Native events were explicitly enabeld and should be on.",
+    assertTrue("Native events were explicitly enabled and should be on.",
         (Boolean) driver2.getCapabilities().getCapability("nativeEvents"));
 
     if (Platform.getCurrent().is(Platform.LINUX)) {
