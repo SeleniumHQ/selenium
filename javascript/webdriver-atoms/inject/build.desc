@@ -5,7 +5,7 @@ js_binary(name = "webdriver-inject",
   ])
 
 js_deps(name = "deps",
-  srcs = "find_element.js",
+  srcs = "*.js",
   deps = "//javascript/atoms:deps")
 
 js_test(name = "test",
@@ -18,3 +18,60 @@ js_test(name = "test",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
+
+# Those fragments are used by 3rd party browsers
+js_fragment(name = "find_element",
+  module = "webdriver.inject.locators",
+  function = "webdriver.inject.locators.findElement",
+  deps = [":deps"])
+
+js_fragment(name = "find_elements",
+  module = "webdriver.inject.locators",
+  function = "webdriver.inject.locators.findElements",
+  deps = [":deps"])
+
+js_fragment(name = "get_text",
+  module = "webdriver.inject.dom",
+  function = "webdriver.inject.dom.getText",
+  deps = [":deps"])
+
+js_fragment(name = "is_selected",
+  module = "webdriver.inject.dom",
+  function = "webdriver.inject.dom.isSelected",
+  deps = [":deps"])
+
+js_fragment(name = "get_top_left_coordinates",
+  module = "webdriver.inject.dom",
+  function = "webdriver.inject.dom.getTopLeftCoordinates",
+  deps = [":deps"])
+
+js_fragment(name = "get_attribute_value",
+  module = "webdriver.inject.dom",
+  function = "webdriver.inject.dom.getAttributeValue",
+  deps = [":deps"])
+
+js_fragment(name = "get_size",
+  module = "webdriver.inject.dom",
+  function = "webdriver.inject.dom.getSize",
+  deps = [":deps"])
+
+js_fragment(name = "get_value_of_css_property",
+  module = "webdriver.inject.dom",
+  function = "webdriver.inject.dom.getValueOfCssProperty",
+  deps = [":deps"])
+
+js_fragment(name = "is_enabled",
+  module = "webdriver.inject.dom",
+  function = "webdriver.inject.dom.isEnabled",
+  deps = [":deps"])
+
+js_fragment(name = "toggle",
+  module = "webdriver.inject.action",
+  function = "webdriver.inject.action.toggle",
+  deps = [":deps"])
+
+js_fragment(name = "set_selected",
+  module = "webdriver.inject.action",
+  function = "webdriver.inject.action.setSelected",
+  deps = [":deps"])
+

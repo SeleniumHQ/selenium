@@ -22,11 +22,10 @@ limitations under the License.
     
   <script type="text/javascript">
     goog.require("goog.testing.jsunit");
-    goog.require("webdriver.inject");
+    goog.require("webdriver.inject.locators");
   </script>
 
   <script type="text/javascript">
-    var pattern;
     var wrappedDocument;
 
     function setUp() {
@@ -38,55 +37,68 @@ limitations under the License.
     }
     
     function testInjectFindElementById() {
-      var e = webdriver.inject.findElement("id", "x", wrappedDocument);
+      var e = webdriver.inject.locators.findElement("id", "x", wrappedDocument);
       assertEquals(document.getElementById("x"),
                    getElementFromCache(goog.json.parse(e)));
     }
 
     function testInjectFindElementByCss() {
-      var e = webdriver.inject.findElement("css", "#wrong", wrappedDocument);
+      var e = webdriver.inject.locators.findElement("css",
+                                                    "#wrong", wrappedDocument);
       assertEquals(document.querySelector("#wrong"),
                    getElementFromCache(goog.json.parse(e)));
     }
 
     function testInjectFindElementByClassName() {
-      var e = webdriver.inject.findElement("className", "dogs",
+      var e = webdriver.inject.locators.findElement("className", "dogs",
                                            wrappedDocument);
       assertEquals(document.getElementsByClassName("dogs")[0],
                    getElementFromCache(goog.json.parse(e)));
     }
 
     function testInjectFindElementByName() {
-      var e = webdriver.inject.findElement("name", "after", wrappedDocument);
+      var e = webdriver.inject.locators.findElement("name", "after",
+                                                    wrappedDocument);
       assertEquals(document.getElementsByName("after")[0],
                    getElementFromCache(goog.json.parse(e)));
     }
 
       function testInjectFindElementByLinkText() {
-      var e = webdriver.inject.findElement("linkText",
+      var e = webdriver.inject.locators.findElement("linkText",
                                            "this is a link", wrappedDocument);
       assertEquals(document.getElementById("link"),
                    getElementFromCache(goog.json.parse(e)));
     }
 
     function testInjectFindElementByPartialLinkText() {
-      var e = webdriver.inject.findElement("partialLinkText",
+      var e = webdriver.inject.locators.findElement("partialLinkText",
                                            "is", wrappedDocument);
       assertEquals(document.getElementById("link"),
                    getElementFromCache(goog.json.parse(e)));
     }
 
     function testInjectFindElementByTagName() {
-      var e = webdriver.inject.findElement("tagName", "form", wrappedDocument);
+      var e = webdriver.inject.locators.findElement("tagName", "form",
+                                                    wrappedDocument);
       assertEquals(document.getElementsByTagName("form")[0],
                    getElementFromCache(goog.json.parse(e)));
     }
 
     function testInjectFindElementByXpath() {
-      var e = webdriver.inject.findElement("xpath", ".//*[@id='after']",
-                                           wrappedDocument);
+      var e = webdriver.inject.locators.findElement("xpath",
+          ".//*[@id='after']", wrappedDocument);
       assertEquals(document.getElementById("after"),
                    getElementFromCache(goog.json.parse(e)));
+    }
+
+    function testInjectFindElementsByTagName() {
+      var e = webdriver.inject.locators.findElements("tagName", "div");
+      assertEquals(5, goog.json.parse(e)["value"].length);
+    }
+
+    function testInjectFindElementsByXPath() {
+      var e = webdriver.inject.locators.findElements("xpath", ".//a");
+      assertEquals(7, goog.json.parse(e)["value"].length);
     }
 
     function getElementFromCache(parsed) {
