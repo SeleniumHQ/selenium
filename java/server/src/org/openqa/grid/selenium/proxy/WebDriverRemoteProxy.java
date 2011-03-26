@@ -16,10 +16,16 @@ limitations under the License.
 
 package org.openqa.grid.selenium.proxy;
 
+import java.io.IOException;
+import java.util.logging.Logger;
+
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHttpRequest;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.TestSession;
-
-import java.util.logging.Logger;
 
 
 public class WebDriverRemoteProxy extends WebRemoteProxy  {
@@ -40,6 +46,23 @@ public class WebDriverRemoteProxy extends WebRemoteProxy  {
 		if (!ok) {
 			log.warning("Error releasing the resources on timeout for session " + session);
 		}
+	}
+
+	@Override
+	public boolean isAlive() {
+		BasicHttpRequest r = new BasicHttpRequest("GET", getRemoteURL().toExternalForm());
+		System.out.println(getRemoteURL().toExternalForm());
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpHost host = new HttpHost(getRemoteURL().getHost(), getRemoteURL().getPort());
+		HttpResponse response;
+		try {
+			response = client.execute(host, r);
+		} catch (ClientProtocolException e) {
+			return false;
+		} catch (IOException e) {
+			return false;
+		}
+		return 500==response.getStatusLine().getStatusCode();
 	}
 
 }

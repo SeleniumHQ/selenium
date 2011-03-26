@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import org.openqa.grid.internal.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.RegistrationListener;
+import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 
@@ -258,6 +259,9 @@ public class Registry {
 			lock.lock();
 			registeringProxies.remove(proxy);
 			if (listenerOk) {
+				if (proxy instanceof SelfHealingProxy){
+					((SelfHealingProxy)proxy).startPolling();
+				}
 				proxies.add(proxy);
 				fireEventNewSessionAvailable();
 			}

@@ -8,6 +8,7 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.internal.utils.HtmlRenderer;
+import org.openqa.grid.selenium.proxy.WebRemoteProxy;
 
 public class WebProxyHtmlRenderer implements HtmlRenderer {
 
@@ -25,15 +26,19 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<fieldset>");
 		builder.append("<legend>").append(proxy.getClass().getSimpleName()).append("</legend>");
-		builder.append("listening on ").append(proxy.getRemoteURL()).append("<br>");
-
+		builder.append("listening on ").append(proxy.getRemoteURL());
+		if (((WebRemoteProxy)proxy).isDown()){
+			builder.append("(cannot be reached at the moment)");
+		}
+		builder.append("<br>");
 		if (proxy.getTimeOut() > 0) {
 			int inSec = proxy.getTimeOut() / 1000;
 			builder.append("test session time out after ").append(inSec).append(" sec.<br>");
 		}
 
 		builder.append("Supports up to <b>").append(proxy.getMaxNumberOfConcurrentTestSessions()).append("</b> concurrent tests from : </u><br>");
-
+		
+		builder.append("");
 		for (TestSlot slot : proxy.getTestSlots()) {
 			TestSession session = slot.getSession();
 			builder.append("<img ");
