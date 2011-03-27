@@ -499,7 +499,7 @@ class WebDriver(object):
         Usage:
             driver.implicitly_wait(30)
         """
-        self.execute(Command.IMPLICIT_WAIT, {'ms': int(time_to_wait) * 1000})
+        self.execute(Command.IMPLICIT_WAIT, {'ms': float(time_to_wait) * 1000})
     
     def set_script_timeout(self, time_to_wait):
         """Set the amount of time that the script should wait before throwing an
@@ -509,7 +509,7 @@ class WebDriver(object):
         Usage:
             driver.set_script_timeout(30)
         """
-        self.execute(Command.SET_SCRIPT_TIMEOUT, {'ms': int(time_to_wait) * 1000})
+        self.execute(Command.SET_SCRIPT_TIMEOUT, {'ms': float(time_to_wait) * 1000})
     
     def find_element(self, by=By.ID, value=None):
         """'Private' method used by the find_element_by_* methods.
