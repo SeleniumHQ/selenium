@@ -51,13 +51,7 @@ class JavascriptMappings
     fun.add_mapping("js_fragment_header", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment_header", Javascript::ConcatenateHeaders.new)
     fun.add_mapping("js_fragment_header", Javascript::CopyHeader.new)
-
-    fun.add_mapping("js_fragment_java", Javascript::CheckFragmentPreconditions.new)
-    fun.add_mapping("js_fragment_java", Javascript::CreateTask.new)
-    fun.add_mapping("js_fragment_java", Javascript::CreateTaskShortName.new)
-    fun.add_mapping("js_fragment_java", Javascript::AddDependencies.new)
-    fun.add_mapping("js_fragment_java", Javascript::ConcatenateJava.new)
-
+    
     fun.add_mapping("js_test", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_test", Javascript::CreateTask.new)
     fun.add_mapping("js_test", Javascript::CreateTaskShortName.new)
@@ -343,7 +337,7 @@ module Javascript
           "// limitations under the License.\n"
 
 
-    def write_atom_string_literal(to_file, dir, atom, utf8, language)
+    def write_atom_string_literal(to_file, dir, atom, utf8)
       # Check that the |atom| task actually generates a JavaScript file.
       if (File.exists?(atom))
         atom_file = atom
@@ -379,21 +373,13 @@ module Javascript
       contents.gsub!(/"/, "\\\"")
       contents.gsub!(/'/, "'")
 
-      if language == "cpp"
-        atom_type = utf8 ? "char" : "wchar_t"
-        max_str_length = MAX_STR_LENGTH
-        max_str_length += 1 if utf8  # Don't need the 'L' on each line for UTF8.
-        line_format = utf8 ? "    \"%s\"" : "    L\"%s\""
+      atom_type = utf8 ? "char" : "wchar_t"
+      max_str_length = MAX_STR_LENGTH
+      max_str_length += 1 if utf8  # Don't need the 'L' on each line for UTF8.
+      line_format = utf8 ? "    \"%s\"" : "    L\"%s\""
 
-        to_file << "\n"
-        to_file << "const #{atom_type}* const #{atom_upper} =\n"
-      end
-      if language == "java"
-        max_str_length = MAX_STR_LENGTH - 2
-        line_format = "      \"\%s\""
-        to_file << "\n"
-        to_file << "  public static final String #{atom_upper} =\n"
-      end
+      to_file << "\n"
+      to_file << "const #{atom_type}* const #{atom_upper} =\n"
 
       # Make the header file play nicely in a terminal: limit lines to 80
       # characters, but make sure we don't cut off a line in the middle
@@ -405,40 +391,11 @@ module Javascript
         line = contents[0, diff]
         contents.slice!(0..diff - 1)
         to_file << line_format % line
-        if language == "java"
-          to_file << " +"
-        end
         to_file << "\n"
       end
 
       to_file << line_format % contents if contents.length > 0
       to_file << ";\n"
-    end
-
-    def generate_java(dir, name, task_name, output, js_files)
-      file output => js_files do
-        puts "Preparing: #{task_name} as #{output}"
-        output_dir = File.dirname(output)
-        mkdir_p output_dir unless File.exists?(output_dir)
-
-        File.open(output, 'w') do |out|
-          out << COPYRIGHT
-          out << "\n"
-          out << "/* AUTO GENERATED - DO NOT EDIT!*/\n"
-          out << "\n"
-          out << "package webdriver;\n"
-          out << "\n"
-          out << "public class Atoms {\n"
-
-          js_files.each do |js_file|
-            write_atom_string_literal(out, dir, js_file, false, "java")
-          end
-
-          out << "\n"
-          out << "}"
-          out << "\n"
-       end
-      end
     end
 
     def generate_header(dir, name, task_name, output, js_files, utf8)
@@ -462,7 +419,7 @@ module Javascript
           out << "namespace atoms {\n"
 
           js_files.each do |js_file|
-            write_atom_string_literal(out, dir, js_file, utf8, "cpp")
+            write_atom_string_literal(out, dir, js_file, utf8)
           end
 
           out << "\n"
