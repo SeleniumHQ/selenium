@@ -31,7 +31,8 @@ private:
 	std::wstring CreateSession(void);
 	void ShutDownSession(const std::wstring& session_id);
 	std::wstring ReadRequestBody(struct mg_connection* conn, const struct mg_request_info* request_info);
-	std::wstring SendCommandToSession(const std::wstring& session_id, const std::wstring& serialized_command);
+	bool LookupSession(const std::wstring& session_id, HWND* session_window_handle);
+	std::wstring SendCommandToSession(const HWND& session_window_handle, const std::wstring& serialized_command);
 	int SendResponseToBrowser(struct mg_connection* conn, const struct mg_request_info* request_info, const std::wstring& serialized_response);
 	void PopulateCommandRepository(void);
 

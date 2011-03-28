@@ -259,9 +259,16 @@ namespace OpenQA.Selenium.Remote
             {
                 this.Execute(DriverCommand.Quit, null);
             }
+            catch (WebDriverException)
+            {
+            }
+            catch (System.Net.WebException)
+            {
+            }
             finally
             {
                 this.Dispose();
+                this.sessionId = null;
             }
         }
 
@@ -716,7 +723,6 @@ namespace OpenQA.Selenium.Remote
         /// <param name="disposing">if its in the process of disposing</param>
         protected virtual void Dispose(bool disposing)
         {
-            this.sessionId = null;
             this.StopClient();
         }
 

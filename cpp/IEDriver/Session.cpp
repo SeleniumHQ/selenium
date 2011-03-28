@@ -189,6 +189,10 @@ LRESULT Session::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 	return 0;
 }
 
+LRESULT Session::OnGetWindowCount(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+	return static_cast<LRESULT>(this->managed_browsers_.size());
+}
+
 unsigned int WINAPI Session::WaitThreadProc(LPVOID lpParameter) {
 	HWND window_handle = reinterpret_cast<HWND>(lpParameter);
 	::Sleep(WAIT_TIME_IN_MILLISECONDS);

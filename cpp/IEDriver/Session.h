@@ -48,6 +48,7 @@ public:
 		MESSAGE_HANDLER(WD_WAIT, OnWait)
 		MESSAGE_HANDLER(WD_BROWSER_NEW_WINDOW, OnBrowserNewWindow)
 		MESSAGE_HANDLER(WD_BROWSER_QUIT, OnBrowserQuit)
+		MESSAGE_HANDLER(WD_GET_WINDOW_COUNT, OnGetWindowCount)
 	END_MSG_MAP()
 
 	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -61,6 +62,7 @@ public:
 	LRESULT OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnGetWindowCount(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 	std::wstring session_id(void) const { return this->session_id_; }
 

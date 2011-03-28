@@ -6,3 +6,4 @@
 #define WD_WAIT WM_APP + 6
 #define WD_BROWSER_NEW_WINDOW WM_APP + 7
 #define WD_BROWSER_QUIT WM_APP + 8
+#define WD_GET_WINDOW_COUNT WM_APP + 9
