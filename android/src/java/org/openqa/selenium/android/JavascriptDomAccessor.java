@@ -28,6 +28,9 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -743,22 +746,16 @@ public class JavascriptDomAccessor {
   }
   
   private String isDisplayedJs() {
-    InputStream is = driver.getContext().getResources()
+    InputStream is = AndroidDriver.getContext().getResources()
         .openRawResource(is_displayed_android);
-    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-    StringBuilder builder = new StringBuilder();
-    String line = null;
+    String isDisplayed;
     try {
-      while ((line = reader.readLine()) != null) {
-        builder.append(line);
-      }
-      reader.close();
+      isDisplayed = new String(ByteStreams.toByteArray(is));
     } catch (IOException e) {
       throw new RuntimeException(e);
+    } finally {
+      Closeables.closeQuietly(is);
     }
-    
-    String isDisplayed = builder.toString();
-    
     return "var isDisplayed = (" + isDisplayed + ")(element);";
   }
 
