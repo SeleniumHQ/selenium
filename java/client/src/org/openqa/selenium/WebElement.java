@@ -60,7 +60,9 @@ public interface WebElement extends SearchContext {
    *
    * @return The value of the element's "value" attribute.
    * @see WebElement#getAttribute(String)
+   * @deprecated Use WebElement#getAttribute("value") instead.
    */
+  @Deprecated
   String getValue();
 
   /**
