@@ -20,18 +20,19 @@ namespace OpenQA.Selenium.Firefox.Internal
         private FirefoxProfile profile;
         private FirefoxBinary process;
         private HttpCommandExecutor executor;
+        private string host;
         #endregion
 
         #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="ExtensionConnection"/> class.
         /// </summary>
-        /// <param name="lockObject">An <see cref="ILock"/> object used to lock the mutex port before connection.</param>
         /// <param name="binary">The <see cref="FirefoxBinary"/> on which to make the connection.</param>
         /// <param name="profile">The <see cref="FirefoxProfile"/> creating the connection.</param>
         /// <param name="host">The name of the host on which to connect to the Firefox extension (usually "localhost").</param>
-        public ExtensionConnection(ILock lockObject, FirefoxBinary binary, FirefoxProfile profile, string host)
+        public ExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, string host)
         {
+            this.host = host;
             this.profile = profile;
             if (binary == null)
             {
@@ -41,28 +42,16 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 this.process = binary;
             }
-
-            lockObject.LockObject(this.process.TimeoutInMilliseconds);
-            try
-            {
-                int portToUse = DetermineNextFreePort(host, profile.Port);
-
-                profile.Port = portToUse;
-                profile.UpdateUserPreferences();
-                this.process.Clean(profile);
-                this.process.StartProfile(profile, null);
-
-                this.SetAddress(host, portToUse);
-
-                // TODO (JimEvans): Get a better url algorithm.
-                this.executor = new HttpCommandExecutor(new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}/hub/", host, portToUse)));
-            }
-            finally
-            {
-                lockObject.UnlockObject();
-            }
         } 
         #endregion
+
+        /// <summary>
+        /// Gets the <see cref="FirefoxProfile"/> associated with this connection.
+        /// </summary>
+        public FirefoxProfile Profile
+        {
+            get { return this.profile; }
+        }
 
         #region IExtensionConnection Members
         /// <summary>
@@ -70,6 +59,28 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// </summary>
         public void Start()
         {
+            using (ILock lockObject = new SocketLock(this.profile.Port - 1))
+            {
+                lockObject.LockObject(this.process.TimeoutInMilliseconds);
+                try
+                {
+                    int portToUse = DetermineNextFreePort(this.host, this.profile.Port);
+                    this.profile.Port = portToUse;
+                    this.profile.WriteToDisk();
+                    this.process.Clean(this.profile);
+                    this.process.StartProfile(this.profile, null);
+
+                    this.SetAddress(portToUse);
+
+                    // TODO (JimEvans): Get a better url algorithm.
+                    this.executor = new HttpCommandExecutor(new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}/hub/", this.host, portToUse)));
+                }
+                finally
+                {
+                    lockObject.UnlockObject();
+                }
+            }
+
             this.ConnectToBrowser(this.process.TimeoutInMilliseconds);
         }
 
@@ -168,15 +179,15 @@ namespace OpenQA.Selenium.Firefox.Internal
             return extensionSocket != null && extensionSocket.Connected;
         }
 
-        private void SetAddress(string host, int port)
+        private void SetAddress(int port)
         {
-            if (string.Compare("localhost", host, StringComparison.OrdinalIgnoreCase) == 0)
+            if (string.Compare("localhost", this.host, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 this.addresses = ObtainLoopbackAddresses(port);
             }
             else
             {
-                IPHostEntry hostEntry = Dns.GetHostEntry(host);
+                IPHostEntry hostEntry = Dns.GetHostEntry(this.host);
 
                 // Use the first IPv4 address that we find
                 IPAddress endPointAddress = IPAddress.Parse("127.0.0.1");

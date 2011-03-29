@@ -13,7 +13,7 @@ namespace OpenQA.Selenium.Firefox
     public class FirefoxProfileManager
     {
         #region Private members
-        private Dictionary<string, FirefoxProfile> profiles = new Dictionary<string, FirefoxProfile>(); 
+        private Dictionary<string, string> profiles = new Dictionary<string, string>(); 
         #endregion
 
         #region Constructor
@@ -32,12 +32,12 @@ namespace OpenQA.Selenium.Firefox
         /// Gets a <see cref="ReadOnlyCollection{T}"/> containing <see cref="FirefoxProfile">FirefoxProfiles</see>
         /// representing the existing named profiles for Firefox.
         /// </summary>
-        public ReadOnlyCollection<FirefoxProfile> ExistingProfiles
+        public ReadOnlyCollection<string> ExistingProfiles
         {
             get
             {
-                List<FirefoxProfile> profileList = new List<FirefoxProfile>(this.profiles.Values);
-                return new ReadOnlyCollection<FirefoxProfile>(profileList);
+                List<string> profileList = new List<string>(this.profiles.Keys);
+                return profileList.AsReadOnly();
             }
         } 
         #endregion
@@ -56,8 +56,7 @@ namespace OpenQA.Selenium.Firefox
             {
                 if (this.profiles.ContainsKey(profileName))
                 {
-                    profile = this.profiles[profileName];
-
+                    profile = new FirefoxProfile(this.profiles[profileName]);
                     if (profile.Port == 0)
                     {
                         profile.Port = FirefoxDriver.DefaultPort;
@@ -116,8 +115,7 @@ namespace OpenQA.Selenium.Firefox
                             fullPath = profilePath;
                         }
 
-                        FirefoxProfile profile = new FirefoxProfile(fullPath, true);
-                        this.profiles.Add(name, profile);
+                        this.profiles.Add(name, fullPath);
                     }
                 }
             }

@@ -54,8 +54,8 @@
     <Compile Include="IExtensionConnection.cs" />
     <Compile Include="Internal\Executable.cs" />
     <Compile Include="Internal\ExtensionConnection.cs" />
-    <Compile Include="Internal\ExtensionConnectionFactory.cs" />
     <Compile Include="FirefoxProfileManager.cs" />
+    <Compile Include="FirefoxExtension.cs" />
     <Compile Include="Internal\ILock.cs" />
     <Compile Include="Internal\IniFileReader.cs" />
     <Compile Include="Internal\NativeMethods.cs" />

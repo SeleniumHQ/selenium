@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Microsoft.Win32;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Chrome
 {
@@ -170,7 +171,7 @@ namespace OpenQA.Selenium.Chrome
                 this.chromeProcess = null;
                 if (this.profile.DeleteProfileOnExit)
                 {
-                    DeleteProfileDirectory(this.profile.ProfileDirectory);
+                    FileUtilities.DeleteDirectory(this.profile.ProfileDirectory);
                 }
             }
         }
@@ -250,39 +251,6 @@ namespace OpenQA.Selenium.Chrome
         {
             return !string.IsNullOrEmpty(chromeFile) && File.Exists(chromeFile);
         }
-
-        private static void DeleteProfileDirectory(string directoryToDelete)
-        {
-            int numberOfRetries = 0;
-            while (Directory.Exists(directoryToDelete) && numberOfRetries < 10)
-            {
-                try
-                {
-                    Directory.Delete(directoryToDelete, true);
-                }
-                catch (IOException)
-                {
-                    // If we hit an exception (like file still in use), wait a half second
-                    // and try again. If we still hit an exception, go ahead and let it through.
-                    System.Threading.Thread.Sleep(500);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    // If we hit an exception (like file still in use), wait a half second
-                    // and try again. If we still hit an exception, go ahead and let it through.
-                    System.Threading.Thread.Sleep(500);
-                }
-                finally
-                {
-                    numberOfRetries++;
-                }
-
-                if (Directory.Exists(directoryToDelete))
-                {
-                    Console.WriteLine("Unable to delete profile directory '{0}'", directoryToDelete);
-                }
-            }
-        } 
 
         private void FindFreePort()
         {

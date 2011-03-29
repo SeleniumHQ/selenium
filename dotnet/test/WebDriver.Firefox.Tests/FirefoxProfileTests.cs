@@ -78,7 +78,7 @@ namespace OpenQA.Selenium.Firefox
 
         private List<string> ReadGeneratedProperties()
         {
-            profile.UpdateUserPreferences();
+            profile.WriteToDisk();
             List<string> generatedProperties = new List<string>();
             string userPrefs = System.IO.Path.Combine(profile.ProfileDirectory, "user.js");
             if (System.IO.File.Exists(userPrefs))

@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Internal\FileUtilities.cs" />
     <Compile Include="UnableToSetCookieException.cs" />
     <Compile Include="InvalidCookieDomainException.cs" />
     <Compile Include="ICapabilities.cs" />

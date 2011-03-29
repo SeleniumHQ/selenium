@@ -164,24 +164,14 @@ namespace OpenQA.Selenium.Firefox
 
         #region Support methods
         /// <summary>
-        /// Connects the <see cref="FirefoxDriver"/> to a running instance of the WebDriver Firefox extension.
-        /// </summary>
-        /// <param name="binary">The <see cref="FirefoxBinary"/> to use to connect to the extension.</param>
-        /// <param name="profile">The <see cref="FirefoxProfile"/> to use to connect to the extension.</param>
-        /// <param name="host">The host name of the computer running the Firefox browser extension (usually "localhost").</param>
-        /// <returns>A <see cref="ExtensionConnection"/> to the currently running Firefox extension.</returns>
-        internal static ExtensionConnection ConnectTo(FirefoxBinary binary, FirefoxProfile profile, string host)
-        {
-            return ExtensionConnectionFactory.ConnectTo(binary, profile, host);
-        }
-
-        /// <summary>
         /// Starts the command executor, enabling communication with the browser.
         /// </summary>
         protected override void StartClient()
         {
             try
             {
+                ExtensionConnection connection = (ExtensionConnection)this.CommandExecutor;
+                connection.Profile.AddWebDriverExtension();
                 ((ExtensionConnection)this.CommandExecutor).Start();
             }
             catch (IOException e)
@@ -230,14 +220,9 @@ namespace OpenQA.Selenium.Firefox
             else if (profileToUse == null)
             {
                 profileToUse = new FirefoxProfile();
-                profileToUse.AddExtension(false);
-            }
-            else
-            {
-                profileToUse.AddExtension(false);
             }
 
-            ExtensionConnection extension = ConnectTo(binary, profileToUse, "localhost");
+            ExtensionConnection extension = new ExtensionConnection(binary, profileToUse, "localhost");
             return extension;
         }
         #endregion

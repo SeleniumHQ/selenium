@@ -143,8 +143,8 @@ namespace OpenQA.Selenium.Remote
         {
             return new DesiredCapabilities("htmlunit", string.Empty, new Platform(PlatformType.Any));
         }
-		
-		/// <summary>
+        
+        /// <summary>
         /// Method to return a new DesiredCapabilities using defaults
         /// </summary>
         /// <returns>New instance of DesiredCapabilities for use with HTMLUnit with JS</returns>
