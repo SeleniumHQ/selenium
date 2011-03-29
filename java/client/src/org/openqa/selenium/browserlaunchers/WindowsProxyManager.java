@@ -268,7 +268,11 @@ public class WindowsProxyManager {
     }
     log.info("Backing up registry settings...");
     for (RegKey key : RegKey.values()) {
-      key.backup();
+      try {
+        key.backup();
+      } catch (RuntimeException e) {
+        log.warning("Cannot back up: " + key);
+      }
     }
     backupHudsuckrSettings();
     backupReady(true);
