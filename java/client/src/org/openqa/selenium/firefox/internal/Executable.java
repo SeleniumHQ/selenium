@@ -3,7 +3,10 @@ package org.openqa.selenium.firefox.internal;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
+
+import com.google.common.collect.ImmutableList;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -142,11 +145,7 @@ public class Executable {
       case WINDOWS:
       case VISTA:
       case XP:
-          binary = new File(getEnvVar("PROGRAMFILES", "\\Program Files") + "\\Mozilla Firefox\\firefox.exe");
-          if (!binary.exists()) {
-              binary = new File(getEnvVar("ProgramFiles(x86)", getEnvVar("SystemDrive", "c:") + "\\Program Files (x86)") +
-                      "\\Mozilla Firefox\\firefox.exe");
-          }
+          binary = findExistingBinary(WindowsUtils.getPathsInProgramFiles("Mozilla Firefox\\firefox.exe"));
           break;
 
       case MAC:
@@ -160,6 +159,16 @@ public class Executable {
     return binary != null && binary.exists() ? binary : findBinary("firefox3", "firefox2", "firefox");
   }
   
+  private static File findExistingBinary(final ImmutableList<String> paths) {
+      for (String path : paths) {
+          File file = new File(path);
+          if (file.exists()) {
+              return file;
+          }
+      }
+      return null;
+  }
+
   /**
    * Retrieve an env var; if no var is set, returns the default
    * 
