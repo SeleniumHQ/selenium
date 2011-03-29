@@ -162,14 +162,6 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
     private String[] createCommandArray(String url) {
         String userDir = customProfileDir.getAbsolutePath();
 
-        // Thanks to issue #517: http://code.google.com/p/selenium/issues/detail?id=517
-        if (Platform.getCurrent().is(Platform.WINDOWS) && userDir.indexOf(' ') != -1) {
-          userDir = "\"" + userDir + "\"";
-        } else {
-          userDir = userDir.replace("\"", "\\\"");
-          userDir = "\"" + userDir + "\"";
-        }
-
         return new String[] {
                 browserInstallation.launcherFilePath(),
                 // Disable hang monitor dialogs in renderer process.
