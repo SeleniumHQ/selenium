@@ -31,6 +31,7 @@ namespace OpenQA.Selenium.Firefox
         private bool enableNativeEvents;
         private bool loadNoFocusLibrary;
         private bool acceptUntrustedCerts;
+        private bool deleteSource;
         private Preferences profileAdditionalPrefs = new Preferences();
         private Dictionary<string, FirefoxExtension> extensions = new Dictionary<string, FirefoxExtension>();
         #endregion
@@ -50,11 +51,23 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="profileDirectory">The directory containing the profile.</param>
         public FirefoxProfile(string profileDirectory)
+            : this(profileDirectory, false)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxProfile"/> class using a 
+        /// specific profile directory.
+        /// </summary>
+        /// <param name="profileDirectory">The directory containing the profile.</param>
+        /// <param name="deleteSourceOnClean">Delete the source directory of the profile upon cleaning.</param>
+        public FirefoxProfile(string profileDirectory, bool deleteSourceOnClean)
         {
             this.sourceProfileDir = profileDirectory;
             this.profilePort = FirefoxDriver.DefaultPort;
             this.enableNativeEvents = FirefoxDriver.DefaultEnableNativeEvents;
             this.acceptUntrustedCerts = FirefoxDriver.AcceptUntrustedCertificates;
+            this.deleteSource = deleteSourceOnClean;
         } 
         #endregion
 
@@ -128,6 +141,26 @@ namespace OpenQA.Selenium.Firefox
 
         #region Public methods
         /// <summary>
+        /// Converts a base64-encoded string into a <see cref="FirefoxProfile"/>.
+        /// </summary>
+        /// <param name="base64">The base64-encoded string containing the profile contents.</param>
+        /// <returns>The constructed <see cref="FirefoxProfile"/>.</returns>
+        public static FirefoxProfile FromBase64String(string base64)
+        {
+            string randomNumber = tempFileGenerator.Next().ToString(CultureInfo.InvariantCulture);
+            string directoryName = string.Format(CultureInfo.InvariantCulture, "webdriver{0}.duplicated", randomNumber);
+            string destinationDirectory = Path.Combine(Path.GetTempPath(), directoryName);
+            byte[] zipContent = Convert.FromBase64String(base64);
+            using (ZipFile profileZipArchive = ZipFile.Read(zipContent))
+            {
+                profileZipArchive.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
+                profileZipArchive.ExtractAll(destinationDirectory);
+            }
+
+            return new FirefoxProfile(destinationDirectory, true);
+        }
+
+        /// <summary>
         /// Adds a Firefox Extension to this profile
         /// </summary>
         /// <param name="extensionToInstall">The path to the new extension</param>
@@ -200,6 +233,26 @@ namespace OpenQA.Selenium.Firefox
             {
                 FileUtilities.DeleteDirectory(this.profileDir);
             }
+
+            if (this.deleteSource && !string.IsNullOrEmpty(this.sourceProfileDir) && Directory.Exists(this.sourceProfileDir))
+            {
+                FileUtilities.DeleteDirectory(this.sourceProfileDir);
+            }
+        }
+
+        /// <summary>
+        /// Converts the profile into a base64-encoded string.
+        /// </summary>
+        /// <returns>A base64-encoded string containing the contents of the profile.</returns>
+        public string ToBase64String()
+        {
+            this.WriteToDisk();
+            ZipFile profileZipFile = new ZipFile();
+            profileZipFile.AddDirectory(this.profileDir);
+            MemoryStream profileMemoryStream = new MemoryStream();
+            profileZipFile.Save(profileMemoryStream);
+            string base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
+            return base64zip;
         }
         #endregion
 

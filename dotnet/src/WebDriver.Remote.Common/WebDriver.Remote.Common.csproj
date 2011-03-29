@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CapabilityType.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandInfo.cs">
       <SubType>Code</SubType>

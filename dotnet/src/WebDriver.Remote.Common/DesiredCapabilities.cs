@@ -11,12 +11,7 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     public class DesiredCapabilities : ICapabilities
     {
-        private readonly Dictionary<string, object> customCapabilities = new Dictionary<string, object>();
-
-        private string name;
-        private string browserVersion;
-        private Platform browserPlatform;
-        private bool javascriptEnabled;
+        private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
 
         /// <summary>
         /// Initializes a new instance of the DesiredCapabilities class
@@ -26,9 +21,9 @@ namespace OpenQA.Selenium.Remote
         /// <param name="platform">The platform it works on</param>
         public DesiredCapabilities(string browser, string version, Platform platform)
         {
-            this.name = browser;
-            this.browserVersion = version;
-            this.browserPlatform = platform;
+            this.SetCapability(CapabilityType.BrowserName, browser);
+            this.SetCapability(CapabilityType.Version, version);
+            this.SetCapability(CapabilityType.Platform, platform);
         }
 
         /// <summary>
@@ -49,32 +44,26 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public DesiredCapabilities(Dictionary<string, object> rawMap)
         {
-            this.name = (string)rawMap["browserName"];
-            this.browserVersion = (string)rawMap["version"];
-            this.javascriptEnabled = (bool)rawMap["javascriptEnabled"];
-
-            if (rawMap.ContainsKey("platform"))
-            {
-                object raw = rawMap["platform"];
-                string rawAsString = raw as string;
-                Platform rawAsPlatform = raw as Platform;
-                if (rawAsString != null)
-                {
-                    PlatformType platformInfo = (PlatformType)Enum.Parse(typeof(PlatformType), rawAsString, true);
-                    this.browserPlatform = new Platform(platformInfo);
-                }
-                else if (rawAsPlatform != null)
-                {
-                    this.browserPlatform = rawAsPlatform;
-                }
-            }
-
-            List<string> knownCapabilities = new List<string> { "browserName", "version", "javascriptEnabled", "platform" };
             foreach (string key in rawMap.Keys)
             {
-                if (!knownCapabilities.Contains(key))
+                if (key == CapabilityType.Platform)
                 {
-                    this.customCapabilities[key] = rawMap[key];
+                    object raw = rawMap[CapabilityType.Platform];
+                    string rawAsString = raw as string;
+                    Platform rawAsPlatform = raw as Platform;
+                    if (rawAsString != null)
+                    {
+                        PlatformType platformInfo = (PlatformType)Enum.Parse(typeof(PlatformType), rawAsString, true);
+                        this.capabilities[CapabilityType.Platform] = new Platform(platformInfo);
+                    }
+                    else if (rawAsPlatform != null)
+                    {
+                        this.SetCapability(CapabilityType.Platform, rawAsPlatform);
+                    }
+                }
+                else
+                {
+                    this.SetCapability(key, rawMap[key]);
                 }
             }
         }
@@ -85,7 +74,17 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("browserName")]
         public string BrowserName
         {
-            get { return this.name; }
+            get 
+            {
+                string name = string.Empty;
+                object capabilityValue = this.GetCapability(CapabilityType.BrowserName);
+                if (capabilityValue != null)
+                {
+                    name = capabilityValue.ToString();
+                }
+
+                return name;
+            }
         }
 
         /// <summary>
@@ -94,8 +93,22 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("platform")]
         public Platform Platform
         {
-            get { return this.browserPlatform; }
-            set { this.browserPlatform = value; }
+            get 
+            {
+                Platform browserPlatform = new Platform(PlatformType.Any);
+                object capabilityValue = this.GetCapability(CapabilityType.BrowserName);
+                if (capabilityValue != null)
+                {
+                    browserPlatform = capabilityValue as Platform;
+                }
+
+                return browserPlatform;
+            }
+            
+            set
+            {
+                this.SetCapability(CapabilityType.Platform, value);
+            }
         }
 
         /// <summary>
@@ -104,7 +117,17 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("version")]
         public string Version
         {
-            get { return this.browserVersion; }
+            get 
+            {
+                string browserVersion = string.Empty;
+                object capabilityValue = this.GetCapability(CapabilityType.Version);
+                if (capabilityValue != null)
+                {
+                    browserVersion = capabilityValue.ToString();
+                }
+
+                return browserVersion;
+            }
         }
 
         /// <summary>
@@ -113,8 +136,22 @@ namespace OpenQA.Selenium.Remote
         [JsonProperty("javascriptEnabled")]
         public bool IsJavaScriptEnabled
         {
-            get { return this.javascriptEnabled; }
-            set { this.javascriptEnabled = value; }
+            get 
+            {
+                bool javascriptEnabled = false;
+                object capabilityValue = this.GetCapability(CapabilityType.IsJavaScriptEnabled);
+                if (capabilityValue != null)
+                {
+                    javascriptEnabled = (bool)capabilityValue;
+                }
+
+                return javascriptEnabled;
+            }
+
+            set 
+            {
+                this.SetCapability(CapabilityType.IsJavaScriptEnabled, value);
+            }
         }
 
         /// <summary>
@@ -190,7 +227,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>Returns <see langword="true"/> if the browser has the capability; otherwise, <see langword="false"/>.</returns>
         public bool HasCapability(string capability)
         {
-            return this.customCapabilities.ContainsKey(capability);
+            return this.capabilities.ContainsKey(capability);
         }
 
         /// <summary>
@@ -202,12 +239,22 @@ namespace OpenQA.Selenium.Remote
         public object GetCapability(string capability)
         {
             object capabilityValue = null;
-            if (this.customCapabilities.ContainsKey(capability))
+            if (this.capabilities.ContainsKey(capability))
             {
-                capabilityValue = this.customCapabilities[capability];
+                capabilityValue = this.capabilities[capability];
             }
 
             return capabilityValue;
+        }
+
+        /// <summary>
+        /// Sets a capability of the browser.
+        /// </summary>
+        /// <param name="capability">The capability to get.</param>
+        /// <param name="capabilityValue">The value for the capability.</param>
+        public void SetCapability(string capability, object capabilityValue)
+        {
+            this.capabilities[capability] = capabilityValue;
         }
 
         /// <summary>
@@ -217,10 +264,10 @@ namespace OpenQA.Selenium.Remote
         public override int GetHashCode()
         {
             int result;
-            result = this.name != null ? this.name.GetHashCode() : 0;
-            result = (31 * result) + (this.browserVersion != null ? this.browserVersion.GetHashCode() : 0);
-            result = (31 * result) + (this.browserPlatform != null ? this.browserPlatform.GetHashCode() : 0);
-            result = (31 * result) + (this.javascriptEnabled ? 1 : 0);
+            result = this.BrowserName != null ? this.BrowserName.GetHashCode() : 0;
+            result = (31 * result) + (this.Version != null ? this.Version.GetHashCode() : 0);
+            result = (31 * result) + (this.Platform != null ? this.Platform.GetHashCode() : 0);
+            result = (31 * result) + (this.IsJavaScriptEnabled ? 1 : 0);
             return result;
         }
 
@@ -230,7 +277,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>String of capabilites being used</returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, IsJavaScriptEnabled={1}, Platform={2}, Version={3}]", this.name, this.javascriptEnabled, this.browserPlatform.PlatformType.ToString(), this.browserVersion);
+            return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, IsJavaScriptEnabled={1}, Platform={2}, Version={3}]", this.BrowserName, this.IsJavaScriptEnabled, this.Platform.PlatformType.ToString(), this.Version);
         }
 
         /// <summary>
@@ -251,22 +298,22 @@ namespace OpenQA.Selenium.Remote
                 return false;
             }
 
-            if (this.javascriptEnabled != other.javascriptEnabled)
+            if (this.IsJavaScriptEnabled != other.IsJavaScriptEnabled)
             {
                 return false;
             }
 
-            if (this.name != null ? this.name != other.name : other.name != null)
+            if (this.BrowserName != null ? this.BrowserName != other.BrowserName : other.BrowserName != null)
             {
                 return false;
             }
 
-            if (!this.browserPlatform.IsPlatformType(other.Platform.PlatformType))
+            if (!this.Platform.IsPlatformType(other.Platform.PlatformType))
             {
                 return false;
             }
 
-            if (this.browserVersion != null ? this.browserVersion != other.browserVersion : other.browserVersion != null)
+            if (this.Version != null ? this.Version != other.Version : other.Version != null)
             {
                 return false;
             }
