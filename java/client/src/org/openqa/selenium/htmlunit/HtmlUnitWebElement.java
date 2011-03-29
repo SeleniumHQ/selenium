@@ -95,7 +95,17 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
   }
 
   public void click() {
-    verifyCanInteractWithElement();
+    try {
+      verifyCanInteractWithElement();
+    }
+    catch (UnsupportedOperationException e) {
+      //Swallow disabled element case
+      //Clicking disabled elements should still be passed through,
+      //we just don't expect any state change
+      
+      //TODO: The javadoc for this method implies we shouldn't throw for
+      //element not visible either
+    }
     HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
     mouse.click(getCoordinates());
   }
@@ -340,6 +350,9 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     if (!isDisplayed())
       throw new ElementNotVisibleException("You may only toggle visible elements");
 
+    if (!isEnabled())
+      throw new UnsupportedOperationException("You may only toggle enabled elements");
+    
 
     try {
       if (element instanceof HtmlCheckBoxInput) {

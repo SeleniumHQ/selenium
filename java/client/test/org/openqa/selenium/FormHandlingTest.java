@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -35,7 +34,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class FormHandlingTest extends AbstractDriverTestCase {
-
   public void testShouldClickOnSubmitInputElements() {
     driver.get(pages.formPage);
     driver.findElement(By.id("submitButton")).click();
@@ -139,139 +137,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(newFormValue, equalTo("some text"));
   }
 
-  public void testShouldBeAbleToSelectACheckBox() {
-    driver.get(pages.formPage);
-    WebElement checkbox = driver.findElement(By
-        .id("checky"));
-    assertThat(checkbox.isSelected(), is(false));
-    checkbox.setSelected();
-    assertThat(checkbox.isSelected(), is(true));
-    checkbox.setSelected();
-    assertThat(checkbox.isSelected(), is(true));
-  }
-
-  @Ignore(IPHONE)
-  public void testShouldToggleTheCheckedStateOfACheckbox() {
-    driver.get(pages.formPage);
-    WebElement checkbox = driver.findElement(By
-        .id("checky"));
-    assertThat(checkbox.isSelected(), is(false));
-    checkbox.toggle();
-    assertThat(checkbox.isSelected(), is(true));
-    checkbox.toggle();
-    assertThat(checkbox.isSelected(), is(false));
-  }
-
-  @Ignore(IPHONE)
-  public void testTogglingACheckboxShouldReturnItsCurrentState() {
-    driver.get(pages.formPage);
-    WebElement checkbox = driver.findElement(By
-        .id("checky"));
-    assertThat(checkbox.isSelected(), is(false));
-    boolean isChecked = checkbox.toggle();
-    assertThat(isChecked, is(true));
-    isChecked = checkbox.toggle();
-    assertThat(isChecked, is(false));
-  }
-
-  public void testShouldNotBeAbleToSelectSomethingThatIsDisabled() {
-    driver.get(pages.formPage);
-    WebElement radioButton = driver.findElement(By.id("nothing"));
-    assertThat(radioButton.isEnabled(), is(false));
-
-    try {
-      radioButton.setSelected();
-      fail("Should not have succeeded");
-    } catch (UnsupportedOperationException e) {
-      // this is expected
-    }
-  }
-
-  public void testShouldBeAbleToSelectARadioButton() {
-    driver.get(pages.formPage);
-    WebElement radioButton = driver.findElement(By.id("peas"));
-    assertThat(radioButton.isSelected(), is(false));
-    radioButton.setSelected();
-    assertThat(radioButton.isSelected(), is(true));
-  }
-
-  public void testRadioShouldNotBeSelectedAfterSelectingSibling() {
-    driver.get(pages.formPage);
-
-    WebElement cheese = driver.findElement(By.id("cheese"));
-    WebElement peas = driver.findElement(By.id("peas"));
-
-    cheese.setSelected();
-
-    assertThat(cheese.isSelected(), is(true));
-    assertThat(peas.isSelected(), is(false));
-
-    peas.setSelected();
-
-    assertThat(peas.isSelected(), is(true));
-    assertThat(cheese.isSelected(), is(false));
-  }
-
-  public void testShouldBeAbleToSelectARadioButtonByClickingOnIt() {
-    driver.get(pages.formPage);
-    WebElement radioButton = driver.findElement(By.id("peas"));
-    assertThat(radioButton.isSelected(), is(false));
-    radioButton.click();
-    assertThat(radioButton.isSelected(), is(true));
-  }
-
-  public void testShouldReturnStateOfRadioButtonsBeforeInteration() {
-    driver.get(pages.formPage);
-    WebElement radioButton = driver.findElement(By.id("cheese_and_peas"));
-    assertThat(radioButton.isSelected(), is(true));
-
-    radioButton = driver.findElement(By.id("cheese"));
-    assertThat(radioButton.isSelected(), is(false));
-  }
-
-  @Ignore(IPHONE)
-  public void testShouldThrowAnExceptionWhenTogglingTheStateOfARadioButton() {
-    driver.get(pages.formPage);
-    WebElement radioButton = driver.findElement(By.id("cheese"));
-    try {
-      radioButton.toggle();
-      fail("You should not be able to toggle a radio button");
-    } catch (UnsupportedOperationException e) {
-      assertThat(e.getMessage().contains("toggle"), is(true));
-    }
-  }
-
-  @Ignore({FIREFOX, IE, SELENESE, IPHONE})
-  public void testTogglingAnOptionShouldThrowAnExceptionIfTheOptionIsNotInAMultiSelect() {
-    driver.get(pages.formPage);
-
-    WebElement select = driver.findElement(By.name("selectomatic"));
-    WebElement option = select.findElements(By.tagName("option")).get(0);
-
-    try {
-      option.toggle();
-      fail("Should not be able to toggle an element");
-    } catch (UnsupportedOperationException e) {
-      // this is expected
-    }
-  }
-
-  @Ignore({FIREFOX, IE, SELENESE, IPHONE, ANDROID})
-  public void testTogglingAnOptionShouldToggleOptionsInAMultiSelect() {
-    driver.get(pages.formPage);
-
-    WebElement select = driver.findElement(By.name("multi"));
-    WebElement option = select.findElements(By.tagName("option")).get(0);
-
-    boolean selected = option.isSelected();
-    boolean current = option.toggle();
-    assertFalse(selected == current);
-
-    current = option.toggle();
-    assertTrue(selected == current);
-  }
-
-
   @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, IE},
       reason = "Does not yet support file uploads")
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
@@ -309,19 +174,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     uploadElement.submit();
 
     // If we get this far, then we're all good.
-  }
-
-  public void testShouldThrowAnExceptionWhenSelectingAnUnselectableElement() {
-    driver.get(pages.formPage);
-
-    WebElement element = driver.findElement(By.xpath("//div"));
-
-    try {
-      element.setSelected();
-      fail("Should not have succeeded");
-    } catch (UnsupportedOperationException e) {
-      // this is expected
-    }
   }
 
   @Ignore(value = {IPHONE, CHROME}, reason = "iPhone: sendKeys implemented incorrectly.\n" +

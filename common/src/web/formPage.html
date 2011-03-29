@@ -22,9 +22,14 @@ There should be a form here:
 </form>
 
 <form method="get" action="resultPage.html" name="optional" style="display: block">
-    Here's a checkbox: <input type="checkbox" id="checky" name="checky" value="furrfu"/><br/>
+    Here's a checkbox:
+    <input type="checkbox" id="checky" name="checky" value="furrfu"/>
+    <input type="checkbox" id="checkedchecky" name="checkedchecky" checked="checked" />
+    <input type="checkbox" id="disabledchecky" disabled="disabled" name="disabledchecky" />
+    <input type="checkbox" id="randomly_disabled_checky" disabled="somerandomstring" checked="checked" name="randomlydisabledchecky" />
+    <br/>
     <select name="selectomatic">
-        <option selected="selected">One</option>
+        <option selected="selected" id="non_multi_option">One</option>
         <option>Two</option>
         <option>Four</option>
         <option>Still learning how to count, apparently</option>
@@ -53,12 +58,15 @@ There should be a form here:
     <input type="radio" id="cheese" name="snack" value="cheese"/>Cheese<br/>
     <input type="radio" id="peas" name="snack" value="peas"/>Peas<br/>
     <input type="radio" id="cheese_and_peas" name="snack" value="cheese and peas" checked/>Cheese and peas<br/>
-    <input type="radio" id="nothing" name="snack" value="nowt" disabled="disabled"/>Not a sausage
+    <input type="radio" id="nothing" name="snack" value="nowt" disabled="disabled"/>Not a sausage<br/>
+    <input type="radio" id="randomly_disabled_nothing" name="snack" value="funny nowt" disabled="somedisablingstring"/>Not another sausage
 
     <input type="hidden" name="hidden" value="fromage" />
 
     <p id="cheeseLiker">I like cheese</p>
     <input type="submit" value="Click!"/>
+    
+    <input type="radio" id="lone_disabled_selected_radio" name="not_a_snack" value="cumberland" checked="checked" disabled="disabled" />Cumberland sausage
 </form>
 
 <form method="get" action="resultPage.html" name="disable">
