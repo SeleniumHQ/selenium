@@ -18,11 +18,12 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.internal.Base64Encoder;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import org.openqa.selenium.internal.Base64Encoder;
+import java.io.OutputStream;
 
 /**
  * Defines the output type for a screenshot. See org.openqa.selenium.Screenshot
@@ -56,23 +57,26 @@ public interface OutputType<T> {
    */
   OutputType<File> FILE = new OutputType<File>() {
   	public File convertFromBase64Png(String base64Png) {
-      FileOutputStream fos = null;
-  		try {
-  			byte[] data = BYTES.convertFromBase64Png(base64Png);
-  			File tmpFile = File.createTempFile("screenshot", ".png");
-  			tmpFile.deleteOnExit();
-  			fos = new FileOutputStream(tmpFile);
-  			fos.write(data);
-  			fos.close();
-  			return tmpFile;
-  		} catch (IOException e) {
-  			throw new WebDriverException(e);
-  		} finally {
-        if (fos != null) {
+      OutputStream stream = null;
+
+      try {
+        byte[] data = BYTES.convertFromBase64Png(base64Png);
+
+        File tmpFile = File.createTempFile("screenshot", ".png");
+        tmpFile.deleteOnExit();
+
+        stream = new FileOutputStream(tmpFile);
+        stream.write(data);
+
+        return tmpFile;
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      } finally {
+        if (stream != null) {
           try {
-            fos.close();
+            stream.close();
           } catch (IOException e) {
-            // Nothing sensible to do
+            // Nothing sane to do
           }
         }
       }

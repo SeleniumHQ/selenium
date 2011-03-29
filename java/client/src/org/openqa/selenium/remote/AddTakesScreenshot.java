@@ -42,8 +42,7 @@ class AddTakesScreenshot implements AugmenterProvider {
 
         if (result instanceof byte[]) {
           byte[] rawPng = (byte[]) result;
-          String base64 = new Base64Encoder().encode(rawPng);
-          return ((OutputType<?>) args[0]).convertFromBase64Png(base64);
+          return ((OutputType<?>) args[0]).convertFromBase64Png(new String(rawPng));
         }
 
         return null;
