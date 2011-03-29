@@ -17,10 +17,10 @@ public class Firefox3LocatorUnitTest extends TestCase {
             }
         };
 
-        assertEquals(3 ,locator.usualLauncherLocations().length);
+        assertEquals(6, locator.usualLauncherLocations().length);
         assertTrue(locator.usualLauncherLocations()[0].endsWith("\\Firefox-3"));
-        assertTrue(locator.usualLauncherLocations()[1].endsWith("\\Mozilla Firefox"));
-        assertTrue(locator.usualLauncherLocations()[2].endsWith("\\Firefox"));
+        assertTrue(locator.usualLauncherLocations()[2].endsWith("\\Mozilla Firefox"));
+        assertTrue(locator.usualLauncherLocations()[4].endsWith("\\Firefox"));
     }
 
     public void testUsualLauncherLocationsOnOSX() {
@@ -37,7 +37,7 @@ public class Firefox3LocatorUnitTest extends TestCase {
             }
         };
 
-        assertEquals(2 ,locator.usualLauncherLocations().length);
+        assertEquals(2, locator.usualLauncherLocations().length);
         assertEquals("/Applications/Firefox-3.app/Contents/MacOS", locator.usualLauncherLocations()[0]);
         assertEquals("/Applications/Firefox.app/Contents/MacOS", locator.usualLauncherLocations()[1]);
     }
@@ -56,7 +56,7 @@ public class Firefox3LocatorUnitTest extends TestCase {
             }
         };
 
-        assertEquals(1 ,locator.usualLauncherLocations().length);
+        assertEquals(1, locator.usualLauncherLocations().length);
         assertEquals("/usr/lib/firefox-3.0.3", locator.usualLauncherLocations()[0]);
     }
 

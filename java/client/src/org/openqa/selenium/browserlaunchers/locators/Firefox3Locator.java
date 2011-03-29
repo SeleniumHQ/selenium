@@ -5,6 +5,8 @@ import org.openqa.selenium.browserlaunchers.locators.FirefoxLocator;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
 
+import com.google.common.collect.ImmutableList;
+
 import java.io.File;
 import java.io.FilenameFilter;
 
@@ -19,13 +21,6 @@ public class Firefox3Locator extends FirefoxLocator {
             "/Applications/Firefox-3.app/Contents/MacOS",
             "/Applications/Firefox.app/Contents/MacOS",
     };
-
-    private static final String[] USUAL_WINDOWS_LAUNCHER_LOCATIONS = {
-            WindowsUtils.getProgramFilesPath() + "\\Firefox-3",
-            WindowsUtils.getProgramFilesPath() + "\\Mozilla Firefox",
-            WindowsUtils.getProgramFilesPath() + "\\Firefox",
-    };
-
 
     private String[] usualLauncherLocations;
 
@@ -48,7 +43,7 @@ public class Firefox3Locator extends FirefoxLocator {
 
     protected synchronized String[] usualLauncherLocations() {
         if (null == usualLauncherLocations) {
-            usualLauncherLocations = runningOnWindows() ? USUAL_WINDOWS_LAUNCHER_LOCATIONS : usualUnixLauncherLocations();
+            usualLauncherLocations = runningOnWindows() ? firefoxDefaultLocationsOnWindows() : usualUnixLauncherLocations();
         }
 
         return usualLauncherLocations;
@@ -87,6 +82,14 @@ public class Firefox3Locator extends FirefoxLocator {
                 return name.startsWith("firefox-");
             }
         });
+    }
+    
+    protected String[] firefoxDefaultLocationsOnWindows() {
+      return new ImmutableList.Builder<String>()
+        .addAll(WindowsUtils.getPathsInProgramFiles("\\Firefox-3"))
+        .addAll(WindowsUtils.getPathsInProgramFiles("\\Mozilla Firefox"))
+        .addAll(WindowsUtils.getPathsInProgramFiles("\\Firefox"))
+        .build().toArray(new String[0]);
     }
 
     protected boolean runningOnWindows() {

@@ -16,6 +16,7 @@
  */
 package org.openqa.selenium.os;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.openqa.selenium.Platform;
 import org.w3c.dom.Document;
@@ -251,15 +252,34 @@ public class WindowsUtils {
    * @return the path to the Windows Program Files
    */
   public static String getProgramFilesPath() {
+    return getEnvVarPath("ProgramFiles", "C:\\Program Files");
+  }
+  
+  public static String getProgramFiles86Path() {
+    return getEnvVarPath("ProgramFiles(x86)", "C:\\Program Files (x86)");
+  }
+  
+  private static String getEnvVarPath(final String envVar, final String defaultValue) {
     loadEnvironment();
-    String pf = getEnvVarIgnoreCase("ProgramFiles");
+    String pf = getEnvVarIgnoreCase(envVar);
     if (pf != null) {
       File ProgramFiles = new File(pf);
       if (ProgramFiles.exists()) {
         return ProgramFiles.getAbsolutePath();
       }
     }
-    return new File("C:\\Program Files").getAbsolutePath();
+    return new File(defaultValue).getAbsolutePath();
+  }
+  
+  public static ImmutableList<String> getPathsInProgramFiles(final String childPath) {
+    return new ImmutableList.Builder<String>()
+      .add(getFullPath(WindowsUtils.getProgramFilesPath(), childPath))
+      .add(getFullPath(WindowsUtils.getProgramFiles86Path(), childPath))
+      .build();
+  }
+  
+  private static String getFullPath(String parent, String child) {
+    return new File(parent, child).getAbsolutePath();
   }
 
   /**
