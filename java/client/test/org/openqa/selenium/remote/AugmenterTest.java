@@ -195,6 +195,16 @@ public class AugmenterTest {
     assertEquals(3, driver.getMagicNumber());
   }
 
+  @Test
+  public void shouldNotChokeOnFinalFields() {
+    WithFinals withFinals = new WithFinals();
+    try {
+      new Augmenter().augment(withFinals);
+    } catch (Exception e) {
+      fail("This is not expected: " + e.getMessage());
+    }
+  }
+
   private static class StubExecutor implements CommandExecutor {
     private final Capabilities capabilities;
     private final List<Data> expected = Lists.newArrayList();
@@ -277,6 +287,15 @@ public class AugmenterTest {
 
     public void setMagicNumber(int magicNumber) {
       this.magicNumber = magicNumber;
+    }
+  }
+
+  public static class WithFinals extends RemoteWebDriver {
+    public final String finalField = "FINAL";
+
+    @Override
+    public Capabilities getCapabilities() {
+      return new DesiredCapabilities();
     }
   }
 }

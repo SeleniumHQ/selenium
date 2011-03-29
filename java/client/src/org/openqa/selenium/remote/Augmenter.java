@@ -44,6 +44,7 @@ import org.openqa.selenium.remote.html5.AddWebStorage;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -148,6 +149,10 @@ public class Augmenter {
   }
 
   private void copyField(Object source, Object target, Field field) {
+    if (Modifier.isFinal(field.getModifiers())) {
+      return;
+    }
+
     try {
       field.setAccessible(true);
       Object value = field.get(source);
