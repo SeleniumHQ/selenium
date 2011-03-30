@@ -14,7 +14,7 @@ namespace OpenQA.Selenium
         public void ShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations()
         {
             driver.Url = xhtmlTestPage;
-            String current = driver.GetWindowHandle();
+            String current = driver.CurrentWindow;
 
             driver.FindElement(By.LinkText("Open new window")).Click();
             Assert.AreEqual("XHTML Test Page", driver.Title);
@@ -27,10 +27,10 @@ namespace OpenQA.Selenium
             Assert.AreEqual("We Arrive Here", driver.Title);
 
             driver.Url = iframesPage;
-            string handle = driver.GetWindowHandle();
+            string handle = driver.CurrentWindow;
             driver.FindElement(By.Id("iframe_page_heading"));
             driver.SwitchTo().Frame("iframe1");
-            Assert.AreEqual(driver.GetWindowHandle(), handle);
+            Assert.AreEqual(driver.CurrentWindow, handle);
             driver.Close();
 
             driver.SwitchTo().Window(current);
@@ -40,7 +40,7 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldThrowNoSuchWindowException() {
             driver.Url = xhtmlTestPage;
-            String current = driver.GetWindowHandle();
+            String current = driver.CurrentWindow;
             try
             {
                 driver.SwitchTo().Window("invalid name");
@@ -64,7 +64,7 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Name("windowTwo")).Click();
             SleepBecauseWindowsTakeTimeToOpen();
 
-            ReadOnlyCollection<string> allWindowHandles = driver.GetWindowHandles();
+            ReadOnlyCollection<string> allWindowHandles = driver.Windows;
 
             // There should be three windows. We should also see each of the window titles at least once.
             List<string> seenHandles = new List<string>();
@@ -84,7 +84,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
 
-            String currentHandle = driver.GetWindowHandle();
+            String currentHandle = driver.CurrentWindow;
 
             driver.FindElement(By.Name("windowThree")).Click();
 
@@ -109,7 +109,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
 
-            String currentHandle = driver.GetWindowHandle();
+            String currentHandle = driver.CurrentWindow;
 
             driver.FindElement(By.Name("windowThree")).Click();
 
@@ -118,7 +118,7 @@ namespace OpenQA.Selenium
             try
             {
                 driver.FindElement(By.Id("close")).Click();
-                driver.GetWindowHandles();
+                ReadOnlyCollection<string> handles = driver.Windows;
                 // If we make it this far, we're all good.
             }
             finally
@@ -132,7 +132,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
 
-            String currentHandle = driver.GetWindowHandle();
+            String currentHandle = driver.CurrentWindow;
 
             Assert.IsNotNull(currentHandle);
         }
@@ -141,7 +141,7 @@ namespace OpenQA.Selenium
         public void FailingToSwitchToAWindowLeavesTheCurrentWindowAsIs()
         {
             driver.Url = xhtmlTestPage;
-            String current = driver.GetWindowHandle();
+            String current = driver.CurrentWindow;
 
             try
             {
@@ -153,7 +153,7 @@ namespace OpenQA.Selenium
                 // expected
             }
 
-            String newHandle = driver.GetWindowHandle();
+            String newHandle = driver.CurrentWindow;
 
             Assert.AreEqual(current, newHandle);
         }
@@ -168,7 +168,7 @@ namespace OpenQA.Selenium
 
             SleepBecauseWindowsTakeTimeToOpen();
 
-            ReadOnlyCollection<string> allWindowHandles = driver.GetWindowHandles();
+            ReadOnlyCollection<string> allWindowHandles = driver.Windows;
 
             // There should be two windows. We should also see each of the window titles at least once.
             Assert.AreEqual(2, allWindowHandles.Count);
@@ -178,7 +178,7 @@ namespace OpenQA.Selenium
 
             SleepBecauseWindowsTakeTimeToOpen();
 
-            allWindowHandles = driver.GetWindowHandles();
+            allWindowHandles = driver.Windows;
             Assert.AreEqual(1, allWindowHandles.Count);
         }
 
@@ -199,13 +199,13 @@ namespace OpenQA.Selenium
             SleepBecauseWindowsTakeTimeToOpen();
 
             string handle1, handle2;
-            handle1 = driver.GetWindowHandle();
+            handle1 = driver.CurrentWindow;
 
             System.Threading.Thread.Sleep(1000);
             driver.SwitchTo().Window("result");
-            handle2 = driver.GetWindowHandle();
+            handle2 = driver.CurrentWindow;
 
-            ReadOnlyCollection<string> handles = driver.GetWindowHandles();
+            ReadOnlyCollection<string> handles = driver.Windows;
 
             // At least the two handles we want should be there.
             Assert.Contains(handle1, handles, "Should have contained current handle");
@@ -229,16 +229,16 @@ namespace OpenQA.Selenium
             SleepBecauseWindowsTakeTimeToOpen();
 
             string handle1, handle2;
-            handle1 = driver.GetWindowHandle();
+            handle1 = driver.CurrentWindow;
 
             driver.SwitchTo().Window("result");
-            handle2 = driver.GetWindowHandle();
+            handle2 = driver.CurrentWindow;
            
             driver.Close();
 
             SleepBecauseWindowsTakeTimeToOpen();
 
-            ReadOnlyCollection<string> handles = driver.GetWindowHandles();
+            ReadOnlyCollection<string> handles = driver.Windows;
 
             Assert.IsFalse(handles.Contains(handle2), "Invalid handle still in handle list");
             Assert.IsTrue(handles.Contains(handle1), "Valid handle not in handle list");

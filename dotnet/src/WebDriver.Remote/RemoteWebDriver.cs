@@ -145,6 +145,38 @@ namespace OpenQA.Selenium.Remote
                 return commandResponse.Value.ToString();
             }
         }
+
+        /// <summary>
+        /// Gets the current window handle, which is an opaque handle to this 
+        /// window that uniquely identifies it within this driver instance.
+        /// </summary>
+        public string CurrentWindow
+        {
+            get
+            {
+                Response commandResponse = this.Execute(DriverCommand.GetCurrentWindowHandle, null);
+                return commandResponse.Value.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets the window handles of open browser windows.
+        /// </summary>
+        public ReadOnlyCollection<string> Windows
+        {
+            get
+            {
+                Response commandResponse = this.Execute(DriverCommand.GetWindowHandles, null);
+                object[] handles = (object[])commandResponse.Value;
+                List<string> handleList = new List<string>();
+                foreach (object handle in handles)
+                {
+                    handleList.Add(handle.ToString());
+                }
+
+                return handleList.AsReadOnly();
+            }
+        }
         #endregion
 
         #region IHasInputDevices Members
@@ -328,15 +360,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<string> GetWindowHandles()
         {
-            Response commandResponse = this.Execute(DriverCommand.GetWindowHandles, null);
-            object[] handles = (object[])commandResponse.Value;
-            List<string> handleList = new List<string>();
-            foreach (object handle in handles)
-            {
-                handleList.Add(handle.ToString());
-            }
-
-            return new ReadOnlyCollection<string>(handleList);
+            return this.Windows;
         }
 
         /// <summary>
@@ -349,8 +373,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public string GetWindowHandle()
         {
-            Response commandResponse = this.Execute(DriverCommand.GetCurrentWindowHandle, null);
-            return commandResponse.Value.ToString();
+            return this.CurrentWindow;
         }
         #endregion
 

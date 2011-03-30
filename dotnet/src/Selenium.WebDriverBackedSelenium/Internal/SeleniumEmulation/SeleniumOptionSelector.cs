@@ -104,7 +104,7 @@ namespace Selenium.Internal.SeleniumEmulation
                             break;
 
                         case Property.Value:
-                            selectedOptions.Add(option.Value);
+                            selectedOptions.Add(option.GetAttribute("value"));
                             break;
 
                         case Property.ID:

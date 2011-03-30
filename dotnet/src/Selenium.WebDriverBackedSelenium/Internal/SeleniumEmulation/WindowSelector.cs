@@ -20,7 +20,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <param name="driver">The <see cref="IWebDriver"/> used in selecting the windows.</param>
         public WindowSelector(IWebDriver driver)
         {
-            this.originalWindowHandle = driver.GetWindowHandle();
+            this.originalWindowHandle = driver.CurrentWindow;
         }
 
         /// <summary>
@@ -61,16 +61,16 @@ namespace Selenium.Internal.SeleniumEmulation
                 }
             }
 
-            if (this.lastFrame.ContainsKey(driver.GetWindowHandle()))
+            if (this.lastFrame.ContainsKey(driver.CurrentWindow))
             {
                 // If the frame has gone, fall back
                 try
                 {
-                    this.SelectFrame(driver, this.lastFrame[driver.GetWindowHandle()]);
+                    this.SelectFrame(driver, this.lastFrame[driver.CurrentWindow]);
                 }
                 catch (SeleniumException)
                 {
-                    this.lastFrame.Remove(driver.GetWindowHandle());
+                    this.lastFrame.Remove(driver.CurrentWindow);
                 }
             }
         }
@@ -85,13 +85,13 @@ namespace Selenium.Internal.SeleniumEmulation
             if (locator == "relative=top")
             {
                 driver.SwitchTo().DefaultContent();
-                this.lastFrame.Remove(driver.GetWindowHandle());
+                this.lastFrame.Remove(driver.CurrentWindow);
                 return;
             }
 
             try
             {
-                this.lastFrame.Add(driver.GetWindowHandle(), locator);
+                this.lastFrame.Add(driver.CurrentWindow, locator);
                 driver.SwitchTo().Frame(locator);
             }
             catch (NoSuchFrameException e)
@@ -118,10 +118,10 @@ namespace Selenium.Internal.SeleniumEmulation
         /// </remarks>
         public void SelectBlankWindow(IWebDriver driver)
         {
-            string current = driver.GetWindowHandle();
+            string current = driver.CurrentWindow;
 
             // Find the first window without a "name" attribute
-            ReadOnlyCollection<string> handles = driver.GetWindowHandles();
+            ReadOnlyCollection<string> handles = driver.Windows;
             foreach (string handle in handles)
             {
                 // the original window will never be a _blank window, so don't even look at it
@@ -149,8 +149,8 @@ namespace Selenium.Internal.SeleniumEmulation
         private static void SelectWindowWithTitle(IWebDriver driver, string title)
         {
             bool windowSuccessfullySwitched = false;
-            string current = driver.GetWindowHandle();
-            foreach (string handle in driver.GetWindowHandles())
+            string current = driver.CurrentWindow;
+            foreach (string handle in driver.Windows)
             {
                 driver.SwitchTo().Window(handle);
                 if (title == driver.Title)

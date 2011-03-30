@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace OpenQA.Selenium
@@ -25,6 +26,16 @@ namespace OpenQA.Selenium
         }
 
         public string PageSource
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public string CurrentWindow
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public ReadOnlyCollection<string> Windows
         {
             get { throw new NotImplementedException(); }
         }

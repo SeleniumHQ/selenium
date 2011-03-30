@@ -81,6 +81,17 @@ namespace OpenQA.Selenium
         string PageSource { get; }
 
         /// <summary>
+        /// Gets the current window handle, which is an opaque handle to this 
+        /// window that uniquely identifies it within this driver instance.
+        /// </summary>
+        string CurrentWindow { get; }
+
+        /// <summary>
+        /// Gets the window handles of open browser windows.
+        /// </summary>
+        ReadOnlyCollection<string> Windows { get; }
+
+        /// <summary>
         /// Close the current window, quitting the browser if it is the last window currently open.
         /// </summary>
         void Close();
@@ -119,6 +130,7 @@ namespace OpenQA.Selenium
         /// <remarks>The set of window handles returned by this method can be used to 
         /// iterate over all open windows of this <see cref="IWebDriver"/> instance by 
         /// passing them to <c>SwitchTo().Window(string)</c></remarks>
+        [Obsolete("Use the IWebDriver.Windows property instead")]
         ReadOnlyCollection<string> GetWindowHandles();
 
         /// <summary>
@@ -126,6 +138,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <returns>An opaque handle to this window that uniquely identifies it 
         /// within this driver instance.</returns>
+        [Obsolete("Use the IWebDriver.CurrentWindow property instead")]
         string GetWindowHandle();
     }
 }

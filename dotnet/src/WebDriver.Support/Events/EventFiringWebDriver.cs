@@ -211,6 +211,13 @@ namespace OpenQA.Selenium.Support.Events
         {
             get { return this.driver.CurrentWindow; }
         }
+        /// <summary>
+        /// Gets the window handles of open browser windows.
+        /// </summary>
+        public ReadOnlyCollection<string> Windows
+        {
+            get { return this.driver.Windows; }
+        }
 
         /// <summary>
         /// Close the current window, quitting the browser if it is the last window currently open.
@@ -268,7 +275,7 @@ namespace OpenQA.Selenium.Support.Events
         /// passing them to <c>SwitchTo().Window(string)</c></remarks>
         public ReadOnlyCollection<string> GetWindowHandles()
         {
-            return this.driver.GetWindowHandles();
+            return this.Windows;
         }
 
         /// <summary>
@@ -278,7 +285,7 @@ namespace OpenQA.Selenium.Support.Events
         /// within this driver instance.</returns>
         public string GetWindowHandle()
         {
-            return this.driver.GetWindowHandle();
+            return this.CurrentWindow;
         }
 
         #endregion
