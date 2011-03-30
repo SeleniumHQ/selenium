@@ -129,7 +129,7 @@ namespace OpenQA.Selenium.Support.UI
         {
             foreach (IWebElement option in this.Options)
             {
-                if (option.Value == value)
+                if (option.GetAttribute("value") == value)
                 {
                     option.Select();
                     if (!this.IsMultiple)
@@ -190,7 +190,7 @@ namespace OpenQA.Selenium.Support.UI
         {
             foreach (IWebElement option in this.Options)
             {
-                if (option.Value.Equals(value))
+                if (option.GetAttribute("value").Equals(value))
                 {
                     if (option.Selected)
                     {

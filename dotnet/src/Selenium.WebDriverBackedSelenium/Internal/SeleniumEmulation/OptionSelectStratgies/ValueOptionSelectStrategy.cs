@@ -15,7 +15,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns><see langword="true"/> if the option meets the criteria; otherwise, <see langword="false"/>.</returns>
         protected override bool SelectOption(IWebElement optionElement, string selectThis)
         {
-            return selectThis.Equals(optionElement.Value);
+            return selectThis.Equals(optionElement.GetAttribute("value"));
         }
     }
 }

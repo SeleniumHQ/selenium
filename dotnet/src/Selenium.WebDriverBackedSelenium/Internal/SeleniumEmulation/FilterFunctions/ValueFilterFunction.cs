@@ -18,7 +18,7 @@ namespace Selenium.Internal.SeleniumEmulation.FilterFunctions
         /// <returns><see langword="true"/> if the element should be added to the filtered list; <see langword="false"/> if not.</returns>
         protected override bool ShouldAdd(IWebElement element, string filterValue)
         {
-            string elementValue = element.Value;
+            string elementValue = element.GetAttribute("value");
             return filterValue == elementValue;
         }
     }

@@ -204,6 +204,15 @@ namespace OpenQA.Selenium.Support.Events
         }
 
         /// <summary>
+        /// Gets the current window handle, which is an opaque handle to this 
+        /// window that uniquely identifies it within this driver instance.
+        /// </summary>
+        public string CurrentWindow
+        {
+            get { return this.driver.CurrentWindow; }
+        }
+
+        /// <summary>
         /// Close the current window, quitting the browser if it is the last window currently open.
         /// </summary>
         public void Close()
@@ -1014,7 +1023,7 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public string Value
             {
-                get { return this.underlyingElement.Value; }
+                get { return this.underlyingElement.GetAttribute("value"); }
             }
 
             /// <summary>
