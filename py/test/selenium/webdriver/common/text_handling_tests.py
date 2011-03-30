@@ -163,7 +163,7 @@ class TextHandlingTests(unittest.TestCase):
     #@Ignore(value = {SELENESE, IPHONE})
     def testReadALargeAmountOfData(self):
         self._loadPage("macbeth")
-        source = self.driver.get_page_source().strip().lower()
+        source = self.driver.page_source.strip().lower()
 
         self.assertTrue(source.endswith("</html>"))
 

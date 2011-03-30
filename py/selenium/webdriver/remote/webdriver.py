@@ -14,6 +14,7 @@
 # limitations under the License.
 """The WebDriver implementation."""
 import base64
+import warnings
 from command import Command
 from webelement import WebElement
 from remote_connection import RemoteConnection
@@ -343,12 +344,25 @@ class WebDriver(object):
             driver.current_url
         """
         return self.execute(Command.GET_CURRENT_URL)['value']
+
+    @property
+    def page_source(self):
+        """Gets the source of the current page.
+        Usage:
+            driver.page_source
+        """
+        return self.execute(Command.GET_PAGE_SOURCE)['value']
+
     
     def get_page_source(self):
         """Gets the source of the current page.
         Usage:
             driver.get_page_source()
+        Note: 
+            This call has been deprecated. Please use page_source property
         """
+        warnings.warn("""Please note this has been deprecated. use page_source 
+                       property instead""")
         return self.execute(Command.GET_PAGE_SOURCE)['value']
     
     def close(self):

@@ -27,3 +27,4 @@ Selenium 2 Beta 4
 * Alerts Support in IE
 * Fix to dictionary returned from size
 * Deprecated value property. Use the get_attribute("value") method
+* Deprecated get_page_source method. Use page_source property
