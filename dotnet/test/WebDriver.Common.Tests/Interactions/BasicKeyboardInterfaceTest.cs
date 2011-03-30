@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Interactions
 
             sendLowercase.Perform();
 
-            Assert.AreEqual("abc def", keyReporter.Value);
+            Assert.AreEqual("abc def", keyReporter.GetAttribute("value"));
 
         }
 
@@ -102,7 +102,7 @@ namespace OpenQA.Selenium.Interactions
             IWebElement keyLoggingElement = driver.FindElement(By.Id("result"));
             Assert.AreEqual("focus keydown keydown keypress keyup keydown keypress keyup keyup", keyLoggingElement.Text, "Shift key not held, events: " + keyLoggingElement.Text);
 
-            Assert.AreEqual("AB", keysEventInput.Value);
+            Assert.AreEqual("AB", keysEventInput.GetAttribute("value"));
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace OpenQA.Selenium.Interactions
 
             sendLowercase.Perform();
 
-            Assert.AreEqual("abc def", keyReporter.Value);
+            Assert.AreEqual("abc def", keyReporter.GetAttribute("value"));
         }
 
         private IActionSequenceBuilder GetBuilder()

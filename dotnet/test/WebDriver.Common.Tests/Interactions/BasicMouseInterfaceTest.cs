@@ -89,7 +89,7 @@ namespace OpenQA.Selenium.Interactions
             IAction dblClick = GetBuilder().DoubleClick(toDoubleClick).Build();
 
             dblClick.Perform();
-            Assert.AreEqual("DoubleClicked", toDoubleClick.Value);
+            Assert.AreEqual("DoubleClicked", toDoubleClick.GetAttribute("value"));
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace OpenQA.Selenium.Interactions
             IAction contextClick = GetBuilder().ContextClick(toContextClick).Build();
 
             contextClick.Perform();
-            Assert.AreEqual("ContextClicked", toContextClick.Value);
+            Assert.AreEqual("ContextClicked", toContextClick.GetAttribute("value"));
         }
 
         [Test]
@@ -121,7 +121,7 @@ namespace OpenQA.Selenium.Interactions
             IAction contextClick = GetBuilder().MoveToElement(toClick).Click().Build();
 
             contextClick.Perform();
-            Assert.AreEqual("Clicked", toClick.Value, "Value should change to Clicked.");
+            Assert.AreEqual("Clicked", toClick.GetAttribute("value"), "Value should change to Clicked.");
         }
 
         [Test]

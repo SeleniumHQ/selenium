@@ -33,7 +33,7 @@ namespace OpenQA.Selenium
 
             input.SendKeys(shalom);
 
-            Assert.AreEqual(shalom, input.Value);
+            Assert.AreEqual(shalom, input.GetAttribute("value"));
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace OpenQA.Selenium
 
             input.SendKeys(tmunot);
 
-            Assert.AreEqual(tmunot, input.Value);
+            Assert.AreEqual(tmunot, input.GetAttribute("value"));
         }
     }
 }

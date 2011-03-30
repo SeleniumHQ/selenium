@@ -51,7 +51,7 @@ namespace OpenQA.Selenium
             driver.Url = iframePage;
             driver.SwitchTo().Frame(0);
 
-            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).Value);
+            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).GetAttribute("value"));
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = iframePage;
             driver.SwitchTo().Frame("iframe1-name");
-            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).Value);
+            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).GetAttribute("value"));
 
         }
 
@@ -86,7 +86,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = iframePage;
             driver.SwitchTo().Frame("iframe1");
-            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).Value);
+            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).GetAttribute("value"));
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace OpenQA.Selenium
             driver.Url = iframePage;
             IWebElement frame = driver.FindElement(By.TagName("iframe"));
             driver.SwitchTo().Frame(frame);
-            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).Value);
+            Assert.AreEqual("name", driver.FindElement(By.Name("id-name1")).GetAttribute("value"));
 
         }
 

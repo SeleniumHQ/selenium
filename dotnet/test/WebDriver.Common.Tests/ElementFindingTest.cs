@@ -124,7 +124,7 @@ namespace OpenQA.Selenium
 
             IWebElement element = driver.FindElement(By.Name("checky"));
 
-            Assert.AreEqual(element.Value, "furrfu");
+            Assert.AreEqual(element.GetAttribute("value"), "furrfu");
         }
 
         [Test]
@@ -300,16 +300,16 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
 
             IWebElement element = driver.FindElement(By.Name("id-name1"));
-            Assert.AreEqual(element.Value, "name");
+            Assert.AreEqual(element.GetAttribute("value"), "name");
 
             element = driver.FindElement(By.Id("id-name1"));
-            Assert.AreEqual(element.Value, "id");
+            Assert.AreEqual(element.GetAttribute("value"), "id");
 
             element = driver.FindElement(By.Name("id-name2"));
-            Assert.AreEqual(element.Value, "name");
+            Assert.AreEqual(element.GetAttribute("value"), "name");
 
             element = driver.FindElement(By.Id("id-name2"));
-            Assert.AreEqual(element.Value, "id");
+            Assert.AreEqual(element.GetAttribute("value"), "id");
         }
 
         [Test]

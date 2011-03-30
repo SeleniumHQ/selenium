@@ -64,6 +64,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox, "moveto JSON protocol command is not yet supported by Firefox")]
         public void ShouldAllowUsersToHoverOverElements()
         {
             driver.Url = javascriptPage;
@@ -84,8 +85,8 @@ namespace OpenQA.Selenium
             Assert.AreEqual("", item.Text);
 
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
-            element.Hover();
-            //inputDevicesDriver.ActionBuilder.MoveToElement(element).Build().Perform();
+            //element.Hover();
+            inputDevicesDriver.ActionBuilder.MoveToElement(element).Build().Perform();
 
             item = (IRenderedWebElement)driver.FindElement(By.Id("item1"));
             Assert.AreEqual("Item 1", item.Text);

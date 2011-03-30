@@ -135,11 +135,11 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("clickField"));
-            Assert.AreEqual("Hello", element.Value);
+            Assert.AreEqual("Hello", element.GetAttribute("value"));
 
             element.Click();
 
-            Assert.AreEqual("Clicked", element.Value);
+            Assert.AreEqual("Clicked", element.GetAttribute("value"));
         }
 
         [Test]

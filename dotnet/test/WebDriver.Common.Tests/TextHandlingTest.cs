@@ -133,7 +133,7 @@ namespace OpenQA.Selenium
             string expectedText = "I like cheese" + newLine + newLine + "It's really nice";
             textarea.SendKeys(expectedText);
 
-            string seenText = textarea.Value;
+            string seenText = textarea.GetAttribute("value");
             Assert.AreEqual(seenText, expectedText);
         }
 
@@ -144,7 +144,7 @@ namespace OpenQA.Selenium
             IWebElement input = driver.FindElement(By.Id("working"));
             string expectedValue = "10/03/2007 to 30/07/1993";
             input.SendKeys(expectedValue);
-            string seenValue = input.Value;
+            string seenValue = input.GetAttribute("value");
 
             Assert.AreEqual(seenValue, expectedValue);
         }

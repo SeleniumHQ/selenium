@@ -186,7 +186,7 @@ namespace OpenQA.Selenium
             IWebElement clicker = driver.FindElement(By.Id("clickField"));
             clicker.Click();
 
-            Assert.AreEqual(clicker.Value, "Clicked");
+            Assert.AreEqual(clicker.GetAttribute("value"), "Clicked");
         }
 
         [Test]

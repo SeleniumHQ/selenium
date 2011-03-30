@@ -55,6 +55,7 @@ namespace OpenQA.Selenium
         /// loaded (for example, through JavaScript) then this will reflect the current value 
         /// of the "value" attribute.
         /// </remarks>
+        [Obsolete("Use IWebElement.GetAttribute(\"value\") instead")]
         string Value { get; }
 
         /// <summary>

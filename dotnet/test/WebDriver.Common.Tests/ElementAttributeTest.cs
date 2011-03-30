@@ -204,7 +204,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
 
-            String value = driver.FindElement(By.Id("withText")).Value;
+            String value = driver.FindElement(By.Id("withText")).GetAttribute("value");
 
             Assert.AreEqual("Example text", value);
         }

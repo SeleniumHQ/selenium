@@ -75,7 +75,7 @@ namespace OpenQA.Selenium
             IWebElement textarea = driver.FindElement(By.Id("keyUpArea"));
             String cheesey = "Brie and cheddar";
             textarea.SendKeys(cheesey);
-            Assert.AreEqual(textarea.Value, cheesey);
+            Assert.AreEqual(textarea.GetAttribute("value"), cheesey);
         }
 
         [Test]
@@ -113,14 +113,14 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             IWebElement element = driver.FindElement(By.XPath("//form[@name='someForm']/input[@id='username']"));
-            String originalValue = element.Value;
+            String originalValue = element.GetAttribute("value");
             Assert.AreEqual(originalValue, "change");
 
             element.Clear();
             element.SendKeys("some text");
 
             element = driver.FindElement(By.XPath("//form[@name='someForm']/input[@id='username']"));
-            String newFormValue = element.Value;
+            String newFormValue = element.GetAttribute("value");
             Assert.AreEqual(newFormValue, "some text");
         }
 
@@ -245,7 +245,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement uploadElement = driver.FindElement(By.Id("upload"));
-            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.Value));
+            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
 
             System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
@@ -254,7 +254,7 @@ namespace OpenQA.Selenium
 
             uploadElement.SendKeys(inputFile.FullName);
 
-            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElement.Value);
+            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElement.GetAttribute("value"));
             Assert.AreEqual(inputFile.Name, outputFile.Name);
             inputFile.Delete();
         }
@@ -269,14 +269,14 @@ namespace OpenQA.Selenium
 
             driver.Url = formsPage;
             IWebElement uploadElement = driver.FindElement(By.Id("upload"));
-            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.Value));
+            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
 
             uploadElement.SendKeys(inputFile.FullName);
             uploadElement.Submit();
 
             driver.Url = formsPage;
             uploadElement = driver.FindElement(By.Id("upload"));
-            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.Value));
+            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
 
             uploadElement.SendKeys(inputFile.FullName);
             uploadElement.Submit();
@@ -299,11 +299,11 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             IWebElement element = driver.FindElement(By.Id("working"));
             element.SendKeys("Some");
-            String value = element.Value;
+            String value = element.GetAttribute("value");
             Assert.AreEqual(value, "Some");
 
             element.SendKeys(" text");
-            value = element.Value;
+            value = element.GetAttribute("value");
             Assert.AreEqual(value, "Some text");
         }
 
@@ -317,7 +317,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("withText"));
 
             element.SendKeys(". Some text");
-            String value = element.Value;
+            String value = element.GetAttribute("value");
 
             Assert.AreEqual(value, "Example text. Some text");
         }
@@ -328,11 +328,11 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             IWebElement element = driver.FindElement(By.Id("working"));
             element.SendKeys("Some text");
-            String value = element.Value;
+            String value = element.GetAttribute("value");
             Assert.IsTrue(value.Length > 0);
 
             element.Clear();
-            value = element.Value;
+            value = element.GetAttribute("value");
 
             Assert.AreEqual(value.Length, 0);
         }
@@ -342,10 +342,10 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement emptyTextBox = driver.FindElement(By.Id("working"));
-            Assert.AreEqual(emptyTextBox.Value, "");
+            Assert.AreEqual(emptyTextBox.GetAttribute("value"), "");
 
             IWebElement emptyTextArea = driver.FindElement(By.Id("emptyTextArea"));
-            Assert.AreEqual(emptyTextBox.Value, "");
+            Assert.AreEqual(emptyTextBox.GetAttribute("value"), "");
         }
 
         [Test]
@@ -354,11 +354,11 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             IWebElement element = driver.FindElement(By.Id("withText"));
             element.SendKeys("Some text");
-            String value = element.Value;
+            String value = element.GetAttribute("value");
             Assert.IsTrue(value.Length > 0);
 
             element.Clear();
-            value = element.Value;
+            value = element.GetAttribute("value");
 
             Assert.AreEqual(value.Length, 0);
         }

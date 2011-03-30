@@ -168,7 +168,7 @@ namespace OpenQA.Selenium
 
             IWebElement typer = driver.FindElement(By.Name("typer"));
             typer.SendKeys("bob");
-            Assert.AreEqual("bob", typer.Value);
+            Assert.AreEqual("bob", typer.GetAttribute("value"));
 
             driver.FindElement(By.Id("red")).Click();
             driver.FindElement(By.Name("submit")).Click();
@@ -180,7 +180,7 @@ namespace OpenQA.Selenium
                 "var callback = arguments[arguments.length - 1];"
                 + "window.registerListener(arguments[arguments.length - 1]);");
             Assert.AreEqual("bob", text);
-            Assert.AreEqual("", typer.Value);
+            Assert.AreEqual("", typer.GetAttribute("value"));
 
             Assert.AreEqual(2, GetNumberOfDivElements(), "There should be 1 DIV (for the butter message) + 1 DIV (for the new label)");
         }

@@ -109,7 +109,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("unclickable"));
             element.SendKeys("You don't see me");
 
-            Assert.AreNotEqual(element.Value, "You don't see me");
+            Assert.AreNotEqual(element.GetAttribute("value"), "You don't see me");
         }
 
         [Test]

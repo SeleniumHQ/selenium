@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Internal;
 
@@ -71,6 +72,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the value of the element's "value" attribute. If this value has been modified after the page has loaded (for example, through javascript) then this will reflect the current value of the "value" attribute.
         /// </summary>
+        [Obsolete("Use IWebElement.GetAttribute(\"value\") instead")]
         public string Value
         {
             get

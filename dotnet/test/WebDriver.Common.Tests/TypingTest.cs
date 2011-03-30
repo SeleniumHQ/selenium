@@ -58,7 +58,7 @@ namespace OpenQA.Selenium
             IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
             keyReporter.SendKeys("abc def");
 
-            Assert.AreEqual(keyReporter.Value, "abc def");
+            Assert.AreEqual(keyReporter.GetAttribute("value"), "abc def");
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace OpenQA.Selenium
             IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
             keyReporter.SendKeys("ABC DEF");
 
-            Assert.AreEqual(keyReporter.Value, "ABC DEF");
+            Assert.AreEqual(keyReporter.GetAttribute("value"), "ABC DEF");
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace OpenQA.Selenium
             IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
             keyReporter.SendKeys("\"");
 
-            Assert.AreEqual(keyReporter.Value, "\"");
+            Assert.AreEqual(keyReporter.GetAttribute("value"), "\"");
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace OpenQA.Selenium
             IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
             keyReporter.SendKeys("@");
 
-            Assert.AreEqual(keyReporter.Value, "@");
+            Assert.AreEqual(keyReporter.GetAttribute("value"), "@");
         }
 
         [Test]
@@ -108,7 +108,7 @@ namespace OpenQA.Selenium
             IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
             keyReporter.SendKeys("me@eXample.com");
 
-            Assert.AreEqual(keyReporter.Value, "me@eXample.com");
+            Assert.AreEqual(keyReporter.GetAttribute("value"), "me@eXample.com");
         }
 
         [Test]
@@ -121,7 +121,7 @@ namespace OpenQA.Selenium
             IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
             keyReporter.SendKeys(Keys.ArrowLeft);
 
-            Assert.AreEqual(keyReporter.Value, "");
+            Assert.AreEqual(keyReporter.GetAttribute("value"), "");
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace OpenQA.Selenium
             IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
             keyReporter.SendKeys("Tet" + Keys.ArrowLeft + "s");
 
-            Assert.AreEqual(keyReporter.Value, "Test");
+            Assert.AreEqual(keyReporter.GetAttribute("value"), "Test");
         }
 
         [Test]
@@ -270,7 +270,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual(result.Text.Trim(), "down: 39 press: 39 up: 39");
 
             // And leave no rubbish/printable keys in the "keyReporter"
-            Assert.AreEqual(element.Value, "");
+            Assert.AreEqual(element.GetAttribute("value"), "");
         }
 
         [Test]
@@ -301,7 +301,7 @@ namespace OpenQA.Selenium
             Assert.IsTrue(result.Text.Trim().Contains("up: 39"));
 
             // And leave no rubbish/printable keys in the "keyReporter"
-            Assert.AreEqual(element.Value, string.Empty);
+            Assert.AreEqual(element.GetAttribute("value"), string.Empty);
         }
 
         [Test]
@@ -315,7 +315,7 @@ namespace OpenQA.Selenium
             String numericLineCharsNonShifted = "`1234567890-=[]\\;,.'/42";
             element.SendKeys(numericLineCharsNonShifted);
 
-            Assert.AreEqual(element.Value, numericLineCharsNonShifted);
+            Assert.AreEqual(element.GetAttribute("value"), numericLineCharsNonShifted);
         }
 
         [Test]
@@ -332,7 +332,7 @@ namespace OpenQA.Selenium
             String numericShiftsEtc = "~!@#$%^&*()_+{}:\"<>?|END~";
             element.SendKeys(numericShiftsEtc);
 
-            Assert.AreEqual(element.Value, numericShiftsEtc);
+            Assert.AreEqual(element.GetAttribute("value"), numericShiftsEtc);
             Assert.IsTrue(result.Text.Trim().Contains(" up: 16"));
         }
 
@@ -347,7 +347,7 @@ namespace OpenQA.Selenium
             String lowerAlphas = "abcdefghijklmnopqrstuvwxyz";
             element.SendKeys(lowerAlphas);
 
-            Assert.AreEqual(element.Value, lowerAlphas);
+            Assert.AreEqual(element.GetAttribute("value"), lowerAlphas);
         }
 
         [Test]
@@ -364,7 +364,7 @@ namespace OpenQA.Selenium
             String upperAlphas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             element.SendKeys(upperAlphas);
 
-            Assert.AreEqual(element.Value, upperAlphas);
+            Assert.AreEqual(element.GetAttribute("value"), upperAlphas);
             Assert.IsTrue(result.Text.Trim().Contains(" up: 16"));
         }
 
@@ -384,7 +384,7 @@ namespace OpenQA.Selenium
                 "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
             element.SendKeys(allPrintable);
 
-            Assert.AreEqual(element.Value, allPrintable);
+            Assert.AreEqual(element.GetAttribute("value"), allPrintable);
             Assert.IsTrue(result.Text.Trim().Contains(" up: 16"));
         }
 
@@ -399,7 +399,7 @@ namespace OpenQA.Selenium
 
             element.SendKeys("a" + Keys.Left + "b" + Keys.Right +
                              Keys.Up + Keys.Down + Keys.PageUp + Keys.PageDown + "1");
-            Assert.AreEqual(element.Value, "ba1");
+            Assert.AreEqual(element.GetAttribute("value"), "ba1");
         }
 
         [Test]
@@ -421,7 +421,7 @@ namespace OpenQA.Selenium
             element.SendKeys("abc" + Keys.Home + "0" + Keys.Left + Keys.Right +
                              Keys.PageUp + Keys.PageDown + Keys.End + "1" + Keys.Home +
                              "0" + Keys.PageUp + Keys.End + "111" + Keys.Home + "00");
-            Assert.AreEqual(element.Value, "0000abc1111");
+            Assert.AreEqual(element.GetAttribute("value"), "0000abc1111");
         }
 
         [Test]
@@ -435,13 +435,13 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
             element.SendKeys("abcdefghi");
-            Assert.AreEqual(element.Value, "abcdefghi");
+            Assert.AreEqual(element.GetAttribute("value"), "abcdefghi");
 
             element.SendKeys(Keys.Left + Keys.Left + Keys.Delete);
-            Assert.AreEqual(element.Value, "abcdefgi");
+            Assert.AreEqual(element.GetAttribute("value"), "abcdefgi");
 
             element.SendKeys(Keys.Left + Keys.Left + Keys.Backspace);
-            Assert.AreEqual(element.Value, "abcdfgi");
+            Assert.AreEqual(element.GetAttribute("value"), "abcdfgi");
         }
 
         [Test]
@@ -455,7 +455,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
             element.SendKeys("abcd" + Keys.Space + "fgh" + Keys.Space + "ij");
-            Assert.AreEqual(element.Value, "abcd fgh ij");
+            Assert.AreEqual(element.GetAttribute("value"), "abcd fgh ij");
         }
 
         [Test]
@@ -472,12 +472,12 @@ namespace OpenQA.Selenium
                              Keys.Decimal + Keys.Separator + Keys.NumberPad0 + Keys.NumberPad9 +
                              Keys.Add + Keys.Semicolon + Keys.Equal + Keys.Divide +
                              Keys.NumberPad3 + "abcd");
-            Assert.AreEqual(element.Value, "abcd*-+.,09+;=/3abcd");
+            Assert.AreEqual(element.GetAttribute("value"), "abcd*-+.,09+;=/3abcd");
 
             element.Clear();
             element.SendKeys("FUNCTION" + Keys.F2 + "-KEYS" + Keys.F2);
             element.SendKeys("" + Keys.F2 + "-TOO" + Keys.F2);
-            Assert.AreEqual(element.Value, "FUNCTION-KEYS-TOO");
+            Assert.AreEqual(element.GetAttribute("value"), "FUNCTION-KEYS-TOO");
         }
 
         [Test]
@@ -491,12 +491,12 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
             element.SendKeys("abcd efgh");
-            Assert.AreEqual(element.Value, "abcd efgh");
+            Assert.AreEqual(element.GetAttribute("value"), "abcd efgh");
 
             //Could be chord problem
             element.SendKeys(Keys.Shift + Keys.Left + Keys.Left + Keys.Left);
             element.SendKeys(Keys.Delete);
-            Assert.AreEqual(element.Value, "abcd e");
+            Assert.AreEqual(element.GetAttribute("value"), "abcd e");
         }
 
         [Test]
@@ -521,7 +521,7 @@ namespace OpenQA.Selenium
             element.SendKeys(Keys.Home);
             element.SendKeys("" + Keys.Shift + Keys.End + Keys.Delete);
 
-            Assert.AreEqual(element.Value, string.Empty);
+            Assert.AreEqual(element.GetAttribute("value"), string.Empty);
             Assert.IsTrue(result.Text.Contains(" up: 16"));
         }
 
@@ -542,22 +542,22 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
             element.SendKeys("done" + Keys.Home);
-            Assert.AreEqual(element.Value, "done");
+            Assert.AreEqual(element.GetAttribute("value"), "done");
 
             //Sending chords
             element.SendKeys("" + Keys.Shift + "ALL " + Keys.Home);
-            Assert.AreEqual(element.Value, "ALL done");
+            Assert.AreEqual(element.GetAttribute("value"), "ALL done");
 
             element.SendKeys(Keys.Delete);
-            Assert.AreEqual(element.Value, "done");
+            Assert.AreEqual(element.GetAttribute("value"), "done");
 
             element.SendKeys("" + Keys.End + Keys.Shift + Keys.Home);
-            Assert.AreEqual(element.Value, "done");
+            Assert.AreEqual(element.GetAttribute("value"), "done");
             // Note: trailing SHIFT up here
             Assert.IsTrue(result.Text.Trim().Contains(" up: 16"));
 
             element.SendKeys("" + Keys.Delete);
-            Assert.AreEqual(element.Value, string.Empty);
+            Assert.AreEqual(element.GetAttribute("value"), string.Empty);
         }
 
         // control-x control-v here for cut & paste tests, these work on windows
@@ -582,32 +582,32 @@ namespace OpenQA.Selenium
 
             String paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG";
             element.SendKeys(paste);
-            Assert.AreEqual(element.Value, paste);
+            Assert.AreEqual(element.GetAttribute("value"), paste);
 
             //Chords
             element.SendKeys("" + Keys.Home + Keys.Shift + Keys.End);
             Assert.IsTrue(result.Text.Trim().Contains(" up: 16"));
 
             element.SendKeys(Keys.Control + "x");
-            Assert.AreEqual(element.Value, string.Empty);
+            Assert.AreEqual(element.GetAttribute("value"), string.Empty);
 
             element.SendKeys(Keys.Control + "v");
-            Assert.AreEqual(element.Value, paste);
+            Assert.AreEqual(element.GetAttribute("value"), paste);
 
             element.SendKeys("" + Keys.Left + Keys.Left + Keys.Left +
                              Keys.Shift + Keys.End);
             element.SendKeys(Keys.Control + "x" + "v");
-            Assert.AreEqual(element.Value, paste);
+            Assert.AreEqual(element.GetAttribute("value"), paste);
 
             element.SendKeys(Keys.Home);
             element.SendKeys(Keys.Control + "v");
             element.SendKeys(Keys.Control + "v" + "v");
             element.SendKeys(Keys.Control + "v" + "v" + "v");
-            Assert.AreEqual(element.Value, "EFGEFGEFGEFGEFGEFG" + paste);
+            Assert.AreEqual(element.GetAttribute("value"), "EFGEFGEFGEFGEFGEFG" + paste);
 
             element.SendKeys("" + Keys.End + Keys.Shift + Keys.Home +
                              Keys.Null + Keys.Delete);
-            Assert.AreEqual(element.Value, string.Empty);
+            Assert.AreEqual(element.GetAttribute("value"), string.Empty);
         }
 
         [Test]
@@ -619,7 +619,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("no-type"));
 
             element.SendKeys("Should Say Cheese");
-            Assert.AreEqual(element.Value, "Should Say Cheese");
+            Assert.AreEqual(element.GetAttribute("value"), "Should Say Cheese");
         }
 
         [Test]
@@ -632,7 +632,7 @@ namespace OpenQA.Selenium
             IWebElement silent = driver.FindElement(By.Name("suppress"));
 
             silent.SendKeys("s");
-            Assert.AreEqual(silent.Value, string.Empty);
+            Assert.AreEqual(silent.GetAttribute("value"), string.Empty);
         }
 
         [Test]
