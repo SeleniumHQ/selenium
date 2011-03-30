@@ -104,7 +104,7 @@ class CorrectEventFiringTests(unittest.TestCase):
         clicker = self.driver.find_element_by_id("clickField")
         clicker.click()
 
-        self.assertEqual(clicker.value, "Clicked")
+        self.assertEqual(clicker.get_attribute("value"), "Clicked")
         
     def testClearingAnElementShouldCauseTheOnChangeHandlerToFire(self):
         self._loadPage("javascriptPage")

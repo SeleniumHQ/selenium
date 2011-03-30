@@ -115,7 +115,7 @@ class TextHandlingTests(unittest.TestCase):
 
         textarea.send_keys(expectedText)
 
-        seenText = textarea.value
+        seenText = textarea.get_attribute("value")
         self.assertEqual(seenText, expectedText)
 
     def testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst(self):
@@ -123,7 +123,7 @@ class TextHandlingTests(unittest.TestCase):
         input_ = self.driver.find_element(by=By.ID, value="working")
         expectedValue = "10/03/2007 to 30/07/1993"
         input_.send_keys(expectedValue)
-        seenValue = input_.value
+        seenValue = input_.get_attribute("value")
 
         self.assertEqual(seenValue, expectedValue)
 

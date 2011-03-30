@@ -167,7 +167,7 @@ class ExecutingAsyncJavaScriptTests(unittest.TestCase):
 
         typer = self.driver.find_element(by=By.NAME, value="typer")
         typer.send_keys("bob")
-        self.assertEqual("bob", typer.value)
+        self.assertEqual("bob", typer.get_attribute("value"))
 
         self.driver.find_element(by=By.ID, value="red").click()
         self.driver.find_element(by=By.NAME, value="submit").click()
@@ -179,7 +179,7 @@ class ExecutingAsyncJavaScriptTests(unittest.TestCase):
         """var callback = arguments[arguments.length - 1];
         window.registerListener(arguments[arguments.length - 1]);""")
         self.assertEqual("bob", text)
-        self.assertEqual("", typer.value)
+        self.assertEqual("", typer.get_attribute("value"))
 
         self.assertEqual(2, len(self.driver.find_elements(by=By.TAG_NAME, value='div')),
                         "There should be 1 DIV (for the butter message) + 1 DIV (for the new label)")

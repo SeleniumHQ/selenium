@@ -81,19 +81,19 @@ class FormHandlingTests(unittest.TestCase):
         textarea = self.driver.find_element_by_id("keyUpArea")
         cheesey = "Brie and cheddar"
         textarea.send_keys(cheesey)
-        self.assertEqual(textarea.value, cheesey)
+        self.assertEqual(textarea.get_attribute("value"), cheesey)
         
     def testShouldEnterDataIntoFormFields(self):
         self._loadPage("xhtmlTest")
         element = self.driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
-        originalValue = element.value
+        originalValue = element.get_attribute("value")
         self.assertEqual(originalValue, "change")
 
         element.clear()
         element.send_keys("some text")
 
         element = self.driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
-        newFormValue = element.value
+        newFormValue = element.get_attribute("value")
         self.assertEqual(newFormValue, "some text")
         
     def testShouldBeAbleToSelectACheckBox(self):
@@ -203,42 +203,42 @@ class FormHandlingTests(unittest.TestCase):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id("working")
         element.send_keys("Some")
-        value = element.value
+        value = element.get_attribute("value")
         self.assertEqual(value, "Some")
 
         element.send_keys(" text")
-        value = element.value
+        value = element.get_attribute("value")
         self.assertEqual(value, "Some text")
 
     def testShouldBeAbleToClearTextFromInputElements(self):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id("working")
         element.send_keys("Some text")
-        value = element.value
+        value = element.get_attribute("value")
         self.assertTrue(len(value) > 0)
 
         element.clear()
-        value = element.value
+        value = element.get_attribute("value")
 
         self.assertEqual(len(value), 0)
 
     def testEmptyTextBoxesShouldReturnAnEmptyStringNotNull(self):
         self._loadPage("formPage")
         emptyTextBox = self.driver.find_element_by_id("working")
-        self.assertEqual(emptyTextBox.value, "")
+        self.assertEqual(emptyTextBox.get_attribute("value"), "")
 
         emptyTextArea = self.driver.find_element_by_id("emptyTextArea")
-        self.assertEqual(emptyTextBox.value, "")
+        self.assertEqual(emptyTextBox.get_attribute("value"), "")
         
     def testShouldBeAbleToClearTextFromTextAreas(self):
         self._loadPage("formPage")
         element = self.driver.find_element_by_id("withText")
         element.send_keys("Some text")
-        value = element.value
+        value = element.get_attribute("value")
         self.assertTrue(len(value) > 0)
 
         element.clear()
-        value = element.value
+        value = element.get_attribute("value")
 
         self.assertEqual(len(value), 0)
         

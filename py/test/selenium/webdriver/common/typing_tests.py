@@ -51,43 +51,43 @@ class TypingTests(unittest.TestCase):
         self._loadPage("javascriptPage")
         keyReporter = self.driver.find_element(by=By.ID, value="keyReporter")
         keyReporter.send_keys("abc def")
-        self.assertEqual(keyReporter.value, "abc def")
+        self.assertEqual(keyReporter.get_attribute("value"), "abc def")
     
     def testShouldBeAbleToTypeCapitalLetters(self):
         self._loadPage("javascriptPage")
         keyReporter = self.driver.find_element(by=By.ID, value="keyReporter")
         keyReporter.send_keys("ABC DEF")
-        self.assertEqual(keyReporter.value, "ABC DEF")
+        self.assertEqual(keyReporter.get_attribute("value"), "ABC DEF")
     
     def testShouldBeAbleToTypeQuoteMarks(self):
         self._loadPage("javascriptPage")
         keyReporter = self.driver.find_element(by=By.ID, value="keyReporter")
         keyReporter.send_keys("\"")
-        self.assertEqual(keyReporter.value, "\"")
+        self.assertEqual(keyReporter.get_attribute("value"), "\"")
     
     def testShouldBeAbleToTypeTheAtCharacter(self):
         self._loadPage("javascriptPage")
         keyReporter = self.driver.find_element(by=By.ID, value="keyReporter")
         keyReporter.send_keys("@")
-        self.assertEqual(keyReporter.value, "@")
+        self.assertEqual(keyReporter.get_attribute("value"), "@")
     
     def testShouldBeAbleToMixUpperAndLowerCaseLetters(self):
         self._loadPage("javascriptPage")
         keyReporter = self.driver.find_element(by=By.ID, value="keyReporter")
         keyReporter.send_keys("me@eXample.com")
-        self.assertEqual(keyReporter.value, "me@eXample.com")
+        self.assertEqual(keyReporter.get_attribute("value"), "me@eXample.com")
 
     def testArrowKeysShouldNotBePrintable(self):
         self._loadPage("javascriptPage")
         keyReporter = self.driver.find_element(by=By.ID, value="keyReporter")
         keyReporter.send_keys(Keys.ARROW_LEFT)
-        self.assertEqual(keyReporter.value, "")
+        self.assertEqual(keyReporter.get_attribute("value"), "")
 
     def testShouldBeAbleToUseArrowKeys(self):
         self._loadPage("javascriptPage")
         keyReporter = self.driver.find_element(by=By.ID, value="keyReporter")
         keyReporter.send_keys("Tet", Keys.ARROW_LEFT, "s")
-        self.assertEqual(keyReporter.value, "Test")
+        self.assertEqual(keyReporter.get_attribute("value"), "Test")
 
     def testWillSimulateAKeyUpWhenEnteringTextIntoInputElements(self):
         self._loadPage("javascriptPage")
@@ -162,14 +162,14 @@ class TypingTests(unittest.TestCase):
         self.assertTrue("up: 39" in result.text.strip())
 
         #  And leave no rubbish/printable keys in the "keyReporter"
-        self.assertEqual(element.value, "")
+        self.assertEqual(element.get_attribute("value"), "")
   
     def testNumericNonShiftKeys(self):
         self._loadPage("javascriptPage")
         element = self.driver.find_element(by=By.ID, value="keyReporter")
         numericLineCharsNonShifted = "`1234567890-=[]\\,.'/42"
         element.send_keys(numericLineCharsNonShifted)
-        self.assertEqual(element.value, numericLineCharsNonShifted)
+        self.assertEqual(element.get_attribute("value"), numericLineCharsNonShifted)
 
     #@Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE, ANDROID},
     #reason = "untested user agent")
@@ -179,7 +179,7 @@ class TypingTests(unittest.TestCase):
         element = self.driver.find_element(by=By.ID, value="keyReporter")
         numericShiftsEtc = "~!@#$%^&*()_+{}:i\"<>?|END~"
         element.send_keys(numericShiftsEtc)
-        self.assertEqual(element.value, numericShiftsEtc)
+        self.assertEqual(element.get_attribute("value"), numericShiftsEtc)
         self.assertTrue(" up: 16" in result.text.strip())
 
     def testLowerCaseAlphaKeys(self):
@@ -187,7 +187,7 @@ class TypingTests(unittest.TestCase):
         element = self.driver.find_element(by=By.ID, value="keyReporter")
         lowerAlphas = "abcdefghijklmnopqrstuvwxyz"
         element.send_keys(lowerAlphas)
-        self.assertEqual(element.value, lowerAlphas)
+        self.assertEqual(element.get_attribute("value"), lowerAlphas)
 
     def testUppercaseAlphaKeys(self):
         self._loadPage("javascriptPage")
@@ -195,7 +195,7 @@ class TypingTests(unittest.TestCase):
         element = self.driver.find_element(by=By.ID, value="keyReporter")
         upperAlphas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         element.send_keys(upperAlphas)
-        self.assertEqual(element.value, upperAlphas)
+        self.assertEqual(element.get_attribute("value"), upperAlphas)
         self.assertTrue(" up: 16" in result.text.strip())
 
     def testAllPrintableKeys(self):
@@ -205,7 +205,7 @@ class TypingTests(unittest.TestCase):
         allPrintable = "!\"#$%&'()*+,-./0123456789:<=>?@ ABCDEFGHIJKLMNOPQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
         element.send_keys(allPrintable)
 
-        self.assertTrue(element.value, allPrintable)
+        self.assertTrue(element.get_attribute("value"), allPrintable)
         self.assertTrue(" up: 16" in result.text.strip())
 
     def testArrowKeysAndPageUpAndDown(self):
@@ -213,7 +213,7 @@ class TypingTests(unittest.TestCase):
         element = self.driver.find_element(by=By.ID, value="keyReporter")
         element.send_keys("a" + Keys.LEFT + "b" + Keys.RIGHT +
                      Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1")
-        self.assertEqual(element.value, "ba1")
+        self.assertEqual(element.get_attribute("value"), "ba1")
 
     #def testHomeAndEndAndPageUpAndPageDownKeys(self):
     #  // FIXME: macs don't have HOME keys, would PGUP work?
@@ -228,7 +228,7 @@ class TypingTests(unittest.TestCase):
     #  element.send_keys("abc" + Keys.HOME + "0" + Keys.LEFT + Keys.RIGHT +
     #                   Keys.PAGE_UP + Keys.PAGE_DOWN + Keys.END + "1" + Keys.HOME +
     #                   "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00")
-    #  self.assertThat(element.value, is("0000abc1111"))
+    #  self.assertThat(element.get_attribute("value"), is("0000abc1111"))
 
     #@Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE, ANDROID},
     #      reason = "untested user agents")
@@ -236,20 +236,20 @@ class TypingTests(unittest.TestCase):
         self._loadPage("javascriptPage")
         element = self.driver.find_element(by=By.ID, value="keyReporter")
         element.send_keys("abcdefghi")
-        self.assertEqual(element.value, "abcdefghi")
+        self.assertEqual(element.get_attribute("value"), "abcdefghi")
 
         element.send_keys(Keys.LEFT, Keys.LEFT, Keys.DELETE)
-        self.assertEqual(element.value, "abcdefgi")
+        self.assertEqual(element.get_attribute("value"), "abcdefgi")
 
         element.send_keys(Keys.LEFT, Keys.LEFT, Keys.BACK_SPACE)
-        self.assertEqual(element.value, "abcdfgi")
+        self.assertEqual(element.get_attribute("value"), "abcdfgi")
 
     #@Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE}, reason = "untested user agents")
     def testSpecialSpaceKeys(self):
         self._loadPage("javascriptPage")
         element = self.driver.find_element(by=By.ID, value="keyReporter")
         element.send_keys("abcd" + Keys.SPACE + "fgh" + Keys.SPACE + "ij")
-        self.assertEqual(element.value, "abcd fgh ij")
+        self.assertEqual(element.get_attribute("value"), "abcd fgh ij")
 
     def testNumberpadAndFunctionKeys(self):
         self._loadPage("javascriptPage")
@@ -258,29 +258,29 @@ class TypingTests(unittest.TestCase):
                      Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
                      Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
                      Keys.NUMPAD3 + "abcd")
-        self.assertEqual(element.value, "abcd*-+.,09+;=/3abcd")
+        self.assertEqual(element.get_attribute("value"), "abcd*-+.,09+;=/3abcd")
 
         element.clear()
         element.send_keys("FUNCTION" + Keys.F2 + "-KEYS" + Keys.F2)
         element.send_keys("" + Keys.F2 + "-TOO" + Keys.F2)
-        self.assertEqual(element.value, "FUNCTION-KEYS-TOO")
+        self.assertEqual(element.get_attribute("value"), "FUNCTION-KEYS-TOO")
   
     def testShiftSelectionDeletes(self):
         self._loadPage("javascriptPage")
         element = self.driver.find_element(by=By.ID, value="keyReporter")
 
         element.send_keys("abcd efgh")
-        self.assertEqual(element.value, "abcd efgh")
+        self.assertEqual(element.get_attribute("value"), "abcd efgh")
 
         element.send_keys(Keys.SHIFT, Keys.LEFT, Keys.LEFT, Keys.LEFT)
         element.send_keys(Keys.DELETE)
-        self.assertEqual(element.value, "abcd e")
+        self.assertEqual(element.get_attribute("value"), "abcd e")
 
     def testShouldTypeIntoInputElementsThatHaveNoTypeAttribute(self):
         self._loadPage("formPage")
         element = self.driver.find_element(by=By.ID, value="no-type")
         element.send_keys("Should Say Cheese")
-        self.assertEqual(element.value, "Should Say Cheese")
+        self.assertEqual(element.get_attribute("value"), "Should Say Cheese")
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)

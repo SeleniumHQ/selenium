@@ -106,7 +106,7 @@ class VisibilityTests(unittest.TestCase):
         except ElementNotVisibleException,e:
             pass
 
-        self.assertTrue(element.value is not "You don't see me")
+        self.assertTrue(element.get_attribute("value") is not "You don't see me")
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)

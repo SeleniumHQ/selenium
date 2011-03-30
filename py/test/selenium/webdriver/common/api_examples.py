@@ -62,7 +62,7 @@ class ApiExampleTest (unittest.TestCase):
         self._loadPage("nestedElements")
         elems = self.driver.find_elements_by_xpath("//option")
         self.assertEquals(48, len(elems))
-        self.assertEquals("One", elems[0].value)
+        self.assertEquals("One", elems[0].get_attribute("value"))
 
     def testFindElementsByName(self):
         self._loadPage("xhtmlTest")
@@ -108,7 +108,7 @@ class ApiExampleTest (unittest.TestCase):
         elem.clear()
         elem.send_keys("some text")
         elem = self.driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
-        self.assertEquals("some text", elem.value)
+        self.assertEquals("some text", elem.get_attribute("value"))
 
     def testFindElementByTagName(self):
         self._loadPage("simpleTest")

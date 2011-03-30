@@ -47,7 +47,7 @@ class FrameSwitchingTest(unittest.TestCase):
       self._loadPage("iframes")
       self.driver.switch_to_frame(0)
       element = self.driver.find_element_by_id("id-name1")
-      self.assertEquals("id", element.value)
+      self.assertEquals("id", element.get_attribute("value"))
 
     def testShouldBeAbleToSwitchToAFrameByItsName(self):
       self._loadPage("frameset")
@@ -59,7 +59,7 @@ class FrameSwitchingTest(unittest.TestCase):
       self._loadPage("iframes")
       self.driver.switch_to_frame("iframe1-name");
       element = self.driver.find_element_by_name("id-name1")
-      self.assertEquals("name", element.value)
+      self.assertEquals("name", element.get_attribute("value"))
 
     def testShouldBeAbleToSwitchToAFrameByItsID(self):
       self._loadPage("frameset")
@@ -71,7 +71,7 @@ class FrameSwitchingTest(unittest.TestCase):
       self._loadPage("iframes")
       self.driver.switch_to_frame("iframe1");
       element = self.driver.find_element_by_name("id-name1")
-      self.assertEquals("name", element.value)
+      self.assertEquals("name", element.get_attribute("value"))
 
     def testShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement(self):
       self._loadPage("frameset")
@@ -85,7 +85,7 @@ class FrameSwitchingTest(unittest.TestCase):
       frame = self.driver.find_element_by_tag_name("iframe")
       self.driver.switch_to_frame(frame)
       element = self.driver.find_element_by_name("id-name1")
-      self.assertEquals("name", element.value)
+      self.assertEquals("name", element.get_attribute("value"))
 
     def testShouldEnsureElementIsAFrameBeforeSwitching(self):
       self._loadPage("frameset")
@@ -128,7 +128,7 @@ class FrameSwitchingTest(unittest.TestCase):
       self.driver.switch_to_frame("sixth")
       self.driver.switch_to_frame(0)
       element = self.driver.find_element_by_id("id-name1")
-      self.assertEquals("id", element.value)
+      self.assertEquals("id", element.get_attribute("value"))
 
     def testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames(self):
       self._loadPage("frameset")

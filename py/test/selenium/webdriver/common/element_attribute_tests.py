@@ -160,7 +160,7 @@ class ElementAttributeTests(unittest.TestCase):
         
     def testShouldReturnTheContentsOfATextAreaAsItsValue(self):
         self._loadPage("formPage")
-        value = self.driver.find_element_by_id("withText").value
+        value = self.driver.find_element_by_id("withText").get_attribute("value")
         self.assertEqual("Example text", value)
         
     def testShouldTreatReadonlyAsAValue(self):    

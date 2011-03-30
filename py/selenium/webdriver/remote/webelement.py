@@ -15,6 +15,7 @@
 
 """WebElement implementation."""
 from command import Command
+import warnings
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchAttributeException
 
@@ -48,7 +49,10 @@ class WebElement(object):
 
     @property
     def value(self):
-        """Gets the value of the element's value attribute."""
+        """Gets the value of the element's value attribute. Note that this call has been
+            deprecated and will be removed in a future version
+        """
+        warnings.warn("value property has been deprecated, please use get_attribute('value')")
         return self._execute(Command.GET_ELEMENT_VALUE)['value']
 
     def clear(self):

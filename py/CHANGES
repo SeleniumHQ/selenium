@@ -26,3 +26,4 @@ Selenium 2 Beta 4
 * Fix for using existing Firefox Profiles
 * Alerts Support in IE
 * Fix to dictionary returned from size
+* Deprecated value property. Use the get_attribute("value") method
