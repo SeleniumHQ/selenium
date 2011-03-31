@@ -45,11 +45,18 @@ function AutoCompleteResult(search, candidates) {
 	this.search = search;
 	this.result = [];
 	var lsearch = search.toLowerCase();
-    //Samit: Enh: add support for camel case autocompletion
-    if (lsearch != search && search.match(/^[A-Za-z]+$/)) {
-        var searchregexp = new RegExp(search.replace(/([A-Z]|$)/g,".*$1"));
+    //Samit: Enh: add support for strict camel case as well as relaxed camel case autocompletion
+    if (lsearch != search && search.match(/^!?[A-Za-z]+$/)) {
+        var searchSrc = search;
+        var pattern = "[a-z]*$1";
+        if (searchSrc.match(/^!/)) {
+            //use relaxed camel case if the search expression begins with an "!"
+            pattern = ".*$1";
+            searchSrc = searchSrc.replace(/^!/, '');
+        }
+        var searchRegExp = new RegExp(searchSrc.replace(/([A-Z]|$)/g, pattern));
         for (var i = 0; i < candidates.length; i++) {
-            if (searchregexp.test(candidates[i][0])) {
+            if (searchRegExp.test(candidates[i][0])) {
                 this.result.push(candidates[i]);
             }
         }
