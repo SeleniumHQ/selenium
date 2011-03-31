@@ -30,12 +30,12 @@ namespace OpenQA.Selenium
             get { throw new NotImplementedException(); }
         }
 
-        public string CurrentWindow
+        public string CurrentWindowHandle
         {
             get { throw new NotImplementedException(); }
         }
 
-        public ReadOnlyCollection<string> Windows
+        public ReadOnlyCollection<string> WindowHandles
         {
             get { throw new NotImplementedException(); }
         }

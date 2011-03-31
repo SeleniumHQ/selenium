@@ -150,7 +150,7 @@ namespace OpenQA.Selenium.Remote
         /// Gets the current window handle, which is an opaque handle to this 
         /// window that uniquely identifies it within this driver instance.
         /// </summary>
-        public string CurrentWindow
+        public string CurrentWindowHandle
         {
             get
             {
@@ -162,7 +162,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the window handles of open browser windows.
         /// </summary>
-        public ReadOnlyCollection<string> Windows
+        public ReadOnlyCollection<string> WindowHandles
         {
             get
             {
@@ -360,7 +360,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<string> GetWindowHandles()
         {
-            return this.Windows;
+            return this.WindowHandles;
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public string GetWindowHandle()
         {
-            return this.CurrentWindow;
+            return this.CurrentWindowHandle;
         }
         #endregion
 

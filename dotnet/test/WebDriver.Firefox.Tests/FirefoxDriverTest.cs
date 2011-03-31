@@ -118,13 +118,13 @@ namespace OpenQA.Selenium.Firefox
             // Then switch back to the original window, make sure it gets native events.
             driver.Url = xhtmlTestPage;
 
-            string originalWinHandle = driver.CurrentWindow;
+            string originalWinHandle = driver.CurrentWindowHandle;
 
             driver.FindElement(By.Name("windowOne")).Click();
 
             SleepBecauseWindowsTakeTimeToOpen();
 
-            List<string> allWindowHandles = new List<string>(driver.Windows);
+            List<string> allWindowHandles = new List<string>(driver.WindowHandles);
 
             // There should be two windows. We should also see each of the window titles at least once.
             Assert.AreEqual(2, allWindowHandles.Count);
@@ -175,12 +175,12 @@ namespace OpenQA.Selenium.Firefox
             // Scenario: Open a new window, switch to it, close it, switch back to the
             // original window - make sure it gets native events.
             driver.Url = xhtmlTestPage;
-            string originalWinHandle = driver.CurrentWindow;
+            string originalWinHandle = driver.CurrentWindowHandle;
 
             driver.FindElement(By.Name("windowOne")).Click();
 
             SleepBecauseWindowsTakeTimeToOpen();
-            List<string> allWindowHandles = new List<string>(driver.Windows);
+            List<string> allWindowHandles = new List<string>(driver.WindowHandles);
             // There should be two windows. We should also see each of the window titles at least once.
             Assert.AreEqual(2, allWindowHandles.Count);
 

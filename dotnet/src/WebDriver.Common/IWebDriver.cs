@@ -84,12 +84,12 @@ namespace OpenQA.Selenium
         /// Gets the current window handle, which is an opaque handle to this 
         /// window that uniquely identifies it within this driver instance.
         /// </summary>
-        string CurrentWindow { get; }
+        string CurrentWindowHandle { get; }
 
         /// <summary>
         /// Gets the window handles of open browser windows.
         /// </summary>
-        ReadOnlyCollection<string> Windows { get; }
+        ReadOnlyCollection<string> WindowHandles { get; }
 
         /// <summary>
         /// Close the current window, quitting the browser if it is the last window currently open.

@@ -40,5 +40,22 @@ namespace OpenQA.Selenium.IE
             // We only need to quit the second driver if the test passes
             secondDriver.Quit();
         }
+
+        [Test]
+        public void SessionCookieTest()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("sessioncookie.html");
+            IWebElement setColorButton = driver.FindElement(By.Id("setcolorbutton"));
+            setColorButton.Click();
+            IWebElement openWindowButton = driver.FindElement(By.Id("openwindowbutton"));
+            openWindowButton.Click();
+            System.Threading.Thread.Sleep(2000);
+            string startWindow = driver.CurrentWindowHandle;
+            driver.SwitchTo().Window("cookiedestwindow");
+            string bodyStyle = driver.FindElement(By.TagName("body")).GetAttribute("style");
+            driver.Close();
+            driver.SwitchTo().Window(startWindow);
+            Assert.IsTrue(bodyStyle.Contains("BACKGROUND-COLOR: #80ffff"));
+        }
     }
 }

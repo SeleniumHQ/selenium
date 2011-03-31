@@ -207,16 +207,16 @@ namespace OpenQA.Selenium.Support.Events
         /// Gets the current window handle, which is an opaque handle to this 
         /// window that uniquely identifies it within this driver instance.
         /// </summary>
-        public string CurrentWindow
+        public string CurrentWindowHandle
         {
-            get { return this.driver.CurrentWindow; }
+            get { return this.driver.CurrentWindowHandle; }
         }
         /// <summary>
         /// Gets the window handles of open browser windows.
         /// </summary>
-        public ReadOnlyCollection<string> Windows
+        public ReadOnlyCollection<string> WindowHandles
         {
-            get { return this.driver.Windows; }
+            get { return this.driver.WindowHandles; }
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace OpenQA.Selenium.Support.Events
         /// passing them to <c>SwitchTo().Window(string)</c></remarks>
         public ReadOnlyCollection<string> GetWindowHandles()
         {
-            return this.Windows;
+            return this.WindowHandles;
         }
 
         /// <summary>
@@ -285,7 +285,7 @@ namespace OpenQA.Selenium.Support.Events
         /// within this driver instance.</returns>
         public string GetWindowHandle()
         {
-            return this.CurrentWindow;
+            return this.CurrentWindowHandle;
         }
 
         #endregion

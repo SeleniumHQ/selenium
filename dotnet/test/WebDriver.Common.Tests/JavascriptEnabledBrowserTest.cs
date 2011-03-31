@@ -247,7 +247,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            String handle = driver.CurrentWindow;
+            String handle = driver.CurrentWindowHandle;
             driver.FindElement(By.Id("new_window")).Click();
 
             driver.SwitchTo().Window("close_me");

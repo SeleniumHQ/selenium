@@ -80,7 +80,7 @@ namespace OpenQA.Selenium.Support.UI
             var mockDriver = mocks.NewMock<IWebDriver>();
             Expect.Once.On(mockDriver).Method("GetWindowHandle").Will(Return.Value(SOME_STRING));
 
-            Func<IWebDriver, string> condition = driver => driver.CurrentWindow;
+            Func<IWebDriver, string> condition = driver => driver.CurrentWindowHandle;
 
             var wait = new WebDriverWait(new TickingClock(), mockDriver, FIVE_SECONDS, ZERO_SECONDS);
             

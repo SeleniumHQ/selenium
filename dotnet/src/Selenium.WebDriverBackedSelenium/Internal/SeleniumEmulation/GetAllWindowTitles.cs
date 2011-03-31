@@ -19,10 +19,10 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            string current = driver.CurrentWindow;
+            string current = driver.CurrentWindowHandle;
 
             List<string> attributes = new List<string>();
-            foreach (string handle in driver.Windows)
+            foreach (string handle in driver.WindowHandles)
             {
                 driver.SwitchTo().Window(handle);
                 attributes.Add(driver.Title);
