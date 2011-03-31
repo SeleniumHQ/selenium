@@ -56,7 +56,7 @@ describe "Driver" do
 
     it "should find by field name" do
       driver.navigate.to url_for("formPage.html")
-      driver.find_element(:name, "x").value.should == "name"
+      driver.find_element(:name, "x").attribute('value').should == "name"
     end
 
     it "should find by class name" do

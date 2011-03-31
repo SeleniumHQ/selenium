@@ -53,6 +53,7 @@ module Selenium
       #
 
       def value
+        warn "#{self.class}#value is deprecated, please use #{self.class}#attribute('value')"
         bridge.getElementValue @id
       end
 

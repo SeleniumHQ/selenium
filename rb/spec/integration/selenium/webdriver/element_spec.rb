@@ -28,7 +28,7 @@ describe "Element" do
       key_reporter = driver.find_element(:id, 'keyReporter')
 
       key_reporter.send_keys("Tet", :arrow_left, "s")
-      key_reporter.value.should == "Test"
+      key_reporter.attribute('value').should == "Test"
     end
   end
 

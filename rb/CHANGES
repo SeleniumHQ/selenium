@@ -1,6 +1,8 @@
 0.1.5 (???)
 ==================
 
+* Add deprecation warning for WebDriver::Element#value.
+
 0.1.4 (2011-03-21)
 ==================
 
