@@ -43,11 +43,23 @@ java_library(name = "server_lite",
     "//javascript/selenium-core",
   ])
 
+java_library(name = "logging",
+  srcs = [
+    "RemoteControlConfiguration.java",
+    "SslCertificateGenerator.java",
+    "log/*.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium/remote:base",
+    "//java/server/src/org/openqa/jetty",
+  ])
+
 java_library(name = "base",
   srcs = [
     "**/*.java",
   ],
   deps = [
+    ":logging",
     "//java/server/src/cybervillains",
     "//java/server/src/org/openqa/selenium/remote/server",
     "//java/client/src/org/openqa/selenium/net",

@@ -57,7 +57,8 @@ public class RemoteControlConfiguration {
     private boolean avoidProxy;
     private boolean debugMode;
     private boolean browserSideLogEnabled;
-    private int jettyThreads = SeleniumServer.DEFAULT_JETTY_THREADS;
+    // TODO(simon): This is meant to be derived from SeleniumServer.
+    private int jettyThreads = 512;
     private SslCertificateGenerator sslCertGenerator;
     private boolean singleWindow;
     
