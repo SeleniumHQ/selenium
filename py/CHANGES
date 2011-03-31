@@ -1,3 +1,10 @@
+Selenium 2 Beta 4
+* Fix for using existing Firefox Profiles
+* Alerts Support in IE
+* Fix to dictionary returned from size
+* Deprecated value property. Use the get_attribute("value") method
+* Deprecated get_page_source method. Use page_source property
+
 Selenium 2 Beta 2
 
 * New bindings landed. Change webdriver namespace to "selenium.webdriver"
@@ -21,10 +28,3 @@ Selenium 2 Beta 3
 * Fixed Firefox Profile creation
 * Added Firefox 4 support
 * DocStrings Improvements
-
-Selenium 2 Beta 4
-* Fix for using existing Firefox Profiles
-* Alerts Support in IE
-* Fix to dictionary returned from size
-* Deprecated value property. Use the get_attribute("value") method
-* Deprecated get_page_source method. Use page_source property
