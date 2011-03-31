@@ -17,57 +17,33 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.TimerTask;
-
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.WebDriver;
 
 public class Timer {
-  private java.util.Timer timer = new java.util.Timer();
   private volatile long timeout;
+  private boolean stopped;
 
   public Timer(long timeout) {
     this.timeout = timeout;
   }
 
   public <T> T run(SeleneseCommand<T> command, WebDriver driver, String[] args) {
-    Thread thread = Thread.currentThread();
-    final SeleneseTimerTask myTimerTask = new SeleneseTimerTask(thread);
-
-    try {
-      timer.schedule(myTimerTask, timeout);
-    } catch (IllegalStateException e) {
-      Thread.interrupted();
-
-      // This should only ever happen the user tries to do something with Selenium after calling
-      // stop. Since this RejectedExecutionException is really vague, rethrow it with a more
-      // explicit message.
-      // The original Selenium RC would throw an NPE at this point, so we should
-      // too. Sadly, an NPE can't take a cause, so spool the stacktrace into a
-      // string.
-      StringWriter writer = new StringWriter();
-      e.printStackTrace(new PrintWriter(writer));
-      String stack = writer.toString();
-      throw new NullPointerException(
-          "Illegal attempt to execute a command after calling stop()\n" + stack);
+    if (stopped) {
+      throw new IllegalStateException("Timer has already been stopped");
     }
-    // Because we call Thread to interrupt, we should ensure that the
-    // interrupted status is cleared. This will be a no-op if called twice.
-    Thread.interrupted();
 
-    try {
-      return command.apply(driver, args);
-    } catch (RuntimeException re) {
-      Throwable cause = re.getCause();
-      if (cause instanceof InterruptedException){
-        throw new SeleniumException("Timed out waiting for action to finish", re);
-      }
-      throw re;
-    } finally {
-      myTimerTask.cancel();
+    long start = System.currentTimeMillis();
+
+    T value = command.apply(driver, args);
+
+    long duration = System.currentTimeMillis() - start;
+
+    if (duration > timeout) {
+      throw new SeleniumException("Timed out waiting for action to finish");
     }
+
+    return value;
   }
 
   public void setTimeout(long timeout) {
@@ -75,21 +51,6 @@ public class Timer {
   }
 
   public void stop() {
-    timer.cancel();
-  }
-
-  class SeleneseTimerTask extends TimerTask {
-    private final Thread thread;
-
-    SeleneseTimerTask(Thread thread) {
-      this.thread = thread;
-    }
-
-    @Override
-    public void run() {
-      synchronized (thread) {
-        thread.interrupt();
-      }
-    }
+    this.stopped = true;
   }
 }
