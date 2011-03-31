@@ -381,12 +381,24 @@ class WebDriver(object):
             self.execute(Command.QUIT)
         finally:
             self.stop_client()
+
+    @property
+    def current_window_handle(self):
+        """Returns the handle of the current window.
+        Usage:
+            driver.current_window_handle
+        """
+        return self.execute(Command.GET_CURRENT_WINDOW_HANDLE)['value']
     
     def get_current_window_handle(self):
         """Returns the handle of the current window.
         Usage:
             driver.get_current_window_handle()
+        Note: this method has been deprecated. Please use current_window_handle 
+            property"
         """
+        warnings.warn("""Please note this has been deprecated. Use 
+                current_window_handle property instead""")
         return self.execute(Command.GET_CURRENT_WINDOW_HANDLE)['value']
     
     def get_window_handles(self):
