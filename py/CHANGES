@@ -4,7 +4,8 @@ Selenium 2 Beta 4
 * Fix to dictionary returned from size
 * Deprecated value property. Use the get_attribute("value") method
 * Deprecated get_page_source method. Use page_source property
-* Deprecated get_current_window_handle. User current_window_handle property
+* Deprecated get_current_window_handle. Use current_window_handle property
+* Deprecated get_window_handles. Use window_handles property
 
 Selenium 2 Beta 2
 

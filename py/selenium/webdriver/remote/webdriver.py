@@ -401,11 +401,23 @@ class WebDriver(object):
                 current_window_handle property instead""")
         return self.execute(Command.GET_CURRENT_WINDOW_HANDLE)['value']
     
+    @property
+    def window_handles(self):
+        """Returns the handles of all windows within the current session.
+        Usage:
+            driver.window_handles
+        """
+        return self.execute(Command.GET_WINDOW_HANDLES)['value']
+
     def get_window_handles(self):
         """Returns the handles of all windows within the current session.
         Usage:
             driver.get_window_handles()
+        Note: this method has been deprecated. Please use window_handles
+            property
         """
+        warnings.warn("""Please note this has been deprecated. Use 
+                    window_handles property""")
         return self.execute(Command.GET_WINDOW_HANDLES)['value']
     
     #Target Locators
