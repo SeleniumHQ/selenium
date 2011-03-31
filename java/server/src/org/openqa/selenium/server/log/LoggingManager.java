@@ -3,7 +3,6 @@ package org.openqa.selenium.server.log;
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SeleniumServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +34,7 @@ public class LoggingManager {
         final Logger currentLogger;
 
         if (configuration.dontTouchLogging()) {
-            return LogFactory.getLog(SeleniumServer.class);
+            return LogFactory.getLog("org.openqa.selenium.server.SeleniumServer");
         }
 
         currentLogger = Logger.getLogger("");
@@ -47,7 +46,7 @@ public class LoggingManager {
             currentLogger.setLevel(Level.FINE);
         }
 
-        seleniumServerJettyLogger = LogFactory.getLog(SeleniumServer.class);
+        seleniumServerJettyLogger = LogFactory.getLog("org.openqa.selenium.server.SeleniumServer");
         if (null != configuration.getLogOutFile()) {
             addNewSeleniumFileHandler(currentLogger, configuration);
             seleniumServerJettyLogger.info("Writing debug logs to " + configuration.getLogOutFile());
