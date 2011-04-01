@@ -120,8 +120,8 @@ module Android
       file out => FileList[File.join(dir, args[:resource], "**", "*")] do
         if (android_installed?)
           android_jar = File.expand_path(File.join($sdk_path, "platforms", $platform, "android.jar"))
-	  manifest = File.join(dir, args[:manifest])
-	  resource = File.join(dir, args[:resource])
+          manifest = File.join(dir, args[:manifest])
+          resource = File.join(dir, args[:resource])
           java_r = File.join(dir, args[:out])
           cmd = "#{$aapt} package -f -M #{manifest} -S #{resource} -I #{android_jar} -J #{java_r}"
           puts "Building #{task_name} as #{out}"
@@ -148,9 +148,9 @@ module Android
       file apk do
         if (android_installed?)
           sh "#{$android} update project -p android/"
-	  sh "cd android; ant debug; cd ../;"
-	  apk = File.join('build', 'android', 'android-server.apk')
-	  sh "cp android/bin/MainActivity-debug.apk #{apk}"
+          sh "cd android; ant debug; cd ../;"
+          apk = File.join('build', 'android', 'android-server.apk')
+          sh "cp android/bin/MainActivity-debug.apk #{apk}"
           copy_to_prebuilt(apk, fun)
         else
           puts apk
@@ -168,12 +168,12 @@ module Android
         jar_name = Rake::Task[task_name(dir, args[:name])].out
         apk = Rake::Task[args[:binary]].out
         puts apk
-	cmd = "#{$adb} kill-server"
-	puts cmd
-	sh cmd
-	cmd = "#{$adb} start-server"
-	puts cmd
-	sh cmd
+        cmd = "#{$adb} kill-server"
+        puts cmd
+        sh cmd
+        cmd = "#{$adb} start-server"
+        puts cmd
+        sh cmd
 
         android_target = $properties["androidtarget"].to_s
         puts "Using Android target: " + android_target
@@ -189,8 +189,8 @@ module Android
         if !linux?
           emulator_options += "-no-boot-anim"
         end
-          command = "#{$emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"
-          puts "COMMAND: #{command}"
+        command = "#{$emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"
+        puts "COMMAND: #{command}"
         Thread.new{ sh "#{$emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"}
 
         puts "Waiting for emulator to get started"
@@ -220,7 +220,7 @@ module Android
     def intialize
       properties = read_properties()
       if (android_installed?)
-	android_target =  "android-" << properties["androidtarget"].to_s
+        android_target =  "android-" << properties["androidtarget"].to_s
         avdname = "debug_rake_#{android_target}"
         sh "#{$android} delete avd -n #{avdname}"
       end
