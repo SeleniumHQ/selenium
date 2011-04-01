@@ -19,8 +19,11 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
+import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.server.log.PerSessionLogHandler;
 
 public class DeleteSession extends WebDriverHandler {
 
@@ -33,7 +36,14 @@ public class DeleteSession extends WebDriverHandler {
 
   public ResultType call() throws Exception {
     getDriver().quit();
-    sessions.deleteSession(getRealSessionId());
+      final SessionId realSessionId = getRealSessionId();
+      sessions.deleteSession( realSessionId );
+
+      final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
+      if(logHandler != null){
+        logHandler.copyThreadTempLogsToSessionLogs( realSessionId.toString(), Thread.currentThread().getId() );
+        logHandler.clearSessionLogRecords( realSessionId.toString() );
+      }
     return ResultType.SUCCESS;
   }
   
