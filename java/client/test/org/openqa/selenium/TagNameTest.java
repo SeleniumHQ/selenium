@@ -28,7 +28,7 @@ public class TagNameTest extends AbstractDriverTestCase {
   public void shouldReturnInput() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.id("cheese"));
-    assertThat(selectBox.getTagName(), is("input"));
+    assertThat(selectBox.getTagName().toLowerCase(), is("input"));
   }
 
 }
