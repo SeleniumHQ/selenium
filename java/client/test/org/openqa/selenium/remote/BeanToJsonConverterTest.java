@@ -29,6 +29,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -295,6 +297,13 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("/path", json.getString("path"));
     assertFalse(json.getBoolean("secure"));
     assertEquals(TimeUnit.MILLISECONDS.toSeconds(expiry.getTime()), json.getLong("expiry"));
+  }
+
+  public void testProperlyConvertsNulls() {
+    Map<String, Object> frameId = Maps.newHashMap();
+    frameId.put("id", null);
+    String payload = new BeanToJsonConverter().convert(frameId);
+    assertEquals("{\"id\":null}", payload); 
   }
 
   private static class SimpleBean {
