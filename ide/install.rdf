@@ -10,6 +10,7 @@
         <em:type>32</em:type>
         <em:homepageURL>http://seleniumhq.org/projects/ide</em:homepageURL>
         <em:updateURL>https://addons.seleniumhq.org/ide-multi/update.rdf</em:updateURL>
+        <em:unpack>true</em:unpack>
 
         <em:targetApplication>
           <Description>
