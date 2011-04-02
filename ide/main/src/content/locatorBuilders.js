@@ -26,7 +26,7 @@ LocatorBuilders.prototype.detach = function() {
         // Firefox 3 (beta 5) throws "Security Manager vetoed action" when we use delete operator like this:
         // delete this.window._locator_pageBot;
     }
-}
+};
 
 LocatorBuilders.prototype.pageBot = function() {
     var pageBot = this.window._locator_pageBot;
@@ -36,15 +36,15 @@ LocatorBuilders.prototype.pageBot = function() {
         var self = this;
         pageBot.getCurrentWindow = function() {
             return self.window;
-        }
+        };
         this.window._locator_pageBot = pageBot;
     }
     return pageBot;
-}
+};
 
 LocatorBuilders.prototype.buildWith = function(name, e, opt_contextNode) {
     return LocatorBuilders.builderMap[name].call(this, e, opt_contextNode);
-}
+};
 
 LocatorBuilders.prototype.build = function(e) {
     var locators = this.buildAll(e);
@@ -53,10 +53,9 @@ LocatorBuilders.prototype.build = function(e) {
     } else {
         return "LOCATOR_DETECTION_FAILED";
     }
-}
+};
 
 LocatorBuilders.prototype.buildAll = function(e) {
-    var i = 0;
     var xpathLevel = 0;
     var maxLevel = 10;
     var locator;
@@ -96,7 +95,7 @@ LocatorBuilders.prototype.buildAll = function(e) {
         }
     }
     return locators;
-}
+};
 
 LocatorBuilders.prototype.findElement = function(locator) {
     try {
@@ -105,21 +104,18 @@ LocatorBuilders.prototype.findElement = function(locator) {
         this.log.debug("findElement failed: " + error + ", locator=" + locator);
         return null;
     }
-}
+};
 
 /*
  * Class methods
  */
 
-LocatorBuilders.order = [];
+LocatorBuilders.order = ['ui', 'id', 'link', 'name', 'css', 'dom:name', 'xpath:link', 'xpath:img', 'xpath:attributes', 'xpath:href', 'dom:index', 'xpath:position'];
 LocatorBuilders.builderMap = {};
 
 LocatorBuilders.add = function(name, finder) {
-    this.order.push(name);
     this.builderMap[name] = finder;
-}
-
-
+};
 
 /*
  * Utility function: Encode XPath attribute value.
@@ -131,6 +127,7 @@ LocatorBuilders.prototype.attributeValue = function(value) {
         return '"' + value + '"';
     } else {
         var result = 'concat(';
+        var part = "";
         while (true) {
             var apos = value.indexOf("'");
             var quot = value.indexOf('"');
@@ -141,11 +138,11 @@ LocatorBuilders.prototype.attributeValue = function(value) {
                 result += '"' + value + '"';
                 break;
             } else if (quot < apos) {
-                var part = value.substring(0, apos);
+                part = value.substring(0, apos);
                 result += "'" + part + "'";
                 value = value.substring(part.length);
             } else {
-                var part = value.substring(0, quot);
+                part = value.substring(0, quot);
                 result += '"' + part + '"';
                 value = value.substring(part.length);
             }
@@ -154,7 +151,7 @@ LocatorBuilders.prototype.attributeValue = function(value) {
         result += ')';
         return result;
     }
-}
+};
 
 LocatorBuilders.prototype.xpathHtmlElement = function(name) {
     if (this.window.document.contentType == 'application/xhtml+xml') {
@@ -163,7 +160,7 @@ LocatorBuilders.prototype.xpathHtmlElement = function(name) {
     } else {
         return name;
     }
-}
+};
 
 LocatorBuilders.prototype.relativeXPathFromParent = function(current) {
     var index = this.getNodeNbr(current);
@@ -191,7 +188,7 @@ LocatorBuilders.prototype.getNodeNbr = function(current) {
 };
 
 LocatorBuilders.prototype.getCSSSubPath = function(e) {
-    var css_attributes = ['id','name', 'class', 'type', 'alt', 'title', 'value'];
+    var css_attributes = ['id', 'name', 'class', 'type', 'alt', 'title', 'value'];
     for (var i = 0; i < css_attributes.length; i++) {
         var attr = css_attributes[i];
         var value = e.getAttribute(attr);
@@ -274,7 +271,7 @@ LocatorBuilders.prototype.findDomFormLocator = function(form) {
         }
     }
     return null;
-}
+};
 
 LocatorBuilders.add('dom:name', function(e) {
         if (e.form && e.name) {
@@ -325,11 +322,12 @@ LocatorBuilders.add('xpath:img', function(e) {
     });
 
 LocatorBuilders.add('xpath:attributes', function(e) {
-        const PREFERRED_ATTRIBUTES = ['id','name','value','type','action','onclick'];
+        const PREFERRED_ATTRIBUTES = ['id', 'name', 'value', 'type', 'action', 'onclick'];
+        var i = 0;
         
         function attributesXPath(name, attNames, attributes) {
             var locator = "//" + this.xpathHtmlElement(name) + "[";
-            for (var i = 0; i < attNames.length; i++) {
+            for (i = 0; i < attNames.length; i++) {
                 if (i > 0) {
                     locator += " and ";
                 }
@@ -343,13 +341,13 @@ LocatorBuilders.add('xpath:attributes', function(e) {
         if (e.attributes) {
             var atts = e.attributes;
             var attsMap = {};
-            for (var i = 0; i < atts.length; i++) {
+            for (i = 0; i < atts.length; i++) {
                 var att = atts[i];
                 attsMap[att.name] = att.value;
             }
             var names = [];
             // try preferred attributes
-            for (var i = 0; i < PREFERRED_ATTRIBUTES.length; i++) {
+            for (i = 0; i < PREFERRED_ATTRIBUTES.length; i++) {
                 var name = PREFERRED_ATTRIBUTES[i];
                 if (attsMap[name] != null) {
                     names.push(name);
@@ -430,7 +428,3 @@ LocatorBuilders.add('xpath:position', function(e, opt_contextNode) {
         }
         return null;
     });
-
-// You can change the priority of builders by setting LocatorBuilders.order.
-//LocatorBuilders.order = ['id', 'link', 'name', 'dom:name', 'xpath:link', 'xpath:img', 'xpath:attributes', 'xpath:href', 'dom:index', 'xpath:position'];
-
