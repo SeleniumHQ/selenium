@@ -21,6 +21,8 @@ import zipfile
 import shutil
 import re
 import rdflib
+import base64
+from cStringIO import StringIO
 
 WEBDRIVER_EXT = "webdriver.xpi"
 EXTENSION_NAME = "fxdriver@googlecode.com"
@@ -131,6 +133,23 @@ class FirefoxProfile(object):
     @accept_untrusted_certs.setter
     def accept_untrusted_certs(self, value):
         self.default_preferences["webdriver_accept_untrusted_certs"] = str(value)
+
+    @property
+    def encoded(self):
+        """
+        A zipped, base64 encoded string of profile directory
+        for use with remote WebDriver JSON wire protocol
+        """
+        fp = StringIO()
+        zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
+        path_root = len(self.path) + 1 # account for trailing slash
+        for base, dirs, files in os.walk(self.path):
+            for fyle in files:
+                filename = os.path.join(base, fyle)
+                zipped.write(filename, filename[path_root:])
+        zipped.close()
+        return base64.encodestring(fp.getvalue())
+
 
     #Private Methods
 
