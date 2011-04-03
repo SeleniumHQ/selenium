@@ -20,6 +20,7 @@ import logging
 import zipfile
 import shutil
 import re
+import rdflib
 
 WEBDRIVER_EXT = "webdriver.xpi"
 EXTENSION_NAME = "fxdriver@googlecode.com"
@@ -155,7 +156,8 @@ class FirefoxProfile(object):
 
     def _install_extension(self, extension):
         tempdir = tempfile.mkdtemp()
-        
+        ext_dir = "" 
+
         if extension == WEBDRIVER_EXT:
             extension = os.path.join(os.path.dirname(__file__), WEBDRIVER_EXT)
             ext_dir = os.path.join(self.extensionsDir, EXTENSION_NAME)
@@ -179,20 +181,18 @@ class FirefoxProfile(object):
                 outfile.write(xpi.read(file_in_xpi))
                 outfile.close()
 
-        if ext_dir is None:
-            installrdf_file = open(os.path.join(tempdir,"install.idf"), "r")
-            installrdf = installrdf_file.readlines()
-            installrdf_file.close()
+        if ext_dir == "":
+            installrdfpath = os.path.join(tempdir,"install.rdf")
             ext_dir = os.path.join(
-                self.extensionsDir, self._read_id_from_install_rdf(installrdf))
-
-        #if not os.path.exists(ext_dir):
-        #    os.makedirs(ext_dir)
+                self.extensionsDir, self._read_id_from_install_rdf(installrdfpath))
 
         shutil.copytree(tempdir, ext_dir)
 
-    def _read_id_from_install_rdf(self, installrdf):
-        
-        
-        return id_
-
+    def _read_id_from_install_rdf(self, installrdfpath):
+        from rdflib import Graph
+        rdf = Graph()
+        installrdf = rdf.parse(installrdfpath)
+        id_ = ""
+        for i in installrdf.all_nodes():
+            if re.search(".*@.*\..*", i):
+                return i.decode()

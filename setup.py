@@ -123,7 +123,7 @@ setup(
         'selenium.webdriver.chrome': ['*.zip'],
     },
     include_package_data=True,
-    install_requires=['distribute'],
+    install_requires=['distribute', 'rdflib'],
     zip_safe=False,
 
 )

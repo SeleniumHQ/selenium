@@ -307,7 +307,7 @@ end
 task :webdriver_py do
   if python? then
     virtualenv = "virtualenv --no-site-packages build/python"
-    pip_install = 'build/python/bin/' + "pip install simplejson py pytest"
+    pip_install = 'build/python/bin/' + "pip install simplejson py pytest rdflib"
     if (windows?) then
        virtualenv = "virtualenv build\\python"
        pip_install = "build\\python\\Scripts\\" + "pip install simplejson py pytest"
