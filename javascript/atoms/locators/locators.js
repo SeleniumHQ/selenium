@@ -73,6 +73,24 @@ bot.locators.add = function(name, strategy) {
 
 
 /**
+ * Returns one key from the object map that is not present in the Object.prototype, if any exists.
+ *
+ * @param {Object} target The object to pick a key from.
+ * @return {string?} The key or null if the object is empty.
+ */
+bot.locators.getOnlyKey = function(target) {
+  for (var i in target) {
+    if (Object.prototype[i]) {
+      continue;
+    }
+    return i;
+  }
+
+  return null;
+};
+
+
+/**
  * Find the first element in the DOM matching the target. The target
  * object should have a single key, the name of which determines the
  * locator strategy and the value of which gives the value to be
@@ -86,7 +104,7 @@ bot.locators.add = function(name, strategy) {
  *     such element could be found.
  */
 bot.locators.findElement = function(target, opt_root) {
-  var key = goog.object.getAnyKey(target);
+  var key = bot.locators.getOnlyKey(target);
 
   if (key) {
     var strategy = bot.locators.STRATEGIES_[key];
@@ -113,7 +131,7 @@ bot.locators.findElement = function(target, opt_root) {
  *     DOM.
  */
 bot.locators.findElements = function(target, opt_root) {
-  var key = goog.object.getAnyKey(target);
+  var key = bot.locators.getOnlyKey(target);
 
   if (key) {
     var strategy = bot.locators.STRATEGIES_[key];

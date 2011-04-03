@@ -242,6 +242,16 @@ limitations under the License.
 
       assertEquals(expected, seen);
     }
+
+    function testShouldSurviveObjectPrototypeBeingModified() {
+      Object.prototype.cheese = 'brie';
+
+      try {
+        bot.locators.findElement({id: 'after'});
+      } catch (e) {
+        fail("Did not expect to see a failure");
+      }
+    }
 </script>
 </head>
 <body>
