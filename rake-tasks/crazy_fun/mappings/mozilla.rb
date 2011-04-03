@@ -86,7 +86,7 @@ class Compile < BaseXpt
     
     file xpt do
       puts "Building: #{task_name(dir, args[:name])} as #{xpt}"
-     
+
       gecko = %w[third_party gecko-1.9.0.11]
       if windows?
         gecko << "win32"
@@ -100,7 +100,7 @@ class Compile < BaseXpt
 
       incl = [gecko, "idl"].join(Platform.dir_separator)
 
-      base_cmd = [gecko, "bin", "xpidl"].join(Platform.dir_separator)
+      base_cmd = (ENV['xpidl'] || [gecko, "bin", "xpidl"].join(Platform.dir_separator)).dup
       base_cmd << ".exe" if windows?
       base_cmd << " -w -m typelib -I#{incl}"
 
@@ -111,6 +111,7 @@ class Compile < BaseXpt
 
       dir_name = File.dirname(src)
       cmd = "#{base_cmd} -I#{dir_name} -e #{xpt} #{src}"
+
       sh cmd do |ok, res|
         if !ok
           copy_prebuilt(fun, xpt)
