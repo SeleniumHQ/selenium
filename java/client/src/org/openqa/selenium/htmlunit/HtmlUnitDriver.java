@@ -220,7 +220,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       }
     }
 
-    return BrowserVersion.getDefault();
+    return BrowserVersion.FIREFOX_3_6;
   }
 
   private WebClient createWebClient(BrowserVersion version) {
