@@ -306,11 +306,12 @@ end
 # Installs the webdriver python bindings using virtualenv for testing.
 task :webdriver_py do
   if python? then
+    pip_pkg = "pip install simplejson py pytest rdflib"
     virtualenv = "virtualenv --no-site-packages build/python"
-    pip_install = 'build/python/bin/' + "pip install simplejson py pytest rdflib"
+    pip_install = 'build/python/bin/' + pip_pkg 
     if (windows?) then
        virtualenv = "virtualenv build\\python"
-       pip_install = "build\\python\\Scripts\\" + "pip install simplejson py pytest"
+       pip_install = "build\\python\\Scripts\\" + pip_pkg 
     end
 
     sh virtualenv, :verbose => true do |ok, res|
