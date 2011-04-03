@@ -204,7 +204,8 @@ class FirefoxProfile(object):
             installrdfpath = os.path.join(tempdir,"install.rdf")
             ext_dir = os.path.join(
                 self.extensionsDir, self._read_id_from_install_rdf(installrdfpath))
-
+        if os.path.exists(ext_dir):
+            shutil.rmtree(ext_dir)
         shutil.copytree(tempdir, ext_dir)
 
     def _read_id_from_install_rdf(self, installrdfpath):
