@@ -24,9 +24,12 @@ import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.SimplePropertyDescriptor;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 
 import com.google.common.collect.Lists;
+import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.server.log.PerSessionLogHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -197,6 +200,15 @@ public class ResultConfig {
 
       ((WebDriverHandler) handler).execute(task);
       task.get();
+      if (handler instanceof DeleteSession){
+          // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
+          final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
+          if(logHandler != null){
+            logHandler.clearThreadTempLogs(Thread.currentThread().getId());
+          }
+      }
+
+
     } else {
       toUse.getRenderer().render(request, response, handler);
     }

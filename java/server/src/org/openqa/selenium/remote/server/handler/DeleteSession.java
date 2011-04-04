@@ -39,14 +39,10 @@ public class DeleteSession extends WebDriverHandler {
       final SessionId realSessionId = getRealSessionId();
       sessions.deleteSession( realSessionId );
 
-    // Yes, this looks funky. The PerSessionLogHandler keeps a ton of records
-    // lying around per-thread. But the memory usage is at least a function of
-    // #threads. DO NOT REMOVE THIS SECTION, otherwise we start leaking again.
+    // Yes, this is funky. See javadocs on cleatThreadTempLogs for details.
     final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
       if(logHandler != null){
-        logHandler.copyThreadTempLogsToSessionLogs(realSessionId.toString(),
-            Thread.currentThread().getId());
-        logHandler.clearSessionLogRecords(realSessionId.toString());
+        logHandler.clearThreadTempLogs(Thread.currentThread().getId());
       }
     return ResultType.SUCCESS;
   }

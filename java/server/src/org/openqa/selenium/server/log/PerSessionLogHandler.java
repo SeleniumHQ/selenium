@@ -135,6 +135,25 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
         logFileRepository.removeLogFile(sessionId);
     }
 
+    /**
+       Clears the logging events attached to the thread.
+
+       The logging is globally added to the jvm and is effectively
+       used by both classic selenium and WebDriver.
+
+       WebDriver must call this to avoid leaking memory, even
+       though it is not really used.
+
+       Ideally we should probably attach the *request*
+       somewhere we could pick it up, so we could attach
+       the pre-session logging to the request instead of
+       the logging. Unfortunately this is no small task.
+     * @param threadId The thread to clear for
+     */
+    public synchronized void clearThreadTempLogs(long threadId) {
+        perThreadTempRecords.remove(threadId);
+    }
+
     public synchronized void copyThreadTempLogsToSessionLogs(String sessionId, long threadId) {
         List<LogRecord> records = perThreadTempRecords.get(threadId);
         List<LogRecord> sessionRecords = new ArrayList<LogRecord>();
@@ -142,7 +161,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
         if (perSessionRecords.get(sessionId) == null && records != null) {
             sessionRecords.addAll(records);
             perSessionRecords.put(sessionId, sessionRecords);
-            perThreadTempRecords.remove(threadId);
+            clearThreadTempLogs(threadId);
         }
     }
 
