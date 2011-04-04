@@ -53,7 +53,7 @@ public abstract class SelfRegisteringRemote {
 	 * Create a selenium1 RC from the configuration specified.
 	 * 
 	 * @param conf
-	 * @param hub
+	 * @param registration
 	 * @return
 	 */
 	public static SelfRegisteringRemote create(RemoteControlConfiguration conf, URL registration) {
@@ -117,12 +117,8 @@ public abstract class SelfRegisteringRemote {
 			if (response.getStatusLine().getStatusCode() != 200) {
 				throw new RuntimeException("Error sending the registration request.");
 			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new RuntimeException("Error sending the registation request.", e);
 		}
 	}
 
