@@ -56,9 +56,10 @@ public class SelfRegisteringSelenium extends SelfRegisteringRemote {
 
 	@Override
 	public RegistrationRequest getRegistrationRequest() {
-		RegistrationRequest res = super.getRegistrationRequest();
-		res.getConfiguration().put(RegistrationRequest.PROXY_CLASS, "org.openqa.grid.selenium.proxy.SeleniumRemoteProxy");
-		return res;
+		RegistrationRequest request = super.getRegistrationRequest();
+		request.getConfiguration().put(RegistrationRequest.PROXY_CLASS, "org.openqa.grid.selenium.proxy.SeleniumRemoteProxy");
+
+    return request;
 	}
 
 	@Override

@@ -51,9 +51,10 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 
 	@Override
 	public RegistrationRequest getRegistrationRequest() {
-		RegistrationRequest res = super.getRegistrationRequest();
-		res.getConfiguration().put(RegistrationRequest.PROXY_CLASS, "org.openqa.grid.selenium.proxy.WebDriverRemoteProxy");
-		return res;
+		RegistrationRequest request = super.getRegistrationRequest();
+		request.getConfiguration().put(RegistrationRequest.PROXY_CLASS, "org.openqa.grid.selenium.proxy.WebDriverRemoteProxy");
+
+    return request;
 	}
 
 	@Override
