@@ -402,13 +402,9 @@ public class HttpCommandExecutor implements CommandExecutor {
 
       HttpHost finalHost = (HttpHost) context.getAttribute(HTTP_TARGET_HOST);
       String uri = finalHost.toURI();
-      int sessionIndex = uri.indexOf("/session/");
-      if (sessionIndex != -1) {
-        sessionIndex += "/session/".length();
-        int nextSlash = uri.indexOf("/", sessionIndex);
-        if (nextSlash != -1) {
-          response.setSessionId(uri.substring(sessionIndex, nextSlash));
-        }
+      String sessionId = getSessionId(uri );
+      if (sessionId != null) {
+        response.setSessionId(sessionId);
       }
 
       int statusCode = httpResponse.getStatusLine().getStatusCode();
@@ -436,6 +432,18 @@ public class HttpCommandExecutor implements CommandExecutor {
       }
     }
     return response;
+  }
+
+  public static String getSessionId(String uri){
+    int sessionIndex = uri.indexOf("/session/");
+    if (sessionIndex != -1) {
+      sessionIndex += "/session/".length();
+      int nextSlash = uri.indexOf("/", sessionIndex);
+      if (nextSlash != -1) {
+        return uri.substring( sessionIndex, nextSlash );
+      }
+    }
+    return null;
   }
 
   private static CommandInfo get(String url) {
