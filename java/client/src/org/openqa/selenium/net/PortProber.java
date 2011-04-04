@@ -58,12 +58,23 @@ public class PortProber {
     };
   }
 
+    /**
+     * Returns a port that is within a probable free range.
+     *
+     * Based on the ports in http://en.wikipedia.org/wiki/Ephemeral_ports, this method stays away from
+     * all well-known ephemeral port ranges, since they can arbitrarily race with the operating
+     * system in allocations. Due to the port-greedy nature of selenium this happens fairly frequently.
+     * Staying within the known safe range increases the probability tests will run green quite significantly.
+     *
+     * @return a random port number
+     */
   private static int createAcceptablePort() {
     synchronized (random) {
       int seed = random.nextInt();
       // avoid protected ports
-      final int FIRST_PORT = 1025;
-      final int LAST_PORT = 65534;
+
+      final int FIRST_PORT = 5001;
+      final int LAST_PORT = 32767;
       final int randomInt = Math.abs(random.nextInt());
       seed = (randomInt % (LAST_PORT - FIRST_PORT + 1)) + FIRST_PORT;
       return seed;
