@@ -39,7 +39,7 @@ public class DeleteSession extends WebDriverHandler {
       final SessionId realSessionId = getRealSessionId();
       sessions.deleteSession( realSessionId );
 
-    // Yes, this is funky. See javadocs on cleatThreadTempLogs for details.
+    // Yes, this is funky. See javadocs on PerSessionLogHandler#clearThreadTempLogs for details.
     final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
       if(logHandler != null){
         logHandler.clearThreadTempLogs(Thread.currentThread().getId());
