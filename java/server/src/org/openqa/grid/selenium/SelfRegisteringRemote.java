@@ -97,13 +97,16 @@ public abstract class SelfRegisteringRemote {
 	}
 
 	public RegistrationRequest getRegistrationRequest() {
-		RegistrationRequest res = new RegistrationRequest();
+		RegistrationRequest request = new RegistrationRequest();
+
 		for (DesiredCapabilities cap : caps) {
-			res.addDesiredCapabilitiy(cap.asMap());
+			request.addDesiredCapabilitiy(cap.asMap());
 		}
+
 		config.put(RegistrationRequest.REMOTE_URL, getRemoteURL());
-		res.setConfiguration(config);
-		return res;
+		request.setConfiguration(config);
+
+		return request;
 	}
 
 	public void registerToHub() {
