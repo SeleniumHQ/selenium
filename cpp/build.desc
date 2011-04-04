@@ -52,6 +52,7 @@ visualc_library(name = "imehandler_dll",
 
 visualc_library(name = "ie_win32_dll",
   deps = [
+    ":atoms",
     ":ie_result_type_cpp",
     ":sizzle"
   ],
@@ -63,6 +64,7 @@ visualc_library(name = "ie_win32_dll",
 
 visualc_library(name = "ie_x64_dll",
   deps = [
+    ":atoms",
     ":ie_result_type_cpp",
     ":sizzle"
   ],
@@ -70,28 +72,6 @@ visualc_library(name = "ie_x64_dll",
   solution = "WebDriver.sln",
   target = "IEDriver",
   out = "x64/Release/IEDriver.dll"
-)
-
-visualc_library(name = "ielegacy_win32_dll",
-  deps = [
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "InternetExplorerDriver",
-  out = "Win32/Release/InternetExplorerDriver.dll"
-)
-
-visualc_library(name = "ielegacy_x64_dll",
-  deps = [
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "x64",
-  solution = "WebDriver.sln",
-  target = "InternetExplorerDriver",
-  out = "x64/Release/InternetExplorerDriver.dll"
 )
 
 js_fragment_header(name = "atoms",
