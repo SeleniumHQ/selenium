@@ -22,7 +22,6 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -203,7 +202,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(element.getAttribute("rows"), is("5"));
   }
 
-  @Ignore({CHROME, FIREFOX, HTMLUNIT})
+  @Ignore({FIREFOX, HTMLUNIT})
   public void testCanReturnATextApproximationOfTheStyleAttribute() {
     driver.get(pages.javascriptPage);
 

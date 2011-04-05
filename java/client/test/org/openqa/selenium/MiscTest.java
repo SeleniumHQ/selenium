@@ -21,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
@@ -50,7 +51,9 @@ public class MiscTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, IE, SELENESE}, reason = "Untested")
+  @Ignore(value = {ANDROID, CHROME, IE, SELENESE},
+      reason = "Chrome: returns XML content formatted for display as HTML document"
+          + "Others: untested")
   public void testShouldBeAbleToGetTheSourceOfAnXmlDocument() {
     driver.get(pages.simpleXmlDocument);
     String source = driver.getPageSource().toLowerCase();

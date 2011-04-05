@@ -31,7 +31,6 @@ import org.apache.commons.io.FileUtils;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -417,9 +416,8 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertEquals("onetwo", result);
   }
 
-  @Ignore(value = {CHROME, SELENESE, IPHONE},
-      reason = "Can't execute script in iframe, track crbug 20773\n"
-               + "iPhone: Frame switching not yet implemented.")
+  @Ignore(value = {SELENESE, IPHONE},
+      reason = "iPhone: Frame switching not yet implemented.")
   @JavascriptEnabled
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(pages.richTextPage);
@@ -457,7 +455,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(CHROME)
   public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(pages.javascriptPage);
 
@@ -476,7 +473,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({SELENESE, CHROME, REMOTE, IPHONE})
+  @Ignore({SELENESE, REMOTE, IPHONE})
   public void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
     driver.get(pages.formPage);
     String scriptToExec = "return document.getElementsByName('snack');";

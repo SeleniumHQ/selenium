@@ -54,7 +54,6 @@ public class I18nTest extends AbstractDriverTestCase {
     driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
   }
 
-  @Ignore(CHROME)
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -64,7 +63,6 @@ public class I18nTest extends AbstractDriverTestCase {
     assertEquals(shalom, input.getValue());
   }
 
-  @Ignore(CHROME)
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -74,7 +72,7 @@ public class I18nTest extends AbstractDriverTestCase {
     assertEquals(tmunot, input.getValue());
   }
 
-  @Ignore(value = {IE, SELENESE, CHROME})
+  @Ignore(value = {IE, SELENESE})
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
         .getAppServer()

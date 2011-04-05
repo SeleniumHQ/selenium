@@ -16,6 +16,9 @@ limitations under the License.
 */
 package org.openqa.selenium;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -32,14 +35,23 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("green-parent"));
     String backgroundColour = element.getValueOfCssProperty("background-color");
 
-    assertEquals("#008000", backgroundColour);
+    // TODO: How should this be standardized? Should it be standardized?
+    assertThat(backgroundColour, anyOf(
+        equalTo("#008000"),
+        equalTo("rgb(0, 128, 0)")));
 
     element = (RenderedWebElement) driver.findElement(By.id("red-item"));
     backgroundColour = element.getValueOfCssProperty("background-color");
 
-    assertEquals("#ff0000", backgroundColour);
+    // TODO: How should this be standardized? Should it be standardized?
+    assertThat(backgroundColour, anyOf(
+        equalTo("#ff0000"),
+        equalTo("rgb(255, 0, 0)")));
   }
 
+  // TODO: This test's value seems dubious at best. The CSS spec does not define how browsers
+  // should handle sub-pixel rendering, and every browser seems to be different anyhow:
+  // http://ejohn.org/blog/sub-pixel-problems-in-css/
   @JavascriptEnabled
   @Ignore({IE, CHROME, SELENESE, IPHONE})
   //Reason for Chrome: WebKit bug 28804
@@ -67,11 +79,14 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("green-item"));
     String backgroundColour = element.getValueOfCssProperty("background-color");
 
-    assertEquals("transparent", backgroundColour);
+    // TODO: How should this be standardized? Should it be standardized?
+    assertThat(backgroundColour, anyOf(
+        equalTo("transparent"),
+        equalTo("rgba(0, 0, 0, 0)")));
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE, CHROME, SELENESE, HTMLUNIT})
+  @Ignore({CHROME, IPHONE, SELENESE, HTMLUNIT})
   public void testShouldAllowUsersToHoverOverElements() {
     if (!hasInputDevices()) {
       return;

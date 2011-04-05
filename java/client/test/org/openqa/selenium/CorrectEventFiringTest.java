@@ -79,7 +79,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME})
+  @Ignore(value = {SELENESE})
   public void testShouldFireMouseOverEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
@@ -88,6 +88,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertEventFired("mouseover");
   }
 
+  // TODO: this is a bad test: mousemove should not fire in a perfect click (e.g. mouse did not move
+  // while doing down, up, click
   @JavascriptEnabled
   @Ignore({SELENESE, CHROME, FIREFOX})
   public void testShouldFireMouseMoveEventWhenClicking() {
@@ -215,9 +217,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, IPHONE, CHROME},
-      reason = "Chrome: Issue 440.\n"
-               + "  Selenese: Fails when running in firefox.\n"
+  @Ignore(value = {SELENESE, IPHONE},
+      reason = "Selenese: Fails when running in firefox.\n"
                + "  iPhone: sendKeys implementation is incorrect")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
     if (browserNeedsFocusOnThisOs(driver)) {
@@ -234,9 +235,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME, IPHONE, ANDROID},
-      reason = "Chrome: Issue 440.\n"
-               + "  Selenese: Fails when running in firefox.\n"
+  @Ignore(value = {SELENESE, IPHONE, ANDROID},
+      reason = "Selenese: Fails when running in firefox.\n"
                + "  iPhone: sendKeys implementation is incorrect")
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
     if (browserNeedsFocusOnThisOs(driver)) {
@@ -251,9 +251,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, CHROME},
-      reason = "Chrome: Issue 440.\n" +
-          "iPhone: input elements are blurred when the keyboard is closed")
+  @Ignore(value = {IPHONE, SELENESE},
+      reason = "iPhone: input elements are blurred when the keyboard is closed")
   public void testSendingKeysToAFocusedElementShouldNotBlurThatElement() {
     if (browserNeedsFocusOnThisOs(driver)) {
       System.out.println("Skipping this test because browser demands focus");
@@ -288,7 +287,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE, CHROME})
+  @Ignore({IE, SELENESE})
   public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement formElement = driver.findElement(By.id("submitListeningForm"));
@@ -297,7 +296,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE, CHROME})
+  @Ignore({IE, SELENESE})
   public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
@@ -306,7 +305,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled 
-  @Ignore({IE, SELENESE, CHROME})
+  @Ignore({IE, SELENESE})
   public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));

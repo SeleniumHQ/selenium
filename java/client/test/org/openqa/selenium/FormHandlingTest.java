@@ -88,7 +88,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(value = CHROME, reason = "Issue 440")
   public void testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By
@@ -98,9 +97,8 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(textarea.getValue(), equalTo(cheesey));
   }
 
-  @Ignore(value = {SELENESE, CHROME, IPHONE, IE},
-      reason = "IE: New failure for IE \n." +
-        "Chrome: Issue 440")
+  @Ignore(value = {SELENESE, IPHONE, IE},
+      reason = "IE: New failure for IE.")
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -110,7 +108,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
   }
 
-  @Ignore({SELENESE, CHROME, IPHONE, IE})
+  @Ignore({SELENESE, IPHONE, IE})
   public void testShouldSubmitAFormUsingTheEnterKey() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -120,7 +118,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
   }
 
-  @Ignore(value = CHROME, reason="Issue 440")
   public void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By
@@ -176,8 +173,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     // If we get this far, then we're all good.
   }
 
-  @Ignore(value = {IPHONE, CHROME}, reason = "iPhone: sendKeys implemented incorrectly.\n" +
-      "Chrome: Issue 440")
+  @Ignore(value = {IPHONE}, reason = "iPhone: sendKeys implemented incorrectly.")
   public void testSendingKeyboardEventsShouldAppendTextInInputs() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
@@ -203,7 +199,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(value, is("Example text. Some text"));
   }
 
-  @Ignore(value = CHROME, reason = "Issue 440")
   public void testShouldBeAbleToClearTextFromInputElements() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));

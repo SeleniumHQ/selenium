@@ -25,8 +25,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.matchers.JUnitMatchers.either;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -106,8 +104,8 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 //	}
 
   @JavascriptEnabled
-  @Ignore(value = {IE, SELENESE, CHROME_NON_WINDOWS, IPHONE},
-      reason = "Chrome failing on OS X;\n  iPhone: does not detect that a new page loaded.")
+  @Ignore(value = {IE, SELENESE, IPHONE},
+      reason = "iPhone: does not detect that a new page loaded.")
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
@@ -118,8 +116,8 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, SELENESE, CHROME_NON_WINDOWS, IPHONE},
-      reason = "Chrome failing on OS X;\n  iPhone: does not detect that a new page loaded.")
+  @Ignore(value = {IE, SELENESE, IPHONE},
+      reason = "iPhone: does not detect that a new page loaded.")
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
@@ -153,9 +151,8 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, IPHONE},
-      reason = "iPhone: sendKeys not implemented correctly\n" +
-          "Chrome: Issue 440")
+  @Ignore(value = {IPHONE},
+      reason = "iPhone: sendKeys not implemented correctly")
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("change")).sendKeys("foo");
@@ -226,8 +223,8 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, FIREFOX, REMOTE, CHROME, SELENESE},
-          reason = "Firefox: Window demands focus to work. Chrome: Event firing is broken.  Other platforms: not properly tested")
+  @Ignore(value = {IE, FIREFOX, REMOTE, SELENESE},
+          reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
 
@@ -293,7 +290,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
    * "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
-  @Ignore({IE, CHROME, SELENESE, IPHONE})
+  @Ignore({IE, SELENESE, IPHONE})
   @JavascriptEnabled
   @NeedsFreshDriver
   public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {

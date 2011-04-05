@@ -27,6 +27,7 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_ALERTS;
 
+@Ignore(value = CHROME, reason = "Not implemented yet")
 public class AlertsTest extends AbstractDriverTestCase {
 
   private String alertPage;
@@ -39,7 +40,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
     driver.get(alertPage);
 
@@ -49,7 +50,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowUsersToAcceptAnAlertManually() throws InterruptedException {
     if (!isCapableOfHandlingAlerts(driver)) {
       return;
@@ -67,7 +68,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowUsersToDismissAnAlertManually() {
     if (!isCapableOfHandlingAlerts(driver)) {
       return;
@@ -85,7 +86,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowAUserToAcceptAPrompt() {
     if (!isCapableOfHandlingAlerts(driver)) {
       return;
@@ -103,7 +104,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowAUserToDismissAPrompt() {
     if (!isCapableOfHandlingAlerts(driver)) {
       return;
@@ -121,7 +122,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     if (!isCapableOfHandlingAlerts(driver)) {
       return;
@@ -140,7 +141,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE})
   public void testShouldAllowTheUserToGetTheTextOfAnAlert() {
     if (!isCapableOfHandlingAlerts(driver)) {
       return;

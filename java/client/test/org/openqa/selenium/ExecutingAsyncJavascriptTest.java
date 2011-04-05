@@ -14,7 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Ignore(value = {IE}, reason = "Every test appears to be failing.")
+@Ignore(value = {IE, CHROME},
+    reason = "IE: Every test appears to be failing. Chrome: not implemented yet")
 public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 
   private JavascriptExecutor executor;

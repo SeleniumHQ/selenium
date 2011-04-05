@@ -159,7 +159,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=208">
    *     Issue 208</a>
    */
-  @Ignore(value = {IE, SELENESE, CHROME, IPHONE}, reason = "Untested user-agents")
+  @Ignore(value = {IE, SELENESE, IPHONE}, reason = "Untested user-agents")
   @JavascriptEnabled
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
       throws Exception {

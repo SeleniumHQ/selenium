@@ -46,7 +46,6 @@ public class TextPagesTest extends AbstractDriverTestCase {
     assertEquals("Test", source);
   }
 
-  @Ignore(CHROME)
   public void testFindingAnElementOnAPlainTextPageWillNeverWork() {
     driver.get(textPage);
 
@@ -58,7 +57,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({IE, CHROME, IPHONE, SELENESE})
+  @Ignore({IE, IPHONE, SELENESE})
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
 

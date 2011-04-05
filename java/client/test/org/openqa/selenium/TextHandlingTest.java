@@ -137,8 +137,8 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 //                "        "));
 //    }
 
-  @Ignore(value = {SELENESE, IPHONE, IE, CHROME}, reason = "iPhone: sendKeys is broken\n" +
-      "Chrome: Issue 440")
+  @Ignore(value = {SELENESE, IPHONE, CHROME, IE}, reason = "iPhone: sendKeys is broken;"
+      + " Chrome: not handling a space character properly.")
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
@@ -154,7 +154,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(seenText, equalTo(expectedText));
   }
 
-  @Ignore(value = {SELENESE, CHROME}, reason = "Chrome: Issue 440")
+  @Ignore(value = {SELENESE})
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("working"));
@@ -187,7 +187,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo(""));
   }
 
-  @Ignore({HTMLUNIT, IE, CHROME, SELENESE})
+  @Ignore({HTMLUNIT, IE, SELENESE})
   public void testShouldNotTrimSpacesWhenLineWraps() {
     driver.get(pages.simpleTestPage);
 
@@ -203,7 +203,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, is("Some text" + newLine + "Some more text"));
   }
 
-  @Ignore({FIREFOX, HTMLUNIT, IE, CHROME, SELENESE})
+  @Ignore({FIREFOX, HTMLUNIT, IE, SELENESE})
   public void testShouldHandleNestedBlockLevelElements() {
     driver.get(pages.simpleTestPage);
 

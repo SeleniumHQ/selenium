@@ -24,8 +24,6 @@ import java.util.concurrent.Callable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -163,7 +161,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = {IE, SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
+  @Ignore(value = {IE, SELENESE})
   public void testCanCloseWindowWhenMultipleWindowsAreOpen() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
@@ -191,7 +189,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({SELENESE, CHROME})
+  @Ignore({SELENESE})
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
     driver.close();

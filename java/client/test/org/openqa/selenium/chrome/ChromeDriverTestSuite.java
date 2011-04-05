@@ -20,65 +20,82 @@ package org.openqa.selenium.chrome;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 
-import org.openqa.selenium.Build;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.internal.InProject;
-
+import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class ChromeDriverTestSuite extends TestCase {
-  private static boolean runBuild = true;
+  private static ChromeDriverService chromeDriverService;
 
   public static Test suite() throws Exception {
-    TestSuiteBuilder builder = new TestSuiteBuilder();
-    builder
+    try {
+      chromeDriverService = ChromeDriverService.createDefaultService();
+    } catch (Throwable t) {
+      return new InitializationError(t);
+    }
+
+    Test rawTest = new TestSuiteBuilder()
         .addSourceDir("java/client/test")
         .exclude(CHROME)
-        .usingDriver(ChromeDriver.class)
+        .exclude(CHROME_NON_WINDOWS)
+        .usingDriver(DriverForTest.class)
         .includeJavascriptTests()
-        .keepDriverInstance();
-    
-    if (!Platform.getCurrent().is(Platform.WINDOWS)) {
-      builder.exclude(CHROME_NON_WINDOWS);
-    }
-    
-    return builder.create();
+        .keepDriverInstance()
+        .restrictToPackage("org.openqa.selenium")
+        .create();
+
+    TestSuite suite = new TestSuite();
+    suite.addTest(new ServiceStarter(rawTest));
+    return suite;
   }
-  
-  public static class TestChromeDriver extends ChromeDriver {
-    public TestChromeDriver() {
-      super(new ChromeProfile(), createExtension());
-    }
 
-    private static ChromeExtension createExtension() {
-      File topDir = InProject.locate("Rakefile").getParentFile();
-      File ext = new File(topDir, "build/chrome/chrome-extension.zip");
-      if (!ext.exists() || runBuild) {
-        ext.delete();
-        new Build().of("//chrome:chrome_extension").go();
-        runBuild = false;
-      }
-
-      File profileDir = null;
-      try {
-        FileInputStream stream = new FileInputStream(ext);
-        profileDir = FileHandler.unzip(stream);
-      } catch (FileNotFoundException e) {
-        throw new WebDriverException(e);
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
-
-      return new ChromeExtension(profileDir);
+  /**
+   * Customized RemoteWebDriver that will communicate with a service that
+   * lives and dies with the entire test suite. We do not use
+   * {@link ChromeDriver} since that starts and stops the service with
+   * each instance (and that is too expensive for our purposes).
+   */
+  public static class DriverForTest extends RemoteWebDriver {
+    public DriverForTest() {
+      super(chromeDriverService.getUrl(), DesiredCapabilities.chrome());
     }
   }
+
+  private static class ServiceStarter extends TestSetup {
+
+    public ServiceStarter(Test test) {
+      super(test);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+      super.setUp();
+      chromeDriverService.start();
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+      chromeDriverService.stop();
+      super.tearDown();
+    }
+  }
+
+  private static class InitializationError extends TestCase {
+    private final Throwable t;
+
+    public InitializationError(Throwable t) {
+      this.t = t;
+    }
+
+    @Override
+    protected void runTest() throws Throwable {
+      throw t;
+    }
+  }
+
 }

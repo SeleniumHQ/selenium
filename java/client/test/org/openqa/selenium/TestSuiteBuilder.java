@@ -48,6 +48,7 @@ public class TestSuiteBuilder {
   private Set<String> excludePatterns = new HashSet<String>();
   private Set<String> testMethodNames = new HashSet<String>();
   private Set<String> decorators = new LinkedHashSet<String>();
+  private Set<Package> packages = new LinkedHashSet<Package>();
   private boolean outputTestNames = false;
   private File baseDir;
 
@@ -153,6 +154,10 @@ public class TestSuiteBuilder {
     }
 
     if (onlyRun.size() > 0 && !onlyRun.contains(rawClass.getSimpleName())) {
+      return;
+    }
+
+    if (!packages.isEmpty() && !packages.contains(rawClass.getPackage())) {
       return;
     }
 
@@ -307,6 +312,15 @@ public class TestSuiteBuilder {
     this.testMethodNames.add(testMethodName);
 
     return this;
+  }
+
+  public TestSuiteBuilder restrictToPackage(Package pkg) {
+    this.packages.add(pkg);
+    return this;
+  }
+
+  public TestSuiteBuilder restrictToPackage(String pkgName) {
+    return restrictToPackage(Package.getPackage(pkgName));
   }
 
   public TestSuiteBuilder addSuiteDecorator(String decoratorClassName) {

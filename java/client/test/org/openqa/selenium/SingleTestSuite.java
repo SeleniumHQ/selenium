@@ -29,7 +29,6 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestCase {
   private static final String CHROME = "org.openqa.selenium.chrome.ChromeDriver";
-  private static final String CHROME_TEST = "org.openqa.selenium.chrome.ChromeDriverTestSuite$TestChromeDriver";
 
   private static final String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
   private static final String FIREFOX_TEST = "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver";
@@ -45,7 +44,6 @@ public class SingleTestSuite extends TestCase {
   private static final Map<String, Ignore.Driver> EXCLUSIONS_BY_DRIVER =
       new HashMap<String, Ignore.Driver>() {{
         put(CHROME, Ignore.Driver.CHROME);
-        put(CHROME_TEST, Ignore.Driver.CHROME);
         put(FIREFOX, Ignore.Driver.FIREFOX);
         put(FIREFOX_TEST, Ignore.Driver.FIREFOX);
         put(HTML_UNIT, Ignore.Driver.HTMLUNIT);
@@ -58,7 +56,7 @@ public class SingleTestSuite extends TestCase {
       }};
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX_TEST;
+    String driver = CHROME;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -71,8 +69,7 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FrameSwitchingTest")
-        .method("testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs")
+        .onlyRun("ImplicitWaitTest")
         .exclude(ALL)
         .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
         .outputTestNames()

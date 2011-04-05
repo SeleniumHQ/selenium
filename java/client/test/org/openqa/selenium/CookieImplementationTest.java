@@ -26,11 +26,12 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
-@Ignore(value = IE, reason = "Nukes the JVM")
+@Ignore(value = {CHROME, IE}, reason = "Chrome: bug in implemenation; IE: Nukes the JVM")
 public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Override
