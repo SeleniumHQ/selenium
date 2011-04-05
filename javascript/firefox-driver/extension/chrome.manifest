@@ -5,7 +5,9 @@ content fxdriver content/ xpcnativewrappers=yes
 overlay chrome://browser/content/browser.xul chrome://fxdriver/content/fxdriver.xul
 
 interfaces components/nsICommandProcessor.xpt
+interfaces components/wdICoordinate.xpt
 interfaces components/nsIHttpServer.xpt
+interfaces components/wdIMouse.xpt
 interfaces components/nsINativeEvents.xpt
 interfaces components/nsIResponseHandler.xpt
 
@@ -32,6 +34,12 @@ contract @googlecode.com/webdriver/wdsession;1 {e193dc71-5b1d-4fea-b4c2-ec71f455
 
 component {b54195d3-841e-47df-b709-edf1bc4c7166} components/sessionstore.js
 contract @googlecode.com/webdriver/wdsessionstoreservice;1 {b54195d3-841e-47df-b709-edf1bc4c7166}
+
+component {E8F9FEFE-C513-4097-98BE-BE00A41D3645} components/syntheticMouse.js
+contract @googlecode.com/webdriver/syntheticmouse;1 {E8F9FEFE-C513-4097-98BE-BE00A41D3645}
+
+contract @googlecode.com/webdriver/coordinate;1 {B8D08F9B-DB29-4897-BCC3-91FF1414540F}
+
 
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox.dll ABI=WINNT_x86-msvc
 binary-component platform/WINNT_x86-msvc/components/imehandler.dll ABI=WINNT_x86-msvc

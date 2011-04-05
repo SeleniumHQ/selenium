@@ -7,6 +7,12 @@ mozilla_xpt(name = "response_handler_xpt",
 mozilla_xpt(name = "httpd_xpt",
   srcs = [ "extension/idl/nsIHttpServer.idl" ])
 
+mozilla_xpt(name = "coordinates_xpt",
+  srcs = [ "extension/idl/wdICoordinate.idl" ])
+
+mozilla_xpt(name = "mouse_xpt",
+  srcs = [ "extension/idl/wdIMouse.idl" ])
+
 mozilla_extension(name = "webdriver",
   content = [
     "extension/content/**/*.js",
@@ -18,7 +24,9 @@ mozilla_extension(name = "webdriver",
     ":command_processor_xpt",
     ":httpd_xpt",
     "//cpp:native_events_xpt",
-    ":response_handler_xpt"
+    ":response_handler_xpt",
+    ":coordinates_xpt",
+    ":mouse_xpt",
   ],
   resources = [
     { "//cpp:firefox_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
@@ -38,6 +46,7 @@ mozilla_extension(name = "webdriver",
 # required by the loader in firefox
 js_binary(name = "atoms",
   srcs = [
+    "js/events.js",
     "js/firefox-utils.js",
     "js/preconditions.js",
     "js/exported_symbols.js"
@@ -57,4 +66,3 @@ js_binary(name = "utils",
   deps = [
     "//javascript/webdriver-atoms:deps"
   ])
-
