@@ -1,6 +1,11 @@
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/crazy_fun/mappings/java'
 
+if Platform.jruby?
+  require 'third_party/jruby/childprocess.jar' 
+  require 'childprocess'
+end
+
 class AndroidMappings
   def add_all(fun)
     fun.add_mapping("android_r", Android::CheckResourcePreconditions.new)
@@ -46,11 +51,11 @@ module Android
   $sdk_path = $properties["androidsdkpath"]
   $platform =  $properties["androidplatform"]
   $dx = File.join($sdk_path, "platforms", $platform, "tools", "dx")
-  $adb = File.join($sdk_path, "platform-tools", "adb")
-  $aapt = File.join($sdk_path, "platforms", $platform, "tools", "aapt")
-  $builder = File.join($sdk_path, "tools", "apkbuilder")
-  $android = File.expand_path(File.join($sdk_path, "tools", "android"))
-  $emulator = File.expand_path(File.join($sdk_path, "tools", "emulator"))
+  $adb = Platform.path_for(File.join($sdk_path, "platform-tools", "adb"))
+  $aapt = Platform.path_for(File.join($sdk_path, "platforms", $platform, "tools", "aapt"))
+  $builder = Platform.path_for(File.join($sdk_path, "tools", "apkbuilder"))
+  $android = Platform.path_for(File.expand_path(File.join($sdk_path, "tools", "android")))
+  $emulator = Platform.path_for(File.expand_path(File.join($sdk_path, "tools", "emulator")))
 
   class CheckPreconditions
     def handle(fun, dir, args)
@@ -165,15 +170,20 @@ module Android
     def handle(fun, dir, args)
       name = task_name(dir, args[:name]) + ":run"
       task name do
+        STDOUT.sync = true
         jar_name = Rake::Task[task_name(dir, args[:name])].out
         apk = Rake::Task[args[:binary]].out
         puts apk
-        cmd = "#{$adb} kill-server"
+
+        cmd = "#{$adb} kill-server"  
         puts cmd
         sh cmd
-        cmd = "#{$adb} start-server"
-        puts cmd
-        sh cmd
+        
+        # sh() wouldn't return on JRuby + Windows, work around by using childprocess
+        proc = ChildProcess.build(Platform.path_for($adb), "start-server")
+        proc.io.inherit!
+        proc.start
+        proc.poll_for_exit(10)
 
         android_target = $properties["androidtarget"].to_s
         puts "Using Android target: " + android_target
