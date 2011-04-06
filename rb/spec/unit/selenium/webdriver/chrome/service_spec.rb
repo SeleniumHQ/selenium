@@ -21,7 +21,7 @@ module Selenium
                        with { |*args| args.first.should == "/some/path" }.
                        and_return(mock_process)
 
-          Service.default_service.start
+          Service.default_service
         end
 
         it "finds the Chrome server binary by searching PATH" do
