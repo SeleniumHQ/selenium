@@ -1,6 +1,8 @@
 require File.expand_path("../spec_helper", __FILE__)
 
 describe "WebDriver::TargetLocator" do
+  let(:wait) { Selenium::WebDriver::Wait.new }
+
   it "should switch to a frame" do
     driver.navigate.to url_for("iframes.html")
     driver.switch_to.frame("iframe1")
@@ -25,10 +27,10 @@ describe "WebDriver::TargetLocator" do
       driver.title.should == "XHTML Test Page"
 
       driver.switch_to.window("result") do
-        driver.title.should == "We Arrive Here"
+        wait.until { driver.title == "We Arrive Here" }
       end
 
-      driver.title.should == "XHTML Test Page"
+      wait.until { driver.title == "XHTML Test Page" }
 
       reset_driver!
     end
@@ -54,10 +56,10 @@ describe "WebDriver::TargetLocator" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       driver.find_element(:link, "Open new window").click
-      driver.title.should == "XHTML Test Page"
+      wait.until { driver.title == "XHTML Test Page" }
 
       driver.switch_to.window("result")
-      driver.title.should == "We Arrive Here"
+      wait.until { driver.title == "We Arrive Here" }
 
       reset_driver!
     end
@@ -69,7 +71,7 @@ describe "WebDriver::TargetLocator" do
       driver.title.should == "XHTML Test Page"
 
       driver.switch_to.window("result") do
-        driver.title.should == "We Arrive Here"
+        wait.until { driver.title == "We Arrive Here" }
         driver.close
       end
 
