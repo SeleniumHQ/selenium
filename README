@@ -1,0 +1,110 @@
+Selenium 2.0 builds with its own build technology that's good for Windows, Linux and Mac.
+
+Quick intro
+===========
+
+In the same directory as this file, do ...
+
+   ./go
+
+The order of building modules is determined by the 'go' system itself.  If you want to
+build an individual module (assuming all dependent modules have previously been build)
+try something like ...
+
+   ./go //javascript/atoms:test:run
+
+In this case, javascript/atoms is the module directory, and "test" is a target
+in that directory's build.desc file
+
+Requirements
+============
+
+* Java 6 JDK
+* "java" and "jar" on the PATH
+
+If you plan to compile the IE driver you also need:
+
+* Visual Studio 2008
+* 32 and 64 bit cross compilers
+
+Although the build system is based on rake it's strongly advised to rely on the packaged jruby version invoked by "go".
+
+Common Tasks
+============
+
+For an express build of the binaries we release run the following from the directory containing the Rakefile:
+
+  ./go clean release
+
+All build output is placed under the "build" directory. The output can be found under "build/dist".
+
+Of course, building the entire project can take too long. If you just want to build a single driver, then you can run one of these targets:
+
+  ./go chrome
+  ./go firefox
+  ./go htmlunit
+  ./go ie
+
+As the build progresses, you'll see it report where the build outputs are being placed. Of course, just building isn't enough. We should really be able to run the tests too. Try:
+
+  ./go test_chrome
+  ./go test_firefox
+  ./go test_htmlunit
+  ./go test_ie
+ 
+Note that the "test_chrome" target requires that you have the separate chromedriver binary available on your PATH. To run all the tests just run:
+
+  ./go test
+
+This will detect your OS and run all the tests that are known to be stable for every browser that's appropriate to use for all language bindings. This can take a healthy amount of time to run.
+
+As a side note, none of the developers run tests using cygwin. It is very unlikely that the build will work as expected if you try and use cygwin.
+
+
+Tour
+====
+
+The code base is generally segmented around the languages used to write the component. Selenium makes extensive use of Javascript, so let's start there. Working on the javascript is easy. First of all, start the development server:
+
+  ./go debug-server
+  
+Now navigate to "http://localhost:2310/javascript" You'll find the contents of the javascript directory being shown. We use the Closure Library for developing much of the javascript, so now navigate to "http://localhost:2310/javascript/atoms/test"
+
+The tests in this directory are normal HTML files with names ending with "_test.html". Click on one to load the page and run the test. You can run all the javascript tests using:
+
+  ./go test_javascript
+
+
+Maven POM files
+===============
+
+Ignore the Maven POM file present in the same directory. It is only used for releasing to jars to Maven Repository (public or local), and is not considered the main build mechanism.
+
+Build Output
+============
+
+"./go" only makes a top-level "build" directory. Outputs are placed under that relative to the target name. Which is probably best described with an example. For the target:
+
+  //java/client/src/org/openqa/selenium:selenium-api
+
+The output is found under:
+
+  build/java/client/src/org/openqa/selenium/selenium-api.jar
+
+If you watch the build, each step should print where its output is going. Java test outputs appear in one of two places: either under build/test_logs for junit or in build/build_log.xml for TestNG tests. If you'd like the build to be chattier, just append "log=true" to the build command line.
+
+Help with 'Go'
+==============
+
+More general, but basic, help for 'go' ...
+
+   ./go --help
+
+Remember, "go" is just a wrapper around "rake", so you can use the standard rake commands such as "rake -T" to get more information about available targets.
+
+Last word on building the bits and pieces of Selenium
+=====================================================
+
+Refer http://code.google.com/p/selenium/wiki/BuildingWebDriver
+
+
