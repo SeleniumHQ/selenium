@@ -6,13 +6,24 @@ module Selenium
       class Bridge < Remote::Bridge
 
         def initialize(opts = {})
-          @launcher = Launcher.new(
-            :default_profile => opts[:default_profile],
-            :secure_ssl      => opts[:secure_ssl]
-          )
+          # TODO: pass options to Chrome::Service
+          http_client = opts.delete(:http_client)
 
-          @executor = CommandExecutor.new
-          @launcher.launch(@executor.uri)
+          unless opts.empty?
+            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
+          end
+
+          @service = Service.default_service
+          @service.start
+
+          remote_opts = {
+            :url                  => @service.uri,
+            :desired_capabilities => :chrome
+          }
+
+          remote_opts.merge!(:http_client => http_client) if http_client
+
+          super(remote_opts)
         end
 
         def browser
@@ -28,81 +39,9 @@ module Selenium
         end
 
         def quit
-          begin
-            super
-          rescue IOError
-          end
-
-          @executor.close
-          @launcher.quit
-        end
-
-        def getAllCookies
-          execute :getCookies
-        end
-
-        def deleteCookie(name)
-          execute :deleteCookie, :name => name
-        end
-
-        def setImplicitWaitTimeout(milliseconds)
-          execute :implicitlyWait, :ms => milliseconds
-        end
-
-        def elementEquals(element, other)
-          element.ref == other.ref
-        end
-
-        %w[acceptAlert dismissAlert setAlertValue getAlertText].each do |m|
-          define_method(m) { |*args| raise NotImplementedError }
-        end
-
-        private
-
-        def execute(command_name, opts = {}, args = nil)
-          command = {:request => command_name}.merge(opts)
-          command.merge!(args) if args
-
-          command = camel_case_keys_in(command)
-
-          puts "--> #{command.inspect}" if $DEBUG
-          resp = raw_execute command
-          puts "<-- #{resp.inspect}" if $DEBUG
-
-          code = resp['status']
-          if e = Error.for_code(code)
-            msg = resp['value']['message'] if resp['value']
-            msg ||= "unknown exception for #{command.inspect}"
-            msg << " (#{code})"
-
-            raise e, msg
-          end
-
-          resp['value']
-        end
-
-        def raw_execute(command)
-          @executor.execute command
-        end
-
-        #
-        # TODO(jari): fix this in the remote driver
-        #
-
-        def camel_case(string)
-          parts = string.split('_')
-          parts[1..-1].map { |e| e.capitalize! }
-          parts.join
-        end
-
-        def camel_case_keys_in(hash)
-          h = {}
-
-          hash.each do |key, value|
-            h[camel_case(key.to_s)] = value
-          end
-
-          h
+          super
+        ensure
+          @service.stop
         end
 
       end # Bridge

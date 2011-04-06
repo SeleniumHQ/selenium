@@ -82,9 +82,6 @@ ruby_library(name = "chrome",
     "lib/selenium/webdriver/chrome/**/*.rb",
     "lib/selenium/webdriver/chrome.rb"
   ],
-  resources = [
-    {"//javascript/chrome-driver" : "rb/lib/selenium/webdriver/chrome/extension.zip"}
-  ],
   deps = [
     ":common",
     ":remote"

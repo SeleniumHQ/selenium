@@ -11,7 +11,8 @@ module Selenium
           ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/x86/#{NO_FOCUS_LIBRARY_NAME}", "x86/#{NO_FOCUS_LIBRARY_NAME}"],
         ]
 
-        WAIT_TIMEOUT          = 90
+        WAIT_TIMEOUT = 90
+        QUIT_TIMEOUT = 5
 
         def start_with(profile, profile_path, *args)
           profile_path = profile_path.gsub("/", "\\") if Platform.win?
@@ -32,10 +33,10 @@ module Selenium
 
         def quit
           return unless @process
-          @process.poll_for_exit 5
+          @process.poll_for_exit QUIT_TIMEOUT
         rescue ChildProcess::TimeoutError
           # ok, force quit
-          @process.stop 5
+          @process.stop QUIT_TIMEOUT
         end
 
         def wait

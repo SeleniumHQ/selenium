@@ -111,11 +111,6 @@ module Selenium
               :url                  => remote_server.webdriver_url,
               :http_client          => http_client
             )
-          when :chromedriver
-            instance = WebDriver::Driver.for(:remote,
-              :url                  => "http://localhost:9515",
-              :desired_capabilities => :chrome
-            )
           else
             instance = WebDriver::Driver.for driver
           end

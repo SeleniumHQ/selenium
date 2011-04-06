@@ -59,7 +59,7 @@ module Selenium
             desired_capabilities = Capabilities.send(desired_capabilities)
           end
 
-          uri = URI.parse(url)
+          uri = url.kind_of?(URI) ? url : URI.parse(url)
           uri.path += "/" unless uri.path =~ /\/$/
 
           http_client.server_url = uri
