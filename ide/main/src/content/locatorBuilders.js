@@ -55,7 +55,8 @@ LocatorBuilders.prototype.build = function(e) {
     }
 };
 
-LocatorBuilders.prototype.buildAll = function(e) {
+LocatorBuilders.prototype.buildAll = function(el) {
+    var e = core.firefox.unwrap(el);    //Samit: Fix: Do the magic to get it to work in Firefox 4
     var xpathLevel = 0;
     var maxLevel = 10;
     var locator;
