@@ -46,6 +46,7 @@ mozilla_extension(name = "webdriver",
 # required by the loader in firefox
 js_binary(name = "atoms",
   srcs = [
+    "js/events.js",
     "js/firefox-utils.js",
     "js/preconditions.js",
     "js/exported_symbols.js"

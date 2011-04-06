@@ -30,19 +30,12 @@ function FirefoxDriver(server, enableNativeEvents, win) {
 
   // We do this here to work around an issue in the import function:
   // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
-  var resources = [
-    "atoms.js",
-    "utils.js"
-  ];
+  var atoms = {};
+  Components.utils.import('resource://fxdriver/modules/atoms.js', atoms);
 
-  for (var i = 0; i < resources.length; i++) {
-    var name = 'resource://fxdriver/modules/' + resources[i];
-    try {
-      Components.utils.import(name);
-    } catch (e) {
-      dump(e);
-    }
-  }
+  var utils = {};
+  Components.utils.import('resource://fxdriver/modules/utils.js', utils);
+
   goog.userAgent.GECKO = true;
 
   FirefoxDriver.listenerScript = Utils.loadUrl("resource://fxdriver/evaluate.js");
@@ -1034,5 +1027,15 @@ FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
     throw new WebDriverError(ErrorCode.IME_ENGINE_ACTIVATION_FAILED,
         "Activation of engine failed: " + engineToActivate);
   } 
+  respond.send();
+};
+
+FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
+  var doc = respond.session.getDocument();
+  var coords = webdriver.firefox.events.buildCoordinates(parameters, doc);
+
+  var mouse = Utils.newInstance('@googlecode.com/webdriver/syntheticmouse;1', 'wdIMouse');
+  mouse.mouseMove(coords);
+
   respond.send();
 };

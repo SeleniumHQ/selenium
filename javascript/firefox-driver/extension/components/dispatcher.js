@@ -194,8 +194,6 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/element/:id/elements').
       on(Request.Method.POST, Dispatcher.executeAs('findChildElements'));
 
-  this.bind_('/session/:sessionId/element/:id/click').
-      on(Request.Method.POST, Dispatcher.executeAs('clickElement'));
   this.bind_('/session/:sessionId/element/:id/text').
       on(Request.Method.GET, Dispatcher.executeAs('getElementText'));
   this.bind_('/session/:sessionId/element/:id/submit').
@@ -271,6 +269,12 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.POST, Dispatcher.executeAs('imeDeactivate'));
   this.bind_('/session/:sessionId/ime/activate').
       on(Request.Method.POST, Dispatcher.executeAs('imeActivateEngine'));
+
+  // Mouse emulation
+  this.bind_('/session/:sessionId/element/:id/click').
+      on(Request.Method.POST, Dispatcher.executeAs('clickElement'));
+  this.bind_('/session/:sessionId/moveto').
+      on(Request.Method.POST, Dispatcher.executeAs('mouseMove'));
 
   // --------------------------------------------------------------------------
   // Firefox extensions to the wire protocol.

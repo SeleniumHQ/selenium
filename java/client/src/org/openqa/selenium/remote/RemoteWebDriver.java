@@ -654,6 +654,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       if (where != null) {
         String id = (String) where.getAuxiliry();
         params.put("element", id);
+        params.put("id", id);
       }
 
       return params;
