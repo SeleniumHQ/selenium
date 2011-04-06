@@ -1,6 +1,7 @@
-0.1.5 (???)
+0.2.0 (???)
 ==================
 
+* Update Ruby bindings to use the new Chrome driver (http://code.google.com/p/selenium/wiki/ChromeDriver).
 * Add deprecation warning for WebDriver::Element#value.
 * Change the default timeout for Wait instances to 5 seconds.
 
