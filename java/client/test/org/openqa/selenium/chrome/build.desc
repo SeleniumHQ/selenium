@@ -5,8 +5,5 @@ java_test(name = "test",
     "//java/client/src/org/openqa/selenium/chrome",
     "//java/client/test/org/openqa/selenium:tests",
     "//third_party/java/junit",
-  ],
-  sysproperties = [
-    { "webdriver.chrome.driver" : "chromedriver" },
   ]
 )
