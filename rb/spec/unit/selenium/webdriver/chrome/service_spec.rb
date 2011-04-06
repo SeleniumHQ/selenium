@@ -31,14 +31,6 @@ module Selenium
           Service.executable_path.should == "/some/path"
         end
 
-        it "creates the server process with the given port and chrome directory" do
-          ChildProcess.should_receive(:build).with "chromedriver",
-                                                   "--port=9000",
-                                                   "--chrome-dir=/path/to/chrome"
-
-          Service.new "chromedriver", 9000, "/path/to/chrome"
-        end
-
       end
     end # Chrome
   end # WebDriver

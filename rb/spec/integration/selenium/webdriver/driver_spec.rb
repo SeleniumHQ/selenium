@@ -40,10 +40,10 @@ describe "Driver" do
       ss.should be_kind_of(String)
       ss.size.should > 0
     end
-  end
 
-  it "raises an error when given an unknown format" do
-    lambda { driver.screenshot_as(:jpeg) }.should raise_error(WebDriver::Error::UnsupportedOperationError)
+    it "raises an error when given an unknown format" do
+      lambda { driver.screenshot_as(:jpeg) }.should raise_error(WebDriver::Error::UnsupportedOperationError)
+    end
   end
 
   describe "one element" do

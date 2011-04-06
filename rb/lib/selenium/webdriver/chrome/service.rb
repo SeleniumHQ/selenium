@@ -25,14 +25,9 @@ module Selenium
           new executable_path, 9515 # TODO: random port
         end
 
-        def initialize(executable_path, port, chrome_dir = nil)
+        def initialize(executable_path, port)
           @uri           = URI.parse "http://#{Platform.localhost}:#{port}"
           server_command = [executable_path, "--port=#{port}"]
-
-          if chrome_dir
-            chrome_dir = Platform.cygwin_path(chrome_dir) if Platform.cygwin?
-            server_command << "--chrome-dir=#{chrome_dir}"
-          end
 
           @process       = ChildProcess.build(*server_command)
           @socket_poller = SocketPoller.new Platform.localhost, port, START_TIMEOUT
