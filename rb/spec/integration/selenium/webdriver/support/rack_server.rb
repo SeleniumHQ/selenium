@@ -13,7 +13,7 @@ module Selenium
           @app  = Rack::File.new(path)
 
           @host = "127.0.0.1"
-          @port = Integer(port || find_free_port_above(8180))
+          @port = Integer(port || PortProber.above(8180))
         end
 
         def start
@@ -69,19 +69,6 @@ module Selenium
           true
         rescue LoadError
           false
-        end
-
-        def find_free_port_above(port)
-          try_port = port
-          begin
-            TCPServer.new(@host, try_port).close
-          rescue
-            raise if try_port > port + 100
-            try_port += 1
-            retry
-          end
-
-          try_port
         end
 
         def start_forked

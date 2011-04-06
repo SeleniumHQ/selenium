@@ -22,7 +22,7 @@ module Selenium
         end
 
         def self.default_service
-          new executable_path, 9515 # TODO: random port
+          new executable_path, PortProber.random
         end
 
         def initialize(executable_path, port)

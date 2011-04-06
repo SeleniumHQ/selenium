@@ -46,13 +46,7 @@ module Selenium
         end
 
         def find_free_port
-          port = @port
-
-          until free_port?(port)
-            port += 1
-          end
-
-          @port = port
+          @port = PortProber.above @port
         end
 
         def create_profile
@@ -80,14 +74,6 @@ module Selenium
             @binary.quit
             raise Error::WebDriverError, "unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds (#{@host}:#{@port})"
           end
-        end
-
-        def free_port?(port)
-          s = TCPServer.new(@host, port)
-          s.close
-          true
-        rescue SocketError, Errno::EADDRINUSE
-          false
         end
 
         def fetch_profile
