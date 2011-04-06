@@ -2,14 +2,14 @@ module Selenium
   module WebDriver
     class Wait
 
-      DEFAULT_TIMEOUT  = 30
+      DEFAULT_TIMEOUT  = 5
       DEFAULT_INTERVAL = 0.5
 
       #
       # Create a new Wait instance
       #
       # @param [Hash] opts Options for this instance
-      # @option opts [Numeric] :timeout (30) Seconds to wait before timing out.
+      # @option opts [Numeric] :timeout (5) Seconds to wait before timing out.
       # @option opts [Numeric] :interval (0.5) Seconds to sleep between polls.
       # @option opts [String] :message Exception mesage if timed out.
 

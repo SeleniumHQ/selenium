@@ -2,6 +2,7 @@
 ==================
 
 * Add deprecation warning for WebDriver::Element#value.
+* Change the default timeout for Wait instances to 5 seconds.
 
 0.1.4 (2011-03-21)
 ==================
