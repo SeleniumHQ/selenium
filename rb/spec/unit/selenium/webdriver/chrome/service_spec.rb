@@ -31,6 +31,12 @@ module Selenium
           Service.executable_path.should == "/some/path"
         end
 
+        it "raises a nice error if the server binary can't be found" do
+          Platform.stub!(:find_binary).and_return(nil)
+
+          lambda { Service.executable_path }.should raise_error(Error::WebDriverError, /code\.google\.com/)
+        end
+
       end
     end # Chrome
   end # WebDriver
