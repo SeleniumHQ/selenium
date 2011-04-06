@@ -50,7 +50,7 @@ class FirefoxBinary(object):
         """
         try:
             if self.process:
-                os.kill(self.process.pid, signal.SIGTERM)
+                os.kill(self.process.pid, signal.SIGTERM).wait()
         except AttributeError:
             # kill may not be available under windows environment
             pass
