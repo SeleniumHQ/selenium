@@ -52,16 +52,7 @@ namespace OpenQA.Selenium.Chrome
         /// Initializes a new instance of the ChromeDriver class with the required extension loaded, and has it connect to a new ChromeCommandExecutor on its port
         /// </summary>
         public ChromeDriver()
-            : this(new ChromeProfile(), new ChromeExtension())
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the ChromeDriver class with the required Chrome Binary
-        /// </summary>
-        /// <param name="chromeBinary">A <see cref="ChromeBinary"/> object to launch.</param>
-        public ChromeDriver(ChromeBinary chromeBinary)
-            : base(new ChromeCommandExecutor(chromeBinary), DesiredCapabilities.Chrome())
+            : this(ChromeDriverService.CreateDefaultService())
         {
         }
 
@@ -70,8 +61,8 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         /// <param name="profile">The profile to use.</param>
         /// <param name="extension">The extension to use.</param>
-        private ChromeDriver(ChromeProfile profile, ChromeExtension extension)
-            : base(new ChromeCommandExecutor(new ChromeBinary(profile, extension)), DesiredCapabilities.Chrome())
+        private ChromeDriver(ChromeDriverService service)
+            : base(new ChromeCommandExecutor(service), DesiredCapabilities.Chrome())
         {
         }
         #endregion
@@ -111,49 +102,6 @@ namespace OpenQA.Selenium.Chrome
         protected override void StopClient()
         {
             ((ChromeCommandExecutor)CommandExecutor).Stop();
-        }
-
-        /// <summary>
-        /// Executes a command with this driver .
-        /// </summary>
-        /// <param name="driverCommandToExecute">A <see cref="DriverCommand"/> value representing the command to execute.</param>
-        /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
-        /// <returns>A <see cref="Response"/> containing information about the success or failure of the command and any data returned by the command.</returns>
-        protected override Response Execute(DriverCommand driverCommandToExecute, Dictionary<string, object> parameters)
-        {
-            Response commandResponse = null;
-            try
-            {
-                commandResponse = base.Execute(driverCommandToExecute, parameters);
-            }
-            catch (ArgumentException)
-            {
-                // Exceptions may leave the extension hung, or in an
-                // inconsistent state, so we restart Chrome
-                this.StopClient();
-                this.StartClient();
-            }
-            catch (FatalChromeException)
-            {
-                // Exceptions may leave the extension hung, or in an inconsistent state, 
-                // so we restart Chrome. There is also a legitimate success condition
-                // where navigating to about:blank does not cause the extension to 
-                // write a response back to the driver.
-                this.StopClient();
-                this.StartClient();
-            }
-
-            return commandResponse;
-        }
-
-        /// <summary>
-        /// Creates a <see cref="RemoteWebElement"/> with the specified ID.
-        /// </summary>
-        /// <param name="elementId">The ID of this element.</param>
-        /// <returns>A <see cref="RemoteWebElement"/> with the specified ID. For the ChromeDriver this will be a <see cref="ChromeWebElement"/>.</returns>
-        protected override RemoteWebElement CreateElement(string elementId)
-        {
-            return new ChromeWebElement(this, elementId);
         }
         #endregion
     }

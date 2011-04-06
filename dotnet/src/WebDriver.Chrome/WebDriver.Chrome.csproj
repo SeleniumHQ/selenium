@@ -47,14 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChromeCommandExecutor.cs" />
-    <Compile Include="ChromeBinary.cs" />
     <Compile Include="ChromeDriver.cs" />
-    <Compile Include="ChromeExtension.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ChromeProfile.cs" />
+    <Compile Include="ChromeDriverService.cs" />
     <Compile Include="ChromeWebElement.cs" />
-    <Compile Include="FatalChromeException.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -81,7 +76,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>if exist $(SolutionDir)build\chrome\chrome-extension.zip copy /y $(SolutionDir)build\chrome\chrome-extension.zip $(TargetDir)
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

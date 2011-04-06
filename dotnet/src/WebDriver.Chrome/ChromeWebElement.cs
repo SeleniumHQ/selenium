@@ -25,25 +25,6 @@ namespace OpenQA.Selenium.Chrome
         }
         #endregion
 
-        /// <summary>
-        /// Drag and drop by delta of pixels horizontally and vertically. Not Supported in Chrome Yet
-        /// </summary>
-        /// <param name="moveRightBy">Move right by x pixels</param>
-        /// <param name="moveDownBy">Move down by x pixels</param>
-        public override void DragAndDropBy(int moveRightBy, int moveDownBy)
-        {
-            throw new NotImplementedException("Not yet supported in Chrome");
-        }
-
-        /// <summary>
-        /// Drag and Drop onto another element. Not Supported in Chrome yet
-        /// </summary>
-        /// <param name="element">Element to be dropped on</param>
-        public override void DragAndDropOn(IRenderedWebElement element)
-        {
-            throw new NotImplementedException("Not yet supported in Chrome");
-        }
-
         #region Overrides
         /// <summary>
         /// Returns the HashCode of the Element

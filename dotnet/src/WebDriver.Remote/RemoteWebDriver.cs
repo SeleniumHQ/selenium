@@ -291,6 +291,9 @@ namespace OpenQA.Selenium.Remote
             {
                 this.Execute(DriverCommand.Quit, null);
             }
+            catch (NotImplementedException)
+            {
+            }
             catch (WebDriverException)
             {
             }

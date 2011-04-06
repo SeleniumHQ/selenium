@@ -9,9 +9,9 @@ namespace OpenQA.Selenium.Remote
     public class ErrorResponse
     {
         private StackTraceElement[] stackTrace;
-        private string message;
-        private string className;
-        private string screenshot;
+        private string message = string.Empty;
+        private string className = string.Empty;
+        private string screenshot = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ErrorResponse"/> class.
@@ -27,7 +27,10 @@ namespace OpenQA.Selenium.Remote
         /// the properties of this <see cref="ErrorResponse"/>.</param>
         public ErrorResponse(Dictionary<string, object> responseValue)
         {
-            this.message = responseValue["message"].ToString();
+            if (responseValue.ContainsKey("message"))
+            {
+                this.message = responseValue["message"].ToString();
+            }
 
             if (responseValue.ContainsKey("screen"))
             {
