@@ -170,6 +170,11 @@ class WebElement(object):
                         {'propertyName': property_name})['value']
 
     @property
+    def location(self):
+        """ Returns the location of the element in the renderable canvas"""
+        return self._execute(Command.GET_ELEMENT_LOCATION)['value']
+
+    @property
     def parent(self):
         return self._parent
 
