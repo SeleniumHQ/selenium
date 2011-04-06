@@ -173,7 +173,7 @@ task :test_rb => [
   "//rb:remote-test",
   "//rb:rc-client-integration-test",
  ("//rb:ie-test" if windows?),
-#  "//rb:chrome-test"  # Just not stable enough
+  "//rb:chrome-test"
 ].compact
 
 task :test_py => [
