@@ -5,12 +5,14 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.os.CommandLine.findExecutable;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +85,8 @@ public class ChromeDriverService {
    * @return A new ChromeDriverService using the default configuration.
    */
   public static ChromeDriverService createDefaultService() {
-    String exePath = System.getProperty(CHROME_DRIVER_EXE_PROPERTY);
+    String defaultPath = findExecutable("chromedriver");
+    String exePath = System.getProperty(CHROME_DRIVER_EXE_PROPERTY, defaultPath);
     checkState(exePath != null,
         "The path to the chromedriver executable must be set by the %s system property",
         CHROME_DRIVER_EXE_PROPERTY);
