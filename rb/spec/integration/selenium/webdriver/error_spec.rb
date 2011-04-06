@@ -2,12 +2,14 @@ require File.expand_path("../spec_helper", __FILE__)
 
 describe "Error" do
 
-  it "should have an appropriate message" do
-    driver.navigate.to url_for("xhtmlTest.html")
+  not_compliant_on :browser => :chrome do
+    it "should have an appropriate message" do
+      driver.navigate.to url_for("xhtmlTest.html")
 
-    lambda { driver.find_element(:id, "nonexistant") }.should raise_error(
-        WebDriver::Error::NoSuchElementError, /unable to (find|locate) element/i # TODO: pick one of "find" vs "locate"
-    )
+      lambda { driver.find_element(:id, "nonexistant") }.should raise_error(
+          WebDriver::Error::NoSuchElementError, /unable to (find|locate) element/i # TODO: pick one of "find" vs "locate"
+      )
+    end
   end
 
   compliant_on :driver => [:remote, :firefox] do

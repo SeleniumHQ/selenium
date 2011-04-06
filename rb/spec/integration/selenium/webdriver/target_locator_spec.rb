@@ -51,7 +51,7 @@ describe "WebDriver::TargetLocator" do
     end
   end
 
-  not_compliant_on :browser => [:chrome, :ie] do
+  not_compliant_on :browser => [:ie] do
     it "should switch to a window" do
       driver.navigate.to url_for("xhtmlTest.html")
 

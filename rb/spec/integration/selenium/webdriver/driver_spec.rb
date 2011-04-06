@@ -11,35 +11,35 @@ describe "Driver" do
     driver.page_source.should match(%r[<title>XHTML Test Page</title>]i)
   end
 
-  not_compliant_on :browser => [:chrome] do
-    it "should refresh the page" do
-      driver.navigate.to url_for("javascriptPage.html")
-      driver.find_element(:link_text, 'Update a div').click
-      driver.find_element(:id, 'dynamo').text.should == "Fish and chips!"
-      driver.navigate.refresh
-      driver.find_element(:id, 'dynamo').text.should == "What's for dinner?"
-    end
+  it "should refresh the page" do
+    driver.navigate.to url_for("javascriptPage.html")
+    driver.find_element(:link_text, 'Update a div').click
+    driver.find_element(:id, 'dynamo').text.should == "Fish and chips!"
+    driver.navigate.refresh
+    driver.find_element(:id, 'dynamo').text.should == "What's for dinner?"
   end
 
-  it "should save a screenshot" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    path = "screenshot_tmp.png"
+  not_compliant_on :browser => :chrome do
+    it "should save a screenshot" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      path = "screenshot_tmp.png"
 
-    begin
-      driver.save_screenshot path
-      File.exist?(path).should be_true # sic
-      File.size(path).should > 0
-    ensure
-      File.delete(path) if File.exist?(path)
+      begin
+        driver.save_screenshot path
+        File.exist?(path).should be_true # sic
+        File.size(path).should > 0
+      ensure
+        File.delete(path) if File.exist?(path)
+      end
     end
-  end
 
-  it "should return a screenshot in the specified format" do
-    driver.navigate.to url_for("xhtmlTest.html")
+    it "should return a screenshot in the specified format" do
+      driver.navigate.to url_for("xhtmlTest.html")
 
-    ss = driver.screenshot_as(:png)
-    ss.should be_kind_of(String)
-    ss.size.should > 0
+      ss = driver.screenshot_as(:png)
+      ss.should be_kind_of(String)
+      ss.size.should > 0
+    end
   end
 
   it "raises an error when given an unknown format" do
@@ -221,27 +221,29 @@ describe "Driver" do
     end
   end
 
-  describe "execute async script" do
-    before {
-      driver.manage.timeouts.script_timeout = 0
-      driver.navigate.to url_for("ajaxy_page.html")
-    }
+  not_compliant_on :browser => :chrome do
+    describe "execute async script" do
+      before {
+        driver.manage.timeouts.script_timeout = 0
+        driver.navigate.to url_for("ajaxy_page.html")
+      }
 
-    it "should be able to return arrays of primitives from async scripts" do
-      result = driver.execute_async_script "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);"
-      result.should == [nil, 123, 'abc', true, false]
-    end
+      it "should be able to return arrays of primitives from async scripts" do
+        result = driver.execute_async_script "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);"
+        result.should == [nil, 123, 'abc', true, false]
+      end
 
-    it "should be able to pass multiple arguments to async scripts" do
-      result = driver.execute_async_script "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2
-      result.should == 3
-    end
+      it "should be able to pass multiple arguments to async scripts" do
+        result = driver.execute_async_script "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2
+        result.should == 3
+      end
 
-    it "times out if the callback is not invoked" do
-      lambda {
-        # Script is expected to be async and explicitly callback, so this should timeout.
-        driver.execute_async_script "return 1 + 2;"
-      }.should raise_error(Selenium::WebDriver::Error::TimeOutError)
+      it "times out if the callback is not invoked" do
+        lambda {
+          # Script is expected to be async and explicitly callback, so this should timeout.
+          driver.execute_async_script "return 1 + 2;"
+        }.should raise_error(Selenium::WebDriver::Error::TimeOutError)
+      end
     end
   end
 
