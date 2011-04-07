@@ -17,7 +17,7 @@
 
 
 from selenium import webdriver
-from selenium.test.selenium.webdriver.common import visibility_tests 
+from selenium.test.selenium.webdriver.common import visibility_tests
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 
 def setup_module(module):
