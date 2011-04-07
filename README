@@ -36,7 +36,9 @@ For an express build of the binaries we release run the following from the direc
 
   ./go clean release
 
-All build output is placed under the "build" directory. The output can be found under "build/dist".
+All build output is placed under the "build" directory. The output can be found under "build/dist". If an error occurs while running this task complaining about a missing Albacore gem, the chances are you're using rvm. If this is the case, switch to the system ruby:
+
+  rvm system
 
 Of course, building the entire project can take too long. If you just want to build a single driver, then you can run one of these targets:
 
