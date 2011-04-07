@@ -17,16 +17,13 @@ limitations under the License.
 package org.openqa.selenium.net;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 
 public class INetAddress {
   private final String hostName;
   private final String hostAddress;
   private final boolean loopbackAddress;
-  private final InetAddress inetAddress;
 
   public INetAddress(InetAddress inetAddress) {
-    this.inetAddress = inetAddress;
     this.hostName = inetAddress.getHostName();
     hostAddress = inetAddress.getHostAddress();
     this.loopbackAddress = inetAddress.isLoopbackAddress();
@@ -34,7 +31,6 @@ public class INetAddress {
 
   @SuppressWarnings({"AssignmentToNull"})
   INetAddress(String hostName, String hostAddress, boolean loopbackAddress) {
-    this.inetAddress = null;
     this.hostName = hostName;
     this.hostAddress = hostAddress;
     this.loopbackAddress = loopbackAddress;
@@ -58,13 +54,5 @@ public class INetAddress {
 
   public String getHostName() {
     return hostName;
-  }
-
-  public InetSocketAddress createInetSocketAddress(int port) {
-    if (inetAddress != null) {
-      return new InetSocketAddress(inetAddress, port);
-    } else {
-      return new InetSocketAddress(hostName, port);
-    }
   }
 }

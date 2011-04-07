@@ -53,14 +53,23 @@ public class NetworkUtils {
    * @return
    */
   public String getNonLoopbackAddressOfThisMachine() {
-    for (NetworkInterface iface : networkInterfaceProvider.getNetworkInterfaces()) {
-      final INetAddress ip4NonLoopback = iface.getIp4NonLoopBackOnly();
-      if (ip4NonLoopback != null) {
-        return ip4NonLoopback.getHostName();
-      }
-    }
-    throw new WebDriverException("Could not find a non-loopback ip4 address for this machine");
+    return getIp4NonLoopbackAddressOfThisMachine().getHostName();
   }
+
+    /**
+     * Returns a non-loopback ip4 hostname of the local host.
+     *
+     * @return A string hostName
+     */
+    public INetAddress getIp4NonLoopbackAddressOfThisMachine() {
+      for (NetworkInterface iface : networkInterfaceProvider.getNetworkInterfaces()) {
+        final INetAddress ip4NonLoopback = iface.getIp4NonLoopBackOnly();
+        if (ip4NonLoopback != null) {
+          return ip4NonLoopback;
+        }
+      }
+      throw new WebDriverException("Could not find a non-loopback ip4 address for this machine");
+    }
 
   /**
    * Returns a single address that is guaranteed to resolve to an ipv4 representation of localhost
@@ -104,7 +113,7 @@ public class NetworkUtils {
     }
 
     if (firstAddress == null) {
-      throw new WebDriverException("Unable to find loopback address for localhost");
+      throw new WebDriverException("Unable to find any network address for localhost");
     }
 
     return firstAddress;

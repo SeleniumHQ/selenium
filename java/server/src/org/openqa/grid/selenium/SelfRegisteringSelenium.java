@@ -20,7 +20,6 @@ import java.io.File;
 import java.net.URL;
 
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.selenium.utils.NetworkUtil;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -30,7 +29,7 @@ import org.openqa.selenium.server.SeleniumServer;
 
 public class SelfRegisteringSelenium extends SelfRegisteringRemote {
 
-	private static String REMOTE_PATH = "/selenium-server/driver";
+	private static final String REMOTE_PATH = "/selenium-server/driver";
 	private File firefoxProfileDir = null;
 	RemoteControlConfiguration config = null;
 
@@ -46,8 +45,7 @@ public class SelfRegisteringSelenium extends SelfRegisteringRemote {
 	@Override
 	public URL getRemoteURL() {
 		try {
-			// TODO freynaud DUP of some existing selenium class 
-			String ip = NetworkUtil.getIPv4Address();
+			String ip = networkUtils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
 			return new URL("http://" + ip + ":" + getPort() + REMOTE_PATH);
 		} catch (Throwable e) {
 			return null;

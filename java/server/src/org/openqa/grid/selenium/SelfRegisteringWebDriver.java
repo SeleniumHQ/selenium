@@ -20,7 +20,6 @@ import java.io.File;
 import java.net.URL;
 
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.selenium.utils.NetworkUtil;
 import org.openqa.jetty.http.SocketListener;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.WebApplicationContext;
@@ -31,7 +30,7 @@ import org.openqa.selenium.remote.server.DriverServlet;
 
 public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 
-	private static String REMOTE_PATH = "/wd";
+	private static final String REMOTE_PATH = "/wd";
 
 	public SelfRegisteringWebDriver(int port, URL registration) {
 		super(port, registration);
@@ -40,10 +39,8 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 	@Override
 	public URL getRemoteURL() {
 		try {
-			// TODO freynaud DUP of some existing selenium class 
-			String ip = NetworkUtil.getIPv4Address();
-			URL res = new URL("http://" + ip + ":" + getPort() + REMOTE_PATH);
-			return res;
+			String ip = networkUtils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+      return new URL("http://" + ip + ":" + getPort() + REMOTE_PATH);
 		} catch (Throwable e) {
 			return null;
 		}

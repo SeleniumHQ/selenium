@@ -17,8 +17,6 @@ limitations under the License.
 package org.openqa.grid.selenium;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,16 +25,18 @@ import java.util.Map;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.selenium.utils.SeleniumProtocol;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public abstract class SelfRegisteringRemote {
+
+    protected static final NetworkUtils networkUtils = new NetworkUtils();
 
 	private URL registration;
 	private int port = 5555;
@@ -52,9 +52,9 @@ public abstract class SelfRegisteringRemote {
 	/**
 	 * Create a selenium1 RC from the configuration specified.
 	 * 
-	 * @param conf
-	 * @param registration
-	 * @return
+	 * @param conf The configuration to use
+	 * @param registration The registration url
+	 * @return A SelfRegisteringRemote
 	 */
 	public static SelfRegisteringRemote create(RemoteControlConfiguration conf, URL registration) {
 		return new SelfRegisteringSelenium(conf, registration);
