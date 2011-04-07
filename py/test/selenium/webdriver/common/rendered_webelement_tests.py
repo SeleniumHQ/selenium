@@ -19,12 +19,14 @@ import tempfile
 import time
 import shutil
 import unittest
+import pytest
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 
 class RenderedWebElementTests(unittest.TestCase):
 
+    @pytest.mark.ignore_chrome
     def testShouldPickUpStyleOfAnElement(self):
         self._loadPage("javascriptPage")
 
@@ -38,6 +40,7 @@ class RenderedWebElementTests(unittest.TestCase):
 
         self.assertEqual("#ff0000", backgroundColour)
 
+    @pytest.mark.ignore_chrome
     def testShouldAllowInheritedStylesToBeUsed(self):
         self._loadPage("javascriptPage")
 

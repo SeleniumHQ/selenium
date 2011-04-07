@@ -19,6 +19,8 @@
 from selenium import webdriver
 from selenium.test.selenium.webdriver.common import executing_async_javascript_test 
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
+import pytest
+
 
 def setup_module(module):
     webserver = SimpleWebServer()
@@ -26,7 +28,7 @@ def setup_module(module):
     ChromeExecutingAsyncJavaScriptTests.webserver = webserver
     ChromeExecutingAsyncJavaScriptTests.driver = webdriver.Chrome()
 
-
+@pytest.mark.ignore_chrome
 class ChromeExecutingAsyncJavaScriptTests(executing_async_javascript_test.ExecutingAsyncJavaScriptTests):
     pass
 

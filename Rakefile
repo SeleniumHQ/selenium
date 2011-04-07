@@ -359,7 +359,6 @@ task :test_chrome_py => [:webdriver_py, :chrome] do
       py_test_path = 'build\\python\\Scripts\\py.test.exe'
       py_setup = 'build\\python\\Scripts\\python ' + 'setup.py build'
     end
-    cp chrome_zip_build , chrome_py_home , :verbose => true
 
     sh py_setup , :verbose => true
 
@@ -369,7 +368,7 @@ task :test_chrome_py => [:webdriver_py, :chrome] do
         py_test = 'py.test'
     end
     test_dir = Dir.glob('build/lib**/selenium/test/selenium/webdriver/chrome').first
-    sh py_test, test_dir, :verbose => true
+    sh py_test, test_dir, "-k -ignore_chrome", :verbose => true
     chrome_zip = chrome_py_home + "chrome-extension.zip"
     rm chrome_zip , :verbose => true
   end

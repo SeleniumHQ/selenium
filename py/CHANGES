@@ -8,6 +8,7 @@ Selenium 2 Beta 4
 * Deprecated get_window_handles. Use window_handles property
 * Ability to install extensions into profiles
 * Added Location to the WebElement
+* ChromeDriver rewritten to use new built in mechanism
 
 Selenium 2 Beta 2
 
