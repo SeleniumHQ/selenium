@@ -30,10 +30,32 @@ module Selenium
         #
 
         class << self
+          def android(opts = {})
+            new({
+              :browser_name     => "android",
+              :platform         => :android,
+              :rotatable        => true,
+              :takes_screenshot => true
+            }.merge(opts))
+          end
+
+          def chrome(opts = {})
+            new({
+              :browser_name       => "chrome",
+              :javascript_enabled => true
+            }.merge(opts))
+          end
+
           def firefox(opts = {})
             new({
               :browser_name => "firefox",
               :javascript_enabled => true
+            }.merge(opts))
+          end
+
+          def htmlunit(opts = {})
+            new({
+              :browser_name => "htmlunit"
             }.merge(opts))
           end
 
@@ -45,19 +67,6 @@ module Selenium
           end
           alias_method :ie, :internet_explorer
 
-          def htmlunit(opts = {})
-            new({
-              :browser_name => "htmlunit"
-            }.merge(opts))
-          end
-
-          def safari(opts = {})
-            new({
-              :browser_name => "safari",
-              :platform     => :mac
-            }.merge(opts))
-          end
-
           def iphone(opts = {})
             new({
               :browser_name       => "iphone",
@@ -66,19 +75,10 @@ module Selenium
             }.merge(opts))
           end
 
-          def chrome(opts = {})
+          def opera(opts = {})
             new({
-              :browser_name       => "chrome",
+              :browser_name       => "opera",
               :javascript_enabled => true
-            }.merge(opts))
-          end
-
-          def android(opts = {})
-            new({
-              :browser_name     => "android",
-              :platform         => :android,
-              :rotatable        => true,
-              :takes_screenshot => true
             }.merge(opts))
           end
 
