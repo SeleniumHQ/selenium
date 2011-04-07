@@ -19,11 +19,13 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import com.google.common.collect.Maps;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -41,8 +43,7 @@ public abstract class CookieHandler extends WebDriverHandler implements JsonPara
     if (allParameters == null) {
       return;
     }
-    rawCookie =
-        new ConcurrentHashMap<String, Object>((Map<String, Object>) allParameters.get("cookie"));
+    rawCookie = Maps.newHashMap((Map<String, Object>) allParameters.get("cookie"));
   }
 
   protected Cookie createCookie() {
