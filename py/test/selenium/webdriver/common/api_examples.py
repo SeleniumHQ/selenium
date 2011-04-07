@@ -180,7 +180,7 @@ class ApiExampleTest (unittest.TestCase):
         # IE returns full URL
         if self.driver.name == "internet explorer":
             attr = attr[-1]
-        self.assertEquals("http://localhost:8001/xhtmlTest.html#", attr)
+        self.assertEquals("http://localhost:%d/xhtmlTest.html#" % self.webserver.port, attr)
 
     def testGetImplicitAttribute(self):
         self._loadPage("nestedElements")
