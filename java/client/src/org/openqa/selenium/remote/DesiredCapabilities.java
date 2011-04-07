@@ -152,8 +152,20 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     capabilities.put(key, value);
   }
 
+  public static DesiredCapabilities android() {
+    return new DesiredCapabilities("android", "", Platform.ANDROID);
+  }
+
+  public static DesiredCapabilities chrome() {
+    return new DesiredCapabilities("chrome", "", Platform.ANY);
+  }
+
   public static DesiredCapabilities firefox() {
     return new DesiredCapabilities("firefox", "", Platform.ANY);
+  }
+
+  public static DesiredCapabilities htmlUnit() {
+    return new DesiredCapabilities("htmlunit", "", Platform.ANY);
   }
 
   public static DesiredCapabilities internetExplorer() {
@@ -163,10 +175,10 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return capabilities;
   }
 
-  public static DesiredCapabilities htmlUnit() {
-    return new DesiredCapabilities("htmlunit", "", Platform.ANY);
-  }
-
+  /**
+   * @deprecated
+   */
+  @Deprecated
   public static DesiredCapabilities htmlUnitWithJavascript() {
     DesiredCapabilities htmlUnitWithJS =
         new DesiredCapabilities("htmlunit", "firefox", Platform.ANY);
@@ -178,12 +190,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return new DesiredCapabilities("iphone", "", Platform.MAC);
   }
 
-  public static DesiredCapabilities chrome() {
-    return new DesiredCapabilities("chrome", "", Platform.ANY);
-  }
-
-  public static DesiredCapabilities android() {
-    return new DesiredCapabilities("android", "", Platform.ANDROID);
+  public static DesiredCapabilities opera() {
+    return new DesiredCapabilities("opera", "", Platform.ANY);
   }
 
   @Override

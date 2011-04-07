@@ -44,6 +44,7 @@ public class DefaultDriverSessions implements DriverSessions {
     put(DesiredCapabilities.firefox(), "org.openqa.selenium.firefox.FirefoxDriver");
     put(DesiredCapabilities.htmlUnit(), "org.openqa.selenium.htmlunit.HtmlUnitDriver");
     put(DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver");
+    put(DesiredCapabilities.opera(), "com.opera.core.systems.OperaDriver");
   }};
 
   public DefaultDriverSessions() {
