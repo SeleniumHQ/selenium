@@ -23,6 +23,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldNotTimeoutIfCallbackInvokedImmediately()
         {
             driver.Url = ajaxyPage;
@@ -32,6 +33,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -44,6 +46,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript()
         {
             driver.Url = ajaxyPage;
@@ -55,6 +58,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript()
         {
             driver.Url = ajaxyPage;
@@ -66,6 +70,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -83,6 +88,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldBeAbleToReturnWebElementsFromAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -93,6 +99,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -110,6 +117,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(TimeoutException))]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldTimeoutIfScriptDoesNotInvokeCallback()
         {
             driver.Url = ajaxyPage;
@@ -118,6 +126,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(TimeoutException))]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout()
         {
             driver.Url = ajaxyPage;
@@ -125,6 +134,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout()
         {
             driver.Url = ajaxyPage;
@@ -135,6 +145,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(TimeoutException))]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout()
         {
             driver.Manage().Timeouts().SetScriptTimeout(TimeSpan.FromMilliseconds(500));
@@ -146,6 +157,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError()
         {
             driver.Url = ajaxyPage;
@@ -155,6 +167,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldCatchErrorsWhenExecutingInitialScript()
         {
             driver.Url = ajaxyPage;
@@ -162,6 +175,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldBeAbleToExecuteAsynchronousScripts()
         {
             driver.Url = ajaxyPage;
@@ -186,6 +200,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldBeAbleToPassMultipleArgumentsToAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -194,6 +209,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
         public void ShouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse()
         {
             string script =

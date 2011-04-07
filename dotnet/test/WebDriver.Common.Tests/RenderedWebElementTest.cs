@@ -11,6 +11,7 @@ namespace OpenQA.Selenium
     {
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Chrome, "Test expects hex color, but a rgb tuple is returned.")]
         public void ShouldPickUpStyleOfAnElement()
         {
             driver.Url = javascriptPage;
@@ -49,6 +50,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Chrome, "Test expects a color keyword, but a rgba tuple is returned.")]
         public void ShouldAllowInheritedStylesToBeUsed()
         {
             driver.Url = javascriptPage;

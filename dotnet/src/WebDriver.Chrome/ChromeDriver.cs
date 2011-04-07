@@ -49,7 +49,7 @@ namespace OpenQA.Selenium.Chrome
 
         #region Constructors
         /// <summary>
-        /// Initializes a new instance of the ChromeDriver class with the required extension loaded, and has it connect to a new ChromeCommandExecutor on its port
+        /// Initializes a new instance of the ChromeDriver.
         /// </summary>
         public ChromeDriver()
             : this(ChromeDriverService.CreateDefaultService())
@@ -57,10 +57,9 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Initializes a new instance of the ChromeDriver class using the specified profile and extension.
+        /// Initializes a new instance of the ChromeDriver class using the specified <see cref="ChromeDriverService"/>.
         /// </summary>
-        /// <param name="profile">The profile to use.</param>
-        /// <param name="extension">The extension to use.</param>
+        /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
         private ChromeDriver(ChromeDriverService service)
             : base(new ChromeCommandExecutor(service), DesiredCapabilities.Chrome())
         {

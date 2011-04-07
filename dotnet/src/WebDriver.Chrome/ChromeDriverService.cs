@@ -10,6 +10,9 @@ using System.Net;
 
 namespace OpenQA.Selenium.Chrome
 {
+    /// <summary>
+    /// Exposes the service provided by the native ChromeDriver executable.
+    /// </summary>
     public sealed class ChromeDriverService
     {
         private const string ChromeDriverServiceFileName = "chromedriver.exe";
@@ -19,11 +22,11 @@ namespace OpenQA.Selenium.Chrome
         private Process driverServiceProcess;
         private Uri serviceUrl;
 
-        /**
-         * @param executable The chromedriver executable.
-         * @param port Which port to start the chromedriver on.
-         * @throws IOException If an I/O error occurs.
-         */
+        /// <summary>
+        /// Initializes a new instance of the ChromeDriverService class.
+        /// </summary>
+        /// <param name="executable">The full path to the ChromeDriver executable.</param>
+        /// <param name="port">The port on which the ChromeDriver executable should listen.</param>
         private ChromeDriverService(string executable, int port)
         {
             this.driverServicePath = executable;
@@ -31,16 +34,26 @@ namespace OpenQA.Selenium.Chrome
             this.serviceUrl = new Uri(string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}", port));
         }
 
+        /// <summary>
+        /// Gets the Uri of the service.
+        /// </summary>
         public Uri ServiceUrl
         {
             get { return this.serviceUrl; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the service is running.
+        /// </summary>
         public bool IsRunning
         {
             get { return this.driverServiceProcess != null && !this.driverServiceProcess.HasExited; }
         }
 
+        /// <summary>
+        /// Creates a default instance of the ChromeDriverService.
+        /// </summary>
+        /// <returns>A ChromeDriverService that implements default settings.</returns>
         public static ChromeDriverService CreateDefaultService()
         {
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
@@ -57,6 +70,11 @@ namespace OpenQA.Selenium.Chrome
             return CreateDefaultService(currentDirectory);
         }
 
+        /// <summary>
+        /// Creates a default instance of the ChromeDriverService using a specified path to the ChromeDriver executable.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the ChromeDriver executable.</param>
+        /// <returns>A ChromeDriverService using a random port.</returns>
         public static ChromeDriverService CreateDefaultService(string driverPath)
         {
             if (string.IsNullOrEmpty(driverPath))
@@ -73,6 +91,9 @@ namespace OpenQA.Selenium.Chrome
             return new ChromeDriverService(executablePath, FindFreePort());
         }
 
+        /// <summary>
+        /// Starts the ChromeDriverService.
+        /// </summary>
         public void Start()
         {
             this.driverServiceProcess = new Process();
@@ -96,6 +117,9 @@ namespace OpenQA.Selenium.Chrome
             }
         }
 
+        /// <summary>
+        /// Stops the ChromeDriverService.
+        /// </summary>
         public void Stop()
         {
             if (this.driverServiceProcess != null && !this.driverServiceProcess.HasExited)

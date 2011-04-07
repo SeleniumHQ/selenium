@@ -17,17 +17,27 @@ namespace OpenQA.Selenium.Chrome
     {
         private ChromeDriverService service;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromeCommandExecutor"/> class.
+        /// </summary>
+        /// <param name="driverService">The <see cref="ChromeDriverService"/> that drives the browser.</param>
         public ChromeCommandExecutor(ChromeDriverService driverService)
             : base(driverService.ServiceUrl)
         {
             this.service = driverService;
         }
 
+        /// <summary>
+        /// Starts the <see cref="ChromeCommandExecutor"/>.
+        /// </summary>
         public void Start()
         {
             service.Start();
         }
 
+        /// <summary>
+        /// Stops the <see cref="ChromeCommandExecutor"/>.
+        /// </summary>
         public void Stop()
         {
             service.Stop();

@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace OpenQA.Selenium
 {
     [TestFixture]
-    public class AtomsInjectionText : DriverTestFixture
+    public class AtomsInjectionTest : DriverTestFixture
     {
         [Test]
         public void InjectingAtomShouldNotTrampleOnUnderscoreGlobal()

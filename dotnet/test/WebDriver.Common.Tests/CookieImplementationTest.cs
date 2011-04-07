@@ -242,6 +242,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
+        [IgnoreBrowser(Browser.Chrome, "Test tries to set the domain explicitly to 'localhost', which is not allowed.")]
         public void ShouldBeAbleToSetDomainToTheCurrentDomain()
         {
             Uri url = new Uri(driver.Url);
@@ -295,6 +296,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
+        [IgnoreBrowser(Browser.Chrome, "Test tries to set the domain explicitly to 'localhost', which is not allowed.")]
         public void ShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie()
         {
             Uri uri = new Uri(driver.Url);
@@ -414,6 +416,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Test tries to set the domain explicitly to 'localhost', which is not allowed.")]
         public void ShouldNotShowCookieAddedToDifferentPath()
         {
             driver.Url = macbethPage;
