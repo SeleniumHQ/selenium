@@ -1,7 +1,3 @@
-#
-# Helper requiring the basic selenium-client API (no RSpec goodness)
-#
-
 require 'net/http'
 require 'uri'
 require 'cgi'
@@ -23,8 +19,19 @@ require 'selenium/client/selenium_helper'
 require 'selenium/server'
 require 'selenium/rake/server_task'
 
-# Backward compatibility
+module Selenium
+  DEPRECATED_CONSTANTS = {
+    :SeleniumDriver => Selenium::Client::Driver,
+    :CommandError   => Selenium::Client::CommandError
+  }
 
-SeleniumHelper = Selenium::Client::SeleniumHelper
-SeleniumCommandError = Selenium::Client::CommandError
-Selenium::SeleniumDriver = Selenium::Client::Driver
+  def self.const_missing(name)
+    if replacement = DEPRECATED_CONSTANTS[name.to_sym]
+      warn "the Selenium::#{name} constant has been deprecated, please use #{DEPRECATED_CONSTANTS[name.to_sym]} instead"
+      replacement
+    else
+      super
+    end
+  end
+end # Selenium
+
