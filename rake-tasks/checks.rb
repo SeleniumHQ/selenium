@@ -34,14 +34,23 @@ def all?
   true
 end
 
-# Checking for particular applications 
+PRESENT_CACHE = {}
 
+# Checking for particular applications
 def present?(arg)
+  if PRESENT_CACHE.has_key?(arg)
+    return PRESENT_CACHE[arg]
+  end
+
   prefixes = ENV['PATH'].split(File::PATH_SEPARATOR)
 
-  prefixes.any? do |prefix|
+  bool = prefixes.any? do |prefix|
     File.exists?(prefix + File::SEPARATOR + arg)
   end
+
+  PRESENT_CACHE[arg] = bool
+
+  bool
 end
 
 def java?
