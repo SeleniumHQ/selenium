@@ -51,7 +51,7 @@ describe "WebDriver::TargetLocator" do
     end
   end
 
-  not_compliant_on :browser => [:ie] do
+  not_compliant_on :browser => :ie do
     it "should switch to a window" do
       driver.navigate.to url_for("xhtmlTest.html")
 
@@ -95,7 +95,7 @@ describe "WebDriver::TargetLocator" do
     driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
   end
 
-  compliant_on :browser => nil do
+  compliant_on :browser => :ie do
     describe "alerts" do
       it "allows the user to accept an alert" do
         driver.navigate.to url_for("alerts.html")
