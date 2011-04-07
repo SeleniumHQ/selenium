@@ -26,6 +26,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.io.FileHandler;
@@ -170,6 +171,33 @@ public class FirefoxProfileTest extends TestCase {
     assertTrue(prefs.exists());
     
     assertTrue(FileHandler.readAsString(prefs).contains("i.like.cheese"));
+  }
+
+  public void testCannotOverrideAFozenPrefence() {
+    FirefoxProfile profile = new FirefoxProfile();
+
+    try {
+      profile.setPreference("browser.EULA.3.accepted", "foo-bar-baz");
+      fail();
+    } catch (IllegalArgumentException expected) {
+      assertEquals(
+          "Preference browser.EULA.3.accepted may not be overridden: frozen value=true, " +
+              "requested value=foo-bar-baz",
+          expected.getMessage());
+    }
+  }
+
+  public void testCanOverrideMaxScriptRuntimeIfGreaterThanDefaultValue() {
+    FirefoxProfile profile = new FirefoxProfile();
+
+    try {
+      profile.setPreference("dom.max_script_run_time", 29);
+      fail();
+    } catch (IllegalArgumentException expected) {
+      assertEquals("dom.max_script_run_time must be >= 30", expected.getMessage());
+    }
+
+    profile.setPreference("dom.max_script_run_time", 31);
   }
 
   private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {

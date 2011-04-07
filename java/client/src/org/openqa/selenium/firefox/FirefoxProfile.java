@@ -26,6 +26,8 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Proxy;
@@ -38,10 +40,66 @@ import org.openqa.selenium.io.Cleanly;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class FirefoxProfile {
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";
 
-  private Preferences additionalPrefs = new Preferences();
+  /**
+   * Profile preferences that are essential to the FirefoxDriver operating
+   * correctly. Users are not permitted to override these values.
+   */
+  private static final ImmutableMap<String, String> FROZEN_PREFERENCES =
+      ImmutableMap.<String, String>builder()
+          .put("app.update.auto", "false")
+          .put("app.update.enabled", "false")
+          .put("browser.download.manager.showWhenStarting", "false")
+          .put("browser.EULA.override", "true")
+          .put("browser.EULA.3.accepted", "true")
+          .put("browser.link.open_external", "2")
+          .put("browser.link.open_newwindow", "2")
+          .put("browser.offline", "false")
+          .put("browser.safebrowsing.enabled", "false")
+          .put("browser.search.update", "false")
+          .put("browser.sessionstore.resume_from_crash", "false")
+          .put("browser.shell.checkDefaultBrowser", "false")
+          .put("browser.tabs.warnOnClose", "false")
+          .put("browser.tabs.warnOnOpen", "false")
+          .put("devtools.errorconsole.enabled", "true")
+          .put("dom.disable_open_during_load", "false")
+          .put("extensions.logging.enabled", "true")
+          .put("extensions.update.enabled", "false")
+          .put("extensions.update.notifyUser", "false")
+          .put("network.manage-offline-status", "false")
+          .put("network.http.max-connections-per-server", "10")
+          .put("prompts.tab_modal.enabled", "false")
+          .put("security.fileuri.origin_policy", "3")
+          .put("security.fileuri.strict_origin_policy", "false")
+          .put("security.warn_entering_secure", "false")
+          .put("security.warn_entering_secure.show_once", "false")
+          .put("security.warn_entering_weak", "false")
+          .put("security.warn_entering_weak.show_once", "false")
+          .put("security.warn_leaving_secure", "false")
+          .put("security.warn_leaving_secure.show_once", "false")
+          .put("security.warn_submit_insecure", "false")
+          .put("security.warn_viewing_mixed", "false")
+          .put("security.warn_viewing_mixed.show_once", "false")
+          .put("signon.rememberSignons", "false")
+          .put("toolkit.networkmanager.disable", "true")
+          .build();
+
+  /**
+   * The maximum amount of time scripts should be permitted to run. The user
+   * may increase this timeout, but may not set it below the default value.
+   */
+  private static final String MAX_SCRIPT_RUN_TIME_KEY = "dom.max_script_run_time";
+  private static final int DEFAULT_MAX_SCRIPT_RUN_TIME = 30;
+
+  private Preferences additionalPrefs = new Preferences() {{
+    setPreference(MAX_SCRIPT_RUN_TIME_KEY, DEFAULT_MAX_SCRIPT_RUN_TIME);
+  }};
+
   private Map<String, Extension> extensions = Maps.newHashMap();
   private boolean enableNativeEvents;
   private boolean loadNoFocusLib;
@@ -185,6 +243,7 @@ public class FirefoxProfile {
    * @param value The new value.
    */
   public void setPreference(String key, String value) {
+    checkPreference(key, value);
     additionalPrefs.setPreference(key, value);
   }
 
@@ -195,6 +254,7 @@ public class FirefoxProfile {
    * @param value The new value.
    */
   public void setPreference(String key, boolean value) {
+    checkPreference(key, value);
     additionalPrefs.setPreference(key, value);
   }
 
@@ -205,7 +265,28 @@ public class FirefoxProfile {
    * @param value The new value.
    */
   public void setPreference(String key, int value) {
+    checkPreference(key, value);
     additionalPrefs.setPreference(key, value);
+  }
+
+  private static void checkPreference(String key, Object value) {
+    checkNotNull(value);
+    checkArgument(!FROZEN_PREFERENCES.containsKey(key),
+        "Preference %s may not be overridden: frozen value=%s, requested value=%s",
+        key, FROZEN_PREFERENCES.get(key), value);
+    if (MAX_SCRIPT_RUN_TIME_KEY.equals(key)) {
+      int n;
+      if (value instanceof String) {
+        n = Integer.parseInt((String) value);
+      } else if (value instanceof Integer) {
+        n = (Integer) value;
+      } else {
+        throw new IllegalArgumentException(String.format(
+          "%s value must be a number: %s", MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
+      }
+      checkArgument(n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
+          "%s must be >= %s", MAX_SCRIPT_RUN_TIME_KEY, DEFAULT_MAX_SCRIPT_RUN_TIME);
+    }
   }
 
   /**
@@ -274,44 +355,7 @@ public class FirefoxProfile {
     additionalPrefs.addTo(prefs);
 
     // Normal settings to facilitate testing
-    prefs.put("app.update.auto", "false");
-    prefs.put("app.update.enabled", "false");
-    prefs.put("browser.download.manager.showWhenStarting", "false");
-    prefs.put("browser.EULA.override", "true");
-    prefs.put("browser.EULA.3.accepted", "true");
-    prefs.put("browser.link.open_external", "2");
-    prefs.put("browser.link.open_newwindow", "2");
-    prefs.put("browser.offline", "false");
-    prefs.put("browser.safebrowsing.enabled", "false");
-    prefs.put("browser.search.update", "false");
-    prefs.put("browser.sessionstore.resume_from_crash", "false");
-    prefs.put("browser.shell.checkDefaultBrowser", "false");
-    prefs.put("browser.tabs.warnOnClose", "false");
-    prefs.put("browser.tabs.warnOnOpen", "false");
-    prefs.put("devtools.errorconsole.enabled", "true");
-    prefs.put("dom.disable_open_during_load", "false");
-    prefs.put("dom.max_script_run_time", "30");
-    prefs.put("extensions.logging.enabled", "true");
-    prefs.put("extensions.update.enabled", "false");
-    prefs.put("extensions.update.notifyUser", "false");
-    prefs.put("network.manage-offline-status", "false");
-    prefs.put("network.http.max-connections-per-server", "10");
-    prefs.put("prompts.tab_modal.enabled", "false");
-    prefs.put("security.fileuri.origin_policy", "3");
-    prefs.put("security.fileuri.strict_origin_policy", "false");
-    prefs.put("security.warn_entering_secure", "false");
-    prefs.put("security.warn_submit_insecure", "false");
-    prefs.put("security.warn_entering_secure.show_once", "false");
-    prefs.put("security.warn_entering_weak", "false");
-    prefs.put("security.warn_entering_weak.show_once", "false");
-    prefs.put("security.warn_leaving_secure", "false");
-    prefs.put("security.warn_leaving_secure.show_once", "false");
-    prefs.put("security.warn_submit_insecure", "false");
-    prefs.put("security.warn_viewing_mixed", "false");
-    prefs.put("security.warn_viewing_mixed.show_once", "false");
-    prefs.put("signon.rememberSignons", "false");
-    prefs.put("toolkit.networkmanager.disable", "true");
-
+    prefs.putAll(FROZEN_PREFERENCES);
 
     // Should we use native events?
     prefs.put(ENABLE_NATIVE_EVENTS_PREF,
