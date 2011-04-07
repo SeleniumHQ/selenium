@@ -1,7 +1,6 @@
 Selenium 2.0 builds with its own build technology that's good for Windows, Linux and Mac.
 
-Quick intro
-===========
+# Quick intro
 
 In the same directory as this file, do ...
 
@@ -16,21 +15,26 @@ try something like ...
 In this case, javascript/atoms is the module directory, and "test" is a target
 in that directory's build.desc file
 
-Requirements
-============
+As you see 'build targets' scroll past in the log, you may want to run them individually.  
+'Go' can run them individually, by target name as long as ":run" is appended (see above).
+
+# Requirements
 
 * Java 6 JDK
 * "java" and "jar" on the PATH
+
+Although the build system is based on rake it's strongly advised to rely on the packaged JRuby version invoked by "go".
+
+## Internet Explorer Driver
 
 If you plan to compile the IE driver you also need:
 
 * Visual Studio 2008
 * 32 and 64 bit cross compilers
 
-Although the build system is based on rake it's strongly advised to rely on the packaged jruby version invoked by "go".
+The build will work on any platform, but the tests for IE will be skipped silently, if you are not building on Windows.
 
-Common Tasks
-============
+# Common Tasks
 
 For an express build of the binaries we release run the following from the directory containing the Rakefile:
 
@@ -62,28 +66,23 @@ This will detect your OS and run all the tests that are known to be stable for e
 
 As a side note, none of the developers run tests using cygwin. It is very unlikely that the build will work as expected if you try and use cygwin.
 
-
-Tour
-====
+# Tour
 
 The code base is generally segmented around the languages used to write the component. Selenium makes extensive use of Javascript, so let's start there. Working on the javascript is easy. First of all, start the development server:
 
   ./go debug-server
   
-Now navigate to "http://localhost:2310/javascript" You'll find the contents of the javascript directory being shown. We use the Closure Library for developing much of the javascript, so now navigate to "http://localhost:2310/javascript/atoms/test"
+Now navigate to [http://localhost:2310/javascript](http://localhost:2310/javascript) You'll find the contents of the javascript directory being shown. We use the Closure Library for developing much of the javascript, so now navigate to [http://localhost:2310/javascript/atoms/test](http://localhost:2310/javascript/atoms/test)
 
 The tests in this directory are normal HTML files with names ending with "_test.html". Click on one to load the page and run the test. You can run all the javascript tests using:
 
   ./go test_javascript
 
-
-Maven POM files
-===============
+# Maven POM files
 
 Ignore the Maven POM file present in the same directory. It is only used for releasing to jars to Maven Repository (public or local), and is not considered the main build mechanism.
 
-Build Output
-============
+# Build Output
 
 "./go" only makes a top-level "build" directory. Outputs are placed under that relative to the target name. Which is probably best described with an example. For the target:
 
@@ -95,8 +94,7 @@ The output is found under:
 
 If you watch the build, each step should print where its output is going. Java test outputs appear in one of two places: either under build/test_logs for junit or in build/build_log.xml for TestNG tests. If you'd like the build to be chattier, just append "log=true" to the build command line.
 
-Help with 'Go'
-==============
+# Help with 'Go'
 
 More general, but basic, help for 'go' ...
 
@@ -104,9 +102,8 @@ More general, but basic, help for 'go' ...
 
 Remember, "go" is just a wrapper around "rake", so you can use the standard rake commands such as "rake -T" to get more information about available targets.
 
-Last word on building the bits and pieces of Selenium
-=====================================================
+# Last word on building the bits and pieces of Selenium
 
-Refer http://code.google.com/p/selenium/wiki/BuildingWebDriver
+Refer [Building Web Driver wiki page](http://code.google.com/p/selenium/wiki/BuildingWebDriver)
 
 
