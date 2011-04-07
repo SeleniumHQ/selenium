@@ -23,7 +23,11 @@ As you see 'build targets' scroll past in the log, you may want to run them indi
 * Java 6 JDK
 * "java" and "jar" on the PATH
 
-Although the build system is based on rake it's strongly advised to rely on the packaged JRuby version invoked by "go".
+Although the build system is based on rake it's **strongly advised** to rely on the version of JRuby in third_party/ that is invoked by "go".  The only developer type who would want to deviate from this is the "build maintainer" who's experimenting with a JRuby upgrade. 
+
+## Optional Requirements
+
+* Python 2.6.x to 2.7  (without this, Python tests will be skipped)
 
 ## Internet Explorer Driver
 
