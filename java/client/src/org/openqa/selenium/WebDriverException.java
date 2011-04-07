@@ -41,8 +41,12 @@ public class WebDriverException extends RuntimeException {
   }
 
   private String createMessage(String originalMessageString) {
-    return String.format("%sSystem info: %s\nDriver info: %s",
+    String supportMessage = getSupportUrl() == null ?
+        "" : "For documentation on this error, please visit: " + getSupportUrl() + "\n";
+
+    return String.format("%s%sSystem info: %s\nDriver info: %s",
                          originalMessageString == null ? "" : originalMessageString + "\n",
+                         supportMessage ,
                          getSystemInformation(),
                          getDriverInformation());
   }
@@ -53,6 +57,10 @@ public class WebDriverException extends RuntimeException {
                          System.getProperty("os.arch"),
                          System.getProperty("os.version"),
                          System.getProperty("java.version"));
+  }
+
+  public String getSupportUrl() {
+    return null;
   }
 
   public String getDriverInformation() {

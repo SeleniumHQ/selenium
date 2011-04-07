@@ -61,7 +61,7 @@ public class ErrorHandler {
       return response;
     }
 
-    Class<? extends RuntimeException> outerErrorType =
+    Class<? extends WebDriverException> outerErrorType =
         errorCodes.getExceptionType(response.getStatus());
 
     Object value = response.getValue();

@@ -1,17 +1,6 @@
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.ImeActivationFailedException;
-import org.openqa.selenium.ImeNotAvailableException;
-import org.openqa.selenium.InvalidCookieDomainException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.UnableToSetCookieException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.XPathLookupException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 
 /**
@@ -54,7 +43,7 @@ public class ErrorCodes {
    * @return The exception type that corresponds to the provided status code or
    *     {@code null} if {@code statusCode == 0}.
    */
-  public Class<? extends RuntimeException> getExceptionType(int statusCode) {
+  public Class<? extends WebDriverException> getExceptionType(int statusCode) {
     switch (statusCode) {
       case SUCCESS:
         return null;
@@ -70,7 +59,7 @@ public class ErrorCodes {
         return NoSuchFrameException.class;
       case UNKNOWN_COMMAND:
       case METHOD_NOT_ALLOWED:
-        return UnsupportedOperationException.class;
+        return UnsupportedCommandException.class;
       case STALE_ELEMENT_REFERENCE:
         return StaleElementReferenceException.class;
       case ELEMENT_NOT_VISIBLE:
@@ -78,7 +67,7 @@ public class ErrorCodes {
       case ELEMENT_NOT_SELECTABLE:
       case INVALID_ELEMENT_STATE:
         // TODO: There should be a more specific exception here.
-        return UnsupportedOperationException.class;
+        return UnsupportedCommandException.class;
       case XPATH_LOOKUP_ERROR:
         return XPathLookupException.class;
       case ASYNC_SCRIPT_TIMEOUT:

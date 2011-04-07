@@ -32,4 +32,8 @@ public class NoSuchElementException extends NotFoundException {
       super(reason, cause);
     }
 
+  @Override
+  public String getSupportUrl() {
+    return "http://seleniumhq.org/exceptions/no_such_element.html";
+  }
 }
