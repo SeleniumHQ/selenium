@@ -1,34 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" type="JAVA_MODULE" version="4">
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/build/classes" />
-    <output-test url="file://$MODULE_DIR$/build/test-classes" />
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/test/java" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="common" />
-    <orderEntry type="module" module-name="firefox" />
-    <orderEntry type="module" module-name="jobbie" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../third_party/java/testng/testng-5.14.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module" module-name="htmlunit" />
-    <orderEntry type="module" module-name="remote-common" />
-    <orderEntry type="module" module-name="remote-client" />
-    <orderEntry type="library" name="third_party-buildtime" level="project" />
-    <orderEntry type="module" module-name="support" />
-    <orderEntry type="module" module-name="chrome" />
-    <orderEntry type="module" module-name="remote-server" />
   </component>
 </module>
 
