@@ -17,18 +17,6 @@ public class StubRenderedWebElement extends StubElement implements RenderedWebEl
     return null;
   }
 
-  public boolean isDisplayed() {
-    return false;
-  }
-
-  public Point getLocation() {
-    return null;
-  }
-
-  public Dimension getSize() {
-    return null;
-  }
-
   public void dragAndDropBy(int moveRightBy, int moveDownBy) { }
 
   public void dragAndDropOn(RenderedWebElement element) { }

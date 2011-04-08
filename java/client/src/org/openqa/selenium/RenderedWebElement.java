@@ -17,31 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+/**
+ * @deprecated The methods in the class are
+ */
+@Deprecated
 public interface RenderedWebElement extends WebElement {
-
-  /**
-   * Is this element displayed or not? This method avoids the problem of
-   * having to parse an element's "style" attribute.
-   *
-   * @return Whether or not the element is displayed
-   */
-  boolean isDisplayed();
-
-  /**
-   * Where on the page is the top left-hand corner of the rendered
-   * element?
-   *
-   * @return A point, containing the location of the top left-hand corner
-   *         of the element
-   */
-  Point getLocation();
-
-  /**
-   * What is the width and height of the rendered element?
-   *
-   * @return The size of the element on the page.
-   */
-  Dimension getSize();
 
   /**
    * Drag and drop
@@ -77,6 +57,7 @@ public interface RenderedWebElement extends WebElement {
    * "#008000"
    *
    * @return The current, computed value of the property.
+   * @deprecated Use {@link WebElement#getCssValue(String)}
    */
   String getValueOfCssProperty(String propertyName);
 }

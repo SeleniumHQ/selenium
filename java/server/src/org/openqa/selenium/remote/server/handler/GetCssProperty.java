@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
@@ -33,8 +34,8 @@ public class GetCssProperty extends WebElementHandler {
   }
 
   public ResultType call() throws Exception {
-    RenderedWebElement element = (RenderedWebElement) getElement();
-    response.setValue(element.getValueOfCssProperty(propertyName));
+    WebElement element = getElement();
+    response.setValue(element.getCssValue(propertyName));
 
     return ResultType.SUCCESS;
   }

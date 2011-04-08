@@ -31,28 +31,6 @@ import java.util.Map;
 
 public class RenderedRemoteWebElement extends RemoteWebElement implements RenderedWebElement,
     Locatable {
-  public boolean isDisplayed() {
-    Response response = parent.execute(DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", id));
-    return (Boolean) response.getValue();
-  }
-
-  @SuppressWarnings({"unchecked"})
-  public Point getLocation() {
-    Response response = parent.execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id));
-    Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
-    int x = ((Long) rawPoint.get("x")).intValue();
-    int y = ((Long) rawPoint.get("y")).intValue();
-    return new Point(x, y);
-  }
-
-  @SuppressWarnings({"unchecked"})
-  public Dimension getSize() {
-    Response response = parent.execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
-    Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
-    int width = ((Long) rawSize.get("width")).intValue();
-    int height = ((Long) rawSize.get("height")).intValue();
-    return new Dimension(width, height);
-  }
 
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {
     parent.execute(DriverCommand.DRAG_ELEMENT,
@@ -66,9 +44,7 @@ public class RenderedRemoteWebElement extends RemoteWebElement implements Render
   }
 
   public String getValueOfCssProperty(String propertyName) {
-    Response response = parent.execute(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-        ImmutableMap.of("id", id, "propertyName", propertyName));
-    return (String) response.getValue();
+    return getCssValue(propertyName);
   }
 
   public Point getLocationOnScreenOnceScrolledIntoView() {

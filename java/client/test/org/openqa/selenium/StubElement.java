@@ -76,4 +76,20 @@ public class StubElement implements WebElement, WrapsDriver {
   public WebDriver getWrappedDriver() {
     return null;
   }
+
+  public boolean isDisplayed() {
+    return false;
+  }
+
+  public Point getLocation() {
+    return null;
+  }
+
+  public Dimension getSize() {
+    return null;
+  }
+
+  public String getCssValue(String propertyName) {
+    return null;
+  }
 }

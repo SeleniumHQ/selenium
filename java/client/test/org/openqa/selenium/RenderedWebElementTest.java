@@ -33,7 +33,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
 
     RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("green-parent"));
-    String backgroundColour = element.getValueOfCssProperty("background-color");
+    String backgroundColour = element.getCssValue("background-color");
 
     // TODO: How should this be standardized? Should it be standardized?
     assertThat(backgroundColour, anyOf(
@@ -41,7 +41,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
         equalTo("rgb(0, 128, 0)")));
 
     element = (RenderedWebElement) driver.findElement(By.id("red-item"));
-    backgroundColour = element.getValueOfCssProperty("background-color");
+    backgroundColour = element.getCssValue("background-color");
 
     // TODO: How should this be standardized? Should it be standardized?
     assertThat(backgroundColour, anyOf(
@@ -59,14 +59,14 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     driver.get(pages.rectanglesPage);
 
     RenderedWebElement r2 = (RenderedWebElement) driver.findElement(By.id("r2"));
-    String left = r2.getValueOfCssProperty("left");
+    String left = r2.getCssValue("left");
     assertTrue("left (\"" + left + "\") should start with \"10.9\".", left.startsWith("10.9"));
-    String top = r2.getValueOfCssProperty("top");
+    String top = r2.getCssValue("top");
     assertTrue("top (\"" + top + "\") should start with \"10.1\".", top.startsWith("10.1"));
     assertEquals(new Point(11, 10), r2.getLocation());
-    String width = r2.getValueOfCssProperty("width");
+    String width = r2.getCssValue("width");
     assertTrue("width (\"" + left + "\") should start with \"48.6\".", width.startsWith("48.6"));
-    String height = r2.getValueOfCssProperty("height");
+    String height = r2.getCssValue("height");
     assertTrue("height (\"" + left + "\") should start with \"49.3\".", height.startsWith("49.3"));
     assertEquals(r2.getSize(), new Dimension(49, 49));
   }
@@ -77,7 +77,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
 
     RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("green-item"));
-    String backgroundColour = element.getValueOfCssProperty("background-color");
+    String backgroundColour = element.getCssValue("background-color");
 
     // TODO: How should this be standardized? Should it be standardized?
     assertThat(backgroundColour, anyOf(

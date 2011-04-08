@@ -766,10 +766,14 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     }
   }
 
-  public String getValueOfCssProperty(String propertyName) {
+  public String getCssValue(String propertyName) {
     assertElementNotStale();
 
     return getEffectiveStyle(element, propertyName);
+  }
+
+  public String getValueOfCssProperty(String propertyName) {
+    return getCssValue(propertyName);
   }
 
   private String getEffectiveStyle(HtmlElement htmlElement, String propertyName) {

@@ -17,22 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.support.events;
 
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.ActionChainsGenerator;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Mouse;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.DefaultActionChainsGenerator;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
@@ -46,11 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -361,14 +343,30 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     public String getText() {
       return element.getText();
     }
-  
+
+    public boolean isDisplayed() {
+      return element.isDisplayed();
+    }
+
+    public Point getLocation() {
+      return element.getLocation();
+    }
+
+    public Dimension getSize() {
+      return element.getSize();
+    }
+
+    public String getCssValue(String propertyName) {
+      return element.getCssValue(propertyName);
+    }
+
     public WebElement findElement(By by) {
       dispatcher.beforeFindBy(by, element, driver);
       WebElement temp = element.findElement(by);
       dispatcher.afterFindBy(by, element, driver);
       return createWebElement(temp);
     }
-  
+
       public List<WebElement> findElements(By by) {
         dispatcher.beforeFindBy(by, element, driver);
         List<WebElement> temp = element.findElements(by);
@@ -379,30 +377,30 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
         }
         return result;
       }
-  
+
     public WebElement getWrappedElement() {
       return underlyingElement;
     }
-  
+
     @Override
     public boolean equals(Object obj) {
       if (!(obj instanceof WebElement)) {
         return false;
       }
-  
+
       WebElement other = (WebElement) obj;
       if (other instanceof WrapsElement) {
         other = ((WrapsElement) other).getWrappedElement();
       }
-  
+
       return underlyingElement.equals(other);
     }
-  
+
     @Override
     public int hashCode() {
       return underlyingElement.hashCode();
     }
-  
+
     public WebDriver getWrappedDriver() {
       return driver;
     }
@@ -415,18 +413,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     public EventFiringRenderedWebElement(WebElement element) {
       super(element);
       delegate = (RenderedWebElement) element;
-    }
-
-    public boolean isDisplayed() {
-      return delegate.isDisplayed();
-    }
-
-    public Point getLocation() {
-      return delegate.getLocation();
-    }
-
-    public Dimension getSize() {
-      return delegate.getSize();
     }
 
     public void dragAndDropBy(int moveRightBy, int moveDownBy) {

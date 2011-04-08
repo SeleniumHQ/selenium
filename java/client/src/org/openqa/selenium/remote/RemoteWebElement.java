@@ -18,9 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -105,6 +103,12 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   public String getText() {
     Response response = execute(DriverCommand.GET_ELEMENT_TEXT, ImmutableMap.of("id", id));
+    return (String) response.getValue();
+  }
+
+  public String getCssValue(String propertyName) {
+    Response response = parent.execute(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
+        ImmutableMap.of("id", id, "propertyName", propertyName));
     return (String) response.getValue();
   }
 
@@ -231,5 +235,28 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
    */
   public WebDriver getWrappedDriver() {
     return parent;
+  }
+
+  public boolean isDisplayed() {
+    Response response = parent.execute(DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", id));
+    return (Boolean) response.getValue();
+  }
+
+  @SuppressWarnings({"unchecked"})
+  public Point getLocation() {
+    Response response = parent.execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id));
+    Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
+    int x = ((Long) rawPoint.get("x")).intValue();
+    int y = ((Long) rawPoint.get("y")).intValue();
+    return new Point(x, y);
+  }
+
+  @SuppressWarnings({"unchecked"})
+  public Dimension getSize() {
+    Response response = parent.execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
+    Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
+    int width = ((Long) rawSize.get("width")).intValue();
+    int height = ((Long) rawSize.get("height")).intValue();
+    return new Dimension(width, height);
   }
 }

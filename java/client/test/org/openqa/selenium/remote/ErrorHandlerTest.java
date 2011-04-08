@@ -23,13 +23,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.XPathLookupException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 
 import static org.hamcrest.Matchers.containsString;
@@ -60,15 +54,15 @@ public class ErrorHandlerTest extends TestCase {
     assertThrowsCorrectExceptionType(ErrorCodes.NO_SUCH_FRAME, NoSuchFrameException.class);
     assertThrowsCorrectExceptionType(ErrorCodes.NO_SUCH_ELEMENT, NoSuchElementException.class);
     assertThrowsCorrectExceptionType(
-        ErrorCodes.UNKNOWN_COMMAND, UnsupportedOperationException.class);
+        ErrorCodes.UNKNOWN_COMMAND, UnsupportedCommandException.class);
     assertThrowsCorrectExceptionType(
-        ErrorCodes.METHOD_NOT_ALLOWED,UnsupportedOperationException.class);
+        ErrorCodes.METHOD_NOT_ALLOWED,UnsupportedCommandException.class);
     assertThrowsCorrectExceptionType(
         ErrorCodes.STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class);
     assertThrowsCorrectExceptionType(
         ErrorCodes.ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class);
     assertThrowsCorrectExceptionType(
-        ErrorCodes.INVALID_ELEMENT_STATE, UnsupportedOperationException.class);
+        ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class);
     assertThrowsCorrectExceptionType(
         ErrorCodes.XPATH_LOOKUP_ERROR, XPathLookupException.class);
     assertThrowsCorrectExceptionType(ErrorCodes.INVALID_ELEMENT_COORDINATES,
