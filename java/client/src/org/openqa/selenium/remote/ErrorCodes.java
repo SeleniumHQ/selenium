@@ -66,8 +66,7 @@ public class ErrorCodes {
         return ElementNotVisibleException.class;
       case ELEMENT_NOT_SELECTABLE:
       case INVALID_ELEMENT_STATE:
-        // TODO: There should be a more specific exception here.
-        return UnsupportedCommandException.class;
+        return InvalidElementStateException.class;
       case XPATH_LOOKUP_ERROR:
         return XPathLookupException.class;
       case ASYNC_SCRIPT_TIMEOUT:

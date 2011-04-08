@@ -43,17 +43,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.gargoylesoftware.htmlunit.javascript.host.Event;
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -98,7 +88,7 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     try {
       verifyCanInteractWithElement();
     }
-    catch (UnsupportedOperationException e) {
+    catch (InvalidElementStateException e) {
       //Swallow disabled element case
       //Clicking disabled elements should still be passed through,
       //we just don't expect any state change
@@ -227,7 +217,7 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     }
     
     if (!isEnabled()) {
-      throw new UnsupportedOperationException("You may only sendKeys to enabled elements");
+      throw new InvalidElementStateException("You may only sendKeys to enabled elements");
     }
   }
 
@@ -351,7 +341,7 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
       throw new ElementNotVisibleException("You may only toggle visible elements");
 
     if (!isEnabled())
-      throw new UnsupportedOperationException("You may only toggle enabled elements");
+      throw new InvalidElementStateException("You may only toggle enabled elements");
     
 
     try {
@@ -369,7 +359,7 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
         }
       }
 
-      throw new UnsupportedOperationException(
+      throw new InvalidElementStateException(
           "You may only toggle checkboxes or options in a select which allows multiple selections: "
           + getTagName());
     } catch (IOException e) {
@@ -399,7 +389,7 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
 
     String disabledValue = element.getAttribute("disabled");
     if (disabledValue.length() > 0) {
-      throw new UnsupportedOperationException("You may not select a disabled element");
+      throw new InvalidElementStateException("You may not select a disabled element");
     }
 
     if (element instanceof HtmlInput) {
@@ -407,7 +397,7 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     } else if (element instanceof HtmlOption) {
       ((HtmlOption) element).setSelected(true);
     } else {
-      throw new UnsupportedOperationException(
+      throw new InvalidElementStateException(
           "Unable to select element. Tag name is: " + element.getTagName());
     }
   }

@@ -205,7 +205,7 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     try {
       element.setSelected();
       fail(String.format(assertCannotPerformActionFormat_action_element, "select", describe(element)));
-    } catch (UnsupportedOperationException e) {
+    } catch (InvalidElementStateException e) {
       //Expected
     }
   }
@@ -265,7 +265,7 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     try {
       element.toggle();
       fail(String.format(assertCannotPerformActionFormat_action_element, "toggle", describe(element)));
-    } catch (UnsupportedOperationException e) {
+    } catch (InvalidElementStateException e) {
       //Expected
     }
   }

@@ -100,7 +100,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     try {
       disabledTextElement1.sendKeys("foo");
       fail("Should have thrown exception");
-    } catch (UnsupportedOperationException e) {
+    } catch (InvalidElementStateException e) {
       //Expected
     }
     assertThat(disabledTextElement1.getText(), is(""));
@@ -109,7 +109,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     try {
       disabledTextElement2.sendKeys("bar");
       fail("Should have thrown exception");
-    } catch (UnsupportedOperationException e) {
+    } catch (InvalidElementStateException e) {
       //Expected
     }
     assertThat(disabledTextElement2.getText(), is(""));

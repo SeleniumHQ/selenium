@@ -56,7 +56,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     try {
       option.toggle();
       fail("Should not have succeeded");
-    } catch (UnsupportedOperationException e) {
+    } catch (InvalidElementStateException e) {
       // This is expected
     }
   }
