@@ -18,27 +18,20 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler.html5;
 
 import org.openqa.selenium.html5.WebStorage;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.handler.WebDriverHandler;
+import org.openqa.selenium.remote.server.Session;
+import org.openqa.selenium.remote.server.handler.ResponseAwareWebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Set;
 
-public class GetSessionStorageKeys extends WebDriverHandler {
-  private volatile Response response;
-  
-  public GetSessionStorageKeys(DriverSessions sessions) {
-    super(sessions);
+public class GetSessionStorageKeys extends ResponseAwareWebDriverHandler {
+
+  public GetSessionStorageKeys(Session session) {
+    super(session);
   }
-  
-  public Response getResponse() {
-    return response;
-  }
-  
+
   public ResultType call() throws Exception {
-    response = newResponse();
-    Set<String> keys = ((WebStorage) unwrap(getDriver())).getSessionStorage().keySet();
+    Set<String> keys = ((WebStorage) getUnwrappedDriver()).getSessionStorage().keySet();
     response.setValue(keys);
     return ResultType.SUCCESS;
   }

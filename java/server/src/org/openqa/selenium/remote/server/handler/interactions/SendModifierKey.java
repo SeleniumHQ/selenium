@@ -20,23 +20,20 @@ package org.openqa.selenium.remote.server.handler.interactions;
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SendModifierKey extends WebDriverHandler implements JsonParametersAware {
 
   private String key;
   private boolean isDown;
 
-  public SendModifierKey(DriverSessions sessions) {
-    super(sessions);
+  public SendModifierKey(Session session) {
+    super(session);
   }
 
   @SuppressWarnings({"unchecked"})

@@ -20,13 +20,13 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class CloseWindow extends WebDriverHandler {
 
-  public CloseWindow(DriverSessions sessions) {
-    super(sessions);
+  public CloseWindow(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {

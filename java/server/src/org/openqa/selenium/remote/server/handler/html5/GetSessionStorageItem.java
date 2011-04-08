@@ -18,20 +18,18 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler.html5;
 
 import org.openqa.selenium.html5.WebStorage;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
-import org.openqa.selenium.remote.server.handler.WebDriverHandler;
+import org.openqa.selenium.remote.server.Session;
+import org.openqa.selenium.remote.server.handler.ResponseAwareWebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class GetSessionStorageItem extends WebDriverHandler implements JsonParametersAware {
+public class GetSessionStorageItem extends ResponseAwareWebDriverHandler implements JsonParametersAware {
   private volatile String key;
-  private volatile Response response;
 
-  public GetSessionStorageItem(DriverSessions sessions) {
-    super(sessions);
+  public GetSessionStorageItem(Session session) {
+    super(session);
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
@@ -39,8 +37,7 @@ public class GetSessionStorageItem extends WebDriverHandler implements JsonParam
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
-    Object value = ((WebStorage) unwrap(getDriver())).getSessionStorage().getItem(key);
+    Object value = ((WebStorage) getUnwrappedDriver()).getSessionStorage().getItem(key);
     response.setValue(value);
     return ResultType.SUCCESS;
   }

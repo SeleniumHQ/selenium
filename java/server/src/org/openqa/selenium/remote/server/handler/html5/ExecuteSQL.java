@@ -17,35 +17,31 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.html5;
 
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.openqa.selenium.html5.DatabaseStorage;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
-import org.openqa.selenium.remote.server.handler.WebDriverHandler;
+import org.openqa.selenium.remote.server.Session;
+import org.openqa.selenium.remote.server.handler.ResponseAwareWebDriverHandler;
 import org.openqa.selenium.remote.server.handler.internal.ArgumentConverter;
 import org.openqa.selenium.remote.server.handler.internal.ResultConverter;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import java.util.List;
+import java.util.Map;
 
-public class ExecuteSQL extends WebDriverHandler implements JsonParametersAware {
-  private Response response;
+public class ExecuteSQL extends ResponseAwareWebDriverHandler implements JsonParametersAware {
   private String dbName;
   private String query;
   private List<Object> args = Lists.newArrayList();
 
-  public ExecuteSQL(DriverSessions sessions) {
-    super(sessions);
+  public ExecuteSQL(Session session) {
+    super(session);
   }
-  
+
   public ResultType call() throws Exception {
-	response = newResponse();
 	Object value =
-	    ((DatabaseStorage) unwrap(getDriver())).executeSQL(dbName, query, args.toArray());
+	    ((DatabaseStorage) getUnwrappedDriver()).executeSQL(dbName, query, args.toArray());
 	Object result = new ResultConverter(getKnownElements()).apply(value);
 	response.setValue(result);
 	return ResultType.SUCCESS;
@@ -57,10 +53,6 @@ public class ExecuteSQL extends WebDriverHandler implements JsonParametersAware 
     List<?> params = (List<?>) allParameters.get("args");
     args = Lists.newArrayList(Iterables.transform(params,
         new ArgumentConverter(getKnownElements())));
-  }
-  
-  public Response getResponse() {
-    return response;
   }
   
   public String toString() {

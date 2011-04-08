@@ -19,15 +19,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class DeleteNamedCookie extends WebDriverHandler {
 
   private volatile String name;
 
-  public DeleteNamedCookie(DriverSessions sessions) {
-    super(sessions);
+  public DeleteNamedCookie(Session session) {
+    super(session);
   }
 
   public void setName(String name) {

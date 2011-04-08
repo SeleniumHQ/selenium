@@ -17,29 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class DescribeElement extends WebElementHandler {
 
-  private volatile Response response;
-
-  public DescribeElement(DriverSessions sessions) {
-    super(sessions);
+  public DescribeElement(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
     response.setValue(getElement());
 
     return ResultType.SUCCESS;
   }
 
-  public Response getResponse() {
-    return response;
-  }
-  
   @Override
   public String toString() {
     return String.format("[describe: %s", getElementAsString());

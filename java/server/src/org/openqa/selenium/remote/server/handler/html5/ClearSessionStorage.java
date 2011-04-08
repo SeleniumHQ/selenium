@@ -18,18 +18,18 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler.html5;
 
 import org.openqa.selenium.html5.WebStorage;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class ClearSessionStorage extends WebDriverHandler {
 
-  public ClearSessionStorage(DriverSessions session) {
+  public ClearSessionStorage(Session session) {
     super(session);
   }
-  
+
   public ResultType call() throws Exception {
-    ((WebStorage) unwrap(getDriver())).getSessionStorage().clear();
+    ((WebStorage) getUnwrappedDriver()).getSessionStorage().clear();
     return ResultType.SUCCESS;
   }
 

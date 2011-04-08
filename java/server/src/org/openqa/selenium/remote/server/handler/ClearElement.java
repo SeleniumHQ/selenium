@@ -17,15 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class ClearElement extends WebDriverHandler {
 
   private volatile String elementId;
 
-  public ClearElement(DriverSessions sessions) {
-    super(sessions);
+  public ClearElement(Session session) {
+    super(session);
   }
 
   public void setId(String elementId) {

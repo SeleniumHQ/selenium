@@ -17,34 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import java.util.Map;
-
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetSessionCapabilities extends WebDriverHandler {
+import java.util.Map;
 
-  private volatile Response response;
+public class GetSessionCapabilities extends ResponseAwareWebDriverHandler {
 
-  public GetSessionCapabilities(DriverSessions sessions) {
-    super(sessions);
+  public GetSessionCapabilities(Session session) {
+    super(session);
   }
 
   public ResultType call() {
-    Session session = sessions.get(sessionId);
-
-    response = newResponse();
+    Session session = getSession();
     Map<String, ?> capabilities = session.getCapabilities().asMap();
     describeSession(capabilities);
     response.setValue(capabilities);
 
     return ResultType.SUCCESS;
-  }
-
-  public Response getResponse() {
-    return response;
   }
 
   protected void describeSession(Map<String, ?> capabilities) {

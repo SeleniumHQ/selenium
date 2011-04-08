@@ -20,13 +20,14 @@ package org.openqa.selenium.android.server.handler;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 
 public abstract class AndroidWebElementHandler extends WebElementHandler {
 
-  public AndroidWebElementHandler(DriverSessions sessions) {
-    super(sessions);
+  protected AndroidWebElementHandler(Session session) {
+    super(session);
   }
 
   @Override

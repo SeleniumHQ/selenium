@@ -17,8 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
@@ -28,8 +28,8 @@ import static org.openqa.selenium.remote.server.rest.ResultType.SUCCESS;
 public class SetAlertText extends WebDriverHandler implements JsonParametersAware {
   private String text;
 
-  public SetAlertText(DriverSessions sessions) {
-    super(sessions);
+  public SetAlertText(Session session) {
+    super(session);
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {

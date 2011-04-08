@@ -17,23 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
-
-import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
-public class FindElement extends WebDriverHandler implements JsonParametersAware {
+public class FindElement extends ResponseAwareWebDriverHandler implements JsonParametersAware {
   private volatile By by;
-  private volatile Response response;
 
-  public FindElement(DriverSessions sessions) {
-    super(sessions);
+  public FindElement(Session session) {
+    super(session);
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
@@ -44,8 +41,6 @@ public class FindElement extends WebDriverHandler implements JsonParametersAware
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
-
     WebElement element = getDriver().findElement(by);
     String elementId = getKnownElements().add(element);
     response.setValue(ImmutableMap.of("ELEMENT", elementId));
@@ -53,10 +48,6 @@ public class FindElement extends WebDriverHandler implements JsonParametersAware
     return ResultType.SUCCESS;
   }
 
-  public Response getResponse() {
-    return response;
-  }
-  
   @Override
   public String toString() {
     return String.format("[find element: %s", by);

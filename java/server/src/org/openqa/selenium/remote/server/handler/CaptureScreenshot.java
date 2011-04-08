@@ -19,31 +19,22 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import static org.openqa.selenium.OutputType.BASE64;
 
-public class CaptureScreenshot extends WebDriverHandler {
+public class CaptureScreenshot extends ResponseAwareWebDriverHandler {
 
-  private volatile Response response;
-
-  public CaptureScreenshot(DriverSessions sessions) {
-    super(sessions);
+  public CaptureScreenshot(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
-
-    WebDriver driver = unwrap(getDriver());
+    WebDriver driver = getUnwrappedDriver();
 
     response.setValue(((TakesScreenshot) driver).getScreenshotAs(BASE64));
     return ResultType.SUCCESS;
-  }
-
-  public Response getResponse() {
-    return response;
   }
 
   @Override

@@ -18,25 +18,18 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler.html5;
 
 import org.openqa.selenium.html5.BrowserConnection;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.handler.WebDriverHandler;
+import org.openqa.selenium.remote.server.Session;
+import org.openqa.selenium.remote.server.handler.ResponseAwareWebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class IsBrowserOnline extends WebDriverHandler {
-  private volatile Response response;
-  
-  public IsBrowserOnline(DriverSessions sessions) {
-    super(sessions);
+public class IsBrowserOnline extends ResponseAwareWebDriverHandler {
+
+  public IsBrowserOnline(Session session) {
+    super(session);
   }
 
-  public Response getResponse() {
-    return response;
-  }
-  
   public ResultType call() throws Exception {
-    response = newResponse();
-    response.setValue(((BrowserConnection) unwrap(getDriver())).isOnline());
+    response.setValue(((BrowserConnection) getUnwrappedDriver()).isOnline());
     return ResultType.SUCCESS;
   }
 

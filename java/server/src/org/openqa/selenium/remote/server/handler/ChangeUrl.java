@@ -17,8 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
@@ -27,8 +27,8 @@ public class ChangeUrl extends WebDriverHandler implements JsonParametersAware {
 
   private volatile String url;
 
-  public ChangeUrl(DriverSessions sessions) {
-    super(sessions);
+  public ChangeUrl(Session session) {
+    super(session);
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {

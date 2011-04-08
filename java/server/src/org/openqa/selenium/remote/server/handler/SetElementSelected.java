@@ -17,13 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class SetElementSelected extends WebElementHandler {
 
-  public SetElementSelected(DriverSessions sessions) {
-    super(sessions);
+  public SetElementSelected(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {

@@ -61,10 +61,10 @@ class SessionCleaner extends Thread {
     for (SessionId sessionId : driverSessions.getSessions()) {
       Session session = driverSessions.get(sessionId);
       if (session != null && session.isTimedOut(timeoutMs)) {
-        DeleteSession deleteSession = new DeleteSession(driverSessions);
-        deleteSession.setSessionId(sessionId.toString());
+        DeleteSession deleteSession = new DeleteSession(session);
         try {
           deleteSession.call();
+          driverSessions.deleteSession(sessionId);
           log.info("Session " + session + " deleted due to timeout");
         } catch (Exception e) {
           throw new RuntimeException(e);

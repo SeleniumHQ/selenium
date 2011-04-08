@@ -21,7 +21,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.KnownElements;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.Handler;
@@ -33,17 +32,16 @@ import java.util.concurrent.FutureTask;
 
 public abstract class WebDriverHandler implements Handler, Callable<ResultType> {
 
-  protected final DriverSessions sessions;
-  protected volatile SessionId sessionId;
+  private final Session session;
 
-  public WebDriverHandler(DriverSessions sessions) {
-    this.sessions = sessions;
+  protected WebDriverHandler(Session session) {
+    this.session = session;
   }
 
   public final ResultType handle() throws Exception {
     FutureTask<ResultType> future = new FutureTask<ResultType>(this);
     try {
-      return sessions.get(sessionId).execute(future);
+      return getSession().execute(future);
     } catch (ExecutionException e) {
       Throwable cause = e.getCause();
       if (cause instanceof Exception)
@@ -52,46 +50,46 @@ public abstract class WebDriverHandler implements Handler, Callable<ResultType> 
     }
   }
 
-  public void setSessionId(String sessionId) {
-    this.sessionId = new SessionId(sessionId);
-  }
-
   public String getSessionId() {
-    return sessionId.toString();
+    return session.getSessionId().toString();
   }
 
   public String getScreenshot() {
-    Session session = sessions.get(sessionId);
+    Session session = getSession();
     return session != null ? session.getAndClearScreenshot() : null;
   }
 
   protected WebDriver getDriver() {
-    Session session = sessions.get(sessionId);
+    Session session = getSession();
     return session.getDriver();
   }
 
+  protected Session getSession(){
+    return session;
+  }
+
   protected KnownElements getKnownElements() {
-    return sessions.get(sessionId).getKnownElements();
+    return getSession().getKnownElements();
   }
 
   protected Response newResponse() {
-    return new Response(sessionId);
+    return new Response(session.getSessionId());
   }
 
   protected SessionId getRealSessionId() {
-    return sessionId;
+    return session.getSessionId();
   }
 
   public void execute(FutureTask<?> task) throws Exception {
-    Session session = sessions.get(sessionId);
+    Session session = getSession();
     if (session != null)
       session.execute(task);
     else
       task.run();
   }
-  
-  protected WebDriver unwrap(WebDriver driver) {
-    WebDriver toReturn = driver;
+
+  protected WebDriver getUnwrappedDriver() {
+    WebDriver toReturn = getDriver();
     while (toReturn instanceof WrapsDriver) {
       toReturn = ((WrapsDriver) toReturn).getWrappedDriver();
     }

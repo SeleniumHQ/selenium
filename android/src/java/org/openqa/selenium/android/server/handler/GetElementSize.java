@@ -22,21 +22,19 @@ import com.google.common.collect.Maps;
 import android.graphics.Point;
 
 import org.openqa.selenium.android.AndroidWebElement;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
 public class GetElementSize extends AndroidWebElementHandler {
-  private volatile Response response;
 
-  public GetElementSize(DriverSessions sessions) {
-    super(sessions);
+  public GetElementSize(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
     AndroidWebElement element = (AndroidWebElement) getElement();
     Point p = element.getSize();
     Map<Object, Object> converted = Maps.newHashMap();
@@ -44,10 +42,6 @@ public class GetElementSize extends AndroidWebElementHandler {
     converted.put("height", p.y);
     response.setValue(converted);
     return ResultType.SUCCESS;
-  }
-
-  public Response getResponse() {
-    return response;
   }
 
   @Override

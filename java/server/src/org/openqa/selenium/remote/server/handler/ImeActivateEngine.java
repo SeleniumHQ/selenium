@@ -17,20 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
 
-public class ImeActivateEngine extends WebDriverHandler implements JsonParametersAware {
-  private volatile Response response;
+public class ImeActivateEngine extends ResponseAwareWebDriverHandler implements JsonParametersAware {
   private String engine = null;
 
-  public ImeActivateEngine(DriverSessions sessions) {
-    super(sessions);
+  public ImeActivateEngine(Session session) {
+    super(session);
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
@@ -38,14 +36,8 @@ public class ImeActivateEngine extends WebDriverHandler implements JsonParameter
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
-
     getDriver().manage().ime().activateEngine(engine);
 
     return ResultType.SUCCESS;
-  }
-
-  public Response getResponse() {
-    return response;
   }
 }

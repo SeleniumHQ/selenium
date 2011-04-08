@@ -17,26 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import java.util.Vector;
+public class ImeDeactivate extends ResponseAwareWebDriverHandler {
 
-public class ImeDeactivate extends WebDriverHandler {
-  private volatile Response response;
-
-  public ImeDeactivate(DriverSessions sessions) {
-    super(sessions);
+  public ImeDeactivate(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
     getDriver().manage().ime().deactivate();
     return ResultType.SUCCESS;
-  }
-
-  public Response getResponse() {
-    return response;
   }
 }

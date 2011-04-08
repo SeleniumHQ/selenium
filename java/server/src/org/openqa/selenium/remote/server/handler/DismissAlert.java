@@ -17,14 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import static org.openqa.selenium.remote.server.rest.ResultType.SUCCESS;
 
 public class DismissAlert extends WebDriverHandler {
-  public DismissAlert(DriverSessions sessions) {
-    super(sessions);
+
+  public DismissAlert(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {

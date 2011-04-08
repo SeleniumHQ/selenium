@@ -19,18 +19,18 @@ package org.openqa.selenium.remote.server.handler.interactions;
 
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Mouse;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
 public class ClickInSession extends WebDriverHandler implements JsonParametersAware {
-  boolean leftMouseButton = true;
+  volatile boolean leftMouseButton = true;
 
-  public ClickInSession(DriverSessions sessions) {
-    super(sessions);
+  public ClickInSession(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {

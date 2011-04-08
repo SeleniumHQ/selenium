@@ -17,28 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.rest.ResultType;
-import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.KnownElements;
-import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.remote.server.KnownElements;
+import org.openqa.selenium.remote.server.Session;
+import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class ElementEquality extends WebElementHandler {
   private volatile String otherId;
-  private volatile Response response;
 
-  public ElementEquality(DriverSessions sessions) {
-    super(sessions);
+  public ElementEquality(Session session) {
+    super(session);
   }
 
   public void setOther(String otherId) {
     this.otherId = otherId;
   }
 
-
   public ResultType call() throws Exception {
-    response = newResponse();
 
     WebElement one = getElement();
     WebElement two = getKnownElements().get(otherId);
@@ -54,10 +50,6 @@ public class ElementEquality extends WebElementHandler {
     response.setValue(one.equals(two));
 
     return ResultType.SUCCESS;
-  }
-
-   public Response getResponse() {
-    return response;
   }
 
   @Override

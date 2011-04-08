@@ -18,8 +18,8 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler.html5;
 
 import org.openqa.selenium.html5.WebStorage;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
@@ -27,17 +27,17 @@ import java.util.Map;
 
 public class RemoveSessionStorageItem extends WebDriverHandler implements JsonParametersAware {
   private volatile String key;
-  
-  public RemoveSessionStorageItem(DriverSessions session) {
+
+  public RemoveSessionStorageItem(Session session) {
     super(session);
   }
-  
+
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     key = (String) allParameters.get("key");
   }
 
   public ResultType call() throws Exception {
-    Object value = ((WebStorage) unwrap(getDriver())).getSessionStorage().removeItem(key);
+    Object value = ((WebStorage) getUnwrappedDriver()).getSessionStorage().removeItem(key);
     return ResultType.SUCCESS;
   }
 

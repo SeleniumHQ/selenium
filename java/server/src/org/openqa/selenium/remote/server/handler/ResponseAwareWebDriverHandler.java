@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2007-2011 WebDriver committers
+Copyright 2007-2011 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,22 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class ClickElement extends WebElementHandler {
+public abstract class ResponseAwareWebDriverHandler extends WebDriverHandler  {
 
-  public ClickElement(Session session) {
+  protected final Response response;
+
+  public ResponseAwareWebDriverHandler(Session session) {
     super(session);
+    this.response = newResponse();
   }
 
-  public ResultType call() throws Exception {
-    getElement().click();
-    return ResultType.SUCCESS;
-  }
-  
-  @Override
-  public String toString() {
-    return String.format("[click: %s]", getElementAsString());
+  public Response getResponse() {
+    return response;
   }
 }

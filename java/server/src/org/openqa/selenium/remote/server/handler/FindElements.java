@@ -19,29 +19,26 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.JsonParametersAware;
-import org.openqa.selenium.remote.server.rest.ResultType;
-
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
+import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class FindElements extends WebDriverHandler implements JsonParametersAware {
+public class FindElements extends ResponseAwareWebDriverHandler implements JsonParametersAware {
 
   private volatile By by;
-  private volatile Response response;
 
-  public FindElements(DriverSessions sessions) {
-    super(sessions);
+  public FindElements(Session session) {
+    super(session);
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
@@ -52,8 +49,6 @@ public class FindElements extends WebDriverHandler implements JsonParametersAwar
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
-
     List<WebElement> elements = getDriver().findElements(by);
     Set<Map<String, String>> elementIds = Sets.newLinkedHashSet(
         Iterables.transform(elements, new Function<WebElement, Map<String, String>>() {
@@ -66,10 +61,6 @@ public class FindElements extends WebDriverHandler implements JsonParametersAwar
     return ResultType.SUCCESS;
   }
 
-  public Response getResponse() {
-    return response;
-  }
-  
   @Override
   public String toString() {
     return String.format("[find elements: %s", by);

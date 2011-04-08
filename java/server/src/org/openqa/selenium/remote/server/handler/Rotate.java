@@ -19,8 +19,8 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
@@ -28,12 +28,12 @@ import java.util.Map;
 public class Rotate extends WebDriverHandler implements JsonParametersAware {
   private volatile ScreenOrientation orientation;
 
-  public Rotate(DriverSessions sessions) {
-    super(sessions);
+  public Rotate(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {
-    ((Rotatable) unwrap(getDriver())).rotate(orientation);
+    ((Rotatable) getUnwrappedDriver()).rotate(orientation);
     return ResultType.SUCCESS;
   }
 

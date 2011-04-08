@@ -18,16 +18,15 @@ limitations under the License.
 package org.openqa.selenium.android.server.handler;
 
 import org.openqa.selenium.android.AndroidWebElement;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetCssProperty extends AndroidWebElementHandler {
   private volatile String propertyName;
-  private volatile Response response;
 
-  public GetCssProperty(DriverSessions sessions) {
-    super(sessions);
+  public GetCssProperty(Session session) {
+    super(session);
   }
 
   public void setPropertyName(String propertyName) {
@@ -35,16 +34,10 @@ public class GetCssProperty extends AndroidWebElementHandler {
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
-
     AndroidWebElement element = (AndroidWebElement) getElement();
     response.setValue(element.getValueOfCssProperty(propertyName));
 
     return ResultType.SUCCESS;
-  }
-
-  public Response getResponse() {
-    return response;
   }
 
   @Override

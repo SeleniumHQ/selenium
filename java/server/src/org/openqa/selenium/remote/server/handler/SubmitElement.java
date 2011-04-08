@@ -17,13 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class SubmitElement extends WebElementHandler {
 
-  public SubmitElement(DriverSessions sessions) {
-    super(sessions);
+  public SubmitElement(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {

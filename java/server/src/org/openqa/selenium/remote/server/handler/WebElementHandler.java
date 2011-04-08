@@ -1,15 +1,15 @@
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 
-public abstract class WebElementHandler extends WebDriverHandler {
+public abstract class WebElementHandler extends ResponseAwareWebDriverHandler {
   private volatile String elementId;
-  
-  public WebElementHandler(DriverSessions sessions) {
-    super(sessions);
+
+  protected WebElementHandler(Session session) {
+    super(session);
   }
-  
+
   public void setId(String elementId) {
     this.elementId = elementId;
   }

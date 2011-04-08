@@ -20,8 +20,8 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
@@ -31,8 +31,8 @@ public class DragElement extends WebElementHandler implements JsonParametersAwar
   private volatile int x;
   private volatile int y;
 
-  public DragElement(DriverSessions sessions) {
-    super(sessions);
+  public DragElement(Session session) {
+    super(session);
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {

@@ -18,8 +18,8 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.internal.ArgumentConverter;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
@@ -29,8 +29,8 @@ public class SwitchToFrame extends WebDriverHandler implements JsonParametersAwa
 
   private volatile Object id;
 
-  public SwitchToFrame(DriverSessions sessions) {
-    super(sessions);
+  public SwitchToFrame(Session session) {
+    super(session);
   }
 
   public void setId(Object id) {

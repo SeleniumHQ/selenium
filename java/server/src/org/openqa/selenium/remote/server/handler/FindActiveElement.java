@@ -17,22 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import com.google.common.collect.ImmutableMap;
+public class FindActiveElement extends ResponseAwareWebDriverHandler {
 
-public class FindActiveElement extends WebDriverHandler {
-    private volatile Response response;
+  public FindActiveElement(Session session) {
+    super(session);
+  }
 
-    public FindActiveElement(DriverSessions sessions) {
-      super(sessions);
-    }
-
-    public ResultType call() throws Exception {
-      response = newResponse();
+  public ResultType call() throws Exception {
 
       WebElement element = getDriver().switchTo().activeElement();
       String elementId = getKnownElements().add(element);
@@ -41,10 +37,6 @@ public class FindActiveElement extends WebDriverHandler {
       return ResultType.SUCCESS;
     }
 
-    public Response getResponse() {
-      return response;
-    }
-    
     @Override
     public String toString() {
       return "[find active element]";

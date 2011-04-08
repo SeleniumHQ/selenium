@@ -17,28 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetCurrentUrl extends WebDriverHandler {
+public class GetCurrentUrl extends ResponseAwareWebDriverHandler {
 
-  private volatile  Response response;
 
-  public GetCurrentUrl(DriverSessions sessions) {
-    super(sessions);
+  public GetCurrentUrl(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
     response.setValue(getDriver().getCurrentUrl());
     return ResultType.SUCCESS;
   }
 
-  public Response getResponse() {
-    return response;
-  }
-  
   @Override
   public String toString() {
     return "[get current url]";

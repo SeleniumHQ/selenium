@@ -19,31 +19,29 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.PerSessionLogHandler;
 
+/**
+ * Handles the browser side of the delete.
+ * Removing from DriverSessions happens outside this class.
+ */
 public class DeleteSession extends WebDriverHandler {
 
-  private final DriverSessions sessions;
-
-  public DeleteSession(DriverSessions sessions) {
-    super(sessions);
-    this.sessions = sessions;
+  public DeleteSession(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {
     getDriver().quit();
-      final SessionId realSessionId = getRealSessionId();
-      sessions.deleteSession( realSessionId );
 
     // Yes, this is funky. See javadocs on PerSessionLogHandler#clearThreadTempLogs for details.
     final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
-      if(logHandler != null){
-        logHandler.clearThreadTempLogs(Thread.currentThread().getId());
-      }
+    if(logHandler != null){
+      logHandler.clearThreadTempLogs(Thread.currentThread().getId());
+    }
     return ResultType.SUCCESS;
   }
   

@@ -17,17 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
+import com.google.common.collect.Lists;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.JsonToBeanConverter;
-import org.openqa.selenium.remote.PropertyMunger;
-import org.openqa.selenium.remote.SimplePropertyDescriptor;
+import org.openqa.selenium.remote.*;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
-
-import com.google.common.collect.Lists;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.PerSessionLogHandler;
 
@@ -37,12 +34,7 @@ import java.io.BufferedReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
@@ -51,10 +43,9 @@ import java.util.logging.Logger;
 public class ResultConfig {
 
   private final String[] sections;
-  private final Class<? extends Handler> handlerClazz;
+  private final HandlerFactory handlerFactory;
   private final DriverSessions sessions;
-  private final Map<ResultType, Set<Result>> resultToRender =
-      new HashMap<ResultType, Set<Result>>();
+  private final Map<ResultType, Set<Result>> resultToRender = new HashMap<ResultType, Set<Result>>();
   private final String url;
   private final Logger log;
 
@@ -66,26 +57,16 @@ public class ResultConfig {
     }
 
     sections = url.split("/");
-    this.handlerClazz = handlerClazz;
     this.sessions = sessions;
+    this.handlerFactory = getHandlerFactory(handlerClazz);
   }
 
-  public Handler getHandler(String url) throws Exception {
+
+  public Handler getHandler(String url, SessionId sessionId) throws Exception {
     if (!isFor(url)) {
       return null;
     }
-
-    return populate(createInstance(handlerClazz), url);
-  }
-
-  private Handler createInstance(Class<? extends Handler> handlerClazz) throws Exception {
-    try {
-      Constructor<? extends Handler> constructor =
-          handlerClazz.getConstructor(DriverSessions.class);
-      return constructor.newInstance(sessions);
-    } catch (NoSuchMethodException e) {
-      return handlerClazz.newInstance();
-    }
+    return populate(handlerFactory.createHandler(sessionId), url);
   }
 
   public boolean isFor(String urlToMatch) {
@@ -103,6 +84,11 @@ public class ResultConfig {
 
     return true;
   }
+
+    interface HandlerFactory {
+      Handler createHandler(SessionId sessionId) throws Exception;
+    }
+
 
   protected Handler populate(Handler handler, String pathString) {
     String[] strings = pathString.split("/");
@@ -141,7 +127,7 @@ public class ResultConfig {
     // There should not be more than one renderer for each result and
     // mime type.
     for (Result existingResult : results) {
-      assert(existingResult.isExactMimeTypeMatch(mimeType) == false);
+      assert(!existingResult.isExactMimeTypeMatch(mimeType));
     }
     results.add(new Result(mimeType, renderer));
     return this;
@@ -149,7 +135,10 @@ public class ResultConfig {
 
   public void handle(String pathInfo, final HttpServletRequest request, final HttpServletResponse response)
       throws Exception {
-    final Handler handler = getHandler(pathInfo);
+    String sessionId = HttpCommandExecutor.getSessionId( request.getRequestURI());
+    SessionId sessId = sessionId != null ? new SessionId(sessionId) : null;
+
+    final Handler handler = getHandler(pathInfo, sessId);
 
     if (handler instanceof JsonParametersAware) {
       setJsonParameters(request, handler);
@@ -206,6 +195,7 @@ public class ResultConfig {
           if(logHandler != null){
             logHandler.clearThreadTempLogs(Thread.currentThread().getId());
           }
+          sessions.deleteSession( sessId);
       }
 
 
@@ -285,6 +275,40 @@ public class ResultConfig {
     return ec.isMappableError(nextCause) ? nextCause : rootCause;
   }
 
+  private HandlerFactory getHandlerFactory(Class<? extends Handler> handlerClazz){
+    final Constructor<? extends Handler> sessionAware = getConstructor( handlerClazz, Session.class);
+    if (sessionAware != null) return new HandlerFactory(){
+      public Handler createHandler(SessionId sessionId) throws Exception {
+        return sessionAware.newInstance( sessionId != null ? sessions.get( sessionId) : null);
+      }
+    };
+
+    final Constructor<? extends Handler> driverSessions = getConstructor( handlerClazz, DriverSessions.class);
+    if (driverSessions != null) return new HandlerFactory(){
+      public Handler createHandler(SessionId sessionId) throws Exception {
+        return driverSessions.newInstance( sessions);
+      }
+    };
+
+
+    final Constructor<? extends Handler> norags = getConstructor( handlerClazz);
+    if (norags != null) return new HandlerFactory(){
+      public Handler createHandler(SessionId sessionId) throws Exception {
+        return norags.newInstance( );
+      }
+    };
+
+    throw new IllegalArgumentException("Don't know how to construct " + handlerClazz);
+  }
+
+  private static Constructor<? extends Handler> getConstructor(Class<? extends Handler> handlerClazz, Class... types){
+    try {
+      return handlerClazz.getConstructor(types);
+    } catch (NoSuchMethodException e) {
+      return null;
+    }
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -296,11 +320,8 @@ public class ResultConfig {
 
     ResultConfig that = (ResultConfig) o;
 
-    if (!url.equals(that.url)) {
-      return false;
-    }
+    return url.equals(that.url);
 
-    return true;
   }
 
   @Override

@@ -19,7 +19,7 @@ package org.openqa.selenium.remote;
 
 public class SessionId {
 
-  private String opaqueKey;
+  private final String opaqueKey;
 
   public SessionId(String opaqueKey) {
     this.opaqueKey = opaqueKey;

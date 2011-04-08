@@ -17,17 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetElementAttribute extends WebElementHandler {
 
   private volatile String name;
-  private volatile Response response;
 
-  public GetElementAttribute(DriverSessions sessions) {
-    super(sessions);
+  public GetElementAttribute(Session session) {
+    super(session);
   }
 
   public void setName(String name) {
@@ -35,14 +33,9 @@ public class GetElementAttribute extends WebElementHandler {
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
     response.setValue(getElement().getAttribute(name));
 
     return ResultType.SUCCESS;
-  }
-
-  public Response getResponse() {
-    return response;
   }
 
   @Override

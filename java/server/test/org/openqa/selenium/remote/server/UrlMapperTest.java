@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import junit.framework.TestCase;
 
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -49,7 +50,7 @@ public class UrlMapperTest extends TestCase {
     mapper.bind("/example", SessionHandler.class);
 
     ResultConfig config = mapper.getConfig("/example");
-    SessionHandler handler = (SessionHandler) config.getHandler("/example");
+    SessionHandler handler = (SessionHandler) config.getHandler("/example", new SessionId("test"));
 
     assertThat(handler.getSessions(), is(notNullValue()));
   }

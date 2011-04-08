@@ -18,31 +18,30 @@ limitations under the License.
 package org.openqa.selenium.remote.server;
 
 import junit.framework.TestCase;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.ResultConfig;
+import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.server.rest.Handler;
-import org.openqa.selenium.remote.server.rest.ResultConfig;
-import org.openqa.selenium.remote.server.rest.ResultType;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 public class ResultConfigTest extends TestCase {
   private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
+  private static final SessionId dummySessionId = new SessionId("Test");
 
   public void testShouldMatchBasicUrls() throws Exception {
     ResultConfig config = new ResultConfig("/fish", StubHandler.class, null, logger);
 
-    assertThat(config.getHandler("/fish"), is(notNullValue()));
-    assertThat(config.getHandler("/cod"), is(nullValue()));
+    assertThat(config.getHandler("/fish", dummySessionId), is(notNullValue()));
+    assertThat(config.getHandler("/cod", dummySessionId), is(nullValue()));
   }
 
   public void testShouldNotAllowNullToBeUsedAsTheUrl() {
@@ -65,14 +64,14 @@ public class ResultConfigTest extends TestCase {
 
   public void testShouldMatchNamedParameters() throws Exception {
     ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
-    Handler handler = config.getHandler("/foo/fishy");
+    Handler handler = config.getHandler("/foo/fishy", dummySessionId);
 
     assertThat(handler, is(notNullValue()));
   }
 
   public void testShouldSetNamedParametersOnHandler() throws Exception {
     ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
-    NamedParameterHandler handler = (NamedParameterHandler) config.getHandler("/foo/fishy");
+    NamedParameterHandler handler = (NamedParameterHandler) config.getHandler("/foo/fishy", dummySessionId);
 
     assertThat(handler.getBar(), is("fishy"));
   }

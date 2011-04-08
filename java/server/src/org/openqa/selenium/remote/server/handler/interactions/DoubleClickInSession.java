@@ -19,15 +19,14 @@ package org.openqa.selenium.remote.server.handler.interactions;
 
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Mouse;
-import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
-import org.openqa.selenium.remote.server.handler.WebElementHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class DoubleClickInSession extends WebDriverHandler {
 
-  public DoubleClickInSession(DriverSessions sessions) {
-    super(sessions);
+  public DoubleClickInSession(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {

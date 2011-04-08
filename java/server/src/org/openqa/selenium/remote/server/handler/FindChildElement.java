@@ -19,23 +19,20 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
-
-import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
 public class FindChildElement extends WebElementHandler implements JsonParametersAware {
   private volatile By by;
-  private volatile Response response;
 
-  public FindChildElement(DriverSessions sessions) {
-    super(sessions);
+  public FindChildElement(Session session) {
+    super(session);
   }
 
   @SuppressWarnings("unchecked")
@@ -47,8 +44,6 @@ public class FindChildElement extends WebElementHandler implements JsonParameter
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
-
     WebElement element = getElement().findElement(by);
     String elementId = getKnownElements().add(element);
 
@@ -57,10 +52,6 @@ public class FindChildElement extends WebElementHandler implements JsonParameter
     return ResultType.SUCCESS;
   }
 
-  public Response getResponse() {
-    return response;
-  }
-  
   @Override
   public String toString() {
     return String.format("[find child element: %s, %s", getElementAsString(), by);

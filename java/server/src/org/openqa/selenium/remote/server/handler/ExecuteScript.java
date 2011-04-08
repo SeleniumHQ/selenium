@@ -17,28 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.internal.ArgumentConverter;
 import org.openqa.selenium.remote.server.handler.internal.ResultConverter;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class ExecuteScript extends WebDriverHandler implements JsonParametersAware {
-  private volatile Response response;
+public class ExecuteScript extends ResponseAwareWebDriverHandler implements JsonParametersAware {
   private volatile String script;
   private volatile List<Object> args = new ArrayList<Object>();
 
-  public ExecuteScript(DriverSessions sessions) {
-    super(sessions);
+  public ExecuteScript(Session session) {
+    super(session);
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
@@ -51,8 +48,6 @@ public class ExecuteScript extends WebDriverHandler implements JsonParametersAwa
   }
   
   public ResultType call() throws Exception {
-    response = newResponse();
-
     Object value;
     if (args.size() > 0) {
       value = ((JavascriptExecutor) getDriver()).executeScript(script, args.toArray());
@@ -66,10 +61,6 @@ public class ExecuteScript extends WebDriverHandler implements JsonParametersAwa
     return ResultType.SUCCESS;
   }
 
-  public Response getResponse() {
-    return response;
-  }
-  
   @Override
   public String toString() {
     return String.format("[execute script: %s, %s]", script, args);

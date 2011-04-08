@@ -441,7 +441,10 @@ public class HttpCommandExecutor implements CommandExecutor {
       int nextSlash = uri.indexOf("/", sessionIndex);
       if (nextSlash != -1) {
         return uri.substring( sessionIndex, nextSlash );
+      } else {
+        return uri.substring( sessionIndex);
       }
+
     }
     return null;
   }

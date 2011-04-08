@@ -22,12 +22,9 @@ import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.internal.WrapsElement;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
-import org.openqa.selenium.remote.server.KnownElements;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
-import org.openqa.selenium.remote.server.handler.WebElementHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
@@ -42,8 +39,8 @@ public class MouseMoveToLocation extends WebDriverHandler implements JsonParamet
   int yOffset = 0;
   boolean offsetsProvided = false;
 
-  public MouseMoveToLocation(DriverSessions sessions) {
-    super(sessions);
+  public MouseMoveToLocation(Session session) {
+    super(session);
   }
 
   public ResultType call() throws Exception {

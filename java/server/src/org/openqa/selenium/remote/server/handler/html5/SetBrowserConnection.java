@@ -17,27 +17,27 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.html5;
 
-import java.util.Map;
-
 import org.openqa.selenium.html5.BrowserConnection;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
+import java.util.Map;
+
 public class SetBrowserConnection extends WebDriverHandler implements JsonParametersAware {
-  private boolean online;
-  
-  public SetBrowserConnection(DriverSessions sessions) {
-    super(sessions);
+  private volatile boolean online;
+
+  public SetBrowserConnection(Session session) {
+    super(session);
   }
-  
+
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     online = (Boolean) allParameters.get("state");
   }
 
   public ResultType call() throws Exception {
-    ((BrowserConnection) unwrap(getDriver())).setOnline(online);
+    ((BrowserConnection) getUnwrappedDriver()).setOnline(online);
     return ResultType.SUCCESS;
   }
   

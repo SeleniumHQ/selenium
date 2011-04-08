@@ -21,8 +21,8 @@ package org.openqa.selenium.remote.server.handler;
 
 import com.google.common.collect.Maps;
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -34,8 +34,8 @@ public abstract class CookieHandler extends WebDriverHandler implements JsonPara
 
   private volatile Map<String, Object> rawCookie;
 
-  public CookieHandler(DriverSessions sessions) {
-    super(sessions);
+  protected CookieHandler(Session session) {
+    super(session);
   }
 
   @SuppressWarnings({"unchecked"})

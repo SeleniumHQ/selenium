@@ -17,28 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.internal.ArgumentConverter;
 import org.openqa.selenium.remote.server.handler.internal.ResultConverter;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class ExecuteAsyncScript extends WebDriverHandler implements JsonParametersAware {
-  private volatile Response response;
+public class ExecuteAsyncScript extends ResponseAwareWebDriverHandler implements JsonParametersAware {
   private volatile String script;
-  private volatile List<Object> args = new ArrayList<Object>();
+  private final List<Object> args = new ArrayList<Object>();
 
-  public ExecuteAsyncScript(DriverSessions sessions) {
-    super(sessions);
+  public ExecuteAsyncScript(Session session) {
+    super(session);
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
@@ -46,12 +43,10 @@ public class ExecuteAsyncScript extends WebDriverHandler implements JsonParamete
 
     List<?> params = (List<?>) allParameters.get("args");
 
-    args = Lists.newArrayList(Iterables.transform(params,
-        new ArgumentConverter(getKnownElements())));
+    args.addAll(Lists.newArrayList(Iterables.transform(params, new ArgumentConverter(getKnownElements()))));
   }
 
   public ResultType call() throws Exception {
-    response = newResponse();
 
     Object value;
     if (args.size() > 0) {
@@ -64,10 +59,6 @@ public class ExecuteAsyncScript extends WebDriverHandler implements JsonParamete
     response.setValue(result);
 
     return ResultType.SUCCESS;
-  }
-
-  public Response getResponse() {
-    return response;
   }
 
   @Override
