@@ -17,6 +17,7 @@ mozilla_extension(name = "webdriver",
   content = [
     "extension/content/**/*.js",
     "extension/content/fxdriver.xul",
+    "extension/content/fx4driver.xul",
     "//javascript/shared-extension",
   ],
   components = [
