@@ -25,4 +25,5 @@ java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 .idea/vcs.xml
 .idea/misc.xml
 .idea/workspace.xml
+.idea/projectCodeStyle.xml
 
