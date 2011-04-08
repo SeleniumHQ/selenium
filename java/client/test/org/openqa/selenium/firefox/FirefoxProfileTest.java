@@ -187,17 +187,18 @@ public class FirefoxProfileTest extends TestCase {
     }
   }
 
-  public void testCanOverrideMaxScriptRuntimeIfGreaterThanDefaultValue() {
+  public void testCanOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
     FirefoxProfile profile = new FirefoxProfile();
 
     try {
       profile.setPreference("dom.max_script_run_time", 29);
       fail();
     } catch (IllegalArgumentException expected) {
-      assertEquals("dom.max_script_run_time must be >= 30", expected.getMessage());
+      assertEquals("dom.max_script_run_time must be == 0 || >= 30", expected.getMessage());
     }
 
     profile.setPreference("dom.max_script_run_time", 31);
+    profile.setPreference("dom.max_script_run_time", 0);
   }
 
   private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {

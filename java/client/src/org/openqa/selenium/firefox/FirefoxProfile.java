@@ -284,8 +284,8 @@ public class FirefoxProfile {
         throw new IllegalArgumentException(String.format(
           "%s value must be a number: %s", MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
       }
-      checkArgument(n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
-          "%s must be >= %s", MAX_SCRIPT_RUN_TIME_KEY, DEFAULT_MAX_SCRIPT_RUN_TIME);
+      checkArgument(n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
+          "%s must be == 0 || >= %s", MAX_SCRIPT_RUN_TIME_KEY, DEFAULT_MAX_SCRIPT_RUN_TIME);
     }
   }
 
