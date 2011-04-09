@@ -18,29 +18,31 @@ package org.openqa.grid.web.servlet.handler;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.management.RuntimeErrorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Maps;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.web.Hub;
 import org.openqa.selenium.Platform;
 
 /**
- * Hanlder processing the selenium1 based requests. Each request body has to be
- * read to get the sessionid at least.
- * 
- * 
+ * Handler processing the selenium1 based requests. Each request body has to be
+ * read to get the sessionId at least.
  */
 public class Selenium1RequestHandler extends RequestHandler {
 
-	private static final Logger log = Logger.getLogger(Selenium1RequestHandler.class.getName());
+    private static final Logger log = Logger.getLogger(Selenium1RequestHandler.class.getName());
 
-  Selenium1RequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
+    Selenium1RequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
 		super(request, response, registry);
 		if (getRequestBody() == null) {
 			throw new InstantiationError("Cannot create a selenium1 request handler from a request without body");
@@ -124,6 +126,11 @@ public class Selenium1RequestHandler extends RequestHandler {
 					piece = URLDecoder.decode(piece, "UTF-8");
 					piece = piece.split(",")[0];
 					piece = piece.split(" ")[0];
+
+                    String parts[] = piece.split("1=");
+                    if (parts[1].charAt(0) != '*') {
+                        piece = String.format("1=%s", URLEncoder.encode(lookupGrid1Environment(parts[1]), "UTF-8"));
+                    }
 				}
 				builder.append(piece + "&");
 			}
@@ -139,4 +146,9 @@ public class Selenium1RequestHandler extends RequestHandler {
 		return null;
 	}
 
+    private String lookupGrid1Environment(String browserString) {
+        String translatedBrowserString = Hub.getGrid1Mapping().get(browserString);
+
+        return (translatedBrowserString == null) ? browserString : translatedBrowserString;
+    }
 }

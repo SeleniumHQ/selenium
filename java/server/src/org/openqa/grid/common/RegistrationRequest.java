@@ -239,6 +239,7 @@ public class RegistrationRequest {
             Map<String, Object> cap = Maps.newHashMap();
             //cap.put("platform", "LINUX");
             cap.put("browserName", registrationInfo.get("environment"));
+            cap.put("environment", registrationInfo.get("environment"));
             request.capabilities.add(cap);
 
             return request;
