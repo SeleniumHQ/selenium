@@ -87,9 +87,5 @@ public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListen
 		super.beforeCommand(session, request, response);
 	}
 
-	@Override
-	public boolean isAlive() {
-		return false;
-	}
 
 }

@@ -114,7 +114,7 @@ public class PriorityTest {
 
 	// free the grid : the queue is consumed, and the test with the highest
 	// priority should be processed.
-	@Test(dependsOnMethods = "queueSomeMore")
+	@Test(dependsOnMethods = "queueSomeMore",timeOut = 10000)
 	public void releaseTheSessionBlockingTheGrid() throws InterruptedException {
 		while (registry.getNewSessionRequests().size() != 5) {
 			Thread.sleep(100);

@@ -16,6 +16,8 @@ limitations under the License.
 
 package org.openqa.grid.selenium;
 
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+
 import java.io.File;
 import java.net.URL;
 
@@ -23,6 +25,7 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.jetty.http.SocketListener;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.WebApplicationContext;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -40,7 +43,7 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 	public URL getRemoteURL() {
 		try {
 			String ip = networkUtils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-      return new URL("http://" + ip + ":" + getPort() + REMOTE_PATH);
+			return new URL("http://" + ip + ":" + getPort() + REMOTE_PATH);
 		} catch (Throwable e) {
 			return null;
 		}
@@ -51,18 +54,18 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 		RegistrationRequest request = super.getRegistrationRequest();
 		request.getConfiguration().put(RegistrationRequest.PROXY_CLASS, "org.openqa.grid.selenium.proxy.WebDriverRemoteProxy");
 
-    return request;
+		return request;
 	}
 
 	@Override
 	public void launchRemoteServer() throws Exception {
 		Server server = new Server();
-    SocketListener listener = new SocketListener();
-    listener.setPort(getRemoteURL().getPort());
-    server.addListener(listener);
+		SocketListener listener = new SocketListener();
+		listener.setPort(getRemoteURL().getPort());
+		server.addListener(listener);
 
-    WebApplicationContext context = server.addWebApplication("", ".");
-    context.addServlet(getRemoteURL().getPath() + "/*", DriverServlet.class.getName());
+		WebApplicationContext context = server.addWebApplication("", ".");
+		context.addServlet(getRemoteURL().getPath() + "/*", DriverServlet.class.getName());
 		server.start();
 	}
 
@@ -74,6 +77,7 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 	@Override
 	public void addFirefoxSupport(File profile) {
 		DesiredCapabilities ff = DesiredCapabilities.firefox();
+		ff.setCapability(PLATFORM, Platform.getCurrent());
 		if (profile != null) {
 			ff.setCapability(FirefoxDriver.PROFILE, new FirefoxProfile(profile));
 		}
@@ -82,7 +86,11 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 
 	@Override
 	public void addInternetExplorerSupport() {
-		getCaps().add(DesiredCapabilities.internetExplorer());
+		if (Platform.getCurrent().is(Platform.WINDOWS)) {
+			DesiredCapabilities ie = DesiredCapabilities.internetExplorer();
+			ie.setCapability(PLATFORM, Platform.getCurrent());
+			getCaps().add(ie);
+		}
 
 	}
 

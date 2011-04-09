@@ -49,14 +49,14 @@ public class DefaultCapabilityMatcherTest {
 	@Test
 	public void smokeTest(){
 		Assert.assertTrue(helper.matches(tl, tl));
-		Assert.assertTrue(helper.matches(tl, tl2));
-		Assert.assertTrue(helper.matches(tl2, tl));
+		Assert.assertFalse(helper.matches(tl, tl2));
+		Assert.assertFalse(helper.matches(tl2, tl));
 		Assert.assertTrue(helper.matches(tl2, tl2));
 		
 		Assert.assertTrue(helper.matches(firefox, firefox));
-		Assert.assertTrue(helper.matches(firefox, firefox2));
-		Assert.assertTrue(helper.matches(firefox2, firefox));
-		Assert.assertTrue(helper.matches(firefox, firefox2));
+		Assert.assertFalse(helper.matches(firefox, firefox2));
+		Assert.assertFalse(helper.matches(firefox2, firefox));
+		Assert.assertFalse(helper.matches(firefox, firefox2));
 		
 		Assert.assertFalse(helper.matches(tl, null));
 		Assert.assertFalse(helper.matches(null, null));
@@ -66,7 +66,7 @@ public class DefaultCapabilityMatcherTest {
 	
 	@Test(expectedExceptions=GridException.class)
 	public void notImplemented(){
-		Assert.assertTrue(helper.matches(tl, exotic));
+		Assert.assertFalse(helper.matches(tl, exotic));
 		
 	}
 }

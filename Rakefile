@@ -537,6 +537,7 @@ end
 task :release => [
     '//java/server/src/org/openqa/selenium/server:server:zip',
     '//java/server/src/org/openqa/selenium/server:server:uber',
+    '//java/server/src/org/openqa/grid/selenium:selenium:uber',
     '//java/client/src/org/openqa/selenium:client-combined:zip'
   ] do |t|
   # Unzip each of the deps and rename the pieces that need renaming
@@ -573,7 +574,8 @@ task :release => [
   end
 
   mkdir_p "build/dist"
-  cp "build/java/server/src/org/openqa/selenium/server/server-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
+  cp "build/java/server/src/org/openqa/selenium/server/server-standalone.jar", "build/dist/selenium-server-standalone-#{version}-without-grid.jar"
+  cp "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
   cp "build/java/server/src/org/openqa/selenium/server/server.zip", "build/dist/selenium-server-#{version}.zip"
   cp "build/java/client/src/org/openqa/selenium/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
 end

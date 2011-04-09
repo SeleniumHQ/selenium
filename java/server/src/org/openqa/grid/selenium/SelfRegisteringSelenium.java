@@ -16,10 +16,13 @@ limitations under the License.
 
 package org.openqa.grid.selenium;
 
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+
 import java.io.File;
 import java.net.URL;
 
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -75,15 +78,14 @@ public class SelfRegisteringSelenium extends SelfRegisteringRemote {
 
 	@Override
 	public void setMaxConcurrentSession(int max) {
-		if (max != 1) {
-			throw new IllegalArgumentException("Selenium 1 RC can only host 1 test at a time");
-		}
+		getConfig().put(RegistrationRequest.MAX_SESSION, max);
 	}
 
 	@Override
 	public void addFirefoxSupport(File profileDir) {
 		DesiredCapabilities ff = new DesiredCapabilities();
 		ff.setBrowserName("*firefox");
+		ff.setCapability(PLATFORM, Platform.getCurrent());
 		if (profileDir != null && profileDir.exists()) {
 			firefoxProfileDir = profileDir;
 			ff.setCapability(FirefoxDriver.PROFILE, new FirefoxProfile(profileDir));
@@ -94,9 +96,12 @@ public class SelfRegisteringSelenium extends SelfRegisteringRemote {
 
 	@Override
 	public void addInternetExplorerSupport() {
-		DesiredCapabilities ie = new DesiredCapabilities();
-		ie.setBrowserName("*iexplore");
-		getCaps().add(ie);
+		if (Platform.getCurrent().is(Platform.WINDOWS)){
+			DesiredCapabilities ie = new DesiredCapabilities();
+			ie.setBrowserName("*iexplore");
+			getCaps().add(ie);
+		}
+		
 
 	}
 

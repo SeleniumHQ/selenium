@@ -30,6 +30,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.selenium.utils.SeleniumProtocol;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -84,7 +85,8 @@ public abstract class SelfRegisteringRemote {
 	public abstract void addFirefoxSupport(File profileDir);
 
 	public void addChromeSupport() {
-		caps.add(DesiredCapabilities.chrome());
+		DesiredCapabilities chrome = new DesiredCapabilities("chrome","10.0",Platform.getCurrent());
+		caps.add(chrome);
 	}
 
 	public void setTimeout(long timeoutMillis, long cycleMillis) {

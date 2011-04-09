@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openqa.grid.internal.GridException;
+import org.openqa.selenium.Platform;
 
 /**
  * Default (naive) implementation of the capability matcher.
@@ -39,15 +40,18 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
 
 	private static final Logger log = Logger.getLogger(DefaultCapabilityMatcher.class.getName());
 
-  private final List<String> web = new ArrayList<String>();
+	private final List<String> web = new ArrayList<String>();
 	private final List<String> win32 = new ArrayList<String>();
-
-	// criterias.add("platform");
-	// criterias.add("version");
 
 	public DefaultCapabilityMatcher() {
 		web.add(BROWSER);
+		web.add("platform");
+		web.add("version");
+
 		win32.add(APP);
+		win32.add("platform");
+		win32.add("version");
+
 	}
 
 	// TODO freynaud for selenium1, find a way to also check the firefox
@@ -83,19 +87,45 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
 	 * 
 	 * @param keys
 	 * @param map1
-	 * @param map2
+	 * @param requestedCapability
 	 * @return TODO
 	 */
-	private boolean matchesAtLeastKeys(List<String> keys, Map<String, Object> map1, Map<String, Object> map2) {
-		for (String key : keys) {
-			if (!map1.containsKey(key)) {
-				return false;
-			}
-			if (!map1.get(key).equals(map2.get(key))) {
-				return false;
+	private boolean matchesAtLeastKeys(List<String> keys, Map<String, Object> map1, Map<String, Object> requestedCapability) {
+		for (String key : requestedCapability.keySet()) {
+			if (keys.contains(key)) {
+				String value = null;
+				if (requestedCapability.get(key)!=null){
+					value = requestedCapability.get(key).toString();
+				}
+				
+				
+				if (!("ANY".equalsIgnoreCase(value) || "".equalsIgnoreCase(value))) {
+					if (requestedCapability.get(key) instanceof Platform) {
+						// TODO freynaud get plateform from String. Calling
+						// extract
+						// is not safe as it may call system properties of the
+						// grid
+						// when the client is needed instead. Create a platform
+						// parser to convert selenium1 legacy envt.
+						Platform p1 = Platform.extractFromSysProperty(map1.get(key).toString());
+						if (!((Platform) requestedCapability.get(key)).is(p1)) {
+							return false;
+						}
+					} else if (map1.get(key) == null) {
+						Object v =  requestedCapability.get(key);
+						return v == null;
+					} else if (!map1.get(key).equals(requestedCapability.get(key))){
+						return false;
+					}
+				}
 			}
 		}
 		return true;
+		/*
+		 * for (String key : keys) { if (!map1.containsKey(key)) { return false;
+		 * } if (!map1.get(key).equals(requestedCapability.get(key))) { return
+		 * false; } } return true;
+		 */
 	}
 
 }

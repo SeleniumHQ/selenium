@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.grid.selenium.proxy;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -23,6 +24,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHttpRequest;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
@@ -58,7 +64,8 @@ public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListe
 	}
 
 	/*
-	 * Self Healing part.Polls the remote, and marks it down if it cannot be reached twice in a row.
+	 * Self Healing part.Polls the remote, and marks it down if it cannot be
+	 * reached twice in a row.
 	 */
 	private boolean down = false;
 	private boolean poll = true;
@@ -73,14 +80,13 @@ public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListe
 					if (!isAlive()) {
 						if (!down) {
 							nbFailedPoll++;
-							if (nbFailedPoll>=2){
+							if (nbFailedPoll >= 2) {
 								addNewEvent(new RemoteNotReachableException("Cannot reach the remote."));
 							}
 						}
 					} else {
 						down = false;
-						System.out.println("back up");
-						nbFailedPoll=0;
+						nbFailedPoll = 0;
 					}
 				} catch (InterruptedException e) {
 					return;
@@ -89,7 +95,21 @@ public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListe
 		}
 	});
 
-	public abstract boolean isAlive();
+	public boolean isAlive() {
+		BasicHttpRequest r = new BasicHttpRequest("GET", getRemoteURL().toExternalForm() + "/status");
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpHost host = new HttpHost(getRemoteURL().getHost(), getRemoteURL().getPort());
+		HttpResponse response;
+		try {
+			response = client.execute(host, r);
+		} catch (ClientProtocolException e) {
+			return false;
+		} catch (IOException e) {
+			return false;
+		}
+		int code = response.getStatusLine().getStatusCode();
+		return code == 404 || code == 500;
+	}
 
 	public void startPolling() {
 		pollingThread.start();
@@ -110,24 +130,23 @@ public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListe
 		for (RemoteException e : events) {
 			if (e instanceof RemoteNotReachableException) {
 				down = true;
-				System.out.println("down");
 				this.errors.clear();
 			}
 		}
 	}
 
 	/**
-	 * overwrites the session allocation to discard the proxy that are down. 
+	 * overwrites the session allocation to discard the proxy that are down.
 	 */
 	@Override
 	public TestSession getNewSession(Map<String, Object> requestedCapability) {
-		if (down){
+		if (down) {
 			return null;
 		}
 		return super.getNewSession(requestedCapability);
 	}
-	
-	public boolean isDown(){
+
+	public boolean isDown() {
 		return down;
 	}
 

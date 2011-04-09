@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
+import org.openqa.selenium.Platform;
 
 /**
  * Hanlder processing the selenium1 based requests. Each request body has to be
@@ -92,13 +93,16 @@ public class Selenium1RequestHandler extends RequestHandler {
 				// TODO freynaud : more splitting, like trying to guess the
 				// plateform or version ?
 
-				String[] details = envt.split(",");
+				String[] details = envt.split(" ");
 				if (details.length == 1) {
+					// simple browser string
 					cap.put(RegistrationRequest.BROWSER, details[0]);
 				} else {
+					// more complex. Only case handled so far = X on Y
+					// where X is the browser string, Y the OS
 					cap.put(RegistrationRequest.BROWSER, details[0]);
-					for (int i = 1; i < details.length; i++) {
-						cap.put(details[i].split("=")[0], details[i].split("=")[1]);
+					if (details.length==3){
+						cap.put(RegistrationRequest.PLATFORM, Platform.extractFromSysProperty(details[2]));
 					}
 				}
 				return cap;
@@ -107,6 +111,7 @@ public class Selenium1RequestHandler extends RequestHandler {
 		throw new RuntimeException("Error");
 	}
 
+	// TODO freynaud do some real parsing here instead. BrowserString to Capabilities service or so.
 	@Override
 	public String forwardNewSessionRequest(TestSession session) {
 		String responseBody = null;
@@ -118,6 +123,7 @@ public class Selenium1RequestHandler extends RequestHandler {
 				if (piece.startsWith("1=")) {
 					piece = URLDecoder.decode(piece, "UTF-8");
 					piece = piece.split(",")[0];
+					piece = piece.split(" ")[0];
 				}
 				builder.append(piece + "&");
 			}
