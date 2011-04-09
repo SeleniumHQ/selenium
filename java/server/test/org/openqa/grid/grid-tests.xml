@@ -2,7 +2,8 @@
 <suite name="grid-tests" verbose="1">
     <test name="grid-tests">
         <packages>
-            <package name="org.openqa.grid.internal"/>
+        	<package name="org.openqa.grid.common"/>
+            <package name="org.openqa.grid.internal.*"/>
             <package name="org.openqa.grid.plugin"/>
         </packages>
     </test>

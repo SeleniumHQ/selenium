@@ -108,7 +108,7 @@ public class DemoTmp {
 	
 	
 	private final String hubIp = "192.168.0.5";
-	@Test(invocationCount=3,threadPoolSize=3)
+	//@Test(invocationCount=3,threadPoolSize=3)
 	public void test() throws MalformedURLException, InterruptedException {
 		WebDriver driver = null;
 		try {

@@ -2,7 +2,7 @@
 <suite name="grid-tests" verbose="1">
     <test name="grid-tests">
         <packages>
-            <package name="org.openqa.grid.e2e"/>
+            <package name="org.openqa.grid.e2e.*"/>
         </packages>
     </test>
 </suite>
