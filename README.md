@@ -61,8 +61,14 @@ As the build progresses, you'll see it report where the build outputs are being 
   ./go test_firefox
   ./go test_htmlunit
   ./go test_ie
- 
-Note that the "test_chrome" target requires that you have the separate chromedriver binary available on your PATH. To run all the tests just run:
+
+Note that the "test_chrome" target requires that you have the separate chromedriver binary available on your PATH. 
+
+If you are interested in a single language binding, try one of:
+
+  ./go test_java 
+
+To run all the tests just run:
 
   ./go test
 
