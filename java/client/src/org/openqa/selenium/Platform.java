@@ -115,7 +115,11 @@ public enum Platform {
     minorVersion = min;
   }
 
-  public static Platform getCurrent() {
+  public String[] getPartOfOsName() {
+	return partOfOsName;
+}
+
+public static Platform getCurrent() {
     return extractFromSysProperty(System.getProperty("os.name"));
   }
 
