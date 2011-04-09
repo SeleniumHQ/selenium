@@ -123,7 +123,7 @@ public abstract class SelfRegisteringRemote {
 				throw new RuntimeException("Error sending the registration request.");
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("Error sending the registation request.", e);
+			throw new RuntimeException("Error sending the registration request.", e);
 		}
 	}
 

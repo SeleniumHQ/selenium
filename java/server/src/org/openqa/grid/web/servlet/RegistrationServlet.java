@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,11 +33,8 @@ import org.openqa.grid.internal.RemoteProxy;
  * entry point for the registration API the grid provides. The
  * {@link RegistrationRequest} sent to http://hub:port/grid/register will be
  * used to create a RemoteProxy and add it to the grid.
- * 
- * 
  */
 public class RegistrationServlet extends RegistryBasedServlet {
-
 	private static final long serialVersionUID = -8670670577712086527L;
 	private static final Logger log = Logger.getLogger(RegistrationServlet.class.getName());
 
@@ -47,7 +43,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
 	}
 
 	public RegistrationServlet(Registry registry) {
-    super(registry);
+        super(registry);
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
