@@ -1,16 +1,13 @@
 package org.openqa.grid.common;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.openqa.grid.selenium.proxy.SeleniumRemoteProxy;
-import org.openqa.selenium.Platform;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 
 public class RegistrationRequestTest {
