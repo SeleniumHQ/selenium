@@ -259,9 +259,9 @@ module Selenium
           path = File.join(directory, 'user.js')
           prefs = read_user_prefs(path)
 
-          prefs.merge! OVERRIDABLE_PREFERENCES
-          prefs.merge! @additional_prefs
           prefs.merge! DEFAULT_PREFERENCES
+          prefs.merge! @additional_prefs
+          prefs.merge! FROZEN_PREFERENCES
 
           prefs[WEBDRIVER_PREFS[:untrusted_certs]]  = !secure_ssl?
           prefs[WEBDRIVER_PREFS[:native_events]]    = native_events?
@@ -296,12 +296,17 @@ module Selenium
           }
         end
 
-        OVERRIDABLE_PREFERENCES = {
+        DEFAULT_PREFERENCES = {
           "browser.startup.page"     => '0',
-          "browser.startup.homepage" => '"about:blank"'
+          "browser.startup.homepage" => '"about:blank"',
+          "dom.max_script_run_time"  => '30',
         }.freeze
 
-        DEFAULT_PREFERENCES = {
+
+        # Profile preferences that are essential to the Firefox driver operating
+        # correctly. Users are not permitted to override these values.
+
+        FROZEN_PREFERENCES = {
           "app.update.auto"                           => 'false',
           "app.update.enabled"                        => 'false',
           "browser.download.manager.showWhenStarting" => 'false',
@@ -317,7 +322,6 @@ module Selenium
           "browser.tabs.warnOnOpen"                   => 'false',
           "devtools.errorconsole.enabled"             => 'true',
           "dom.disable_open_during_load"              => 'false',
-          "dom.max_script_run_time"                   => '30',
           "extensions.logging.enabled"                => 'true',
           "extensions.update.enabled"                 => 'false',
           "extensions.update.notifyUser"              => 'false',
