@@ -2,8 +2,11 @@ package org.openqa.grid.common;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.grid.selenium.proxy.SeleniumRemoteProxy;
+import org.openqa.selenium.Platform;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
@@ -68,4 +71,24 @@ public class RegistrationRequestTest {
 
 	}
 
+    @Test
+    public void seleniumGrid1Request() {
+        RegistrationRequest request = RegistrationRequest.getNewInstance("host=localhost&port=5000&environment=linux_firefox_3_6");
+
+        Assert.assertEquals(null, request.getId());
+        Assert.assertEquals(null, request.getName());
+        Assert.assertEquals(null, request.getDescription());
+
+        // Verify the capabilities were set up properly.
+        Assert.assertEquals(1, request.getCapabilities().size());
+        Map<String, Object> caps = request.getCapabilities().get(0);
+
+        //Assert.assertEquals(Platform.LINUX.toString(), caps.get("platform"));
+        Assert.assertEquals("linux_firefox_3_6", caps.get("browserName"));
+
+
+        // Verify the configuration was set up properly.
+        Assert.assertEquals("org.openqa.grid.selenium.proxy.SeleniumRemoteProxy", request.getConfiguration().get("proxy"));
+        Assert.assertEquals("http://localhost:5000/selenium-server/driver", request.getConfiguration().get("url"));
+    }
 }

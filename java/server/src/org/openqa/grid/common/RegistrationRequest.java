@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.InvalidParameterException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -151,10 +152,10 @@ public class RegistrationRequest {
 	}
 
 	/**
-	 * Create an object from a registration request formated as a json string.
+	 * Create an object from a registration request formatted as a json string.
 	 * 
 	 * @param json
-	 * @return create a request from the JSON request recieved
+	 * @return create a request from the JSON request received.
 	 */
 	@SuppressWarnings("unchecked") // JSON lib
 	public static RegistrationRequest getNewInstance(String json) {
@@ -190,8 +191,8 @@ public class RegistrationRequest {
 			}
 			return request;
 		} catch (JSONException e) {
-			e.printStackTrace();
-			throw new InvalidParameterException();
+            // Check if it was a Selenium Grid 1.0 request.
+            return parseGrid1Request(json);
 		}
 	}
 
@@ -207,5 +208,44 @@ public class RegistrationRequest {
 		Object o = getConfiguration().get(PROXY_CLASS);
 		return o == null ? null : o.toString();
 	}
+
+    private static RegistrationRequest parseGrid1Request(String clientRequest) {
+        // Check if it's a Selenium Grid 1.0 node connecting.
+        // If so, the string will be of the format: host=localhost&port=5000&environment=linux_firefox_3_6
+        Map<String, String> registrationInfo = Maps.newHashMap();
+
+        // Attempt to parse the client request string.
+        String parts[] = clientRequest.split("&");
+        for (String part : parts) {
+            String configItem[] = part.split("=");
+
+            // Do some basic taint checking so we can exit early if it's not really a key=value pair.
+            if (configItem.length != 2) {
+                throw new InvalidParameterException();
+            }
+
+            registrationInfo.put(configItem[0], configItem[1]);
+        }
+
+        // Now validate the query string.
+        if ((registrationInfo.get("port") != null) && (registrationInfo.get("environment") != null)) {
+            RegistrationRequest request = new RegistrationRequest();
+
+            Map<String, Object> configuration = Maps.newHashMap();
+            configuration.put("proxy", "org.openqa.grid.selenium.proxy.SeleniumRemoteProxy");
+            configuration.put("url", String.format("http://%s:%s/selenium-server/driver", registrationInfo.get("host"), registrationInfo.get("port")));
+			request.setConfiguration(configuration);
+
+            Map<String, Object> cap = Maps.newHashMap();
+            //cap.put("platform", "LINUX");
+            cap.put("browserName", registrationInfo.get("environment"));
+            request.capabilities.add(cap);
+
+            return request;
+        }
+        else {
+            throw new InvalidParameterException();
+        }
+    }
 
 }

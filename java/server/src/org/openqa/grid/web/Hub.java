@@ -17,10 +17,7 @@ package org.openqa.grid.web;
 
 import com.google.common.collect.Maps;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.web.servlet.ConsoleServlet;
-import org.openqa.grid.web.servlet.DriverServlet;
-import org.openqa.grid.web.servlet.RegistrationServlet;
-import org.openqa.grid.web.servlet.ResourceServlet;
+import org.openqa.grid.web.servlet.*;
 import org.openqa.jetty.http.SocketListener;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.WebApplicationContext;
@@ -143,6 +140,10 @@ public class Hub {
       root.addServlet("/grid/driver/*", DriverServlet.class.getName());
       root.addServlet("/selenium-server/driver/*", DriverServlet.class.getName());
       root.addServlet("/resources/*", ResourceServlet.class.getName());
+
+      // Selenium Grid 1.0 compatibility routes for older nodes trying to work with the newer hub.
+      root.addServlet("/registration-manager/register/*", RegistrationServlet.class.getName());
+      root.addServlet("/heartbeat", Grid1HeartbeatServlet.class.getName());
 
       for (Map.Entry<String, Class<? extends Servlet>> entry : extraServlet.entrySet()) {
         root.addServlet(entry.getKey(), entry.getValue().getName());
