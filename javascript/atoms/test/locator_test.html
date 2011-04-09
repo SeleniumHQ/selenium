@@ -245,12 +245,16 @@ limitations under the License.
 
     function testShouldSurviveObjectPrototypeBeingModified() {
       Object.prototype.cheese = 'brie';
+      Object.prototype.Inherits = function() { /* does nothing */ }
 
-      try {
-        bot.locators.findElement({id: 'after'});
-      } catch (e) {
-        fail("Did not expect to see a failure");
-      }
+      var first = bot.locators.findElement({name: 'tiger'});
+      assertEquals('tiger', first.getAttribute('name'));
+
+      var locator = new Object();
+      locator.name = 'tiger';
+
+      var second = bot.locators.findElement(locator);
+      assertEquals('tiger', second.getAttribute('name'));
     }
 </script>
 </head>
