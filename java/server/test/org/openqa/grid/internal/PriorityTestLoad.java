@@ -33,8 +33,8 @@ public class PriorityTestLoad {
 	// priority rule : the request with the highest priority goes first.
 	private Prioritizer highestNumberHasPriority = new Prioritizer() {
 		public int compareTo(Map<String, Object> a, Map<String, Object> b) {
-			int priorityA = Integer.parseInt(a.get("priority").toString());
-			int priorityB = Integer.parseInt(b.get("priority").toString());
+			int priorityA = Integer.parseInt(a.get("_priority").toString());
+			int priorityB = Integer.parseInt(b.get("_priority").toString());
 			return priorityB - priorityA;
 		}
 	};
@@ -57,7 +57,7 @@ public class PriorityTestLoad {
 		for (int i = 1; i <= MAX; i++) {
 			Map<String, Object> cap = new HashMap<String, Object>();
 			cap.put(APP, "FF");
-			cap.put("priority", i);
+			cap.put("_priority", i);
 			MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, cap);
 			requests.add(req);
 		}
@@ -116,7 +116,7 @@ public class PriorityTestLoad {
 			Thread.sleep(20);
 		}
 		Assert.assertNotNull(requests.get(requests.size() - 1).getTestSession());
-		Assert.assertEquals(requests.get(requests.size() - 1).getDesiredCapabilities().get("priority"), MAX);
+		Assert.assertEquals(requests.get(requests.size() - 1).getDesiredCapabilities().get("_priority"), MAX);
 	}
 
 	@AfterClass(alwaysRun = true)

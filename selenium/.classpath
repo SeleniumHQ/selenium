@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+‚<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="build/client/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/client/test-classes" path="test/java"/>

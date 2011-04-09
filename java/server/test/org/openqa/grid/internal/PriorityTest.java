@@ -24,8 +24,8 @@ public class PriorityTest {
 	// priority rule : the request with the highest priority goes first.
 	private Prioritizer highestNumberHasPriority = new Prioritizer() {
 		public int compareTo(Map<String, Object> a, Map<String, Object> b) {
-			int priorityA = Integer.parseInt(a.get("priority").toString());
-			int priorityB = Integer.parseInt(b.get("priority").toString());
+			int priorityA = Integer.parseInt(a.get("_priority").toString());
+			int priorityB = Integer.parseInt(b.get("_priority").toString());
 			return priorityB - priorityA;
 		}
 	};
@@ -55,23 +55,23 @@ public class PriorityTest {
 		// create 5 sessionRequest, with priority =1 .. 5
 		Map<String, Object> ff1 = new HashMap<String, Object>();
 		ff1.put(APP, "FF");
-		ff1.put("priority", 1);
+		ff1.put("_priority", 1);
 
 		Map<String, Object> ff2 = new HashMap<String, Object>();
 		ff2.put(APP, "FF");
-		ff2.put("priority", 2);
+		ff2.put("_priority", 2);
 
 		Map<String, Object> ff3 = new HashMap<String, Object>();
 		ff3.put(APP, "FF");
-		ff3.put("priority", 3);
+		ff3.put("_priority", 3);
 
 		Map<String, Object> ff4 = new HashMap<String, Object>();
 		ff4.put(APP, "FF");
-		ff4.put("priority", 4);
+		ff4.put("_priority", 4);
 
 		Map<String, Object> ff5 = new HashMap<String, Object>();
 		ff5.put(APP, "FF");
-		ff5.put("priority", 5);
+		ff5.put("_priority", 5);
 
 		newSessionRequest1 = new MockedNewSessionRequestHandler(registry, ff1);
 		newSessionRequest2 = new MockedNewSessionRequestHandler(registry, ff2);

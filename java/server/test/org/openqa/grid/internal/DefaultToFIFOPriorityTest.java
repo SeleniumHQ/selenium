@@ -47,7 +47,7 @@ public class DefaultToFIFOPriorityTest {
 		for (int i = 1; i <= MAX; i++) {
 			Map<String, Object> cap = new HashMap<String, Object>();
 			cap.put(APP, "FF");
-			cap.put("priority", i);
+			cap.put("_priority", i);
 			MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, cap);
 			requests.add(req);
 		}
@@ -91,7 +91,7 @@ public class DefaultToFIFOPriorityTest {
 	public void validate() throws InterruptedException {
 		Thread.sleep(250);
 		Assert.assertNotNull(requests.get(0).getTestSession());	
-		Assert.assertEquals(requests.get(0).getDesiredCapabilities().get("priority"), 1);
+		Assert.assertEquals(requests.get(0).getDesiredCapabilities().get("_priority"), 1);
 	}
 	
 	

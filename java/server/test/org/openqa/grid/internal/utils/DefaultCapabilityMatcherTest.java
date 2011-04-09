@@ -1,4 +1,4 @@
-package org.openqa.grid.internal;
+package org.openqa.grid.internal.utils;
 
 import static org.openqa.grid.common.RegistrationRequest.BROWSER;
 import static org.openqa.grid.common.RegistrationRequest.PLATFORM;
@@ -8,8 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+import org.openqa.selenium.Platform;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -50,7 +49,7 @@ public class DefaultCapabilityMatcherTest {
 	public void smokeTest(){
 		Assert.assertTrue(helper.matches(tl, tl));
 		Assert.assertFalse(helper.matches(tl, tl2));
-		Assert.assertFalse(helper.matches(tl2, tl));
+		Assert.assertTrue(helper.matches(tl2, tl));
 		Assert.assertTrue(helper.matches(tl2, tl2));
 		
 		Assert.assertTrue(helper.matches(firefox, firefox));
@@ -64,7 +63,18 @@ public class DefaultCapabilityMatcherTest {
 		Assert.assertFalse(helper.matches(firefox, tl2));
 	}
 	
-	@Test(expectedExceptions=GridException.class)
+	@Test
+	public void platformMatchingTest(){
+		DefaultCapabilityMatcher matcher = new DefaultCapabilityMatcher();
+		Platform p = Platform.WINDOWS;
+	
+		Assert.assertTrue(matcher.exctractPlatform("xp").is(p));
+		Assert.assertTrue(matcher.exctractPlatform("windows VISTA").is(p));
+		Assert.assertTrue(matcher.exctractPlatform("windows 7").is(p));
+	}
+	
+	
+	@Test
 	public void notImplemented(){
 		Assert.assertFalse(helper.matches(tl, exotic));
 		

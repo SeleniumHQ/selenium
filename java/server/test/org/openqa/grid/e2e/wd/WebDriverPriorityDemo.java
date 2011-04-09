@@ -47,8 +47,8 @@ public class WebDriverPriorityDemo {
 		// go first.
 		hub.getRegistry().setPrioritizer(new Prioritizer() {
 			public int compareTo(Map<String, Object> a, Map<String, Object> b) {
-				boolean aImportant = a.get("important") == null ? false : Boolean.parseBoolean(a.get("important").toString());
-				boolean bImportant = b.get("important") == null ? false : Boolean.parseBoolean(b.get("important").toString());
+				boolean aImportant = a.get("_important") == null ? false : Boolean.parseBoolean(a.get("_important").toString());
+				boolean bImportant = b.get("_important") == null ? false : Boolean.parseBoolean(b.get("_important").toString());
 				if (aImportant == bImportant) {
 					return 0;
 				}
@@ -103,7 +103,7 @@ public class WebDriverPriorityDemo {
 		Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
 
 		final DesiredCapabilities ff = DesiredCapabilities.firefox();
-		ff.setCapability("important", true);
+		ff.setCapability("_important", true);
 
 		new Thread(new Runnable() {
 			public void run() {

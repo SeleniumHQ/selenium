@@ -20,6 +20,7 @@ import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.BROWSER;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -30,102 +31,75 @@ import org.openqa.selenium.Platform;
 /**
  * Default (naive) implementation of the capability matcher.
  * 
- * At the moment, the default only looks for the value of the key BROWSER
- * (first)and APP. If the value corresponding to those keys are equals on the
- * requested capabilities and the current capabilities, then the matcher returns
- * true.
+ * The default capability matcher will look at all the key from the request do
+ * not start with _ and will try to find a node that has at least those
+ * capabilities.
  * 
  */
 public class DefaultCapabilityMatcher implements CapabilityMatcher {
 
 	private static final Logger log = Logger.getLogger(DefaultCapabilityMatcher.class.getName());
-
-	private final List<String> web = new ArrayList<String>();
-	private final List<String> win32 = new ArrayList<String>();
+	private static final String GRID_TOKEN = "_";
 
 	public DefaultCapabilityMatcher() {
-		web.add(BROWSER);
-		web.add("platform");
-		web.add("version");
-
-		win32.add(APP);
-		win32.add("platform");
-		win32.add("version");
 
 	}
 
-	// TODO freynaud for selenium1, find a way to also check the firefox
-	// profile.
-	public boolean matches(Map<String, Object> currentCapability, Map<String, Object> requestedCapability) {
-		if (currentCapability == null || requestedCapability == null) {
+	public boolean matches(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
+		if (nodeCapability == null || requestedCapability == null) {
 			return false;
 		}
-
-		if (isSelenium(requestedCapability)) {
-			return matchesAtLeastKeys(web, currentCapability, requestedCapability);
-		} else if (isWin32(requestedCapability)) {
-			return matchesAtLeastKeys(win32, currentCapability, requestedCapability);
-		} else {
-			String msg = "DefaultCapabilityMatcher cannot work with capability " + requestedCapability;
-			log.warning(msg);
-			throw new GridException(msg);
-		}
-
-	}
-
-	private boolean isSelenium(Map<String, Object> cap) {
-		return cap.get(BROWSER) != null && cap.get(APP) == null;
-	}
-
-	private boolean isWin32(Map<String, Object> cap) {
-		return cap.get(BROWSER) == null && cap.get(APP) != null;
-	}
-
-	/**
-	 * Check that the 2 maps have the same values for the list of keys
-	 * specified.
-	 * 
-	 * @param keys
-	 * @param map1
-	 * @param requestedCapability
-	 * @return TODO
-	 */
-	private boolean matchesAtLeastKeys(List<String> keys, Map<String, Object> map1, Map<String, Object> requestedCapability) {
 		for (String key : requestedCapability.keySet()) {
-			if (keys.contains(key)) {
-				String value = null;
-				if (requestedCapability.get(key)!=null){
-					value = requestedCapability.get(key).toString();
-				}
-				
-				
-				if (!("ANY".equalsIgnoreCase(value) || "".equalsIgnoreCase(value))) {
-					if (requestedCapability.get(key) instanceof Platform) {
-						// TODO freynaud get plateform from String. Calling
-						// extract
-						// is not safe as it may call system properties of the
-						// grid
-						// when the client is needed instead. Create a platform
-						// parser to convert selenium1 legacy envt.
-						Platform p1 = Platform.extractFromSysProperty(map1.get(key).toString());
-						if (!((Platform) requestedCapability.get(key)).is(p1)) {
-							return false;
+			// ignore capabilities that are targeted at grid internal for the
+			// matching.
+			if (!key.startsWith(GRID_TOKEN)) {
+				if (requestedCapability.get(key) != null) {
+					String value = requestedCapability.get(key).toString();
+					if (!("ANY".equalsIgnoreCase(value) || "".equals(value) || "*".equals(value))) {
+						Platform requested = exctractPlatform(requestedCapability.get(key));
+						// special case for platform
+						if (requested != null) {
+							Platform node = exctractPlatform(nodeCapability.get(key));
+							if (node == null){
+								return false;
+							}
+							if (!node.is(requested)) {
+								return false;
+							}
+						} else {
+							if (!requestedCapability.get(key).equals(nodeCapability.get(key))) {
+								return false;
+							}
 						}
-					} else if (map1.get(key) == null) {
-						Object v =  requestedCapability.get(key);
-						return v == null;
-					} else if (!map1.get(key).equals(requestedCapability.get(key))){
-						return false;
+					} else {
+						// null value matches anything.
+					}
+				}
+			}		
+		}
+		return true;
+	}
+
+	Platform exctractPlatform(Object o) {
+		if (o == null) {
+			return null;
+		}
+		if (o instanceof Platform) {
+			return (Platform) o;
+		} else if (o instanceof String) {
+			String name = o.toString();
+			for (Platform os : Platform.values()) {
+				for (String matcher : os.getPartOfOsName()) {
+					if ("".equals(matcher))
+						continue;
+					if (name.equalsIgnoreCase(matcher)) {
+						return os;
 					}
 				}
 			}
+			return null;
+		} else {
+			return null;
 		}
-		return true;
-		/*
-		 * for (String key : keys) { if (!map1.containsKey(key)) { return false;
-		 * } if (!map1.get(key).equals(requestedCapability.get(key))) { return
-		 * false; } } return true;
-		 */
 	}
-
 }
