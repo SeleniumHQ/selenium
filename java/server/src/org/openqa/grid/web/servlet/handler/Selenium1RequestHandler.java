@@ -23,15 +23,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.management.RuntimeErrorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.collect.Maps;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.web.Hub;
+import org.openqa.grid.web.utils.BrowserNameUtils;
 import org.openqa.selenium.Platform;
 
 /**
@@ -129,7 +127,7 @@ public class Selenium1RequestHandler extends RequestHandler {
 
                     String parts[] = piece.split("1=");
                     if (parts[1].charAt(0) != '*') {
-                        piece = String.format("1=%s", URLEncoder.encode(lookupGrid1Environment(parts[1]), "UTF-8"));
+                        piece = String.format("1=%s", URLEncoder.encode(BrowserNameUtils.lookupGrid1Environment(parts[1]), "UTF-8"));
                     }
 				}
 				builder.append(piece + "&");
@@ -145,10 +143,4 @@ public class Selenium1RequestHandler extends RequestHandler {
 		}
 		return null;
 	}
-
-    private String lookupGrid1Environment(String browserString) {
-        String translatedBrowserString = Hub.getGrid1Mapping().get(browserString);
-
-        return (translatedBrowserString == null) ? browserString : translatedBrowserString;
-    }
 }

@@ -9,6 +9,7 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.selenium.proxy.WebRemoteProxy;
+import org.openqa.grid.web.utils.BrowserNameUtils;
 
 public class WebProxyHtmlRenderer implements HtmlRenderer {
 
@@ -59,15 +60,7 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
 	}
 
 	private String getIcon(Map<String, Object> capabilities) {
-		String browser = (String) capabilities.get(BROWSER);
-		if ("*iexplore".equals(browser)) {
-			browser = "internet explorer";
-		} else if ("*firefox".equals(browser)) {
-			browser = "firefox";
-		} else if ("*safari".equals(browser)) {
-			browser = "safari";
-		}
-		return "/resources/images/" + browser + ".png";
+		return "/resources/images/" + BrowserNameUtils.consoleIconName((String) capabilities.get(BROWSER)) + ".png";
 	}
 
 }
