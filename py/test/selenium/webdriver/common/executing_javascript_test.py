@@ -34,7 +34,8 @@ class ExecutingJavaScriptTests(unittest.TestCase):
 
         result = self.driver.execute_script("return document.title")
 
-        self.assertTrue(type(result) == unicode, "The type of the result is " + str(type(result)))
+        self.assertTrue(type(result) == unicode or type(result) == str,
+            "The type of the result is " + str(type(result)))
         self.assertEqual("XHTML Test Page", result)
   
 
