@@ -15,12 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import base64
 import httplib
-from selenium.common.exceptions import ErrorInResponseException
-from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities 
 from service import Service
 

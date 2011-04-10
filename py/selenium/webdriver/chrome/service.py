@@ -14,7 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import socket
 import subprocess
 from subprocess import PIPE
 import time
@@ -58,7 +57,7 @@ class Service(object):
         import urllib2
         urllib2.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
         count = 0
-        while not utils.is_connectable():
+        while not utils.is_connectable(self.port):
             if count == 30:
                break 
             count += 1
