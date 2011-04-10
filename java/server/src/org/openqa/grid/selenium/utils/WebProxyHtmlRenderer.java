@@ -60,7 +60,7 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
 	}
 
 	private String getIcon(Map<String, Object> capabilities) {
-		return "/resources/images/" + BrowserNameUtils.consoleIconName((String) capabilities.get(BROWSER)) + ".png";
+		return "/grid/resources/images/" + BrowserNameUtils.consoleIconName((String) capabilities.get(BROWSER)) + ".png";
 	}
 
 }

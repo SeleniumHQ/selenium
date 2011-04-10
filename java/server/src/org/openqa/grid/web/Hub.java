@@ -145,7 +145,7 @@ public class Hub {
             root.addServlet("/grid/register/*", RegistrationServlet.class.getName());
             root.addServlet("/grid/driver/*", DriverServlet.class.getName());
             root.addServlet("/selenium-server/driver/*", DriverServlet.class.getName());
-            root.addServlet("/resources/*", ResourceServlet.class.getName());
+            root.addServlet("/grid/resources/*", ResourceServlet.class.getName());
 
             // Selenium Grid 1.0 compatibility routes for older nodes trying to work with the newer hub.
             root.addServlet("/registration-manager/register/*", RegistrationServlet.class.getName());
