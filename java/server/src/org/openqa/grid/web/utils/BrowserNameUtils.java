@@ -43,7 +43,9 @@ public class BrowserNameUtils {
 			ret = "firefox";
 		} else if ("*safari".equals(browserString)) {
 			ret = "safari";
-		}
+		} else if ("*googlechrome".equals(browserString)) {
+            ret = "chrome";
+        }
 
         return ret;
     }
