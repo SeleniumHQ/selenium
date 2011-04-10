@@ -18,7 +18,7 @@
 import base64
 import httplib
 from selenium.common.exceptions import ErrorInResponseException
-from selenium.webdriver.remote.command import Command
+from selenium.webdriver.common import utils
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -36,10 +36,7 @@ class WebDriver(RemoteWebDriver):
     def __init__(self, port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT):
         self.port = port
         if self.port == 0:
-            free_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            free_socket.bind((socket.gethostname(), 0))
-            self.port = free_socket.getsockname()[1]
-            free_socket.close()
+            self.port = utils.free_port()
         
         # Create IE Driver instance of the unmanaged code
         self.iedriver = CDLL(os.path.join(os.path.dirname(__file__), "IEDriver.dll"))
@@ -47,8 +44,8 @@ class WebDriver(RemoteWebDriver):
 
         seconds = 0
         while not self._is_connectable():
-	    seconds += 1
-	    if seconds > DEFAULT_TIMEOUT:
+	        seconds += 1
+    	    if seconds > DEFAULT_TIMEOUT:
                 raise RuntimeError("Unable to connect to IE")
             time.sleep(1)
 

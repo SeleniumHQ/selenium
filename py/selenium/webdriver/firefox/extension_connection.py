@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import socket
 import logging
 import time
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common import utils 
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
@@ -38,7 +38,7 @@ class ExtensionConnection(RemoteConnection):
         if HOST is None:
             HOST = "127.0.0.1"
 
-        PORT = self._free_port()
+        PORT = utils.free_port()
         self.profile.port = PORT 
         self.profile.update_preferences()
         
@@ -75,13 +75,6 @@ class ExtensionConnection(RemoteConnection):
             return True
         except socket.error:
             return False
-
-    def _free_port(self):
-        free_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        free_socket.bind((socket.gethostname(), 0))
-        port = free_socket.getsockname()[1]
-        free_socket.close()
-        return port
 
 class ExtensionConnectionError(Exception):
     """An internal error occurred int the extension.

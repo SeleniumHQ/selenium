@@ -21,6 +21,7 @@ import time
 import os
 import signal
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common import utils
 
 class Service(object):
 
@@ -28,7 +29,7 @@ class Service(object):
         self.port = port
         self.path = executable_path
         if self.port == 0:
-            self.port = self._free_port()
+            self.port = utils.free_port()
 
     def start(self):
         try:
@@ -81,11 +82,3 @@ class Service(object):
             return True
         except socket.error:
             return False
-
-    def _free_port(self):
-        free_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        free_socket.bind((socket.gethostname(), 0))
-        port = free_socket.getsockname()[1]
-        free_socket.close()
-        return port
-
