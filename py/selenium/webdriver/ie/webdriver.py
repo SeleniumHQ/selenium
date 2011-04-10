@@ -43,7 +43,7 @@ class WebDriver(RemoteWebDriver):
         self.ptr = self.iedriver.StartServer(self.port)
 
         seconds = 0
-        while not utils._is_connectable():
+        while not utils.is_connectable(self.port):
             seconds += 1
             if seconds > DEFAULT_TIMEOUT:
                 raise RuntimeError("Unable to connect to IE")
