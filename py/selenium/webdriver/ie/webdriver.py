@@ -44,15 +44,15 @@ class WebDriver(RemoteWebDriver):
 
         seconds = 0
         while not self._is_connectable():
-	        seconds += 1
-    	    if seconds > DEFAULT_TIMEOUT:
+            seconds += 1
+            if seconds > DEFAULT_TIMEOUT:
                 raise RuntimeError("Unable to connect to IE")
             time.sleep(1)
 
         RemoteWebDriver.__init__(self,
 			    command_executor='http://localhost:%d' % self.port,
 			    desired_capabilities=DesiredCapabilities.INTERNETEXPLORER) 
-    
+
     def _is_connectable(self):
         """Trys to connect to the server to see if it is running."""
         try:
@@ -69,4 +69,3 @@ class WebDriver(RemoteWebDriver):
         self.iedriver.StopServer(self.ptr)
         del self.iedriver
         del self.ptr
-      
