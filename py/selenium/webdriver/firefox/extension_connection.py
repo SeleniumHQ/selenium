@@ -60,21 +60,14 @@ class ExtensionConnection(RemoteConnection):
         return self.execute(Command.NEW_SESSION, {'desiredCapabilities': DesiredCapabilities.FIREFOX})
     
     @classmethod
-    def connect_and_quit(cls):
+    def connect_and_quit(self):
         """Connects to an running browser and quit immediately."""
         self._request('%s/extensions/firefox/quit' % _URL)
     
     @classmethod
-    def is_connectable(cls):
+    def is_connectable(self):
         """Trys to connect to the extension but do not retrieve context."""
-        try:
-            socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            socket_.settimeout(1)
-            socket_.connect((HOST, PORT))
-            socket_.close()
-            return True
-        except socket.error:
-            return False
+        utils.is_connectable(self.port)
 
 class ExtensionConnectionError(Exception):
     """An internal error occurred int the extension.

@@ -39,7 +39,7 @@ class Service(object):
             raise WebDriverException(
                 "ChromeDriver executable needs to be available in the path")
         count = 0
-        while not self.is_connectable():
+        while not utils.is_connectable(self.port):
             count += 1
             time.sleep(1)
             if count == 30:
@@ -58,7 +58,7 @@ class Service(object):
         import urllib2
         urllib2.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
         count = 0
-        while not self.is_connectable():
+        while not utils.is_connectable():
             if count == 30:
                break 
             count += 1
@@ -71,14 +71,3 @@ class Service(object):
         except AttributeError:
             # kill may not be available under windows environment
             pass
-
-    def is_connectable(self):
-        """Trys to connect to the extension but do not retrieve context."""
-        try:
-            socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            socket_.settimeout(1)
-            socket_.connect(("127.0.0.1", self.port))
-            socket_.close()
-            return True
-        except socket.error:
-            return False

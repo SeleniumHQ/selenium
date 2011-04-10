@@ -21,3 +21,15 @@ def free_port():
         port = free_socket.getsockname()[1]
         free_socket.close()
         return port
+
+def is_connectable(port):
+        """Trys to connect to the server to see if it is running."""
+        try:
+            socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            socket_.settimeout(1)
+            socket_.connect(("localhost", port))
+            socket_.close()
+            return True
+        except socket.error:
+            return False
+
