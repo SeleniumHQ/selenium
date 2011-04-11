@@ -44,7 +44,7 @@ namespace OpenQA.Selenium.IE
         [Test]
         public void SessionCookieTest()
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("sessioncookie.html");
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("sessionCookie.html");
             IWebElement setColorButton = driver.FindElement(By.Id("setcolorbutton"));
             setColorButton.Click();
             IWebElement openWindowButton = driver.FindElement(By.Id("openwindowbutton"));
