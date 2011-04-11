@@ -86,8 +86,7 @@ protected:
 				if (file) {
 					DWORD ie_process_id;
 					::GetWindowThreadProcessId(window_handle, &ie_process_id);
-					HWND top_level_window_handle = NULL;
-					browser_wrapper->browser()->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&top_level_window_handle));
+					HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
 
 					FileNameData key_data;
 					key_data.main = top_level_window_handle;

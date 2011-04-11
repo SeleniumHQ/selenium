@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib"
+				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib mshtml.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
@@ -224,7 +224,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib"
+				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib mshtml.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -303,7 +303,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib"
+				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib mshtml.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -368,6 +368,14 @@
 			</File>
 			<File
 				RelativePath=".\ElementWrapper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\HtmlDialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\HtmlWindow.cpp"
 				>
 			</File>
 			<File
@@ -618,6 +626,14 @@
 			</File>
 			<File
 				RelativePath=".\HoverOverElementCommandHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\HtmlDialog.h"
+				>
+			</File>
+			<File
+				RelativePath=".\HtmlWindow.h"
 				>
 			</File>
 			<File

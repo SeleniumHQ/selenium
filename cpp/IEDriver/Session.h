@@ -9,8 +9,10 @@
 #include <vector>
 #include <unordered_map>
 #include "BrowserWrapper.h"
+#include "CommandValues.h"
 #include "ElementWrapper.h"
 #include "ElementFinder.h"
+#include "HtmlDialog.h"
 #include "messages.h"
 #include "WebDriverCommand.h"
 #include "WebDriverCommandHandler.h"
@@ -49,6 +51,7 @@ public:
 		MESSAGE_HANDLER(WD_BROWSER_NEW_WINDOW, OnBrowserNewWindow)
 		MESSAGE_HANDLER(WD_BROWSER_QUIT, OnBrowserQuit)
 		MESSAGE_HANDLER(WD_GET_WINDOW_COUNT, OnGetWindowCount)
+		MESSAGE_HANDLER(WD_NEW_HTML_DIALOG, OnNewHtmlDialog)
 	END_MSG_MAP()
 
 	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -63,6 +66,7 @@ public:
 	LRESULT OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnGetWindowCount(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 	std::wstring session_id(void) const { return this->session_id_; }
 

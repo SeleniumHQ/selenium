@@ -22,7 +22,7 @@ protected:
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
 		}
-		HRESULT hr = browser_wrapper->browser()->Quit();
+		browser_wrapper->Close();
 		response->SetResponse(SUCCESS, Json::Value::null);
 	}
 };

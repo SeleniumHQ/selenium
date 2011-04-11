@@ -4,16 +4,13 @@
 #include <exdispid.h>
 #include <exdisp.h>
 #include <mshtml.h>
-#include <rpc.h>
 #include <iostream>
-#include <queue>
 #include <string>
 #include "json.h"
 #include "BrowserFactory.h"
-#include "CommandValues.h"
 #include "ErrorCodes.h"
+#include "HtmlWindow.h"
 #include "messages.h"
-#include "ScriptWrapper.h"
 
 #define BASE_TEN_BASE 10
 #define MAX_DIGITS_OF_NUMBER 22
@@ -22,9 +19,7 @@ using namespace std;
 
 namespace webdriver {
 
-typedef std::tr1::shared_ptr<BrowserWrapper> BrowserHandle;
-
-class BrowserWrapper : public IDispEventSimpleImpl<1, BrowserWrapper, &DIID_DWebBrowserEvents2> {
+class BrowserWrapper : public HtmlWindow, public IDispEventSimpleImpl<1, BrowserWrapper, &DIID_DWebBrowserEvents2> {
 public:
 	BrowserWrapper(IWebBrowser2* browser, HWND hwnd, HWND session_handle);
 	virtual ~BrowserWrapper(void);
@@ -65,42 +60,31 @@ public:
 	STDMETHOD_(void, NewWindow3)(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl);
 
 	bool Wait(void);
+	void Close(void);
 	void GetDocument(IHTMLDocument2** doc);
-	HWND GetWindowHandle(void);
+	std::wstring GetWindowName(void);
 	std::wstring GetTitle(void);
-	std::wstring GetCookies(void);
-	int AddCookie(const std::wstring& cookie);
-	int DeleteCookie(const std::wstring& cookie_name);
-	int SetFocusedFrameByIndex(const int frame_index);
-	int SetFocusedFrameByName(const std::wstring& frame_name);
-	int SetFocusedFrameByElement(IHTMLElement* frame_element);
+	HWND GetWindowHandle(void);
+	HWND GetTopLevelWindowHandle(void);
 	HWND GetActiveDialogWindowHandle(void);
-	bool IsFrameFocused(void);
+
+	int NavigateToUrl(const std::wstring& url);
+	int NavigateBack(void);
+	int NavigateForward(void);
+	int Refresh(void);
 
 	IWebBrowser2* browser(void) { return this->browser_; }
-	std::wstring browser_id(void) const { return this->browser_id_; }
-
-	bool wait_required(void) const { return this->wait_required_; }
-	void set_wait_required(const bool value) { this->wait_required_ = value; }
-
-	bool is_closing(void) const { return this->is_closing_; }
 
 private:
 	void AttachEvents(void);
 	void DetachEvents(void);
 	bool IsDocumentNavigating(IHTMLDocument2* doc);
-	bool IsHtmlPage(IHTMLDocument2* doc);
 	bool GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc);
+	HWND GetTabWindowHandle(void);
+	HWND FindContentWindowHandle(HWND top_level_window);
 
-	CComPtr<IHTMLWindow2> focused_frame_window_;
 	CComPtr<IWebBrowser2> browser_;
-	BrowserFactory factory_;
-	HWND window_handle_;
-	HWND session_handle_;
-	std::wstring browser_id_;
 	bool is_navigation_started_;
-	bool wait_required_;
-	bool is_closing_;
 };
 
 } // namespace webdriver

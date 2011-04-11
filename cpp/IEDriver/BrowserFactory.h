@@ -30,18 +30,14 @@ public:
 	DWORD LaunchBrowserProcess(int port);
 	IWebBrowser2* CreateBrowser();
 	void AttachToBrowser(ProcessWindowInfo* procWinInfo);
-	HWND GetTabWindowHandle(IWebBrowser2* pBrowser);
+	bool GetDocumentFromWindowHandle(HWND window_handle, IHTMLDocument2** document);
 	bool GetRegistryValue(const HKEY root_key, const std::wstring& subkey, const std::wstring& value_name, std::wstring* value);
 
-	static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
 	static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
 	static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
 
 private:
-	int ie_major_version_;
-	int windows_major_version_;
-	std::wstring ie_executable_location_;
-
+	static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
 	UINT html_getobject_msg_;
 	HINSTANCE oleacc_instance_handle_;
 
@@ -51,6 +47,10 @@ private:
 	void GetExecutableLocation(void);
 	void GetIEVersion(void);
 	void GetOSVersion(void);
+
+	int ie_major_version_;
+	int windows_major_version_;
+	std::wstring ie_executable_location_;
 };
 
 } // namespace webdriver

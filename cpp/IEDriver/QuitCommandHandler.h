@@ -23,10 +23,7 @@ protected:
 			BrowserHandle browser_wrapper;
 			int status_code = session.GetManagedBrowser(*it, &browser_wrapper);
 			if (status_code == SUCCESS && !browser_wrapper->is_closing()) {
-				HRESULT hr = browser_wrapper->browser()->Quit();
-				if (FAILED(hr)) {
-					cout << "Quit failed: " << hr << "\r\n";
-				}
+				browser_wrapper->Close();
 			}
 		}
 

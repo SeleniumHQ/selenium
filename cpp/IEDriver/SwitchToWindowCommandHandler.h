@@ -29,7 +29,7 @@ protected:
 				BrowserHandle browser_wrapper;
 				int get_handle_loop_status_code = session.GetManagedBrowser(handle_list[i], &browser_wrapper);
 				if (get_handle_loop_status_code == SUCCESS) {
-					std::string browser_name = this->GetWindowName(browser_wrapper->browser());
+					std::string browser_name = CW2A(browser_wrapper->GetWindowName().c_str(), CP_UTF8);
 					if (browser_name == desired_name) {
 						found_browser_handle = handle_list[i];
 						break;
@@ -61,33 +61,6 @@ protected:
 				response->SetResponse(SUCCESS, Json::Value::null);
 			}
 		}
-	}
-
-private:
-	std::string GetWindowName(IWebBrowser2* browser) {
-		CComPtr<IDispatch> dispatch;
-		HRESULT hr = browser->get_Document(&dispatch);
-		if (FAILED(hr)) {
-			return "";
-		}
-		CComQIPtr<IHTMLDocument2> doc(dispatch);
-		if (!doc) {
-			return "";
-		}
-
-		CComPtr<IHTMLWindow2> window;
-		hr = doc->get_parentWindow(&window);
-		if (FAILED(hr)) {
-			return "";
-		}
-
-		std::string name("");
-		CComBSTR window_name;
-		hr = window->get_name(&window_name);
-		if (window_name) {
-			name = CW2A(window_name, CP_UTF8);
-		}
-		return name;
 	}
 };
 

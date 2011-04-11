@@ -70,6 +70,23 @@ DWORD BrowserFactory::LaunchBrowserProcess(int port) {
 	return process_id;
 }
 
+bool BrowserFactory::GetDocumentFromWindowHandle(HWND window_handle, IHTMLDocument2** document) {
+	if (window_handle != NULL && this->oleacc_instance_handle_) {
+		LRESULT result;
+		::SendMessageTimeout(window_handle, this->html_getobject_msg_, 0L, 0L, SMTO_ABORTIFHUNG, 1000, (PDWORD_PTR)&result);
+
+		LPFNOBJECTFROMLRESULT object_pointer =  reinterpret_cast<LPFNOBJECTFROMLRESULT>(::GetProcAddress(this->oleacc_instance_handle_, "ObjectFromLresult"));
+		if (object_pointer != NULL) {
+			HRESULT hr;
+			hr = (*object_pointer)(result, IID_IHTMLDocument2, 0, reinterpret_cast<void**>(document));
+			if (SUCCEEDED(hr)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info) {
 	while (process_window_info->hwndBrowser == NULL) {
 		// TODO: create a timeout for this. We shouldn't need it, since
@@ -80,38 +97,26 @@ void BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info) {
 		}
 	}
 
-	if (process_window_info->hwndBrowser != NULL) {
-		if (this->oleacc_instance_handle_) {
-			CComPtr<IHTMLDocument2> document;
-			LRESULT result;
-			::SendMessageTimeout(process_window_info->hwndBrowser, this->html_getobject_msg_, 0L, 0L, SMTO_ABORTIFHUNG, 1000, (PDWORD_PTR)&result);
-
-			LPFNOBJECTFROMLRESULT object_pointer =  reinterpret_cast<LPFNOBJECTFROMLRESULT>(::GetProcAddress(this->oleacc_instance_handle_, "ObjectFromLresult"));
-			if (object_pointer != NULL) {
-				HRESULT hr;
-				hr = (*object_pointer)(result, IID_IHTMLDocument2, 0, reinterpret_cast<void**>(&document));
+	CComPtr<IHTMLDocument2> document;
+	if (this->GetDocumentFromWindowHandle(process_window_info->hwndBrowser, &document)) {
+	   CComPtr<IHTMLWindow2> window;
+	   HRESULT hr = document->get_parentWindow(&window);
+	   if (SUCCEEDED(hr)) {
+			// http://support.microsoft.com/kb/257717
+			CComQIPtr<IServiceProvider> provider(window);
+			if (provider) {
+				CComPtr<IServiceProvider> child_provider;
+				hr = provider->QueryService(SID_STopLevelBrowser, IID_IServiceProvider, reinterpret_cast<void**>(&child_provider));
 				if (SUCCEEDED(hr)) {
-				   CComPtr<IHTMLWindow2> window;
-				   hr = document->get_parentWindow(&window);
-				   if (SUCCEEDED(hr)) {
-						// http://support.microsoft.com/kb/257717
-						CComQIPtr<IServiceProvider> provider(window);
-						if (provider) {
-							CComPtr<IServiceProvider> child_provider;
-							hr = provider->QueryService(SID_STopLevelBrowser, IID_IServiceProvider, reinterpret_cast<void**>(&child_provider));
-							if (SUCCEEDED(hr)) {
-								IWebBrowser2* browser;
-								hr = child_provider->QueryService(SID_SWebBrowserApp, IID_IWebBrowser2, reinterpret_cast<void**>(&browser));
-								if (SUCCEEDED(hr)) {
-									process_window_info->pBrowser = browser;
-								}
-							}
-						}
-				   }
+					IWebBrowser2* browser;
+					hr = child_provider->QueryService(SID_SWebBrowserApp, IID_IWebBrowser2, reinterpret_cast<void**>(&browser));
+					if (SUCCEEDED(hr)) {
+						process_window_info->pBrowser = browser;
+					}
 				}
 			}
 		}
-	} // else Active Accessibility is not installed
+	}
 }
 
 IWebBrowser2* BrowserFactory::CreateBrowser() {
@@ -178,35 +183,6 @@ void BrowserFactory::ResetThreadIntegrityLevel() {
 	::RevertToSelf();
 }
 
-HWND BrowserFactory::GetTabWindowHandle(IWebBrowser2* browser) {
-	ProcessWindowInfo process_window_info;
-	process_window_info.pBrowser = browser;
-	process_window_info.hwndBrowser = NULL;
-
-	HWND hwnd = NULL;
-	CComQIPtr<IServiceProvider> service_provider;
-	HRESULT hr = browser->QueryInterface(IID_IServiceProvider, reinterpret_cast<void**>(&service_provider));
-	if (SUCCEEDED(hr)) {
-		CComPtr<IOleWindow> window;
-		hr = service_provider->QueryService(SID_SShellBrowser, IID_IOleWindow, reinterpret_cast<void**>(&window));
-		if (SUCCEEDED(hr)) {
-			// This gets the TabWindowClass window in IE 7 and 8,
-			// and the top-level window frame in IE 6. The window
-			// we need is the InternetExplorer_Server window.
-			window->GetWindow(&hwnd);
-
-			DWORD process_id;
-			::GetWindowThreadProcessId(hwnd, &process_id);
-			process_window_info.dwProcessId = process_id;
-
-			::EnumChildWindows(hwnd, &BrowserFactory::FindChildWindowForProcess, (LPARAM)&process_window_info);
-			hwnd = process_window_info.hwndBrowser;
-		}
-	}
-
-	return hwnd;
-}
-
 BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
 	// Could this be an IE instance?
 	// 8 == "IeFrame\0"
@@ -256,8 +232,9 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
 
 	// Could this be an dialog window?
 	// 7 == "#32770\0"
-	char name[7];
-	if (GetClassNameA(hwnd, name, 7) == 0) {
+	// 34 == "Internet Explorer_TridentDlgFrame\0"
+	char name[34];
+	if (GetClassNameA(hwnd, name, 34) == 0) {
 		// No match found. Skip
 		return TRUE;
 	}

@@ -1,33 +1,13 @@
 #include "StdAfx.h"
 #include "BrowserWrapper.h"
-#include "cookies.h"
 #include "logging.h"
 #include <comutil.h>
 
 namespace webdriver {
 
-BrowserWrapper::BrowserWrapper(IWebBrowser2* browser, HWND hwnd, HWND session_handle) {
-	// NOTE: COM should be initialized on this thread, so we
-	// could use CoCreateGuid() and StringFromGUID2() instead.
-	UUID guid;
-	RPC_WSTR guid_string = NULL;
-	::UuidCreate(&guid);
-	::UuidToString(&guid, &guid_string);
-
-	// RPC_WSTR is currently typedef'd in RpcDce.h (pulled in by rpc.h)
-	// as unsigned short*. It needs to be typedef'd as wchar_t* 
-	wchar_t* cast_guid_string = reinterpret_cast<wchar_t*>(guid_string);
-	this->browser_id_ = cast_guid_string;
-
-	::RpcStringFree(&guid_string);
-
-	this->is_closing_ = false;
-	this->wait_required_ = false;
+BrowserWrapper::BrowserWrapper(IWebBrowser2* browser, HWND hwnd, HWND session_handle) : HtmlWindow(hwnd, session_handle) {
 	this->is_navigation_started_ = false;
-	this->window_handle_ = hwnd;
-	this->session_handle_ = session_handle;
 	this->browser_ = browser;
-	this->focused_frame_window_ = NULL;
 	this->AttachEvents();
 }
 
@@ -35,10 +15,54 @@ BrowserWrapper::~BrowserWrapper(void) {
 	this->DetachEvents();
 }
 
+void __stdcall BrowserWrapper::BeforeNavigate2(IDispatch* pObject, VARIANT* pvarUrl, VARIANT* pvarFlags, VARIANT* pvarTargetFrame,
+VARIANT* pvarData, VARIANT* pvarHeaders, VARIANT_BOOL* pbCancel) {
+	// std::cout << "BeforeNavigate2\r\n";
+}
+
+void __stdcall BrowserWrapper::OnQuit() {
+	this->set_is_closing(true);
+	LPWSTR message_payload = new WCHAR[this->browser_id().size() + 1];
+	wcscpy_s(message_payload, this->browser_id().size() + 1, this->browser_id().c_str());
+	::PostMessage(this->session_handle(), WD_BROWSER_QUIT, NULL, reinterpret_cast<LPARAM>(message_payload));
+}
+
+void __stdcall BrowserWrapper::NewWindow3(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl) {
+	// Handle the NewWindow3 event to allow us to immediately hook
+	// the events of the new browser window opened by the user action.
+	// This will not allow us to handle windows created by the JavaScript
+	// showModalDialog function().
+	IWebBrowser2* browser;
+	LPSTREAM message_payload;
+	::SendMessage(this->session_handle(), WD_BROWSER_NEW_WINDOW, NULL, (LPARAM)&message_payload);
+	HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IWebBrowser2, reinterpret_cast<void**>(&browser));
+	*ppDisp = browser;
+}
+
+void __stdcall BrowserWrapper::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
+	// Flag the browser as navigation having started.
+	// std::cout << "DocumentComplete\r\n";
+	this->is_navigation_started_ = true;
+
+	// DocumentComplete fires last for the top-level frame. If it fires
+	// for the top-level frame and the focused_frame_window_ member variable
+	// is not NULL, we assume we have navigated from within a frameset to a
+	// link that has a target of "_top", which replaces the frameset with the
+	// target page. On a top-level navigation, we are supposed to reset the
+	// focused frame to the top-level, so we do that here.
+	// NOTE: This is a possible source of unreliability if the above 
+	// assumptions turn out to be wrong and/or the event firing doesn't work
+	// the way we expect it to.
+	CComPtr<IDispatch> dispatch(this->browser_);
+	if (dispatch.IsEqualObject(pDisp) && this->focused_frame_window() != NULL) {
+		this->SetFocusedFrameByElement(NULL);
+	}
+}
+
 void BrowserWrapper::GetDocument(IHTMLDocument2** doc) {
 	CComPtr<IHTMLWindow2> window;
 
-	if (this->focused_frame_window_ == NULL) {
+	if (this->focused_frame_window() == NULL) {
 		CComPtr<IDispatch> dispatch;
 		HRESULT hr = this->browser_->get_Document(&dispatch);
 		if (FAILED(hr)) {
@@ -55,7 +79,7 @@ void BrowserWrapper::GetDocument(IHTMLDocument2** doc) {
 
 		dispatch_doc->get_parentWindow(&window);
 	} else {
-		window = this->focused_frame_window_;
+		window = this->focused_frame_window();
 	}
 
 	if (window) {
@@ -64,10 +88,6 @@ void BrowserWrapper::GetDocument(IHTMLDocument2** doc) {
 			LOG(WARN) << "Cannot get document";
 		}
 	}
-}
-
-bool BrowserWrapper::IsFrameFocused() {
-	return this->focused_frame_window_ != NULL;
 }
 
 std::wstring BrowserWrapper::GetTitle() {
@@ -96,268 +116,47 @@ std::wstring BrowserWrapper::GetTitle() {
 	return title_string;
 }
 
-std::wstring BrowserWrapper::GetCookies() {
-	CComPtr<IHTMLDocument2> doc;
-	this->GetDocument(&doc);
-
-	if (!doc) {
-		return L"";
-	}
-
-	CComBSTR cookie;
-	HRESULT hr = doc->get_cookie(&cookie);
-	if (!cookie) {
-		cookie = L"";
-	}
-
-	std::wstring cookie_string(cookie);
-	return cookie_string;
-}
-
-int BrowserWrapper::AddCookie(const std::wstring& cookie) {
-	CComBSTR cookie_bstr(cookie.c_str());
-
-	CComPtr<IHTMLDocument2> doc;
-	this->GetDocument(&doc);
-
-	if (!doc) {
-		return EUNHANDLEDERROR;
-	}
-
-	if (!this->IsHtmlPage(doc)) {
-		return ENOSUCHDOCUMENT;
-	}
-
-	if (!SUCCEEDED(doc->put_cookie(cookie_bstr))) {
-		return EUNHANDLEDERROR;
-	}
-
-	return SUCCESS;
-}
-
-int BrowserWrapper::DeleteCookie(const std::wstring& cookie_name) {
-	// Construct the delete cookie script
-	std::wstring script_source;
-	for (int i = 0; DELETECOOKIES[i]; i++) {
-		script_source += DELETECOOKIES[i];
-	}
-
-	CComPtr<IHTMLDocument2> doc;
-	this->GetDocument(&doc);
-	ScriptWrapper script_wrapper(doc, script_source, 1);
-	script_wrapper.AddArgument(cookie_name);
-	int status_code = script_wrapper.Execute();
-	return status_code;
-}
-
-bool BrowserWrapper::IsHtmlPage(IHTMLDocument2* doc) {
-	CComBSTR type;
-	if (!SUCCEEDED(doc->get_mimeType(&type))) {
-		return false;
-	}
-
-	std::wstring document_type_key_name(L"");
-	if (this->factory_.GetRegistryValue(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice", L"Progid", &document_type_key_name)) {
-		// Look for the user-customization under Vista/Windows 7 first. If it's
-		// IE, set the document friendly name lookup key to 'htmlfile'. If not,
-		// set it to blank so that we can look up the proper HTML type.
-		if (document_type_key_name == L"IE.HTTP") {
-			document_type_key_name = L"htmlfile";
-		} else {
-			document_type_key_name = L"";
-		}
-	}
-
-	if (document_type_key_name == L"") {
-		// To be technically correct, we should look up the extension specified
-		// for the text/html MIME type first (located in the "Extension" value
-		// of HKEY_CLASSES_ROOT\MIME\Database\Content Type\text/html), but that
-		// should always resolve to ".htm" anyway. From the extension, we can 
-		// find the browser-specific subkey of HKEY_CLASSES_ROOT, the default 
-		// value of which should contain the browser-specific friendly name of
-		// the MIME type for HTML documents, which is what 
-		// IHTMLDocument2::get_mimeType() returns.
-		if (!this->factory_.GetRegistryValue(HKEY_CLASSES_ROOT, L".htm", L"", &document_type_key_name)) {
-			return false;
-		}
-	}
-
-	std::wstring mime_type_name;
-	if (!this->factory_.GetRegistryValue(HKEY_CLASSES_ROOT, document_type_key_name, L"", &mime_type_name)) {
-		return false;
-	}
-
-	std::wstring type_string(type);
-	return type_string == mime_type_name;
-}
-
-int BrowserWrapper::SetFocusedFrameByElement(IHTMLElement* frame_element) {
-	HRESULT hr = S_OK;
-	if (!frame_element) {
-		this->focused_frame_window_ = NULL;
-		return SUCCESS;
-	}
-
-	CComQIPtr<IHTMLFrameBase2> frame_base(frame_element);
-	if (!frame_base) {
-		// IHTMLElement is not a FRAME or IFRAME element.
-		return ENOSUCHFRAME;
-	}
-
-	CComQIPtr<IHTMLWindow2> interim_result;
-	hr = frame_base->get_contentWindow(&interim_result);
-	if (FAILED(hr)) {
-		// Cannot get contentWindow from IHTMLFrameBase2.
-		return ENOSUCHFRAME;
-	}
-
-	this->focused_frame_window_ = interim_result;
-	return SUCCESS;
-}
-
-int BrowserWrapper::SetFocusedFrameByName(const std::wstring& frame_name) {
-	CComPtr<IHTMLDocument2> doc;
-	this->GetDocument(&doc);
-
-	CComQIPtr<IHTMLFramesCollection2> frames;
-	HRESULT hr = doc->get_frames(&frames);
-
-	if (frames == NULL) { 
-		// No frames in document. Exit.
-		return ENOSUCHFRAME;
-	}
-
-	long length = 0;
-	frames->get_length(&length);
-	if (!length) { 
-		// No frames in document. Exit.
-		return ENOSUCHFRAME;
-	}
-
-	CComVariant name;
-	CComBSTR name_bstr(frame_name.c_str());
-	name_bstr.CopyTo(&name);
-
-	// Find the frame
-	CComVariant frame_holder;
-	hr = frames->item(&name, &frame_holder);
-
-	if (FAILED(hr)) {
-		// Error retrieving frame. Exit.
-		return ENOSUCHFRAME;
-	}
-
-	CComQIPtr<IHTMLWindow2> interim_result = frame_holder.pdispVal;
-	if (!interim_result) {
-		// Error retrieving frame. Exit.
-		return ENOSUCHFRAME;
-	}
-
-	this->focused_frame_window_ = interim_result;
-	return SUCCESS;
-}
-
-int BrowserWrapper::SetFocusedFrameByIndex(const int frame_index) {
-	CComPtr<IHTMLDocument2> doc;
-	this->GetDocument(&doc);
-
-	CComQIPtr<IHTMLFramesCollection2> frames;
-	HRESULT hr = doc->get_frames(&frames);
-
-	if (frames == NULL) { 
-		// No frames in document. Exit.
-		return ENOSUCHFRAME;
-	}
-
-	long length = 0;
-	frames->get_length(&length);
-	if (!length) { 
-		// No frames in document. Exit.
-		return ENOSUCHFRAME;
-	}
-
-	CComVariant index;
-	index.vt = VT_I4;
-	index.lVal = frame_index;
-
-	// Find the frame
-	CComVariant frame_holder;
-	hr = frames->item(&index, &frame_holder);
-
-	if (FAILED(hr)) {
-		// Error retrieving frame. Exit.
-		return ENOSUCHFRAME;
-	}
-
-	CComQIPtr<IHTMLWindow2> interim_result = frame_holder.pdispVal;
-	if (!interim_result) {
-		// Error retrieving frame. Exit.
-		return ENOSUCHFRAME;
-	}
-
-	this->focused_frame_window_ = interim_result;
-	return SUCCESS;
-}
-
 HWND BrowserWrapper::GetWindowHandle() {
 	// If, for some reason, the window handle is no longer valid,
 	// set the member variable to NULL so that we can reacquire
 	// the valid window handle. Note that this can happen when
 	// browsing from one type of content to another, like from
 	// HTML to a transformed XML page that renders content.
-	if (!::IsWindow(this->window_handle_)) {
-		this->window_handle_ = NULL;
+	if (!::IsWindow(this->window_handle())) {
+		this->set_window_handle(NULL);
 	}
 
-	if (this->window_handle_ == NULL) {
-		this->window_handle_ = this->factory_.GetTabWindowHandle(this->browser_);
+	if (this->window_handle() == NULL) {
+		this->set_window_handle(this->GetTabWindowHandle());
 	}
 
-	return this->window_handle_;
+	return this->window_handle();
 }
 
-void __stdcall BrowserWrapper::BeforeNavigate2(IDispatch* pObject, VARIANT* pvarUrl, VARIANT* pvarFlags, VARIANT* pvarTargetFrame,
-VARIANT* pvarData, VARIANT* pvarHeaders, VARIANT_BOOL* pbCancel) {
-	// std::cout << "BeforeNavigate2\r\n";
-}
-
-void __stdcall BrowserWrapper::OnQuit() {
-	this->is_closing_ = true;
-	LPWSTR message_payload = new WCHAR[this->browser_id_.size() + 1];
-	wcscpy_s(message_payload, this->browser_id_.size() + 1, this->browser_id_.c_str());
-	::PostMessage(this->session_handle_, WD_BROWSER_QUIT, NULL, reinterpret_cast<LPARAM>(message_payload));
-}
-
-void __stdcall BrowserWrapper::NewWindow3(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl) {
-	// Handle the NewWindow3 event to allow us to immediately hook
-	// the events of the new browser window opened by the user action.
-	// This will not allow us to handle windows created by the JavaScript
-	// showModalDialog function().
-	IWebBrowser2* browser;
-	LPSTREAM message_payload;
-	::SendMessage(this->session_handle_, WD_BROWSER_NEW_WINDOW, NULL, (LPARAM)&message_payload);
-	HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IWebBrowser2, reinterpret_cast<void**>(&browser));
-	*ppDisp = browser;
-}
-
-void __stdcall BrowserWrapper::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
-	// Flag the browser as navigation having started.
-	// std::cout << "DocumentComplete\r\n";
-	this->is_navigation_started_ = true;
-
-	// DocumentComplete fires last for the top-level frame. If it fires
-	// for the top-level frame and the focused_frame_window_ member variable
-	// is not NULL, we assume we have navigated from within a frameset to a
-	// link that has a target of "_top", which replaces the frameset with the
-	// target page. On a top-level navigation, we are supposed to reset the
-	// focused frame to the top-level, so we do that here.
-	// NOTE: This is a possible source of unreliability if the above 
-	// assumptions turn out to be wrong and/or the event firing doesn't work
-	// the way we expect it to.
-	CComPtr<IDispatch> dispatch(this->browser_);
-	if (dispatch.IsEqualObject(pDisp) && this->focused_frame_window_ != NULL) {
-		this->focused_frame_window_ = NULL;
+std::wstring BrowserWrapper::GetWindowName() {
+	CComPtr<IDispatch> dispatch;
+	HRESULT hr = this->browser_->get_Document(&dispatch);
+	if (FAILED(hr)) {
+		return L"";
 	}
+	CComQIPtr<IHTMLDocument2> doc(dispatch);
+	if (!doc) {
+		return L"";
+	}
+
+	CComPtr<IHTMLWindow2> window;
+	hr = doc->get_parentWindow(&window);
+	if (FAILED(hr)) {
+		return L"";
+	}
+
+	std::wstring name(L"");
+	CComBSTR window_name;
+	hr = window->get_name(&window_name);
+	if (window_name) {
+		name = window_name;
+	}
+	return name;
 }
 
 void BrowserWrapper::AttachEvents() {
@@ -372,6 +171,68 @@ void BrowserWrapper::DetachEvents() {
 	HRESULT hr = this->DispEventUnadvise(unknown);
 }
 
+void BrowserWrapper::Close() {
+	HRESULT hr = this->browser_->Quit();
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Quit failed";
+	}
+}
+
+int BrowserWrapper::NavigateToUrl(const std::wstring& url) {
+	CComVariant url_variant(url.c_str());
+	CComVariant dummy;
+
+	// TODO: check HRESULT for error
+	HRESULT hr = this->browser_->Navigate2(&url_variant, &dummy, &dummy, &dummy, &dummy);
+	this->set_wait_required(true);
+	return SUCCESS;
+}
+
+int BrowserWrapper::NavigateBack() { 
+	HRESULT hr = this->browser_->GoBack();
+	this->set_wait_required(true);
+	return SUCCESS;
+}
+
+int BrowserWrapper::NavigateForward() { 
+	HRESULT hr = this->browser_->GoForward();
+	this->set_wait_required(true);
+	return SUCCESS;
+}
+
+int BrowserWrapper::Refresh() {
+	HRESULT hr = this->browser_->Refresh();
+	this->set_wait_required(true);
+	return SUCCESS;
+}
+
+HWND BrowserWrapper::GetActiveDialogWindowHandle() {
+	HWND active_dialog_handle = NULL;
+	DWORD process_id;
+	::GetWindowThreadProcessId(this->GetWindowHandle(), &process_id);
+	ProcessWindowInfo process_win_info;
+	process_win_info.dwProcessId = process_id;
+	process_win_info.hwndBrowser = NULL;
+	::EnumWindows(&BrowserFactory::FindDialogWindowForProcess, reinterpret_cast<LPARAM>(&process_win_info));
+	if (process_win_info.hwndBrowser != NULL) {
+		active_dialog_handle = process_win_info.hwndBrowser;
+		char window_class_name[34];
+		if (GetClassNameA(active_dialog_handle, window_class_name, 34) == 0) {
+			if (strcmp("Internet Explorer_TridentDlgFrame", window_class_name) == 0) {
+				HWND content_window_handle = this->FindContentWindowHandle(active_dialog_handle);
+				::PostMessage(this->session_handle(), WD_NEW_HTML_DIALOG, NULL, reinterpret_cast<LPARAM>(content_window_handle));
+			}
+		}
+	}
+	return active_dialog_handle;
+}
+
+HWND BrowserWrapper::GetTopLevelWindowHandle() { 
+	HWND top_level_window_handle = NULL;
+	this->browser_->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&top_level_window_handle));
+	return top_level_window_handle;
+}
+
 bool BrowserWrapper::Wait() {
 	bool is_navigating = true;
 
@@ -381,7 +242,7 @@ bool BrowserWrapper::Wait() {
 	HWND dialog = this->GetActiveDialogWindowHandle();
 	if (dialog != NULL) {
 		//std::cout "Found alert. Aborting wait." << std::endl;
-		this->wait_required_ = false;
+		this->set_wait_required(false);
 		return true;
 	}
 
@@ -420,7 +281,7 @@ bool BrowserWrapper::Wait() {
 	}
 
 	if (!is_navigating) {
-		this->wait_required_ = false;
+		this->set_wait_required(false);
 	}
 
 	return !is_navigating;
@@ -518,18 +379,37 @@ bool BrowserWrapper::GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2*
 	return false;
 }
 
-HWND BrowserWrapper::GetActiveDialogWindowHandle() {
-	HWND active_dialog_handle = NULL;
-	DWORD process_id;
-	::GetWindowThreadProcessId(this->GetWindowHandle(), &process_id);
-	ProcessWindowInfo process_win_info;
-	process_win_info.dwProcessId = process_id;
-	process_win_info.hwndBrowser = NULL;
-	::EnumWindows(&BrowserFactory::FindDialogWindowForProcess, reinterpret_cast<LPARAM>(&process_win_info));
-	if (process_win_info.hwndBrowser != NULL) {
-		active_dialog_handle = process_win_info.hwndBrowser;
+HWND BrowserWrapper::GetTabWindowHandle() {
+
+	HWND hwnd = NULL;
+	CComQIPtr<IServiceProvider> service_provider;
+	HRESULT hr = this->browser_->QueryInterface(IID_IServiceProvider, reinterpret_cast<void**>(&service_provider));
+	if (SUCCEEDED(hr)) {
+		CComPtr<IOleWindow> window;
+		hr = service_provider->QueryService(SID_SShellBrowser, IID_IOleWindow, reinterpret_cast<void**>(&window));
+		if (SUCCEEDED(hr)) {
+			// This gets the TabWindowClass window in IE 7 and 8,
+			// and the top-level window frame in IE 6. The window
+			// we need is the InternetExplorer_Server window.
+			window->GetWindow(&hwnd);
+			hwnd = this->FindContentWindowHandle(hwnd);
+		}
 	}
-	return active_dialog_handle;
+
+	return hwnd;
+}
+
+HWND BrowserWrapper::FindContentWindowHandle(HWND top_level_window_handle) {
+	ProcessWindowInfo process_window_info;
+	process_window_info.pBrowser = NULL;
+	process_window_info.hwndBrowser = NULL;
+
+	DWORD process_id;
+	::GetWindowThreadProcessId(top_level_window_handle, &process_id);
+	process_window_info.dwProcessId = process_id;
+
+	::EnumChildWindows(top_level_window_handle, &BrowserFactory::FindChildWindowForProcess, (LPARAM)&process_window_info);
+	return process_window_info.hwndBrowser;
 }
 
 } // namespace webdriver

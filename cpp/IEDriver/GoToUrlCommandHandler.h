@@ -26,15 +26,12 @@ protected:
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
-			std::string url = url_parameter_iterator->second.asString();
+			std::wstring url = CA2W(url_parameter_iterator->second.asString().c_str(), CP_UTF8);
 			CComVariant url_variant(url.c_str());
 			CComVariant dummy;
 
-			// TODO: check HRESULT for error
-			HRESULT hr = browser_wrapper->browser()->Navigate2(&url_variant, &dummy, &dummy, &dummy, &dummy);
-			browser_wrapper->set_wait_required(true);
-
-			//browser_wrapper->set_path_to_frame(L"");
+			// TODO: check result for error
+			status_code = browser_wrapper->NavigateToUrl(url);
 			browser_wrapper->SetFocusedFrameByElement(NULL);
 			response->SetResponse(SUCCESS, Json::Value::null);
 		}

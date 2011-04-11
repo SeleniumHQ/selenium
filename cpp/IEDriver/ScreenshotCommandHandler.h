@@ -23,7 +23,7 @@ protected:
 		session.GetCurrentBrowser(&browser_wrapper);
 		
 		this->image_ = new CImage();
-		HRESULT hr = this->CaptureBrowser(browser_wrapper->browser());
+		HRESULT hr = this->CaptureBrowser(browser_wrapper->GetWindowHandle());
 		if (FAILED(hr)) {
 			response->SetResponse(SUCCESS, "");
 			return;
@@ -43,54 +43,7 @@ protected:
 private:
 	ATL::CImage* image_;
 
-	bool ScreenshotCommandHandler::FindContentWindow(HWND tab_window_handle, HWND* content_window_handle_pointer) {
-		HWND shell_window_handle = ::FindWindowEx(tab_window_handle, 0, _T("Shell DocObject View"), NULL);
-		if (shell_window_handle == NULL) {
-			LOG(WARN) << "Could not find shell view";
-			return false;
-		}
-
-		HWND content_window_handle = ::FindWindowEx(shell_window_handle, 0, _T("Internet Explorer_Server"), NULL);
-		if (content_window_handle == NULL) {
-			LOG(WARN) << "Could not find 'Internet Explorer_Server'";
-			return false;
-		}
-
-		*content_window_handle_pointer = content_window_handle;
-
-		return true;
-	}
-
-	HRESULT ScreenshotCommandHandler::CaptureBrowser(IWebBrowser2* browser) {
-		// Get the browser HWND.
-		HWND content_window_handle;
-
-		CComPtr<IServiceProvider> service_provider;
-		HRESULT hr = browser->QueryInterface(&service_provider);
-		if (FAILED(hr)) {
-			LOG(WARN) << "Query for IServiceProvider failed: " << hr;
-			return hr;
-		}
-
-		CComPtr<IOleWindow> window_pointer;
-		hr = service_provider->QueryService(SID_SShellBrowser, &window_pointer);
-		if (FAILED(hr)) {
-			LOG(WARN) << "QueryService for ShellBrowser failed: " << hr;
-			return hr;
-		}
-
-		HWND tab_window_handle;
-		hr = window_pointer->GetWindow(&tab_window_handle);
-		if (FAILED(hr)) {
-			LOG(WARN) << "Could not get window: " << hr;
-			return hr;
-		}
-
-		if (!this->FindContentWindow(tab_window_handle, &content_window_handle)) {
-			LOG(WARN) << "Could not find content hwnd";
-			return E_FAIL;
-		}
-
+	HRESULT ScreenshotCommandHandler::CaptureBrowser(HWND content_window_handle) {
 		RECT window_rect;
 		::GetWindowRect(content_window_handle, &window_rect);
 		int width = window_rect.right - window_rect.left;
@@ -102,7 +55,7 @@ private:
 			// Could not draw.
 			LOG(WARN) << "PrintWindow failed";
 			this->image_->ReleaseDC();
-			return hr;
+			return E_FAIL;
 		}
 
 		this->image_->ReleaseDC();

@@ -21,8 +21,7 @@ protected:
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
 		}
-		HRESULT hr = browser_wrapper->browser()->GoBack();
-		browser_wrapper->set_wait_required(true);
+		status_code = browser_wrapper->NavigateBack();
 		response->SetResponse(SUCCESS, Json::Value::null);
 	}
 };

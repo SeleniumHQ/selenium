@@ -193,6 +193,15 @@ LRESULT Session::OnGetWindowCount(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&
 	return static_cast<LRESULT>(this->managed_browsers_.size());
 }
 
+LRESULT Session::OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandles) {
+	HWND dialog_handle = reinterpret_cast<HWND>(lParam);
+	IHTMLDocument2* document;
+	if (this->factory_.GetDocumentFromWindowHandle(dialog_handle, &document)) {
+		this->AddManagedBrowser(BrowserHandle(new HtmlDialog(document, dialog_handle, this->m_hWnd)));
+	}
+	return 0;
+}
+
 unsigned int WINAPI Session::WaitThreadProc(LPVOID lpParameter) {
 	HWND window_handle = reinterpret_cast<HWND>(lpParameter);
 	::Sleep(WAIT_TIME_IN_MILLISECONDS);
