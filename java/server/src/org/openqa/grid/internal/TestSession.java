@@ -248,8 +248,9 @@ public class TestSession {
 		String uri = new URL(remoteURL, ok).toExternalForm();
 
 		InputStream body = null;
-		if (request.getContentLength() > 0 || request.getHeader("Transfer-Encoding") != null)
+		if (request.getContentLength() > 0 || request.getHeader("Transfer-Encoding") != null) {
 			body = request.getInputStream();
+        }
 
 		HttpRequest proxyRequest;
 		if (content != null) {
@@ -264,11 +265,15 @@ public class TestSession {
 			BasicHttpRequest r = new BasicHttpRequest(request.getMethod(), uri);
 			proxyRequest = r;
 		}
+
 		for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
 			String headerName = (String) e.nextElement();
-			if ("Content-Length".equalsIgnoreCase(headerName))
+
+            if ("Content-Length".equalsIgnoreCase(headerName)) {
 				continue; // already set
-			proxyRequest.setHeader(headerName, request.getHeader(headerName));
+            }
+
+            proxyRequest.setHeader(headerName, request.getHeader(headerName));
 		}
 
 		DefaultHttpClient client = getClient(); /*
@@ -292,9 +297,18 @@ public class TestSession {
 
 		response.setStatus(proxyResponse.getStatusLine().getStatusCode());
 		HttpEntity responseBody = proxyResponse.getEntity();
+
 		for (Header header : proxyResponse.getAllHeaders()) {
 			String name = header.getName();
 			String value = header.getValue();
+
+            // HttpEntity#getContent() chews up the chunk-size octet (i.e., the InputStream does not actually map 1:1
+            // to the underlying response body).  This breaks any client expecting the chunk size.  We could try to
+            // recreate it, but since the chunks are already read in and decoded, you'd end up with a single chunk, which
+            // isn't all that useful.  So, just return the response as is.
+            if (name.equalsIgnoreCase("Transfer-Encoding") && value.equalsIgnoreCase("chunked")) {
+                continue;
+            }
 
 			// the location needs to point to the hub that will proxy
 			// everything.
@@ -311,6 +325,7 @@ public class TestSession {
 				response.setHeader(name, value);
 			}
 		}
+
 		if (responseBody != null) {
 			InputStream in = responseBody.getContent();
 
@@ -323,7 +338,6 @@ public class TestSession {
 					while ((line = reader.readLine()) != null) {
 						// TODO freynaud bug ?
 						sb.append(line);/* .append("\n") */
-						;
 					}
 					is.close();
 				} catch (UnsupportedEncodingException e) {
@@ -338,7 +352,18 @@ public class TestSession {
 			try {
 				OutputStream out = response.getOutputStream();
 				try {
-					ByteStreams.copy(in, out);
+                    byte[] rawBody = ByteStreams.toByteArray(in);
+
+                    // We need to set the Content-Length header before we write to the output stream.  Usually the
+                    // Content-Length header is already set because we take it from the proxied request.  But, it won't
+                    // be set when we consume chunked content, since that doesn't use Content-Length.  As we're not
+                    // going to send a chunked response, we need to set the Content-Length in order for the response
+                    // to be valid.
+                    if (!response.containsHeader("Content-Length")) {
+                        response.setIntHeader("Content-Length", rawBody.length);
+                    }
+
+                    out.write(rawBody);
 				} finally {
 					try {
 						out.close();
