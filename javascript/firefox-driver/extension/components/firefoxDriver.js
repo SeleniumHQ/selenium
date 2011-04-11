@@ -1034,8 +1034,43 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   var doc = respond.session.getDocument();
   var coords = webdriver.firefox.events.buildCoordinates(parameters, doc);
 
-  var mouse = Utils.newInstance('@googlecode.com/webdriver/syntheticmouse;1', 'wdIMouse');
-  mouse.mouseMove(coords);
+  var mouseMoveTo = function(coordinates, nativeEventsEnabled) {
+    if (!coordinates.auxiliary) {
+      throw new bot.Error("No element specified for mouse move.");
+    }
+
+    var element = webdriver.firefox.utils.unwrap(coordinates.auxiliary);
+
+    if (goog.isFunction(element.scrollIntoView)) {
+      element.scrollIntoView();
+    }
+
+    var events = Utils.getNativeEvents();
+    var node = Utils.getNodeForNativeEvents(element);
+
+    if (nativeEventsEnabled && events && node) {
+      var loc = Utils.getLocationOnceScrolledIntoView(element);
+
+      var x = loc.x + (loc.width ? loc.width / 2 : 0);
+      var y = loc.y + (loc.height ? loc.height / 2 : 0);
+
+      events.mouseMove(node, this.currentX, this.currentY, x, y);
+      this.currentX = x;
+      this.currentY = y;
+    } else {
+      var hoverFailureCause = "Could not get node for element or native " +
+          "events are not supported on the platform.";
+      if (nativeEventsEnabled) {
+        hoverFailureCause = "native events are disabled on this platform.";
+      }
+      // TODO: use the correct error type here.
+      throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+          "Cannot hover over element: " + hoverFailureCause);
+    }
+
+  };
+
+  mouseMoveTo(coords, this.enableNativeEvents);
 
   respond.send();
 };
