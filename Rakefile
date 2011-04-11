@@ -349,13 +349,9 @@ end
 
 task :test_chrome_py => [:webdriver_py, :chrome] do
   if python? then
-    chrome_zip_build = 'build/javascript/chrome-driver/chrome-extension.zip'
-    chrome_py_home = "py/selenium/webdriver/chrome/"
     py_test_path = 'build/python/bin/py.test'
     py_setup = "build/python/bin/python " + 'setup.py build'
     if (windows?) then
-      chrome_zip_build = chrome_zip_build.gsub(/\//, "\\")
-      chrome_py_home = chrome_py_home.gsub(/\//, "\\")
       py_test_path = 'build\\python\\Scripts\\py.test.exe'
       py_setup = 'build\\python\\Scripts\\python ' + 'setup.py build'
     end
@@ -369,8 +365,6 @@ task :test_chrome_py => [:webdriver_py, :chrome] do
     end
     test_dir = Dir.glob('build/lib**/selenium/test/selenium/webdriver/chrome').first
     sh py_test, test_dir, "-k -ignore_chrome", :verbose => true
-    chrome_zip = chrome_py_home + "chrome-extension.zip"
-    rm chrome_zip , :verbose => true
   end
 end
 
@@ -429,8 +423,6 @@ end
 
 task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :chrome] do
     if python? then
-        chrome_zip_build = 'build/javascript/chrome-driver/chrome-extension.zip'
-        chrome_py_home = "py/selenium/webdriver/chrome/"
 
         firefox_py_home = "py/selenium/webdriver/firefox/"
         xpi_zip_build = 'build/javascript/firefox-driver/webdriver.xpi'
@@ -440,14 +432,11 @@ task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :
         if (windows?) then
             xpi_zip_build = xpi_zip_build.gsub(/\//, "\\")
             firefox_py_home = firefox_py_home .gsub(/\//, "\\")
-            chrome_zip_build = chrome_zip_build.gsub(/\//,"\\")
-            chrome_py_home = chrome_py_home.gsub(/\//, "\\")
             ie_driver = ie_driver.gsub(/\//, "\\")
             ie_py_home = ie_py_home.gsub(/\//, "\\")
         end
         
         cp xpi_zip_build , firefox_py_home, :verbose => true
-        cp chrome_zip_build , chrome_py_home , :verbose => true
         cp ie_driver, ie_py_home, :verbose => true
     end
 end
