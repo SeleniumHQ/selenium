@@ -262,7 +262,7 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
 		return TRUE;
 	}
 	
-	if (strcmp("#32770", name) != 0) {
+	if (strcmp("#32770", name) != 0 && strcmp("Internet Explorer_TridentDlgFrame", name) != 0){
 		return TRUE;
 	} else {
 		DWORD process_id = NULL;
