@@ -121,6 +121,9 @@ public interface JavascriptExecutor {
   /**
    * It's not enough to simply support JavaScript, it also needs to be enabled
    * too.
+   *
+   * @deprecated Only one driver instance allows us to toggle this value.
    */
+  @Deprecated
   boolean isJavascriptEnabled();
 }
