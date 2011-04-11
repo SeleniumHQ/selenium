@@ -100,7 +100,7 @@ class Compile < BaseXpt
 
       incl = [gecko, "idl"].join(Platform.dir_separator)
 
-      base_cmd = (ENV['xpidl'] || [gecko, "bin", "xpidl"].join(Platform.dir_separator)).dup
+      base_cmd = (ENV['XPIDL'] || [gecko, "bin", "xpidl"].join(Platform.dir_separator)).dup
       base_cmd << ".exe" if windows?
       base_cmd << " -w -m typelib -I#{incl}"
 
