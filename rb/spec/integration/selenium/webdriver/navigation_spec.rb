@@ -6,13 +6,14 @@ describe "Navigation" do
     driver.current_url.should == url_for("formPage.html")
 
     driver.find_element(:id, 'imageButton').submit
-    driver.find_element(:id, 'greeting').text.should == "Success!"
+    driver.title.should == "We Arrive Here"
 
     driver.navigate.back
     driver.current_url.should == url_for("formPage.html")
+    driver.title.should == "We Leave From Here"
 
     driver.navigate.forward
-    driver.find_element(:id, 'greeting').text.should == "Success!"
+    driver.title.should == "We Arrive Here"
   end
 
   it "should refresh the page" do
