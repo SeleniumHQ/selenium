@@ -21,8 +21,18 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from service import Service
 
 class WebDriver(RemoteWebDriver):
+    """ Controls the ChromeDriver and allows you to drive the browser. 
+        You will need to download the ChromeDriver executable from 
+        http://code.google.com/p/selenium/downloads/list"""
 
     def __init__(self, executable_path="chromedriver"):
+        """ Creates a new instance of the chrome driver. Starts the service
+            and then creates
+            Attributes:
+                executable_path : path to the executable. If the default
+                    is used it assumes the executable is in the $PATH
+
+        """
         self.service = Service(executable_path)
         self.service.start()
 
@@ -31,6 +41,8 @@ class WebDriver(RemoteWebDriver):
             desired_capabilities=DesiredCapabilities.CHROME)
 
     def quit(self):
+        """ Closes the browser and shuts down the ChromeDriver executable
+            that is started when starting the ChromeDriver """
         try:
             RemoteWebDriver.quit(self)
         except httplib.BadStatusLine:
