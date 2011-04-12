@@ -95,7 +95,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
 
     RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("menu1"));
-    if (!Platform.getCurrent().is(Platform.WINDOWS)) {
+    if (!supportsNativeEvents()) {
       System.out.println("Skipping hover test: needs native events");
       return;
     }
@@ -105,6 +105,12 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
     ((HasInputDevices) driver).actionsBuilder().moveToElement(element).build().perform();
+
+    long waitEndTime = System.currentTimeMillis() + 5000;
+
+    while (item.getText().equals("") && (System.currentTimeMillis() < waitEndTime)) {
+      doSleep(200);
+    }
 
     assertEquals("Item 1", item.getText());
   }
@@ -140,7 +146,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
 
     RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("menu1"));
-    if (!Platform.getCurrent().is(Platform.WINDOWS)) {
+    if (!supportsNativeEvents()) {
       System.out.println("Skipping hover test: needs native events");
       return;
     }
@@ -161,5 +167,26 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
       return false;
     }
     return true;
+  }
+
+  private boolean supportsNativeEvents() {
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      return true;
+    }
+
+    if (driver instanceof HasCapabilities) {
+      Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
+      return (Boolean) capabilities.getCapability("nativeEvents");
+    }
+
+    return false;
+  }
+
+  private void doSleep(int timeInMs) {
+    try {
+      Thread.sleep(timeInMs);
+    } catch (InterruptedException e) {
+      throw new RuntimeException("Interrupted: " + e.toString());
+    }
   }
 }
