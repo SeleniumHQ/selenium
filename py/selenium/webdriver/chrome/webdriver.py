@@ -25,15 +25,17 @@ class WebDriver(RemoteWebDriver):
         You will need to download the ChromeDriver executable from 
         http://code.google.com/p/selenium/downloads/list"""
 
-    def __init__(self, executable_path="chromedriver"):
+    def __init__(self, executable_path="chromedriver", port=0):
         """ Creates a new instance of the chrome driver. Starts the service
             and then creates
             Attributes:
                 executable_path : path to the executable. If the default
                     is used it assumes the executable is in the $PATH
+                port : port you would like the service to run, if left
+                    as 0, a free port will be found
 
         """
-        self.service = Service(executable_path)
+        self.service = Service(executable_path, port=port)
         self.service.start()
 
         RemoteWebDriver.__init__(self, 
