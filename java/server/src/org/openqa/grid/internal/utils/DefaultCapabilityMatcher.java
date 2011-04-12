@@ -16,16 +16,11 @@ limitations under the License.
 
 package org.openqa.grid.internal.utils;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.BROWSER;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.openqa.grid.internal.GridException;
 import org.openqa.selenium.Platform;
 
 /**
