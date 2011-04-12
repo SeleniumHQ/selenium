@@ -20,7 +20,7 @@ module Selenium
 
           remote_opts = {
             :url                  => @launcher.url,
-            :desired_capabilities => :firefox
+            :desired_capabilities => Remote::Capabilities.firefox(:native_events => DEFAULT_ENABLE_NATIVE_EVENTS)
           }
 
           remote_opts.merge!(:http_client => http_client) if http_client
