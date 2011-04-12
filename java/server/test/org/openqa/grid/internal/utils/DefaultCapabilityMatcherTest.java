@@ -74,9 +74,5 @@ public class DefaultCapabilityMatcherTest {
 	}
 	
 	
-	@Test
-	public void notImplemented(){
-		Assert.assertFalse(helper.matches(tl, exotic));
-		
-	}
+	
 }
