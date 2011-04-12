@@ -33,17 +33,19 @@ public class NativeEventsTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testSwitchingElementsUsingKeyboardWorks() {
+  public void testNativeEventsCanBeEnabled() {
     if (driver2 == null) {
       return;
     }
 
     assertTrue("Native events were explicitly enabled and should be on.",
         (Boolean) driver2.getCapabilities().getCapability("nativeEvents"));
+  }
 
+  public void testNativeEventsAreNotOnByDefaultOnLinux() {
     if (Platform.getCurrent().is(Platform.LINUX)) {
       assertFalse("Native events should be off by default on Linux",
-          (Boolean) ((FirefoxDriver) driver).getCapabilities().getCapability("nativeEvents"));
+          FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS);
     }
   }
 }

@@ -1,5 +1,4 @@
-
-java_test(name = "test",
+java_library(name = "tests_common",
   srcs = [
     "*.java",
     "internal/*.java",
@@ -11,4 +10,15 @@ java_test(name = "test",
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/test/org/openqa/selenium:tests",
     "//third_party/java/junit",
+  ])
+
+java_test(name = "test",
+  deps = [
+    ":tests_common"
+  ])
+
+java_test(name = "test_native",
+  test_suite = "org.openqa.selenium.firefox.NativeEventsFirefoxDriverTestSuite",
+  deps = [
+    ":tests_common"
   ])
