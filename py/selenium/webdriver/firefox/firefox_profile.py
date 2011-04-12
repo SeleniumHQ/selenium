@@ -73,7 +73,8 @@ class FirefoxProfile(object):
         "toolkit.networkmanager.disable": "true",    
         "javascript.options.showInConsole": "true",
         "browser.dom.window.dump.enabled": "true",
-        "webdriver_accept_untrusted_certs": "true"
+        "webdriver_accept_untrusted_certs": "true",
+        "dom.max_script_run_time": "30"
         }
 
     def __init__(self,profile_directory=None):
