@@ -151,7 +151,6 @@
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-all</artifactId>
                 <version>1.1</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.json</groupId>
@@ -162,7 +161,6 @@
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>5.14.1</version>
-                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
