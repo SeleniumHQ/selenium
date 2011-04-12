@@ -41,15 +41,18 @@ module Selenium
 
           def chrome(opts = {})
             new({
-              :browser_name       => "chrome",
-              :javascript_enabled => true
+              :browser_name          => "chrome",
+              :javascript_enabled    => true,
+              :css_selectors_enabled => true
             }.merge(opts))
           end
 
           def firefox(opts = {})
             new({
-              :browser_name => "firefox",
-              :javascript_enabled => true
+              :browser_name          => "firefox",
+              :javascript_enabled    => true,
+              :takes_screenshot      => true,
+              :css_selectors_enabled => true
             }.merge(opts))
           end
 
@@ -61,8 +64,10 @@ module Selenium
 
           def internet_explorer(opts = {})
             new({
-              :browser_name => "internet explorer",
-              :platform     => :windows
+              :browser_name          => "internet explorer",
+              :platform              => :windows,
+              :takes_screenshot      => true,
+              :css_selectors_enabled => true
             }.merge(opts))
           end
           alias_method :ie, :internet_explorer
