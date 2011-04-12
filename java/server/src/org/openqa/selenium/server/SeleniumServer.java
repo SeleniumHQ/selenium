@@ -369,7 +369,10 @@ public class SeleniumServer implements SslCertificateGenerator {
     protected ProxyHandler makeProxyHandler(RemoteControlConfiguration configuration) {
         ProxyHandler proxyHandler;
         if (customProxyHandler == null) {
-            proxyHandler = new ProxyHandler(configuration.trustAllSSLCertificates(), configuration.getDontInjectRegex(), configuration.getDebugURL(), configuration.getProxyInjectionModeArg(), false);
+            proxyHandler = new ProxyHandler(configuration.trustAllSSLCertificates(),
+                    configuration.getDontInjectRegex(), configuration.getDebugURL(),
+                    configuration.getProxyInjectionModeArg(), false,
+                    configuration.getPort());
         } else {
             proxyHandler = customProxyHandler;
         }

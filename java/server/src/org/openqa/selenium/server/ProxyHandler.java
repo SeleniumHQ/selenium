@@ -151,6 +151,8 @@ public class ProxyHandler extends AbstractHttpHandler {
      */
     protected HashSet<Integer> _allowedConnectPorts = new HashSet<Integer>();
 
+    private int port;
+
     {
         _allowedConnectPorts.add(80);
         _allowedConnectPorts.add(RemoteControlConfiguration.getDefaultPort());
@@ -161,13 +163,14 @@ public class ProxyHandler extends AbstractHttpHandler {
         _allowedConnectPorts.add(8443);
     }
 
-    public ProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL, boolean proxyInjectionMode, boolean forceProxyChain) {
+    public ProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL, boolean proxyInjectionMode, boolean forceProxyChain, int port) {
         super();
         this.trustAllSSLCertificates = trustAllSSLCertificates;
         this.dontInjectRegex = dontInjectRegex;
         this.debugURL = debugURL;
         this.proxyInjectionMode = proxyInjectionMode;
         this.forceProxyChain = forceProxyChain;
+        this.port = port;
     }
 
     /* ------------------------------------------------------------ */
@@ -597,7 +600,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         Server server = new Server();
         HttpContext httpContext = new HttpContext();
         httpContext.setContextPath("/");
-        ProxyHandler proxy = new ProxyHandler(true, "", "", false, false);
+        ProxyHandler proxy = new ProxyHandler(true, "", "", false, false, 4444);
         proxy.useCyberVillains = false;
         httpContext.addHandler(proxy);
         server.addContext(httpContext);
@@ -760,7 +763,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             ResourceExtractor.extractResourcePath(getClass(), "/sslSupport", root);
 
 
-            KeyStoreManager mgr = new KeyStoreManager(root);
+            KeyStoreManager mgr = new KeyStoreManager(root, "http://127.0.0.1:"+port+"/selenium-server/sslSupport/blank_crl.pem");
             mgr.getCertificateByHostname(host);
             mgr.getKeyStore().deleteEntry(KeyStoreManager._caPrivKeyAlias);
             mgr.persist();

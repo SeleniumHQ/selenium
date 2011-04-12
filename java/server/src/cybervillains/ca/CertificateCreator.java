@@ -116,10 +116,11 @@ public class CertificateCreator {
 			final PublicKey newPubKey,
 			final X509Certificate caCert,
 			final PrivateKey caPrivateKey,
-			final String subject)
-	throws 	CertificateParsingException, 
-			SignatureException, 
-			InvalidKeyException, 
+			final String subject,
+			final String certificateRevocationListPath)
+	throws 	CertificateParsingException,
+			SignatureException,
+			InvalidKeyException,
 			CertificateExpiredException, 
 			CertificateNotYetValidException, 
 			CertificateException, 
@@ -183,14 +184,21 @@ public class CertificateCreator {
 //				false,
 //				new AuthorityInformationAccess(new DERObjectIdentifier(OID_ID_AD_CAISSUERS),
 //						new GeneralName(GeneralName.uniformResourceIdentifier, "http://" + subject + "/aia")));
-		
-//		v3CertGen.addExtension(
-//				X509Extensions.CRLDistributionPoints,
-//				false,
-//				new CRLDistPoint(new DistributionPoint[] {}));
-		
-		
-		
+
+		if(certificateRevocationListPath != null) {
+		/* Safari on Windows requires a CRL and validates it */
+            DistributionPoint crl = new DistributionPoint(new DistributionPointName(
+                    DistributionPointName.FULL_NAME, new GeneralName(
+                            GeneralName.uniformResourceIdentifier, certificateRevocationListPath)),
+                    null, null);
+		v3CertGen.addExtension(
+				X509Extensions.CRLDistributionPoints,
+				false,
+				new CRLDistPoint(new DistributionPoint[] {crl}));
+		}
+
+
+
 		X509Certificate cert = v3CertGen.generate(caPrivateKey, "BC");
 		
 		return cert;

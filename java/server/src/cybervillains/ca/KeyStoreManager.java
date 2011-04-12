@@ -93,16 +93,18 @@ public class KeyStoreManager {
 	
 	
 	
-	
+
 	private boolean persistImmediately = true;
     private File root;
+    private String certificateRevocationListPath;
 
     @SuppressWarnings("unchecked")
-    public KeyStoreManager(File root) {
+    public KeyStoreManager(File root, String certificateRevocationListPath) {
         this.root = root;
+        this.certificateRevocationListPath = certificateRevocationListPath;
 
 		Security.insertProviderAt(new BouncyCastleProvider(), 2);
-		
+
 		_sr = new SecureRandom();
 		
 		try
@@ -574,13 +576,14 @@ public class KeyStoreManager {
 			
 			KeyPair kp = getRSAKeyPair();
 			
-			X509Certificate newCert = CertificateCreator.generateStdSSLServerCertificate(kp.getPublic(), 
+			X509Certificate newCert = CertificateCreator.generateStdSSLServerCertificate(kp.getPublic(),
 																						 getSigningCert(),
 																						 getSigningPrivateKey(),
-																						 subject);
-			
+																						 subject,
+																						 certificateRevocationListPath);
+
 			addCertAndPrivateKey(hostname, newCert, kp.getPrivate());
-			
+
 			thumbprint = ThumbprintUtil.getThumbprint(newCert);
 			
 			_subjectMap.put(subject, thumbprint);
