@@ -41,11 +41,11 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 
 	@Override
 	public URL getRemoteURL() {
+		String url = "http://" + getHost() + ":" + getPort() + REMOTE_PATH;
 		try {
-			String ip = networkUtils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-			return new URL("http://" + ip + ":" + getPort() + REMOTE_PATH);
+			return new URL(url);
 		} catch (Throwable e) {
-			return null;
+			throw new RuntimeException("URL for the node doesn't seem correct: "+url+" , "+e.getMessage());
 		}
 	}
 

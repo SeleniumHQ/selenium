@@ -8,8 +8,17 @@ public class GridConfiguration {
 	private GridRole role = GridRole.NOT_GRID;
 	private URL registrationURL;
 	private int port = 5555;
+	private String host;
 	
 	
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
 	public URL getRegistrationURL() {
 		return registrationURL;
 	}

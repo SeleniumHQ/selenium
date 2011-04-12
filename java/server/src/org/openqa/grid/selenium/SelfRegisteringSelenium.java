@@ -25,6 +25,7 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.internal.seleniumemulation.GetHtmlSource;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
@@ -47,12 +48,13 @@ public class SelfRegisteringSelenium extends SelfRegisteringRemote {
 
 	@Override
 	public URL getRemoteURL() {
+		String url = "http://" + getHost() + ":" + getPort() + REMOTE_PATH;
 		try {
-			String ip = networkUtils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-			return new URL("http://" + ip + ":" + getPort() + REMOTE_PATH);
+			return new URL(url);
 		} catch (Throwable e) {
-			return null;
+			throw new RuntimeException("URL for the node doesn't seem correct: "+url+" , "+e.getMessage());
 		}
+		
 	}
 
 	@Override

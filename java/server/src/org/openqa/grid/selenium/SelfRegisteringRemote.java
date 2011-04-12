@@ -37,10 +37,10 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public abstract class SelfRegisteringRemote {
 
-    protected static final NetworkUtils networkUtils = new NetworkUtils();
-
+	private static final NetworkUtils networkUtils = new NetworkUtils();
 	private URL registration;
 	private int port = 5555;
+	private String host = null;
 
 	private List<DesiredCapabilities> caps = new ArrayList<DesiredCapabilities>();
 	private Map<String, Object> config = new HashMap<String, Object>();
@@ -53,8 +53,10 @@ public abstract class SelfRegisteringRemote {
 	/**
 	 * Create a selenium1 RC from the configuration specified.
 	 * 
-	 * @param conf The configuration to use
-	 * @param registration The registration url
+	 * @param conf
+	 *            The configuration to use
+	 * @param registration
+	 *            The registration url
 	 * @return A SelfRegisteringRemote
 	 */
 	public static SelfRegisteringRemote create(RemoteControlConfiguration conf, URL registration) {
@@ -72,6 +74,23 @@ public abstract class SelfRegisteringRemote {
 		}
 	}
 
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	/**
+	 * 
+	 * @return the IP or hostname of the machine.
+	 */
+	public String getHost() {
+		if (host == null){
+			return networkUtils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+		}else {
+			return host;
+		}
+		
+	}
+
 	public abstract URL getRemoteURL();
 
 	public abstract void launchRemoteServer() throws Exception;
@@ -85,7 +104,7 @@ public abstract class SelfRegisteringRemote {
 	public abstract void addFirefoxSupport(File profileDir);
 
 	public void addChromeSupport() {
-		DesiredCapabilities chrome = new DesiredCapabilities("chrome","10.0",Platform.getCurrent());
+		DesiredCapabilities chrome = new DesiredCapabilities("chrome", "10.0", Platform.getCurrent());
 		caps.add(chrome);
 	}
 

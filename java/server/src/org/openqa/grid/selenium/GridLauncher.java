@@ -46,6 +46,9 @@ public class GridLauncher {
 			} else if ("-port".equalsIgnoreCase(arg)) {
 				String v = getArgValue(args, i);
 				config.setPort(Integer.parseInt(v));
+			}else if ("-host".equalsIgnoreCase(arg)) {
+				String v = getArgValue(args, i);
+				config.setHost(v);
 			}
 		}
 		try {
