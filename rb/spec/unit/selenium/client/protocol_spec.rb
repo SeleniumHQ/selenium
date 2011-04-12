@@ -19,7 +19,7 @@ describe Selenium::Client::Protocol do
       client.instance_variable_set :@default_timeout_in_seconds, 1
       client.stub!(:http_request_for).with(:a_verb, :some_args).and_return(:the_request)
       client.should_receive(:http_post).with(:the_request).and_return(["ER", "ERROR,the error message"])
-      lambda { client.remote_control_command(:a_verb, :some_args) }.should raise_error(SeleniumCommandError)
+      lambda { client.remote_control_command(:a_verb, :some_args) }.should raise_error(Selenium::Client::CommandError)
     end
 
     it "succeeds when given zero args" do

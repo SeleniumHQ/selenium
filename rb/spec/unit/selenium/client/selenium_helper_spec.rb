@@ -1,8 +1,8 @@
 require File.expand_path("../spec_helper", __FILE__)
 
-describe SeleniumHelper do
+describe Selenium::Client::SeleniumHelper do
   class SeleniumHelperClass
-    include SeleniumHelper
+    include Selenium::Client::SeleniumHelper
     attr_accessor :selenium
   end
   
