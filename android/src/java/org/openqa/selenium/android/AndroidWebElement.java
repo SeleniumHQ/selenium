@@ -28,6 +28,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.android.app.WebDriverWebView;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
@@ -66,19 +67,20 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public void click() {
+    WebDriverWebView.resetEditableAreaHasFocus();
     // Scroll if the element is not visible so it is in the viewport.
     getDomAccessor().scrollIfNeeded(elementId);
     Point center = getDomAccessor().getCenterCoordinate(elementId);
-
-    MotionEvent downEvent = MotionEvent.obtain(SystemClock.uptimeMillis(),
+    long downTime = SystemClock.uptimeMillis();
+    MotionEvent downEvent = MotionEvent.obtain(downTime,
         SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, center.x, center.y, 0);
-    MotionEvent upEvent = MotionEvent.obtain(downEvent.getDownTime(),
+    MotionEvent upEvent = MotionEvent.obtain(downTime,
         SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, center.x, center.y, 0);
     
     controller.sendMotionEvent(downEvent, upEvent);
     // If the page started loading we should wait
     // until the page is done loading.
-    controller.blockIfPageIsLoading();
+    controller.blockIfPageIsLoading(driver);
   }
   
   public JavascriptDomAccessor getDomAccessor() {
@@ -93,7 +95,7 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
       this.click();
     } else {
       getDomAccessor().submit(elementId);
-      controller.blockIfPageIsLoading();
+      controller.blockIfPageIsLoading(driver);
     }
   }
 
@@ -115,8 +117,6 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     this.click();
     controller.waitUntilEditableAreaFocused();
     controller.sendKeys(keys);
-    //driver.sendIntent(Action.SEND_KEYS, serilizableArgs);
-    controller.blockIfPageIsLoading();
   }
 
   public void sendKeys(CharSequence... value) {
@@ -136,7 +136,6 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     this.click();
     controller.waitUntilEditableAreaFocused();
     controller.sendKeys(keys);
-    controller.blockIfPageIsLoading();
   }
   
   public String getTagName() {

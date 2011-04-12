@@ -25,7 +25,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.android.ActivityController;
-import org.openqa.selenium.android.Logger;
 import org.openqa.selenium.android.events.TouchScreen;
 import org.openqa.selenium.android.events.WebViewAction;
 import org.openqa.selenium.android.server.JettyService;
@@ -46,7 +45,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.webkit.CookieManager;
@@ -65,6 +63,8 @@ public class WebDriverActivity extends Activity {
   private SessionCookieManager sessionCookieManager;
   private WebDriverWebView currentView;
   private WebViewManager viewManager = new WebViewManager();  
+  private ActivityController controller = ActivityController.getInstance();
+
 
   private boolean bound;
   private JettyService jettyService;
@@ -83,6 +83,7 @@ public class WebDriverActivity extends Activity {
     public void handleMessage(Message msg) {
       if (msg.what == CMD_SEND_KEYS) {
         WebViewAction.sendKeys(currentView, (CharSequence[]) msg.obj);
+        controller.notifySendKeysDone();
       } else if (msg.what == CMD_NAVIGATE_TO) {
         currentView.navigateTo((String) msg.obj);
       } else if (msg.what == CMD_EXECUTE_SCRIPT) {
@@ -146,8 +147,7 @@ public class WebDriverActivity extends Activity {
       public void run() {
         jettyIntent = new Intent(WebDriverActivity.this, JettyService.class);
         bindService(jettyIntent, mConnection, Context.BIND_AUTO_CREATE);
-        ActivityController s = ActivityController.getInstance();
-        s.setActivity(WebDriverActivity.this);
+        controller.setActivity(WebDriverActivity.this);
       }
     }).start();
     
@@ -252,7 +252,8 @@ public class WebDriverActivity extends Activity {
   public void sendMotionToScreen(MotionEvent down, MotionEvent up) {
     Message msg = handler.obtainMessage(CMD_SEND_TOUCH);
     msg.obj = new MotionEvent[]{down, up};
-    handler.sendMessage(msg);  }
+    handler.sendMessage(msg);
+  }
   
   public void sendKeys(CharSequence[] inputKeys) {
     Message msg = handler.obtainMessage(CMD_SEND_KEYS);
@@ -298,14 +299,14 @@ public class WebDriverActivity extends Activity {
     ByteArrayOutputStream stream = new ByteArrayOutputStream();
     
     if (!bitmap.compress(CompressFormat.PNG, 100, stream)) {
-      Logger.log(Log.ERROR, LOG_TAG,
+      throw new RuntimeException(
           "Error while compressing screenshot image.");
     }
     try {
       stream.flush();
       stream.close();
     } catch (IOException e) {
-      Logger.log(Log.ERROR, LOG_TAG,
+      throw new RuntimeException(
           "Error while capturing screenshot: " + e.getMessage());
     }
     byte[] rawPng = stream.toByteArray();

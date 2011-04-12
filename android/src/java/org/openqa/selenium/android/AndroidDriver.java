@@ -41,7 +41,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.android.app.WebDriverActivity;
-import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
 import org.openqa.selenium.android.util.JsUtil;
 import org.openqa.selenium.android.util.SimpleTimer;
 import org.openqa.selenium.html5.BrowserConnection;
@@ -62,12 +61,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     Rotatable, BrowserConnection {
 
   public static final String LOG_TAG = AndroidDriver.class.getName();
-  
-  // Timeouts in milliseconds
-  public static final long LOADING_TIMEOUT = 30000L;
-  public static final long START_LOADING_TIMEOUT = 800L;
-  public static final long WAIT_FOR_RESPONSE_TIMEOUT = 20000L;
-  public static final long FOCUS_TIMEOUT = 1000L;
   
   public static final String ERROR = "_ERROR:";  // Prefixes JS result when returning an error
   public static final String TYPE = "_TYPE";  // Prefixes JS result to be converted

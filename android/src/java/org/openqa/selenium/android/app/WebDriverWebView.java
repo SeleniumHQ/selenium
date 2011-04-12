@@ -18,14 +18,14 @@ limitations under the License.
 package org.openqa.selenium.android.app;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.openqa.selenium.android.ActivityController;
 
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Message;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -37,6 +37,8 @@ public class WebDriverWebView extends WebView {
   private final WebDriverActivity context;
   private final JavascriptExecutor javascriptExecutor;
   private final String WINDOW_HANDLE = UUID.randomUUID().toString();
+  private final ActivityController controller = ActivityController.getInstance();
+  private static volatile boolean editAreaHasFocus;
   
   public WebDriverWebView(Context context) {
     super(context);
@@ -58,32 +60,45 @@ public class WebDriverWebView extends WebView {
    */
   public void navigateTo(String url) {
      if (url == null) {
-      ActivityController.done();
+      controller.notifyPageDoneLoading();
       return;
     }
     //use for redirect control
     context.setLastUrlLoaded(null);
-
-    if (url.equals(context.currentUrl())) {
-      this.reload();
+    String toLoad = "";
+    if (url.startsWith("www")) {
+      toLoad += "http://";
     }
-    else if (url.length() > 0) {
-      if (url.startsWith("http") || url.startsWith("www")) {
-        this.loadUrl(url); // This is a URL
-      } else {
-        this.loadData(url, "text/html", "utf-8"); // This is HTML
-      }
-    }
+    toLoad += url;
+    this.loadUrl(url);
   }
-  
+
+  public boolean onKeyUp(int keyCode, KeyEvent event) {
+    controller.notifySendKeysDone();
+    return super.onKeyUp(keyCode, event);
+  }
+
+  @Override
+  public boolean onTouchEvent(MotionEvent ev) {
+    controller.motionEventDone();
+    return super.onTouchEvent(ev);
+  }
+
   @Override
   protected void onFocusChanged(boolean focused, int direction,
       Rect previouslyFocusedRect) {
     super.onFocusChanged(focused, direction, previouslyFocusedRect);
     if (!focused) {  // When a text area is focused, webview's focus is false
-      ActivityController.getInstance();
-      ActivityController.done();
+      editAreaHasFocus = true;
     }
+  }
+  
+  public static void resetEditableAreaHasFocus() {
+    editAreaHasFocus = false;
+  }
+  
+  public static boolean ediatbleAreaHasFocus() {
+    return editAreaHasFocus;
   }
   
   public void executeJavascript(String javascript) {
@@ -116,6 +131,7 @@ public class WebDriverWebView extends WebView {
     settings.setGeolocationEnabled(true);
     settings.setSaveFormData(true);
     settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+    enablePlatformNotifications();
   }
   
   /**
@@ -123,7 +139,6 @@ public class WebDriverWebView extends WebView {
    * title.
    */
   final class WebDriverWebChromeClient extends WebChromeClient {
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
     private final WebDriverActivity context;
     
     public WebDriverWebChromeClient(WebDriverActivity context) {
@@ -152,7 +167,7 @@ public class WebDriverWebView extends WebView {
       context.setProgress(newProgress * 100);  
       if (newProgress == 100 && context.lastUrlLoaded() != null
           && context.lastUrlLoaded().equals(view.getUrl())) {
-        ActivityController.done();
+        controller.notifyPageDoneLoading();
       }
     }
     

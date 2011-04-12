@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.android.app;
 
 import org.openqa.selenium.android.Logger;
-import org.openqa.selenium.android.intents.IntentReceiverRegistrar;
 
 import android.app.Activity;
 import android.content.Intent;

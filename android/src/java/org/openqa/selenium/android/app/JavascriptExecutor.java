@@ -25,6 +25,7 @@ import org.openqa.selenium.android.ActivityController;
 public class JavascriptExecutor {
   private String javascriptResult;
   private final WebDriverWebView webview;
+  private final ActivityController controller = ActivityController.getInstance();
 
   public JavascriptExecutor(WebDriverWebView webview) {
     this.webview = webview;
@@ -48,8 +49,7 @@ public class JavascriptExecutor {
    */
   public void resultAvailable(String result) {
     javascriptResult = result;
-    ActivityController.updateResult(result);
-    ActivityController.done();
+    controller.updateResult(result);
   }
   
   public String getResult() {

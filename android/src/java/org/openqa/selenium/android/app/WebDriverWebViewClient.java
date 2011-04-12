@@ -17,11 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
+import org.openqa.selenium.android.ActivityController;
+
 import android.graphics.Bitmap;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import org.openqa.selenium.android.ActivityController;
 
 /**
  * This class overrides WebView default behavior when loading new URL. It makes sure that the URL
@@ -30,22 +30,21 @@ import org.openqa.selenium.android.ActivityController;
  */
 final class WebDriverWebViewClient extends WebViewClient {
   private final WebDriverActivity context;
+  private final ActivityController controller = ActivityController.getInstance();
   
   public WebDriverWebViewClient(WebDriverActivity context) {
     this.context = context;
   }
-
+  
   @Override
   public void onPageStarted(WebView view, String url, Bitmap favicon) {
-    super.onPageStarted(view, url, favicon);
+    context.setLastUrlLoaded(url);
+    context.setCurrentUrl(url);
     context.setProgressBarVisibility(true); // Showing progress bar in title
     context.setProgress(0);
-    context.setCurrentUrl(url);
-    context.setLastUrlLoaded(url);
     context.setPageHasStartedLoading(true);
-    
-    ActivityController.getInstance().notifyPageStartedLoading();
-    //context.sendIntent(Action.PAGE_STARTED_LOADING);
+    controller.notifyPageStartedLoading();
+    super.onPageStarted(view, url, favicon);
   }
 
   @Override
@@ -53,12 +52,11 @@ final class WebDriverWebViewClient extends WebViewClient {
     super.onPageFinished(view, url);
     context.setProgressBarVisibility(false); // Hiding progress bar in title
     context.setLastUrlLoaded(url);
-    
+        
     // If it is a html fragment or the current url loaded, the page is
     // not reloaded and the onProgessChanged function is not called.
     if (url.contains("#") && context.currentUrl().equals(url.split("#")[0])) {
-      //context.sendIntent(Action.PAGE_LOADED);
-      ActivityController.done();
+      controller.notifyPageDoneLoading();
     }
   }
 

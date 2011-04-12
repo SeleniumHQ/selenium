@@ -47,10 +47,7 @@ public class TouchScreen {
         eventsQueue.add(e);
       }
       for (MotionEvent me : eventsQueue) {
-        webview.onTouchEvent(me);
-      }
-      for (MotionEvent me : eventsQueue) {
-        me.recycle();
+        webview.dispatchTouchEvent(me);
       }
     } finally {
       if (Platform.sdk() <= Platform.DONUT) {
