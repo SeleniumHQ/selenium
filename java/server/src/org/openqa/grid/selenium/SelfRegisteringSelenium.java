@@ -25,7 +25,6 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.internal.seleniumemulation.GetHtmlSource;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
