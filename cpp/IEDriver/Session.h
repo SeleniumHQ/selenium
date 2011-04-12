@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "BrowserWrapper.h"
+#include "Browser.h"
 #include "CommandValues.h"
 #include "ElementWrapper.h"
 #include "ElementFinder.h"

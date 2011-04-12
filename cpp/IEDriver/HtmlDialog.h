@@ -5,7 +5,7 @@
 #include <exdisp.h>
 #include <mshtml.h>
 #include <mshtmdid.h>
-#include "HtmlWindow.h"
+#include "DocumentHost.h"
 
 using namespace std;
 
@@ -16,9 +16,9 @@ struct DialogWindowInfo {
 	HWND hwndDialog;
 };
 
-class HtmlDialog : public HtmlWindow, public IDispEventSimpleImpl<1, HtmlDialog, &DIID_HTMLWindowEvents2>  {
+class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialog, &DIID_HTMLWindowEvents2>  {
 public:
-	HtmlDialog(IHTMLDocument2* document, HWND hwnd, HWND session_handle);
+	HtmlDialog(IHTMLWindow2* window, HWND hwnd, HWND session_handle);
 	virtual ~HtmlDialog(void);
 
 	static inline _ATL_FUNC_INFO* DocEventInfo() {
@@ -27,10 +27,12 @@ public:
 	}
 
 	BEGIN_SINK_MAP(HtmlDialog)
-		SINK_ENTRY_INFO(1, DIID_HTMLWindowEvents2, DISPID_HTMLWINDOWEVENTS2_ONUNLOAD, OnUnload, DocEventInfo())
+		SINK_ENTRY_INFO(1, DIID_HTMLWindowEvents2, DISPID_HTMLWINDOWEVENTS2_ONBEFOREUNLOAD, OnBeforeUnload, DocEventInfo())
+		SINK_ENTRY_INFO(1, DIID_HTMLWindowEvents2, DISPID_HTMLWINDOWEVENTS2_ONLOAD, OnLoad, DocEventInfo())
 	END_SINK_MAP()
 
-	STDMETHOD_(void, OnUnload)(IHTMLEventObj* pEvtObj);
+	STDMETHOD_(void, OnBeforeUnload)(IHTMLEventObj* pEvtObj);
+	STDMETHOD_(void, OnLoad)(IHTMLEventObj* pEvtObj);
 
 	void GetDocument(IHTMLDocument2** doc);
 	void Close(void);
@@ -48,7 +50,12 @@ public:
 
 private:
 	static BOOL CALLBACK FindChildDialogWindow(HWND hwnd, LPARAM arg);
-	CComPtr<IHTMLDocument2> document_;
+
+	void AttachEvents(void);
+	void DetachEvents(void);
+
+	bool is_navigating_;
+	CComPtr<IHTMLWindow2> window_;
 };
 
 } // namespace webdriver

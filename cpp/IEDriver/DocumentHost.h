@@ -1,5 +1,5 @@
-#ifndef WEBDRIVER_IE_HTMLWINDOW_H_
-#define WEBDRIVER_IE_HTMLWINDOW_H_
+#ifndef WEBDRIVER_IE_DOCUMENTHOST_H_
+#define WEBDRIVER_IE_DOCUMENTHOST_H_
 
 #include <string>
 #include <memory>
@@ -11,10 +11,10 @@ using namespace std;
 
 namespace webdriver {
 
-class HtmlWindow {
+class DocumentHost {
 public:
-	HtmlWindow(HWND hwnd, HWND session_handle);
-	virtual ~HtmlWindow(void);
+	DocumentHost(HWND hwnd, HWND session_handle);
+	virtual ~DocumentHost(void);
 
 	virtual void GetDocument(IHTMLDocument2** doc) = 0;
 	virtual void Close(void) = 0;
@@ -46,6 +46,8 @@ public:
 	std::wstring browser_id(void) const { return this->browser_id_; }
 
 protected:
+	void PostQuitMessage(void);
+
 	HWND window_handle(void) const { return this->window_handle_; }
 	void set_window_handle(const HWND window_handle) { this->window_handle_ = window_handle; }
 
@@ -67,8 +69,8 @@ private:
 	bool is_closing_;
 };
 
-typedef std::tr1::shared_ptr<HtmlWindow> BrowserHandle;
+typedef std::tr1::shared_ptr<DocumentHost> BrowserHandle;
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_HTMLWINDOW_H_
+#endif // WEBDRIVER_IE_DOCUMENTHOST_H_

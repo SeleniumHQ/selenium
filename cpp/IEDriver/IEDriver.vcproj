@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib mshtml.lib"
+				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
@@ -224,7 +224,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib mshtml.lib"
+				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -303,7 +303,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib mshtml.lib"
+				AdditionalDependencies="ws2_32.lib Rpcrt4.lib version.lib iepmapi.lib comsuppw.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -355,11 +355,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Browser.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\BrowserFactory.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\BrowserWrapper.cpp"
+				RelativePath=".\DocumentHost.cpp"
 				>
 			</File>
 			<File
@@ -372,10 +376,6 @@
 			</File>
 			<File
 				RelativePath=".\HtmlDialog.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\HtmlWindow.cpp"
 				>
 			</File>
 			<File
@@ -461,11 +461,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BrowserFactory.h"
+				RelativePath=".\Browser.h"
 				>
 			</File>
 			<File
-				RelativePath=".\BrowserWrapper.h"
+				RelativePath=".\BrowserFactory.h"
 				>
 			</File>
 			<File
@@ -498,6 +498,10 @@
 			</File>
 			<File
 				RelativePath=".\DismissAlertCommandHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DocumentHost.h"
 				>
 			</File>
 			<File
@@ -630,10 +634,6 @@
 			</File>
 			<File
 				RelativePath=".\HtmlDialog.h"
-				>
-			</File>
-			<File
-				RelativePath=".\HtmlWindow.h"
 				>
 			</File>
 			<File

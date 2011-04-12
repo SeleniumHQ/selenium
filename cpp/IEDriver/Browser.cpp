@@ -1,33 +1,30 @@
 #include "StdAfx.h"
-#include "BrowserWrapper.h"
+#include "Browser.h"
 #include "logging.h"
 #include <comutil.h>
 
 namespace webdriver {
 
-BrowserWrapper::BrowserWrapper(IWebBrowser2* browser, HWND hwnd, HWND session_handle) : HtmlWindow(hwnd, session_handle) {
+Browser::Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle) : DocumentHost(hwnd, session_handle) {
 	this->is_navigation_started_ = false;
 	this->browser_ = browser;
 	this->AttachEvents();
 }
 
-BrowserWrapper::~BrowserWrapper(void) {
+Browser::~Browser(void) {
 	this->DetachEvents();
 }
 
-void __stdcall BrowserWrapper::BeforeNavigate2(IDispatch* pObject, VARIANT* pvarUrl, VARIANT* pvarFlags, VARIANT* pvarTargetFrame,
+void __stdcall Browser::BeforeNavigate2(IDispatch* pObject, VARIANT* pvarUrl, VARIANT* pvarFlags, VARIANT* pvarTargetFrame,
 VARIANT* pvarData, VARIANT* pvarHeaders, VARIANT_BOOL* pbCancel) {
 	// std::cout << "BeforeNavigate2\r\n";
 }
 
-void __stdcall BrowserWrapper::OnQuit() {
-	this->set_is_closing(true);
-	LPWSTR message_payload = new WCHAR[this->browser_id().size() + 1];
-	wcscpy_s(message_payload, this->browser_id().size() + 1, this->browser_id().c_str());
-	::PostMessage(this->session_handle(), WD_BROWSER_QUIT, NULL, reinterpret_cast<LPARAM>(message_payload));
+void __stdcall Browser::OnQuit() {
+	this->PostQuitMessage();
 }
 
-void __stdcall BrowserWrapper::NewWindow3(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl) {
+void __stdcall Browser::NewWindow3(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl) {
 	// Handle the NewWindow3 event to allow us to immediately hook
 	// the events of the new browser window opened by the user action.
 	// This will not allow us to handle windows created by the JavaScript
@@ -39,7 +36,7 @@ void __stdcall BrowserWrapper::NewWindow3(IDispatch** ppDisp, VARIANT_BOOL* pbCa
 	*ppDisp = browser;
 }
 
-void __stdcall BrowserWrapper::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
+void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
 	// Flag the browser as navigation having started.
 	// std::cout << "DocumentComplete\r\n";
 	this->is_navigation_started_ = true;
@@ -59,7 +56,7 @@ void __stdcall BrowserWrapper::DocumentComplete(IDispatch* pDisp, VARIANT* URL) 
 	}
 }
 
-void BrowserWrapper::GetDocument(IHTMLDocument2** doc) {
+void Browser::GetDocument(IHTMLDocument2** doc) {
 	CComPtr<IHTMLWindow2> window;
 
 	if (this->focused_frame_window() == NULL) {
@@ -90,7 +87,7 @@ void BrowserWrapper::GetDocument(IHTMLDocument2** doc) {
 	}
 }
 
-std::wstring BrowserWrapper::GetTitle() {
+std::wstring Browser::GetTitle() {
 	CComPtr<IDispatch> dispatch;
 	HRESULT hr = this->browser_->get_Document(&dispatch);
 	if (FAILED(hr)) {
@@ -116,7 +113,7 @@ std::wstring BrowserWrapper::GetTitle() {
 	return title_string;
 }
 
-HWND BrowserWrapper::GetWindowHandle() {
+HWND Browser::GetWindowHandle() {
 	// If, for some reason, the window handle is no longer valid,
 	// set the member variable to NULL so that we can reacquire
 	// the valid window handle. Note that this can happen when
@@ -133,7 +130,7 @@ HWND BrowserWrapper::GetWindowHandle() {
 	return this->window_handle();
 }
 
-std::wstring BrowserWrapper::GetWindowName() {
+std::wstring Browser::GetWindowName() {
 	CComPtr<IDispatch> dispatch;
 	HRESULT hr = this->browser_->get_Document(&dispatch);
 	if (FAILED(hr)) {
@@ -159,26 +156,26 @@ std::wstring BrowserWrapper::GetWindowName() {
 	return name;
 }
 
-void BrowserWrapper::AttachEvents() {
+void Browser::AttachEvents() {
 	CComQIPtr<IDispatch> dispatch(this->browser_);
 	CComPtr<IUnknown> unknown(dispatch);
 	HRESULT hr = this->DispEventAdvise(unknown);
 }
 
-void BrowserWrapper::DetachEvents() {
+void Browser::DetachEvents() {
 	CComQIPtr<IDispatch> dispatch(this->browser_);
 	CComPtr<IUnknown> unknown(dispatch);
 	HRESULT hr = this->DispEventUnadvise(unknown);
 }
 
-void BrowserWrapper::Close() {
+void Browser::Close() {
 	HRESULT hr = this->browser_->Quit();
 	if (FAILED(hr)) {
 		LOGHR(WARN, hr) << "Quit failed";
 	}
 }
 
-int BrowserWrapper::NavigateToUrl(const std::wstring& url) {
+int Browser::NavigateToUrl(const std::wstring& url) {
 	CComVariant url_variant(url.c_str());
 	CComVariant dummy;
 
@@ -188,52 +185,31 @@ int BrowserWrapper::NavigateToUrl(const std::wstring& url) {
 	return SUCCESS;
 }
 
-int BrowserWrapper::NavigateBack() { 
+int Browser::NavigateBack() { 
 	HRESULT hr = this->browser_->GoBack();
 	this->set_wait_required(true);
 	return SUCCESS;
 }
 
-int BrowserWrapper::NavigateForward() { 
+int Browser::NavigateForward() { 
 	HRESULT hr = this->browser_->GoForward();
 	this->set_wait_required(true);
 	return SUCCESS;
 }
 
-int BrowserWrapper::Refresh() {
+int Browser::Refresh() {
 	HRESULT hr = this->browser_->Refresh();
 	this->set_wait_required(true);
 	return SUCCESS;
 }
 
-HWND BrowserWrapper::GetActiveDialogWindowHandle() {
-	HWND active_dialog_handle = NULL;
-	DWORD process_id;
-	::GetWindowThreadProcessId(this->GetWindowHandle(), &process_id);
-	ProcessWindowInfo process_win_info;
-	process_win_info.dwProcessId = process_id;
-	process_win_info.hwndBrowser = NULL;
-	::EnumWindows(&BrowserFactory::FindDialogWindowForProcess, reinterpret_cast<LPARAM>(&process_win_info));
-	if (process_win_info.hwndBrowser != NULL) {
-		active_dialog_handle = process_win_info.hwndBrowser;
-		char window_class_name[34];
-		if (GetClassNameA(active_dialog_handle, window_class_name, 34) == 0) {
-			if (strcmp("Internet Explorer_TridentDlgFrame", window_class_name) == 0) {
-				HWND content_window_handle = this->FindContentWindowHandle(active_dialog_handle);
-				::PostMessage(this->session_handle(), WD_NEW_HTML_DIALOG, NULL, reinterpret_cast<LPARAM>(content_window_handle));
-			}
-		}
-	}
-	return active_dialog_handle;
-}
-
-HWND BrowserWrapper::GetTopLevelWindowHandle() { 
+HWND Browser::GetTopLevelWindowHandle() { 
 	HWND top_level_window_handle = NULL;
 	this->browser_->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&top_level_window_handle));
 	return top_level_window_handle;
 }
 
-bool BrowserWrapper::Wait() {
+bool Browser::Wait() {
 	bool is_navigating = true;
 
 	//std::cout << "Navigate Events Completed." << std::endl;
@@ -287,7 +263,7 @@ bool BrowserWrapper::Wait() {
 	return !is_navigating;
 }
 
-bool BrowserWrapper::IsDocumentNavigating(IHTMLDocument2* doc) {
+bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
 	bool is_navigating = true;
 	// Starting WaitForDocumentComplete()
 	is_navigating = this->is_navigation_started_;
@@ -350,7 +326,7 @@ bool BrowserWrapper::IsDocumentNavigating(IHTMLDocument2* doc) {
 	return is_navigating;
 }
 
-bool BrowserWrapper::GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc) {
+bool Browser::GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc) {
 	HRESULT hr = window->get_document(doc);
 	if (SUCCEEDED(hr)) {
 		return true;
@@ -379,7 +355,7 @@ bool BrowserWrapper::GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2*
 	return false;
 }
 
-HWND BrowserWrapper::GetTabWindowHandle() {
+HWND Browser::GetTabWindowHandle() {
 
 	HWND hwnd = NULL;
 	CComQIPtr<IServiceProvider> service_provider;
@@ -399,7 +375,32 @@ HWND BrowserWrapper::GetTabWindowHandle() {
 	return hwnd;
 }
 
-HWND BrowserWrapper::FindContentWindowHandle(HWND top_level_window_handle) {
+HWND Browser::GetActiveDialogWindowHandle() {
+	HWND active_dialog_handle = NULL;
+	DWORD process_id;
+	::GetWindowThreadProcessId(this->GetWindowHandle(), &process_id);
+	ProcessWindowInfo process_win_info;
+	process_win_info.dwProcessId = process_id;
+	process_win_info.hwndBrowser = NULL;
+	::EnumWindows(&BrowserFactory::FindDialogWindowForProcess, reinterpret_cast<LPARAM>(&process_win_info));
+	if (process_win_info.hwndBrowser != NULL) {
+		active_dialog_handle = process_win_info.hwndBrowser;
+		this->CheckDialogType(active_dialog_handle);
+	}
+	return active_dialog_handle;
+}
+
+void Browser::CheckDialogType(HWND dialog_window_handle) {
+	vector<char> window_class_name(34);
+	if (GetClassNameA(dialog_window_handle, &window_class_name[0], 34)) {
+		if (strcmp("Internet Explorer_TridentDlgFrame", &window_class_name[0]) == 0) {
+			HWND content_window_handle = this->FindContentWindowHandle(dialog_window_handle);
+			::PostMessage(this->session_handle(), WD_NEW_HTML_DIALOG, NULL, reinterpret_cast<LPARAM>(content_window_handle));
+		}
+	}
+}
+
+HWND Browser::FindContentWindowHandle(HWND top_level_window_handle) {
 	ProcessWindowInfo process_window_info;
 	process_window_info.pBrowser = NULL;
 	process_window_info.hwndBrowser = NULL;

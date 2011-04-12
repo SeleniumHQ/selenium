@@ -168,7 +168,7 @@ LRESULT Session::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 
 LRESULT Session::OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	IWebBrowser2* browser = this->factory_.CreateBrowser();
-	BrowserHandle new_window_wrapper(new BrowserWrapper(browser, NULL, this->m_hWnd));
+	BrowserHandle new_window_wrapper(new Browser(browser, NULL, this->m_hWnd));
 	this->AddManagedBrowser(new_window_wrapper);
 	LPSTREAM* stream = reinterpret_cast<LPSTREAM*>(lParam);
 	HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2, browser, stream);
@@ -195,9 +195,11 @@ LRESULT Session::OnGetWindowCount(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&
 
 LRESULT Session::OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandles) {
 	HWND dialog_handle = reinterpret_cast<HWND>(lParam);
-	IHTMLDocument2* document;
+	CComPtr<IHTMLDocument2> document;
 	if (this->factory_.GetDocumentFromWindowHandle(dialog_handle, &document)) {
-		this->AddManagedBrowser(BrowserHandle(new HtmlDialog(document, dialog_handle, this->m_hWnd)));
+		IHTMLWindow2* window;
+		document->get_parentWindow(&window);
+		this->AddManagedBrowser(BrowserHandle(new HtmlDialog(window, dialog_handle, this->m_hWnd)));
 	}
 	return 0;
 }
@@ -309,7 +311,7 @@ void Session::CreateNewBrowser(void) {
 	process_window_info.hwndBrowser = NULL;
 	process_window_info.pBrowser = NULL;
 	this->factory_.AttachToBrowser(&process_window_info);
-	BrowserHandle wrapper(new BrowserWrapper(process_window_info.pBrowser, process_window_info.hwndBrowser, this->m_hWnd));
+	BrowserHandle wrapper(new Browser(process_window_info.pBrowser, process_window_info.hwndBrowser, this->m_hWnd));
 	this->AddManagedBrowser(wrapper);
 }
 

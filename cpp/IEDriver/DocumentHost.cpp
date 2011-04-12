@@ -1,10 +1,11 @@
 #include "StdAfx.h"
-#include "HtmlWindow.h"
+#include "DocumentHost.h"
 #include "cookies.h"
+#include "messages.h"
 
 namespace webdriver {
 
-HtmlWindow::HtmlWindow(HWND hwnd, HWND session_handle) {
+DocumentHost::DocumentHost(HWND hwnd, HWND session_handle) {
 	// NOTE: COM should be initialized on this thread, so we
 	// could use CoCreateGuid() and StringFromGUID2() instead.
 	UUID guid;
@@ -26,10 +27,10 @@ HtmlWindow::HtmlWindow(HWND hwnd, HWND session_handle) {
 	this->focused_frame_window_ = NULL;
 }
 
-HtmlWindow::~HtmlWindow(void) {
+DocumentHost::~DocumentHost(void) {
 }
 
-int HtmlWindow::SetFocusedFrameByElement(IHTMLElement* frame_element) {
+int DocumentHost::SetFocusedFrameByElement(IHTMLElement* frame_element) {
 	HRESULT hr = S_OK;
 	if (!frame_element) {
 		this->focused_frame_window_ = NULL;
@@ -53,7 +54,7 @@ int HtmlWindow::SetFocusedFrameByElement(IHTMLElement* frame_element) {
 	return SUCCESS;
 }
 
-int HtmlWindow::SetFocusedFrameByName(const std::wstring& frame_name) {
+int DocumentHost::SetFocusedFrameByName(const std::wstring& frame_name) {
 	CComPtr<IHTMLDocument2> doc;
 	this->GetDocument(&doc);
 
@@ -95,7 +96,7 @@ int HtmlWindow::SetFocusedFrameByName(const std::wstring& frame_name) {
 	return SUCCESS;
 }
 
-int HtmlWindow::SetFocusedFrameByIndex(const int frame_index) {
+int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
 	CComPtr<IHTMLDocument2> doc;
 	this->GetDocument(&doc);
 
@@ -137,7 +138,7 @@ int HtmlWindow::SetFocusedFrameByIndex(const int frame_index) {
 	return SUCCESS;
 }
 
-std::wstring HtmlWindow::GetCookies() {
+std::wstring DocumentHost::GetCookies() {
 	CComPtr<IHTMLDocument2> doc;
 	this->GetDocument(&doc);
 
@@ -155,7 +156,7 @@ std::wstring HtmlWindow::GetCookies() {
 	return cookie_string;
 }
 
-int HtmlWindow::AddCookie(const std::wstring& cookie) {
+int DocumentHost::AddCookie(const std::wstring& cookie) {
 	CComBSTR cookie_bstr(cookie.c_str());
 
 	CComPtr<IHTMLDocument2> doc;
@@ -176,7 +177,7 @@ int HtmlWindow::AddCookie(const std::wstring& cookie) {
 	return SUCCESS;
 }
 
-int HtmlWindow::DeleteCookie(const std::wstring& cookie_name) {
+int DocumentHost::DeleteCookie(const std::wstring& cookie_name) {
 	// Construct the delete cookie script
 	std::wstring script_source;
 	for (int i = 0; DELETECOOKIES[i]; i++) {
@@ -191,7 +192,14 @@ int HtmlWindow::DeleteCookie(const std::wstring& cookie_name) {
 	return status_code;
 }
 
-bool HtmlWindow::IsHtmlPage(IHTMLDocument2* doc) {
+void DocumentHost::PostQuitMessage() {
+	this->set_is_closing(true);
+	LPWSTR message_payload = new WCHAR[this->browser_id_.size() + 1];
+	wcscpy_s(message_payload, this->browser_id_.size() + 1, this->browser_id_.c_str());
+	::PostMessage(this->session_handle(), WD_BROWSER_QUIT, NULL, reinterpret_cast<LPARAM>(message_payload));
+}
+
+bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
 	CComBSTR type;
 	if (!SUCCEEDED(doc->get_mimeType(&type))) {
 		return false;

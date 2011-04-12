@@ -55,7 +55,6 @@ namespace OpenQA.Selenium
         public string slowIframes = EnvironmentManager.Instance.UrlBuilder.WhereIs("slow_loading_iframes.html");
         public string draggableLists = EnvironmentManager.Instance.UrlBuilder.WhereIs("draggableLists.html");
         public string droppableItems = EnvironmentManager.Instance.UrlBuilder.WhereIs("droppableItems.html");
-        public string alertPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("alerts.html");
         public string bodyTypingPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("bodyTypingTest.html");
         public string formSelectionPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("formSelectionPage.html");
         public string selectableItemsPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("selectableItems.html");

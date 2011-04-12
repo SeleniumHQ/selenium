@@ -1,5 +1,5 @@
-#ifndef WEBDRIVER_IE_BROWSERWRAPPER_H_
-#define WEBDRIVER_IE_BROWSERWRAPPER_H_
+#ifndef WEBDRIVER_IE_BROWSER_H_
+#define WEBDRIVER_IE_BROWSER_H_
 
 #include <exdispid.h>
 #include <exdisp.h>
@@ -9,7 +9,7 @@
 #include "json.h"
 #include "BrowserFactory.h"
 #include "ErrorCodes.h"
-#include "HtmlWindow.h"
+#include "DocumentHost.h"
 #include "messages.h"
 
 #define BASE_TEN_BASE 10
@@ -19,10 +19,10 @@ using namespace std;
 
 namespace webdriver {
 
-class BrowserWrapper : public HtmlWindow, public IDispEventSimpleImpl<1, BrowserWrapper, &DIID_DWebBrowserEvents2> {
+class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DIID_DWebBrowserEvents2> {
 public:
-	BrowserWrapper(IWebBrowser2* browser, HWND hwnd, HWND session_handle);
-	virtual ~BrowserWrapper(void);
+	Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle);
+	virtual ~Browser(void);
 
 	static inline _ATL_FUNC_INFO* BeforeNavigate2Info() {
 		static _ATL_FUNC_INFO kBeforeNavigate2 = { CC_STDCALL, VT_EMPTY, 7,
@@ -46,7 +46,7 @@ public:
 		return &kNewWindow3;
 	}
 
-	BEGIN_SINK_MAP(BrowserWrapper)
+	BEGIN_SINK_MAP(Browser)
 		SINK_ENTRY_INFO(1, DIID_DWebBrowserEvents2, DISPID_BEFORENAVIGATE2, BeforeNavigate2, BeforeNavigate2Info())
 		SINK_ENTRY_INFO(1, DIID_DWebBrowserEvents2, DISPID_DOCUMENTCOMPLETE, DocumentComplete, DocumentCompleteInfo())
 		SINK_ENTRY_INFO(1, DIID_DWebBrowserEvents2, DISPID_ONQUIT, OnQuit, NoArgumentsInfo())
@@ -82,6 +82,7 @@ private:
 	bool GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc);
 	HWND GetTabWindowHandle(void);
 	HWND FindContentWindowHandle(HWND top_level_window);
+	void CheckDialogType(HWND dialog_window_handle);
 
 	CComPtr<IWebBrowser2> browser_;
 	bool is_navigation_started_;
@@ -89,4 +90,4 @@ private:
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_BROWSERWRAPPER_H_
+#endif // WEBDRIVER_IE_BROWSER_H_

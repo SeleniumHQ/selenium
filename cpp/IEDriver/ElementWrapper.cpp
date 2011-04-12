@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "ElementWrapper.h"
-#include "BrowserWrapper.h"
+#include "Browser.h"
 #include "atoms.h"
 #include "interactions.h"
 #include "logging.h"

@@ -17,7 +17,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToOverrideTheWindowAlertMethod()
         {
-            driver.Url = alertPage;
+            driver.Url = alertsPage;
 
             ((IJavaScriptExecutor)driver).ExecuteScript(
                 "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }");
@@ -33,7 +33,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToAcceptAnAlertManually()
         {
-            driver.Url = alertPage;
+            driver.Url = alertsPage;
 
             driver.FindElement(By.Id("alert")).Click();
 
@@ -53,7 +53,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToDismissAnAlertManually()
         {
-            driver.Url = alertPage;
+            driver.Url = alertsPage;
 
             driver.FindElement(By.Id("alert")).Click();
 
@@ -73,7 +73,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowAUserToAcceptAPrompt()
         {
-            driver.Url = alertPage;
+            driver.Url = alertsPage;
 
             driver.FindElement(By.Id("prompt")).Click();
 
@@ -93,7 +93,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowAUserToDismissAPrompt()
         {
-            driver.Url = alertPage;
+            driver.Url = alertsPage;
 
             driver.FindElement(By.Id("prompt")).Click();
 
@@ -113,7 +113,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari)]
         public void testShouldAllowAUserToSetTheValueOfAPrompt()
         {
-            driver.Url = alertPage;
+            driver.Url = alertsPage;
 
             driver.FindElement(By.Id("prompt")).Click();
 
@@ -134,7 +134,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari)]
         public void testShouldAllowTheUserToGetTheTextOfAnAlert()
         {
-            driver.Url = alertPage;
+            driver.Url = alertsPage;
 
             driver.FindElement(By.Id("alert")).Click();
 
@@ -150,7 +150,7 @@ namespace OpenQA.Selenium
         [ExpectedException(typeof(InvalidOperationException))]
         public void ShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith()
         {
-            driver.Url = alertPage;
+            driver.Url = alertsPage;
 
             driver.FindElement(By.Id("alert")).Click();
 
@@ -174,7 +174,7 @@ namespace OpenQA.Selenium
         [ExpectedException(typeof(NoAlertPresentException))]
         public void AlertShouldNotAllowAdditionalCommandsIfDimissed()
         {
-            driver.Url = alertPage;
+            driver.Url = alertsPage;
 
             driver.FindElement(By.Id("alert")).Click();
 

@@ -4,27 +4,56 @@
 
 namespace webdriver {
 
-HtmlDialog::HtmlDialog(IHTMLDocument2* document, HWND hwnd, HWND session_handle) : HtmlWindow(hwnd, session_handle) {
-	this->document_ = document;
+HtmlDialog::HtmlDialog(IHTMLWindow2* window, HWND hwnd, HWND session_handle) : DocumentHost(hwnd, session_handle) {
+	this->is_navigating_ = false;
+	this->window_ = window;
+	this->AttachEvents();
 }
 
 HtmlDialog::~HtmlDialog(void) {
+	this->DetachEvents();
 }
 
-void __stdcall HtmlDialog::OnUnload(IHTMLEventObj *pEvtObj) {
+void HtmlDialog::AttachEvents() {
+	CComQIPtr<IDispatch> dispatch(this->window_);
+	CComPtr<IUnknown> unknown(dispatch);
+	HRESULT hr = this->DispEventAdvise(unknown);
+}
+
+void HtmlDialog::DetachEvents() {
+	CComQIPtr<IDispatch> dispatch(this->window_);
+	CComPtr<IUnknown> unknown(dispatch);
+	HRESULT hr = this->DispEventUnadvise(unknown);
+}
+
+void __stdcall HtmlDialog::OnBeforeUnload(IHTMLEventObj *pEvtObj) {
+	this->is_navigating_ = true;
+}
+
+void __stdcall HtmlDialog::OnLoad(IHTMLEventObj *pEvtObj) {
+	this->is_navigating_ = false;
 }
 
 void HtmlDialog::GetDocument(IHTMLDocument2** doc) {
-	*doc = this->document_;
+	this->window_->get_document(doc);
 }
 
 void HtmlDialog::Close() {
-	this->document_->close();
+	this->window_->close();
 }
 
 bool HtmlDialog::Wait() {
+	// If the window handle is no longer valid, the wait is completed,
+	// and we must post the quit message. Otherwise, we wait until
+	// navigation is complete.
+	if (!::IsWindow(this->GetTopLevelWindowHandle())) {
+		this->is_navigating_ = false;
+		this->PostQuitMessage();
+		return true;
+	}
+
 	::Sleep(250);
-	return false;
+	return !this->is_navigating_;
 }
 
 HWND HtmlDialog::GetWindowHandle() {
@@ -36,8 +65,10 @@ std::wstring HtmlDialog::GetWindowName() {
 }
 
 std::wstring HtmlDialog::GetTitle() {
+	CComPtr<IHTMLDocument2> doc;
+	this->GetDocument(&doc);
 	CComBSTR title;
-	HRESULT hr = this->document_->get_title(&title);
+	HRESULT hr = doc->get_title(&title);
 	if (FAILED(hr)) {
 		LOGHR(WARN, hr) << "Unable to get document title";
 		return L"";

@@ -11,7 +11,7 @@ namespace webdriver {
 
 // Forward declaration of classes to avoid
 // circular include files.
-class BrowserWrapper;
+class Browser;
 class Session;
 
 class ScriptWrapper
