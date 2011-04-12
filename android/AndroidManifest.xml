@@ -18,22 +18,7 @@ limitations under the License.
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.openqa.selenium.android.app">
-  <application android:label="WebDriver Client" android:icon="@drawable/selenium_icon">
-    <activity android:name=".MainActivity" android:label="WebDriver">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
-    <activity android:name=".WebDriverActivity" android:label="Android WebDriver Client">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-      </intent-filter>
-    </activity>
-    <service android:enabled="true" android:name="org.openqa.selenium.android.server.JettyService"/>
-  </application>
-  <uses-sdk android:targetSdkVersion="11" android:minSdkVersion="7"></uses-sdk>
+  
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WRITE_SETTINGS" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -49,4 +34,20 @@ limitations under the License.
   <uses-permission android:name="android.permission.WRITE_SETTINGS" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />  
+
+  <application android:label="WebDriver Client" android:icon="@drawable/selenium_icon">
+    <activity android:name=".MainActivity" android:label="WebDriver">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+    <activity android:name=".WebDriverActivity" android:label="Android WebDriver Client">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+      </intent-filter>
+    </activity>
+    <service android:enabled="true" android:name="org.openqa.selenium.android.server.JettyService"/>
+  </application>
 </manifest>
