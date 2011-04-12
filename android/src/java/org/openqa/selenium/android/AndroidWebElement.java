@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -254,21 +255,22 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
    * @return A point, containing the location of the top left-hand corner of the
    *         element
    */
-  public Point getLocation() {
+  public org.openqa.selenium.Point getLocation() {
     Point result = getDomAccessor().getCoordinate(elementId);
     if (result == null) {
       throw new WebDriverException("Element location is null.");
     }
-    return result;
+    return new org.openqa.selenium.Point(result.x, result.y);
   }
 
   /**
    * @return a {@link Point} where x is the width, and y is the height.
    */
-  public Point getSize() {
+  public Dimension getSize() {
     // TODO(berrada): I don't think this will work ("em", for example). There is an
     // atom for that.
-    return getDomAccessor().getSize(elementId);
+    Point result = getDomAccessor().getSize(elementId);
+    return new Dimension(result.x, result.y);
   }
 
   public String getValueOfCssProperty(String property) {
@@ -317,5 +319,9 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
 
   public WebDriver getWrappedDriver() {
     return driver;
+  }
+
+  public String getCssValue(String propertyName) {
+    throw new UnsupportedOperationException("Getting CSS values is not supported yet.");
   }
 }

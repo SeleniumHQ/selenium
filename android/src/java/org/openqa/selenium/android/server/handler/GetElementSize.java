@@ -36,11 +36,7 @@ public class GetElementSize extends AndroidWebElementHandler {
 
   public ResultType call() throws Exception {
     AndroidWebElement element = (AndroidWebElement) getElement();
-    Point p = element.getSize();
-    Map<Object, Object> converted = Maps.newHashMap();
-    converted.put("width", p.x);
-    converted.put("height", p.y);
-    response.setValue(converted);
+    response.setValue(element.getSize());
     return ResultType.SUCCESS;
   }
 
