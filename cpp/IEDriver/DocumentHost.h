@@ -25,11 +25,16 @@ public:
 	virtual HWND GetActiveDialogWindowHandle(void) = 0;
 	virtual HWND GetTopLevelWindowHandle(void) = 0;
 
+	virtual long GetWidth(void) = 0;
+	virtual long GetHeight(void) = 0;
+	virtual void SetWidth(long width) = 0;
+	virtual void SetHeight(long height) = 0;
+
 	virtual int NavigateToUrl(const std::wstring& url) = 0;
 	virtual int NavigateBack(void) = 0;
 	virtual int NavigateForward(void) = 0;
 	virtual int Refresh(void) = 0;
-	
+
 	std::wstring GetCookies(void);
 	int AddCookie(const std::wstring& cookie);
 	int DeleteCookie(const std::wstring& cookie_name);

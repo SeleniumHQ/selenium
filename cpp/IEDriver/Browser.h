@@ -68,6 +68,11 @@ public:
 	HWND GetTopLevelWindowHandle(void);
 	HWND GetActiveDialogWindowHandle(void);
 
+	long GetWidth(void);
+	long GetHeight(void);
+	void SetWidth(long width);
+	void SetHeight(long height);
+
 	int NavigateToUrl(const std::wstring& url);
 	int NavigateBack(void);
 	int NavigateForward(void);

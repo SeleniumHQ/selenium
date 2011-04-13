@@ -156,6 +156,26 @@ std::wstring Browser::GetWindowName() {
 	return name;
 }
 
+long Browser::GetWidth() {
+	long width(0);
+	this->browser_->get_Width(&width);
+	return width;
+}
+
+long Browser::GetHeight() {
+	long height(0);
+	this->browser_->get_Height(&height);
+	return height;
+}
+
+void Browser::SetWidth(long width) {
+	this->browser_->put_Width(width);
+}
+
+void Browser::SetHeight(long height) {
+	this->browser_->put_Height(height);
+}
+
 void Browser::AttachEvents() {
 	CComQIPtr<IDispatch> dispatch(this->browser_);
 	CComPtr<IUnknown> unknown(dispatch);

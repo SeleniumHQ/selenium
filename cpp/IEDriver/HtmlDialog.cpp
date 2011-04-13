@@ -90,6 +90,22 @@ HWND HtmlDialog::GetActiveDialogWindowHandle() {
 	return info.hwndDialog;
 }
 
+long HtmlDialog::GetWidth() {
+	// TODO: calculate width
+	return 0L;
+}
+
+long HtmlDialog::GetHeight() {
+	// TODO: calculate height
+	return 0L;
+}
+
+void HtmlDialog::SetWidth(long width) { 
+}
+
+void HtmlDialog::SetHeight(long height) {
+}
+
 int HtmlDialog::NavigateToUrl(const std::wstring& url) {
 	// Cannot force navigation on windows opened with showModalDialog();
 	return ENOTIMPLEMENTED;
