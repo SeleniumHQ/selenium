@@ -1,24 +1,21 @@
 package org.openqa.selenium.server;
 
-import junit.framework.TestCase;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 
+import junit.framework.TestCase;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.util.URI;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.net.URL;
-
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
+import static org.easymock.classextension.EasyMock.*;
 
 public class ProxyHanderUnitTest extends TestCase {
 
-	public void testSendNotFoundSends404ResponseCode() throws Exception {
-		ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false);
+    private final int port = 8086;
+
+    public void testSendNotFoundSends404ResponseCode() throws Exception {
+		ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port);
 		HttpResponse httpResponseMock = createMock(HttpResponse.class);
 		httpResponseMock.sendError(HttpResponse.__404_Not_Found, "Not found");
 		expectLastCall().once();
@@ -28,7 +25,7 @@ public class ProxyHanderUnitTest extends TestCase {
 	}
 
     public void testUnknownHostExceptionDoesNotBubble() throws Exception {
-        ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false);
+        ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port );
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         HttpResponse response = new HttpResponse() {
             @Override
@@ -43,7 +40,7 @@ public class ProxyHanderUnitTest extends TestCase {
     }
 
     public void testUnknownHostExceptionProvidesUsefulErrorMessage() throws Exception {
-        ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false);
+        ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port);
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         HttpResponse response = new HttpResponse() {
             @Override
@@ -61,7 +58,7 @@ public class ProxyHanderUnitTest extends TestCase {
     }
 
     public void testConnectExceptionDoesNotBubble() throws Exception {
-        ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false);
+        ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port);
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         HttpResponse response = new HttpResponse() {
             @Override
@@ -76,7 +73,7 @@ public class ProxyHanderUnitTest extends TestCase {
     }
 
     public void testConnectExceptionProvidesUsefulErrorMessage() throws Exception {
-        ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false);
+        ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port);
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         HttpResponse response = new HttpResponse() {
             @Override
