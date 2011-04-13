@@ -26,6 +26,7 @@ import android.graphics.Rect;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -34,7 +35,7 @@ import android.webkit.WebViewClient;
 public class WebDriverWebView extends WebView {
   private final WebChromeClient chromeClient;
   private final WebViewClient viewClient;
-  private final WebDriverActivity context;
+  private final MainActivity context;
   private final JavascriptExecutor javascriptExecutor;
   private final String WINDOW_HANDLE = UUID.randomUUID().toString();
   private final ActivityController controller = ActivityController.getInstance();
@@ -42,9 +43,9 @@ public class WebDriverWebView extends WebView {
   
   public WebDriverWebView(Context context) {
     super(context);
-    this.context = (WebDriverActivity) context;
-    chromeClient = new WebDriverWebChromeClient((WebDriverActivity) context);
-    viewClient = new WebDriverWebViewClient((WebDriverActivity) context);
+    this.context = (MainActivity) context;
+    chromeClient = new WebDriverWebChromeClient((MainActivity) context);
+    viewClient = new WebDriverWebViewClient((MainActivity) context);
     javascriptExecutor = new JavascriptExecutor(this);
     initWebViewSettings();
   }
@@ -73,6 +74,7 @@ public class WebDriverWebView extends WebView {
     this.loadUrl(url);
   }
 
+  @Override
   public boolean onKeyUp(int keyCode, KeyEvent event) {
     controller.notifySendKeysDone();
     return super.onKeyUp(keyCode, event);
@@ -88,6 +90,7 @@ public class WebDriverWebView extends WebView {
   protected void onFocusChanged(boolean focused, int direction,
       Rect previouslyFocusedRect) {
     super.onFocusChanged(focused, direction, previouslyFocusedRect);
+    
     if (!focused) {  // When a text area is focused, webview's focus is false
       editAreaHasFocus = true;
     }
@@ -117,6 +120,10 @@ public class WebDriverWebView extends WebView {
     setWebChromeClient(chromeClient);
     addJavascriptInterface(new JavascriptInterface(javascriptExecutor), "webdriver");
 
+    requestFocus(View.FOCUS_DOWN);
+    setFocusable(true);
+    setFocusableInTouchMode(true);
+    
     // Webview settings
     WebSettings settings = getSettings();
     settings.setJavaScriptCanOpenWindowsAutomatically(true);
@@ -139,9 +146,9 @@ public class WebDriverWebView extends WebView {
    * title.
    */
   final class WebDriverWebChromeClient extends WebChromeClient {
-    private final WebDriverActivity context;
+    private final MainActivity context;
     
-    public WebDriverWebChromeClient(WebDriverActivity context) {
+    public WebDriverWebChromeClient(MainActivity context) {
       this.context = context;  
     }
     

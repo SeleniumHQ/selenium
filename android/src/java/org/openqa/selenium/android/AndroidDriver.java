@@ -40,7 +40,6 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.android.app.WebDriverActivity;
 import org.openqa.selenium.android.util.JsUtil;
 import org.openqa.selenium.android.util.SimpleTimer;
 import org.openqa.selenium.html5.BrowserConnection;
@@ -83,9 +82,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     domAccessor = new JavascriptDomAccessor(this);
     element = new AndroidWebElement(this);
     
-    Intent startActivity = new Intent(context, WebDriverActivity.class);
-    startActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    context.startActivity(startActivity);
+    controller.newWebView();
   }
 
   public JavascriptDomAccessor getDomAccessor() {
@@ -397,7 +394,6 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
         .append("})()")
         .toString();
 
-    Logger.log(Log.DEBUG, LOG_TAG, "executeScript executing: " + finalScript);
     return finalScript;
   }
 

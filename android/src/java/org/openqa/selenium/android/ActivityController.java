@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.android.app.WebDriverActivity;
+import org.openqa.selenium.android.app.MainActivity;
 import org.openqa.selenium.android.app.WebDriverWebView;
 
 import android.view.MotionEvent;
@@ -29,26 +29,24 @@ import android.view.MotionEvent;
 public class ActivityController {
   // Timeouts in milliseconds
   private static final long LOADING_TIMEOUT = 30000L;
-  private static final long START_LOADING_TIMEOUT = 500L;
-  private static final long RESPONSE_TIMEOUT = 3000L;
+  private static final long START_LOADING_TIMEOUT = 700L;
+  private static final long RESPONSE_TIMEOUT = 5000L;
   private static final long FOCUS_TIMEOUT = 1000L;
   private static final long POLLING_INTERVAL = 50L;
   
-  
-  private WebDriverActivity activity;
+  private MainActivity activity;
   private static ActivityController instance;
   private static Object syncObject = new Object();
   private volatile String result;
-  private volatile static boolean startedLoading = false;
   private Object syncStartedLoading = new Object();
+  private Object syncMotionEvent = new Object();
+  private Object syncSendKeys = new Object();
   private volatile boolean resultReady;
-  private Object syncEditable = new Object();  
   private volatile boolean pageDoneLoading = false;
   private volatile boolean motionEventDone = false;
-  private Object syncMotionEvent = new Object();
+  private volatile boolean pageStartedLoading = false;
   private volatile boolean sendKeysDone = false;
-  private Object syncSendKeys = new Object();
-
+  
   private ActivityController() {}
   
   public static ActivityController getInstance() {
@@ -60,18 +58,24 @@ public class ActivityController {
     }
   }
   
-  public void setActivity(WebDriverActivity ui) {
+  public void setActivity(MainActivity ui) {
     synchronized (syncObject) {
       this.activity = ui;      
     }
   }
   
+  public void newWebView() {
+    synchronized (syncObject) {
+      activity.newWebView();
+    }
+  }
+  
   public void waitUntilEditableAreaFocused() {
-    synchronized (syncEditable) {
+    synchronized (syncObject) {
       long timeout = System.currentTimeMillis() + FOCUS_TIMEOUT;
       while (!WebDriverWebView.ediatbleAreaHasFocus() && (System.currentTimeMillis() < timeout)) {
         try {
-          syncEditable.wait(POLLING_INTERVAL);
+          Thread.sleep(POLLING_INTERVAL);
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }
@@ -81,7 +85,7 @@ public class ActivityController {
   
   public void notifyPageStartedLoading() {
     synchronized(syncStartedLoading) {
-      startedLoading = true;
+      pageStartedLoading = true;
       pageDoneLoading = false;
       syncStartedLoading.notify();
     }
@@ -97,7 +101,7 @@ public class ActivityController {
   public void blockIfPageIsLoading(AndroidDriver driver) {
     synchronized (syncStartedLoading) {
       long timeout = System.currentTimeMillis() + START_LOADING_TIMEOUT;
-      while (!startedLoading && (System.currentTimeMillis() < timeout)) {
+      while (!pageStartedLoading && (System.currentTimeMillis() < timeout)) {
         try {
           syncStartedLoading.wait(POLLING_INTERVAL);
         } catch (InterruptedException e) {
@@ -107,7 +111,7 @@ public class ActivityController {
     }
     synchronized (syncObject) {
       long end = System.currentTimeMillis() + LOADING_TIMEOUT;
-      while (!pageDoneLoading && startedLoading && (System.currentTimeMillis() < end)) {
+      while (!pageDoneLoading && pageStartedLoading && (System.currentTimeMillis() < end)) {
         try {
           syncObject.wait(LOADING_TIMEOUT);
         } catch (InterruptedException e) {
@@ -126,7 +130,7 @@ public class ActivityController {
     
   public void sendMotionEvent(MotionEvent down, MotionEvent up) {
     synchronized(syncMotionEvent) {
-      startedLoading = false;
+      pageStartedLoading = false;
       pageDoneLoading = false;
       motionEventDone = false;
       activity.sendMotionToScreen(down, up);
@@ -141,18 +145,38 @@ public class ActivityController {
     }
   }
   
+  private void waitForPageLoadToComplete() {
+    long timeout = System.currentTimeMillis() + LOADING_TIMEOUT;
+    while (!pageDoneLoading && (System.currentTimeMillis() < timeout)) {
+      try {
+        syncObject.wait(LOADING_TIMEOUT);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+  
+  public void refresh() {
+    synchronized(syncObject) {
+      pageDoneLoading = false;
+      activity.refresh();
+      waitForPageLoadToComplete();
+    }
+  }
+  
+  public void navigateBackOrForward(int direction) {
+    synchronized(syncObject) {
+      pageDoneLoading = false;
+      activity.navigateBackOrForward(direction);
+      waitForPageLoadToComplete();
+    }
+  }
+  
   public void get(final String url) {
     synchronized (syncObject) {
       pageDoneLoading = false;
       activity.navigateTo(url);
-      long timeout = System.currentTimeMillis() + LOADING_TIMEOUT;
-      while (!pageDoneLoading && (System.currentTimeMillis() < timeout)) {
-        try {
-          syncObject.wait(LOADING_TIMEOUT);
-        } catch (InterruptedException e) {
-          throw new RuntimeException(e);
-        }
-      }
+      waitForPageLoadToComplete();
     }    
   }
   
@@ -194,7 +218,7 @@ public class ActivityController {
   
   public void quit() {
     synchronized(syncObject) {
-      activity.finish();
+      activity.flushWebView();
     }
   }
   
@@ -264,21 +288,9 @@ public class ActivityController {
     }
   }
   
-  public void navigateBackOrForward(int direction) {
-    synchronized(syncObject) {
-      activity.navigateBackOrForward(direction);
-    }
-  }
-  
-  public void refresh() {
-    synchronized(syncObject) {
-      activity.refresh();
-    }
-  }
-  
   public void notifySendKeysDone() {
     synchronized (syncSendKeys) {
-      startedLoading = false;
+      pageStartedLoading = false;
       pageDoneLoading = false;
       sendKeysDone = true;
       syncSendKeys.notify();

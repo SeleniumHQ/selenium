@@ -29,10 +29,10 @@ import android.webkit.WebViewClient;
  * progress.
  */
 final class WebDriverWebViewClient extends WebViewClient {
-  private final WebDriverActivity context;
+  private final MainActivity context;
   private final ActivityController controller = ActivityController.getInstance();
   
-  public WebDriverWebViewClient(WebDriverActivity context) {
+  public WebDriverWebViewClient(MainActivity context) {
     this.context = context;
   }
   
