@@ -87,4 +87,10 @@ public class NetworkUtilsTest extends TestCase {
     assertEquals("127.0.0.1", s);
     assertEquals("192.168.1.102", networkUtils.getNonLoopbackAddressOfThisMachine());
   }
+
+  public void testOpenSuseBoxIssue1181(){
+      NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getOpenSuseBoxFromIssue1181());
+      String s = networkUtils.obtainLoopbackIp4Address();
+      assertEquals("localhost.localdomain", s);
+  }
 }

@@ -271,5 +271,24 @@ public class StubNetworkInterfaceProvider {
     };
   }
 
+    public static NetworkInterfaceProvider getOpenSuseBoxFromIssue1181() {
+      // dawagner's windows 7 box
+      return new NetworkInterfaceProvider() {
+        public Iterable<NetworkInterface> getNetworkInterfaces() {
+          return Arrays.asList(
+                  newInterface("wlan0", "192.168.37.21", "192.168.37.21", false),
+                  getLoInterface()
+                  );
+        }
+        // This method should only return an interface if it's named exactly "lo"
+        public NetworkInterface getLoInterface() {
+            INetAddress iNetAddress1 = new INetAddress( "127.0.0.2", "127.0.0.2", true );
+            INetAddress iNetAddress2 = new INetAddress( "localhost.localdomain", "127.0.0.1", true );
+            return newInterface( "lo", iNetAddress1, iNetAddress2);
+        }
+
+      };
+    }
+
 
 }
