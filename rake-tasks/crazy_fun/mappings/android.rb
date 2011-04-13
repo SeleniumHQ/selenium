@@ -178,12 +178,16 @@ module Android
         cmd = "#{$adb} kill-server"  
         puts cmd
         sh cmd
-        
-        # sh() wouldn't return on JRuby + Windows, work around by using childprocess
-        proc = ChildProcess.build(Platform.path_for($adb), "start-server")
-        proc.io.inherit!
-        proc.start
-        proc.poll_for_exit(10)
+       
+        if windows? 
+          # sh() wouldn't return on JRuby + Windows, work around by using childprocess
+          proc = ChildProcess.build(Platform.path_for($adb), "start-server")
+          proc.io.inherit!
+          proc.start
+          proc.poll_for_exit(10)
+        else
+          sh "#{$adb} start-server"
+        end
 
         android_target = $properties["androidtarget"].to_s
         puts "Using Android target: " + android_target
