@@ -111,7 +111,8 @@ public class GridLauncher {
 		}
 
 		SelfRegisteringRemote remote = SelfRegisteringRemote.create(protocol, config.getPort(), config.getRegistrationURL());
-
+		remote.setHost(config.getHost());
+		
 		// TODO freynaud : use config for that.
 		remote.addFirefoxSupport(null);
 		remote.addFirefoxSupport(null);
@@ -123,6 +124,7 @@ public class GridLauncher {
 		remote.setMaxConcurrentSession(5);
 		remote.setTimeout(30000, 10000);
 		remote.launchRemoteServer();
+		
 		remote.registerToHub();
 
 	}
