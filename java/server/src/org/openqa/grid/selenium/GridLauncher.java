@@ -52,16 +52,18 @@ public class GridLauncher {
 
 		SelfRegisteringRemote remote = SelfRegisteringRemote.create(config);
 
-		// TODO freynaud : use config for that.
-		remote.addFirefoxSupport();
-		remote.addFirefoxSupport();
-		remote.addFirefoxSupport();
-		remote.addFirefoxSupport();
-		remote.addFirefoxSupport();
-		remote.addInternetExplorerSupport();
-		remote.addChromeSupport();
+		// loading the browsers specified command line if any, otherwise try 5 firefox, IE and chrome
+		if (config.getCapabilities().size()==0){
+			remote.addFirefoxSupport();
+			remote.addFirefoxSupport();
+			remote.addFirefoxSupport();
+			remote.addFirefoxSupport();
+			remote.addFirefoxSupport();
+			remote.addInternetExplorerSupport();
+			remote.addChromeSupport();
+		}
+		
 		remote.launchRemoteServer();
-
 		remote.registerToHub();
 	}
 
