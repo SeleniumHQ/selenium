@@ -21,56 +21,6 @@ namespace OpenQA.Selenium.Remote
         {
         }
 
-        #region IRenderedWebElement Properties
-        /// <summary>
-        /// Gets the Location of an element and returns a Point object
-        /// </summary>
-        public Point Location
-        {
-            get
-            { 
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", Id);
-                Response commandResponse = Execute(DriverCommand.GetElementLocation, parameters);
-                Dictionary<string, object> rawPoint = (Dictionary<string, object>)commandResponse.Value;
-                int x = Convert.ToInt32(rawPoint["x"], CultureInfo.InvariantCulture);
-                int y = Convert.ToInt32(rawPoint["y"], CultureInfo.InvariantCulture);
-                return new Point(x, y);
-            }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Size"/> of the element on the page
-        /// </summary>
-        public Size Size
-        {
-            get 
-            { 
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", Id);
-                Response commandResponse = Execute(DriverCommand.GetElementSize, parameters);
-                Dictionary<string, object> rawSize = (Dictionary<string, object>)commandResponse.Value;
-                int width = Convert.ToInt32(rawSize["width"], CultureInfo.InvariantCulture);
-                int height = Convert.ToInt32(rawSize["height"], CultureInfo.InvariantCulture);
-                return new Size(width, height);
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the element is currently being displayed
-        /// </summary>
-        public bool Displayed
-        {
-            get
-            {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", Id);
-                Response commandResponse = Execute(DriverCommand.IsElementDisplayed, parameters);
-                return (bool)commandResponse.Value;
-            }
-        }
-        #endregion
-
         #region ILocatable Properties
         /// <summary>
         /// Gets the point of the element once scrolling has completed
@@ -107,11 +57,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>string value of the CSS property</returns>
         public string GetValueOfCssProperty(string propertyName)
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", Id);
-            parameters.Add("propertyName", propertyName);
-            Response commandResponse = Execute(DriverCommand.GetElementValueOfCssProperty, parameters);
-            return commandResponse.Value.ToString();
+            return this.GetCssValue(propertyName);
         }
 
         /// <summary>

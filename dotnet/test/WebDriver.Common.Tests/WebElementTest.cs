@@ -22,7 +22,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NotImplementedException))]
+        [ExpectedException(typeof(InvalidElementStateException))]
         public void ShouldThrowExceptionOnNonToggableElement()
         {
             driver.Url = simpleTestPage;
@@ -69,13 +69,13 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            IRenderedWebElement hidden = (IRenderedWebElement)driver.FindElement(By.Id("hidden"));
+            IWebElement hidden = driver.FindElement(By.Id("hidden"));
             Assert.IsFalse(hidden.Displayed);
 
-            IRenderedWebElement none = (IRenderedWebElement)driver.FindElement(By.Id("none"));
+            IWebElement none = driver.FindElement(By.Id("none"));
             Assert.IsFalse(none.Displayed);
 
-            IRenderedWebElement displayed = (IRenderedWebElement)driver.FindElement(By.Id("displayed"));
+            IWebElement displayed = driver.FindElement(By.Id("displayed"));
             Assert.IsTrue(displayed.Displayed);
         }
 
@@ -95,7 +95,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            IRenderedWebElement textbox = (IRenderedWebElement)driver.FindElement(By.Id("keyUp"));
+            IWebElement textbox = driver.FindElement(By.Id("keyUp"));
             textbox.SendKeys("a@#$ç.ó");
             textbox.Clear();
             Assert.AreEqual("", textbox.GetAttribute("value"));

@@ -14,10 +14,10 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            Assert.IsTrue(((IRenderedWebElement)driver.FindElement(By.Id("displayed"))).Displayed);
-            Assert.IsFalse(((IRenderedWebElement)driver.FindElement(By.Id("none"))).Displayed);
-            Assert.IsFalse(((IRenderedWebElement)driver.FindElement(By.Id("suppressedParagraph"))).Displayed);
-            Assert.IsFalse(((IRenderedWebElement)driver.FindElement(By.Id("hidden"))).Displayed);
+            Assert.IsTrue(driver.FindElement(By.Id("displayed")).Displayed);
+            Assert.IsFalse(driver.FindElement(By.Id("none")).Displayed);
+            Assert.IsFalse(driver.FindElement(By.Id("suppressedParagraph")).Displayed);
+            Assert.IsFalse(driver.FindElement(By.Id("hidden")).Displayed);
         }
 
         [Test]
@@ -26,8 +26,8 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            IRenderedWebElement childDiv = (IRenderedWebElement)driver.FindElement(By.Id("hiddenchild"));
-            IRenderedWebElement hiddenLink = (IRenderedWebElement)driver.FindElement(By.Id("hiddenlink"));
+            IWebElement childDiv = driver.FindElement(By.Id("hiddenchild"));
+            IWebElement hiddenLink = driver.FindElement(By.Id("hiddenlink"));
 
             Assert.IsFalse(childDiv.Displayed);
             Assert.IsFalse(hiddenLink.Displayed);
@@ -39,7 +39,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            IRenderedWebElement shown = (IRenderedWebElement)driver.FindElement(By.Id("visibleSubElement"));
+            IWebElement shown = driver.FindElement(By.Id("visibleSubElement"));
 
             Assert.IsTrue(shown.Displayed);
         }
@@ -50,7 +50,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            IRenderedWebElement element = (IRenderedWebElement)driver.FindElement(By.Id("hideMe"));
+            IWebElement element = driver.FindElement(By.Id("hideMe"));
 
             Assert.IsTrue(element.Displayed);
 
@@ -65,7 +65,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            IRenderedWebElement shown = (IRenderedWebElement)driver.FindElement(By.Name("hidden"));
+            IWebElement shown = driver.FindElement(By.Name("hidden"));
 
             Assert.IsFalse(shown.Displayed);
         }
@@ -120,7 +120,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            IRenderedWebElement zeroHeight = (IRenderedWebElement)driver.FindElement(By.Id("zeroheight"));
+            IWebElement zeroHeight = driver.FindElement(By.Id("zeroheight"));
 
             Assert.IsFalse(zeroHeight.Displayed);
         }
@@ -133,7 +133,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            IRenderedWebElement zeroWidth = (IRenderedWebElement)driver.FindElement(By.Id("zerowidth"));
+            IWebElement zeroWidth = driver.FindElement(By.Id("zerowidth"));
 
             Assert.IsFalse(zeroWidth.Displayed);
         }

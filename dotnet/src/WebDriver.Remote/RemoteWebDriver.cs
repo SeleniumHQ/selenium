@@ -1711,9 +1711,17 @@ namespace OpenQA.Selenium.Remote
             /// <param name="offsetY">A vertical offset from the coordinates specified in <paramref name="where"/>.</param>
             public void MouseMove(ICoordinates where, int offsetX, int offsetY)
             {
-                string elementId = where.AuxiliaryLocator.ToString();
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("element", elementId);
+                if (where != null)
+                {
+                    string elementId = where.AuxiliaryLocator.ToString();
+                    parameters.Add("element", elementId);
+                }
+                else
+                {
+                    parameters.Add("element", null);
+                }
+
                 parameters.Add("xoffset", offsetX);
                 parameters.Add("yoffset", offsetY);
                 this.driver.Execute(DriverCommand.MouseMoveTo, parameters);

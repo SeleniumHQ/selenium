@@ -35,7 +35,9 @@ namespace Selenium.Internal.SeleniumEmulation
             int deltaX = int.Parse(parts[0], CultureInfo.InvariantCulture);
             int deltaY = int.Parse(parts[1], CultureInfo.InvariantCulture);
 
-            ((IRenderedWebElement)this.finder.FindElement(driver, locator)).DragAndDropBy(deltaX, deltaY);
+            IWebElement element = this.finder.FindElement(driver, locator);
+            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
+            inputDevicesDriver.ActionBuilder.DragAndDropToOffset(element, deltaX, deltaY);
 
             return null;
         }

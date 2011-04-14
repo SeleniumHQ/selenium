@@ -73,7 +73,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
 
-            IRenderedWebElement element = (IRenderedWebElement)driver.FindElement(By.Id("username"));
+            IWebElement element = driver.FindElement(By.Id("username"));
             Point location = element.Location;
 
             Assert.Greater(location.X, 0);
@@ -86,7 +86,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
 
-            IRenderedWebElement element = (IRenderedWebElement)driver.FindElement(By.Id("username"));
+            IWebElement element = driver.FindElement(By.Id("username"));
             Size size = element.Size;
 
             Assert.Greater(size.Width, 0);

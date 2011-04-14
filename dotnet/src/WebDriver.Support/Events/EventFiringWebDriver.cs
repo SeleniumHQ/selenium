@@ -1008,7 +1008,7 @@ namespace OpenQA.Selenium.Support.Events
             }
             #endregion
 
-            #region IWebElement Members
+            #region IWebElement Properties
             /// <summary>
             /// Gets the DOM Tag of element
             /// </summary>
@@ -1049,6 +1049,40 @@ namespace OpenQA.Selenium.Support.Events
                 get { return this.underlyingElement.Selected; }
             }
 
+            /// <summary>
+            /// Gets the Location of an element and returns a Point object
+            /// </summary>
+            public Point Location
+            {
+                get { return this.underlyingElement.Location; }
+            }
+
+            /// <summary>
+            /// Gets the <see cref="Size"/> of the element on the page
+            /// </summary>
+            public Size Size
+            {
+                get { return this.underlyingElement.Size; }
+            }
+
+            /// <summary>
+            /// Gets a value indicating whether the element is currently being displayed
+            /// </summary>
+            public bool Displayed
+            {
+                get { return this.underlyingElement.Displayed; }
+            }
+            #endregion
+
+            /// <summary>
+            /// Gets the underlying EventFiringWebDriver for this element.
+            /// </summary>
+            protected EventFiringWebDriver ParentDriver
+            {
+                get { return this.parentDriver; }
+            }
+
+            #region IWebElement methods
             /// <summary>
             /// Method to clear the text out of an Input element
             /// </summary>
@@ -1125,6 +1159,15 @@ namespace OpenQA.Selenium.Support.Events
                 return toggleValue;
             }
 
+            /// <summary>
+            /// Method to return the value of a CSS Property
+            /// </summary>
+            /// <param name="propertyName">CSS property key</param>
+            /// <returns>string value of the CSS property</returns>
+            public string GetCssValue(string propertyName)
+            {
+                return this.underlyingElement.GetCssValue(propertyName);
+            }
             #endregion
 
             #region ISearchContext Members
@@ -1184,50 +1227,13 @@ namespace OpenQA.Selenium.Support.Events
 
             #region IRenderedWebElement Members
             /// <summary>
-            /// Gets the Location of an element and returns a Point object
-            /// </summary>
-            public Point Location
-            {
-                get
-                {
-                    IRenderedWebElement renderedElement = WrappedElement as IRenderedWebElement;
-                    return renderedElement.Location;
-                }
-            }
-
-            /// <summary>
-            /// Gets the <see cref="Size"/> of the element on the page
-            /// </summary>
-            public Size Size
-            {
-                get
-                {
-                    IRenderedWebElement renderedElement = WrappedElement as IRenderedWebElement;
-                    return renderedElement.Size;
-                }
-            }
-
-            /// <summary>
-            /// Gets a value indicating whether the element is currently being displayed
-            /// </summary>
-            public bool Displayed
-            {
-                get
-                {
-                    IRenderedWebElement renderedElement = WrappedElement as IRenderedWebElement;
-                    return renderedElement.Displayed;
-                }
-            }
-
-            /// <summary>
             /// Method to return the value of a CSS Property
             /// </summary>
             /// <param name="propertyName">CSS property key</param>
             /// <returns>string value of the CSS property</returns>
             public string GetValueOfCssProperty(string propertyName)
             {
-                IRenderedWebElement renderedElement = WrappedElement as IRenderedWebElement;
-                return renderedElement.GetValueOfCssProperty(propertyName);
+                return this.GetCssValue(propertyName);
             }
 
             /// <summary>
@@ -1235,8 +1241,8 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public void Hover()
             {
-                IRenderedWebElement renderedElement = WrappedElement as IRenderedWebElement;
-                renderedElement.Hover();
+                IHasInputDevices inputDevicesDriver = this.ParentDriver as IHasInputDevices;
+                inputDevicesDriver.ActionBuilder.MoveToElement(this).Build().Perform();
             }
 
             /// <summary>
@@ -1246,8 +1252,8 @@ namespace OpenQA.Selenium.Support.Events
             /// <param name="moveDownBy">Integer to move it up or down</param>
             public void DragAndDropBy(int moveRightBy, int moveDownBy)
             {
-                IRenderedWebElement renderedElement = WrappedElement as IRenderedWebElement;
-                renderedElement.DragAndDropBy(moveRightBy, moveDownBy);
+                IHasInputDevices inputDevicesDriver = this.ParentDriver as IHasInputDevices;
+                inputDevicesDriver.ActionBuilder.DragAndDropToOffset(this, moveRightBy, moveDownBy).Build().Perform();
             }
 
             /// <summary>
@@ -1256,8 +1262,8 @@ namespace OpenQA.Selenium.Support.Events
             /// <param name="element">Element you wish to drop on</param>
             public void DragAndDropOn(IRenderedWebElement element)
             {
-                IRenderedWebElement renderedElement = WrappedElement as IRenderedWebElement;
-                renderedElement.DragAndDropOn(element);
+                IHasInputDevices inputDevicesDriver = this.ParentDriver as IHasInputDevices;
+                inputDevicesDriver.ActionBuilder.DragAndDrop(this, element).Build().Perform();
             }
 
             #endregion

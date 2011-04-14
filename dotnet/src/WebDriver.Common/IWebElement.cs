@@ -19,6 +19,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Text;
 
 namespace OpenQA.Selenium
@@ -71,6 +72,25 @@ namespace OpenQA.Selenium
         /// <remarks>This operation only applies to input elements such as checkboxes,
         /// options in a select element and radio buttons.</remarks>
         bool Selected { get; }
+
+        /// <summary>
+        /// Gets the coordinates of the upper-left corner of this element relative 
+        /// to the upper-left corner of the page.
+        /// </summary>
+        Point Location { get; }
+
+        /// <summary>
+        /// Gets the height and width of this element.
+        /// </summary>
+        Size Size { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether or not this element is displayed.
+        /// </summary>
+        /// <remarks>The <see cref="Displayed"/> property avoids the problem 
+        /// of having to parse an element's "style" attribute to determine
+        /// visibility of an element.</remarks>
+        bool Displayed { get; }
 
         /// <summary>
         /// Clears the content of this element.
@@ -167,5 +187,17 @@ namespace OpenQA.Selenium
         /// will toggle the element's state from selected to not selected, or from not selected 
         /// to selected.</remarks>
         bool Toggle();
+
+        /// <summary>
+        /// Gets the value of a CSS property of this element.
+        /// </summary>
+        /// <param name="propertyName">The name of the CSS property to get the value of.</param>
+        /// <returns>The value of the specified CSS property.</returns>
+        /// <remarks>The value returned by the <see cref="GetCssValue"/>
+        /// method is likely to be unpredictable in a cross-browser environment. 
+        /// Color values should be returned as hex strings. For example, a 
+        /// "background-color" property set as "green" in the HTML source, will
+        /// return "#008000" for its value.</remarks>
+        string GetCssValue(string propertyName);
     }
 }

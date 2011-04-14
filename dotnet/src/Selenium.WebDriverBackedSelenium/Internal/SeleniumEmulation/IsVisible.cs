@@ -30,7 +30,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            return ((IRenderedWebElement)this.finder.FindElement(driver, locator)).Displayed;
+            return this.finder.FindElement(driver, locator).Displayed;
         }
     }
 }

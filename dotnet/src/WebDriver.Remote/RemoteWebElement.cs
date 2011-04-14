@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Globalization;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
@@ -108,6 +110,53 @@ namespace OpenQA.Selenium.Remote
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", this.elementId);
                 Response commandResponse = this.Execute(DriverCommand.IsElementSelected, parameters);
+                return (bool)commandResponse.Value;
+            }
+        }
+        /// <summary>
+        /// Gets the Location of an element and returns a Point object
+        /// </summary>
+        public Point Location
+        {
+            get
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", Id);
+                Response commandResponse = Execute(DriverCommand.GetElementLocation, parameters);
+                Dictionary<string, object> rawPoint = (Dictionary<string, object>)commandResponse.Value;
+                int x = Convert.ToInt32(rawPoint["x"], CultureInfo.InvariantCulture);
+                int y = Convert.ToInt32(rawPoint["y"], CultureInfo.InvariantCulture);
+                return new Point(x, y);
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="Size"/> of the element on the page
+        /// </summary>
+        public Size Size
+        {
+            get
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", Id);
+                Response commandResponse = Execute(DriverCommand.GetElementSize, parameters);
+                Dictionary<string, object> rawSize = (Dictionary<string, object>)commandResponse.Value;
+                int width = Convert.ToInt32(rawSize["width"], CultureInfo.InvariantCulture);
+                int height = Convert.ToInt32(rawSize["height"], CultureInfo.InvariantCulture);
+                return new Size(width, height);
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the element is currently being displayed
+        /// </summary>
+        public bool Displayed
+        {
+            get
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", Id);
+                Response commandResponse = Execute(DriverCommand.IsElementDisplayed, parameters);
                 return (bool)commandResponse.Value;
             }
         }
@@ -247,6 +296,20 @@ namespace OpenQA.Selenium.Remote
             parameters.Add("id", this.elementId);
             Response commandResponse = this.Execute(DriverCommand.ToggleElement, parameters);
             return (bool)commandResponse.Value;
+        }
+
+        /// <summary>
+        /// Method to return the value of a CSS Property
+        /// </summary>
+        /// <param name="propertyName">CSS property key</param>
+        /// <returns>string value of the CSS property</returns>
+        public string GetCssValue(string propertyName)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", Id);
+            parameters.Add("propertyName", propertyName);
+            Response commandResponse = Execute(DriverCommand.GetElementValueOfCssProperty, parameters);
+            return commandResponse.Value.ToString();
         }
 
         /// <summary>

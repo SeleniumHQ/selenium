@@ -26,27 +26,9 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Defines the interface through which the user controls drawn elements on the page.
     /// </summary>
+    [Obsolete("Properties and methods of this interface have been moved to the IWebElement interface")]
     public interface IRenderedWebElement : IWebElement
     {
-        /// <summary>
-        /// Gets the coordinates of the upper-left corner of this element relative 
-        /// to the upper-left corner of the page.
-        /// </summary>
-        Point Location { get; }
-
-        /// <summary>
-        /// Gets the height and width of this element.
-        /// </summary>
-        Size Size { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether or not this element is displayed.
-        /// </summary>
-        /// <remarks>The <see cref="Displayed"/> property avoids the problem 
-        /// of having to parse an element's "style" attribute to determine
-        /// visibility of an element.</remarks>
-        bool Displayed { get; }
-        
         /// <summary>
         /// Gets the value of a CSS property of this element.
         /// </summary>
@@ -57,6 +39,7 @@ namespace OpenQA.Selenium
         /// Color values should be returned as hex strings. For example, a 
         /// "background-color" property set as "green" in the HTML source, will
         /// return "#008000" for its value.</remarks>
+        [Obsolete("This method will be removed in a future release. Please use IWebElement.GetCssValue instead.")]
         string GetValueOfCssProperty(string propertyName);
 
         /// <summary>
@@ -73,12 +56,14 @@ namespace OpenQA.Selenium
         /// <param name="moveRightBy">The distance (in pixels) to drag the element to the right.</param>
         /// <param name="moveDownBy">The distance (in pixels) to drag the element to the down.</param>
         /// <remarks>To drag an element left or up, use negative values for the parameters.</remarks>
+        [Obsolete("This method will be removed in a future release. Please use the user interactions API instead.")]
         void DragAndDropBy(int moveRightBy, int moveDownBy);
 
         /// <summary>
         /// Drags and drops an element onto another element.
         /// </summary>
         /// <param name="element">The <see cref="IRenderedWebElement"/> on which to drop this element.</param>
+        [Obsolete("This method will be removed in a future release. Please use the user interactions API instead.")]
         void DragAndDropOn(IRenderedWebElement element);
     }
 }

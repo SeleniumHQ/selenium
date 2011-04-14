@@ -247,6 +247,23 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
+        /// Performs a drag-and-drop operation on one element to a specified offset.
+        /// </summary>
+        /// <param name="source">The element on which the drag operation is started.</param>
+        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
+        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        public IActionSequenceBuilder DragAndDropToOffset(IWebElement source, int offsetX, int offsetY)
+        {
+            ILocatable startElement = source as ILocatable;
+
+            this.action.AddAction(new ClickAndHoldAction(this.mouse, startElement));
+            this.action.AddAction(new MoveToOffsetAction(this.mouse, null, offsetX, offsetY));
+            this.action.AddAction(new ButtonReleaseAction(this.mouse, null));
+            return this;
+        }
+
+        /// <summary>
         /// Builds the sequence of actions.
         /// </summary>
         /// <returns>A composite <see cref="IAction"/> which can be used to perform the actions.</returns>

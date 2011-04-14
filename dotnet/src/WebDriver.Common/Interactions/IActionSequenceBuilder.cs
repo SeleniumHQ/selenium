@@ -154,6 +154,15 @@ namespace OpenQA.Selenium.Interactions
         IActionSequenceBuilder DragAndDrop(IWebElement source, IWebElement target);
 
         /// <summary>
+        /// Performs a drag-and-drop operation on one element to a specified offset.
+        /// </summary>
+        /// <param name="source">The element on which the drag operation is started.</param>
+        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
+        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        IActionSequenceBuilder DragAndDropToOffset(IWebElement source, int offsetX, int offsetY);
+
+        /// <summary>
         /// Builds the sequence of actions.
         /// </summary>
         /// <returns>A composite <see cref="IAction"/> which can be used to perform the actions.</returns>

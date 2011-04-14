@@ -249,7 +249,7 @@ namespace OpenQA.Selenium
                 element.Select();
                 Assert.Fail(string.Format(assertCannotPerformActionFormat_action_element, "select", describe(element)));
             }
-            catch (InvalidElementStateException e)
+            catch (InvalidElementStateException)
             {
                 //Expected
             }
@@ -315,7 +315,7 @@ namespace OpenQA.Selenium
                 element.Toggle();
                 Assert.Fail(string.Format(assertCannotPerformActionFormat_action_element, "toggle", describe(element)));
             }
-            catch (InvalidElementStateException e)
+            catch (InvalidElementStateException)
             {
                 //Expected
             }

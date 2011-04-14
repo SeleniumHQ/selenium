@@ -30,10 +30,10 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            IRenderedWebElement dragger = (IRenderedWebElement)this.finder.FindElement(driver, locator);
-            IRenderedWebElement draggee = (IRenderedWebElement)this.finder.FindElement(driver, value);
-
-            dragger.DragAndDropOn(draggee);
+            IWebElement dragElement = this.finder.FindElement(driver, locator);
+            IWebElement dropElement = this.finder.FindElement(driver, value);
+            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
+            inputDevicesDriver.ActionBuilder.DragAndDrop(dragElement, dropElement).Build().Perform();
 
             return null;
         }

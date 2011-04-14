@@ -17,7 +17,7 @@ namespace OpenQA.Selenium
         public void DragAndDrop()
         {
             driver.Url = dragAndDropPage;
-            IRenderedWebElement img = (IRenderedWebElement)driver.FindElement(By.Id("test1"));
+            IWebElement img = driver.FindElement(By.Id("test1"));
             Point expectedLocation = drag(img, img.Location, 150, 200);
             Assert.AreEqual(expectedLocation, img.Location);
             expectedLocation = drag(img, img.Location, -50, -25);
@@ -35,9 +35,10 @@ namespace OpenQA.Selenium
         public void DragAndDropToElement()
         {
             driver.Url = dragAndDropPage;
-            IRenderedWebElement img1 = (IRenderedWebElement)driver.FindElement(By.Id("test1"));
-            IRenderedWebElement img2 = (IRenderedWebElement)driver.FindElement(By.Id("test2"));
-            img2.DragAndDropOn(img1);
+            IWebElement img1 = driver.FindElement(By.Id("test1"));
+            IWebElement img2 = driver.FindElement(By.Id("test2"));
+            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
+            inputDevicesDriver.ActionBuilder.DragAndDrop(img2, img1).Build().Perform();
             Assert.AreEqual(img1.Location, img2.Location);
         }
 
@@ -48,7 +49,7 @@ namespace OpenQA.Selenium
         public void ElementInDiv()
         {
             driver.Url = dragAndDropPage;
-            IRenderedWebElement img = (IRenderedWebElement)driver.FindElement(By.Id("test3"));
+            IWebElement img = driver.FindElement(By.Id("test3"));
             Point expectedLocation = drag(img, img.Location, 100, 100);
             Assert.AreEqual(expectedLocation, img.Location);
         }
@@ -60,16 +61,17 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome)]
         public void DragTooFar()
         {
+            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
             driver.Url = dragAndDropPage;
-            IRenderedWebElement img = (IRenderedWebElement)driver.FindElement(By.Id("test1"));
+            IWebElement img = driver.FindElement(By.Id("test1"));
 
             // Dragging too far left and up does not move the element. It will be at 
             // its original location after the drag.
             Point originalLocation = new Point(0, 0);
-            img.DragAndDropBy(int.MinValue, int.MinValue);
+            inputDevicesDriver.ActionBuilder.DragAndDropToOffset(img, int.MinValue, int.MinValue).Build().Perform();
             Assert.AreEqual(originalLocation, img.Location);
 
-            img.DragAndDropBy(int.MaxValue, int.MaxValue);
+            inputDevicesDriver.ActionBuilder.DragAndDropToOffset(img, int.MaxValue, int.MaxValue).Build().Perform();
             //We don't know where the img is dragged to , but we know it's not too
             //far, otherwise this function will not return for a long long time
         }
@@ -102,7 +104,7 @@ namespace OpenQA.Selenium
             try
             {
                 driver.Url = dragAndDropPage;
-                IRenderedWebElement img = (IRenderedWebElement)driver.FindElement(By.Id("test3"));
+                IWebElement img = driver.FindElement(By.Id("test3"));
                 Point expectedLocation = drag(img, img.Location, 100, 100);
                 Assert.AreEqual(expectedLocation, img.Location);
             }
@@ -122,11 +124,12 @@ namespace OpenQA.Selenium
 
             IWebElement toDrag = driver.FindElement(By.Id("draggable"));
             IWebElement dropInto = driver.FindElement(By.Id("droppable"));
+            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
 
             // Wait until all event handlers are installed.
             System.Threading.Thread.Sleep(500);
 
-            ((IRenderedWebElement)toDrag).DragAndDropOn((IRenderedWebElement)dropInto);
+            inputDevicesDriver.ActionBuilder.DragAndDrop(toDrag, dropInto).Build().Perform();
 
             string text = dropInto.FindElement(By.TagName("p")).Text;
 
@@ -150,10 +153,13 @@ namespace OpenQA.Selenium
             Assert.IsTrue(reporterText.Contains("move"), "Reporter text:" + reporterText);
         }
 
-        private Point drag(IRenderedWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)
+        private Point drag(IWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)
         {
+            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
+            inputDevicesDriver.ActionBuilder.DragAndDropToOffset(elem, moveRightBy, moveDownBy).Build().Perform();
+            //inputDevicesDriver.ActionBuilder.ClickAndHold(elem).MoveByOffset(moveRightBy, moveDownBy).Release(null).Build().Perform();
             Point expectedLocation = new Point(initialLocation.X, initialLocation.Y);
-            elem.DragAndDropBy(moveRightBy, moveDownBy);
+            // elem.DragAndDropBy(moveRightBy, moveDownBy);
             expectedLocation.Offset(moveRightBy, moveDownBy);
             return expectedLocation;
         }

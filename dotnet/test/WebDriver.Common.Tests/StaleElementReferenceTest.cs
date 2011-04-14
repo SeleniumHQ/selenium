@@ -26,7 +26,7 @@ namespace OpenQA.Selenium
         public void ShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement()
         {
             driver.Url = simpleTestPage;
-            IRenderedWebElement elem = (IRenderedWebElement)driver.FindElement(By.Id("links"));
+            IWebElement elem = driver.FindElement(By.Id("links"));
             driver.Url = xhtmlTestPage;
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
             Size elementSize = elem.Size;

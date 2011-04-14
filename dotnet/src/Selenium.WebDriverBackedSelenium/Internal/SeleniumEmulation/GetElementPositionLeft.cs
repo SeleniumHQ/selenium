@@ -31,7 +31,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            Point location = ((IRenderedWebElement)this.finder.FindElement(driver, locator)).Location;
+            Point location = this.finder.FindElement(driver, locator).Location;
             return location.X;
         }
     }

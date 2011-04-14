@@ -419,7 +419,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            IRenderedWebElement toBeDeleted = (IRenderedWebElement)driver.FindElement(By.Id("deleted"));
+            IWebElement toBeDeleted = driver.FindElement(By.Id("deleted"));
             Assert.IsTrue(toBeDeleted.Displayed);
 
             driver.FindElement(By.Id("delete")).Click();
