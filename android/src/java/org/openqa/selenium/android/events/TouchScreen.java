@@ -31,9 +31,7 @@ import java.util.List;
  * Class used to send touch events to the screen directed to the webview.
  */
 public class TouchScreen {  
-  public static void sendMotion(WebView webview, MotionEvent... events) {
-    WebViewAction.clearFocusFromCurrentElement(webview);
-    
+  public static void sendMotion(WebView webview, MotionEvent... events) {    
     if (Platform.sdk() <= Platform.DONUT) {
       webview.pauseTimers();
     }

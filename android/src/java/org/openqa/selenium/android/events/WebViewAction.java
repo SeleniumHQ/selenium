@@ -37,37 +37,6 @@ import com.google.common.collect.Lists;
  * Helper class to perform action on the webview.
  */
 public class WebViewAction {
-
-  /**
-   * Called when the current element wants to give up focus.
-   * 
-   * @param webview
-   */
-  public static void clearFocusFromCurrentElement(WebView webview) {
-    // Froyo fixed the focus issue, so no action is needed.
-    if (Platform.FROYO <= Platform.sdk()) {
-      return;
-    }
-	Method clearTextEntry;
-    try {
-      // This allows to clear the focus from the current element, despite the confusing
-      // method name.
-      clearTextEntry = webview.getClass().getDeclaredMethod("clearTextEntry");
-      clearTextEntry.setAccessible(true);
-      clearTextEntry.invoke(webview);
-      return;
-    } catch (SecurityException e) {
-      throw new WebDriverException("clearTextEntry failed!", e);
-    } catch (NoSuchMethodException e) {
-      throw new WebDriverException("clearTextEntry failed!", e);
-    } catch (IllegalArgumentException e) {
-      throw new WebDriverException("clearTextEntry failed!", e);
-    } catch (IllegalAccessException e) {
-      throw new WebDriverException("clearTextEntry failed!", e);
-    } catch (InvocationTargetException e) {
-      throw new WebDriverException("clearTextEntry failed!", e);
-    }
-  }
   
   /**
    * Sends key strokes to the given text to the element in focus within the webview.
