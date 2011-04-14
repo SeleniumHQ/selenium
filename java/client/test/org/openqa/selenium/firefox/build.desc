@@ -13,12 +13,13 @@ java_library(name = "tests_common",
   ])
 
 java_test(name = "test",
+  srcs = [ "FirefoxDriverTestSuite.java" ],
   deps = [
     ":tests_common"
   ])
 
 java_test(name = "test_native",
-  test_suite = "org.openqa.selenium.firefox.NativeEventsFirefoxDriverTestSuite",
+  srcs = [ "NativeEventsFirefoxDriverTestSuite.java" ],
   deps = [
     ":tests_common"
   ])
