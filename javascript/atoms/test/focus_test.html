@@ -152,37 +152,37 @@
     }
 
     function testIsFocusable() {
-	    function assertIsFocusable(element, opt_reason) {
-		    assertTrue(opt_reason || '', bot.dom.isFocusable(element));
-		  }
+      function assertIsFocusable(element, opt_reason) {
+        assertTrue(opt_reason || '', bot.dom.isFocusable(element));
+      }
 
       function assertNotFocusable(element, opt_reason) {
-		    assertFalse(opt_reason || '', bot.dom.isFocusable(element));
-	    }
+        assertFalse(opt_reason || '', bot.dom.isFocusable(element));
+      }
 
       goog.array.forEach(bot.dom.FOCUSABLE_FORM_FIELDS_, function(tagName) {
-	      assertIsFocusable(goog.dom.createDom(tagName),
-	          tagName + ' is a focusable form field');
-	    });
+        assertIsFocusable(goog.dom.createDom(tagName),
+            tagName + ' is a focusable form field');
+      });
 
       var div = goog.dom.createDom('DIV');
-	    assertNotFocusable(div);
-	
-	    div.setAttribute('tabindex', '0');
-	    assertIsFocusable(div, 'has a tab index of 0');
-	
-	    div.tabIndex = -1;
-	    assertEquals('-1', bot.dom.getAttribute(div, 'tabindex'));
-	    assertNotFocusable(div, 'has a negative tab index');
+      assertNotFocusable(div);
+
+      div.setAttribute('tabindex', '0');
+      assertIsFocusable(div, 'has a tab index of 0');
+
+      div.tabIndex = -1;
+      assertEquals('-1', bot.dom.getAttribute(div, 'tabindex'));
+      assertNotFocusable(div, 'has a negative tab index');
 
       div.tabIndex = 2;
-	    assertEquals('2', bot.dom.getAttribute(div, 'tabindex'));
-	    assertIsFocusable(div, 'has a tab index of 2');
+      assertEquals('2', bot.dom.getAttribute(div, 'tabindex'));
+      assertIsFocusable(div, 'has a tab index of 2');
 
       div.removeAttribute('tabindex');
-	    assertNull(bot.dom.getAttribute(div, 'tabindex'));
-	    assertNotFocusable(div, 'tab index was removed');
-	  }
+      assertNull(bot.dom.getAttribute(div, 'tabindex'));
+      assertNotFocusable(div, 'tab index was removed');
+    }
 
   </script>
 </head>
