@@ -2,9 +2,9 @@ package org.openqa.grid.e2e.selenium;
 
 import java.net.URL;
 
+import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
-import org.openqa.grid.selenium.utils.SeleniumProtocol;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.testng.Assert;
@@ -29,15 +29,15 @@ public class SmokeTest {
 	public void prepare() throws Exception {
 		hub.start();
 
-		SelfRegisteringRemote remote = SelfRegisteringRemote.create(SeleniumProtocol.Selenium, PortProber.findFreePort(),  hub.getRegistrationURL());
-		remote.addFirefoxSupport(null);
+		SelfRegisteringRemote remote = SelfRegisteringRemote.create(GridConfigurationMock.seleniumConfig(hub.getRegistrationURL()));
+		remote.addFirefoxSupport();
 		remote.addSafariSupport();
 		remote.addInternetExplorerSupport();
 		remote.launchRemoteServer();
 		remote.registerToHub();
 	}
 
-	@Test(timeOut=10000)
+	@Test(timeOut = 10000)
 	public void sel1firefox() throws InterruptedException {
 		Selenium selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", hubURL + "");
 		Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
@@ -47,9 +47,9 @@ public class SmokeTest {
 		Assert.assertTrue(selenium.getTitle().contains("Grid overview"));
 		selenium.stop();
 
-		
 		// cannot assume it will be 0 active session right away. selenium.stop()
-		// will trigger a session.terminate() on the grid, that runs in a different thread
+		// will trigger a session.terminate() on the grid, that runs in a
+		// different thread
 		// not to block the test.
 		while (hub.getRegistry().getActiveSessions().size() != 0) {
 			Thread.sleep(250);
@@ -66,7 +66,7 @@ public class SmokeTest {
 		selenium.open("http://www.ebay.co.uk");
 		Assert.assertTrue(selenium.getTitle().contains("eBay"));
 		selenium.stop();
-		while (hub.getRegistry().getActiveSessions().size()!=0){
+		while (hub.getRegistry().getActiveSessions().size() != 0) {
 			Thread.sleep(250);
 		}
 	}
@@ -88,7 +88,5 @@ public class SmokeTest {
 	public void stop() throws Exception {
 		hub.stop();
 	}
-	
-	
-}
 
+}

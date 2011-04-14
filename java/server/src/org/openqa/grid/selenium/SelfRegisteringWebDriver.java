@@ -22,26 +22,24 @@ import java.io.File;
 import java.net.URL;
 
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.jetty.http.SocketListener;
-import org.openqa.jetty.jetty.Server;
-import org.openqa.jetty.jetty.servlet.WebApplicationContext;
+import org.openqa.grid.selenium.utils.GridConfiguration;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.server.DriverServlet;
+import org.openqa.selenium.server.SeleniumServer;
 
 public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 
-	private static final String REMOTE_PATH = "/wd";
+	private static final String REMOTE_PATH = "/wd/hub";
 
-	public SelfRegisteringWebDriver(int port, URL registration) {
-		super(port, registration);
+	public SelfRegisteringWebDriver(GridConfiguration config) {
+		super(config);
 	}
 
 	@Override
 	public URL getRemoteURL() {
-		String url = "http://" + getHost() + ":" + getPort() + REMOTE_PATH;
+		String url = "http://" + getGridConfig().getHost() + ":" + getGridConfig().getNodeRemoteControlConfiguration().getPort() + REMOTE_PATH;
 		try {
 			return new URL(url);
 		} catch (Throwable e) {
@@ -57,30 +55,12 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 		return request;
 	}
 
-	@Override
-	public void launchRemoteServer() throws Exception {
-		Server server = new Server();
-		SocketListener listener = new SocketListener();
-		listener.setPort(getRemoteURL().getPort());
-		server.addListener(listener);
 
-		WebApplicationContext context = server.addWebApplication("", ".");
-		context.addServlet(getRemoteURL().getPath() + "/*", DriverServlet.class.getName());
-		server.start();
-	}
-
+	
 	@Override
-	public void setMaxConcurrentSession(int max) {
-		getConfig().put(RegistrationRequest.MAX_SESSION, max);
-	}
-
-	@Override
-	public void addFirefoxSupport(File profile) {
+	public void addFirefoxSupport() {
 		DesiredCapabilities ff = DesiredCapabilities.firefox();
-		ff.setCapability(PLATFORM, Platform.getCurrent());
-		if (profile != null) {
-			ff.setCapability(FirefoxDriver.PROFILE, new FirefoxProfile(profile));
-		}
+		ff.setCapability(PLATFORM, Platform.getCurrent());	
 		getCaps().add(ff);
 	}
 

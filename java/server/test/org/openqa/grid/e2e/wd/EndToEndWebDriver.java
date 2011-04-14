@@ -3,9 +3,9 @@ package org.openqa.grid.e2e.wd;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
-import org.openqa.grid.selenium.utils.SeleniumProtocol;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.PortProber;
@@ -34,24 +34,23 @@ public class EndToEndWebDriver {
 		hub.start();
 		hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
 
-		SelfRegisteringRemote remote = SelfRegisteringRemote.create(SeleniumProtocol.WebDriver, PortProber.findFreePort(), hub.getRegistrationURL());
-		remote.addFirefoxSupport(null);
-		remote.addFirefoxSupport(null);
-		remote.addFirefoxSupport(null);
-		remote.addFirefoxSupport(null);
-		remote.addFirefoxSupport(null);
+		SelfRegisteringRemote remote = SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
+		remote.addFirefoxSupport();
+		remote.addFirefoxSupport();
+		remote.addFirefoxSupport();
+		remote.addFirefoxSupport();
+		remote.addFirefoxSupport();
 		remote.setMaxConcurrentSession(5);
 		remote.setTimeout(-1, -1);
 		remote.launchRemoteServer();
 		remote.registerToHub();
 
-		SelfRegisteringRemote remote2 = SelfRegisteringRemote
-				.create(SeleniumProtocol.WebDriver, PortProber.findFreePort(), hub.getRegistrationURL());
-		remote2.addFirefoxSupport(null);
-		remote2.addFirefoxSupport(null);
-		remote2.addFirefoxSupport(null);
-		remote2.addFirefoxSupport(null);
-		remote2.addFirefoxSupport(null);
+		SelfRegisteringRemote remote2 = SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
+		remote2.addFirefoxSupport();
+		remote2.addFirefoxSupport();
+		remote2.addFirefoxSupport();
+		remote2.addFirefoxSupport();
+		remote2.addFirefoxSupport();
 		remote2.setMaxConcurrentSession(5);
 		remote2.setTimeout(-1, -1);
 		remote2.launchRemoteServer();

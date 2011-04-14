@@ -3,9 +3,9 @@ package org.openqa.grid.e2e.wd;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
-import org.openqa.grid.selenium.utils.SeleniumProtocol;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -27,8 +27,8 @@ public class TimeoutWebDriver {
 	public void prepare() throws Exception {
 		hub.start();
 		
-		SelfRegisteringRemote remote = SelfRegisteringRemote.create(SeleniumProtocol.WebDriver, PortProber.findFreePort(),  hub.getRegistrationURL());
-		remote.addFirefoxSupport(null);
+		SelfRegisteringRemote remote =  SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
+		remote.addFirefoxSupport();
 		remote.setTimeout(5000,1000);
 
 		remote.launchRemoteServer();

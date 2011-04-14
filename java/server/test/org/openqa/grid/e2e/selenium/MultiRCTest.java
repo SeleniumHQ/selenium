@@ -4,9 +4,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
-import org.openqa.grid.selenium.utils.SeleniumProtocol;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.testng.Assert;
@@ -33,9 +33,8 @@ public class MultiRCTest {
 		hub.start();
 
 		for (int i = 0; i < 5; i++) {
-			SelfRegisteringRemote remote = SelfRegisteringRemote.create(SeleniumProtocol.Selenium, PortProber.findFreePort(), hub
-					.getRegistrationURL());
-			remote.addFirefoxSupport(null);
+			SelfRegisteringRemote remote = SelfRegisteringRemote.create(GridConfigurationMock.seleniumConfig(hub.getRegistrationURL()));
+			remote.addFirefoxSupport();
 			remote.addSafariSupport();
 			remote.addInternetExplorerSupport();
 			remote.launchRemoteServer();
@@ -53,7 +52,7 @@ public class MultiRCTest {
 		selenium.open(hubURL + "/grid/console");
 	}
 
-	@Test(dependsOnMethods = "multifirefox", timeOut = 10000, enabled = false )
+	@Test(dependsOnMethods = "multifirefox", timeOut = 10000, enabled = false)
 	public void validate() throws InterruptedException {
 		Assert.assertEquals(seleniums.size(), 5);
 

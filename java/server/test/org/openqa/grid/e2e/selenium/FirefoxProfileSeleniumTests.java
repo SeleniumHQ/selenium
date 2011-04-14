@@ -1,12 +1,11 @@
 package org.openqa.grid.e2e.selenium;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
-import org.openqa.grid.selenium.utils.SeleniumProtocol;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.testng.Assert;
@@ -32,10 +31,10 @@ public class FirefoxProfileSeleniumTests {
 	public void prepare() throws Exception {
 		hub.start();
 
-		SelfRegisteringRemote remote = SelfRegisteringRemote.create(SeleniumProtocol.Selenium, PortProber.findFreePort(), hub.getRegistrationURL());
+		SelfRegisteringRemote remote =  SelfRegisteringRemote.create(GridConfigurationMock.seleniumConfig(hub.getRegistrationURL()));
 
 		// specifying a profile
-		remote.addFirefoxSupport(new File("C:\\grid\\master"));
+		//remote.addFirefoxSupport(new File("C:\\grid\\master"));
 
 		remote.launchRemoteServer();
 		remote.registerToHub();

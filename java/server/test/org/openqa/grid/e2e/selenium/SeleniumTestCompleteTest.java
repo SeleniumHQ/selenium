@@ -1,8 +1,8 @@
 package org.openqa.grid.e2e.selenium;
 
+import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
-import org.openqa.grid.selenium.utils.SeleniumProtocol;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.testng.Assert;
@@ -28,8 +28,8 @@ public class SeleniumTestCompleteTest {
 		hub.start();
 
 		// register a selenium 1
-		SelfRegisteringRemote selenium1 = SelfRegisteringRemote.create(SeleniumProtocol.Selenium, PortProber.findFreePort(),  hub.getRegistrationURL());
-		selenium1.addFirefoxSupport(null);
+		SelfRegisteringRemote selenium1 = SelfRegisteringRemote.create(GridConfigurationMock.seleniumConfig(hub.getRegistrationURL()));
+		selenium1.addFirefoxSupport();
 		selenium1.setTimeout(5000, 2000);
 		selenium1.launchRemoteServer();
 		selenium1.registerToHub();

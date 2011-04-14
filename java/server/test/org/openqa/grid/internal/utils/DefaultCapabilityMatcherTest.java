@@ -75,4 +75,25 @@ public class DefaultCapabilityMatcherTest {
 	
 	
 	
+	@Test
+	public void nullEmptyValues(){
+		DefaultCapabilityMatcher matcher = new DefaultCapabilityMatcher();
+		
+		Map<String, Object> requested = new HashMap<String, Object>();
+		requested.put("browserName", "firefox");
+		requested.put("platform", null);
+		requested.put("version", "");
+		
+		Map<String, Object> node = new HashMap<String, Object>();
+		node.put("browserName", "firefox");
+		node.put("platform", Platform.LINUX);
+		node.put("version", "3.6");
+		
+		Assert.assertTrue(matcher.matches(node, requested));
+		
+		
+	}
+	
+	
+	
 }

@@ -4,9 +4,9 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
-import org.openqa.grid.selenium.utils.SeleniumProtocol;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -32,9 +32,9 @@ public class FirefoxProfilesTests {
 		hub.start();
 		hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
 
-		SelfRegisteringRemote remote = SelfRegisteringRemote.create(SeleniumProtocol.WebDriver, PortProber.findFreePort(),  hub.getRegistrationURL());
-		remote.addFirefoxSupport(null);
-		remote.setTimeout(-1,-1);
+		SelfRegisteringRemote remote = SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
+		remote.addFirefoxSupport();
+		remote.setTimeout(-1, -1);
 		remote.launchRemoteServer();
 		remote.registerToHub();
 
@@ -42,7 +42,7 @@ public class FirefoxProfilesTests {
 
 	// TODO freynaud profile checked in
 	// disabled. won't work because of the hardcoded path to c:\
-	@Test(enabled=false)
+	@Test(enabled = false)
 	public void testwebdriver() throws MalformedURLException, InterruptedException {
 		WebDriver driver = null;
 		try {
@@ -54,7 +54,7 @@ public class FirefoxProfilesTests {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			Reporter.log("driver : "+driver);
+			Reporter.log("driver : " + driver);
 			driver.quit();
 		}
 	}

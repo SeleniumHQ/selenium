@@ -4,10 +4,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
+import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
-import org.openqa.grid.selenium.utils.SeleniumProtocol;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.PortProber;
@@ -36,8 +36,8 @@ public class WebDriverPriorityDemo {
 		hub.start();
 		hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
 
-		SelfRegisteringRemote remote = SelfRegisteringRemote.create(SeleniumProtocol.WebDriver, PortProber.findFreePort(), hub.getRegistrationURL());
-		remote.addFirefoxSupport(null);
+		SelfRegisteringRemote remote =  SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
+		remote.addFirefoxSupport();
 		remote.setMaxConcurrentSession(1);
 		remote.setTimeout(-1, -1);
 		remote.launchRemoteServer();

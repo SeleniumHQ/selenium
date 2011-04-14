@@ -1,12 +1,11 @@
 package org.openqa.grid.e2e.misc;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
-import org.openqa.grid.selenium.utils.SeleniumProtocol;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.PortProber;
@@ -30,30 +29,23 @@ public class Selenium1WebDriverTests {
 		hub.start();
 
 		// register a selenium 1
-		SelfRegisteringRemote selenium1 = SelfRegisteringRemote.create(SeleniumProtocol.Selenium, PortProber.findFreePort(), hub.getRegistrationURL());
-		selenium1.addFirefoxSupport(null);
-		selenium1.addFirefoxSupport(new File("c:\\grid\\master"));
-		selenium1.addInternetExplorerSupport();
-		selenium1.addSafariSupport();
+		SelfRegisteringRemote selenium1 = SelfRegisteringRemote.create(GridConfigurationMock.seleniumConfig(hub.getRegistrationURL()));
+		selenium1.addFirefoxSupport();
 		selenium1.launchRemoteServer();
 		selenium1.registerToHub();
 		
 		
 		// register a webdriver
-		SelfRegisteringRemote webdriver = SelfRegisteringRemote.create(SeleniumProtocol.WebDriver, PortProber.findFreePort(), hub.getRegistrationURL());
-		webdriver.addFirefoxSupport(null);
-		webdriver.addFirefoxSupport(null);
-		webdriver.addFirefoxSupport(null);
-		webdriver.addInternetExplorerSupport();
-		webdriver.setMaxConcurrentSession(5);
-		
+		SelfRegisteringRemote webdriver = SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
+		webdriver.addFirefoxSupport();
 		webdriver.launchRemoteServer();
 		webdriver.registerToHub();
 	}
 
-	@Test(enabled = false)
+	@Test
 	public void test() throws MalformedURLException {
 		String url = "http://" + hub.getHost() + ":" + hub.getPort()+"/grid/console";
+		System.out.println(url);
 		
 		Selenium selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", url);
 		Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);

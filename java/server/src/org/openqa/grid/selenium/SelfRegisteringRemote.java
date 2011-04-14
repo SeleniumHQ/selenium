@@ -29,79 +29,54 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.selenium.utils.SeleniumProtocol;
+import org.openqa.grid.selenium.utils.GridConfiguration;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.SeleniumServer;
 
 public abstract class SelfRegisteringRemote {
 
-	private static final NetworkUtils networkUtils = new NetworkUtils();
-	private URL registration;
-	private int port = 5555;
-	private String host = null;
+	
 
+	private GridConfiguration gridConfig;
 	private List<DesiredCapabilities> caps = new ArrayList<DesiredCapabilities>();
 	private Map<String, Object> config = new HashMap<String, Object>();
 
-	public SelfRegisteringRemote(int port, URL registration) {
-		this.port = port;
-		this.registration = registration;
+	public SelfRegisteringRemote(GridConfiguration config) {
+		this.gridConfig = config;
 	}
 
-	/**
-	 * Create a selenium1 RC from the configuration specified.
-	 * 
-	 * @param conf
-	 *            The configuration to use
-	 * @param registration
-	 *            The registration url
-	 * @return A SelfRegisteringRemote
-	 */
-	public static SelfRegisteringRemote create(RemoteControlConfiguration conf, URL registration) {
-		return new SelfRegisteringSelenium(conf, registration);
-	}
 
-	public static SelfRegisteringRemote create(SeleniumProtocol type, int port, URL registration) {
-		switch (type) {
-		case Selenium:
-			return new SelfRegisteringSelenium(port, registration);
-		case WebDriver:
-			return new SelfRegisteringWebDriver(port, registration);
+	public static SelfRegisteringRemote create(GridConfiguration config) {
+		switch (config.getRole()) {
+		case REMOTE_CONTROL:
+			return new SelfRegisteringSelenium(config);
+		case WEBDRIVER:
+			return new SelfRegisteringWebDriver(config);
 		default:
 			throw new RuntimeException("NI");
 		}
 	}
 
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	/**
-	 * 
-	 * @return the IP or hostname of the machine.
-	 */
-	public String getHost() {
-		if (host == null){
-			return networkUtils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-		}else {
-			return host;
-		}
-		
-	}
-
+	
 	public abstract URL getRemoteURL();
 
-	public abstract void launchRemoteServer() throws Exception;
+	public void launchRemoteServer() throws Exception{
+		SeleniumServer server = new SeleniumServer(getGridConfig().getNodeRemoteControlConfiguration());
+		server.boot();
+	}
 
-	public abstract void setMaxConcurrentSession(int max);
+	
+	public void setMaxConcurrentSession(int max) {
+		getConfig().put(RegistrationRequest.MAX_SESSION, max);
+	}
+
 
 	public abstract void addInternetExplorerSupport();
 
 	public abstract void addSafariSupport();
 
-	public abstract void addFirefoxSupport(File profileDir);
+	public abstract void addFirefoxSupport();
 
 	public void addChromeSupport() {
 		DesiredCapabilities chrome = new DesiredCapabilities("chrome", "10.0", Platform.getCurrent());
@@ -113,9 +88,7 @@ public abstract class SelfRegisteringRemote {
 		config.put(RegistrationRequest.CLEAN_UP_CYCLE, cycleMillis);
 	}
 
-	public int getPort() {
-		return port;
-	}
+
 
 	public RegistrationRequest getRegistrationRequest() {
 		RegistrationRequest request = new RegistrationRequest();
@@ -132,11 +105,11 @@ public abstract class SelfRegisteringRemote {
 
 	public void registerToHub() {
 		try {
-			BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST", registration.toExternalForm());
+			BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST",gridConfig.getRegistrationURL().toExternalForm());
 			r.setEntity(new StringEntity(getRegistrationRequest().toJSON()));
 
 			DefaultHttpClient client = new DefaultHttpClient();
-			HttpHost host = new HttpHost(registration.getHost(), registration.getPort());
+			HttpHost host = new HttpHost(gridConfig.getRegistrationURL().getHost(), gridConfig.getRegistrationURL().getPort());
 			HttpResponse response = client.execute(host, r);
 			if (response.getStatusLine().getStatusCode() != 200) {
 				throw new RuntimeException("Error sending the registration request.");
@@ -144,6 +117,10 @@ public abstract class SelfRegisteringRemote {
 		} catch (Exception e) {
 			throw new RuntimeException("Error sending the registration request.", e);
 		}
+	}
+	
+	public GridConfiguration getGridConfig() {
+		return gridConfig;
 	}
 
 	List<DesiredCapabilities> getCaps() {

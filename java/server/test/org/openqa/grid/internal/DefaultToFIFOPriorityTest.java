@@ -12,6 +12,7 @@ import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
 import org.testng.Assert;
+import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -82,6 +83,9 @@ public class DefaultToFIFOPriorityTest {
 	// priority should be processed.
 	@Test(dependsOnMethods = "queueSomeMore")
 	public void releaseTheSessionBlockingTheGrid() throws InterruptedException {
+		while(requests.size()!=MAX){
+			Thread.sleep(250);
+		}
 		session.terminateSyncronousFOR_TEST_ONLY();
 
 	}
@@ -89,7 +93,17 @@ public class DefaultToFIFOPriorityTest {
 	// validate that the one with priority 5 has been assigned a proxy
 	@Test(dependsOnMethods = "releaseTheSessionBlockingTheGrid")
 	public void validate() throws InterruptedException {
-		Thread.sleep(250);
+		int cpt=0;
+		while(cpt <10){
+			Thread.sleep(250);
+			cpt++;
+			try {
+				requests.get(0).getTestSession();
+			}catch (IllegalAccessError iae){
+				//ignore
+			}
+		}
+		System.out.println(">"+requests);
 		Assert.assertNotNull(requests.get(0).getTestSession());	
 		Assert.assertEquals(requests.get(0).getDesiredCapabilities().get("_priority"), 1);
 	}
