@@ -256,14 +256,19 @@ bot.action.toggle = function(element) {
 /**
  * Focuses on the given element if it is not already the active element. If
  * a focus change is required, the active element will be blurred before
- * focusing on the given element.
+ * focusing on the given element. This function will be a no-op if
+ * the {@code element} is not eligible to receive focus.
  * @param {!Element} element The element to focus on.
  * @param {Element=} opt_activeElement The currently active element. If
  *     provided, and different from {@code element}, the active element will
  *     be blurred before focusing on the element.
+ * @see bot.dom.isFocusable
  */
-
 bot.action.focusOnElement = function(element, opt_activeElement) {
+  if (!bot.dom.isFocusable(element)) {
+    return;
+  }
+
   var activeElement = opt_activeElement || bot.dom.getActiveElement(element);
   bot.action.checkShown_(element);
 
@@ -447,7 +452,7 @@ bot.action.click = function(element) {
           function(e) {
             return bot.dom.isElement(e, goog.dom.TagName.A);
           }, true));
-
+  
       if (anchor && anchor.href) {
         bot.action.followHref_(anchor);
       }

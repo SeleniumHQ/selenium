@@ -60,6 +60,38 @@ bot.dom.isElement = function(node, opt_tagName) {
 
 
 /**
+ * List of the focusable fields, according to
+ * http://www.w3.org/TR/html401/interact/scripts.html#adef-onfocus
+ * @type {!Array.<!goog.dom.TagName>}
+ * @const
+ * @private
+ */
+bot.dom.FOCUSABLE_FORM_FIELDS_ = [
+  goog.dom.TagName.A,
+  goog.dom.TagName.AREA,
+  goog.dom.TagName.BUTTON,
+  goog.dom.TagName.INPUT,
+  goog.dom.TagName.LABEL,
+  goog.dom.TagName.SELECT,
+  goog.dom.TagName.TEXTAREA
+];
+
+
+/**
+ * Returns whether a node is a focusable element.  An element may receive focus
+ * if it is a form field or has a positive tabindex.
+ * @param {Element} element The node to test.
+ * @return {boolean} Whether the node is focusable.
+ */
+bot.dom.isFocusable = function(element) {
+  return goog.array.some(bot.dom.FOCUSABLE_FORM_FIELDS_, function(tagName) {
+    return element.tagName.toUpperCase() == tagName;
+  }) || (bot.dom.getAttribute(element, 'tabindex') != null &&
+         bot.dom.getProperty(element, 'tabIndex') >= 0);
+};
+
+
+/**
  * Common aliases for properties. This maps names that users use to the correct
  * property name.
  *
