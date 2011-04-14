@@ -89,6 +89,8 @@ public class WebDriverRequestHandler extends RequestHandler {
 		return null;
 	}
 
+	
+	// TODO freynaud parsing is so so.
 	@SuppressWarnings("unchecked")
 	// JSON iterator.
 	@Override
@@ -100,7 +102,11 @@ public class WebDriverRequestHandler extends RequestHandler {
 			JSONObject dc = map.getJSONObject("desiredCapabilities");
 			for (Iterator iterator = dc.keys(); iterator.hasNext();) {
 				String key = (String) iterator.next();
-				desiredCapability.put(key, dc.get(key));
+				Object value = dc.get(key);
+				if (value == JSONObject.NULL){
+					value = null;
+				}
+				desiredCapability.put(key, value);
 			}
 		} catch (JSONException e) {
 			throw new GridException("Cannot extract a capabilities from the request " + json);
