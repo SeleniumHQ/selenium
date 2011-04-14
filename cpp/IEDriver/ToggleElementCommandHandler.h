@@ -43,7 +43,7 @@ protected:
 				}
 
 				if ((tag_name != L"OPTION") && !element_wrapper->IsCheckBox())  {
-					response->SetErrorResponse(ENOTIMPLEMENTED, "cannot toggle element that is not an option or check box");
+					response->SetErrorResponse(EELEMENTNOTENABLED, "cannot toggle element that is not an option or check box");
 					return;
 				}
 
