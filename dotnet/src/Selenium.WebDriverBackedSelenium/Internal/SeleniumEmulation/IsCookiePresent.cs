@@ -18,7 +18,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(OpenQA.Selenium.IWebDriver driver, string locator, string value)
         {
-            return driver.Manage().GetCookieNamed(locator) == null ? false : true;
+            return driver.Manage().Cookies.GetCookieNamed(locator) == null ? false : true;
         }
     }
 }

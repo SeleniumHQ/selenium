@@ -113,6 +113,7 @@ namespace OpenQA.Selenium.Remote
                 return (bool)commandResponse.Value;
             }
         }
+
         /// <summary>
         /// Gets the Location of an element and returns a Point object
         /// </summary>
@@ -121,8 +122,8 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", Id);
-                Response commandResponse = Execute(DriverCommand.GetElementLocation, parameters);
+                parameters.Add("id", this.Id);
+                Response commandResponse = this.Execute(DriverCommand.GetElementLocation, parameters);
                 Dictionary<string, object> rawPoint = (Dictionary<string, object>)commandResponse.Value;
                 int x = Convert.ToInt32(rawPoint["x"], CultureInfo.InvariantCulture);
                 int y = Convert.ToInt32(rawPoint["y"], CultureInfo.InvariantCulture);
@@ -138,8 +139,8 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", Id);
-                Response commandResponse = Execute(DriverCommand.GetElementSize, parameters);
+                parameters.Add("id", this.Id);
+                Response commandResponse = this.Execute(DriverCommand.GetElementSize, parameters);
                 Dictionary<string, object> rawSize = (Dictionary<string, object>)commandResponse.Value;
                 int width = Convert.ToInt32(rawSize["width"], CultureInfo.InvariantCulture);
                 int height = Convert.ToInt32(rawSize["height"], CultureInfo.InvariantCulture);
@@ -155,8 +156,8 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", Id);
-                Response commandResponse = Execute(DriverCommand.IsElementDisplayed, parameters);
+                parameters.Add("id", this.Id);
+                Response commandResponse = this.Execute(DriverCommand.IsElementDisplayed, parameters);
                 return (bool)commandResponse.Value;
             }
         }
@@ -306,9 +307,9 @@ namespace OpenQA.Selenium.Remote
         public string GetCssValue(string propertyName)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", Id);
+            parameters.Add("id", this.Id);
             parameters.Add("propertyName", propertyName);
-            Response commandResponse = Execute(DriverCommand.GetElementValueOfCssProperty, parameters);
+            Response commandResponse = this.Execute(DriverCommand.GetElementValueOfCssProperty, parameters);
             return commandResponse.Value.ToString();
         }
 

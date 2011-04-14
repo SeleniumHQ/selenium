@@ -19,7 +19,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string ignored, string alsoIgnored)
         {
-            driver.Manage().DeleteAllCookies();
+            driver.Manage().Cookies.DeleteAllCookies();
             return null;
         }
     }

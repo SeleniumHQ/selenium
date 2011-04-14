@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium
 {
@@ -32,7 +33,7 @@ namespace OpenQA.Selenium
         public void OptionsForUninitializedWebDriverDoesNotThrowException()
         {
             IOptions options = driver.Manage();
-            options.GetCookies();
+            ReadOnlyCollection<Cookie> allCookies = options.Cookies.AllCookies;
         }
 
         /**

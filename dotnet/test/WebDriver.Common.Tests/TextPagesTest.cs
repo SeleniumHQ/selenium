@@ -39,7 +39,7 @@ namespace OpenQA.Selenium
             driver.Url = textPage;
 
             Cookie cookie = new Cookie("hello", "goodbye");
-            driver.Manage().AddCookie(cookie);
+            driver.Manage().Cookies.AddCookie(cookie);
         }
     }
 }

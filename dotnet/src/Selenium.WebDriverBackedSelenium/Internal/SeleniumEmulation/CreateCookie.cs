@@ -60,7 +60,7 @@ namespace Selenium.Internal.SeleniumEmulation
             }
 
             Cookie cookie = new Cookie(cookieName, cookieValue, path, maxAge);
-            driver.Manage().AddCookie(cookie);
+            driver.Manage().Cookies.AddCookie(cookie);
 
             return null;
         }

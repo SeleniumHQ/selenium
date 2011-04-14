@@ -774,6 +774,14 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
+            /// Gets an object allowing the user to manipulate cookies on the page.
+            /// </summary>
+            public ICookieJar Cookies
+            {
+                get { return this.wrappedOptions.Cookies; }
+            }
+
+            /// <summary>
             /// Method for creating a cookie in the browser
             /// </summary>
             /// <param name="cookie"><see cref="Cookie"/> that represents a cookie in the browser</param>

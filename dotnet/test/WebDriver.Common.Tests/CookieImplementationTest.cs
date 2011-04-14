@@ -14,7 +14,7 @@ namespace OpenQA.Selenium
         public void GoToSimplePageAndDeleteCookies()
         {
             driver.Url = simpleTestPage;
-            driver.Manage().DeleteAllCookies();
+            driver.Manage().Cookies.DeleteAllCookies();
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace OpenQA.Selenium
             string key = string.Format("key_{0}", new Random().Next());
             ((IJavaScriptExecutor)driver).ExecuteScript("document.cookie = arguments[0] + '=set';", key);
 
-            Cookie cookie = driver.Manage().GetCookieNamed(key);
+            Cookie cookie = driver.Manage().Cookies.GetCookieNamed(key);
             Assert.AreEqual("set", cookie.Value);
         }
 
@@ -37,11 +37,11 @@ namespace OpenQA.Selenium
 
             ((IJavaScriptExecutor)driver).ExecuteScript("return document.cookie");
 
-            driver.Manage().AddCookie(cookie);
+            driver.Manage().Cookies.AddCookie(cookie);
 
             string current = (string)((IJavaScriptExecutor)driver).ExecuteScript("return document.cookie");
             Assert.IsTrue(current.Contains(key));
-            Assert.That(driver.Manage().GetCookies().Contains(cookie), "Cookie was not added successfully");
+            Assert.That(driver.Manage().Cookies.AllCookies.Contains(cookie), "Cookie was not added successfully");
         }
 
         [Test]
@@ -51,17 +51,17 @@ namespace OpenQA.Selenium
             string key1 = string.Format("key_{0}", random.Next());
             string key2 = string.Format("key_{0}", random.Next());
 
-            ReadOnlyCollection<Cookie> cookies = driver.Manage().GetCookies();
+            ReadOnlyCollection<Cookie> cookies = driver.Manage().Cookies.AllCookies;
             int count = cookies.Count;
 
             Cookie one = new Cookie(key1, "value");
             Cookie two = new Cookie(key2, "value");
 
-            driver.Manage().AddCookie(one);
-            driver.Manage().AddCookie(two);
+            driver.Manage().Cookies.AddCookie(one);
+            driver.Manage().Cookies.AddCookie(two);
 
             driver.Url = simpleTestPage;
-            cookies = driver.Manage().GetCookies();
+            cookies = driver.Manage().Cookies.AllCookies;
             Assert.AreEqual(count + 2, cookies.Count);
 
             Assert.IsTrue(cookies.Contains(one));
@@ -73,12 +73,12 @@ namespace OpenQA.Selenium
         public void DeleteAllCookies()
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("document.cookie = 'foo=set';");
-            int count = driver.Manage().GetCookies().Count;
+            int count = driver.Manage().Cookies.AllCookies.Count;
             Assert.Greater(count, 0);
 
-            driver.Manage().DeleteAllCookies();
+            driver.Manage().Cookies.DeleteAllCookies();
 
-            count = driver.Manage().GetCookies().Count;
+            count = driver.Manage().Cookies.AllCookies.Count;
             Assert.AreEqual(0, count);
         }
 
@@ -93,13 +93,13 @@ namespace OpenQA.Selenium
             ((IJavaScriptExecutor)driver).ExecuteScript("document.cookie = arguments[0] + '=set';", key1);
             ((IJavaScriptExecutor)driver).ExecuteScript("document.cookie = arguments[0] + '=set';", key2);
 
-            Assert.IsNotNull(driver.Manage().GetCookieNamed(key1));
-            Assert.IsNotNull(driver.Manage().GetCookieNamed(key2));
+            Assert.IsNotNull(driver.Manage().Cookies.GetCookieNamed(key1));
+            Assert.IsNotNull(driver.Manage().Cookies.GetCookieNamed(key2));
 
-            driver.Manage().DeleteCookieNamed(key1);
+            driver.Manage().Cookies.DeleteCookieNamed(key1);
 
-            Assert.IsNull(driver.Manage().GetCookieNamed(key1));
-            Assert.IsNotNull(driver.Manage().GetCookieNamed(key2));
+            Assert.IsNull(driver.Manage().Cookies.GetCookieNamed(key1));
+            Assert.IsNotNull(driver.Manage().Cookies.GetCookieNamed(key2));
         }
 
         [Test]
@@ -109,14 +109,14 @@ namespace OpenQA.Selenium
             Cookie cookie1 = new Cookie(cookieOneName, "cod");
             Cookie cookie2 = new Cookie(cookieOneName + "x", "earth");
             IOptions options = driver.Manage();
-            options.AddCookie(cookie1);
-            options.AddCookie(cookie2);
+            options.Cookies.AddCookie(cookie1);
+            options.Cookies.AddCookie(cookie2);
 
-            options.DeleteCookieNamed(cookieOneName);
-            ReadOnlyCollection<Cookie> cookies = options.GetCookies();
+            options.Cookies.DeleteCookieNamed(cookieOneName);
+            ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
 
-            Assert.IsFalse(driver.Manage().GetCookies().Contains(cookie1));
-            Assert.IsTrue(driver.Manage().GetCookies().Contains(cookie2));
+            Assert.IsFalse(driver.Manage().Cookies.AllCookies.Contains(cookie1));
+            Assert.IsTrue(driver.Manage().Cookies.AllCookies.Contains(cookie2));
         }
 
         [Test]
@@ -127,18 +127,18 @@ namespace OpenQA.Selenium
             Cookie cookie1 = new Cookie("fish", "cod", "/" + basePath + "/animals");
             Cookie cookie2 = new Cookie("planet", "earth", "/" + basePath + "/");
             IOptions options = driver.Manage();
-            options.AddCookie(cookie1);
-            options.AddCookie(cookie2);
+            options.Cookies.AddCookie(cookie1);
+            options.Cookies.AddCookie(cookie2);
 
             UrlBuilder builder = EnvironmentManager.Instance.UrlBuilder;
             driver.Url = builder.WhereIs("animals");
 
-            ReadOnlyCollection<Cookie> cookies = options.GetCookies();
+            ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
             Assert.IsTrue(cookies.Contains(cookie1));
             Assert.IsTrue(cookies.Contains(cookie2));
 
             driver.Url = builder.WhereIs("");
-            cookies = options.GetCookies();
+            cookies = options.Cookies.AllCookies;
             Assert.IsFalse(cookies.Contains(cookie1));
             Assert.IsTrue(cookies.Contains(cookie2));
         }
@@ -151,20 +151,20 @@ namespace OpenQA.Selenium
             Cookie cookie2 = new Cookie("planet", "earth", "/" + basePath + "/galaxy");
 
             IOptions options = driver.Manage();
-            ReadOnlyCollection<Cookie> count = options.GetCookies();
+            ReadOnlyCollection<Cookie> count = options.Cookies.AllCookies;
 
-            options.AddCookie(cookie1);
-            options.AddCookie(cookie2);
+            options.Cookies.AddCookie(cookie1);
+            options.Cookies.AddCookie(cookie2);
 
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("animals");
             driver.Url = url;
-            ReadOnlyCollection<Cookie> cookies = options.GetCookies();
+            ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
 
             Assert.IsTrue(cookies.Contains(cookie1));
             Assert.IsFalse(cookies.Contains(cookie2));
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("galaxy");
-            cookies = options.GetCookies();
+            cookies = options.Cookies.AllCookies;
             Assert.IsFalse(cookies.Contains(cookie1));
             Assert.IsTrue(cookies.Contains(cookie2));
         }
@@ -174,12 +174,12 @@ namespace OpenQA.Selenium
         {
             Cookie cookie1 = new Cookie("fish", "cod");
             IOptions options = driver.Manage();
-            options.AddCookie(cookie1);
+            options.Cookies.AddCookie(cookie1);
 
             string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("simpleTest.html");
             driver.Url = url;
 
-            Assert.IsNull(options.GetCookieNamed("fish"));
+            Assert.IsNull(options.Cookies.GetCookieNamed("fish"));
         }
 
         [Test]
@@ -192,15 +192,15 @@ namespace OpenQA.Selenium
                 Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
 
-            Assert.IsNull(driver.Manage().GetCookieNamed("name"));
+            Assert.IsNull(driver.Manage().Cookies.GetCookieNamed("name"));
 
             Regex replaceRegex = new Regex(".*?\\.");
             string shorter = replaceRegex.Replace(name, ".");
             Cookie cookie = new Cookie("name", "value", shorter, "/", DateTime.Now.AddSeconds(100000));
 
-            driver.Manage().AddCookie(cookie);
+            driver.Manage().Cookies.AddCookie(cookie);
 
-            Assert.IsNotNull(driver.Manage().GetCookieNamed("name"));
+            Assert.IsNotNull(driver.Manage().Cookies.GetCookieNamed("name"));
         }
 
         [Test]
@@ -212,18 +212,18 @@ namespace OpenQA.Selenium
             {
                 Assert.Ignore("Skipping test: Cookies can only be set on fully-qualified domain names.");
             }
-            driver.Manage().DeleteAllCookies();
+            driver.Manage().Cookies.DeleteAllCookies();
 
-            Assert.IsNull(driver.Manage().GetCookieNamed("name"), "Looks like delete all cookies doesn't");
+            Assert.IsNull(driver.Manage().Cookies.GetCookieNamed("name"), "Looks like delete all cookies doesn't");
 
             // Replace the first part of the name with a period
             Regex replaceRegex = new Regex(".*?\\.");
             string shorter = replaceRegex.Replace(name, ".");
             Cookie cookie = new Cookie("name", "value", shorter, "/", DateTime.Now.AddSeconds(100000));
 
-            driver.Manage().AddCookie(cookie);
+            driver.Manage().Cookies.AddCookie(cookie);
 
-            Assert.IsNotNull(driver.Manage().GetCookieNamed("name"));
+            Assert.IsNotNull(driver.Manage().Cookies.GetCookieNamed("name"));
         }
 
         [Test]
@@ -231,12 +231,12 @@ namespace OpenQA.Selenium
         {
             Cookie cookie1 = new Cookie("fish", "cod");
             IOptions options = driver.Manage();
-            options.AddCookie(cookie1);
+            options.Cookies.AddCookie(cookie1);
 
             String url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("");
             driver.Url = url;
 
-            ReadOnlyCollection<Cookie> cookies = options.GetCookies();
+            ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
             Assert.IsFalse(cookies.Contains(cookie1));
         }
 
@@ -250,10 +250,10 @@ namespace OpenQA.Selenium
 
             Cookie cookie1 = new Cookie("fish", "cod", host, "/", null);
             IOptions options = driver.Manage();
-            options.AddCookie(cookie1);
+            options.Cookies.AddCookie(cookie1);
 
             driver.Url = javascriptPage;
-            ReadOnlyCollection<Cookie> cookies = options.GetCookies();
+            ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
             Assert.IsTrue(cookies.Contains(cookie1));
         }
 
@@ -263,34 +263,34 @@ namespace OpenQA.Selenium
             string basePath = EnvironmentManager.Instance.UrlBuilder.Path;
 
             Cookie cookie1 = new Cookie("fish", "cod");
-            driver.Manage().AddCookie(cookie1);
-            int count = driver.Manage().GetCookies().Count;
+            driver.Manage().Cookies.AddCookie(cookie1);
+            int count = driver.Manage().Cookies.AllCookies.Count;
 
             driver.Url = childPage;
             Cookie cookie2 = new Cookie("rodent", "hamster", "/" + basePath + "/child");
-            driver.Manage().AddCookie(cookie2);
-            count = driver.Manage().GetCookies().Count;
+            driver.Manage().Cookies.AddCookie(cookie2);
+            count = driver.Manage().Cookies.AllCookies.Count;
 
             driver.Url = grandchildPage;
             Cookie cookie3 = new Cookie("dog", "dalmation", "/" + basePath + "/child/grandchild/");
-            driver.Manage().AddCookie(cookie3);
-            count = driver.Manage().GetCookies().Count;
+            driver.Manage().Cookies.AddCookie(cookie3);
+            count = driver.Manage().Cookies.AllCookies.Count;
 
             driver.Url = (EnvironmentManager.Instance.UrlBuilder.WhereIs("child/grandchild"));
-            driver.Manage().DeleteCookieNamed("rodent");
-            count = driver.Manage().GetCookies().Count;
+            driver.Manage().Cookies.DeleteCookieNamed("rodent");
+            count = driver.Manage().Cookies.AllCookies.Count;
 
-            Assert.IsNull(driver.Manage().GetCookieNamed("rodent"));
+            Assert.IsNull(driver.Manage().Cookies.GetCookieNamed("rodent"));
 
-            ReadOnlyCollection<Cookie> cookies = driver.Manage().GetCookies();
+            ReadOnlyCollection<Cookie> cookies = driver.Manage().Cookies.AllCookies;
             Assert.AreEqual(2, cookies.Count);
             Assert.IsTrue(cookies.Contains(cookie1));
             Assert.IsTrue(cookies.Contains(cookie3));
 
-            driver.Manage().DeleteAllCookies();
+            driver.Manage().Cookies.DeleteAllCookies();
             driver.Url = grandchildPage;
 
-            cookies = driver.Manage().GetCookies();
+            cookies = driver.Manage().Cookies.AllCookies;
             Assert.AreEqual(0, cookies.Count);
         }
 
@@ -302,11 +302,11 @@ namespace OpenQA.Selenium
             Uri uri = new Uri(driver.Url);
             String host = string.Format("{0}:{1}", uri.Host, uri.Port);
 
-            Assert.IsNull(driver.Manage().GetCookieNamed("name"));
+            Assert.IsNull(driver.Manage().Cookies.GetCookieNamed("name"));
             Cookie cookie = new Cookie("name", "value", host, "/", null);
-            driver.Manage().AddCookie(cookie);
+            driver.Manage().Cookies.AddCookie(cookie);
 
-            Assert.IsNotNull(driver.Manage().GetCookieNamed("name"));
+            Assert.IsNotNull(driver.Manage().Cookies.GetCookieNamed("name"));
         }
 
         [Test]
@@ -315,14 +315,14 @@ namespace OpenQA.Selenium
             string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
 
             driver.Url = url;
-            driver.Manage().DeleteAllCookies();
+            driver.Manage().Cookies.DeleteAllCookies();
 
             DateTime time = DateTime.Now.AddDays(1);
             Cookie cookie1 = new Cookie("fish", "cod", null, "/common/animals", time);
             IOptions options = driver.Manage();
-            options.AddCookie(cookie1);
+            options.Cookies.AddCookie(cookie1);
 
-            ReadOnlyCollection<Cookie> cookies = options.GetCookies();
+            ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
             Cookie retrievedCookie = null;
             foreach (Cookie tempCookie in cookies)
             {
@@ -346,7 +346,7 @@ namespace OpenQA.Selenium
             string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
 
             driver.Url = url;
-            driver.Manage().DeleteAllCookies();
+            driver.Manage().Cookies.DeleteAllCookies();
 
             // DateTime.Now contains milliseconds; the returned cookie expire date
             // will not. So we need to truncate the milliseconds.
@@ -355,9 +355,9 @@ namespace OpenQA.Selenium
 
             Cookie addCookie = new Cookie("fish", "cod", "/common/animals", expireDate);
             IOptions options = driver.Manage();
-            options.AddCookie(addCookie);
+            options.Cookies.AddCookie(addCookie);
 
-            Cookie retrieved = options.GetCookieNamed("fish");
+            Cookie retrieved = options.Cookies.GetCookieNamed("fish");
             Assert.IsNotNull(retrieved);
             Assert.AreEqual(addCookie.Expiry, retrieved.Expiry, "Cookies are not equal");
         }
@@ -368,14 +368,14 @@ namespace OpenQA.Selenium
             string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
 
             driver.Url = url;
-            driver.Manage().DeleteAllCookies();
+            driver.Manage().Cookies.DeleteAllCookies();
 
             DateTime expires = DateTime.Now.AddSeconds(-1000);
             Cookie cookie = new Cookie("expired", "yes", "/common/animals", expires);
             IOptions options = driver.Manage();
-            options.AddCookie(cookie);
+            options.Cookies.AddCookie(cookie);
 
-            cookie = options.GetCookieNamed("fish");
+            cookie = options.Cookies.GetCookieNamed("fish");
             Assert.IsNull(cookie, "Cookie expired before it was set, so nothing should be returned: " + cookie);
         }
 
@@ -397,8 +397,8 @@ namespace OpenQA.Selenium
             driver.Url = macbethPage;
             IOptions options = driver.Manage();
             Cookie cookie = new Cookie("Homer", "Simpson", hostName, "/" + EnvironmentManager.Instance.UrlBuilder.Path, null);
-            options.AddCookie(cookie);
-            ReadOnlyCollection<Cookie> cookies = options.GetCookies();
+            options.Cookies.AddCookie(cookie);
+            ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
             Assert.That(cookies.Contains(cookie), "Valid cookie was not returned");
         }
 
@@ -410,8 +410,8 @@ namespace OpenQA.Selenium
             driver.Url = macbethPage;
             IOptions options = driver.Manage();
             Cookie cookie = new Cookie("Bart", "Simpson", EnvironmentManager.Instance.UrlBuilder.HostName + ".com", EnvironmentManager.Instance.UrlBuilder.Path, null);
-            options.AddCookie(cookie);
-            ReadOnlyCollection<Cookie> cookies = options.GetCookies();
+            options.Cookies.AddCookie(cookie);
+            ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
             Assert.IsFalse(cookies.Contains(cookie), "Invalid cookie was returned");
         }
 
@@ -422,8 +422,8 @@ namespace OpenQA.Selenium
             driver.Url = macbethPage;
             IOptions options = driver.Manage();
             Cookie cookie = new Cookie("Lisa", "Simpson", EnvironmentManager.Instance.UrlBuilder.HostName, "/" + EnvironmentManager.Instance.UrlBuilder.Path + "IDoNotExist", null);
-            options.AddCookie(cookie);
-            ReadOnlyCollection<Cookie> cookies = options.GetCookies();
+            options.Cookies.AddCookie(cookie);
+            ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
             Assert.IsFalse(cookies.Contains(cookie), "Invalid cookie was returned");
         }
 
@@ -439,7 +439,7 @@ namespace OpenQA.Selenium
             driver.Url = "doesnot.noireallyreallyreallydontexist.com";
             IOptions options = driver.Manage();
             Cookie cookie = new Cookie("question", "dunno");
-            options.AddCookie(cookie);
+            options.Cookies.AddCookie(cookie);
         }
 
         [Test]
@@ -449,13 +449,13 @@ namespace OpenQA.Selenium
             string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
             driver.Url = url;
 
-            driver.Manage().DeleteAllCookies();
+            driver.Manage().Cookies.DeleteAllCookies();
 
             Cookie addCookie = new Cookie("fish", "cod", "/common/animals", DateTime.Now.AddHours(-1));
             IOptions options = driver.Manage();
-            options.AddCookie(addCookie);
+            options.Cookies.AddCookie(addCookie);
 
-            Cookie retrieved = options.GetCookieNamed("fish");
+            Cookie retrieved = options.Cookies.GetCookieNamed("fish");
             Assert.IsNull(retrieved);
         }
 
@@ -465,8 +465,8 @@ namespace OpenQA.Selenium
             driver.Url = macbethPage;
             IOptions options = driver.Manage();
             Cookie cookie = new Cookie("Marge", "Simpson", "/");
-            options.AddCookie(cookie);
-            ReadOnlyCollection<Cookie> cookies = options.GetCookies();
+            options.Cookies.AddCookie(cookie);
+            ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
             Assert.That(cookies.Contains(cookie), "Valid cookie was not returned");
         }
 
@@ -477,11 +477,11 @@ namespace OpenQA.Selenium
             IOptions options = driver.Manage();
             Cookie cookieToDelete = new Cookie("answer", "42");
             Cookie cookieToKeep = new Cookie("canIHaz", "Cheeseburguer");
-            options.AddCookie(cookieToDelete);
-            options.AddCookie(cookieToKeep);
-            ReadOnlyCollection<Cookie> cookies = options.GetCookies();
-            options.DeleteCookie(cookieToDelete);
-            ReadOnlyCollection<Cookie> cookies2 = options.GetCookies();
+            options.Cookies.AddCookie(cookieToDelete);
+            options.Cookies.AddCookie(cookieToKeep);
+            ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
+            options.Cookies.DeleteCookie(cookieToDelete);
+            ReadOnlyCollection<Cookie> cookies2 = options.Cookies.AllCookies;
             Assert.IsFalse(cookies2.Contains(cookieToDelete), "Cookie was not deleted successfully");
             Assert.That(cookies2.Contains(cookieToKeep), "Valid cookie was not returned");
         }
@@ -504,7 +504,7 @@ namespace OpenQA.Selenium
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("simpleTest.html");
             }
 
-            driver.Manage().DeleteAllCookies();
+            driver.Manage().Cookies.DeleteAllCookies();
 
             return name;
         }

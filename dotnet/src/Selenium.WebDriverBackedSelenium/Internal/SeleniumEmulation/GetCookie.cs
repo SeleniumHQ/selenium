@@ -20,7 +20,7 @@ namespace Selenium.Internal.SeleniumEmulation
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             StringBuilder builder = new StringBuilder();
-            foreach (Cookie c in driver.Manage().GetCookies())
+            foreach (Cookie c in driver.Manage().Cookies.AllCookies)
             {
                 builder.Append(c.ToString());
                 builder.Append("; ");
