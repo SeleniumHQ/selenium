@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.dom.ViewportSizeMonitor</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.math.Size');
+    goog.require('goog.style');
+
+    goog.require('goog.dom.ViewportSizeMonitor');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <style>
+    html, body {
+      margin: 0;
+      border: 0;
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    div#demo {
+      position: relative;
+      top: 0;
+      left: 0;
+      margin: 0;
+      border: 0;
+      padding: 0;
+    }
+
+    span#current_size {
+      font: bold 9pt Arial, Helvetica, sans-serif;
+      color: #333;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.dom.ViewportSizeMonitor</h1>
+  <div id="demo">
+    Current Size: <span id="current_size">Loading...</span>
+  </div>
+
+  <script>
+    // Takes a goog.math.Size object containing the viewport size, and updates
+    // the UI accordingly.
+    function updateUi(size) {
+      goog.style.setSize(goog.dom.getElement('demo'), size);
+      goog.dom.setTextContent(goog.dom.getElement('current_size'),
+          size.toString());
+    }
+
+    // Initialize the layout.
+    updateUi(goog.dom.getViewportSize());
+
+    // Start listening for viewport size changes.
+    var vsm = new goog.dom.ViewportSizeMonitor();
+    goog.events.listen(vsm, goog.events.EventType.RESIZE, function(e) {
+      updateUi(vsm.getSize());
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>Event Test</title>
+  <script type="text/javascript" src="../base.js"></script>
+  <script type="text/javascript">
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+  </script>
+</head>
+<body>
+  <p>
+    <a id="link1" href="#link1">Link 1</a><br />
+    <a id="link2" href="#link2">Link 2</a><br />
+    <a id="link3" href="#link3">Link 3</a><br />
+    <a id="link4" href="#link4">Link 4</a>
+  </p>
+  <p>
+    <a href="javascript:addListeners()">Listen</a> |
+    <a href="javascript:removeListeners()">UnListen</a> |
+    <a href="javascript:removeAll()">Remove All</a> |
+    <a href="javascript:void(goog.events.unlisten($('link1'), 'click', one))">Remove One</a> |
+    <a href="javascript:void(goog.events.unlisten($('link1'), 'click', two))">Remove Two</a> |
+    <a href="javascript:void(goog.events.unlisten($('link1'), 'click', three))">Remove Three</a> |
+  </p>
+  <pre id="info"></pre>
+
+  <div id="test1" style="background-color: pink;">
+    Test 1
+    <div id="test2" style="background-color: lightblue;">
+      &nbsp; &nbsp; Test 2
+      <div id="test3" style="background-color: lightyellow;">
+        &nbsp; &nbsp; &nbsp; &nbsp; Test 3
+      </div>
+      &nbsp; &nbsp; Test 2
+    </div>
+    Test 1
+  </div>
+
+  <script type="text/javascript">
+
+    function $(el) { return document.getElementById(el); }
+
+    function handleEventC(e) {
+      alert('capture');
+      $('info').innerHTML = "CAPTURE<br>" + goog.events.expose(e).replace(/\n/g, '<br>');
+    }
+    function handleEventB(e) {
+      alert('bubble');
+      $('info').innerHTML = "BUBBLE<br>" + goog.events.expose(e).replace(/\n/g, '<br>');
+    }
+
+    function one() {
+      alert('1');
+    }
+    function two() {
+      alert('2');
+    }
+    function three() {
+      alert('3');
+    }
+
+    function addListeners() {
+      goog.events.listen($('link1'), 'click', one);
+      goog.events.listen($('link1'), 'click', two);
+      goog.events.listen($('link1'), 'click', three);
+
+      goog.events.listen($('link2'), 'click', handleEventB);
+      goog.events.listen($('link3'), 'click', handleEventB);
+      goog.events.listen($('link4'), 'click', handleEventB);
+    }
+
+    function removeListeners() {
+      goog.events.unlisten($('link1'), 'click', handleEventB);
+      goog.events.unlisten($('link2'), 'click', handleEventB);
+      goog.events.unlisten($('link3'), 'click', handleEventB);
+      goog.events.unlisten($('link4'), 'click', handleEventB);
+    }
+
+    function removeAll() {
+      goog.events.removeAll();
+    }
+
+    addListeners();
+
+    goog.events.listen($('test1'), goog.events.EventType.CLICK, handleEventC,
+                       true, $('test3'));
+    goog.events.listen($('test1'), goog.events.EventType.CLICK, handleEventB,
+                       false, $('test3'));
+
+    alert('howdy');
+  </script>
+</body>
+</html>

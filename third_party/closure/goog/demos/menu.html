@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.Menu</title>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/menu.css">
+  <link rel="stylesheet" href="../css/menuitem.css">
+  <link rel="stylesheet" href="../css/menuseparator.css">
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.array');
+    goog.require('goog.events');
+    goog.require('goog.object');
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.debug.LogManager');
+    goog.require('goog.ui.CheckBoxMenuItem');
+    goog.require('goog.ui.Menu');
+    goog.require('goog.ui.MenuItem');
+  </script>
+</head>
+<body>
+  <h1>goog.ui.Menu</h1>
+  <div>
+    This is a very basic menu class, it doesn't handle its display or
+    dismissal. It just exists, listens to keys and mouse events and can fire
+    events for selections or highlights.
+  </div>
+  <div>
+    <a href="javascript:void(menu1.setVisible(true));">Show Menu</a> |
+    <a href="javascript:void(menu1.setVisible(false));">Hide Menu</a> |
+    <a href="javascript:void(menu1.setPosition(0, 0));">Move(0, 0)</a> |
+    <a href="javascript:void(menu1.setPosition(50, 50));">Move(50, 50)</a> |
+    <a href="javascript:void(menu1.setPosition(50, 100));">Move(50, 100)</a> |
+    <a href="javascript:void(menu1.setPosition(200, 300));">Move(200, 300)</a>
+  </div>
+  <br>
+  <br>
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tbody>
+      <tr valign="top" height="180">
+        <td width="33%">
+          <div id="menu1"></div>
+        </td>
+        <td width="33%">
+          <div id="menu2" class="goog-menu">
+            <div class="goog-menuitem">Google</div>
+            <div class="goog-menuitem">Yahoo</div>
+            <div class="goog-menuitem">MSN</div>
+            <hr>
+            <div id="enableNewItems"
+                class="goog-menuitem goog-option goog-option-selected">
+              <div class="goog-menuitem-accel">Ctrl+E</div>
+              Enable new items
+            </div>
+            <hr>
+            <div id="addNewItem" class="goog-menuitem">
+              <div class="goog-menuitem-accel">Ctrl+Shift+N</div>
+              New...
+            </div>
+          </div>
+        </td>
+        <td width="33%">
+          <ul id="menu3" class="goog-menu">
+            <li class="goog-menuitem">I am a <b>menu</b></li>
+            <li class="goog-menuitem">based on an</li>
+            <li class="goog-menuitem goog-menuitem-disabled">unordered list</li>
+            <li class="goog-menuitem">Woop!</li>
+          </ul>
+        </td>
+      </tr>
+      <tr valign="top" height="180">
+        <td width="33%">
+          Here's a menu with checkbox items.<br>You checked:&nbsp;
+          <span id="checkedItems" style="color: #800">Bold</span><br>
+          <div id="menu4"></div>
+        </td>
+        <td width="33%">
+          Here's a BiDi menu with checkbox items.<br>
+          <div id="menu5" dir="rtl"></div>
+        </td>
+        <td width="33%">
+          Here's a menu with an explicit content container.<br>
+          <div id="menu6" class="goog-menu">
+            <div style="background: #ccc; border-right: 15px solid #888;">
+              <div class="goog-menu-content">
+                <div class="goog-menuitem">Red</div>
+                <div class="goog-menuitem">Black</div>
+                <div class="goog-menuitem">Blue</div>
+              </div>
+            </div>
+            <hr>
+            <div class="goog-menuitem">White</div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <br>
+  <!-- Event log. -->
+  <fieldset class="goog-debug-panel">
+    <legend>Event Log</legend>
+    <div id="log"></div>
+  </fieldset>
+  <div id="perf"></div>
+  <script type="text/javascript">
+    var timer = goog.now();
+
+    // Set up a logger.
+    goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
+    var logger = goog.debug.Logger.getLogger('demo');
+    var logconsole = new goog.debug.DivConsole(goog.dom.getElement('log'));
+    logconsole.setCapturing(true);
+
+    var EVENTS = goog.object.getValues(goog.ui.Component.EventType);
+    logger.fine('Listening for: ' + EVENTS.join(', ') + '.');
+
+    function logEvent(e) {
+      var name = e.target.getCaption ? e.target.getCaption() : 'Menu';
+      logger.info('"' + name + '" dispatched: ' + e.type);
+    }
+
+    var el = goog.dom.getElement('menu1');
+    var menu1 = new goog.ui.Menu();
+    var m1, m2, m3, m4, m5, m6;
+    menu1.addItem(m1 = new goog.ui.MenuItem('Inbox'));
+    menu1.addItem(m2 = new goog.ui.MenuItem('Starred'));
+    menu1.addItem(m3 = new goog.ui.MenuItem('Chats'));
+    menu1.addItem(m4 = new goog.ui.MenuItem('Sent'));
+    menu1.addItem(new goog.ui.MenuSeparator());
+    menu1.addItem(m5 = new goog.ui.MenuItem('New Folder...'));
+
+    menu1.addItemAt(m6 = new goog.ui.MenuItem('All Mail'), 1);
+    menu1.render(el);
+    goog.events.listen(menu1, EVENTS, logEvent);
+
+    m1.setEnabled(false);
+    m6.setEnabled(false);
+
+    var el2 = goog.dom.getElement('menu2');
+    var menu2 = new goog.ui.Menu();
+    menu2.decorate(el2);
+    goog.events.listen(menu2, EVENTS, logEvent);
+
+    goog.events.listen(menu2, 'action', function(e) {
+      if (e.target.getId() == 'addNewItem') {
+        var n = prompt('Enter a new item...');
+        if (n) {
+          menu2.addItemAt(new goog.ui.MenuItem(n), menu2.getItemCount() - 4);
+        }
+      } else if (e.target.getId() == 'enableNewItems') {
+        menu2.getItemAt(menu2.getItemCount() - 1).setEnabled(
+            e.target.isChecked());
+      } else {
+        alert(e.target.getCaption());
+      }
+    });
+
+    var el3 = goog.dom.getElement('menu3');
+    var menu3 = new goog.ui.Menu();
+    menu3.decorate(el3);
+    goog.events.listen(menu3, EVENTS, logEvent);
+
+    var menu4 = new goog.ui.Menu();
+    var foo, bar;
+    menu4.addItem(foo = new goog.ui.CheckBoxMenuItem('Bold'));
+    menu4.addItem(new goog.ui.CheckBoxMenuItem('Italic'));
+    menu4.addItem(bar = new goog.ui.CheckBoxMenuItem('3D'));
+    menu4.addItem(new goog.ui.CheckBoxMenuItem('Underline'));
+    foo.setChecked(true);
+    bar.setEnabled(false);
+    menu4.render(goog.dom.getElement('menu4'));
+    goog.events.listen(menu4, EVENTS, logEvent);
+
+    goog.events.listen(menu4, 'action', function(e) {
+      var items = [];
+      menu4.forEachChild(function(child) {
+        if (child.isChecked()) {
+          items.push(child.getCaption());
+        }
+      });
+      goog.dom.setTextContent(goog.dom.getElement('checkedItems'),
+          items.length > 0 ? items.join(', ') : 'nothing');
+    });
+
+    function createCheckBoxItem(label, shortcut) {
+      return new goog.ui.CheckBoxMenuItem([
+        goog.dom.createDom('div', 'goog-menuitem-accel', shortcut),
+        goog.dom.createTextNode(label)
+      ]);
+    }
+
+    var menu5 = new goog.ui.Menu();
+    menu5.setRightToLeft(true);
+    var fee, baz;
+    menu5.addItem(fee = createCheckBoxItem('Bold', 'Ctrl+B'));
+    menu5.addItem(createCheckBoxItem('Italic', 'Ctrl+I'));
+    menu5.addItem(baz = createCheckBoxItem('3D', 'Ctrl+Shift+3'));
+    menu5.addItem(createCheckBoxItem('Underline', 'Ctrl+U'));
+    fee.setChecked(true);
+    baz.setEnabled(false);
+    menu5.render(goog.dom.getElement('menu5'));
+    goog.events.listen(menu5, EVENTS, logEvent);
+    
+    var menu6 = new goog.ui.Menu();
+    menu6.decorate(goog.dom.getElement('menu6'));
+    goog.events.listen(menu6, EVENTS, logEvent);
+
+    goog.dom.setTextContent(goog.dom.getElement('perf'),
+        (goog.now() - timer) + 'ms');
+  </script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title>History Demo 3</title>
+</head>
+
+<style type="text/css">
+body {
+  font-family: sans-serif;
+  font-size: 83%
+}
+
+table {
+  border: 1px solid #666;
+  background: lightblue;
+  margin: 1em auto;
+}
+
+td {
+  text-align: center;
+  padding: 0 0.5em 0.5em 0.5em;
+}
+</style>
+
+<input type="text" name="hist_state" id="hist_state" style="display:none" />
+<iframe name="js" frameborder="0" src="history3js.html"
+  style="position:absolute;left:0;top:0;z-index:0;width:0;height:0"></iframe>
+
+<body>
+
+<p>This page demonstrates a goog.History object used in an iframe. Loading JS
+code in an iframe is useful for large apps because the JS code can be sent in
+bite-sized script blocks that browsers can evaluate incrementally, as they are
+received over the wire.</p>
+
+<p>For an introduction to the goog.History object, see <a
+href="history1.html">history1.html</a> and <a
+href="history2.html">history2.html</a>. This demo uses visible history, like
+the first demo.</p>
+
+<p>Try following the hash links below, or updating the location with your own
+tokens. Replacing the token will update the page address without appending a
+new history entry.</p>
+
+<p>
+  Set #fragment<br>
+  <a href="#first">first</a><br>
+  <a href="#second">second</a><br>
+  <a href="#third">third</a>
+</p>
+
+<p>
+  Set Token<br>
+<button onclick="setToken('//\\\\/\\/\\');">//\\/\/\</button>
+<button onclick="setToken('{\'a\': \'123\', \'b\': \'456\'}');">
+  {'a': '123', 'b': '456'}
+</button>
+<button onclick="setToken('!@#$%^&*()_+-={}[]\\|;\':&quot;,./<>?');">
+  !@#$%^&*()_+-={}[]\|;':&quot;,./&lt;&gt;
+</button>
+<button onclick="setToken('%2F/foo');">%2F/foo</button>
+<button onclick="setToken('%20   02%');">%20&nbsp;&nbsp;&nbsp;02%</button>
+</p>
+
+<p>
+<input type="text" id="token_input" />
+<button onclick="setToken()">Set Token</button>
+<button onclick="replaceToken()">Replace Current Token</button>
+</p>
+
+<table><tr><td>
+<h3>The current history state:</h3>
+<div id="token_output"></div>
+</td></tr></table>
+
+<p>The state should be correctly restored after you
+<a href="http://www.google.com/">leave the page</a> and hit the back button.</p>
+
+<script type="text/javascript">
+function setToken(opt_val) {
+  if (js && js.googHist) {
+    var input = document.getElementById('token_input');
+    js.googHist.setToken(opt_val || input.value);
+  }
+  return false;
+}
+
+function replaceToken() {
+  if (js && js.googHist) {
+    var input = document.getElementById('token_input');
+    js.googHist.replaceToken(input.value);
+  }
+  return false;
+}
+</script>
+
+</body>
+</html>

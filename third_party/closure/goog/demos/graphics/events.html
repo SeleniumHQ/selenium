@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html>
+<!--
+Copyright 2007 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>Graphics Basic events Demo Page</title>
+  
+  <style class="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow:hidden;
+    }
+
+    #log {
+      position: absolute;
+      top: 0px;
+      width: 50%;
+      right: 0%;
+      height: 100%;
+      overflow: auto;
+      border: 1px solid #cccccc;
+    }
+
+    #c {
+      margin-bottom: 10px;
+      font-size: small;
+    }
+  </style>
+
+  <script type="text/javascript" src="../../base.js"></script>
+  <script type="text/javascript">
+    goog.require('goog.graphics');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.debug.DivConsole');
+  </script>
+</head>
+
+<body>
+  <div>
+    <span id="shapes"></span>
+  </div>
+
+  <div>
+    <span id="colors"></span>
+  </div>
+
+  <p>
+    <a href="javascript:void(logconsole.clear())">Clear Log</a>
+  </p>
+
+  <div id="log"></div>
+
+  <p> Try to mouse over, mouse out, or click the elipse and the group of
+    circles. The elipse will be disposed in 10 sec.
+  </p>
+
+  <script type="text/javascript">
+    // Set up a logger to track responses
+    var log = goog.debug.Logger.getLogger('Events');
+    goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
+    var logconsole = new goog.debug.DivConsole(document.getElementById('log'));
+    logconsole.setCapturing(true);
+
+    // A helper function to handle events.
+    function handleEvent(elementType) {
+      return function(e) {
+        log.info(elementType + ' ' + e.type + '.');
+      }
+    }
+
+    // The events to catch.
+    var events = [goog.events.EventType.MOUSEOVER,
+                  goog.events.EventType.MOUSEOUT,
+                  goog.events.EventType.CLICK]
+
+    // Create an elipse.
+    var graphics = goog.graphics.createGraphics(600, 200);
+    var fill = new goog.graphics.SolidFill('yellow');
+    var stroke = new goog.graphics.Stroke(2, 'green');
+
+    var elipseElem = graphics.drawEllipse(300, 140, 80, 40, stroke, fill);
+    goog.events.listen(elipseElem, events, handleEvent('Ellipse'));
+
+
+    // Create a group of circles.
+    stroke = new goog.graphics.Stroke(1, 'black');
+    var group = graphics.createGroup();
+    goog.events.listen(group, events, handleEvent('Group'));
+
+    fill = new goog.graphics.SolidFill('blue');
+    var blueCircle = graphics.drawCircle(500, 60, 40, stroke, fill, group);
+    goog.events.listen(blueCircle, events, handleEvent('Blue-Circle'));
+
+    fill = new goog.graphics.SolidFill("red", 0.5);
+    var redCircle = graphics.drawCircle(500, 90, 40, stroke, fill, group);
+    goog.events.listen(redCircle, events, handleEvent('Red-Circle'));
+
+    fill = new goog.graphics.SolidFill('green', 0.2);
+    var greenCircle = graphics.drawCircle(500, 120, 40, stroke, fill, group);
+    goog.events.listen(greenCircle, events, handleEvent('Green-Circle'));
+
+    graphics.render(document.getElementById('shapes'));
+
+    goog.global.setTimeout(function()  {elipseElem.dispose();}, 10000);
+  </script>
+</body>
+</html>

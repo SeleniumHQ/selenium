@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title>goog.ui.FilteredMenu</title>
+<script src="../base.js"></script>
+<script>
+  goog.require('goog.events');
+  goog.require('goog.ui.Menu');
+  goog.require('goog.ui.MenuItem');
+  goog.require('goog.ui.CheckBoxMenuItem');
+  goog.require('goog.ui.FilteredMenu');
+  goog.require('goog.ui.TriStateMenuItem');
+  goog.require('goog.ui.FilterObservingMenuItem');
+</script>
+<link rel="stylesheet" href="css/demo.css">
+<link rel="stylesheet" href="../css/menu.css">
+<link rel="stylesheet" href="../css/menuitem.css">
+<link rel="stylesheet" href="../css/menuseparator.css">
+<link rel="stylesheet" href="../css/filteredmenu.css">
+<link rel="stylesheet" href="../css/filterobservingmenuitem.css">
+<link rel="stylesheet" href="../css/tristatemenuitem.css">
+<style>
+
+.goog-menu {
+  width: 30ex;
+}
+
+.goog-menu-filter input {
+  width: 100%;
+
+  /* width: 100% interferes with the input event handler in IE6 */
+  width: expression('30ex');
+}
+</style>
+</head>
+<body>
+
+<div id="menu1"></div>
+
+<script type="text/javascript">
+
+var folders = [
+  'Inbox',
+  'Starred',
+  'Spam',
+  'Sent Mail',
+  'Trash'
+];
+
+var labels = [
+  'Gmail',
+  'Finance',
+  'Bugs',
+  'Apps',
+  'Apps UI',
+  'Apps UX',
+  'Gmail Bugs',
+  'Reference',
+  'DO',
+  'READ',
+  'misc'
+];
+
+var el = goog.dom.getElement('menu1');
+var menu1 = new goog.ui.FilteredMenu();
+menu1.setFilterLabel('Create / search');
+menu1.setAllowMultiple(true);
+
+var lm, cm, cm2;
+for (var str, i = 0; str = labels[i]; i++) {
+  menu1.addItem(lm = new goog.ui.TriStateMenuItem(str));
+  if (i == 0 || i == 3) {
+    lm.setCheckedState(goog.ui.TriStateMenuItem.State.PARTIALLY_CHECKED);
+  } else if (i == 1 || i == 4 || i == 5) {
+    lm.setCheckedState(goog.ui.TriStateMenuItem.State.FULLY_CHECKED);
+  }
+}
+menu1.addItem(new goog.ui.MenuSeparator());
+for (var str, i = 0; str = folders[i]; i++) {
+  menu1.addItem(new goog.ui.MenuItem(str));
+}
+menu1.addItem(new goog.ui.MenuSeparator());
+menu1.addItem(cm = new goog.ui.FilterObservingMenuItem(''));
+menu1.addItem(cm2 = new goog.ui.FilterObservingMenuItem('Manage tags'));
+
+menu1.render(el);
+menu1.setPosition(10, 10);
+
+
+cm.setObserver(function(item, str) {
+  str = goog.string.trim(str);
+  var b = str == '' || goog.array.contains(folders, str) ||
+                       goog.array.contains(labels, str);
+  item.setVisible(!b);
+  if (!b) {
+    item.setContent(this.dom_.createDom(
+        'span',
+        null,
+        '"',
+        this.dom_.createDom('b', null, str),
+        '" (create tag)'));
+  }
+});
+
+cm2.setObserver(function(item, str) {
+  item.setVisible(str == '');
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2007 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>Graphics Advanced Coordinates Demo Page -
+    Using Percentage Based Surface Size</title>
+  <style type="text/css">
+    html, body {
+      height: 100%;
+    }
+  </style>
+  <script type="text/javascript" src="../../base.js"></script>
+  <script type="text/javascript">
+    goog.require('goog.dom');
+    goog.require('goog.graphics');
+    goog.require('goog.graphics.ext');
+  </script>
+</head>
+
+<body>
+<script type="text/javascript">
+  var graphics = new goog.graphics.ext.Graphics('100%', '100%', 1000, 1000);
+  graphics.setCoordOrigin(320, 0);
+
+  var group = new goog.graphics.ext.Group(graphics);
+  group.setLeft(20, true);
+  group.setTop(20, true);
+  group.setWidth(600, true);
+  group.setHeight(200);
+
+  // Basic shapes
+  var fill = new goog.graphics.SolidFill('yellow');
+  var stroke = new goog.graphics.Stroke(2, 'green');
+
+  var bg = new goog.graphics.SolidFill('#eeeeee');
+  var outline = new goog.graphics.Stroke(1, '#333333');
+
+  var background = new goog.graphics.ext.Rectangle(group);
+  background.setLeft(0, true);
+  background.setTop(0, true);
+  background.setWidth('100%', true);
+  background.setHeight('100%');
+  background.setStroke(outline);
+  background.setFill(bg);
+
+  var rect = new goog.graphics.ext.Rectangle(group);
+  rect.setLeft('-5px', true);
+  rect.setTop('-5px', true);
+  rect.setWidth('10px', true);
+  rect.setHeight('10px');
+  rect.setStroke(stroke);
+  rect.setFill(fill);
+
+  rect = new goog.graphics.ext.Rectangle(group);
+  rect.setRight('-5px', true);
+  rect.setTop('-5px', true);
+  rect.setWidth('10px', true);
+  rect.setHeight('10px');
+  rect.setStroke(stroke);
+  rect.setFill(fill);
+
+  rect = new goog.graphics.ext.Rectangle(group);
+  rect.setRight('-5px', true);
+  rect.setBottom('-5px', true);
+  rect.setWidth('10px', true);
+  rect.setHeight('10px');
+  rect.setStroke(stroke);
+  rect.setFill(fill);
+
+  rect = new goog.graphics.ext.Rectangle(group);
+  rect.setLeft('-5px', true);
+  rect.setBottom('-5px', true);
+  rect.setWidth('10px', true);
+  rect.setHeight('10px');
+  rect.setStroke(stroke);
+  rect.setFill(fill);
+
+  var image = new goog.graphics.ext.Image(group,
+      'http://www.google.com/intl/en_ALL/images/logo.gif');
+  image.setRight(10, true);
+  image.setTop(10, true);
+  image.setWidth('276px', true);
+  image.setHeight('110px');
+
+  var ellipse = new goog.graphics.ext.Ellipse(group);
+  ellipse.setCenter(0, true);
+  ellipse.setMiddle(0, true);
+  ellipse.setWidth('10%', true);
+  ellipse.setHeight('80%');
+  ellipse.setStroke(stroke);
+  ellipse.setFill(fill);
+
+  ellipse = new goog.graphics.ext.Ellipse(group);
+  ellipse.setCenter(0, true);
+  ellipse.setMiddle(0, true);
+  ellipse.setWidth(120, true);
+  ellipse.setHeight(60);
+  ellipse.setStroke(stroke);
+  ellipse.setFill(fill);
+
+  var path = new goog.graphics.ext.Path().moveTo(0, 0).lineTo(20, 0).
+      lineTo(10, 20).close();
+
+  var shape = new goog.graphics.ext.Shape(group, path);
+  shape.setLeft(10, true);
+  shape.setTop(10, true);
+  shape.setWidth('10%', true);
+  shape.setHeight('10%');
+  shape.setStroke(stroke);
+  shape.setFill(fill);
+
+  shape = new goog.graphics.ext.Shape(group, path, true);
+  shape.setLeft(40, true);
+  shape.setTop(10, true);
+  shape.setWidth('10%', true);
+  shape.setHeight('10%');
+  shape.setStroke(stroke);
+  shape.setFill(fill);
+
+  graphics.render(document.body);
+</script>
+
+</body>
+
+</html>

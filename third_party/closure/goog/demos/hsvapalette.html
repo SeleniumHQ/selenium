@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2008 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<!--
+-->
+  <head>
+    <title>goog.ui.HsvaPalette</title>
+    <link rel="stylesheet" href="css/demo.css" />
+    <link rel="stylesheet" href="../css/hsvapalette.css" />
+    <script src="../base.js"></script>
+    <script>
+    goog.require('goog.events');
+    goog.require('goog.ui.Component.EventType');
+    goog.require('goog.ui.HsvaPalette');
+    </script>
+  </head>
+  <body>
+
+    <h1>goog.ui.HsvaPalette</h1>
+
+    <h3>Normal Size</h3>
+
+    <script>
+
+    var p = new goog.ui.HsvaPalette;
+    p.render();
+
+    </script>
+
+    <h3>Smaller Size</h3>
+
+    <script>
+
+    function linkColors(e) {
+      e.target.other.setColorRgbaHex(e.target.getColorRgbaHex());
+    };
+
+    var pSmall = new goog.ui.HsvaPalette(null, null, null,
+        'goog-hsva-palette-sm');
+    pSmall.render();
+
+    p.other = pSmall;
+    pSmall.other = p;
+    goog.events.listen(p, goog.ui.Component.EventType.ACTION, linkColors);
+    goog.events.listen(pSmall, goog.ui.Component.EventType.ACTION, linkColors);
+
+    </script>
+
+  </body>
+</html>

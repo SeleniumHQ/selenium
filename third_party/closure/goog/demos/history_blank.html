@@ -1,0 +1,23 @@
+<title>Intentionally left blank</title>
+<script type="text/javascript">
+// Display the current iframe location for debugging purposes.
+function displayLocation() {
+  document.body.innerHTML = '';
+  document.body.appendChild(document.createTextNode(location.hash || 'null'));
+}
+
+if (window != window.top) {
+  setInterval(displayLocation, 10);
+}
+</script>
+<body>
+This is a blank helper page for the goog.History demos. See
+<a href="history1.html">demo 1</a> and
+<a href="history2.html">demo 2</a>.
+</body>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <title>goog.ui.DatePicker</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.dom');
+    goog.require('goog.date');
+    goog.require('goog.i18n.DateTimeSymbols');
+    goog.require('goog.i18n.DateTimeSymbols_en_ISO');
+    goog.require('goog.i18n.DateTimeSymbols_en_US');
+    goog.require('goog.i18n.DateTimeSymbols_de');
+    goog.require('goog.i18n.DateTimeSymbols_ml');
+    goog.require('goog.i18n.DateTimeSymbols_ar_YE');
+    goog.require('goog.ui.DatePicker');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/datepicker.css">
+</head>
+<body>
+  <h1>goog.ui.DatePicker</h1>
+
+  <table width="100%" summary="for laying out datepickers"><tr><td valign="top">
+  <h2>Default: ISO 8601</h2>
+  <div id="widget_iso_8601"></div>
+  <div style="clear: both;">&nbsp;</div>
+  <span id="label_iso_8601"></span>
+  <br><br>
+  <h2>Custom</h2>
+  <input type="checkbox" id="ck-0"
+      onclick="dp_custom.setShowFixedNumWeeks(this.checked);" checked><label
+      for="ck-0">ShowFixedNumWeeks</label><br>
+  <input type="checkbox" id="ck-1"
+      onclick="dp_custom.setShowOtherMonths(this.checked);" checked><label
+      for="ck-1">ShowOtherMonths</label><br>
+  <input type="checkbox" id="ck-2"
+      onclick="dp_custom.setExtraWeekAtEnd(this.checked);" checked><label
+      for="ck-2">ExtraWeekAtEnd</label><br>
+  <input type="checkbox" id="ck-3"
+      onclick="dp_custom.setShowWeekNum(this.checked);" checked><label
+      for="ck-3">ShowWeekNum</label><br>
+  <input type="checkbox" id="ck-4"
+      onclick="dp_custom.setShowWeekdayNames(this.checked);" checked><label
+      for="ck-4">ShowWeekdays</label><br>
+  <input type="checkbox" id="ck-5"
+      onclick="dp_custom.setAllowNone(this.checked);" checked><label
+      for="ck-5">AllowNone</label><br>
+  <input type="checkbox" id="ck-6"
+      onclick="dp_custom.setShowToday(this.checked);" checked><label
+      for="ck-6">ShowToday</label><br>
+  <input type="checkbox" id="ck-7"
+      onclick="dp_custom.setUseNarrowWeekdayNames(this.checked);"><label
+      for="ck-7">UseNarrowWeekdayNames</label><br>
+  <input type="checkbox" id="ck-8"
+      onclick="dp_custom.setUseSimpleNavigationMenu(this.checked);"><label
+      for="ck-8">UseSimpleNavigationMenu</label><br>
+  <br>
+  <div id="widget_custom"></div>
+  <div style="clear: both;">&nbsp;</div>
+  <span id="label_custom"></span>
+  </td>
+  <td valign="top">
+
+  <h2>English (US)</h2>
+  <div id="widget_en_US"></div>
+  <div style="clear: both;">&nbsp;</div>
+  <span id="label_en_US"></span>
+  <br><br>
+
+  <h2>German</h2>
+  <div id="widget_de"></div>
+  <div style="clear: both;">&nbsp;</div>
+  <span id="label_de"></span>
+  <br><br>
+
+  <h2>Malayalam</h2>
+  <div id="widget_ml"></div>
+  <div style="clear: both;">&nbsp;</div>
+  <span id="label_ml"></span>
+  <br><br>
+
+  <h2>Arabic (Yemen)</h2>
+  <div dir=rtl id="widget_ar_YE"></div>
+  <div style="clear: both;">&nbsp;</div>
+  <span id="label_ar_YE"></span>
+  <br><br>
+  </td></tr></table>
+
+  <script type="text/javascript">
+    // Standard: ISO 8601
+    goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en_ISO;
+    var dp_iso_8601 = new goog.ui.DatePicker();
+    dp_iso_8601.render(document.getElementById('widget_iso_8601'));
+
+    goog.events.listen(dp_iso_8601,
+        goog.ui.DatePicker.Events.CHANGE, function(event) {
+      goog.dom.setTextContent(document.getElementById('label_iso_8601'),
+          event.date ?
+          event.date.toIsoString(true) : 'none');
+    });
+
+    goog.dom.setTextContent(document.getElementById('label_iso_8601'),
+                            dp_iso_8601.getDate().toIsoString(true));
+
+    // Custom
+    var dp_custom = new goog.ui.DatePicker(new goog.date.Date(2006, 0, 1));
+    dp_custom.render(document.getElementById('widget_custom'));
+
+    goog.events.listen(dp_custom, goog.ui.DatePicker.Events.CHANGE,
+                       function(event) {
+      goog.dom.setTextContent(document.getElementById('label_custom'),
+          event.date ?
+          event.date.toIsoString(true) : 'none');
+    });
+
+    goog.dom.setTextContent(document.getElementById('label_custom'),
+                            dp_custom.getDate().toIsoString(true));
+
+    // English (US)
+    goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en_US;
+
+    var dp_en_US = new goog.ui.DatePicker();
+    dp_en_US.render(document.getElementById('widget_en_US'));
+
+    goog.events.listen(dp_en_US, goog.ui.DatePicker.Events.CHANGE,
+        function(event) {
+      goog.dom.setTextContent(document.getElementById('label_en_US'), event.date ?
+          event.date.toIsoString(true) : 'none');
+    });
+
+    goog.dom.setTextContent(document.getElementById('label_en_US'),
+                            dp_en_US.getDate().toIsoString(true));
+
+    // German
+    goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_de;
+
+    dp_de = new goog.ui.DatePicker();
+    dp_de.render(document.getElementById('widget_de'));
+
+    goog.events.listen(dp_de, goog.ui.DatePicker.Events.CHANGE, function(event) {
+      goog.dom.setTextContent(document.getElementById('label_de'), event.date ?
+          event.date.toIsoString(true) : 'none');
+    });
+
+    goog.dom.setTextContent(document.getElementById('label_de'),
+                            dp_de.getDate().toIsoString(true));
+
+    // Malayalam
+    goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ml;
+
+    var dp_ml = new goog.ui.DatePicker();
+    dp_ml.render(document.getElementById('widget_ml'));
+
+    goog.events.listen(dp_ml, goog.ui.DatePicker.Events.CHANGE, function(event) {
+      goog.dom.setTextContent(document.getElementById('label_ml'), event.date ?
+          event.date.toIsoString(true) : 'none');
+    });
+
+    goog.dom.setTextContent(document.getElementById('label_ml'),
+                            dp_ml.getDate().toIsoString(true));
+
+    // Arabic (Yemen)
+    var dp_ar_YE = new goog.ui.DatePicker(null, goog.i18n.DateTimeSymbols_ar_YE);
+    dp_ar_YE.render(document.getElementById('widget_ar_YE'));
+
+    goog.events.listen(dp_ar_YE, goog.ui.DatePicker.Events.CHANGE,
+        function(event) {
+      goog.dom.setTextContent(document.getElementById('label_ar_YE'), event.date ?
+          event.date.toIsoString(true) : 'none');
+    });
+
+    goog.dom.setTextContent(document.getElementById('label_ar_YE'),
+                            dp_ar_YE.getDate().toIsoString(true));
+  </script>
+</body>
+</html>

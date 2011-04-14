@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.KeyboardShortcutHandler</title>
+  <meta charset="utf-8">
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.dom');
+    goog.require('goog.events.KeyCodes');
+    goog.require('goog.ui.KeyboardShortcutHandler');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+  <h1>goog.ui.KeyboardShortcutHandler</h1>
+  <div id="text"></div>
+  <input type="text" />
+  <input type="checkbox" />
+  <input type="radio" />
+  <button>button</button>
+  <textarea></textarea>
+
+  <pre>
+    Shortcuts:
+      A
+      T E S T
+      Shift+F12
+      Shift+F11 C
+      Ctrl+A
+      G O O G
+      B C
+      B D
+      Alt+Q A
+      Alt+Q Shift+A
+      Alt+Q Shift+B
+      Space
+      Home
+      Enter
+      G S
+      S
+      Meta+y
+  </pre>
+
+  <script>
+
+    function showTriggered(event) {
+      goog.dom.setTextContent(document.getElementById('text'),
+          'Shortcut triggered: ' + event.identifier);
+    }
+
+    var shortcutHandler = new goog.ui.KeyboardShortcutHandler(document);
+
+    var NONE = goog.ui.KeyboardShortcutHandler.Modifiers.NONE;
+    var CTRL = goog.ui.KeyboardShortcutHandler.Modifiers.CTRL;
+    var SHIFT = goog.ui.KeyboardShortcutHandler.Modifiers.SHIFT;
+    var ALT = goog.ui.KeyboardShortcutHandler.Modifiers.ALT;
+    var META = goog.ui.KeyboardShortcutHandler.Modifiers.META;
+
+    shortcutHandler.registerShortcut('A', 'a');
+    shortcutHandler.registerShortcut('T E S T', 't e s t');
+    shortcutHandler.registerShortcut('SHIFT_F12', 'shift+f12');
+    shortcutHandler.registerShortcut('SHIFT_F11 C', 'shift+f11 c');
+    shortcutHandler.registerShortcut('META_Y', 'meta+y');
+    shortcutHandler.registerShortcut('G S', 'g s');
+    shortcutHandler.registerShortcut('S', 's');
+
+    shortcutHandler.registerShortcut('GOOG',
+        goog.events.KeyCodes.G, NONE,
+        goog.events.KeyCodes.O, NONE,
+        goog.events.KeyCodes.O, NONE,
+        goog.events.KeyCodes.G);
+
+    shortcutHandler.registerShortcut('CTRL_A',
+        goog.events.KeyCodes.A, CTRL);
+
+    shortcutHandler.registerShortcut('BC',
+        goog.events.KeyCodes.B, NONE,
+        goog.events.KeyCodes.C);
+
+    shortcutHandler.registerShortcut('BD',
+        goog.events.KeyCodes.B, NONE,
+        goog.events.KeyCodes.D);
+
+    shortcutHandler.registerShortcut('ALT_Q A',
+        goog.events.KeyCodes.Q, ALT,
+        goog.events.KeyCodes.A);
+
+    shortcutHandler.registerShortcut('ALT_Q SHIFT_A',
+        goog.events.KeyCodes.Q, ALT,
+        goog.events.KeyCodes.A, SHIFT);
+
+    shortcutHandler.registerShortcut('ALT_Q SHIFT_B', [
+        goog.events.KeyCodes.Q, ALT,
+        goog.events.KeyCodes.B, SHIFT]);
+
+    shortcutHandler.registerShortcut('SPACE', goog.events.KeyCodes.SPACE);
+    shortcutHandler.registerShortcut('HOME', goog.events.KeyCodes.HOME);
+    shortcutHandler.registerShortcut('ENTER', goog.events.KeyCodes.ENTER);
+
+    goog.events.listen(
+        shortcutHandler,
+        goog.ui.KeyboardShortcutHandler.EventType.SHORTCUT_TRIGGERED,
+        showTriggered);
+  </script>
+</body>
+</html>

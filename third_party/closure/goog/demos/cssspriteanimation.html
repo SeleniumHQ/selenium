@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title>CssSpriteAnimation demo</title>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+  goog.require('goog.events');
+  goog.require('goog.fx.Animation');
+  goog.require('goog.fx.CssSpriteAnimation');
+  goog.require('goog.math.Box');
+  goog.require('goog.math.Size');
+</script>
+<style>
+
+.icon {
+  width: 11px;
+  height: 11px;
+  background-image: url(../images/offlineicons.png);
+}
+
+#test1,
+#test3 {
+  background-position: 0 -11px;
+}
+
+#test2 {
+  background-position: 0 -132px;
+}
+</style>
+</head>
+<body>
+
+<p>The following just runs and runs...</p>
+<div class=icon id=test1></div>
+
+<p>The animation is just an ordinary animation so you can pause it etc.
+<div class=icon id=test2></div>
+
+<p>
+<button onclick="sa2.play()">Play</button>
+<button onclick="sa2.pause()">Pause</button>
+</p>
+
+<p>The animation can be played once by stopping it after it finishes for the
+first time.
+
+<div class=icon id=test3></div>
+
+<script>
+
+var size = new goog.math.Size(11, 11);
+
+var el = document.getElementById('test1');
+var sa = new goog.fx.CssSpriteAnimation(el, size,
+    new goog.math.Box(11, 11, 99, 0), 1200);
+sa.play();
+
+var el2 = document.getElementById('test2');
+var sa2 = new goog.fx.CssSpriteAnimation(el2, size,
+    new goog.math.Box(132, 11, 132 + 11 * 8, 0), 1200);
+sa2.play();
+
+var el3 = document.getElementById('test3');
+var sa3 = new goog.fx.CssSpriteAnimation(el3, size,
+    new goog.math.Box(11, 11, 99, 0), 8000);
+goog.events.listen(sa3, goog.fx.Animation.EventType.FINISH, function() {
+  sa3.stop();
+});
+sa3.play();
+
+</script>
+
+</body>
+</html>

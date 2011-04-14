@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.History #2</title>
+  <link rel="stylesheet" href="css/demo.css">
+  <style>
+    table {
+      border: 1px solid #666;
+      background: lightblue;
+      margin: 1em auto;
+    }
+    td {
+      text-align: center;
+      padding: 0 0.5em 0.5em 0.5em;
+    }
+  </style>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.History');
+  </script>
+</head>
+<body>
+  <h1>goog.History #2</h1>
+  <p>This page demonstrates the goog.History object which can create new browser
+  history entries without leaving the page. This version maintains the history
+  state internally, so that states are not visible or editable by the user, but
+  the back and forward buttons can still be used to move between history states.
+  </p>
+
+  <p>Try setting a few history tokens using the buttons and box below, then hit
+  the back and forward buttons to test if the tokens are correctly restored.</p>
+
+  <button onclick="setToken('one')">State 1</button>
+  <button onclick="setToken('two')">State 2</button>
+  <button onclick="setToken('three')">State 3</button>
+  <button onclick="setToken('four')">State 4</button><br>
+
+  <button onclick="setToken('//\\\\/\\/\\');">//\\/\/\</button>
+  <button onclick="setToken('{\'a\': \'123\', \'b\': \'456\'}');">
+    {'a': '123', 'b': '456'}
+  </button>
+  <button onclick="setToken('!@#$%^&*()_+-={}[]\\|;\':&quot;,./<>?');">
+    !@#$%^&*()_+-={}[]\|;':",./&lt;&gt;
+  </button>
+  <button onclick="setToken('%2F/foo');">%2F/foo</button>
+  <button onclick="setToken('%20   02%');">%20&nbsp;&nbsp;&nbsp;02%</button>
+
+  <p>
+  <input type="text" id="token_input" />
+  <button onclick="javascript:setToken()">Set Token</button>
+  <button onclick="replaceToken()">Replace Current Token</button>
+  </p>
+
+  <table><tr><td>
+  <h3>The current history state:</h3>
+  <div id="token_output"></div>
+  </td></tr></table>
+
+  <p>The state should be correctly restored after you
+  <a href="http://www.google.com/">leave the page</a> and hit the back button.</p>
+
+  <p>The history object can also be created so that the history state is visible
+  and modifiable by the user. See <a href="history1.html">history1.html</a> for a
+  demo.</p>
+
+  <script>
+
+  var h = new goog.History(true, 'history_blank.html');
+  goog.events.listen(h, goog.History.EventType.NAVIGATE, navCallback);
+  h.setEnabled(true);
+
+  function setToken(opt_token) {
+    var input = goog.dom.getElement('token_input');
+    h.setToken(opt_token || input.value);
+  }
+
+  function replaceToken(opt_token) {
+    var input = goog.dom.getElement('token_input');
+    h.replaceToken(opt_token || input.value);
+  }
+
+  function navCallback(e) {
+    var output = goog.dom.getElement('token_output');
+    if (output) {
+      var token = (e.token == null) ? 'null' : '\u201C' + e.token + '\u201D';
+      goog.dom.setTextContent(output, token);
+    }
+  }
+  </script>
+
+</body>
+</html>

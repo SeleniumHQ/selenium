@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.events.FileDropHandler Demo</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.dom');
+    goog.require('goog.events.FileDropHandler');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+  <h2>Demo of goog.events.FileDropHandler</h2>
+
+  <fieldset>
+    <legend>Demo of the <strong>goog.events.FileDropHandler</strong>:</legend>
+    <label>goog.events.FileDropHandler detects file drag and drop events in
+    elements. Try dropping a file in the textarea below and watch the event
+    log at the bottom of the page. Try dropping some text too.<br></label>
+    <textarea id="drop-zone" rows="5" cols="50"></textarea>
+  </fieldset>
+
+  <fieldset class="goog-debug-panel">
+    <legend>Event Log</legend>
+    <div id="log" style="height: 400px;"></div>
+  </fieldset>
+
+  <script>
+    var dropZone = goog.dom.getElement('drop-zone');
+    var handler = new goog.events.FileDropHandler(dropZone, true);
+    var logger = goog.debug.Logger.getLogger('demo');
+
+    goog.events.listen(handler, goog.events.FileDropHandler.EventType.DROP,
+        function(e) {
+          logger.shout('DROP event detected!');
+          logger.info('dataTransfer:\n' +
+              goog.debug.deepExpose(e.getBrowserEvent().dataTransfer));
+          var files = e.getBrowserEvent().dataTransfer.files;
+          for (var i = 0; i < files.length; i++) {
+            // If you want to access the filename you should try both
+            // alternatives.
+            var fileName = file.name || file.fileName;
+            // Sample code to upload the dropped files (commented out).
+            // var xhr = new goog.net.XmlHttp();
+            // xhr.open('POST', 'http://www.myserver.com/upload');
+            // xhr.send(file);
+          }
+        });
+
+    goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.FINER);
+    var logconsole = new goog.debug.DivConsole(goog.dom.getElement('log'));
+    logconsole.setCapturing(true);
+  </script>
+</body>
+</html>

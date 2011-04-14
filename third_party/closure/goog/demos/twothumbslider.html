@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.TwoThumbSlider</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.dom');
+    goog.require('goog.ui.Component');
+    goog.require('goog.ui.TwoThumbSlider');
+  </script>
+  <style>
+
+    .goog-twothumbslider-vertical,
+    .goog-twothumbslider-horizontal {
+      background-color: ThreeDFace;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .goog-twothumbslider-value-thumb {
+      position: absolute;
+      background-color: ThreeDShadow;
+      overflow: hidden;
+    }
+
+    .goog-twothumbslider-extent-thumb {
+      position: absolute;
+      background-color: #FF0000;
+      overflow: hidden;
+    }
+
+    .goog-twothumbslider-vertical .goog-twothumbslider-value-thumb {
+      height: 20px;
+      width: 100%;
+    }
+
+    .goog-twothumbslider-vertical .goog-twothumbslider-extent-thumb {
+      height: 20px;
+      width: 100%;
+    }
+
+    .goog-twothumbslider-horizontal .goog-twothumbslider-value-thumb {
+      width: 20px;
+      height: 100%;
+    }
+
+    .goog-twothumbslider-horizontal .goog-twothumbslider-extent-thumb {
+      height: 20px;
+      width: 20px;
+    }
+    #s-h {
+      margin-bottom: 2em;
+    }
+    #out1, #out2 {
+      color: #999;
+      margin-left: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.ui.TwoThumbSlider</h1>
+  <div id="s-h">
+    <div id="s1" class="goog-twothumbslider" style="width: 200px; height: 20px">
+      <!-- this line is here just to show that custom content can be added -->
+      <div style="position:absolute;width:100%;top:9px;border:1px inset white;
+                  overflow:hidden;height:0"></div>
+      <div class="goog-twothumbslider-value-thumb"></div>
+      <div class="goog-twothumbslider-extent-thumb"></div>
+    </div>
+    <label>
+      <input type="checkbox" onclick="s.setMoveToPointEnabled(this.checked)">
+      MoveToPointEnabled
+      <span id="out1"></span>
+    </label>
+  </div>
+
+  <div id="s-v">
+    <!-- slider inserted using scripting -->
+    <label id="s2-label">
+      <input type="checkbox" onclick="s2.setMoveToPointEnabled(this.checked)">
+      MoveToPointEnabled
+      <span id="out2"></span>
+    </label>
+  </div>
+
+  <script>
+
+  var el = document.getElementById('s1');
+  var s = new goog.ui.TwoThumbSlider;
+  s.decorate(el);
+  s.addEventListener(goog.ui.Component.EventType.CHANGE, function() {
+    document.getElementById('out1').innerHTML = 'start: ' + s.getValue() +
+      ' end: ' + (s.getValue() + s.getExtent());
+  });
+
+
+  var s2 = new goog.ui.TwoThumbSlider;
+  s2.setOrientation(goog.ui.SliderBase.Orientation.VERTICAL);
+  s2.createDom();
+  var el = s2.getElement();
+  el.style.width = '20px';
+  el.style.height = '200px';
+  s2.render(document.body);
+  s2.setStep(null);
+  s2.addEventListener(goog.ui.Component.EventType.CHANGE, function() {
+    document.getElementById('out2').innerHTML = 'start: ' + s2.getValue() +
+      ' end: ' + (s2.getValue() + s2.getExtent());
+  });
+
+  var label = document.getElementById('s2-label');
+  label.parentNode.insertBefore(el, label);
+
+  </script>
+</body>
+</html>

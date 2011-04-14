@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title>goog.events.InputHandler</title>
+<script src="../base.js"></script>
+<script>
+goog.require('goog.dom');
+goog.require('goog.events');
+goog.require('goog.events.InputHandler');
+</script>
+<link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+<h1>goog.events.InputHandler</h1>
+<p><button onclick="addSome('text')">Add Some</button>
+<input type=text id=text><span></span>
+
+
+<p><button onclick="addSome('password')">Add Some</button>
+<input type=password id=password><span></span>
+
+
+<p><button onclick="addSome('textarea')">Add Some</button>
+<textarea id=textarea></textarea><span></span>
+
+<script>
+
+var $ = goog.dom.getElement;
+
+function addSome(id) {
+  var el = $(id);
+  el.value += '.';
+}
+
+function updateText(e) {
+  var inputEl = e.target;
+  var outputEl = inputEl.nextSibling;
+  while (outputEl.hasChildNodes()) {
+    outputEl.removeChild(outputEl.lastChild);
+  }
+  outputEl.appendChild(document.createTextNode(inputEl.value));
+}
+
+var textIh = new goog.events.InputHandler($('text'));
+var passwordIh = new goog.events.InputHandler($('password'));
+var textareaIh = new goog.events.InputHandler($('textarea'));
+
+goog.events.listen(textIh, goog.events.InputHandler.EventType.INPUT,
+                   updateText);
+goog.events.listen(passwordIh, goog.events.InputHandler.EventType.INPUT,
+                   updateText);
+goog.events.listen(textareaIh, goog.events.InputHandler.EventType.INPUT,
+                   updateText);
+
+goog.events.listen(window, 'unload', function() {
+  goog.events.unlisten(textIh, goog.events.InputHandler.EventType.INPUT,
+                       updateText);
+  goog.events.unlisten(passwordIh, goog.events.InputHandler.EventType.INPUT,
+                       updateText);
+  goog.events.unlisten(textareaIh, goog.events.InputHandler.EventType.INPUT,
+                       updateText);
+});
+
+</script>
+</body>
+</html>

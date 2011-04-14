@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2007 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<!--
+
+  Demo file for imagelessroundedcorner.js.
+-->
+<head>
+  <title>Rounded Corner Demo</title>
+  <style type="text/css">
+    input {
+      width: 160px;
+    }
+    .rc {
+      margin: 0;
+      padding-bottom: 5px;
+      padding-right: 5px;
+      position: relative;
+    }
+    #roundedCornerRadiusSliderDiv {
+      height: 20px;
+      margin-top: 5px;
+      width: 160px;
+    }
+    .goog-slider-horizontal {
+      background-color: #cccccc;
+      overflow: hidden;
+      position: relative;
+    }
+    .goog-slider-thumb {
+      background-color: #666666;
+      height: 100%;
+      overflow: hidden;
+      position: absolute;
+      top: 0;
+      width: 20px;
+    }
+    .sliderLine {
+      border-top: 1px inset #ffffff;
+      height: 1px;
+      overflow: hidden;
+      position: absolute;
+      top: 9px;
+      width: 100%;
+    }
+  </style>
+  <script type="text/javascript" src="../base.js"></script>
+  <script type="text/javascript">
+    goog.require('goog.dom');
+    goog.require('goog.ui.ImagelessRoundedCorner');
+    goog.require('goog.ui.Slider');
+  </script>
+  <script type="text/javascript">
+    var roundedCornerRadiusSlider = new goog.ui.Slider();
+    var INT_BASE = 10;
+
+    /**
+     * Creates 4 rounded corners, by using user-specified values.
+     */
+    function createRoundedCorners() {
+      // Parse user-selected values.
+      var width = parseInt(
+          document.getElementById('roundedCornerWidth').value,
+          INT_BASE);
+      var height = parseInt(
+          document.getElementById('roundedCornerHeight').value,
+          INT_BASE);
+      var color = document.getElementById('roundedCornerColor').value;
+      var backgroundColor =
+          document.getElementById('roundedCornerBackgroundColor').value;
+      var lineWidth = parseInt(
+          document.getElementById('roundedCornerLineWidth').value,
+          INT_BASE);
+      var radius = parseInt(roundedCornerRadiusSlider.getValue(), INT_BASE);
+
+      // Set maximum value for the slider.
+      var radiusMaximum = (height > width) ? height : width;
+      roundedCornerRadiusSlider.setMaximum(radiusMaximum);
+
+      // Create the rounded corners and determine the rendering time. Then
+      // display the rendering latency time.
+      var start = new Date();
+      for (var i = 0; i < 4; i++) {
+        var containerDiv = document.getElementById('rc' + i);
+        containerDiv.innerHTML = '';
+        var roundedCorner = goog.ui.ImagelessRoundedCorner.create(
+            containerDiv,
+            width,
+            height,
+            lineWidth,
+            radius,
+            Math.pow(2, i),
+            color,
+            backgroundColor);
+        roundedCorner.draw();
+      }
+      var end = new Date();
+      var diff = end - start;
+      var results = document.getElementById('results');
+      results.innerHTML = 'Rendering Time: ' + diff + 'ms';
+    };
+
+
+    /**
+     * Used as the event handler for changes in the rounded corner slider
+     * value, this method will capture the desired value and render the
+     * rounded corners.
+     */
+    function setRoundedCornerRadiusValueAndRender() {
+      var currentRoundedCornerRadius =
+          document.getElementById('currentRoundedCornerRadius');
+      currentRoundedCornerRadius.innerHTML =
+          roundedCornerRadiusSlider.getValue();
+      createRoundedCorners();
+    };
+
+
+    /**
+     * Sets the rounded corners in either a stacked position, or in separate
+     * corners, forming a rounded rectangle.
+     */
+    function setCornerPositionsAndRender() {
+      var rc0 = document.getElementById('rc0');
+      var rc1 = document.getElementById('rc1');
+      var rc2 = document.getElementById('rc2');
+      var rc3 = document.getElementById('rc3');
+      var positionsList = document.getElementById('positions');
+      var isStacked = parseInt(positionsList.options[
+          positionsList.selectedIndex].value) == 1;
+
+      if (isStacked) {
+        if (goog.userAgent.IE) {
+          rc0.style.styleFloat = '';
+          rc2.style.styleFloat = '';
+        } else {
+          rc0.style.cssFloat = '';
+          rc2.style.cssFloat = '';
+        }
+      } else {
+        // Use styleFloat for IE, and cssFloat for everyone else.
+        if (goog.userAgent.IE) {
+          rc0.style.styleFloat = 'left';
+          rc2.style.styleFloat = 'left';
+         } else {
+          rc0.style.cssFloat = 'left';
+          rc2.style.cssFloat = 'left';
+        }
+      }
+
+      createRoundedCorners();
+    };
+
+
+    /**
+     * Takes the initial values of the 'input' elements, and generates 4 rounded
+     * corners.
+     */
+    function init() {
+      // Initialize the radius sliders.
+      var roundedCornerRadiusSliderDiv =
+          document.getElementById('roundedCornerRadiusSliderDiv');
+      roundedCornerRadiusSlider.decorate(roundedCornerRadiusSliderDiv);
+      roundedCornerRadiusSlider.setMinimum(1);
+      goog.events.listen(roundedCornerRadiusSlider,
+                         goog.ui.Component.EventType.CHANGE,
+                         setRoundedCornerRadiusValueAndRender);
+
+      // Set the event handlers of the input elements.
+      var rcInputs = goog.dom.getElementsByTagNameAndClass(null, 'rcInput');
+      for (var i = 0; i < rcInputs.length; i++) {
+        var rcInput = rcInputs[i];
+        rcInput.onchange = createRoundedCorners;
+      }
+
+      createRoundedCorners();
+    };
+  </script>
+</head>
+<body>
+  <div id="rcPage"><br>
+    <div>
+      Container Width:<br>
+      <input type="text" class="rcInput" id="roundedCornerWidth" value="100">
+    </div>
+    <div>
+      Container Height:<br>
+      <input type="text" class="rcInput" id="roundedCornerHeight" value="100">
+    </div>
+    <div>
+      Color:<br>
+      <input type="text" class="rcInput" id="roundedCornerColor"
+        value="#000000">
+    </div>
+    <div>
+      Background Color:<br>
+      <input type="text" class="rcInput" id="roundedCornerBackgroundColor"
+        value="#cccccc">
+    </div>
+    <div>
+      Line Width:<br>
+      <input type="text" class="rcInput" id="roundedCornerLineWidth" value="1">
+    </div>
+    <div>
+      Radius:&nbsp;<span id="currentRoundedCornerRadius"></span><br>
+      <div id="roundedCornerRadiusSliderDiv">
+        <div class="sliderLine"></div>
+      </div>
+    </div>
+    <div>
+	  Arrangement:<br>
+	  <select id="positions" onchange="setCornerPositionsAndRender();">
+	    <option value="1">Stacked</option>
+	    <option value="0">Rectangle</option>
+	  </select>
+    </div>
+    <p id="results"></p><br>
+    <div id="rc0" class="rc"></div>
+    <div id="rc1" class="rc"></div>
+    <div id="rc2" class="rc"></div>
+    <div id="rc3" class="rc"></div>
+  </div>
+  <script type="text/javascript">
+    init();
+  </script>
+</body>
+</html>

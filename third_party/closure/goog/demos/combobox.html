@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.ComboBox</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.events');
+    goog.require('goog.ui.ComboBox');
+    goog.require('goog.debug.DivConsole');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/menu.css">
+  <link rel="stylesheet" href="../css/menuitem.css">
+  <link rel="stylesheet" href="../css/menuseparator.css">
+  <link rel="stylesheet" href="../css/combobox.css">
+  <style>
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow:hidden;
+  }
+
+  #log {
+    position: absolute;
+    top: 0px;
+    width: 50%;
+    right: 0%;
+    height: 100%;
+    overflow: auto;
+  }
+
+  #c {
+    margin-bottom: 10px;
+    font-size: small;
+  }
+
+  </style>
+</head>
+<body>
+  <h1>goog.ui.ComboBox</h1>
+  <div id="c">cb.value = '<span id="v"></span>'</div>
+
+  <div id="combo1" class="use-arrow"></div>
+  <div>&nbsp;</div>
+
+  <div id="combo2"></div>
+  <p>
+    <a href="javascript:void(logconsole.clear())">Clear Log</a>
+  </p>
+  <div id="log"></div>
+
+  <script type="text/javascript">
+
+  // Set up a logger to track responses
+  goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
+  var logconsole = new goog.debug.DivConsole(document.getElementById('log'));
+  logconsole.setCapturing(true);
+
+
+  var el = goog.dom.getElement('combo1');
+  var cb = new goog.ui.ComboBox();
+  cb.setUseDropdownArrow(true);
+  cb.setDefaultText('Select a folder...');
+  cb.addItem(new goog.ui.ComboBoxItem('Inbox'));
+  cb.addItem(new goog.ui.ComboBoxItem('Bills & statements'));
+  cb.addItem(new goog.ui.ComboBoxItem('Cal alumni'));
+  cb.addItem(new goog.ui.ComboBoxItem('Calendar Stuff'));
+  cb.addItem(new goog.ui.ComboBoxItem('Design'));
+  cb.addItem(new goog.ui.ComboBoxItem('Music'));
+  cb.addItem(new goog.ui.ComboBoxItem('Netflix'));
+  cb.addItem(new goog.ui.ComboBoxItem('Personal'));
+  cb.addItem(new goog.ui.ComboBoxItem('Photos'));
+  cb.addItem(new goog.ui.ComboBoxItem('Programming'));
+  cb.addItem(new goog.ui.MenuSeparator());
+
+  var newfolder = new goog.ui.ComboBoxItem('New Folder...');
+  newfolder.setSticky(true);
+  cb.addItem(newfolder);
+
+  cb.render(el);
+
+  goog.events.listen(cb, 'change', function(e) {
+    goog.dom.setTextContent(document.getElementById('v'), e.target.getValue());
+  });
+
+
+  var el2 = goog.dom.getElement('combo2');
+  var cb2 = new goog.ui.ComboBox();
+  cb2.setDefaultText('Select a color...');
+  cb2.addItem(new goog.ui.ComboBoxItem('Red'));
+  cb2.addItem(new goog.ui.ComboBoxItem('Maroon'));
+  cb2.addItem(new goog.ui.ComboBoxItem('Gre<en'));
+  cb2.addItem(new goog.ui.ComboBoxItem('Blue'));
+  cb2.addItem(new goog.ui.ComboBoxItem('Royal Blue'));
+  cb2.addItem(new goog.ui.ComboBoxItem('Yellow'));
+  cb2.addItem(new goog.ui.ComboBoxItem('Magenta'));
+  cb2.addItem(new goog.ui.ComboBoxItem('Mouve'));
+  cb2.addItem(new goog.ui.ComboBoxItem('Grey'));
+
+  var caption = new goog.ui.ComboBoxItem('Select a color...');
+  caption.setSticky(true);
+  caption.setEnabled(false);
+  cb2.addItemAt(caption, 0);
+
+  cb2.render(el2);
+
+  goog.events.listen(cb2, 'change', function(e) {
+    goog.dom.setTextContent(document.getElementById('v'), e.target.getValue());
+  });
+
+  window.onbeforeunload = function() {
+    cb.dispose();
+    cb2.dispose();
+  };
+
+  </script>
+</body>
+</html>

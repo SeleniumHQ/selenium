@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.Zippy</title>
+  <meta charset="utf-8">
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.ui.AnimatedZippy');
+    goog.require('goog.ui.Zippy');
+    goog.require('goog.ui.ZippyEvent');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <style>
+    h2 {
+      background: #C0C0FF;
+      margin-top: 10px;
+      margin-bottom: 0px;
+      cursor: pointer;
+      padding: 1px 3px;
+    }
+    div {
+      margin: 0px;
+      padding: 0px;
+    }
+    p {
+      background: #DEDEFF;
+      border: solid #C0C0FF;
+      border-width: 0px 3px 3px 3px;
+      margin-top: 0px;
+      padding: 3px;
+      text-align: justify;
+      overflow: hidden;
+    }
+    img {
+      width: 19px;
+      height: 16px;
+    }
+    .goog-zippy-expanded img {
+      background-image: url('../images/minus.png');
+    }
+    .goog-zippy-collapsed img {
+      background-image: url('../images/plus.png');
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.ui.Zippy</h1>
+
+  <h2 id="header1">Zippy 1</h2>
+  <p id="content1">
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Cras et nisi id
+    lorem tempor semper. Suspendisse ante. Integer ligula urna, venenatis quis,
+    placerat vitae, commodo quis, sapien. Quisque nec lectus. Sed non dolor. Sed
+    congue, nisi in pharetra consequat, odio diam pulvinar arcu, in laoreet elit
+    risus id ipsum. Class aptent taciti sociosqu ad litora torquent per conubia
+    nostra, per inceptos hymenaeos. Praesent tellus enim, imperdiet a, sagittis
+    id, pulvinar vel, tortor. Integer nulla. Sed nulla augue, lacinia id,
+    vulputate eu, rhoncus non, ante. Integer lobortis eros vitae quam. Phasellus
+    sagittis, ipsum sollicitudin bibendum laoreet, arcu erat luctus lacus, vel
+    pharetra felis metus tincidunt diam. Cras ac augue in enim ultricies aliquam.
+  </p>
+
+  <div style="width: 400px; float: left;">
+    <h2 id="header2"><img src="../images/blank.gif" />Zippy 2</h2>
+    <p id="content2">
+      Nunc et eros. Aliquam felis lectus, sagittis ac, sagittis eu, accumsan
+      vitae, leo. Maecenas suscipit, arcu eget elementum tincidunt, erat ligula
+      porttitor dui, quis ornare nisi turpis at ipsum. Vivamus magna tortor,
+      porttitor eu, cursus ut, vulputate in, nulla. Quisque nonummy feugiat
+      turpis. Cras lobortis lobortis elit. Aliquam congue, pede suscipit
+      condimentum convallis, diam purus dictum lacus, eu scelerisque mi est
+      molestie libero. Duis luctus dapibus nibh. Sed condimentum iaculis metus.
+      Pellentesque habitant morbi tristique senectus et netus et malesuada fames
+      ac turpis egestas. In pharetra dolor porta eros facilisis pellentesque.
+      Proin quam mi, sodales vel, tincidunt sit amet, convallis vel, eros.
+      Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
+      cubilia Curae; Phasellus velit augue, rutrum sit amet, posuere nec, euismod
+      ac, elit. Etiam nisi.
+    </p>
+  </div>
+
+  <div style="width: 400px; float: left; margin-left: 5px; ">
+    <h2 id="header3"><img src="../images/blank.gif" />Zippy 3</h2>
+    <p id="content3">
+      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas commodo
+      convallis nisi. Cras rhoncus elit non dolor. Vivamus gravida ultricies arcu.
+      Praesent ipsum erat, vehicula et, ultrices at, dignissim at, ipsum. Aenean
+      venenatis. Fusce blandit laoreet urna. Aliquam et pede condimentum lorem
+      posuere molestie. Pellentesque habitant morbi tristique senectus et netus et
+      malesuada fames ac turpis egestas. Fusce euismod, justo in feugiat feugiat,
+      urna metus sagittis felis, in varius neque mauris vitae dui. Nunc vel sapien
+      in diam laoreet euismod. Mauris quis felis ut ipsum auctor feugiat. Nulla
+      facilisi. Proin vitae urna. Quisque dignissim commodo nisl. Curabitur
+      bibendum.
+    </p>
+  </div>
+
+  <div style="clear: both;">
+    Zippy 2 sets the expanded state of zippy 3 to the inverted expanded state of
+    itself. Hence expanding zippy 2 collapses zippy 3 and vice verse.
+  </div>
+  <div>
+    Zippy 2 and 3 are animated, zippy 1 is not.
+  </div>
+
+
+  <script>
+    var z1 = new goog.ui.Zippy('header1', 'content1');
+    var z2 = new goog.ui.AnimatedZippy('header2', 'content2', true);
+    var z3 = new goog.ui.AnimatedZippy('header3', 'content3', false);
+
+    z1.expand();
+
+    function zippyToggle(event) {
+      z3.setExpanded(!event.expanded);
+    }
+
+    goog.events.listen(z2, goog.ui.Zippy.Events.TOGGLE, zippyToggle);
+  </script>
+</body>
+</html>

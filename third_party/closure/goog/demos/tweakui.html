@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.tweak.TweakUi</title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.tweak');
+    goog.require('goog.tweak.TweakUi');
+  </script>
+  <link rel="stylesheet" type="text/css" href="../css/common.css">
+</head>
+<body>
+  <h1>goog.ui.TweakUi</h1>
+The goog.tweak package provides a convenient and flexible way to add
+configurable settings to an app. These settings:
+<ul>
+  <li>can be set at compile time
+  <li>can be set in code (using goog.tweak.overrideDefaultValue)
+  <li>can be set by query parameters
+  <li>can be set through the TweakUi interface
+</ul>
+Tweaks IDs are checked by the compiler and tweaks can be fully removed when
+tweakProcessing=STRIP. Tweaks are great for toggling debugging facilities.
+
+<h2>A collapsible menu</h2><div id="menu1"></div>
+<h2>An expanded menu</h2><div id="menu2"></div>
+<ul>
+  <li>When "Apply Tweaks" is clicked, all non-default values are encoded into
+  query parameters and the page is refreshed.
+  <li>Blue entries are ones where the value of the tweak will change without
+  clicking apply tweaks (the value of goog.tweak.get*() will change)
+</ul>
+<script>
+
+var entryCounter = 0;
+
+goog.tweak.registerButton('CreateNewTweak', 'Creates a new tweak. Meant ' +
+    'to simulate a tweak being registered in a lazy-loaded module.',
+    function() {
+  var registry = goog.tweak.getRegistry();
+  entryCounter++;
+  registry.register(new goog.tweak.BooleanSetting('Lazy' + entryCounter,
+      'Lazy-loaded tweak ' + entryCounter));
+});
+
+goog.tweak.registerButton('CreateNewTweakInNamespace1',
+    'Creates a new tweak within a namespace. Meant to simulate a tweak ' +
+    'being registered in a lazy-loaded module.', function() {
+  var registry = goog.tweak.getRegistry();
+  entryCounter++;
+  registry.register(new goog.tweak.StringSetting(
+      'namespace1.Lazy' + entryCounter, 'Lazy-loaded tweak ' + entryCounter));
+});
+
+goog.tweak.registerButton('CreateNewTweakInNamespace2',
+    'Creates a new tweak within a namespace. Meant to simulate a tweak ' +
+    'being registered in a lazy-loaded module.', function() {
+  var registry = goog.tweak.getRegistry();
+  entryCounter++;
+  var entry = new goog.tweak.NumericSetting(
+      'namespace1.subnamespace.Lazy' + entryCounter,
+      'Lazy-loaded tweak ' + entryCounter);
+  entry.setValidValues([1, 2, 3]);
+  entry.setDefaultValue((entryCounter % 3) + 1);
+  registry.register(entry);
+});
+
+goog.tweak.registerBoolean('Bool1', 'A boolean tweak that defaults to false');
+goog.tweak.registerBoolean('Bool2', 'A boolean tweak that defaults to true',
+    true);
+goog.tweak.registerString('Str1', 'A string tweak that defaults to false');
+goog.tweak.registerString('Str2', 'A string tweak with a default value',
+    'some value');
+goog.tweak.registerString('Str3', 'A string tweak with validValues.', '', {
+  validValues: ['A', 'B', 'C']
+});
+goog.tweak.registerNumber('Num1', 'A numeric tweak');
+goog.tweak.registerNumber('Num2', 'A numeric tweak with default value', 10);
+goog.tweak.registerNumber('Num3', 'A numeric tweak with validValues.', 0, {
+  validValues: [1, 2, 3]
+});
+goog.tweak.beginBooleanGroup('BooleanGroup', 'A boolean group are boolean ' +
+    'tweaks that share a query parameter.');
+goog.tweak.registerBoolean('Value1', 'Example 1');
+goog.tweak.registerBoolean('Value2', 'Example 2');
+goog.tweak.registerBoolean('Value3', 'Example 3 (default on)', true);
+goog.tweak.endBooleanGroup();
+goog.tweak.registerBoolean('Fancy1', 'A boolean tweak with a callback', false, {
+  restartRequired: false,
+  callback: function(entry) {
+    alert('Tweak value is now ' + entry.getValue());
+  }
+});
+goog.tweak.registerBoolean('Fancy2', 'A boolean tweak with a custom query ' +
+    'parameter', false, {
+  paramName: 'WowSoFancy'
+});
+goog.tweak.registerBoolean('Fancy3', 'A boolean tweak with a custom label.',
+    false, {
+  label: 'Relabeled Tweak'
+});
+goog.tweak.registerBoolean('namespace1.NamespacedTweak',
+    'Tweaks are grouped by namespace');
+goog.tweak.registerBoolean('namespace1.NamespacedTweak2',
+    'Tweaks are grouped by namespace');
+goog.tweak.registerBoolean('namespace1.NamespacedTweak3',
+    'Tweaks are grouped by namespace');
+
+document.getElementById('menu1').appendChild(
+    goog.tweak.TweakUi.createCollapsible());
+document.getElementById('menu2').appendChild(goog.tweak.TweakUi.create());
+
+</script>
+</body>
+</html>

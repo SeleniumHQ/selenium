@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.Tooltip</title>
+  <meta charset="utf-8">
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.ui.Tooltip');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <style>
+    .goog-tooltip {
+      background: infobackground;
+      color: infotext;
+      border: 1px solid infotext;
+      padding: 1px;
+      font: menu;
+    }
+    .tooltip2 {
+      background: #C0C0FF;
+      color: infotext;
+      border: 1px solid infotext;
+      padding: 1px;
+      font: menu;
+      width: 120px;
+    }
+    span {
+      border-bottom: 1px dotted black;
+    }
+  </style>
+  </head>
+<body>
+  <h1>goog.ui.Tooltip</h1>
+  <p>
+    <button id="btn1">Hover me</button>
+    <button id="btn2">and me</button>
+    <button id="btn3">and me</button>
+    <button id="btnNoTooltip">but not me</button>
+  </p>
+
+  <p>
+    Demo <span id="txt1">tooltips</span> in text and and of <span id="txt2">nested
+    <span id="txt3">tooltips</span>, where an element triggers
+    one tooltip and an element inside the first element triggers another
+    one.</span>
+  </p>
+
+  <div style="overflow: auto; height: 100px; border: 1px solid black;">
+  <div style="margin: 5px; padding: 5px; height: 200px;">
+    <button id="btn4">and me too!</button>
+  </div>
+  </div>
+
+  <button id="btn5" style="position: absolute; bottom: 5px;">near bottom</button>
+
+  <script>
+    var msg1 = "Tooltip widget. Appears next to the cursor when over an " +
+      "attached element or next to the element if it's active.";
+    var tooltip1 = new goog.ui.Tooltip('btn1', msg1);
+
+    var tooltip2 = new goog.ui.Tooltip('btn2');
+    tooltip2.className = 'tooltip2';
+    tooltip2.setHtml(
+      "This is message two, using a different class name for the tooltip and " +
+      "<strong>HTML</strong> <em>markup</em>.<br>" +
+      "<button id=\"btn-nest\">Hover me</button>", true);
+    tooltip2.attach('btn5');
+
+    var tooltip3 = new goog.ui.Tooltip('btn3', 'Tooltip for button 3');
+
+    var msg4 = "Tooltip for button 4, demonstrating that it's positioned " +
+               "correctly even when inside a scrolling container.";
+    var tooltip4 = new goog.ui.Tooltip('btn4', msg4);
+
+    var msg5 = "tooltip for the word 'tooltips'."
+    var tooltip5 = new goog.ui.Tooltip('txt1', msg5);
+    tooltip5.attach('txt3');
+
+    var tooltip6 = new goog.ui.Tooltip('txt2', 'outer tooltip');
+
+    var tooltip7 = new goog.ui.Tooltip('btn-nest');
+    tooltip7.setHtml("Even nested<br>tooltips!");
+  </script>
+</body>
+</html>

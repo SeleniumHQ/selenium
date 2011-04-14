@@ -1,0 +1,36 @@
+/*
+ * Copyright 2007 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* Author: dalewis@google.com (Darren Lewis) */
+
+/* Styles used in the emojipicker demo */
+.goog-ui-popupemojipicker {
+  position: absolute;
+  -moz-outline: 0;
+  outline: 0;
+  visibility: hidden;
+}
+
+.goog-palette-cell {
+  padding: 2px;
+  background: white;
+}
+
+.goog-palette-cell div {
+  vertical-align: middle;
+  text-align: center;
+  margin: auto;
+}
+
+.goog-palette-cell-wrapper {
+  width: 25px;
+  height: 25px;
+}
+
+.goog-palette-cell-hover {
+  background: lightblue;
+}

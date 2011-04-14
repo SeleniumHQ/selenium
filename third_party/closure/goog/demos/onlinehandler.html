@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2008 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<!--
+-->
+<head>
+<title>goog.net.OnlineHandler</title>
+<script src="../base.js"></script>
+<script>
+
+goog.require('goog.events');
+goog.require('goog.events.OnlineHandler');
+
+</script>
+<style>
+
+body {
+  width: 30em;
+  margin: 1em auto;
+  text-align: justify;
+  font: small sans-serif;
+}
+
+#out.online {
+  border: 1px solid green;
+  background: lightgreen;
+}
+
+#out.offline {
+  border: 1px solid red;
+  background: pink;
+}
+
+p {
+  padding: 0.2em;
+}
+
+</style>
+</head>
+<body>
+
+<p>This page reports whether your browser is online or offline. It will detect
+changes to the reported state and fire events when this changes. The
+OnlineHandler acts as a wrapper around the HTML5 events <code>online</code> and
+<code>offline</code> and emulates these for older browsers.</p>
+
+<p>Try changing <strong>File -> Work Offline</strong> in your browser.</p>
+
+<p id=out></p>
+
+<script>
+
+var out = document.getElementById('out');
+var oh = new goog.events.OnlineHandler;
+
+function updateText() {
+  out.innerHTML = 'Is online: ' + oh.isOnline();
+  out.className = oh.isOnline() ? 'online' : 'offline';
+}
+
+goog.events.listen(oh, [goog.events.OnlineHandler.EventType.ONLINE,
+                        goog.events.OnlineHandler.EventType.OFFLINE],
+                   updateText);
+goog.events.listen(window, 'unload', function() {
+  oh.dispose();
+});
+
+updateText();
+
+</script>
+</body>
+</html>

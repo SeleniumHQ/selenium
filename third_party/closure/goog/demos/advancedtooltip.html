@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>goog.ui.AdvancedTooltip</title>
+  <meta charset="utf-8">
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.events.EventType');
+    goog.require('goog.ui.AdvancedTooltip');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <style>
+    .goog-tooltip {
+      background: lightyellow;
+      color: black;
+      border: 1px solid black;
+      padding: 1px;
+      font: menu;
+    }
+    .tooltip {
+      background: lightyellow;
+      color: black;
+      border: 1px solid black;
+      padding: 5px;
+      font: menu;
+      width: 400px;
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.ui.AdvancedTooltip</h1>
+  <fieldset class="goog-debug-panel" style="display:none">
+    <legend>Event Log</legend>
+    <div id="log"></div>
+  </fieldset>
+
+  <p>
+    <button id="btn">Hover me</button>
+  </p>
+
+  <script>
+    var tooltip = new goog.ui.AdvancedTooltip('btn');
+    tooltip.className = 'tooltip';
+    tooltip.setHtml(
+      "<h2>AdvancedTooltip</h2>" +
+      "<ul><li>Move cursor towards the tooltip (<em>that's me!</em>) " +
+      "and see that it remains open.</li>" +
+      "<li>Before reaching it start moving the cursor in another " +
+      "direction...</li>" +
+      "<li>Once the cursor reaches the tooltip the cursor tracking is turned " +
+      "off and  a 10px 'padding' around it gets added. As long as the cursor " +
+      "stays inside the box formed by the tooltip and the padding it remains " +
+      "open.</li></ul><hr/><div style=\"text-align: center;\">" +
+      "<button id=\"btn-nest\">Hover me</button>&nbsp;" +
+      "<button id=\"btn-close\">Close</button></div>", true);
+    tooltip.setHotSpotPadding(new goog.math.Box(5, 5, 5, 5));
+    tooltip.setCursorTracking(true);
+    tooltip.setMargin(new goog.math.Box(100, 0, 0, 100));
+    tooltip.setHideDelayMs(250);
+
+    new goog.ui.AdvancedTooltip('btn-nest').setHtml(
+        'Clicking<br> this<br> button<br> has no effect.');
+    new goog.ui.Tooltip('btn-close', 'Closes tooltip');
+
+    goog.events.listen(document.getElementById('btn-close'),
+        goog.events.EventType.CLICK, function(e) {
+            tooltip.setVisible(false);
+        }
+    );
+  </script>
+</body>
+</html>

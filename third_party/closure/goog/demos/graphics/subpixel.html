@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+<!--
+Copyright 2007 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title>Sub pixel rendering</title>
+<script type="text/javascript" src="../../base.js"></script>
+<script type="text/javascript">
+
+goog.require('goog.dom');
+goog.require('goog.graphics');
+
+</script>
+<script type="text/javascript">
+
+function testLineWidth() {
+  var graphics = goog.graphics.createGraphics(100, 100);
+
+  // vertical line
+  for (var i = 0; i < 100; i++) {
+    var stroke = new goog.graphics.Stroke(i / 100, 'black');
+    var path = graphics.createPath();
+    path.moveTo(49.5, i);
+    path.lineTo(49.5, i + 1);
+    path.close();
+    graphics.drawPath(path, stroke, null);
+  }
+
+  // horizontal line
+  for (var i = 0; i < 100; i++) {
+    var stroke = new goog.graphics.Stroke(i / 100, 'black');
+    var path = graphics.createPath();
+    path.moveTo(i, 49.5);
+    path.lineTo(i + 1, 49.5);
+    path.close();
+    graphics.drawPath(path, stroke, null);
+  }
+
+  graphics.render();
+}
+
+function testLinePos() {
+  var graphics = goog.graphics.createGraphics(100, 100);
+  var stroke = new goog.graphics.Stroke(1, 'black');
+
+  // vertical line
+  for (var i = 0; i < 100; i++) {
+    var path = graphics.createPath();
+    path.moveTo(49 + i / 100, i);
+    path.lineTo(49 + i / 100, i + 1);
+    path.close();
+    graphics.drawPath(path, stroke, null);
+  }
+
+  // horizontal line
+  for (var i = 0; i < 100; i++) {
+    var path = graphics.createPath();
+    path.moveTo(i, 49.5 + i / 100);
+    path.lineTo(i + 1, 49.5 + i / 100);
+    path.close();
+    graphics.drawPath(path, stroke, null);
+  }
+
+  graphics.render();
+}
+
+</script>
+</head>
+<body>
+<script>
+testLineWidth();
+document.write('<br>');
+testLinePos();
+</script>
+</body>
+</html>

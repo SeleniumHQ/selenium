@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>
+    goog.ui.ImagelessButtonRenderer Demo
+  </title>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.array');
+    goog.require('goog.events');
+    goog.require('goog.object');
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.debug.LogManager');
+    goog.require('goog.ui.CustomButton');
+    goog.require('goog.ui.ImagelessButtonRenderer');
+    goog.require('goog.ui.ToggleButton');
+    goog.require('goog.ui.decorate');
+  </script>
+  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="../css/imagelessbutton.css">
+  <style>
+    /* Base class for all icon elements. */
+    .icon {
+      height: 16px;
+      width: 16px;
+      margin: 0 4px 0 0;
+      background-image: url(../images/toolbar_icons.gif);
+      background-repeat: no-repeat;
+      vertical-align: middle;
+    }
+
+    /* "Highlight" icon. */
+    .highlight-icon{
+      background-position: -64px;
+    }
+
+    /* "Insert Image" icon. */
+    .insert-image-icon {
+      background-position: -80px;
+    }
+
+    /* Custom style for the "default" button. */
+    .default-button {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>goog.ui.ImagelessButtonRenderer</h1>
+  <fieldset>
+    <legend>
+      These buttons were rendered using
+      <strong>goog.ui.ImagelessButtonRenderer</strong>:
+    </legend>
+    <br/>
+    These buttons were created programmatically:<br/>
+    <div id="cb1"></div>
+    <br/>
+    These buttons were created by decorating some DIVs, and they dispatch
+    state transition events (watch the event log):<br/>
+    <div id="cb2">
+      <!-- On FF2, if you don't enclose the contents of the button in a SPAN,
+           the bold element isn't rendered.  Works on every other browser. -->
+      <div id="foo" class="goog-imageless-button"
+          title="Title specified in HTML">
+        <span>Decorated <b>Button</b>, yay!</span>
+      </div>
+      <div id="bar" class="goog-imageless-button goog-imageless-button-disabled"
+          title="Initialized to DISABLED in HTML...">Decorated Disabled</div>
+      <div id="fee" class="goog-imageless-button">Another Button</div>
+      <div id="btn1"
+           class="goog-imageless-button goog-imageless-button-collapse-right">
+        Archive
+      </div><div id="btn2"
+          class="goog-imageless-button goog-imageless-button-collapse-right goog-imageless-button-collapse-left">
+        Delete
+      </div><div id="btn3"
+          class="goog-imageless-button goog-imageless-button-collapse-left">
+        Report Spam
+      </div>
+    </div>
+    <br/>
+    Use these <strong>ToggleButton</strong>s to hide/show and enable/disable
+    the middle button:<br/>
+    <div id="toggleEnable" class="goog-imageless-toggle-button"
+        title="Click here to enable/disable the button above">Enable</div>
+
+    <div id="hideShow"
+        class="goog-imageless-toggle-button goog-imageless-button-checked"
+        title="Click here to hide/show the button above">Show</div>
+
+    <br/><br/>
+    Combined toggle buttons<br/>
+      <div id="btn4" class="goog-imageless-toggle-button goog-imageless-button-collapse-right">
+        Bold
+      </div><div id="btn5" class="goog-imageless-toggle-button goog-imageless-button-collapse-right goog-imageless-button-collapse-left">
+        Italics
+      </div><div id="btn6" class="goog-imageless-toggle-button goog-imageless-button-collapse-left goog-imageless-button-checked">
+        Underlined
+      </div>
+    <br/><br/>
+    These buttons have icons, and the second one has an extra CSS class:<br/>
+    <div id="iconbuttons"></div>
+    <br/>
+  </fieldset>
+  <br/>
+  <div id="perf"></div>
+  <!-- Event log. -->
+  <fieldset class="goog-debug-panel">
+    <legend>Event Log</legend>
+    <div id="log"></div>
+  </fieldset>
+
+  <script type="text/javascript">
+    var timer = goog.now();
+
+    // Set up a logger.
+    goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
+    var logger = goog.debug.Logger.getLogger('demo');
+    var logconsole = new goog.debug.DivConsole(goog.dom.getElement('log'));
+    logconsole.setCapturing(true);
+
+    var EVENTS = goog.object.getValues(goog.ui.Component.EventType);
+    logger.fine('Listening for: ' + EVENTS.join(', ') + '.');
+
+    function logEvent(e) {
+      logger.info('"' + e.target.getCaption() + '" dispatched: ' + e.type);
+    }
+
+    // Create some buttons using CustomButton with the
+    // ImagelessButtonRenderer renderer.
+    var disabledButton;
+    var customButtons = [
+        new goog.ui.CustomButton('Button',
+            goog.ui.ImagelessButtonRenderer.getInstance()),
+        new goog.ui.CustomButton('Another Button',
+            goog.ui.ImagelessButtonRenderer.getInstance()),
+        disabledButton = new goog.ui.CustomButton('Disabled Button',
+            goog.ui.ImagelessButtonRenderer.getInstance()),
+        new goog.ui.CustomButton('Yet Another Button',
+            goog.ui.ImagelessButtonRenderer.getInstance())
+    ];
+    disabledButton.setEnabled(false);
+    goog.array.forEach(customButtons, function(b) {
+      b.render(goog.dom.getElement('cb1'));
+      goog.events.listen(b, goog.ui.Component.EventType.ACTION,
+          function(e) {
+            var newCaption = window.prompt('Enter new caption for button:');
+            b.setCaption(newCaption || 'Empty');
+          });
+      goog.events.listen(b, EVENTS, logEvent);
+    });
+
+    // Decorate some buttons.
+    var cb2 = [];
+    var decoratedButtons = goog.array.map([
+      'foo', 'bar', 'fee', 'btn1', 'btn2', 'btn3', 'btn4', 'btn5', 'btn6'
+     ], goog.dom.getElement);
+    goog.array.forEach(decoratedButtons, function(element) {
+      // Since the elements to be decorated each have the correct "marker" CSS
+      // class ("goog-imageless-button"), we can use the renderer
+      // registry to get the appropriate control instance to decorate them.
+      var button = goog.ui.decorate(element);
+
+      button.setDispatchTransitionEvents(goog.ui.Component.State.ALL, true);
+      cb2.push(button);
+      goog.events.listen(button, EVENTS, logEvent);
+    });
+
+    // Decorate toggle buttons.
+    var toggleEnableElem = goog.dom.getElement('toggleEnable');
+    var toggleEnable = goog.ui.decorate(toggleEnableElem);
+    toggleEnable.setDispatchTransitionEvents(goog.ui.Component.State.ALL, true);
+
+    goog.events.listen(toggleEnable, EVENTS, logEvent);
+
+    goog.events.listen(toggleEnable, goog.ui.Component.EventType.ACTION,
+        function(e) {
+          cb2[1].setEnabled(e.target.isChecked());
+        });
+
+    var hideShowElem = goog.dom.getElement('hideShow');
+    var hideShow = new goog.ui.decorate(hideShowElem);
+    hideShow.setDispatchTransitionEvents(goog.ui.Component.State.ALL, true);
+    goog.events.listen(hideShow, EVENTS, logEvent);
+
+    goog.events.listen(hideShow, goog.ui.Component.EventType.ACTION,
+        function(e) {
+          cb2[1].setVisible(e.target.isChecked());
+        });
+
+
+    // Use a DIV with a background image as the icon, and a SPAN as the caption.
+    var iconbutton1 = new goog.ui.ToggleButton([
+      goog.dom.createDom('div', 'icon insert-image-icon goog-inline-block'),
+      'Insert Image'
+    ], goog.ui.ImagelessButtonRenderer.getInstance());
+    iconbutton1.render(goog.dom.getElement('iconbuttons'));
+    goog.events.listen(iconbutton1, EVENTS, logEvent);
+
+    // Add a custom style, too.
+    var iconbutton2 = new goog.ui.ToggleButton([
+      goog.dom.createDom('div', 'icon highlight-icon goog-inline-block'),
+      'Highlight Text'
+    ], goog.ui.ImagelessButtonRenderer.getInstance());
+    iconbutton2.addClassName('default-button');
+    iconbutton2.render(goog.dom.getElement('iconbuttons'));
+    goog.events.listen(iconbutton2, EVENTS, logEvent);
+
+    goog.dom.setTextContent(goog.dom.getElement('perf'),
+        (goog.now() - timer) + 'ms');
+ </script>
+</body>
+</html>

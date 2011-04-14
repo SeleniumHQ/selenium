@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title>History Demo JavaScript Page</title>
+</head>
+<body>
+<script type="text/javascript" src="../base.js"></script>
+<script type="text/javascript">
+goog.require('goog.dom');
+goog.require('goog.events');
+goog.require('goog.History');
+</script>
+<script type="text/javascript">
+var googHist = new goog.History(
+    false, 'history_blank.html', top.document.getElementById('hist_state'));
+goog.events.listen(googHist, goog.History.EventType.NAVIGATE, navCallback);
+googHist.setEnabled(true);
+
+function navCallback(e) {
+  var output = top.document.getElementById('token_output');
+  if (output) {
+    var token = (e.token == null) ? 'null' : '\u201C' + e.token + '\u201D';
+    goog.dom.setTextContent(output, token);
+  }
+}
+</script>
+</body>
+</html>

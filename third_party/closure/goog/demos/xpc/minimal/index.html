@@ -1,0 +1,105 @@
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+
+<script type="text/javascript" src="../../../base.js"></script>
+<script type="text/javascript">
+
+goog.require('goog.dom');
+goog.require('goog.events');
+goog.require('goog.net.xpc.CrossPageChannel');
+
+</script>
+<script type="text/javascript">
+
+var channel;
+var logEl;
+
+/**
+ * Writes a message to the log.
+ * @param {string} msg The message text.
+ */
+function log(msg) {
+  logEl || (logEl = goog.dom.getElement('log'));
+
+  var msgEl = goog.dom.createDom('div');
+  msgEl.innerHTML = msg;
+  logEl.insertBefore(msgEl, logEl.firstChild);
+}
+
+
+goog.events.listen(window, 'load', function() {
+
+  // Build the channel configuration.
+  var cfg = {};
+
+  var ownUri = new goog.Uri(window.location.href);
+  var peerDomain = ownUri.getParameterValue('peerdomain') || ownUri.getDomain();
+  var peerUri = ownUri.clone().setDomain(peerDomain);
+
+  var localRelayUri = ownUri.resolve(new goog.Uri('relay.html'));
+  var peerRelayUri = peerUri.resolve(new goog.Uri('relay.html'));
+
+  var localPollUri = ownUri.resolve(new goog.Uri('blank.html'));
+  var peerPollUri = peerUri.resolve(new goog.Uri('blank.html'));
+
+
+  cfg[goog.net.xpc.CfgFields.LOCAL_RELAY_URI] = localRelayUri.toString();
+  cfg[goog.net.xpc.CfgFields.PEER_RELAY_URI] = peerRelayUri.toString();
+
+  cfg[goog.net.xpc.CfgFields.LOCAL_POLL_URI] = localPollUri.toString();
+  cfg[goog.net.xpc.CfgFields.PEER_POLL_URI] = peerPollUri.toString();
+
+  // Set the URI of the peer page.
+  var peerUri = ownUri.resolve(
+      new goog.Uri('inner.html')).setDomain(peerDomain);
+  cfg[goog.net.xpc.CfgFields.PEER_URI] = peerUri;
+
+  // Create the channel.
+  channel = new goog.net.xpc.CrossPageChannel(cfg);
+
+  // Create the peer iframe.
+  channel.createPeerIframe(
+      goog.dom.getElement('iframeContainer'));
+
+  channel.registerService('log', log);
+
+  channel.connect(function() {
+    log('Channel connected.');
+  });
+});
+
+</script>
+<style type="text/css">
+body, td {
+  background-color: #eeeeff;
+  font-family: arial,verdana;
+  font-size: 12px;
+}
+</style>
+</head>
+<body>
+
+<table border=0 width="100%" height="100%"><tr><td width="50%" valign="top">
+
+<h3><script type="text/javascript">document.write(location.href.replace(/\?.*/,'?...'))</script></h3>
+
+<p>
+<input type="text" id="msgInput" value="Hello from the container page."
+    style="width:250px">
+<input type="button" value="Send" onclick="
+    channel.send('log', goog.dom.getElement('msgInput').value)">
+</p>
+
+<div id="log" style="border: 1px #000 solid;"></div>
+</td><td width="50%" valign="top" id="iframeContainer">
+
+</td></tr></table>
+
+</body>
+</html>

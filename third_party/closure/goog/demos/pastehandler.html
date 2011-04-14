@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+  <title>PasteHandler Test</title>
+  <link rel="stylesheet" href="css/demo.css">
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.debug.LogManager');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.dom');
+    goog.require('goog.events.PasteHandler');
+    goog.require('goog.ui.KeyboardShortcutEvent');
+  </script>
+</head>
+<body>
+  <h2>Demo of goog.events.PasteHandler</h2>
+
+  <fieldset>
+    <legend>Demo of the <strong>goog.events.PasteHandler</strong>:</legend>
+    <label>goog.events.PasteHandler detects paste events in textareas.
+    Try pasting text in the textarea below and watch the event log at the
+    bottom of the page.<br></label>
+    <textarea id="foo" rows="10" cols="100"></textarea>
+  </fieldset>
+
+  <fieldset class="goog-debug-panel">
+    <legend>Event Log</legend>
+    <div id="log" style="height: 200px;"></div>
+  </fieldset>
+
+  <script type="text/javascript">
+    var textarea = goog.dom.getElement('foo');
+    var pasteHandler = new goog.events.PasteHandler(textarea);
+    var logger = goog.debug.Logger.getLogger('demo')
+
+    goog.events.listen(pasteHandler, goog.events.PasteHandler.EventType.PASTE,
+        function(e) {
+          logger.shout('pasted!');
+        });
+
+    goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.SEVERE);
+    var logconsole = new goog.debug.DivConsole(goog.dom.getElement('log'));
+    logconsole.setCapturing(true);
+  </script>
+</body>
+</html>

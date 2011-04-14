@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+
+<script type="text/javascript" src="../../../base.js"></script>
+<script type="text/javascript">
+
+goog.require('goog.dom');
+goog.require('goog.events');
+goog.require('goog.net.xpc.CrossPageChannel');
+
+</script>
+<script type="text/javascript">
+
+var channel;
+var logEl;
+
+
+/**
+ * Writes a message to the log.
+ * @param {string} msg The message text.
+ */
+function log(msg) {
+  logEl || (logEl = goog.dom.getElement('log'));
+
+  var msgEl = goog.dom.createDom('div');
+  msgEl.innerHTML = msg;
+  logEl.insertBefore(msgEl, logEl.firstChild);
+}
+
+
+goog.events.listen(window, 'load', function() {
+  // Get the channel configuration from the URI parameter.
+  var cfg = goog.json.parse(
+      (new goog.Uri(window.location.href)).getParameterValue('xpc'));
+
+  // Create the channel.
+  channel = new goog.net.xpc.CrossPageChannel(cfg);
+  channel.registerService('log', log);
+  channel.connect(function() {
+    log('Channel connected.');
+  });
+});
+
+</script>
+<style type="text/css">
+body {
+  background-color: #ddffff;
+  font-family: arial,verdana;
+  font-size: 12px;
+}
+</style>
+</head>
+<body>
+
+<h3><script type="text/javascript">document.write(location.href.replace(/\?.*/,'?...'))</script></h3>
+
+<p>
+<input type="text" id="msgInput" value="Hello from the iframe."
+    style="width:250px">
+<input type="button" value="Send" onclick="
+    channel.send('log', goog.dom.getElement('msgInput').value)">
+</p>
+
+<div id="log" style="border: 1px #000 solid"></div>
+
+
+</body>
+</html>
