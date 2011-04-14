@@ -15,6 +15,15 @@ limitations under the License.
  */
 package org.openqa.grid.web.servlet.handler;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.internal.GridException;
@@ -22,19 +31,11 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.jetty.jetty.servlet.ServletHttpResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Logger;
-
 public class WebDriverRequestHandler extends RequestHandler {
 
 	private static final Logger log = Logger.getLogger(WebDriverRequestHandler.class.getName());
 
-  protected WebDriverRequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
+	protected WebDriverRequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
 		super(request, response, registry);
 	}
 
@@ -64,7 +65,8 @@ public class WebDriverRequestHandler extends RequestHandler {
 	/**
 	 * extract the session xxx from http://host:port/a/b/c/session/xxx/...
 	 * 
-	 * @param path The path to the session
+	 * @param path
+	 *            The path to the session
 	 * @return the session key provided by the remote., or null if the url
 	 *         didn't contain a session id
 	 */
@@ -89,7 +91,6 @@ public class WebDriverRequestHandler extends RequestHandler {
 		return null;
 	}
 
-	
 	// TODO freynaud parsing is so so.
 	@SuppressWarnings("unchecked")
 	// JSON iterator.
@@ -103,7 +104,7 @@ public class WebDriverRequestHandler extends RequestHandler {
 			for (Iterator iterator = dc.keys(); iterator.hasNext();) {
 				String key = (String) iterator.next();
 				Object value = dc.get(key);
-				if (value == JSONObject.NULL){
+				if (value == JSONObject.NULL) {
 					value = null;
 				}
 				desiredCapability.put(key, value);
@@ -117,14 +118,24 @@ public class WebDriverRequestHandler extends RequestHandler {
 	@Override
 	public String forwardNewSessionRequest(TestSession session) {
 		try {
-			session.forward(getRequest(), getResponse(), getRequestBody(), false);
+			// here, don't forward the requestBody directly, but read the
+			// desiredCapabilities from the session instead.
+			// That allow the TestSessionListener.before modification of the
+			// capability map to be propagated.
+			JSONObject c = new JSONObject();
+			c.put("desiredCapabilities", session.getRequestedCapabilities());
+			String content = c.toString();
+			session.forward(getRequest(), getResponse(), content, false);
 		} catch (IOException e) {
 			log.warning("Error forwarding the request " + e.getMessage());
+			return null;
+		} catch (JSONException e) {
+			log.warning("Error with the request " + e.getMessage());
 			return null;
 		}
 
 		if (getResponse().containsHeader("Location")) {
-      String location = ((ServletHttpResponse) getResponse()).getHttpResponse().getField("Location");
+			String location = ((ServletHttpResponse) getResponse()).getHttpResponse().getField("Location");
 			return extractSession(location);
 		} else {
 			log.warning("Error, header should contain Location");

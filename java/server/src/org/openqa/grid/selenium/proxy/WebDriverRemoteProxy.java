@@ -16,16 +16,19 @@ limitations under the License.
 
 package org.openqa.grid.selenium.proxy;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.internal.listeners.TestSessionListener;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.CapabilityType;
 
-
-public class WebDriverRemoteProxy extends WebRemoteProxy  {
+public class WebDriverRemoteProxy extends WebRemoteProxy implements TestSessionListener {
 	private static final Logger log = Logger.getLogger(WebDriverRemoteProxy.class.getName());
 
-  public WebDriverRemoteProxy(RegistrationRequest request) {
+	public WebDriverRemoteProxy(RegistrationRequest request) {
 		super(request);
 	}
 
@@ -40,6 +43,20 @@ public class WebDriverRemoteProxy extends WebRemoteProxy  {
 		if (!ok) {
 			log.warning("Error releasing the resources on timeout for session " + session);
 		}
+	}
+
+	public void beforeSession(TestSession session) {
+		Map<String, Object> cap = session.getRequestedCapabilities();
+		if ("firefox".equals(cap.get(CapabilityType.BROWSER_NAME))) {
+			if (session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null && cap.get(FirefoxDriver.BINARY) == null) {
+				session.getRequestedCapabilities().put(FirefoxDriver.BINARY, session.getSlot().getCapabilities().get(FirefoxDriver.BINARY));
+			}
+		}
+	}
+
+	public void afterSession(TestSession session) {
+		// ignore
+
 	}
 
 }
