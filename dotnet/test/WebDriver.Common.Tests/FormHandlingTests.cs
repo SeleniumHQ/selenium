@@ -125,121 +125,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldBeAbleToSelectACheckBox()
-        {
-            driver.Url = formsPage;
-            IWebElement checkbox = driver.FindElement(By.Id("checky"));
-            Assert.AreEqual(checkbox.Selected, false);
-            checkbox.Select();
-            Assert.AreEqual(checkbox.Selected, true);
-            checkbox.Select();
-            Assert.AreEqual(checkbox.Selected, true);
-        }
-
-        [Test]
-        public void ShouldToggleTheCheckedStateOfACheckbox()
-        {
-            driver.Url = formsPage;
-            IWebElement checkbox = driver.FindElement(By.Id("checky"));
-            Assert.AreEqual(checkbox.Selected, false);
-            checkbox.Toggle();
-            Assert.AreEqual(checkbox.Selected, true);
-            checkbox.Toggle();
-            Assert.AreEqual(checkbox.Selected, false);
-        }
-
-        [Test]
-        public void TogglingACheckboxShouldReturnItsCurrentState()
-        {
-            driver.Url = formsPage;
-            IWebElement checkbox = driver.FindElement(By.Id("checky"));
-            Assert.AreEqual(checkbox.Selected, false);
-            bool isChecked = checkbox.Toggle();
-            Assert.AreEqual(isChecked, true);
-            isChecked = checkbox.Toggle();
-            Assert.AreEqual(isChecked, false);
-        }
-
-        [Test]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void ShouldNotBeAbleToSelectSomethingThatIsDisabled()
-        {
-            driver.Url = formsPage;
-            IWebElement radioButton = driver.FindElement(By.Id("nothing"));
-            Assert.AreEqual(radioButton.Enabled, false);
-            radioButton.Select();
-        }
-
-        [Test]
-        public void ShouldBeAbleToSelectARadioButton()
-        {
-            driver.Url = formsPage;
-            IWebElement radioButton = driver.FindElement(By.Id("peas"));
-            Assert.AreEqual(radioButton.Selected, false);
-            radioButton.Select();
-            Assert.AreEqual(radioButton.Selected, true);
-        }
-
-        [Test]
-        public void ShouldBeAbleToSelectARadioButtonByClickingOnIt()
-        {
-            driver.Url = formsPage;
-            IWebElement radioButton = driver.FindElement(By.Id("peas"));
-            Assert.AreEqual(radioButton.Selected, false);
-            radioButton.Click();
-            Assert.AreEqual(radioButton.Selected, true);
-        }
-
-        [Test]
-        public void ShouldReturnStateOfRadioButtonsBeforeInteration()
-        {
-            driver.Url = formsPage;
-            IWebElement radioButton = driver.FindElement(By.Id("cheese_and_peas"));
-            Assert.AreEqual(radioButton.Selected, true);
-
-            radioButton = driver.FindElement(By.Id("cheese"));
-            Assert.AreEqual(radioButton.Selected, false);
-        }
-
-        [Test]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void ShouldThrowAnExceptionWhenTogglingTheStateOfARadioButton()
-        {
-            driver.Url = formsPage;
-            IWebElement radioButton = driver.FindElement(By.Id("cheese"));
-            radioButton.Toggle();
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.IE, "IE allows toggling of an option not in a multiselect")]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void TogglingAnOptionShouldThrowAnExceptionIfTheOptionIsNotInAMultiSelect()
-        {
-            driver.Url = formsPage;
-
-            IWebElement select = driver.FindElement(By.Name("selectomatic"));
-            IWebElement option = select.FindElements(By.TagName("option"))[0];
-            option.Toggle();
-        }
-
-        [Test]
-        public void TogglingAnOptionShouldToggleOptionsInAMultiSelect()
-        {
-            driver.Url = formsPage;
-
-            IWebElement select = driver.FindElement(By.Name("multi"));
-            IWebElement option = select.FindElements(By.TagName("option"))[0];
-
-            bool selected = option.Selected;
-            bool current = option.Toggle();
-            Assert.IsFalse(selected == current);
-
-            current = option.Toggle();
-            Assert.IsTrue(selected == current);
-        }
-
-
-        [Test]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver does not yet support file uploads")]
         public void ShouldBeAbleToAlterTheContentsOfAFileUploadInputElement()
         {
@@ -281,16 +166,6 @@ namespace OpenQA.Selenium
             uploadElement.SendKeys(inputFile.FullName);
             uploadElement.Submit();
             // If we get this far, then we're all good.
-        }
-
-        [Test]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void ShouldThrowAnExceptionWhenSelectingAnUnselectableElement()
-        {
-            driver.Url = formsPage;
-
-            IWebElement element = driver.FindElement(By.XPath("//div"));
-            element.Select();
         }
 
         [Test]
@@ -361,25 +236,6 @@ namespace OpenQA.Selenium
             value = element.GetAttribute("value");
 
             Assert.AreEqual(value.Length, 0);
-        }
-
-        [Test]
-        public void RadioShouldNotBeSelectedAfterSelectingSibling()
-        {
-            driver.Navigate().GoToUrl(formsPage);
-
-            IWebElement cheese = driver.FindElement(By.Id("cheese"));
-            IWebElement peas = driver.FindElement(By.Id("peas"));
-
-            cheese.Select();
-
-            Assert.AreEqual(true,cheese.Selected);
-            Assert.AreEqual(false, peas.Selected);
-
-            peas.Select();
-
-            Assert.AreEqual(false, cheese.Selected);
-            Assert.AreEqual(true, peas.Selected);
         }
     }
 }

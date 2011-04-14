@@ -956,7 +956,7 @@ namespace OpenQA.Selenium.Remote
                         case WebDriverResult.NoSuchFrame:
                             throw new NoSuchFrameException(errorMessage);
 
-                        case WebDriverResult.NotImplemented:
+                        case WebDriverResult.UnknownCommand:
                             throw new NotImplementedException(errorMessage);
 
                         case WebDriverResult.ObsoleteElement:
@@ -965,13 +965,9 @@ namespace OpenQA.Selenium.Remote
                         case WebDriverResult.ElementNotDisplayed:
                             throw new ElementNotVisibleException(errorMessage);
 
-                        case WebDriverResult.ElementNotEnabled:
-                            if (errorMessage.ToLowerInvariant().Contains("toggle") || errorMessage.Contains("single element"))
-                            {
-                                throw new NotImplementedException(errorMessage);
-                            }
-
-                            throw new NotSupportedException(errorMessage);
+                        case WebDriverResult.InvalidElementState:
+                        case WebDriverResult.ElementNotSelectable:
+                            throw new InvalidElementStateException(errorMessage);
 
                         case WebDriverResult.UnhandledError:
                             if (errorMessage.ToLowerInvariant().Contains("script"))
@@ -985,9 +981,6 @@ namespace OpenQA.Selenium.Remote
                             }
 
                             throw new WebDriverException(errorMessage);
-
-                        case WebDriverResult.ElementNotSelected:
-                            throw new NotSupportedException(errorMessage);
 
                         case WebDriverResult.NoSuchDocument:
                             throw new NoSuchElementException(errorMessage);

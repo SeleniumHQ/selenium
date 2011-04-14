@@ -118,7 +118,7 @@ namespace OpenQA.Selenium.Remote
                     // 4xx represents an unknown command or a bad request.
                     if (webResponse.StatusCode >= HttpStatusCode.BadRequest && webResponse.StatusCode < HttpStatusCode.InternalServerError)
                     {
-                        commandResponse.Status = WebDriverResult.NotImplemented;
+                        commandResponse.Status = WebDriverResult.UnknownCommand;
                     }
                     else if (webResponse.StatusCode >= HttpStatusCode.InternalServerError)
                     {

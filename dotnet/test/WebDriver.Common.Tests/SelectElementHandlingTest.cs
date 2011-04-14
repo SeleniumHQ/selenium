@@ -30,7 +30,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE driver allows deselecting option from a single-select selectlist")]
-        [ExpectedException(typeof(NotImplementedException))]
+        [ExpectedException(typeof(InvalidElementStateException))]
         public void ShouldNotBeAbleToDeselectAnOptionFromANormalSelect()
         {
             driver.Url = formsPage;

@@ -102,7 +102,7 @@ namespace OpenQA.Selenium
                 disabledTextElement1.SendKeys("foo");
                 Assert.Fail("Should have thrown exception");
             }
-            catch (NotSupportedException)
+            catch (InvalidElementStateException)
             {
                 //Expected
             }
@@ -115,7 +115,7 @@ namespace OpenQA.Selenium
                 disabledTextElement2.SendKeys("bar");
                 Assert.Fail("Should have thrown exception");
             }
-            catch (NotSupportedException)
+            catch (InvalidElementStateException)
             {
                 //Expected
             }

@@ -71,7 +71,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// The functionality is not supported.
         /// </summary>
-        NotImplemented = 9,
+        UnknownCommand = 9,
 
         /// <summary>
         /// The specified element is no longer valid.
@@ -86,7 +86,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// The specified element is not enabled.
         /// </summary>
-        ElementNotEnabled = 12,
+        InvalidElementState = 12,
 
         /// <summary>
         /// An unhandled error occurred.
@@ -101,7 +101,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// The specified element is not selected.
         /// </summary>
-        ElementNotSelected = 15,
+        ElementNotSelectable = 15,
 
         /// <summary>
         /// No document matching the criteria exists.
@@ -121,7 +121,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// The result from the JavaScript execution is not recognized.
         /// </summary>
-        UnknownScriptResult = 19,
+        XPathLookupError = 19,
 
         /// <summary>
         /// No collection matching the criteria exists.
@@ -156,6 +156,11 @@ namespace OpenQA.Selenium
         /// <summary>
         /// An asynchronous JavaScript execution timed out.
         /// </summary>
-        AsyncScriptTimeout = 28
+        AsyncScriptTimeout = 28,
+
+        /// <summary>
+        /// The coordinates of the element are invalid.
+        /// </summary>
+        InvalidElementCoordinates = 29
     }
 }
