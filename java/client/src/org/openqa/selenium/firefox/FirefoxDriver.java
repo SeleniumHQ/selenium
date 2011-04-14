@@ -112,7 +112,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
   private static FirefoxBinary getBinary(Capabilities capabilities) {
     if (capabilities.getCapability(BINARY) != null) {
       File file = new File((String) capabilities.getCapability(BINARY));
-      new FirefoxBinary(file);
+      return new FirefoxBinary(file);
     }
     return new FirefoxBinary();
   }
