@@ -44,7 +44,7 @@ namespace Selenium.Internal.SeleniumEmulation
 
             IWebElement element = this.finder.FindElement(driver, locator);
             IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
-            if (executor != null && executor.IsJavaScriptEnabled)
+            if (executor != null)
             {
                 JavaScriptLibrary.CallEmbeddedSelenium(driver, "replaceText", element, stringToType);
             }

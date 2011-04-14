@@ -30,6 +30,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets a value indicating whether JavaScript is enabled for this browser.
         /// </summary>
+        [Obsolete("This property will be removed. Only one driver allows JavaScript to be toggled.")]
         bool IsJavaScriptEnabled { get; }
 
         /// <summary>

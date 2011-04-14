@@ -100,12 +100,6 @@ if (document.__$webdriverPageId != '{1}') {{
         /// <exception cref="TimeoutException">if the timeout expires during the JavaScript execution.</exception>
         public object ExecuteScript(string script, object[] args)
         {
-            if (!this.executor.IsJavaScriptEnabled)
-            {
-                throw new InvalidOperationException(
-                    "The underlying JavascriptExecutor must have JavaScript enabled");
-            }
-
             // Injected into the page along with the user's script. Used to detect when a new page is
             // loaded while waiting for the script result.
             string pageId = Guid.NewGuid().ToString();
