@@ -98,7 +98,6 @@ public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListe
 	public boolean isAlive() {
 		String url = getRemoteURL().toExternalForm() + "/status";
 		BasicHttpRequest r = new BasicHttpRequest("GET",url );
-		System.out.println("GET on "+url);
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpHost host = new HttpHost(getRemoteURL().getHost(), getRemoteURL().getPort());
 		HttpResponse response;

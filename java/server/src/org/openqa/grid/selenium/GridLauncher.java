@@ -60,8 +60,6 @@ public class GridLauncher {
 		remote.addFirefoxSupport();
 		remote.addInternetExplorerSupport();
 		remote.addChromeSupport();
-		remote.setMaxConcurrentSession(5);
-		remote.setTimeout(30000, 10000);
 		remote.launchRemoteServer();
 
 		remote.registerToHub();

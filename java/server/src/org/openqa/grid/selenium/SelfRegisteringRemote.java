@@ -44,6 +44,8 @@ public abstract class SelfRegisteringRemote {
 
 	public SelfRegisteringRemote(GridConfiguration config) {
 		this.gridConfig = config;
+		setMaxConcurrentSession(config.getMaxConcurrentTests());
+		setTimeout(config.getNodeTimeoutInSec()*1000, 10000);
 	}
 
 
