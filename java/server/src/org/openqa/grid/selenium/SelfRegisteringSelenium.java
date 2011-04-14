@@ -58,7 +58,7 @@ public class SelfRegisteringSelenium extends SelfRegisteringRemote {
 		DesiredCapabilities ff = new DesiredCapabilities();
 		ff.setBrowserName("*firefox");
 		ff.setCapability(PLATFORM, Platform.getCurrent());
-		getCaps().add(ff);
+		getGridConfig().getCapabilities().add(ff);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class SelfRegisteringSelenium extends SelfRegisteringRemote {
 		if (Platform.getCurrent().is(Platform.WINDOWS)) {
 			DesiredCapabilities ie = new DesiredCapabilities();
 			ie.setBrowserName("*iexplore");
-			getCaps().add(ie);
+			getGridConfig().getCapabilities().add(ie);
 		}
 	}
 
@@ -74,7 +74,7 @@ public class SelfRegisteringSelenium extends SelfRegisteringRemote {
 	public void addSafariSupport() {
 		DesiredCapabilities safari = new DesiredCapabilities();
 		safari.setBrowserName("*safari");
-		getCaps().add(safari);
+		getGridConfig().getCapabilities().add(safari);
 
 	}
 }

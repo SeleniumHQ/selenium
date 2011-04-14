@@ -18,6 +18,7 @@ package org.openqa.grid.selenium;
 
 import java.io.File;
 import java.net.URL;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ public abstract class SelfRegisteringRemote {
 	
 
 	private GridConfiguration gridConfig;
-	private List<DesiredCapabilities> caps = new ArrayList<DesiredCapabilities>();
+	//private List<DesiredCapabilities> caps = new ArrayList<DesiredCapabilities>();
 	private Map<String, Object> config = new HashMap<String, Object>();
 
 	public SelfRegisteringRemote(GridConfiguration config) {
@@ -74,6 +75,17 @@ public abstract class SelfRegisteringRemote {
 	}
 
 
+	public void addCustomBrowser(DesiredCapabilities cap){
+		String s = cap.getBrowserName();
+		if (s == null || "".equals(s)){
+			throw new InvalidParameterException(cap +" does seems to be a valid browser.");
+		}
+		cap.setPlatform(Platform.getCurrent());
+		// TODO freynaud find the version automatically.
+		getGridConfig().getCapabilities().add(cap);
+	}
+	
+	
 	public abstract void addInternetExplorerSupport();
 
 	public abstract void addSafariSupport();
@@ -82,7 +94,7 @@ public abstract class SelfRegisteringRemote {
 
 	public void addChromeSupport() {
 		DesiredCapabilities chrome = new DesiredCapabilities("chrome", "10.0", Platform.getCurrent());
-		caps.add(chrome);
+		getGridConfig().getCapabilities().add(chrome);
 	}
 
 	public void setTimeout(long timeoutMillis, long cycleMillis) {
@@ -95,7 +107,7 @@ public abstract class SelfRegisteringRemote {
 	public RegistrationRequest getRegistrationRequest() {
 		RegistrationRequest request = new RegistrationRequest();
 
-		for (DesiredCapabilities cap : caps) {
+		for (DesiredCapabilities cap : getGridConfig().getCapabilities()) {
 			request.addDesiredCapabilitiy(cap.asMap());
 		}
 
@@ -125,9 +137,7 @@ public abstract class SelfRegisteringRemote {
 		return gridConfig;
 	}
 
-	List<DesiredCapabilities> getCaps() {
-		return caps;
-	}
+	
 
 	Map<String, Object> getConfig() {
 		return config;

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
@@ -15,7 +16,6 @@ public class GridConfiguration {
 	private GridRole role = GridRole.NOT_GRID;
 	private int timeout = 30000;
 	private int maxConcurrent = 5;
-	
 
 	private URL registrationURL;
 	private int port = 4444;
@@ -23,6 +23,8 @@ public class GridConfiguration {
 	private String[] seleniumServerargs = new String[0];
 	private RemoteControlConfiguration nodeConfig = new RemoteControlConfiguration();
 	private NetworkUtils networkUtils = new NetworkUtils();
+	
+	private List<DesiredCapabilities> capabilities = new ArrayList<DesiredCapabilities>();
 
 	public static GridConfiguration parse(String[] args) {
 
@@ -63,7 +65,7 @@ public class GridConfiguration {
 				i++;
 				String v = getArgValue(args, i);
 				config.setHost(v);
-			}  else if ("-nodeTimeout".equalsIgnoreCase(arg)) {
+			} else if ("-nodeTimeout".equalsIgnoreCase(arg)) {
 				i++;
 				String v = getArgValue(args, i);
 				config.setNodeTimeoutInSec(Integer.parseInt(v));
@@ -71,7 +73,11 @@ public class GridConfiguration {
 				i++;
 				String v = getArgValue(args, i);
 				config.setMaxConcurrentTests(Integer.parseInt(v));
-			}else {
+			} else if ("-browser".equalsIgnoreCase(arg)) {
+				i++;
+				String v = getArgValue(args, i);
+				config.addCapabilityFromString(v);
+			} else {
 				leftOver.add(arg);
 			}
 		}
@@ -82,6 +88,28 @@ public class GridConfiguration {
 			printHelpAndDie(e.getMessage());
 		}
 		return config;
+	}
+
+	public List<DesiredCapabilities> getCapabilities() {
+		return capabilities;
+	}
+
+	private void addCapabilityFromString(String capability) {
+		String[] s = capability.split(",");
+		if (s.length==0){
+			throw new InvalidParameterException("-browser must be followed by a browser description");
+		}
+		DesiredCapabilities res = new DesiredCapabilities();
+		for (int i = 0; i < s.length; i++) {
+			if (s[i].split("=").length!=2){
+				throw new InvalidParameterException("-browser format is key1=value1,key2=value2 "+s[i]+" deosn't follow that format.");
+			}
+			String key = s[i].split("=")[0];
+			String value = s[i].split("=")[1];
+			res.setCapability(key, value);
+		}
+		capabilities.add(res);
+		
 	}
 
 	/**
@@ -100,21 +128,22 @@ public class GridConfiguration {
 
 	private static void printHelpAndDie(String msg) {
 		String INDENT = "  ";
-		RemoteControlLauncher.printWrappedErrorLine("","Error with the parameters :"+msg);
+		RemoteControlLauncher.printWrappedErrorLine("", "Error with the parameters :" + msg);
 		RemoteControlLauncher.printWrappedErrorLine("", "To use as a grid, specify a role and its arguments.");
-		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-role <hub|remotecontrol|webdriver> (default is no grid -- just run an RC server). When launching a node for webdriver"+
-				" or remotecontrol, the parameters will be forwarded to the server on the node, so you can use something like -role remotecontrol -trustAllSSLCertificates." +
-				" In that case, the SeleniumServer will be launch with the trustallCertificats option.");
+		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-role <hub|remotecontrol|webdriver> (default is no grid -- just run an RC server). When launching a node for webdriver"
+				+ " or remotecontrol, the parameters will be forwarded to the server on the node, so you can use something like -role remotecontrol -trustAllSSLCertificates."
+				+ " In that case, the SeleniumServer will be launch with the trustallCertificats option.");
 		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-hub <http://localhost:4444/grid/register> : the url that will be used to post the registration request.");
-		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-host <IP | hostname> : usually not needed and determined automatically. For exotic network configuration, network with VPN, " +
-				"specifying the host might be necessary.");
+		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-host <IP | hostname> : usually not needed and determined automatically. For exotic network configuration, network with VPN, " + "specifying the host might be necessary.");
 		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-port <xxxx> : the port the remote/hub will listen on.Default to 4444.");
-		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-nodeTimeout <xxxx> : the timeout in seconds before the hub automatically releases a node that hasn't received any requests for more than XX sec." +
-				" The browser will be released for another test to use.This tupically takes care of the client crashes.");
-		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-maxConcurrent <x> : Defaults to 5. The maximum number of tests that can run at the same time on the node. " +
-				"Different from the supported browsers.For a node that supports firefox 3.6, firefox 4.0  and IE8 for instance,maxConccurent=1 " +
-				"will ensure that you never have more than 1 browserrunning. With maxConcurrent=2 you can have 2 firefox tests at the same time, or 1 IE and 1 FF. ");
-		
+		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-nodeTimeout <xxxx> : the timeout in seconds before the hub automatically releases a node that hasn't received any requests for more than XX sec."
+				+ " The browser will be released for another test to use.This tupically takes care of the client crashes.");
+		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-maxConcurrent <x> : Defaults to 5. The maximum number of tests that can run at the same time on the node. "
+				+ "Different from the supported browsers.For a node that supports firefox 3.6, firefox 4.0  and IE8 for instance,maxConccurent=1 "
+				+ "will ensure that you never have more than 1 browserrunning. With maxConcurrent=2 you can have 2 firefox tests at the same time, or 1 IE and 1 FF. ");
+
+		// -browser
+		// browserName=firefox,version=3.6,firefox_binary=/Users/freynaud
 		System.exit(-1);
 	}
 
@@ -173,7 +202,7 @@ public class GridConfiguration {
 		// param passed to the node do not contain anything that doesn't make
 		// sense in a grid environement.For instance launching a node with
 		// -interactive.
-		if (getNodeRemoteControlConfiguration().isInteractive() == true ){
+		if (getNodeRemoteControlConfiguration().isInteractive() == true) {
 			throw new InvalidParameterException("no point launching the node in interactive mode");
 		}
 
@@ -189,9 +218,10 @@ public class GridConfiguration {
 
 	}
 
-	public void setNodeTimeoutInSec(int sec){
-		this.timeout=sec;
+	public void setNodeTimeoutInSec(int sec) {
+		this.timeout = sec;
 	}
+
 	public int getNodeTimeoutInSec() {
 		return timeout;
 	}

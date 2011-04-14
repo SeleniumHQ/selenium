@@ -61,7 +61,7 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 	public void addFirefoxSupport() {
 		DesiredCapabilities ff = DesiredCapabilities.firefox();
 		ff.setCapability(PLATFORM, Platform.getCurrent());	
-		getCaps().add(ff);
+		getGridConfig().getCapabilities().add(ff);
 	}
 
 	@Override
@@ -69,9 +69,8 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 		if (Platform.getCurrent().is(Platform.WINDOWS)) {
 			DesiredCapabilities ie = DesiredCapabilities.internetExplorer();
 			ie.setCapability(PLATFORM, Platform.getCurrent());
-			getCaps().add(ie);
+			getGridConfig().getCapabilities().add(ie);
 		}
-
 	}
 
 	@Override
