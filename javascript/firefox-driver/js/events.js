@@ -38,23 +38,28 @@ var CI = Components.interfaces;
  * @param {object} parameters The parameters to extract the coordinates from.
  */
 webdriver.firefox.events.buildCoordinates = function(parameters, doc) {
-  var element = parameters.id ? Utils.getElementAt(parameters.id, doc) : null;
-
+  var element = parameters.element ? Utils.getElementAt(parameters.element, doc) : null;
 
   var x = parameters['xoffset'];
   var y = parameters['yoffset'];
 
 
+  var auxiliaryToReturn = undefined;
+  if (element) {
+    auxiliaryToReturn = new XPCNativeWrapper(element);
+  }
+
   if (!goog.isDef(x) && element) {
     var size = goog.style.getSize(element);
     x =  size.width / 2;
     y =  size.height / 2;
+
   }
 
   return {
     x: x,
     y: y,
-    auxiliary: new XPCNativeWrapper(element),
+    auxiliary: auxiliaryToReturn,
 
     QueryInterface: webdriver.firefox.utils.queryInterface(this,
       [CI.nsISupports, CI.wdICoordinate])

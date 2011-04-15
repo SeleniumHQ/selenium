@@ -21,6 +21,7 @@ import java.util.concurrent.Callable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -141,7 +142,6 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     if (!hasInputDevices()) {
       return;
@@ -149,7 +149,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     driver.get(pages.javascriptPage);
 
-    RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("menu1"));
+    WebElement element = driver.findElement(By.id("menu1"));
     if (!supportsNativeEvents()) {
       System.out.println("Skipping hover test: needs native events");
       return;
@@ -157,13 +157,76 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     ((HasInputDevices) driver).actionsBuilder().moveToElement(element).build().perform();
 
-    RenderedWebElement target = (RenderedWebElement) driver.findElement(By.id("item1"));
+    WebElement target = driver.findElement(By.id("item1"));
     assertTrue(target.isDisplayed());
     target.click();
 
     String text = driver.findElement(By.id("result")).getText();
     assertTrue(text.contains("item 1"));
   }
+
+  @JavascriptEnabled
+  public void testMovingMouseByRelativeOffset() {
+    if (!hasInputDevices() || !supportsNativeEvents()) {
+      System.out.println(
+          String.format("Skipping move by offset test: native events %s has input devices: %s",
+              supportsNativeEvents(), hasInputDevices()));
+      return;
+    }
+
+    driver.get(pages.mouseTrackerPage);
+
+    WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
+    ((HasInputDevices) driver).actionsBuilder().moveToElement(trackerDiv).build().perform();
+
+    WebElement reporter = driver.findElement(By.id("status"));
+
+    waitFor(fuzzyMatchingOfCoordinates(reporter, 55, 182));
+
+    ((HasInputDevices) driver).actionsBuilder().moveByOffset(10, 20).build().perform();
+
+    waitFor(fuzzyMatchingOfCoordinates(reporter, 65, 219));
+  }
+
+  @JavascriptEnabled
+  public void testMovingMouseToRelativeElementOffset() {
+    if (!hasInputDevices() || !supportsNativeEvents()) {
+      System.out.println(
+          String.format("Skipping move to offset test: native events %s has input devices: %s",
+              supportsNativeEvents(), hasInputDevices()));
+      return;
+    }
+
+    driver.get(pages.mouseTrackerPage);
+
+    WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
+    ((HasInputDevices) driver).actionsBuilder().moveToElement(trackerDiv, 95, 195).build()
+        .perform();
+
+    WebElement reporter = driver.findElement(By.id("status"));
+
+    waitFor(fuzzyMatchingOfCoordinates(reporter, 95, 195));
+  }
+
+  @JavascriptEnabled
+  @NeedsFreshDriver
+  public void testMoveRelativeToBody() {
+    if (!hasInputDevices() || !supportsNativeEvents()) {
+      System.out.println(
+          String.format("Skipping move to offset test: native events %s has input devices: %s",
+              supportsNativeEvents(), hasInputDevices()));
+      return;
+    }
+
+    driver.get(pages.mouseTrackerPage);
+
+    ((HasInputDevices) driver).actionsBuilder().moveByOffset(50, 100).build().perform();
+
+    WebElement reporter = driver.findElement(By.id("status"));
+
+    waitFor(fuzzyMatchingOfCoordinates(reporter, 36, 13));
+  }
+
 
   private boolean hasInputDevices() {
     if (!(driver instanceof HasInputDevices)) {
@@ -185,4 +248,33 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     return false;
   }
+
+  private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {
+    String[] splitString = locationTouple.split(",");
+    int gotX = Integer.parseInt(splitString[0].trim());
+    int gotY = Integer.parseInt(splitString[1].trim());
+
+    // Everything with in 10 pixels range is OK
+    final int ALLOWED_DEVIATION = 10;
+    return Math.abs(expectedX - gotX) < ALLOWED_DEVIATION &&
+        Math.abs(expectedY - gotY) < ALLOWED_DEVIATION;
+
+  }
+
+  private Callable<Boolean> fuzzyMatchingOfCoordinates(
+      final WebElement element, final int x, final int y) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        return fuzzyPositionMatching(x, y, element.getText());
+      }
+
+      @Override
+      public String toString() {
+        return "Coordinates: " + element.getText() + " but expected: " +
+            x + ", " + y;
+      }
+    };
+  }
+
+
 }

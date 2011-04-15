@@ -56,6 +56,7 @@ public class Pages {
   public String underscorePage;
   public String ajaxyPage;
   public String mapVisibilityPage;
+  public String mouseTrackerPage;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -94,5 +95,6 @@ public class Pages {
     selectableItemsPage = appServer.whereIs("selectableItems.html");
     underscorePage = appServer.whereIs("underscore.html");
     mapVisibilityPage = appServer.whereIs("map_visibility.html");
+    mouseTrackerPage = appServer.whereIs("mousePositionTracker.html");
   }
 }

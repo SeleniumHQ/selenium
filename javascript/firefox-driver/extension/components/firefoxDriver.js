@@ -1035,28 +1035,51 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   var coords = webdriver.firefox.events.buildCoordinates(parameters, doc);
 
   var mouseMoveTo = function(coordinates, nativeEventsEnabled) {
-    if (!coordinates.auxiliary) {
-      throw new bot.Error("No element specified for mouse move.");
-    }
+    var toX = this.currentX;
+    var toY = this.currentY;
+    var elementForNode = null;
 
-    var element = webdriver.firefox.utils.unwrap(coordinates.auxiliary);
+    if (coordinates.auxiliary) {
+      var element = webdriver.firefox.utils.unwrap(coordinates.auxiliary);
 
-    if (goog.isFunction(element.scrollIntoView)) {
-      element.scrollIntoView();
-    }
-
-    var events = Utils.getNativeEvents();
-    var node = Utils.getNodeForNativeEvents(element);
-
-    if (nativeEventsEnabled && events && node) {
       var loc = Utils.getLocationOnceScrolledIntoView(element);
 
-      var x = loc.x + (loc.width ? loc.width / 2 : 0);
-      var y = loc.y + (loc.height ? loc.height / 2 : 0);
+      toX = loc.x + coordinates.x;
+      toY = loc.y + coordinates.y;
 
-      events.mouseMove(node, this.currentX, this.currentY, x, y);
-      this.currentX = x;
-      this.currentY = y;
+      elementForNode = element;
+    } else {
+      if (goog.isDef(this.currentX) && goog.isDef(this.currentY)) {
+        Logger.dumpn("Getting element from coordinates " + this.currentX + "," + this.currentY);
+        elementForNode = doc.elementFromPoint(this.currentX, this.currentY);
+      } else {
+        this.currentX = 0;
+        this.currentY = 0;
+        Logger.dumpn("currentX,Y not defined - using body");
+        elementForNode = doc.getElementsByTagName("body")[0];
+      }
+
+      toX = this.currentX + coordinates.x;
+      toY = this.currentY + coordinates.y;
+    }
+
+
+    var events = Utils.getNativeEvents();
+    var node = Utils.getNodeForNativeEvents(elementForNode);
+
+    if (nativeEventsEnabled && events && node) {
+      if (!goog.isDef(this.currentX)) {
+        this.currentX = 0;
+      }
+
+      if (!goog.isDef(this.currentY)) {
+        this.currentY = 0;
+      }
+
+      events.mouseMove(node, this.currentX, this.currentY, toX, toY);
+
+      this.currentX = toX;
+      this.currentY = toY;
     } else {
       var hoverFailureCause = "Could not get node for element or native " +
           "events are not supported on the platform.";
