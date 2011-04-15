@@ -14,7 +14,7 @@ import org.openqa.selenium.server.cli.RemoteControlLauncher;
 public class GridConfiguration {
 
 	private GridRole role = GridRole.NOT_GRID;
-	private int timeout = 30000;
+	private int timeout = 30;
 	private int maxConcurrent = 5;
 
 	private URL registrationURL;
