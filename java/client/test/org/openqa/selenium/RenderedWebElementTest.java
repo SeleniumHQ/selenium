@@ -16,6 +16,8 @@ limitations under the License.
 */
 package org.openqa.selenium;
 
+import java.util.concurrent.Callable;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,6 +26,7 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaiter.waitFor;
 
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 
@@ -100,17 +103,18 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
       return;
     }
 
-    RenderedWebElement item = (RenderedWebElement) driver.findElement(By.id("item1"));
+    final WebElement item = driver.findElement(By.id("item1"));
     assertEquals("", item.getText());
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
     ((HasInputDevices) driver).actionsBuilder().moveToElement(element).build().perform();
 
-    long waitEndTime = System.currentTimeMillis() + 5000;
+    waitFor(new Callable<Boolean>() {
 
-    while (item.getText().equals("") && (System.currentTimeMillis() < waitEndTime)) {
-      doSleep(200);
-    }
+      public Boolean call() throws Exception {
+        return !item.getText().equals("");
+      }
+    });
 
     assertEquals("Item 1", item.getText());
   }
@@ -180,13 +184,5 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     }
 
     return false;
-  }
-
-  private void doSleep(int timeInMs) {
-    try {
-      Thread.sleep(timeInMs);
-    } catch (InterruptedException e) {
-      throw new RuntimeException("Interrupted: " + e.toString());
-    }
   }
 }
