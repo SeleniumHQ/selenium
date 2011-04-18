@@ -15,7 +15,7 @@ namespace :se_ide do
       # mkdir "ide/main/src/content-files"
       ln_s Dir.glob(base_ide_dir + "/common/src/js/core/scripts/selenium-testrunner.js"), "ide/main/src/content-files"
       # atoms
-      cp "build/common/src/js/selenium/core.js", "ide/main/src/content/selenium/scripts/atoms.js"
+      cp "build/javascript/selenium-atoms/selenium-atoms.js", "ide/main/src/content/selenium/scripts/atoms.js"
       # sizzle
       # mkdir "ide/main/src/content/selenium/lib"
       cp "third_party/js/sizzle/sizzle.js", "ide/main/src/content/selenium/lib/sizzle.js"
@@ -35,9 +35,9 @@ namespace :se_ide do
       end
 
       # atoms
-      f = Dir.glob(base_ide_dir + "/build/common/src/js/selenium/core.js")
+      f = Dir.glob(base_ide_dir + "/build/javascript/selenium-atoms/selenium-atoms.js")
       f.each do |c|
-        files << base_ide_dir + "/build/common/src/js/selenium/core.js"
+        files << base_ide_dir + "/build/javascript/selenium-atoms/selenium-atoms.js"
         cp c, "ide/main/src/content/selenium/scripts/atoms.js"
       end
       
