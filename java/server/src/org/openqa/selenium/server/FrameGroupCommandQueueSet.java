@@ -214,7 +214,11 @@ public class FrameGroupCommandQueueSet {
         if (sessionId == null) {
             throw new NullPointerException("sessionId should not be null; has this session been started yet?");
         }
-        return queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
+        FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
+        if (queueSet == null) {
+            throw new RuntimeException("sessionId " + sessionId + " doesn't exist; perhaps this session was already stopped?");
+        }
+        return queueSet;
     }
     
     /** Creates a FrameGroupCommandQueueSet for the specifed sessionId 
