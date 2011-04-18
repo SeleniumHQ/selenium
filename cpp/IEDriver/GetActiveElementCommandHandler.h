@@ -32,8 +32,18 @@ protected:
 		CComPtr<IHTMLElement> element;
 		doc->get_activeElement(&element);
 
+		// For some contentEditable frames, the <body> element will be the
+		// active element. However, to properly have focus, we must explicitly
+		// set focus to the element.
+		CComQIPtr<IHTMLBodyElement> body_element(element);
+		if (body_element) {
+			CComQIPtr<IHTMLElement2> body_element2(body_element);
+			body_element2->focus();
+		}
+
+		// If we don't have an element at this point, just return the
+		// body element so that we don't return a NULL pointer.
 		if (!element) {
-			// Grab the body instead
 			doc->get_body(&element);
 		}
 

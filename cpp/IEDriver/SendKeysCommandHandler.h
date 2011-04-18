@@ -201,22 +201,31 @@ private:
 	}
 
 	bool SendKeysCommandHandler::WaitUntilElementFocused(IHTMLElement *element) {
-		CComQIPtr<IHTMLElement2> element2(element);
-		element2->focus();
-
 		// Check we have focused the element.
+		bool has_focus = false;
 		CComPtr<IDispatch> dispatch;
 		element->get_document(&dispatch);
 		CComQIPtr<IHTMLDocument2> document(dispatch);
 
-		bool has_focus = false;
+		// If the element we want is already the focused element, we're done.
+		CComPtr<IHTMLElement> active_element;
+		if (document->get_activeElement(&active_element) == S_OK) {
+			if (active_element.IsEqualObject(element)) {
+				return true;
+			}
+		}
+
+		CComQIPtr<IHTMLElement2> element2(element);
+		element2->focus();
+
 		clock_t max_wait = clock() + 1000;
 		for (int i = clock(); i < max_wait; i = clock()) {
 			wait(1);
-			CComPtr<IHTMLElement> active_element;
-			if (document->get_activeElement(&active_element) == S_OK) {
-				CComQIPtr<IHTMLElement2> active_element2(active_element);
-				if (element2.IsEqualObject(active_element2)) {
+			CComPtr<IHTMLElement> active_wait_element;
+			if (document->get_activeElement(&active_wait_element) == S_OK) {
+				CComQIPtr<IHTMLElement2> active_wait_element2(active_wait_element);
+				if (element2.IsEqualObject(active_wait_element2)) {
+					this->SetInsertionPoint(element);
 					has_focus = true;
 					break;
 				}
@@ -228,6 +237,27 @@ private:
 		}
 
 		return has_focus;
+	}
+
+	bool SendKeysCommandHandler::SetInsertionPoint(IHTMLElement* element) {
+		CComPtr<IHTMLTxtRange> range;
+		CComQIPtr<IHTMLInputTextElement> input_element(element);
+		if (input_element) {
+			input_element->createTextRange(&range);
+		} else {
+			CComQIPtr<IHTMLTextAreaElement> text_area_element(element);
+			if (text_area_element) {
+				text_area_element->createTextRange(&range);
+			}
+		}
+
+		if (range) {
+			range->collapse(VARIANT_FALSE);
+			range->select();
+			return true;
+		}
+
+		return false;
 	}
 };
 
