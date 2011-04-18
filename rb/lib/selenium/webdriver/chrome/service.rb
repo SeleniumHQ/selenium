@@ -44,6 +44,8 @@ module Selenium
           unless @socket_poller.connected?
             raise Error::WebDriverError, "unable to connect to chromedriver #{@uri}"
           end
+
+          at_exit { stop } # make sure we don't leave the server running
         end
 
         def stop
