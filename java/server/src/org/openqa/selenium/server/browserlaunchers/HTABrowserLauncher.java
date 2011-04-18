@@ -113,7 +113,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
         FrameGroupCommandQueueSet queueSet = 
             FrameGroupCommandQueueSet.getQueueSet(sessionId);
         
-        if (queueSet.getExtensionJs().length() > 0) {
+        if (queueSet != null && queueSet.getExtensionJs().length() > 0) {
             String path = "scripts/user-extensions.js[" + sessionId + "]";
             FileWriter fileWriter = new FileWriter(new File(coreDir, path));
             BufferedWriter writer = new BufferedWriter(fileWriter);
