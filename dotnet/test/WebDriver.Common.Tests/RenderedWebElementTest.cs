@@ -11,7 +11,6 @@ namespace OpenQA.Selenium
     {
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "Test expects hex color, but a rgb tuple is returned.")]
         public void ShouldPickUpStyleOfAnElement()
         {
             driver.Url = javascriptPage;
@@ -19,12 +18,12 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("green-parent"));
             string backgroundColour = element.GetCssValue("background-color");
 
-            Assert.AreEqual("#008000", backgroundColour);
+            Assert.That(backgroundColour, Is.EqualTo("#008000").Or.EqualTo("rgb(0, 128, 0)"));
 
             element = driver.FindElement(By.Id("red-item"));
             backgroundColour = element.GetCssValue("background-color");
 
-            Assert.AreEqual("#ff0000", backgroundColour);
+            Assert.That(backgroundColour, Is.EqualTo("#ff0000").Or.EqualTo("rgb(255, 0, 0)"));
         }
 
         [Test]
@@ -50,7 +49,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "Test expects a color keyword, but a rgba tuple is returned.")]
         public void ShouldAllowInheritedStylesToBeUsed()
         {
             driver.Url = javascriptPage;
@@ -58,7 +56,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("green-item"));
             string backgroundColour = element.GetCssValue("background-color");
 
-            Assert.AreEqual("transparent", backgroundColour);
+            Assert.That(backgroundColour, Is.EqualTo("transparent").Or.EqualTo("rgba(0, 0, 0, 0)"));
         }
 
         [Test]
@@ -66,7 +64,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Firefox, "moveto JSON protocol command is not yet supported by Firefox")]
         public void ShouldAllowUsersToHoverOverElements()
         {
             driver.Url = javascriptPage;
@@ -100,7 +97,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
 
-            IWebElement shrinko = driver.FindElement(By.Id("amazing"));
+            IWebElement shrinko = driver.FindElement(By.Id("linkId"));
             Size size = shrinko.Size;
             Assert.IsTrue(size.Width > 0, "Width expected to be greater than 0");
             Assert.IsTrue(size.Height > 0, "Height expected to be greater than 0");

@@ -143,13 +143,6 @@ namespace OpenQA.Selenium
                     }
                     break;
 
-                case Browser.ChromeNonWindows:
-                    if (EnvironmentManager.Instance.RemoteCapabilities == "chrome" && !Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
-                    {
-                        isRemoteInstance = true;
-                    }
-                    break;
-
                 case Browser.IPhone:
                     if (EnvironmentManager.Instance.RemoteCapabilities == "iphone")
                     {

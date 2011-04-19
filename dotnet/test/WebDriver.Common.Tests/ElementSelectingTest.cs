@@ -14,7 +14,6 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToSelectAnEnabledUnselectedCheckbox()
         {
             driver.Url = (formsPage);
-            Console.WriteLine("On page: " + driver.Url);
             assertCanSelect(enabledUnselectedCheckbox());
         }
 

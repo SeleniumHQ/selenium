@@ -52,7 +52,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldSubmitAFormWhenAnyElementWihinThatFormIsSubmitted()
+        public void ShouldSubmitAFormWhenAnyElementWithinThatFormIsSubmitted()
         {
             driver.Url = formsPage;
             driver.FindElement(By.XPath("//form/p")).Submit();
@@ -79,7 +79,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void ShouldSubmitAFormUsingTheNewlineLiteral()
         {
             driver.Url = formsPage;
@@ -94,7 +93,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void ShouldSubmitAFormUsingTheEnterKey()
         {
             driver.Url = formsPage;
@@ -143,6 +141,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual(inputFile.Name, outputFile.Name);
             inputFile.Delete();
         }
+
         [Test]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver does not yet support file uploads")]
         public void ShouldBeAbleToUploadTheSameFileTwice()
@@ -183,10 +182,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Not implemented going to the end of the line first")]
         [IgnoreBrowser(Browser.HtmlUnit, "Not implemented going to the end of the line first")]
         [IgnoreBrowser(Browser.Chrome, "Not implemented going to the end of the line first")]
-        public void SendingKeyboardEventsShouldAppendTextinTextAreas()
+        public void SendingKeyboardEventsShouldAppendTextInTextAreas()
         {
             driver.Url = formsPage;
             IWebElement element = driver.FindElement(By.Id("withText"));

@@ -44,7 +44,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
 
             IWebElement oneliner = driver.FindElement(By.Id("oneline"));
-            Assert.AreEqual("p", oneliner.TagName);
+            Assert.AreEqual("p", oneliner.TagName.ToLower());
 
         }
 

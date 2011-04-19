@@ -223,7 +223,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "Chrome doesn't handle the many-pages situation well")]
         public void ShouldBeAbleToFindAnElementsByCssSelector()
         {
             driver.Url = nestedPage;

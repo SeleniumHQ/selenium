@@ -232,7 +232,6 @@ namespace OpenQA.Selenium
 
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Can't execute script in iframe, track crbug 20773")]
         public void ShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt()
         {
             driver.Url = iframePage;
@@ -262,7 +261,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldBeAbleToClickInASubFrame()
         {
@@ -310,7 +308,6 @@ namespace OpenQA.Selenium
             Assert.IsNotNull(element);
         }
 
-        //@Ignore(value = IE, reason = "IE8 on Win7 is not correctly reporting the query string")
         [Test]
         public void GetCurrentUrl()
         {
@@ -331,7 +328,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs()
         {
             driver.Url = deletingFrame;
@@ -374,6 +370,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Browser returns frame title")]
         public void ShouldReturnWindowTitleInAFrameset()
         {
             driver.Url = framesetPage;

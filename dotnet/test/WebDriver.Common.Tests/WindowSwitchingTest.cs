@@ -160,7 +160,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "Chrome failing on OS X")]
         public void CanCloseWindowWhenMultipleWindowsAreOpen()
         {
             driver.Url = xhtmlTestPage;

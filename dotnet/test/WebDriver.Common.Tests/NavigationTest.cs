@@ -19,7 +19,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver opens a new window for every navigation, rendering back/forward useless for Chrome.")]
         public void ShouldGoBackAndForward()
         {
             INavigation navigation;

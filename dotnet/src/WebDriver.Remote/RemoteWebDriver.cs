@@ -118,6 +118,12 @@ namespace OpenQA.Selenium.Remote
                     // drivers, in that no exeception is thrown when going to an
                     // invalid URL.
                 }
+                catch (InvalidOperationException)
+                {
+                    // Catch the exeception, if any. This is consistent with other
+                    // drivers, in that no exeception is thrown when going to an
+                    // invalid URL.
+                }
             }
         }
 
@@ -970,17 +976,7 @@ namespace OpenQA.Selenium.Remote
                             throw new InvalidElementStateException(errorMessage);
 
                         case WebDriverResult.UnhandledError:
-                            if (errorMessage.ToLowerInvariant().Contains("script"))
-                            {
-                                throw new InvalidOperationException(errorMessage);
-                            }
-
-                            if (errorMessage.Contains("frame"))
-                            {
-                                throw new NoSuchFrameException(errorMessage);
-                            }
-
-                            throw new WebDriverException(errorMessage);
+                            throw new InvalidOperationException(errorMessage);
 
                         case WebDriverResult.NoSuchDocument:
                             throw new NoSuchElementException(errorMessage);

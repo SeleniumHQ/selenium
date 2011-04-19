@@ -10,7 +10,6 @@ namespace OpenQA.Selenium
     {
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void ShouldFireKeyPressEvents()
         {
             driver.Url = javascriptPage;
@@ -24,7 +23,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void ShouldFireKeyDownEvents()
         {
             driver.Url = javascriptPage;
@@ -38,7 +36,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void ShouldFireKeyUpEvents()
         {
             driver.Url = javascriptPage;
@@ -113,7 +110,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void ArrowKeysShouldNotBePrintable()
         {
             driver.Url = javascriptPage;
@@ -125,7 +121,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldBeAbleToUseArrowKeys()
         {
@@ -139,7 +134,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void WillSimulateAKeyUpWhenEnteringTextIntoInputElements()
         {
             driver.Url = javascriptPage;
@@ -153,7 +147,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void WillSimulateAKeyDownWhenEnteringTextIntoInputElements()
         {
             driver.Url = javascriptPage;
@@ -169,7 +162,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void WillSimulateAKeyPressWhenEnteringTextIntoInputElements()
         {
             driver.Url = javascriptPage;
@@ -185,7 +177,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void WillSimulateAKeyUpWhenEnteringTextIntoTextAreas()
         {
             driver.Url = javascriptPage;
@@ -199,7 +190,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void WillSimulateAKeyDownWhenEnteringTextIntoTextAreas()
         {
             driver.Url = javascriptPage;
@@ -215,7 +205,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows)]
         public void WillSimulateAKeyPressWhenEnteringTextIntoTextAreas()
         {
             driver.Url = javascriptPage;
@@ -231,7 +220,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "event firing broken.")]
         [IgnoreBrowser(Browser.Chrome, "event firing broken.")]
         [IgnoreBrowser(Browser.Firefox, "Firefox demands to have the focus on the window already.")]
         public void ShouldFireFocusKeyEventsInTheRightOrder()
@@ -320,7 +308,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void NumericShiftKeys()
         {
@@ -352,7 +339,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void UppercaseAlphaKeys()
         {
@@ -389,7 +375,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ArrowKeysAndPageUpAndDown()
         {
@@ -404,7 +389,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void HomeAndEndAndPageUpAndPageDownKeys()
         {
@@ -426,7 +410,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void DeleteAndBackspaceKeys()
         {
@@ -446,7 +429,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void SpecialSpaceKeys()
         {
@@ -460,7 +442,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void NumberpadAndFunctionKeys()
         {
@@ -482,7 +463,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ShiftSelectionDeletes()
         {
@@ -501,7 +481,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ChordControlHomeShiftEndDelete()
         {
@@ -527,7 +506,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ChordReveseShiftHomeSelectionDeletes()
         {
@@ -565,7 +543,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ChordControlCutAndPaste()
         {
@@ -624,7 +601,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.ChromeNonWindows, "untested user agents")]
         public void ShouldNotTypeIntoElementsThatPreventKeyDownEvents()
         {
             driver.Url = javascriptPage;

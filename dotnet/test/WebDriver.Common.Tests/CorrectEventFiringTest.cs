@@ -55,7 +55,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldFireMouseOverEventWhenClicking()
         {
             driver.Url = javascriptPage;
@@ -67,7 +66,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome does not report mouse move event when clicking")]
         [IgnoreBrowser(Browser.Firefox, "Firefox does not report mouse move event when clicking")]
         public void ShouldFireMouseMoveEventWhenClicking()
         {
@@ -321,7 +320,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldReportTheXAndYCoordinatesWhenClicking()
         {

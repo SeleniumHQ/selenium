@@ -8,7 +8,6 @@ namespace OpenQA.Selenium
         Firefox, 
         Safari, 
         Chrome,
-        ChromeNonWindows,
         Remote, 
         IPhone,
         Android

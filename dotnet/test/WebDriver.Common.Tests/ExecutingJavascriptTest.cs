@@ -599,7 +599,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "Frames not implemented")]
         public void ShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo()
         {
             driver.Url = richTextPage;
@@ -628,7 +627,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldBeAbleToExecuteABigChunkOfJavascriptCode()
         {
             driver.Url = javascriptPage;
@@ -643,7 +641,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.IPhone)]
         public void ShouldBeAbleToExecuteScriptAndReturnElementsList()
         {

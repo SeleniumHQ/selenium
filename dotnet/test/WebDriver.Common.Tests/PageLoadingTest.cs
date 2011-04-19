@@ -157,7 +157,6 @@ namespace OpenQA.Selenium
         //}
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Refresh does not work properly for IE.")]
         public void ShouldBeAbleToRefreshAPage()
         {
             driver.Url = xhtmlTestPage;
@@ -173,8 +172,7 @@ namespace OpenQA.Selenium
         /// </summary>
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "Untested user-agent")]
-        [IgnoreBrowser(Browser.Chrome, "Untested user-agent")]
+        [IgnoreBrowser(Browser.IE, "Browser does, in fact, hang in this case.")]
         [IgnoreBrowser(Browser.IPhone, "Untested user-agent")]
         public void ShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
         {

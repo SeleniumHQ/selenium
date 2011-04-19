@@ -14,6 +14,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "IE renders plain text pages as HTML with <pre> tags.")]
         [IgnoreBrowser(Browser.Firefox, "Firefox renders plain text pages as HTML with <pre> tags.")]
+        [IgnoreBrowser(Browser.Chrome, "Chrome renders plain text pages as HTML with <pre> tags.")]
         public void ShouldBeAbleToLoadASimplePageOfText()
         {
             driver.Url = textPage;
