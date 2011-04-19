@@ -129,11 +129,13 @@ var BrowserVersion = function() {
         return;
     }
 
-    if (navigator.userAgent.indexOf('Firefox') != -1) {
+    if (navigator.userAgent.indexOf('Firefox') != -1 ||
+	navigator.userAgent.indexOf('Namoroka') != -1 ||
+	navigator.userAgent.indexOf('Shiretoko') != -1) {
         this.browser = BrowserVersion.FIREFOX;
         this.isFirefox = true;
         this.isGecko = true;
-        var result = /.*Firefox\/([\d\.]+).*/.exec(navigator.userAgent);
+        var result = /.*[Firefox|Namoroka|Shiretoko]\/([\d\.]+).*/.exec(navigator.userAgent);
         if (result) {
             this.firefoxVersion = result[1];
         }
