@@ -168,6 +168,8 @@ class RemoteConnection(object):
             Command.GET_ELEMENT_TEXT: ('GET', '/session/$sessionId/element/$id/text'),
             Command.SEND_KEYS_TO_ELEMENT:
                 ('POST', '/session/$sessionId/element/$id/value'),
+            Command.SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT:
+                ('POST', '/session/$sessionId/modifier'),
             Command.GET_ELEMENT_VALUE:
                 ('GET', '/session/$sessionId/element/$id/value'),
             Command.GET_ELEMENT_TAG_NAME:
@@ -223,7 +225,17 @@ class RemoteConnection(object):
             Command.SET_ALERT_VALUE:
                 ('POST', '/session/$sessionId/alert_text'),
             Command.GET_ALERT_TEXT:
-                ('GET', '/session/$sessionId/alert_text')}
+                ('GET', '/session/$sessionId/alert_text'),
+            Command.CLICK:
+                ('POST', '/session/$sessionId/click'),
+            Command.DOUBLE_CLICK:
+                ('POST', '/session/$sessionId/doubleclick'),
+            Command.MOUSE_DOWN:
+                ('POST', '/session/$sessionId/buttondown'),
+            Command.MOUSE_UP:
+                ('POST', '/session/$sessionId/buttonup'),
+            Command.MOVE_TO:
+                ('POST', '/session/$sessionId/moveto')}
 
     def execute(self, command, params):
         """Send a command to the remote server.

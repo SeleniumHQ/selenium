@@ -45,6 +45,7 @@ class Command(object):
     CLICK_ELEMENT = "clickElement"
     HOVER_OVER_ELEMENT = "hoverOverElement"
     SEND_KEYS_TO_ELEMENT = "sendKeysToElement"
+    SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT = "sendModifierKeyToActiveElement"
     SUBMIT_ELEMENT = "submitElement"
     TOGGLE_ELEMENT = "toggleElement"
     GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle"
@@ -86,3 +87,10 @@ class Command(object):
     ACCEPT_ALERT = "acceptAlert"
     SET_ALERT_VALUE = "setAlertValue"
     GET_ALERT_TEXT = "getAlertText"
+
+    # Advanced user interactions
+    CLICK = "mouseClick";
+    DOUBLE_CLICK = "mouseDoubleClick";
+    MOUSE_DOWN = "mouseButtonDown";
+    MOUSE_UP = "mouseButtonUp";
+    MOVE_TO = "mouseMoveTo";

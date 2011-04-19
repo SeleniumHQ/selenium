@@ -9,6 +9,7 @@ Selenium 2 Beta 4
 * Ability to install extensions into profiles
 * Added Location to the WebElement
 * ChromeDriver rewritten to use new built in mechanism
+* Added Advanced User Interaction API. Only Available for HTMLUnit at the moment
 
 Selenium 2 Beta 2
 
