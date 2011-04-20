@@ -49,7 +49,7 @@ namespace OpenQA.Selenium.Chrome
 
         #region Constructors
         /// <summary>
-        /// Initializes a new instance of the ChromeDriver.
+        /// Initializes a new instance of the ChromeDriver class.
         /// </summary>
         public ChromeDriver()
             : this(ChromeDriverService.CreateDefaultService())

@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public void Start()
         {
-            service.Start();
+            this.service.Start();
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public void Stop()
         {
-            service.Stop();
+            this.service.Dispose();
         }
     }
 }

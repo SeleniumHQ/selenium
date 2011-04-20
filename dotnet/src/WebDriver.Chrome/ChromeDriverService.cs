@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Text;
-using System.Reflection;
 using System.IO;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Text;
 
 namespace OpenQA.Selenium.Chrome
 {
     /// <summary>
     /// Exposes the service provided by the native ChromeDriver executable.
     /// </summary>
-    public sealed class ChromeDriverService
+    public sealed class ChromeDriverService : IDisposable
     {
         private const string ChromeDriverServiceFileName = "chromedriver.exe";
 
@@ -91,15 +91,26 @@ namespace OpenQA.Selenium.Chrome
             return new ChromeDriverService(executablePath, FindFreePort());
         }
 
+        #region IDisposable Members
+        /// <summary>
+        /// Releases all resources associated with this <see cref="ChromeDriverService"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Stop();
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
         /// <summary>
         /// Starts the ChromeDriverService.
         /// </summary>
         public void Start()
         {
             this.driverServiceProcess = new Process();
-            driverServiceProcess.StartInfo.FileName = this.driverServicePath;
-            driverServiceProcess.StartInfo.Arguments = string.Format(CultureInfo.InvariantCulture, "--port={0}", this.driverServicePort);
-            driverServiceProcess.StartInfo.UseShellExecute = false;
+            this.driverServiceProcess.StartInfo.FileName = this.driverServicePath;
+            this.driverServiceProcess.StartInfo.Arguments = string.Format(CultureInfo.InvariantCulture, "--port={0}", this.driverServicePort);
+            this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.Start();
             DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(20));
             HttpWebRequest request = HttpWebRequest.Create(this.serviceUrl) as HttpWebRequest;
@@ -108,40 +119,12 @@ namespace OpenQA.Selenium.Chrome
             {
                 try
                 {
-                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                    request.GetResponse();
                     processStarted = true;
                 }
                 catch (WebException)
                 {
                 }
-            }
-        }
-
-        /// <summary>
-        /// Stops the ChromeDriverService.
-        /// </summary>
-        public void Stop()
-        {
-            if (this.driverServiceProcess != null && !this.driverServiceProcess.HasExited)
-            {
-                Uri shutdownUrl = new Uri(this.serviceUrl, "/shutdown");
-                DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(3));
-                HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
-                bool processStopped = false;
-                while (!processStopped && DateTime.Now < timeout)
-                {
-                    try
-                    {
-                        HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-                    }
-                    catch (WebException)
-                    {
-                        processStopped = true;
-                    }
-                }
-
-                this.driverServiceProcess.WaitForExit();
-                this.driverServiceProcess = null;
             }
         }
 
@@ -157,6 +140,35 @@ namespace OpenQA.Selenium.Chrome
             int listeningPort = socketEndPoint.Port;
             portSocket.Close();
             return listeningPort;
+        }
+
+        /// <summary>
+        /// Stops the ChromeDriverService.
+        /// </summary>
+        private void Stop()
+        {
+            if (this.driverServiceProcess != null && !this.driverServiceProcess.HasExited)
+            {
+                Uri shutdownUrl = new Uri(this.serviceUrl, "/shutdown");
+                DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(3));
+                HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
+                bool processStopped = false;
+                while (!processStopped && DateTime.Now < timeout)
+                {
+                    try
+                    {
+                        request.GetResponse();
+                    }
+                    catch (WebException)
+                    {
+                        processStopped = true;
+                    }
+                }
+
+                this.driverServiceProcess.WaitForExit();
+                this.driverServiceProcess.Dispose();
+                this.driverServiceProcess = null;
+            }
         }
     }
 }

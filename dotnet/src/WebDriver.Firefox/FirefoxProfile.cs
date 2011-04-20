@@ -252,6 +252,7 @@ namespace OpenQA.Selenium.Firefox
             MemoryStream profileMemoryStream = new MemoryStream();
             profileZipFile.Save(profileMemoryStream);
             string base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
+            this.Clean();
             return base64zip;
         }
         #endregion
