@@ -53,6 +53,10 @@
       <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
       <Name>WebDriver.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\WebDriver.Firefox\WebDriver.Firefox.csproj">
+      <Project>{5E7C67A1-1BF2-4A46-8C29-8A6DCF6E4543}</Project>
+      <Name>WebDriver.Firefox</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WebDriver.Common.Tests\WebDriver.Common.Tests.csproj">
       <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>
       <Name>webdriver-common-test</Name>

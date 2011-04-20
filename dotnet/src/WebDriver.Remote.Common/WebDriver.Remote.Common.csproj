@@ -60,6 +60,7 @@
     <Compile Include="ICommandExecutor.cs" />
     <Compile Include="JsonConverters\CharArrayJsonConverter.cs" />
     <Compile Include="JsonConverters\CookieJsonConverter.cs" />
+    <Compile Include="JsonConverters\DesiredCapabilitiesJsonConverter.cs" />
     <Compile Include="JsonConverters\PlatformJsonConverter.cs" />
     <Compile Include="JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

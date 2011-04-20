@@ -73,7 +73,7 @@ namespace OpenQA.Selenium.Remote
                 string parametersString = string.Empty;
                 if (this.commandParameters != null && this.commandParameters.Count > 0)
                 {
-                    parametersString = JsonConvert.SerializeObject(this.commandParameters, new JsonConverter[] { new PlatformJsonConverter(), new CookieJsonConverter(), new CharArrayJsonConverter() });
+                    parametersString = JsonConvert.SerializeObject(this.commandParameters, new JsonConverter[] { new CookieJsonConverter(), new CharArrayJsonConverter(), new DesiredCapabilitiesJsonConverter() });
                 }
 
                 return parametersString;

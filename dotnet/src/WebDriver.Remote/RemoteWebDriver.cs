@@ -769,23 +769,7 @@ namespace OpenQA.Selenium.Remote
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 
             Dictionary<string, object> rawCapabilities = (Dictionary<string, object>)response.Value;
-
-            string browser = (string)rawCapabilities["browserName"];
-            string version = (string)rawCapabilities["version"];
-            
-            Platform platform;
-            if (rawCapabilities.ContainsKey("platform"))
-            {
-                platform = new Platform((PlatformType)Enum.Parse(typeof(PlatformType), (string)rawCapabilities["platform"], true));
-            }
-            else
-            {
-                platform = new Platform(PlatformType.Any);
-            }
-
-            DesiredCapabilities returnedCapabilities = new DesiredCapabilities(browser, version, platform);
-            returnedCapabilities.IsJavaScriptEnabled = (bool)rawCapabilities["javascriptEnabled"];
-            returnedCapabilities.Platform = platform;
+            DesiredCapabilities returnedCapabilities = new DesiredCapabilities(rawCapabilities);
             this.capabilities = returnedCapabilities;
             this.sessionId = new SessionId(response.SessionId);
         }

@@ -66,11 +66,9 @@ namespace OpenQA.Selenium.Firefox
         }
 
         [Test]
-        [Ignore]
         public void ShouldBeAbleToStartANamedProfile()
         {
             FirefoxProfile profile = new FirefoxProfileManager().GetProfile("default");
-
             if (profile != null)
             {
                 IWebDriver firefox = new FirefoxDriver(profile);

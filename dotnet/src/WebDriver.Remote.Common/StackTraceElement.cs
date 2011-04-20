@@ -10,10 +10,10 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     public class StackTraceElement
     {
-        private string fileName;
-        private string className;
+        private string fileName = string.Empty;
+        private string className = string.Empty;
         private int lineNumber;
-        private string methodName;
+        private string methodName = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StackTraceElement"/> class.
@@ -28,12 +28,12 @@ namespace OpenQA.Selenium.Remote
         /// <param name="elementAttributes">A <see cref="Dictionary{K, V}"/> containing the names and values for the properties of this <see cref="StackTraceElement"/>.</param>
         public StackTraceElement(Dictionary<string, object> elementAttributes)
         {
-            if (elementAttributes.ContainsKey("className"))
+            if (elementAttributes.ContainsKey("className") && elementAttributes["className"] != null)
             {
                 this.className = elementAttributes["className"].ToString();
             }
 
-            if (elementAttributes.ContainsKey("methodName"))
+            if (elementAttributes.ContainsKey("methodName") && elementAttributes["methodName"] != null)
             {
                 this.methodName = elementAttributes["methodName"].ToString();
             }
@@ -43,7 +43,7 @@ namespace OpenQA.Selenium.Remote
                 this.lineNumber = Convert.ToInt32(elementAttributes["lineNumber"], CultureInfo.InvariantCulture);
             }
 
-            if (elementAttributes.ContainsKey("fileName"))
+            if (elementAttributes.ContainsKey("fileName") && elementAttributes["fileName"] != null)
             {
                 this.fileName = elementAttributes["fileName"].ToString();
             }

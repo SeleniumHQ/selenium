@@ -71,7 +71,6 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the browser name 
         /// </summary>
-        [JsonProperty("browserName")]
         public string BrowserName
         {
             get 
@@ -90,7 +89,6 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets or sets the platform
         /// </summary>
-        [JsonProperty("platform")]
         public Platform Platform
         {
             get 
@@ -114,7 +112,6 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the browser version
         /// </summary>
-        [JsonProperty("version")]
         public string Version
         {
             get 
@@ -133,7 +130,6 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets or sets a value indicating whether the browser is javascript enabled
         /// </summary>
-        [JsonProperty("javascriptEnabled")]
         public bool IsJavaScriptEnabled
         {
             get 
@@ -152,6 +148,14 @@ namespace OpenQA.Selenium.Remote
             {
                 this.SetCapability(CapabilityType.IsJavaScriptEnabled, value);
             }
+        }
+
+        /// <summary>
+        /// Gets the internal capabilities dictionary.
+        /// </summary>
+        internal Dictionary<string, object> Capabilities
+        {
+            get { return this.capabilities; }
         }
 
         /// <summary>
