@@ -550,6 +550,7 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
   if (bot.dom.isElement(elem, goog.dom.TagName.BR)) {
     lines.push('');
   } else {
+    // TODO: properly handle display:run-in and display:table
     var blockElem = bot.dom.hasBlockStyle_(elem);
     // Add a newline before block elems when there is text on the current line.
     if (blockElem && goog.array.peek(lines)) {
@@ -579,7 +580,7 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
  */
 bot.dom.hasBlockStyle_ = function(elem) {
   var display = bot.dom.getEffectiveStyle(elem, 'display');
-  return display == 'block' || display == 'inline-block';
+  return display == 'block' || display == 'list-item';
 };
 
 
