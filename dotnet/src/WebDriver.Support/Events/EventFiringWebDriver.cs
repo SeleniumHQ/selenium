@@ -753,7 +753,7 @@ namespace OpenQA.Selenium.Support.Events
             /// <param name="driver">Instance of the driver currently in use</param>
             public EventFiringOptions(EventFiringWebDriver driver)
             {
-                this.wrappedOptions = driver.Manage();
+                this.wrappedOptions = driver.WrappedDriver.Manage();
             }
 
             #region IOptions Members
@@ -860,7 +860,7 @@ namespace OpenQA.Selenium.Support.Events
             /// <param name="driver">The driver that is currently in use</param>
             public EventFiringTargetLocator(EventFiringWebDriver driver)
             {
-                this.wrappedLocator = driver.SwitchTo();
+                this.wrappedLocator = driver.WrappedDriver.SwitchTo();
             }
 
             #region ITargetLocator Members
