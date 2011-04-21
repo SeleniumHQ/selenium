@@ -150,7 +150,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 			}
 			try {
 				forwardRequest(session, this);
-
 			} catch (Throwable t) {
 				log.log(Level.WARNING, "cannot forward the request " + t.getMessage(), t);
 				session.terminate();
@@ -341,6 +340,16 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 		b.append("session :" + session + " , ");
 		b.append("cap : " + getDesiredCapabilities());
 		b.append("\n");
+		return b.toString();
+	}
+	
+	
+	public String debug(){
+		StringBuilder b = new StringBuilder();
+		b.append("\nmethod: " + request.getMethod());
+		b.append("\npathInfo: " + request.getPathInfo());
+		b.append("\nuri: " + request.getRequestURI());
+		b.append("\ncontent :"+getRequestBody());
 		return b.toString();
 	}
 
