@@ -60,7 +60,7 @@
   
     <dt class="r1 last">Defined in:</dt>
     <dd class="r1 last">rb/lib/selenium/webdriver/chrome.rb<span class="defines">,<br />
-  rb/lib/selenium/webdriver/chrome/bridge.rb,<br /> rb/lib/selenium/webdriver/chrome/launcher.rb,<br /> rb/lib/selenium/webdriver/chrome/command_executor.rb</span>
+  rb/lib/selenium/webdriver/chrome/bridge.rb,<br /> rb/lib/selenium/webdriver/chrome/service.rb</span>
 </dd>
   
 </dl>
@@ -72,7 +72,7 @@
     
    
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Chrome/Bridge.html" title="Selenium::WebDriver::Chrome::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Chrome/CommandExecutor.html" title="Selenium::WebDriver::Chrome::CommandExecutor (class)">CommandExecutor</a></span>, <span class='object_link'><a href="Chrome/Launcher.html" title="Selenium::WebDriver::Chrome::Launcher (class)">Launcher</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Chrome/Bridge.html" title="Selenium::WebDriver::Chrome::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Chrome/Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Service</a></span>
     
   
 </p>
@@ -130,15 +130,15 @@
       <pre class="lines">
 
 
-13
-14
-15</pre>
+11
+12
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id path='>path=</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
-  <span class='const'>Launcher</span><span class='period'>.</span><span class='id binary_path'>binary_path</span> <span class='op'>=</span> <span class='id path'>path</span>
+  <span class='const'>Service</span><span class='period'>.</span><span class='id executable_path'>executable_path</span> <span class='op'>=</span> <span class='id path'>path</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -150,9 +150,9 @@
 </div>
     
     <div id="footer">
-  Generated on Mon Mar 21 18:49:48 2011 by 
+  Generated on Fri Apr 22 14:19:49 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.5 (ruby-1.9.2).
+  0.6.8 (ruby-1.9.2).
 </div>
 
   </body>

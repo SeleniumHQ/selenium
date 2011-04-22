@@ -114,6 +114,11 @@
         </dt>
         <dd><pre class="code"><span class='int'>90</span></pre></dd>
       
+        <dt id="QUIT_TIMEOUT-constant" class="">QUIT_TIMEOUT =
+          
+        </dt>
+        <dd><pre class="code"><span class='int'>5</span></pre></dd>
+      
     </dl>
   
 
@@ -263,7 +268,6 @@
       <pre class="lines">
 
 
-100
 101
 102
 103
@@ -282,10 +286,11 @@
 116
 117
 118
-119</pre>
+119
+120</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 100</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 101</span>
 
 <span class='kw'>def</span> <span class='id path'>path</span>
   <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='kw'>case</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id os'>os</span>
@@ -344,13 +349,13 @@
       <pre class="lines">
 
 
-95
 96
 97
-98</pre>
+98
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 95</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 96</span>
 
 <span class='kw'>def</span> <span class='id path='>path=</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id assert_executable'>assert_executable</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
@@ -380,23 +385,23 @@
       <pre class="lines">
 
 
-33
 34
 35
 36
 37
 38
-39</pre>
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id quit'>quit</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='ivar'>@process</span>
-  <span class='ivar'>@process</span><span class='period'>.</span><span class='id poll_for_exit'>poll_for_exit</span> <span class='int'>5</span>
+  <span class='ivar'>@process</span><span class='period'>.</span><span class='id poll_for_exit'>poll_for_exit</span> <span class='const'>QUIT_TIMEOUT</span>
 <span class='kw'>rescue</span> <span class='const'>ChildProcess</span><span class='op'>::</span><span class='const'>TimeoutError</span>
   <span class='comment'># ok, force quit
-</span>  <span class='ivar'>@process</span><span class='period'>.</span><span class='id stop'>stop</span> <span class='int'>5</span>
+</span>  <span class='ivar'>@process</span><span class='period'>.</span><span class='id stop'>stop</span> <span class='const'>QUIT_TIMEOUT</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -416,7 +421,6 @@
       <pre class="lines">
 
 
-16
 17
 18
 19
@@ -431,10 +435,11 @@
 28
 29
 30
-31</pre>
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 17</span>
 
 <span class='kw'>def</span> <span class='id start_with'>start_with</span><span class='lparen'>(</span><span class='id profile'>profile</span><span class='comma'>,</span> <span class='id profile_path'>profile_path</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
   <span class='id profile_path'>profile_path</span> <span class='op'>=</span> <span class='id profile_path'>profile_path</span><span class='period'>.</span><span class='id gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\\</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id win?'>win?</span>
@@ -470,12 +475,12 @@
       <pre class="lines">
 
 
-41
 42
-43</pre>
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id wait'>wait</span>
   <span class='ivar'>@process</span><span class='period'>.</span><span class='id poll_for_exit'>poll_for_exit</span><span class='lparen'>(</span><span class='const'>WAIT_TIMEOUT</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@process</span>
@@ -490,9 +495,9 @@
 </div>
     
     <div id="footer">
-  Generated on Mon Mar 21 18:49:50 2011 by 
+  Generated on Fri Apr 22 14:19:52 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.5 (ruby-1.9.2).
+  0.6.8 (ruby-1.9.2).
 </div>
 
   </body>
