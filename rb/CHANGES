@@ -1,9 +1,23 @@
-0.2.0 (???)
+0.2.0 (2011-04-22)
 ==================
 
-* Update Ruby bindings to use the new Chrome driver (http://code.google.com/p/selenium/wiki/ChromeDriver).
-* Add deprecation warning for WebDriver::Element#value.
+* Update Ruby bindings to use the rewritten Chrome driver (see http://code.google.com/p/selenium/wiki/ChromeDriver).
+* Add deprecation warning for WebDriver::Element#value (use Element#attribute("value") instead).
 * Change the default timeout for Wait instances to 5 seconds.
+* Fix bug where locators would fail if Object.prototype had been modified.
+* Various IE fixes
+  - Issues: #698, #1444
+  - Improved handling of showModalDialog() 
+  - Full-size screenshots
+* Allow users to override the dom.max_script_run_time preference in Firefox.
+* Removed DesiredCapabilities.safari, which was never supported anyway.
+* Add DesiredCapabilities.opera, which will be supported in the Remote server if OperaDriver is on the classpath.
+* Print warnings for deprecated constants in the RC client:
+  - Selenium::SeleniumDriver => Selenium::Client::Driver
+  - Selenium::CommandError   => Selenium::Client::CommandError
+* Removed top-level constants:
+  - SeleniumHelper (available as Selenium::Client::SeleniumHelper)
+  - SeleniumCommandError (available as Selenium::Client::CommandError)
 
 0.1.4 (2011-03-21)
 ==================

@@ -27,11 +27,10 @@ module Selenium
 
   def self.const_missing(name)
     if replacement = DEPRECATED_CONSTANTS[name.to_sym]
-      warn "the Selenium::#{name} constant has been deprecated, please use #{DEPRECATED_CONSTANTS[name.to_sym]} instead"
+      warn "the Selenium::#{name} constant has been deprecated, please use #{replacement} instead"
       replacement
     else
       super
     end
   end
 end # Selenium
-
