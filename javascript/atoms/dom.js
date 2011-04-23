@@ -533,7 +533,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
  * @return {string} visible text.
  */
 bot.dom.getVisibleText = function(elem) {
-  var lines = [''];
+  var lines = [];
   bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
   lines = goog.array.map(lines, goog.string.trim);
   return goog.string.trim(lines.join('\n'));
@@ -626,7 +626,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines) {
     return;
   }
   var text = textNode.nodeValue.replace(bot.dom.HTML_WHITESPACE_REGEXP_, ' ');
-  var currLine = lines.pop();
+  var currLine = lines.pop() || '';
   if (goog.string.endsWith(currLine, ' ') &&
       goog.string.startsWith(text, ' ')) {
     text = text.substr(1);
