@@ -49,11 +49,10 @@ public class Registry {
 
   private List<RequestHandler> newSessionRequests = new ArrayList<RequestHandler>();
 
-	private static Registry INSTANCE = null;// new Registry();
+	private static Registry INSTANCE = null;
 	private Hub hub;
 
-	// lock for anything modifying the tests session currently running on this
-	// regitry.
+	// lock for anything modifying the tests session currently running on this registry.
 	private final ReentrantLock lock = new ReentrantLock();
 	private final Condition testSessionAvailable = lock.newCondition();
 
@@ -232,14 +231,33 @@ public class Registry {
 		log.fine("adding  " + proxy);
 		try {
 			lock.lock();
-			if (proxies.contains(proxy) || registeringProxies.contains(proxy)) {
-				log.warning("proxy " + proxy + " was already present.");
+
+            if (proxies.contains(proxy)) {
+                log.warning(String.format("Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
+
+                // Find the original proxy.  While the supplied one is logically equivalent, it's a fresh object with
+                // an empty TestSlot list.  Thus there's a disconnection between this proxy and the one associated with
+                // any active test sessions.
+                for (RemoteProxy p : proxies) {
+                    if (p.equals(proxy)) {
+                        for (TestSlot slot : p.getTestSlots()) {
+                            slot.release();
+                        }
+                    }
+                }
+
+                return;
+            }
+
+			if (registeringProxies.contains(proxy)) {
+				log.warning(String.format("Proxy '%s' is already queued for registration.", proxy));
+
 				return;
-			} else {
-				registeringProxies.add(proxy);
-				proxy.setRegistry(this);
-				fireEventNewSessionAvailable();
 			}
+
+		    registeringProxies.add(proxy);
+			proxy.setRegistry(this);
+			fireEventNewSessionAvailable();
 		} finally {
 			lock.unlock();
 		}
