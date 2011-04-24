@@ -46,5 +46,11 @@
 	<classpathentry kind="lib" path="third_party/java/jasper/jsp-api-2.0.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jasper/jasper-runtime-5.5.15.jar"/>
 	<classpathentry kind="lib" path="third_party/java/yaml/snakeyaml-1.8.jar"/>
+	<classpathentry kind="lib" path="third_party/java/sac/sac-1.3.jar"/>
+	<classpathentry kind="lib" path="third_party/java/apache-mime4j/apache-mime4j-0.6.jar"/>
+	<classpathentry kind="lib" path="third_party/java/xml/xercesImpl-2.9.1.jar"/>
+	<classpathentry kind="lib" path="third_party/java/cssparser/cssparser-0.9.5.jar"/>
+	<classpathentry kind="lib" path="third_party/java/nekohtml/nekohtml-1.9.14.jar"/>
+	<classpathentry kind="lib" path="third_party/java/xml/xalan-2.7.1.jar"/>
 	<classpathentry kind="output" path="out/production/selenium"/>
 </classpath>
