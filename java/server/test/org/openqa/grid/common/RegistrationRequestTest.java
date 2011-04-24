@@ -70,7 +70,7 @@ public class RegistrationRequestTest {
 
     @Test
     public void seleniumGrid1Request() {
-        RegistrationRequest request = RegistrationRequest.getNewInstance("host=localhost&port=5000&environment=linux_firefox_3_6");
+        RegistrationRequest request = RegistrationRequest.getNewInstance("host=localhost&port=5000&environment=Firefox%3A+4%3B+MacOS+X%3A+10.6.7");
 
         Assert.assertEquals(null, request.getId());
         Assert.assertEquals(null, request.getName());
@@ -81,7 +81,7 @@ public class RegistrationRequestTest {
         Map<String, Object> caps = request.getCapabilities().get(0);
 
         //Assert.assertEquals(Platform.LINUX.toString(), caps.get("platform"));
-        Assert.assertEquals("linux_firefox_3_6", caps.get("browserName"));
+        Assert.assertEquals("Firefox: 4; MacOS X: 10.6.7", caps.get("browserName"));
 
 
         // Verify the configuration was set up properly.

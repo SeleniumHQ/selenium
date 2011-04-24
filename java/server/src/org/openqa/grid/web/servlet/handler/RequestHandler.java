@@ -214,6 +214,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 		String externalKey = forwardNewSessionRequest(session);
 		if (externalKey == null) {
 			session.terminate();
+            // TODO (kmenard 04/10/11): We should indicate what the requested session type is.
 			throw new GridException("Error getting a new session from the remote." + registry.getAllProxies());
 		} else {
 			session.setExternalKey(externalKey);

@@ -16,7 +16,12 @@ limitations under the License.
 
 package org.openqa.grid.web.utils;
 
+import com.google.common.collect.Maps;
+import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.Platform;
+
+import java.util.Map;
 
 /**
  * Utilities for dealing with browser names.
@@ -26,6 +31,25 @@ public class BrowserNameUtils {
         String translatedBrowserString = Hub.getGrid1Mapping().get(browserString);
 
         return (translatedBrowserString == null) ? browserString : translatedBrowserString;
+    }
+
+    public static Map<String, Object> parseGrid2Environment(String environment) {
+        Map<String, Object> ret = Maps.newHashMap();
+
+        String[] details = environment.split(" ");
+        if (details.length == 1) {
+            // simple browser string
+            ret.put(RegistrationRequest.BROWSER, details[0]);
+        } else {
+            // more complex. Only case handled so far = X on Y
+            // where X is the browser string, Y the OS
+            ret.put(RegistrationRequest.BROWSER, details[0]);
+            if (details.length==3){
+                ret.put(RegistrationRequest.PLATFORM, Platform.extractFromSysProperty(details[2]));
+            }
+        }
+
+        return ret;
     }
 
     public static String consoleIconName(String browserString) {

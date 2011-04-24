@@ -22,8 +22,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.InvalidParameterException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -224,7 +225,11 @@ public class RegistrationRequest {
                 throw new InvalidParameterException();
             }
 
-            registrationInfo.put(configItem[0], configItem[1]);
+            try {
+                registrationInfo.put(URLDecoder.decode(configItem[0], "UTF-8"), URLDecoder.decode(configItem[1], "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                log.warning(String.format("Unable to decode registration request portion: %s", part));
+            }
         }
 
         // Now validate the query string.

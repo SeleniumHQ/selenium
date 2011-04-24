@@ -29,8 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.utils.BrowserNameUtils;
-import org.openqa.selenium.Platform;
 
 /**
  * Handler processing the selenium1 based requests. Each request body has to be
@@ -93,21 +93,21 @@ public class Selenium1RequestHandler extends RequestHandler {
 				// TODO freynaud : more splitting, like trying to guess the
 				// plateform or version ?
 
-				String[] details = envt.split(" ");
-				if (details.length == 1) {
-					// simple browser string
-					cap.put(RegistrationRequest.BROWSER, details[0]);
-				} else {
-					// more complex. Only case handled so far = X on Y
-					// where X is the browser string, Y the OS
-					cap.put(RegistrationRequest.BROWSER, details[0]);
-					if (details.length==3){
-						cap.put(RegistrationRequest.PLATFORM, Platform.extractFromSysProperty(details[2]));
-					}
-				}
+                // We don't want to process Grid 1.0 environment names because they use an explicit mapping
+                // to a browser launcher string.
+                if (Hub.getGrid1Mapping().containsKey(envt)) {
+                    cap.put(RegistrationRequest.BROWSER, envt);
+                }
+
+                // Otherwise, process the environment string to extract the target browser and platform.
+                else {
+                    cap.putAll(BrowserNameUtils.parseGrid2Environment(envt));
+                }
+
 				return cap;
 			}
 		}
+
 		throw new RuntimeException("Error");
 	}
 
@@ -115,32 +115,42 @@ public class Selenium1RequestHandler extends RequestHandler {
 	@Override
 	public String forwardNewSessionRequest(TestSession session) {
 		String responseBody = null;
+
 		try {
 			String body = getRequestBody();
 			String[] pieces = body.split("&");
 			StringBuilder builder = new StringBuilder();
+
 			for (String piece : pieces) {
 				if (piece.startsWith("1=")) {
 					piece = URLDecoder.decode(piece, "UTF-8");
-					piece = piece.split(",")[0];
-					piece = piece.split(" ")[0];
-
                     String parts[] = piece.split("1=");
-                    if (parts[1].charAt(0) != '*') {
+
+                    // We don't want to process Grid 1.0 environment names because they use an explicit mapping
+                    // to a browser launcher string.
+                    if (Hub.getGrid1Mapping().containsKey(parts[1])) {
                         piece = String.format("1=%s", URLEncoder.encode(BrowserNameUtils.lookupGrid1Environment(parts[1]), "UTF-8"));
+                    }
+
+                    // Otherwise, the requested environment includes the browser name before the space.
+                    else {
+                        piece = (String) BrowserNameUtils.parseGrid2Environment(piece).get(RegistrationRequest.BROWSER);
                     }
 				}
 				builder.append(piece + "&");
 			}
+
 			responseBody = session.forward(getRequest(), getResponse(), builder.toString(), true);
 		} catch (IOException e) {
 			log.warning("Error forwarding the request " + e.getMessage());
 			return null;
 		}
+
 		if (responseBody != null && responseBody.startsWith("OK,")) {
 			String externalKey = responseBody.replace("OK,", "");
 			return externalKey;
 		}
+
 		return null;
 	}
 }
