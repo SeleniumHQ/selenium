@@ -126,6 +126,10 @@ public class ErrorCodes {
       return ASYNC_SCRIPT_TIMEOUT;
     } else if (thrown instanceof InvalidCoordinatesException) {
       return INVALID_ELEMENT_COORDINATES;
+    } else if (thrown instanceof ImeNotAvailableException) {
+      return IME_NOT_AVAILABLE;
+    } else if (thrown instanceof ImeActivationFailedException) {
+      return IME_ENGINE_ACTIVATION_FAILED;
     } else {
       return UNHANDLED_ERROR;
     }
