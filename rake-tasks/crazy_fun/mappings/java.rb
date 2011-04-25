@@ -77,7 +77,7 @@ module CrazyFunJava
   end
 
   def self.import(class_name)
-    if RUBY_PLATFORM == 'java'      
+    if RUBY_PLATFORM == 'java'
       clazz = include_class(class_name)
     else
       clazz = Rjb::import(class_name)
@@ -156,13 +156,13 @@ module CrazyFunJava
       sysprops = props || {}
       CrazyFunJava.ant.java :classname => classname, :fork => true do
         arg :line => args
-        
+
         classpath do
           cp.all.each do |jar|
             pathelement :location => jar
           end
         end
-        
+
         sysprops.each do |map|
           map.each do |key, value|
             sysproperty :key => key, :value => value
@@ -352,6 +352,7 @@ module CrazyFunJava
   end
 
   class RunTests < BaseJava
+
     def handle(fun, dir, args)
   #    raise FailedPrecondition, "java_test targets need :srcs defined" if args[:srcs].nil || ar?
 
@@ -388,7 +389,7 @@ module CrazyFunJava
         end
 
         if ("org.testng.TestNG" == args[:main])
-          CrazyFunJava.ant.testng :outputdir => "build/test_logs", :haltOnFailure => true do |ant|
+          CrazyFunJava.ant.testng :outputdir => "build/test_logs", :haltOnFailure => halt_on_failure? do |ant|
             ant.classpath do |ant_cp|
                 cp.all.each do |jar|
                   ant_cp.pathelement(:location => jar)
@@ -402,15 +403,21 @@ module CrazyFunJava
               end
             end
 
-            ant.xmlfileset :dir => dir, :includes => args[:args] 
+            ant.xmlfileset :dir => dir, :includes => args[:args]
           end
         elsif (args[:main])
           ant_java_task(task_name, args[:main], cp, args[:args], args[:sysproperties])
         else
           tests.each do |test|
             CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
-            CrazyFunJava.ant.junit(:fork => true, :forkmode =>  'once', :showoutput => true,
-                                   :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
+            CrazyFunJava.ant.junit(
+              :fork          => true,
+              :forkmode      => 'once',
+              :showoutput    => true,
+              :printsummary  => 'on',
+              :haltonerror   => halt_on_error?,
+              :haltonfailure => halt_on_failure?
+            ) do |ant|
               ant.classpath do |ant_cp|
                 cp.all.each do |jar|
                   ant_cp.pathelement(:location => jar)
@@ -446,6 +453,14 @@ module CrazyFunJava
           end
         end
       end
+    end
+
+    def halt_on_error?
+      [nil, 'true'].include? ENV['haltonerror']
+    end
+
+    def halt_on_failure?
+      [nil, 'true'].include? ENV['haltonfailure']
     end
   end
 
