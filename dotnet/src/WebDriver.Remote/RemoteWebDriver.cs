@@ -300,10 +300,10 @@ namespace OpenQA.Selenium.Remote
             catch (NotImplementedException)
             {
             }
-            catch (WebDriverException)
+            catch (InvalidOperationException)
             {
             }
-            catch (System.Net.WebException)
+            catch (WebDriverException)
             {
             }
             finally

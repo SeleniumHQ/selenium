@@ -113,13 +113,13 @@ namespace OpenQA.Selenium.Remote
                             string value = cookie["value"].ToString();
 
                             string path = "/";
-                            if (cookie.ContainsKey("path"))
+                            if (cookie.ContainsKey("path") && cookie["path"] != null)
                             {
                                 path = cookie["path"].ToString();
                             }
 
                             string domain = string.Empty;
-                            if (cookie.ContainsKey("domain"))
+                            if (cookie.ContainsKey("domain") && cookie["domain"] != null)
                             {
                                 domain = cookie["domain"].ToString();
                             }
