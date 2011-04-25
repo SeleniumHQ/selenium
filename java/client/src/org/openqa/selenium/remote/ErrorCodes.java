@@ -118,7 +118,7 @@ public class ErrorCodes {
       return STALE_ELEMENT_REFERENCE;
     } else if (thrown instanceof ElementNotVisibleException) {
       return ELEMENT_NOT_VISIBLE;
-    } else if (thrown instanceof UnsupportedOperationException) {
+    } else if (thrown instanceof InvalidElementStateException) {
       return INVALID_ELEMENT_STATE;
     } else if (thrown instanceof XPathLookupException) {
       return XPATH_LOOKUP_ERROR;
