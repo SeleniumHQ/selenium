@@ -30,7 +30,9 @@ public class GridLauncher {
 			SeleniumServer.main(args);
 			break;
 		case HUB:
-			Hub.getInstance().start();
+			Hub h = Hub.getInstance();
+			h.configure(args);
+			h.start();
 			break;
 		case WEBDRIVER:
 		case REMOTE_CONTROL:

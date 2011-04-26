@@ -43,14 +43,14 @@ import java.util.logging.Logger;
  */
 public class Hub {
 
-    private static final Logger log = Logger.getLogger(Hub.class.getName());
+	private static final Logger log = Logger.getLogger(Hub.class.getName());
 
-    private int port;
+	private int port;
 	private String host;
 	private Server server;
 	private Registry registry;
 	private Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
-    private static Map<String, String> grid1Mapping = Maps.newHashMap();
+	private static Map<String, String> grid1Mapping = Maps.newHashMap();
 	private static Hub INSTANCE = new Hub(4444, Registry.getInstance());
 
 	public static Hub getInstance() {
@@ -126,35 +126,36 @@ public class Hub {
 		this.registry = registry;
 		registry.setHub(this);
 
-        // Load up the old Selenium Grid 1.0 configuration if it exists.
-        loadGrid1Config();
+		// Load up the old Selenium Grid 1.0 configuration if it exists.
+		loadGrid1Config();
 	}
 
 	private void initServer() {
 		try {
-            server = new Server();
-            SocketListener socketListener = new SocketListener();
-            socketListener.setMaxIdleTimeMs(60000);
-            socketListener.setPort(port);
-            server.addListener(socketListener);
+			server = new Server();
+			SocketListener socketListener = new SocketListener();
+			socketListener.setMaxIdleTimeMs(60000);
+			socketListener.setPort(port);
+			server.addListener(socketListener);
 
-            WebApplicationContext root = server.addWebApplication("", ".");
-            root.setAttribute(Registry.KEY, registry);
+			WebApplicationContext root = server.addWebApplication("", ".");
+			root.setAttribute(Registry.KEY, registry);
 
-            root.addServlet("/grid/console/*", ConsoleServlet.class.getName());
-            root.addServlet("/grid/register/*", RegistrationServlet.class.getName());
-            root.addServlet("/grid/driver/*", DriverServlet.class.getName());
-            root.addServlet("/selenium-server/driver/*", DriverServlet.class.getName());
-            root.addServlet("/grid/resources/*", ResourceServlet.class.getName());
+			root.addServlet("/grid/console/*", ConsoleServlet.class.getName());
+			root.addServlet("/grid/register/*", RegistrationServlet.class.getName());
+			root.addServlet("/grid/driver/*", DriverServlet.class.getName());
+			root.addServlet("/selenium-server/driver/*", DriverServlet.class.getName());
+			root.addServlet("/grid/resources/*", ResourceServlet.class.getName());
 
-            // Selenium Grid 1.0 compatibility routes for older nodes trying to work with the newer hub.
-            root.addServlet("/registration-manager/register/*", RegistrationServlet.class.getName());
-            root.addServlet("/heartbeat", Grid1HeartbeatServlet.class.getName());
+			// Selenium Grid 1.0 compatibility routes for older nodes trying to
+			// work with the newer hub.
+			root.addServlet("/registration-manager/register/*", RegistrationServlet.class.getName());
+			root.addServlet("/heartbeat", Grid1HeartbeatServlet.class.getName());
 
-            // Load any additional servlets provided by the user.
-            for (Map.Entry<String, Class<? extends Servlet>> entry : extraServlet.entrySet()) {
-                root.addServlet(entry.getKey(), entry.getValue().getName());
-            }
+			// Load any additional servlets provided by the user.
+			for (Map.Entry<String, Class<? extends Servlet>> entry : extraServlet.entrySet()) {
+				root.addServlet(entry.getKey(), entry.getValue().getName());
+			}
 		} catch (Throwable e) {
 			throw new RuntimeException("Error initializing the hub" + e.getMessage(), e);
 		}
@@ -169,8 +170,8 @@ public class Hub {
 	}
 
 	public void start() throws Exception {
-    initServer();
-    server.start();
+		initServer();
+		server.start();
 	}
 
 	public void stop() throws Exception {
@@ -194,29 +195,44 @@ public class Hub {
 		}
 	}
 
-    public static Map<String, String> getGrid1Mapping() {
-        return Hub.grid1Mapping;
-    }
+	public static Map<String, String> getGrid1Mapping() {
+		return Hub.grid1Mapping;
+	}
 
-    private void loadGrid1Config() {
-        InputStream input = Class.class.getResourceAsStream("/grid_configuration.yml");
+	private void loadGrid1Config() {
+		InputStream input = Class.class.getResourceAsStream("/grid_configuration.yml");
 
-        if (input != null) {
-            log.info("Loading Grid 1.0 configuration file.");
+		if (input != null) {
+			log.info("Loading Grid 1.0 configuration file.");
 
-            Yaml yaml = new Yaml();
-            Map<String, Object> config = (Map<String, Object>) yaml.load(input);
-            Map<String, Object> hub = (Map<String, Object>) config.get("hub");
-            List<Map<String, String>> environments = (List<Map<String,String>>) hub.get("environments");
+			Yaml yaml = new Yaml();
+			Map<String, Object> config = (Map<String, Object>) yaml.load(input);
+			Map<String, Object> hub = (Map<String, Object>) config.get("hub");
+			List<Map<String, String>> environments = (List<Map<String, String>>) hub.get("environments");
 
-            // Store a copy of the environment names => browser strings
-            for (Map<String, String> environment : environments) {
-                grid1Mapping.put(environment.get("name"), environment.get("browser"));
-            }
-        }
-        else {
-            log.info("Did not find a Grid 1.0 configuration file.  Skipping Grid 1.0 setup.");
-        }
-    }
+			// Store a copy of the environment names => browser strings
+			for (Map<String, String> environment : environments) {
+				grid1Mapping.put(environment.get("name"), environment.get("browser"));
+			}
+		} else {
+			log.info("Did not find a Grid 1.0 configuration file.  Skipping Grid 1.0 setup.");
+		}
+	}
+
+	/**
+	 * Configure the hub based on the parameter passed at launch.
+	 * 
+	 * @param args
+	 */
+	public void configure(String[] args) {
+		for (String s : args) {
+			Class<? extends Servlet> servletClass = createServlet(s);
+			if (s != null) {
+				String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
+				log.info("binding " + servletClass.getCanonicalName() + " to " + path);
+				addServlet(path, servletClass);
+			}
+		}
+	}
 
 }
