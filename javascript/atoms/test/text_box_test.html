@@ -19,6 +19,7 @@ limitations under the License.
 <head>
   <title>bot.dom.getVisibleText Box Model Test</title>
   <script src="test_bootstrap.js"></script>
+  <script src="text_util.js"></script>
   <style><!--
 div.example { width: 25em; }
 
@@ -51,7 +52,6 @@ div.example div.header {
     <a href="http://www.quirksmode.org/css/display.html">
     http://www.quirksmode.org/css/display.html</a></div>
   <!-- All dynamically generated DOM structures should be added here. -->
-  <div id="test-container"></div>
   <script>
 /**
  * Configures and runs visible text tests against elements with various
@@ -64,7 +64,7 @@ var DisplayBoxTester = function(display) {
   // has not been generated yet for this display type, add it now.
   var parent = goog.dom.$(display);
   if (!parent) {
-    var container = goog.dom.$('test-container');
+    var container = getTestContainer();
     goog.dom.appendChild(container,
         goog.dom.createDom('h4', null, 'display: ' + display));
     parent = goog.dom.createDom('div', {id: display});
@@ -144,19 +144,9 @@ DisplayBoxTester.prototype.addNode = function(tagName, opt_attributes, var_args)
  *     of visible text.
  */
 DisplayBoxTester.prototype.assertTextIs = function(var_args) {
-  var expected = goog.array.slice(arguments, 0).join('\n');
-  var actual = bot.dom.getVisibleText(this.dom);
-
-  assertEquals(
-      'Expected: ' + escapeText(expected) +
-      '\n but was: ' + escapeText(actual) +
-      '\n raw html:\n' + this.dom.innerHTML + 
-      '\n------\n',
-      expected, actual);
-      
-  function escapeText(text) {
-    return text.replace(/\n/g, '\\n').replace(/\s/g, '\\s');
-  }
+  var args = goog.array.slice(arguments, 0);
+  args.unshift(this.dom);
+  assertTextIs.apply(null, args);
 };
 
 
@@ -238,7 +228,7 @@ function testListItem() {
 }
 
 
-// TODO: tests for display: run-in and display: table.
+// TODO: tests for display: run-in
 
 
 function testRunIn_followedByBlock() {

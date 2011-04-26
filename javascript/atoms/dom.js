@@ -550,21 +550,48 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
   if (bot.dom.isElement(elem, goog.dom.TagName.BR)) {
     lines.push('');
   } else {
-    // TODO: properly handle display:run-in and display:table
-    var blockElem = bot.dom.hasBlockStyle_(elem);
+    // TODO: properly handle display:run-in
+    var display = bot.dom.getEffectiveStyle(elem, 'display');
+    var blockElem = !goog.array.contains(bot.dom.INLINE_DISPLAY_BOXES_,
+        display);
+
     // Add a newline before block elems when there is text on the current line.
     if (blockElem && goog.array.peek(lines)) {
       lines.push('');
     }
+
+    // This element may be considered unshown, but have a child that is
+    // explicitly shown (e.g. this element has "visibility:hidden").
+    // Nevertheless, any text nodes that are direct descendants of this
+    // element will not contribute to the visible text.
+    var shown = bot.dom.isShown(elem);
+
+    // All text nodes that are children of this element need to know the
+    // effective "white-space" and "text-transform" styles to properly
+    // compute their contribution to visible text. Compute these values once.
+    if (shown) {
+      var whitespace = bot.dom.getEffectiveStyle(elem, 'white-space');
+      var textTransform = bot.dom.getEffectiveStyle(elem, 'text-transform');
+    }
+
     goog.array.forEach(elem.childNodes, function(node) {
-      if (node.nodeType == goog.dom.NodeType.TEXT) {
+      if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
         var textNode = (/** @type {!Text} */ node);
-        bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines);
+        bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
+            whitespace, textTransform);
       } else if (bot.dom.isElement(node)) {
         var castElem = (/** @type {!Element} */ node);
         bot.dom.appendVisibleTextLinesFromElement_(castElem, lines);
       }
     });
+
+    // Here we differ from standard innerText implementations (if there were
+    // such a thing). Usually, table cells are separated by a tab, but we
+    // normalize tabs into single spaces.
+    if (display == 'table-cell' && goog.array.peek(lines)) {
+      lines[lines.length - 1] += ' ';
+    }
+
     // Add a newline after block elems when there is text on the current line.
     if (blockElem && goog.array.peek(lines)) {
       lines.push('');
@@ -574,14 +601,22 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
 
 
 /**
- * @param {!Element} elem Element.
- * @return {boolean} Whether the element has a block style.
+ * Elements with one of these effective "display" styles are treated as
+ * inline display boxes and have their visible text appended to the
+ * current line.
+ * @type {!Array.<string>}
  * @private
+ * @const
  */
-bot.dom.hasBlockStyle_ = function(elem) {
-  var display = bot.dom.getEffectiveStyle(elem, 'display');
-  return display == 'block' || display == 'list-item';
-};
+bot.dom.INLINE_DISPLAY_BOXES_ = [
+  'inline',
+  'inline-block',
+  'inline-table',
+  'none',
+  'table-cell',
+  'table-column',
+  'table-column-group'
+];
 
 
 /**
@@ -590,6 +625,7 @@ bot.dom.hasBlockStyle_ = function(elem) {
  * @private
  */
 bot.dom.HTML_WHITESPACE_ = '[\\s\\xa0' + String.fromCharCode(160) + ']+';
+
 
 /**
  * @const
@@ -609,23 +645,46 @@ bot.dom.JUST_HTML_WHITESPACE_REGEXP_ = new RegExp(
     '^' + bot.dom.HTML_WHITESPACE_ + '$');
 
 
-
 /**
  * @param {!Text} textNode Text node.
  * @param {!Array.<string>} lines Accumulated visible lines of text.
+ * @param {string} whitespace The text node's parent element's effective
+ *     "white-space" style.
+ * @param {string} textTransform The text node's parent element's effective
+ *     "text-transform" style.
  * @private
  */
-bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines) {
-  var parentElement = bot.dom.getParentElement_(textNode);
-  if (!parentElement) {
-    return;
+bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
+    whitespace, textTransform) {
+  var text = goog.string.canonicalizeNewlines(textNode.nodeValue);
+
+  if (whitespace == 'normal' || whitespace == 'nowrap') {
+    // TODO(jleyba): Do we really want to collapse all white-space?
+    // http://code.google.com/p/selenium/issues/detail?id=1566
+    // Or should &nbsp; characters be preserved as the author explicitly
+    // inserted them into the page (and would be preserved for the user)?
+    // If we decide not to collapse &nbsp; along with everythong else,
+    // uncomment this next line and delete the one after:
+    // text = goog.string.normalizeSpaces(text.replace(/\n/g, ' '));
+    text = text.replace(bot.dom.HTML_WHITESPACE_REGEXP_, ' ');
+  } else if (whitespace == 'pre-line') {
+    text = goog.string.normalizeSpaces(text);
   }
 
-  var shown = !bot.dom.isShown(parentElement);
-  if (!parentElement || !bot.dom.isShown(parentElement)) {
-    return;
+  // Once we've normalized all other whitespace, canonicalize
+  // &nbsp and tabs as single spaces and remove zero-width spaces.
+  text = text.replace(/\xa0|\t/g, ' ').replace(/\u200b/g, '');
+
+  if (textTransform == 'capitalize') {
+    text = text.replace(/(^|\s)(\S)/g, function() {
+      return arguments[1] + arguments[2].toUpperCase();
+    });
+  } else if (textTransform == 'uppercase') {
+    text = text.toUpperCase();
+  } else if (textTransform == 'lowercase') {
+    text = text.toLowerCase();
   }
-  var text = textNode.nodeValue.replace(bot.dom.HTML_WHITESPACE_REGEXP_, ' ');
+
   var currLine = lines.pop() || '';
   if (goog.string.endsWith(currLine, ' ') &&
       goog.string.startsWith(text, ' ')) {
