@@ -16,12 +16,9 @@ limitations under the License.
 
 package org.openqa.grid.selenium;
 
-import java.io.File;
 import java.net.URL;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpHost;
@@ -64,10 +61,20 @@ public abstract class SelfRegisteringRemote {
 	
 	public abstract URL getRemoteURL();
 
+	SeleniumServer server;
 	public void launchRemoteServer() throws Exception{
-		SeleniumServer server = new SeleniumServer(getGridConfig().getNodeRemoteControlConfiguration());
+		server = new SeleniumServer(getGridConfig().getNodeRemoteControlConfiguration());
 		server.boot();
 	}
+	
+	public void stopRemoteServer(){
+		if (server!=null){
+			server.stop();
+		}
+	}
+	
+	
+	
 
 	
 	public void setMaxConcurrentSession(int max) {

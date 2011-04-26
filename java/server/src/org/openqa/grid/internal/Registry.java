@@ -239,14 +239,16 @@ public class Registry {
                 // an empty TestSlot list.  Thus there's a disconnection between this proxy and the one associated with
                 // any active test sessions.
                 for (RemoteProxy p : proxies) {
+                	proxies.remove(p);
                     if (p.equals(proxy)) {
                         for (TestSlot slot : p.getTestSlots()) {
+                        	// TODO freynaud slot.getSession().terminate();
                             slot.release();
                         }
+                      
                     }
                 }
-
-                return;
+                //return;
             }
 
 			if (registeringProxies.contains(proxy)) {
