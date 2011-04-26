@@ -556,7 +556,7 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
         display);
 
     // Add a newline before block elems when there is text on the current line.
-    if (blockElem && goog.array.peek(lines)) {
+    if (blockElem && hasText(goog.array.peek(lines))) {
       lines.push('');
     }
 
@@ -585,16 +585,27 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
       }
     });
 
+    var line = goog.array.peek(lines);
+
     // Here we differ from standard innerText implementations (if there were
     // such a thing). Usually, table cells are separated by a tab, but we
     // normalize tabs into single spaces.
-    if (display == 'table-cell' && goog.array.peek(lines)) {
+    if (display == 'table-cell' && line && !goog.string.endsWith(line, ' ')) {
       lines[lines.length - 1] += ' ';
     }
 
     // Add a newline after block elems when there is text on the current line.
-    if (blockElem && goog.array.peek(lines)) {
+    if (blockElem && hasText(line)) {
       lines.push('');
+    }
+
+    /**
+     * Tests if there is non-whitespace text on a line.
+     * @param {string} line The line to test.
+     * @return {boolean} Whether the line has non-whitespace text.
+     */
+    function hasText(line) {
+      return line && !bot.dom.JUST_HTML_WHITESPACE_REGEXP_(line);
     }
   }
 };

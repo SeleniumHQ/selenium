@@ -307,6 +307,12 @@ limitations under the License.
           'Line 2',
           'Line 3');
     }
+
+    function testNodesWithJustWhitespace() {
+      var div = goog.partial(goog.dom.createDom, 'DIV', null);
+      var span = goog.partial(goog.dom.createDom, 'SPAN', null);
+      assertTextIs(div('a', span(' '), 'b'), 'a b');
+    }
   </script>
 
   <style type="text/css">

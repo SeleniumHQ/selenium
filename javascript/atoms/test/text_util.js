@@ -82,6 +82,6 @@ function assertTextIs(element, var_args) {
   }
 
   function escapeText(text) {
-    return text.replace(/\n/g, '\\n').replace(/\s/g, '\\s');
+    return text.replace(/\n/g, '\\n');//.replace(/\s/g, '\\s');
   }
 }
