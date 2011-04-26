@@ -89,9 +89,9 @@ bot.inject.wrapValue = function(value) {
       // Sniff out DOM elements. We're using duck-typing instead of an
       // instanceof check since the instanceof might not always work
       // (e.g. if the value originated from another Firefox component)
-      if (goog.object.containsKey(value, 'tagName') &&
-          goog.object.containsKey(value, 'nodeType') &&
-          value['nodeType'] == goog.dom.NodeType.ELEMENT) {
+      if (goog.object.containsKey(value, 'nodeType') &&
+          (value['nodeType'] == goog.dom.NodeType.ELEMENT
+           || value['nodeType'] == goog.dom.NodeType.DOCUMENT)) {
         var ret = {};
         ret[bot.inject.ELEMENT_KEY] =
             bot.inject.cache.addElement((/**@type {!Element}*/value));
