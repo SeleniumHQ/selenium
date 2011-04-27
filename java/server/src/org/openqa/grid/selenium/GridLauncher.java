@@ -31,7 +31,7 @@ public class GridLauncher {
 			break;
 		case HUB:
 			Hub h = Hub.getInstance();
-			h.configure(config);
+			h.registerServlets(config.getServlets());
 			h.start();
 			break;
 		case WEBDRIVER:

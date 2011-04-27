@@ -15,16 +15,6 @@ limitations under the License.
  */
 package org.openqa.grid.web;
 
-import com.google.common.collect.Maps;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.selenium.utils.GridConfiguration;
-import org.openqa.grid.web.servlet.*;
-import org.openqa.jetty.http.SocketListener;
-import org.openqa.jetty.jetty.Server;
-import org.openqa.jetty.jetty.servlet.WebApplicationContext;
-import org.yaml.snakeyaml.Yaml;
-
-import javax.servlet.Servlet;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -33,6 +23,21 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import javax.servlet.Servlet;
+
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.web.servlet.ConsoleServlet;
+import org.openqa.grid.web.servlet.DriverServlet;
+import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
+import org.openqa.grid.web.servlet.RegistrationServlet;
+import org.openqa.grid.web.servlet.ResourceServlet;
+import org.openqa.jetty.http.SocketListener;
+import org.openqa.jetty.jetty.Server;
+import org.openqa.jetty.jetty.servlet.WebApplicationContext;
+import org.yaml.snakeyaml.Yaml;
+
+import com.google.common.collect.Maps;
 
 /**
  * 
@@ -225,8 +230,10 @@ public class Hub {
 	 * 
 	 * @param args
 	 */
-	public void configure(GridConfiguration config) {
-		for (String s : config.getServlets()) {
+	public void registerServlets(List<String> servlets) {
+		if (servlets == null)
+			return;
+		for (String s : servlets) {
 			Class<? extends Servlet> servletClass = createServlet(s);
 			if (s != null) {
 				String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
