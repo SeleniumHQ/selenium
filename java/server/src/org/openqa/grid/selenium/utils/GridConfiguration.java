@@ -24,6 +24,8 @@ public class GridConfiguration {
 	private RemoteControlConfiguration nodeConfig = new RemoteControlConfiguration();
 	private NetworkUtils networkUtils = new NetworkUtils();
 	
+	private List<String> servlets = new ArrayList<String>();
+	
 	private List<DesiredCapabilities> capabilities = new ArrayList<DesiredCapabilities>();
 
 	public static GridConfiguration parse(String[] args) {
@@ -77,6 +79,10 @@ public class GridConfiguration {
 				i++;
 				String v = getArgValue(args, i);
 				config.addCapabilityFromString(v);
+			}else if ("-servlet".equalsIgnoreCase(arg)) {
+				i++;
+				String v = getArgValue(args, i);
+				config.addServlet(v);
 			} else {
 				leftOver.add(arg);
 			}
@@ -88,6 +94,18 @@ public class GridConfiguration {
 			printHelpAndDie(e.getMessage());
 		}
 		return config;
+	}
+
+	/**
+	 * To get the list of extra servlet the hub should register.
+	 * @return
+	 */
+	public List<String> getServlets() {
+		return servlets;
+	}
+
+	private void addServlet(String v) {
+		servlets.add(v);
 	}
 
 	public List<DesiredCapabilities> getCapabilities() {
@@ -141,7 +159,7 @@ public class GridConfiguration {
 		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-maxConcurrent <x> : Defaults to 5. The maximum number of tests that can run at the same time on the node. "
 				+ "Different from the supported browsers.For a node that supports firefox 3.6, firefox 4.0  and IE8 for instance,maxConccurent=1 "
 				+ "will ensure that you never have more than 1 browserrunning. With maxConcurrent=2 you can have 2 firefox tests at the same time, or 1 IE and 1 FF. ");
-
+		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-servlet <com.mycompany.MyServlet> to register a new servlet on the hub. The servlet will accessible under the path  /grid/admin/MyServlet");
 		// -browser
 		// browserName=firefox,version=3.6,firefox_binary=/Users/freynaud
 		System.exit(-1);

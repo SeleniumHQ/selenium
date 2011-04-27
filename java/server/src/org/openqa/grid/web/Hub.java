@@ -17,6 +17,7 @@ package org.openqa.grid.web;
 
 import com.google.common.collect.Maps;
 import org.openqa.grid.internal.Registry;
+import org.openqa.grid.selenium.utils.GridConfiguration;
 import org.openqa.grid.web.servlet.*;
 import org.openqa.jetty.http.SocketListener;
 import org.openqa.jetty.jetty.Server;
@@ -224,8 +225,8 @@ public class Hub {
 	 * 
 	 * @param args
 	 */
-	public void configure(String[] args) {
-		for (String s : args) {
+	public void configure(GridConfiguration config) {
+		for (String s : config.getServlets()) {
 			Class<? extends Servlet> servletClass = createServlet(s);
 			if (s != null) {
 				String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
