@@ -556,7 +556,7 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
         display);
 
     // Add a newline before block elems when there is text on the current line.
-    if (blockElem && hasText(goog.array.peek(lines))) {
+    if (blockElem && bot.dom.hasText_(goog.array.peek(lines))) {
       lines.push('');
     }
 
@@ -595,19 +595,21 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     }
 
     // Add a newline after block elems when there is text on the current line.
-    if (blockElem && hasText(line)) {
+    if (blockElem && bot.dom.hasText_(line)) {
       lines.push('');
     }
-
-    /**
-     * Tests if there is non-whitespace text on a line.
-     * @param {string} line The line to test.
-     * @return {boolean} Whether the line has non-whitespace text.
-     */
-    function hasText(line) {
-      return line && !bot.dom.JUST_HTML_WHITESPACE_REGEXP_(line);
-    }
   }
+};
+
+
+/**
+ * Tests if there is non-whitespace text on a line.
+ * @param {string} line The line to test.
+ * @return {boolean} Whether the line has non-whitespace text.
+ * @private
+ */
+bot.dom.hasText_ = function(line) {
+  return line && !bot.dom.JUST_HTML_WHITESPACE_REGEXP_(line);
 };
 
 
