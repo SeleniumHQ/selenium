@@ -141,6 +141,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     assertTrue("The element and the enclosing map should be considered shown.", isShown);
   }
 
+  @Ignore
   @JavascriptEnabled
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     if (!hasInputDevices()) {
