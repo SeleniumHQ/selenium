@@ -36,12 +36,13 @@ module Selenium
 
       private
 
-      SOCKET_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError]
-      SOCKET_ERRORS << Errno::EPERM if Platform.cygwin?
+      NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError]
+      NOT_CONNECTED_ERRORS << Errno::EPERM if Platform.cygwin?
+
+      CONNECTED_ERRORS = [Errno::EISCONN]
+      CONNECTED_ERRORS << Errno::EINVAL if Platform.win?
 
       def listening?
-        # There's a bug in 1.9.1 on Windows where this will succeed even if no
-        # one is listening. Users who hit that should upgrade their Ruby.
         addr     = Socket.getaddrinfo(@host, @port, Socket::AF_INET, Socket::SOCK_STREAM)
         sock     = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
         sockaddr = Socket.pack_sockaddr_in(@port, addr[0][3])
@@ -54,13 +55,13 @@ module Selenium
           else
             raise Errno::ECONNREFUSED
           end
-        rescue Errno::EISCONN
+        rescue *CONNECTED_ERRORS
           # yay!
         end
 
         sock.close
         true
-      rescue *SOCKET_ERRORS => e
+      rescue *NOT_CONNECTED_ERRORS => e
         $stderr.puts [@host, @port].inspect if $DEBUG
         false
       end
