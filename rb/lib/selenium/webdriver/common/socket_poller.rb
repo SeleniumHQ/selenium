@@ -43,15 +43,28 @@ module Selenium
       def listening?
         # There's a bug in 1.9.1 on Windows where this will succeed even if no
         # one is listening. Users who hit that should upgrade their Ruby.
-        Timeout::timeout 5 do
-          TCPSocket.new(@host, @port).close
+        addr = Socket.getaddrinfo(@host, nil)
+        sock = Socket.new(Socket.const_get(addr[0][0]), Socket::SOCK_STREAM, 0)
+
+        begin
+          sock.connect_nonblock(Socket.pack_sockaddr_in(@port, addr[0][3]))
+        rescue Errno::EINPROGRESS
+          if IO.select(nil, [sock], nil, 1)
+            begin
+              sock.connect_nonblock(Socket.pack_sockaddr_in(@port, addr[0][3]))
+            rescue Errno::EISCONN
+              # yay!
+            end
+          else
+            raise Errno::ECONNREFUSED
+          end
         end
+
+        sock.close
         true
       rescue *SOCKET_ERRORS => e
         $stderr.puts [@host, @port].inspect if $DEBUG
         false
-      rescue Timeout::Error
-        $stderr.puts "TCPSocket.new timed out" if $DEBUG
       end
 
       def with_timeout(&blk)
