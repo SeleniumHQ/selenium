@@ -1,5 +1,6 @@
 require "selenium/webdriver/common/platform"
 require "socket"
+require "timeout"
 
 module Selenium
   module WebDriver
@@ -42,11 +43,15 @@ module Selenium
       def listening?
         # There's a bug in 1.9.1 on Windows where this will succeed even if no
         # one is listening. Users who hit that should upgrade their Ruby.
-        TCPSocket.new(@host, @port).close
+        Timeout::timeout 5 do
+          TCPSocket.new(@host, @port).close
+        end
         true
       rescue *SOCKET_ERRORS => e
         $stderr.puts [@host, @port].inspect if $DEBUG
         false
+      rescue Timeout::Error
+        $stderr.puts "TCPSocket.new timed out" if $DEBUG
       end
 
       def with_timeout(&blk)
