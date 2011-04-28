@@ -1,6 +1,5 @@
 require "selenium/webdriver/common/platform"
 require "socket"
-require "timeout"
 
 module Selenium
   module WebDriver
@@ -43,21 +42,20 @@ module Selenium
       def listening?
         # There's a bug in 1.9.1 on Windows where this will succeed even if no
         # one is listening. Users who hit that should upgrade their Ruby.
-        addr = Socket.getaddrinfo(@host, @port, Socket::AF_INET, Socket::SOCK_STREAM)
-        sock = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
+        addr     = Socket.getaddrinfo(@host, @port, Socket::AF_INET, Socket::SOCK_STREAM)
+        sock     = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
+        sockaddr = Socket.pack_sockaddr_in(@port, addr[0][3])
 
         begin
-          sock.connect_nonblock(Socket.pack_sockaddr_in(@port, addr[0][3]))
+          sock.connect_nonblock sockaddr
         rescue Errno::EINPROGRESS
           if IO.select(nil, [sock], nil, 1)
-            begin
-              sock.connect_nonblock(Socket.pack_sockaddr_in(@port, addr[0][3]))
-            rescue Errno::EISCONN
-              # yay!
-            end
+            retry
           else
             raise Errno::ECONNREFUSED
           end
+        rescue Errno::EISCONN
+          # yay!
         end
 
         sock.close
