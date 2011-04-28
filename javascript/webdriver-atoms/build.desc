@@ -36,6 +36,11 @@ js_fragment(name = "execute_script",
   function = "bot.inject.executeScript",
   deps = [ "//javascript/atoms:deps" ])
 
+js_fragment(name = "execute_async_script",
+  module = "bot.inject",
+  function = "bot.inject.executeAsyncScript",
+  deps = [ "//javascript/atoms:deps" ])
+
 js_fragment(name = "find_element",
   module = "bot.locators",
   function = "bot.locators.findElement",

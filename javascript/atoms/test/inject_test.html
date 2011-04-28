@@ -24,6 +24,7 @@ limitations under the License.
     goog.require('bot.ErrorCode');
     goog.require('bot.inject');
     goog.require('bot.inject.cache');
+    goog.require('goog.json');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -246,6 +247,111 @@ limitations under the License.
       assertTrue('No message: ' + result, 'message' in json['value']);
       assertEquals('ouch', json['value']['message']);
     }
+
+
+    function testShouldBeAbleToExecuteAsyncScript() {
+      function onDone(result) {
+        asyncTestCase.continueTesting();
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+        assertTrue(goog.object.containsKey(result, 'value'));
+        assertEquals(1, result['value']);
+      }
+
+      asyncTestCase.waitForAsync('callback');
+      bot.inject.executeAsyncScript(
+          "window.setTimeout(goog.partial(arguments[0], 1), 10)",
+          [], 250, onDone);
+    }
+
+
+    function testShouldBeAbleToExecuteAsyncScriptThatCallsbackSynchronously() {
+      function onDone(result) {
+        asyncTestCase.continueTesting();
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+        assertTrue(goog.object.containsKey(result, 'value'));
+        assertEquals(1, result['value']);
+      }
+
+      asyncTestCase.waitForAsync('callback');
+      bot.inject.executeAsyncScript("arguments[0](1)", [], 0, onDone);
+    }
+
+
+    function testShouldBeAbleToExecuteAsyncFunc() {
+      function onDone(result) {
+        asyncTestCase.continueTesting();
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+        assertTrue(goog.object.containsKey(result, 'value'));
+        assertEquals(1, result['value']);
+      }
+
+      asyncTestCase.waitForAsync('callback');
+      bot.inject.executeAsyncScript(
+          function(callback) { callback(1) }, [], 0, onDone);
+    }
+
+
+    function testShouldThrowOnExecuteAsyncException() {
+      function onDone(result) {
+        asyncTestCase.continueTesting();
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.UNKNOWN_ERROR, result['status']);
+      }
+
+      asyncTestCase.waitForAsync('callback');
+      bot.inject.executeAsyncScript("nosuchfunc()", [], 0, onDone);
+    }
+
+
+    function testShouldTimeoutInExecuteAsync() {
+      function onDone(result) {
+        asyncTestCase.continueTesting();
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SCRIPT_TIMEOUT, result['status']);
+      }
+
+      asyncTestCase.waitForAsync('callback');
+      bot.inject.executeAsyncScript("", [], 0, onDone);
+    }
+
+
+    function testShouldBeAbleToStringifyResult() {
+      function onDone(jsonResult) {
+        asyncTestCase.continueTesting();
+        var result = goog.json.parse(jsonResult);
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SCRIPT_TIMEOUT, result['status']);
+      }
+
+      asyncTestCase.waitForAsync('callback');
+      bot.inject.executeAsyncScript("", [], 0, onDone, true);
+    }
+
+
+    function testShouldBeAbleToWrapAndUnwrapInExecuteAsyncScript() {
+      function onDone(result) {
+        asyncTestCase.continueTesting();
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+
+        assertTrue(goog.object.containsKey(result, 'value'));
+        assertTrue(goog.object.containsKey(result['value'],
+            bot.inject.ELEMENT_KEY));
+        assertEquals(document.body, bot.inject.cache.getElement(
+            result['value'][bot.inject.ELEMENT_KEY]));
+      }
+
+      var id = bot.inject.cache.addElement(document.body);
+      var args = [{}];
+      args[0][bot.inject.ELEMENT_KEY] = id;
+      asyncTestCase.waitForAsync('callback');
+      var result = bot.inject.executeAsyncScript(
+          "arguments[1](arguments[0])", args, 0, onDone);
+    }
+
   </script>
 </body>
 </html>

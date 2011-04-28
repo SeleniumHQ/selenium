@@ -28,6 +28,7 @@ goog.provide('bot.inject.cache');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.script');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
@@ -177,15 +178,78 @@ bot.inject.executeScript = function(fn, args, opt_stringify) {
     }
 
     var unwrappedArgs = (/**@type {Object}*/bot.inject.unwrapValue(args));
-    var result = fn.apply(null, unwrappedArgs);
-    ret =  {
-      'status': bot.ErrorCode.SUCCESS,
-      'value': bot.inject.wrapValue(result)
-    };
+    ret = bot.inject.wrapResponse_(fn.apply(null, unwrappedArgs));
   } catch (ex) {
     ret = bot.inject.wrapError_(ex);
   }
   return opt_stringify ? goog.json.serialize(ret) : ret;
+};
+
+
+/**
+ * Executes an injected script, which is expected to finish asynchronously
+ * before the given {@code timeout}. When the script finishes or an error
+ * occurs, the given {@code onDone} callback will be invoked. This callback
+ * will have a single argument, a dictionary containing a status code and
+ * a value.
+ *
+ * The script signals its completion by invoking a supplied callback given
+ * as its last argument. The callback may be invoked with a single value.
+ *
+ * Like {@code bot.inject.executeScript}, this function should only be called
+ * from an external source. It handles wrapping and unwrapping of input/output
+ * values.
+ *
+ * @param {(function()|string)} fn Either the function to execute, or a string
+ *     defining the body of an anonymous function that should be executed.
+ * @param {Array.<*>} args An array of wrapped script arguments, as defined by
+ *     the WebDriver wire protocol.
+ * @param {number} timeout The amount of time, in milliseconds, the script
+ *     should be permitted to run.
+ * @param {function((string|{status:bot.ErrorCode, value:*}))} onDone
+ *     The function to call when the given {@code fn} invokes its callback,
+ *     or when an exception or timeout occurs. This will always be called.
+ * @param {boolean=} opt_stringify Whether the result should be returned as a
+ *     serialized JSON string.
+ */
+bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
+                                         opt_stringify) {
+  function invokeCallback(result) {
+    onDone(opt_stringify ? goog.json.serialize(result) : result);
+  }
+
+  function onSuccess(value) {
+    invokeCallback(bot.inject.wrapResponse_(value));
+  }
+
+  function onFailure(err) {
+    invokeCallback(bot.inject.wrapError_(err));
+  }
+
+  try {
+    var unwrappedArgs = (/**@type {Object}*/bot.inject.unwrapValue(args));
+    bot.script.execute(fn, unwrappedArgs, timeout, onSuccess, onFailure);
+  } catch (ex) {
+    onFailure(new bot.Error(ex.code || bot.ErrorCode.UNKNOWN_ERROR,
+                            ex.message));
+  }
+};
+
+
+/**
+ * Wraps the response to an injected script that executed successfully so it
+ * can be JSON-ified for transmission to the process that injected this
+ * script.
+ * @param {*} value The script result.
+ * @return {{status:bot.ErrorCode,value:*}} The wrapped value.
+ * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Responses
+ * @private
+ */
+bot.inject.wrapResponse_ = function(value) {
+  return {
+    'status': bot.ErrorCode.SUCCESS,
+    'value': bot.inject.wrapValue(value)
+  };
 };
 
 

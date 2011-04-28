@@ -55,7 +55,7 @@
         var called = false;
         bot.script.execute('throw Error("boom");', [], IS_SYNCHRONOUS,
             expectedFailure, function(e) {
-              assertEquals(bot.ErrorCode.UNHANDLED_JS_ERROR, e.code);
+              assertEquals(bot.ErrorCode.UNKNOWN_ERROR, e.code);
               assertEquals('boom', e.message);
               called = true;
             });

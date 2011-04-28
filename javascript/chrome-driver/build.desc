@@ -15,6 +15,7 @@ js_fragment_header(name = "atoms",
   deps = [
     "//javascript/webdriver-atoms:clear:chrome",
     "//javascript/webdriver-atoms:execute_script:chrome",
+    "//javascript/webdriver-atoms:execute_async_script:chrome",
     "//javascript/webdriver-atoms:find_element:chrome",
     "//javascript/webdriver-atoms:find_elements:chrome",
     "//javascript/webdriver-atoms:get_attribute:chrome",

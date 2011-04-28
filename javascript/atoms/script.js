@@ -32,8 +32,8 @@ goog.require('goog.events.EventType');
  * is executing, the script will be aborted and the {@code onFailure} callback
  * will be invoked.
  *
- * @param {string} script A string defining the body of the function
- *     to invoke.
+ * @param {(string|function())} script Either a string defining the body of the
+ *     function to invoke, or a function object.
  * @param {!Array.<*>} args The list of arguments to pass to the script.
  * @param {number} timeout The amount of time, in milliseconds, the script
  *     should be permitted to run. If {@code timeout < 0}, the script will
@@ -71,7 +71,7 @@ bot.script.execute = function(script, args, timeout, onSuccess, onFailure,
   }
 
   function onUnload() {
-    sendResponse(bot.ErrorCode.UNHANDLED_JS_ERROR,
+    sendResponse(bot.ErrorCode.UNKNOWN_ERROR,
                  Error('Detected a page unload event; asynchronous script ' +
                        'execution does not work across apge loads.'));
   }
@@ -94,8 +94,11 @@ bot.script.execute = function(script, args, timeout, onSuccess, onFailure,
 
   var startTime = goog.now();
   try {
+    if (goog.isString(script)) {
+      script = new Function(script);
+    }
     with (win) {
-      var result = new Function(script).apply(win, args);
+      var result = script.apply(win, args);
     }
     if (isAsync) {
       timeoutId = win.setTimeout(goog.partial(onTimeout, startTime), timeout);
@@ -103,6 +106,6 @@ bot.script.execute = function(script, args, timeout, onSuccess, onFailure,
       sendResponse(bot.ErrorCode.SUCCESS, result);
     }
   } catch (ex) {
-    sendResponse(ex.code || bot.ErrorCode.UNHANDLED_JS_ERROR, ex);
+    sendResponse(ex.code || bot.ErrorCode.UNKNOWN_ERROR, ex);
   }
 };
