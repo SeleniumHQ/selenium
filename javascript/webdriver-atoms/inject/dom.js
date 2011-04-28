@@ -89,3 +89,13 @@ webdriver.inject.dom.getValueOfCssProperty = function(element, property) {
 webdriver.inject.dom.isEnabled = function(element) {
   return bot.inject.executeScript(bot.dom.isEnabled, [element], true);
 }
+
+/**
+ * @param {bot.inject.ELEMENT_KEY:string} element The element to check.
+ * @return {string} true if the element is visisble, false otherwise.
+ *     The result is wrapped in a JSON string as defined by the wire
+ *     protocol.
+ */
+webdriver.inject.dom.isDisplayed = function(element) {
+  return bot.inject.executeScript(bot.action.isShown_, [element], true)
+}

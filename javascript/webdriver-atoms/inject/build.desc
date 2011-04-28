@@ -75,3 +75,8 @@ js_fragment(name = "set_selected",
   function = "webdriver.inject.action.setSelected",
   deps = [":deps"])
 
+js_fragment(name = "is_displayed",
+  module = "webdriver.inject.dom",
+  function = "webdriver.inject.dom.isDisplayed",
+  deps = [":deps"])
+

@@ -88,6 +88,15 @@ limitations under the License.
 
     }
 
+    function testIsDisplayed() {
+      var working = webdriver.inject.locators.findElement("id", "working");
+      assertTrue(getValueFromJSONObject(webdriver.inject.dom.isDisplayed(
+              getValueFromJSONObject(working))));
+      var hidden = webdriver.inject.locators.findElement("id", "hidden");
+      assertFalse(getValueFromJSONObject(webdriver.inject.dom.isDisplayed(
+              getValueFromJSONObject(hidden))));
+    }
+
     function getValueFromJSONObject(arg) {
       return goog.json.parse(arg)["value"];
     }
@@ -109,5 +118,6 @@ limitations under the License.
 
     <input type="text" id="working" >
     <input type="text" id="notWorking" disabled=true >
+    <input type="hidden" id="hidden"></input>
   </body>
 </html>
