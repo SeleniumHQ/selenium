@@ -311,6 +311,11 @@ bot.inject.cache.getCache_ = function(opt_doc) {
     // reset whenever the cache does.
     cache.nextId = goog.now();
   }
+  // Sometimes the nextId does not get initialized and returns NaN
+  // TODO: Generate UID on the fly instead.
+  if (!cache.nextId) {
+    cache.nextId = goog.now();
+  }
   return cache;
 };
 
