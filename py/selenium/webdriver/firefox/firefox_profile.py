@@ -20,7 +20,6 @@ import logging
 import zipfile
 import shutil
 import re
-import rdflib
 import base64
 from cStringIO import StringIO
 
