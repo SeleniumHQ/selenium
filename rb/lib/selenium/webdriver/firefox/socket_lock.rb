@@ -46,7 +46,7 @@ module Selenium
           ChildProcess.close_on_exec @server
 
           true
-        rescue SocketError, Errno::EADDRINUSE => ex
+        rescue SocketError, Errno::EADDRINUSE, Errno::EBADF => ex
           $stderr.puts "#{self}: #{ex.message}" if $DEBUG
           false
         end
