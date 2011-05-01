@@ -16,6 +16,7 @@
 # limitations under the License.
 
 import unittest
+import os
 from selenium import webdriver
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 
@@ -44,8 +45,16 @@ class FirefoxProfileTest(unittest.TestCase):
         title = self.driver.title
         self.assertEquals("Hello WebDriver", title)
 
-    def tearDown(self):
+    def test_that_we_delete_the_profile(self):
+        path = self.driver.firefox_profile.path
         self.driver.quit()
+        self.assertFalse(os.path.exists(path))
+
+    def tearDown(self):
+        try:
+            self.driver.quit()
+        except:
+            pass #don't care since we may have killed the browser above
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
@@ -57,5 +66,8 @@ class FirefoxProfileTest(unittest.TestCase):
         self.driver.get(self._pageURL(name))
 
 def teardown_module(module):
-    FirefoxProfileTest.driver.quit()
+    try:
+        FirefoxProfileTest.driver.quit()
+    except:
+        pass #Don't Care since we may have killed the browser above
     FirefoxProfileTest.webserver.stop()

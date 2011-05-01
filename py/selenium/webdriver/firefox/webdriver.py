@@ -25,6 +25,7 @@ from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.extension_connection import ExtensionConnection
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities 
 import urllib2
+import shutil
 import socket
 
 class WebDriver(RemoteWebDriver):
@@ -58,6 +59,10 @@ class WebDriver(RemoteWebDriver):
             # the socket.
             pass
         self.binary.kill()
+        try:
+            shutil.rmtree(self.profile.path)
+        except Exception, e:
+            print str(e)
 
     @property
     def firefox_profile(self):
