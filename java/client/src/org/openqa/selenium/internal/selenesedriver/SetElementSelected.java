@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.Selenium;
+import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.WebDriverException;
 
 import java.util.Map;
@@ -36,10 +37,10 @@ public class SetElementSelected extends ElementFunction<Void> {
       if (selenium.isEditable(locator)) {
         selenium.check(locator);
       } else {
-        throw new UnsupportedOperationException("Element is not selectable: " + locator);
+        throw new InvalidElementStateException("Element is not selectable: " + locator);
       }
     } else {
-      throw new UnsupportedOperationException("Element is not selectable: " + locator);
+      throw new InvalidElementStateException("Element is not selectable: " + locator);
     }
 
     return null;
