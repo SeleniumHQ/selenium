@@ -16,18 +16,17 @@ limitations under the License.
 */
 package org.openqa.selenium;
 
-import java.util.concurrent.Callable;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
+
+import java.util.concurrent.Callable;
 
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 
@@ -244,7 +243,8 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     if (driver instanceof HasCapabilities) {
       Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
-      return (Boolean) capabilities.getCapability("nativeEvents");
+      Object nativeEvents = capabilities.getCapability("nativeEvents");
+      return nativeEvents != null && (Boolean) nativeEvents;
     }
 
     return false;
