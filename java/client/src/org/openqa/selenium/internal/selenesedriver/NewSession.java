@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
+import com.thoughtworks.selenium.BrowserConfigurationOptions;
 import com.thoughtworks.selenium.Selenium;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
@@ -26,18 +27,27 @@ import java.util.Map;
 
 public class NewSession implements SeleneseFunction<Map<String, Object>> {
   public Map<String, Object> apply(Selenium selenium, Map<String, ?> args) {
-    selenium.start();
+    Capabilities capabilities = (Capabilities) args.get("desiredCapabilities");
+
+    selenium.start(getBrowserConfigurationOptions(capabilities));
 
     // Emulate behaviour of webdriver
     selenium.useXpathLibrary("javascript-xpath");
     selenium.allowNativeXpath("true");
 
-    Capabilities capabilities = (Capabilities) args.get("desiredCapabilities");
     Map<String, Object> seenCapabilities = new HashMap<String, Object>();
     seenCapabilities.put("browserName", capabilities.getBrowserName());
     seenCapabilities.put("version", capabilities.getVersion());
     seenCapabilities.put("platform", Platform.getCurrent().toString());
     seenCapabilities.put("javascriptEnabled", true);
     return seenCapabilities;
+  }
+
+  private String getBrowserConfigurationOptions(Capabilities capabilities) {
+    BrowserConfigurationOptions options = new BrowserConfigurationOptions();
+    for (Map.Entry<String, ?> capability : capabilities.asMap().entrySet()) {
+      options.set(capability.getKey(), String.valueOf(capability.getValue()));
+    }
+    return options.serialize();
   }
 }
