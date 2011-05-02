@@ -1,0 +1,13 @@
+js_deps(name = "atoms",
+  srcs = "**/*.js",
+  deps = "//javascript/atoms:deps")
+
+js_fragment(name = "fireEvent",
+  module = "bot.events",
+  function = "bot.events.fire",
+  deps = [":atoms"])
+
+js_fragment(name = "getOuterHtml",
+  module = "goog.dom",
+  function = "goog.dom.getOuterHtml",
+  deps = [""])
