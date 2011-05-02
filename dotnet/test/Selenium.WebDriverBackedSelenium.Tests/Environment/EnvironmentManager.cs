@@ -13,7 +13,7 @@ namespace Selenium.Tests.Environment
         private static readonly EnvironmentManager instance = new EnvironmentManager();
         private Type driverType;
         SeleniumServer remoteServer;
-        private int port = 6000;
+        private int port = 4444;
 
         private EnvironmentManager()
         {

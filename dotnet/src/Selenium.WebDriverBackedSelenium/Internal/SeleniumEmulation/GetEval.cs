@@ -12,22 +12,14 @@ namespace Selenium.Internal.SeleniumEmulation
     /// </summary>
     internal class GetEval : SeleneseCommand
     {
-        // Regular expression for scripts that reference the current window.
-        private static readonly Regex SeleniumWindowReferenceRegex = new Regex("selenium\\.(browserbot|page\\(\\))\\.getCurrentWindow\\(\\)");
-
-        // Regular expression for scripts that reference the current window's document.
-        private static readonly Regex SeleniumDocumentReferenceRegex = new Regex("selenium\\.(browserbot|page\\(\\))\\.getDocument\\(\\)");
-
-        private Regex seleniumBaseUrlRegex = new Regex("selenium\\.browserbot\\.baseUrl");
-        private string url;
-
+        private IScriptMutator mutator;
         /// <summary>
         /// Initializes a new instance of the <see cref="GetEval"/> class.
         /// </summary>
         /// <param name="baseUrl">The <see cref="Uri"/> used to replace the base URL in the script being run.</param>
-        public GetEval(Uri baseUrl)
+        public GetEval(IScriptMutator mutator)
         {
-            this.url = '"' + baseUrl.ToString() + '"';
+            this.mutator = mutator;
         }
 
         /// <summary>
@@ -39,15 +31,10 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            string script = locator.Replace("\n", "\\\\n");
-            script = SeleniumWindowReferenceRegex.Replace(script, "window");
-            script = SeleniumDocumentReferenceRegex.Replace(script, "window.document");
-            script = this.seleniumBaseUrlRegex.Replace(script, this.url);
-            script = script.Replace("\"", "\\\"");
-            script = script.Replace("'", "\\\\'");
-            script = string.Format(CultureInfo.InvariantCulture, "return eval('{0}');", script);
-
-            return ((IJavaScriptExecutor)driver).ExecuteScript(script);
+            StringBuilder scriptBuilder = new StringBuilder();
+            this.mutator.Mutate(locator, scriptBuilder);
+            object result = ((IJavaScriptExecutor)driver).ExecuteScript(scriptBuilder.ToString());
+            return result == null ? string.Empty : result.ToString();
         }
     }
 }

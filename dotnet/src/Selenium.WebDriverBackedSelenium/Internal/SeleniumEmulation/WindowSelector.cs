@@ -91,7 +91,11 @@ namespace Selenium.Internal.SeleniumEmulation
 
             try
             {
-                this.lastFrame.Add(driver.CurrentWindowHandle, locator);
+                if (!this.lastFrame.ContainsKey(driver.CurrentWindowHandle))
+                {
+                    this.lastFrame.Add(driver.CurrentWindowHandle, locator);
+                }
+
                 driver.SwitchTo().Frame(locator);
             }
             catch (NoSuchFrameException e)

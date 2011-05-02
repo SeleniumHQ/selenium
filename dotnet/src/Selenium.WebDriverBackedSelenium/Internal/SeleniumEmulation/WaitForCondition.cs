@@ -11,6 +11,13 @@ namespace Selenium.Internal.SeleniumEmulation
     /// </summary>
     internal class WaitForCondition : SeleneseCommand
     {
+        private IScriptMutator mutator;
+
+        public WaitForCondition(IScriptMutator mutator)
+        {
+            this.mutator = mutator;
+        }
+
         /// <summary>
         /// Handles the command.
         /// </summary>
@@ -20,6 +27,9 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
+            StringBuilder builder = new StringBuilder();
+            mutator.Mutate(locator, builder);
+            string modified = builder.ToString();
             string waitMessage = "Failed to resolve " + locator;
             ConditionWaiter waiter = new ConditionWaiter(driver, locator);
             if (!string.IsNullOrEmpty(value))
@@ -61,7 +71,26 @@ namespace Selenium.Internal.SeleniumEmulation
             /// <returns>Returns true when it's time to stop waiting.</returns>
             public override bool Until()
             {
-                return (bool)((IJavaScriptExecutor)this.driver).ExecuteScript(this.script);
+                object result = ((IJavaScriptExecutor)this.driver).ExecuteScript(this.script);
+
+                // Although the conditions should return a boolean, JS has a loose
+                // definition of "true" Try and meet that definition.
+                if (result == null)
+                {
+                    return false;
+                }
+                else if (result is string)
+                {
+                    return !string.IsNullOrEmpty(result.ToString());
+                }
+                else if (result is bool)
+                {
+                    return (bool)result;
+                }
+                else
+                {
+                    return true;
+                }
             }
         }
     }

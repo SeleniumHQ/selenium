@@ -10,7 +10,7 @@ namespace Selenium.Internal.SeleniumEmulation
     /// </summary>
     internal class SelectOption : SeleneseCommand
     {
-        private SeleniumOptionSelector selector;
+        private ElementFinder finder;
         private AlertOverride alertOverride;
 
         /// <summary>
@@ -18,9 +18,9 @@ namespace Selenium.Internal.SeleniumEmulation
         /// </summary>
         /// <param name="alertOverride">An <see cref="AlertOverride"/> object used to handle JavaScript alerts.</param>
         /// <param name="optionSelector">The <see cref="SeleniumOptionSelector"/> used in selecting the option.</param>
-        public SelectOption(AlertOverride alertOverride, SeleniumOptionSelector optionSelector)
+        public SelectOption(AlertOverride alertOverride, ElementFinder finder)
         {
-            this.selector = optionSelector;
+            this.finder = finder;
             this.alertOverride = alertOverride;
         }
 
@@ -34,7 +34,8 @@ namespace Selenium.Internal.SeleniumEmulation
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             this.alertOverride.ReplaceAlertMethod();
-            this.selector.Select(driver, locator, value, true, true);
+            SeleniumSelect select = new SeleniumSelect(finder, driver, locator);
+            select.SetSelected(value);
             return null;
         }
     }

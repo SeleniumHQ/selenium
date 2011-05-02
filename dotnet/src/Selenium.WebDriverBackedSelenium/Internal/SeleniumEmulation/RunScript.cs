@@ -10,6 +10,12 @@ namespace Selenium.Internal.SeleniumEmulation
     /// </summary>
     internal class RunScript : SeleneseCommand
     {
+        private IScriptMutator mutator;
+
+        public RunScript(IScriptMutator mutator)
+        {
+            this.mutator = mutator;
+        }
         /// <summary>
         /// Handles the command.
         /// </summary>
@@ -19,7 +25,9 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            JavaScriptLibrary.ExecuteScript(driver, locator);
+            StringBuilder builder = new StringBuilder();
+            mutator.Mutate(locator, builder);
+            ((IJavaScriptExecutor)driver).ExecuteScript(builder.ToString());
             return null;
         }
     }

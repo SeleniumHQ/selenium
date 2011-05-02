@@ -31,7 +31,8 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            UserLookupStrategy strategy = new UserLookupStrategy(value);
+            string strategy = string.Format(@"return (function(locator, inWindow, inDocument) {{ {0} }}).call(null, arguments[0], window, document)", value);
+
             this.finder.AddStrategy(locator, strategy);
 
             return null;

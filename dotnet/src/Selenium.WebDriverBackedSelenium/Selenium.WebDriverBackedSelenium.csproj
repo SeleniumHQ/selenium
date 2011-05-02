@@ -77,18 +77,20 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Internal\AlertOverride.cs" />
     <Compile Include="Internal\CommandTimer.cs" />
+    <Compile Include="Internal\SeleniumEmulation\CompoundMutator.cs" />
+    <Compile Include="Internal\SeleniumEmulation\FunctionDeclaration.cs" />
+    <Compile Include="Internal\SeleniumEmulation\GetExpression.cs" />
     <Compile Include="Internal\SeleniumEmulation\IsConfirmationPresent.cs" />
-    <Compile Include="Internal\SeleniumEmulation\FilterFunctions\BaseFilterFunction.cs" />
-    <Compile Include="Internal\SeleniumEmulation\FilterFunctions\ValueFilterFunction.cs" />
-    <Compile Include="Internal\SeleniumEmulation\FilterFunctions\IndexFilterFunction.cs" />
-    <Compile Include="Internal\SeleniumEmulation\FilterFunctions\NameFilterFunction.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetAlert.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetConfirmation.cs" />
     <Compile Include="Internal\SeleniumEmulation\IFilterFunction.cs" />
     <Compile Include="Internal\SeleniumEmulation\IsAlertPresent.cs" />
-    <Compile Include="Internal\SeleniumEmulation\LookupStrategies\CssSelectorLookupStrategy.cs" />
+    <Compile Include="Internal\SeleniumEmulation\IScriptMutator.cs" />
+    <Compile Include="Internal\SeleniumEmulation\SeleniumMutator.cs" />
     <Compile Include="Internal\SeleniumEmulation\SetTimeout.cs" />
     <Compile Include="Internal\SeleniumEmulation\SetNextConfirmationState.cs" />
+    <Compile Include="Internal\SeleniumEmulation\SeleniumSelect.cs" />
+    <Compile Include="Internal\SeleniumEmulation\VariableDeclaration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\SeleniumEmulation\AddLocationStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\AddSelection.cs" />
@@ -149,8 +151,6 @@
     <Compile Include="Internal\SeleniumEmulation\JavaScriptLibrary.cs" />
     <Compile Include="Internal\SeleniumEmulation\KeyState.cs" />
     <Compile Include="Internal\SeleniumEmulation\NoOp.cs" />
-    <Compile Include="Internal\SeleniumEmulation\LookupStrategies\DomTraversalLookupStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\LookupStrategies\ImplicitLookupStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\IsVisible.cs" />
     <Compile Include="Internal\SeleniumEmulation\IsTextPresent.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetHtmlSource.cs" />
@@ -165,29 +165,16 @@
     <Compile Include="Internal\SeleniumEmulation\GetLocation.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetText.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetTitle.cs" />
-    <Compile Include="Internal\SeleniumEmulation\LookupStrategies\IdLookupStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\LookupStrategies\LinkLookupStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\LookupStrategies\NameLookupStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\Open.cs" />
     <Compile Include="Internal\SeleniumEmulation\OpenWindow.cs" />
-    <Compile Include="Internal\SeleniumEmulation\OptionSelectStratgies\BaseOptionSelectStragety.cs" />
-    <Compile Include="Internal\SeleniumEmulation\OptionSelectStratgies\IdOptionSelectStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\OptionSelectStratgies\IndexOptionSelectStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\OptionSelectStratgies\LabelOptionSelectStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\OptionSelectStratgies\ValueOptionSelectStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\Refresh.cs" />
     <Compile Include="Internal\SeleniumEmulation\RemoveAllSelections.cs" />
     <Compile Include="Internal\SeleniumEmulation\SeleneseCommand.cs" />
-    <Compile Include="Internal\SeleniumEmulation\SeleniumOptionSelector.cs" />
     <Compile Include="Internal\SeleniumEmulation\Submit.cs" />
     <Compile Include="Internal\SeleniumEmulation\ITextMatchingStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\TextMatchingStrategies\ExactTextMatchingStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\TextMatchingStrategies\GlobTextMatchingStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\TextMatchingStrategies\RegExTextMatchingStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\Type.cs" />
     <Compile Include="Internal\SeleniumEmulation\TypeKeys.cs" />
     <Compile Include="Internal\SeleniumEmulation\Uncheck.cs" />
-    <Compile Include="Internal\SeleniumEmulation\LookupStrategies\XPathLookupStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\Waiter.cs" />
     <Compile Include="Internal\SeleniumEmulation\WaitForCondition.cs" />
     <Compile Include="Internal\SeleniumEmulation\WaitForPopup.cs" />
@@ -196,14 +183,31 @@
     <Compile Include="Internal\SeleniumEmulation\WindowSelector.cs" />
     <Compile Include="WebDriverBackedSelenium.cs" />
     <Compile Include="WebDriverCommandProcessor.cs" />
-    <Compile Include="Internal\SeleniumEmulation\LookupStrategies\AltLookupStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\LookupStrategies\ClassLookupStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\LookupStrategies\IdentifierLookupStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\ILookupStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetCssCount.cs" />
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>copy /y "$(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\injectableSelenium.js" "$(TargetDir)"
-copy /y "$(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\htmlutils.js" "$(TargetDir)"</PostBuildEvent>
+copy /y "$(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\htmlutils.js" "$(TargetDir)"
+if exist $(SolutionDir)build\javascript\selenium-atoms\findElement.js copy /y $(SolutionDir)build\javascript\selenium-atoms\findElement.js $(TargetDir)
+if exist $(SolutionDir)build\javascript\selenium-atoms\findOption.js copy /y $(SolutionDir)build\javascript\selenium-atoms\findOption.js $(TargetDir)
+if exist $(SolutionDir)build\javascript\selenium-atoms\fireEvent.js copy /y $(SolutionDir)build\javascript\selenium-atoms\fireEvent.js $(TargetDir)
+if exist $(SolutionDir)build\javascript\selenium-atoms\fireEventAt.js copy /y $(SolutionDir)build\javascript\selenium-atoms\fireEventAt.js $(TargetDir)
+if exist $(SolutionDir)build\javascript\selenium-atoms\getAttribute.js copy /y $(SolutionDir)build\javascript\selenium-atoms\getAttribute.js $(TargetDir)
+if exist $(SolutionDir)build\javascript\selenium-atoms\getText.js copy /y $(SolutionDir)build\javascript\selenium-atoms\getText.js $(TargetDir)
+if exist $(SolutionDir)build\javascript\selenium-atoms\linkLocator.js copy /y $(SolutionDir)build\javascript\selenium-atoms\linkLocator.js $(TargetDir)
+if exist $(SolutionDir)build\javascript\selenium-atoms\isElementPresent.js copy /y $(SolutionDir)build\javascript\selenium-atoms\isElementPresent.js $(TargetDir)
+if exist $(SolutionDir)build\javascript\selenium-atoms\isSomethingSelected.js copy /y $(SolutionDir)build\javascript\selenium-atoms\isSomethingSelected.js $(TargetDir)
+if exist $(SolutionDir)build\javascript\selenium-atoms\isTextPresent.js copy /y $(SolutionDir)build\javascript\selenium-atoms\isTextPresent.js $(TargetDir)
+if exist $(SolutionDir)build\javascript\selenium-atoms\isVisible.js copy /y $(SolutionDir)build\javascript\selenium-atoms\isVisible.js $(TargetDir)
+if exist $(SolutionDir)build\javascript\selenium-atoms\type.js copy /y $(SolutionDir)build\javascript\selenium-atoms\type.js $(TargetDir)
+
+</PostBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Internal\SeleniumEmulation\FilterFunctions\" />
+    <Folder Include="Internal\SeleniumEmulation\LookupStrategies\" />
+    <Folder Include="Internal\SeleniumEmulation\OptionSelectStratgies\" />
+    <Folder Include="Internal\SeleniumEmulation\TextMatchingStrategies\" />
+  </ItemGroup>
 </Project>

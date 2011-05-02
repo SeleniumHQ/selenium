@@ -66,8 +66,13 @@ namespace Selenium.Internal
         /// <returns><see langword="true"/> if an alert is present; otherwise <see langword="false"/>.</returns>
         public bool IsAlertPresent()
         {
-            bool alertPresent = (bool)((IJavaScriptExecutor)this.driver).ExecuteScript(
+            bool alertPresent = false;
+            object alertResult = ((IJavaScriptExecutor)this.driver).ExecuteScript(
               "return window.__webdriverAlerts && window.__webdriverAlerts.length > 0;");
+            if (alertResult != null)
+            {
+                alertPresent = (bool)alertResult;
+            }
 
             return alertPresent;
         }
@@ -96,8 +101,13 @@ namespace Selenium.Internal
         /// <returns><see langword="true"/> if an confirm is present; otherwise <see langword="false"/>.</returns>
         public bool IsConfirmationPresent()
         {
-            bool confirmPresent = (bool)((IJavaScriptExecutor)this.driver).ExecuteScript(
+            bool confirmPresent = false;
+            object confirmResult = ((IJavaScriptExecutor)this.driver).ExecuteScript(
               "return window.__webdriverConfirms && window.__webdriverConfirms.length > 0;");
+            if (confirmResult != null)
+            {
+                confirmPresent = (bool)confirmResult;
+            }
 
             return confirmPresent;
         }

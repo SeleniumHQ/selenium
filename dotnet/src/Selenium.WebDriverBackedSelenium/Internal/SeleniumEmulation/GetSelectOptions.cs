@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using OpenQA.Selenium;
+using System.Collections.ObjectModel;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
@@ -10,15 +11,15 @@ namespace Selenium.Internal.SeleniumEmulation
     /// </summary>
     internal class GetSelectOptions : SeleneseCommand
     {
-        private SeleniumOptionSelector selector;
+        private ElementFinder finder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetSelectOptions"/> class.
         /// </summary>
         /// <param name="optionsSelector">A <see cref="SeleniumOptionSelector"/> used in getting the select options.</param>
-        public GetSelectOptions(SeleniumOptionSelector optionsSelector)
+        public GetSelectOptions(ElementFinder finder)
         {
-            this.selector = optionsSelector;
+            this.finder = finder;
         }
 
         /// <summary>
@@ -30,9 +31,16 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            List<string> allOptions = this.selector.GetOptions(driver, locator, SeleniumOptionSelector.Property.Text, true);
+            SeleniumSelect select = new SeleniumSelect(finder, driver, locator);
 
-            return allOptions.ToArray();
+            ReadOnlyCollection<IWebElement> allOptions = select.AllOptions;
+            List<string> labels = new List<string>();
+            foreach (IWebElement label in allOptions)
+            {
+                labels.Add(label.Text);
+            }
+
+            return labels.ToArray();
         }
     }
 }

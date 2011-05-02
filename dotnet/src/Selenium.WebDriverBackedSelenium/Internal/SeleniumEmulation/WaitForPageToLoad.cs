@@ -22,68 +22,90 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            string waitMessage = "Failed to resolve " + locator;
-            PageLoadWaiter waiter = new PageLoadWaiter(driver, this.timeToWaitAfterPageLoad);
-            if (!string.IsNullOrEmpty(value))
+            if (!(driver is IJavaScriptExecutor))
             {
-                waiter.Wait(waitMessage, long.Parse(value, CultureInfo.InvariantCulture));
+                // Assume that we Do The Right Thing
+                return null;
             }
-            else
-            {
-                waiter.Wait(waitMessage);
-            }
+
+            long timeoutInMilliseconds = long.Parse(locator);
+           
+            this.Pause();
+            object result = ((IJavaScriptExecutor)driver).ExecuteScript("return !!document['readyState'];");
+            Waiter wait = (result != null && (bool)result) ? new ReadyStateWaiter(driver) as Waiter : new LengthCheckingWaiter(driver) as Waiter;
+            wait.Wait(String.Format("Failed to load page within {0} ms", locator), timeoutInMilliseconds);
+            this.Pause();
 
             return null;
         }
 
-        /// <summary>
-        /// Provides methods to wait for a page to load.
-        /// </summary>
-        private class PageLoadWaiter : Waiter
+        private void Pause()
         {
-            private IWebDriver driver;
-            private int timeToWaitAfterPageLoad;
-            private DateTime started = DateTime.Now;
+            System.Threading.Thread.Sleep(this.timeToWaitAfterPageLoad);
+        }
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="PageLoadWaiter"/> class.
-            /// </summary>
-            /// <param name="driver">The <see cref="IWebDriver"/> object to use to wait.</param>
-            /// <param name="timeToWaitAfterPageLoad">The time to wait after the page loads.</param>
-            public PageLoadWaiter(IWebDriver driver, int timeToWaitAfterPageLoad)
+        private class ReadyStateWaiter : Waiter
+        {
+            IWebDriver driver;
+            public ReadyStateWaiter(IWebDriver driver)
                 : base()
             {
                 this.driver = driver;
-                this.timeToWaitAfterPageLoad = timeToWaitAfterPageLoad;
             }
 
-            /// <summary>
-            /// The function called to wait for the condition
-            /// </summary>
-            /// <returns>Returns true when it's time to stop waiting.</returns>
             public override bool Until()
             {
                 try
                 {
-                    object result = ((IJavaScriptExecutor)this.driver).ExecuteScript("return document['readyState'] ? 'complete' == document.readyState : true");
+                    object result = ((IJavaScriptExecutor)driver).ExecuteScript("return 'complete' == document.readyState;");
 
-                    DateTime now = DateTime.Now;
                     if (result != null && result is bool && (bool)result)
                     {
-                        if (now.Subtract(this.started).TotalMilliseconds > this.timeToWaitAfterPageLoad)
-                        {
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        this.started = now;
+                        return true;
                     }
                 }
                 catch (Exception)
                 {
                     // Possible page reload. Fine
                 }
+                return false;
+            }
+        }
+
+        private class LengthCheckingWaiter : Waiter
+        {
+            private IWebDriver driver;
+            private int length;
+            private DateTime seenAt;
+
+            public LengthCheckingWaiter(IWebDriver driver)
+            {
+                this.driver = driver;
+            }
+
+            public override bool Until()
+            {
+                // Page length needs to be stable for a second
+                try
+                {
+                    int currentLength = driver.FindElement(By.TagName("body")).Text.Length;
+                    if (seenAt == null)
+                    {
+                        this.seenAt = DateTime.Now;
+                        this.length = currentLength;
+                        return false;
+                    }
+
+                    if (currentLength != length)
+                    {
+                        this.seenAt = DateTime.Now;
+                        this.length = currentLength;
+                        return false;
+                    }
+
+                    return DateTime.Now.Subtract(seenAt).TotalMilliseconds > 1000;
+                }
+                catch (NoSuchElementException) { }
 
                 return false;
             }

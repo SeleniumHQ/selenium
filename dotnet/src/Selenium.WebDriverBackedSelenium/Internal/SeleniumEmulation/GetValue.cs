@@ -30,7 +30,24 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            return this.finder.FindElement(driver, locator).GetAttribute("value");
+            IWebElement element = finder.FindElement(driver, locator);
+
+            // Special-case handling for checkboxes: The Selenium API returs "on" for
+            // checked checkboxes and off for unchecked ones. WebDriver will return "null" for
+            // the "checked" attribute if the checkbox is not-checked, "true" otherwise.
+            if (element.TagName == "input" && element.GetAttribute("type") == "checkbox")
+            {
+                if (element.GetAttribute("checked") == null)
+                {
+                    return "off";
+                }
+                else
+                {
+                    return "on";
+                }
+            }
+
+            return element.Value;
         }
     }
 }

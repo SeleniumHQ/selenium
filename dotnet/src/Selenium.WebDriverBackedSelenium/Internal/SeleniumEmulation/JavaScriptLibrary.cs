@@ -10,7 +10,7 @@ namespace Selenium.Internal.SeleniumEmulation
     /// <summary>
     /// Provides the internal JavaScript library.
     /// </summary>
-    internal static class JavaScriptLibrary
+    public static class JavaScriptLibrary
     {
         private const string InjectableSeleniumResourceName = "injectableSelenium.js";
         private const string HtmlUtilsResourceName = "htmlutils.js";
@@ -73,6 +73,17 @@ namespace Selenium.Internal.SeleniumEmulation
             {
                 return executor.ExecuteScript(script, args);
             }
+        }
+
+        /// <summary>
+        /// Loads the named Selenium script and returns it wrapped in an anonymous function.
+        /// </summary>
+        /// <param name="libraryName">The script to load.</param>
+        /// <returns>The loaded script wrapped in an anonymous function.</returns>
+        public static string GetSeleniumScript(string libraryName)
+        {
+            string rawFunction = ReadScript(libraryName);
+            return string.Format(@"function() {{ return ({0}).apply(null, arguments);}}", rawFunction);
         }
 
         private static string ReadScript(string script)

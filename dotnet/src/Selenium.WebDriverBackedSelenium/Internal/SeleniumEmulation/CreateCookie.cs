@@ -31,21 +31,21 @@ namespace Selenium.Internal.SeleniumEmulation
             }
 
             Match nameValueMatch = this.NameValuePairRegex.Match(locator);
-            string cookieName = nameValueMatch.Groups[0].Value;
-            string cookieValue = nameValueMatch.Groups[1].Value;
+            string cookieName = nameValueMatch.Groups[1].Value;
+            string cookieValue = nameValueMatch.Groups[2].Value;
 
             DateTime? maxAge = null;
             if (this.MaxAgeRegex.IsMatch(value))
             {
                 Match maxAgeMatch = this.MaxAgeRegex.Match(value);
-                maxAge = DateTime.Now.AddSeconds(int.Parse(maxAgeMatch.Groups[0].Value, CultureInfo.InvariantCulture));
+                maxAge = DateTime.Now.AddSeconds(int.Parse(maxAgeMatch.Groups[1].Value, CultureInfo.InvariantCulture));
             }
 
             string path = string.Empty;
             if (this.PathRegex.IsMatch(value))
             {
                 Match pathMatch = this.PathRegex.Match(value);
-                path = pathMatch.Groups[0].Value;
+                path = pathMatch.Groups[1].Value;
                 try
                 {
                     if (path.StartsWith("http", StringComparison.Ordinal))
@@ -57,6 +57,10 @@ namespace Selenium.Internal.SeleniumEmulation
                 {
                     // Fine.
                 }
+            }
+            else
+            {
+                path = new Uri(driver.Url).AbsolutePath;
             }
 
             Cookie cookie = new Cookie(cookieName, cookieValue, path, maxAge);

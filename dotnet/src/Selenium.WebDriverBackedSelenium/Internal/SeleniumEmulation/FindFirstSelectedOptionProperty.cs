@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using OpenQA.Selenium;
+using System.Collections.ObjectModel;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
@@ -9,18 +10,18 @@ namespace Selenium.Internal.SeleniumEmulation
     /// Defines the command for the findFirstSelectedOptionProperty keyword.
     /// </summary>
     internal class FindFirstSelectedOptionProperty : SeleneseCommand
-    {
-        private SeleniumOptionSelector selector;
-        private SeleniumOptionSelector.Property property;
+        {
+        private ElementFinder finder;
+        private string property;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FindFirstSelectedOptionProperty"/> class.
         /// </summary>
         /// <param name="optionSelect">A <see cref="SeleniumOptionSelector"/> that gets options from the element.</param>
         /// <param name="property">The property on which to select the options.</param>
-        public FindFirstSelectedOptionProperty(SeleniumOptionSelector optionSelect, SeleniumOptionSelector.Property property)
+        public FindFirstSelectedOptionProperty(ElementFinder finder, string property)
         {
-            this.selector = optionSelect;
+            this.finder = finder;
             this.property = property;
         }
 
@@ -33,8 +34,15 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            List<string> options = this.selector.GetOptions(driver, locator, this.property, false);
-            return options[0];
+            SeleniumSelect select = new SeleniumSelect(finder, driver, locator);
+            ReadOnlyCollection<IWebElement> allOptions = select.SelectedOptions;
+
+            if (allOptions.Count == 0)
+            {
+                throw new SeleniumException("No options are selected: " + locator);
+            }
+
+            return allOptions[0].GetAttribute(property);
         }
     }
 }

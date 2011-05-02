@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using OpenQA.Selenium;
+using System.Collections.ObjectModel;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
@@ -10,17 +11,17 @@ namespace Selenium.Internal.SeleniumEmulation
     /// </summary>
     internal class FindSelectedOptionProperties : SeleneseCommand
     {
-        private SeleniumOptionSelector selector;
-        private SeleniumOptionSelector.Property property;
+  private ElementFinder finder;
+  private string property;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FindSelectedOptionProperties"/> class.
         /// </summary>
         /// <param name="optionSelect">A <see cref="SeleniumOptionSelector"/> that gets options from the element.</param>
         /// <param name="property">The property on which to select the options.</param>
-        public FindSelectedOptionProperties(SeleniumOptionSelector optionSelect, SeleniumOptionSelector.Property property)
+        public FindSelectedOptionProperties(ElementFinder finder, string property)
         {
-            this.selector = optionSelect;
+            this.finder = finder;
             this.property = property;
         }
 
@@ -33,8 +34,16 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            List<string> options = this.selector.GetOptions(driver, locator, this.property, true);
-            return options.ToArray();
+            SeleniumSelect select = new SeleniumSelect(finder, driver, locator);
+            ReadOnlyCollection<IWebElement> allOptions = select.SelectedOptions;
+            List<string> values = new List<string>();
+
+            foreach (IWebElement element in allOptions)
+            {
+                values.Add(element.GetAttribute(property));
+            }
+
+            return values.ToArray();
         }
     }
 }

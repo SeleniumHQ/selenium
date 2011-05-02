@@ -291,7 +291,19 @@ dotnet_library(name = "webdriverbackedselenium",
   ],
   resources = [
     {"java/client/src/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "injectableSelenium.js"},
-    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "htmlutils.js"}
+    {"java/client/src/org/openqa/selenium/internal/seleniumemulation/htmlutils.js" : "htmlutils.js"},
+    {"//javascript/selenium-atoms:findElement" : "findElement.js" },
+    {"//javascript/selenium-atoms:findOption" : "findOption.js" },
+    {"//javascript/selenium-atoms:fireEvent" : "fireEvent.js" },
+    {"//javascript/selenium-atoms:fireEventAt" : "fireEventAt.js" },
+    {"//javascript/selenium-atoms:getAttribute" : "getAttribute.js" },
+    {"//javascript/selenium-atoms:getText" : "getText.js" },
+    {"//javascript/selenium-atoms:linkLocator" : "linkLocator.js" },
+    {"//javascript/selenium-atoms:isElementPresent" : "isElementPresent.js" },
+    {"//javascript/selenium-atoms:isSomethingSelected" : "isSomethingSelected.js" },
+    {"//javascript/selenium-atoms:isTextPresent" : "isTextPresent.js" },
+    {"//javascript/selenium-atoms:isVisible" : "isVisible.js" },
+    {"//javascript/selenium-atoms:type" : "type.js" }
   ],
   out = "build/dotnet/Selenium.WebDriverBackedSelenium.dll",
   doc = "build/dotnet/Selenium.WebDriverBackedSelenium.xml"

@@ -30,7 +30,24 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            return this.finder.FindElement(driver, locator).Text;
+            string getText = JavaScriptLibrary.GetSeleniumScript("getText.js");
+
+            try
+            {
+                return (string)((IJavaScriptExecutor)driver).ExecuteScript("return (" + getText + ")(arguments[0]);", locator);
+            }
+            catch (WebDriverException)
+            {
+                // TODO(simon): remove fall back for IE driver
+                IWebElement element = finder.FindElement(driver, locator);
+                return element.Text;
+            }
+            catch (InvalidOperationException)
+            {
+                // TODO(simon): remove fall back for IE driver
+                IWebElement element = finder.FindElement(driver, locator);
+                return element.Text;
+            }
         }
     }
 }

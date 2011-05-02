@@ -12,6 +12,7 @@ namespace Selenium.Internal.SeleniumEmulation
     {
         private ElementFinder finder;
         private string type;
+        private string fire;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MouseEvent"/> class.
@@ -22,6 +23,7 @@ namespace Selenium.Internal.SeleniumEmulation
         {
             this.finder = elementFinder;
             this.type = eventType;
+            this.fire = "return (" + JavaScriptLibrary.GetSeleniumScript("fireEvent.js") + ").apply(null, arguments);";
         }
 
         /// <summary>
@@ -34,7 +36,7 @@ namespace Selenium.Internal.SeleniumEmulation
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             IWebElement element = this.finder.FindElement(driver, locator);
-            JavaScriptLibrary.CallEmbeddedSelenium(driver, "triggerMouseEvent", element, this.type, true);
+            JavaScriptLibrary.ExecuteScript(driver, this.fire, element, this.type);
             return null;
         }
     }

@@ -10,15 +10,15 @@ namespace Selenium.Internal.SeleniumEmulation
     /// </summary>
     internal class IsSomethingSelected : SeleneseCommand
     {
-        private SeleniumOptionSelector selector;
+        private string script;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IsSomethingSelected"/> class.
         /// </summary>
         /// <param name="optionSelector">A <see cref="SeleniumOptionSelector"/> used to get options in the select element.</param>
-        public IsSomethingSelected(SeleniumOptionSelector optionSelector)
+        public IsSomethingSelected()
         {
-            this.selector = optionSelector;
+            this.script = "return (" + JavaScriptLibrary.GetSeleniumScript("isSomethingSelected.js") + ").apply(null, arguments)";
         }
 
         /// <summary>
@@ -30,8 +30,8 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            List<string> values = this.selector.GetOptions(driver, locator, SeleniumOptionSelector.Property.Text, false);
-            return values.Count > 0;
+            object returnValue = JavaScriptLibrary.ExecuteScript(driver, script, locator);
+            return returnValue is bool && (bool)returnValue;
         }
     }
 }

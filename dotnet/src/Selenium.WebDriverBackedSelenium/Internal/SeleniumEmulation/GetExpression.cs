@@ -1,26 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
     /// <summary>
-    /// Defines the command for the attachFile keyword.
+    /// Defines the command for the getExpression keyword.
     /// </summary>
-    internal class AttachFile : SeleneseCommand
+    internal class GetExpression : SeleneseCommand
     {
-        private ElementFinder finder;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AttachFile"/> class.
-        /// </summary>
-        /// <param name="finder">An <see cref="ElementFinder"/> used in finding the element.</param>
-        public AttachFile(ElementFinder finder)
-        {
-            this.finder = finder;
-        }
-
         /// <summary>
         /// Handles the command.
         /// </summary>
@@ -30,11 +21,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            IWebElement element = this.finder.FindElement(driver, locator);
-            element.Clear();
-
-            element.SendKeys(value);
-            return null;
+            return locator;
         }
     }
 }

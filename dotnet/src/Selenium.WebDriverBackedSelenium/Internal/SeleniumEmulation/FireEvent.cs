@@ -11,6 +11,7 @@ namespace Selenium.Internal.SeleniumEmulation
     internal class FireEvent : SeleneseCommand
     {
         private ElementFinder finder;
+        private string fire;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FireEvent"/> class.
@@ -19,6 +20,7 @@ namespace Selenium.Internal.SeleniumEmulation
         public FireEvent(ElementFinder elementFinder)
         {
             this.finder = elementFinder;
+            fire = "return (" + JavaScriptLibrary.GetSeleniumScript("fireEvent.js") + ").apply(null, arguments);";
         }
 
         /// <summary>
@@ -31,8 +33,7 @@ namespace Selenium.Internal.SeleniumEmulation
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             IWebElement element = this.finder.FindElement(driver, locator);
-            JavaScriptLibrary.CallEmbeddedSelenium(driver, "doFireEvent", element, value);
-
+            JavaScriptLibrary.ExecuteScript(driver, fire, element, value);
             return null;
         }
     }

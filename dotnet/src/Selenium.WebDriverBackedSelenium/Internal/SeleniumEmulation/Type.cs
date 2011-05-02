@@ -11,6 +11,7 @@ namespace Selenium.Internal.SeleniumEmulation
         private AlertOverride alertOverride;
         private ElementFinder finder;
         private KeyState state;
+        private string type;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Type"/> class.
@@ -23,6 +24,7 @@ namespace Selenium.Internal.SeleniumEmulation
             this.alertOverride = alertOverride;
             this.finder = elementFinder;
             this.state = keyState;
+            this.type = "return (" + JavaScriptLibrary.GetSeleniumScript("type.js") + ").apply(null, arguments);";
         }
 
         /// <summary>
@@ -43,10 +45,20 @@ namespace Selenium.Internal.SeleniumEmulation
             string stringToType = this.state.ShiftKeyDown ? value.ToUpperInvariant() : value;
 
             IWebElement element = this.finder.FindElement(driver, locator);
+
+            // TODO(simon): Log a warning that people should be using "attachFile"
+            string tagName = element.TagName;
+            string elementType = element.GetAttribute("type");
+            if (tagName.ToLowerInvariant() == "input" && elementType != null && elementType.ToLowerInvariant() == "file")
+            {
+                element.SendKeys(stringToType);
+                return null;
+            }
+            
             IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
             if (executor != null)
             {
-                JavaScriptLibrary.CallEmbeddedSelenium(driver, "replaceText", element, stringToType);
+                JavaScriptLibrary.ExecuteScript(driver, type, element, stringToType);
             }
             else
             {

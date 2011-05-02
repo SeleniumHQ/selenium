@@ -83,7 +83,14 @@ namespace Selenium.Internal.SeleniumEmulation
                     }
                     else
                     {
-                        this.driver.SwitchTo().Window(this.windowId);
+                        try
+                        {
+                            this.driver.SwitchTo().Window(this.windowId);
+                        }
+                        catch (NoSuchWindowException)
+                        {
+                            return false;
+                        }
                     }
 
                     return this.driver.Url != "about:blank";

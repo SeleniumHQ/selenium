@@ -14,33 +14,21 @@ namespace Selenium.Internal.SeleniumEmulation
         /// A <see cref="Regex"/> used to match element lookup patterns.
         /// </summary>
         public static readonly Regex StrategyPattern = new Regex("^([a-zA-Z]+)=(.*)");
-
-        private Dictionary<string, ILookupStrategy> lookupStrategies = new Dictionary<string, ILookupStrategy>();
+  
+        private string findElement;
+        private Dictionary<string, string> lookupStrategies = new Dictionary<string, string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementFinder"/> class.
         /// </summary>
         public ElementFinder()
         {
-            this.SetUpElementFindingStrategies();
-        }
+            string rawScript = JavaScriptLibrary.GetSeleniumScript("findElement.js");
+            this.findElement = "return (" + rawScript + ")(arguments[0]);";
 
-        /// <summary>
-        /// Gets the locator value to use in finding elements.
-        /// </summary>
-        /// <param name="locator">The locator string.</param>
-        /// <returns>The value to use in finding elements.</returns>
-        internal static string DetermineLocator(string locator)
-        {
-            string result = locator;
-            Match m = StrategyPattern.Match(locator);
+            string linkTextLocator = "return (" + JavaScriptLibrary.GetSeleniumScript("linkLocator.js") + ").call(null, arguments[0], document)";
 
-            if (m.Success)
-            {
-                result = m.Groups[2].Value;
-            }
-
-            return result;
+            this.AddStrategy("link", linkTextLocator);
         }
 
         /// <summary>
@@ -53,39 +41,67 @@ namespace Selenium.Internal.SeleniumEmulation
         internal IWebElement FindElement(IWebDriver driver, string locator)
         {
             IWebElement result;
-            ILookupStrategy strategy = this.FindStrategy(locator);
-            string use = DetermineLocator(locator);
-            try
+            string strategy = this.FindStrategy(locator);
+            if (!string.IsNullOrEmpty(strategy))
             {
-                result = strategy.Find(driver, use);
-            }
-            catch (NoSuchElementException)
-            {
-                throw new SeleniumException("Element " + locator + " not found.");
+                string actualLocator = locator.Substring(locator.IndexOf('=') + 1);
+
+                // TODO(simon): Recurse into child documents
+                try
+                {
+                    result = ((IJavaScriptExecutor)driver).ExecuteScript(strategy, actualLocator) as IWebElement;
+
+                    if (result == null)
+                    {
+                        throw new SeleniumException("Element " + locator + " not found");
+                    }
+
+                    return result;
+                }
+                catch (WebDriverException)
+                {
+                    throw new SeleniumException("Element " + locator + " not found");
+                }
             }
 
-            return result;
+            try
+            {
+                result = this.FindElementDirectly(driver, locator);
+                if (result != null)
+                {
+                    return result;
+                }
+
+                return ((IJavaScriptExecutor)driver).ExecuteScript(findElement, locator) as IWebElement; ;
+            }
+            catch (WebDriverException)
+            {
+                throw new SeleniumException("Element " + locator + " not found");
+            }
+            catch (InvalidOperationException)
+            {
+                throw new SeleniumException("Element " + locator + " not found");
+            }
         }
 
         /// <summary>
         /// Gets the strategy used to find elements.
         /// </summary>
         /// <param name="locator">The locator string that defines the strategy.</param>
-        /// <returns>An <see cref="ILookupStrategy"/> object used in finding elements.</returns>
-        internal ILookupStrategy FindStrategy(string locator)
+        /// <returns>A string used in finding elements.</returns>
+        internal string FindStrategy(string locator)
         {
-            string strategyName = "implicit";
-            Match m = StrategyPattern.Match(locator);
-
-            if (m.Success)
+            string strategy = string.Empty;
+            int index = locator.IndexOf('=');
+            if (index == -1)
             {
-                strategyName = m.Groups[1].Value;
+                return null;
             }
 
-            ILookupStrategy strategy;
+            string strategyName = locator.Substring(0, index);
             if (!this.lookupStrategies.TryGetValue(strategyName, out strategy))
             {
-                throw new SeleniumException("No matcher found for " + strategyName);
+                return null;
             }
 
             return strategy;
@@ -95,24 +111,30 @@ namespace Selenium.Internal.SeleniumEmulation
         /// Adds a strategy to the dictionary of known lookup strategies.
         /// </summary>
         /// <param name="strategyName">The name used to identify the lookup strategy.</param>
-        /// <param name="strategy">The <see cref="ILookupStrategy"/> used in finding elements.</param>
-        internal void AddStrategy(string strategyName, ILookupStrategy strategy)
+        /// <param name="strategy">The string used in finding elements.</param>
+        internal void AddStrategy(string strategyName, string strategy)
         {
             this.lookupStrategies.Add(strategyName, strategy);
         }
 
-        private void SetUpElementFindingStrategies()
+        private IWebElement FindElementDirectly(IWebDriver driver, string locator)
         {
-            this.lookupStrategies.Add("alt", new AltLookupStrategy());
-            this.lookupStrategies.Add("class", new ClassLookupStrategy());
-            this.lookupStrategies.Add("id", new IdLookupStrategy());
-            this.lookupStrategies.Add("identifier", new IdentifierLookupStrategy());
-            this.lookupStrategies.Add("implicit", new ImplicitLookupStrategy());
-            this.lookupStrategies.Add("link", new LinkLookupStrategy());
-            this.lookupStrategies.Add("name", new NameLookupStrategy());
-            this.lookupStrategies.Add("xpath", new XPathLookupStrategy());
-            this.lookupStrategies.Add("dom", new DomTraversalLookupStrategy());
-            this.lookupStrategies.Add("css", new CssSelectorLookupStrategy());
+            if (locator.StartsWith("xpath="))
+            {
+                return driver.FindElement(By.XPath(locator.Substring("xpath=".Length)));
+            }
+
+            if (locator.StartsWith("//"))
+            {
+                return driver.FindElement(By.XPath(locator));
+            }
+
+            if (locator.StartsWith("css="))
+            {
+                return driver.FindElement(By.CssSelector(locator.Substring("css=".Length)));
+            }
+
+            return null;
         }
     }
 }

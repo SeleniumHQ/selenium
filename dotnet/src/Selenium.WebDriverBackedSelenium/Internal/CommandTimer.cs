@@ -17,6 +17,7 @@ namespace Selenium.Internal
         private SeleneseCommand command;
         private IWebDriver driver;
         private string[] args;
+        private SeleniumException thrownException;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandTimer"/> class.
@@ -46,6 +47,7 @@ namespace Selenium.Internal
         /// <remarks>This method executes the command on a separate thread.</remarks>
         public object Execute(SeleneseCommand commandToExecute, IWebDriver commandDriver, string[] commandArguments)
         {
+            this.thrownException = null;
             this.command = commandToExecute;
             this.driver = commandDriver;
             this.args = commandArguments;
@@ -57,12 +59,24 @@ namespace Selenium.Internal
                 throw new SeleniumException("Timed out running command");
             }
 
+            if (this.thrownException != null)
+            {
+                throw this.thrownException;
+            }
+
             return this.commandResult;
         }
 
         private void RunCommand()
         {
-            this.commandResult = this.command.Apply(this.driver, this.args);
+            try
+            {
+                this.commandResult = this.command.Apply(this.driver, this.args);
+            }
+            catch (SeleniumException e)
+            {
+                this.thrownException = e;
+            }
         }
     }
 }
