@@ -35,21 +35,26 @@ public class Issue1586 {
 
 	}
 
-	@Test(enabled=false)
+	@Test
 	public void test() throws MalformedURLException, InterruptedException {
 		DesiredCapabilities ff = DesiredCapabilities.firefox();
-		WebDriver driver = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
-		for (int i = 0; i < 20; i++) {
-			driver.get("http://code.google.com/p/selenium/");
-			WebElement keywordInput = driver.findElement(By.name("q"));
-			keywordInput.clear();
-			keywordInput.sendKeys("test");
-			WebElement submitButton = driver.findElement(By.name("projectsearch"));
-			submitButton.click();
-			driver.getCurrentUrl(); // fails here
+		WebDriver driver = null;
+		try {
+			driver = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+			for (int i = 0; i < 20; i++) {
+				driver.get("http://code.google.com/p/selenium/");
+				WebElement keywordInput = driver.findElement(By.name("q"));
+				keywordInput.clear();
+				keywordInput.sendKeys("test");
+				WebElement submitButton = driver.findElement(By.name("projectsearch"));
+				submitButton.click();
+				driver.getCurrentUrl(); // fails here
+			}
+		}finally {
+			if (driver !=null){
+				driver.quit();
+			}
 		}
-		driver.quit();
-
 	}
 
 	@AfterClass(alwaysRun = true)

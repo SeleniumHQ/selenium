@@ -15,30 +15,6 @@ limitations under the License.
  */
 package org.openqa.grid.internal;
 
-import com.google.common.io.ByteStreams;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolException;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.RedirectHandler;
-import org.apache.http.conn.params.ConnManagerPNames;
-import org.apache.http.conn.params.ConnPerRouteBean;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpRequest;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HttpContext;
-import org.openqa.grid.internal.listeners.CommandListener;
-import org.openqa.grid.web.Hub;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -53,6 +29,38 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.ProtocolException;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.RedirectHandler;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HttpContext;
+import org.openqa.grid.internal.listeners.CommandListener;
+import org.openqa.grid.web.Hub;
+
+import com.google.common.io.ByteStreams;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when
@@ -194,14 +202,18 @@ public class TestSession {
 	private DefaultHttpClient getClient() {
 		synchronized (TestSession.class) {
 			if (connManager == null) {
-				DefaultHttpClient client = new DefaultHttpClient();
-				params = client.getParams().copy();
-				params.setParameter(ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE, new ConnPerRouteBean(50));
-				params.setIntParameter(ConnManagerPNames.MAX_TOTAL_CONNECTIONS, 200);
-				connManager = new ThreadSafeClientConnManager(params, client.getConnectionManager().getSchemeRegistry());
+				params = new BasicHttpParams();
+				HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
+				HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+
+				// Create and initialize scheme registry 
+				SchemeRegistry schemeRegistry = new SchemeRegistry();
+				schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+				
+				connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
 			}
 		}
-		DefaultHttpClient client = new DefaultHttpClient(connManager, params);
+		DefaultHttpClient client = new DefaultHttpClient(connManager,params);
 		client.setRedirectHandler(new RedirectHandler() {
 			public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
 				return false;
