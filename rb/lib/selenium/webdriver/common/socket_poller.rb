@@ -36,6 +36,8 @@ module Selenium
 
       private
 
+      CONNECT_TIMEOUT = 5
+
       NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError]
       NOT_CONNECTED_ERRORS << Errno::EPERM if Platform.cygwin?
 
@@ -50,7 +52,7 @@ module Selenium
         begin
           sock.connect_nonblock sockaddr
         rescue Errno::EINPROGRESS
-          if IO.select(nil, [sock], nil, 1)
+          if IO.select(nil, [sock], nil, CONNECT_TIMEOUT)
             retry
           else
             raise Errno::ECONNREFUSED
