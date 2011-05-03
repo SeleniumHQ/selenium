@@ -58,7 +58,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
 
     WebElement element = driver.findElement(By.name("form2"));
     try {
-      element.findElement(By.xpath("select/x"));
+      element.findElement(By.xpath(".//select/x"));
       fail("Did not expect to find element");
     } catch (NoSuchElementException ignored) {
       // this is expected
@@ -78,7 +78,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   public void testfindElementsByXPathWhenNoMatch() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
-    List<WebElement> children = element.findElements(By.xpath("select/x"));
+    List<WebElement> children = element.findElements(By.xpath(".//select/x"));
     assertEquals(0, children.size());
   }
 
