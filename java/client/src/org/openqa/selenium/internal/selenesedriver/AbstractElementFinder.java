@@ -80,9 +80,17 @@ public abstract  class AbstractElementFinder<T> implements SeleneseFunction<T> {
       } catch (SeleniumException e) {
         // Ignore. The element couldn't be found
       }
+      sleepQuietly(200);
     } while (System.currentTimeMillis() - startTime <= implicitlyWait);
 
     return onFailure(how, using);
+  }
+
+  private static void sleepQuietly(long ms) {
+    try {
+      Thread.sleep(ms);
+    } catch (InterruptedException ignored) {
+    }
   }
 
   public ImplicitWait implicitlyWait() {
