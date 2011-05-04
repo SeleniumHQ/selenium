@@ -48,6 +48,7 @@ goog.require('goog.events.EventType');
  *     to the current window. Asynchronous scripts will have their timeouts
  *     scheduled with this window. Furthermore, asynchronous scripts will
  *     be aborted if this window fires an unload event.
+ * @deprecated Use bot.inject.executeAsyncScript.
  */
 bot.script.execute = function(script, args, timeout, onSuccess, onFailure,
                               opt_window) {

@@ -165,11 +165,11 @@
       [SimpleObserver simpleObserverForAction:@"webdriver:executeAsyncScript"
                                     andSender:[self viewController]];
 
-  args = [NSArray arrayWithObjects:script, args,
-      [NSNumber numberWithDouble:timeout * 1000], nil];
-  NSString* atom =
-      [NSString stringWithUTF8String:webdriver::atoms::EXECUTE_ASYNC_SCRIPT];
-  [self executeScript:atom withArgs:args];
+  [[self viewController] jsEval:@"(%@)(function(){%@\n},%@,%@)",
+       [NSString stringWithUTF8String:webdriver::atoms::EXECUTE_ASYNC_SCRIPT],
+       script,
+       [args JSONRepresentation],
+       [NSNumber numberWithDouble:timeout * 1000]];
 
   NSDictionary* resultDict = [observer waitForData];
 

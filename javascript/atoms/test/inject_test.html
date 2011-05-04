@@ -36,6 +36,8 @@ limitations under the License.
     <iframe id="test-frame"></iframe>
   </div>
   <script type="text/javascript">
+    goog.global.MY_GLOBAL_CONSTANT = 123;
+
     // We need to use an AsyncTestCase since a few of the tests require a
     // window.setTimeout delay for the conditions under test.
     var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
@@ -350,6 +352,36 @@ limitations under the License.
       asyncTestCase.waitForAsync('callback');
       var result = bot.inject.executeAsyncScript(
           "arguments[1](arguments[0])", args, 0, onDone);
+    }
+
+    function testShouldExecuteAsyncScriptsInTheContextOfTheSpecifiedWindow() {
+      var testFrameWin = goog.dom.getFrameContentWindow(
+          goog.dom.$('test-frame'));
+
+      function onDone(response) {
+        asyncTestCase.continueTesting();
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+
+        assertTrue(goog.object.containsKey(result, 'value'));
+        var value = response['value'];
+
+        assertTrue(value['this == window']);
+        assertFalse(value['this == window.top']);
+        assertEquals('undefined', value['typeof window.MY_GLOBAL_CONSTANT']);
+        assertEquals('number', value['typeof window.top.MY_GLOBAL_CONSTANT']);
+      }
+
+      asyncTestCase.waitForAsync('callback');
+      bot.inject.executeAsyncScript(function(callback) {
+        callback({
+          'this == window': (this == window),
+          'this == top': (this == window.top),
+          'typeof window.MY_GLOBAL_CONSTANT': (typeof MY_GLOBAL_CONSTANT),
+          'typeof window.top.MY_GLOBAL_CONSTANT':
+              (typeof window.top.MY_GLOBAL_CONSTANT)
+        });
+      }, [], 0, onDone, false, testFrameWin);
     }
 
   </script>

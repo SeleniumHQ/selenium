@@ -28,13 +28,21 @@ goog.provide('bot.inject.cache');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
-goog.require('bot.script');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
+goog.require('goog.events');
 goog.require('goog.json');
 goog.require('goog.object');
 
+
+
+/**
+ * WebDriver wire protocol definition of a command response.
+ * @typedef {{status:bot.ErrorCode, value:*}}
+ * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Responses
+ */
+bot.inject.Response;
 
 
 /**
@@ -190,11 +198,16 @@ bot.inject.executeScript = function(fn, args, opt_stringify) {
  * Executes an injected script, which is expected to finish asynchronously
  * before the given {@code timeout}. When the script finishes or an error
  * occurs, the given {@code onDone} callback will be invoked. This callback
- * will have a single argument, a dictionary containing a status code and
- * a value.
+ * will have a single argument, a {@code bot.inject.Response} object.
  *
  * The script signals its completion by invoking a supplied callback given
  * as its last argument. The callback may be invoked with a single value.
+ *
+ * The script timeout event will be scheduled with the provided window,
+ * ensuring the timeout is synchronized with that window's event queue.
+ * Furthermore, asynchronous scripts do not work across new page loads; if an
+ * "unload" event is fired on the window while an asynchronous script is
+ * pending, the script will be aborted and an error will be returned.
  *
  * Like {@code bot.inject.executeScript}, this function should only be called
  * from an external source. It handles wrapping and unwrapping of input/output
@@ -205,33 +218,76 @@ bot.inject.executeScript = function(fn, args, opt_stringify) {
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
  * @param {number} timeout The amount of time, in milliseconds, the script
- *     should be permitted to run.
- * @param {function((string|{status:bot.ErrorCode, value:*}))} onDone
+ *     should be permitted to run; must be non-negative.
+ * @param {function(string|bot.inject.Response)} onDone
  *     The function to call when the given {@code fn} invokes its callback,
  *     or when an exception or timeout occurs. This will always be called.
  * @param {boolean=} opt_stringify Whether the result should be returned as a
  *     serialized JSON string.
+ * @param {Window=} opt_window The window to synchronize the script with;
+ *     defaults to the current window
  */
 bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
-                                         opt_stringify) {
-  function invokeCallback(result) {
-    onDone(opt_stringify ? goog.json.serialize(result) : result);
+                                         opt_stringify, opt_window) {
+  var win = opt_window || window;
+  var timeoutId, onunloadKey;
+  var responseSent = false;
+
+  function sendResponse(status, value) {
+    if (!responseSent) {
+      responseSent = true;
+      goog.events.unlistenByKey(onunloadKey);
+      win.clearTimeout(timeoutId);
+      if (status != bot.ErrorCode.SUCCESS) {
+        var err = new bot.Error(status, value.message || value + '');
+        err.stack = value.stack;
+        value = bot.inject.wrapError_(err);
+      } else {
+        value = bot.inject.wrapResponse_(value);
+      }
+      onDone(opt_stringify ? goog.json.serialize(value) : value);
+    }
+  }
+  var sendError = goog.partial(sendResponse, bot.ErrorCode.UNKNOWN_ERROR);
+
+  if (win.closed) {
+    return sendError('Unable to execute script; the target window is closed.');
   }
 
-  function onSuccess(value) {
-    invokeCallback(bot.inject.wrapResponse_(value));
+  if (goog.isString(fn)) {
+    fn = new Function(fn);
   }
 
-  function onFailure(err) {
-    invokeCallback(bot.inject.wrapError_(err));
+  // If necessary, recompile the injected function in the context of the
+  // target window so symbol references are correct. This should also prevent
+  // against leaking globals from this window (as would be the case using the
+  // "with" keyword).
+  if (win != window) {
+    fn = win.eval('(' + fn + ')');
   }
 
+  args.push(goog.partial(sendResponse, bot.ErrorCode.SUCCESS));
+  onunloadKey = goog.events.listen(win, goog.events.EventType.UNLOAD,
+      function() {
+        sendResponse(bot.ErrorCode.UNKNOWN_ERROR,
+            Error('Detected a page unload event; asynchronous script ' +
+                  'execution does not work across page loads.'));
+      }, true);
+
+  var startTime = goog.now();
   try {
-    var unwrappedArgs = (/**@type {Object}*/bot.inject.unwrapValue(args));
-    bot.script.execute(fn, unwrappedArgs, timeout, onSuccess, onFailure);
+    fn.apply(win, args);
+
+    // Register our timeout *after* the function has been invoked. This will
+    // ensure we don't timeout on a function that invokes its callback after
+    // a 0-based timeout.
+    timeoutId = win.setTimeout(function() {
+      sendResponse(bot.ErrorCode.SCRIPT_TIMEOUT,
+                   Error('Timed out waiting for asyncrhonous script result ' +
+                         'after ' + (goog.now() - startTime) + ' ms'));
+    }, Math.max(0, timeout));
   } catch (ex) {
-    onFailure(new bot.Error(ex.code || bot.ErrorCode.UNKNOWN_ERROR,
-                            ex.message));
+    sendResponse(ex.code || bot.ErrorCode.UNKNOWN_ERROR, ex);
   }
 };
 

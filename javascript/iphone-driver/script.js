@@ -15,10 +15,7 @@
 
 goog.provide('webdriver.iphone');
 
-goog.require('bot.ErrorCode');
 goog.require('bot.inject');
-goog.require('bot.script');
-goog.require('goog.json');
 
 
 
@@ -26,29 +23,14 @@ goog.require('goog.json');
  * Executes a random snippet of JavaScript that defines the body of a function
  * to invoke. This function is intended to be wrapped inside
  * {@code bot.inject.executeScript} as a JavaScript atom.
- * @param {string} script A string defining the body of the function
- *     to invoke.
+ *
+ * @param {!Function} fn The function to invoke.
  * @param {!Array.<*>} args The list of arguments to pass to the script.
  * @param {number} timeout The amount of time, in milliseconds, the script
- *     should be permitted to run. If {@code timeout < 0}, the script will
- *     be considered synchronous and expetected to immediately return a result.
+ *     should be permitted to run.
  */
-webdriver.iphone.executeAsyncScript = function(script, args, timeout) {
-  function sendResponse(status, value) {
-    window.location.href = 'webdriver://executeAsyncScript?' +
-        goog.json.serialize({
-          'status': status,
-          'value': bot.inject.wrapValue(value)
-        });
-  }
-
-  bot.script.execute(script, args, timeout,
-      /*onSuccess=*/function(value) {
-        sendResponse(bot.ErrorCode.SUCCESS, value);
-      },
-      /*onFailure=*/function(err) {
-        sendResponse(err.code || bot.ErrorCode.UNKNOWN_ERROR, {
-          'message': err.message
-        });
-      });
+webdriver.iphone.executeAsyncScript = function(fn, args, timeout) {
+  bot.inject.executeAsyncScript(fn, args, timeout, function(data) {
+    window.location.href = 'webdriver://executeAsyncScript?' + data;
+  }, window, true);
 };
