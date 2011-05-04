@@ -472,7 +472,7 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
       var callback = goog.bind(this.findElementInternal_, this, respond, method, selector,
               opt_parentElementId, startTime);
 
-      this.jsTimer.setTimeout(callback, 10);
+      this.jsTimer.setTimeout(callback, 100);
     }
   }
 };
