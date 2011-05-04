@@ -37,6 +37,8 @@ import org.openqa.selenium.io.Zip;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
+import com.google.common.collect.ImmutableList;
+
 public class FirefoxProfileTest extends TestCase {
 
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
@@ -213,5 +215,45 @@ public class FirefoxProfileTest extends TestCase {
     }
 
     return prefLines;
+  }
+
+  public void testParsePreferences_boolean() {
+    List<String> lines = ImmutableList.of(
+        "user_pref(\"extensions.update.notifyUser\", false);");
+    Map<String, String> preferenceMap = FirefoxProfile.parsePreferences(lines);
+    assertEquals(1, preferenceMap.size());
+    assertEquals("false", preferenceMap.get("extensions.update.notifyUser"));
+  }
+
+  public void testParsePreferences_integer() {
+    List<String> lines = ImmutableList.of(
+        "user_pref(\"dom.max_script_run_time\", 30);");
+    Map<String, String> preferenceMap = FirefoxProfile.parsePreferences(lines);
+    assertEquals(1, preferenceMap.size());
+    assertEquals("30", preferenceMap.get("dom.max_script_run_time"));
+  }
+
+  public void testParsePreferences_string() {
+    String prefWithComma = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_1 like Mac OS X; en-us) "
+        + "AppleWebKit/532.9 (KHTML, like Gecko)";
+    String prefWithQuotes = "lpr ${MOZ_PRINTER_NAME:+-P\"$MOZ_PRINTER_NAME\"}";
+
+    List<String> lines = ImmutableList.of(
+        "user_pref(\"general.useragent.override\", \"" + prefWithComma + "\");",
+        "user_pref(\"print.print_command\", \"" + prefWithQuotes + "\");");
+    Map<String, String> preferenceMap = FirefoxProfile.parsePreferences(lines);
+    assertEquals(2, preferenceMap.size());
+    assertEquals(prefWithComma, preferenceMap.get("general.useragent.override"));
+    assertEquals(prefWithQuotes, preferenceMap.get("print.print_command"));
+  }
+
+  public void testParsePreferences_multiline() {
+    List<String> lines = ImmutableList.of(
+        "user_pref(\"extensions.update.notifyUser\", false);",
+        "user_pref(\"dom.max_script_run_time\", 30);");
+    Map<String, String> preferenceMap = FirefoxProfile.parsePreferences(lines);
+    assertEquals(2, preferenceMap.size());
+    assertEquals("false", preferenceMap.get("extensions.update.notifyUser"));
+    assertEquals("30", preferenceMap.get("dom.max_script_run_time"));
   }
 }
