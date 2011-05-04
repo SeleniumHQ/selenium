@@ -146,6 +146,29 @@ bot.inject.unwrapValue = function(value, opt_doc) {
 
 
 /**
+ * Recompiles {@code fn} in the context of another window so that the
+ * correct symbol table is used when the function is executed. This
+ * function assumes the {@code fn} can be decompiled to its source using
+ * {@code Function.prototype.toString} and that it only refers to symbols
+ * defined in the target window's context.
+ *
+ * @param {!(Function|string)} fn Either the function that shold be
+ *     recompiled, or a string defining the body of an anonymous function
+ *     that should be compiled in the target window's context.
+ * @param {!Window} theWindow The window to recompile the function in.
+ * @return {!Function} The recompiled function.
+ * @private
+ */
+bot.inject.recompileFunction_ = function(fn, theWindow) {
+  if (goog.isString(fn)) {
+    return new theWindow.Function(fn);
+  }
+  return theWindow == window ? fn : new theWindow.Function(
+      'return (' + fn + ').apply(null,arguments);');
+};
+
+
+/**
  * Executes an injected script. This function should never be called from
  * within JavaScript itself. Instead, it is used from an external source that
  * is injecting a script for execution.
@@ -167,24 +190,24 @@ bot.inject.unwrapValue = function(value, opt_doc) {
  * <p/>The details of how this actually gets injected for evaluation is left
  * as an implementation detail for clients of this library.
  *
- * @param {(function()|string)} fn Either the function to execute, or a string
- *     defining the body of an anonymous function that should be executed.
+ * @param {!(Function|string)} fn Either the function to execute, or a string
+ *     defining the body of an anonymous function that should be executed. This
+ *     function should only contain references to symbols defined in the context
+ *     of the current window.
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
  * @param {boolean=} opt_stringify Whether the result should be returned as a
  *     serialized JSON string.
- * @return {(string|{status:bot.ErrorCode, value:*})} The script result wrapped
- *     in a JSON object as defined by the WebDriver wire protocol. If
+ * @param {!Window=} opt_window The window in whose context the function should
+ *     be invoked; defaults to the current window.
+ * @return {!(string|bot.inject.Response)} The response object. If
  *     opt_stringify is true, the result will be serialized and returned in
  *     string format.
  */
-bot.inject.executeScript = function(fn, args, opt_stringify) {
+bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
   var ret;
   try {
-    if (goog.isString(fn)) {
-      fn = new Function(fn);
-    }
-
+    fn = bot.inject.recompileFunction_(fn, opt_window || window);
     var unwrappedArgs = (/**@type {Object}*/bot.inject.unwrapValue(args));
     ret = bot.inject.wrapResponse_(fn.apply(null, unwrappedArgs));
   } catch (ex) {
@@ -224,7 +247,7 @@ bot.inject.executeScript = function(fn, args, opt_stringify) {
  *     or when an exception or timeout occurs. This will always be called.
  * @param {boolean=} opt_stringify Whether the result should be returned as a
  *     serialized JSON string.
- * @param {Window=} opt_window The window to synchronize the script with;
+ * @param {!Window=} opt_window The window to synchronize the script with;
  *     defaults to the current window
  */
 bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
@@ -235,7 +258,6 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
 
   function sendResponse(status, value) {
     if (!responseSent) {
-      responseSent = true;
       goog.events.unlistenByKey(onunloadKey);
       win.clearTimeout(timeoutId);
       if (status != bot.ErrorCode.SUCCESS) {
@@ -246,6 +268,7 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
         value = bot.inject.wrapResponse_(value);
       }
       onDone(opt_stringify ? goog.json.serialize(value) : value);
+      responseSent = true;
     }
   }
   var sendError = goog.partial(sendResponse, bot.ErrorCode.UNKNOWN_ERROR);
@@ -254,17 +277,7 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
     return sendError('Unable to execute script; the target window is closed.');
   }
 
-  if (goog.isString(fn)) {
-    fn = new Function(fn);
-  }
-
-  // If necessary, recompile the injected function in the context of the
-  // target window so symbol references are correct. This should also prevent
-  // against leaking globals from this window (as would be the case using the
-  // "with" keyword).
-  if (win != window) {
-    fn = win.eval('(' + fn + ')');
-  }
+  fn = bot.inject.recompileFunction_(fn, win);
 
   args.push(goog.partial(sendResponse, bot.ErrorCode.SUCCESS));
   onunloadKey = goog.events.listen(win, goog.events.EventType.UNLOAD,

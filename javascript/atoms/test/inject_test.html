@@ -358,18 +358,20 @@ limitations under the License.
       var testFrameWin = goog.dom.getFrameContentWindow(
           goog.dom.$('test-frame'));
 
-      function onDone(response) {
+      function onDone(result) {
         asyncTestCase.continueTesting();
-        assertTrue(goog.object.containsKey(result, 'status'));
-        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+        var jsonResult = goog.json.serialize(result);
 
-        assertTrue(goog.object.containsKey(result, 'value'));
-        var value = response['value'];
+        assertTrue(jsonResult, goog.object.containsKey(result, 'status'));
+        assertEquals(jsonResult, bot.ErrorCode.SUCCESS, result['status']);
 
-        assertTrue(value['this == window']);
-        assertFalse(value['this == window.top']);
-        assertEquals('undefined', value['typeof window.MY_GLOBAL_CONSTANT']);
-        assertEquals('number', value['typeof window.top.MY_GLOBAL_CONSTANT']);
+        assertTrue(jsonResult, goog.object.containsKey(result, 'value'));
+        var value = result['value'];
+
+        assertEquals(jsonResult, true, value['this == window']);
+        assertEquals(jsonResult, false, value['this == top']);
+        assertEquals(jsonResult, 'undefined', value['typeof window.MY_GLOBAL_CONSTANT']);
+        assertEquals(jsonResult, 'number', value['typeof window.top.MY_GLOBAL_CONSTANT']);
       }
 
       asyncTestCase.waitForAsync('callback');
@@ -382,6 +384,34 @@ limitations under the License.
               (typeof window.top.MY_GLOBAL_CONSTANT)
         });
       }, [], 0, onDone, false, testFrameWin);
+    }
+
+    function testShouldExecuteScriptsInTheContextOfTheSpecifiedWindow() {
+      var testFrameWin = goog.dom.getFrameContentWindow(
+          goog.dom.$('test-frame'));
+
+      var result = bot.inject.executeScript(function() {
+        return {
+          'this == window': (this == window),
+          'this == top': (this == window.top),
+          'typeof window.MY_GLOBAL_CONSTANT': (typeof MY_GLOBAL_CONSTANT),
+          'typeof window.top.MY_GLOBAL_CONSTANT':
+              (typeof window.top.MY_GLOBAL_CONSTANT)
+        };
+      }, [], false, testFrameWin);
+
+      var jsonResult = goog.json.serialize(result);
+
+      assertTrue(jsonResult, goog.object.containsKey(result, 'status'));
+      assertEquals(jsonResult, bot.ErrorCode.SUCCESS, result['status']);
+
+      assertTrue(jsonResult, goog.object.containsKey(result, 'value'));
+      var value = result['value'];
+
+      assertEquals(jsonResult, true, value['this == window']);
+      assertEquals(jsonResult, false, value['this == top']);
+      assertEquals(jsonResult, 'undefined', value['typeof window.MY_GLOBAL_CONSTANT']);
+      assertEquals(jsonResult, 'number', value['typeof window.top.MY_GLOBAL_CONSTANT']);
     }
 
   </script>
