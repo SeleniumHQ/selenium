@@ -47,7 +47,8 @@ protected:
 				if (status_code == SUCCESS && found_elements.size() > 0) {
 					break;
 				} else {
-					::Sleep(100);
+					// Release the thread so that the browser doesn't starve.
+					::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
 				}
 			} while (clock() < end);
 

@@ -19,6 +19,7 @@
 #include "WebDriverResponse.h"
 
 #define WAIT_TIME_IN_MILLISECONDS 200
+#define FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS 250
 
 #define EVENT_NAME L"WD_START_EVENT"
 

@@ -58,6 +58,9 @@ protected:
 					status_code = session.LocateElements(parent_element_wrapper, mechanism_translation, value, &found_elements);
 					if (status_code == SUCCESS && found_elements.size() > 0) {
 						break;
+					} else {
+						// Release the thread so that the browser doesn't starve.
+						::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
 					}
 				} while (clock() < end);
 
