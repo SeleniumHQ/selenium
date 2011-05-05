@@ -1,12 +1,17 @@
 require File.expand_path("../spec_helper", __FILE__)
 
 describe Selenium::WebDriver::SocketPoller do
-  let(:poller) { Selenium::WebDriver::SocketPoller.new("somehost", 1234, 5, 0.05) }
+  let(:poller)         { Selenium::WebDriver::SocketPoller.new("localhost", 1234, 5, 0.05)  }
+  let(:socket)         { mock Socket, :close => true}
+
+  before do
+    Socket.should_receive(:new).any_number_of_times.and_return socket
+  end
 
   describe "#connected?" do
     it "returns true when the socket is listening" do
-      TCPSocket.should_receive(:new).twice.and_raise Errno::ECONNREFUSED
-      TCPSocket.should_receive(:new).once.and_return mock("TCPSocket").as_null_object
+      socket.should_receive(:connect_nonblock).and_raise(Errno::ECONNREFUSED)
+      socket.should_receive(:connect_nonblock).and_raise(Errno::EISCONN)
 
       poller.should be_connected
     end
@@ -17,7 +22,7 @@ describe Selenium::WebDriver::SocketPoller do
       stop  = Time.parse("2010-01-01 00:00:06")
 
       Time.should_receive(:now).and_return(start, wait, stop)
-      TCPSocket.should_receive(:new).and_raise Errno::ECONNREFUSED
+      socket.should_receive(:connect_nonblock).and_raise(Errno::ECONNREFUSED)
 
       poller.should_not be_connected
     end
@@ -25,8 +30,8 @@ describe Selenium::WebDriver::SocketPoller do
 
   describe "#closed?" do
     it "returns true when the socket is closed" do
-      TCPSocket.should_receive(:new).twice.and_return mock("TCPSocket").as_null_object
-      TCPSocket.should_receive(:new).once.and_raise Errno::ECONNREFUSED
+      socket.should_receive(:connect_nonblock).twice.and_raise Errno::EISCONN
+      socket.should_receive(:connect_nonblock).and_raise Errno::ECONNREFUSED
 
       poller.should be_closed
     end
@@ -37,7 +42,7 @@ describe Selenium::WebDriver::SocketPoller do
       stop  = Time.parse("2010-01-01 00:00:06")
 
       Time.should_receive(:now).and_return(start, wait, stop)
-      TCPSocket.should_receive(:new).and_return mock("TCPSocket").as_null_object
+      socket.should_receive(:connect_nonblock).and_raise Errno::EISCONN
 
       poller.should_not be_closed
     end
