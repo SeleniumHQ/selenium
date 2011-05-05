@@ -1035,6 +1035,32 @@ location for correctly generating native events.''').
                  'Rotatable#rotate(ScreenOrientation)'))
 
   resources.append(
+      SessionResource('/session/:sessionId/alert_text').
+      Get('Gets the text of the currently displayed JavaScript `alert()`, `confirm()`, '
+          'or `prompt()` dialog.').
+      SetReturnType('{string}', 'The text of the currently displayed alert.').
+      AddError('NoAlertPresent', 'If there is no alert displayed.').
+      SetJavadoc('java/org/openqa/selenium/Alert.html#getText()', 'Alert#getText()').
+      Post('Sends keystrokes to a JavaScript `prompt()` dialog.').
+      AddError('NoAlertPresent', 'If there is no alert displayed.').
+      SetJavadoc('java/org/openqa/selenium/Alert.html#sendKeys()', 'Alert#sendKeys()'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/accept_alert').
+      Post('Accepts the currently displayed alert dialog. Usually, this is equivalent '
+           'to clicking on the \'OK\' button in the dialog.').
+      AddError('NoAlertPresent', 'If there is no alert displayed.').
+      SetJavadoc('java/org/openqa/selenium/Alert.html#accept()', 'Alert#accept()'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/dismiss_alert').
+      Post('Dismisses the currently displayed alert dialog. For `confirm()` and `prompt()` '
+           'dialogs, this is equivalent to clicking the \'Cancel\' button. For `alert()` '
+           'dialogs, this is equivalent to clicking the \'OK\' button.').
+      AddError('NoAlertPresent', 'If there is no alert displayed.').
+      SetJavadoc('java/org/openqa/selenium/Alert.html#dismiss()', 'Alert#dismiss()'))
+
+  resources.append(
       SessionResource('/session/:sessionId/moveto').
       Post('Move the mouse by an offset of the specificed element. If no element '
            'is specified, the move is relative to the current mouse cursor. If an '
