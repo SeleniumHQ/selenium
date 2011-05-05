@@ -550,7 +550,7 @@ task :release => [
     deep = File.join(temp, "/selenium-#{version}")
     mkdir_p deep
 
-    sh "cd #{deep} && jar xf ../../#{zip.split('/')[-1]}"
+    sh "cd #{deep} && jar xf ../../#{File.basename(zip)}"
     renames.each do |from, to|
       src = File.join(deep, from)
             next unless File.exists?(src)
@@ -559,7 +559,7 @@ task :release => [
     end
     rm_f File.join(deep, "client-combined-standalone.jar")
     rm zip
-    sh "cd #{temp} && jar cMf ../#{zip.split('/')[-1]} *"
+    sh "cd #{temp} && jar cMf ../#{File.basename(zip)} *"
 
     rm_rf temp
   end
