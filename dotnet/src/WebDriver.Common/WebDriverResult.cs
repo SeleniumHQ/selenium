@@ -154,6 +154,16 @@ namespace OpenQA.Selenium
         UnableToSetCookie = 25,
 
         /// <summary>
+        /// An alert was found open unexpectedly.
+        /// </summary>
+        UnexpectedAlertOpen = 26,
+
+        /// <summary>
+        /// A request was made to switch to an alert, but no alert is currently open.
+        /// </summary>
+        NoAlertPresent = 27,
+
+        /// <summary>
         /// An asynchronous JavaScript execution timed out.
         /// </summary>
         AsyncScriptTimeout = 28,

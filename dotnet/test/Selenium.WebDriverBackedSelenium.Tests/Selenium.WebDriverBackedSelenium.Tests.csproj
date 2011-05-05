@@ -56,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompoundMutator.cs" />
-    <Compile Include="TestEvilCloseWindow.cs" />
     <Compile Include="TestErrorChecking.cs" />
     <Compile Include="TestElementPresent.cs" />
     <Compile Include="TestElementOrder.cs" />

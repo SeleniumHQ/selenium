@@ -111,7 +111,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
-        public void testShouldAllowAUserToSetTheValueOfAPrompt()
+        public void ShouldAllowAUserToSetTheValueOfAPrompt()
         {
             driver.Url = alertsPage;
 
@@ -132,7 +132,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
-        public void testShouldAllowTheUserToGetTheTextOfAnAlert()
+        public void ShouldAllowTheUserToGetTheTextOfAnAlert()
         {
             driver.Url = alertsPage;
 
@@ -170,7 +170,12 @@ namespace OpenQA.Selenium
 
 
         [Test]
-        [Ignore]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.Safari)]
         [ExpectedException(typeof(NoAlertPresentException))]
         public void AlertShouldNotAllowAdditionalCommandsIfDimissed()
         {
@@ -182,19 +187,5 @@ namespace OpenQA.Selenium
             alert.Dismiss();
             string text = alert.Text;
         }
-
-        //private Alert switchToAlert(WebDriver driver) {
-        // IWebDriver.TargetLocator locator = driver.SwitchTo();
-
-        //  try {
-        //    Method alertMethod = locator.getClass().getMethod("alert");
-        //    alertMethod.setAccessible(true);
-        //    return (Alert) alertMethod.invoke(locator);
-        //  } catch (Exception e) {
-        //    e.printStackTrace();
-        //  }
-        //  return null;
-        //}
-        //  }
     }
 }
