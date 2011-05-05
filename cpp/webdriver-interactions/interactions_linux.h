@@ -24,6 +24,8 @@ limitations under the License.
 #define INTERACTIONS_LOG_FILE "/tmp/native_ff_events_log"
 
 guint32 TimeSinceBootMsec();
+void sleep_for_ms(int sleep_time_ms);
+
 bool event_earlier_than(GdkEvent* ev, guint32 compare_time);
 bool is_gdk_keyboard_event(GdkEvent* ev);
 bool is_gdk_mouse_event(GdkEvent* ev);

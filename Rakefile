@@ -226,6 +226,7 @@ gecko_sdk = "third_party/gecko-1.9.0.11/linux/"
 
 dll(:name => "libwebdriver_firefox_so",
     :src  => FileList.new('cpp/webdriver-interactions/*_linux*.cpp') +
+             FileList.new('cpp/webdriver-interactions/interactions_common.cpp') +
              FileList.new('cpp/webdriver-firefox/*.cpp'),
     :arch => "i386",
     :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I cpp/webdriver-interactions -I cpp/imehandler/common -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
@@ -255,6 +256,7 @@ end
 
 dll(:name => "libwebdriver_firefox_so64",
     :src  => FileList.new('cpp/webdriver-interactions/*_linux*.cpp') +
+             FileList.new('cpp/webdriver-interactions/interactions_common.cpp') +
              FileList.new('cpp/webdriver-firefox/*.cpp'),
     :arch => "amd64",
     :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I cpp/webdriver-interactions -I cpp/imehandler/common #{local_gecko_include} `pkg-config gtk+-2.0 --cflags` ",

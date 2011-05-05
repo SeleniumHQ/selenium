@@ -295,6 +295,10 @@
 				RelativePath=".\interactions.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\interactions_common.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -311,6 +315,10 @@
 			</File>
 			<File
 				RelativePath=".\interactions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\interactions_common.h"
 				>
 			</File>
 			<File

@@ -181,11 +181,11 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     WebElement reporter = driver.findElement(By.id("status"));
 
-    waitFor(fuzzyMatchingOfCoordinates(reporter, 55, 182));
+    waitFor(fuzzyMatchingOfCoordinates(reporter, 50, 200));
 
     ((HasInputDevices) driver).actionsBuilder().moveByOffset(10, 20).build().perform();
 
-    waitFor(fuzzyMatchingOfCoordinates(reporter, 65, 219));
+    waitFor(fuzzyMatchingOfCoordinates(reporter, 60, 220));
   }
 
   @JavascriptEnabled
@@ -224,7 +224,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     WebElement reporter = driver.findElement(By.id("status"));
 
-    waitFor(fuzzyMatchingOfCoordinates(reporter, 36, 13));
+    waitFor(fuzzyMatchingOfCoordinates(reporter, 40, 20));
   }
 
 
@@ -255,8 +255,8 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     int gotX = Integer.parseInt(splitString[0].trim());
     int gotY = Integer.parseInt(splitString[1].trim());
 
-    // Everything with in 10 pixels range is OK
-    final int ALLOWED_DEVIATION = 10;
+    // Everything within 5 pixels range is OK
+    final int ALLOWED_DEVIATION = 5;
     return Math.abs(expectedX - gotX) < ALLOWED_DEVIATION &&
         Math.abs(expectedY - gotY) < ALLOWED_DEVIATION;
 

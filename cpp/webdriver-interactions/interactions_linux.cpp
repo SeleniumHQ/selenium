@@ -504,14 +504,6 @@ KeypressEventsHandler::~KeypressEventsHandler()
   modifiers_.clear();
 }
 
-static void sleep_for_ms(int sleep_time_ms)
-{
-  struct timespec sleep_time;
-  sleep_time.tv_sec = sleep_time_ms / 1000;
-  sleep_time.tv_nsec = (sleep_time_ms % 1000) * 1000000;
-  nanosleep(&sleep_time, NULL);
-}
-
 static void submit_and_free_event(GdkEvent* p_key_event, int sleep_time_ms)
 {
   gdk_event_put(p_key_event);

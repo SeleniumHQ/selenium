@@ -56,6 +56,14 @@ guint32 TimeSinceBootMsec()
     return 0;
 }
 
+void sleep_for_ms(int sleep_time_ms)
+{
+  struct timespec sleep_time;
+  sleep_time.tv_sec = sleep_time_ms / 1000;
+  sleep_time.tv_nsec = (sleep_time_ms % 1000) * 1000000;
+  nanosleep(&sleep_time, NULL);
+}
+
 bool is_gdk_keyboard_event(GdkEvent* ev)
 {
   return ((ev->type == GDK_KEY_PRESS) || (ev->type == GDK_KEY_RELEASE));
@@ -108,6 +116,7 @@ void init_logging()
   }
 #endif
 }
+
 extern "C"
 {
 bool pending_input_events()

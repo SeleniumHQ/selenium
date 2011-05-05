@@ -23,6 +23,7 @@ limitations under the License.
 
 #include "errorcodes.h"
 #include "interactions.h"
+#include "interactions_common.h"
 #include "logging.h"
 
 using namespace std;
@@ -712,16 +713,18 @@ LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY,
 
 	HWND directInputTo = (HWND) handle;
 
-	// How many steps?
-	int steps = 15;
-	long sleep = duration / steps;
+  long pointsDistance = distanceBetweenPoints(fromX, fromY, toX, toY);
+  const int stepSizeInPixels = 5;
+  int steps = pointsDistance / stepSizeInPixels;
+
+	long sleep = duration / max(steps, 1);
 
   LPRECT r = new RECT();
   GetWindowRect(directInputTo, r);
 
   WPARAM buttonValue = (leftMouseButtonPressed ? MK_LBUTTON : 0);
 
-	for (int i = 0; i < steps; i++) {
+	for (int i = 0; i < steps + 1; i++) {
 	  //To avoid integer division rounding and cumulative floating point errors,
 	  //calculate from scratch each time
 	  int currentX = (int)(fromX + ((toX - fromX) * ((double)i) / steps));

@@ -36,6 +36,7 @@ limitations under the License.
 
 #include "translate_keycode_linux.h"
 #include "interactions_linux.h"
+#include "interactions_common.h"
 
 using namespace std;
 
@@ -173,14 +174,6 @@ MouseEventsHandler::~MouseEventsHandler()
 {
 }
 
-static void sleep_for_ms(int sleep_time_ms)
-{
-  struct timespec sleep_time;
-  sleep_time.tv_sec = sleep_time_ms / 1000;
-  sleep_time.tv_nsec = (sleep_time_ms % 1000) * 1000000;
-  nanosleep(&sleep_time, NULL);
-}
-
 static void submit_and_free_event(GdkEvent* p_mouse_event, int sleep_time_ms)
 {
   gdk_event_put(p_mouse_event);
@@ -273,13 +266,19 @@ WD_RESULT mouseMoveTo(WINDOW_HANDLE windowHandle, long duration, long fromX, lon
 
   MouseEventsHandler mousep_handler(hwnd);
 
-  int steps = 15;
+  long pointsDistance = distanceBetweenPoints(fromX, fromY, toX, toY);
+  const int stepSizeInPixels = 5;
+  int steps = pointsDistance / stepSizeInPixels;
 
-  for (int i = 0; i < steps; ++i) {
+  LOG(DEBUG) << "From: (" << fromX << ", " << fromY << ") to: (" << toX << ", " << toY << ")";
+  LOG(DEBUG) << "Distance: " << pointsDistance << " steps: " << steps;
+
+  for (int i = 0; i < steps + 1; ++i) {
     //To avoid integer division rounding and cumulative floating point errors,
     //calculate from scratch each time
     int currentX = fromX + ((toX - fromX) * ((double)i) / steps);
     int currentY = fromY + ((toY - fromY) * ((double)i) / steps);
+    LOG(DEBUG) << "Moving to: (" << currentX << ", " << currentY << ")";
     list<GdkEvent*> events_for_mouse = mousep_handler.CreateEventsForMouseMove(currentX, currentY);
     submit_and_free_events_list(events_for_mouse, timePerEvent);
   }
