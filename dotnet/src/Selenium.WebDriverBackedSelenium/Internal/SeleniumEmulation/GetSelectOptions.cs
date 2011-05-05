@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using OpenQA.Selenium;
-using System.Collections.ObjectModel;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
@@ -16,7 +16,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <summary>
         /// Initializes a new instance of the <see cref="GetSelectOptions"/> class.
         /// </summary>
-        /// <param name="optionsSelector">A <see cref="SeleniumOptionSelector"/> used in getting the select options.</param>
+        /// <param name="finder">A <see cref="ElementFinder"/> used in getting the select options.</param>
         public GetSelectOptions(ElementFinder finder)
         {
             this.finder = finder;
@@ -31,7 +31,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            SeleniumSelect select = new SeleniumSelect(finder, driver, locator);
+            SeleniumSelect select = new SeleniumSelect(this.finder, driver, locator);
 
             ReadOnlyCollection<IWebElement> allOptions = select.AllOptions;
             List<string> labels = new List<string>();

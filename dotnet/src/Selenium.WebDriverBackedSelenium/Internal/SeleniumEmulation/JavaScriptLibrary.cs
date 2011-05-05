@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using OpenQA.Selenium;
@@ -42,7 +43,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <param name="element">An <see cref="IWebElement"/> used as an argument to the JavaScript function.</param>
         /// <param name="values">An array of values containing additional arguments to the function.</param>
         /// <returns>The result of the script</returns>
-        public static object CallEmbeddedHtmlUtils(IWebDriver driver, string functionName, IWebElement element, params object[] values)
+        public static object CallEmbeddedHtmlUtilities(IWebDriver driver, string functionName, IWebElement element, params object[] values)
         {
             StringBuilder builder = new StringBuilder(ReadScript(HtmlUtilsResourceName));
 
@@ -83,7 +84,7 @@ namespace Selenium.Internal.SeleniumEmulation
         public static string GetSeleniumScript(string libraryName)
         {
             string rawFunction = ReadScript(libraryName);
-            return string.Format(@"function() {{ return ({0}).apply(null, arguments);}}", rawFunction);
+            return string.Format(CultureInfo.InvariantCulture, @"function() {{ return ({0}).apply(null, arguments);}}", rawFunction);
         }
 
         private static string ReadScript(string script)

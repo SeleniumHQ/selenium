@@ -31,45 +31,11 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            string strategy = string.Format(@"return (function(locator, inWindow, inDocument) {{ {0} }}).call(null, arguments[0], window, document)", value);
+            string strategy = string.Format(CultureInfo.InvariantCulture, @"return (function(locator, inWindow, inDocument) {{ {0} }}).call(null, arguments[0], window, document)", value);
 
             this.finder.AddStrategy(locator, strategy);
 
             return null;
-        }
-        
-        /// <summary>
-        /// Provides a mechanism for user-defined lookup strategies.
-        /// </summary>
-        private class UserLookupStrategy : ILookupStrategy
-        {
-            private string strategyFunctionDefinition = string.Empty;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="UserLookupStrategy"/> class.
-            /// </summary>
-            /// <param name="functionDefinition">A JavaScript function that returns a web element.</param>
-            public UserLookupStrategy(string functionDefinition)
-            {
-                this.strategyFunctionDefinition = functionDefinition;
-            }
-
-            #region ILookupStrategy Members
-            /// <summary>
-            /// Finds an element on the page based on a user-defined JavaScript function.
-            /// </summary>
-            /// <param name="driver">The <see cref="IWebDriver"/> object driving the browser.</param>
-            /// <param name="use">The script to use to find the element.</param>
-            /// <returns>An <see cref="IWebElement"/> that matches the criteria.</returns>
-            public IWebElement Find(IWebDriver driver, string use)
-            {
-                string finderScript = string.Format(CultureInfo.InvariantCulture, @"(function(locator, inWindow, inDocument) {{ {0} }}).call(this,'{1}', window, document)", this.strategyFunctionDefinition, use);
-                IJavaScriptExecutor scriptExecutor = driver as IJavaScriptExecutor;
-
-                return scriptExecutor.ExecuteScript(finderScript, this.strategyFunctionDefinition, use) as IWebElement;
-            }
-
-            #endregion
         }
     }
 }

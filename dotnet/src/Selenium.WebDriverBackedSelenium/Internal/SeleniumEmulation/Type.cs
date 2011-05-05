@@ -58,7 +58,7 @@ namespace Selenium.Internal.SeleniumEmulation
             IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
             if (executor != null)
             {
-                JavaScriptLibrary.ExecuteScript(driver, type, element, stringToType);
+                JavaScriptLibrary.ExecuteScript(driver, this.type, element, stringToType);
             }
             else
             {

@@ -274,7 +274,7 @@ namespace Selenium
             this.seleneseMethods.Add("getSelectedLabels", new FindSelectedOptionProperties(this.elementFinder, "text"));
             this.seleneseMethods.Add("getSelectedValue", new FindFirstSelectedOptionProperty(this.elementFinder, "value"));
             this.seleneseMethods.Add("getSelectedValues", new FindSelectedOptionProperties(this.elementFinder, "value"));
-            this.seleneseMethods.Add("getSelectOptions", new GetSelectOptions(elementFinder));
+            this.seleneseMethods.Add("getSelectOptions", new GetSelectOptions(this.elementFinder));
             this.seleneseMethods.Add("getSpeed", new NoOp("0"));
             this.seleneseMethods.Add("getTable", new GetTable(this.elementFinder));
             this.seleneseMethods.Add("getText", new GetText(this.elementFinder));

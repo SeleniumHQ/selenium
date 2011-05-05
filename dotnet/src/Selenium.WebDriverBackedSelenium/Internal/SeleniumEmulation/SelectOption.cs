@@ -17,7 +17,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// Initializes a new instance of the <see cref="SelectOption"/> class.
         /// </summary>
         /// <param name="alertOverride">An <see cref="AlertOverride"/> object used to handle JavaScript alerts.</param>
-        /// <param name="optionSelector">The <see cref="SeleniumOptionSelector"/> used in selecting the option.</param>
+        /// <param name="finder">The <see cref="ElementFinder"/> used in selecting the option.</param>
         public SelectOption(AlertOverride alertOverride, ElementFinder finder)
         {
             this.finder = finder;
@@ -34,7 +34,7 @@ namespace Selenium.Internal.SeleniumEmulation
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             this.alertOverride.ReplaceAlertMethod();
-            SeleniumSelect select = new SeleniumSelect(finder, driver, locator);
+            SeleniumSelect select = new SeleniumSelect(this.finder, driver, locator);
             select.SetSelected(value);
             return null;
         }

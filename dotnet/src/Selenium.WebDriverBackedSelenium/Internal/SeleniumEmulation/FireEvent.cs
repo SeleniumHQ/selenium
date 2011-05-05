@@ -20,7 +20,7 @@ namespace Selenium.Internal.SeleniumEmulation
         public FireEvent(ElementFinder elementFinder)
         {
             this.finder = elementFinder;
-            fire = "return (" + JavaScriptLibrary.GetSeleniumScript("fireEvent.js") + ").apply(null, arguments);";
+            this.fire = "return (" + JavaScriptLibrary.GetSeleniumScript("fireEvent.js") + ").apply(null, arguments);";
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Selenium.Internal.SeleniumEmulation
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             IWebElement element = this.finder.FindElement(driver, locator);
-            JavaScriptLibrary.ExecuteScript(driver, fire, element, value);
+            JavaScriptLibrary.ExecuteScript(driver, this.fire, element, value);
             return null;
         }
     }

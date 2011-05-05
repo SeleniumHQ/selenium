@@ -12,10 +12,16 @@ namespace Selenium.Internal.SeleniumEmulation
     {
         private IScriptMutator mutator;
 
+        /// <summary>
+        /// Initializes a new instance of the RunScript class.
+        /// </summary>
+        /// <param name="mutator">The <see cref="IScriptMutator"/> object to modify the 
+        /// script so that WebDriver can use it.</param>
         public RunScript(IScriptMutator mutator)
         {
             this.mutator = mutator;
         }
+
         /// <summary>
         /// Handles the command.
         /// </summary>
@@ -26,7 +32,7 @@ namespace Selenium.Internal.SeleniumEmulation
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             StringBuilder builder = new StringBuilder();
-            mutator.Mutate(locator, builder);
+            this.mutator.Mutate(locator, builder);
             ((IJavaScriptExecutor)driver).ExecuteScript(builder.ToString());
             return null;
         }

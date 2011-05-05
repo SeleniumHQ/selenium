@@ -14,11 +14,15 @@ namespace Selenium.Internal.SeleniumEmulation
     {
         private List<IScriptMutator> mutators = new List<IScriptMutator>();
 
-        public CompoundMutator(string baseUrl)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompoundMutator"/> class.
+        /// </summary>
+        /// <param name="basePath">The URL to use in mutating the script.</param>
+        public CompoundMutator(string basePath)
         {
             this.AddMutator(new VariableDeclaration("selenium", "var selenium = {};"));
             this.AddMutator(new VariableDeclaration("selenium.browserbot", "selenium.browserbot = {};"));
-            this.AddMutator(new VariableDeclaration("selenium.browserbot.baseUrl", "selenium.browserbot.baseUrl = '" + baseUrl + "';"));
+            this.AddMutator(new VariableDeclaration("selenium.browserbot.baseUrl", "selenium.browserbot.baseUrl = '" + basePath + "';"));
 
             this.AddMutator(new FunctionDeclaration("selenium.page", "if (!selenium.browserbot) { selenium.browserbot = {} }; return selenium.browserbot;"));
             this.AddMutator(new FunctionDeclaration("selenium.browserbot.getCurrentWindow", "return window;"));
@@ -33,35 +37,43 @@ namespace Selenium.Internal.SeleniumEmulation
         }
 
         #region IScriptMutator Members
-
+        /// <summary>
+        /// Mutate a script so by calling all component mutators on it in turn.
+        /// The original, unmodified script is used to generate a script
+        /// on the StringBuilder, the "ToString" method of which should be
+        /// used to get the result. We make use of a StringBuilder rather than a
+        /// normal String so that we can efficiently chain mutators.
+        /// </summary>
+        /// <param name="script">The original script.</param>
+        /// <param name="outputTo">The mutated script.</param>
         public void Mutate(string script, StringBuilder outputTo)
         {
             StringBuilder nested = new StringBuilder();
-            foreach (IScriptMutator mutator in mutators)
+            foreach (IScriptMutator mutator in this.mutators)
             {
                 mutator.Mutate(script, nested);
             }
 
-            nested.Append("").Append(script);
+            nested.Append(script);
 
             outputTo.Append("return eval('");
-            outputTo.Append(escape(nested.ToString()));
+            outputTo.Append(Escape(nested.ToString()));
             outputTo.Append("');");
         }
-
         #endregion
 
+        /// <summary>
+        /// Adds a mutator to the collection
+        /// </summary>
+        /// <param name="mutator">The <see cref="IScriptMutator"/> to add.</param>
         internal void AddMutator(IScriptMutator mutator)
         {
             this.mutators.Add(mutator);
         }
 
-        private string escape(String escapee)
+        private static string Escape(string escapee)
         {
-            return escapee
-                .Replace("\\", "\\\\")
-                .Replace("\n", "\\n")
-                .Replace("'", "\\'");
+            return escapee.Replace("\\", "\\\\").Replace("\n", "\\n").Replace("'", "\\'");
         }
     }
 }

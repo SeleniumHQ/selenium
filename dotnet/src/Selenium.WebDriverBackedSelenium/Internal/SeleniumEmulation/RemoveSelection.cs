@@ -16,7 +16,6 @@ namespace Selenium.Internal.SeleniumEmulation
         /// Initializes a new instance of the <see cref="RemoveSelection"/> class.
         /// </summary>
         /// <param name="elementFinder">An <see cref="ElementFinder"/> used to find the element on which to execute the command.</param>
-        /// <param name="optionSelector">The <see cref="SeleniumOptionSelector"/> used to select the object.</param>
         public RemoveSelection(ElementFinder elementFinder)
         {
             this.finder = elementFinder;
@@ -31,7 +30,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            SeleniumSelect select = new SeleniumSelect(finder, driver, locator);
+            SeleniumSelect select = new SeleniumSelect(this.finder, driver, locator);
             select.RemoveSelection(value);
             return null;
         }

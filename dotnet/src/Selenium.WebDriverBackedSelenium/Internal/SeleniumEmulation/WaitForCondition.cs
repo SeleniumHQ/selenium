@@ -13,6 +13,11 @@ namespace Selenium.Internal.SeleniumEmulation
     {
         private IScriptMutator mutator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WaitForCondition"/> class.
+        /// </summary>
+        /// <param name="mutator">An <see cref="IScriptMutator"/> used to modify the script 
+        /// into something WebDriver can parse.</param>
         public WaitForCondition(IScriptMutator mutator)
         {
             this.mutator = mutator;
@@ -28,10 +33,10 @@ namespace Selenium.Internal.SeleniumEmulation
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
             StringBuilder builder = new StringBuilder();
-            mutator.Mutate(locator, builder);
+            this.mutator.Mutate(locator, builder);
             string modified = builder.ToString();
             string waitMessage = "Failed to resolve " + locator;
-            ConditionWaiter waiter = new ConditionWaiter(driver, locator);
+            ConditionWaiter waiter = new ConditionWaiter(driver, modified);
             if (!string.IsNullOrEmpty(value))
             {
                 waiter.Wait(waitMessage, long.Parse(value, CultureInfo.InvariantCulture));

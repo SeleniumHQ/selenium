@@ -30,7 +30,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            JavaScriptLibrary.CallEmbeddedHtmlUtils(driver, "highlight", this.finder.FindElement(driver, locator));
+            JavaScriptLibrary.CallEmbeddedHtmlUtilities(driver, "highlight", this.finder.FindElement(driver, locator));
 
             return null;
         }

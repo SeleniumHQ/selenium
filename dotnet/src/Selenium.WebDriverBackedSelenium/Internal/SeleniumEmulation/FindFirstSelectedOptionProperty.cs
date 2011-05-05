@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using OpenQA.Selenium;
-using System.Collections.ObjectModel;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
@@ -17,7 +17,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <summary>
         /// Initializes a new instance of the <see cref="FindFirstSelectedOptionProperty"/> class.
         /// </summary>
-        /// <param name="optionSelect">A <see cref="SeleniumOptionSelector"/> that gets options from the element.</param>
+        /// <param name="finder">A <see cref="ElementFinder"/> that gets options from the element.</param>
         /// <param name="property">The property on which to select the options.</param>
         public FindFirstSelectedOptionProperty(ElementFinder finder, string property)
         {
@@ -34,7 +34,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            SeleniumSelect select = new SeleniumSelect(finder, driver, locator);
+            SeleniumSelect select = new SeleniumSelect(this.finder, driver, locator);
             ReadOnlyCollection<IWebElement> allOptions = select.SelectedOptions;
 
             if (allOptions.Count == 0)
@@ -42,7 +42,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 throw new SeleniumException("No options are selected: " + locator);
             }
 
-            return allOptions[0].GetAttribute(property);
+            return allOptions[0].GetAttribute(this.property);
         }
     }
 }

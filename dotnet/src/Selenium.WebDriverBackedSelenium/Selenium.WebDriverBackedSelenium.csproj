@@ -83,7 +83,6 @@
     <Compile Include="Internal\SeleniumEmulation\IsConfirmationPresent.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetAlert.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetConfirmation.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IFilterFunction.cs" />
     <Compile Include="Internal\SeleniumEmulation\IsAlertPresent.cs" />
     <Compile Include="Internal\SeleniumEmulation\IScriptMutator.cs" />
     <Compile Include="Internal\SeleniumEmulation\SeleniumMutator.cs" />
@@ -144,7 +143,6 @@
     <Compile Include="Internal\SeleniumEmulation\GetTable.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetXpathCount.cs" />
     <Compile Include="Internal\SeleniumEmulation\Highlight.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IOptionSelectStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\IsEditable.cs" />
     <Compile Include="Internal\SeleniumEmulation\IsOrdered.cs" />
     <Compile Include="Internal\SeleniumEmulation\IsSomethingSelected.cs" />
@@ -171,7 +169,6 @@
     <Compile Include="Internal\SeleniumEmulation\RemoveAllSelections.cs" />
     <Compile Include="Internal\SeleniumEmulation\SeleneseCommand.cs" />
     <Compile Include="Internal\SeleniumEmulation\Submit.cs" />
-    <Compile Include="Internal\SeleniumEmulation\ITextMatchingStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\Type.cs" />
     <Compile Include="Internal\SeleniumEmulation\TypeKeys.cs" />
     <Compile Include="Internal\SeleniumEmulation\Uncheck.cs" />
@@ -183,7 +180,6 @@
     <Compile Include="Internal\SeleniumEmulation\WindowSelector.cs" />
     <Compile Include="WebDriverBackedSelenium.cs" />
     <Compile Include="WebDriverCommandProcessor.cs" />
-    <Compile Include="Internal\SeleniumEmulation\ILookupStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetCssCount.cs" />
   </ItemGroup>
   <PropertyGroup>
@@ -204,10 +200,4 @@ if exist $(SolutionDir)build\javascript\selenium-atoms\type.js copy /y $(Solutio
 
 </PostBuildEvent>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="Internal\SeleniumEmulation\FilterFunctions\" />
-    <Folder Include="Internal\SeleniumEmulation\LookupStrategies\" />
-    <Folder Include="Internal\SeleniumEmulation\OptionSelectStratgies\" />
-    <Folder Include="Internal\SeleniumEmulation\TextMatchingStrategies\" />
-  </ItemGroup>
 </Project>

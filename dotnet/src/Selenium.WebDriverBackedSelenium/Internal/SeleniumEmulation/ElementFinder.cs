@@ -10,11 +10,6 @@ namespace Selenium.Internal.SeleniumEmulation
     /// </summary>
     internal class ElementFinder
     {
-        /// <summary>
-        /// A <see cref="Regex"/> used to match element lookup patterns.
-        /// </summary>
-        public static readonly Regex StrategyPattern = new Regex("^([a-zA-Z]+)=(.*)");
-  
         private string findElement;
         private Dictionary<string, string> lookupStrategies = new Dictionary<string, string>();
 
@@ -40,6 +35,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <exception cref="SeleniumException">There is no element matching the locator.</exception>
         internal IWebElement FindElement(IWebDriver driver, string locator)
         {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
             IWebElement result;
             string strategy = this.FindStrategy(locator);
             if (!string.IsNullOrEmpty(strategy))
@@ -49,7 +45,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 // TODO(simon): Recurse into child documents
                 try
                 {
-                    result = ((IJavaScriptExecutor)driver).ExecuteScript(strategy, actualLocator) as IWebElement;
+                    result = executor.ExecuteScript(strategy, actualLocator) as IWebElement;
 
                     if (result == null)
                     {
@@ -66,13 +62,13 @@ namespace Selenium.Internal.SeleniumEmulation
 
             try
             {
-                result = this.FindElementDirectly(driver, locator);
+                result = FindElementDirectly(driver, locator);
                 if (result != null)
                 {
                     return result;
                 }
 
-                return ((IJavaScriptExecutor)driver).ExecuteScript(findElement, locator) as IWebElement; ;
+                return executor.ExecuteScript(this.findElement, locator) as IWebElement;
             }
             catch (WebDriverException)
             {
@@ -117,19 +113,19 @@ namespace Selenium.Internal.SeleniumEmulation
             this.lookupStrategies.Add(strategyName, strategy);
         }
 
-        private IWebElement FindElementDirectly(IWebDriver driver, string locator)
+        private static IWebElement FindElementDirectly(IWebDriver driver, string locator)
         {
-            if (locator.StartsWith("xpath="))
+            if (locator.StartsWith("xpath=", StringComparison.Ordinal))
             {
                 return driver.FindElement(By.XPath(locator.Substring("xpath=".Length)));
             }
 
-            if (locator.StartsWith("//"))
+            if (locator.StartsWith("//", StringComparison.Ordinal))
             {
                 return driver.FindElement(By.XPath(locator));
             }
 
-            if (locator.StartsWith("css="))
+            if (locator.StartsWith("css=", StringComparison.Ordinal))
             {
                 return driver.FindElement(By.CssSelector(locator.Substring("css=".Length)));
             }

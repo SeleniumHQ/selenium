@@ -39,13 +39,13 @@ namespace Selenium.Internal.SeleniumEmulation
             catch (WebDriverException)
             {
                 // TODO(simon): remove fall back for IE driver
-                IWebElement element = finder.FindElement(driver, locator);
+                IWebElement element = this.finder.FindElement(driver, locator);
                 return element.Text;
             }
             catch (InvalidOperationException)
             {
                 // TODO(simon): remove fall back for IE driver
-                IWebElement element = finder.FindElement(driver, locator);
+                IWebElement element = this.finder.FindElement(driver, locator);
                 return element.Text;
             }
         }

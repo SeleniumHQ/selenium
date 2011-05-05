@@ -13,10 +13,11 @@ namespace Selenium.Internal.SeleniumEmulation
     internal class GetEval : SeleneseCommand
     {
         private IScriptMutator mutator;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GetEval"/> class.
         /// </summary>
-        /// <param name="baseUrl">The <see cref="Uri"/> used to replace the base URL in the script being run.</param>
+        /// <param name="mutator">The <see cref="IScriptMutator"/> used to replace terms in the script being run.</param>
         public GetEval(IScriptMutator mutator)
         {
             this.mutator = mutator;

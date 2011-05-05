@@ -30,7 +30,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            IWebElement element = finder.FindElement(driver, locator);
+            IWebElement element = this.finder.FindElement(driver, locator);
 
             // Special-case handling for checkboxes: The Selenium API returs "on" for
             // checked checkboxes and off for unchecked ones. WebDriver will return "null" for
@@ -47,7 +47,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 }
             }
 
-            return element.Value;
+            return element.GetAttribute("value");
         }
     }
 }

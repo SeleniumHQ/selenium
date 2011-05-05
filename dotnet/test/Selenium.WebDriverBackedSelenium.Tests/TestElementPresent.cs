@@ -19,7 +19,7 @@ namespace Selenium.Tests
             {
                 if (second >= 60) Assert.Fail("timeout");
                 try { if (!selenium.IsElementPresent("aLink")) break; }
-                catch (Exception e) { }
+                catch (Exception) { }
                 Thread.Sleep(1000);
             }
 
@@ -29,7 +29,7 @@ namespace Selenium.Tests
             {
                 if (second >= 60) Assert.Fail("timeout");
                 try { if (selenium.IsElementPresent("aLink")) break; }
-                catch (Exception e) { }
+                catch (Exception) { }
                 Thread.Sleep(1000);
             }
 

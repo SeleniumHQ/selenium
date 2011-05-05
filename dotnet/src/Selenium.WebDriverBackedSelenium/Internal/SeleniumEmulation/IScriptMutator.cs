@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Selenium.Internal.SeleniumEmulation
@@ -13,12 +12,12 @@ namespace Selenium.Internal.SeleniumEmulation
     {
         /// <summary>
         /// Mutate a script. The original, unmodified script is used to generate a
-        /// script on the StringBuilder, the "toString" method of which should be
+        /// script on the StringBuilder, the "ToString" method of which should be
         /// used to get the result. We make use of a StringBuilder rather than a
         /// normal String so that we can efficiently chain mutators.
         /// </summary>
         /// <param name="script">The original script.</param>
         /// <param name="outputTo">The mutated script</param>
-        void Mutate(String script, StringBuilder outputTo);
+        void Mutate(string script, StringBuilder outputTo);
     }
 }

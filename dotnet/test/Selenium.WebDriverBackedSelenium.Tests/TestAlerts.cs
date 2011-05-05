@@ -20,7 +20,7 @@ namespace Selenium.Tests
             {
                 if (second >= 60) Assert.Fail("timeout");
                 try { if (selenium.IsAlertPresent()) break; }
-                catch (Exception e) { }
+                catch (Exception) { }
                 System.Threading.Thread.Sleep(1000);
             }
 
