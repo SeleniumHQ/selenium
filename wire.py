@@ -1042,8 +1042,10 @@ location for correctly generating native events.''').
       AddError('NoAlertPresent', 'If there is no alert displayed.').
       SetJavadoc('java/org/openqa/selenium/Alert.html#getText()', 'Alert#getText()').
       Post('Sends keystrokes to a JavaScript `prompt()` dialog.').
+      AddJsonParameter('keysToSend', '{string}', 'Keystrokes to send to the `prompt()` dialog.').
       AddError('NoAlertPresent', 'If there is no alert displayed.').
-      SetJavadoc('java/org/openqa/selenium/Alert.html#sendKeys()', 'Alert#sendKeys()'))
+      SetJavadoc('java/org/openqa/selenium/Alert.html#sendKeys(java.lang.String)',
+                 'Alert#sendKeys(String)'))
 
   resources.append(
       SessionResource('/session/:sessionId/accept_alert').
