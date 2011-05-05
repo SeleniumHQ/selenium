@@ -13,7 +13,7 @@ module Selenium
 
       def key_down(*args)
         if args.first.kind_of? Element
-          @actions << [:mouse, :click, args.shift]
+          @actions << [:mouse, :click, [args.shift]]
         end
 
         @actions << [:keyboard, :press, args]
@@ -22,7 +22,7 @@ module Selenium
 
       def key_up(*args)
         if args.first.kind_of? Element
-          @actions << [:mouse, :click, args.shift]
+          @actions << [:mouse, :click, [args.shift]]
         end
 
         @actions << [:keyboard, :release, args]
@@ -31,7 +31,7 @@ module Selenium
 
       def send_keys(*args)
         if args.first.kind_of? Element
-          @actions << [:mouse, :click, args.shift]
+          @actions << [:mouse, :click, [args.shift]]
         end
 
         @actions << [:keyboard, :send_keys, args]
@@ -39,42 +39,42 @@ module Selenium
       end
 
       def click_and_hold(element)
-        @actions << [:mouse, :down, element]
+        @actions << [:mouse, :down, [element]]
         self
       end
 
       def release(element = nil)
-        @actions << [:mouse, :up, element]
+        @actions << [:mouse, :up, [element]]
         self
       end
 
       def click(element = nil)
-        @actions << [:mouse, :click, element]
+        @actions << [:mouse, :click, [element]]
         self
       end
 
       def double_click(element = nil)
-        @actions << [:mouse, :double_click, element]
+        @actions << [:mouse, :double_click, [element]]
         self
       end
 
       def move_to(element, down_by = nil, right_by = nil)
         if down_by && right_by
-          @actions << [:mouse, :move_to, element, down_by, right_by]
+          @actions << [:mouse, :move_to, [element, down_by, right_by]]
         else
-          @actions << [:mouse, :move_to, element]
+          @actions << [:mouse, :move_to, [element]]
         end
 
         self
       end
 
       def move_by(down_by, right_by)
-        @actions << [:mouse, :move_by, down_by, right_by]
+        @actions << [:mouse, :move_by, [down_by, right_by]]
         self
       end
 
       def context_click(element = nil)
-        @actions << [:mouse, :context_click, element]
+        @actions << [:mouse, :context_click, [element]]
         self
       end
 

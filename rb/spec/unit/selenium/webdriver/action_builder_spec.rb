@@ -55,5 +55,15 @@ describe Selenium::WebDriver::ActionBuilder do
             move_to(element).
             context_click(element).perform
   end
+  
+  it "can move the mouse by coordinates" do
+    mouse.should_receive(:down).with(element)
+    mouse.should_receive(:move_by).with(-300, 400)
+    mouse.should_receive(:up)
+    
+    builder.click_and_hold(element).
+            move_by(-300, 400).
+            release.perform
+  end
 
 end
