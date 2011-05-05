@@ -24,6 +24,8 @@ limitations under the License.
     goog.require('bot.ErrorCode');
     goog.require('bot.inject');
     goog.require('bot.inject.cache');
+    goog.require('goog.dom');
+    goog.require('goog.dom.TagName');
     goog.require('goog.json');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
@@ -47,6 +49,13 @@ limitations under the License.
       // "delete" it here because IE complains about it being an unsupported
       // operation.
       document[bot.inject.cache.CACHE_KEY_] = null;
+
+      // Delete the cache in our test frame, if it was created.
+      var testFrame = goog.dom.$('test-frame');
+      var testFrameWindow = goog.dom.getFrameContentWindow(testFrame);
+      if (testFrameWindow.document) {
+        testFrameWindow.document[bot.inject.cache.CACHE_KEY_] = null;
+      }
     }
 
     function testShouldBeAbleToCacheElements() {
@@ -145,7 +154,7 @@ limitations under the License.
     function testShouldBeAbleToUnWrapWrappedValues() {
       var unwrapped = [123, 'abc', null, document.body];
       var wrapped = bot.inject.wrapValue(unwrapped);
-      var roundTripped = bot.inject.unwrapValue(wrapped);
+      var roundTripped = bot.inject.unwrapValue_(wrapped);
       assertArrayEquals(unwrapped, roundTripped);
     }
 
@@ -154,7 +163,7 @@ limitations under the License.
       var unwrapped = [123, 'abc', null, [document.body, null,
           [document.body]]];
       var wrapped = bot.inject.wrapValue(unwrapped);
-      var roundTripped = bot.inject.unwrapValue(wrapped);
+      var roundTripped = bot.inject.unwrapValue_(wrapped);
       assertArrayEquals(unwrapped, roundTripped);
     }
 
@@ -162,13 +171,32 @@ limitations under the License.
     function testShouldBeAbleToUnWrapNestedObjects() {
       var unwrapped = {"foo":{"bar":document.body}};
       var wrapped = bot.inject.wrapValue(unwrapped);
-      var roundTripped = bot.inject.unwrapValue(wrapped);
+      var roundTripped = bot.inject.unwrapValue_(wrapped);
 
       assertTrue(goog.object.containsKey(roundTripped, "foo"));
       var foo = roundTripped['foo'];
 
       assertTrue(goog.object.containsKey(foo, "bar"));
       assertEquals(document.body, foo['bar']);
+    }
+
+
+    function testShouldUnWrapElementsUsingTheGivenDocumentsCache() {
+      var testFrame = goog.dom.$('test-frame');
+      var testFrameDoc = goog.dom.getFrameContentDocument(testFrame);
+
+      var wrapped = bot.inject.wrapValue(testFrameDoc.body);
+      assertNotNull(wrapped);
+      assertNotUndefined(wrapped);
+      assertTrue(goog.isObject(wrapped));
+      assertTrue(goog.object.containsKey(wrapped, bot.inject.ELEMENT_KEY));
+
+      // Should not be able to unwrap using our document since the element
+      // was cached on its ownerDocument.
+      assertThrows(goog.partial(bot.inject.unwrapValue_, wrapped));
+
+      var unwrapped = bot.inject.unwrapValue_(wrapped, testFrameDoc);
+      assertEquals(testFrameDoc.body, unwrapped);
     }
 
 
@@ -412,6 +440,58 @@ limitations under the License.
       assertEquals(jsonResult, false, value['this == top']);
       assertEquals(jsonResult, 'undefined', value['typeof window.MY_GLOBAL_CONSTANT']);
       assertEquals(jsonResult, 'number', value['typeof window.top.MY_GLOBAL_CONSTANT']);
+    }
+
+    function testCorrectlyUnwrapsArgsForInjectedScripts() {
+      var testFrame = goog.dom.$('test-frame');
+      var testFrameWin = goog.dom.getFrameContentWindow(testFrame);
+      var wrapped = bot.inject.wrapValue(testFrameWin.document.body);
+
+      var result = bot.inject.executeScript(function() {
+        return [arguments[0], arguments[0].tagName.toUpperCase()];
+      }, [wrapped], false, testFrameWin);
+
+
+      assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+
+      var value = result['value'];
+      assertTrue(goog.isArray(value));
+      assertEquals(2, value.length);
+
+      assertTrue(goog.isObject(value[0]));
+      assertTrue(goog.object.containsKey(value[0], bot.inject.ELEMENT_KEY));
+      assertEquals(wrapped[bot.inject.ELEMENT_KEY],
+                   value[0][bot.inject.ELEMENT_KEY]);
+
+      assertEquals(goog.dom.TagName.BODY, value[1]);
+    }
+
+    function testCorrectlyUnwrapsArgsForInjectedAsyncScripts() {
+      var testFrame = goog.dom.$('test-frame');
+      var testFrameWin = goog.dom.getFrameContentWindow(testFrame);
+      var wrapped = bot.inject.wrapValue(testFrameWin.document.body);
+
+      function onDone(result) {
+        asyncTestCase.continueTesting();
+
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+
+        var value = result['value'];
+        assertTrue(goog.isArray(value));
+        assertEquals(2, value.length);
+
+        assertTrue(goog.isObject(value[0]));
+        assertTrue(goog.object.containsKey(value[0], bot.inject.ELEMENT_KEY));
+        assertEquals(wrapped[bot.inject.ELEMENT_KEY],
+                     value[0][bot.inject.ELEMENT_KEY]);
+
+        assertEquals(goog.dom.TagName.BODY, value[1]);
+      }
+
+      asyncTestCase.waitForAsync('bot.inject.executeAsyncScript');
+      bot.inject.executeAsyncScript(function(element, callback) {
+        callback([element, element.tagName.toUpperCase()]);
+      }, [wrapped], 0, onDone, false, testFrameWin);
     }
 
   </script>

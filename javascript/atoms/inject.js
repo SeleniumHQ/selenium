@@ -129,16 +129,17 @@ bot.inject.wrapValue = function(value) {
  * @param {Document} opt_doc The document whose cache to retrieve wrapped
  *     elements from. Defaults to the current document.
  * @return {*} The unwrapped value.
+ * @private
  */
-bot.inject.unwrapValue = function(value, opt_doc) {
+bot.inject.unwrapValue_ = function(value, opt_doc) {
   if (goog.isArray(value)) {
     return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
-        function(v) { return bot.inject.unwrapValue(v, opt_doc); });
+        function(v) { return bot.inject.unwrapValue_(v, opt_doc); });
   } else if (goog.isObject(value)) {
     return goog.object.containsKey(value, bot.inject.ELEMENT_KEY) ?
         bot.inject.cache.getElement(value[bot.inject.ELEMENT_KEY], opt_doc) :
         goog.object.map(value, function(val) {
-          return bot.inject.unwrapValue(val, opt_doc);
+          return bot.inject.unwrapValue_(val, opt_doc);
         });
   }
   return value;
@@ -205,10 +206,12 @@ bot.inject.recompileFunction_ = function(fn, theWindow) {
  *     string format.
  */
 bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
+  var win = opt_window || window;
   var ret;
   try {
-    fn = bot.inject.recompileFunction_(fn, opt_window || window);
-    var unwrappedArgs = (/**@type {Object}*/bot.inject.unwrapValue(args));
+    fn = bot.inject.recompileFunction_(fn, win);
+    var unwrappedArgs = (/**@type {Object}*/bot.inject.unwrapValue_(args,
+        win.document));
     ret = bot.inject.wrapResponse_(fn.apply(null, unwrappedArgs));
   } catch (ex) {
     ret = bot.inject.wrapError_(ex);
@@ -279,7 +282,9 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
 
   fn = bot.inject.recompileFunction_(fn, win);
 
+  args = bot.inject.unwrapValue_(args, win.document);
   args.push(goog.partial(sendResponse, bot.ErrorCode.SUCCESS));
+
   onunloadKey = goog.events.listen(win, goog.events.EventType.UNLOAD,
       function() {
         sendResponse(bot.ErrorCode.UNKNOWN_ERROR,
