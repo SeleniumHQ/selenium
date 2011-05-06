@@ -30,6 +30,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -157,10 +158,13 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     expected.put("abc", "123");
     expected.put("tired", false);
 
-    assertEquals("Expected:<" + expected + ">, but was:<" + map + ">", expected.size(),
-        map.size());
+    // Cannot do an exact match; Firefox 4 inserts a few extra keys in our object; this is OK, as
+    // long as the expected keys are there.
+    assertThat("Expected:<" + expected + ">, but was:<" + map + ">",
+        map.size(), greaterThanOrEqualTo(expected.size()));
     for (Map.Entry<String, Object> entry : expected.entrySet()) {
-      assertEquals("Difference at key:<" + entry.getKey() + ">", entry.getValue(), map.get(entry.getKey()));
+      assertEquals("Difference at key:<" + entry.getKey() + ">",
+          entry.getValue(), map.get(entry.getKey()));
     }
   }
 
@@ -189,14 +193,15 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertTrue("result was: " + result + " (" + result.getClass() + ")", result instanceof Map);
 
     Map<String, Object> map = (Map<String, Object>) result;
-    assertEquals("Expected:<" + expectedResult + ">, but was:<" + map + ">", 3, map.size());
-    assertEquals(expectedResult.keySet(), map.keySet());
+    assertThat("Expected:<" + expectedResult + ">, but was:<" + map + ">",
+        map.size(), greaterThanOrEqualTo(3));
     assertEquals("bar", map.get("foo"));
     assertTrue(compareLists((List<?>) expectedResult.get("baz"),
         (List<?>) map.get("baz")));
 
     Map<String, String> person = (Map<String, String>) map.get("person");
-    assertEquals(2, person.size());
+    assertThat("Expected:<{first:John, last:Doe}>, but was:<" + person + ">",
+        person.size(), greaterThanOrEqualTo(2));
     assertEquals("John", person.get("first"));
     assertEquals("Doe", person.get("last"));
   }
