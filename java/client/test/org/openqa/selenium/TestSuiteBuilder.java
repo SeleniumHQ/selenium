@@ -308,6 +308,12 @@ public class TestSuiteBuilder {
     return this;
   }
 
+  public TestSuiteBuilder onlyRun(Class testCaseClass) {
+    onlyRun.add(testCaseClass.getSimpleName());
+
+    return this;
+  }
+
   public TestSuiteBuilder method(String testMethodName) {
     this.testMethodNames.add(testMethodName);
 
