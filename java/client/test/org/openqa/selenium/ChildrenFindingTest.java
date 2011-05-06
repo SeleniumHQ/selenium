@@ -53,6 +53,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertEquals("A div containing", children.get(0).getText());
   }
 
+  @Ignore(value = SELENESE, reason = "Selenium expects xpaths to start with a leading //")
   public void testFindElementByXPathWhenNoMatch() {
     driver.get(pages.nestedPage);
 
@@ -75,6 +76,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(children.get(1).getText(), is("Two"));
   }
 
+  @Ignore(value = SELENESE, reason = "Selenium expects xpaths to start with a leading //")
   public void testfindElementsByXPathWhenNoMatch() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
