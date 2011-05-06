@@ -21,6 +21,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 
 public class Pages {
   public String alertsPage;
+  public String clickJacker;
   public String simpleTestPage;
   public String simpleXmlDocument;
   public String xhtmlTestPage;
@@ -61,6 +62,7 @@ public class Pages {
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
     alertsPage = appServer.whereIs("alerts.html");
+    clickJacker = appServer.whereIs("click_jacker.html");
     simpleTestPage = appServer.whereIs("simpleTest.html");
     simpleXmlDocument = appServer.whereIs("simple.xml");
     xhtmlTestPage = appServer.whereIs("xhtmlTest.html");

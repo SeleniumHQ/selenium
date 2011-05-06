@@ -60,7 +60,7 @@ webdriver.preconditions.visible = function(doc, parameters) {
         'Element is in the document HEAD and so may not be interacted with');
   }
   
-  if (!bot.dom.isShown(element)) {
+  if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
     return new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and so may not be interacted with');
   }

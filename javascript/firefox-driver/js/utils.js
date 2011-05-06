@@ -927,7 +927,7 @@ Utils.getLocation = function(element) {
 
     var position = goog.style.getClientPosition(element);
     var size = goog.style.getBorderBoxSize(element);
-    var shown = bot.dom.isShown(element);
+    var shown = bot.dom.isShown(element, /*ignoreOpacity=*/true);
 
     return {
       x: position.x,
