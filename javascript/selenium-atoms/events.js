@@ -75,7 +75,7 @@ core.events.parseCoordinates_ = function(coordString) {
  *
  * @param {string|!Element} locator The element to fire the event on.
  * @param {string} eventName The name of the event to fire.
- * @param {=string} opt_coordString The coordinate string. "0,0" by default.
+ * @param {string=} opt_coordString The coordinate string. "0,0" by default.
  */
 core.events.fireAt = function(locator, eventName, opt_coordString) {
   var element = core.locators.findElement(locator);

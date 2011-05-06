@@ -30,7 +30,8 @@ goog.require('core.patternMatcher');
 
 
 /**
- * @typedef {{findOption: function(!Element):!Element, assertSelected: function(!Element}}
+ * @typedef {{findOption: function(!Element):!Element,
+ *            assertSelected: function(!Element)}}
  */
 core.select.option.Locator;
 
@@ -149,7 +150,7 @@ core.select.option.createIdLocator_ = function(id) {
  * Option location strategies.
  *
  * @const
- * @type {Object.<string, core.select.option.Locator}
+ * @type {Object.<string, core.select.option.Locator>}
  */
 core.select.option.Locators_ = {
   'id': core.select.option.createIdLocator_,
