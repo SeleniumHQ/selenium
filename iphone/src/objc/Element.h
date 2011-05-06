@@ -107,6 +107,9 @@
 // Get the attribute with the given name.
 - (id)attribute:(NSString *)attributeName;
 
+// Get the effective CSS property with the given name.
+- (NSString*)css:(NSString*)property;
+
 // Get the tag name of this element, not the value of the name attribute:
 // will return "input" for the element <input name="foo">
 - (NSString *)name;

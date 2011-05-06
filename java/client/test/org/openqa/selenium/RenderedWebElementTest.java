@@ -31,7 +31,7 @@ import java.util.concurrent.Callable;
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
-  @Ignore({SELENESE, IPHONE})
+  @Ignore({SELENESE})
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
 

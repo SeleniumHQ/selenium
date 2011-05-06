@@ -25,6 +25,7 @@
 #import "HTTPVirtualDirectory+ExecuteScript.h"
 #import "HTTPVirtualDirectory+FindElement.h"
 #import "Attribute.h"
+#import "Css.h"
 #import "MainViewController.h"
 #import "WebViewController.h"
 #import "NSString+SBJSON.h"
@@ -110,6 +111,9 @@ static NSString* const kElementIdKey = @"ELEMENT";
     
   [self setResource:[Attribute attributeDirectoryForElement:self]
            withName:@"attribute"];
+
+  [self setResource:[Css cssDirectoryForElement:self]
+           withName:@"css"];
 
   [self setResource:[ElementComparatorBridge comparatorBridgeFor:self]
            withName:@"equals"];
@@ -279,6 +283,12 @@ static NSString* const kElementIdKey = @"ELEMENT";
   return [self executeAtom:webdriver::atoms::GET_ATTRIBUTE
                   withArgs:[NSArray arrayWithObjects:
                       [self idDictionary], name, nil]];
+}
+
+-(NSString *) css:(NSString *)property {
+  return [self executeAtom:webdriver::atoms::GET_EFFECTIVE_STYLE
+                  withArgs:[NSArray arrayWithObjects:
+                      [self idDictionary], property, nil]];
 }
 
 // Get the tag name of this element, not the value of the name attribute:
