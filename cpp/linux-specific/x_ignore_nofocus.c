@@ -192,11 +192,16 @@ int event_on_active_or_adj_window(Display* dpy, XEvent* ev, Window active_win)
     return TRUE;
   }
 
-  if (cache_xquery_result(dpy, active_win)) {
-    ret_val = lookup_in_xquery_cache(ev_win);
+  // "Obviously" related windows - ID of active window
+  // and event_window differ by 1. By performing this check first,
+  // we avoid calling XQueryTree which causes a segfault
+  // if the window queried is being closed.
+  if (abs(active_win - ev_win) <= 1) {
+    ret_val = TRUE;
   } else {
-    // Fall back to +/-1 comparison...
-    ret_val = (abs(active_win - ev_win) <= 1);
+    if (cache_xquery_result(dpy, active_win)) {
+      ret_val = lookup_in_xquery_cache(ev_win);
+    }
   }
 
   return ret_val;
