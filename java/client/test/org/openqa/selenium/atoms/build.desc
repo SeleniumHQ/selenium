@@ -3,6 +3,7 @@ java_test(name = "test",
   resources = [
     { "//javascript/webdriver-atoms:execute_script" : "scripts/executeScript.js" }
   ],
+  test_suite = "org.openqa.selenium.atoms.CompiledAtomsNotLeakingTest",
   deps = [
     "//third_party/java/guava-libraries",
     "//third_party/java/htmlunit",

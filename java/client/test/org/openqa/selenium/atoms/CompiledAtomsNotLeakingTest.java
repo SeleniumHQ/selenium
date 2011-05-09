@@ -4,14 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
-import net.sourceforge.htmlunit.corejs.javascript.Function;
 import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import org.junit.Before;
@@ -24,7 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 
 @RunWith(BlockJUnit4ClassRunner.class)
-public class AtomsTestSuite {
+public class CompiledAtomsNotLeakingTest {
 
   private static final String FRAGMENT_PATH = "/scripts/executeScript.js";
   private static String fragment;
@@ -33,7 +31,7 @@ public class AtomsTestSuite {
 
   @BeforeClass
   public static void loadFragment() {
-    URL atomUrl = AtomsTestSuite.class.getResource(FRAGMENT_PATH);
+    URL atomUrl = CompiledAtomsNotLeakingTest.class.getResource(FRAGMENT_PATH);
     assertNotNull("Fragment not found", atomUrl);
     try {
       fragment = Resources.toString(atomUrl, Charsets.UTF_8);
