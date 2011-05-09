@@ -671,6 +671,10 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
     whitespace, textTransform) {
   var text = goog.string.canonicalizeNewlines(textNode.nodeValue);
 
+  // Replace all zero-width spaces. Do this before regularizing spaces as the
+  // zero-width space is, by definition, a space.
+  text = text.replace(/\u200b/g, '');
+
   if (whitespace == 'normal' || whitespace == 'nowrap') {
     // TODO(jleyba): Do we really want to collapse all white-space?
     // http://code.google.com/p/selenium/issues/detail?id=1566
@@ -685,8 +689,8 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
   }
 
   // Once we've normalized all other whitespace, canonicalize
-  // &nbsp and tabs as single spaces and remove zero-width spaces.
-  text = text.replace(/\xa0|\t/g, ' ').replace(/\u200b/g, '');
+  // &nbsp and tabs as single spaces.
+  text = text.replace(/\xa0|\t/g, ' ');
 
   if (textTransform == 'capitalize') {
     text = text.replace(/(^|\s)(\S)/g, function() {
