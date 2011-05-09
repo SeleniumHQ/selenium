@@ -95,10 +95,13 @@ bot.script.execute = function(script, args, timeout, onSuccess, onFailure,
 
   var startTime = goog.now();
   try {
-    if (goog.isString(script)) {
-      script = new Function(script);
-    }
+
     with (win) {
+      // Compile within the "with" block so that "window" refers to the expected
+      // "window" value. 
+      if (goog.isString(script)) {
+        script = new Function(script);
+      }
       var result = script.apply(win, args);
     }
     if (isAsync) {
