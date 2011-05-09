@@ -59,6 +59,7 @@ namespace OpenQA.Selenium
         public string formSelectionPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("formSelectionPage.html");
         public string selectableItemsPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("selectableItems.html");
         public string underscorePage = EnvironmentManager.Instance.UrlBuilder.WhereIs("underscore.html");
+        public string clickJackerPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_jacker.html");
 
         protected IWebDriver driver;
 

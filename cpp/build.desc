@@ -80,13 +80,14 @@ js_fragment_header(name = "atoms",
     "//javascript/webdriver-atoms:find_element:ie",
     "//javascript/webdriver-atoms:find_elements:ie",
     "//javascript/webdriver-atoms:get_attribute:ie",
+    "//javascript/webdriver-atoms:get_effective_style:ie",
     "//javascript/webdriver-atoms:get_location:ie",
     "//javascript/webdriver-atoms:get_size:ie",
     "//javascript/webdriver-atoms:get_text:ie",
     "//javascript/webdriver-atoms:is_displayed:ie",
     "//javascript/webdriver-atoms:is_enabled:ie",
     "//javascript/webdriver-atoms:is_selected:ie",
-    "//javascript/webdriver-atoms:submit:ie",
+    "//javascript/webdriver-atoms:submit:ie"
   ],
   out = "cpp/IEDriver/atoms.h"
 )

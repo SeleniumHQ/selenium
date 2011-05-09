@@ -48,8 +48,9 @@ int ElementWrapper::IsDisplayed(bool* result) {
 
 	CComPtr<IHTMLDocument2> doc;
 	this->GetContainingDocument(false, &doc);
-	ScriptWrapper script_wrapper(doc, script_source, 1);
+	ScriptWrapper script_wrapper(doc, script_source, 2);
 	script_wrapper.AddArgument(this->element_);
+	script_wrapper.AddArgument(true);
 	status_code = script_wrapper.Execute();
 
 	if (status_code == SUCCESS) {
