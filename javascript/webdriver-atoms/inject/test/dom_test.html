@@ -97,6 +97,13 @@ limitations under the License.
               getValueFromJSONObject(hidden))));
     }
 
+    function testGetAttributeWithProperty() {
+      var working = webdriver.inject.locators.findElement("id", "working");
+      assertEquals("",
+          getValueFromJSONObject(webdriver.inject.dom.getAttributeValue(
+              getValueFromJSONObject(working))))
+    }
+
     function getValueFromJSONObject(arg) {
       return goog.json.parse(arg)["value"];
     }

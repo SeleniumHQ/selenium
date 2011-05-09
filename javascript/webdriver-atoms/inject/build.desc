@@ -80,3 +80,8 @@ js_fragment(name = "is_displayed",
   function = "webdriver.inject.dom.isDisplayed",
   deps = [":deps"])
 
+js_fragment(name = "submit",
+  module = "webdriver.inject.action",
+  function = "webdriver.inject.action.submit",
+  deps = [":deps"])
+

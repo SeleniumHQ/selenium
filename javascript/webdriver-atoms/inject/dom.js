@@ -22,6 +22,7 @@ goog.provide('webdriver.inject.dom');
 goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('bot.inject');
+goog.require('webdriver.element')
 
 /**
  * Gets the visisble text for the given element.
@@ -58,7 +59,7 @@ webdriver.inject.dom.getTopLeftCoordinates = function(element) {
  *     as defined by the wire protocol.
  */
 webdriver.inject.dom.getAttributeValue = function(element, attribute) {
-  return bot.inject.executeScript(bot.dom.getAttribute, [element, attribute],
+  return bot.inject.executeScript(webdriver.element.getAttribute, [element, attribute],
                                   true);
 }
 
