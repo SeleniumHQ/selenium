@@ -494,6 +494,23 @@ limitations under the License.
       }, [wrapped], 0, onDone, false, testFrameWin);
     }
 
+    function testExecuteScriptShouldBeAbleToRecurseOnItself() {
+      var json = bot.inject.executeScript(
+          bot.inject.executeScript, ['return 1 +2;'], true);
+      var result = goog.json.parse(json);
+
+      assertTrue(json, goog.object.containsKey(result, 'status'));
+      assertEquals(json, bot.ErrorCode.SUCCESS, result['status']);
+      assertTrue(json, goog.object.containsKey(result, 'value'));
+
+      var innerResult = result['value'];
+      assertTrue(json, goog.isObject(innerResult));
+      assertTrue(json, goog.object.containsKey(innerResult, 'status'));
+      assertEquals(json, bot.ErrorCode.SUCCESS, innerResult['status']);
+      assertTrue(json, goog.object.containsKey(innerResult, 'value'));
+      assertEquals(json, 3, innerResult['value']);
+    }
+
   </script>
 </body>
 </html>

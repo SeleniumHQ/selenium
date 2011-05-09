@@ -7,5 +7,6 @@ java_test(name = "test",
   deps = [
     "//third_party/java/guava-libraries",
     "//third_party/java/htmlunit",
+    "//third_party/java/json",
     "//third_party/java/junit",
   ])

@@ -1,7 +1,5 @@
 package org.openqa.selenium.atoms;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -10,8 +8,9 @@ import com.google.common.io.Resources;
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
-import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,7 +45,17 @@ public class CompiledAtomsNotLeakingTest {
       public Object run(Context context) {
         global = context.initStandardObjects();
         global.defineProperty("_", 1234, ScriptableObject.EMPTY);
-        assertEquals(1234, context.evaluateString(global, "_", "", 1, null));
+        assertEquals(1234, eval(context, "_"));
+
+        // We're using the //javascript/webdriver-atoms:execute_script atom,
+        // which assumes it is used in the context of a browser window, so make
+        // sure the "window" free variable is defined and refers to the global
+        // context.
+        assertEquals(global, eval(context, "this.window=this;"));
+        assertEquals(global, eval(context, "this"));
+        assertEquals(global, eval(context, "window"));
+        assertEquals(true, eval(context, "this === window"));
+
         return null;
       }
     });
@@ -57,23 +66,23 @@ public class CompiledAtomsNotLeakingTest {
   public void fragmentWillNotLeakVariablesToEnclosingScopes() {
     ContextFactory.getGlobal().call(new ContextAction() {
       public Object run(Context context) {
-        context.evaluateString(global, "(" + fragment + ")()", FRAGMENT_PATH, 1, null);
-        assertEquals(1234, context.evaluateString(global, "_", "", 1, null));
+        eval(context, "(" + fragment + ")()", FRAGMENT_PATH);
+        assertEquals(1234, eval(context, "_"));
 
-        context.evaluateString(global, "(" + fragment + ").call(this)", FRAGMENT_PATH, 1, null);
-        assertEquals(1234, context.evaluateString(global, "_", "", 1, null));
+        eval(context, "(" + fragment + ").call(this)", FRAGMENT_PATH);
+        assertEquals(1234, eval(context, "_"));
 
-        context.evaluateString(global, "(" + fragment + ").apply(this,[])", FRAGMENT_PATH, 1, null);
-        assertEquals(1234, context.evaluateString(global, "_", "", 1, null));
+        eval(context, "(" + fragment + ").apply(this,[])", FRAGMENT_PATH);
+        assertEquals(1234, eval(context, "_"));
 
-        context.evaluateString(global, "(" + fragment + ").call(null)", FRAGMENT_PATH, 1, null);
-        assertEquals(1234, context.evaluateString(global, "_", "", 1, null));
+        eval(context, "(" + fragment + ").call(null)", FRAGMENT_PATH);
+        assertEquals(1234, eval(context, "_"));
 
-        context.evaluateString(global, "(" + fragment + ").apply(null,[])", FRAGMENT_PATH, 1, null);
-        assertEquals(1234, context.evaluateString(global, "_", "", 1, null));
+        eval(context, "(" + fragment + ").apply(null,[])", FRAGMENT_PATH);
+        assertEquals(1234, eval(context, "_"));
 
-        context.evaluateString(global, "(" + fragment + ").call({})", FRAGMENT_PATH, 1, null);
-        assertEquals(1234, context.evaluateString(global, "_", "", 1, null));
+        eval(context, "(" + fragment + ").call({})", FRAGMENT_PATH);
+        assertEquals(1234, eval(context, "_"));
         return null;
       }
     });
@@ -86,25 +95,37 @@ public class CompiledAtomsNotLeakingTest {
         // executeScript atom recursing on itself to execute "return 1+2".
         // Should result in {status:0,value:{status:0,value:3}}
         // Global scope should not be modified.
-        String nestedScript = String.format("(%s).call(this, %s, ['return 1+2;'], false)",
+        String nestedScript = String.format("(%s).call(null, %s, ['return 1+2;'], true)",
             fragment, fragment);
 
-        NativeObject result = (NativeObject) context.evaluateString(global, nestedScript,
-            FRAGMENT_PATH, 1, null);
+        String jsonResult = eval(context, nestedScript, FRAGMENT_PATH);
 
-        assertThat(result.get("status"), instanceOf(Number.class));
-        assertEquals(0, ((Number) result.get("status")).intValue());
-        assertThat(result.get("value"), instanceOf(NativeObject.class));
+        try {
+          JSONObject result = new JSONObject(jsonResult);
 
-        result = (NativeObject) result.get("value");
-        assertThat(result.get("status"), instanceOf(Number.class));
-        assertEquals(0, ((Number) result.get("status")).intValue());
-        assertThat(result.get("value"), instanceOf(Number.class));
-        assertEquals(3, ((Number) result.get("value")).intValue());
+          assertEquals(jsonResult, 0, result.getInt("status"));
 
-        assertEquals(1234, context.evaluateString(global, "_", "", 1, null));
+          result = result.getJSONObject("value");
+          assertEquals(jsonResult, 0, result.getInt("status"));
+          assertEquals(jsonResult, 3, result.getInt("value"));
+
+        } catch (JSONException e) {
+          throw new RuntimeException("JSON result was: " + jsonResult, e);
+        }
+
+        assertEquals(1234, eval(context, "_"));
         return null;
       }
     });
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private <T> T eval(Context context, String script) {
+    return (T) eval(context, script, "");
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private <T> T eval(Context context, String script, String src) {
+    return (T) context.evaluateString(global, script, src, 1, null);
   }
 }

@@ -162,9 +162,9 @@ bot.inject.unwrapValue_ = function(value, opt_doc) {
  */
 bot.inject.recompileFunction_ = function(fn, theWindow) {
   if (goog.isString(fn)) {
-    return new theWindow.Function(fn);
+    return new theWindow['Function'](fn);
   }
-  return theWindow == window ? fn : new theWindow.Function(
+  return theWindow == window ? fn : new theWindow['Function'](
       'return (' + fn + ').apply(null,arguments);');
 };
 
