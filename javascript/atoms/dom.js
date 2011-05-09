@@ -609,7 +609,7 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
  * @private
  */
 bot.dom.hasText_ = function(line) {
-  return line && !bot.dom.JUST_HTML_WHITESPACE_REGEXP_(line);
+  return line && !bot.dom.JUST_HTML_WHITESPACE_REGEXP_.test(line);
 };
 
 
