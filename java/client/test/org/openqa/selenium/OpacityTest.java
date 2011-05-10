@@ -18,6 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
 public class OpacityTest extends AbstractDriverTestCase {
 
   /**
@@ -25,7 +28,7 @@ public class OpacityTest extends AbstractDriverTestCase {
    *   http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
   @JavascriptEnabled
-  @Ignore(Ignore.Driver.IE)
+  @Ignore({IE, SELENESE})
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
 
