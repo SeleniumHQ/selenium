@@ -15,9 +15,16 @@ public:
 
 protected:
 	void GetSessionCapabilitiesCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, WebDriverResponse * response) {
+		// ASSUMPTION: Version string will never be larger than 2 characters
+		// (+1 for the null terminator).
+		int version = session.browser_version();
+		char buffer[3];
+		_itoa_s(version, buffer, 3, 10);
+		std::string version_string(buffer);
+
 		Json::Value capabilities;
 		capabilities["browserName"] = "internet explorer";
-		capabilities["version"] = "0";
+		capabilities["version"] = version_string;
 		capabilities["javascriptEnabled"] = true;
 		capabilities["platform"] = "WINDOWS";
 		capabilities["nativeEvents"] = true;

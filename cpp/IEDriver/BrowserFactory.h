@@ -33,6 +33,8 @@ public:
 	bool GetDocumentFromWindowHandle(HWND window_handle, IHTMLDocument2** document);
 	bool GetRegistryValue(const HKEY root_key, const std::wstring& subkey, const std::wstring& value_name, std::wstring* value);
 
+	int browser_version(void) const { return ie_major_version_; }
+
 	static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
 	static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
 

@@ -109,6 +109,8 @@ public:
 
 	ElementFinder element_finder(void) const { return this->element_finder_; }
 
+	int browser_version(void) const { return this->factory_.browser_version(); }
+
 private:
 	typedef std::tr1::unordered_map<std::wstring, BrowserHandle> BrowserMap;
 	typedef std::tr1::unordered_map<std::wstring, ElementHandle> ElementMap;
