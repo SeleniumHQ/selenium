@@ -35,7 +35,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
 
-    RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("green-parent"));
+    WebElement element = driver.findElement(By.id("green-parent"));
     String backgroundColour = element.getCssValue("background-color");
 
     // TODO: How should this be standardized? Should it be standardized?
@@ -43,7 +43,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
         equalTo("#008000"),
         equalTo("rgb(0, 128, 0)")));
 
-    element = (RenderedWebElement) driver.findElement(By.id("red-item"));
+    element = driver.findElement(By.id("red-item"));
     backgroundColour = element.getCssValue("background-color");
 
     // TODO: How should this be standardized? Should it be standardized?
@@ -61,7 +61,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   public void testShouldHandleNonIntegerPositionAndSize() {
     driver.get(pages.rectanglesPage);
 
-    RenderedWebElement r2 = (RenderedWebElement) driver.findElement(By.id("r2"));
+    WebElement r2 = driver.findElement(By.id("r2"));
     String left = r2.getCssValue("left");
     assertTrue("left (\"" + left + "\") should start with \"10.9\".", left.startsWith("10.9"));
     String top = r2.getCssValue("top");
@@ -79,7 +79,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);
 
-    RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("green-item"));
+    WebElement element = driver.findElement(By.id("green-item"));
     String backgroundColour = element.getCssValue("background-color");
 
     // TODO: How should this be standardized? Should it be standardized?
@@ -97,7 +97,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     driver.get(pages.javascriptPage);
 
-    RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("menu1"));
+    WebElement element = driver.findElement(By.id("menu1"));
     if (!supportsNativeEvents()) {
       System.out.println("Skipping hover test: needs native events");
       return;
@@ -124,7 +124,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   public void testShouldCorrectlyIdentifyThatAnElementHasWidth() {
     driver.get(pages.xhtmlTestPage);
 
-    RenderedWebElement shrinko = (RenderedWebElement) driver.findElement(By.id("linkId"));
+    WebElement shrinko = driver.findElement(By.id("linkId"));
     Dimension size = shrinko.getSize();
     assertTrue("Width expected to be greater than 0", size.width > 0);
     assertTrue("Height expected to be greater than 0", size.height > 0);
@@ -136,7 +136,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     WebElement area = driver.findElement(By.id("mtgt_unnamed_0"));
 
-    boolean isShown = ((RenderedWebElement) area).isDisplayed();
+    boolean isShown = area.isDisplayed();
     assertTrue("The element and the enclosing map should be considered shown.", isShown);
   }
 
@@ -276,6 +276,4 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
       }
     };
   }
-
-
 }
