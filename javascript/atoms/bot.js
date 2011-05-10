@@ -57,6 +57,18 @@ bot.setWindow = function(win) {
   bot.window_ = win;
 };
 
+
+/**
+ * Returns the document of the window currently being used for
+ * command execution.
+ *
+ * @return {!Document} The current window's document.
+ */
+bot.getDocument = function() {
+  return bot.window_.document;
+};
+
+
 bot.isFirefoxExtension = function() {
   // Make the Closure compiler happy.
   var Components = goog.global.Components;

@@ -109,7 +109,7 @@ bot.locators.findElement = function(target, opt_root) {
   if (key) {
     var strategy = bot.locators.STRATEGIES_[key];
     if (strategy && goog.isFunction(strategy.single)) {
-      var root = opt_root || goog.dom.getOwnerDocument(bot.getWindow());
+      var root = opt_root || bot.getDocument();
       return strategy.single(target[key], root);
     }
   }
@@ -136,7 +136,7 @@ bot.locators.findElements = function(target, opt_root) {
   if (key) {
     var strategy = bot.locators.STRATEGIES_[key];
     if (strategy && goog.isFunction(strategy.many)) {
-      var root = opt_root || goog.dom.getOwnerDocument(bot.getWindow());
+      var root = opt_root || bot.getDocument();
       return strategy.many(target[key], root);
     }
   }
