@@ -109,8 +109,9 @@ module Javascript
       # this also causes the command to actually execute
 
       output = err.read
+
       if output =~ /ERROR/m
-        STDERR.puts output
+        puts output
         exit(2)
       end
     end
