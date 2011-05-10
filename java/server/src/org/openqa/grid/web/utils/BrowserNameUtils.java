@@ -61,9 +61,9 @@ public class BrowserNameUtils {
         }
 
         // Map browser environments to icon names.
-        if (browserString.contains("iexplore") || browserString.equals("*iehta")) {
+        if (browserString.contains("iexplore") || browserString.startsWith("*iehta")) {
 			ret = "internet explorer";
-		} else if (browserString.contains("firefox")) {
+		} else if (browserString.contains("firefox") || browserString.startsWith("*chrome")) {
 			ret = "firefox";
 		} else if (browserString.startsWith("*safari")) {
 			ret = "safari";
