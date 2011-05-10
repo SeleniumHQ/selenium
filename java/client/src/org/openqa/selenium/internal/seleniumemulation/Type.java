@@ -57,7 +57,12 @@ public class Type extends SeleneseCommand<Void> {
       return null;
     }
 
-    if(driver instanceof JavascriptExecutor && ((JavascriptExecutor) driver).isJavascriptEnabled()) {
+    if (!"input".equals(tagName.toLowerCase())) {
+      element.sendKeys(valueToUse);
+      return null;
+    }
+
+    if(driver instanceof JavascriptExecutor) {
         js.executeScript(driver, type, element, valueToUse);
     } else {
         element.sendKeys(valueToUse);
