@@ -75,7 +75,7 @@ public class TestSession {
 
 	private static final Logger log = Logger.getLogger(TestSession.class.getName());
 
-  private final String internalKey;
+    private final String internalKey;
 	private final TestSlot slot;
 	private String externalKey = null;
 	private long lastActivity;
@@ -110,7 +110,7 @@ public class TestSession {
 	}
 
 	/**
-	 * Get the session key from the remote. It's up to the remote to garantee
+	 * Get the session key from the remote. It's up to the remote to guarantee
 	 * the key is unique. If 2 remotes return the same session key, the tests
 	 * will overwrite each other.
 	 * 
