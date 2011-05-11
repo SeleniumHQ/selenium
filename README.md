@@ -62,7 +62,7 @@ As the build progresses, you'll see it report where the build outputs are being 
   ./go test_htmlunit
   ./go test_ie
 
-Note that the "test_chrome" target requires that you have the separate chromedriver binary available on your PATH. 
+Note that the "test_chrome" target requires that you have the separate chrome driver binary available on your PATH. 
 
 If you are interested in a single language binding, try one of:
 
@@ -75,11 +75,15 @@ To run all the tests just run:
 
   ./go test
 
+This will detect your OS and run all the tests that are known to be stable for every browser that's appropriate to use for all language bindings. This can take a healthy amount of time to run.
+
 To run the minimal logical Selenium build:
 
   ./go test_javascript test_java
 
-This will detect your OS and run all the tests that are known to be stable for every browser that's appropriate to use for all language bindings. This can take a healthy amount of time to run.
+To get a list of tasks you could build, do:
+
+  ./go -T
 
 As a side note, none of the developers run tests using cygwin. It is very unlikely that the build will work as expected if you try and use cygwin.
 
