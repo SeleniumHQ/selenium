@@ -49,6 +49,14 @@ namespace OpenQA.Selenium.Environment
             alternateHostName = ipAddress.ToString();
         }
 
+        public string LocalWhereIs(string page)
+        {
+            string location = string.Empty;
+            location = "http://localhost:" + port + "/" + path + "/" + page;
+
+            return location;
+        }
+
         public string WhereIs(string page)
         {
             string location = string.Empty;

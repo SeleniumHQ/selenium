@@ -10,6 +10,7 @@ namespace OpenQA.Selenium
     public class CorrectEventFiringTest : DriverTestFixture
     {
         [Test]
+        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome, "Webkit bug 22261")]
         public void ShouldFireFocusEventWhenClicking()
         {
@@ -22,6 +23,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Android)]
         public void ShouldFireClickEventWhenClicking()
         {
             driver.Url = javascriptPage;
@@ -33,6 +35,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Android)]
         public void ShouldFireMouseDownEventWhenClicking()
         {
             driver.Url = javascriptPage;
@@ -44,6 +47,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Android)]
         public void ShouldFireMouseUpEventWhenClicking()
         {
             driver.Url = javascriptPage;
@@ -79,6 +83,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome, "Webkit bug 22261")]
         public void ShouldFireEventsInTheRightOrder()
         {
@@ -102,6 +107,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Android)]
         public void ShouldIssueMouseDownEvents()
         {
             driver.Url = javascriptPage;
@@ -190,6 +196,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Android)]
         public void ClearingAnElementShouldCauseTheOnChangeHandlerToFire()
         {
             driver.Url = javascriptPage;
@@ -217,6 +224,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IPhone, "SendKeys implementation is incorrect.")]
+        [IgnoreBrowser(Browser.Android)]
         public void SendingKeysToAnElementShouldCauseTheFocusEventToFire()
         {
             driver.Url = javascriptPage;
@@ -298,6 +306,7 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.Chrome, "Does not yet support file uploads")]
         [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
+        [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
         public void UploadingFileShouldFireOnChangeEvent()
         {
             driver.Url = formsPage;

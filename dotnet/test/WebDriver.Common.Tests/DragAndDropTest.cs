@@ -14,6 +14,8 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
+        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         public void DragAndDrop()
         {
             driver.Url = dragAndDropPage;
@@ -32,6 +34,8 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
+        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         public void DragAndDropToElement()
         {
             driver.Url = dragAndDropPage;
@@ -50,6 +54,8 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
+        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         public void ElementInDiv()
         {
             driver.Url = dragAndDropPage;
@@ -63,6 +69,8 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Dragging too far in IE causes the element not to move, instead of moving to 0,0.")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
+        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         public void DragTooFar()
         {
             IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
@@ -92,6 +100,8 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
+        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         public void ShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort()
         {
             driver.Url = dragAndDropPage;
@@ -130,6 +140,8 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
+        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         public void DragAndDropOnJQueryItems()
         {
             driver.Url = droppableItems;

@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Environment
                 while (!isRunning && DateTime.Now < timeout)
                 {
                     // Poll until the webserver is correctly serving pages.
-                    HttpWebRequest request = WebRequest.Create(EnvironmentManager.Instance.UrlBuilder.WhereIs("simpleTest.html")) as HttpWebRequest;
+                    HttpWebRequest request = WebRequest.Create(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("simpleTest.html")) as HttpWebRequest;
                     try
                     {
                         HttpWebResponse response = request.GetResponse() as HttpWebResponse;
@@ -54,7 +54,7 @@ namespace OpenQA.Selenium.Environment
 
         public void Stop()
         {
-            HttpWebRequest request = WebRequest.Create(EnvironmentManager.Instance.UrlBuilder.WhereIs("quitquitquit")) as HttpWebRequest;
+            HttpWebRequest request = WebRequest.Create(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("quitquitquit")) as HttpWebRequest;
             try
             {
                 request.GetResponse();

@@ -10,6 +10,7 @@ namespace OpenQA.Selenium
     {
         [Test]
         [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
@@ -26,6 +27,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
@@ -46,6 +48,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
@@ -66,6 +69,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
@@ -86,6 +90,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
@@ -106,6 +111,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
@@ -127,6 +133,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
@@ -170,6 +177,7 @@ namespace OpenQA.Selenium
 
 
         [Test]
+        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.HtmlUnit)]

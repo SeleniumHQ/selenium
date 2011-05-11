@@ -149,6 +149,13 @@ namespace OpenQA.Selenium
                         isRemoteInstance = true;
                     }
                     break;
+
+                case Browser.Android:
+                    if (EnvironmentManager.Instance.RemoteCapabilities == "android")
+                    {
+                        isRemoteInstance = true;
+                    }
+                    break;
             }
             return isRemoteInstance;
         }

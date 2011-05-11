@@ -2,6 +2,7 @@ dotnet_library(name = "common",
   srcs = "src/WebDriver.Common/**/*.cs",
   refs = [
     "System.dll",
+    "System.Core.dll",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll"
@@ -36,6 +37,7 @@ dotnet_library(name = "remote-common",
   srcs = "src/WebDriver.Remote.Common/**/*.cs",
   refs = [
     "System.dll",
+    "System.Core.dll",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll",
@@ -50,6 +52,7 @@ dotnet_library(name = "remote",
   srcs = "src/WebDriver.Remote/**/*.cs",
   refs = [
     "System.dll",
+    "System.Core.dll",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll",
@@ -68,6 +71,7 @@ dotnet_test(name = "remote-test",
   srcs = "test/WebDriver.Remote.Tests/**/*.cs",
   refs = [
     "System.dll",
+    "System.Core.dll",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll",
@@ -89,6 +93,7 @@ dotnet_library(name = "ie",
   srcs = "src/WebDriver.IE/**/*.cs",
   refs = [
     "System.dll",
+    "System.Core.dll",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll",
@@ -131,6 +136,7 @@ dotnet_library(name = "firefox",
   srcs = "src/WebDriver.Firefox/**/*.cs",
   refs = [
     "System.dll",
+    "System.Core.dll",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll",
@@ -174,6 +180,7 @@ dotnet_library(name = "chrome",
   srcs = "src/WebDriver.Chrome/**/*.cs",
   refs = [
     "System.dll",
+    "System.Core.dll",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll",
@@ -206,6 +213,42 @@ dotnet_test(name = "chrome-test",
     "test/WebDriver.Chrome.Tests/WebDriver.Chrome.Tests.nunit"
   ],
   project = "WebDriver.Chrome.Tests.nunit"
+)
+
+dotnet_library(name = "android",
+  srcs = "src/WebDriver.Android/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Xml.dll",
+    ":common",
+    ":remote-common",
+    ":remote",
+  ],
+  out = "build/dotnet/WebDriver.Android.dll",
+  doc = "build/dotnet/WebDriver.Android.xml"
+)
+
+dotnet_test(name = "android-test",
+  srcs = "test/WebDriver.Android.Tests/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Xml.dll",
+    ":common",
+    ":remote",
+    ":android",
+    ":common-test",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
+  ],
+  out = "build/dotnet/WebDriver.Android.Tests.dll",
+  files = [
+    "test/WebDriver.Android.Tests/WebDriver.Android.Tests.config",
+    "test/WebDriver.Android.Tests/WebDriver.Android.Tests.nunit"
+  ],
+  project = "WebDriver.Android.Tests.nunit"
 )
 
 dotnet_library(name = "support",

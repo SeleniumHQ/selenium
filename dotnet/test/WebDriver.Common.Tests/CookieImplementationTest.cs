@@ -341,6 +341,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info;")]
         [IgnoreBrowser(Browser.IE, "IE does not return expiry info")]
+        [IgnoreBrowser(Browser.Android, "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info;")]
         public void ShouldRetainCookieExpiry()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
