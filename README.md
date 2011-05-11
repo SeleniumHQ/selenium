@@ -67,10 +67,17 @@ Note that the "test_chrome" target requires that you have the separate chromedri
 If you are interested in a single language binding, try one of:
 
   ./go test_java 
+  ./go test_dotnet
+  ./go test_rb 
+  ./go test_javascript 
 
 To run all the tests just run:
 
   ./go test
+
+To run the minimal logical Selenium build:
+
+  ./go test_javascript test_java
 
 This will detect your OS and run all the tests that are known to be stable for every browser that's appropriate to use for all language bindings. This can take a healthy amount of time to run.
 
