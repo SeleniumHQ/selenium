@@ -1,2 +1,6 @@
 java_library(name = "testng",
-  deps = [ "testng-5.14.1.jar" ])
+  deps = [ 
+    "testng-6.0.1-nobsh-noguice.jar",
+    "//third_party/java/beanshell",
+    "//third_party/java/jcommander",
+   ])

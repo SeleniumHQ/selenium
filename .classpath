@@ -31,7 +31,7 @@
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-xml-7.2.0.v20101020.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-http-7.2.0.v20101020.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-websocket-7.2.0.v20101020.jar"/>
-	<classpathentry kind="lib" path="third_party/java/testng/testng-5.14.1.jar"/>
+	<classpathentry kind="lib" path="third_party/java/testng/testng-6.0.1-nobsh-noguice.jar" sourcepath="third_party/java/testng/testng-6.0.1-nobsh-noguice-src.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-io-7.2.0.v20101020.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jmock/jmock-2.4.0.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-servlets-7.2.0.v20101020.jar"/>
