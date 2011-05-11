@@ -45,9 +45,10 @@ class WebDriver(object):
           command_executor - Either a command.CommandExecutor object or a string
               that specifies the URL of a remote server to send commands to.
           desired_capabilities - Dictionary holding predefined values for starting 
-              a browser    
-          browser_profile: A browser profile directory as a Base64-encoded
-              zip file.  Only used if Firefox is requested.
+              a browser
+          browser_profile:
+              A selenium.webdriver.firefox.firefox_profile.FirefoxProfile
+              object.  Only used if Firefox is requested.
         """
         if desired_capabilities is None:
             raise WebDriverException("Desired Capabilities can't be None")
@@ -88,8 +89,9 @@ class WebDriver(object):
           version: Which browser version to request.
           platform: Which platform to request the browser on.
           javascript_enabled: Whether the new session should support JavaScript.
-          browser_profile: A browser profile directory as a Base64-encoded
-              zip file.  Only used if Firefox is requested.
+          browser_profile:
+              A selenium.webdriver.firefox.firefox_profile.FirefoxProfile
+              object.  Only used if Firefox is requested.
         """
         if browser_profile:
             desired_capabilities['firefox_profile'] = browser_profile.encoded
