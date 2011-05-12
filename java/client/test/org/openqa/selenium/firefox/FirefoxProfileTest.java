@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import com.google.common.io.Files;
 import junit.framework.TestCase;
 
 import java.io.BufferedReader;
@@ -24,10 +25,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.internal.InProject;
@@ -36,6 +40,7 @@ import org.openqa.selenium.io.Zip;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasEntry;
 
 import com.google.common.collect.ImmutableList;
 
@@ -255,5 +260,27 @@ public class FirefoxProfileTest extends TestCase {
     assertEquals(2, preferenceMap.size());
     assertEquals("false", preferenceMap.get("extensions.update.notifyUser"));
     assertEquals("30", preferenceMap.get("dom.max_script_run_time"));
+  }
+
+  public void testLayoutOnDiskSetsUserPreferences() throws IOException {
+    profile.setPreference("browser.startup.homepage", "http://www.example.com");
+    Map<String, String> parsedPrefs = parseUserPrefs(profile);
+    assertThat(parsedPrefs, hasEntry("browser.startup.homepage", "http://www.example.com"));
+  }
+
+  public void testUserPrefsArePreservedWhenConvertingToAndFromJson() throws IOException {
+    profile.setPreference("browser.startup.homepage", "http://www.example.com");
+
+    String json = profile.toJson();
+    FirefoxProfile rebuilt = FirefoxProfile.fromJson(json);
+    Map<String, String> parsedPrefs = parseUserPrefs(rebuilt);
+    assertThat(parsedPrefs, hasEntry("browser.startup.homepage", "http://www.example.com"));
+  }
+
+  private static Map<String, String> parseUserPrefs(FirefoxProfile profile) throws IOException {
+    File directory = profile.layoutOnDisk();
+    File userPrefs = new File(directory, "user.js");
+    List<String> lines = Files.readLines(userPrefs, Charset.defaultCharset());
+    return FirefoxProfile.parsePreferences(lines);
   }
 }
