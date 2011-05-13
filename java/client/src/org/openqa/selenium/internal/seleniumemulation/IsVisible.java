@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 
 public class IsVisible extends SeleneseCommand<Boolean> {
@@ -29,6 +28,6 @@ public class IsVisible extends SeleneseCommand<Boolean> {
 
   @Override
   protected Boolean handleSeleneseCommand(WebDriver driver, String locator, String ignored) {
-    return ((RenderedWebElement) finder.findElement(driver, locator)).isDisplayed();
+    return finder.findElement(driver, locator).isDisplayed();
   }
 }

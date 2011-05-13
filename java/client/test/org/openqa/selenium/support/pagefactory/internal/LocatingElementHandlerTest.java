@@ -51,7 +51,7 @@ public class LocatingElementHandlerTest extends MockObjectTestCase {
 
     public void testShouldDelegateToARenderedWebElementIfNecessary() throws NoSuchFieldException {
       final ElementLocator locator = mock(ElementLocator.class);
-      final RenderedWebElement element = mock(RenderedWebElement.class);
+      final WebElement element = mock(WebElement.class);
 
       checking(new Expectations() {{
             allowing(locator).findElement(); will(returnValue(element));

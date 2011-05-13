@@ -131,7 +131,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
     driver.get(pages.xhtmlTestPage);
 
-    RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("username"));
+    WebElement element = driver.findElement(By.id("username"));
     Point location = element.getLocation();
 
     assertThat(location.getX() > 0, is(true));
@@ -143,7 +143,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
     driver.get(pages.xhtmlTestPage);
 
-    RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("username"));
+    WebElement element = driver.findElement(By.id("username"));
     Dimension size = element.getSize();
 
     assertThat(size.getWidth() > 0, is(true));

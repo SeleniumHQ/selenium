@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 
 public class GetElementWidth extends SeleneseCommand<Number> {
@@ -30,7 +29,7 @@ public class GetElementWidth extends SeleneseCommand<Number> {
 
   @Override
   protected Number handleSeleneseCommand(WebDriver driver, String locator, String ignored) {
-    Dimension size = ((RenderedWebElement) finder.findElement(driver, locator)).getSize();
+    Dimension size = finder.findElement(driver, locator).getSize();
     return size.getWidth();
   }
 }

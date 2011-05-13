@@ -31,7 +31,7 @@ import org.openqa.selenium.remote.Response;
 
 import com.google.common.collect.ImmutableMap;
 
-public class InternetExplorerElement extends RenderedRemoteWebElement implements RenderedWebElement {
+public class InternetExplorerElement extends RenderedRemoteWebElement {
   public InternetExplorerElement(InternetExplorerDriver parent) {
     setParent(parent);
   }

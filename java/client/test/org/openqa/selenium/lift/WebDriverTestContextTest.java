@@ -17,19 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.lift;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
 import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.TickingClock;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -45,7 +44,7 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
 
   WebDriver webdriver = mock(WebDriver.class);
   TestContext context = new WebDriverTestContext(webdriver);
-  RenderedWebElement element = mock(RenderedWebElement.class);
+  WebElement element = mock(WebElement.class);
   Finder<WebElement, WebDriver> finder = mockFinder();
   private static final int CLOCK_INCREMENT = 300;
   Clock clock = new TickingClock(CLOCK_INCREMENT);
@@ -177,6 +176,6 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
   }
   
   private Collection<WebElement> twoElements() {
-    return Arrays.asList(new WebElement[] {element, element});
+    return Arrays.asList(element, element);
   }
 }

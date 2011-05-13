@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.Point;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 
 public class GetElementPositionTop extends SeleneseCommand<Number> {
@@ -30,7 +29,7 @@ public class GetElementPositionTop extends SeleneseCommand<Number> {
 
   @Override
   protected Number handleSeleneseCommand(WebDriver driver, String locator, String value) {
-    Point location = ((RenderedWebElement) finder.findElement(driver, locator)).getLocation();
+    Point location = finder.findElement(driver, locator).getLocation();
     return location.getY();
   }
 }

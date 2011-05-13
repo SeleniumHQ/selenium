@@ -20,7 +20,6 @@ package org.openqa.selenium.lift;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
@@ -128,7 +127,7 @@ public class WebDriverTestContext implements TestContext {
       public Boolean apply(WebDriver driver) {
         final Collection<WebElement> elements = finder.findFrom(driver);
         for (WebElement webElement : elements) {
-          if (((RenderedWebElement) webElement).isDisplayed()) {
+          if (webElement.isDisplayed()) {
             return true;
           }
         }

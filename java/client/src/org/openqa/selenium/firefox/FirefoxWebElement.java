@@ -23,7 +23,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.RenderedRemoteWebElement;
 
-public class FirefoxWebElement extends RenderedRemoteWebElement implements RenderedWebElement {
+public class FirefoxWebElement extends RenderedRemoteWebElement {
 
   public FirefoxWebElement(FirefoxDriver parent) {
     setParent(parent);

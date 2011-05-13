@@ -18,14 +18,8 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.Mouse;
-import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.interactions.internal.BaseAction;
 import org.openqa.selenium.interactions.internal.MouseRelatedAction;
-
-import java.awt.*;
+import org.openqa.selenium.internal.Locatable;
 
 /**
  * Move the mouse to a location within the element provided. The coordinates

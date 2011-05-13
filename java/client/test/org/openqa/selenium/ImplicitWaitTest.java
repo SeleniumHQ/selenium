@@ -112,7 +112,7 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
     driver.get(pages.dynamicPage);
 
     WebElement reveal = driver.findElement(By.id("reveal"));
-    RenderedWebElement revealed = (RenderedWebElement) driver.findElement(By.id("revealed"));
+    WebElement revealed = driver.findElement(By.id("revealed"));
     driver.manage().timeouts().implicitlyWait(5000, MILLISECONDS);
 
     assertFalse("revealed should not be visible", revealed.isDisplayed());

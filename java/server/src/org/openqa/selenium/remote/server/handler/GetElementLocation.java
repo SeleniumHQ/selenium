@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
@@ -28,7 +28,7 @@ public class GetElementLocation extends WebElementHandler {
   }
 
   public ResultType call() throws Exception {
-    RenderedWebElement element = (RenderedWebElement) getElement();
+    WebElement element = getElement();
     response.setValue(element.getLocation());
 
     return ResultType.SUCCESS;

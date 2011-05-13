@@ -37,7 +37,7 @@ public class StaleElementReferenceTest extends AbstractDriverTestCase {
   @Ignore(SELENESE)
   public void testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement() {
     driver.get(pages.simpleTestPage);
-    RenderedWebElement elem = (RenderedWebElement) driver.findElement(By.id("links"));
+    WebElement elem = driver.findElement(By.id("links"));
     driver.get(pages.xhtmlTestPage);
     try {
       elem.getSize();

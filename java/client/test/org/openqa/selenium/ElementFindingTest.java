@@ -410,7 +410,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
     driver.get(pages.javascriptPage);
 
-    RenderedWebElement toBeDeleted = (RenderedWebElement) driver.findElement(By.id("deleted"));
+    WebElement toBeDeleted = driver.findElement(By.id("deleted"));
     assertTrue(toBeDeleted.isDisplayed());
 
     driver.findElement(By.id("delete")).click();
@@ -419,7 +419,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertTrue("Element should be stale at this point", wasStale);
   }
 
-  private Callable<Boolean> elementToBeStale(final RenderedWebElement element) {
+  private Callable<Boolean> elementToBeStale(final WebElement element) {
     return new Callable<Boolean>() {
 
       public Boolean call() throws Exception {

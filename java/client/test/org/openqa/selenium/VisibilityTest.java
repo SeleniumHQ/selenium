@@ -47,8 +47,8 @@ public class VisibilityTest extends AbstractDriverTestCase {
   public void testVisibilityShouldTakeIntoAccountParentVisibility() {
     driver.get(pages.javascriptPage);
 
-    RenderedWebElement childDiv = (RenderedWebElement) driver.findElement(By.id("hiddenchild"));
-    RenderedWebElement hiddenLink = (RenderedWebElement) driver.findElement(By.id("hiddenlink"));
+    WebElement childDiv = driver.findElement(By.id("hiddenchild"));
+    WebElement hiddenLink = driver.findElement(By.id("hiddenlink"));
 
     assertFalse(childDiv.isDisplayed());
     assertFalse(hiddenLink.isDisplayed());
@@ -58,7 +58,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   public void testShouldCountElementsAsVisibleIfStylePropertyHasBeenSet() {
     driver.get(pages.javascriptPage);
 
-    RenderedWebElement shown = (RenderedWebElement) driver.findElement(By.id("visibleSubElement"));
+    WebElement shown = driver.findElement(By.id("visibleSubElement"));
 
     assertTrue(shown.isDisplayed());
   }
@@ -67,7 +67,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   public void testShouldModifyTheVisibilityOfAnElementDynamically() {
     driver.get(pages.javascriptPage);
 
-    RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("hideMe"));
+    WebElement element = driver.findElement(By.id("hideMe"));
 
     assertTrue(element.isDisplayed());
 
@@ -82,7 +82,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   public void testHiddenInputElementsAreNeverVisible() {
     driver.get(pages.javascriptPage);
 
-    RenderedWebElement shown = (RenderedWebElement) driver.findElement(By.name("hidden"));
+    WebElement shown = driver.findElement(By.name("hidden"));
 
     assertFalse(shown.isDisplayed());
   }
@@ -150,7 +150,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   public void testShouldNotAllowAnElementWithZeroHeightToBeCountedAsDisplayed() {
     driver.get(pages.javascriptPage);
 
-    RenderedWebElement zeroHeight = (RenderedWebElement) driver.findElement(By.id("zeroheight"));
+    WebElement zeroHeight = driver.findElement(By.id("zeroheight"));
 
     assertFalse(zeroHeight.isDisplayed());
   }
@@ -160,12 +160,12 @@ public class VisibilityTest extends AbstractDriverTestCase {
   public void testShouldNotAllowAnElementWithZeroWidthToBeCountedAsDisplayed() {
     driver.get(pages.javascriptPage);
 
-    RenderedWebElement zeroWidth = (RenderedWebElement) driver.findElement(By.id("zerowidth"));
+    WebElement zeroWidth = driver.findElement(By.id("zerowidth"));
 
     assertFalse(zeroWidth.isDisplayed());
   }
 
-  private Callable<Boolean> elementNotToDisplayed(final RenderedWebElement element) {
+  private Callable<Boolean> elementNotToDisplayed(final WebElement element) {
     return new Callable<Boolean>() {
 
       public Boolean call() throws Exception {
