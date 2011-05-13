@@ -139,6 +139,7 @@ public class WebDriverWebView extends WebView {
     settings.setSaveFormData(true);
     settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
     enablePlatformNotifications();
+    setNetworkAvailable(true);
   }
   
   /**

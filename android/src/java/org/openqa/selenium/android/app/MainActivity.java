@@ -19,6 +19,8 @@ package org.openqa.selenium.android.app;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.openqa.selenium.Cookie;
@@ -33,22 +35,28 @@ import org.openqa.selenium.android.server.WebDriverBinder;
 import org.openqa.selenium.android.sessions.SessionCookieManager;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Picture;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.webkit.CookieManager;
+import android.webkit.WebView;
 
 /**
  * Main application activity.
@@ -75,6 +83,9 @@ public class MainActivity extends Activity {
   private static final int CMD_RELOAD = 6;
   private static final int CMD_SEND_TOUCH = 7;
   private static final int CMD_NEW_VIEW = 8;
+  
+  private IntentFilter mNetworkFilter;
+  private BroadcastReceiver mNetworkReceiver;
   
   private final Handler handler = new Handler() {
     @Override
@@ -133,6 +144,7 @@ public class MainActivity extends Activity {
   
   public void setPageHasStartedLoading(boolean value) {
     pageHasStartedLoading = value;
+    
   }
   
   public WebViewManager viewManager() {
@@ -165,6 +177,31 @@ public class MainActivity extends Activity {
     sessionCookieManager = new SessionCookieManager(this);
     CookieManager cookieManager = CookieManager.getInstance();
     cookieManager.removeAllCookie();
+    
+    mNetworkFilter = new IntentFilter();
+    mNetworkFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+    mNetworkReceiver = new BroadcastReceiver() {
+      public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+          NetworkInfo info = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
+          String typeName = info.getTypeName();
+          String subType = (info.getSubtypeName() != null ? info.getSubtypeName() : "");
+          if (currentView != null) {
+            try {
+              Method setNetworkType = currentView.getClass().getMethod(
+                  "setNetworkType", String.class, String.class);
+              setNetworkType.invoke(currentView,
+                  typeName.toLowerCase(), subType);
+              boolean isConnected = !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+              Logger.log(Log.DEBUG, "WD MainActivity", "Connectivity: " + isConnected);
+              currentView.setNetworkAvailable(isConnected);
+            } catch (Exception e) {
+              throw new RuntimeException(e);
+            }
+          }
+        }
+      }
+    };
   }
 
   public void newWebView() {
@@ -209,6 +246,26 @@ public class MainActivity extends Activity {
     return currentView.getTitle();
   }
   
+  @Override
+  protected void onPause() {
+    if (currentView != null) {
+      currentView.pauseTimers();
+    }
+    unregisterReceiver(mNetworkReceiver);
+    WebView.disablePlatformNotifications();
+    super.onPause();
+  }
+
+  @Override
+  protected void onResume() {
+    if (currentView != null) {
+      currentView.resumeTimers();
+    }
+    registerReceiver(mNetworkReceiver, mNetworkFilter);
+    WebView.enablePlatformNotifications();
+    super.onResume();
+  }
+
   public void injectScript(final String script) {
     Message msg = handler.obtainMessage(CMD_EXECUTE_SCRIPT);
     msg.obj = script;
