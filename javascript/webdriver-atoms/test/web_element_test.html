@@ -153,6 +153,18 @@ limitations under the License.
       var options = bot.locators.findElements({tagName: 'option'});
       assertEquals("1", webdriver.element.getAttribute(options[1], 'index'));
     }
+
+    function testShouldReturnTheProtocolOfAnImage() {
+      var image = bot.locators.findElement({id: 'image'});
+      var url = webdriver.element.getAttribute(image, 'src');
+      assertTrue(url, url.indexOf('http') == 0);
+    }
+
+    function testShouldReturnNullWhenGettingSrcAttributeOfInvalidImageTag() {
+      var image = bot.locators.findElement({id: 'invalidImgTag'});
+      var url = webdriver.element.getAttribute(image, 'src');
+      assertNull(url);
+    }
   </script>
 </head>
 <body id="body" style="" name="body">
@@ -181,6 +193,10 @@ limitations under the License.
   </select>
 
 </form>
+
+<img src="kitten.jpg" id="image">
+<!-- Here comes an invalid <img> tag which has no src attribute ... -->
+<img id="invalidImgTag" />
 
 <div style="background-color: green" id="green">This is a green div</div>
 

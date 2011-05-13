@@ -121,6 +121,17 @@ webdriver.element.getAttribute = function(element, attribute) {
   var isLink = element.tagName && goog.dom.TagName.A == element.tagName.toUpperCase();
   var isImg = element.tagName && goog.dom.TagName.IMG == element.tagName.toUpperCase();
 
+  // Although the attribute matters, the property is consistent. Return that in
+  // preference to the attribute for links and images.
+  if ((isImg && name == 'src') || (isLink && name == 'href')) {
+    value = bot.dom.getAttribute(element, name);
+    if (value) {
+      // We want the full URL if present
+      value = bot.dom.getProperty(element, name);
+    }
+    return value;
+  }
+
   var property;
   try {
     property = bot.dom.getProperty(element, attribute);
@@ -128,20 +139,17 @@ webdriver.element.getAttribute = function(element, attribute) {
     // Leaves property undefined or null
   }
 
-  // 1- Prefer the attribute over the property for
-  // the href attribute of <a> tags and the src attribute of <img> tags.
-  //
-  // 2- Call getAttribute if getProperty fails,
+  // 1- Call getAttribute if getProperty fails,
   // i.e. property is null or undefined.
   // This happens for event handlers in Firefox.
   // For example, calling getProperty for 'onclick' would
   // fail while getAttribute for 'onclick' will succeed and
   // return the JS code of the handler.
   //
-  // 3- When property is an object we fall back to the
+  // 2- When property is an object we fall back to the
   // actual attribute instead.
   // See issue http://code.google.com/p/selenium/issues/detail?id=966
-  if ((name == 'href' && isLink) || (name == 'src' && isImg) || !goog.isDefAndNotNull(property) || goog.isObject(property)) {
+  if (!goog.isDefAndNotNull(property) || goog.isObject(property)) {
     value = bot.dom.getAttribute(element, attribute);
   } else {
     value = property;
