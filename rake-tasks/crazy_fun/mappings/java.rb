@@ -61,8 +61,13 @@ module CrazyFunJava
       ant.taskdef :name      => 'jarjar',
                   :classname => 'com.tonicsystems.jarjar.JarJarTask',
                   :classpath => 'third_party/java/jarjar/jarjar-1.0.jar'
-      ant.taskdef :resource  => 'testngtasks',
-                  :classpath => 'third_party/java/testng/testng-5.14.1.jar'
+      ant.taskdef :resource  => 'testngtasks' do |t|
+        t.classpath do |cp|
+          cp.pathelement :location => 'third_party/java/testng/testng-6.0.1-nobsh-noguice.jar'
+          cp.pathelement :location => 'third_party/java/jcommander/jcommander-1.13.jar'
+          cp.pathelement :location => 'third_party/java/beanshell/bsh-1.3.0.jar'
+        end
+      end
 
       ant.project.setProperty 'XmlLogger.file', 'build/build_log.xml'
       ant.project.setProperty 'build.compiler', 'org.eclipse.jdt.core.JDTCompilerAdapter'
