@@ -24,7 +24,7 @@ import org.jmock.integration.junit3.MockObjectTestCase;
  * Tests the CompositeAction class
  *
  */
-public class TestCompositeAction extends MockObjectTestCase {
+public class CompositeActionTest extends MockObjectTestCase {
   public void testAddingActions() {
     CompositeAction sequence = new CompositeAction();
     final Action dummyAction1 = mock(Action.class);

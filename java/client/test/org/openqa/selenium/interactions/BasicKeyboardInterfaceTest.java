@@ -41,7 +41,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
  * 
  */
 @Ignore(IE)
-public class TestBasicKeyboardInterface extends AbstractDriverTestCase {
+public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   private ActionChainsGenerator getBuilder(WebDriver driver) {
     return ((HasInputDevices) driver).actionsBuilder();
   }

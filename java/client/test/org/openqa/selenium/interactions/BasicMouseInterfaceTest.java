@@ -39,7 +39,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
  * Tests operations that involve mouse and keyboard.
  *
  */
-public class TestBasicMouseInterface extends AbstractDriverTestCase {
+public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   private ActionChainsGenerator getBuilder(WebDriver driver) {
     return ((HasInputDevices) driver).actionsBuilder();
   }

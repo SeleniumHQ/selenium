@@ -31,7 +31,7 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 /**
  * Tests the builder for user actions.
  */
-public class TestActionChainsGenerator extends MockObjectTestCase {
+public class ActionChainsGeneratorTest extends MockObjectTestCase {
   private WebElement dummyLocatableElement;
   private Mouse dummyMouse;
   private Keyboard dummyKeyboard;
@@ -62,7 +62,7 @@ public class TestActionChainsGenerator extends MockObjectTestCase {
 
       @Override
       public ActionChainsGenerator actionsBuilder() {
-        return new DefaultActionChainsGenerator(this);
+        return new Actions(this);
       }
     };
   }
@@ -156,7 +156,7 @@ public class TestActionChainsGenerator extends MockObjectTestCase {
       one(dummyMouse).contextClick(dummyCoordinates);
     }});
 
-    DefaultActionChainsGenerator builder = new DefaultActionChainsGenerator(driver);
+    Actions builder = new Actions(driver);
 
     builder.clickAndHold(dummyLocatableElement)
         .release(dummyLocatableElement)

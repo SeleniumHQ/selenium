@@ -28,7 +28,7 @@ import org.openqa.selenium.interactions.internal.Coordinates;
  * Unit test for all simple keyboard actions.
  *
  */
-public class TestIndividualMouseActions extends MockObjectTestCase {
+public class IndividualMouseActionsTest extends MockObjectTestCase {
   private Mouse dummyMouse;
   private Locatable locatableElement;
   private Coordinates dummyCoordinates;
