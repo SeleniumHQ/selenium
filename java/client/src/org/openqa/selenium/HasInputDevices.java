@@ -27,5 +27,10 @@ import org.openqa.selenium.interactions.ActionChainsGenerator;
 public interface HasInputDevices {
   Keyboard getKeyboard();
   Mouse getMouse();
+
+  /**
+   * @deprecated Use {@link org.openqa.selenium.interactions.Actions} instead.
+   */
+  @Deprecated
   ActionChainsGenerator actionsBuilder();
 }

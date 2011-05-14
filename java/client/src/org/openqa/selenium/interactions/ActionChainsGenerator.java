@@ -22,8 +22,10 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Generate user actions.
+ *
+ * @deprecated Use the {@link Actions} class directly.
  */
-
+@Deprecated
 public interface ActionChainsGenerator {
   // Keyboard-related actions.
 

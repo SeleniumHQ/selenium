@@ -448,7 +448,7 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     return Math.round(Float.parseFloat(cssValue));
   }
 
-    public void dragAndDropBy(int moveRightBy, int moveDownBy) {
+  public void dragAndDropBy(int moveRightBy, int moveDownBy) {
     assertElementNotStale();
     throw new UnsupportedOperationException("dragAndDropBy");
   }

@@ -75,6 +75,7 @@ public class StubDriver implements WebDriver, HasInputDevices {
     throw new UnsupportedOperationException("manage");
   }
 
+  // TODO(eran): Why does this not throw an exception like everything else?
   public Keyboard getKeyboard() {
     return null;
   }

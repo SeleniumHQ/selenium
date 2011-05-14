@@ -19,7 +19,7 @@ package org.openqa.selenium.support.events;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.ActionChainsGenerator;
-import org.openqa.selenium.interactions.DefaultActionChainsGenerator;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
@@ -262,7 +262,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   public ActionChainsGenerator actionsBuilder() {
-    return new DefaultActionChainsGenerator(this);
+    return new Actions(this);
   }
 
   private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver {

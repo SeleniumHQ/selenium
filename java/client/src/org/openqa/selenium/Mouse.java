@@ -20,7 +20,7 @@ package org.openqa.selenium;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 /**
- * Interface representing basic Mouse operations.
+ * Interface representing basic mouse operations.
  *
  */
 public interface Mouse {
