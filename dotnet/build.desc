@@ -186,8 +186,7 @@ dotnet_library(name = "chrome",
     "System.Xml.dll",
     ":common",
     ":remote-common",
-    ":remote",
-    "third_party/csharp/dotnetzip-1.9/Ionic.Zip.Reduced.dll"
+    ":remote"
   ],
   out = "build/dotnet/WebDriver.Chrome.dll",
   doc = "build/dotnet/WebDriver.Chrome.xml"
