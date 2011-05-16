@@ -20,7 +20,7 @@ module Selenium
       #
       # When using Element#find_element with :xpath, be aware that webdriver
       # follows standard conventions: a search prefixed with "//" will search
-      # the entire document, not just the children of this current node. Use 
+      # the entire document, not just the children of this current node. Use
       # ".//" to limit your search to the children of the receiving Element.
       #
       # @param [:class, :class_name, :id, :link_text, :link, :partial_link_text, :name, :tag_name, :xpath] how
@@ -75,11 +75,13 @@ module Selenium
           args
         when 1
           arg = args.first
+
           unless arg.respond_to?(:shift)
             raise ArgumentError, "expected #{arg.inspect}:#{arg.class} to respond to #shift"
           end
 
-          arr = arg.shift
+          # this will be a single-entry hash, so use #shift over #first or #[]
+          arr = arg.dup.shift
           unless arr.size == 2
             raise ArgumentError, "expected #{arr.inspect} to have 2 elements"
           end
