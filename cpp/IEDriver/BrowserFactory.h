@@ -12,6 +12,23 @@
 #include <sstream>
 #include <vector>
 
+#define HTML_GETOBJECT_MSG L"WM_HTML_GETOBJECT"
+#define OLEACC_LIBRARY_NAME L"OLEACC.DLL"
+#define IEFRAME_LIBRARY_NAME L"ieframe.dll"
+#define IELAUNCHURL_FUNCTION_NAME "IELaunchURL"
+
+#define IE_FRAME_WINDOW_CLASS "IEFrame"
+#define SHELL_DOCOBJECT_VIEW_WINDOW_CLASS "Shell DocObject View"
+#define IE_SERVER_CHILD_WINDOW_CLASS "Internet Explorer_Server"
+#define ALERT_WINDOW_CLASS "#32770"
+#define HTML_DIALOG_WINDOW_CLASS "Internet Explorer_TridentDlgFrame"
+
+#define FILE_LANGUAGE_INFO L"\\VarFileInfo\\Translation"
+#define FILE_VERSION_INFO L"\\StringFileInfo\\%04x%04x\\FileVersion"
+
+#define IE_CLSID_REGISTRY_KEY L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID"
+#define IE_SECURITY_ZONES_REGISTRY_KEY L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones"
+
 using namespace std;
 
 namespace webdriver {
@@ -49,6 +66,7 @@ private:
 	void GetExecutableLocation(void);
 	void GetIEVersion(void);
 	void GetOSVersion(void);
+	bool ProtectedModeSettingsAreValid(void);
 
 	int ie_major_version_;
 	int windows_major_version_;

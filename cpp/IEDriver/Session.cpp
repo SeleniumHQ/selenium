@@ -86,6 +86,7 @@ LRESULT Session::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 	// as unsigned short*. It needs to be typedef'd as wchar_t* 
 	wchar_t* cast_guid_string = reinterpret_cast<wchar_t*>(guid_string);
 	this->session_id_ = cast_guid_string;
+	this->is_valid_ = true;
 
 	::RpcStringFree(&guid_string);
 	this->SetWindowText(this->session_id_.c_str());
@@ -189,8 +190,8 @@ LRESULT Session::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 	return 0;
 }
 
-LRESULT Session::OnGetWindowCount(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-	return static_cast<LRESULT>(this->managed_browsers_.size());
+LRESULT Session::OnIsSessionValid(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+	return this->is_valid_ ? 1 : 0;
 }
 
 LRESULT Session::OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandles) {
@@ -304,8 +305,11 @@ void Session::AddManagedBrowser(BrowserHandle browser_wrapper) {
 	}
 }
 
-void Session::CreateNewBrowser(void) {
+int Session::CreateNewBrowser(void) {
 	DWORD dwProcId = this->factory_.LaunchBrowserProcess(this->port_);
+	if (dwProcId == NULL) {
+		return ENOSUCHDRIVER;
+	}
 	ProcessWindowInfo process_window_info;
 	process_window_info.dwProcessId = dwProcId;
 	process_window_info.hwndBrowser = NULL;
@@ -313,6 +317,7 @@ void Session::CreateNewBrowser(void) {
 	this->factory_.AttachToBrowser(&process_window_info);
 	BrowserHandle wrapper(new Browser(process_window_info.pBrowser, process_window_info.hwndBrowser, this->m_hWnd));
 	this->AddManagedBrowser(wrapper);
+	return SUCCESS;
 }
 
 int Session::GetManagedElement(const std::wstring& element_id, ElementHandle* element_wrapper) const {

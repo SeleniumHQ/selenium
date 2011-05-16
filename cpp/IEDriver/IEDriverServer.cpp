@@ -131,19 +131,14 @@ int IEDriverServer::ProcessRequest(struct mg_connection* conn, const struct mg_r
 				// Hand-code the response for an invalid session id
 				serialized_response = L"{ \"status\" : 404, \"sessionId\" : \"" + session_id + L"\", \"value\" : \"session " + session_id + L" does not exist\" }";
 			} else {
-				// The session should end if the user sends a quit command,
-				// or if the user sends a close command with exactly 1 window
-				// open, per spec.
-				bool command_ends_session(command == Quit || (command == Close && ::SendMessage(session_window_handle, WD_GET_WINDOW_COUNT, NULL, NULL) == 1));
-
 				// Compile the serialized JSON representation of the command by hand.
 				std::wstringstream command_value_stream;
 				command_value_stream << command;
 				std::wstring command_value = command_value_stream.str();
 
 				std::wstring serialized_command = L"{ \"command\" : " + command_value + L", \"locator\" : " + locator_parameters + L", \"parameters\" : " + request_body + L" }";
-				serialized_response = this->SendCommandToSession(session_window_handle, serialized_command);
-				if (command_ends_session) {
+				bool session_is_valid = this->SendCommandToSession(session_window_handle, serialized_command, &serialized_response);
+				if (!session_is_valid) {
 					this->ShutDownSession(session_id);
 				}
 			}
@@ -164,28 +159,29 @@ bool IEDriverServer::LookupSession(const std::wstring& session_id, HWND* session
 	return true;
 }
 
-std::wstring IEDriverServer::SendCommandToSession(const HWND& session_window_handle, const std::wstring& serialized_command) {
-	// Sending a command consists of four actions:
+bool IEDriverServer::SendCommandToSession(const HWND& session_window_handle, const std::wstring& serialized_command, std::wstring* serialized_response) {
+	// Sending a command consists of five actions:
 	// 1. Setting the command to be executed
 	// 2. Executing the command
 	// 3. Waiting for the response to be populated
 	// 4. Retrieving the response
-	::SendMessage(session_window_handle, WD_SET_COMMAND, NULL, (LPARAM)serialized_command.c_str());
+	// 5. Retrieving whether the command sent caused the session to be ready for shutdown
+	::SendMessage(session_window_handle, WD_SET_COMMAND, NULL, reinterpret_cast<LPARAM>(serialized_command.c_str()));
 	::PostMessage(session_window_handle, WD_EXEC_COMMAND, NULL, NULL);
 	
-	int response_length = (int)::SendMessage(session_window_handle, WD_GET_RESPONSE_LENGTH, NULL, NULL);
+	int response_length = static_cast<int>(::SendMessage(session_window_handle, WD_GET_RESPONSE_LENGTH, NULL, NULL));
 	while (response_length == 0) {
 		// Sleep a short time to prevent thread starvation on single-core machines.
 		::Sleep(10);
-		response_length = (int)::SendMessage(session_window_handle, WD_GET_RESPONSE_LENGTH, NULL, NULL);
+		response_length = static_cast<int>(::SendMessage(session_window_handle, WD_GET_RESPONSE_LENGTH, NULL, NULL));
 	}
 
 	// Must add one to the length to handle the terminating character.
 	std::vector<TCHAR> response_buffer(response_length + 1);
-	::SendMessage(session_window_handle, WD_GET_RESPONSE, NULL, (LPARAM)&response_buffer[0]);
-	std::wstring serialized_response(&response_buffer[0]);
-	response_buffer.clear();
-	return serialized_response;
+	::SendMessage(session_window_handle, WD_GET_RESPONSE, NULL, reinterpret_cast<LPARAM>(&response_buffer[0]));
+	*serialized_response = &response_buffer[0];
+	bool session_is_valid = ::SendMessage(session_window_handle, WD_IS_SESSION_VALID, NULL, NULL) != 0;
+	return session_is_valid;
 }
 
 int IEDriverServer::SendResponseToBrowser(struct mg_connection* conn, const struct mg_request_info* request_info, const std::wstring& serialized_response) {

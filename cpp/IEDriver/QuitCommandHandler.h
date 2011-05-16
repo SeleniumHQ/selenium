@@ -27,6 +27,9 @@ protected:
 			}
 		}
 
+		// Calling quit will always result in an invalid session.
+		Session& mutable_session = const_cast<Session&>(session);
+		mutable_session.set_is_valid(false);
 		response->SetResponse(SUCCESS, Json::Value::null);
 	}
 };

@@ -7,10 +7,10 @@ BrowserFactory::BrowserFactory(void) {
 	this->GetExecutableLocation();
 	this->GetIEVersion();
 	this->GetOSVersion();
-	this->html_getobject_msg_ = ::RegisterWindowMessage(L"WM_HTML_GETOBJECT");
+	this->html_getobject_msg_ = ::RegisterWindowMessage(HTML_GETOBJECT_MSG);
 
 	// Explicitly load MSAA so we know if it's installed
-	this->oleacc_instance_handle_ = ::LoadLibrary(L"OLEACC.DLL");
+	this->oleacc_instance_handle_ = ::LoadLibrary(OLEACC_LIBRARY_NAME);
 }
 
 BrowserFactory::~BrowserFactory(void) {
@@ -21,52 +21,53 @@ BrowserFactory::~BrowserFactory(void) {
 
 DWORD BrowserFactory::LaunchBrowserProcess(int port) {
 	DWORD process_id = NULL;
-	STARTUPINFO start_info;
-	PROCESS_INFORMATION proc_info;
+	if (this->ProtectedModeSettingsAreValid()) {
+		STARTUPINFO start_info;
+		PROCESS_INFORMATION proc_info;
 
-	::ZeroMemory(&start_info, sizeof(start_info));
-    start_info.cb = sizeof(start_info);
-	::ZeroMemory(&proc_info, sizeof(proc_info));
+		::ZeroMemory(&start_info, sizeof(start_info));
+		start_info.cb = sizeof(start_info);
+		::ZeroMemory(&proc_info, sizeof(proc_info));
 
-	std::wstringstream url_stream;
-	url_stream << L"http://localhost:" << port << L"/";
-	std::wstring initial_url(url_stream.str());
+		std::wstringstream url_stream;
+		url_stream << L"http://localhost:" << port << L"/";
+		std::wstring initial_url(url_stream.str());
 
-	FARPROC proc_address = 0;
-	HMODULE library_handle = ::LoadLibrary(L"ieframe.dll");
-	if (library_handle != NULL) {
-		proc_address = ::GetProcAddress(library_handle, "IELaunchURL");
+		FARPROC proc_address = 0;
+		HMODULE library_handle = ::LoadLibrary(IEFRAME_LIBRARY_NAME);
+		if (library_handle != NULL) {
+			proc_address = ::GetProcAddress(library_handle, IELAUNCHURL_FUNCTION_NAME);
+		}
+
+		if (proc_address != 0) {
+			// If we have the IELaunchURL API, expressly use it. This will
+			// guarantee a new session. Simply using CoCreateInstance to 
+			// create the browser will merge sessions, making separate cookie
+			// handling impossible.
+			::IELaunchURL(initial_url.c_str(), &proc_info, NULL);
+		} else {
+			std::wstring executable_and_url = this->ie_executable_location_ + L" " + initial_url;
+			LPWSTR command_line = new WCHAR[executable_and_url.size() + 1];
+			wcscpy_s(command_line, executable_and_url.size() + 1, executable_and_url.c_str());
+			command_line[executable_and_url.size()] = L'\0';
+			::CreateProcess(NULL, command_line, NULL, NULL, FALSE, 0, NULL, NULL, &start_info, &proc_info);
+			delete[] command_line;
+		}
+
+		process_id = proc_info.dwProcessId;
+
+		if (proc_info.hThread != NULL) {
+			::CloseHandle(proc_info.hThread);
+		}
+
+		if (proc_info.hProcess != NULL) {
+			::CloseHandle(proc_info.hProcess);
+		}
+
+		if (library_handle != NULL) {
+			::FreeLibrary(library_handle);
+		}
 	}
-
-	if (proc_address != 0) {
-		// If we have the IELaunchURL API, expressly use it. This will
-		// guarantee a new session. Simply using CoCreateInstance to 
-		// create the browser will merge sessions, making separate cookie
-		// handling impossible.
-		::IELaunchURL(initial_url.c_str(), &proc_info, NULL);
-	} else {
-		std::wstring executable_and_url = this->ie_executable_location_ + L" " + initial_url;
-		LPWSTR command_line = new WCHAR[executable_and_url.size() + 1];
-		wcscpy_s(command_line, executable_and_url.size() + 1, executable_and_url.c_str());
-		command_line[executable_and_url.size()] = L'\0';
-		::CreateProcess(NULL, command_line, NULL, NULL, FALSE, 0, NULL, NULL, &start_info, &proc_info);
-		delete[] command_line;
-	}
-
-	process_id = proc_info.dwProcessId;
-
-	if (proc_info.hThread != NULL) {
-		::CloseHandle(proc_info.hThread);
-	}
-
-	if (proc_info.hProcess != NULL) {
-		::CloseHandle(proc_info.hProcess);
-	}
-
-	if (library_handle != NULL) {
-		::FreeLibrary(library_handle);
-	}
-
 	return process_id;
 }
 
@@ -193,7 +194,7 @@ BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
 		return TRUE;
 	}
 	
-	if (strcmp("IEFrame", name) != 0 && strcmp("Shell DocObject View", name) != 0) {
+	if (strcmp(IE_FRAME_WINDOW_CLASS, name) != 0 && strcmp(SHELL_DOCOBJECT_VIEW_WINDOW_CLASS, name) != 0) {
 		return TRUE;
 	}
 
@@ -211,7 +212,7 @@ BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
 		return TRUE;
 	}
 	
-	if (strcmp("Internet Explorer_Server", name) != 0) {
+	if (strcmp(IE_SERVER_CHILD_WINDOW_CLASS, name) != 0) {
 		return TRUE;
 	} else {
 		DWORD process_id = NULL;
@@ -239,7 +240,7 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
 		return TRUE;
 	}
 	
-	if (strcmp("#32770", name) != 0 && strcmp("Internet Explorer_TridentDlgFrame", name) != 0){
+	if (strcmp(ALERT_WINDOW_CLASS, name) != 0 && strcmp(HTML_DIALOG_WINDOW_CLASS, name) != 0){
 		return TRUE;
 	} else {
 		DWORD process_id = NULL;
@@ -256,10 +257,8 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
 }
 
 void BrowserFactory::GetExecutableLocation() {
-	std::wstring class_id_key = L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID";
 	std::wstring class_id;
-
-	if (this->GetRegistryValue(HKEY_LOCAL_MACHINE, class_id_key, L"", &class_id)) {
+	if (this->GetRegistryValue(HKEY_LOCAL_MACHINE, IE_CLSID_REGISTRY_KEY, L"", &class_id)) {
 		std::wstring location_key = L"SOFTWARE\\Classes\\CLSID\\" + class_id + L"\\LocalServer32";
 		std::wstring executable_location;
 
@@ -294,7 +293,8 @@ bool BrowserFactory::GetRegistryValue(const HKEY root_key, const std::wstring& s
 	if (ERROR_SUCCESS == ::RegOpenKeyEx(root_key, subkey.c_str(), 0, KEY_QUERY_VALUE, &key_handle)) {
 		if (ERROR_SUCCESS == ::RegQueryValueEx(key_handle, value_name.c_str(), NULL, NULL, NULL, &required_buffer_size)) {
 			std::vector<TCHAR> value_buffer(required_buffer_size);
-			if (ERROR_SUCCESS == ::RegQueryValueEx(key_handle, value_name.c_str(), NULL, NULL, reinterpret_cast<LPBYTE>(&value_buffer[0]), &required_buffer_size)) {
+			DWORD value_type(0);
+			if (ERROR_SUCCESS == ::RegQueryValueEx(key_handle, value_name.c_str(), NULL, &value_type, reinterpret_cast<LPBYTE>(&value_buffer[0]), &required_buffer_size)) {
 				*value = &value_buffer[0];
 				value_retrieved = true;
 			}
@@ -316,18 +316,17 @@ void BrowserFactory::GetIEVersion() {
 	::GetFileVersionInfo(this->ie_executable_location_.c_str(), dummy, length, &version_buffer[0]);
 
 	UINT page_count;
-	BOOL query_result = ::VerQueryValue(&version_buffer[0], L"\\VarFileInfo\\Translation", reinterpret_cast<void**>(&lpTranslate), &page_count);
+	BOOL query_result = ::VerQueryValue(&version_buffer[0], FILE_LANGUAGE_INFO, reinterpret_cast<void**>(&lpTranslate), &page_count);
     
 	wchar_t sub_block[MAX_PATH];
-    _snwprintf_s(sub_block, MAX_PATH, MAX_PATH,
-                 L"\\StringFileInfo\\%04x%04x\\FileVersion", lpTranslate->language, lpTranslate->code_page);
+    _snwprintf_s(sub_block, MAX_PATH, MAX_PATH, FILE_VERSION_INFO, lpTranslate->language, lpTranslate->code_page);
     LPVOID value = NULL;
     UINT size;
     query_result = ::VerQueryValue(&version_buffer[0], sub_block, &value, &size);
 	std::wstring ie_version;
 	ie_version.assign(static_cast<wchar_t*>(value));
-	std::wstringstream versionStream(ie_version);
-	versionStream >> this->ie_major_version_;
+	std::wstringstream version_stream(ie_version);
+	version_stream >> this->ie_major_version_;
 }
 
 void BrowserFactory::GetOSVersion() {
@@ -335,6 +334,54 @@ void BrowserFactory::GetOSVersion() {
 	osVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 	::GetVersionEx(&osVersion);
 	this->windows_major_version_ = osVersion.dwMajorVersion;
+}
+
+bool BrowserFactory::ProtectedModeSettingsAreValid() {
+	// Only need to check Protected Mode settings on IE 7 or higher
+	// and on Windows Vista or higher. Otherwise, Protected Mode
+	// doesn't come into play, and are valid.
+	// Documentation of registry settings can be found at the following
+	// Microsoft KnowledgeBase article:
+	// http://support.microsoft.com/kb/182569
+	if (this->ie_major_version_ >= 7 && this->windows_major_version_ >= 6) {
+		HKEY key_handle;
+		if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_CURRENT_USER, IE_SECURITY_ZONES_REGISTRY_KEY, 0, KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS, &key_handle)) {
+			DWORD subkey_count(0);
+			DWORD max_subkey_name_length(0);
+			if (ERROR_SUCCESS == ::RegQueryInfoKey(key_handle, NULL, NULL, NULL, &subkey_count, &max_subkey_name_length, NULL, NULL, NULL, NULL, NULL, NULL)) {
+				int protected_mode_value(-1);
+				std::vector<TCHAR> subkey_name_buffer(max_subkey_name_length + 1);
+				for (size_t index = 0; index < subkey_count; ++index) {
+					DWORD number_of_characters_copied(max_subkey_name_length + 1);
+					::RegEnumKeyEx(key_handle, static_cast<DWORD>(index), &subkey_name_buffer[0], &number_of_characters_copied, NULL, NULL, NULL, NULL);
+					std::wstring subkey_name(&subkey_name_buffer[0]);
+					// Ignore zone "0" (the "My Computer" zone)
+					if (subkey_name != L"0") {
+						HKEY subkey_handle;
+						if (ERROR_SUCCESS == ::RegOpenKeyEx(key_handle, subkey_name.c_str(), 0, KEY_QUERY_VALUE, &subkey_handle)) {
+							// The protected mode settings are stored in a
+							// REG_DWORD value with the name "2500".
+							DWORD value(0);
+							DWORD value_length(sizeof(DWORD));
+							if (ERROR_SUCCESS == ::RegQueryValueEx(subkey_handle, L"2500", NULL, NULL, reinterpret_cast<LPBYTE>(&value), &value_length)) {
+								if (protected_mode_value == -1) {
+									protected_mode_value = value;
+								} else {
+									if (value != protected_mode_value) {
+										::RegCloseKey(subkey_handle);
+										return false;
+									}
+								}
+							}
+							::RegCloseKey(subkey_handle);
+						}
+					}
+				}
+			}
+			::RegCloseKey(key_handle);
+		}
+	}
+	return true;
 }
 
 } // namespace webdriver

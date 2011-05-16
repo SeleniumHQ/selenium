@@ -51,7 +51,7 @@ public:
 		MESSAGE_HANDLER(WD_WAIT, OnWait)
 		MESSAGE_HANDLER(WD_BROWSER_NEW_WINDOW, OnBrowserNewWindow)
 		MESSAGE_HANDLER(WD_BROWSER_QUIT, OnBrowserQuit)
-		MESSAGE_HANDLER(WD_GET_WINDOW_COUNT, OnGetWindowCount)
+		MESSAGE_HANDLER(WD_IS_SESSION_VALID, OnIsSessionValid)
 		MESSAGE_HANDLER(WD_NEW_HTML_DIALOG, OnNewHtmlDialog)
 	END_MSG_MAP()
 
@@ -66,7 +66,7 @@ public:
 	LRESULT OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	LRESULT OnGetWindowCount(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnIsSessionValid(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 	std::wstring session_id(void) const { return this->session_id_; }
@@ -77,7 +77,7 @@ public:
 	std::wstring current_browser_id(void) const { return this->current_browser_id_; }
 	void set_current_browser_id(const std::wstring& browser_id) { this->current_browser_id_ = browser_id; }
 
-	void CreateNewBrowser(void);
+	int CreateNewBrowser(void);
 
 	int GetManagedBrowser(const std::wstring& browser_id, BrowserHandle* browser_wrapper) const;
 	int GetCurrentBrowser(BrowserHandle* browser_wrapper) const;
@@ -107,9 +107,13 @@ public:
 	long last_known_mouse_y(void) const { return this->last_known_mouse_y_; }
 	void set_last_known_mouse_y(const long y_coordinate) { this->last_known_mouse_y_ = y_coordinate; }
 
+	bool is_valid(void) const { return this->is_valid_; }
+	void set_is_valid(const bool session_is_valid) { this->is_valid_ = session_is_valid; }
+
 	ElementFinder element_finder(void) const { return this->element_finder_; }
 
 	int browser_version(void) const { return this->factory_.browser_version(); }
+	size_t managed_window_count(void) const { return this->managed_browsers_.size(); }
 
 private:
 	typedef std::tr1::unordered_map<std::wstring, BrowserHandle> BrowserMap;
@@ -144,6 +148,7 @@ private:
 	std::wstring serialized_response_;
 	CommandHandlerMap command_handlers_;
 	bool is_waiting_;
+	bool is_valid_;
 
 	long last_known_mouse_x_;
 	long last_known_mouse_y_;
