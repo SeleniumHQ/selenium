@@ -121,7 +121,7 @@ public class Actions implements ActionChainsGenerator {
 
   public Action build() {
     CompositeAction toReturn = action;
-    action = null;
+    action = new CompositeAction();
     return toReturn;
   }
 
