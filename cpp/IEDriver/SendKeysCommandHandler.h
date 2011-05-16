@@ -175,9 +175,8 @@ private:
 				curr = ::SendMessage(edit_field_window_handle, WM_GETTEXTLENGTH, 0, 0);
 			}
 
-			for (int i = 0; i < 10000; i++) 
-			{
-				HWND open_window_handle = ::FindWindowExW(dialog_window_handle, NULL, L"Button", L"&Open");
+			for (int i = 0; i < 10000; i++) {
+				HWND open_window_handle = ::GetDlgItem(dialog_window_handle, IDOK);
 				if (open_window_handle) {
 					LRESULT total = 0;
 					total += ::SendMessage(open_window_handle, WM_LBUTTONDOWN, 0, 0);
