@@ -109,11 +109,11 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
 
   public void testShouldBeAbleToFindChildrenOfANode() {
-    driver.get(pages.xhtmlTestPage);
+    driver.get(pages.selectableItemsPage);
     List<WebElement> elements = driver.findElements(By.xpath("/html/head"));
     WebElement head = elements.get(0);
     List<WebElement> importedScripts = head.findElements(By.tagName("script"));
-    assertThat(importedScripts.size(), equalTo(2));
+    assertThat(importedScripts.size(), equalTo(3));
   }
 
   public void testReturnAnEmptyListWhenThereAreNoChildrenOfANode() {
