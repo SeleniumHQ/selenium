@@ -252,4 +252,28 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertEquals("rotate(30)", svgElement.getAttribute("transform"));
   }
 
+  public void testCanRetrieveTheCurrentValueOfATextFormField_textInput() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.id("working"));
+    assertEquals("", element.getAttribute("value"));
+    element.sendKeys("hello world");
+    assertEquals("hello world", element.getAttribute("value"));
+  }
+
+  public void testCanRetrieveTheCurrentValueOfATextFormField_emailInput() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.id("email"));
+    assertEquals("", element.getAttribute("value"));
+    element.sendKeys("hello world");
+    assertEquals("hello world", element.getAttribute("value"));
+  }
+
+  public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.id("emptyTextArea"));
+    assertEquals("", element.getAttribute("value"));
+    element.sendKeys("hello world");
+    assertEquals("hello world", element.getAttribute("value"));
+  }
+
 }

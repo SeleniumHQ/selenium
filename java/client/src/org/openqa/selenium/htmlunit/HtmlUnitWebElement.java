@@ -184,13 +184,7 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
   }
 
   public String getValue() {
-    assertElementNotStale();
-
-    if (element instanceof HtmlTextArea) {
-      return ((HtmlTextArea) element).getText();
-    }
-    String value = getAttribute("value");
-    return (value == null) ? "" : value;
+    return getAttribute("value");
   }
 
   public void clear() {
@@ -321,6 +315,14 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
       }
 
       return null;
+    }
+
+    if ("value".equals(lowerName)) {
+      if (element instanceof HtmlTextArea) {
+        return ((HtmlTextArea) element).getText();
+      }
+
+      return value == null ? "" : value;
     }
 
     if (!"".equals(value)) {
