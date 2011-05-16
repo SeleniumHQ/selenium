@@ -48,8 +48,8 @@ describe "SearchContext" do
     end
 
     it "accepts two arguments" do
-      bridge.should_receive(:findElementById).with(nil, "bar").and_return(element)
-      search_context.find_element(:id, "bar").should == element
+      bridge.should_receive(:findElementsById).with(nil, "bar").and_return([])
+      search_context.find_elements(:id, "bar").should == []
     end
 
     it "raises an error if given an invalid 'by'" do
