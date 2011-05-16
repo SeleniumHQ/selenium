@@ -23,6 +23,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets an <see cref="IActionSequenceBuilder"/> object for building actions to send to the browser.
         /// </summary>
+        [Obsolete("Use the Actions class directly instead.")]
         IActionSequenceBuilder ActionBuilder { get; }
     }
 }

@@ -22,7 +22,8 @@ namespace OpenQA.Selenium.Interactions
 
             ReadOnlyCollection<IWebElement> options = driver.FindElements(By.TagName("option"));
 
-            IAction selectThreeOptions = GetBuilder().Click(options[1])
+            Actions actionBuider = new Actions(driver);
+            IAction selectThreeOptions = actionBuider.Click(options[1])
                 .KeyDown(Keys.Shift)
                 .Click(options[2])
                 .Click(options[3])
@@ -54,7 +55,8 @@ namespace OpenQA.Selenium.Interactions
 
             ReadOnlyCollection<IWebElement> listItems = driver.FindElements(By.TagName("li"));
 
-            IAction selectThreeItems = GetBuilder().KeyDown(Keys.Control)
+            Actions actionBuider = new Actions(driver);
+            IAction selectThreeItems = actionBuider.KeyDown(Keys.Control)
                 .Click(listItems[1])
                 .Click(listItems[3])
                 .Click(listItems[5])
@@ -65,14 +67,8 @@ namespace OpenQA.Selenium.Interactions
             Assert.AreEqual("#item2 #item4 #item6", reportingElement.Text);
 
             // Now click on another element, make sure that's the only one selected.
-            GetBuilder().Click(listItems[6]).Build().Perform();
+            actionBuider.Click(listItems[6]).Build().Perform();
             Assert.AreEqual("#item7", reportingElement.Text);
-        }
-
-        private IActionSequenceBuilder GetBuilder()
-        {
-            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
-            return inputDevicesDriver.ActionBuilder;
         }
     }
 }

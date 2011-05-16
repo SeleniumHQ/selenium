@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
@@ -32,8 +33,8 @@ namespace Selenium.Internal.SeleniumEmulation
         {
             IWebElement dragElement = this.finder.FindElement(driver, locator);
             IWebElement dropElement = this.finder.FindElement(driver, value);
-            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
-            inputDevicesDriver.ActionBuilder.DragAndDrop(dragElement, dropElement).Build().Perform();
+            Actions actionBuilder = new Actions(driver);
+            actionBuilder.DragAndDrop(dragElement, dropElement).Perform();
 
             return null;
         }

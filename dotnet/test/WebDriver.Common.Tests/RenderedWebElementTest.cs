@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.Drawing;
+using OpenQA.Selenium.Interactions;
 
 namespace OpenQA.Selenium
 {
@@ -85,7 +86,8 @@ namespace OpenQA.Selenium
 
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
             //element.Hover();
-            inputDevicesDriver.ActionBuilder.MoveToElement(element).Build().Perform();
+            Actions actionBuilder = new Actions(driver);
+            actionBuilder.MoveToElement(element).Perform();
 
             item = driver.FindElement(By.Id("item1"));
             Assert.AreEqual("Item 1", item.Text);

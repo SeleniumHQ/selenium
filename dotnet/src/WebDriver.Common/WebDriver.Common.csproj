@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ICookieJar.cs" />
+    <Compile Include="Interactions\Actions.cs" />
     <Compile Include="InvalidElementStateException.cs" />
     <Compile Include="Internal\FileUtilities.cs" />
     <Compile Include="UnableToSetCookieException.cs" />

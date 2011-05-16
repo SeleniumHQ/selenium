@@ -27,9 +27,7 @@ namespace OpenQA.Selenium.Interactions
     /// </summary>
     public class DefaultActionSequenceBuilder : IActionSequenceBuilder
     {
-        private IKeyboard keyboard;
-        private IMouse mouse;
-        private CompositeAction action = new CompositeAction();
+        private Actions actionGenerator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultActionSequenceBuilder"/> class.
@@ -37,12 +35,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="driver">The <see cref="IWebDriver"/> object on which the actions built will be performed.</param>
         public DefaultActionSequenceBuilder(IWebDriver driver)
         {
-            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
-            if (inputDevicesDriver != null)
-            {
-                this.keyboard = inputDevicesDriver.Keyboard;
-                this.mouse = inputDevicesDriver.Mouse;
-            }
+            this.actionGenerator = new Actions(driver);
         }
 
         #region IActionSequenceGenerator Members
@@ -68,8 +61,7 @@ namespace OpenQA.Selenium.Interactions
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public IActionSequenceBuilder KeyDown(IWebElement element, string theKey)
         {
-            ILocatable target = element as ILocatable;
-            this.action.AddAction(new KeyDownAction(this.keyboard, this.mouse, target, theKey));
+            this.actionGenerator.KeyDown(element, theKey);
             return this;
         }
 
@@ -95,8 +87,7 @@ namespace OpenQA.Selenium.Interactions
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public IActionSequenceBuilder KeyUp(IWebElement element, string theKey)
         {
-            ILocatable target = element as ILocatable;
-            this.action.AddAction(new KeyUpAction(this.keyboard, this.mouse, target, theKey));
+            this.actionGenerator.KeyUp(element, theKey);
             return this;
         }
 
@@ -118,8 +109,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
         public IActionSequenceBuilder SendKeys(IWebElement element, string keysToSend)
         {
-            ILocatable target = element as ILocatable;
-            this.action.AddAction(new SendKeysAction(this.keyboard, this.mouse, target, keysToSend));
+            this.actionGenerator.SendKeys(element, keysToSend);
             return this;
         }
 
@@ -130,8 +120,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
         public IActionSequenceBuilder ClickAndHold(IWebElement onElement)
         {
-            ILocatable target = onElement as ILocatable;
-            this.action.AddAction(new ClickAndHoldAction(this.mouse, target));
+            this.actionGenerator.Click(onElement);
             return this;
         }
 
@@ -142,8 +131,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
         public IActionSequenceBuilder Release(IWebElement onElement)
         {
-            ILocatable target = onElement as ILocatable;
-            this.action.AddAction(new ButtonReleaseAction(this.mouse, target));
+            this.actionGenerator.Release(onElement);
             return this;
         }
 
@@ -154,8 +142,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
         public IActionSequenceBuilder Click(IWebElement onElement)
         {
-            ILocatable target = onElement as ILocatable;
-            this.action.AddAction(new ClickAction(this.mouse, target));
+            this.actionGenerator.Click(onElement);
             return this;
         }
 
@@ -175,8 +162,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
         public IActionSequenceBuilder DoubleClick(IWebElement onElement)
         {
-            ILocatable target = onElement as ILocatable;
-            this.action.AddAction(new DoubleClickAction(this.mouse, target));
+            this.actionGenerator.DoubleClick(onElement);
             return this;
         }
 
@@ -187,8 +173,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
         public IActionSequenceBuilder MoveToElement(IWebElement toElement)
         {
-            ILocatable target = toElement as ILocatable;
-            this.action.AddAction(new MoveMouseAction(this.mouse, target));
+            this.actionGenerator.MoveToElement(toElement);
             return this;
         }
 
@@ -201,8 +186,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
         public IActionSequenceBuilder MoveToElement(IWebElement toElement, int offsetX, int offsetY)
         {
-            ILocatable target = toElement as ILocatable;
-            this.action.AddAction(new MoveToOffsetAction(this.mouse, target, offsetX, offsetY));
+            this.actionGenerator.MoveToElement(toElement, offsetX, offsetY);
             return this;
         }
 
@@ -224,8 +208,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
         public IActionSequenceBuilder ContextClick(IWebElement onElement)
         {
-            ILocatable target = onElement as ILocatable;
-            this.action.AddAction(new ContextClickAction(this.mouse, target));
+            this.actionGenerator.ContextClick(onElement);
             return this;
         }
 
@@ -237,12 +220,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
         public IActionSequenceBuilder DragAndDrop(IWebElement source, IWebElement target)
         {
-            ILocatable startElement = source as ILocatable;
-            ILocatable endElement = target as ILocatable;
-
-            this.action.AddAction(new ClickAndHoldAction(this.mouse, startElement));
-            this.action.AddAction(new MoveMouseAction(this.mouse, endElement));
-            this.action.AddAction(new ButtonReleaseAction(this.mouse, endElement));
+            this.actionGenerator.DragAndDrop(source, target);
             return this;
         }
 
@@ -255,11 +233,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
         public IActionSequenceBuilder DragAndDropToOffset(IWebElement source, int offsetX, int offsetY)
         {
-            ILocatable startElement = source as ILocatable;
-
-            this.action.AddAction(new ClickAndHoldAction(this.mouse, startElement));
-            this.action.AddAction(new MoveToOffsetAction(this.mouse, null, offsetX, offsetY));
-            this.action.AddAction(new ButtonReleaseAction(this.mouse, null));
+            this.actionGenerator.DragAndDropToOffset(source, offsetX, offsetY);
             return this;
         }
 
@@ -269,9 +243,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A composite <see cref="IAction"/> which can be used to perform the actions.</returns>
         public IAction Build()
         {
-            CompositeAction toReturn = this.action;
-            this.action = null;
-            return toReturn;
+            return this.actionGenerator.Build();
         }
         #endregion
     }

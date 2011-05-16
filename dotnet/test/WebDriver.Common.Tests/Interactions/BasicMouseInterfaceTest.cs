@@ -62,11 +62,13 @@ namespace OpenQA.Selenium.Interactions
             IWebElement toDrag = driver.FindElement(By.Id("draggable"));
             IWebElement dropInto = driver.FindElement(By.Id("droppable"));
 
-            IAction holdDrag = GetBuilder().ClickAndHold(toDrag).Build();
+            Actions actionProvider = new Actions(driver);
 
-            IAction move = GetBuilder().MoveToElement(dropInto).Build();
+            IAction holdDrag = actionProvider.ClickAndHold(toDrag).Build();
 
-            IAction drop = GetBuilder().Release(dropInto).Build();
+            IAction move = actionProvider.MoveToElement(dropInto).Build();
+
+            IAction drop = actionProvider.Release(dropInto).Build();
 
             holdDrag.Perform();
             move.Perform();
@@ -86,7 +88,8 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement toDoubleClick = driver.FindElement(By.Id("doubleClickField"));
 
-            IAction dblClick = GetBuilder().DoubleClick(toDoubleClick).Build();
+            Actions actionProvider = new Actions(driver);
+            IAction dblClick = actionProvider.DoubleClick(toDoubleClick).Build();
 
             dblClick.Perform();
             Assert.AreEqual("DoubleClicked", toDoubleClick.GetAttribute("value"));
@@ -100,7 +103,8 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement toContextClick = driver.FindElement(By.Id("doubleClickField"));
 
-            IAction contextClick = GetBuilder().ContextClick(toContextClick).Build();
+            Actions actionProvider = new Actions(driver);
+            IAction contextClick = actionProvider.ContextClick(toContextClick).Build();
 
             contextClick.Perform();
             Assert.AreEqual("ContextClicked", toContextClick.GetAttribute("value"));
@@ -118,7 +122,8 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement toClick = driver.FindElement(By.Id("clickField"));
 
-            IAction contextClick = GetBuilder().MoveToElement(toClick).Click().Build();
+            Actions actionProvider = new Actions(driver);
+            IAction contextClick = actionProvider.MoveToElement(toClick).Click().Build();
 
             contextClick.Perform();
             Assert.AreEqual("Clicked", toClick.GetAttribute("value"), "Value should change to Clicked.");
@@ -134,9 +139,10 @@ namespace OpenQA.Selenium.Interactions
         {
             driver.Url = javascriptPage;
 
+            Actions actionProvider = new Actions(driver);
             try
             {
-                IAction contextClick = GetBuilder().MoveToElement(null).Build();
+                IAction contextClick = actionProvider.MoveToElement(null).Build();
 
                 contextClick.Perform();
                 Assert.Fail("Shouldn't be allowed to click on null element.");
@@ -148,7 +154,7 @@ namespace OpenQA.Selenium.Interactions
 
             try
             {
-                GetBuilder().Click().Build().Perform();
+                actionProvider.Click().Build().Perform();
                 Assert.Fail("Shouldn't be allowed to click without a context.");
             }
             catch (Exception)
@@ -166,13 +172,14 @@ namespace OpenQA.Selenium.Interactions
             IWebElement toDrag = driver.FindElement(By.Id("rightitem-3"));
             IWebElement dragInto = driver.FindElement(By.Id("sortable1"));
 
-            IAction holdItem = GetBuilder().ClickAndHold(toDrag).Build();
+            Actions actionProvider = new Actions(driver);
+            IAction holdItem = actionProvider.ClickAndHold(toDrag).Build();
 
-            IAction moveToSpecificItem = GetBuilder().MoveToElement(driver.FindElement(By.Id("leftitem-4"))).Build();
+            IAction moveToSpecificItem = actionProvider.MoveToElement(driver.FindElement(By.Id("leftitem-4"))).Build();
 
-            IAction moveToOtherList = GetBuilder().MoveToElement(dragInto).Build();
+            IAction moveToOtherList = actionProvider.MoveToElement(dragInto).Build();
 
-            IAction drop = GetBuilder().Release(dragInto).Build();
+            IAction drop = actionProvider.Release(dragInto).Build();
 
             Assert.AreEqual("Nothing happened.", dragReporter.Text);
 
@@ -195,12 +202,6 @@ namespace OpenQA.Selenium.Interactions
             {
                 return false;
             }
-        }
-
-        private IActionSequenceBuilder GetBuilder()
-        {
-            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
-            return inputDevicesDriver.ActionBuilder;
         }
     }
 }

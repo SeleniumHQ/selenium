@@ -25,6 +25,7 @@ namespace OpenQA.Selenium.Interactions
     /// <summary>
     /// Provides methods to build a complex sequence of user interactions.
     /// </summary>
+    [Obsolete("Use the Actions class directly instead.")]
     public interface IActionSequenceBuilder
     {
         //// Keyboard-related actions.

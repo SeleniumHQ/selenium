@@ -20,7 +20,8 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement keyReporter = driver.FindElement(By.Id("keyReporter"));
 
-            IAction sendLowercase = GetBuilder().SendKeys(keyReporter, "abc def").Build();
+            Actions actionProvider = new Actions(driver);
+            IAction sendLowercase = actionProvider.SendKeys(keyReporter, "abc def").Build();
 
             sendLowercase.Perform();
 
@@ -40,7 +41,8 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
 
-            IAction pressShift = GetBuilder().KeyDown(keysEventInput, Keys.Shift).Build();
+            Actions actionProvider = new Actions(driver);
+            IAction pressShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
 
             pressShift.Perform();
 
@@ -60,7 +62,8 @@ namespace OpenQA.Selenium.Interactions
             driver.Url = javascriptPage;
             IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
 
-            IAction pressShift = GetBuilder().KeyDown(keysEventInput, Keys.Shift).Build();
+            Actions actionProvider = new Actions(driver);
+            IAction pressShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
             pressShift.Perform();
 
             IWebElement keyLoggingElement = driver.FindElement(By.Id("result"));
@@ -68,7 +71,7 @@ namespace OpenQA.Selenium.Interactions
             string eventsText = keyLoggingElement.Text;
             Assert.IsTrue(keyLoggingElement.Text.EndsWith("keydown"), "Key down should be isolated for this test to be meaningful. Got events: " + eventsText);
 
-            IAction releaseShift = GetBuilder().KeyUp(keysEventInput, Keys.Shift).Build();
+            IAction releaseShift = actionProvider.KeyUp(keysEventInput, Keys.Shift).Build();
 
             releaseShift.Perform();
 
@@ -90,13 +93,14 @@ namespace OpenQA.Selenium.Interactions
 
             keysEventInput.Click();
 
-            IAction pressShift = GetBuilder().KeyDown(keysEventInput, Keys.Shift).Build();
+            Actions actionProvider = new Actions(driver);
+            IAction pressShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
             pressShift.Perform();
 
-            IAction sendLowercase = GetBuilder().SendKeys(keysEventInput, "ab").Build();
+            IAction sendLowercase = actionProvider.SendKeys(keysEventInput, "ab").Build();
             sendLowercase.Perform();
 
-            IAction releaseShift = GetBuilder().KeyUp(keysEventInput, Keys.Shift).Build();
+            IAction releaseShift = actionProvider.KeyUp(keysEventInput, Keys.Shift).Build();
             releaseShift.Perform();
 
             IWebElement keyLoggingElement = driver.FindElement(By.Id("result"));
@@ -115,7 +119,8 @@ namespace OpenQA.Selenium.Interactions
         {
             driver.Url = bodyTypingPage;
 
-            IAction someKeys = GetBuilder().SendKeys("ab").Build();
+            Actions actionProvider = new Actions(driver);
+            IAction someKeys = actionProvider.SendKeys("ab").Build();
             someKeys.Perform();
 
             IWebElement bodyLoggingElement = driver.FindElement(By.Id("body_result"));
@@ -139,17 +144,12 @@ namespace OpenQA.Selenium.Interactions
 
             keyReporter.Click();
 
-            IAction sendLowercase = GetBuilder().SendKeys("abc def").Build();
+            Actions actionProvider = new Actions(driver);
+            IAction sendLowercase = actionProvider.SendKeys("abc def").Build();
 
             sendLowercase.Perform();
 
             Assert.AreEqual("abc def", keyReporter.GetAttribute("value"));
-        }
-
-        private IActionSequenceBuilder GetBuilder()
-        {
-            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
-            return inputDevicesDriver.ActionBuilder;
         }
     }
 }

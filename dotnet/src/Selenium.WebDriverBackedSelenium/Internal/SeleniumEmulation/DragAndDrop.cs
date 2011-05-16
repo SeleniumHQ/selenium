@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 
 namespace Selenium.Internal.SeleniumEmulation
 {
@@ -36,8 +37,8 @@ namespace Selenium.Internal.SeleniumEmulation
             int deltaY = int.Parse(parts[1], CultureInfo.InvariantCulture);
 
             IWebElement element = this.finder.FindElement(driver, locator);
-            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
-            inputDevicesDriver.ActionBuilder.DragAndDropToOffset(element, deltaX, deltaY);
+            Actions actionBuilder = new Actions(driver);
+            actionBuilder.DragAndDropToOffset(element, deltaX, deltaY).Perform();
 
             return null;
         }
