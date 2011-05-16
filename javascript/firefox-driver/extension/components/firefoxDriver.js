@@ -697,16 +697,6 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
       throw new WebDriverError(ErrorCode.NO_SUCH_FRAME,
           'Element is not a frame element: ' + element.tagName);
     }
-//
-//    var numFrames = currentWindow.frames.length;
-//    for (var j = 0; j < numFrames; ++j) {
-//      var frame = currentWindow.frames[j];
-//      if (frame == newWindow) {
-//        Logger.dumpn("...switching to frame by index: " + j);
-//        newWindow = frame;
-//        break;
-//      }
-//    }
   }
 
   if (newWindow) {
