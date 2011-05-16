@@ -49,8 +49,8 @@ module Selenium
 
         begin
           sock.connect_nonblock sockaddr
-        rescue Errno::EINPROGRESS
-          wait
+        rescue Errno::EINPROGRESS, Errno::EALREADY
+          wait # we should select() here, but JRuby has problems..
           retry
         rescue *CONNECTED_ERRORS
           # yay!
