@@ -685,11 +685,28 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
         currentWindow.document);
 
     if (/^i?frame$/i.test(element.tagName)) {
-      newWindow = element.contentWindow;
+      // Each session maintains a weak reference to the window it is currently
+      // focused on. If we set this reference using the |contentWindow|
+      // property, we may prematurely lose our window reference. This does not
+      // appear to happen if we cross reference the frame's |contentWindow|
+      // with the current window's |frames| nsIDOMWindowCollection.
+      newWindow = goog.array.find(currentWindow.frames, function(frame) {
+        return frame == element.contentWindow;
+      });
     } else {
       throw new WebDriverError(ErrorCode.NO_SUCH_FRAME,
           'Element is not a frame element: ' + element.tagName);
     }
+//
+//    var numFrames = currentWindow.frames.length;
+//    for (var j = 0; j < numFrames; ++j) {
+//      var frame = currentWindow.frames[j];
+//      if (frame == newWindow) {
+//        Logger.dumpn("...switching to frame by index: " + j);
+//        newWindow = frame;
+//        break;
+//      }
+//    }
   }
 
   if (newWindow) {
