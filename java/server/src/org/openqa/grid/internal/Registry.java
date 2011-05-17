@@ -41,39 +41,28 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
  */
 public class Registry {
 
-  public static final String KEY = Registry.class.getName();
+	public static final String KEY = Registry.class.getName();
 
 	private Prioritizer prioritizer = null;
 
 	private static final Logger log = Logger.getLogger(Registry.class.getName());
 
-  private List<RequestHandler> newSessionRequests = new ArrayList<RequestHandler>();
+	private List<RequestHandler> newSessionRequests = new ArrayList<RequestHandler>();
 
 	private static Registry INSTANCE = null;
 	private Hub hub;
 
-	// lock for anything modifying the tests session currently running on this registry.
+	// lock for anything modifying the tests session currently running on this
+	// registry.
 	private final ReentrantLock lock = new ReentrantLock();
 	private final Condition testSessionAvailable = lock.newCondition();
 
 	private final Set<RemoteProxy> proxies = new CopyOnWriteArraySet<RemoteProxy>();
 	private final Set<TestSession> activeTestSessions = new CopyOnWriteArraySet<TestSession>();
-	private Thread matcherThread;
+	private Matcher matcherThread = new Matcher();
 	private boolean stop = false;
 
-
-  private Registry() {
-		matcherThread = new Thread(new Runnable() {
-			public void run() {
-				try {
-					lock.lock();
-					assignRequestToProxy();
-				} finally {
-					lock.unlock();
-				}
-
-			}
-		});
+	private Registry() {
 		matcherThread.start();
 
 		// freynaud : TODO
@@ -84,6 +73,47 @@ public class Registry {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * iterates the queue of incoming new session request and assign them to
+	 * proxy after they've been sorted by priority, with priority defined by the
+	 * prioritizer.
+	 * 
+	 */
+	class Matcher extends Thread {
+		private boolean cleanState = true;
+
+		@Override
+		public void run() {
+			try {
+				lock.lock();
+				assignRequestToProxy();
+			} finally {
+				lock.unlock();
+			}
+		}
+
+		/**
+		 * let the matcher know that something has been modified in the
+		 * registry, and that the current iteration of incoming new session
+		 * request should be stop to take the change into account. The change
+		 * could be either a new Proxy added, or a session released
+		 * 
+		 * @param ok
+		 */
+		public void registryHasBeenModified(boolean ok) {
+			this.cleanState = ok;
+		}
+
+		/**
+		 * @return true if the registry hasn't been modified since the matcher
+		 *         started the current iteration.
+		 */
+		public boolean isRegistryClean() {
+			return cleanState;
+		}
+
 	}
 
 	public void stop() {
@@ -133,22 +163,52 @@ public class Registry {
 		}
 	}
 
+	class QueueIsStateException extends Exception {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+	}
+
+	/**
+	 * iterates the list of incoming session request to find a potential match
+	 * in the list of proxies. If something changes in the registry, the matcher
+	 * iteration is stopped to account for that change.
+	 */
 	public void assignRequestToProxy() {
 
+		boolean force = false;
 		while (!stop) {
 			try {
-				// testSessionAvailable.await(250,TimeUnit.MILLISECONDS);
-				testSessionAvailable.await();
+				matcherThread.registryHasBeenModified(true);
+				if (force) {
+					force = false;
+				} else {
+					testSessionAvailable.await();
+				}
 				if (prioritizer != null) {
 					Collections.sort(newSessionRequests);
 				}
 				List<RequestHandler> matched = new ArrayList<RequestHandler>();
 				for (RequestHandler request : newSessionRequests) {
+
+					// sort the proxies first, by default by total number of
+					// test running, to avoid putting all the load of the first
+					// proxies.
 					List<RemoteProxy> sorted = new ArrayList<RemoteProxy>(proxies);
 					Collections.sort(sorted);
+
 					for (RemoteProxy proxy : sorted) {
+						if (!matcherThread.isRegistryClean()) {
+							throw new QueueIsStateException();
+						}
 						TestSession session = proxy.getNewSession(request.getDesiredCapabilities());
 						if (session != null) {
+							if (!matcherThread.isRegistryClean()) {
+								throw new QueueIsStateException();
+							}
 							matched.add(request);
 							boolean ok = activeTestSessions.add(session);
 							request.bindSession(session);
@@ -165,8 +225,12 @@ public class Registry {
 						log.severe("Bug removing request " + req);
 					}
 				}
+
 			} catch (InterruptedException e) {
 				log.info("Shutting down registry.");
+			} catch (QueueIsStateException q) {
+				log.fine("something modified the queue while the matcher was looking at it.Restarting the iteration from 0.");
+				force = true;
 			}
 		}
 
@@ -181,6 +245,7 @@ public class Registry {
 	private void release(TestSession session) {
 		try {
 			lock.lock();
+			matcherThread.registryHasBeenModified(false);
 			boolean removed = activeTestSessions.remove(session);
 			if (removed) {
 				fireEventNewSessionAvailable();
@@ -232,24 +297,26 @@ public class Registry {
 		try {
 			lock.lock();
 
-            if (proxies.contains(proxy)) {
-                log.warning(String.format("Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
+			if (proxies.contains(proxy)) {
+				log.warning(String.format("Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
 
-                // Find the original proxy.  While the supplied one is logically equivalent, it's a fresh object with
-                // an empty TestSlot list.  Thus there's a disconnection between this proxy and the one associated with
-                // any active test sessions.
-                for (RemoteProxy p : proxies) {
-                    if (p.equals(proxy)) {
-                    	proxies.remove(p);
-                        for (TestSlot slot : p.getTestSlots()) {
-                        	// TODO freynaud slot.getSession().terminate();
-                            slot.release();
-                        }
-                      
-                    }
-                }
-                //return;
-            }
+				// Find the original proxy. While the supplied one is logically
+				// equivalent, it's a fresh object with
+				// an empty TestSlot list. Thus there's a disconnection between
+				// this proxy and the one associated with
+				// any active test sessions.
+				for (RemoteProxy p : proxies) {
+					if (p.equals(proxy)) {
+						proxies.remove(p);
+						for (TestSlot slot : p.getTestSlots()) {
+							// TODO freynaud slot.getSession().terminate();
+							slot.release();
+						}
+
+					}
+				}
+				// return;
+			}
 
 			if (registeringProxies.contains(proxy)) {
 				log.warning(String.format("Proxy '%s' is already queued for registration.", proxy));
@@ -257,8 +324,9 @@ public class Registry {
 				return;
 			}
 
-		    registeringProxies.add(proxy);
+			registeringProxies.add(proxy);
 			proxy.setRegistry(this);
+			matcherThread.registryHasBeenModified(false);
 			fireEventNewSessionAvailable();
 		} finally {
 			lock.unlock();
@@ -279,8 +347,8 @@ public class Registry {
 			lock.lock();
 			registeringProxies.remove(proxy);
 			if (listenerOk) {
-				if (proxy instanceof SelfHealingProxy){
-					((SelfHealingProxy)proxy).startPolling();
+				if (proxy instanceof SelfHealingProxy) {
+					((SelfHealingProxy) proxy).startPolling();
 				}
 				proxies.add(proxy);
 				fireEventNewSessionAvailable();
