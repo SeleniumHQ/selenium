@@ -667,7 +667,21 @@ BrowserBot.prototype.setOpenLocation = function(win, loc) {
             }
         } catch (e) {} // DGF don't know why, but this often fails
     } else {
-        win.location.href = loc;
+        try {
+            win.location.href = loc;
+        } catch (err) {
+            //Samit: Fix: SeleniumIDE under Firefox 4 breaks if you try to open chrome URL on (XPCNativeWrapper) unwrapped window objects
+            if (err.name && err.name == "NS_ERROR_FAILURE") {
+                //LOG.debug("wrapping and retrying");
+                try {
+                    XPCNativeWrapper(win).location.href = loc;  //wrap it and try again
+                } catch(e) {
+                    throw err;  //throw the original error, not this one
+                }
+            } else {
+                throw err;  //throw the original error, since we cannot fix it
+            }
+        }
     }
 };
 
@@ -875,6 +889,8 @@ BrowserBot.prototype._getFrameElementByName = function(name, doc, win) {
 BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker) {
     LOG.debug("pollForLoad original (" + marker + "): " + originalHref);
     try {
+        //Samit: Fix: open command sometimes fails if current url is chrome and new is not
+        windowObject = core.firefox.unwrap(windowObject);
         if (this._windowClosed(windowObject)) {
             LOG.debug("pollForLoad WINDOW CLOSED (" + marker + ")");
             delete this.pollingForLoad[marker];
