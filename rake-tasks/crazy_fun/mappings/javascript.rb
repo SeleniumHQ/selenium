@@ -300,6 +300,7 @@ module Javascript
             "-f \"--js_output_file=#{output}\" " <<
             "-f \"--output_wrapper='#{wrapper}'\" " <<
             "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" " <<
+            "-f \"--define goog.NATIVE_ARRAY_PROTOTYPES=false\" " <<
             "#{defines} " <<
             "-p third_party/closure/goog/ " <<
             "-p javascript " <<
