@@ -26,6 +26,7 @@ goog.provide('goog.date.weekDay');
 
 goog.require('goog.asserts');
 goog.require('goog.date.DateLike');
+goog.require('goog.i18n.DateTimeSymbols');
 goog.require('goog.string');
 
 
@@ -724,13 +725,13 @@ goog.date.Date = function(opt_year, opt_month, opt_date) {
 };
 
 
-// TODO(anatol): It should use DateTimeSymbols
 /**
  * First day of week. 0 = Mon, 6 = Sun.
  * @type {number}
  * @private
  */
-goog.date.Date.prototype.firstDayOfWeek_ = goog.date.weekDay.MON;
+goog.date.Date.prototype.firstDayOfWeek_ =
+    goog.i18n.DateTimeSymbols.FIRSTDAYOFWEEK;
 
 
 /**
@@ -738,7 +739,8 @@ goog.date.Date.prototype.firstDayOfWeek_ = goog.date.weekDay.MON;
  * @type {number}
  * @private
  */
-goog.date.Date.prototype.firstWeekCutOffDay_ = goog.date.weekDay.THU;
+goog.date.Date.prototype.firstWeekCutOffDay_ =
+    goog.i18n.DateTimeSymbols.FIRSTWEEKCUTOFFDAY;
 
 
 /**

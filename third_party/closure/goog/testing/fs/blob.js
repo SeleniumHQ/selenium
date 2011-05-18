@@ -30,24 +30,28 @@ goog.provide('goog.testing.fs.Blob');
  */
 goog.testing.fs.Blob = function(opt_data, opt_type) {
   /**
-   * The string data encapsulated by the blob.
-   * @type {string}
-   * @private
-   */
-  this.data_ = opt_data || '';
-
-  /**
-   * @see http://www.w3.org/TR/FileAPI/#dfn-size
-   * @type {number}
-   */
-  this.size = this.data_.length;
-
-  /**
    * @see http://www.w3.org/TR/FileAPI/#dfn-type
    * @type {string}
    */
   this.type = opt_type || '';
+
+  this.setDataInternal(opt_data || '');
 };
+
+
+/**
+ * The string data encapsulated by the blob.
+ * @type {string}
+ * @private
+ */
+goog.testing.fs.Blob.prototype.data_;
+
+
+/**
+ * @see http://www.w3.org/TR/FileAPI/#dfn-size
+ * @type {number}
+ */
+goog.testing.fs.Blob.prototype.size;
 
 
 /**
@@ -71,4 +75,16 @@ goog.testing.fs.Blob.prototype.slice = function(
  */
 goog.testing.fs.Blob.prototype.toString = function() {
   return this.data_;
+};
+
+
+/**
+ * Sets the internal contents of the blob. This should only be called by other
+ * functions inside the {@code goog.testing.fs} namespace.
+ *
+ * @param {string} data
+ */
+goog.testing.fs.Blob.prototype.setDataInternal = function(data) {
+  this.data_ = data;
+  this.size = data.length;
 };

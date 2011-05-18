@@ -333,10 +333,10 @@ goog.ui.SliderBase.prototype.handleKeyDown_ = function(e) {
   var handled = true;
   switch (e.keyCode) {
     case goog.events.KeyCodes.HOME:
-      this.animatedSetValue_(this.getMinimum());
+      this.animatedSetValue(this.getMinimum());
       break;
     case goog.events.KeyCodes.END:
-      this.animatedSetValue_(this.getMaximum());
+      this.animatedSetValue(this.getMaximum());
       break;
     case goog.events.KeyCodes.PAGE_UP:
       this.moveThumbs(this.getBlockIncrement());
@@ -382,7 +382,7 @@ goog.ui.SliderBase.prototype.handleMouseDown_ = function(e) {
       !goog.dom.contains(this.extentThumb, target)) {
     if (this.moveToPointEnabled_) {
       // just set the value directly based on the position of the click
-      this.animatedSetValue_(this.getValueFromMousePosition_(e));
+      this.animatedSetValue(this.getValueFromMousePosition_(e));
     } else {
       // start a timer that incrementally moves the handle
       this.startBlockIncrementing_(e);
@@ -607,10 +607,10 @@ goog.ui.SliderBase.prototype.setThumbPosition_ = function(thumb, position) {
   if (thumb == this.extentThumb &&
       position <= this.rangeModel.getMaximum() &&
       position >= this.rangeModel.getValue() + this.minExtent_) {
-      // For the case where there is only one thumb, we don't want to set the
-      // extent twice, causing two change events, so delay setting until we know
-      // if there will be a subsequent change.
-      intermediateExtent = position - this.rangeModel.getValue();
+    // For the case where there is only one thumb, we don't want to set the
+    // extent twice, causing two change events, so delay setting until we know
+    // if there will be a subsequent change.
+    intermediateExtent = position - this.rangeModel.getValue();
   }
 
   // Make sure the minThumb stays within minimum <= minThumb <= maxThumb
@@ -763,7 +763,7 @@ goog.ui.SliderBase.prototype.updateUi_ = function() {
     var minCoord = this.getThumbCoordinateForValue_(
         this.getThumbPosition_(this.valueThumb));
     var maxCoord = this.getThumbCoordinateForValue_(
-         this.getThumbPosition_(this.extentThumb));
+        this.getThumbPosition_(this.extentThumb));
 
     if (this.orientation_ == goog.ui.SliderBase.Orientation.VERTICAL) {
       this.valueThumb.style.top = minCoord.y + 'px';
@@ -810,9 +810,8 @@ goog.ui.SliderBase.prototype.getThumbCoordinateForValue_ = function(val) {
 /**
  * Sets the value and starts animating the handle towards that position.
  * @param {number} v Value to set and animate to.
- * @private
  */
-goog.ui.SliderBase.prototype.animatedSetValue_ = function(v) {
+goog.ui.SliderBase.prototype.animatedSetValue = function(v) {
   // the value might be out of bounds
   v = Math.min(this.getMaximum(), Math.max(v, this.getMinimum()));
 
@@ -903,6 +902,14 @@ goog.ui.SliderBase.prototype.disposeInternal = function() {
   if (this.mouseWheelHandler_) {
     this.mouseWheelHandler_.dispose();
     delete this.mouseWheelHandler_;
+  }
+  if (this.valueDragger_) {
+    this.valueDragger_.dispose();
+    delete this.valueDragger_;
+  }
+  if (this.extentDragger_) {
+    this.extentDragger_.dispose();
+    delete this.extentDragger_;
   }
 };
 
@@ -1040,7 +1047,7 @@ goog.ui.SliderBase.prototype.getExtent = function() {
 goog.ui.SliderBase.prototype.setExtent = function(extent) {
   // Set the position through the thumb method to enforce constraints.
   this.setThumbPosition_(this.extentThumb, (this.rangeModel.getValue() +
-                                             extent));
+                                            extent));
 };
 
 

@@ -20,6 +20,7 @@
 goog.provide('goog.window');
 
 goog.require('goog.string');
+goog.require('goog.userAgent');
 
 
 /**
@@ -112,11 +113,28 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
     // request headers.
     newWin = parentWin.open('', target, optionString);
     if (newWin) {
-      var encodedHref = href.replace(/;/g, '%3B');
-      // Have to encode semicolon as it is a separator in this case.
-      encodedHref = goog.string.htmlEscape(encodedHref);
+      if (goog.userAgent.IE) {
+        // IE has problems parsing the content attribute if the url contains
+        // a semicolon. We can fix this by adding quotes around the url, but
+        // then we can't parse quotes in the URL correctly. We take a
+        // best-effort approach.
+        //
+        // If the URL has semicolons, wrap it in single quotes to protect
+        // the semicolons.
+        // If the URL has semicolons and single quotes, url-encode the single
+        // quotes as well.
+        //
+        // This is imperfect. Notice that both ' and ; are reserved characters
+        // in URIs, so this could do the wrong thing, but at least it will
+        // do the wrong thing in only rare cases.
+        // ugh.
+        if (href.indexOf(';') != -1) {
+          href = "'" + href.replace(/'/g, '%27') + "'";
+        }
+      }
+      href = goog.string.htmlEscape(href);
       newWin.document.write('<META HTTP-EQUIV="refresh" content="0; url=' +
-                            encodedHref + '">');
+                            href + '">');
       newWin.document.close();
     }
   } else {

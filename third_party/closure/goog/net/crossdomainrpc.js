@@ -74,6 +74,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.json');
 goog.require('goog.net.EventType');
+goog.require('goog.net.HttpStatus');
 goog.require('goog.userAgent');
 
 
@@ -425,13 +426,12 @@ goog.net.CrossDomainRpc.prototype.sendRequest =
   requestFrameDoc.forms[0].submit();
   requestFrameDoc = null;
 
-  this.loadListenerKey_ = goog.events.listen(requestFrame,
-      goog.events.EventType.LOAD, function() {
+  this.loadListenerKey_ = goog.events.listen(
+      requestFrame, goog.events.EventType.LOAD, function() {
         goog.net.CrossDomainRpc.logger_.log(goog.debug.Logger.Level.FINE,
             'response ready');
         this.responseReady_ = true;
-      }, false, this
-  );
+      }, false, this);
 
   this.receiveResponse_();
 };
@@ -539,8 +539,9 @@ goog.net.CrossDomainRpc.prototype.detectResponse_ =
             'xd response timed out');
         window.clearInterval(responseDetectorHandle);
 
-        this.status = 500;
+        this.status = goog.net.HttpStatus.INTERNAL_SERVER_ERROR;
         this.responseText = 'response timed out';
+
         this.dispatchEvent(goog.net.EventType.READY);
         this.dispatchEvent(goog.net.EventType.ERROR);
         this.dispatchEvent(goog.net.EventType.COMPLETE);
@@ -606,8 +607,8 @@ goog.net.CrossDomainRpc.prototype.getResponseJson = function() {
 goog.net.CrossDomainRpc.prototype.isSuccess = function() {
   // Definition similar to goog.net.XhrIo.prototype.isSuccess.
   switch (this.status) {
-    case 200:       // Http Success
-    case 304:       // Http Cache
+    case goog.net.HttpStatus.OK:
+    case goog.net.HttpStatus.NOT_MODIFIED:
       return true;
 
     default:

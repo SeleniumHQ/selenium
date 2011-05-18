@@ -34,30 +34,30 @@ goog.require('goog.math.Coordinate3');
  * Inherits from goog.math.Coordinate3 so that a Vec3 may be passed in to any
  * function that requires a Coordinate.
  *
- * @param {number=} opt_x The x value for the vector.
- * @param {number=} opt_y The y value for the vector.
- * @param {number=} opt_z The z value for the vector.
+ * @param {number} x The x value for the vector.
+ * @param {number} y The y value for the vector.
+ * @param {number} z The z value for the vector.
  * @constructor
  * @extends {goog.math.Coordinate3}
  */
-goog.math.Vec3 = function(opt_x, opt_y, opt_z) {
+goog.math.Vec3 = function(x, y, z) {
   /**
    * X-value
    * @type {number}
    */
-  this.x = Number(opt_x) || 0;
+  this.x = x;
 
   /**
    * Y-value
    * @type {number}
    */
-  this.y = Number(opt_y) || 0;
+  this.y = y;
 
   /**
    * Z-value
    * @type {number}
    */
-  this.z = Number(opt_z) || 0;
+  this.z = z;
 };
 goog.inherits(goog.math.Vec3, goog.math.Coordinate3);
 
@@ -232,25 +232,6 @@ goog.math.Vec3.squaredDistance = goog.math.Coordinate3.squaredDistance;
 
 
 /**
- * Returns a new 3x1 matrix object from a given coordinate.
- *
- * @param {goog.math.Coordinate3} a The coordinate.
- * @return {!goog.math.Matrix} A new matrix object.
- */
-goog.math.Vec3.toMatrix3x1 = goog.math.Coordinate3.toMatrix3x1;
-
-
-/**
- * Returns a new 4x1 matrix object from a given coordinate.
- *
- * @param {goog.math.Coordinate3} a The coordinate.
- * @return {!goog.math.Matrix} A new matrix object.
- */
-
-goog.math.Vec3.toMatrix4x1 = goog.math.Coordinate3.toMatrix4x1;
-
-
-/**
  * Compares vectors for equality.
  *
  * @param {goog.math.Vec3} a The first vector.
@@ -324,4 +305,3 @@ goog.math.Vec3.lerp = function(a, b, x) {
                             goog.math.lerp(a.y, b.y, x),
                             goog.math.lerp(a.z, b.z, x));
 };
-

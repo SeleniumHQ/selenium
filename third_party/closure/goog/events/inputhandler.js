@@ -87,7 +87,7 @@ goog.events.InputHandler = function(element) {
    * @type {goog.events.EventHandler}
    * @private
    */
-  this.eventHandler_ = new goog.events.EventHandler();
+  this.eventHandler_ = new goog.events.EventHandler(this);
   this.eventHandler_.listen(
       this.element_,
       this.inputEventEmulation_ ? ['keydown', 'paste', 'cut', 'drop'] : 'input',

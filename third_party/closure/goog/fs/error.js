@@ -21,6 +21,7 @@ goog.provide('goog.fs.Error');
 goog.provide('goog.fs.Error.ErrorCode');
 
 goog.require('goog.debug.Error');
+goog.require('goog.string');
 
 
 
@@ -35,55 +36,16 @@ goog.require('goog.debug.Error');
  * @extends {goog.debug.Error}
  */
 goog.fs.Error = function(code, action) {
-  goog.base(this);
-
+  goog.base(this, goog.string.subs('Error %s: %s', action,
+                                   goog.fs.Error.getDebugMessage(code)));
   this.code = /** @type {goog.fs.Error.ErrorCode} */ (code);
-  this.message = 'Error ' + action;
-
-  switch (this.code) {
-    case goog.fs.Error.ErrorCode.NOT_FOUND:
-      this.message += ': File or directory not found';
-      break;
-    case goog.fs.Error.ErrorCode.SECURITY:
-      this.message += ': Insecure or disallowed operation';
-      break;
-    case goog.fs.Error.ErrorCode.ABORT:
-      this.message += ': Operation aborted';
-      break;
-    case goog.fs.Error.ErrorCode.NOT_READABLE:
-      this.message += ': File or directory not readable';
-      break;
-    case goog.fs.Error.ErrorCode.ENCODING:
-      this.message += ': Invalid encoding';
-      break;
-    case goog.fs.Error.ErrorCode.NO_MODIFICATION_ALLOWED:
-      this.message += ': Cannot modify file or directory';
-      break;
-    case goog.fs.Error.ErrorCode.INVALID_STATE:
-      this.message += ': Invalid state';
-      break;
-    case goog.fs.Error.ErrorCode.SYNTAX:
-      this.message += ': Invalid line-ending specifier';
-      break;
-    case goog.fs.Error.ErrorCode.INVALID_MODIFICATION:
-      this.message += ': Invalid modification';
-      break;
-    case goog.fs.Error.ErrorCode.QUOTA_EXCEEDED:
-      this.message += ': Quota exceeded';
-      break;
-    case goog.fs.Error.ErrorCode.TYPE_MISMATCH:
-      this.message += ': Invalid filetype';
-      break;
-    case goog.fs.Error.ErrorCode.PATH_EXISTS:
-      this.message += ': File or directory already exists at specified path';
-      break;
-  }
 };
 goog.inherits(goog.fs.Error, goog.debug.Error);
 
 
 /**
  * Error codes for file errors.
+ * @see http://www.w3.org/TR/file-system-api/#idl-def-FileException
  *
  * @enum {number}
  */
@@ -100,4 +62,41 @@ goog.fs.Error.ErrorCode = {
   QUOTA_EXCEEDED: 10,
   TYPE_MISMATCH: 11,
   PATH_EXISTS: 12
+};
+
+
+/**
+ * @param {number} errorCode The error code for the error.
+ * @return {string} A debug message for the given error code. These messages are
+ *     for debugging only and are not localized.
+ */
+goog.fs.Error.getDebugMessage = function(errorCode) {
+  switch (errorCode) {
+    case goog.fs.Error.ErrorCode.NOT_FOUND:
+      return 'File or directory not found';
+    case goog.fs.Error.ErrorCode.SECURITY:
+      return 'Insecure or disallowed operation';
+    case goog.fs.Error.ErrorCode.ABORT:
+      return 'Operation aborted';
+    case goog.fs.Error.ErrorCode.NOT_READABLE:
+      return 'File or directory not readable';
+    case goog.fs.Error.ErrorCode.ENCODING:
+      return 'Invalid encoding';
+    case goog.fs.Error.ErrorCode.NO_MODIFICATION_ALLOWED:
+      return 'Cannot modify file or directory';
+    case goog.fs.Error.ErrorCode.INVALID_STATE:
+      return 'Invalid state';
+    case goog.fs.Error.ErrorCode.SYNTAX:
+      return 'Invalid line-ending specifier';
+    case goog.fs.Error.ErrorCode.INVALID_MODIFICATION:
+      return 'Invalid modification';
+    case goog.fs.Error.ErrorCode.QUOTA_EXCEEDED:
+      return 'Quota exceeded';
+    case goog.fs.Error.ErrorCode.TYPE_MISMATCH:
+      return 'Invalid filetype';
+    case goog.fs.Error.ErrorCode.PATH_EXISTS:
+      return 'File or directory already exists at specified path';
+    default:
+      return 'Unrecognized error';
+  }
 };

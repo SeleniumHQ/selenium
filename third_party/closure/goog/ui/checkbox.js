@@ -21,13 +21,11 @@
 goog.provide('goog.ui.Checkbox');
 goog.provide('goog.ui.Checkbox.State');
 
-goog.require('goog.array');
-goog.require('goog.dom.classes');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
-goog.require('goog.events.KeyHandler.EventType');
-goog.require('goog.object');
+goog.require('goog.ui.CheckboxRenderer');
 goog.require('goog.ui.Component.EventType');
+goog.require('goog.ui.Component.State');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.registry');
 
@@ -41,13 +39,14 @@ goog.require('goog.ui.registry');
  * @param {goog.ui.Checkbox.State=} opt_checked Checked state to set.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
+ * @param {goog.ui.CheckboxRenderer=} opt_renderer Renderer used to render or
+ *     decorate the checkbox; defaults to {@link goog.ui.CheckboxRenderer}.
  * @constructor
  * @extends {goog.ui.Control}
  */
-goog.ui.Checkbox = function(opt_checked, opt_domHelper) {
-  var checkboxRenderer = goog.ui.ControlRenderer.getCustomRenderer(
-      goog.ui.ControlRenderer, goog.ui.Checkbox.CSS_CLASS);
-  goog.ui.Control.call(this, null, checkboxRenderer, opt_domHelper);
+goog.ui.Checkbox = function(opt_checked, opt_domHelper, opt_renderer) {
+  var renderer = opt_renderer || goog.ui.CheckboxRenderer.getInstance();
+  goog.ui.Control.call(this, null, renderer, opt_domHelper);
   // The checkbox maintains its own tri-state CHECKED state.
   // The control class maintains DISABLED and FOCUSED (which enable tab
   // navigation, and keyHandling with SPACE).
@@ -73,35 +72,6 @@ goog.ui.Checkbox.State = {
   UNCHECKED: false,
   UNDETERMINED: null
 };
-
-
-/**
- * CSS class for checkbox.
- * @type {string}
- */
-goog.ui.Checkbox.CSS_CLASS = goog.getCssName('goog-checkbox');
-
-
-/**
- * Checkbox CSS class names.
- * @enum {string}
- */
-goog.ui.Checkbox.Css = {
-  CHECKED: goog.getCssName(goog.ui.Checkbox.CSS_CLASS, 'checked'),
-  UNCHECKED: goog.getCssName(goog.ui.Checkbox.CSS_CLASS, 'unchecked'),
-  UNDETERMINED: goog.getCssName(goog.ui.Checkbox.CSS_CLASS, 'undetermined')
-};
-
-
-/**
- * Map of component states to state-specific structural class names.
- * @type {Object}
- * @private
- */
-goog.ui.Checkbox.classByState_ = goog.object.create(
-    goog.ui.Checkbox.State.CHECKED, goog.ui.Checkbox.Css.CHECKED,
-    goog.ui.Checkbox.State.UNCHECKED, goog.ui.Checkbox.Css.UNCHECKED,
-    goog.ui.Checkbox.State.UNDETERMINED, goog.ui.Checkbox.Css.UNDETERMINED);
 
 
 /**
@@ -151,8 +121,19 @@ goog.ui.Checkbox.prototype.isUndetermined = function() {
 goog.ui.Checkbox.prototype.setChecked = function(checked) {
   if (checked != this.checked_) {
     this.checked_ = checked;
-    this.updateView();
+    this.getRenderer().setCheckboxState(this.getElement(), this.checked_);
   }
+};
+
+
+/**
+ * Sets the checked state for the checkbox.  Unlike {@link #setChecked},
+ * doesn't update the checkbox's DOM.  Considered protected; to be called
+ * only by renderer code during element decoration.
+ * @param {goog.ui.Checkbox.State} checked New checkbox state.
+ */
+goog.ui.Checkbox.prototype.setCheckedInternal = function(checked) {
+  this.checked_ = checked;
 };
 
 
@@ -185,66 +166,23 @@ goog.ui.Checkbox.prototype.setLabel = function(label) {
  * </ul>
  */
 goog.ui.Checkbox.prototype.toggle = function() {
-  this.checked_ = this.checked_ ? goog.ui.Checkbox.State.UNCHECKED :
-      goog.ui.Checkbox.State.CHECKED;
-  this.updateView();
-};
-
-
-/** @inheritDoc */
-goog.ui.Checkbox.prototype.createDom = function() {
-  this.decorateInternal(this.getDomHelper().createElement('span'));
-};
-
-
-/** @inheritDoc */
-goog.ui.Checkbox.prototype.decorateInternal = function(element) {
-  goog.ui.Checkbox.superClass_.decorateInternal.call(this, element);
-  var classes = goog.dom.classes.get(element);
-  // Update the checked state of the element based on its css classNames
-  // with the following order: undetermined -> checked -> unchecked.
-  if (goog.array.contains(classes, goog.ui.Checkbox.Css.UNDETERMINED)) {
-    this.checked_ = goog.ui.Checkbox.State.UNDETERMINED;
-  } else if (goog.array.contains(classes, goog.ui.Checkbox.Css.CHECKED)) {
-    this.checked_ = goog.ui.Checkbox.State.CHECKED;
-  } else if (goog.array.contains(classes, goog.ui.Checkbox.Css.UNCHECKED)) {
-    this.checked_ = goog.ui.Checkbox.State.UNCHECKED;
-  } else {
-    this.updateView();
-  }
+  this.setChecked(this.checked_ ? goog.ui.Checkbox.State.UNCHECKED :
+      goog.ui.Checkbox.State.CHECKED);
 };
 
 
 /** @inheritDoc */
 goog.ui.Checkbox.prototype.enterDocument = function() {
-  goog.ui.Checkbox.superClass_.enterDocument.call(this);
+  goog.base(this, 'enterDocument');
   if (this.isHandleMouseEvents()) {
-    this.getHandler().listen(this.label_ || this.getElement(),
-        goog.events.EventType.CLICK, this.handleClickOrSpace_);
-  }
-};
-
-
-/**
- * Updates the CSS class names after the checked state has changed.
- * @protected
- */
-goog.ui.Checkbox.prototype.updateView = function() {
-  var el = this.getElement();
-  if (el) {
-    var classToAdd = goog.ui.Checkbox.classByState_[this.checked_];
-    var elementClassNames = goog.dom.classes.get(el);
-    if (goog.array.contains(elementClassNames, classToAdd)) {
-      return;
+    // Listen to the label, if it was set.
+    if (this.label_) {
+      this.getHandler().listen(this.label_,
+          goog.events.EventType.CLICK, this.handleClickOrSpace_);
     }
-    var classesToAssign = [classToAdd];
-    var checkStateClasses = goog.object.getValues(goog.ui.Checkbox.Css);
-    goog.array.forEach(elementClassNames, function(name) {
-      if (!goog.array.contains(checkStateClasses, name)) {
-        classesToAssign.push(name);
-      }
-    });
-    goog.dom.classes.set(el, classesToAssign.join(' '));
+    // Always listen to the checkbox element.
+    this.getHandler().listen(this.getElement(),
+        goog.events.EventType.CLICK, this.handleClickOrSpace_);
   }
 };
 
@@ -257,7 +195,7 @@ goog.ui.Checkbox.prototype.updateView = function() {
  * @inheritDoc
  */
 goog.ui.Checkbox.prototype.setEnabled = function(enabled) {
-  goog.ui.Checkbox.superClass_.setEnabled.call(this, enabled);
+  goog.base(this, 'setEnabled', enabled);
   var el = this.getElement();
   if (el) {
     el.tabIndex = this.isEnabled() ? 0 : -1;
@@ -275,15 +213,14 @@ goog.ui.Checkbox.prototype.handleClickOrSpace_ = function(e) {
   var eventType = this.checked_ ? goog.ui.Component.EventType.UNCHECK :
       goog.ui.Component.EventType.CHECK;
   if (this.isEnabled() && this.dispatchEvent(eventType)) {
+    e.preventDefault();  // Prevent scrolling in Chrome if SPACE is pressed.
     this.toggle();
     this.dispatchEvent(goog.ui.Component.EventType.CHANGE);
   }
 };
 
 
-/**
- * @inheritDoc
- */
+/** @inheritDoc */
 goog.ui.Checkbox.prototype.handleKeyEventInternal = function(e) {
   if (e.keyCode == goog.events.KeyCodes.SPACE) {
     this.handleClickOrSpace_(e);
@@ -295,9 +232,8 @@ goog.ui.Checkbox.prototype.handleKeyEventInternal = function(e) {
 /**
  * Register this control so it can be created from markup.
  */
-// TODO(user): support setLabel from markup
 goog.ui.registry.setDecoratorByClassName(
-    goog.ui.Checkbox.CSS_CLASS,
+    goog.ui.CheckboxRenderer.CSS_CLASS,
     function() {
       return new goog.ui.Checkbox();
     });

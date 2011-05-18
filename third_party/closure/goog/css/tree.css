@@ -34,7 +34,7 @@
 
 .goog-tree-children {
   background-repeat: repeat-y;
-  background-image: url("../images/tree/I.png") !important;
+  background-image: url("//ssl.gstatic.com/closure/tree/I.png") !important;
   background-position-y: 1px !important;	/* IE only */
   font: icon;
 }
@@ -44,7 +44,7 @@
 }
 
 .goog-tree-icon {
-  background-image: url("../images/tree/tree.png");
+  background-image: url("//ssl.gstatic.com/closure/tree/tree.png");
 }
 
 .goog-tree-expand-icon {

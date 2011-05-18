@@ -293,23 +293,6 @@ goog.testing.AsyncTestCase.prototype.numControlExceptionsExpected_ = 0;
 
 
 /**
- * Initializes the given test case with the global test runner 'G_testRunner'.
- * @param {goog.testing.TestCase} testCase The test case to install.
- * @param {string=} opt_name A descriptive name for the test case.
- */
-goog.testing.AsyncTestCase.initializeTestRunner = function(testCase, opt_name) {
-  testCase.autoDiscoverTests();
-  var gTestRunner = goog.global['G_testRunner'];
-  if (gTestRunner) {
-    gTestRunner.initialize(testCase);
-  } else {
-    throw Error('G_testRunner is undefined. Please ensure goog.testing.jsunit' +
-        'is included.');
-  }
-};
-
-
-/**
  * Preferred way of creating an AsyncTestCase. Creates one and initializes it
  * with the G_testRunner.
  * @param {string=} opt_name A descriptive name for the test case.
@@ -317,7 +300,7 @@ goog.testing.AsyncTestCase.initializeTestRunner = function(testCase, opt_name) {
  */
 goog.testing.AsyncTestCase.createAndInstall = function(opt_name) {
   var asyncTestCase = new goog.testing.AsyncTestCase(opt_name);
-  goog.testing.AsyncTestCase.initializeTestRunner(asyncTestCase, opt_name);
+  goog.testing.TestCase.initializeTestRunner(asyncTestCase);
   return asyncTestCase;
 };
 

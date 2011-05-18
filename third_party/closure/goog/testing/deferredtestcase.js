@@ -86,7 +86,7 @@ goog.inherits(goog.testing.DeferredTestCase, goog.testing.AsyncTestCase);
  */
 goog.testing.DeferredTestCase.createAndInstall = function(opt_name) {
   var deferredTestCase = new goog.testing.DeferredTestCase(opt_name);
-  goog.testing.AsyncTestCase.initializeTestRunner(deferredTestCase, opt_name);
+  goog.testing.TestCase.initializeTestRunner(deferredTestCase);
   return deferredTestCase;
 };
 

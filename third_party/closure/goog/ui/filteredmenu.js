@@ -218,9 +218,9 @@ goog.ui.FilteredMenu.prototype.tearDownFilterListeners_ = function() {
 
 
 /** @inheritDoc */
-goog.ui.FilteredMenu.prototype.setVisible = function(show, opt_force) {
+goog.ui.FilteredMenu.prototype.setVisible = function(show, opt_force, opt_e) {
   var visibilityChanged = goog.ui.FilteredMenu.superClass_.setVisible.call(this,
-      show, opt_force);
+      show, opt_force, opt_e);
   if (visibilityChanged && show && this.isInDocument()) {
     this.setFilter('');
     this.setUpFilterListeners_();

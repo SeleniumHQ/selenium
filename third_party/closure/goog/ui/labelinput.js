@@ -31,7 +31,6 @@
 
 goog.provide('goog.ui.LabelInput');
 
-
 goog.require('goog.Timer');
 goog.require('goog.dom');
 goog.require('goog.dom.classes');
@@ -82,7 +81,7 @@ goog.ui.LabelInput.prototype.eventHandler_;
  * @type {boolean}
  * @private
  */
-goog.ui.LabelInput.prototype.hasFocus_;
+goog.ui.LabelInput.prototype.hasFocus_ = false;
 
 
 /**
@@ -144,9 +143,11 @@ goog.ui.LabelInput.prototype.attachEvents_ = function() {
   eh.listen(this.getElement(), goog.events.EventType.BLUR, this.handleBlur_);
 
   if (goog.userAgent.GECKO) {
-    eh.listen(this.getElement(), [goog.events.EventType.KEYPRESS,
-        goog.events.EventType.KEYDOWN, goog.events.EventType.KEYUP],
-        this.handleEscapeKeys_);
+    eh.listen(this.getElement(), [
+      goog.events.EventType.KEYPRESS,
+      goog.events.EventType.KEYDOWN,
+      goog.events.EventType.KEYUP
+    ], this.handleEscapeKeys_);
   }
 
   // IE sets defaultValue upon load so we need to test that as well.
@@ -231,6 +232,12 @@ goog.ui.LabelInput.prototype.handleFocus_ = function(e) {
  * @private
  */
 goog.ui.LabelInput.prototype.handleBlur_ = function(e) {
+  // We listen to the click event when we enter focusAndSelect mode so we can
+  // fake an artificial focus when the user clicks on the input box. However,
+  // if the user clicks on something else (and we lose focus), there is no
+  // need for an artificial focus event.
+  this.eventHandler_.unlisten(
+      this.getElement(), goog.events.EventType.CLICK, this.handleFocus_);
   this.ffKeyRestoreValue_ = null;
   this.hasFocus_ = false;
   this.check_();
@@ -366,6 +373,27 @@ goog.ui.LabelInput.prototype.getValue = function() {
 
 
 /**
+ * Sets the label text.
+ * @param {string} label The text to show as the label.
+ */
+goog.ui.LabelInput.prototype.setLabel = function(label) {
+  if (this.getElement() && !this.hasChanged()) {
+    this.getElement().value = '';
+  }
+  this.label_ = label;
+  this.restoreLabel_();
+};
+
+
+/**
+ * @return {string} The text to show as the label.
+ */
+goog.ui.LabelInput.prototype.getLabel = function() {
+  return this.label_;
+};
+
+
+/**
  * Checks the state of the input element
  * @private
  */
@@ -400,6 +428,16 @@ goog.ui.LabelInput.prototype.focusAndSelect = function() {
     this.getElement().value = this.label_;
   }
   this.getElement().select();
+
+  // Since the object now has focus, we won't get a focus event when they
+  // click in the input element. The expected behavior when you click on
+  // the default text is that it goes away and allows you to type...so we
+  // have to fire an artificial focus event when we're in focusAndSelect mode.
+  if (this.eventHandler_) {
+    this.eventHandler_.listenOnce(
+        this.getElement(), goog.events.EventType.CLICK, this.handleFocus_);
+  }
+
   // set to false in timer to let IE trigger the focus event
   goog.Timer.callOnce(this.focusAndSelect_, 10, this);
 };

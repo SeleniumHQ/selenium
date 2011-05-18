@@ -93,14 +93,6 @@ goog.ui.emoji.EmojiPalette = function(emoji,
    */
   this.emoji_ = this.getEmojiArrayFromProperties_(emoji);
 
-  /**
-   * The renderer for this emoji palette.
-   *
-   * @type {goog.ui.ControlRenderer|undefined}
-   * @private
-   */
-  this.renderer_ = this.getRenderer();
-
   this.setContent(this.emoji_);
 };
 goog.inherits(goog.ui.emoji.EmojiPalette, goog.ui.Palette);
@@ -157,10 +149,8 @@ goog.ui.emoji.EmojiPalette.prototype.getEmojiArrayFromProperties_ =
     var displayUrl = spriteInfo ? spriteInfo.getUrl() :
                      this.urlPrefix_ + url;
 
-    var item = this.renderer_.createPaletteItem(this.getDomHelper(),
-                                                id,
-                                                spriteInfo,
-                                                displayUrl);
+    var item = this.getRenderer().createPaletteItem(
+        this.getDomHelper(), id, spriteInfo, displayUrl);
     emojiItems.push(item);
 
     var emoji = new goog.ui.emoji.Emoji(url, id);

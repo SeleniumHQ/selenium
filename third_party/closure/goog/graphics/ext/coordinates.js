@@ -34,6 +34,8 @@
 
 goog.provide('goog.graphics.ext.coordinates');
 
+goog.require('goog.string');
+
 
 /**
  * Cache of boolean values.  For a given string (key), is it special? (value)
@@ -127,7 +129,6 @@ goog.graphics.ext.coordinates.computeValue = function(coord, size, scale) {
  *     cached computations in.  The calling class should manage clearing out
  *     the cache when the scale or containerSize changes.
  * @return {number} The correct number of coordinate space units.
- * @notypecheck
  */
 goog.graphics.ext.coordinates.getValue = function(coord, forMaximum,
     containerSize, scale, opt_cache) {

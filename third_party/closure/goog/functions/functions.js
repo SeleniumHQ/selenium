@@ -193,6 +193,19 @@ goog.functions.or = function(var_args) {
 
 
 /**
+ * Creates a function that returns the Boolean opposite of a provided function.
+ * For example, (goog.functions.not(f))(x) is equivalent to !f(x).
+ * @param {!Function} f The original function.
+ * @return {!Function} A function that delegates to f and returns opposite.
+ */
+goog.functions.not = function(f) {
+  return function() {
+    return !f.apply(this, arguments);
+  };
+};
+
+
+/**
  * Generic factory function to construct an object given the constructor
  * and the arguments. Intended to be bound to create object factories.
  *

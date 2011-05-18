@@ -43,17 +43,15 @@ goog.style.cursor.CLOSEDHAND_FILE = 'closedhand.cur';
  *
  * @param {string} absoluteDotCurFilePath The absolute base path of
  *     'openhand.cur' file to be used if the browser supports it.
- * @param {boolean=} opt_important Whether to use the '!important' CSS
- *     modifier.
+ * @param {boolean=} opt_obsolete Just for compiler backward compatibility.
  * @return {string} The "draggable" mouse cursor style value.
  */
 goog.style.cursor.getDraggableCursorStyle = function(
-    absoluteDotCurFilePath, opt_important) {
+    absoluteDotCurFilePath, opt_obsolete) {
   return goog.style.cursor.getCursorStyle_(
       '-moz-grab',
       absoluteDotCurFilePath + goog.style.cursor.OPENHAND_FILE,
-      'default',
-      opt_important);
+      'default');
 };
 
 
@@ -63,17 +61,15 @@ goog.style.cursor.getDraggableCursorStyle = function(
  *
  * @param {string} absoluteDotCurFilePath The absolute base path of
  *     'closedhand.cur' file to be used if the browser supports it.
- * @param {boolean=} opt_important Whether to use the '!important' CSS
- *     modifier.
+ * @param {boolean=} opt_obsolete Just for compiler backward compatibility.
  * @return {string} The "dragging" mouse cursor style value.
  */
 goog.style.cursor.getDraggingCursorStyle = function(
-    absoluteDotCurFilePath, opt_important) {
+    absoluteDotCurFilePath, opt_obsolete) {
   return goog.style.cursor.getCursorStyle_(
       '-moz-grabbing',
       absoluteDotCurFilePath + goog.style.cursor.CLOSEDHAND_FILE,
-      'move',
-      opt_important);
+      'move');
 };
 
 
@@ -85,13 +81,11 @@ goog.style.cursor.getDraggingCursorStyle = function(
  * @param {string} absoluteDotCurFilePath The .cur file absolute file to be
  *     used if the browser supports it.
  * @param {string} defaultStyle The default fallback cursor style.
- * @param {boolean=} opt_important Whether to use the '!important' CSS
- *     modifier (not included for FF).
  * @return {string} The computed mouse cursor style value.
  * @private
  */
 goog.style.cursor.getCursorStyle_ = function(geckoNonWinBuiltInStyleValue,
-    absoluteDotCurFilePath, defaultStyle, opt_important) {
+    absoluteDotCurFilePath, defaultStyle) {
   // Use built in cursors for Gecko on non Windows OS.
   // We prefer our custom cursor, but Firefox Mac and Firefox Linux
   // cannot do custom cursors. They do have a built-in hand, so use it:
@@ -116,10 +110,6 @@ goog.style.cursor.getCursorStyle_ = function(geckoNonWinBuiltInStyleValue,
   }
   // Add default cursor fallback.
   cursorStyleValue += ', ' + defaultStyle;
-  // Force the style. Do not do it for FF on Windows as it breaks the style.
-  if (!goog.userAgent.GECKO && opt_important) {
-    cursorStyleValue += ' !important';
-  }
   return cursorStyleValue;
 };
 

@@ -46,9 +46,21 @@ goog.i18n.bidi.FORCE_RTL = false;
  * {@see goog.LOCALE}
  *
  * @type {boolean}
+ *
+ * TODO(user): write a test that checks that this is a compile-time constant.
+ * For example, for the default goog.LOCALE, compiling
+ * "if (goog.i18n.bidi.IS_RTL) alert('rtl') else {}" should produce no code.
  */
 goog.i18n.bidi.IS_RTL = goog.i18n.bidi.FORCE_RTL ||
-    (goog.LOCALE == 'ar' || goog.LOCALE == 'iw' || goog.LOCALE == 'fa');
+    (goog.LOCALE.substring(0, 2) == 'ar' ||
+     goog.LOCALE.substring(0, 2) == 'fa' ||
+     goog.LOCALE.substring(0, 2) == 'he' ||
+     goog.LOCALE.substring(0, 2) == 'iw' ||
+     goog.LOCALE.substring(0, 2) == 'ur' ||
+     goog.LOCALE.substring(0, 2) == 'yi') &&
+    (goog.LOCALE.length == 2 ||
+     goog.LOCALE.substring(2, 3) == '-' ||
+     goog.LOCALE.substring(2, 3) == '_');
 
 
 /**

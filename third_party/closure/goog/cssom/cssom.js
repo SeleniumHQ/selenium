@@ -264,7 +264,7 @@ goog.cssom.replaceCssRule = function(cssRule, cssText, opt_parentStyleSheet,
   if (parentStyleSheet) {
     var index = opt_index >= 0 ? opt_index :
         goog.cssom.getCssRuleIndexInParentStyleSheet(cssRule, parentStyleSheet);
-    if (index) {
+    if (index >= 0) {
       goog.cssom.removeCssRule(parentStyleSheet, index);
       goog.cssom.addCssRule(parentStyleSheet, cssText, index);
     } else {

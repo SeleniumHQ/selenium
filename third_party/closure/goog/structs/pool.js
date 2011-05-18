@@ -30,7 +30,7 @@ goog.require('goog.structs.Set');
 
 
 /**
- * A generic pool class. If max is greater than min, an error is thrown.
+ * A generic pool class. If min is greater than max, an error is thrown.
  * @param {number=} opt_minCount Min. number of objects (Default: 1).
  * @param {number=} opt_maxCount Max. number of objects (Default: 10).
  * @constructor
@@ -72,6 +72,23 @@ goog.structs.Pool = function(opt_minCount, opt_maxCount) {
    * @private
    */
   this.inUseSet_ = new goog.structs.Set();
+
+  /**
+   * The minimum delay between objects being made available, in milliseconds. If
+   * this is 0, no minimum delay is enforced.
+   * @type {number}
+   * @protected
+   */
+  this.delay = 0;
+
+  /**
+   * The time of the last object being made available, in milliseconds since the
+   * epoch (i.e., the result of Date#toTime). If this is null, no access has
+   * occurred yet.
+   * @type {number?}
+   * @protected
+   */
+  this.lastAccess = null;
 
   // Make sure that the minCount constraint is satisfied.
   this.adjustForMinMax();
@@ -140,12 +157,30 @@ goog.structs.Pool.prototype.setMaximumCount = function(max) {
 
 
 /**
+ * Sets the minimum delay between objects being returned by getObject, in
+ * milliseconds. This defaults to zero, meaning that no minimum delay is
+ * enforced and objects may be used as soon as they're available.
+ * @param {number} delay The minimum delay, in milliseconds.
+ */
+goog.structs.Pool.prototype.setDelay = function(delay) {
+  this.delay = delay;
+};
+
+
+/**
  * @return {Object|undefined} A new object from the pool if there is one
  *     available, otherwise undefined.
  */
 goog.structs.Pool.prototype.getObject = function() {
+  var time = goog.now();
+  if (goog.isDefAndNotNull(this.lastAccess) &&
+      time - this.lastAccess < this.delay) {
+    return undefined;
+  }
+
   var obj = this.removeFreeObject_();
   if (obj) {
+    this.lastAccess = time;
     this.inUseSet_.add(obj);
   }
 

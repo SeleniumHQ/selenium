@@ -66,8 +66,7 @@ goog.ui.HsvPalette = function(opt_domHelper, opt_color, opt_class) {
    * type {HTMLDocument}
    * @private
    */
-  this.document_ = opt_domHelper ? opt_domHelper.getDocument() :
-      goog.dom.getDomHelper().getDocument();
+  this.document_ = this.getDomHelper().getDocument();
 };
 goog.inherits(goog.ui.HsvPalette, goog.ui.Component);
 // TODO(user): Make this inherit from goog.ui.Control and split this into
@@ -417,7 +416,7 @@ goog.ui.HsvPalette.prototype.handleMouseDown_ = function(e) {
  */
 goog.ui.HsvPalette.prototype.handleMouseMoveV_ = function(b, e) {
   e.preventDefault();
-  var vportPos = goog.dom.getPageScroll();
+  var vportPos = this.getDomHelper().getDocumentScroll();
   var newV = Math.round(
       255 * (b.top + b.height - Math.min(
           Math.max(vportPos.y + e.clientY, b.top),
@@ -438,7 +437,7 @@ goog.ui.HsvPalette.prototype.handleMouseMoveV_ = function(b, e) {
  */
 goog.ui.HsvPalette.prototype.handleMouseMoveHs_ = function(b, e) {
   e.preventDefault();
-  var vportPos = goog.dom.getPageScroll();
+  var vportPos = this.getDomHelper().getDocumentScroll();
   var newH = (Math.min(Math.max(vportPos.x + e.clientX, b.left),
       b.left + b.width) - b.left) / b.width;
   var newS = (-Math.min(Math.max(vportPos.y + e.clientY, b.top),

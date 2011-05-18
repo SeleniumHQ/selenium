@@ -44,6 +44,7 @@ goog.provide('goog.structs.AvlTree');
 goog.provide('goog.structs.AvlTree.Node');
 
 goog.require('goog.structs');
+goog.require('goog.structs.Collection');
 
 
 
@@ -54,6 +55,7 @@ goog.require('goog.structs');
  *
  * @param {Function=} opt_comparator Function used to order the tree's nodes.
  * @constructor
+ * @implements {goog.structs.Collection}
  */
 goog.structs.AvlTree = function(opt_comparator) {
   this.comparator_ = opt_comparator ||
@@ -218,9 +220,10 @@ goog.structs.AvlTree.prototype.remove = function(value) {
     return retNode; // If null, we'll stop traversing the tree
   });
 
-  // If a node was removed, decrement count
+  // If a node was removed, decrement count.
   if (retValue) {
-    this.count_ -= 1;
+    // Had traverse_() cleared the tree, set to 0.
+    this.count_ = this.root_ ? this.count_ - 1 : 0;
   }
 
   // Return the value that was removed, null if the value was not in the tree
@@ -346,18 +349,18 @@ goog.structs.AvlTree.prototype.inOrderTraverse =
   // Depth traverse the tree to find node to begin in-order traversal from
   var startNode;
   if (opt_startValue) {
-      this.traverse_(function(node) {
-        var retNode = null;
-        if (this.comparator_(node.value, opt_startValue) > 0) {
-          retNode = node.left;
-          startNode = node;
-        } else if (this.comparator_(node.value, opt_startValue) < 0) {
-          retNode = node.right;
-        } else {
-          startNode = node;
-        }
-        return retNode; // If null, we'll stop traversing the tree
-      });
+    this.traverse_(function(node) {
+      var retNode = null;
+      if (this.comparator_(node.value, opt_startValue) > 0) {
+        retNode = node.left;
+        startNode = node;
+      } else if (this.comparator_(node.value, opt_startValue) < 0) {
+        retNode = node.right;
+      } else {
+        startNode = node;
+      }
+      return retNode; // If null, we'll stop traversing the tree
+    });
   } else {
     startNode = this.getMinNode_();
   }
@@ -403,18 +406,18 @@ goog.structs.AvlTree.prototype.reverseOrderTraverse =
   // Depth traverse the tree to find node to begin reverse-order traversal from
   var startNode;
   if (opt_startValue) {
-      this.traverse_(goog.bind(function(node) {
-        var retNode = null;
-        if (this.comparator_(node.value, opt_startValue) > 0) {
-          retNode = node.left;
-        } else if (this.comparator_(node.value, opt_startValue) < 0) {
-          retNode = node.right;
-          startNode = node;
-        } else {
-          startNode = node;
-        }
-        return retNode; // If null, we'll stop traversing the tree
-      }, this));
+    this.traverse_(goog.bind(function(node) {
+      var retNode = null;
+      if (this.comparator_(node.value, opt_startValue) > 0) {
+        retNode = node.left;
+      } else if (this.comparator_(node.value, opt_startValue) < 0) {
+        retNode = node.right;
+        startNode = node;
+      } else {
+        startNode = node;
+      }
+      return retNode; // If null, we'll stop traversing the tree
+    }, this));
   } else {
     startNode = this.getMaxNode_();
   }

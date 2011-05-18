@@ -41,11 +41,18 @@ goog.require('goog.fs.FileSystem');
  * @private
  */
 goog.fs.get_ = function(type, size) {
+  var requestFileSystem = goog.global.requestFileSystem ||
+      goog.global.webkitRequestFileSystem;
+
+  if (!goog.isFunction(requestFileSystem)) {
+    return goog.async.Deferred.fail(new Error('File API unsupported'));
+  }
+
   var d = new goog.async.Deferred();
-  goog.global.requestFileSystem(type, size, function(fs) {
+  requestFileSystem(type, size, function(fs) {
     d.callback(new goog.fs.FileSystem(fs));
   }, function(err) {
-    d.callback(new goog.fs.Error(err.code, 'requesting filesystem'));
+    d.errback(new goog.fs.Error(err.code, 'requesting filesystem'));
   });
   return d;
 };
@@ -118,11 +125,17 @@ goog.fs.revokeObjectUrl = function(url) {
 
 
 /**
+ * @typedef {!{createObjectURL: (function(!Blob): string),
+ *             revokeObjectURL: function(string): void}}
+ */
+goog.fs.UrlObject_;
+
+
+/**
  * Get the object that has the createObjectURL and revokeObjectURL functions for
  * this browser.
  *
- * @return {!{createObjectURL: (function(Blob): string),
- *            revokeObjectURL: function(string)}} The object for this browser.
+ * @return {goog.fs.UrlObject_} The object for this browser.
  * @private
  */
 goog.fs.getUrlObject_ = function() {
@@ -130,14 +143,14 @@ goog.fs.getUrlObject_ = function() {
   // http://dev.w3.org/2006/webapi/FileAPI/#dfn-createObjectURL
   if (goog.isDef(goog.global.URL) &&
       goog.isDef(goog.global.URL.createObjectURL)) {
-    return goog.global.URL;
+    return /** @type {goog.fs.UrlObject_} */ (goog.global.URL);
   // This is what Chrome does (as of 10.0.648.6 dev)
   } else if (goog.isDef(goog.global.webkitURL) &&
              goog.isDef(goog.global.webkitURL.createObjectURL)) {
-    return goog.global.webkitURL;
+    return /** @type {goog.fs.UrlObject_} */ (goog.global.webkitURL);
   // This is what the spec used to say to do
   } else if (goog.isDef(goog.global.createObjectURL)) {
-    return goog.global;
+    return /** @type {goog.fs.UrlObject_} */ (goog.global);
   } else {
     throw Error('This browser doesn\'t seem to support blob URLs');
   }
@@ -147,11 +160,12 @@ goog.fs.getUrlObject_ = function() {
 /**
  * Concatenates one or more values together and converts them to a Blob.
  *
- * @param {...(string|!Blob)} var_args The values that will make up
+ * @param {...(string|!Blob|!ArrayBuffer)} var_args The values that will make up
  *     the resulting blob.
  * @return {!Blob} The blob.
  */
 goog.fs.getBlob = function(var_args) {
+  var BlobBuilder = goog.global.BlobBuilder || goog.global.WebKitBlobBuilder;
   var bb = new BlobBuilder();
   for (var i = 0; i < arguments.length; i++) {
     bb.append(arguments[i]);
@@ -180,4 +194,52 @@ goog.fs.blobToString = function(blob, opt_encoding) {
   };
   reader.readAsText(blob, opt_encoding);
   return d;
+};
+
+
+/**
+ * Slices the blob. The returned blob contains data from the start byte
+ * (inclusive) till the end byte (exclusive). Negative indices can be used
+ * to count bytes from the end of the blob (-1 == blob.size - 1). Indices
+ * are always clamped to blob range. If end is omitted, all the data till
+ * the end of the blob is taken.
+ *
+ * @param {!Blob} blob The blob to be sliced.
+ * @param {number} start Index of the starting byte.
+ * @param {number=} opt_end Index of the ending byte.
+ * @return {Blob} The blob slice or null if not supported.
+ */
+goog.fs.sliceBlob = function(blob, start, opt_end) {
+  if (!goog.isDef(opt_end)) {
+    opt_end = blob.size;
+  }
+  if (blob.webkitSlice) {
+    // Natively accepts negative indices, clamping to the blob range and
+    // range end is optional. See http://trac.webkit.org/changeset/83873
+    return blob.webkitSlice(start, opt_end);
+  } else if (blob.mozSlice) {
+    // Natively accepts negative indices, clamping to the blob range and
+    // range end is optional. See https://developer.mozilla.org/en/DOM/Blob
+    // and http://hg.mozilla.org/mozilla-central/rev/dae833f4d934
+    return blob.mozSlice(start, opt_end);
+  } else if (blob.slice) {
+    // This is the original specification. Negative indices are not accepted,
+    // only range end is clamped and range end specification is obligatory.
+    // See http://www.w3.org/TR/2009/WD-FileAPI-20091117/, this will be
+    // replaced by http://dev.w3.org/2006/webapi/FileAPI/ in the future.
+    if (start < 0) {
+      start += blob.size;
+    }
+    if (start < 0) {
+      start = 0;
+    }
+    if (opt_end < 0) {
+      opt_end += blob.size;
+    }
+    if (opt_end < start) {
+      opt_end = start;
+    }
+    return blob.slice(start, opt_end - start);
+  }
+  return null;
 };

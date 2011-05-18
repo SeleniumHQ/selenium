@@ -628,37 +628,25 @@ goog.ui.Control.prototype.setContentInternal = function(content) {
 
 
 /**
- * Returns the text caption of the component.
- * @param {function(Node): string} getChildElementContent Function that takes an
- *     element and returns a string.
- * @return {?string} Text caption of the component (null if none).
- */
-goog.ui.Control.prototype.getCaptionInternal =
-    function(getChildElementContent) {
-  var content = this.getContent();
-  if (!content || goog.isString(content)) {
-    return content;
-  }
-
-  var caption = goog.isArray(content) ?
-      goog.array.map(content, getChildElementContent).join('') :
-      goog.dom.getTextContent(/** @type {!Node} */ (content));
-  return caption && goog.string.trim(caption);
-};
-
-
-/**
- * Returns the text caption of the component.
- * @return {?string} Text caption of the component (null if none).
+ * @return {string} Text caption of the control or empty string if none.
  */
 goog.ui.Control.prototype.getCaption = function() {
-  return this.getCaptionInternal(goog.dom.getTextContent);
+  var content = this.getContent();
+  if (!content) {
+    return '';
+  }
+  var caption =
+      goog.isString(content) ? content :
+      goog.isArray(content) ? goog.array.map(content,
+          goog.dom.getRawTextContent).join('') :
+      goog.dom.getTextContent(/** @type {!Node} */ (content));
+  return goog.string.collapseBreakingSpaces(caption);
 };
 
 
 /**
  * Sets the text caption of the component.
- * @param {string} caption Text caption of the component (null to clear).
+ * @param {string} caption Text caption of the component.
  */
 goog.ui.Control.prototype.setCaption = function(caption) {
   this.setContent(caption);

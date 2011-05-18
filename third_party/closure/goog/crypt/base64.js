@@ -192,17 +192,12 @@ goog.crypt.base64.decodeString = function(input, opt_webSafe) {
 /**
  * Base64-decode a string.
  *
- * @param {string} input to decode.
+ * @param {string} input to decode (length not required to be a multiple of 4).
  * @param {boolean=} opt_webSafe True if we should use the
  *     alternative alphabet.
  * @return {Array} bytes representing the decoded value.
  */
 goog.crypt.base64.decodeStringToByteArray = function(input, opt_webSafe) {
-
-  if (input.length % 4) {
-    throw Error('Length of b64-encoded data must be zero mod four');
-  }
-
   goog.crypt.base64.init_();
 
   var charToByteMap = opt_webSafe ?
@@ -211,12 +206,20 @@ goog.crypt.base64.decodeStringToByteArray = function(input, opt_webSafe) {
 
   var output = [];
 
-  for (var i = 0; i < input.length; i += 4) {
+  for (var i = 0; i < input.length; ) {
+    var byte1 = charToByteMap[input.charAt(i++)];
 
-    var byte1 = charToByteMap[input.charAt(i)];
-    var byte2 = charToByteMap[input.charAt(i + 1)];
-    var byte3 = charToByteMap[input.charAt(i + 2)];
-    var byte4 = charToByteMap[input.charAt(i + 3)];
+    var haveByte2 = i < input.length;
+    var byte2 = haveByte2 ? charToByteMap[input.charAt(i)] : 0;
+    ++i;
+
+    var haveByte3 = i < input.length;
+    var byte3 = haveByte3 ? charToByteMap[input.charAt(i)] : 0;
+    ++i;
+
+    var haveByte4 = i < input.length;
+    var byte4 = haveByte4 ? charToByteMap[input.charAt(i)] : 0;
+    ++i;
 
     if (byte1 == null || byte2 == null ||
         byte3 == null || byte4 == null) {

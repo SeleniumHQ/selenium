@@ -25,6 +25,21 @@ goog.require('goog.asserts');
 
 
 /**
+ * @define {boolean} NATIVE_ARRAY_PROTOTYPES indicates whether the code should
+ * rely on Array.prototype functions, if available.
+ *
+ * The Array.prototype functions can be defined by external libraries like
+ * Prototype and setting this flag to false forces closure to use its own
+ * goog.array implementation.
+ *
+ * If your javascript can be loaded by a third party site and you are wary about
+ * relying on the prototype functions, specify
+ * "--define goog.NATIVE_ARRAY_PROTOTYPES=false" to the JSCompiler.
+ */
+goog.NATIVE_ARRAY_PROTOTYPES = true;
+
+
+/**
  * @typedef {Array|NodeList|Arguments|{length: number}}
  */
 goog.array.ArrayLike;
@@ -66,7 +81,8 @@ goog.array.ARRAY_PROTOTYPE_ = Array.prototype;
  *     omitted the search starts at index 0.
  * @return {number} The index of the first matching array element.
  */
-goog.array.indexOf = goog.array.ARRAY_PROTOTYPE_.indexOf ?
+goog.array.indexOf = goog.NATIVE_ARRAY_PROTOTYPES &&
+                     goog.array.ARRAY_PROTOTYPE_.indexOf ?
     function(arr, obj, opt_fromIndex) {
       goog.asserts.assert(arr.length != null);
 
@@ -105,7 +121,8 @@ goog.array.indexOf = goog.array.ARRAY_PROTOTYPE_.indexOf ?
  *     omitted the search starts at the end of the array.
  * @return {number} The index of the last matching array element.
  */
-goog.array.lastIndexOf = goog.array.ARRAY_PROTOTYPE_.lastIndexOf ?
+goog.array.lastIndexOf = goog.NATIVE_ARRAY_PROTOTYPES &&
+                         goog.array.ARRAY_PROTOTYPE_.lastIndexOf ?
     function(arr, obj, opt_fromIndex) {
       goog.asserts.assert(arr.length != null);
 
@@ -153,7 +170,8 @@ goog.array.lastIndexOf = goog.array.ARRAY_PROTOTYPE_.lastIndexOf ?
  * @param {Object=} opt_obj The object to be used as the value of 'this'
  *     within f.
  */
-goog.array.forEach = goog.array.ARRAY_PROTOTYPE_.forEach ?
+goog.array.forEach = goog.NATIVE_ARRAY_PROTOTYPES &&
+                     goog.array.ARRAY_PROTOTYPE_.forEach ?
     function(arr, f, opt_obj) {
       goog.asserts.assert(arr.length != null);
 
@@ -208,7 +226,8 @@ goog.array.forEachRight = function(arr, f, opt_obj) {
  * @return {!Array} a new array in which only elements that passed the test are
  *     present.
  */
-goog.array.filter = goog.array.ARRAY_PROTOTYPE_.filter ?
+goog.array.filter = goog.NATIVE_ARRAY_PROTOTYPES &&
+                    goog.array.ARRAY_PROTOTYPE_.filter ?
     function(arr, f, opt_obj) {
       goog.asserts.assert(arr.length != null);
 
@@ -245,7 +264,8 @@ goog.array.filter = goog.array.ARRAY_PROTOTYPE_.filter ?
  *     within f.
  * @return {!Array} a new array with the results from f.
  */
-goog.array.map = goog.array.ARRAY_PROTOTYPE_.map ?
+goog.array.map = goog.NATIVE_ARRAY_PROTOTYPES &&
+                 goog.array.ARRAY_PROTOTYPE_.map ?
     function(arr, f, opt_obj) {
       goog.asserts.assert(arr.length != null);
 
@@ -355,7 +375,8 @@ goog.array.reduceRight = function(arr, f, val, opt_obj) {
  *     within f.
  * @return {boolean} true if any element passes the test.
  */
-goog.array.some = goog.array.ARRAY_PROTOTYPE_.some ?
+goog.array.some = goog.NATIVE_ARRAY_PROTOTYPES &&
+                  goog.array.ARRAY_PROTOTYPE_.some ?
     function(arr, f, opt_obj) {
       goog.asserts.assert(arr.length != null);
 
@@ -388,7 +409,8 @@ goog.array.some = goog.array.ARRAY_PROTOTYPE_.some ?
  *     within f.
  * @return {boolean} false if any element fails the test.
  */
-goog.array.every = goog.array.ARRAY_PROTOTYPE_.every ?
+goog.array.every = goog.NATIVE_ARRAY_PROTOTYPES &&
+                   goog.array.ARRAY_PROTOTYPE_.every ?
     function(arr, f, opt_obj) {
       goog.asserts.assert(arr.length != null);
 

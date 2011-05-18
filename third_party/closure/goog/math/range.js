@@ -28,9 +28,6 @@ goog.provide('goog.math.Range');
  * @constructor
  */
 goog.math.Range = function(a, b) {
-  a = Number(a);
-  b = Number(b);
-
   /**
    * The lowest value in the range.
    * @type {number}

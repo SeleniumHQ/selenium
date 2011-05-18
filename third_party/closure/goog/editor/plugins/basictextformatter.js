@@ -1459,8 +1459,6 @@ goog.editor.plugins.BasicTextFormatter.prototype.applyExecCommandGeckoFixes_ =
  * Workaround for Opera bug CORE-23903. Opera sometimes fails to invalidate
  * serialized CSS or innerHTML for the DOM after certain execCommands when
  * styleWithCSS is on. Toggling an inline style on the elements fixes it.
- * TODO(user): Opera says they're going to prioritize a fix for this. Remove
- *              this code once that fix is released.
  * @private
  */
 goog.editor.plugins.BasicTextFormatter.prototype.invalidateInlineCss_ =

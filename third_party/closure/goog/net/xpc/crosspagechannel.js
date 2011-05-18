@@ -80,6 +80,18 @@ goog.net.xpc.CrossPageChannel = function(cfg, opt_domHelper) {
    */
   this.domHelper_ = opt_domHelper || goog.dom.getDomHelper();
 
+  // If LOCAL_POLL_URI or PEER_POLL_URI is not available, try using
+  // robots.txt from that host.
+  cfg[goog.net.xpc.CfgFields.LOCAL_POLL_URI] =
+      cfg[goog.net.xpc.CfgFields.LOCAL_POLL_URI] ||
+      goog.uri.utils.getHost(this.domHelper_.getWindow().location.href) +
+          '/robots.txt';
+  // PEER_URI is sometimes undefined in tests.
+  cfg[goog.net.xpc.CfgFields.PEER_POLL_URI] =
+      cfg[goog.net.xpc.CfgFields.PEER_POLL_URI] ||
+      goog.uri.utils.getHost(cfg[goog.net.xpc.CfgFields.PEER_URI] || '') +
+          '/robots.txt';
+
   goog.net.xpc.channels_[this.name] = this;
 
   goog.events.listen(window, 'unload',
@@ -179,10 +191,9 @@ goog.net.xpc.CrossPageChannel.prototype.determineTransportType_ = function() {
   } else if (goog.userAgent.IE &&
              this.cfg_[goog.net.xpc.CfgFields.PEER_RELAY_URI]) {
     transportType = goog.net.xpc.TransportTypes.IFRAME_RELAY;
-  } else if (goog.userAgent.IE) {
+  } else if (goog.userAgent.IE && goog.net.xpc.NixTransport.isNixSupported()) {
     transportType = goog.net.xpc.TransportTypes.NIX;
-  } else if (this.cfg_[goog.net.xpc.CfgFields.LOCAL_POLL_URI] &&
-             this.cfg_[goog.net.xpc.CfgFields.PEER_POLL_URI]) {
+  } else {
     transportType = goog.net.xpc.TransportTypes.IFRAME_POLLING;
   }
   return transportType;

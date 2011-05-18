@@ -253,10 +253,7 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
     // denied exception. See:
     // https://bugzilla.mozilla.org/show_bug.cgi?id=497780
     if (goog.userAgent.GECKO) {
-      /** @preserveTry */
-      try {
-        goog.reflect.sinkValue(relatedTarget.nodeName);
-      } catch (err) {
+      if (!goog.reflect.canAccessProperty(relatedTarget, 'nodeName')) {
         relatedTarget = null;
       }
     }

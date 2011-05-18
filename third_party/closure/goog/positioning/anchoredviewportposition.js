@@ -19,6 +19,7 @@
 
 goog.provide('goog.positioning.AnchoredViewportPosition');
 
+goog.require('goog.functions');
 goog.require('goog.math.Box');
 goog.require('goog.positioning');
 goog.require('goog.positioning.AnchoredPosition');
@@ -66,6 +67,18 @@ goog.inherits(goog.positioning.AnchoredViewportPosition,
 
 
 /**
+ * @return {number} A bitmask for the "last resort" overflow. Only takes affect
+ *     when {@code opt_adjusted} in the constructor is enabled.
+ * @protected
+ */
+goog.positioning.AnchoredViewportPosition.prototype.getLastResortOverflow =
+    function() {
+  return goog.positioning.Overflow.ADJUST_X |
+      goog.positioning.Overflow.ADJUST_Y;
+};
+
+
+/**
  * Repositions the movable element.
  *
  * @param {Element} movableElement Element to position.
@@ -74,6 +87,7 @@ goog.inherits(goog.positioning.AnchoredViewportPosition,
  * @param {goog.math.Box=} opt_margin A margin specified in pixels.
  * @param {goog.math.Size=} opt_preferredSize The preferred size of the
  *     movableElement.
+ * @override
  */
 goog.positioning.AnchoredViewportPosition.prototype.reposition = function(
     movableElement, movableCorner, opt_margin, opt_preferredSize) {
@@ -110,8 +124,7 @@ goog.positioning.AnchoredViewportPosition.prototype.reposition = function(
       if (this.adjust_) {
         goog.positioning.positionAtAnchor(this.element, this.corner,
             movableElement, movableCorner, null, opt_margin,
-            goog.positioning.Overflow.ADJUST_X |
-            goog.positioning.Overflow.ADJUST_Y, opt_preferredSize);
+            this.getLastResortOverflow(), opt_preferredSize);
 
       // Or display it anyway at the preferred position, if the adjust option
       // was not enabled.

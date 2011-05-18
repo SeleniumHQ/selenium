@@ -25,6 +25,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.json');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
+goog.require('goog.net.HttpStatus');
 goog.require('goog.net.XhrIo.ResponseType');
 goog.require('goog.net.XmlHttp');
 goog.require('goog.object');
@@ -318,11 +319,14 @@ goog.testing.net.XhrIo.prototype.getWithCredentials = function() {
  */
 goog.testing.net.XhrIo.prototype.abort = function(opt_failureCode) {
   if (this.active_) {
-    this.active_ = false;
-    this.lastErrorCode_ = opt_failureCode || goog.net.ErrorCode.ABORT;
-    this.dispatchEvent(goog.net.EventType.COMPLETE);
-    this.dispatchEvent(goog.net.EventType.ABORT);
-    this.simulateReady();
+    try {
+      this.active_ = false;
+      this.lastErrorCode_ = opt_failureCode || goog.net.ErrorCode.ABORT;
+      this.dispatchEvent(goog.net.EventType.COMPLETE);
+      this.dispatchEvent(goog.net.EventType.ABORT);
+    } finally {
+      this.simulateReady();
+    }
   }
 };
 
@@ -397,16 +401,19 @@ goog.testing.net.XhrIo.prototype.simulateResponse = function(statusCode,
   this.response_ = response || '';
   this.responseHeaders_ = opt_headers || {};
 
-  if (this.isSuccess()) {
-    this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.COMPLETE);
-    this.dispatchEvent(goog.net.EventType.SUCCESS);
-  } else {
-    this.lastErrorCode_ = goog.net.ErrorCode.HTTP_ERROR;
-    this.lastError_ = this.getStatusText() + ' [' + this.getStatus() + ']';
-    this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.COMPLETE);
-    this.dispatchEvent(goog.net.EventType.ERROR);
+  try {
+    if (this.isSuccess()) {
+      this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.COMPLETE);
+      this.dispatchEvent(goog.net.EventType.SUCCESS);
+    } else {
+      this.lastErrorCode_ = goog.net.ErrorCode.HTTP_ERROR;
+      this.lastError_ = this.getStatusText() + ' [' + this.getStatus() + ']';
+      this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.COMPLETE);
+      this.dispatchEvent(goog.net.EventType.ERROR);
+    }
+  } finally {
+    this.simulateReady();
   }
-  this.simulateReady();
 };
 
 
@@ -443,9 +450,9 @@ goog.testing.net.XhrIo.prototype.isComplete = function() {
  */
 goog.testing.net.XhrIo.prototype.isSuccess = function() {
   switch (this.getStatus()) {
-    case 200:       // HTTP Success
-    case 204:       // HTTP Success - no content
-    case 304:       // HTTP Cache
+    case goog.net.HttpStatus.OK:
+    case goog.net.HttpStatus.NO_CONTENT:
+    case goog.net.HttpStatus.NOT_MODIFIED:
       return true;
 
     default:

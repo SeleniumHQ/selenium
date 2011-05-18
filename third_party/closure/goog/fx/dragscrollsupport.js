@@ -37,16 +37,16 @@ goog.require('goog.style');
  * made more general and could support horizontal scrolling.
  *
  * @param {Element} containerNode A container that can be scrolled.
- * @param {number=} opt_verticalMargin Optional vertical margin to use while
- *     scrolling.
+ * @param {number=} opt_margin Optional margin to use while scrolling.
  * @param {boolean=} opt_externalMouseMoveTracking Whether mouse move events
  *     are tracked externally by the client object which calls the mouse move
  *     event handler, useful when events are generated for more than one source
  *     element and/or are not real mousemove events.
  * @constructor
  * @extends {goog.Disposable}
+ * @see ../demos/dragscrollsupport.html
  */
-goog.fx.DragScrollSupport = function(containerNode, opt_verticalMargin,
+goog.fx.DragScrollSupport = function(containerNode, opt_margin,
                                      opt_externalMouseMoveTracking) {
   goog.Disposable.call(this);
 
@@ -59,7 +59,7 @@ goog.fx.DragScrollSupport = function(containerNode, opt_verticalMargin,
 
   /**
    * Scroll timer that will scroll the container until it is stopped.
-   * It will scroll when the mouse is above or below the scrolling area of the
+   * It will scroll when the mouse is outside the scrolling area of the
    * container.
    *
    * @type {goog.Timer}
@@ -89,18 +89,18 @@ goog.fx.DragScrollSupport = function(containerNode, opt_verticalMargin,
   this.containerBounds_ = goog.style.getBounds(containerNode);
 
   /**
-   * The vertical margin for triggering a scroll.
+   * The margin for triggering a scroll.
    * @type {number}
    * @private
    */
-  this.verticalMargin_ = opt_verticalMargin || 0;
+  this.margin_ = opt_margin || 0;
 
   /**
    * The bounding rectangle which if left triggers scrolling.
    * @type {goog.math.Rect}
    * @private
    */
-  this.scrollBounds_ = opt_verticalMargin ?
+  this.scrollBounds_ = opt_margin ?
       this.constrainBounds_(this.containerBounds_.clone()) :
       this.containerBounds_;
 
@@ -144,18 +144,18 @@ goog.fx.DragScrollSupport.prototype.constrainScroll_ = false;
 /**
  * Sets whether scrolling should be constrained to happen only when the cursor
  * is inside the container node.
- * NOTE: If a vertical margin is not set, then it does not make sense to
+ * NOTE: If a margin is not set, then it does not make sense to
  * contain the scroll, because in that case scroll will never be triggered.
  * @param {boolean} constrain Whether scrolling should be constrained to happen
  *     only when the cursor is inside the container node.
  */
 goog.fx.DragScrollSupport.prototype.setConstrainScroll = function(constrain) {
-  this.constrainScroll_ = !!this.verticalMargin_ && constrain;
+  this.constrainScroll_ = !!this.margin_ && constrain;
 };
 
 
 /**
- * Constrains the container bounds with respect to the vertical margin.
+ * Constrains the container bounds with respect to the margin.
  *
  * @param {goog.math.Rect} bounds The container element.
  * @return {goog.math.Rect} The bounding rectangle used to calculate scrolling
@@ -163,13 +163,17 @@ goog.fx.DragScrollSupport.prototype.setConstrainScroll = function(constrain) {
  * @private
  */
 goog.fx.DragScrollSupport.prototype.constrainBounds_ = function(bounds) {
-  var quarterHeight = bounds.height * 0.25;
-  var verticalMargin = this.verticalMargin_;
-  if (verticalMargin) {
-    verticalMargin = verticalMargin > quarterHeight ?
-        quarterHeight : verticalMargin;
-    bounds.top += verticalMargin;
-    bounds.height -= 2 * verticalMargin;
+  var margin = this.margin_;
+  if (margin) {
+    var quarterHeight = bounds.height * 0.25;
+    var yMargin = Math.min(margin, quarterHeight);
+    bounds.top += yMargin;
+    bounds.height -= 2 * yMargin;
+
+    var quarterWidth = bounds.width * 0.25;
+    var xMargin = Math.min(margin, quarterWidth);
+    bounds.top += xMargin;
+    bounds.height -= 2 * xMargin;
   }
   return bounds;
 };
@@ -202,6 +206,7 @@ goog.fx.DragScrollSupport.prototype.setupListeners_ = function(
  */
 goog.fx.DragScrollSupport.prototype.onTick_ = function(event) {
   this.containerNode_.scrollTop += this.scrollDelta_.y;
+  this.containerNode_.scrollLeft += this.scrollDelta_.x;
 };
 
 
@@ -210,14 +215,18 @@ goog.fx.DragScrollSupport.prototype.onTick_ = function(event) {
  * @param {goog.events.Event} event Mouse move event.
  */
 goog.fx.DragScrollSupport.prototype.onMouseMove = function(event) {
-  this.scrollDelta_.y = this.calculateScrollDelta(event.clientY,
-      /** @type {number} */ (this.scrollBounds_.top),
-      /** @type {number} */ (this.scrollBounds_.height));
+  var deltaX = this.calculateScrollDelta(event.clientX,
+      this.scrollBounds_.left, this.scrollBounds_.width);
+  var deltaY = this.calculateScrollDelta(event.clientY,
+      this.scrollBounds_.top, this.scrollBounds_.height);
+  this.scrollDelta_.x = deltaX;
+  this.scrollDelta_.y = deltaY;
 
-  // If the vertical scroll data is 0 or the event fired outside of the
+  // If the scroll data is 0 or the event fired outside of the
   // bounds of the container node.
-  if (this.scrollDelta_.y == 0 || (this.constrainScroll_ &&
-      !this.isInContainerBounds_(event.clientX, event.clientY))) {
+  if ((!deltaX && !deltaY) ||
+      (this.constrainScroll_ &&
+       !this.isInContainerBounds_(event.clientX, event.clientY))) {
     this.scrollTimer_.stop();
   } else if (!this.scrollTimer_.enabled) {
     this.scrollTimer_.start();

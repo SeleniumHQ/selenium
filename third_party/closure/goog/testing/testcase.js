@@ -261,6 +261,26 @@ goog.testing.TestCase.prototype.add = function(test) {
 
 
 /**
+ * Sets the tests.
+ * @param {Array.<goog.testing.TestCase.Test>} tests A new test array.
+ * @protected
+ */
+goog.testing.TestCase.prototype.setTests = function(tests) {
+  this.tests_ = tests;
+};
+
+
+/**
+ * Gets the tests.
+ * @return {Array.<goog.testing.TestCase.Test>} The test array.
+ * @protected
+ */
+goog.testing.TestCase.prototype.getTests = function() {
+  return this.tests_;
+};
+
+
+/**
  * Returns the number of tests contained in the test case.
  * @return {number} The number of tests.
  */
@@ -655,16 +675,23 @@ goog.testing.TestCase.prototype.autoDiscoverTests = function() {
 
   this.log(this.getCount() + ' tests auto-discovered');
 
-  // One-lining for readability.
-  if (goog.global['setUp']) this.setUp = goog.global['setUp'];
-  if (goog.global['tearDown']) this.tearDown = goog.global['tearDown'];
-  if (goog.global['setUpPage']) this.setUpPage = goog.global['setUpPage'];
-  if (goog.global['tearDownPage']) {
-    this.tearDownPage = goog.global['tearDownPage'];
+  if (goog.global['setUp']) {
+    this.setUp = goog.bind(goog.global['setUp'], goog.global);
   }
-  if (goog.global['runTests']) this.runTests = goog.global['runTests'];
+  if (goog.global['tearDown']) {
+    this.tearDown = goog.bind(goog.global['tearDown'], goog.global);
+  }
+  if (goog.global['setUpPage']) {
+    this.setUpPage = goog.bind(goog.global['setUpPage'], goog.global);
+  }
+  if (goog.global['tearDownPage']) {
+    this.tearDownPage = goog.bind(goog.global['tearDownPage'], goog.global);
+  }
+  if (goog.global['runTests']) {
+    this.runTests = goog.bind(goog.global['runTests'], goog.global);
+  }
   if (goog.global['shouldRunTests']) {
-      this.shouldRunTests = goog.global['shouldRunTests'];
+    this.shouldRunTests = goog.bind(goog.global['shouldRunTests'], goog.global);
   }
 };
 
@@ -1002,6 +1029,22 @@ goog.testing.TestCase.Result.prototype.getSummary = function() {
   }
 
   return summary;
+};
+
+
+/**
+ * Initializes the given test case with the global test runner 'G_testRunner'.
+ * @param {goog.testing.TestCase} testCase The test case to install.
+ */
+goog.testing.TestCase.initializeTestRunner = function(testCase) {
+  testCase.autoDiscoverTests();
+  var gTestRunner = goog.global['G_testRunner'];
+  if (gTestRunner) {
+    gTestRunner.initialize(testCase);
+  } else {
+    throw Error('G_testRunner is undefined. Please ensure goog.testing.jsunit' +
+        'is included.');
+  }
 };
 
 

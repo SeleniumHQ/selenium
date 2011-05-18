@@ -272,7 +272,7 @@ goog.net.Jsonp.newErrorHandler_ = function(id,
     if (opt_errorCallback) {
       opt_errorCallback(payload);
     }
-  }
+  };
 };
 
 

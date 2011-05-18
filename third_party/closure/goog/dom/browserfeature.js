@@ -36,6 +36,15 @@ goog.dom.BrowserFeature = {
       goog.userAgent.isVersion('9'),
 
   /**
+   * Whether we can use element.children to access an element's Element
+   * children. Available since Gecko 1.9.1, IE 9. (IE<9 also includes comment
+   * nodes in the collection.)
+   */
+  CAN_USE_CHILDREN_ATTRIBUTE: !goog.userAgent.GECKO && !goog.userAgent.IE ||
+      goog.userAgent.IE && goog.userAgent.isVersion('9') ||
+      goog.userAgent.GECKO && goog.userAgent.isVersion('1.9.1'),
+
+  /**
    * Opera, Safari 3, and Internet Explorer 9 all support innerText but they
    * include text nodes in script and style tags.
    */

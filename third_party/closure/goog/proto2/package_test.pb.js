@@ -23,6 +23,7 @@ goog.provide('someprotopackage.TestPackageTypes');
 goog.require('goog.proto2.Message');
 goog.require('proto2.TestAllTypes');
 
+goog.setTestOnly('package_test.pb');
 
 
 /**
@@ -80,7 +81,7 @@ someprotopackage.TestPackageTypes.prototype.hasOptionalInt32 = function() {
 
 
 /**
- * @return {number} The number of values in the optional_int32 field. 
+ * @return {number} The number of values in the optional_int32 field.
  */
 someprotopackage.TestPackageTypes.prototype.optionalInt32Count = function() {
   return this.count$Values(1);
@@ -131,7 +132,7 @@ someprotopackage.TestPackageTypes.prototype.hasOtherAll = function() {
 
 
 /**
- * @return {number} The number of values in the other_all field. 
+ * @return {number} The number of values in the other_all field.
  */
 someprotopackage.TestPackageTypes.prototype.otherAllCount = function() {
   return this.count$Values(2);

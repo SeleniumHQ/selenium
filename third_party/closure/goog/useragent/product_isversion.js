@@ -44,8 +44,12 @@ goog.userAgent.product.determineVersion_ = function() {
     // Chrome/4.0.223.1
     re = /Chrome\/([0-9.]+)/;
   } else if (goog.userAgent.product.SAFARI) {
-    // Safari/530.19.1
-    re = /Safari\/([0-9.]+)/;
+    // Version/5.0.3
+    //
+    // NOTE: Before version 3, Safari did not report a product version number.
+    // The product version number for these browsers will be the empty string.
+    // They may be differentiated by WebKit version number in goog.userAgent.
+    re = /Version\/([0-9.]+)/;
   } else if (goog.userAgent.product.IPHONE || goog.userAgent.product.IPAD) {
     // Mozilla/5.0 (iPod; U; CPU like Mac OS X; en) AppleWebKit/420.1
     // (KHTML, like Gecko) Version/3.0 Mobile/3A100a Safari/419.3
@@ -95,5 +99,5 @@ goog.userAgent.product.VERSION = goog.userAgent.product.determineVersion_();
  */
 goog.userAgent.product.isVersion = function(version) {
   return goog.string.compareVersions(
-             goog.userAgent.product.VERSION, version) >= 0;
+      goog.userAgent.product.VERSION, version) >= 0;
 };

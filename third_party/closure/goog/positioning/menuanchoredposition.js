@@ -55,7 +55,7 @@ goog.positioning.MenuAnchoredPosition = function(anchorElement,
                                                  opt_adjust,
                                                  opt_resize) {
   goog.positioning.AnchoredViewportPosition.call(this, anchorElement, corner,
-                                                 opt_adjust);
+                                                 opt_adjust || opt_resize);
   /**
    * Whether the positioning should be adjusted until the element fits inside
    * the viewport even if that means that the anchored corners are ignored.
@@ -68,30 +68,12 @@ goog.inherits(goog.positioning.MenuAnchoredPosition,
               goog.positioning.AnchoredViewportPosition);
 
 
-/**
- * Repositions the movable element.
- *
- * @param {Element} movableElement Element to position.
- * @param {goog.positioning.Corner} movableCorner Corner of the movable element
- *     that should be positioned adjacent to the anchored element.
- * @param {goog.math.Box=} opt_margin A margin specifin pixels.
- * @param {goog.math.Size=} opt_preferredSize Preferred size of the
- *     moveableElement.
- */
-goog.positioning.MenuAnchoredPosition.prototype.reposition =
-    function(movableElement, movableCorner, opt_margin, opt_preferredSize) {
-
-  if (this.resize_) {
-    goog.positioning.positionAtAnchor(this.element, this.corner,
-        movableElement, movableCorner, null, opt_margin,
-        goog.positioning.Overflow.ADJUST_X |
-        goog.positioning.Overflow.RESIZE_HEIGHT, opt_preferredSize);
-  } else {
-    goog.positioning.MenuAnchoredPosition.superClass_.reposition.call(
-        this,
-        movableElement,
-        movableCorner,
-        opt_margin,
-        opt_preferredSize);
-  }
+/** @inheritDoc */
+goog.positioning.MenuAnchoredPosition.prototype.getLastResortOverflow =
+    function() {
+  var overflowX = goog.positioning.Overflow.ADJUST_X_EXCEPT_OFFSCREEN;
+  var overflowY = this.resize_ ?
+      goog.positioning.Overflow.RESIZE_HEIGHT :
+      goog.positioning.Overflow.ADJUST_Y_EXCEPT_OFFSCREEN;
+  return overflowX | overflowY;
 };

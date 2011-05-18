@@ -887,8 +887,10 @@ goog.net.IframeIo.prototype.sendFormInternal_ = function() {
       // The childnodes represent the initial child nodes for the text area
       // appending a text node essentially resets the initial value ready for
       // it to be clones - while maintaining HTML escaping.
-      if (goog.dom.getTextContent(textareas[i]) != textareas[i].value) {
-        goog.dom.setTextContent(textareas[i], textareas[i].value);
+      var value = textareas[i].value;
+      if (goog.dom.getRawTextContent(textareas[i]) != value) {
+        goog.dom.setTextContent(textareas[i], value);
+        textareas[i].value = value;
       }
     }
 
@@ -1292,30 +1294,23 @@ goog.net.IframeIo.prototype.getRequestIframe_ = function() {
 goog.net.IframeIo.prototype.testForFirefoxSilentError_ = function() {
   if (this.active_) {
     var doc = this.getContentDocument_();
-    if (doc) {
-      /** @preserveTry */
-      try {
-        // This is a hack to test of the document has loaded with a page that
-        // we can't access, such as a network error, that won't report onload
-        // or onerror events.
-        goog.reflect.sinkValue(doc['documentUri']);
 
-        // TODO: Is there a situation when this won't error?
+    // This is a hack to test of the document has loaded with a page that
+    // we can't access, such as a network error, that won't report onload
+    // or onerror events.
+    if (doc && !goog.reflect.canAccessProperty(doc, 'documentUri')) {
+      goog.events.unlisten(this.getRequestIframe_(),
+          goog.events.EventType.LOAD, this.onIframeLoaded_, false, this);
 
-      } catch (e) {
-        goog.events.unlisten(this.getRequestIframe_(),
-            goog.events.EventType.LOAD, this.onIframeLoaded_, false, this);
-
-        if (navigator.onLine) {
-          this.logger_.warning('Silent Firefox error detected');
-          this.handleError_(goog.net.ErrorCode.FF_SILENT_ERROR);
-        } else {
-          this.logger_.warning('Firefox is offline so report offline error ' +
-                               'instead of silent error');
-          this.handleError_(goog.net.ErrorCode.OFFLINE);
-        }
-        return;
+      if (navigator.onLine) {
+        this.logger_.warning('Silent Firefox error detected');
+        this.handleError_(goog.net.ErrorCode.FF_SILENT_ERROR);
+      } else {
+        this.logger_.warning('Firefox is offline so report offline error ' +
+                             'instead of silent error');
+        this.handleError_(goog.net.ErrorCode.OFFLINE);
       }
+      return;
     }
     this.firefoxSilentErrorTimeout_ =
         goog.Timer.callOnce(this.testForFirefoxSilentError_, 250, this);

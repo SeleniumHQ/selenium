@@ -65,7 +65,7 @@
 .goog-hsva-palette-v-handle,
 .goog-hsva-palette-a-handle,
 .goog-hsva-palette-swatch-backdrop {
-  background-image: url(../images/hsva-sprite.png);
+  background-image: url(//ssl.gstatic.com/closure/hsva-sprite.png);
 }
 
 .goog-hsva-palette-noalpha .goog-hsva-palette-hs-image,
@@ -75,7 +75,7 @@
 .goog-hsva-palette-noalpha .goog-hsva-palette-v-handle,
 .goog-hsva-palette-noalpha .goog-hsva-palette-a-handle,
 .goog-hsva-palette-noalpha .goog-hsva-palette-swatch-backdrop {
-  background-image: url(../images/hsva-sprite.gif);
+  background-image: url(//ssl.gstatic.com/closure/hsva-sprite.gif);
 }
 
 .goog-hsva-palette-sm-hs-image,
@@ -85,7 +85,7 @@
 .goog-hsva-palette-sm-v-handle,
 .goog-hsva-palette-sm-a-handle,
 .goog-hsva-palette-sm-swatch-backdrop {
-  background-image: url(../images/hsva-sprite-sm.png);
+  background-image: url(//ssl.gstatic.com/closure/hsva-sprite-sm.png);
 }
 
 .goog-hsva-palette-noalpha .goog-hsva-palette-sm-hs-image,
@@ -95,7 +95,7 @@
 .goog-hsva-palette-noalpha .goog-hsva-palette-sm-v-handle,
 .goog-hsva-palette-noalpha .goog-hsva-palette-sm-a-handle,
 .goog-hsva-palette-noalpha .goog-hsva-palette-swatch-backdrop {
-  background-image: url(../images/hsva-sprite-sm.gif);
+  background-image: url(//ssl.gstatic.com/closure/hsva-sprite-sm.gif);
 }
 
 .goog-hsva-palette-hs-image,

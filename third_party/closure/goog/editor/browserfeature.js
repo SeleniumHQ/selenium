@@ -32,12 +32,13 @@ goog.require('goog.userAgent.product.isVersion');
  */
 goog.editor.BrowserFeature = {
   // Whether this browser uses the IE TextRange object.
-  HAS_IE_RANGES: goog.userAgent.IE && !goog.userAgent.isVersion('9'),
+  HAS_IE_RANGES: goog.userAgent.IE && !goog.userAgent.isDocumentMode(9),
 
   // Whether this browser uses the W3C standard Range object.
+  // Assumes IE higher versions will be compliance with W3C standard.
   HAS_W3C_RANGES: goog.userAgent.GECKO || goog.userAgent.WEBKIT ||
       goog.userAgent.OPERA ||
-      (goog.userAgent.IE && goog.userAgent.isVersion('9')),
+      (goog.userAgent.IE && goog.userAgent.isDocumentMode(9)),
 
   // Has the contentEditable attribute, which makes nodes editable.
   //
@@ -179,17 +180,18 @@ goog.editor.BrowserFeature = {
 
   // Whether this browser collapses the selection in a contenteditable when the
   // mouse is pressed in a non-editable portion of the same frame, even if
-  // Event.preventDefault is called.
-  COLLAPSES_SELECTION_ONMOUSEDOWN: goog.userAgent.OPERA,
+  // Event.preventDefault is called. This field is deprecated and unused -- only
+  // old versions of Opera have this bug.
+  COLLAPSES_SELECTION_ONMOUSEDOWN: false,
 
   // Whether the user can actually create a selection in this browser with the
   // caret in the MIDDLE of the selection by double-clicking.
   CARET_INSIDE_SELECTION: goog.userAgent.OPERA,
 
   // Whether the browser focuses <body contenteditable> automatically when
-  // the user clicks on <html>
-  FOCUSES_EDITABLE_BODY_ON_HTML_CLICK:
-      goog.userAgent.IE || goog.userAgent.GECKO || goog.userAgent.WEBKIT,
+  // the user clicks on <html>. This field is deprecated and unused -- only old
+  // versions of Opera don't have this behavior.
+  FOCUSES_EDITABLE_BODY_ON_HTML_CLICK: true,
 
   // Whether to use keydown for key listening (uses keypress otherwise). Taken
   // from goog.events.KeyHandler.
@@ -246,6 +248,16 @@ goog.editor.BrowserFeature = {
   // browser: http://www.whatwg/org/specs/web-apps/current-work/#dnd
   SUPPORTS_HTML5_FILE_DRAGGING: (goog.userAgent.product.CHROME &&
                                  goog.userAgent.product.isVersion('4')) ||
-      (goog.userAgent.product.SAFARI && goog.userAgent.product.isVersion('533'))
+      (goog.userAgent.product.SAFARI && goog.userAgent.isVersion('533')),
 
+  // Version of Opera that supports the opera-defaultBlock execCommand to change
+  // the default block inserted when [return] is pressed. Note that this only is
+  // used if the caret is not already in a block that can be repeated.
+  // TODO(user): Link to public documentation of this feature if Opera puts
+  // something up about it.
+  SUPPORTS_OPERA_DEFAULTBLOCK_COMMAND:
+      goog.userAgent.OPERA && goog.userAgent.isVersion('11.10'),
+
+  SUPPORTS_FILE_PASTING: goog.userAgent.product.CHROME &&
+      goog.userAgent.product.isVersion('12')
 };

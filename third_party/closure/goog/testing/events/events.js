@@ -504,6 +504,19 @@ goog.testing.events.firePopStateEvent = function(target, state) {
 
 
 /**
+ * Simulate a focus event on the given target.
+ * @param {EventTarget} target The target for the event.
+ * @return {boolean} The value returned by firing the focus browser event,
+ *     which returns false iff 'preventDefault' was invoked.
+ */
+goog.testing.events.fireFocusEvent = function(target) {
+  var e = new goog.testing.events.Event(
+      goog.events.EventType.FOCUS, target);
+  return goog.testing.events.fireBrowserEvent(e);
+};
+
+
+/**
  * Simulates an event's capturing and bubbling phases.
  * @param {Event} event A simulated native event. It will be wrapped in a
  *     normalized BrowserEvent and dispatched to Closure listeners on all

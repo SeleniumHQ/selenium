@@ -31,6 +31,7 @@ goog.require('goog.testing.MockClock');
 goog.require('goog.testing.MockRange');
 goog.require('goog.testing.jsunit');
 
+goog.setTestOnly('seamlessfield_test');
 
 var fieldElem;
 var fieldElemClone;

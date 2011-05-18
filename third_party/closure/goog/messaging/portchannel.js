@@ -26,7 +26,9 @@
 
 goog.provide('goog.messaging.PortChannel');
 
+goog.require('goog.Timer');
 goog.require('goog.array');
+goog.require('goog.async.Deferred');
 goog.require('goog.debug');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
@@ -35,59 +37,38 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.json');
 goog.require('goog.messaging.AbstractChannel');
+goog.require('goog.messaging.DeferredChannel');
 goog.require('goog.object');
+goog.require('goog.string');
 
 
 
 /**
  * A wrapper for several types of HTML5 message-passing entities
- * ({@link MessagePort}s, {@link WebWorker}s, and {@link Window}s). This class
- * adds several things on top of the standard API: it implements the
- * {@link goog.messaging.MessageChannel} interface and allows easy restriction
- * of the origin from which messages are accepted for cross-document messaging.
- *
- * The origin may be restricted using the opt_origin parameter. This is only
- * used for cross-domain messaging; that is, when the underlying port is a
- * {@link Window}. It restricts both sent and received messages, so that this
- * will never report a message from a non-matching domain and its messages will
- * never be seen by a non-matching domain. The syntax for this is given in
- * {@link http://www.w3.org/TR/html5/origin-0.html}, although "*" (meaning any
- * origin) is allowed but discouraged.
+ * ({@link MessagePort}s and {@link WebWorker}s). This class implements the
+ * {@link goog.messaging.MessageChannel} interface.
  *
  * This class can be used in conjunction with other communication on the port.
  * It sets {@link goog.messaging.PortChannel.FLAG} to true on all messages it
  * sends.
  *
- * @param {!MessagePort|!WebWorker|!Window} underlyingPort The message-passing
+ * @param {!MessagePort|!WebWorker} underlyingPort The message-passing
  *     entity to wrap. If this is a {@link MessagePort}, it should be started.
  *     The remote end should also be wrapped in a PortChannel. This will be
  *     disposed along with the PortChannel; this means terminating it if it's a
  *     worker or removing it from the DOM if it's an iframe.
- * @param {string=} opt_origin The expected origin of the remote end of the
- *     port. Required if underlyingPort is a {@link Window}.
  * @constructor
  * @extends {goog.messaging.AbstractChannel}
  */
-goog.messaging.PortChannel = function(underlyingPort, opt_origin) {
+goog.messaging.PortChannel = function(underlyingPort) {
   goog.base(this);
-
-  if (goog.dom.isWindow(underlyingPort) && !opt_origin) {
-    throw Error('Origin must be specified for a PortChannel wrapping a Window');
-  }
 
   /**
    * The wrapped message-passing entity.
-   * @type {!MessagePort|!WebWorker|!Window}
+   * @type {!MessagePort|!WebWorker}
    * @private
    */
   this.port_ = underlyingPort;
-
-  /**
-   * The expected origin of the remote end of the port.
-   * @type {?string}
-   * @protected
-   */
-  this.peerOrigin = opt_origin || null;
 
   /**
    * The key for the event listener.
@@ -101,11 +82,131 @@ goog.inherits(goog.messaging.PortChannel, goog.messaging.AbstractChannel);
 
 
 /**
+ * Create a PortChannel that communicates with a window embedded in the current
+ * page (e.g. an iframe contentWindow). The code within the window should call
+ * {@link forGlobalWindow} to establish the connection.
+ *
+ * It's possible to use this channel in conjunction with other messages to the
+ * embedded window. However, only one PortChannel should be used for a given
+ * window at a time.
+ *
+ * @param {!Window} window The window object to communicate with.
+ * @param {string} peerOrigin The expected origin of the window. See
+ *     http://dev.w3.org/html5/postmsg/#dom-window-postmessage.
+ * @param {goog.Timer=} opt_timer The timer that regulates how often the initial
+ *     connection message is attempted. This will be automatically disposed once
+ *     the connection is established, or when the connection is cancelled.
+ * @return {!goog.messaging.DeferredChannel} The PortChannel. Although this is
+ *     not actually an instance of the PortChannel class, it will behave like
+ *     one in that MessagePorts may be sent across it. The DeferredChannel may
+ *     be cancelled before a connection is established in order to abort the
+ *     attempt to make a connection.
+ */
+goog.messaging.PortChannel.forEmbeddedWindow = function(
+    window, peerOrigin, opt_timer) {
+  var timer = opt_timer || new goog.Timer(50);
+  var deferred = new goog.async.Deferred(goog.partial(goog.dispose, timer));
+
+  timer.start();
+  // Every tick, attempt to set up a connection by sending in one end of an
+  // HTML5 MessageChannel. If the inner window posts a response along a channel,
+  // then we'll use that channel to create the PortChannel.
+  //
+  // As per http://dev.w3.org/html5/postmsg/#ports-and-garbage-collection, any
+  // ports that are not ultimately used to set up the channel will be garbage
+  // collected (since there are no references in this context, and the remote
+  // context hasn't seen them).
+  goog.events.listen(timer, goog.Timer.TICK, function() {
+    var channel = new MessageChannel();
+    var gotMessage = function(e) {
+      channel.port1.removeEventListener(
+          goog.events.EventType.MESSAGE, gotMessage, true);
+      // If the connection has been cancelled, don't create the channel.
+      if (!timer.isDisposed()) {
+        deferred.callback(new goog.messaging.PortChannel(channel.port1));
+      }
+    };
+    channel.port1.start();
+    // Don't use goog.events because we don't want any lingering references to
+    // the ports to prevent them from getting GCed. Only modern browsers support
+    // these APIs anyway, so we don't need to worry about event API
+    // compatibility.
+    channel.port1.addEventListener(
+        goog.events.EventType.MESSAGE, gotMessage, true);
+
+    var msg = {};
+    msg[goog.messaging.PortChannel.FLAG] = true;
+    window.postMessage(msg, [channel.port2], peerOrigin);
+  });
+
+  return new goog.messaging.DeferredChannel(deferred);
+};
+
+
+/**
+ * Create a PortChannel that communicates with the document in which this window
+ * is embedded (e.g. within an iframe). The enclosing document should call
+ * {@link forEmbeddedWindow} to establish the connection.
+ *
+ * It's possible to use this channel in conjunction with other messages posted
+ * to the global window. However, only one PortChannel should be used for the
+ * global window at a time.
+ *
+ * @param {string} peerOrigin The expected origin of the enclosing document. See
+ *     http://dev.w3.org/html5/postmsg/#dom-window-postmessage.
+ * @return {!goog.messaging.MessageChannel} The PortChannel. Although this may
+ *     not actually be an instance of the PortChannel class, it will behave like
+ *     one in that MessagePorts may be sent across it.
+ */
+goog.messaging.PortChannel.forGlobalWindow = function(peerOrigin) {
+  var deferred = new goog.async.Deferred();
+  // Wait for the external page to post a message containing the message port
+  // which we'll use to set up the PortChannel. Ignore all other messages. Once
+  // we receive the port, notify the other end and then set up the PortChannel.
+  var key = goog.events.listen(
+      window, goog.events.EventType.MESSAGE, function(e) {
+        var browserEvent = e.getBrowserEvent();
+        var data = browserEvent.data;
+        if (!goog.isObject(data) || !data[goog.messaging.PortChannel.FLAG]) {
+          return;
+        }
+
+        if (peerOrigin != '*' && peerOrigin != browserEvent.origin) {
+          return;
+        }
+
+        var port = browserEvent.ports[0];
+        // Notify the other end of the channel that we've received our port
+        port.postMessage({});
+
+        port.start();
+        deferred.callback(new goog.messaging.PortChannel(port));
+        goog.events.unlistenByKey(key);
+      });
+  return new goog.messaging.DeferredChannel(deferred);
+};
+
+
+/**
  * The flag added to messages that are sent by a PortChannel, and are meant to
  * be handled by one on the other side.
  * @type {string}
  */
 goog.messaging.PortChannel.FLAG = '--goog.messaging.PortChannel';
+
+
+/**
+ * Whether the messages sent across the channel must be JSON-serialized. This is
+ * required for older versions of Webkit, which can only send string messages.
+ *
+ * Although Safari and Chrome have separate implementations of message passing,
+ * both of them support passing objects by Webkit 533.
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.messaging.PortChannel.REQUIRES_SERIALIZATION_ = goog.userAgent.WEBKIT &&
+    goog.string.compareVersions(goog.userAgent.VERSION, '533') < 0;
 
 
 /**
@@ -139,20 +240,12 @@ goog.messaging.PortChannel.prototype.send = function(serviceName, payload) {
   payload = this.extractPorts_(ports, payload);
   var message = {'serviceName': serviceName, 'payload': payload};
   message[goog.messaging.PortChannel.FLAG] = true;
-  if (goog.userAgent.GECKO && goog.dom.isWindow(this.port_)) {
-    // Firefox doesn't support sending ports to Windows, nor does it support
-    // arbitrary objects. Raise an error if there are ports, and JSON-serialize
-    // the object.
-    //
-    // TODO(user): Add a version check once some version of Firefox does
-    // support this.
-    if (ports.length != 0) {
-      throw Error('Firefox doesn\'t support sending ports to windows');
-    }
-    this.port_.postMessage(goog.json.serialize(message), this.peerOrigin);
-  } else {
-    this.port_.postMessage(message, ports, this.peerOrigin);
+
+  if (goog.messaging.PortChannel.REQUIRES_SERIALIZATION_) {
+    message = goog.json.serialize(message);
   }
+
+  this.port_.postMessage(message, ports);
 };
 
 
@@ -167,18 +260,16 @@ goog.messaging.PortChannel.prototype.deliver_ = function(e) {
   var browserEvent = e.getBrowserEvent();
   var data = browserEvent.data;
 
-  if (goog.userAgent.GECKO && goog.dom.isWindow(this.port_)) {
-    // Firefox doesn't support sending objects to Windows, so we have to
-    // deserialize if we're receiving a message via a Window connection.
-    data = goog.json.parse(data);
+  if (goog.messaging.PortChannel.REQUIRES_SERIALIZATION_) {
+    try {
+      data = goog.json.parse(data);
+    } catch (error) {
+      // Ignore any non-JSON messages.
+      return;
+    }
   }
 
   if (!goog.isObject(data) || !data[goog.messaging.PortChannel.FLAG]) {
-    return;
-  }
-
-  if (browserEvent.origin &&
-      !this.checkMessageOrigin(browserEvent.origin)) {
     return;
   }
 
@@ -193,7 +284,7 @@ goog.messaging.PortChannel.prototype.deliver_ = function(e) {
     payload = this.decodePayload(
         serviceName,
         this.injectPorts_(browserEvent.ports || [], payload),
-        service.jsonEncoded);
+        service.objectPayload);
     if (goog.isDefAndNotNull(payload)) {
       service.callback(payload);
     }
@@ -222,35 +313,6 @@ goog.messaging.PortChannel.prototype.validateMessage_ = function(data) {
   }
 
   return true;
-};
-
-
-/**
- * Checks whether the origin for a given message is the expected origin. If it's
- * not, a warning is logged and the message is ignored.
- *
- * This checks that the origin matches the peerOrigin property. It can be
- * overridden if more complex origin detection is necessary.
- *
- * @param {string} messageOrigin The origin of the message, of the form
- *     given in {@link http://www.w3.org/TR/html5/origin-0.html}.
- * @return {boolean} True if the origin is acceptable, false otherwise.
- * @protected
- */
-goog.messaging.PortChannel.prototype.checkMessageOrigin = function(
-    messageOrigin) {
-  if (!this.peerOrigin || this.peerOrigin == '*') {
-    return true;
-  }
-
-  if (this.peerOrigin == messageOrigin) {
-    return true;
-  }
-
-  this.logger.warning('Message from unexpected origin "' + messageOrigin +
-                      '"; expected only messages from origin "' +
-                      this.peerOrigin + '"');
-  return false;
 };
 
 
@@ -327,14 +389,6 @@ goog.messaging.PortChannel.prototype.disposeInternal = function() {
   // Worker is undefined in workers as well as of Chrome 9
   } else if (Object.prototype.toString.call(this.port_) == '[object Worker]') {
     this.port_.terminate();
-  } else if (goog.dom.isWindow(this.port_) && this.port_ != goog.global &&
-             this.port_.parent) {
-    var win = this.port_.parent;
-    var dom = new goog.dom.DomHelper(win.document);
-    // If port_ is an iframe in a document, find the iframe element and remove
-    // it.
-    dom.removeNode(dom.getElementsByTagNameAndClass('iframe')[
-        goog.array.indexOf(win.frames, this.port_)]);
   }
   delete this.port_;
   goog.base(this, 'disposeInternal');

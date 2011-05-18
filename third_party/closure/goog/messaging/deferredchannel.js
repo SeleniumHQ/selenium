@@ -39,6 +39,14 @@ goog.messaging.DeferredChannel = function(deferredChannel) {
 };
 
 
+/**
+ * Cancels the wrapped Deferred.
+ */
+goog.messaging.DeferredChannel.prototype.cancel = function() {
+  this.deferred_.cancel();
+};
+
+
 /** @inheritDoc */
 goog.messaging.DeferredChannel.prototype.connect = function(opt_connectCb) {
   if (opt_connectCb) {
@@ -55,9 +63,9 @@ goog.messaging.DeferredChannel.prototype.isConnected = function() {
 
 /** @inheritDoc */
 goog.messaging.DeferredChannel.prototype.registerService = function(
-    serviceName, callback, opt_jsonEncoded) {
+    serviceName, callback, opt_objectPayload) {
   this.deferred_.addCallback(function(resolved) {
-    resolved.registerService(serviceName, callback, opt_jsonEncoded);
+    resolved.registerService(serviceName, callback, opt_objectPayload);
   });
 };
 

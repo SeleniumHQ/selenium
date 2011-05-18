@@ -147,11 +147,14 @@ goog.proto2.Message.prototype.setUnknown = function(tag, value) {
  *
  * @param {function(number, *)} callback A callback method
  *     which gets invoked for each unknown field.
+ * @param {Object=} opt_scope The scope under which to execute the callback.
+ *     If not given, the current message will be used.
  */
-goog.proto2.Message.prototype.forEachUnknown = function(callback) {
+goog.proto2.Message.prototype.forEachUnknown = function(callback, opt_scope) {
+  var scope = opt_scope || this;
   for (var key in this.values_) {
     if (!this.fields_[key]) {
-      callback(/** @type {number} */ (key), this.values_[key]);
+      callback.call(scope, /** @type {number} */ (key), this.values_[key]);
     }
   }
 };

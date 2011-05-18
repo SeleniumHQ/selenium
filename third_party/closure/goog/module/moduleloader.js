@@ -151,11 +151,11 @@ goog.module.ModuleLoader.prototype.loadModulesInDebugMode_ = function(uris) {
   // a head element to append on to make this a bit more idiot-proof.
   var scriptParent = document.getElementsByTagName('head')[0] ||
       document.documentElement;
-  if (goog.userAgent.GECKO) {
-    // For <script> tags that are loaded in this manner, Gecko ensures that
-    // tag order is consistent with evaluation order. Unfortunately, other
-    // browsers do not make that guarantee. So the other browsers need a slower
-    // and more complex implementation.
+  if (goog.userAgent.GECKO && !goog.userAgent.isVersion(2)) {
+    // For <script> tags that are loaded in this manner, Gecko 1.9 and earlier
+    // ensures that tag order is consistent with evaluation order.
+    // Unfortunately, other browsers do not make that guarantee. So the other
+    // browsers need a slower and more complex implementation.
     for (var i = 0; i < uris.length; i++) {
       var scriptEl = this.createScriptElement_(uris[i]);
       scriptParent.appendChild(scriptEl);

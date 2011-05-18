@@ -198,7 +198,14 @@ goog.ui.AutoComplete.EventType = {
    * of these fields are guaranteed to exist).  The row field may be used to
    * return custom-type row data.
    */
-  UPDATE: 'update'
+  UPDATE: 'update',
+
+  /**
+   * The list of suggestions has been updated, usually because either the list
+   * has opened, or because the user has typed another character and the
+   * suggestions have been updated.
+   */
+  SUGGESTIONS_UPDATE: 'suggestionsupdate'
 };
 
 
@@ -425,7 +432,12 @@ goog.ui.AutoComplete.prototype.selectHilited = function() {
   if (index != -1) {
     var selectedRow = this.rows_[index];
     var suppressUpdate = this.selectionHandler_.selectRow(selectedRow);
-    this.dismiss();
+    if (this.triggerSuggestionsOnUpdate_) {
+      this.token_ = null;
+      this.dismissOnDelay();
+    } else {
+      this.dismiss();
+    }
     if (!suppressUpdate) {
       this.dispatchEvent({
         type: goog.ui.AutoComplete.EventType.UPDATE,
@@ -570,6 +582,7 @@ goog.ui.AutoComplete.prototype.renderRows = function(rows,
   } else {
     this.hiliteId_ = -1;
   }
+  this.dispatchEvent(goog.ui.AutoComplete.EventType.SUGGESTIONS_UPDATE);
 };
 
 

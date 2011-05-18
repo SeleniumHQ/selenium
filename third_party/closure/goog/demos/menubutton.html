@@ -45,6 +45,12 @@ See the COPYING file for details.
     .format-icon {
       background-position: -64px;
     }
+
+    .positioning-frame {
+      height: 250px;
+      overflow: auto;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -129,6 +135,25 @@ See the COPYING file for details.
               &nbsp;
             </legend>
             <div id="comboButtons"></div>
+            <label>
+            </label>
+            <br>
+          </fieldset>
+          <fieldset>
+            <legend>
+              These <strong>MenuButtons</strong> demonstrate
+              menu positioning options:
+              &nbsp;
+            </legend>
+            <div></div>
+
+            <input type="checkbox" id="pos_option_scroll">
+            <label for="pos_option_scroll">
+              Scroll on overflow
+            </label>
+            <iframe class="positioning-frame" id="positioning-frame"
+                src="menubutton_frame.html">
+            </iframe>
             <label>
             </label>
             <br>
@@ -309,6 +334,43 @@ See the COPYING file for details.
     cbmb1.render(goog.dom.getElement('comboButtons'));
     cbmb1.setTooltip('Combo button');
     goog.events.listen(cbmb1, EVENTS, logEvent);
+
+
+    // Create two buttons with menus for the positioning demo inside the
+    // positioning iframe.
+    var positioningFrame = goog.dom.getElement('positioning-frame');
+    var shortPosButton, longPosButton;
+    goog.events.listen(positioningFrame, 'load', function() {
+      var frameDocument = goog.dom.getFrameContentDocument(positioningFrame);
+      var frameDomHelper = new goog.dom.DomHelper(frameDocument);
+
+      var shortMenu = new goog.ui.Menu(frameDomHelper);
+      shortMenu.setId('PositionMenuShort');
+      for (var i = 1; i <= 5; i++) {
+        shortMenu.addItem(new goog.ui.MenuItem('Item ' + i + '...'));
+      }
+      shortPosButton = new goog.ui.MenuButton('Short Menu', shortMenu);
+      shortPosButton.setId('PositingButtonShort');
+      shortPosButton.render(frameDocument.body);
+      shortMenu.getElement().style.overflowY = 'auto';
+
+      var longMenu = new goog.ui.Menu(frameDomHelper);
+      longMenu.setId('PositionMenuLong');
+      for (var i = 1; i <= 15; i++) {
+        longMenu.addItem(new goog.ui.MenuItem('Item ' + i + '...'));
+      }
+      longPosButton = new goog.ui.MenuButton('Long Menu', longMenu);
+      longPosButton.setId('PositingButtonLong');
+      longPosButton.render(frameDocument.body);
+      longMenu.getElement().style.overflowY = 'auto';
+    });
+    function updateScrollOption() {
+      var checked = goog.dom.getElement('pos_option_scroll').checked;
+      shortPosButton.setScrollOnOverflow(checked);
+      longPosButton.setScrollOnOverflow(checked);
+    }
+    goog.events.listen(goog.dom.getElement('pos_option_scroll'), 'click',
+        updateScrollOption);
 
 
     goog.dom.setTextContent(goog.dom.getElement('perf'),

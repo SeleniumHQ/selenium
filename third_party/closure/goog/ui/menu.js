@@ -184,7 +184,7 @@ goog.ui.Menu.prototype.containsElement = function(element) {
  * Adds a new menu item at the end of the menu.
  * @param {goog.ui.MenuHeader|goog.ui.MenuItem|goog.ui.MenuSeparator} item Menu
  *     item to add to the menu.
- * @deprecated Use {@link #addChild} instead.
+ * @deprecated Use {@link #addChild} instead, with true for the second argument.
  */
 goog.ui.Menu.prototype.addItem = function(item) {
   this.addChild(item, true);
@@ -196,7 +196,8 @@ goog.ui.Menu.prototype.addItem = function(item) {
  * @param {goog.ui.MenuHeader|goog.ui.MenuItem|goog.ui.MenuSeparator} item Menu
  *     item to add to the menu.
  * @param {number} n Index at which to insert the menu item.
- * @deprecated Use {@link #addChildAt} instead.
+ * @deprecated Use {@link #addChildAt} instead, with true for the third
+ *     argument.
  */
 goog.ui.Menu.prototype.addItemAt = function(item, n) {
   this.addChildAt(item, n, true);

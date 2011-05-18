@@ -23,27 +23,27 @@
 }
 
 .goog-offlinestatus-offline {
-  background: url("../images/gears_offline.gif") no-repeat 50% 50%;
+  background: url("//ssl.gstatic.com/closure/gears_offline.gif") no-repeat 50% 50%;
   text-decoration: none;
 }
 
 .goog-offlinestatus-online {
-  background: url("../images/gears_online.gif") no-repeat 50% 50%;
+  background: url("//ssl.gstatic.com/closure/gears_online.gif") no-repeat 50% 50%;
   text-decoration: none;
 }
 
 .goog-offlinestatus-paused {
-  background: url("../images/gears_paused.gif") no-repeat 50% 50%;
+  background: url("//ssl.gstatic.com/closure/gears_paused.gif") no-repeat 50% 50%;
   text-decoration: none;
 }
 
 .goog-offlinestatus-syncing {
-  background: url("../images/gears_syncing.gif") no-repeat 50% 50%;
+  background: url("//ssl.gstatic.com/closure/gears_syncing.gif") no-repeat 50% 50%;
   text-decoration: none;
 }
 
 .goog-offlinestatus-error {
-  background: url("../images/gears_syncing.gif") no-repeat 50% 50%;
+  background: url("//ssl.gstatic.com/closure/gears_syncing.gif") no-repeat 50% 50%;
   text-decoration: none;
 }
 
@@ -91,7 +91,7 @@
   cursor: pointer;
   width: 11px;
   height: 11px;
-  background-image: url("../images/close_box.gif");
+  background-image: url("//ssl.gstatic.com/closure/close_box.gif");
 }
 
 
@@ -112,7 +112,7 @@
   color: #ffffff;
   font-weight: bold;
   padding: 10px;
-  background: url("../images/gears_bluedot.gif") no-repeat 50% 50%;
+  background: url("//ssl.gstatic.com/closure/gears_bluedot.gif") no-repeat 50% 50%;
 }
 
 .goog-offlinedialog-step-description {

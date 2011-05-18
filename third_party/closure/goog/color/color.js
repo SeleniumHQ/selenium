@@ -403,7 +403,7 @@ goog.color.rgbStyle_ = function(rgb) {
 /**
  * Converts an HSV triplet to an RGB array.  V is brightness because b is
  *   reserved for blue in RGB.
- * @param {number} h Hue value in [0, 1].
+ * @param {number} h Hue value in [0, 360].
  * @param {number} s Saturation value in [0, 1].
  * @param {number} brightness brightness in [0, 255].
  * @return {!Array.<number>} Array of r,g,b values.
@@ -569,7 +569,7 @@ goog.color.hexToHsv = function(hex) {
 
 /**
  * Converts from h,s,v values to a hex string
- * @param {number} h Hue, in [0, 1].
+ * @param {number} h Hue, in [0, 360].
  * @param {number} s Saturation, in [0, 1].
  * @param {number} v Value, in [0, 255].
  * @return {string} hex representation of the color.
@@ -581,7 +581,7 @@ goog.color.hsvToHex = function(h, s, v) {
 
 /**
  * Converts from an HSV array to a hex string
- * @param {Array} hsv Array of [h, s, v] in [[0, 1], [0, 1], [0, 255]].
+ * @param {Array} hsv Array of [h, s, v] in [[0, 360], [0, 1], [0, 255]].
  * @return {string} hex representation of the color.
  */
 goog.color.hsvArrayToHex = function(hsv) {

@@ -28,8 +28,9 @@
  */
 goog.provide('goog.net.BrowserTestChannel');
 
-goog.require('goog.net.ChannelDebug');
-goog.require('goog.net.ChannelRequest');
+goog.require('goog.json');
+goog.require('goog.net.ChannelRequest.Error');
+goog.require('goog.net.tmpnetwork');
 goog.require('goog.userAgent');
 
 
@@ -210,15 +211,6 @@ goog.net.BrowserTestChannel.BLOCKED_PAUSE_BETWEEN_RETRIES_ = 2000;
 
 
 /**
- * @define {boolean} Whether to allow the test to complete as soon as
- *     the channel appears unbuffered.
- * TODO(user) Change default to true once this is deployed and
- *     verified as not causing issues in Gcomm/Supermoles.
- */
-goog.net.BrowserTestChannel.ALLOW_EARLY_NON_BUFFERED_DETECTION = false;
-
-
-/**
  * Time between chunks in the test connection that indicates that we
  * are not behind a buffering proxy. This value should be less than or
  * equals to the time between chunks sent from the server.
@@ -275,7 +267,7 @@ goog.net.BrowserTestChannel.prototype.checkBlocked_ = function() {
   var uri = this.channel_.createDataUri(this.blockedPrefix_,
       '/mail/images/cleardot.gif');
   uri.makeUnique();
-  goog.net.testLoadImageWithRetries(uri.toString(),
+  goog.net.tmpnetwork.testLoadImageWithRetries(uri.toString(),
       goog.net.BrowserTestChannel.BLOCKED_TIMEOUT_,
       goog.bind(this.checkBlockedCallback_, this),
       goog.net.BrowserTestChannel.BLOCKED_RETRIES_,
@@ -546,7 +538,6 @@ goog.net.BrowserTestChannel.prototype.checkForEarlyNonBuffered_ =
   // onRequestData, so we have to check the time that the first came in
   // and verify that the data arrived before the second portion could
   // have been sent. For all other browser's we skip the timing test.
-  return (!goog.userAgent.IE || ms <
-      goog.net.BrowserTestChannel.MIN_TIME_EXPECTED_BETWEEN_DATA_) &&
-      goog.net.BrowserTestChannel.ALLOW_EARLY_NON_BUFFERED_DETECTION;
+  return !goog.userAgent.IE ||
+      ms < goog.net.BrowserTestChannel.MIN_TIME_EXPECTED_BETWEEN_DATA_;
 };

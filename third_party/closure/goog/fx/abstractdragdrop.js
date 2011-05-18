@@ -458,7 +458,7 @@ goog.fx.AbstractDragDrop.prototype.endDrag = function(event) {
   if (activeTarget && activeTarget.target_) {
     var clientX = event.clientX;
     var clientY = event.clientY;
-    var scroll = this.getPageScroll_();
+    var scroll = this.getScrollPos();
     var x = clientX + scroll.x;
     var y = clientY + scroll.y;
 
@@ -542,7 +542,7 @@ goog.fx.AbstractDragDrop.prototype.disposeDrag = function() {
 goog.fx.AbstractDragDrop.prototype.moveDrag_ = function(event) {
   var x = event.clientX;
   var y = event.clientY;
-  var scroll = this.getPageScroll_();
+  var scroll = this.getScrollPos();
   x += scroll.x;
   y += scroll.y;
 
@@ -771,8 +771,9 @@ goog.fx.AbstractDragDrop.prototype.getDragElementPosition =
 
   // Subtract margin from drag element position twice, once to adjust the
   // position given by the original node and once for the drag node.
-  pos.x += (parseInt(goog.style.getStyle_(el, 'marginLeft'), 10) || 0) * 2;
-  pos.y += (parseInt(goog.style.getStyle_(el, 'marginTop'), 10) || 0) * 2;
+  var marginBox = goog.style.getMarginBox(el);
+  pos.x += (marginBox.left || 0) * 2;
+  pos.y += (marginBox.top || 0) * 2;
 
   return pos;
 };
@@ -1044,12 +1045,12 @@ goog.fx.AbstractDragDrop.prototype.isInside_ = function(x, y, box) {
 
 
 /**
- * Gets the page scroll distance as a coordinate object, using
+ * Gets the scroll distance as a coordinate object, using
  * the window of the current drag element's dom.
  * @return {goog.math.Coordinate} Object with scroll offsets 'x' and 'y'.
- * @private
+ * @protected
  */
-goog.fx.AbstractDragDrop.prototype.getPageScroll_ = function() {
+goog.fx.AbstractDragDrop.prototype.getScrollPos = function() {
   return goog.dom.getDomHelper(this.dragEl_).getDocumentScroll();
 };
 
@@ -1266,6 +1267,10 @@ goog.fx.DragDropItem.prototype.getDraggableElements = function() {
  * @private
  */
 goog.fx.DragDropItem.prototype.mouseDown_ = function(event) {
+  if (!event.isMouseActionButton()) {
+    return;
+  }
+
   // Get the draggable element for the target.
   var element = this.getDraggableElement(/** @type {Element} */ (event.target));
   if (element) {

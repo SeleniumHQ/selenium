@@ -31,13 +31,13 @@
 }
 
 .goog-tristatemenuitem-partially-checked {
-  background-image: url(../images/check-outline.gif);
+  background-image: url(//ssl.gstatic.com/closure/check-outline.gif);
   background-position: 4px 50%;
   background-repeat: no-repeat;
 }
 
 .goog-tristatemenuitem-fully-checked {
-  background-image: url(../images/check.gif);
+  background-image: url(//ssl.gstatic.com/closure/check.gif);
   background-position: 4px 50%;
   background-repeat: no-repeat;
 }

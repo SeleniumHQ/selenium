@@ -98,13 +98,6 @@ goog.ui.DatePicker = function(opt_date, opt_dateTimeSymbols, opt_domHelper) {
    * @private
    */
   this.keyHandlers_ = {};
-
-  /**
-   * Dom helper.
-   * @type {goog.dom.DomHelper}
-   * @private
-   */
-  this.dom_ = opt_domHelper || goog.dom.getDomHelper();
 };
 goog.inherits(goog.ui.DatePicker, goog.ui.Component);
 

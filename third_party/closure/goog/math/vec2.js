@@ -33,23 +33,23 @@ goog.require('goog.math.Coordinate');
  * Class for a two-dimensional vector object and assorted functions useful for
  * manipulating points.
  *
- * @param {number=} opt_x The x coordinate for the vector.
- * @param {number=} opt_y The y coordinate for the vector.
+ * @param {number} x The x coordinate for the vector.
+ * @param {number} y The y coordinate for the vector.
  * @constructor
  * @extends {goog.math.Coordinate}
  */
-goog.math.Vec2 = function(opt_x, opt_y) {
+goog.math.Vec2 = function(x, y) {
   /**
    * X-value
    * @type {number}
    */
-  this.x = Number(opt_x) || 0;
+  this.x = x;
 
   /**
    * Y-value
    * @type {number}
    */
-  this.y = Number(opt_y) || 0;
+  this.y = y;
 };
 goog.inherits(goog.math.Vec2, goog.math.Coordinate);
 

@@ -14,7 +14,7 @@
 
 /**
  * @fileoverview Provides facilities for creating and querying tweaks.
- * @see http://go/jstweaks
+ * @see http://code.google.com/p/closure-library/wiki/UsingTweaks
  *
  * @author agrieve@google.com (Andrew Grieve)
  */

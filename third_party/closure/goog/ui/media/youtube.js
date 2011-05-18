@@ -234,12 +234,37 @@ goog.inherits(goog.ui.media.YoutubeModel, goog.ui.media.MediaModel);
 
 /**
  * A youtube regular expression matcher. It matches the VIDEOID of URLs like
- * http://www.youtube.com/watch?v=VIDEOID.
+ * http://www.youtube.com/watch?v=VIDEOID. Based on:
+ * googledata/contentonebox/opencob/specs/common/YTPublicExtractorCard.xml
  * @type {RegExp}
  * @private
+ * @const
  */
-goog.ui.media.YoutubeModel.matcher_ =
-    /https?:\/\/(?:[a-zA_Z]{2,3}.)?(?:youtube\.com\/watch\?)((?:[\w\d\-\_\=]+&amp;(?:amp;)?)*v(?:&lt;[A-Z]+&gt;)?=([0-9a-zA-Z\-\_]+))/i;
+goog.ui.media.YoutubeModel.MATCHER_ = new RegExp(
+    // Lead in.
+    'http://(?:[a-zA_Z]{2,3}.)?' +
+    // Watch URL prefix.  This should handle new URLs of the form:
+    // http://www.youtube.com/watch#!v=jqxENMKaeCU&feature=related
+    // where the parameters appear after "#!" instead of "?".
+    '(?:youtube\.com/watch)' +
+    // Get the video id:
+    // The video ID is a parameter v=[videoid] either right after the "?"
+    // or after some other parameters.
+    '(?:\\?(?:[\\w\-\=]+&(?:amp;)?)*v=([\\w\-]+)' +
+    '(?:&(?:amp;)?[\\w\-\=]+)*)?' +
+    // Get any extra arguments in the URL's hash part.
+    '(?:#[!]?(?:' +
+    // Video ID from the v=[videoid] parameter, optionally surrounded by other
+    // & separated parameters.
+    '(?:(?:[\\w\-\=]+&(?:amp;)?)*(?:v=([\\w\-]+))' +
+    '(?:&(?:amp;)?[\\w\-\=]+)*)' +
+    '|' +
+    // Continue supporting "?" for the video ID
+    // and "#" for other hash parameters.
+    '(?:[\\w\-\=&]+)' +
+    '))?' +
+    // Should terminate with a word break or a /.
+    '(?:/|\\b)', 'i');
 
 
 /**
@@ -258,10 +283,11 @@ goog.ui.media.YoutubeModel.matcher_ =
 goog.ui.media.YoutubeModel.newInstance = function(youtubeUrl,
                                                   opt_caption,
                                                   opt_description) {
-  var extract = goog.ui.media.YoutubeModel.matcher_.exec(youtubeUrl);
+  var extract = goog.ui.media.YoutubeModel.MATCHER_.exec(youtubeUrl);
   if (extract) {
+    var videoId = extract[1] || extract[2];
     return new goog.ui.media.YoutubeModel(
-        extract[2], opt_caption, opt_description);
+        videoId, opt_caption, opt_description);
   }
 
   throw Error('failed to parse video id from youtube url: ' + youtubeUrl);

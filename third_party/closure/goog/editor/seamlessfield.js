@@ -220,7 +220,7 @@ goog.editor.SeamlessField.prototype.getIframeBodyHeightGecko_ = function() {
     // If there is a horizontal scroll, add in the thickness of the
     // scrollbar.
     if (htmlElement.clientHeight != htmlElement.offsetHeight) {
-      fieldHeight += goog.editor.SeamlessField.getScrollbarThickness_();
+      fieldHeight += goog.editor.SeamlessField.getScrollbarWidth_();
     }
   }
 
@@ -229,23 +229,14 @@ goog.editor.SeamlessField.prototype.getIframeBodyHeightGecko_ = function() {
 
 
 /**
- * Grabs the width of a scrollbar from the browser and caches
- * the result. This needs to be dynamic because the width is OS/browser
- * specific.
- * @private
- *
+ * Grabs the width of a scrollbar from the browser and caches the result.
  * @return {number} The scrollbar width in pixels.
+ * @private
  */
-goog.editor.SeamlessField.getScrollbarThickness_ = function() {
-  if (!goog.editor.SeamlessField.scrollbarThickness_) {
-    var div = goog.dom.createDom('div',
-        {'style': 'overflow:scroll;position:absolute;visibility:hidden;'});
-    goog.dom.appendChild(goog.dom.getDocument().body, div);
-    goog.editor.SeamlessField.scrollbarThickness_ =
-        div.offsetWidth - div.clientWidth;
-    goog.dom.removeNode(div);
-  }
-  return goog.editor.SeamlessField.scrollbarThickness_;
+goog.editor.SeamlessField.getScrollbarWidth_ = function() {
+  return goog.editor.SeamlessField.scrollbarWidth_ ||
+      (goog.editor.SeamlessField.scrollbarWidth_ =
+          goog.style.getScrollbarWidth());
 };
 
 

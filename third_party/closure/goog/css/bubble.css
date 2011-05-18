@@ -11,7 +11,7 @@
 }
 
 .goog-bubble-close-button {
-  background-image:url(../images/bubble_close.jpg);
+  background-image:url(//ssl.gstatic.com/closure/bubble_close.jpg);
   background-color: white;
   background-position: top right;
   background-repeat: no-repeat;
@@ -20,21 +20,21 @@
 }
 
 .goog-bubble-left {
-  background-image:url(../images/bubble_left.gif);
+  background-image:url(//ssl.gstatic.com/closure/bubble_left.gif);
   background-position:left;
   background-repeat:repeat-y;
   width: 4px;
 }
 
 .goog-bubble-right {
-  background-image:url(../images/bubble_right.gif);
+  background-image:url(//ssl.gstatic.com/closure/bubble_right.gif);
   background-position: right;
   background-repeat: repeat-y;
   width: 4px;
 }
 
 .goog-bubble-top-right-anchor {
-  background-image:url(../images/right_anchor_bubble_top.gif);
+  background-image:url(//ssl.gstatic.com/closure/right_anchor_bubble_top.gif);
   background-position: center;
   background-repeat: no-repeat;
   width: 147px;
@@ -42,7 +42,7 @@
 }
 
 .goog-bubble-top-left-anchor {
-  background-image:url(../images/left_anchor_bubble_top.gif);
+  background-image:url(//ssl.gstatic.com/closure/left_anchor_bubble_top.gif);
   background-position: center;
   background-repeat: no-repeat;
   width: 147px;
@@ -50,7 +50,7 @@
 }
 
 .goog-bubble-top-no-anchor {
-  background-image:url(../images/no_anchor_bubble_top.gif);
+  background-image:url(//ssl.gstatic.com/closure/no_anchor_bubble_top.gif);
   background-position: center;
   background-repeat: no-repeat;
   width: 147px;
@@ -58,7 +58,7 @@
 }
 
 .goog-bubble-bottom-right-anchor {
-  background-image:url(../images/right_anchor_bubble_bot.gif);
+  background-image:url(//ssl.gstatic.com/closure/right_anchor_bubble_bot.gif);
   background-position: center;
   background-repeat: no-repeat;
   width: 147px;
@@ -66,7 +66,7 @@
 }
 
 .goog-bubble-bottom-left-anchor {
-  background-image:url(../images/left_anchor_bubble_bot.gif);
+  background-image:url(//ssl.gstatic.com/closure/left_anchor_bubble_bot.gif);
   background-position: center;
   background-repeat: no-repeat;
   width: 147px;
@@ -74,7 +74,7 @@
 }
 
 .goog-bubble-bottom-no-anchor {
-  background-image:url(../images/no_anchor_bubble_bot.gif);
+  background-image:url(//ssl.gstatic.com/closure/no_anchor_bubble_bot.gif);
   background-position: center;
   background-repeat: no-repeat;
   width: 147px;

@@ -103,21 +103,7 @@ goog.editor.icontent.getInitialIframeContent_ =
   }
 
   // <HTML>
-  html.push('<html ');
-
-  if (goog.editor.BrowserFeature.HAS_CONTENT_EDITABLE &&
-      !goog.editor.BrowserFeature.FOCUSES_EDITABLE_BODY_ON_HTML_CLICK) {
-    html.push('contentEditable ');
-  }
-
-  html.push('style="background:none transparent;');
-
-  if (goog.editor.BrowserFeature.HAS_CONTENT_EDITABLE &&
-      !goog.editor.BrowserFeature.FOCUSES_EDITABLE_BODY_ON_HTML_CLICK) {
-    // Make sure the HTML element fills the full height of the page so that
-    // it can be clicked to place the caret.
-    html.push('min-height:100%;');
-  }
+  html.push('<html style="background:none transparent;');
 
   // Make sure that the HTML element's height has the
   // correct value as the body element's percentage height is made relative
@@ -157,8 +143,7 @@ goog.editor.icontent.getInitialIframeContent_ =
   // Hidefocus is needed to ensure that IE7 doesn't show the dotted, focus
   // border when you tab into the field.
   html.push('<body g_editable="true" hidefocus="true" ');
-  if (goog.editor.BrowserFeature.HAS_CONTENT_EDITABLE &&
-      goog.editor.BrowserFeature.FOCUSES_EDITABLE_BODY_ON_HTML_CLICK) {
+  if (goog.editor.BrowserFeature.HAS_CONTENT_EDITABLE) {
     html.push('contentEditable ');
   }
 
@@ -198,6 +183,11 @@ goog.editor.icontent.getInitialIframeContent_ =
     } else {
       html.push(';overflow-y:hidden;overflow-x:auto');
     }
+  }
+
+  // Hide the native focus rect in Opera.
+  if (goog.userAgent.OPERA) {
+    html.push(';outline:hidden');
   }
 
   for (var key in info.extraStyles_) {

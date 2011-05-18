@@ -78,15 +78,15 @@ goog.messaging.MessageChannel.prototype.isConnected = function() {};
  *
  * @param {string} serviceName The name of the service.
  * @param {function((string|!Object))} callback The callback to process the
- *     incoming messages. Passed the payload. If opt_jsonEncoded is set, the
+ *     incoming messages. Passed the payload. If opt_objectPayload is set, the
  *     payload is decoded and passed as an object.
- * @param {boolean=} opt_jsonEncoded If true, incoming messages for this service
- *     are expected to contain a JSON-encoded object and will be deserialized
- *     automatically. It's the responsibility of implementors of this class to
- *     perform the deserialization.
+ * @param {boolean=} opt_objectPayload If true, incoming messages for this
+ *     service are expected to contain an object, and will be deserialized from
+ *     a string automatically if necessary. It's the responsibility of
+ *     implementors of this class to perform the deserialization.
  */
 goog.messaging.MessageChannel.prototype.registerService =
-    function(serviceName, callback, opt_jsonEncoded) {};
+    function(serviceName, callback, opt_objectPayload) {};
 
 
 /**
@@ -108,8 +108,9 @@ goog.messaging.MessageChannel.prototype.registerDefaultService =
  * @param {string} serviceName The name of the service this message should be
  *     delivered to.
  * @param {string|!Object} payload The value of the message. If this is an
- *     Object, it is serialized to JSON before sending. It's the responsibility
- *     of implementors of this class to perform the serialization.
+ *     Object, it is serialized to a string before sending if necessary. It's
+ *     the responsibility of implementors of this class to perform the
+ *     serialization.
  */
 goog.messaging.MessageChannel.prototype.send =
     function(serviceName, payload) {};

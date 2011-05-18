@@ -214,8 +214,8 @@ goog.messaging.BufferedChannel.prototype.peerReady_;
 
 /** @inheritDoc */
 goog.messaging.BufferedChannel.prototype.registerService = function(
-    serviceName, callback, opt_jsonEncoded) {
-  this.userChannel_.registerService(serviceName, callback, opt_jsonEncoded);
+    serviceName, callback, opt_objectPayload) {
+  this.userChannel_.registerService(serviceName, callback, opt_objectPayload);
 };
 
 

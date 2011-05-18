@@ -27,23 +27,46 @@ goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
 goog.require('goog.userAgent.product.isVersion');
 
+goog.setTestOnly('dom_test');
+
 var $ = goog.dom.getElement;
 
-// Setup for the iframe
-var myIframe = $('myIframe');
-var myIframeDoc = goog.dom.getFrameContentDocument(
-    /** @type {HTMLIFrameElement} */ (myIframe));
+var divForTestingScrolling;
+var myIframe;
+var myIframeDoc;
 
-// Set up document for iframe: total height of elements in document is 65
-// If the elements are not create like below, IE will get a wrong height for
-// the document.
-myIframeDoc.open();
-// Make sure we progate the compat mode
-myIframeDoc.write((goog.dom.isCss1CompatMode() ? '<!DOCTYPE html>' : '') +
-    '<style>body{margin:0;padding:0}</style>' +
-    '<div style="height:42px;font-size:1px;line-height:0;">hello world</div>' +
-    '<div style="height:23px;font-size:1px;line-height:0;">hello world</div>');
-myIframeDoc.close();
+function setUpPage() {
+  divForTestingScrolling = document.createElement('div');
+  divForTestingScrolling.style.width = '5000px';
+  divForTestingScrolling.style.height = '5000px';
+  document.body.appendChild(divForTestingScrolling);
+
+  // Setup for the iframe
+  myIframe = $('myIframe');
+  myIframeDoc = goog.dom.getFrameContentDocument(
+      /** @type {HTMLIFrameElement} */ (myIframe));
+
+  // Set up document for iframe: total height of elements in document is 65
+  // If the elements are not create like below, IE will get a wrong height for
+  // the document.
+  myIframeDoc.open();
+  // Make sure we progate the compat mode
+  myIframeDoc.write((goog.dom.isCss1CompatMode() ? '<!DOCTYPE html>' : '') +
+      '<style>body{margin:0;padding:0}</style>' +
+      '<div style="height:42px;font-size:1px;line-height:0;">' +
+          'hello world</div>' +
+      '<div style="height:23px;font-size:1px;line-height:0;">' +
+          'hello world</div>');
+  myIframeDoc.close();
+}
+
+function tearDownPage() {
+  document.body.removeChild(divForTestingScrolling);
+}
+
+function tearDown() {
+  window.scrollTo(0, 0);
+}
 
 function testDom() {
   assert('Dom library exists', typeof goog.dom != 'undefined');
@@ -456,6 +479,35 @@ function testReplaceNode() {
   assertNull('badNode should not be in the DOM tree', $('badReplaceNode'));
 }
 
+function testAppendChildAt() {
+  var parent = $('p2');
+  var origNumChildren = parent.childNodes.length;
+
+  var child1 = document.createElement('div');
+  goog.dom.insertChildAt(parent, child1, origNumChildren);
+  assertEquals(origNumChildren + 1, parent.childNodes.length);
+
+  var child2 = document.createElement('div');
+  goog.dom.insertChildAt(parent, child2, origNumChildren + 42);
+  assertEquals(origNumChildren + 2, parent.childNodes.length);
+
+  var child3 = document.createElement('div');
+  goog.dom.insertChildAt(parent, child3, 0);
+  assertEquals(origNumChildren + 3, parent.childNodes.length);
+
+  var child4 = document.createElement('div');
+  goog.dom.insertChildAt(parent, child3, 2);
+  assertEquals(origNumChildren + 3, parent.childNodes.length);
+
+  parent.removeChild(child1);
+  parent.removeChild(child2);
+  parent.removeChild(child3);
+
+  var emptyParentNotInDocument = document.createElement('div');
+  goog.dom.insertChildAt(emptyParentNotInDocument, child1, 0);
+  assertEquals(1, emptyParentNotInDocument.childNodes.length);
+}
+
 function testFlattenElement() {
   var text = document.createTextNode('Text');
   var br = document.createElement('br');
@@ -545,6 +597,18 @@ function testGetFirstElementChild() {
 
   var c = goog.dom.getFirstElementChild(b1);
   assertNull('First element child of b1 should be null', c);
+
+  // Test with an undefined firstElementChild attribute.
+  var b2 = $('b2');
+  var mockP2 = {
+      childNodes: [b1, b2],
+      firstChild: b1,
+      firstElementChild: undefined
+  };
+
+  b1 = goog.dom.getFirstElementChild(mockP2);
+  assertNotNull('First element child of mockP2 should not be null', b1);
+  assertEquals('First element child is b1', 'b1', b1.id);
 }
 
 function testGetLastElementChild() {
@@ -555,6 +619,18 @@ function testGetLastElementChild() {
 
   var c = goog.dom.getLastElementChild(b2);
   assertNull('Last element child of b2 should be null', c);
+
+  // Test with an undefined lastElementChild attribute.
+  var b1 = $('b1');
+  var mockP2 = {
+      childNodes: [b1, b2],
+      lastChild: b2,
+      lastElementChild: undefined
+  };
+
+  b2 = goog.dom.getLastElementChild(mockP2);
+  assertNotNull('Last element child of mockP2 should not be null', b2);
+  assertEquals('Last element child is b2', 'b2', b2.id);
 }
 
 function testGetNextElementSibling() {
@@ -565,6 +641,16 @@ function testGetNextElementSibling() {
 
   var c = goog.dom.getNextElementSibling(b2);
   assertNull('Next element sibling of b2 should be null', c);
+
+  // Test with an undefined nextElementSibling attribute.
+  var mockB1 = {
+      nextSibling: b2,
+      nextElementSibling: undefined
+  };
+
+  b2 = goog.dom.getNextElementSibling(mockB1);
+  assertNotNull('Next element sibling of mockB1 should not be null', b1);
+  assertEquals('Next element sibling is b2', 'b2', b2.id);
 }
 
 function testGetPreviousElementSibling() {
@@ -575,6 +661,48 @@ function testGetPreviousElementSibling() {
 
   var c = goog.dom.getPreviousElementSibling(b1);
   assertNull('Previous element sibling of b1 should be null', c);
+
+  // Test with an undefined previousElementSibling attribute.
+  var mockB2 = {
+      previousSibling: b1,
+      previousElementSibling: undefined
+  };
+
+  b1 = goog.dom.getPreviousElementSibling(mockB2);
+  assertNotNull('Previous element sibling of mockB2 should not be null', b1);
+  assertEquals('Previous element sibling is b1', 'b1', b1.id);
+}
+
+function testGetChildren() {
+  var p2 = $('p2');
+  var children = goog.dom.getChildren(p2);
+  assertNotNull('Elements array should not be null', children);
+  assertEquals('List of element children should be length two.', 2,
+      children.length);
+
+  var b1 = $('b1');
+  var b2 = $('b2');
+  assertObjectEquals('First element child should be b1.', b1, children[0]);
+  assertObjectEquals('Second element child should be b2.', b2, children[1]);
+
+  var noChildren = goog.dom.getChildren(b1);
+  assertNotNull('Element children array should not be null', noChildren);
+  assertEquals('List of element children should be length zero.', 0,
+      noChildren.length);
+
+  // Test with an undefined children attribute.
+  var mockP2 = {
+      childNodes: [b1, b2],
+      children: undefined
+  };
+
+  children = goog.dom.getChildren(mockP2);
+  assertNotNull('Elements array should not be null', children);
+  assertEquals('List of element children should be length two.', 2,
+      children.length);
+
+  assertObjectEquals('First element child should be b1.', b1, children[0]);
+  assertObjectEquals('Second element child should be b2.', b2, children[1]);
 }
 
 function testGetNextNode() {
@@ -1117,6 +1245,31 @@ function testAppend4() {
   goog.dom.append(div, div2.childNodes);
   assertEqualsCaseAndLeadingWhitespaceInsensitive('a<b></b>c', div.innerHTML);
   assertFalse(div2.hasChildNodes());
+}
+
+function testGetDocumentScroll() {
+  // setUpPage added divForTestingScrolling to the DOM. It's not init'd here so
+  // it can be shared amonst other tests.
+  window.scrollTo(100, 100);
+
+  assertEquals(100, goog.dom.getDocumentScroll().x);
+  assertEquals(100, goog.dom.getDocumentScroll().y);
+}
+
+function testGetDocumentScrollOfFixedViewport() {
+  // iOS and perhaps other environments don't actually support scrolling.
+  // Instead, you view the document's fixed layout through a screen viewport.
+  // We need getDocumentScroll to handle this case though.
+  var fakeDocumentScrollElement = {scrollLeft: 0, scrollTop: 0};
+  var fakeDocument = {
+    defaultView: {pageXOffset: 100, pageYOffset: 100},
+    documentElement: fakeDocumentScrollElement,
+    body: fakeDocumentScrollElement
+  };
+  var dh = goog.dom.getDomHelper(document);
+  dh.setDocument(fakeDocument);
+  assertEquals(100, dh.getDocumentScroll().x);
+  assertEquals(100, dh.getDocumentScroll().y);
 }
 
 

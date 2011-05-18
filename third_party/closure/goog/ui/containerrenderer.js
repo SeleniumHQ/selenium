@@ -232,6 +232,7 @@ goog.ui.ContainerRenderer.prototype.setStateFromClassName = function(container,
  *     discovered.
  * @param {Element} element Element whose children are to be decorated.
  * @param {Element=} opt_firstChild the first child to be decorated.
+ * @suppress {visibility} setElementInternal
  */
 goog.ui.ContainerRenderer.prototype.decorateChildren = function(container,
     element, opt_firstChild) {

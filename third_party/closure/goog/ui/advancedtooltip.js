@@ -253,8 +253,7 @@ goog.ui.AdvancedTooltip.prototype.isCoordinateInTooltip = function(coord) {
  *     tooltip whose anchor is a child of this tooltip.
  * @private
  */
-goog.ui.AdvancedTooltip.prototype.isCoordinateActive_ = function(
-    coord) {
+goog.ui.AdvancedTooltip.prototype.isCoordinateActive_ = function(coord) {
   if ((this.anchorBox_ && this.anchorBox_.contains(coord)) ||
       this.isCoordinateInTooltip(coord)) {
     return true;

@@ -71,13 +71,38 @@ goog.positioning.CornerBit = {
  * @enum {number}
  */
 goog.positioning.Overflow = {
+  /** Ignore overflow */
   IGNORE: 0,
+
+  /** Try to fit horizontally in the viewport at all costs. */
   ADJUST_X: 1,
+
+  /** If the element can't fit horizontally, report positioning failure. */
   FAIL_X: 2,
+
+  /** Try to fit vertically in the viewport at all costs. */
   ADJUST_Y: 4,
+
+  /** If the element can't fit vertically, report positioning failure. */
   FAIL_Y: 8,
+
+  /** Resize the element's width to fit in the viewport. */
   RESIZE_WIDTH: 16,
-  RESIZE_HEIGHT: 32
+
+  /** Resize the element's height to fit in the viewport. */
+  RESIZE_HEIGHT: 32,
+
+  /**
+   * If the anchor goes off-screen in the x-direction, position the movable
+   * element off-screen. Otherwise, try to fit horizontally in the viewport.
+   */
+  ADJUST_X_EXCEPT_OFFSCREEN: 64 | 1,
+
+  /**
+   * If the anchor goes off-screen in the y-direction, position the movable
+   * element off-screen. Otherwise, try to fit vertically in the viewport.
+   */
+  ADJUST_Y_EXCEPT_OFFSCREEN: 128 | 4
 };
 
 
@@ -304,7 +329,7 @@ goog.positioning.positionAtCoordinate = function(absolutePos,
                                                    movableElementCorner);
   var elementSize = goog.style.getSize(movableElement);
   var size = opt_preferredSize ? opt_preferredSize.clone() :
-      elementSize;
+      elementSize.clone();
 
   if (opt_margin || corner != goog.positioning.Corner.TOP_LEFT) {
     if (corner & goog.positioning.CornerBit.RIGHT) {
@@ -321,10 +346,9 @@ goog.positioning.positionAtCoordinate = function(absolutePos,
 
   // Adjust position to fit inside viewport.
   if (opt_overflow) {
-    status = opt_viewport ? goog.positioning.adjustForViewport(absolutePos,
-                                                               size,
-                                                               opt_viewport,
-                                                               opt_overflow) :
+    status = opt_viewport ?
+        goog.positioning.adjustForViewport(
+            absolutePos, size, opt_viewport, opt_overflow) :
         goog.positioning.OverflowStatus.FAILED_OUTSIDE_VIEWPORT;
     if (status & goog.positioning.OverflowStatus.FAILED) {
       return status;
@@ -357,6 +381,19 @@ goog.positioning.positionAtCoordinate = function(absolutePos,
  */
 goog.positioning.adjustForViewport = function(pos, size, viewport, overflow) {
   var status = goog.positioning.OverflowStatus.NONE;
+
+  var ADJUST_X_EXCEPT_OFFSCREEN =
+      goog.positioning.Overflow.ADJUST_X_EXCEPT_OFFSCREEN;
+  var ADJUST_Y_EXCEPT_OFFSCREEN =
+      goog.positioning.Overflow.ADJUST_Y_EXCEPT_OFFSCREEN;
+  if ((overflow & ADJUST_X_EXCEPT_OFFSCREEN) == ADJUST_X_EXCEPT_OFFSCREEN &&
+      (pos.x < viewport.left || pos.x >= viewport.right)) {
+    overflow &= ~goog.positioning.Overflow.ADJUST_X;
+  }
+  if ((overflow & ADJUST_Y_EXCEPT_OFFSCREEN) == ADJUST_Y_EXCEPT_OFFSCREEN &&
+      (pos.y < viewport.top || pos.y >= viewport.bottom)) {
+    overflow &= ~goog.positioning.Overflow.ADJUST_Y;
+  }
 
   // Left edge outside viewport, try to move it.
   if (pos.x < viewport.left && overflow & goog.positioning.Overflow.ADJUST_X) {

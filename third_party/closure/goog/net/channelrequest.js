@@ -28,12 +28,13 @@
  * Namespace for BrowserChannel
  */
 goog.provide('goog.net.ChannelRequest');
+goog.provide('goog.net.ChannelRequest.Error');
+
 goog.require('goog.Timer');
-goog.require('goog.Uri');
+goog.require('goog.events');
 goog.require('goog.events.EventHandler');
-goog.require('goog.net.XhrIo');
-goog.require('goog.net.XmlHttp');
-goog.require('goog.net.tmpnetwork');
+goog.require('goog.net.EventType');
+goog.require('goog.net.XmlHttp.ReadyState');
 goog.require('goog.object');
 goog.require('goog.userAgent');
 
@@ -354,7 +355,7 @@ goog.net.ChannelRequest.errorStringFromCode = function(errorCode, statusCode) {
       return 'Non-200 return code (' + statusCode + ')';
     case goog.net.ChannelRequest.Error.NO_DATA:
       return 'XMLHTTP failure (no data)';
-   case goog.net.ChannelRequest.Error.TIMEOUT:
+    case goog.net.ChannelRequest.Error.TIMEOUT:
       return 'HttpConnection timeout';
     default:
       return 'Unknown error';
@@ -504,7 +505,7 @@ goog.net.ChannelRequest.prototype.xmlHttpHandler_ = function(e) {
       this.onXmlHttpReadyStateChanged_();
     } else {
       this.channelDebug_.warning('Called back with an ' +
-                                              'unexpected xmlhttp');
+                                     'unexpected xmlhttp');
     }
   } catch (ex) {
     this.channelDebug_.debug('Failed call to OnXmlHttpReadyStateChanged_');
@@ -543,8 +544,8 @@ goog.net.ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
     // before we continue.  However, we don't do it in Opera because it only
     // fire readyState == INTERACTIVE once.  We need the following code to poll
     if (readyState < goog.net.XmlHttp.ReadyState.INTERACTIVE ||
-          readyState == goog.net.XmlHttp.ReadyState.INTERACTIVE &&
-          !goog.userAgent.OPERA && !this.xmlHttp_.getResponseText()) {
+        readyState == goog.net.XmlHttp.ReadyState.INTERACTIVE &&
+        !goog.userAgent.OPERA && !this.xmlHttp_.getResponseText()) {
       // not yet ready
       return;
     }
@@ -704,7 +705,7 @@ goog.net.ChannelRequest.prototype.pollResponse_ = function() {
  */
 goog.net.ChannelRequest.prototype.startPolling_ = function() {
   this.eventHandler_.listen(this.pollingTimer_, goog.Timer.TICK,
-          this.pollResponse_);
+      this.pollResponse_);
   this.pollingTimer_.start();
 };
 

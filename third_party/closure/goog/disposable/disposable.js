@@ -21,14 +21,17 @@
 goog.provide('goog.Disposable');
 goog.provide('goog.dispose');
 
+goog.require('goog.disposable.IDisposable');
+
 
 
 /**
  * Class that provides the basic implementation for disposable objects. If your
  * class holds one or more references to COM objects, DOM nodes, or other
  * disposable objects, it should extend this class or implement the disposable
- * interface.
+ * interface (defined in goog.disposable.IDisposable).
  * @constructor
+ * @implements {goog.disposable.IDisposable}
  */
 goog.Disposable = function() {
   if (goog.Disposable.ENABLE_MONITORING) {

@@ -189,6 +189,17 @@ goog.ui.editor.LinkDialog.prototype.setStopReferrerLeaks = function(stop) {
 };
 
 
+/**
+ * Tells the dialog whether the autogeneration of text to display is to be
+ * enabled.
+ * @param {boolean} enable Whether to enable the feature.
+ */
+goog.ui.editor.LinkDialog.prototype.setAutogenFeatureEnabled = function(
+    enable) {
+  this.autogenFeatureEnabled_ = enable;
+};
+
+
 // *** Protected interface ************************************************** //
 
 
@@ -312,6 +323,15 @@ goog.ui.editor.LinkDialog.prototype.textToDisplayDiv_;
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.textToDisplayInput_;
+
+
+/**
+ * Whether or not the feature of automatically generating the display text is
+ * enabled.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.editor.LinkDialog.prototype.autogenFeatureEnabled_ = true;
 
 
 /**
@@ -715,7 +735,7 @@ goog.ui.editor.LinkDialog.prototype.onChangeTab_ = function(e) {
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.setTextToDisplayFromAuto_ = function() {
-  if (this.autogenerateTextToDisplay_) {
+  if (this.autogenFeatureEnabled_ && this.autogenerateTextToDisplay_) {
     var inputId = this.tabPane_.getCurrentTabId() +
         goog.ui.editor.LinkDialog.Id_.TAB_INPUT_SUFFIX;
     this.textToDisplayInput_.value =

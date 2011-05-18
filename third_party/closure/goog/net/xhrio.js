@@ -49,6 +49,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.json');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
+goog.require('goog.net.HttpStatus');
 goog.require('goog.net.XmlHttp');
 goog.require('goog.net.xhrMonitor');
 goog.require('goog.object');
@@ -445,7 +446,7 @@ goog.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
     throw Error('[goog.net.XhrIo] Object is active with another request');
   }
 
-  var method = opt_method || 'GET';
+  var method = opt_method ? opt_method.toUpperCase() : 'GET';
 
   this.lastUri_ = url;
   this.lastError_ = '';
@@ -844,9 +845,10 @@ goog.net.XhrIo.prototype.isSuccess = function() {
     case 0:         // Used for local XHR requests
       return !this.isLastUriEffectiveSchemeHttp_();
 
-    case 200:       // Http Success
-    case 204:       // Http Success - no content
-    case 304:       // Http Cache
+    case goog.net.HttpStatus.OK:
+    case goog.net.HttpStatus.NO_CONTENT:
+    case goog.net.HttpStatus.NOT_MODIFIED:
+    case goog.net.HttpStatus.QUIRK_IE_NO_CONTENT:
       return true;
 
     default:

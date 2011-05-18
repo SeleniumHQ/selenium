@@ -16,6 +16,9 @@
  * @fileoverview Wrappers for HTML5 Entry objects. These are all in the same
  * file to avoid circular dependency issues.
  *
+ * When adding or modifying functionality in this namespace, be sure to update
+ * the mock counterparts in goog.testing.fs.
+ *
  */
 
 goog.provide('goog.fs.DirectoryEntry');
@@ -23,9 +26,11 @@ goog.provide('goog.fs.DirectoryEntry.Behavior');
 goog.provide('goog.fs.Entry');
 goog.provide('goog.fs.FileEntry');
 
+goog.require('goog.array');
 goog.require('goog.async.Deferred');
 goog.require('goog.fs.Error');
 goog.require('goog.fs.FileWriter');
+goog.require('goog.string');
 
 
 
@@ -59,7 +64,7 @@ goog.fs.Entry = function(fs, entry) {
  * @return {boolean} Whether or not this entry is a file.
  */
 goog.fs.Entry.prototype.isFile = function() {
-  return this.entry_.isFile();
+  return this.entry_.isFile;
 };
 
 
@@ -67,7 +72,7 @@ goog.fs.Entry.prototype.isFile = function() {
  * @return {boolean} Whether or not this entry is a directory.
  */
 goog.fs.Entry.prototype.isDirectory = function() {
-  return this.entry_.isDirectory();
+  return this.entry_.isDirectory;
 };
 
 
@@ -96,6 +101,25 @@ goog.fs.Entry.prototype.getFileSystem = function() {
 
 
 /**
+ * Retrieves the last modified date for this entry.
+ *
+ * @return {!goog.async.Deferred} The deferred Date for this entry. If an error
+ *     occurs, the errback is called with a {@link goog.fs.Error}.
+ */
+goog.fs.Entry.prototype.getLastModified = function() {
+  var d = new goog.async.Deferred();
+
+  this.entry_.getMetadata(
+      function(metadata) { d.callback(metadata.modificationTime); },
+      goog.bind(function(err) {
+        var msg = 'retrieving last modified date for ' + this.getFullPath();
+        d.errback(new goog.fs.Error(err.code, msg));
+      }, this));
+  return d;
+};
+
+
+/**
  * Move this entry to a new location.
  *
  * @param {!goog.fs.DirectoryEntry} parent The new parent directory.
@@ -109,7 +133,7 @@ goog.fs.Entry.prototype.moveTo = function(parent, opt_newName) {
   var d = new goog.async.Deferred();
   this.entry_.moveTo(
       parent.dir_, opt_newName,
-      goog.bind(function(entry) { d.callback(this.wrapEntry_(entry)); }, this),
+      goog.bind(function(entry) { d.callback(this.wrapEntry(entry)); }, this),
       goog.bind(function(err) {
         var msg = 'moving ' + this.getFullPath() + ' into ' +
             parent.getFullPath() +
@@ -121,7 +145,7 @@ goog.fs.Entry.prototype.moveTo = function(parent, opt_newName) {
 
 
 /**
- * copy this entry to a new location.
+ * Copy this entry to a new location.
  *
  * @param {!goog.fs.DirectoryEntry} parent The new parent directory.
  * @param {string=} opt_newName The name of the new entry. If omitted, the new
@@ -134,7 +158,7 @@ goog.fs.Entry.prototype.copyTo = function(parent, opt_newName) {
   var d = new goog.async.Deferred();
   this.entry_.copyTo(
       parent.dir_, opt_newName,
-      goog.bind(function(entry) { d.callback(this.wrapEntry_(entry)); }, this),
+      goog.bind(function(entry) { d.callback(this.wrapEntry(entry)); }, this),
       goog.bind(function(err) {
         var msg = 'copying ' + this.getFullPath() + ' into ' +
             parent.getFullPath() +
@@ -150,9 +174,9 @@ goog.fs.Entry.prototype.copyTo = function(parent, opt_newName) {
  *
  * @param {!Entry} entry The underlying Entry object.
  * @return {!goog.fs.Entry} The appropriate subclass wrapper.
- * @private
+ * @protected
  */
-goog.fs.Entry.prototype.wrapEntry_ = function(entry) {
+goog.fs.Entry.prototype.wrapEntry = function(entry) {
   return entry.isFile ?
       new goog.fs.FileEntry(this.fs_, /** @type {!FileEntry} */ (entry)) :
       new goog.fs.DirectoryEntry(
@@ -301,6 +325,85 @@ goog.fs.DirectoryEntry.prototype.getDirectory = function(path, opt_behavior) {
         var msg = 'loading directory ' + path + ' from ' + this.getFullPath();
         d.errback(new goog.fs.Error(err.code, msg));
       }, this));
+  return d;
+};
+
+
+/**
+ * Opens the directory for the specified path, creating the directory and any
+ * intermediate directories as necessary.
+ *
+ * @param {string} path The directory path to create. May be absolute or
+ *     relative to the current directory. The parent directory ".." and current
+ *     directory "." are supported.
+ * @return {!goog.async.Deferred} A deferred {@link goog.fs.DirectoryEntry} for
+ *     the requested path. If an error occurs, the errback is called with a
+ *     {@link goog.fs.Error}.
+ */
+goog.fs.DirectoryEntry.prototype.createPath = function(path) {
+  // If the path begins at the root, reinvoke createPath on the root directory.
+  if (goog.string.startsWith(path, '/')) {
+    var root = this.getFileSystem().getRoot();
+    if (this.getFullPath() != root.getFullPath()) {
+      return root.createPath(path);
+    }
+  }
+
+  // Filter out any empty path components caused by '//' or a leading slash.
+  var parts = goog.array.filter(path.split('/'), goog.identityFunction);
+  var existed = [];
+
+  function getNextDirectory(dir) {
+    if (!parts.length) {
+      return goog.async.Deferred.succeed(dir);
+    }
+
+    var def;
+    var nextDir = parts.shift();
+
+    if (nextDir == '..') {
+      def = dir.getParent();
+    } else if (nextDir == '.') {
+      def = goog.async.Deferred.succeed(dir);
+    } else {
+      def = dir.getDirectory(nextDir, goog.fs.DirectoryEntry.Behavior.CREATE);
+    }
+    return def.addCallback(getNextDirectory);
+  }
+
+  return getNextDirectory(this);
+};
+
+
+/**
+ * Gets a list of all entries in this directory.
+ *
+ * @return {!goog.async.Deferred} The deferred list of {@link goog.fs.Entry}
+ *     results. If an error occurs, the errback is called with a
+ *     {@link goog.fs.Error}.
+ */
+goog.fs.DirectoryEntry.prototype.listDirectory = function() {
+  var d = new goog.async.Deferred();
+  var reader = this.dir_.createReader();
+  var results = [];
+
+  var errorCallback = goog.bind(function(err) {
+    var msg = 'listing directory ' + this.getFullPath();
+    d.errback(new goog.fs.Error(err.code, msg));
+  }, this);
+
+  var successCallback = goog.bind(function(entries) {
+    if (entries.length) {
+      for (var i = 0, entry; entry = entries[i]; i++) {
+        results.push(this.wrapEntry(entry));
+      }
+      reader.readEntries(successCallback, errorCallback);
+    } else {
+      d.callback(results);
+    }
+  }, this);
+
+  reader.readEntries(successCallback, errorCallback);
   return d;
 };
 

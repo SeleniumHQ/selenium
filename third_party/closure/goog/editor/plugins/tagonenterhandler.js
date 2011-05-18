@@ -44,12 +44,7 @@ goog.require('goog.userAgent');
  * @extends {goog.editor.plugins.EnterHandler}
  */
 goog.editor.plugins.TagOnEnterHandler = function(tag) {
-  /**
-   * The type of block level tag to add on enter.
-   * @type {goog.dom.TagName}
-   * @private
-   */
-  this.tag_ = tag;
+  this.tag = tag;
 
   goog.editor.plugins.EnterHandler.call(this);
 };
@@ -66,9 +61,9 @@ goog.editor.plugins.TagOnEnterHandler.prototype.getTrogClassId = function() {
 /** @inheritDoc */
 goog.editor.plugins.TagOnEnterHandler.prototype.getNonCollapsingBlankHtml =
     function() {
-  if (this.tag_ == goog.dom.TagName.P) {
+  if (this.tag == goog.dom.TagName.P) {
     return '<p>&nbsp;</p>';
-  } else if (this.tag_ == goog.dom.TagName.DIV) {
+  } else if (this.tag == goog.dom.TagName.DIV) {
     return '<div><br></div>';
   }
   return '<br>';
@@ -94,7 +89,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.isSupportedCommand = function(
 /** @inheritDoc */
 goog.editor.plugins.TagOnEnterHandler.prototype.queryCommandValue = function(
     command) {
-  return command == goog.editor.Command.DEFAULT_TAG ? this.tag_ : null;
+  return command == goog.editor.Command.DEFAULT_TAG ? this.tag : null;
 };
 
 
@@ -114,8 +109,8 @@ goog.editor.plugins.TagOnEnterHandler.prototype.handleBackspaceInternal =
 goog.editor.plugins.TagOnEnterHandler.prototype.processParagraphTagsInternal =
     function(e, split) {
   if ((goog.userAgent.OPERA || goog.userAgent.IE) &&
-      this.tag_ != goog.dom.TagName.P) {
-    this.ensureBlockIeOpera(this.tag_);
+      this.tag != goog.dom.TagName.P) {
+    this.ensureBlockIeOpera(this.tag);
   }
 };
 
@@ -155,7 +150,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.handleKeyUpInternal = function(
     }
   } else if ((goog.userAgent.IE || goog.userAgent.OPERA) &&
              e.keyCode == goog.events.KeyCodes.ENTER) {
-    this.ensureBlockIeOpera(this.tag_, true);
+    this.ensureBlockIeOpera(this.tag, true);
   }
   // Safari uses DIVs by default.
 };
@@ -217,7 +212,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.ensureNodeIsWrappedW3c_ =
       return container == child.parentNode; };
     var nodeToWrap = goog.dom.getAncestor(node, isChildOfFn, true);
     container = goog.editor.plugins.TagOnEnterHandler.wrapInContainerW3c_(
-        this.tag_, {node: nodeToWrap, offset: 0}, container);
+        this.tag, {node: nodeToWrap, offset: 0}, container);
   }
   return container;
 };
@@ -226,7 +221,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.ensureNodeIsWrappedW3c_ =
 /** @inheritDoc */
 goog.editor.plugins.TagOnEnterHandler.prototype.handleEnterWebkitInternal =
     function(e) {
-  if (this.tag_ == goog.dom.TagName.DIV) {
+  if (this.tag == goog.dom.TagName.DIV) {
     var range = this.fieldObject.getRange();
     var container =
         goog.editor.style.getContainer(range.getContainerElement());
@@ -316,7 +311,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.breakOutOfEmptyListItemGecko_ =
 
   // TODO(robbyw): Should we apply the list or list item styles to the new node?
   var newNode = goog.dom.getDomHelper(li).createElement(
-      inSubList ? goog.dom.TagName.LI : this.tag_);
+      inSubList ? goog.dom.TagName.LI : this.tag);
 
   if (!li.previousSibling) {
     goog.dom.insertSiblingBefore(newNode, listNode);

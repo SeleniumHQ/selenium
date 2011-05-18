@@ -35,14 +35,18 @@
 
 goog.provide('goog.net.BrowserChannel');
 goog.provide('goog.net.BrowserChannel.Error');
+goog.provide('goog.net.BrowserChannel.Event');
 goog.provide('goog.net.BrowserChannel.Handler');
 goog.provide('goog.net.BrowserChannel.LogSaver');
 goog.provide('goog.net.BrowserChannel.QueuedMap');
+goog.provide('goog.net.BrowserChannel.Stat');
 goog.provide('goog.net.BrowserChannel.StatEvent');
+goog.provide('goog.net.BrowserChannel.State');
 goog.provide('goog.net.BrowserChannel.TimingEvent');
 
 goog.require('goog.Uri');
 goog.require('goog.array');
+goog.require('goog.debug.Logger');
 goog.require('goog.debug.TextFormatter');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
@@ -50,8 +54,11 @@ goog.require('goog.json');
 goog.require('goog.net.BrowserTestChannel');
 goog.require('goog.net.ChannelDebug');
 goog.require('goog.net.ChannelRequest');
+goog.require('goog.net.ChannelRequest.Error');
 goog.require('goog.net.XhrIo');
+goog.require('goog.net.tmpnetwork');
 goog.require('goog.string');
+goog.require('goog.structs');
 goog.require('goog.structs.CircularBuffer');
 goog.require('goog.userAgent');
 
@@ -1236,7 +1243,7 @@ goog.net.BrowserChannel.prototype.startForwardChannel_ = function(
 
     if (this.outgoingMaps_.length == 0) {
       this.channelDebug_.debug('startForwardChannel_ returned: ' +
-                                  'nothing to send');
+                                   'nothing to send');
       // no need to start a new forward channel request
       return;
     }
@@ -1270,7 +1277,7 @@ goog.net.BrowserChannel.prototype.open_ = function() {
   var uri = this.forwardChannelUri_.clone();
   uri.setParameterValue('RID', rid);
   if (this.clientVersion_) {
-   uri.setParameterValue('CVER', this.clientVersion_);
+    uri.setParameterValue('CVER', this.clientVersion_);
   }
 
   // Add the reconnect parameters.
@@ -1520,7 +1527,7 @@ goog.net.BrowserChannel.prototype.okToMakeRequest_ = function() {
     var result = this.handler_.okToMakeRequest(this);
     if (result != goog.net.BrowserChannel.Error.OK) {
       this.channelDebug_.debug('Handler returned error code from ' +
-                                  'okToMakeRequest');
+                                   'okToMakeRequest');
       this.signalError_(result);
       return false;
     }
@@ -1602,7 +1609,7 @@ goog.net.BrowserChannel.prototype.onRequestData =
       }
     } else if (responseText != goog.net.BrowserChannel.MAGIC_RESPONSE_COOKIE) {
       this.channelDebug_.debug('Bad data returned - missing/invald ' +
-                                  'magic cookie');
+                                   'magic cookie');
       this.signalError_(goog.net.BrowserChannel.Error.BAD_RESPONSE);
     }
   } else {
@@ -1633,15 +1640,15 @@ goog.net.BrowserChannel.prototype.handlePostResponse_ = function(
   if (0 < outstandingArrays) {
     var numOutstandingBackchannelBytes = responseValues[2];
     this.channelDebug_.debug(numOutstandingBackchannelBytes + ' bytes (in ' +
-         outstandingArrays + ' arrays) are outstanding on the BackChannel');
+        outstandingArrays + ' arrays) are outstanding on the BackChannel');
     if (!this.shouldRetryBackChannel_(numOutstandingBackchannelBytes)) {
       return;
     }
     if (!this.deadBackChannelTimerId_) {
       // We expect to receive data within 2 RTTs or we retry the backchannel.
       this.deadBackChannelTimerId_ = goog.net.BrowserChannel.setTimeout(
-        goog.bind(this.onBackChannelDead_, this),
-        2 * goog.net.BrowserChannel.RTT_ESTIMATE);
+          goog.bind(this.onBackChannelDead_, this),
+          2 * goog.net.BrowserChannel.RTT_ESTIMATE);
     }
   }
 };
@@ -1674,7 +1681,7 @@ goog.net.BrowserChannel.prototype.handleBackchannelMissing_ = function() {
   }
   this.maybeRetryBackChannel_();
   goog.net.BrowserChannel.notifyStatEvent(
-        goog.net.BrowserChannel.Stat.BACKCHANNEL_MISSING);
+      goog.net.BrowserChannel.Stat.BACKCHANNEL_MISSING);
 };
 
 
@@ -1963,7 +1970,7 @@ goog.net.BrowserChannel.prototype.signalError_ = function(error) {
     if (this.handler_) {
       imageUri = this.handler_.getNetworkTestImageUri(this);
     }
-    goog.net.testGoogleCom(
+    goog.net.tmpnetwork.testGoogleCom(
         goog.bind(this.testGoogleComCallback_, this), imageUri);
   } else {
     goog.net.BrowserChannel.notifyStatEvent(

@@ -94,8 +94,12 @@ goog.debug.reflect.init_ = function() {
   goog.debug.reflect.registerType_('Function', Function);
   goog.debug.reflect.registerType_('Number', Number);
   goog.debug.reflect.registerType_('Object', Object);
-  goog.debug.reflect.registerType_('RegExp', RegExp);
   goog.debug.reflect.registerType_('String', String);
+
+  // The compiler gets upset if we alias regexp directly, because
+  // then it can't optimize regexps as well. Just be sneaky about it,
+  // because this is only for debugging.
+  goog.debug.reflect.registerType_('RegExp', goog.global['RegExp']);
 };
 
 
@@ -140,7 +144,7 @@ goog.debug.reflect.typeOf = function(obj) {
   var isActiveXObject = goog.global.ActiveXObject &&
       obj instanceof ActiveXObject;
   var typeString = isActiveXObject ? String(obj) :
-      goog.debug.reflect.toString_.call(obj);
+      goog.debug.reflect.toString_.call(/** @type {Object} */ (obj));
   var match = typeString.match(/^\[object (\w+)\]$/);
   if (match) {
     var name = match[1];

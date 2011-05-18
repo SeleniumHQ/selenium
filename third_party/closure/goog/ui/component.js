@@ -27,9 +27,6 @@ goog.provide('goog.ui.Component.State');
 
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.dom.DomHelper');
-goog.require('goog.events');
-goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.object');
@@ -423,8 +420,13 @@ goog.ui.Component.prototype.childIndex_ = null;
 
 /**
  * Flag used to keep track of whether a component decorated an already existing
- * element or whether it created the DOM itself.  If an element was decorated
- * dispose will remove the node from the document, it is left up to the app.
+ * element or whether it created the DOM itself.
+ *
+ * If an element is decorated, dispose will leave the node in the document.
+ * It is up to the app to remove the node.
+ *
+ * If an element was rendered, dispose will remove the node automatically.
+ *
  * @type {boolean}
  * @private
  */
@@ -797,13 +799,29 @@ goog.ui.Component.prototype.disposeInternal = function() {
 
 /**
  * Helper function for subclasses that gets a unique id for a given fragment,
- * this can be used by components to
- * generate unique string ids for DOM elements
+ * this can be used by components to generate unique string ids for DOM
+ * elements.
  * @param {string} idFragment A partial id.
  * @return {string} Unique element id.
  */
 goog.ui.Component.prototype.makeId = function(idFragment) {
   return this.getId() + '.' + idFragment;
+};
+
+
+/**
+ * Makes a collection of ids.  This is a convenience method for makeId.  The
+ * object's values are the id fragments and the new values are the generated
+ * ids.  The key will remain the same.
+ * @param {Object} object The object that will be used to create the ids.
+ * @return {Object} An object of id keys to generated ids.
+ */
+goog.ui.Component.prototype.makeIds = function(object) {
+  var ids = {};
+  for (var key in object) {
+    ids[key] = this.makeId(object[key]);
+  }
+  return ids;
 };
 
 

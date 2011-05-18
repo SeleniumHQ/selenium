@@ -97,6 +97,7 @@ goog.ui.NativeButtonRenderer.prototype.decorate = function(button, element) {
 /**
  * @inheritDoc
  * Native buttons natively support BiDi and keyboard focus.
+ * @suppress {visibility} getHandler and performActionInternal
  */
 goog.ui.NativeButtonRenderer.prototype.initializeDom = function(button) {
   // WARNING:  This is a hack, and it is only applicable to native buttons,

@@ -393,6 +393,7 @@ goog.debug.DevCss.prototype.getIe6CombinedSelectorText_ = function(cssText) {
     }
     return combinedSelectorText;
   }
+  return null;
 };
 
 

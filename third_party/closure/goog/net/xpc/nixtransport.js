@@ -35,7 +35,7 @@ goog.provide('goog.net.xpc.NixTransport');
 
 goog.require('goog.net.xpc');
 goog.require('goog.net.xpc.Transport');
-
+goog.require('goog.reflect');
 
 
 /**
@@ -135,6 +135,26 @@ goog.net.xpc.NixTransport.NIX_CREATE_CHANNEL = 'GCXPC____NIXJS_create_channel';
  * @type {string}
  */
 goog.net.xpc.NixTransport.NIX_ID_FIELD = 'GCXPC____NIXVBS_container';
+
+
+/**
+ * Determines if the installed version of IE supports accessing window.opener
+ * after it has been set to a non-Window/null value. NIX relies on this being
+ * possible.
+ * @return {boolean} Whether window.opener behavior is compatible with NIX.
+ */
+goog.net.xpc.NixTransport.isNixSupported = function() {
+  var isSupported = false;
+  try {
+    var oldOpener = window.opener;
+    // The compiler complains (as it should!) if we set window.opener to
+    // something other than a window or null.
+    window.opener = /** @type {Window} */ ({});
+    isSupported = goog.reflect.canAccessProperty(window, 'opener');
+    window.opener = oldOpener;
+  } catch(e) { }
+  return isSupported;
+};
 
 
 /**

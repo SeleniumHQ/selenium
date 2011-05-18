@@ -242,11 +242,11 @@ goog.messaging.MultiChannel.VirtualChannel.prototype.isConnected =
  * @inheritDoc
  */
 goog.messaging.MultiChannel.VirtualChannel.prototype.registerService =
-    function(serviceName, callback, opt_jsonEncoded) {
+    function(serviceName, callback, opt_objectPayload) {
   this.parent_.underlyingChannel_.registerService(
       this.name_ + ':' + serviceName,
       goog.bind(this.doCallback_, this, callback),
-      opt_jsonEncoded);
+      opt_objectPayload);
 };
 
 

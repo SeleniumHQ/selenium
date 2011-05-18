@@ -211,7 +211,10 @@ goog.Uri.prototype.toString = function() {
       out.push('/');
     }
     out.push(goog.Uri.encodeSpecialChars_(
-        this.path_, goog.Uri.reDisallowedInPath_));
+        this.path_,
+        this.path_.charAt(0) == '/' ?
+            goog.Uri.reDisallowedInAbsolutePath_ :
+            goog.Uri.reDisallowedInRelativePath_));
   }
 
   var query = String(this.queryData_);
@@ -978,11 +981,19 @@ goog.Uri.reDisallowedInSchemeOrUserInfo_ = /[#\/\?@]/g;
 
 
 /**
- * Regular expression for characters that are disallowed in the path.
+ * Regular expression for characters that are disallowed in a relative path.
  * @type {RegExp}
  * @private
  */
-goog.Uri.reDisallowedInPath_ = /[\#\?]/g;
+goog.Uri.reDisallowedInRelativePath_ = /[\#\?:]/g;
+
+
+/**
+ * Regular expression for characters that are disallowed in an absolute path.
+ * @type {RegExp}
+ * @private
+ */
+goog.Uri.reDisallowedInAbsolutePath_ = /[\#\?]/g;
 
 
 /**

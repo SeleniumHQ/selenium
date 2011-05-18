@@ -25,11 +25,11 @@ goog.require('goog.proto2.Util');
 
 
 /**
- * @type {{name: (string|undefined),
- *         fullName: (string|undefined),
- *         containingType: (goog.proto2.Message|undefined)}}
+ * @typedef {{name: (string|undefined),
+ *            fullName: (string|undefined),
+ *            containingType: (goog.proto2.Message|undefined)}}
  */
-goog.proto2.Metadata = goog.typedef;
+goog.proto2.Metadata;
 
 
 
