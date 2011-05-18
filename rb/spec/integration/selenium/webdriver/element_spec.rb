@@ -12,11 +12,6 @@ describe "Element" do
     driver.find_element(:id, "submitButton").submit
   end
 
-  it "should get value" do
-    driver.navigate.to url_for("formPage.html")
-    driver.find_element(:id, "cheese").value.should == "cheese"
-  end
-
   it "should send string keys" do
     driver.navigate.to url_for("formPage.html")
     driver.find_element(:id, "working").send_keys("foo", "bar")
