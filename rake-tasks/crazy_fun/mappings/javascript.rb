@@ -107,9 +107,9 @@ module Javascript
 
       # ignore stdout --- the commands we use log to stderr
       # this also causes the command to actually execute
-      puts out.read
+
       output = err.read
-      puts output
+
       if output =~ /ERROR/m
         puts output
         exit(2)
