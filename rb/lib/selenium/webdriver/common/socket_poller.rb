@@ -36,31 +36,47 @@ module Selenium
 
       private
 
+      CONNECT_TIMEOUT = 5
+
       NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError]
       NOT_CONNECTED_ERRORS << Errno::EPERM if Platform.cygwin?
 
       CONNECTED_ERRORS = [Errno::EISCONN]
       CONNECTED_ERRORS << Errno::EINVAL if Platform.win?
 
-      def listening?
-        addr     = Socket.getaddrinfo(@host, @port, Socket::AF_INET, Socket::SOCK_STREAM)
-        sock     = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
-        sockaddr = Socket.pack_sockaddr_in(@port, addr[0][3])
-
-        begin
-          sock.connect_nonblock sockaddr
-        rescue Errno::EINPROGRESS, Errno::EALREADY
-          wait # we should select() here, but JRuby has problems..
-          retry
-        rescue *CONNECTED_ERRORS
-          # yay!
+      if Platform.jruby?
+        # we use a plain TCPSocket here since JRuby has issues select()ing on a connecting socket
+        # see http://jira.codehaus.org/browse/JRUBY-5165
+        def listening?
+          TCPSocket.new(@host, @port).close
+          true
+        rescue *NOT_CONNECTED_ERRORS
+          false
         end
+      else
+        def listening?
+          addr     = Socket.getaddrinfo(@host, @port, Socket::AF_INET, Socket::SOCK_STREAM)
+          sock     = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
+          sockaddr = Socket.pack_sockaddr_in(@port, addr[0][3])
 
-        sock.close
-        true
-      rescue *NOT_CONNECTED_ERRORS => e
-        $stderr.puts [@host, @port].inspect if $DEBUG
-        false
+          begin
+            sock.connect_nonblock sockaddr
+          rescue Errno::EINPROGRESS
+            if IO.select(nil, [sock], nil, CONNECT_TIMEOUT)
+              retry
+            else
+              raise Errno::ECONNREFUSED
+            end
+          rescue *CONNECTED_ERRORS
+            # yay!
+          end
+
+          sock.close
+          true
+        rescue *NOT_CONNECTED_ERRORS => e
+          $stderr.puts [@host, @port].inspect if $DEBUG
+          false
+        end
       end
 
       def with_timeout(&blk)
