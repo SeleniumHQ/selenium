@@ -100,11 +100,11 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldBeAbleToFindChildrenOfANode()
         {
-            driver.Url = xhtmlTestPage;
+            driver.Url = selectableItemsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.XPath("/html/head"));
             IWebElement head = elements[0];
             ReadOnlyCollection<IWebElement> importedScripts = head.FindElements(By.TagName("script"));
-            Assert.AreEqual(importedScripts.Count, 2);
+            Assert.AreEqual(importedScripts.Count, 3);
         }
 
         [Test]
