@@ -21,7 +21,7 @@ int ElementFinder::FindElement(const Session& session, const ElementHandle paren
 		} else if (mechanism == L"xpath") {
 			return this->FindElementByXPath(session, parent_wrapper, criteria, found_element);
 		} else {
-			std::wstring criteria_object_script = L"(function() { return function(){ return  { " + mechanism + L" : \"" + criteria + L"\" }; };})();";
+			std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + criteria + L"\" }; };})();";
 			CComPtr<IHTMLDocument2> doc;
 			browser->GetDocument(&doc);
 
@@ -67,7 +67,7 @@ int ElementFinder::FindElements(const Session& session, const ElementHandle pare
 		} else if (mechanism == L"xpath") {
 			return this->FindElementsByXPath(session, parent_wrapper, criteria, found_elements);
 		} else {
-			std::wstring criteria_object_script = L"(function() { return function(){ return  { " + mechanism + L" : \"" + criteria + L"\" }; };})();";
+			std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + criteria + L"\" }; };})();";
 			CComPtr<IHTMLDocument2> doc;
 			browser->GetDocument(&doc);
 
