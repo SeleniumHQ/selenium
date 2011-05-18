@@ -1,4 +1,3 @@
-require 'open3'
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/crazy_fun/mappings/java'
 
@@ -102,18 +101,14 @@ module Javascript
     end
 
     def execute(cmd)
-      stdin, out, err = Open3.popen3(cmd)
-      stdin.close
+      output = `#{cmd} 2>&1`
+      failed = !$?.success? || output =~ /ERROR/
 
-      # ignore stdout --- the commands we use log to stderr
-      # this also causes the command to actually execute
-
-      output = err.read
-
-      if output =~ /ERROR/m
+      if ENV['log'] == 'true' || failed
         puts output
-        exit(2)
       end
+
+      exit(2) if failed
     end
   end
 
