@@ -89,13 +89,13 @@ js_fragment_header(name = "atoms",
     "//javascript/webdriver-atoms:is_selected:ie",
     "//javascript/webdriver-atoms:submit:ie"
   ],
-  out = "cpp/IEDriver/atoms.h"
+  out = "cpp/IEDriver/Generated/atoms.h"
 )
 
 rake_task(name = "sizzle",
   task_name = "sizzle_header",
-  out = "cpp/IEDriver/sizzle.h")
+  out = "cpp/IEDriver/Generated/sizzle.h")
 
 rake_task(name = "ie_result_type_cpp",
   task_name = "ie_result_type_cpp",
-  out = "cpp/IEDriver/IEReturnTypes.h")
+  out = "cpp/IEDriver/Generated/IEReturnTypes.h")

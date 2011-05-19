@@ -363,15 +363,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Command.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CommandHandler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DocumentHost.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ElementFinder.cpp"
+				RelativePath=".\Element.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ElementWrapper.cpp"
+				RelativePath=".\ElementFinder.cpp"
 				>
 			</File>
 			<File
@@ -383,7 +391,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ScriptWrapper.cpp"
+				RelativePath=".\Response.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Script.cpp"
 				>
 			</File>
 			<File
@@ -430,36 +442,12 @@
 				RelativePath=".\WebDriver.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\WebDriverCommand.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\WebDriverCommandHandler.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\WebDriverResponse.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath=".\AcceptAlertCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\AddCookieCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\atoms.h"
-				>
-			</File>
 			<File
 				RelativePath=".\Browser.h"
 				>
@@ -469,15 +457,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ClearElementCommandHandler.h"
+				RelativePath=".\Command.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ClickElementCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CloseWindowCommandHandler.h"
+				RelativePath=".\CommandHandler.h"
 				>
 			</File>
 			<File
@@ -485,151 +469,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\cookies.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DeleteAllCookiesCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DeleteCookieCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DismissAlertCommandHandler.h"
-				>
-			</File>
-			<File
 				RelativePath=".\DocumentHost.h"
 				>
 			</File>
 			<File
-				RelativePath=".\DragElementCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ElementEqualsCommandHandler.h"
+				RelativePath=".\Element.h"
 				>
 			</File>
 			<File
 				RelativePath=".\ElementFinder.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ElementWrapper.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ExecuteAsyncScriptCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ExecuteScriptCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FindChildElementCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FindChildElementsCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FindElementCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FindElementsCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetActiveElementCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetAlertTextCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetAllCookiesCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetAllWindowHandlesCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetCurrentUrlCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetCurrentWindowHandleCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetElementAttributeCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetElementLocationCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetElementLocationOnceScrolledIntoViewCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetElementSizeCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetElementTagNameCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetElementTextCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetElementValueCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetElementValueOfCssPropertyCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetPageSourceCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetSessionCapabilitiesCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetSpeedCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GetTitleCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GoBackCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GoForwardCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GoToUrlCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\HoverOverElementCommandHandler.h"
 				>
 			</File>
 			<File
@@ -641,75 +489,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\IsElementDisplayedCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\IsElementEnabledCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\IsElementSelectedCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\jsxpath.h"
-				>
-			</File>
-			<File
 				RelativePath=".\messages.h"
 				>
 			</File>
 			<File
-				RelativePath=".\MouseButtonDownCommandHandler.h"
+				RelativePath=".\Response.h"
 				>
 			</File>
 			<File
-				RelativePath=".\MouseButtonUpCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MouseClickCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MouseDoubleClickCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MouseMoveToCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\NewSessionCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\QuitCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\RefreshCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ScreenshotCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ScriptWrapper.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SendKeysCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SendKeysToAlertCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SendModifierKeyCommandHandler.h"
+				RelativePath=".\Script.h"
 				>
 			</File>
 			<File
@@ -717,39 +505,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SetAsyncScriptTimeoutCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SetElementSelectedCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SetImplicitWaitTimeoutCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SetSpeedCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\sizzle.h"
-				>
-			</File>
-			<File
 				RelativePath=".\stdafx.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SubmitElementCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SwitchToFrameCommandHandler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SwitchToWindowCommandHandler.h"
 				>
 			</File>
 			<File
@@ -757,25 +513,279 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ToggleElementCommandHandler.h"
-				>
-			</File>
-			<File
 				RelativePath=".\WebDriver.h"
 				>
 			</File>
-			<File
-				RelativePath=".\WebDriverCommand.h"
+			<Filter
+				Name="CommandHandlers"
+				Filter="h"
 				>
-			</File>
-			<File
-				RelativePath=".\WebDriverCommandHandler.h"
+				<File
+					RelativePath=".\CommandHandlers\AcceptAlertCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\AddCookieCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\ClearElementCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\ClickElementCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\CloseWindowCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\DeleteAllCookiesCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\DeleteCookieCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\DismissAlertCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\DragElementCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\ElementEqualsCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\ExecuteAsyncScriptCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\ExecuteScriptCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\FindChildElementCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\FindChildElementsCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\FindElementCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\FindElementsCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetActiveElementCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetAlertTextCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetAllCookiesCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetAllWindowHandlesCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetCurrentUrlCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetCurrentWindowHandleCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetElementAttributeCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetElementLocationCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetElementLocationOnceScrolledIntoViewCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetElementSizeCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetElementTagNameCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetElementTextCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetElementValueCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetElementValueOfCssPropertyCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetPageSourceCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetSessionCapabilitiesCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetSpeedCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GetTitleCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GoBackCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GoForwardCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\GoToUrlCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\HoverOverElementCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\IsElementDisplayedCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\IsElementEnabledCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\IsElementSelectedCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\MouseButtonDownCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\MouseButtonUpCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\MouseClickCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\MouseDoubleClickCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\MouseMoveToCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\NewSessionCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\QuitCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\RefreshCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\ScreenshotCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\SendKeysCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\SendKeysToAlertCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\SendModifierKeyCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\SetAsyncScriptTimeoutCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\SetElementSelectedCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\SetImplicitWaitTimeoutCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\SetSpeedCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\SubmitElementCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\SwitchToFrameCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\SwitchToWindowCommandHandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\CommandHandlers\ToggleElementCommandHandler.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Generated"
+				Filter="h"
 				>
-			</File>
-			<File
-				RelativePath=".\WebDriverResponse.h"
-				>
-			</File>
+				<File
+					RelativePath=".\Generated\atoms.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Generated\cookies.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Generated\jsxpath.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Generated\sizzle.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -783,10 +793,6 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

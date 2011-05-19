@@ -1,3 +1,16 @@
+// Copyright 2011 WebDriver committers
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "StdAfx.h"
 #include <regex>
 #include "IEDriverServer.h"
@@ -28,7 +41,7 @@ IEDriverServer::~IEDriverServer(void) {
 }
 
 std::wstring IEDriverServer::CreateSession() {
-	unsigned int thread_id;
+	unsigned int thread_id = 0;
 	HWND session_window_handle = NULL;
 	HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, EVENT_NAME);
 	HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &Session::ThreadProc, reinterpret_cast<void*>(&session_window_handle), 0, &thread_id));
@@ -125,8 +138,8 @@ int IEDriverServer::ProcessRequest(struct mg_connection* conn, const struct mg_r
 				session_id = this->CreateSession();                                             
 			}
 
-			std::wstring serialized_response(L"");
-			HWND session_window_handle(NULL);
+			std::wstring serialized_response = L"";
+			HWND session_window_handle = NULL;
 			if (!this->LookupSession(session_id, &session_window_handle)) {
 				// Hand-code the response for an invalid session id
 				serialized_response = L"{ \"status\" : 404, \"sessionId\" : \"" + session_id + L"\", \"value\" : \"session " + session_id + L" does not exist\" }";
@@ -187,7 +200,7 @@ bool IEDriverServer::SendCommandToSession(const HWND& session_window_handle, con
 int IEDriverServer::SendResponseToBrowser(struct mg_connection* conn, const struct mg_request_info* request_info, const std::wstring& serialized_response) {
 	int return_code = 0;
 	if (serialized_response.size() > 0) {
-		WebDriverResponse response;
+		Response response;
 		response.Deserialize(serialized_response);
 		if (response.status_code() == 0) {
 			this->SendHttpOk(conn, request_info, serialized_response);
@@ -216,7 +229,7 @@ int IEDriverServer::SendResponseToBrowser(struct mg_connection* conn, const stru
 
 void IEDriverServer::SendWelcomePage(struct mg_connection* connection,
                 const struct mg_request_info* request_info) {
-	std::string page_body(SERVER_DEFAULT_PAGE);
+	std::string page_body = SERVER_DEFAULT_PAGE;
 	std::ostringstream out;
 	out << "HTTP/1.1 200 OK\r\n"
 		<< "Content-Length: " << strlen(page_body.c_str()) << "\r\n"
@@ -238,7 +251,7 @@ void IEDriverServer::SendWelcomePage(struct mg_connection* connection,
 void IEDriverServer::SendHttpOk(struct mg_connection* connection,
                 const struct mg_request_info* request_info,
 				const std::wstring& body) {
-	std::string narrow_body(CW2A(body.c_str(), CP_UTF8));
+	std::string narrow_body = CW2A(body.c_str(), CP_UTF8);
 	std::ostringstream out;
 	out << "HTTP/1.1 200 OK\r\n"
 		<< "Content-Length: " << strlen(narrow_body.c_str()) << "\r\n"
@@ -256,7 +269,7 @@ void IEDriverServer::SendHttpOk(struct mg_connection* connection,
 void IEDriverServer::SendHttpBadRequest(struct mg_connection* const connection,
                         const struct mg_request_info* const request_info,
 				        const std::wstring& body) {
-	std::string narrow_body(CW2A(body.c_str(), CP_UTF8));
+	std::string narrow_body = CW2A(body.c_str(), CP_UTF8);
 	std::ostringstream out;
 	out << "HTTP/1.1 400 Bad Request\r\n"
 		<< "Content-Length: " << strlen(narrow_body.c_str()) << "\r\n"
@@ -274,7 +287,7 @@ void IEDriverServer::SendHttpBadRequest(struct mg_connection* const connection,
 void IEDriverServer::SendHttpInternalError(struct mg_connection* connection,
                            const struct mg_request_info* request_info,
 						   const std::wstring& body) {
-	std::string narrow_body(CW2A(body.c_str(), CP_UTF8));
+	std::string narrow_body = CW2A(body.c_str(), CP_UTF8);
 	std::ostringstream out;
 	out << "HTTP/1.1 500 Internal Server Error\r\n"
 		<< "Content-Length: " << strlen(narrow_body.c_str()) << "\r\n"
@@ -292,7 +305,7 @@ void IEDriverServer::SendHttpInternalError(struct mg_connection* connection,
 void IEDriverServer::SendHttpNotFound(struct mg_connection* const connection,
                       const struct mg_request_info* const request_info,
 				      const std::wstring& body) {
-	std::string narrow_body(CW2A(body.c_str(), CP_UTF8));
+	std::string narrow_body = CW2A(body.c_str(), CP_UTF8);
 	std::ostringstream out;
 	out << "HTTP/1.1 404 Not Found\r\n"
 		<< "Content-Length: " << strlen(narrow_body.c_str()) << "\r\n"
@@ -310,7 +323,7 @@ void IEDriverServer::SendHttpNotFound(struct mg_connection* const connection,
 void IEDriverServer::SendHttpMethodNotAllowed(struct mg_connection* connection,
 							const struct mg_request_info* request_info,
 							const std::wstring& allowed_methods) {
-	std::string narrow_body(CW2A(allowed_methods.c_str(), CP_UTF8));
+	std::string narrow_body = CW2A(allowed_methods.c_str(), CP_UTF8);
 	std::ostringstream out;
 	out << "HTTP/1.1 405 Method Not Allowed\r\n"
 		<< "Content-Type: text/html\r\n"

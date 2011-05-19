@@ -1,7 +1,20 @@
+// Copyright 2011 WebDriver committers
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "StdAfx.h"
-#include "atoms.h"
-#include "jsxpath.h"
-#include "sizzle.h"
+#include "Generated/atoms.h"
+#include "Generated/jsxpath.h"
+#include "Generated/sizzle.h"
 #include "Session.h"
 
 namespace webdriver {
@@ -25,11 +38,11 @@ int ElementFinder::FindElement(const Session& session, const ElementHandle paren
 			CComPtr<IHTMLDocument2> doc;
 			browser->GetDocument(&doc);
 
-			ScriptWrapper criteria_wrapper(doc, criteria_object_script, 0);
+			Script criteria_wrapper(doc, criteria_object_script, 0);
 			status_code = criteria_wrapper.Execute();
 			if (status_code == SUCCESS) {
 				CComVariant criteria_object;
-				::VariantCopy(&criteria_object, &criteria_wrapper.result());
+				HRESULT hr = ::VariantCopy(&criteria_object, &criteria_wrapper.result());
 
 				// The atom is just the definition of an anonymous
 				// function: "function() {...}"; Wrap it in another function so we can
@@ -38,7 +51,7 @@ int ElementFinder::FindElement(const Session& session, const ElementHandle paren
 				script_source += atoms::FIND_ELEMENT;
 				script_source += L")})();";
 
-				ScriptWrapper script_wrapper(doc, script_source, 2);
+				Script script_wrapper(doc, script_source, 2);
 				script_wrapper.AddArgument(criteria_object);
 				if (parent_wrapper) {
 					script_wrapper.AddArgument(parent_wrapper->element());
@@ -71,11 +84,11 @@ int ElementFinder::FindElements(const Session& session, const ElementHandle pare
 			CComPtr<IHTMLDocument2> doc;
 			browser->GetDocument(&doc);
 
-			ScriptWrapper criteria_wrapper(doc, criteria_object_script, 0);
+			Script criteria_wrapper(doc, criteria_object_script, 0);
 			status_code = criteria_wrapper.Execute();
 			if (status_code == SUCCESS) {
 				CComVariant criteria_object;
-				::VariantCopy(&criteria_object, &criteria_wrapper.result());
+				HRESULT hr = ::VariantCopy(&criteria_object, &criteria_wrapper.result());
 
 				// The atom is just the definition of an anonymous
 				// function: "function() {...}"; Wrap it in another function so we can
@@ -84,7 +97,7 @@ int ElementFinder::FindElements(const Session& session, const ElementHandle pare
 				script_source += atoms::FIND_ELEMENTS;
 				script_source += L")})();";
 
-				ScriptWrapper script_wrapper(doc, script_source, 2);
+				Script script_wrapper(doc, script_source, 2);
 				script_wrapper.AddArgument(criteria_object);
 				if (parent_wrapper) {
 					script_wrapper.AddArgument(parent_wrapper->element());
@@ -122,12 +135,12 @@ int ElementFinder::FindElementByCssSelector(const Session& session, const Elemen
 
 	CComPtr<IHTMLDocument2> doc;
 	browser->GetDocument(&doc);
-	ScriptWrapper script_wrapper(doc, script_source, 2);
+	Script script_wrapper(doc, script_source, 2);
 	script_wrapper.AddArgument(criteria);
 	if (parent_wrapper) {
 		CComPtr<IHTMLElement> parent(parent_wrapper->element());
 		IHTMLElement* parent_element_copy;
-		parent.CopyTo(&parent_element_copy);
+		HRESULT hr = parent.CopyTo(&parent_element_copy);
 		script_wrapper.AddArgument(parent_element_copy);
 	}
 	result = script_wrapper.Execute();
@@ -164,13 +177,13 @@ int ElementFinder::FindElementsByCssSelector(const Session& session, const Eleme
 	CComPtr<IHTMLDocument2> doc;
 	browser->GetDocument(&doc);
 
-	ScriptWrapper script_wrapper(doc, script_source, 2);
+	Script script_wrapper(doc, script_source, 2);
 	script_wrapper.AddArgument(criteria);
 	if (parent_wrapper) {
 		// Use a copy for the parent element?
 		CComPtr<IHTMLElement> parent(parent_wrapper->element());
 		IHTMLElement* parent_element_copy;
-		parent.CopyTo(&parent_element_copy);
+		HRESULT hr = parent.CopyTo(&parent_element_copy);
 		script_wrapper.AddArgument(parent_element_copy);
 	}
 
@@ -178,7 +191,7 @@ int ElementFinder::FindElementsByCssSelector(const Session& session, const Eleme
 	CComVariant snapshot = script_wrapper.result();
 
 	std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].length;}})();";
-	ScriptWrapper get_element_count_script_wrapper(doc, get_element_count_script, 1);
+	Script get_element_count_script_wrapper(doc, get_element_count_script, 1);
 	get_element_count_script_wrapper.AddArgument(snapshot);
 	result = get_element_count_script_wrapper.Execute();
 	if (result == SUCCESS) {
@@ -188,7 +201,7 @@ int ElementFinder::FindElementsByCssSelector(const Session& session, const Eleme
 			long length = get_element_count_script_wrapper.result().lVal;
 			std::wstring get_next_element_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();";
 			for (long i = 0; i < length; ++i) {
-				ScriptWrapper get_element_script_wrapper(doc, get_next_element_script, 2);
+				Script get_element_script_wrapper(doc, get_next_element_script, 2);
 				get_element_script_wrapper.AddArgument(snapshot);
 				get_element_script_wrapper.AddArgument(i);
 				result = get_element_script_wrapper.Execute();
@@ -227,12 +240,12 @@ int ElementFinder::FindElementByXPath(const Session& session, const ElementHandl
 
 	CComPtr<IHTMLDocument2> doc;
 	browser->GetDocument(&doc);
-	ScriptWrapper script_wrapper(doc, query, 2);
+	Script script_wrapper(doc, query, 2);
 	script_wrapper.AddArgument(criteria);
 	if (parent_wrapper) {
 		CComPtr<IHTMLElement> parent(parent_wrapper->element());
 		IHTMLElement* parent_element_copy;
-		parent.CopyTo(&parent_element_copy);
+		HRESULT hr = parent.CopyTo(&parent_element_copy);
 		script_wrapper.AddArgument(parent_element_copy);
 	}
 	result = script_wrapper.Execute();
@@ -273,13 +286,13 @@ int ElementFinder::FindElementsByXPath(const Session& session, const ElementHand
 	CComPtr<IHTMLDocument2> doc;
 	browser->GetDocument(&doc);
 
-	ScriptWrapper script_wrapper(doc, query, 2);
+	Script script_wrapper(doc, query, 2);
 	script_wrapper.AddArgument(criteria);
 	if (parent_wrapper) {
 		// Use a copy for the parent element?
 		CComPtr<IHTMLElement> parent(parent_wrapper->element());
 		IHTMLElement* parent_element_copy;
-		parent.CopyTo(&parent_element_copy);
+		HRESULT hr = parent.CopyTo(&parent_element_copy);
 		script_wrapper.AddArgument(parent_element_copy);
 	}
 
@@ -287,7 +300,7 @@ int ElementFinder::FindElementsByXPath(const Session& session, const ElementHand
 	CComVariant snapshot = script_wrapper.result();
 
 	std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].snapshotLength;}})();";
-	ScriptWrapper get_element_count_script_wrapper(doc, get_element_count_script, 1);
+	Script get_element_count_script_wrapper(doc, get_element_count_script, 1);
 	get_element_count_script_wrapper.AddArgument(snapshot);
 	result = get_element_count_script_wrapper.Execute();
 	if (result == SUCCESS) {
@@ -297,7 +310,7 @@ int ElementFinder::FindElementsByXPath(const Session& session, const ElementHand
 			long length = get_element_count_script_wrapper.result().lVal;
 			std::wstring get_next_element_script(L"(function(){return function() {return arguments[0].iterateNext();}})();");
 			for (long i = 0; i < length; ++i) {
-				ScriptWrapper get_element_script_wrapper(doc, get_next_element_script, 2);
+				Script get_element_script_wrapper(doc, get_next_element_script, 2);
 				get_element_script_wrapper.AddArgument(snapshot);
 				get_element_script_wrapper.AddArgument(i);
 				result = get_element_script_wrapper.Execute();
@@ -320,7 +333,7 @@ int ElementFinder::InjectXPathEngine(BrowserHandle browser_wrapper) {
 
 	CComPtr<IHTMLDocument2> doc;
 	browser_wrapper->GetDocument(&doc);
-	ScriptWrapper script_wrapper(doc, script_source, 0);
+	Script script_wrapper(doc, script_source, 0);
 	int status_code = script_wrapper.Execute();
 
 	return status_code;

@@ -1,6 +1,19 @@
+// Copyright 2011 WebDriver committers
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "StdAfx.h"
 #include "DocumentHost.h"
-#include "cookies.h"
+#include "Generated/cookies.h"
 #include "messages.h"
 
 namespace webdriver {
@@ -10,8 +23,8 @@ DocumentHost::DocumentHost(HWND hwnd, HWND session_handle) {
 	// could use CoCreateGuid() and StringFromGUID2() instead.
 	UUID guid;
 	RPC_WSTR guid_string = NULL;
-	::UuidCreate(&guid);
-	::UuidToString(&guid, &guid_string);
+	RPC_STATUS status = ::UuidCreate(&guid);
+	status = ::UuidToString(&guid, &guid_string);
 
 	// RPC_WSTR is currently typedef'd in RpcDce.h (pulled in by rpc.h)
 	// as unsigned short*. It needs to be typedef'd as wchar_t* 
@@ -75,7 +88,7 @@ int DocumentHost::SetFocusedFrameByName(const std::wstring& frame_name) {
 
 	CComVariant name;
 	CComBSTR name_bstr(frame_name.c_str());
-	name_bstr.CopyTo(&name);
+	hr = name_bstr.CopyTo(&name);
 
 	// Find the frame
 	CComVariant frame_holder;
@@ -152,7 +165,7 @@ std::wstring DocumentHost::GetCookies() {
 		cookie = L"";
 	}
 
-	std::wstring cookie_string(cookie);
+	std::wstring cookie_string = cookie;
 	return cookie_string;
 }
 
@@ -186,7 +199,7 @@ int DocumentHost::DeleteCookie(const std::wstring& cookie_name) {
 
 	CComPtr<IHTMLDocument2> doc;
 	this->GetDocument(&doc);
-	ScriptWrapper script_wrapper(doc, script_source, 1);
+	Script script_wrapper(doc, script_source, 1);
 	script_wrapper.AddArgument(cookie_name);
 	int status_code = script_wrapper.Execute();
 	return status_code;
@@ -205,7 +218,7 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
 		return false;
 	}
 
-	std::wstring document_type_key_name(L"");
+	std::wstring document_type_key_name= L"";
 	if (this->factory_.GetRegistryValue(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice", L"Progid", &document_type_key_name)) {
 		// Look for the user-customization under Vista/Windows 7 first. If it's
 		// IE, set the document friendly name lookup key to 'htmlfile'. If not,
@@ -236,7 +249,7 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
 		return false;
 	}
 
-	std::wstring type_string(type);
+	std::wstring type_string = type;
 	return type_string == mime_type_name;
 }
 

@@ -1,68 +1,79 @@
+// Copyright 2011 WebDriver committers
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "StdAfx.h"
 #include "Session.h"
-#include "AddCookieCommandHandler.h"
-#include "ClickElementCommandHandler.h"
-#include "ClearElementCommandHandler.h"
-#include "CloseWindowCommandHandler.h"
-#include "DeleteAllCookiesCommandHandler.h"
-#include "DeleteCookieCommandHandler.h"
-#include "DragElementCommandHandler.h"
-#include "ElementEqualsCommandHandler.h"
-#include "ExecuteAsyncScriptCommandHandler.h"
-#include "ExecuteScriptCommandHandler.h"
-#include "FindChildElementCommandHandler.h"
-#include "FindChildElementsCommandHandler.h"
-#include "FindElementCommandHandler.h"
-#include "FindElementsCommandHandler.h"
-#include "GetActiveElementCommandHandler.h"
-#include "GetAllCookiesCommandHandler.h"
-#include "GetAllWindowHandlesCommandHandler.h"
-#include "GetCurrentUrlCommandHandler.h"
-#include "GetCurrentWindowHandleCommandHandler.h"
-#include "GetElementAttributeCommandHandler.h"
-#include "GetElementLocationCommandHandler.h"
-#include "GetElementLocationOnceScrolledIntoViewCommandHandler.h"
-#include "GetElementSizeCommandHandler.h"
-#include "GetElementTagNameCommandHandler.h"
-#include "GetElementTextCommandHandler.h"
-#include "GetElementValueCommandHandler.h"
-#include "GetElementValueOfCssPropertyCommandHandler.h"
-#include "GetSessionCapabilitiesCommandHandler.h"
-#include "GetSpeedCommandHandler.h"
-#include "GetPageSourceCommandHandler.h"
-#include "GetTitleCommandHandler.h"
-#include "GoBackCommandHandler.h"
-#include "GoForwardCommandHandler.h"
-#include "GoToUrlCommandHandler.h"
-#include "HoverOverElementCommandHandler.h"
-#include "IsElementDisplayedCommandHandler.h"
-#include "IsElementEnabledCommandHandler.h"
-#include "IsElementSelectedCommandHandler.h"
-#include "NewSessionCommandHandler.h"
-#include "RefreshCommandHandler.h"
-#include "ScreenshotCommandHandler.h"
-#include "SendKeysCommandHandler.h"
-#include "SetAsyncScriptTimeoutCommandHandler.h"
-#include "SetElementSelectedCommandHandler.h"
-#include "SetImplicitWaitTimeoutCommandHandler.h"
-#include "SetSpeedCommandHandler.h"
-#include "SubmitElementCommandHandler.h"
-#include "SwitchToFrameCommandHandler.h"
-#include "SwitchToWindowCommandHandler.h"
-#include "ToggleElementCommandHandler.h"
-#include "QuitCommandHandler.h"
-
-#include "AcceptAlertCommandHandler.h"
-#include "DismissAlertCommandHandler.h"
-#include "GetAlertTextCommandHandler.h"
-#include "SendKeysToAlertCommandHandler.h"
-
-#include "SendModifierKeyCommandHandler.h"
-#include "MouseMoveToCommandHandler.h"
-#include "MouseClickCommandHandler.h"
-#include "MouseDoubleClickCommandHandler.h"
-#include "MouseButtonDownCommandHandler.h"
-#include "MouseButtonUpCommandHandler.h"
+#include "CommandHandlers/AcceptAlertCommandHandler.h"
+#include "CommandHandlers/AddCookieCommandHandler.h"
+#include "CommandHandlers/ClickElementCommandHandler.h"
+#include "CommandHandlers/ClearElementCommandHandler.h"
+#include "CommandHandlers/CloseWindowCommandHandler.h"
+#include "CommandHandlers/DeleteAllCookiesCommandHandler.h"
+#include "CommandHandlers/DeleteCookieCommandHandler.h"
+#include "CommandHandlers/DismissAlertCommandHandler.h"
+#include "CommandHandlers/DragElementCommandHandler.h"
+#include "CommandHandlers/ElementEqualsCommandHandler.h"
+#include "CommandHandlers/ExecuteAsyncScriptCommandHandler.h"
+#include "CommandHandlers/ExecuteScriptCommandHandler.h"
+#include "CommandHandlers/FindChildElementCommandHandler.h"
+#include "CommandHandlers/FindChildElementsCommandHandler.h"
+#include "CommandHandlers/FindElementCommandHandler.h"
+#include "CommandHandlers/FindElementsCommandHandler.h"
+#include "CommandHandlers/GetActiveElementCommandHandler.h"
+#include "CommandHandlers/GetAlertTextCommandHandler.h"
+#include "CommandHandlers/GetAllCookiesCommandHandler.h"
+#include "CommandHandlers/GetAllWindowHandlesCommandHandler.h"
+#include "CommandHandlers/GetCurrentUrlCommandHandler.h"
+#include "CommandHandlers/GetCurrentWindowHandleCommandHandler.h"
+#include "CommandHandlers/GetElementAttributeCommandHandler.h"
+#include "CommandHandlers/GetElementLocationCommandHandler.h"
+#include "CommandHandlers/GetElementLocationOnceScrolledIntoViewCommandHandler.h"
+#include "CommandHandlers/GetElementSizeCommandHandler.h"
+#include "CommandHandlers/GetElementTagNameCommandHandler.h"
+#include "CommandHandlers/GetElementTextCommandHandler.h"
+#include "CommandHandlers/GetElementValueCommandHandler.h"
+#include "CommandHandlers/GetElementValueOfCssPropertyCommandHandler.h"
+#include "CommandHandlers/GetSessionCapabilitiesCommandHandler.h"
+#include "CommandHandlers/GetSpeedCommandHandler.h"
+#include "CommandHandlers/GetPageSourceCommandHandler.h"
+#include "CommandHandlers/GetTitleCommandHandler.h"
+#include "CommandHandlers/GoBackCommandHandler.h"
+#include "CommandHandlers/GoForwardCommandHandler.h"
+#include "CommandHandlers/GoToUrlCommandHandler.h"
+#include "CommandHandlers/HoverOverElementCommandHandler.h"
+#include "CommandHandlers/IsElementDisplayedCommandHandler.h"
+#include "CommandHandlers/IsElementEnabledCommandHandler.h"
+#include "CommandHandlers/IsElementSelectedCommandHandler.h"
+#include "CommandHandlers/MouseMoveToCommandHandler.h"
+#include "CommandHandlers/MouseClickCommandHandler.h"
+#include "CommandHandlers/MouseDoubleClickCommandHandler.h"
+#include "CommandHandlers/MouseButtonDownCommandHandler.h"
+#include "CommandHandlers/MouseButtonUpCommandHandler.h"
+#include "CommandHandlers/NewSessionCommandHandler.h"
+#include "CommandHandlers/QuitCommandHandler.h"
+#include "CommandHandlers/RefreshCommandHandler.h"
+#include "CommandHandlers/ScreenshotCommandHandler.h"
+#include "CommandHandlers/SendKeysCommandHandler.h"
+#include "CommandHandlers/SendKeysToAlertCommandHandler.h"
+#include "CommandHandlers/SendModifierKeyCommandHandler.h"
+#include "CommandHandlers/SetAsyncScriptTimeoutCommandHandler.h"
+#include "CommandHandlers/SetElementSelectedCommandHandler.h"
+#include "CommandHandlers/SetImplicitWaitTimeoutCommandHandler.h"
+#include "CommandHandlers/SetSpeedCommandHandler.h"
+#include "CommandHandlers/SubmitElementCommandHandler.h"
+#include "CommandHandlers/SwitchToFrameCommandHandler.h"
+#include "CommandHandlers/SwitchToWindowCommandHandler.h"
+#include "CommandHandlers/ToggleElementCommandHandler.h"
 
 namespace webdriver {
 
@@ -79,8 +90,8 @@ LRESULT Session::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 	// could use CoCreateGuid() and StringFromGUID2() instead.
 	UUID guid;
 	RPC_WSTR guid_string = NULL;
-	::UuidCreate(&guid);
-	::UuidToString(&guid, &guid_string);
+	RPC_STATUS status = ::UuidCreate(&guid);
+	status = ::UuidToString(&guid, &guid_string);
 
 	// RPC_WSTR is currently typedef'd in RpcDce.h (pulled in by rpc.h)
 	// as unsigned short*. It needs to be typedef'd as wchar_t* 
@@ -155,7 +166,7 @@ LRESULT Session::OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 			// on this thread. This call happens in a message loop, and we would be 
 			// unable to process the COM events in the browser if we put this thread
 			// to sleep.
-			unsigned int thread_id;
+			unsigned int thread_id = 0;
 			HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &Session::WaitThreadProc, (void *)this->m_hWnd, 0, &thread_id));
 			if (thread_handle != NULL) {
 				::CloseHandle(thread_handle);
@@ -249,7 +260,7 @@ unsigned int WINAPI Session::ThreadProc(LPVOID lpParameter) {
 
 void Session::DispatchCommand() {
 	std::string session_id = CW2A(this->session_id_.c_str(), CP_UTF8);
-	WebDriverResponse response(session_id);
+	Response response(session_id);
 	CommandHandlerMap::const_iterator found_iterator = this->command_handlers_.find(this->current_command_.command_value());
 
 	if (found_iterator == this->command_handlers_.end()) {
@@ -338,7 +349,7 @@ void Session::AddManagedElement(IHTMLElement* element, ElementHandle* element_wr
 	// the map. For long-running tests, this means the addition of a
 	// new managed element may take longer and longer as we have no
 	// good algorithm for removing dead elements from the map.
-	bool element_already_managed(false);
+	bool element_already_managed = false;
 	ElementMap::iterator it = this->managed_elements_.begin();
 	for (; it != this->managed_elements_.end(); ++it) {
 		if (it->second->element() == element) {
@@ -351,7 +362,7 @@ void Session::AddManagedElement(IHTMLElement* element, ElementHandle* element_wr
 	if (!element_already_managed) {
 		BrowserHandle current_browser;
 		this->GetCurrentBrowser(&current_browser);
-		ElementHandle new_wrapper(new ElementWrapper(element, current_browser->GetWindowHandle()));
+		ElementHandle new_wrapper(new Element(element, current_browser->GetWindowHandle()));
 		this->managed_elements_[new_wrapper->element_id()] = new_wrapper;
 		*element_wrapper = new_wrapper;
 	}
@@ -367,7 +378,7 @@ void Session::RemoveManagedElement(const std::wstring& element_id) {
 void Session::ListManagedElements() {
 	ElementMap::iterator it = this->managed_elements_.begin();
 	for (; it != this->managed_elements_.end(); ++it) {
-		std::string id(CW2A(it->first.c_str(), CP_UTF8));
+		std::string id = CW2A(it->first.c_str(), CP_UTF8);
 		std::cout << id << "\n";
 	}
 }
@@ -402,7 +413,7 @@ void Session::PopulateElementFinderMethods(void) {
 }
 
 void Session::PopulateCommandHandlers() {
-	this->command_handlers_[NoCommand] = CommandHandlerHandle(new WebDriverCommandHandler);
+	this->command_handlers_[NoCommand] = CommandHandlerHandle(new CommandHandler);
 	this->command_handlers_[GetCurrentWindowHandle] = CommandHandlerHandle(new GetCurrentWindowHandleCommandHandler);
 	this->command_handlers_[GetWindowHandles] = CommandHandlerHandle(new GetAllWindowHandlesCommandHandler);
 	this->command_handlers_[SwitchToWindow] = CommandHandlerHandle(new SwitchToWindowCommandHandler);

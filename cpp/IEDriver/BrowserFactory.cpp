@@ -1,3 +1,16 @@
+// Copyright 2011 WebDriver committers
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "StdAfx.h"
 #include "BrowserFactory.h"
 
@@ -74,7 +87,7 @@ DWORD BrowserFactory::LaunchBrowserProcess(int port) {
 bool BrowserFactory::GetDocumentFromWindowHandle(HWND window_handle, IHTMLDocument2** document) {
 	if (window_handle != NULL && this->oleacc_instance_handle_) {
 		LRESULT result;
-		::SendMessageTimeout(window_handle, this->html_getobject_msg_, 0L, 0L, SMTO_ABORTIFHUNG, 1000, (PDWORD_PTR)&result);
+		::SendMessageTimeout(window_handle, this->html_getobject_msg_, 0L, 0L, SMTO_ABORTIFHUNG, 1000, reinterpret_cast<PDWORD_PTR>(&result));
 
 		LPFNOBJECTFROMLRESULT object_pointer =  reinterpret_cast<LPFNOBJECTFROMLRESULT>(::GetProcAddress(this->oleacc_instance_handle_, "ObjectFromLresult"));
 		if (object_pointer != NULL) {
@@ -189,7 +202,7 @@ BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
 	// 8 == "IeFrame\0"
 	// 21 == "Shell DocObject View\0";
 	char name[21];
-	if (GetClassNameA(hwnd, name, 21) == 0) {
+	if (::GetClassNameA(hwnd, name, 21) == 0) {
 		// No match found. Skip
 		return TRUE;
 	}
@@ -207,7 +220,7 @@ BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
 	// Could this be an Internet Explorer Server window?
 	// 25 == "Internet Explorer_Server\0"
 	char name[25];
-	if (GetClassNameA(hwnd, name, 25) == 0) {
+	if (::GetClassNameA(hwnd, name, 25) == 0) {
 		// No match found. Skip
 		return TRUE;
 	}
@@ -287,7 +300,7 @@ void BrowserFactory::GetExecutableLocation() {
 }
 
 bool BrowserFactory::GetRegistryValue(const HKEY root_key, const std::wstring& subkey, const std::wstring& value_name, std::wstring *value) {
-	bool value_retrieved(false);
+	bool value_retrieved = false;
 	DWORD required_buffer_size;
 	HKEY key_handle;
 	if (ERROR_SUCCESS == ::RegOpenKeyEx(root_key, subkey.c_str(), 0, KEY_QUERY_VALUE, &key_handle)) {
@@ -346,23 +359,23 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
 	if (this->ie_major_version_ >= 7 && this->windows_major_version_ >= 6) {
 		HKEY key_handle;
 		if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_CURRENT_USER, IE_SECURITY_ZONES_REGISTRY_KEY, 0, KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS, &key_handle)) {
-			DWORD subkey_count(0);
-			DWORD max_subkey_name_length(0);
+			DWORD subkey_count = 0;
+			DWORD max_subkey_name_length = 0;
 			if (ERROR_SUCCESS == ::RegQueryInfoKey(key_handle, NULL, NULL, NULL, &subkey_count, &max_subkey_name_length, NULL, NULL, NULL, NULL, NULL, NULL)) {
-				int protected_mode_value(-1);
+				int protected_mode_value = -1;
 				std::vector<TCHAR> subkey_name_buffer(max_subkey_name_length + 1);
 				for (size_t index = 0; index < subkey_count; ++index) {
-					DWORD number_of_characters_copied(max_subkey_name_length + 1);
+					DWORD number_of_characters_copied = max_subkey_name_length + 1;
 					::RegEnumKeyEx(key_handle, static_cast<DWORD>(index), &subkey_name_buffer[0], &number_of_characters_copied, NULL, NULL, NULL, NULL);
-					std::wstring subkey_name(&subkey_name_buffer[0]);
+					std::wstring subkey_name = &subkey_name_buffer[0];
 					// Ignore zone "0" (the "My Computer" zone)
 					if (subkey_name != L"0") {
 						HKEY subkey_handle;
 						if (ERROR_SUCCESS == ::RegOpenKeyEx(key_handle, subkey_name.c_str(), 0, KEY_QUERY_VALUE, &subkey_handle)) {
 							// The protected mode settings are stored in a
 							// REG_DWORD value with the name "2500".
-							DWORD value(0);
-							DWORD value_length(sizeof(DWORD));
+							DWORD value = 0;
+							DWORD value_length = sizeof(DWORD);
 							if (ERROR_SUCCESS == ::RegQueryValueEx(subkey_handle, L"2500", NULL, NULL, reinterpret_cast<LPBYTE>(&value), &value_length)) {
 								if (protected_mode_value == -1) {
 									protected_mode_value = value;
