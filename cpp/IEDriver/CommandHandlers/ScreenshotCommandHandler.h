@@ -122,7 +122,7 @@ private:
 		browser->SetHeight(max_height);
 
 		// Capture the window's canvas to a DIB.
-		this->image_->Create(image_width, image_height, 24);
+		this->image_->Create(image_width, image_height, 32);
 		HDC device_context_handle = this->image_->GetDC();
 
 		BOOL print_result = ::PrintWindow(content_window_handle, device_context_handle, PW_CLIENTONLY);
