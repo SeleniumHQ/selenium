@@ -17,35 +17,71 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.io.File;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
-import static org.openqa.selenium.OutputType.BASE64;
+import java.io.*;
+import java.util.List;
+
+import static com.google.common.primitives.Bytes.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 
 public class TakesScreenshotTest extends AbstractDriverTestCase {
+
+  private static List<Byte> PNG_SIGNATURE = asList(new byte[]{ (byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A });
+
+  @Override
+  public void setUp() throws Exception {
+    super.setUp();
+    if (driver instanceof RemoteWebDriver) {
+      driver = new Augmenter().augment(driver);
+    }
+  }
+
+  public void testSaveScreenshotAsBase64() throws Exception {
+    if (!isAbleToTakeScreenshots(driver)) {
+      return;
+    }
+
+    driver.get(pages.simpleTestPage);
+    String screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+    byte[] bytes = Base64.decodeBase64(screenshot);
+    assertThat(bytes.length, greaterThan(8));
+    assertThat(asList(bytes).subList(0, 8), is(PNG_SIGNATURE));
+  }
+
+  public void testSaveScreenshotAsBytes() throws Exception {
+    if (!isAbleToTakeScreenshots(driver)) {
+      return;
+    }
+
+    driver.get(pages.simpleTestPage);
+    byte[] bytes = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+    assertThat(bytes.length, greaterThan(8));
+    assertThat(asList(bytes).subList(0, 8), is(PNG_SIGNATURE));
+  }
+
   public void testSaveScreenshotAsFile() throws Exception {
     if (!isAbleToTakeScreenshots(driver)) {
       return;
     }
 
     driver.get(pages.simpleTestPage);
-    File tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    File tempFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
-    tempFile.delete();
-  }
-
-  public void testCaptureToBase64() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
+    try {
+      assertThat(tempFile.getName(), endsWith(".png"));
+      byte[] bytes = FileUtils.readFileToByteArray(tempFile);
+      assertThat(bytes.length, greaterThan(8));
+      assertThat(asList(bytes).subList(0, 8), is(PNG_SIGNATURE));
+    } finally {
+      tempFile.delete();
     }
-
-    driver.get(pages.simpleTestPage);
-    String screenshot = getScreenshot().getScreenshotAs(BASE64);
-    assertTrue(screenshot.length() > 0);
-  }
-  
-  public TakesScreenshot getScreenshot() {
-    return (TakesScreenshot)driver;
   }
 
   private boolean isAbleToTakeScreenshots(WebDriver driver) throws Exception {
