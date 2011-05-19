@@ -97,14 +97,6 @@ ruby_test(name = "chrome",
   deps = [ ":chrome"  ]
 )
 
-ruby_test(name = "chromedriver",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [ ":remote"  ]
-)
-
 ruby_library(name = "firefox",
   srcs = [
     "lib/selenium/webdriver/firefox/**/*.rb",
