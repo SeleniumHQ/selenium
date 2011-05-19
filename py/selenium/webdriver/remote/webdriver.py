@@ -148,7 +148,7 @@ class WebDriver(object):
             return response
         # If the server doesn't send a response, assume the command was
         # a success
-        return {'success': 0, 'value': None}
+        return {'success': 0, 'value': None, 'sessionId': self.session_id}
 
     def get(self, url):
         """Loads a web page in the current browser session."""
