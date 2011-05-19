@@ -72,28 +72,7 @@ public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListe
 	int nbFailedPoll = 0;
 	// TODO freynaud
 	private List<RemoteException> errors = new CopyOnWriteArrayList<RemoteException>();
-	private Thread pollingThread = new Thread(new Runnable() {
-		public void run() {
-			while (poll) {
-				try {
-					Thread.sleep(10000);
-					if (!isAlive()) {
-						if (!down) {
-							nbFailedPoll++;
-							if (nbFailedPoll >= 2) {
-								addNewEvent(new RemoteNotReachableException("Cannot reach the remote."));
-							}
-						}
-					} else {
-						down = false;
-						nbFailedPoll = 0;
-					}
-				} catch (InterruptedException e) {
-					return;
-				}
-			}
-		}
-	});
+	private Thread pollingThread = null;
 
 	public boolean isAlive() {
 		String url = getRemoteURL().toExternalForm() + "/status";
@@ -113,6 +92,28 @@ public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListe
 	}
 
 	public void startPolling() {
+		pollingThread =new Thread(new Runnable() {
+			public void run() {
+				while (poll) {
+					try {
+						Thread.sleep(10000);
+						if (!isAlive()) {
+							if (!down) {
+								nbFailedPoll++;
+								if (nbFailedPoll >= 2) {
+									addNewEvent(new RemoteNotReachableException("Cannot reach the remote."));
+								}
+							}
+						} else {
+							down = false;
+							nbFailedPoll = 0;
+						}
+					} catch (InterruptedException e) {
+						return;
+					}
+				}
+			}
+		});
 		pollingThread.start();
 	}
 
