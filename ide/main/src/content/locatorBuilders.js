@@ -111,10 +111,11 @@ LocatorBuilders.prototype.findElement = function(locator) {
  * Class methods
  */
 
-LocatorBuilders.order = ['ui', 'id', 'link', 'name', 'css', 'dom:name', 'xpath:link', 'xpath:img', 'xpath:attributes', 'xpath:href', 'dom:index', 'xpath:position'];
+LocatorBuilders.order = [];
 LocatorBuilders.builderMap = {};
 
 LocatorBuilders.add = function(name, finder) {
+    this.order.push(name);
     this.builderMap[name] = finder;
 };
 
@@ -429,3 +430,6 @@ LocatorBuilders.add('xpath:position', function(e, opt_contextNode) {
         }
         return null;
     });
+
+// You can change the priority of builders by setting LocatorBuilders.order.
+LocatorBuilders.order = ['ui', 'id', 'link', 'name', 'css', 'dom:name', 'xpath:link', 'xpath:img', 'xpath:attributes', 'xpath:idRelative', 'xpath:href', 'dom:index', 'xpath:position'];
