@@ -1,0 +1,6 @@
+
+java_library(name = "commons-jxpath",
+  deps = [
+    "commons-jxpath-1.3.jar",
+  ])
+

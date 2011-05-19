@@ -1,0 +1,6 @@
+
+java_library(name = "google-protobuffers",
+  deps = [
+    "protobuf-java-2.3.0.jar",
+  ])
+

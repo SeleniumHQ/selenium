@@ -6,7 +6,8 @@ java_library(name = "server",
     "//java/client/src/org/openqa/selenium/htmlunit",
     "//java/client/src/org/openqa/selenium/ie",
     "//java/client/src/org/openqa/selenium/iphone",
-    ":server_lite"
+    ":server_lite",
+    "//third_party/java/opera-driver",
   ])
 
 java_library(name = "server-with-tests",
