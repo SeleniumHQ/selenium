@@ -22,7 +22,7 @@ class DesiredCapabilities(object):
 
     INTERNETEXPLORER = { "browserName": "internet explorer",
                         "version": "",
-                        "platform": "windows",
+                        "platform": "WINDOWS",
                         "javascriptEnabled": True }
 
     CHROME = {"browserName": "chrome",
