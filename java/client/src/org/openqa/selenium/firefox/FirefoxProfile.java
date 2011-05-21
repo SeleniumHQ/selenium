@@ -17,23 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.String;
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.common.io.Files;
-
+import com.google.common.io.LineReader;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
@@ -44,6 +31,12 @@ import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.io.Cleanly;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -222,24 +215,28 @@ public class FirefoxProfile {
 
   //Assumes that we only really care about the preferences, not the comments
   private Map<String, String> readExistingPrefs(File userPrefs) {
-    List<String> lines;
     try {
-      lines = Files.readLines(userPrefs, Charset.defaultCharset());
+      FileReader reader = new FileReader(userPrefs);
+      return parsePreferences(reader);
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
-    return parsePreferences(lines);
   }
 
   @VisibleForTesting
-  static Map<String, String> parsePreferences(List<String> lines) {
+  static Map<String, String> parsePreferences(Reader input) throws IOException {
+    LineReader reader = new LineReader(input);
+
     Map<String, String> preferenceMap = Maps.newHashMap();
-    for (String line : lines) {
+    String line = reader.readLine();
+    while (line != null) {
       Matcher matcher = PREFERENCE_PATTERN.matcher(line);
       if (matcher.matches()) {
         preferenceMap.put(matcher.group(1), matcher.group(2));
       }
+      line = reader.readLine();
     }
+
     return preferenceMap;
   }
 
