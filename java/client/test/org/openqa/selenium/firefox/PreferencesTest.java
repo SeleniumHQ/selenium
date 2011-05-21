@@ -19,6 +19,11 @@ package org.openqa.selenium.firefox;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Map;
+
 public class PreferencesTest extends TestCase {
 
   public void testStringifyVsStringFormat() {
@@ -44,6 +49,45 @@ public class PreferencesTest extends TestCase {
                canSet(a,("\"Julian\" \"TestEngineer\" Harty.\"")));
 
   }
+
+  public void testParsePreferences_boolean() throws IOException {
+    StringReader lines = new StringReader("user_pref(\"extensions.update.notifyUser\", false);");
+    Preferences prefs = new Preferences(lines);
+
+    assertEquals(false, prefs.getPreference("extensions.update.notifyUser"));
+  }
+
+  public void testParsePreferences_integer() throws IOException {
+    StringReader lines = new StringReader("user_pref(\"dom.max_script_run_time\", 30);");
+    Preferences prefs = new Preferences(lines);
+
+    assertEquals(30, prefs.getPreference("dom.max_script_run_time"));
+  }
+
+  public void testParsePreferences_string() throws IOException {
+    String prefWithComma = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_1 like Mac OS X; en-us) "
+        + "AppleWebKit/532.9 (KHTML, like Gecko)";
+    String prefWithQuotes = "lpr ${MOZ_PRINTER_NAME:+-P\"$MOZ_PRINTER_NAME\"}";
+
+    Reader lines = new StringReader(
+        "user_pref(\"general.useragent.override\", \"" + prefWithComma + "\");\n" +
+        "user_pref(\"print.print_command\", \"" + prefWithQuotes + "\");");
+    Preferences prefs = new Preferences(lines);
+
+    assertEquals(prefWithComma, prefs.getPreference("general.useragent.override"));
+    assertEquals(prefWithQuotes, prefs.getPreference("print.print_command"));
+  }
+
+  public void testParsePreferences_multiline() throws IOException {
+    Reader lines = new StringReader(
+        "user_pref(\"extensions.update.notifyUser\", false);\n" +
+        "user_pref(\"dom.max_script_run_time\", 30);");
+    Preferences prefs = new Preferences(lines);
+
+    assertEquals(false, prefs.getPreference("extensions.update.notifyUser"));
+    assertEquals(30, prefs.getPreference("dom.max_script_run_time"));
+  }
+
 
   private boolean canSet(Preferences pref, String value) {
     try {

@@ -69,7 +69,7 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("DragAndDropTest")
+        .onlyRun("FirefoxProfileTest")
         .exclude(ALL)
         .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
         .outputTestNames()

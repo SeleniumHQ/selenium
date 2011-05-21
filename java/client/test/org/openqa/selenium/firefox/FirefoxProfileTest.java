@@ -24,14 +24,16 @@ import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasEntry;
 
 public class FirefoxProfileTest extends TestCase {
 
@@ -205,54 +207,17 @@ public class FirefoxProfileTest extends TestCase {
 
     List<String> prefLines = new ArrayList<String>();
     for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+      System.out.println("line = " + line);
       prefLines.add(line);
     }
 
     return prefLines;
   }
 
-  public void testParsePreferences_boolean() throws IOException {
-    StringReader lines = new StringReader("user_pref(\"extensions.update.notifyUser\", false);");
-    Map<String, String> preferenceMap = FirefoxProfile.parsePreferences(lines);
-    assertEquals(1, preferenceMap.size());
-    assertEquals("false", preferenceMap.get("extensions.update.notifyUser"));
-  }
-
-  public void testParsePreferences_integer() throws IOException {
-    StringReader lines = new StringReader("user_pref(\"dom.max_script_run_time\", 30);");
-    Map<String, String> preferenceMap = FirefoxProfile.parsePreferences(lines);
-    assertEquals(1, preferenceMap.size());
-    assertEquals("30", preferenceMap.get("dom.max_script_run_time"));
-  }
-
-  public void testParsePreferences_string() throws IOException {
-    String prefWithComma = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_1 like Mac OS X; en-us) "
-        + "AppleWebKit/532.9 (KHTML, like Gecko)";
-    String prefWithQuotes = "lpr ${MOZ_PRINTER_NAME:+-P\"$MOZ_PRINTER_NAME\"}";
-
-    Reader lines = new StringReader(
-        "user_pref(\"general.useragent.override\", \"" + prefWithComma + "\");\n" +
-        "user_pref(\"print.print_command\", \"" + prefWithQuotes + "\");");
-    Map<String, String> preferenceMap = FirefoxProfile.parsePreferences(lines);
-    assertEquals(2, preferenceMap.size());
-    assertEquals(prefWithComma, preferenceMap.get("general.useragent.override"));
-    assertEquals(prefWithQuotes, preferenceMap.get("print.print_command"));
-  }
-
-  public void testParsePreferences_multiline() throws IOException {
-    Reader lines = new StringReader(
-        "user_pref(\"extensions.update.notifyUser\", false);\n" +
-        "user_pref(\"dom.max_script_run_time\", 30);");
-    Map<String, String> preferenceMap = FirefoxProfile.parsePreferences(lines);
-    assertEquals(2, preferenceMap.size());
-    assertEquals("false", preferenceMap.get("extensions.update.notifyUser"));
-    assertEquals("30", preferenceMap.get("dom.max_script_run_time"));
-  }
-
   public void testLayoutOnDiskSetsUserPreferences() throws IOException {
     profile.setPreference("browser.startup.homepage", "http://www.example.com");
-    Map<String, String> parsedPrefs = parseUserPrefs(profile);
-    assertThat(parsedPrefs, hasEntry("browser.startup.homepage", "http://www.example.com"));
+    Preferences parsedPrefs = parseUserPrefs(profile);
+    assertEquals("http://www.example.com", parsedPrefs.getPreference("browser.startup.homepage"));
   }
 
   public void testUserPrefsArePreservedWhenConvertingToAndFromJson() throws IOException {
@@ -260,14 +225,15 @@ public class FirefoxProfileTest extends TestCase {
 
     String json = profile.toJson();
     FirefoxProfile rebuilt = FirefoxProfile.fromJson(json);
-    Map<String, String> parsedPrefs = parseUserPrefs(rebuilt);
-    assertThat(parsedPrefs, hasEntry("browser.startup.homepage", "http://www.example.com"));
+    Preferences parsedPrefs = parseUserPrefs(rebuilt);
+
+    assertEquals("http://www.example.com", parsedPrefs.getPreference("browser.startup.homepage"));
   }
 
-  private Map<String, String> parseUserPrefs(FirefoxProfile profile) throws IOException {
+  private Preferences parseUserPrefs(FirefoxProfile profile) throws IOException {
     File directory = profile.layoutOnDisk();
     File userPrefs = new File(directory, "user.js");
     FileReader reader = new FileReader(userPrefs);
-    return FirefoxProfile.parsePreferences(reader);
+    return new Preferences(userPrefs);
   }
 }
