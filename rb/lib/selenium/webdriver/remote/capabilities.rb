@@ -7,17 +7,28 @@ module Selenium
       #
       class Capabilities
 
-        attr_reader :proxy
+        DEFAULTS = {
+          :browser_name          => "",
+          :version               => "",
+          :platform              => :any,
+          :javascript_enabled    => false,
+          :css_selectors_enabled => false,
+          :takes_screenshot      => false,
+          :native_events         => false,
+          :rotatable             => false,
+          :firefox_profile       => nil,
+          :proxy                 => nil
+        }
 
-        attr_accessor :css_selectors_enabled,
-                      :javascript_enabled,
-                      :native_events,
-                      :platform,
-                      :takes_screenshot,
-                      :rotatable,
-                      :version,
-                      :browser_name,
-                      :firefox_profile
+        DEFAULTS.each_key do |key|
+          define_method key do
+            @capabilities.fetch(key)
+          end
+
+          define_method "#{key}=" do |value|
+            @capabilities[key] = value
+          end
+        end
 
         alias_method :css_selectors_enabled?, :css_selectors_enabled
         alias_method :javascript_enabled?   , :javascript_enabled
@@ -92,17 +103,23 @@ module Selenium
           #
 
           def json_create(data)
-            new(
-              :browser_name          => data["browserName"],
-              :version               => data["version"],
-              :platform              => data["platform"].downcase.to_sym,
-              :javascript_enabled    => data["javascriptEnabled"],
-              :css_selectors_enabled => data["cssSelectorsEnabled"],
-              :takes_screenshot      => data["takesScreenshot"],
-              :native_events         => data["nativeEvents"],
-              :rotatable             => data["rotatable"],
-              :proxy                 => (Proxy.json_create(data['proxy']) if data['proxy'])
-            )
+            data = data.dup
+
+            caps = new
+            caps.browser_name          = data.delete("browserName")
+            caps.version               = data.delete("version")
+            caps.platform              = data.delete("platform").downcase.to_sym
+            caps.javascript_enabled    = data.delete("javascriptEnabled")
+            caps.css_selectors_enabled = data.delete("cssSelectorsEnabled")
+            caps.takes_screenshot      = data.delete("takesScreenshot")
+            caps.native_events         = data.delete("nativeEvents")
+            caps.rotatable             = data.delete("rotatable")
+            caps.proxy                 = Proxy.json_create(data['proxy']) if data.has_key?('proxy')
+
+            # any remaining pairs will be added as is, with no conversion
+            caps.merge!(data)
+
+            caps
           end
         end
 
@@ -112,36 +129,49 @@ module Selenium
         # @option :javascript_enabled     [Boolean] does the driver have javascript enabled?
         # @option :css_selectors_enabled  [Boolean] does the driver support CSS selectors?
         # @option :takes_screenshot       [Boolean] can this driver take screenshots?
-        # @option :native_events         [Boolean] does this driver use native events?
-        # @option :proxy                 [Selenium::WebDriver::Proxy, Hash] proxy configuration
+        # @option :native_events          [Boolean] does this driver use native events?
+        # @option :proxy                  [Selenium::WebDriver::Proxy, Hash] proxy configuration
         #
         # Firefox-specific options:
         #
-        # @option :firefox_profile       [Selenium::WebDriver::Firefox::Profile] the firefox profile to use
+        # @option :firefox_profile        [Selenium::WebDriver::Firefox::Profile] the firefox profile to use
         #
         # @api public
         #
 
         def initialize(opts = {})
-          @browser_name          = opts[:browser_name]          || ""
-          @version               = opts[:version]               || ""
-          @platform              = opts[:platform]              || :any
-          @javascript_enabled    = opts[:javascript_enabled]    || false
-          @css_selectors_enabled = opts[:css_selectors_enabled] || false
-          @takes_screenshot      = opts[:takes_screenshot]      || false
-          @native_events         = opts[:native_events]         || false
-          @rotatable             = opts[:rotatable]             || false
-          @firefox_profile       = opts[:firefox_profile]
+          @capabilities = DEFAULTS.merge(opts)
+          self.proxy    = opts.delete(:proxy)
+        end
 
-          self.proxy             = opts[:proxy]
+        #
+        # Allows setting arbitrary capabilities.
+        #
+
+        def []=(key, value)
+          @capabilities[key] = value
+        end
+
+        def [](key)
+          @capabilities[key]
+        end
+
+        def merge!(other)
+          if other.respond_to?(:capabilities) && other.capabilities.kind_of?(Hash)
+            @capabilities.merge! other.capabilities
+          elsif other.kind_of? Hash
+            @capabilities.merge! other
+          else
+            raise ArgumentError, "argument should be a Hash or implement #capabilities"
+          end
         end
 
         def proxy=(proxy)
           case proxy
           when Hash
-            @proxy = Proxy.new(proxy)
+            @capabilities[:proxy] = Proxy.new(proxy)
           when Proxy, nil
-            @proxy = proxy
+            @capabilities[:proxy] = proxy
           else
             raise TypeError, "expected Hash or #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}"
           end
@@ -151,19 +181,24 @@ module Selenium
         #
 
         def as_json(opts = nil)
-          hash = {
-            "browserName"         => browser_name,
-            "version"             => version,
-            "platform"            => platform.to_s.upcase,
-            "javascriptEnabled"   => javascript_enabled?,
-            "cssSelectorsEnabled" => css_selectors_enabled?,
-            "takesScreenshot"     => takes_screenshot?,
-            "nativeEvents"        => native_events?,
-            "rotatable"           => rotatable?,
-          }
+          hash = {}
 
-          hash["proxy"]           = proxy.as_json if proxy
-          hash['firefox_profile'] = firefox_profile.as_json['zip'] if firefox_profile
+          @capabilities.each do |key, value|
+            case key
+            when :platform
+              hash['platform'] = value.to_s.upcase
+            when :firefox_profile
+              hash['firefox_profile'] = value.as_json['zip'] if value
+            when :proxy
+              hash['proxy'] = value.as_json if value
+            when String
+              hash[key] = value
+            when Symbol
+              hash[camel_case(key.to_s)] = value
+            else
+              raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class} / #{value.inspect}"
+            end
+          end
 
           hash
         end
@@ -177,6 +212,18 @@ module Selenium
           as_json == other.as_json
         end
         alias_method :eql?, :==
+
+        protected
+
+        def capabilities
+          @capabilities
+        end
+
+        private
+
+        def camel_case(str)
+          str.gsub(/_([a-z])/) { $1.upcase }
+        end
 
       end # Capabilities
     end # Remote

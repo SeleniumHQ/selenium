@@ -7,6 +7,22 @@ module Selenium
           Capabilities.new.proxy.should be_nil
         end
 
+        it "can set and get standard capabilities" do
+          caps = Capabilities.new
+
+          caps.browser_name = "foo"
+          caps.browser_name.should == "foo"
+
+          caps.native_events = true
+          caps.native_events.should == true
+        end
+
+        it "can set and get arbitrary capabilities" do
+          caps = Capabilities.chrome
+          caps['chrome'] = :foo
+          caps['chrome'].should == :foo
+        end
+
         it "should set the given proxy" do
           proxy = Proxy.new
           capabilities = Capabilities.new(:proxy => proxy)
@@ -33,8 +49,16 @@ module Selenium
           capabilities_hash.should_not have_key("proxy")
         end
 
+        it "can merge capabilities" do
+          a, b = Capabilities.chrome, Capabilities.htmlunit
+          a.merge!(b)
+
+          a.browser_name.should == "htmlunit"
+          a.javascript_enabled.should be_false
+        end
+
         it "can be serialized and deserialized to JSON" do
-          caps = Capabilities.new(:browser_name => "firefox")
+          caps = Capabilities.new(:browser_name => "firefox", :custom_capability => true)
           caps.should == Capabilities.json_create(caps.as_json)
         end
       end
