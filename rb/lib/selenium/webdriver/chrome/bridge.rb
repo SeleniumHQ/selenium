@@ -6,7 +6,6 @@ module Selenium
       class Bridge < Remote::Bridge
 
         def initialize(opts = {})
-          # TODO: pass options to Chrome::Service
           http_client = opts.delete(:http_client)
 
           unless opts.empty?
@@ -15,6 +14,19 @@ module Selenium
 
           @service = Service.default_service
           @service.start
+
+          # TODO: chrome command line switches when it's supported
+          # in the released server
+          #
+          # http://peter.sh/experiments/chromium-command-line-switches/
+          #
+          # {
+          #   :chrome => {
+          #     :customSwitches => {
+          #       "--disable-translate" => ""
+          #     }
+          #   }
+          # }
 
           remote_opts = {
             :url                  => @service.uri,
