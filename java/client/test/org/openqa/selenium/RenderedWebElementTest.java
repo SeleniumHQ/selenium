@@ -131,6 +131,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testCorrectlyDetectMapElementsAreShown() {
     driver.get(pages.mapVisibilityPage);
 
