@@ -331,7 +331,9 @@ public interface WebDriver extends SearchContext {
     WebDriver defaultContent();
 
     /**
-     * Switches to the element that currently has focus, or the body element if this cannot be detected.
+     * Switches to the element that currently has focus within the document currently "switched to",
+     * or the body element if this cannot be detected. This matches the semantics of calling
+     * "document.activeElement" in Javascript.
      *
      * @return The WebElement with focus, or the body element if no element with focus can be detected.
      */
