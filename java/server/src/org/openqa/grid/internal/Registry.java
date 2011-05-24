@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -152,9 +153,11 @@ public class Registry {
 
 			if (proxies.isEmpty()) {
 				throw new GridException("Empty pool of VM for setup " + request.getDesiredCapabilities());
+				//log.warning("Empty pool of nodes.");
 			}
 			if (!contains(request.getDesiredCapabilities())) {
 				throw new CapabilityNotPresentOnTheGridException(request.getDesiredCapabilities());
+				//log.warning("grid doesn't contain "+request.getDesiredCapabilities()+" at the moment.");
 			}
 			newSessionRequests.add(request);
 			fireEventNewSessionAvailable();
@@ -177,6 +180,7 @@ public class Registry {
 	 * in the list of proxies. If something changes in the registry, the matcher
 	 * iteration is stopped to account for that change.
 	 */
+	
 	public void assignRequestToProxy() {
 
 		boolean force = false;
@@ -186,7 +190,7 @@ public class Registry {
 				if (force) {
 					force = false;
 				} else {
-					testSessionAvailable.await();
+					testSessionAvailable.await(5,TimeUnit.SECONDS);
 				}
 				if (prioritizer != null) {
 					Collections.sort(newSessionRequests);
@@ -309,8 +313,7 @@ public class Registry {
 					if (p.equals(proxy)) {
 						proxies.remove(p);
 						for (TestSlot slot : p.getTestSlots()) {
-							// TODO freynaud slot.getSession().terminate();
-							slot.release();
+							slot.forceRelease();
 						}
 
 					}
