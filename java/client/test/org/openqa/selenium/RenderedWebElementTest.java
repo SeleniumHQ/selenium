@@ -173,6 +173,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT}, reason = "Not implemented in HtmlUnit yet.")
   public void testMovingMouseByRelativeOffset() {
     if (!hasInputDevices() || !supportsNativeEvents()) {
       System.out.println(
@@ -196,6 +197,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT}, reason = "Not implemented in HtmlUnit yet.")
   public void testMovingMouseToRelativeElementOffset() {
     if (!hasInputDevices() || !supportsNativeEvents()) {
       System.out.println(
@@ -217,6 +219,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @NeedsFreshDriver
+  @Ignore(value = {HTMLUNIT}, reason = "Not implemented in HtmlUnit yet.")
   public void testMoveRelativeToBody() {
     if (!hasInputDevices() || !supportsNativeEvents()) {
       System.out.println(
