@@ -12,8 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
-
+ */
 
 package org.openqa.grid.internal;
 
@@ -25,7 +24,6 @@ import java.util.logging.Logger;
 
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
-
 
 /**
  * The entity on a proxy that can host a test session. A test slot has only 1
@@ -43,7 +41,7 @@ public class TestSlot {
 
 	private static final Logger log = Logger.getLogger(TestSlot.class.getName());
 
-  private final Map<String, Object> capabilities;
+	private final Map<String, Object> capabilities;
 	private final RemoteProxy proxy;
 	private final CapabilityMatcher matcher;
 	private TestSession currentSession;
@@ -55,8 +53,7 @@ public class TestSlot {
 		this.proxy = proxy;
 		CapabilityMatcher c = proxy.getCapabilityHelper();
 		if (c == null) {
-			throw new InvalidParameterException("the proxy needs to have a valid "
-					+ "capabilityMatcher to support have some testslots attached to it");
+			throw new InvalidParameterException("the proxy needs to have a valid " + "capabilityMatcher to support have some testslots attached to it");
 		}
 		matcher = proxy.getCapabilityHelper();
 		this.capabilities = capabilities;
@@ -197,7 +194,8 @@ public class TestSlot {
 			return;
 		}
 
-		String internalKey = currentSession.getInternalKey();
+		// forceRelease doesn't check anything and wll set currentSession to null.
+		String internalKey = currentSession == null ? null : currentSession.getInternalKey();
 
 		// release resources on the test slot.
 		finishReleaseProcess();
@@ -205,18 +203,21 @@ public class TestSlot {
 		// update the registry.
 		proxy.getRegistry().release(internalKey);
 	}
-	
+
 	/**
-	 *  releasing the testslot, WITHOUT running any listener.
+	 * releasing the testslot, WITHOUT running any listener.
 	 */
-	public void forceRelease(){
+	public void forceRelease() {
 		if (currentSession == null) {
 			return;
 		}
+
 		String internalKey = currentSession.getInternalKey();
+		currentSession = null;
 		proxy.getRegistry().release(internalKey);
+		
 	}
-	
+
 	/**
 	 * releasing the test slot, running the afterSession listener if specified.
 	 */
