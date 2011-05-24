@@ -18,6 +18,8 @@ limitations under the License.
 <!DOCTYPE window [
 <!ENTITY % browserDTD SYSTEM "chrome://browser/locale/browser.dtd">
 %browserDTD;
+<!ENTITY % baseMenuOverlayDTD SYSTEM "chrome://browser/locale/baseMenuOverlay.dtd">
+%baseMenuOverlayDTD;
 <!ENTITY % seleniumIdeDTD SYSTEM "chrome://selenium-ide/locale/selenium-ide.dtd">
 %seleniumIdeDTD;
 ]>
@@ -217,7 +219,12 @@ limitations under the License.
       <menuitem id="internalTestsMenu" label="&internalTestsMenu.label;" oncommand="window.editor.showInBrowser('chrome://selenium-ide/content/tests/index.html');" />
     </menupopup>
   </menu>
-  
+  <menu id="help_menu" label="&helpMenu.label;">
+    <menupopup id="help-popup">
+      <menuitem label="UI-Element Documentation" oncommand="openTabOrWindow('chrome://selenium-ide/content/selenium-core/scripts/ui-doc.html')" />
+    </menupopup>
+  </menu>
+
   <stack id="speedSliderBox">
     <hbox>
       <label value="&speedSliderFast.label;" />
