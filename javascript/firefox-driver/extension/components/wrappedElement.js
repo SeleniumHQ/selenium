@@ -170,7 +170,10 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
                                    respond.session.getDocument());
 
   var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
-  if (currentlyActive != element) {
+  var unwrappedActive = webdriver.firefox.utils.unwrapFor4(currentlyActive);
+  if (unwrappedActive != element) {
+    Logger.dumpn("Currently active element: " + currentlyActive + " unwrapped: " + unwrappedActive);
+    Logger.dumpn("Requested element: " + element);
     currentlyActive.blur();
     element.focus();
     element.ownerDocument.defaultView.focus();
