@@ -72,8 +72,15 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
         current = ultimateParent;
         ultimateParent = current.parent;
       }
+
       var offX = element.ownerDocument.defaultView.mozInnerScreenX - ultimateParent.mozInnerScreenX;
       var offY = element.ownerDocument.defaultView.mozInnerScreenY - ultimateParent.mozInnerScreenY;
+
+      if (versionChecker.compare(appInfo.version, '4') >= 0) {
+        var rect = respond.session.getBrowser().getBoundingClientRect();
+        offY += rect.top;
+        offX += rect.left;
+      }
 
       x += offX;
       y += offY;

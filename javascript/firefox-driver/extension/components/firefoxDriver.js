@@ -1045,6 +1045,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     var toX = this.currentX;
     var toY = this.currentY;
     var elementForNode = null;
+    var shouldAddBrowserOffset = true;
 
     if (coordinates.auxiliary) {
       var element = webdriver.firefox.utils.unwrap(coordinates.auxiliary);
@@ -1059,6 +1060,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
       if (goog.isDef(this.currentX) && goog.isDef(this.currentY)) {
         Logger.dumpn("Getting element from coordinates " + this.currentX + "," + this.currentY);
         elementForNode = doc.elementFromPoint(this.currentX, this.currentY);
+        shouldAddBrowserOffset = false;
       } else {
         this.currentX = 0;
         this.currentY = 0;
@@ -1069,6 +1071,24 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
       toX = this.currentX + coordinates.x;
       toY = this.currentY + coordinates.y;
     }
+
+
+
+    // In Firefox 4, there's a shared window handle. We need to calculate an offset
+    // to add to the x and y locations.
+    var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
+        getService(Components.interfaces.nsIXULAppInfo);
+    var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
+        getService(Components.interfaces.nsIVersionComparator);
+    if (versionChecker.compare(appInfo.version, '4') >= 0) {
+      var rect = respond.session.getBrowser().getBoundingClientRect();
+      if (shouldAddBrowserOffset) {
+        toY += rect.top;
+        toX += rect.left;
+        Logger.dumpn("Adding when calling moveTo: new X,Y: " + toX + ", " + toY);
+      }
+    }
+
 
 
     var events = Utils.getNativeEvents();
