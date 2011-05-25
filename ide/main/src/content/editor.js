@@ -38,6 +38,9 @@ function Editor(window) {
                 if (self.view){
                     self.view.refresh();
                 }
+                //Samit: Enh: now sync other UI elements with the options
+                self.updateDeveloperTools(self.app.getBooleanOption('showDeveloperTools'));
+                self.updateExperimentalFeatures(self.app.getBooleanOption('enableExperimentalFeatures'));
             },
 
             testSuiteChanged: function(testSuite) {
@@ -116,12 +119,6 @@ function Editor(window) {
             clipboardFormatChanged: function(format) {
             },
             
-            //use when the developer tools have to be enabled or not
-            showDevToolsChanged: function(){
-    			$("reload-button").hidden = !self.app.getShowDeveloperTools();
-    			$("reload-button").disabled = $("reload-button").hidden;
-    		},
-
             _testCaseObserver: {
                 modifiedStateUpdated: function() {
                     self.updateTitle();
@@ -279,7 +276,7 @@ Editor.controller = {
                 return false;
             }
         case "cmd_selenium_reload":
-			return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING && editor.app.getShowDeveloperTools();
+			return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING && editor.app.getBooleanOption('showDeveloperTools');
 		case "cmd_selenium_play_suite":
             return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
 		case "cmd_selenium_pause":
@@ -647,6 +644,22 @@ Editor.prototype.resetWindow = function() {
             alert("Error: [" + err + "] while trying to reset window size and position.");
         }
     }
+}
+
+//Samit: Enh: Introduced experimental features to enable or disable experimental and unstable features
+Editor.prototype.updateExperimentalFeatures = function(show) {
+    $("menu_choose_format").disabled = !show;
+    if (show == false && this.app.options.selectedFormat != 'default') {
+        //reset format to html
+        this.app.setCurrentFormat(this.app.formats.selectFormat('default'));
+    }
+}
+
+//Samit: Ref: Refactored the developer tools to be simpler
+Editor.prototype.updateDeveloperTools = function(show) {
+    //use when the developer tools have to be enabled or not
+    $("reload-button").hidden = !show;
+    $("reload-button").disabled = !show;
 }
 
 Editor.prototype.addCommand = function(command,target,value,window,insertBeforeLastCommand) {

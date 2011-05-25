@@ -24,5 +24,6 @@
 <!ENTITY options.user-ext.reload.label "Recharger">
 <!ENTITY options.user-ext.reload.tooltip "Recharger Selenium Core et ses extensions">
 <!ENTITY options.showDeveloperTools.description "Activer les outils d&#233;veloppeur">
+<!ENTITY options.enableExperimentalFeatures.label "Enable experimental features">
 
 <!ENTITY options.recordOnOpen.description "D&#233;marrer l'enregistrement automatiquement à l'ouverture">

@@ -25,10 +25,15 @@ function saveOptions() {
 			options[name] = e.checked != undefined ? e.checked.toString() : e.value;
 		}
 	}
+    if (options.enableExperimentalFeatures.toLowerCase() != 'true' && options.selectedFormat != 'default') {
+        if (!confirm(Message("options.confirmFormatDisable"))) {
+            return false;
+        }
+    }
+    updateFormatOptions();
 	SeleniumIDE.Loader.getEditors().forEach(function(editor) {
 			editor.app.setOptions(options);
 		});
-	updateFormatOptions();
 	Preferences.save(options);
 	return true;
 }
@@ -40,11 +45,10 @@ function loadFromOptions(options) {
 		if (e != null) {
 			if (e.checked != undefined) {
 				e.checked = options[name] == 'true';
-				
+
 				//initialize the reload-button state
 				if (name == "showDeveloperTools"){
-					document.getElementById("reload").hidden = !e.checked;
-					document.getElementById('reload').disabled = document.getElementById('reload').hidden;
+					updateReloadButton(e.checked);
 				}
 			} else {
 				e.value = options[name];
@@ -68,16 +72,21 @@ function loadDefaultOptions() {
 }
 
 function loadOptions() {
-  var options = Preferences.load();
-  loadFromOptions(options);
-  this.formats = new FormatCollection(options);
-  this.options = options;
+    var options = Preferences.load();
+    loadFromOptions(options);
+    this.formats = new FormatCollection(options);
+    this.options = options;
 
-  loadFormatList();
-  selectFormat("default");
+    loadFormatList();
+    //Samit: Enh: Selected the options of the current format if available
+    if (this.formats.findFormat(options.selectedFormat)) {
+        selectFormat(options.selectedFormat);
+    } else {
+        selectFormat('default');
+    }
 
-  this.plugins = new PluginCollection(this.Preferences.getString("plugins"));
-  loadPluginList();
+    this.plugins = new PluginCollection(this.Preferences.getString("plugins"));
+    loadPluginList();
 }
 
 function loadFormatList() {
@@ -292,9 +301,7 @@ var validations = {
  * Call the reload method of the current editor
  */
 function reloadUserExtFile(){
-
 	try{
-			
 		SeleniumIDE.Loader.getEditors()[0].reload();
 	}catch(e){
 		alert("error :" + e);
@@ -304,10 +311,9 @@ function reloadUserExtFile(){
 /**
  * Use to toggle the reload-button state
  */
-function SDTToggle(){
-
-	document.getElementById('reload').hidden = !document.getElementById('showDeveloperTools').checked;
-	document.getElementById('reload').disabled = document.getElementById('reload').hidden;
+function updateReloadButton(show){
+	document.getElementById('reload').hidden = !show;
+	document.getElementById('reload').disabled = !show;
 }
 
 //

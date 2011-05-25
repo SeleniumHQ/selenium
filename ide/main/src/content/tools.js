@@ -256,7 +256,11 @@ function observable(clazz) {
         for (var i = 0; i < this.observers.length; i++) {
             var observer = this.observers[i];
             if (observer[event]) {
-                observer[event].apply(observer, args);
+                try {
+                    observer[event].apply(observer, args);
+                } catch(e) {
+                    //continue with the rest even if one observer fails
+                }
             }
         }
     }

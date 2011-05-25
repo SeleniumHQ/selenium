@@ -23,5 +23,6 @@
 <!ENTITY options.user-ext.reload.label "リロード">
 <!ENTITY options.user-ext.reload.tooltip "リロードセレンコアとその拡張">
 <!ENTITY options.showDeveloperTools.description "アクティブに開発者向けツール">
+<!ENTITY options.enableExperimentalFeatures.label "Enable experimental features">
 
 <!ENTITY options.recordOnOpen.description "Start recording immediately on open">

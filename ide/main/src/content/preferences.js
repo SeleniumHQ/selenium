@@ -150,7 +150,13 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
     
     showDeveloperTools:
     "false",
-    
+
+    selectedFormat:
+    "default",
+
+    enableExperimentalFeatures:
+    "false",
+
     recordOnOpen:
     "true"
 };

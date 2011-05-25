@@ -22,7 +22,6 @@ this.Preferences = SeleniumIDE.Preferences;
  */
 function Application() {
     this.baseURL = "";
-    this.showDeveloperTools = false;
     this.options = Preferences.load();
     this.baseURLHistory = new StoredHistory("baseURLHistory", 20);
     this.testCase = null;
@@ -62,58 +61,59 @@ Application.prototype = {
         return this.baseURLHistory.list();
     },
     
-    //get the "showDeveloperTools" state
-    getShowDeveloperTools: function(){
-    	return this.showDeveloperTools;
-    },
-    
-    //set the "showDeveloperTools" state by the given state "show"
-    setShowDeveloperTools: function(show){
-    	this.showDeveloperTools = show == 'true' ? true : false;
-    	this.notify("showDevToolsChanged", this.showDeveloperTools);
-    },
-
     initOptions: function() {
         if (this.options.rememberBaseURL == 'true' && this.options.baseURL != null) {
             this.setBaseURL(this.options.baseURL);
         }
-        //initializing the reload button
-        this.setShowDeveloperTools(this.options.showDeveloperTools);
         this.setOptions(this.options); // to notify optionsChanged to views
     },
-    
+
+    getBooleanOption: function(option) {
+        if (this.options[option]){
+            return this.options[option].toLowerCase() == 'true';
+        }
+        return false;
+    },
+
     getOptions: function(options) {
         return this.options;
     },
 
     setOptions: function(options) {
         this.options = options;
-        this.setShowDeveloperTools(this.options.showDeveloperTools+"");
         this.formats = new FormatCollection(options);
         this.currentFormat = this.formats.selectFormat(options.selectedFormat || null);
         this.clipboardFormat = this.formats.selectFormat(options.clipboardFormat || null);
         this.notify("optionsChanged", options);
     },
 
-    setCurrentFormat: function(format) {
+    userSetCurrentFormat: function(format) {
+        //Samit: TODO: this whole concept of format changing needs to be thought through again
         //if the testcase is manually changed
         var edited = this.testCase.edited;
         //if the format is reversible (implements the "parse" method)
         //or if the testcase isn't changed manually by user: all be fine
         //if not, the format isn't changed
 
-        if ((this.currentFormat.isReversible && this.currentFormat.isReversible()) || !edited){
-             //sync the testcase with the data view
-            this.notify("currentFormatChanging");
-
-            this.currentFormat = format;
-            this.options.selectedFormat = format.id;
-            Preferences.save(this.options, 'selectedFormat');
-            this.notify("currentFormatChanged", format);
-        }else{
-            //advise the user of the impossibility of changing the format
-            this.notify("currentFormatUnChanged",format);
+        if (this.currentFormat != format) {
+            //if (!(this.currentFormat.isReversible && this.currentFormat.isReversible())){
+                //prompt that user will lose changes
+                if (confirm(Editor.getString('format.switch.warn'))){
+                    //user wants to take the risk
+                    //change the current format
+                    this.setCurrentFormat(format);
+                }
+            //}
         }
+    },
+
+    setCurrentFormat: function(format) {
+         //sync the testcase with the data view
+        this.notify("currentFormatChanging");
+        this.currentFormat = format;
+        this.options.selectedFormat = format.id;
+        Preferences.save(this.options, 'selectedFormat');
+        this.notify("currentFormatChanged", format);
     },
 
     getCurrentFormat: function() {
