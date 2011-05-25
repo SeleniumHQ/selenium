@@ -1,15 +1,15 @@
-require "timeout"
-require "socket"
-require "rexml/document"
+require 'timeout'
+require 'socket'
+require 'rexml/document'
 
-require "selenium/webdriver/firefox/util"
-require "selenium/webdriver/firefox/extension"
-require "selenium/webdriver/firefox/socket_lock"
-require "selenium/webdriver/firefox/binary"
-require "selenium/webdriver/firefox/profiles_ini"
-require "selenium/webdriver/firefox/profile"
-require "selenium/webdriver/firefox/launcher"
-require "selenium/webdriver/firefox/bridge"
+require 'selenium/webdriver/firefox/util'
+require 'selenium/webdriver/firefox/extension'
+require 'selenium/webdriver/firefox/socket_lock'
+require 'selenium/webdriver/firefox/binary'
+require 'selenium/webdriver/firefox/profiles_ini'
+require 'selenium/webdriver/firefox/profile'
+require 'selenium/webdriver/firefox/launcher'
+require 'selenium/webdriver/firefox/bridge'
 
 module Selenium
   module WebDriver

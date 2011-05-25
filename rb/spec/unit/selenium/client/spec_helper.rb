@@ -1,8 +1,8 @@
-require "selenium-client"
-require "stringio"
+require 'selenium-client'
+require 'stringio'
 
 # for bamboo
-require "ci/reporter/rspec"
+require 'ci/reporter/rspec'
 
 module SeleniumClientSpecHelper
   def capture_stderr(&blk)

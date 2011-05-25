@@ -1,4 +1,4 @@
-require "net/http/persistent"
+require 'net/http/persistent'
 
 module Selenium
   module WebDriver

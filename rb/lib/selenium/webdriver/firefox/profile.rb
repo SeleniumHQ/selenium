@@ -3,8 +3,6 @@ module Selenium
     module Firefox
       class Profile
 
-        ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
-        EXTENSION_NAME           = "fxdriver@googlecode.com"
         WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi")
         WEBDRIVER_PREFS          = {
           :native_events    => 'webdriver_enable_native_events',

@@ -133,7 +133,7 @@ module Selenium
           end
 
           def windows_registry_path
-            require "win32/registry"
+            require 'win32/registry'
 
             lm = Win32::Registry::HKEY_LOCAL_MACHINE
             lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox") do |reg|

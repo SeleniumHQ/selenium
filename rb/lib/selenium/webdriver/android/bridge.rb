@@ -10,7 +10,7 @@ module Selenium
             super
           else
             super(
-              :url                  => DEFAULT_URL,
+              :url => DEFAULT_URL,
               :desired_capabilities => capabilities
             )
           end

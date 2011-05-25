@@ -13,7 +13,7 @@ module Selenium
   end
 end
 
-require "ffi"
+require 'ffi'
 
-require "selenium/webdriver/ie/server"
-require "selenium/webdriver/ie/bridge"
+require 'selenium/webdriver/ie/server'
+require 'selenium/webdriver/ie/bridge'

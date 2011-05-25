@@ -6,4 +6,4 @@ module Selenium
   end # WebDriver
 end # Selenium
 
-require "selenium/webdriver/iphone/bridge"
+require 'selenium/webdriver/iphone/bridge'

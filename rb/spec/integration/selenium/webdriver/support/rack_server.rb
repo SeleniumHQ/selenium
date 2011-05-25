@@ -1,5 +1,5 @@
-require "rack"
-require "socket"
+require 'rack'
+require 'socket'
 
 module Selenium
   module WebDriver

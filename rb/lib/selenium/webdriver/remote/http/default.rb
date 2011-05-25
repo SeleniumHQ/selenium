@@ -1,4 +1,4 @@
-require "net/https"
+require 'net/https'
 
 module Selenium
   module WebDriver

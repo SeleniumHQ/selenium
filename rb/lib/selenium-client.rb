@@ -1,2 +1,2 @@
-require "selenium/client"
+require 'selenium/client'
 

@@ -4,8 +4,6 @@ module Selenium
 
       # @api private
       class Extension
-        EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#" # not used?
-
         def initialize(path)
           unless File.exist?(path)
             raise Error::WebDriverError, "could not find extension at #{path.inspect}"

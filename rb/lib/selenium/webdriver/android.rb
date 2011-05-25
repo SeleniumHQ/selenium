@@ -6,4 +6,4 @@ module Selenium
   end # WebDriver
 end # Selenium
 
-require "selenium/webdriver/android/bridge"
+require 'selenium/webdriver/android/bridge'

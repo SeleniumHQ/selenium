@@ -261,7 +261,14 @@ module Selenium
         find_element sel
       end
 
+      def browser
+        bridge.browser
+      end
 
+      def capabilities
+        bridge.capabilities
+      end
+      
       #
       # @api private
       # @see SearchContext
@@ -269,14 +276,6 @@ module Selenium
 
       def ref
         nil
-      end
-
-      def browser
-        bridge.browser
-      end
-
-      def capabilities
-        bridge.capabilities
       end
 
       private

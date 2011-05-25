@@ -1,7 +1,7 @@
-require "childprocess"
-require "tmpdir"
-require "fileutils"
-require "date"
+require 'childprocess'
+require 'tmpdir'
+require 'fileutils'
+require 'date'
 require 'base64'
 
 have_lib = lambda { |lib|
@@ -13,7 +13,7 @@ have_lib = lambda { |lib|
   end
 }
 
-unless have_lib["yajl/json_gem"] || have_lib["json"]
+unless have_lib['yajl/json_gem'] || have_lib['json']
   raise LoadError, <<-END
 
        You need to require rubygems or install one of these gems:
@@ -26,7 +26,7 @@ unless have_lib["yajl/json_gem"] || have_lib["json"]
   END
 end
 
-require "selenium/webdriver/common"
+require 'selenium/webdriver/common'
 
 module Selenium
   module WebDriver

@@ -1,7 +1,7 @@
 require 'net/http'
 require 'uri'
 require 'cgi'
-require "digest/md5"
+require 'digest/md5'
 require 'fileutils'
 require 'tmpdir'
 

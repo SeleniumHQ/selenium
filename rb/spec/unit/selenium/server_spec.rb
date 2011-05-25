@@ -1,5 +1,5 @@
-require File.expand_path("../webdriver/spec_helper", __FILE__)
-require "selenium/server"
+require File.expand_path('../webdriver/spec_helper', __FILE__)
+require 'selenium/server'
 
 describe Selenium::Server do
   let(:mock_process) { mock(ChildProcess).as_null_object }

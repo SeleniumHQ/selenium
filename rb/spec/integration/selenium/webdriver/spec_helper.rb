@@ -1,19 +1,19 @@
-require "rubygems"
-require "time"
-require "rspec"
-require "ci/reporter/rspec"
+require 'rubygems'
+require 'time'
+require 'rspec'
+require 'ci/reporter/rspec'
 
-require "selenium-webdriver"
-require "selenium/webdriver/support"
+require 'selenium-webdriver'
+require 'selenium/webdriver/support'
 
 include Selenium
 
 if WebDriver::Platform.jruby?
-  require "java"
+  require 'java'
 
   [
-    Dir["build/**/*.jar"],
-    Dir["third_party/java/{jetty,servlet-api}/*.jar"]
+    Dir['build/**/*.jar'],
+    Dir['third_party/java/{jetty,servlet-api}/*.jar']
   ].flatten.each { |jar| require jar }
 
 

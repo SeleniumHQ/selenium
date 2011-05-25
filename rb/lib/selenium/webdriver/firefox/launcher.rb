@@ -50,7 +50,7 @@ module Selenium
         end
 
         def create_profile
-          fetch_profile if @profile.nil?
+          fetch_profile unless @profile
 
           @profile.add_webdriver_extension
           @profile.port = @port
@@ -64,12 +64,14 @@ module Selenium
 
         def start_silent_and_wait
           assert_profile
+
           @binary.start_with @profile, @profile_dir, "-silent"
           @binary.wait
         end
 
         def connect_until_stable
           poller = SocketPoller.new(@host, @port, STABLE_CONNECTION_TIMEOUT)
+
           unless poller.connected?
             @binary.quit
             raise Error::WebDriverError, "unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds (#{@host}:#{@port})"
@@ -79,7 +81,8 @@ module Selenium
         def fetch_profile
           if @profile_name
             @profile = Profile.from_name @profile_name
-            if @profile.nil?
+
+            unless @profile
               raise Error::WebDriverError, "unable to find profile named: #{@profile_name.inspect}"
             end
           else

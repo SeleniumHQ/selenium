@@ -1,6 +1,6 @@
-require "rubygems"
+require 'rubygems'
 require 'rack'
-require "webrick"
+require 'webrick'
 
 # TODO: Use Selenium::WebDriver::SpecSupport::RackServer?
 class SampleApp

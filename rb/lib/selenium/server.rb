@@ -1,6 +1,6 @@
-require "childprocess"
-require "selenium/webdriver/common/socket_poller"
-require "net/http"
+require 'childprocess'
+require 'selenium/webdriver/common/socket_poller'
+require 'net/http'
 
 module Selenium
 

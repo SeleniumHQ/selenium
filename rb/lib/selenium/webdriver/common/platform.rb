@@ -1,5 +1,5 @@
-require "rbconfig"
-require "socket"
+require 'rbconfig'
+require 'socket'
 
 module Selenium
   module WebDriver

@@ -1,5 +1,5 @@
-require "selenium/webdriver/common/platform"
-require "socket"
+require 'selenium/webdriver/common/platform'
+require 'socket'
 
 module Selenium
   module WebDriver
