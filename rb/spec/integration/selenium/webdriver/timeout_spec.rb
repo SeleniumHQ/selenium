@@ -10,7 +10,7 @@ describe "Timeouts" do
   after { driver.manage.timeouts.implicit_wait = 0 }
 
   it "should implicitly wait for a single element" do
-    driver.manage.timeouts.implicit_wait = 1.5
+    driver.manage.timeouts.implicit_wait = 3
 
     driver.find_element(:id => 'adder').click
     driver.find_element(:id => 'box0')
@@ -22,7 +22,7 @@ describe "Timeouts" do
   end
 
   it "should return after first attempt to find one after disabling implicit waits" do
-    driver.manage.timeouts.implicit_wait = 1.5
+    driver.manage.timeouts.implicit_wait = 3
     driver.manage.timeouts.implicit_wait = 0
 
     lambda { driver.find_element(:id => "box0") }.should raise_error(WebDriver::Error::NoSuchElementError)
@@ -46,7 +46,7 @@ describe "Timeouts" do
   it "should return after first attempt to find many after disabling implicit waits" do
     add = driver.find_element(:id => "adder")
 
-    driver.manage.timeouts.implicit_wait = 1.5
+    driver.manage.timeouts.implicit_wait = 3
     driver.manage.timeouts.implicit_wait = 0
     add.click
 
