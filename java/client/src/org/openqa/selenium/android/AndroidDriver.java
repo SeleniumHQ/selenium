@@ -81,7 +81,6 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
     caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
     caps.setCapability(CapabilityType.ROTATABLE, true);
     caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
-    caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
     if (userPrefs != null) {
       caps.merge(userPrefs);
     }
