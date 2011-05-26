@@ -53,12 +53,8 @@ final class WebDriverWebViewClient extends WebViewClient {
   @Override
   public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
     DesiredCapabilities caps = MainActivity.getDesiredCapabilities();
-    boolean shouldAcceptSslCerts = false;
-    try {
-      shouldAcceptSslCerts = (Boolean) caps.getCapability(CapabilityType.ACCEPT_SSL_CERTS);
-    } catch (NullPointerException npe) {
-      // Ignore, we just leave shouldAcceptSslCerts to false
-    }
+    Object cap = caps.getCapability(CapabilityType.ACCEPT_SSL_CERTS);
+    boolean shouldAcceptSslCerts = (cap == null ? false : (Boolean) cap);
     Logger.log(Log.DEBUG, LOG_TAG, "onReceivedSslError: " + error.toString()
         + ", shouldAcceptSslCerts: " + shouldAcceptSslCerts);
 
