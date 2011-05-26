@@ -11,7 +11,7 @@ module Selenium
       #
 
       def implicit_wait=(seconds)
-        @bridge.setImplicitWaitTimeout seconds * 1000
+        @bridge.setImplicitWaitTimeout Integer(seconds * 1000)
       end
 
       #
@@ -21,7 +21,7 @@ module Selenium
       #
 
       def script_timeout=(seconds)
-        @bridge.setScriptTimeout seconds * 1000
+        @bridge.setScriptTimeout Integer(seconds * 1000)
       end
 
     end # Timeouts
