@@ -4,7 +4,7 @@
     <Description about="urn:mozilla:install-manifest">
         <em:id>{a6fd85ed-e919-4a43-a5af-8da18bda539f}</em:id>
         <em:name>Selenium IDE</em:name>
-        <em:version>1.0.11</em:version>
+        <em:version>1.0.12-SNAPSHOT</em:version>
         <em:creator>Shinya Kasatani</em:creator>
         <em:description>Record, edit and play Selenium tests</em:description>
         <em:type>2</em:type>
@@ -12,7 +12,7 @@
         <em:optionsURL>chrome://selenium-ide/content/optionsDialog.xul</em:optionsURL>
         <em:updateURL>https://addons.seleniumhq.org/se-ide/update.rdf</em:updateURL>
         <em:iconURL>chrome://selenium-ide/content/images/selenium-ide-logo32.png</em:iconURL>
-        <em:unpack>false</em:unpack>
+        <em:unpack>true</em:unpack>
 
         <em:targetApplication>
           <Description>
