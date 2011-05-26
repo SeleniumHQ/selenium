@@ -51,8 +51,6 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
 import android.content.Context;
-import android.content.Intent;
-import android.provider.Settings;
 import android.util.Log;
 
 public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, JavascriptExecutor,
@@ -575,15 +573,10 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public boolean isOnline() {
-    return Settings.System.getInt(getContext().getContentResolver(),
-        Settings.System.AIRPLANE_MODE_ON, 0) == 0;
+    return controller.isConnected();
   }
 
   public void setOnline(boolean online) throws WebDriverException {
-    Settings.System.putInt(getContext().getContentResolver(),
-        Settings.System.AIRPLANE_MODE_ON, online ? 0 : 1);
-    Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-    intent.putExtra("state", !online);
-    getContext().sendBroadcast(intent);
+    controller.setConnected(online);
   }
 }
