@@ -35,6 +35,8 @@ public interface CapabilityType {
   String PROXY = "proxy";
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
   String ROTATABLE = "rotatable";
+  // Enable this capability to accept all SSL certs by defaults.
+  String ACCEPT_SSL_CERTS = "acceptSslCerts";
 
   interface ForSeleniumServer {
     String AVOIDING_PROXY = "avoidProxy";

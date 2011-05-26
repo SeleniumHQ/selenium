@@ -55,6 +55,14 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
     super(remoteAddress, getAndroidCapabilities());
   }
 
+  public AndroidDriver(URL url, DesiredCapabilities caps) {
+    super(url, caps);
+  }
+
+  public AndroidDriver(DesiredCapabilities caps) {
+    this(getDefaultUrl(), caps);
+  }
+
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
     String base64Png = execute(DriverCommand.SCREENSHOT).getValue().toString();
     return target.convertFromBase64Png(base64Png);

@@ -25,9 +25,11 @@ import org.openqa.selenium.android.server.handler.GetElementDisplayed;
 import org.openqa.selenium.android.server.handler.GetElementLocation;
 import org.openqa.selenium.android.server.handler.GetElementSize;
 import org.openqa.selenium.android.server.handler.HoverOverElement;
+import org.openqa.selenium.android.server.handler.NewSession;
 import org.openqa.selenium.remote.server.DriverServlet;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.JsonResult;
+import org.openqa.selenium.remote.server.renderer.RedirectResult;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class AndroidDriverServlet extends DriverServlet {
@@ -48,7 +50,8 @@ public class AndroidDriverServlet extends DriverServlet {
           ResultType.SUCCESS, new EmptyResult());
       addNewPostMapping("/session/:sessionId/element/:id/drag", DragElement.class).on(
           ResultType.SUCCESS, new EmptyResult());
-
+      addNewPostMapping("/session", NewSession.class)
+          .on(ResultType.SUCCESS, new RedirectResult("/session/:sessionId"));
     } catch (Exception e) {
       throw new ServletException(e);
     }

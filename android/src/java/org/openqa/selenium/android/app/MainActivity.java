@@ -33,6 +33,7 @@ import org.openqa.selenium.android.events.WebViewAction;
 import org.openqa.selenium.android.server.JettyService;
 import org.openqa.selenium.android.server.WebDriverBinder;
 import org.openqa.selenium.android.sessions.SessionCookieManager;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -86,6 +87,8 @@ public class MainActivity extends Activity {
   
   private IntentFilter mNetworkFilter;
   private BroadcastReceiver mNetworkReceiver;
+
+  private static DesiredCapabilities caps;
   
   private final Handler handler = new Handler() {
     @Override
@@ -114,7 +117,15 @@ public class MainActivity extends Activity {
       }
     }
   };
-  
+
+  public static void setDesiredCapabilities(DesiredCapabilities capabilities) {
+    caps = capabilities;
+  }
+
+  public static DesiredCapabilities getDesiredCapabilities() {
+    return caps;
+  }
+
   private ServiceConnection mConnection = new ServiceConnection() {
     public void onServiceConnected(ComponentName className, IBinder service) {
       bound = true;

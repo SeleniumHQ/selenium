@@ -18,8 +18,14 @@ limitations under the License.
 package org.openqa.selenium.android.app;
 
 import org.openqa.selenium.android.ActivityController;
+import org.openqa.selenium.android.Logger;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import android.graphics.Bitmap;
+import android.net.http.SslError;
+import android.util.Log;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -31,11 +37,38 @@ import android.webkit.WebViewClient;
 final class WebDriverWebViewClient extends WebViewClient {
   private final MainActivity context;
   private final ActivityController controller = ActivityController.getInstance();
+  private final String LOG_TAG = WebDriverWebView.class.getName();
   
   public WebDriverWebViewClient(MainActivity context) {
     this.context = context;
   }
   
+  @Override
+  public void onReceivedError(WebView view, int errorCode, String description,
+      String failingUrl) {
+    Logger.log(Log.DEBUG, LOG_TAG, "onReceiveError: " + description
+        + ", error code: " + errorCode);
+  }
+
+  @Override
+  public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+    DesiredCapabilities caps = MainActivity.getDesiredCapabilities();
+    boolean shouldAcceptSslCerts = false;
+    try {
+      shouldAcceptSslCerts = (Boolean) caps.getCapability(CapabilityType.ACCEPT_SSL_CERTS);
+    } catch (NullPointerException npe) {
+      // Ignore, we just leave shouldAcceptSslCerts to false
+    }
+    Logger.log(Log.DEBUG, LOG_TAG, "onReceivedSslError: " + error.toString()
+        + ", shouldAcceptSslCerts: " + shouldAcceptSslCerts);
+
+    if (shouldAcceptSslCerts) {
+      handler.proceed();
+    } else {
+      super.onReceivedSslError(view, handler, error);
+    }
+  }
+
   @Override
   public void onPageStarted(WebView view, String url, Bitmap favicon) {
     context.setLastUrlLoaded(url);
