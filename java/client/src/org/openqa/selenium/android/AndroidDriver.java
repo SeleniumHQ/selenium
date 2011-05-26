@@ -52,11 +52,11 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
   }
   
   public AndroidDriver(URL remoteAddress) {
-    super(remoteAddress, getAndroidCapabilities());
+    super(remoteAddress, getAndroidCapabilities(null));
   }
 
   public AndroidDriver(URL url, DesiredCapabilities caps) {
-    super(url, caps);
+    super(url, getAndroidCapabilities(caps));
   }
 
   public AndroidDriver(DesiredCapabilities caps) {
@@ -76,11 +76,14 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
     execute(DriverCommand.SET_BROWSER_ONLINE, ImmutableMap.of("state", online));
   }
 
-  private static DesiredCapabilities getAndroidCapabilities() {
+  private static DesiredCapabilities getAndroidCapabilities(DesiredCapabilities userPrefs) {
     DesiredCapabilities caps = DesiredCapabilities.android();
     caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
     caps.setCapability(CapabilityType.ROTATABLE, true);
     caps.setCapability(CapabilityType.SUPPORTS_BROWSER_CONNECTION, true);
+    if (userPrefs != null) {
+      caps.merge(userPrefs);
+    }
     return caps;
   }
 
