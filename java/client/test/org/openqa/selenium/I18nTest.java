@@ -86,7 +86,7 @@ public class I18nTest extends AbstractDriverTestCase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT}, reason="Not implemented on anything other than"
+  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, FIREFOX}, reason="Not implemented on anything other than"
       + "Firefox/Linux at the moment.")
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
     if (!Platform.getCurrent().is(Platform.LINUX)) {

@@ -223,7 +223,7 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
                          :type => "java",
                          :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
 
-gecko_sdk = "third_party/gecko-1.9.0.11/linux/"
+gecko_sdk = "third_party/gecko-2/linux/"
 
 dll(:name => "libwebdriver_firefox_so",
     :src  => FileList.new('cpp/webdriver-interactions/*_linux*.cpp') +
@@ -231,7 +231,7 @@ dll(:name => "libwebdriver_firefox_so",
              FileList.new('cpp/webdriver-firefox/*.cpp'),
     :arch => "i386",
     :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I cpp/webdriver-interactions -I cpp/imehandler/common -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
-    :link_args => "-Wall -fno-rtti -fno-exceptions -shared  -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt `pkg-config gtk+-2.0 --libs`",
+    :link_args => "-Wall -fno-rtti -fno-exceptions -shared  -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s_nomozalloc -lxpcom -lnspr4 -lrt `pkg-config gtk+-2.0 --libs`",
     :prebuilt => "cpp/prebuilt/i386/libwebdriver-firefox.so",
     :out  => "cpp/i386/libwebdriver-firefox.so")
 

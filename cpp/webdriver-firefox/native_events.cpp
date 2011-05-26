@@ -1,13 +1,18 @@
 #include "build_environment.h"
-#ifdef BUILD_ON_UNIX
-#include <xpcom-config.h>
+
+#ifndef BUILD_ON_UNIX
+#define MOZ_NO_MOZALLOC
+#include <mozilla-config.h>
 #endif
+
+#include <xpcom-config.h>
+
 #include "errorcodes.h"
 #include "interactions.h"
 #include "logging.h"
 #include "native_events.h"
 #include "library_loading.h"
-#include "nsIGenericFactory.h"
+#include "mozilla/ModuleUtils.h"
 #include "nsIComponentManager.h"
 #include "nsComponentManagerUtils.h"
 #include <assert.h>
@@ -353,14 +358,26 @@ NS_IMETHODIMP nsNativeEvents::ImeGetAvailableEngines(nsIArray **enginesList)
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsNativeEvents)
 
-static nsModuleComponentInfo components[] =
-{
-    {
-       EVENTS_CLASSNAME, 
-       EVENTS_CID,
-       EVENTS_CONTRACTID,
-       nsNativeEventsConstructor,
-    }
+NS_DEFINE_NAMED_CID(EVENTS_CID);
+
+static const mozilla::Module::CIDEntry kNativeEventsCIDs[] = {
+  { &kEVENTS_CID, false, NULL, nsNativeEventsConstructor },
+  { NULL }
 };
 
-NS_IMPL_NSGETMODULE("NativeEventsModule", components) 
+static const mozilla::Module::ContractIDEntry kNativeEventsContracts[] = {
+  { EVENTS_CONTRACTID, &kEVENTS_CID },
+  { NULL }
+};
+
+static const mozilla::Module kNativeEventsModule = {
+  mozilla::Module::kVersion,
+  kNativeEventsCIDs,
+  kNativeEventsContracts,
+  NULL
+};
+
+NSMODULE_DEFN(nsNativeEvents) = &kNativeEventsModule;
+
+NS_IMPL_MOZILLA192_NSGETMODULE(&kNativeEventsModule)
+

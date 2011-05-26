@@ -87,7 +87,7 @@ class Compile < BaseXpt
     file xpt do
       puts "Building: #{task_name(dir, args[:name])} as #{xpt}"
 
-      gecko = %w[third_party gecko-1.9.0.11]
+      gecko = %w[third_party gecko-2]
       if windows?
         gecko << "win32"
       elsif linux?
