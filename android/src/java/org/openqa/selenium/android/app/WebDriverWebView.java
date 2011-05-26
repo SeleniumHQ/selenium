@@ -130,7 +130,7 @@ public class WebDriverWebView extends WebView {
     settings.setSupportMultipleWindows(true);
     settings.setBuiltInZoomControls(true);
     settings.setJavaScriptEnabled(true);
-/*    settings.setAppCacheEnabled(true);
+    /*settings.setAppCacheEnabled(true);
     settings.setAppCacheMaxSize(10*1024*1024);
     settings.setAppCachePath("");*/
     settings.setDatabaseEnabled(true);

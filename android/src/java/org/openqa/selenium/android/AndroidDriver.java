@@ -43,6 +43,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.android.util.JsUtil;
 import org.openqa.selenium.android.util.SimpleTimer;
 import org.openqa.selenium.html5.BrowserConnection;
+import org.openqa.selenium.html5.Location;
+import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -51,13 +53,11 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
 import android.content.Context;
-import android.content.Intent;
-import android.provider.Settings;
 import android.util.Log;
 
 public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByName, FindsByXPath, TakesScreenshot,
-    Rotatable, BrowserConnection {
+    Rotatable, BrowserConnection, LocationContext {
 
   public static final String LOG_TAG = AndroidDriver.class.getName();
   
@@ -575,15 +575,10 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   public boolean isOnline() {
-    return Settings.System.getInt(getContext().getContentResolver(),
-        Settings.System.AIRPLANE_MODE_ON, 0) == 0;
+    return controller.isConnected();
   }
 
   public void setOnline(boolean online) throws WebDriverException {
-    Settings.System.putInt(getContext().getContentResolver(),
-        Settings.System.AIRPLANE_MODE_ON, online ? 0 : 1);
-    Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-    intent.putExtra("state", !online);
-    getContext().sendBroadcast(intent);
+    controller.setConnected(online);
   }
 }

@@ -23,9 +23,9 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.android.app.MainActivity;
 import org.openqa.selenium.android.app.WebDriverWebView;
+import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class ActivityController {
@@ -316,5 +316,17 @@ public class ActivityController {
   
   public void setCapabilities(DesiredCapabilities caps) {
     MainActivity.setDesiredCapabilities(caps);
+  }
+  
+  public boolean isConnected() {
+    synchronized (syncObject) {
+      return activity.isConnected();  
+    }
+  }
+  
+  public void setConnected(boolean connected) {
+    synchronized (syncObject) {
+      activity.setConnected(connected); 
+    }
   }
 }
