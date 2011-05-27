@@ -273,11 +273,11 @@ WD_RESULT mouseMoveTo(WINDOW_HANDLE windowHandle, long duration, long fromX, lon
   LOG(DEBUG) << "From: (" << fromX << ", " << fromY << ") to: (" << toX << ", " << toY << ")";
   LOG(DEBUG) << "Distance: " << pointsDistance << " steps: " << steps;
 
-  for (int i = 0; i < steps + 1; ++i) {
+  for (int i = 0;i < steps + 1; ++i) {
     //To avoid integer division rounding and cumulative floating point errors,
     //calculate from scratch each time
-    int currentX = fromX + ((toX - fromX) * ((double)i) / steps);
-    int currentY = fromY + ((toY - fromY) * ((double)i) / steps);
+    int currentX = fromX + ((toX - fromX) * ((double)i) / max(steps, 1));
+    int currentY = fromY + ((toY - fromY) * ((double)i) / max(steps, 1));
     LOG(DEBUG) << "Moving to: (" << currentX << ", " << currentY << ")";
     list<GdkEvent*> events_for_mouse = mousep_handler.CreateEventsForMouseMove(currentX, currentY);
     submit_and_free_events_list(events_for_mouse, timePerEvent);
