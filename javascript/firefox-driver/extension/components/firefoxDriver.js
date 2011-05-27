@@ -1037,15 +1037,65 @@ FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
   respond.send();
 };
 
+function getElementFromLocation(mouseLocation, doc) {
+  var elementForNode = null;
+
+  var locationX = Math.round(mouseLocation.x);
+  var locationY = Math.round(mouseLocation.y);
+
+  if ((locationX != 0) || (locationY != 0)) {
+    Logger.dumpn("Getting element from coordinates " + locationX + "," + locationY);
+    elementForNode = doc.elementFromPoint(locationX, locationY);
+  } else {
+    Logger.dumpn("currentX,Y are zero - using body");
+    elementForNode = doc.getElementsByTagName("body")[0];
+  }
+
+  return webdriver.firefox.utils.unwrap(elementForNode);
+  //return elementForNode;
+}
+
+function generateErrorForNativeEvents(nativeEventsEnabled, nativeEventsObj, nodeForInteraction) {
+  var nativeEventFailureCause = "Could not get node for element or native " +
+      "events are not supported on the platform.";
+  if (! nativeEventsEnabled) {
+    nativeEventFailureCause = "native events are disabled on this platform.";
+  } else if (! nativeEventsObj) {
+    nativeEventFailureCause = "Could not load native events component.";
+  } else {
+    nativeEventFailureCause = "Could not get node for element - cannot interact.";
+  }
+ // TODO: use the correct error type here.
+  return new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+      "Cannot perform native interaction: " + nativeEventFailureCause);
+}
+
+function getBrowserSpecificOffset(inBrowser) {
+    // In Firefox 4, there's a shared window handle. We need to calculate an offset
+    // to add to the x and y locations.
+    var browserSpecificXOffset = 0;
+    var browserSpecificYOffset = 0;
+    var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
+        getService(Components.interfaces.nsIXULAppInfo);
+    var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
+        getService(Components.interfaces.nsIVersionComparator);
+    if (versionChecker.compare(appInfo.version, '4') >= 0) {
+      var rect = inBrowser.getBoundingClientRect();
+      browserSpecificYOffset += rect.top;
+      browserSpecificXOffset += rect.left;
+      Logger.dumpn("Browser-specific offset (X,Y): " + browserSpecificXOffset
+          + ", " + browserSpecificYOffset);
+    }
+
+  return {x: browserSpecificXOffset, y: browserSpecificYOffset};
+}
+
 FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   var doc = respond.session.getDocument();
   var coords = webdriver.firefox.events.buildCoordinates(parameters, doc);
 
   var mouseMoveTo = function(coordinates, nativeEventsEnabled) {
-    var toX = this.currentX;
-    var toY = this.currentY;
     var elementForNode = null;
-    var shouldAddBrowserOffset = true;
 
     if (coordinates.auxiliary) {
       var element = webdriver.firefox.utils.unwrap(coordinates.auxiliary);
@@ -1057,65 +1107,33 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
       elementForNode = element;
     } else {
-      if (goog.isDef(this.currentX) && goog.isDef(this.currentY)) {
-        Logger.dumpn("Getting element from coordinates " + this.currentX + "," + this.currentY);
-        elementForNode = doc.elementFromPoint(this.currentX, this.currentY);
-        shouldAddBrowserOffset = false;
-      } else {
-        this.currentX = 0;
-        this.currentY = 0;
-        Logger.dumpn("currentX,Y not defined - using body");
-        elementForNode = doc.getElementsByTagName("body")[0];
-      }
+      elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
+      var mousePosition = respond.session.getMousePosition();
 
-      toX = this.currentX + coordinates.x;
-      toY = this.currentY + coordinates.y;
+      toX = mousePosition.x + coordinates.x;
+      toY = mousePosition.y + coordinates.y;
     }
 
-
-
-    // In Firefox 4, there's a shared window handle. We need to calculate an offset
-    // to add to the x and y locations.
-    var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
-        getService(Components.interfaces.nsIXULAppInfo);
-    var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
-        getService(Components.interfaces.nsIVersionComparator);
-    if (versionChecker.compare(appInfo.version, '4') >= 0) {
-      var rect = respond.session.getBrowser().getBoundingClientRect();
-      if (shouldAddBrowserOffset) {
-        toY += rect.top;
-        toX += rect.left;
-        Logger.dumpn("Adding when calling moveTo: new X,Y: " + toX + ", " + toY);
-      }
-    }
-
-
+    var browserOffset = getBrowserSpecificOffset(respond.session.getBrowser());
 
     var events = Utils.getNativeEvents();
     var node = Utils.getNodeForNativeEvents(elementForNode);
 
     if (nativeEventsEnabled && events && node) {
-      if (!goog.isDef(this.currentX)) {
-        this.currentX = 0;
-      }
+      var currentPosition = respond.session.getMousePosition();
+      events.mouseMove(node,
+          currentPosition.x + browserOffset.x, currentPosition.y + browserOffset.y,
+          toX + browserOffset.x, toY + browserOffset.y);
 
-      if (!goog.isDef(this.currentY)) {
-        this.currentY = 0;
-      }
+      var dummyIndicator = {
+        wasUnloaded: false
+      };
 
-      events.mouseMove(node, this.currentX, this.currentY, toX, toY);
+      Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator);
 
-      this.currentX = toX;
-      this.currentY = toY;
+      respond.session.setMousePosition(toX, toY);
     } else {
-      var hoverFailureCause = "Could not get node for element or native " +
-          "events are not supported on the platform.";
-      if (nativeEventsEnabled) {
-        hoverFailureCause = "native events are disabled on this platform.";
-      }
-      // TODO: use the correct error type here.
-      throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
-          "Cannot hover over element: " + hoverFailureCause);
+      throw generateErrorForNativeEvents(nativeEventsEnabled, events, node);
     }
 
   };
@@ -1124,3 +1142,83 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
   respond.send();
 };
+
+FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
+  var doc = respond.session.getDocument();
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);;
+
+  var events = Utils.getNativeEvents();
+  var node = Utils.getNodeForNativeEvents(elementForNode);
+
+  if (this.enableNativeEvents && events && node) {
+    var currentPosition = respond.session.getMousePosition();
+    var browserOffset = getBrowserSpecificOffset(respond.session.getBrowser());
+
+    events.mousePress(node, currentPosition.x + browserOffset.x,
+        currentPosition.y + browserOffset.y, 1);
+
+    var dummyIndicator = {
+      wasUnloaded: false
+    };
+
+    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator);
+
+  } else {
+    throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
+  }
+
+  respond.send();
+}
+
+FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
+  var doc = respond.session.getDocument();
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);;
+
+  var events = Utils.getNativeEvents();
+  var node = Utils.getNodeForNativeEvents(elementForNode);
+
+  if (this.enableNativeEvents && events && node) {
+    var currentPosition = respond.session.getMousePosition();
+    var browserOffset = getBrowserSpecificOffset(respond.session.getBrowser());
+
+    events.mouseRelease(node, currentPosition.x + browserOffset.x,
+        currentPosition.y + browserOffset.y, 1);
+
+    var dummyIndicator = {
+      wasUnloaded: false
+    };
+
+    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator);
+  } else {
+    throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
+  }
+
+  respond.send();
+}
+
+FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
+  var doc = respond.session.getDocument();
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);;
+
+  var events = Utils.getNativeEvents();
+  var node = Utils.getNodeForNativeEvents(elementForNode);
+
+  if (this.enableNativeEvents && events && node) {
+    var currentPosition = respond.session.getMousePosition();
+    var browserOffset = getBrowserSpecificOffset(respond.session.getBrowser());
+
+    events.click(node, node, currentPosition.x + browserOffset.x,
+        currentPosition.y + browserOffset.y, 1);
+
+    var dummyIndicator = {
+      wasUnloaded: false
+    };
+
+    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator);
+
+  } else {
+    throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
+  }
+
+  respond.send();
+}

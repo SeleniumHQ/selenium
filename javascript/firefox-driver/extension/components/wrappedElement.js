@@ -87,13 +87,15 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
     }
 
     try {
-      nativeEvents.mouseMove(node, this.currentX, this.currentY, x, y);
+      var currentPosition = respond.session.getMousePosition();
+
+      nativeEvents.mouseMove(node, currentPosition.x, currentPosition.y, x, y);
 
       var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(element);
 
       nativeEvents.click(node, x, y, 1);
-      this.currentX = x;
-      this.currentY = y;
+
+      respond.session.setMousePosition(x, y);
 
       Utils.waitForNativeEventsProcessing(element, nativeEvents, pageUnloadedIndicator);
 
@@ -270,9 +272,10 @@ FirefoxDriver.prototype.hoverOverElement = function(respond, parameters) {
     var x = loc.x + (loc.width ? loc.width / 2 : 0);
     var y = loc.y + (loc.height ? loc.height / 2 : 0);
 
-    events.mouseMove(node, this.currentX, this.currentY, x, y);
-    this.currentX = x;
-    this.currentY = y;
+    var currentPosition = respond.session.getMousePosition();
+
+    events.mouseMove(node, currentPosition.x, currentPosition.y, x, y);
+    respond.session.setMousePosition(x, y);
   } else {
     // TODO: use the correct error type here.
     throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,

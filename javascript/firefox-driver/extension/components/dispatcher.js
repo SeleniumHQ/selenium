@@ -275,6 +275,13 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.POST, Dispatcher.executeAs('clickElement'));
   this.bind_('/session/:sessionId/moveto').
       on(Request.Method.POST, Dispatcher.executeAs('mouseMove'));
+  this.bind_('/session/:sessionId/buttondown').
+      on(Request.Method.POST, Dispatcher.executeAs('mouseDown'));
+  this.bind_('/session/:sessionId/buttonup').
+      on(Request.Method.POST, Dispatcher.executeAs('mouseUp'));
+  this.bind_('/session/:sessionId/click').
+      on(Request.Method.POST, Dispatcher.executeAs('mouseClick'));
+
 
   // --------------------------------------------------------------------------
   // Firefox extensions to the wire protocol.
