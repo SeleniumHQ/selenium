@@ -149,7 +149,9 @@ public class Hub {
 
 			root.addServlet("/grid/console/*", ConsoleServlet.class.getName());
 			root.addServlet("/grid/register/*", RegistrationServlet.class.getName());
+			// TODO remove at some point. Here for backward compatibility of tests etc.
 			root.addServlet("/grid/driver/*", DriverServlet.class.getName());
+			root.addServlet("/wd/hub/*", DriverServlet.class.getName());
 			root.addServlet("/selenium-server/driver/*", DriverServlet.class.getName());
 			root.addServlet("/grid/resources/*", ResourceServlet.class.getName());
 
