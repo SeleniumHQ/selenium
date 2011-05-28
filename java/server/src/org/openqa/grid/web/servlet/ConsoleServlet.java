@@ -19,16 +19,18 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.io.ByteStreams;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+
+import com.google.common.io.ByteStreams;
 
 /**
  * Front end to monitor what is currently happening on the proxies. The display
@@ -40,13 +42,17 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 public class ConsoleServlet extends RegistryBasedServlet {
 
 	private static final long serialVersionUID = 8484071790930378855L;
+	private static final Logger log = Logger.getLogger(ConsoleServlet.class.getName());
+	private static String coreVersion;
+	private static String coreRevision;
 
 	public ConsoleServlet() {
-    this(null);
+		this(null);
 	}
 
 	public ConsoleServlet(Registry registry) {
-    super(registry);
+		super(registry);
+		getVersion();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -76,8 +82,11 @@ public class ConsoleServlet extends RegistryBasedServlet {
 		builder.append("}");
 		builder.append("</style>");
 		builder.append("</head>");
+		
 		builder.append("<body>");
-		builder.append("<H1>Grid 2.0 Hub</H1>");
+		builder.append("<H1>Grid Hub ");
+		builder.append(coreVersion + "[" + coreRevision+"]");
+		builder.append("</H1>");
 
 		for (RemoteProxy proxy : getRegistry().getAllProxies()) {
 			builder.append(proxy.getHtmlRender().renderSummary());
@@ -85,7 +94,9 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
 		List<RequestHandler> l = getRegistry().getNewSessionRequests();
 
-		builder.append(l.size() + " requests waiting for a slot to be free.");
+		if (l.size() != 0) {
+			builder.append(l.size() + " requests waiting for a slot to be free.");
+		}
 
 		builder.append("<ul>");
 		for (RequestHandler req : l) {
@@ -104,4 +115,25 @@ public class ConsoleServlet extends RegistryBasedServlet {
 			response.getOutputStream().close();
 		}
 	}
+
+	private void getVersion() {
+		final Properties p = new Properties();
+
+		InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("VERSION.txt");
+		if (stream == null) {
+			log.severe("Couldn't determine version number");
+			return;
+		}
+		try {
+			p.load(stream);
+		} catch (IOException e) {
+			log.severe("Cannot load version from VERSION.txt" + e.getMessage());
+		}
+		coreVersion = p.getProperty("selenium.core.version");
+		coreRevision = p.getProperty("selenium.core.revision");
+		if (coreVersion==null){
+			log.severe("Cannot load selenium.core.version from VERSION.txt" );
+		}
+	}
+
 }
