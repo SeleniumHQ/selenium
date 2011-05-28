@@ -7,10 +7,11 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.RemoteProxy;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
 
 
 public class RemoteProxyInheritanceTest {
@@ -29,7 +30,7 @@ public class RemoteProxyInheritanceTest {
 
 		// requires Custom1 & Custom1 set in config to work.
 		RemoteProxy p = RemoteProxy.getNewInstance(req);
-		Assert.assertEquals(p.getClass(), RemoteProxy.class);
+		Assert.assertEquals( RemoteProxy.class,p.getClass());
 	}
 	
 	
@@ -52,14 +53,14 @@ public class RemoteProxyInheritanceTest {
 
 		Assert.assertEquals(p.getClass(), MyRemoteProxy.class);
 		MyRemoteProxy myRemoteProxy = (MyRemoteProxy) p;
-		Assert.assertEquals(myRemoteProxy.getCustom1(), "A");
-		Assert.assertEquals(myRemoteProxy.getCustom2(), "B");
-		Assert.assertEquals(myRemoteProxy.getConfig().get("Custom1"), "A");
-		Assert.assertEquals(myRemoteProxy.getConfig().get("Custom2"), "B");
+		Assert.assertEquals("A",myRemoteProxy.getCustom1());
+		Assert.assertEquals("B",myRemoteProxy.getCustom2() );
+		Assert.assertEquals("A",myRemoteProxy.getConfig().get("Custom1"));
+		Assert.assertEquals("B",myRemoteProxy.getConfig().get("Custom2"));
 
 	}
 	
-	@Test(expectedExceptions=InvalidParameterException.class)
+	@Test(expected=InvalidParameterException.class)
 	public void notExisting() {
 		RegistrationRequest req = new RegistrationRequest();
 		Map<String, Object> app1 = new HashMap<String, Object>();
@@ -74,7 +75,7 @@ public class RemoteProxyInheritanceTest {
 		RemoteProxy.getNewInstance(req);
 	}
 	
-	@Test(expectedExceptions=InvalidParameterException.class)
+	@Test(expected=InvalidParameterException.class)
 	public void notExtendingProxyExisting() {
 		RegistrationRequest req = new RegistrationRequest();
 		Map<String, Object> app1 = new HashMap<String, Object>();
@@ -91,7 +92,7 @@ public class RemoteProxyInheritanceTest {
 	}
 	
 	// when some mandatory param are missing -> InvalidParameterException
-	@Test(expectedExceptions=InvalidParameterException.class)
+	@Test(expected=InvalidParameterException.class)
 	public void badConfig() {
 		RegistrationRequest req = new RegistrationRequest();
 		Map<String, Object> app1 = new HashMap<String, Object>();
