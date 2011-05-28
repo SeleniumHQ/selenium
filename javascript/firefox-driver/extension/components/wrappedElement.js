@@ -76,12 +76,6 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
       var offX = element.ownerDocument.defaultView.mozInnerScreenX - ultimateParent.mozInnerScreenX;
       var offY = element.ownerDocument.defaultView.mozInnerScreenY - ultimateParent.mozInnerScreenY;
 
-      if (versionChecker.compare(appInfo.version, '4') >= 0) {
-        var rect = respond.session.getBrowser().getBoundingClientRect();
-        offY += rect.top;
-        offX += rect.left;
-      }
-
       x += offX;
       y += offY;
     }
@@ -89,11 +83,17 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
     try {
       var currentPosition = respond.session.getMousePosition();
 
-      nativeEvents.mouseMove(node, currentPosition.x, currentPosition.y, x, y);
+      var browserOffset = this.getBrowserSpecificOffset_(respond.session.getBrowser());
+
+      var adjustedX = x + browserOffset.x;
+      var adjustedY = y + browserOffset.y;
+
+      nativeEvents.mouseMove(node, currentPosition.x + browserOffset.x,
+          currentPosition.y + browserOffset.y, adjustedX, adjustedY);
 
       var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(element);
 
-      nativeEvents.click(node, x, y, 1);
+      nativeEvents.click(node, adjustedX, adjustedY, 1);
 
       respond.session.setMousePosition(x, y);
 

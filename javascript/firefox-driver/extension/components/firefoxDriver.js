@@ -1070,7 +1070,7 @@ function generateErrorForNativeEvents(nativeEventsEnabled, nativeEventsObj, node
       "Cannot perform native interaction: " + nativeEventFailureCause);
 }
 
-function getBrowserSpecificOffset(inBrowser) {
+getBrowserSpecificOffset_ = function(inBrowser) {
     // In Firefox 4, there's a shared window handle. We need to calculate an offset
     // to add to the x and y locations.
     var browserSpecificXOffset = 0;
@@ -1088,6 +1088,11 @@ function getBrowserSpecificOffset(inBrowser) {
     }
 
   return {x: browserSpecificXOffset, y: browserSpecificYOffset};
+}
+
+//TODO: figure out why this.getBrowserSpecificOffset_ cannot be used in mouseMove
+FirefoxDriver.prototype.getBrowserSpecificOffset_ = function(inBrowser) {
+  return getBrowserSpecificOffset_(inBrowser);
 }
 
 FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
@@ -1114,7 +1119,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
       toY = mousePosition.y + coordinates.y;
     }
 
-    var browserOffset = getBrowserSpecificOffset(respond.session.getBrowser());
+    var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
     var events = Utils.getNativeEvents();
     var node = Utils.getNodeForNativeEvents(elementForNode);
@@ -1152,7 +1157,7 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
 
   if (this.enableNativeEvents && events && node) {
     var currentPosition = respond.session.getMousePosition();
-    var browserOffset = getBrowserSpecificOffset(respond.session.getBrowser());
+    var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
     events.mousePress(node, currentPosition.x + browserOffset.x,
         currentPosition.y + browserOffset.y, 1);
@@ -1179,7 +1184,7 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
 
   if (this.enableNativeEvents && events && node) {
     var currentPosition = respond.session.getMousePosition();
-    var browserOffset = getBrowserSpecificOffset(respond.session.getBrowser());
+    var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
     events.mouseRelease(node, currentPosition.x + browserOffset.x,
         currentPosition.y + browserOffset.y, 1);
@@ -1205,7 +1210,7 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
 
   if (this.enableNativeEvents && events && node) {
     var currentPosition = respond.session.getMousePosition();
-    var browserOffset = getBrowserSpecificOffset(respond.session.getBrowser());
+    var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
     events.click(node, node, currentPosition.x + browserOffset.x,
         currentPosition.y + browserOffset.y, 1);
