@@ -188,7 +188,7 @@ public class GridConfiguration {
 		return role;
 	}
 
-	public int getPort2() {
+	public int getPort() {
 		return port;
 	}
 

@@ -227,6 +227,8 @@ public class Hub {
 		}
 	}
 
+	
+	
 	/**
 	 * Configure the hub based on the parameter passed at launch.
 	 * 
@@ -243,6 +245,10 @@ public class Hub {
 				addServlet(path, servletClass);
 			}
 		}
+	}
+
+	public void setPort(int port) {
+		this.port = port;
 	}
 
 }
