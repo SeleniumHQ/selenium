@@ -194,14 +194,20 @@ public class TestSlot {
 			return;
 		}
 
-		// forceRelease doesn't check anything and wll set currentSession to null.
+		// forceRelease doesn't check anything and wll set currentSession to
+		// null.
 		String internalKey = currentSession == null ? null : currentSession.getInternalKey();
 
-		// release resources on the test slot.
-		finishReleaseProcess();
+		try {
+			proxy.getRegistry().getLock().lock();
+			// release resources on the test slot.
+			finishReleaseProcess();
+			// update the registry.
+			proxy.getRegistry().release(internalKey);
+		} finally {
+			proxy.getRegistry().getLock().unlock();
+		}
 
-		// update the registry.
-		proxy.getRegistry().release(internalKey);
 	}
 
 	/**
@@ -215,7 +221,7 @@ public class TestSlot {
 		String internalKey = currentSession.getInternalKey();
 		currentSession = null;
 		proxy.getRegistry().release(internalKey);
-		
+
 	}
 
 	/**
