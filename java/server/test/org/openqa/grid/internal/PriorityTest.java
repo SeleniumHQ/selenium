@@ -7,22 +7,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
-@Test(timeOut=10000)
+
 public class PriorityTest {
 
-	private Registry registry = Registry.getNewInstanceForTestOnly();
+	private static Registry registry;
 
 	// priority rule : the request with the highest priority goes first.
-	private Prioritizer highestNumberHasPriority = new Prioritizer() {
+	private static Prioritizer highestNumberHasPriority = new Prioritizer() {
 		public int compareTo(Map<String, Object> a, Map<String, Object> b) {
 			int priorityA = Integer.parseInt(a.get("_priority").toString());
 			int priorityB = Integer.parseInt(b.get("_priority").toString());
@@ -30,23 +30,24 @@ public class PriorityTest {
 		}
 	};
 
-	Map<String, Object> ff = new HashMap<String, Object>();
-	RemoteProxy p1;
+	static Map<String, Object> ff = new HashMap<String, Object>();
+	static RemoteProxy p1;
 
-	MockedNewSessionRequestHandler newSessionRequest1;
-	MockedNewSessionRequestHandler newSessionRequest2;
-	MockedNewSessionRequestHandler newSessionRequest3;
-	MockedNewSessionRequestHandler newSessionRequest4;
-	MockedNewSessionRequestHandler newSessionRequest5;
+	static MockedNewSessionRequestHandler newSessionRequest1;
+	static MockedNewSessionRequestHandler newSessionRequest2;
+	static MockedNewSessionRequestHandler newSessionRequest3;
+	static MockedNewSessionRequestHandler newSessionRequest4;
+	static MockedNewSessionRequestHandler newSessionRequest5;
 
-	List<MockedRequestHandler> requests = new ArrayList<MockedRequestHandler>();
+	static List<MockedRequestHandler> requests = new ArrayList<MockedRequestHandler>();
 
 	/**
 	 * create a hub with 1 FF
+	 * @throws InterruptedException 
 	 */
-	@BeforeClass(alwaysRun = true)
-	public void setup() {
-
+	@BeforeClass
+	public static void setup() throws InterruptedException {
+		registry = Registry.getNewInstanceForTestOnly();
 		registry.setPrioritizer(highestNumberHasPriority);
 		ff.put(APP, "FF");
 		p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444");
@@ -84,24 +85,14 @@ public class PriorityTest {
 		requests.add(newSessionRequest5);
 		requests.add(newSessionRequest3);
 		requests.add(newSessionRequest4);
-
-	}
-
-	TestSession session = null;
-
-	// use all the spots ( so 1 ) of the grid so that a queue buils up
-	@Test
-	public void useAllProxies() {
+		
 		MockedRequestHandler newSessionRequest = new MockedRequestHandler(registry);
 		newSessionRequest.setRequestType(RequestType.START_SESSION);
 		newSessionRequest.setDesiredCapabilities(ff);
 		newSessionRequest.process();
-		session = newSessionRequest.getTestSession();
-	}
-
-	// fill the queue with 5 requests.
-	@Test(dependsOnMethods = "useAllProxies")
-	public void queueSomeMore() {
+		TestSession session = newSessionRequest.getTestSession();
+	
+		// fill the queue with 5 requests.
 		for (MockedRequestHandler h : requests) {
 			final MockedRequestHandler req = h;
 			new Thread(new Runnable() {
@@ -110,29 +101,31 @@ public class PriorityTest {
 				}
 			}).start();
 		}
-	}
-
-	// free the grid : the queue is consumed, and the test with the highest
-	// priority should be processed.
-	@Test(dependsOnMethods = "queueSomeMore",timeOut = 10000)
-	public void releaseTheSessionBlockingTheGrid() throws InterruptedException {
+		
 		while (registry.getNewSessionRequests().size() != 5) {
 			Thread.sleep(100);
 		}
+		
+		// free the grid : the queue is consumed, and the test with the highest
+		// priority should be processed.
 		session.terminateSyncronousFOR_TEST_ONLY();
 
 	}
 
+	
+
+	
+
 	// validate that the one with priority 5 has been assigned a proxy
-	@Test(dependsOnMethods = "releaseTheSessionBlockingTheGrid")
+	@Test
 	public void validate() throws InterruptedException {
 		Thread.sleep(250);
 		Assert.assertNotNull(newSessionRequest5.getTestSession());
 	}
 	
 	
-	@AfterClass(alwaysRun=true)
-	public void teardown(){
+	@AfterClass
+	public static void teardown(){
 		registry.stop();
 	}
 

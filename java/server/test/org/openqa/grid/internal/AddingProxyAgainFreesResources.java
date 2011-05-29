@@ -22,7 +22,7 @@ import org.openqa.grid.web.servlet.handler.RequestType;
  */
 public class AddingProxyAgainFreesResources {
 
-	private static Registry registry = Registry.getNewInstanceForTestOnly();
+	private static Registry registry;
 
 	private static Map<String, Object> ff = new HashMap<String, Object>();
 	private static RemoteProxy p1;
@@ -36,7 +36,7 @@ public class AddingProxyAgainFreesResources {
 	 */
 	@BeforeClass
 	public static void setup() throws InterruptedException {
-
+		registry = Registry.getNewInstanceForTestOnly();
 		ff.put(APP, "FF");
 		p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444");
 		registry.add(p1);
@@ -71,8 +71,9 @@ public class AddingProxyAgainFreesResources {
 		
 	}
 
-	@Test
+	@Test(timeout=1000)
 	public void validateRequest2isNowRunningOnTheNode() throws InterruptedException {
+		Thread.sleep(250);
 		Assert.assertNotNull(request.getTestSession());
 	}
 

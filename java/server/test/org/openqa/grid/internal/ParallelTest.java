@@ -10,25 +10,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.testng.internal.thread.ThreadTimeoutException;
 
-@Test(singleThreaded = true,timeOut=10000)
 public class ParallelTest {
 
-	RemoteProxy p1 = null;
-	RegistrationRequest req = null;
-	Map<String, Object> app1 = new HashMap<String, Object>();
-	Map<String, Object> app2 = new HashMap<String, Object>();
+	static RegistrationRequest req = null;
+	static Map<String, Object> app1 = new HashMap<String, Object>();
+	static Map<String, Object> app2 = new HashMap<String, Object>();
 
-	@BeforeClass(alwaysRun = true)
-	public void prepareReqRequest() {
+	/**
+	 * a proxy than can host up to 5 tests at the same time. - of type app1 (
+	 * max 5 tests at the same time ) could be Firefox for instance - of type
+	 * app2 ( max 1 test ) could be IE
+	 */
+	@BeforeClass
+	public static void prepareReqRequest() {
 
 		Map<String, Object> config = new HashMap<String, Object>();
 		app1.put(APP, "app1");
@@ -46,19 +47,10 @@ public class ParallelTest {
 		req.setConfiguration(config);
 	}
 
-	/**
-	 * create and register a proxy than can host up to 5 tests at the same time.
-	 * - of type app1 ( max 5 tests at the same time ) could be Firefox for
-	 * instance - of type app2 ( max 1 test ) could be IE
-	 */
-	@BeforeMethod(alwaysRun = true)
-	public void prepareProxy() {
-		p1 = new RemoteProxy(req);
-	}
-
 	@Test
 	public void canGetApp2() throws InterruptedException {
 		Registry registry = Registry.getNewInstanceForTestOnly();
+		RemoteProxy p1 = new RemoteProxy(req);
 		try {
 			registry.add(p1);
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
@@ -69,18 +61,34 @@ public class ParallelTest {
 
 	}
 
+	static boolean started = false;
+	static boolean processed = false;
+
 	/**
 	 * cannot reserve 2 app2
+	 * 
+	 * @throws InterruptedException
 	 */
-	@Test(timeOut = 1000, expectedExceptions = ThreadTimeoutException.class)
-	public void cannotGet2App2() {
-		Registry registry = Registry.getNewInstanceForTestOnly();
+	@Test
+	public void cannotGet2App2() throws InterruptedException {
+		final Registry registry = Registry.getNewInstanceForTestOnly();
+		RemoteProxy p1 = new RemoteProxy(req);
 		try {
 			registry.add(p1);
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
 			newSessionRequest.process();
-			MockedRequestHandler newSessionRequest2 = new MockedNewSessionRequestHandler(registry, app2);
-			newSessionRequest2.process();
+			new Thread(new Runnable() {
+				public void run() {
+					MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+					started = true;
+					newSessionRequest.process();
+					processed = true;
+				}
+			}).start();
+			// give it time
+			Thread.sleep(250);
+			Assert.assertTrue(started);
+			Assert.assertFalse(processed);
 		} finally {
 			registry.stop();
 		}
@@ -89,9 +97,10 @@ public class ParallelTest {
 	/**
 	 * can reserve 5 app1
 	 */
-	@Test(timeOut = 2000)
+	@Test(timeout = 2000)
 	public void canGet5App1() {
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		final Registry registry = Registry.getNewInstanceForTestOnly();
+		RemoteProxy p1 = new RemoteProxy(req);
 		try {
 			registry.add(p1);
 			for (int i = 0; i < 5; i++) {
@@ -103,47 +112,85 @@ public class ParallelTest {
 		}
 	}
 
+	static int cpt = 0;
+	static synchronized void inc(){
+		cpt++;
+	}
 	/**
 	 * cannot get 6 app1
+	 * @throws InterruptedException 
 	 */
-	@Test(timeOut = 1000, expectedExceptions = ThreadTimeoutException.class)
-	public void cannotGet6App1() {
-		Registry registry = Registry.getNewInstanceForTestOnly();
+	@Test(timeout = 1000)
+	public void cannotGet6App1() throws InterruptedException {
+		final Registry registry = Registry.getNewInstanceForTestOnly();
+		RemoteProxy p1 = new RemoteProxy(req);
 		try {
 			registry.add(p1);
 			for (int i = 0; i < 6; i++) {
-				MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
-				newSessionRequest.process();
+				new Thread(new Runnable() {
+					public void run() {
+						MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+						newSessionRequest.process();
+						inc();
+					}
+				}).start();
 			}
+			
+			Thread.sleep(250);
+			Assert.assertEquals(5, cpt);
 		} finally {
 			registry.stop();
 		}
 	}
 
+	
+	static int cpt2 = 0;
+	static synchronized void inc2(){
+		cpt2++;
+	}
+	static boolean app6Done=false;
+	
 	/**
 	 * cannot get app2 if 5 app1 are reserved.
+	 * @throws InterruptedException 
 	 */
-	@Test(timeOut = 1000, expectedExceptions = ThreadTimeoutException.class)
-	public void cannotGetApp2() {
-		Registry registry = Registry.getNewInstanceForTestOnly();
+	@Test(timeout=1000)
+	public void cannotGetApp2() throws InterruptedException {
+		final Registry registry = Registry.getNewInstanceForTestOnly();
+		RemoteProxy p1 = new RemoteProxy(req);
 		try {
 			registry.add(p1);
 
 			for (int i = 0; i < 5; i++) {
-				MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
-				newSessionRequest.process();
+				new Thread(new Runnable() {
+					public void run() {
+						MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+						newSessionRequest.process();
+						inc2();
+					}
+				}).start();
 			}
 			
+			while (cpt2!=5) {
+				Thread.sleep(100);
+			}
 			
-			
-			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
-			newSessionRequest.process();
+			new Thread(new Runnable() {
+				public void run() {
+					MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+					newSessionRequest.process();
+					app6Done=true;
+				}
+			}).start();
+
+			Thread.sleep(250);
+			Assert.assertFalse(app6Done);
 		} finally {
 			registry.stop();
 		}
 	}
 
-	@Test(invocationCount=100,threadPoolSize=100,timeOut=5000)
+	@Test(timeout=5000)
 	public void releaseAndReserve() throws InterruptedException {
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		RemoteProxy p1 = null;
@@ -164,8 +211,7 @@ public class ParallelTest {
 		req.addDesiredCapabilitiy(app1);
 		req.addDesiredCapabilitiy(app2);
 		req.setConfiguration(config);
-		
-		
+
 		try {
 			p1 = new RemoteProxy(req);
 			registry.add(p1);
@@ -187,15 +233,13 @@ public class ParallelTest {
 			Assert.assertEquals(registry.getActiveSessions().size(), 0);
 			used.clear();
 
-			
-
 			// reserve them again
 			for (int i = 0; i < 5; i++) {
 				int original = registry.getActiveSessions().size();
 				Assert.assertEquals(original, i);
 				MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
 				newSessionRequest.process();
-				TestSession session =newSessionRequest.getTestSession(); 
+				TestSession session = newSessionRequest.getTestSession();
 				used.add(session);
 			}
 
@@ -205,7 +249,7 @@ public class ParallelTest {
 
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
 			newSessionRequest.process();
-			newSessionRequest.getTestSession(); 
+			newSessionRequest.getTestSession();
 			Assert.assertEquals(registry.getActiveSessions().size(), 5);
 		} finally {
 			registry.stop();

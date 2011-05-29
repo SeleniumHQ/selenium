@@ -7,42 +7,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-
 
 /**
  * Check that 1 type of request doesn't block other requests.
  * 
  * For a hub capable of handling 1 FF and 1 IE for instance, if the hub already
- * built a queue of FF requests and a IE request is recieved it should be
+ * built a queue of FF requests and a IE request is received it should be
  * processed right away and not blocked by the FF queue.
  * 
  * 
  */
 
-
-@Test(timeOut=10000)
 public class ConcurrencyLock {
 
-	private Registry registry = Registry.getNewInstanceForTestOnly();
+	private static Registry registry;
 
-	Map<String, Object> ie = new HashMap<String, Object>();
-	Map<String, Object> ff = new HashMap<String, Object>();
+	private static Map<String, Object> ie = new HashMap<String, Object>();
+	private static Map<String, Object> ff = new HashMap<String, Object>();
 
-	RemoteProxy p1;
-	RemoteProxy p2;
+	private static RemoteProxy p1;
+	private static RemoteProxy p2;
 
 	/**
 	 * create a hub with 1 IE and 1 FF
 	 */
-	@BeforeClass(alwaysRun = true)
-	public void setup() {
+	@BeforeClass
+	public static void setup() {
+		registry = Registry.getNewInstanceForTestOnly();
 		ie.put(APP, "IE");
 		ff.put(APP, "FF");
 
@@ -53,22 +50,50 @@ public class ConcurrencyLock {
 
 	}
 
-	@DataProvider(name = "cap", parallel = true)
-	Object[][] createData1() {
-		return new Object[][] { { ff }, { ff }, { ff }, { ie } };
-	}
 
 	private List<String> results = new ArrayList<String>();
 
-	@Test(dataProvider = "cap")
-	public void runTests(Map<String, Object> cap) throws InterruptedException {
+	@Test(timeout=10000)
+	public void runTest() throws InterruptedException{
+		List<Map<String, Object>> caps = new ArrayList<Map<String,Object>>();
+		caps.add(ff);
+		caps.add(ff);
+		caps.add(ff);
+		caps.add(ie);
 		
+		List<Thread> threads = new ArrayList<Thread>();
+		for (final Map<String, Object> cap : caps){
+			Thread t = new Thread(new Runnable() {
+				public void run() {
+					try {
+						runTests2(cap);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			t.start();
+			threads.add(t);
+		}
+		
+		for (Thread t : threads) {
+			t.join();
+		}
+		Assert.assertEquals(4,results.size());
+		Assert.assertEquals("IE",results.get(0));
+		Assert.assertEquals("FF",results.get(1));
+		Assert.assertEquals("FF",results.get(2));
+		Assert.assertEquals("FF",results.get(3));
+	}
+
+	private void runTests2(Map<String, Object> cap) throws InterruptedException  {
+
 		MockedRequestHandler newSessionRequest = new MockedRequestHandler(registry);
 		newSessionRequest.setRequestType(RequestType.START_SESSION);
 		newSessionRequest.setDesiredCapabilities(cap);
-		
+
 		if (cap.get(APP).equals("FF")) {
-			// start the FF right away	
+			// start the FF right away
 			newSessionRequest.process();
 			TestSession s = newSessionRequest.getTestSession();
 			Thread.sleep(2000);
@@ -87,17 +112,10 @@ public class ConcurrencyLock {
 		// so IE should be done first.
 	}
 
-	@Test(dependsOnMethods = "runTests")
-	public void validation() {
-		Assert.assertEquals(results.size(), 4);
-		Assert.assertEquals(results.get(0), "IE");
-		Assert.assertEquals(results.get(1), "FF");
-		Assert.assertEquals(results.get(2), "FF");
-		Assert.assertEquals(results.get(3), "FF");
-	}
-	
-	@AfterClass(alwaysRun=true)
-	public void teardown(){
+
+
+	@AfterClass
+	public static void teardown() {
 		registry.stop();
 	}
 

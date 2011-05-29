@@ -4,6 +4,7 @@ import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class DefaultToFIFOPriorityTest {
 
 	private final static int MAX = 50;
 
-	private static Registry registry = Registry.getNewInstanceForTestOnly();
+	private static Registry registry;
 
 	// priority rule : nothing defined = FIFO
 	private static Prioritizer fifo = null;
@@ -40,7 +41,7 @@ public class DefaultToFIFOPriorityTest {
 	 */
 	@BeforeClass
 	public static void setup() throws InterruptedException {
-
+		registry = Registry.getNewInstanceForTestOnly();
 		registry.setPrioritizer(fifo);
 		ff.put(APP, "FF");
 		p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444");
@@ -71,8 +72,7 @@ public class DefaultToFIFOPriorityTest {
 			}).start();
 		}
 		
-		System.out.println(">" + requests);
-
+		
 		// free the grid : the queue is consumed, and the test with the highest
 		// priority should be processed.
 		while (requests.size() != MAX) {
@@ -81,11 +81,9 @@ public class DefaultToFIFOPriorityTest {
 		session.terminateSyncronousFOR_TEST_ONLY();
 	}
 
-	// validate that the one with priority 5 has been assigned a proxy
+
 	@Test
 	public void validateRequestAreHandledFIFO() throws InterruptedException {
-		System.out.println(">" + requests);
-		Thread.sleep(1000);
 		Assert.assertNotNull(requests.get(0).getTestSession());
 		Assert.assertEquals(1, requests.get(0).getDesiredCapabilities().get("_priority"));
 	}

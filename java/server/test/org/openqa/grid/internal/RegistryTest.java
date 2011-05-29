@@ -8,28 +8,32 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
-
-@Test(timeOut=10000)
 public class RegistryTest {
-	
+
 	private static final int TOTAL_THREADS = 100;
-	
-	
-	RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/");
-	RemoteProxy p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/");
-	RemoteProxy p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/");
-	RemoteProxy p4 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/");
-	
+
+	static RemoteProxy p1 = null;
+	static RemoteProxy p2 = null;
+	static RemoteProxy p3 = null;
+	static RemoteProxy p4 = null;
+
+	@BeforeClass
+	public static void setup() {
+		p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/");
+		p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/");
+		p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/");
+		p4 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/");
+
+	}
 
 	@Test
 	public void addProxy() {
@@ -60,12 +64,12 @@ public class RegistryTest {
 		}
 	}
 
-	RegistrationRequest req = null;
-	Map<String, Object> app1 = new HashMap<String, Object>();
-	Map<String, Object> app2 = new HashMap<String, Object>();
+	static RegistrationRequest req = null;
+	static Map<String, Object> app1 = new HashMap<String, Object>();
+	static Map<String, Object> app2 = new HashMap<String, Object>();
 
-	@BeforeClass(alwaysRun = true)
-	public void prepareReqRequest() {
+	@BeforeClass
+	public static void prepareReqRequest() {
 		Map<String, Object> config = new HashMap<String, Object>();
 		app1.put(APP, "app1");
 		app2.put(APP, "app2");
@@ -76,7 +80,7 @@ public class RegistryTest {
 		req.setConfiguration(config);
 	}
 
-	@Test(expectedExceptions = GridException.class)
+	@Test(expected = GridException.class)
 	public void emptyRegistry() {
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		try {
@@ -89,7 +93,7 @@ public class RegistryTest {
 
 	}
 
-	@Test(expectedExceptions = CapabilityNotPresentOnTheGridException.class)
+	@Test(expected = CapabilityNotPresentOnTheGridException.class)
 	public void CapabilityNotPresentRegistry() {
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		try {
@@ -102,23 +106,33 @@ public class RegistryTest {
 		}
 	}
 
-	private Registry registry = Registry.getNewInstanceForTestOnly();
 	private int invoc = 0;
 
 	private synchronized void increment() {
 		invoc++;
 	}
 
-	@Test(invocationCount = TOTAL_THREADS, threadPoolSize = TOTAL_THREADS)
-	public void registerAtTheSameTime() {
-		registry.add(new RemoteProxy(req));
-		increment();
-	}
+	@Test(timeout = 1000)
+	public void registerAtTheSameTime() throws InterruptedException {
+		final Registry registry = Registry.getNewInstanceForTestOnly();
+		try {
+			for (int i = 0; i < TOTAL_THREADS; i++) {
+				new Thread(new Runnable() {
 
-	@Test(dependsOnMethods = "registerAtTheSameTime")
-	public void validate() {
-		Assert.assertEquals(invoc, TOTAL_THREADS);
-		Assert.assertEquals(registry.getAllProxies().size(), 1);
+					public void run() {
+						registry.add(new RemoteProxy(req));
+						increment();
+					}
+				}).start();
+			}
+			while (invoc != TOTAL_THREADS) {
+				Thread.sleep(250);
+			}
+			Assert.assertEquals(invoc, TOTAL_THREADS);
+			Assert.assertEquals(registry.getAllProxies().size(), 1);
+		} finally {
+			registry.stop();
+		}
 	}
 
 	private Random randomGenerator = new Random();
@@ -127,7 +141,7 @@ public class RegistryTest {
 	 * try to simulate a real proxy. The proxy registration takes up to 1 sec to
 	 * register, and crashes in 10% of the case.
 	 * 
-	 * @author FranÐ·ois Reynaud
+	 * @author Franois Reynaud
 	 * 
 	 */
 	class MyRemoteProxy extends RemoteProxy implements RegistrationListener {
@@ -148,30 +162,34 @@ public class RegistryTest {
 		}
 	}
 
-	private Registry registry2 = Registry.getNewInstanceForTestOnly();
 	private int invoc2 = 0;
 
 	private synchronized void increment2() {
 		invoc2++;
 	}
 
-	@Test(invocationCount = TOTAL_THREADS, threadPoolSize = TOTAL_THREADS)
-	public void registerAtTheSameTimeWithListener() {
-		registry2.add(new MyRemoteProxy(req));
-		increment2();
+	@Test(timeout = 2000)
+	public void registerAtTheSameTimeWithListener() throws InterruptedException {
+		final Registry registry = Registry.getNewInstanceForTestOnly();
+
+		try {
+			for (int i = 0; i < TOTAL_THREADS; i++) {
+				new Thread(new Runnable() {
+
+					public void run() {
+						registry.add(new MyRemoteProxy(req));
+						increment2();
+					}
+				}).start();
+			}
+			while (invoc2 != TOTAL_THREADS) {
+				Thread.sleep(250);
+			}
+			Assert.assertEquals(invoc2, TOTAL_THREADS);
+			Assert.assertEquals(registry.getAllProxies().size(), 1);
+		} finally {
+			registry.stop();
+		}
 	}
 
-	@Test(dependsOnMethods = "registerAtTheSameTimeWithListener")
-	public void validate2() {
-		Assert.assertEquals(invoc2, TOTAL_THREADS);
-		Assert.assertEquals(registry2.getAllProxies().size(), 1);
-	}
-
-	@AfterClass(alwaysRun=true)
-	public void tearfdown() {
-		registry.stop();
-		registry.stop();
-	}
-
-	
 }

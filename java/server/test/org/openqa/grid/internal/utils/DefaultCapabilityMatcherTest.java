@@ -7,29 +7,30 @@ import static org.openqa.grid.common.RegistrationRequest.VERSION;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.selenium.Platform;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+
 
 
 public class DefaultCapabilityMatcherTest {
 
 	
-	Map<String, Object> firefox = new HashMap<String, Object>();
-	Map<String, Object> tl = new HashMap<String, Object>();
+	static Map<String, Object> firefox = new HashMap<String, Object>();
+	static Map<String, Object> tl = new HashMap<String, Object>();
 	
-	Map<String, Object> firefox2 = new HashMap<String, Object>();
-	Map<String, Object> tl2 = new HashMap<String, Object>();
+	static Map<String, Object> firefox2 = new HashMap<String, Object>();
+	static Map<String, Object> tl2 = new HashMap<String, Object>();
 	
-	Map<String, Object> exotic = new HashMap<String, Object>();
+	static Map<String, Object> exotic = new HashMap<String, Object>();
 	
 	
 	CapabilityMatcher helper = new DefaultCapabilityMatcher();
 	
-	@BeforeClass(alwaysRun=true)
-	public void build(){
+	@BeforeClass
+	public static void build(){
 		tl.put(RegistrationRequest.APP, "A");
 		tl.put(RegistrationRequest.VERSION, null);
 		firefox.put(BROWSER, "B");

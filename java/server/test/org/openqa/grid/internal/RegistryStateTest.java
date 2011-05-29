@@ -8,24 +8,29 @@ import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
-@Test(singleThreaded=true,timeOut=10000)
+
+
 public class RegistryStateTest {
 
-	RemoteProxy p1 = null;
-	RegistrationRequest req = null;
-	Map<String, Object> app1 = new HashMap<String, Object>();
-	Map<String, Object> app2 = new HashMap<String, Object>();
 
-	@BeforeClass(alwaysRun = true)
-	public void prepareReqRequest() {
+	static RegistrationRequest req = null;
+	static Map<String, Object> app1 = new HashMap<String, Object>();
+	static Map<String, Object> app2 = new HashMap<String, Object>();
+
+	/**
+	 * create a proxy than can host up to 5 tests at the same time. - of type
+	 * app1 ( max 5 tests at the same time ) could be Firefox for instance - of
+	 * type app2 ( max 1 test ) could be IE
+	 */
+	@BeforeClass
+	public static void prepareReqRequest() {
 
 		Map<String, Object> config = new HashMap<String, Object>();
 		app1.put(APP, "app1");
@@ -43,18 +48,13 @@ public class RegistryStateTest {
 		req.setConfiguration(config);
 	}
 
-	/**
-	 * create a proxy than can host up to 5 tests at the same time. - of type
-	 * app1 ( max 5 tests at the same time ) could be Firefox for instance - of
-	 * type app2 ( max 1 test ) could be IE
-	 */
-	@BeforeMethod(alwaysRun = true)
-	public void prepareProxy() {
-		p1 = new RemoteProxy(req);
-	}
+
+	
 
 	@Test
 	public void sessionIsRemoved() throws InterruptedException {
+		RemoteProxy p1 = new RemoteProxy(req);
+		
 		Registry registry = Registry.getNewInstanceForTestOnly();
 
 		try {
@@ -65,41 +65,43 @@ public class RegistryStateTest {
 			TestSession session = newSessionRequest.getTestSession();
 
 			session.terminateSyncronousFOR_TEST_ONLY();
-			Assert.assertEquals(registry.getActiveSessions().size(), 0);
+			Assert.assertEquals(0,registry.getActiveSessions().size());
 		} finally {
 			registry.stop();
 		}
 	}
 
-	@Test(timeOut = 5000)
+	@Test(timeout = 5000)
 	public void basichecks() throws InterruptedException {
+		RemoteProxy p1 = new RemoteProxy(req);
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		try {
 			registry.add(p1);
 
-			Assert.assertEquals(registry.getActiveSessions().size(), 0);
-			Assert.assertEquals(registry.getAllProxies().size(), 1);
-			Assert.assertEquals(registry.getUsedProxies().size(), 0);
+			Assert.assertEquals(0,registry.getActiveSessions().size());
+			Assert.assertEquals(1,registry.getAllProxies().size());
+			Assert.assertEquals(0,registry.getUsedProxies().size());
 
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
 			newSessionRequest.process();
 			TestSession session = newSessionRequest.getTestSession();
 
-			Assert.assertEquals(registry.getActiveSessions().size(), 1);
-			Assert.assertEquals(registry.getAllProxies().size(), 1);
-			Assert.assertEquals(registry.getUsedProxies().size(), 1);
+			Assert.assertEquals(1,registry.getActiveSessions().size());
+			Assert.assertEquals(1,registry.getAllProxies().size());
+			Assert.assertEquals(1,registry.getUsedProxies().size());
 
 			session.terminateSyncronousFOR_TEST_ONLY();
-			Assert.assertEquals(registry.getActiveSessions().size(), 0);
-			Assert.assertEquals(registry.getAllProxies().size(), 1);
-			Assert.assertEquals(registry.getUsedProxies().size(), 0);
+			Assert.assertEquals(0,registry.getActiveSessions().size());
+			Assert.assertEquals(1,registry.getAllProxies().size());
+			Assert.assertEquals(0,registry.getUsedProxies().size());
 		} finally {
 			registry.stop();
 		}
 	}
 
-	@Test(timeOut=4000)
+	@Test(timeout=4000)
 	public void sessionIsRemoved2() throws InterruptedException {
+		RemoteProxy p1 = new RemoteProxy(req);
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		try {
 			registry.add(p1);
@@ -108,15 +110,16 @@ public class RegistryStateTest {
 			newSessionRequest.process();
 			TestSession session = newSessionRequest.getTestSession();
 			session.terminateSyncronousFOR_TEST_ONLY();
-			Assert.assertEquals(registry.getActiveSessions().size(), 0);
+			Assert.assertEquals(0,registry.getActiveSessions().size());
 		
 		} finally {
 			registry.stop();
 		}
 	}
 
-	@Test(timeOut=4000)
+	@Test(timeout=4000)
 	public void sessionByExtKey() throws InterruptedException {
+		RemoteProxy p1 = new RemoteProxy(req);
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		try {
 			registry.add(p1);
@@ -130,12 +133,12 @@ public class RegistryStateTest {
 			Assert.assertNotNull(s);
 			Assert.assertEquals(s, session);
 			session.terminateSyncronousFOR_TEST_ONLY();
-			Assert.assertEquals(registry.getActiveSessions().size(), 0);
+			Assert.assertEquals(0,registry.getActiveSessions().size());
 
 			TestSession s2 = registry.getSession("1234");
 			Assert.assertNull(s2);
 
-			Assert.assertEquals(registry.getActiveSessions().size(), 0);
+			Assert.assertEquals(0,registry.getActiveSessions().size());
 		} finally {
 			registry.stop();
 		}
@@ -143,6 +146,7 @@ public class RegistryStateTest {
 
 	@Test
 	public void sessionByExtKeyNull() {
+		RemoteProxy p1 = new RemoteProxy(req);
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		try {
 			registry.add(p1);

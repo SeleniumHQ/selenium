@@ -7,25 +7,22 @@ import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import org.testng.internal.thread.ThreadTimeoutException;
 
-@Test(timeOut = 10000)
 public class SessionTimesOutTest {
 
-	RegistrationRequest req = new RegistrationRequest();
-	Map<String, Object> app1 = new HashMap<String, Object>();
+	private static RegistrationRequest req = new RegistrationRequest();
+	private static Map<String, Object> app1 = new HashMap<String, Object>();
 
 	// create a request for a proxy that times out after 0.5 sec.
 	@BeforeClass
-	public void setup() {
+	public static void setup() {
 
 		app1.put(APP, "app1");
 		req.addDesiredCapabilitiy(app1);
@@ -56,7 +53,7 @@ public class SessionTimesOutTest {
 	 * 
 	 * @throws InterruptedException
 	 */
-	@Test(timeOut = 2000)
+	@Test(timeout = 2000)
 	public void testTimeout() throws InterruptedException {
 
 		RemoteProxy p1 = new MyRemoteProxyTimeout(req);
@@ -100,7 +97,7 @@ public class SessionTimesOutTest {
 
 	}
 
-	@Test(timeOut = 5000)
+	@Test(timeout = 5000)
 	public void testTimeoutSlow() throws InterruptedException {
 		RemoteProxy p1 = new MyRemoteProxyTimeoutSlow(req);
 
@@ -149,24 +146,34 @@ public class SessionTimesOutTest {
 		}
 	}
 
-	@Test(timeOut = 1000, expectedExceptions = ThreadTimeoutException.class)
+	// a proxy throwing an exception will end up not releasing the resources.
+	@Test(timeout = 1000, expected = IllegalAccessError.class)
 	public void testTimeoutBug() throws InterruptedException {
 
 		RemoteProxy p1 = new MyBuggyRemoteProxyTimeout(req);
 
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		final Registry registry = Registry.getNewInstanceForTestOnly();
 		try {
 			registry.add(p1);
 
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
 			newSessionRequest.process();
+
+			final MockedRequestHandler newSessionRequest2 = new MockedNewSessionRequestHandler(registry, app1);
+			new Thread(new Runnable() {
+				public void run() {
+					// the request should never be processed because the
+					// resource is not released by the buggy proxy
+					newSessionRequest2.process();
+				}
+			}).start();
+
 			// wait for a timeout
 			Thread.sleep(500);
+			// should throw illegal access. getTestSession cannot be called
+			// because the request has not been processed yet.
+			newSessionRequest2.getTestSession();
 
-			MockedRequestHandler newSessionRequest2 = new MockedNewSessionRequestHandler(registry, app1);
-			newSessionRequest2.process();
-			TestSession session = newSessionRequest2.getTestSession();
-			Assert.assertNull(session);
 		} finally {
 			registry.stop();
 		}
@@ -183,46 +190,46 @@ public class SessionTimesOutTest {
 		}
 	}
 
-	// timeout || cycle
-	@DataProvider(name = "stupidConfig")
-	public Object[][] config() {
-		return new Object[][] {
-		// correct config, just to check something happens
+	@Test(timeout = 4000)
+	public void stupidConfig() throws InterruptedException {
+		Object[][] configs = new Object[][] {
+				// correct config, just to check something happens
 				{ 5, 5 },
 				// and invalid ones
 				{ -1, 5 }, { 5, -1 }, { -1, -1 }, { 0, 0 } };
-	}
+		for (Object[] c : configs) {
+			int timeout = (Integer) c[0];
+			int cycle = (Integer) c[1];
+			Registry registry = Registry.getNewInstanceForTestOnly();
 
-	@Test(timeOut = 2000, dataProvider = "stupidConfig")
-	public void stupidConfig(int timeout, int cycle) throws InterruptedException {
-		Registry registry = Registry.getNewInstanceForTestOnly();
+			RegistrationRequest req = new RegistrationRequest();
+			Map<String, Object> app1 = new HashMap<String, Object>();
+			app1.put(APP, "app1");
+			req.addDesiredCapabilitiy(app1);
+			Map<String, Object> config = new HashMap<String, Object>();
 
-		RegistrationRequest req = new RegistrationRequest();
-		Map<String, Object> app1 = new HashMap<String, Object>();
-		app1.put(APP, "app1");
-		req.addDesiredCapabilitiy(app1);
-		Map<String, Object> config = new HashMap<String, Object>();
+			config.put(TIME_OUT, timeout);
+			config.put(CLEAN_UP_CYCLE, cycle);
 
-		config.put(TIME_OUT, timeout);
-		config.put(CLEAN_UP_CYCLE, cycle);
+			req.setConfiguration(config);
 
-		req.setConfiguration(config);
+			registry.add(new MyStupidConfig(req));
+			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+			newSessionRequest.process();
+			TestSession session = newSessionRequest.getTestSession();
+			// wait -> timed out and released.
+			Thread.sleep(500);
+			boolean shouldTimeout = timeout > 0 && cycle > 0;
 
-		registry.add(new MyStupidConfig(req));
-		MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
-		newSessionRequest.process();
-		TestSession session = newSessionRequest.getTestSession();
-		// wait -> timed out and released.
-		Thread.sleep(500);
-		boolean shouldTimeout = timeout > 0 && cycle > 0;
-
-		if (shouldTimeout) {
-			Assert.assertEquals(session.get("FLAG"), true);
-			Assert.assertNull(session.getSlot().getSession());
-		} else {
-			Assert.assertNull(session.get("FLAG"));
-			Assert.assertNotNull(session.getSlot().getSession());
+			if (shouldTimeout) {
+				Assert.assertEquals(session.get("FLAG"), true);
+				Assert.assertNull(session.getSlot().getSession());
+			} else {
+				Assert.assertNull(session.get("FLAG"));
+				Assert.assertNotNull(session.getSlot().getSession());
+			}
 		}
+
 	}
 
 }

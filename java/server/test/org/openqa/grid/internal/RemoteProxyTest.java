@@ -8,22 +8,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+
 
 
 public class RemoteProxyTest {
 
-	RemoteProxy p1 = null;
-	RemoteProxy p2 = null;
+	private static RemoteProxy p1 = null;
+	private static RemoteProxy p2 = null;
 
-	Map<String, Object> app1Capability = new HashMap<String, Object>();
-	Map<String, Object> app2Capability = new HashMap<String, Object>();
+	private static Map<String, Object> app1Capability = new HashMap<String, Object>();
+	private static Map<String, Object> app2Capability = new HashMap<String, Object>();
 
 	@BeforeClass
-	public void setup() {
+	public static void setup() {
 		app1Capability.put(APP, "app1");
 		app2Capability.put(APP, "app2");
 
@@ -41,7 +42,7 @@ public class RemoteProxyTest {
 		Assert.assertFalse(p1.equals(p2));
 	}
 
-	@Test(expectedExceptions = GridException.class)
+	@Test(expected = GridException.class)
 	public void create() {
 		Map<String, Object> cap = new HashMap<String, Object>();
 		cap.put(APP, "corrupted");

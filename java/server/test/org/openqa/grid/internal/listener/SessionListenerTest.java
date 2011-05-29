@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -17,10 +20,7 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.testng.internal.thread.ThreadTimeoutException;
+
 
 public class SessionListenerTest {
 
@@ -40,12 +40,12 @@ public class SessionListenerTest {
 		}
 	}
 
-	RegistrationRequest req = null;
-	Map<String, Object> app1 = new HashMap<String, Object>();
-	Map<String, Object> app2 = new HashMap<String, Object>();
+	static RegistrationRequest req = null;
+	static Map<String, Object> app1 = new HashMap<String, Object>();
+	static Map<String, Object> app2 = new HashMap<String, Object>();
 
-	@BeforeClass(alwaysRun = true)
-	public void prepare() {
+	@BeforeClass
+	public static void prepare() {
 		app1.put(APP, "app1");
 		Map<String, Object> config = new HashMap<String, Object>();
 		req = new RegistrationRequest();
@@ -62,21 +62,21 @@ public class SessionListenerTest {
 		MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, app1);
 		req.process();
 		TestSession session = req.getTestSession();
-		Assert.assertEquals(session.get("FLAG"), true);
+		Assert.assertEquals(true,session.get("FLAG"));
 		session.terminate();
 		try {
 			Thread.sleep(250);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Assert.assertEquals(session.get("FLAG"), false);
+		Assert.assertEquals(false,session.get("FLAG"));
 	}
 
 	/**
 	 * buggy proxy that will throw an exception the first time beforeSession is
 	 * called.
 	 * 
-	 * @author Fran–∑ois Reynaud
+	 * @author François Reynaud
 	 * 
 	 */
 	class MyBuggyBeforeRemoteProxy extends RemoteProxy implements TestSessionListener {
@@ -103,7 +103,7 @@ public class SessionListenerTest {
 	 * to use.
 	 * @throws InterruptedException 
 	 */
-	@Test(timeOut=5000)
+	@Test(timeout=5000)
 	public void buggyBefore() throws InterruptedException {
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		registry.add(new MyBuggyBeforeRemoteProxy(req));
@@ -131,7 +131,7 @@ public class SessionListenerTest {
 	 * buggy proxy that will throw an exception the first time beforeSession is
 	 * called.
 	 * 
-	 * @author Fran–∑ois Reynaud
+	 * @author François Reynaud
 	 * 
 	 */
 	class MyBuggyAfterRemoteProxy extends RemoteProxy implements TestSessionListener {
@@ -148,12 +148,15 @@ public class SessionListenerTest {
 		}
 	}
 
+	
+	static boolean processed = false;
 	/**
 	 * if after throws an exception, the resources are NOT released got other
 	 * tests to use.
+	 * @throws InterruptedException 
 	 */
-	@Test(timeOut = 500, expectedExceptions = ThreadTimeoutException.class)
-	public void buggyAfter() {
+	@Test(timeout=1000)
+	public void buggyAfter() throws InterruptedException {
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		registry.add(new MyBuggyAfterRemoteProxy(req));
 
@@ -169,10 +172,19 @@ public class SessionListenerTest {
 			e.printStackTrace();
 		}
 		
-		MockedNewSessionRequestHandler req2 = new MockedNewSessionRequestHandler(registry, app1);
-		req2.process();
-		session = req2.getTestSession();
+		final MockedNewSessionRequestHandler req2 = new MockedNewSessionRequestHandler(registry, app1);
 		
+		
+		new Thread(new Runnable() {
+			
+			public void run() {
+				req2.process();
+				processed = true;
+			}
+		}).start();
+		
+		Thread.sleep(100);
+		Assert.assertFalse(processed);
 	}
 
 	class SlowAfterSession extends RemoteProxy implements TestSessionListener, TimeoutListener {

@@ -6,6 +6,9 @@ import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -13,9 +16,7 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+
 
 
 public class RegistrationListenerTest {
@@ -38,12 +39,12 @@ public class RegistrationListenerTest {
 		}
 	}
 
-	RemoteProxy p1 = null;
-	RegistrationRequest req = null;
-	Map<String, Object> app1 = new HashMap<String, Object>();
+	static RemoteProxy p1 = null;
+	static RegistrationRequest req = null;
+	static Map<String, Object> app1 = new HashMap<String, Object>();
 
-	@BeforeClass(alwaysRun = true)
-	public void prepareReqRequest() {
+	@BeforeClass
+	public static void prepareReqRequest() {
 		Map<String, Object> config = new HashMap<String, Object>();
 		app1.put(APP, "app1");
 		config.put(REMOTE_URL, "http://machine1:4444");
@@ -52,7 +53,7 @@ public class RegistrationListenerTest {
 		req.setConfiguration(config);
 	}
 
-	@Test(timeOut = 5000)
+	@Test(timeout = 5000)
 	public void testRegistration() {
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		registry.add(new MyRemoteProxy(req));
@@ -70,7 +71,7 @@ public class RegistrationListenerTest {
 	/**
 	 * this proxy will throw an exception on registration the first time.
 	 * 
-	 * @author Fran–∑ois Reynaud
+	 * @author François Reynaud
 	 * 
 	 */
 	class MyBuggyRemoteProxy extends RemoteProxy implements RegistrationListener {
@@ -125,7 +126,7 @@ public class RegistrationListenerTest {
 	 * 1 should be reserved directly.
 	 * 1 should wait for the slow proxy to finish the registration properly before returning
 	 */
-	@Test(timeOut=2000)
+	@Test(timeout=2000)
 	public void registerSomeSlow() {
 		registry.add(new RemoteProxy(req));
 		new Thread(new Runnable() {
@@ -150,7 +151,7 @@ public class RegistrationListenerTest {
 		// the registry yet
 		Assert.assertEquals(registry.getAllProxies().size(), 1);
 		// check onRegistration has not run yet.
-		Assert.assertEquals(slowRemoteUp, false);
+		Assert.assertEquals(false,slowRemoteUp);
 		
 		
 		
@@ -161,9 +162,9 @@ public class RegistrationListenerTest {
 		Assert.assertNotNull(s2);
 		// return when the proxy is visible = fully registered. So registry has
 		// 2 proxies at that point.
-		Assert.assertEquals(registry.getAllProxies().size(), 2);
+		Assert.assertEquals(2,registry.getAllProxies().size());
 		// and slow remote is up
-		Assert.assertEquals(slowRemoteUp, true);
+		Assert.assertTrue(slowRemoteUp);
 
 	}
 

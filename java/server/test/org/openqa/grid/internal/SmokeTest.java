@@ -18,7 +18,7 @@ import org.openqa.grid.web.servlet.handler.RequestType;
 
 
 public class SmokeTest {
-	private static Registry registry = Registry.getNewInstanceForTestOnly();
+	private static Registry registry;
 
 	private static Map<String, Object> ie = new HashMap<String, Object>();
 	private static Map<String, Object> ff = new HashMap<String, Object>();
@@ -35,6 +35,7 @@ public class SmokeTest {
 	 */
 	@BeforeClass
 	public static void setup() {
+		registry = Registry.getNewInstanceForTestOnly();
 		ie.put(APP, "IE");
 		ff.put(APP, "FF");
 
