@@ -9,7 +9,6 @@ namespace OpenQA.Selenium.Interactions
     public class BasicMouseInterfaceTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
@@ -24,7 +23,6 @@ namespace OpenQA.Selenium.Interactions
         // This test is very similar to DraggingElementWithMouse. The only
         // difference is that this test also verifies the correct events were fired.
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
@@ -38,7 +36,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
@@ -130,7 +127,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
