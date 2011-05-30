@@ -153,12 +153,8 @@ namespace OpenQA.Selenium
             // Wait until all event handlers are installed.
             System.Threading.Thread.Sleep(500);
 
-            // The below is the proper way to accomplish the drag and drop.
-            // Uncomment when the interactions API has been completely implemented
-            // in all browsers.
             Actions actionProvider = new Actions(driver);
             actionProvider.DragAndDrop(toDrag, dropInto).Perform();
-            //((IRenderedWebElement)toDrag).DragAndDropOn((IRenderedWebElement)dropInto);
 
             string text = dropInto.FindElement(By.TagName("p")).Text;
 
