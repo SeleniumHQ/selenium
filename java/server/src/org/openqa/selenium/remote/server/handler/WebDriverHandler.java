@@ -80,6 +80,10 @@ public abstract class WebDriverHandler implements Handler, Callable<ResultType> 
     return session.getSessionId();
   }
 
+  protected BySelector newBySelector() {
+    return new BySelector();
+  }
+
   public void execute(FutureTask<?> task) throws Exception {
     Session session = getSession();
     if (session != null)

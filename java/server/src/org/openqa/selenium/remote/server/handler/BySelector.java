@@ -22,7 +22,15 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriverException;
 
+import java.util.Map;
+
 public class BySelector {
+  public By pickFromJsonParameters(Map<String, Object> allParameters) {
+    String method = (String) allParameters.get("using");
+    String selector = (String) allParameters.get("value");
+
+    return pickFrom(method, selector);
+  }
 
   public By pickFrom(String method, String selector) {
     if ("class name".equals(method)) {

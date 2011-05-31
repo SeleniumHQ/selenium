@@ -34,10 +34,7 @@ public class FindElement extends ResponseAwareWebDriverHandler implements JsonPa
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    String method = (String) allParameters.get("using");
-    String selector = (String) allParameters.get("value");
-
-    by = new BySelector().pickFrom(method, selector);
+    by = newBySelector().pickFromJsonParameters(allParameters);
   }
 
   public ResultType call() throws Exception {
@@ -50,7 +47,7 @@ public class FindElement extends ResponseAwareWebDriverHandler implements JsonPa
 
   @Override
   public String toString() {
-    return String.format("[find element: %s", by);
+    return String.format("[find element: %s]", by);
   }
 
 }

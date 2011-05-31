@@ -41,10 +41,7 @@ public class FindChildElements extends WebElementHandler implements JsonParamete
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    String method = (String) allParameters.get("using");
-    String selector = (String) allParameters.get("value");
-    
-    by = new BySelector().pickFrom(method, selector);
+    by = newBySelector().pickFromJsonParameters(allParameters);
   }
 
   public ResultType call() throws Exception {
@@ -62,6 +59,6 @@ public class FindChildElements extends WebElementHandler implements JsonParamete
 
   @Override
   public String toString() {
-    return String.format("[find child elements: %s, %s", getElementAsString(), by);
+    return String.format("[find child elements: %s, %s]", getElementAsString(), by);
   }
 }
