@@ -64,7 +64,26 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         /// <param name="port">The port to use to communicate with the IE server.</param>
         public InternetExplorerDriver(int port)
-            : base(CreateServerUri(port), DesiredCapabilities.InternetExplorer())
+            : this(port, DesiredCapabilities.InternetExplorer())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class with the desired capabilities.
+        /// </summary>
+        /// <param name="desiredCapabilities">The desired capabilities of the IE driver.</param>
+        public InternetExplorerDriver(ICapabilities desiredCapabilities)
+            : this(0, desiredCapabilities)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class for the specified port and desired capabilities.
+        /// </summary>
+        /// <param name="port">The port to use to communicate with the IE server.</param>
+        /// <param name="desiredCapabilities">The desired capabilities of the IE driver.</param>
+        public InternetExplorerDriver(int port, ICapabilities desiredCapabilities)
+            : base(CreateServerUri(port), desiredCapabilities)
         {
         }
 

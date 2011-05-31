@@ -106,6 +106,7 @@ LRESULT Session::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 	this->PopulateElementFinderMethods();
 	this->current_browser_id_ = L"";
 	this->serialized_response_ = L"";
+	this->ignore_protected_mode_settings_ = false;
 	this->speed_ = 0;
 	this->implicit_wait_timeout_ = 0;
 	this->last_known_mouse_x_ = 0;
@@ -317,7 +318,7 @@ void Session::AddManagedBrowser(BrowserHandle browser_wrapper) {
 }
 
 int Session::CreateNewBrowser(void) {
-	DWORD dwProcId = this->factory_.LaunchBrowserProcess(this->port_);
+	DWORD dwProcId = this->factory_.LaunchBrowserProcess(this->port_, this->ignore_protected_mode_settings_);
 	if (dwProcId == NULL) {
 		return ENOSUCHDRIVER;
 	}

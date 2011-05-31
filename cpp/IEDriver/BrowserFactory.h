@@ -42,6 +42,14 @@
 #define IE_CLSID_REGISTRY_KEY L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID"
 #define IE_SECURITY_ZONES_REGISTRY_KEY L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones"
 
+#define IE_PROTECTED_MODE_SETTING_VALUE_NAME L"2500"
+
+#define ZONE_MY_COMPUTER L"0"
+#define ZONE_LOCAL_INTRANET L"1"
+#define ZONE_TRUSTED_SITES L"2"
+#define ZONE_INTERNET L"3"
+#define ZONE_RESTRICTED_SITES L"4"
+
 using namespace std;
 
 namespace webdriver {
@@ -57,7 +65,7 @@ public:
 	BrowserFactory(void);
 	virtual ~BrowserFactory(void);
 
-	DWORD LaunchBrowserProcess(int port);
+	DWORD LaunchBrowserProcess(const int port, const bool ignore_protected_mode_settings);
 	IWebBrowser2* CreateBrowser();
 	void AttachToBrowser(ProcessWindowInfo* procWinInfo);
 	bool GetDocumentFromWindowHandle(HWND window_handle, IHTMLDocument2** document);
@@ -80,6 +88,7 @@ private:
 	void GetIEVersion(void);
 	void GetOSVersion(void);
 	bool ProtectedModeSettingsAreValid(void);
+	int GetZoneProtectedModeSetting(const HKEY key_handle, const std::wstring& zone_subkey_name);
 
 	int ie_major_version_;
 	int windows_major_version_;

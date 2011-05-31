@@ -123,6 +123,9 @@ public:
 	bool is_valid(void) const { return this->is_valid_; }
 	void set_is_valid(const bool session_is_valid) { this->is_valid_ = session_is_valid; }
 
+	bool ignore_protected_mode_settings(void) const { return this->ignore_protected_mode_settings_; }
+	void set_ignore_protected_mode_settings(const bool ignore_settings) { this->ignore_protected_mode_settings_ = ignore_settings; }
+
 	ElementFinder element_finder(void) const { return this->element_finder_; }
 
 	int browser_version(void) const { return this->factory_.browser_version(); }
@@ -156,6 +159,7 @@ private:
 
 	std::wstring session_id_;
 	int port_;
+	bool ignore_protected_mode_settings_;
 
 	Command current_command_;
 	std::wstring serialized_response_;

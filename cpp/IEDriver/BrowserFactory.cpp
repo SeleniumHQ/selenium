@@ -32,9 +32,9 @@ BrowserFactory::~BrowserFactory(void) {
 	}
 }
 
-DWORD BrowserFactory::LaunchBrowserProcess(int port) {
+DWORD BrowserFactory::LaunchBrowserProcess(const int port, const bool ignore_protected_mode_settings) {
 	DWORD process_id = NULL;
-	if (this->ProtectedModeSettingsAreValid()) {
+	if (ignore_protected_mode_settings || this->ProtectedModeSettingsAreValid()) {
 		STARTUPINFO start_info;
 		PROCESS_INFORMATION proc_info;
 
@@ -248,7 +248,7 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
 	// 7 == "#32770\0"
 	// 34 == "Internet Explorer_TridentDlgFrame\0"
 	char name[34];
-	if (GetClassNameA(hwnd, name, 34) == 0) {
+	if (::GetClassNameA(hwnd, name, 34) == 0) {
 		// No match found. Skip
 		return TRUE;
 	}
@@ -350,6 +350,7 @@ void BrowserFactory::GetOSVersion() {
 }
 
 bool BrowserFactory::ProtectedModeSettingsAreValid() {
+	bool settings_are_valid = true;
 	// Only need to check Protected Mode settings on IE 7 or higher
 	// and on Windows Vista or higher. Otherwise, Protected Mode
 	// doesn't come into play, and are valid.
@@ -368,25 +369,17 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
 					DWORD number_of_characters_copied = max_subkey_name_length + 1;
 					::RegEnumKeyEx(key_handle, static_cast<DWORD>(index), &subkey_name_buffer[0], &number_of_characters_copied, NULL, NULL, NULL, NULL);
 					std::wstring subkey_name = &subkey_name_buffer[0];
-					// Ignore zone "0" (the "My Computer" zone)
-					if (subkey_name != L"0") {
-						HKEY subkey_handle;
-						if (ERROR_SUCCESS == ::RegOpenKeyEx(key_handle, subkey_name.c_str(), 0, KEY_QUERY_VALUE, &subkey_handle)) {
-							// The protected mode settings are stored in a
-							// REG_DWORD value with the name "2500".
-							DWORD value = 0;
-							DWORD value_length = sizeof(DWORD);
-							if (ERROR_SUCCESS == ::RegQueryValueEx(subkey_handle, L"2500", NULL, NULL, reinterpret_cast<LPBYTE>(&value), &value_length)) {
-								if (protected_mode_value == -1) {
-									protected_mode_value = value;
-								} else {
-									if (value != protected_mode_value) {
-										::RegCloseKey(subkey_handle);
-										return false;
-									}
-								}
+					// Ignore the "My Computer" zone, since it's not displayed
+					// in the UI.
+					if (subkey_name != ZONE_MY_COMPUTER) {
+						int value = this->GetZoneProtectedModeSetting(key_handle, subkey_name);
+						if (protected_mode_value == -1) {
+							protected_mode_value = value;
+						} else {
+							if (value != protected_mode_value) {
+								settings_are_valid = false;
+								break;
 							}
-							::RegCloseKey(subkey_handle);
 						}
 					}
 				}
@@ -394,7 +387,32 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
 			::RegCloseKey(key_handle);
 		}
 	}
-	return true;
+	return settings_are_valid;
+}
+
+int BrowserFactory::GetZoneProtectedModeSetting(const HKEY key_handle, const std::wstring& zone_subkey_name) {
+	int protected_mode_value = 0;
+	HKEY subkey_handle;
+	if (ERROR_SUCCESS == ::RegOpenKeyEx(key_handle, zone_subkey_name.c_str(), 0, KEY_QUERY_VALUE, &subkey_handle)) {
+		DWORD value = 0;
+		DWORD value_length = sizeof(DWORD);
+		if (ERROR_SUCCESS == ::RegQueryValueEx(subkey_handle, IE_PROTECTED_MODE_SETTING_VALUE_NAME, NULL, NULL, reinterpret_cast<LPBYTE>(&value), &value_length)) {
+			protected_mode_value = value;
+		}
+		::RegCloseKey(subkey_handle);
+	} else {
+		// The REG_DWORD value doesn't exist, so we have to return the default
+		// value, which is "on" for the Internet and Restricted Sites zones and
+		// is "on" for the Local Intranet zone in IE7 only (the default was
+		// changed to "off" for Local Intranet in IE8), and "off" everywhere
+		// else.
+		if (zone_subkey_name == ZONE_INTERNET ||
+				zone_subkey_name == ZONE_RESTRICTED_SITES ||
+				(zone_subkey_name == ZONE_LOCAL_INTRANET && this->ie_major_version_ == 7)) {
+			protected_mode_value = 3;
+		}
+	}
+	return protected_mode_value;
 }
 
 } // namespace webdriver
