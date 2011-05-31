@@ -19,6 +19,7 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.OutputType.FILE;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import org.openqa.selenium.Capabilities;
@@ -104,6 +105,11 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
     if (capabilities.getCapability(PROXY) != null) {
       Proxy proxy = Proxies.extractProxy(capabilities);
       profile.setProxyPreferences(proxy);
+    }
+
+    if (capabilities.getCapability(ACCEPT_SSL_CERTS) != null) {
+      Boolean acceptCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
+      profile.setAcceptUntrustedCertificates(acceptCerts);
     }
 
     return profile;
