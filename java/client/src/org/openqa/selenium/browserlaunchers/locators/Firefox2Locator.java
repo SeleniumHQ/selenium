@@ -12,6 +12,7 @@ import org.openqa.selenium.os.CommandLine;
 public class Firefox2Locator extends FirefoxLocator {
 
     private static final String[] USUAL_UNIX_LAUNCHER_LOCATIONS = {
+            "/Applications/Minefield.app/Contents/MacOS",
             "/Applications/Firefox-2.app/Contents/MacOS",
             "/Applications/Firefox.app/Contents/MacOS",
             "/usr/lib/firefox", /* Ubuntu 7.x default location */
