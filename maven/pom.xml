@@ -125,12 +125,12 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>r07</version>
+                <version>r09</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>1.4</version>
+                <version>2.0.1</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -160,7 +160,7 @@
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
-                <version>5.14.1</version>
+                <version>6.0.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
