@@ -1,6 +1,7 @@
 0.2.1 (2011-06-01)
 ==================
 
+* Allow passing custom command line switches to Chrome (requires today's release of the Chrome server)
 * Avoid mutating arguments to find_element (issue #1273).
 * Avoid conflicts when SUT modifies Array.prototype
 * Allow setting arbitrary capabilities by adding Capabilities#[]=

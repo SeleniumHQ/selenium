@@ -7,30 +7,29 @@ module Selenium
 
         def initialize(opts = {})
           http_client = opts.delete(:http_client)
+          switches    = opts.delete(:switches)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
+          caps = Remote::Capabilities.chrome
+
+          if switches
+            unless switches.kind_of? Array
+              raise ArgumentError, ":switches must be an Array of Strings"
+            end
+
+            caps.merge! 'chrome.switches' => switches.map { |e| e.to_s }
+          end
+
+
           @service = Service.default_service
           @service.start
 
-          # TODO: chrome command line switches when it's supported
-          # in the released server
-          #
-          # http://peter.sh/experiments/chromium-command-line-switches/
-          #
-          # {
-          #   :chrome => {
-          #     :customSwitches => {
-          #       "--disable-translate" => ""
-          #     }
-          #   }
-          # }
-
           remote_opts = {
             :url                  => @service.uri,
-            :desired_capabilities => :chrome
+            :desired_capabilities => caps
           }
 
           remote_opts.merge!(:http_client => http_client) if http_client
