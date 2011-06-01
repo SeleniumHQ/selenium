@@ -19,6 +19,7 @@ package org.openqa.selenium.v1;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
+import com.thoughtworks.selenium.BrowserConfigurationOptions;
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 import org.openqa.selenium.Build;
@@ -57,6 +58,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
         args = allArgs;
       }
       command = new CommandLine("java", args);
+      command.copyOutputTo(System.out);
       command.executeAsync();
 
       PortProber.pollPort(port);
@@ -118,6 +120,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
           }
         }
       }, baseUrl);
+      selenium.start();
     } else {
       int port = 0;
       try {
@@ -126,9 +129,16 @@ public class SeleniumTestEnvironment implements TestEnvironment {
         throw Throwables.propagate(e);
       }
       selenium = new DefaultSelenium("localhost", port, browser, baseUrl);
+      if (Boolean.getBoolean("webdriver.debug")) {
+         BrowserConfigurationOptions options = new BrowserConfigurationOptions();
+        options.set("browserSideLog", "true");
+        selenium.start(options);
+        selenium.setBrowserLogLevel("debug");
+      } else {
+        selenium.start();
+      }
     }
 
-    selenium.start();
     return selenium;
   }
 

@@ -45,7 +45,7 @@ SeleniumFrame.prototype._setLocation = function(location) {
     location += (location.indexOf("?") == -1 ? "?" : "&");
     location += "thisIsChrome=" + isChrome + "&thisIsHTA=" + isHTA; 
     this.frame.src = location;
-}
+};
 
 MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogsWithoutRecorder = MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs;
 
@@ -58,4 +58,4 @@ MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowTo
     if (recorder) {
         recorder.reattachWindowMethods();
     }
-}
+};

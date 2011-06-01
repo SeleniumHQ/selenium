@@ -3,6 +3,7 @@ package com.thoughtworks.selenium.corebased;
 import java.util.regex.Pattern;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+import org.junit.After;
 import org.junit.Test;
 
 public class TestWaitFor extends InternalSelenseTestBase {
@@ -52,4 +53,9 @@ public class TestWaitFor extends InternalSelenseTestBase {
 		}
 		 fail("expected failure"); } catch (Throwable e) {}
 	}
+
+    @After
+    public void resetTimeout() {
+        selenium.setTimeout("30000");
+    }
 }

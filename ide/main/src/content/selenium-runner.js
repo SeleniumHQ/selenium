@@ -61,7 +61,7 @@ MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowTo
         windowToModify = windowToModify.wrappedJSObject;
     }
     return BrowserBot.prototype.modifyWindowToRecordPopUpDialogs.call(this, windowToModify, browserBot);
-}
+};
 
 Selenium.prototype.doPause = function(waitTime) {
     currentTest.pauseInterval = waitTime;
@@ -285,7 +285,7 @@ function start(baseURL, handler, useLastWindow) {
 
 	currentTest = new IDETestLoop(commandFactory, handler);
 
-	currentTest.getCommandInterval = function() {return getInterval();}
+	currentTest.getCommandInterval = function() {return getInterval();};
 	testCase.debugContext.reset();
 	currentTest.start();
     //setState(Debugger.PLAYING);
@@ -302,7 +302,7 @@ function executeCommand(baseURL, command) {
 
     currentTest = new IDETestLoop(commandFactory);
 
-	currentTest.getCommandInterval = function() {return 0;}
+	currentTest.getCommandInterval = function() {return 0;};
 	var first = true;
 	currentTest.nextCommand = function() {
 		if (first) {
