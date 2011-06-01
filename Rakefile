@@ -33,6 +33,9 @@ require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 
+# download helper
+require 'rake-tasks/downloader'
+
 version = "2.0rc1"
 ide_version = "1.0.12"
 
@@ -222,6 +225,47 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
                          :src => "cpp/IEDriver/result_types.txt",
                          :type => "java",
                          :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
+
+
+rule %r[third_party/gecko-2/(linux|mac|win32)] do |t|
+  case t.name
+  when /linux/
+    path = Downloader.fetch "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2"
+  when /mac/
+    path = Downloader.fetch "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.mac-i386.sdk.tar.bz2"
+  when /win32/
+    path = Downloader.fetch "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.win32.sdk.zip"
+  else
+    raise "don't know where to fetch #{t.name}"
+  end
+
+  begin
+    destination = "third_party/gecko-2"
+
+    if Platform.windows?
+      require 'third_party/jruby/rubyzip.jar' if RUBY_PLATFORM == "java"
+      require 'zip/zip'
+
+      puts "Unzipping: #{File.basename path}"
+      Zip::ZipFile.open(path) do |zip|
+        zip.each do |entry|
+          to      = File.join(destination, entry.name)
+          dirname = File.dirname(to)
+
+          FileUtils.mkdir_p dirname unless File.exist? dirname
+          zip.extract(entry, to)
+        end
+      end
+    else
+      puts "Unpacking: #{File.basename path}"
+      sh "tar", "jxf", path, "-C", destination
+    end
+
+    mv "third_party/gecko-2/xulrunner-sdk", t.name
+  ensure
+    rm_rf path
+  end
+end
 
 gecko_sdk = "third_party/gecko-2/linux/"
 
