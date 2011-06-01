@@ -177,9 +177,6 @@ class ApiExampleTest (unittest.TestCase):
         self._loadPage(page)
         elem = self.driver.find_element_by_id("id1")
         attr = elem.get_attribute("href")
-        # IE returns full URL
-        if self.driver.name == "internet explorer":
-            attr = attr[-1]
         self.assertEquals("http://localhost:%d/xhtmlTest.html#" % self.webserver.port, attr)
 
     def testGetImplicitAttribute(self):
