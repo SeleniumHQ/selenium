@@ -320,6 +320,7 @@ void Session::AddManagedBrowser(BrowserHandle browser_wrapper) {
 int Session::CreateNewBrowser(void) {
 	DWORD dwProcId = this->factory_.LaunchBrowserProcess(this->port_, this->ignore_protected_mode_settings_);
 	if (dwProcId == NULL) {
+		this->is_waiting_ = false;
 		return ENOSUCHDRIVER;
 	}
 	ProcessWindowInfo process_window_info;
