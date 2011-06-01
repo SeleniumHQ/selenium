@@ -1,7 +1,10 @@
 package org.openqa.selenium.chrome;
 
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
@@ -72,7 +75,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
  *
  * @see ChromeDriverService#createDefaultService
  */
-public class ChromeDriver extends RemoteWebDriver {
+public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
 
   /**
    * Creates a new ChromeDriver using the
@@ -91,5 +94,12 @@ public class ChromeDriver extends RemoteWebDriver {
    */
   public ChromeDriver(ChromeDriverService service) {
     super(new ChromeCommandExecutor(service), DesiredCapabilities.chrome());
+  }
+
+  public <X> X getScreenshotAs(OutputType<X> target) {
+    // Get the screenshot as base64.
+    String base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
+    // ... and convert it.
+    return target.convertFromBase64Png(base64);
   }
 }
