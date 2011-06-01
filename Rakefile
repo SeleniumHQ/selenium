@@ -572,17 +572,16 @@ end
 
 task :release => [
     '//java/server/src/org/openqa/selenium/server:server:zip',
-    '//java/server/src/org/openqa/selenium/server:server:uber',
-    '//java/server/src/org/openqa/grid/selenium:selenium:uber',
+    '//java/server/src/org/openqa/grid/selenium:selenium:zip',
     '//java/client/src/org/openqa/selenium:client-combined:zip'
   ] do |t|
   # Unzip each of the deps and rename the pieces that need renaming
   renames = {
     "client-combined-nodeps-srcs.jar" => "selenium-java-#{version}-srcs.jar",
     "client-combined-nodeps.jar" => "selenium-java-#{version}.jar",
-    "server-nodeps-srcs.jar" => "selenium-server-#{version}-srcs.jar",
-    "server-nodeps.jar" => "selenium-server-#{version}.jar",
-    "server-standalone.jar" => "selenium-server-standalone-#{version}.jar",
+    "selenium-nodeps-srcs.jar" => "selenium-server-#{version}-srcs.jar",
+    "selenium-nodeps.jar" => "selenium-server-#{version}.jar",
+    "selenium-standalone.jar" => "selenium-server-standalone-#{version}.jar",
   }
 
   t.prerequisites.each do |pre|
@@ -610,9 +609,8 @@ task :release => [
   end
 
   mkdir_p "build/dist"
-  cp "build/java/server/src/org/openqa/selenium/server/server-standalone.jar", "build/dist/selenium-server-standalone-#{version}-without-grid.jar"
   cp "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar", "build/dist/selenium-server-standalone-#{version}.jar"
-  cp "build/java/server/src/org/openqa/selenium/server/server.zip", "build/dist/selenium-server-#{version}.zip"
+  cp "build/java/server/src/org/openqa/grid/selenium/selenium.zip", "build/dist/selenium-server-#{version}.zip"
   cp "build/java/client/src/org/openqa/selenium/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
 end
 
