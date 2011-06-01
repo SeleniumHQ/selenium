@@ -252,12 +252,17 @@ end # RubyMappings
 class RubyRunner
 
   def self.run(opts)
-    cmd = ["ruby"]
+    cmd = []
 
     if Platform.jruby?
       require 'java'
       JRuby.runtime.instance_config.run_ruby_in_process = true
+      cmd << "ruby"
       cmd << "-J-Djava.awt.headless=true" if opts[:headless]
+    elsif defined?(Gem)
+      cmd << Gem.ruby
+    else
+      cmd << "ruby"
     end
 
     if opts[:debug]
