@@ -1,6 +1,16 @@
-0.2.1 (???)
+0.2.1 (2011-06-01)
 ==================
 
+* Avoid mutating arguments to find_element (issue #1273).
+* Avoid conflicts when SUT modifies Array.prototype
+* Allow setting arbitrary capabilities by adding Capabilities#[]=
+* The Chrome driver is extended with TakesScreenshot.
+* IE driver detects bad protected mode settings.
+* Firefox driver no longer considers opacity when determining visibility.
+* Fix for ActionBuilder#move_by.
+* Treat Errno::EBADF as an indication that we failed to grab the socket lock (issue #1611).
+* Ensure Firefox launches don't hang on some Ruby versions (by improving Selenium::WebDriver::SocketPoller).
+* Various internal driver improvements.
 
 0.2.0 (2011-04-22)
 ==================
