@@ -64,7 +64,7 @@ public class ChromeDriverService {
         executable.getCanonicalPath(),
         String.format("--port=%d", port));
 
-    this.url = new URL(String.format("http://localhost:%d", port));
+    url = new URL(String.format("http://localhost:%d", port));
   }
 
   /**
@@ -146,7 +146,8 @@ public class ChromeDriverService {
       process = processBuilder.start();
       pipe(process.getErrorStream(), System.err);
       pipe(process.getInputStream(), System.out);
-      new UrlChecker().waitUntilAvailable(url, 20, SECONDS);
+      URL healthz = new URL(url.toString() + "/healthz");
+      new UrlChecker().waitUntilAvailable(healthz, 20, SECONDS);
     } finally {
       lock.unlock();
     }
