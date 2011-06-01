@@ -339,10 +339,10 @@ BrowserBot.prototype._modifyWindow = function(win) {
     if (!this.proxyInjectionMode) {
         LOG.debug('modifyWindow ' + this.uniqueId + ":" + win[this.uniqueId]);
     }
-    if (!win[this.uniqueId]) {
-        win[this.uniqueId] = 1;
-        this.modifyWindowToRecordPopUpDialogs(win, this);
-    }
+
+    this.modifyWindowToRecordPopUpDialogs(win, this);
+    win[this.uniqueId] = 1;
+
     // In proxyInjection mode, we have our own mechanism for detecting page loads
     if (!this.proxyInjectionMode) {
         this.modifySeparateTestWindowToDetectPageLoads(win);
@@ -689,6 +689,26 @@ BrowserBot.prototype.getCurrentPage = function() {
     return this;
 };
 
+
+BrowserBot.prototype.windowNeedsModifying = function(win, uniqueId) {
+    // On anything but Firefox, checking the unique id is enough.
+    // Firefox 4 introduces a race condition which selenium regularly loses.
+
+    try {
+        var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
+            getService(Components.interfaces.nsIXULAppInfo);
+        var versionChecker = Components.
+            classes['@mozilla.org/xpcom/version-comparator;1'].
+            getService(Components.interfaces.nsIVersionComparator);
+
+        if (versionChecker.compare(appInfo.version, '4.0b1') >= 0) {
+            return win.alert.toString().indexOf("native code") != -1;
+        }
+    } catch (ignored) {}
+    return !win[uniqueId];
+};
+
+
 BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(originalWindow, browserBot) {
     var self = this;
 
@@ -700,6 +720,10 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(originalWindow,
     }
 
     windowToModify.seleniumAlert = windowToModify.alert;
+
+    if (!self.windowNeedsModifying(windowToModify, browserBot.uniqueId)) {
+        return;
+    }
 
     windowToModify.alert = function(alert) {
         browserBot.recordedAlerts.push(alert);
