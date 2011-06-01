@@ -84,6 +84,16 @@ public class DefaultToFIFOPriorityTest {
 
 	@Test
 	public void validateRequestAreHandledFIFO() throws InterruptedException {
+		int cpt=0;
+		while (cpt < 8){
+			try {
+				requests.get(0).getTestSession();
+				break;
+			}catch (IllegalAccessError e){
+				// ignore.
+			}
+			Thread.sleep(250);
+		}
 		Assert.assertNotNull(requests.get(0).getTestSession());
 		Assert.assertEquals(1, requests.get(0).getDesiredCapabilities().get("_priority"));
 	}
