@@ -50,7 +50,6 @@ import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -76,9 +75,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
+public class HtmlUnitWebElement implements WrapsDriver,
     FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
-    FindsByCssSelector, Locatable {
+    FindsByCssSelector, Locatable, WebElement {
 
   protected final HtmlUnitDriver parent;
   protected final HtmlElement element;
@@ -459,16 +458,6 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
       return 5; // wrong... but better than nothing
     }
     return Math.round(Float.parseFloat(cssValue));
-  }
-
-  public void dragAndDropBy(int moveRightBy, int moveDownBy) {
-    assertElementNotStale();
-    throw new UnsupportedOperationException("dragAndDropBy");
-  }
-
-  public void dragAndDropOn(RenderedWebElement element) {
-    assertElementNotStale();
-    throw new UnsupportedOperationException("dragAndDropOn");
   }
 
   // This isn't very pretty. Sorry.

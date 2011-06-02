@@ -43,7 +43,6 @@ import org.openqa.selenium.internal.seleniumemulation.DeleteAllVisibleCookies;
 import org.openqa.selenium.internal.seleniumemulation.DeleteCookie;
 import org.openqa.selenium.internal.seleniumemulation.DoubleClick;
 import org.openqa.selenium.internal.seleniumemulation.DragAndDrop;
-import org.openqa.selenium.internal.seleniumemulation.DragAndDropToObject;
 import org.openqa.selenium.internal.seleniumemulation.ElementFinder;
 import org.openqa.selenium.internal.seleniumemulation.FindFirstSelectedOptionProperty;
 import org.openqa.selenium.internal.seleniumemulation.FindSelectedOptionProperties;
@@ -322,7 +321,6 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("doubleClick", new DoubleClick(elementFinder));
     seleneseMethods.put("dragdrop", new DragAndDrop(elementFinder));
     seleneseMethods.put("dragAndDrop", new DragAndDrop(elementFinder));
-    seleneseMethods.put("dragAndDropToObject", new DragAndDropToObject(elementFinder));
     seleneseMethods.put("fireEvent", new FireEvent(elementFinder, javascriptLibrary));
     seleneseMethods.put("focus", new FireNamedEvent(elementFinder, javascriptLibrary, "focus"));
     seleneseMethods.put("getAlert", new GetAlert(alertOverride));

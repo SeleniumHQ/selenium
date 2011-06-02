@@ -23,7 +23,6 @@ import java.util.Map;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.openqa.selenium.remote.RenderedRemoteWebElement;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
@@ -70,12 +69,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
   }
   
   protected RemoteWebElement newRemoteWebElement() {
-    RemoteWebElement toReturn;
-    if (driver.getCapabilities().isJavascriptEnabled()) {
-      toReturn = new RenderedRemoteWebElement();
-    } else {
-      toReturn = new RemoteWebElement();
-    }
+    RemoteWebElement toReturn = new RemoteWebElement();
     toReturn.setParent(driver);
     return toReturn;
   }

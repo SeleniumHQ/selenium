@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
@@ -62,13 +61,8 @@ public class KnownElements {
     };
 
     Class[] proxyThese;
-    if (element instanceof RenderedWebElement) {
-      if (element instanceof Locatable) {
-        proxyThese = new Class[]{RenderedWebElement.class, ProxiedElement.class,
-          Locatable.class};
-      } else {
-        proxyThese = new Class[]{RenderedWebElement.class, ProxiedElement.class};
-      }      
+    if (element instanceof Locatable) {
+      proxyThese = new Class[]{WebElement.class, ProxiedElement.class, Locatable.class};
     } else {
       proxyThese = new Class[]{WebElement.class, ProxiedElement.class};
     }

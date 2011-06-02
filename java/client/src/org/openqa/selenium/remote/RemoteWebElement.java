@@ -19,21 +19,14 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.*;
-import org.openqa.selenium.internal.FindsByClassName;
-import org.openqa.selenium.internal.FindsByCssSelector;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByTagName;
-import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.*;
 
 import java.util.List;
 import java.util.Map;
 
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
-    FindsByTagName, FindsByClassName, FindsByCssSelector, FindsByXPath, WrapsDriver {
+    FindsByTagName, FindsByClassName, FindsByCssSelector, FindsByXPath, WrapsDriver, Locatable {
 
   protected String id;
   protected RemoteWebDriver parent;
@@ -258,5 +251,36 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     int width = ((Long) rawSize.get("width")).intValue();
     int height = ((Long) rawSize.get("height")).intValue();
     return new Dimension(width, height);
+  }
+
+  public Point getLocationOnScreenOnceScrolledIntoView() {
+    Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
+        ImmutableMap.of("id", getId()));
+
+    @SuppressWarnings("unchecked")
+    Map<String, Number> mapped = (Map<String, Number>) response.getValue();
+
+    return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
+  }
+
+  public Coordinates getCoordinates() {
+    return new Coordinates() {
+
+      public Point getLocationOnScreen() {
+        return getLocationOnScreenOnceScrolledIntoView();
+      }
+
+      public Point getLocationInViewPort() {
+        throw new UnsupportedOperationException("Not supported yet.");
+      }
+
+      public Point getLocationInDOM() {
+        throw new UnsupportedOperationException("Not supported yet.");
+      }
+
+      public Object getAuxiliry() {
+        return getId();
+      }
+    };
   }
 }

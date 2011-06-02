@@ -361,12 +361,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    */
   @Deprecated
   protected RemoteWebElement newRemoteWebElement() {
-    RemoteWebElement toReturn;
-    if (capabilities.isJavascriptEnabled()) {
-      toReturn = new RenderedRemoteWebElement();
-    } else {
-      toReturn = new RemoteWebElement();
-    }
+    RemoteWebElement toReturn = new RemoteWebElement();
     toReturn.setParent(this);
     return toReturn;
   }

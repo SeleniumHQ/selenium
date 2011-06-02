@@ -119,6 +119,13 @@ public class Actions implements ActionChainsGenerator {
     return this;
   }
 
+  public Actions dragAndDropBy(WebElement source, int xOffset, int yOffset) {
+    action.addAction(new ClickAndHoldAction(mouse, (Locatable) source));
+    action.addAction(new MoveToOffsetAction(mouse, null, xOffset, yOffset));
+    action.addAction(new ButtonReleaseAction(mouse, null));
+    return this;
+  }
+
   public Action build() {
     CompositeAction toReturn = action;
     action = new CompositeAction();

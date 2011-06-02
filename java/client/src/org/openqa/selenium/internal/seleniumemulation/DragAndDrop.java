@@ -17,8 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 public class DragAndDrop extends SeleneseCommand<Void> {
   private final ElementFinder finder;
@@ -33,7 +34,8 @@ public class DragAndDrop extends SeleneseCommand<Void> {
     int xDelta = Integer.parseInt(parts[0].trim());
     int yDelta = Integer.parseInt(parts[1].trim());
 
-    ((RenderedWebElement) finder.findElement(driver, locator)).dragAndDropBy(xDelta, yDelta);
+    WebElement element = finder.findElement(driver, locator);
+    new Actions(driver).dragAndDropBy(element, xDelta, yDelta).perform();
 
     return null;
   }

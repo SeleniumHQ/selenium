@@ -20,7 +20,6 @@ package org.openqa.selenium.support;
 import java.lang.reflect.Field;
 
 import org.jmock.integration.junit3.MockObjectTestCase;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.FieldDecorator;
@@ -137,7 +136,7 @@ public class PageFactoryTest extends MockObjectTestCase {
     @FindBy(name = "q")
     public WebElement q;
 
-    public RenderedWebElement rendered;
+    public WebElement rendered;
   }
 
   public static class ChildPage extends PublicPage {

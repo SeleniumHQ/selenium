@@ -22,7 +22,6 @@ import java.lang.reflect.Proxy;
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.By;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -47,21 +46,6 @@ public class LocatingElementHandlerTest extends MockObjectTestCase {
 
         proxy.sendKeys("Fishy");
         proxy.submit();
-    }
-
-    public void testShouldDelegateToARenderedWebElementIfNecessary() throws NoSuchFieldException {
-      final ElementLocator locator = mock(ElementLocator.class);
-      final WebElement element = mock(WebElement.class);
-
-      checking(new Expectations() {{
-            allowing(locator).findElement(); will(returnValue(element));
-            one(element).getLocation();
-      }});
-
-      LocatingElementHandler handler = new LocatingElementHandler(locator);
-      RenderedWebElement proxy = (RenderedWebElement) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{RenderedWebElement.class}, handler);
-
-      proxy.getLocation();
     }
 
     public void testShouldUseAnnotationsToLookUpByAlternativeMechanisms() {
@@ -123,9 +107,6 @@ public class LocatingElementHandlerTest extends MockObjectTestCase {
     @SuppressWarnings("unused")
     @CacheLookup
     private WebElement staysTheSame;
-
-    @SuppressWarnings("unused")
-    private RenderedWebElement rendered;
 
     public void doQuery(String foo) {
       query.clear();

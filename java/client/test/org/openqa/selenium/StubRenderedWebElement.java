@@ -7,7 +7,7 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 /**
  * Stub rendered web element.
  */
-public class StubRenderedWebElement extends StubElement implements RenderedWebElement, Locatable {
+public class StubRenderedWebElement extends StubElement implements Locatable, WebElement {
 
   public Point getLocationOnScreenOnceScrolledIntoView() {
     return null;
@@ -16,9 +16,4 @@ public class StubRenderedWebElement extends StubElement implements RenderedWebEl
   public Coordinates getCoordinates() {
     return null;
   }
-
-  public void dragAndDropBy(int moveRightBy, int moveDownBy) { }
-
-  public void dragAndDropOn(RenderedWebElement element) { }
-
 }

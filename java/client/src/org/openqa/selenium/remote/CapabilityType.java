@@ -37,6 +37,7 @@ public interface CapabilityType {
   String ROTATABLE = "rotatable";
   // Enable this capability to accept all SSL certs by defaults.
   String ACCEPT_SSL_CERTS = "acceptSslCerts";
+  String HAS_NATIVE_EVENTS = "nativeEvents";
 
   interface ForSeleniumServer {
     String AVOIDING_PROXY = "avoidProxy";

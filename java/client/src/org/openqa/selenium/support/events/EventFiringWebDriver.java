@@ -239,8 +239,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   private WebElement createWebElement(WebElement from) {
-    return from instanceof RenderedWebElement ?
-      new EventFiringRenderedWebElement(from) : new EventFiringWebElement(from);
+    return new EventFiringWebElement(from);
   }
 
   public Keyboard getKeyboard() {
@@ -265,7 +264,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     return new Actions(this);
   }
 
-  private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver {
+  private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver, Locatable {
     private final WebElement element;
     private final WebElement underlyingElement;
 
@@ -404,31 +403,13 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     public WebDriver getWrappedDriver() {
       return driver;
     }
-  }
-
-  private class EventFiringRenderedWebElement extends EventFiringWebElement implements
-      RenderedWebElement, Locatable {
-    private final RenderedWebElement delegate;
-
-    public EventFiringRenderedWebElement(WebElement element) {
-      super(element);
-      delegate = (RenderedWebElement) element;
-    }
-
-    public void dragAndDropBy(int moveRightBy, int moveDownBy) {
-      delegate.dragAndDropBy(moveRightBy, moveDownBy);
-    }
-
-    public void dragAndDropOn(RenderedWebElement element) {
-      delegate.dragAndDropOn(element);
-    }
 
     public Point getLocationOnScreenOnceScrolledIntoView() {
-      return ((Locatable) delegate).getLocationOnScreenOnceScrolledIntoView();
+      return ((Locatable) underlyingElement).getLocationOnScreenOnceScrolledIntoView();
     }
 
     public Coordinates getCoordinates() {
-      return ((Locatable) delegate).getCoordinates();
+      return ((Locatable) underlyingElement).getCoordinates();
     }
   }
 

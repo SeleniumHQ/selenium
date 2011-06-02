@@ -35,12 +35,11 @@ public class VisibilityTest extends AbstractDriverTestCase {
   public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
     driver.get(pages.javascriptPage);
 
-    assertThat(((RenderedWebElement) driver.findElement(By.id("displayed"))).isDisplayed(),
+    assertThat(driver.findElement(By.id("displayed")).isDisplayed(),
                is(true));
-    assertThat(((RenderedWebElement) driver.findElement(By.id("none"))).isDisplayed(), is(false));
-    assertThat(((RenderedWebElement) driver.findElement(By.id("suppressedParagraph")))
-        .isDisplayed(), is(false));
-    assertThat(((RenderedWebElement) driver.findElement(By.id("hidden"))).isDisplayed(), is(false));
+    assertThat(driver.findElement(By.id("none")).isDisplayed(), is(false));
+    assertThat(driver.findElement(By.id("suppressedParagraph")).isDisplayed(), is(false));
+    assertThat(driver.findElement(By.id("hidden")).isDisplayed(), is(false));
   }
 
   @JavascriptEnabled

@@ -223,9 +223,6 @@ public class DriverServlet extends HttpServlet {
     getMapper.bind("/session/:sessionId/element/:id/css/:propertyName", GetCssProperty.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
 
-    postMapper.bind("/session/:sessionId/element/:id/drag", DragElement.class)
-        .on(ResultType.SUCCESS, new EmptyResult());
-
     getMapper.bind("/session/:sessionId/element/:id/attribute/:name", GetElementAttribute.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/element/:id/equals/:other", ElementEquality.class)
