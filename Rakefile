@@ -36,7 +36,7 @@ require 'rake-tasks/ie_code_generator'
 # download helper
 require 'rake-tasks/downloader'
 
-version = "2.0rc1"
+version = "2.0rc2"
 ide_version = "1.0.12"
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -104,7 +104,9 @@ task :support => [
 ]
 task :iphone_client => ['//java/client/src/org/openqa/selenium/iphone']
 task :iphone => [:iphone_server, :iphone_client]
-task :'selenium-server-standalone' => ["//java/server/src/org/openqa/selenium/remote/server:server:uber"]
+
+desc 'Build the standalone server'
+task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/server:server:uber'
 
 task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//javascript/selenium-atoms", "se_ide:setup_proxy" ]
@@ -616,9 +618,6 @@ end
 
 desc 'Build the selenium client jars'
 task 'selenium-java' => '//java/client/src/org/openqa/selenium:client-combined:project'
-
-desc 'Build the standalone server'
-task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/server:server:uber'
 
 desc 'Build and package Selenium IDE'
 task :release_ide  => [:ide] do
