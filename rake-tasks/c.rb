@@ -68,7 +68,8 @@ def gcc(srcs, out, args, link_args, is_32_bit, prebuilt)
   # if we've made it this far, try to link. If link fails,
   # copy from prebuilt.
   linker = is_cpp_code ? "g++" : "gcc"
-  sh "#{linker} -o #{out} #{obj_dir}/*.o #{flags}" do |link_ok, res|
+  linker_cmd = "#{linker} -o #{out} #{obj_dir}/*.o #{flags}"
+  sh linker_cmd do |link_ok, res|
     if (!link_ok)
       copy_prebuilt(prebuilt, out)
       return
