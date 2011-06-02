@@ -211,14 +211,6 @@ namespace OpenQA.Selenium.Remote
         {
             get { return this.capabilities; }
         }
-
-        /// <summary>
-        /// Gets a value indicating whether JavaScript is enabled for this browser.
-        /// </summary>
-        public bool IsJavaScriptEnabled
-        {
-            get { return this.capabilities.IsJavaScriptEnabled; }
-        }
         #endregion
 
         #region Protected properties

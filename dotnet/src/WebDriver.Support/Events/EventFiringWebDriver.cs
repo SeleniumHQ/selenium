@@ -127,26 +127,6 @@ namespace OpenQA.Selenium.Support.Events
 
         #endregion
 
-        #region IJavaScriptExecutor Properties
-        /// <summary>
-        /// Gets a value indicating whether JavaScript is enabled for this browser.
-        /// </summary>
-        public bool IsJavaScriptEnabled
-        {
-            get
-            {
-                bool javascriptEnabled = false;
-                IJavaScriptExecutor javascriptDriver = this.driver as IJavaScriptExecutor;
-                if (javascriptDriver != null)
-                {
-                    javascriptEnabled = javascriptDriver.IsJavaScriptEnabled;
-                }
-
-                return javascriptEnabled;
-            }
-        }
-        #endregion
-
         #region IWebDriver Members
         /// <summary>
         /// Gets or sets the URL the browser is currently displaying.

@@ -28,12 +28,6 @@ namespace OpenQA.Selenium
     public interface IJavaScriptExecutor
     {
         /// <summary>
-        /// Gets a value indicating whether JavaScript is enabled for this browser.
-        /// </summary>
-        [Obsolete("This property will be removed. Only one driver allows JavaScript to be toggled.")]
-        bool IsJavaScriptEnabled { get; }
-
-        /// <summary>
         /// Executes JavaScript in the context of the currently selected frame or window.
         /// </summary>
         /// <param name="script">The JavaScript code to execute.</param>
