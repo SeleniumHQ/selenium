@@ -50,16 +50,6 @@ namespace OpenQA.Selenium
         string Text { get; }
 
         /// <summary>
-        /// Gets a value indicating the content of the "value" attribute for this element.
-        /// </summary>
-        /// <remarks>If the content of the "value" attribute has been modified after the page has 
-        /// loaded (for example, through JavaScript) then this will reflect the current value 
-        /// of the "value" attribute.
-        /// </remarks>
-        [Obsolete("Use IWebElement.GetAttribute(\"value\") instead")]
-        string Value { get; }
-
-        /// <summary>
         /// Gets a value indicating whether or not this element is enabled.
         /// </summary>
         /// <remarks>The <see cref="Enabled"/> property will generally 

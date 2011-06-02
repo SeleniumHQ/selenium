@@ -910,14 +910,6 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Gets the value of the element's "value" attribute. If this value has been modified after the page has loaded (for example, through javascript) then this will reflect the current value of the "value" attribute.
-            /// </summary>
-            public string Value
-            {
-                get { return this.underlyingElement.GetAttribute("value"); }
-            }
-
-            /// <summary>
             /// Gets a value indicating whether an element is currently enabled
             /// </summary>
             public bool Enabled

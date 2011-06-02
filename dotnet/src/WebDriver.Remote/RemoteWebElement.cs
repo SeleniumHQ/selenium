@@ -72,21 +72,6 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets the value of the element's "value" attribute. If this value has been modified after the page has loaded (for example, through javascript) then this will reflect the current value of the "value" attribute.
-        /// </summary>
-        [Obsolete("Use IWebElement.GetAttribute(\"value\") instead")]
-        public string Value
-        {
-            get
-            {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", this.elementId);
-                Response commandResponse = this.Execute(DriverCommand.GetElementValue, parameters);
-                return commandResponse.Value.ToString();
-            }
-        }
-
-        /// <summary>
         /// Gets a value indicating whether an element is currently enabled
         /// </summary>
         public bool Enabled
