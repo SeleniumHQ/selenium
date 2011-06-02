@@ -21,9 +21,11 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.EmptyTest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Platform.WINDOWS;
@@ -35,7 +37,7 @@ public class InternetExplorerDriverTestSuite extends TestCase {
     if (Platform.getCurrent().is(WINDOWS)) {
       return new TestSuiteBuilder()
           .addSourceDir("java/client/test")
-          .usingDriver(InternetExplorerDriver.class)
+          .usingDriver(TestInternetExplorerDriver.class)
           .exclude(IE)
           .includeJavascriptTests()
           .keepDriverInstance()
@@ -46,5 +48,18 @@ public class InternetExplorerDriverTestSuite extends TestCase {
     TestSuite toReturn = new TestSuite();
     toReturn.addTestSuite(EmptyTest.class);
     return toReturn;
+  }
+
+  public static class TestInternetExplorerDriver extends InternetExplorerDriver {
+    public TestInternetExplorerDriver() {
+      super(buildDesiredCapabilities());
+    }
+
+    private static Capabilities buildDesiredCapabilities() {
+      DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
+      caps.setCapability(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+        System.out.println("caps = " + caps);
+      return caps;
+    }
   }
 }

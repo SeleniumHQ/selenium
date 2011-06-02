@@ -47,13 +47,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
+  /**
+   * Setting this capability will make your tests unstable and hard to debug.
+   */
+  public final static String INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS = "ignoreProtectedModeSettings";
+
   private Pointer server;
   private IEServer lib;
   private int port;
   private WindowsProxyManager proxyManager;
 
   public InternetExplorerDriver() {
-    setup();
+    setup(DesiredCapabilities.internetExplorer());
   }
 
   public InternetExplorerDriver(Capabilities capabilities) {
@@ -61,12 +66,12 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
 
     proxyManager = new WindowsProxyManager(true, "webdriver-ie", 0, 0);
     prepareProxy(capabilities);
-    setup();
+    setup(capabilities);
   }
 
   public InternetExplorerDriver(int port) {
     this.port = port;
-    setup();
+    setup(DesiredCapabilities.internetExplorer());
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {
@@ -84,7 +89,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
       }
   }
 
-  private void setup() {
+  private void setup(Capabilities capabilities) {
     if (port == 0) {
       port = PortProber.findFreePort();
     }
@@ -96,7 +101,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
         return new InternetExplorerElement(InternetExplorerDriver.this);
       }
     });
-    startSession(DesiredCapabilities.internetExplorer());
+    startSession(capabilities);
   }
 
   protected void startClient() {
@@ -129,6 +134,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
       try {
         FileHandler.copyResource(parentDir, getClass(), "IEDriver.dll");
       } catch (IOException ioe) {
+        // TODO(simon): Delete this. Test code should not be in production code
         try {
           if (Boolean.getBoolean("webdriver.development")) {
             String arch = System.getProperty("os.arch", "")
