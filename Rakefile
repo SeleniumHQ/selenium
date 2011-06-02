@@ -230,12 +230,17 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 
 
 rule %r[third_party/gecko-2/(linux|mac|win32)] do |t|
+  mkdir_p t.name
+
   url = case t.name
   when /linux/
+    next unless Platform.linux?
     "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2"
   when /mac/
+    next unless Platform.mac?
     "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.mac-i386.sdk.tar.bz2"
   when /win32/
+    next unless Platform.windows?
     "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.win32.sdk.zip"
   else
     raise "don't know where to fetch #{t.name}"
@@ -268,8 +273,6 @@ rule %r[third_party/gecko-2/(linux|mac|win32)] do |t|
     mv "third_party/gecko-2/xulrunner-sdk", t.name
   rescue StandardError, Timeout::Error => ex
     # ignore errors - dependant targets will fall back to prebuilts
-
-    mkdir_p t.name
     $stderr.puts "Failed to download the Gecko 2 SDK - manually delete #{t.name} to retry."
 
     next
