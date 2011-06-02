@@ -103,7 +103,6 @@
     <Compile Include="Internal\IFindsByTagName.cs" />
     <Compile Include="Internal\IFindsByXPath.cs" />
     <Compile Include="Internal\ReturnedCookie.cs" />
-    <Compile Include="IRenderedWebElement.cs" />
     <Compile Include="ISearchContext.cs" />
     <Compile Include="ITargetLocator.cs" />
     <Compile Include="IWebDriver.cs" />

@@ -650,17 +650,7 @@ namespace OpenQA.Selenium.Support.Events
 
         private IWebElement WrapElement(IWebElement underlyingElement)
         {
-            IWebElement wrappedElement = null;
-            IRenderedWebElement renderedElement = underlyingElement as IRenderedWebElement;
-            if (renderedElement != null)
-            {
-                wrappedElement = new EventFiringRenderedWebElement(this, underlyingElement);
-            }
-            else
-            {
-                wrappedElement = new EventFiringWebElement(this, underlyingElement);
-            }
-
+            IWebElement wrappedElement = new EventFiringWebElement(this, underlyingElement);
             return wrappedElement;
         }
 
@@ -1213,65 +1203,6 @@ namespace OpenQA.Selenium.Support.Events
                 }
 
                 return wrappedElementList.AsReadOnly();
-            }
-
-            #endregion
-        }
-
-        /// <summary>
-        /// Provides a mechanism to find Rendered Elements on the page
-        /// </summary>
-        private class EventFiringRenderedWebElement : EventFiringWebElement, IRenderedWebElement
-        {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="EventFiringRenderedWebElement"/> class.
-            /// </summary>
-            /// <param name="driver">The <see cref="EventFiringWebDriver"/> instance hosting this element.</param>
-            /// <param name="element">The <see cref="IWebElement"/> to wrap for event firing.</param>
-            public EventFiringRenderedWebElement(EventFiringWebDriver driver, IWebElement element)
-                : base(driver, element)
-            {
-            }
-
-            #region IRenderedWebElement Members
-            /// <summary>
-            /// Method to return the value of a CSS Property
-            /// </summary>
-            /// <param name="propertyName">CSS property key</param>
-            /// <returns>string value of the CSS property</returns>
-            public string GetValueOfCssProperty(string propertyName)
-            {
-                return this.GetCssValue(propertyName);
-            }
-
-            /// <summary>
-            /// Moves the mouse over the element to do a hover
-            /// </summary>
-            public void Hover()
-            {
-                IHasInputDevices inputDevicesDriver = this.ParentDriver as IHasInputDevices;
-                inputDevicesDriver.ActionBuilder.MoveToElement(this).Build().Perform();
-            }
-
-            /// <summary>
-            /// Move to an element, MouseDown on the element and move it by passing in the how many pixels horizontally and vertically you wish to move it
-            /// </summary>
-            /// <param name="moveRightBy">Integer to move it left or right</param>
-            /// <param name="moveDownBy">Integer to move it up or down</param>
-            public void DragAndDropBy(int moveRightBy, int moveDownBy)
-            {
-                IHasInputDevices inputDevicesDriver = this.ParentDriver as IHasInputDevices;
-                inputDevicesDriver.ActionBuilder.DragAndDropToOffset(this, moveRightBy, moveDownBy).Build().Perform();
-            }
-
-            /// <summary>
-            /// Drag and Drop an element to another element
-            /// </summary>
-            /// <param name="element">Element you wish to drop on</param>
-            public void DragAndDropOn(IRenderedWebElement element)
-            {
-                IHasInputDevices inputDevicesDriver = this.ParentDriver as IHasInputDevices;
-                inputDevicesDriver.ActionBuilder.DragAndDrop(this, element).Build().Perform();
             }
 
             #endregion

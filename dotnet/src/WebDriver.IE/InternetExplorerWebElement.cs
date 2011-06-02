@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.IE
     /// }
     /// </code>
     /// </example>
-    public class InternetExplorerWebElement : RenderedRemoteWebElement
+    public class InternetExplorerWebElement : RemoteWebElement
     {
         /// <summary>
         /// Initializes a new instance of the InternetExplorerWebElement class.

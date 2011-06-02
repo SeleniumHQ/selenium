@@ -11,7 +11,7 @@ namespace OpenQA.Selenium.Chrome
     /// <summary>
     /// Provides a mechanism to get elements off the page for test
     /// </summary>
-    public class ChromeWebElement : RenderedRemoteWebElement
+    public class ChromeWebElement : RemoteWebElement
     {
         #region Constructor
         /// <summary>

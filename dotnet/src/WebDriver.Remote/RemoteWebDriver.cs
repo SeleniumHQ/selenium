@@ -855,16 +855,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A <see cref="RemoteWebElement"/> with the specified ID.</returns>
         protected virtual RemoteWebElement CreateElement(string elementId)
         {
-            RemoteWebElement toReturn;
-            if (this.capabilities.IsJavaScriptEnabled)
-            {
-                toReturn = new RenderedRemoteWebElement(this, elementId);
-            }
-            else
-            {
-                toReturn = new RemoteWebElement(this, elementId);
-            }
-
+            RemoteWebElement toReturn = new RemoteWebElement(this, elementId);
             return toReturn;
         }
         #endregion

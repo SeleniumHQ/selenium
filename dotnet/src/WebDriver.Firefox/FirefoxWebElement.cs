@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Firefox
     /// <summary>
     /// Allows the user to control elements on a page in Firefox.
     /// </summary>
-    public class FirefoxWebElement : RenderedRemoteWebElement
+    public class FirefoxWebElement : RemoteWebElement
     {
         #region Constructor
         /// <summary>

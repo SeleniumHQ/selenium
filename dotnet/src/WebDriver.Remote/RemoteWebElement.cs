@@ -25,7 +25,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="parentDriver">The <see cref="RemoteWebDriver"/> instance hosting this element.</param>
         /// <param name="id">The ID assigned to the element.</param>
-        internal RemoteWebElement(RemoteWebDriver parentDriver, string id)
+        public RemoteWebElement(RemoteWebDriver parentDriver, string id)
         {
             this.driver = parentDriver;
             this.elementId = id;

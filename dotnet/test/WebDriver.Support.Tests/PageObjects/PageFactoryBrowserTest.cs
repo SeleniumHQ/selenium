@@ -65,7 +65,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         private class RenderedPage
         {
             [FindsBy(How = How.Name, Using = "someForm")]
-            public IRenderedWebElement formElement;
+            public IWebElement formElement;
         }
 
         #pragma warning restore 649

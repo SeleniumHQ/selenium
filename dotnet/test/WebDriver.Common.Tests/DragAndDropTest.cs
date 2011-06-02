@@ -21,13 +21,13 @@ namespace OpenQA.Selenium
         {
             driver.Url = dragAndDropPage;
             IWebElement img = driver.FindElement(By.Id("test1"));
-            Point expectedLocation = drag(img, img.Location, 150, 200, true);
+            Point expectedLocation = drag(img, img.Location, 150, 200);
             Assert.AreEqual(expectedLocation, img.Location);
-            expectedLocation = drag(img, img.Location, -50, -25, true);
+            expectedLocation = drag(img, img.Location, -50, -25);
             Assert.AreEqual(expectedLocation, img.Location);
-            expectedLocation = drag(img, img.Location, 0, 0, true);
+            expectedLocation = drag(img, img.Location, 0, 0);
             Assert.AreEqual(expectedLocation, img.Location);
-            expectedLocation = drag(img, img.Location, 1, -1, true);
+            expectedLocation = drag(img, img.Location, 1, -1);
             Assert.AreEqual(expectedLocation, img.Location);
         }
 
@@ -42,12 +42,8 @@ namespace OpenQA.Selenium
             driver.Url = dragAndDropPage;
             IWebElement img1 = driver.FindElement(By.Id("test1"));
             IWebElement img2 = driver.FindElement(By.Id("test2"));
-            // The below is the proper way to accomplish the drag and drop.
-            // Uncomment when the interactions API has been completely implemented
-            // in all browsers.
-            //Actions actionProvider = new Actions(driver);
-            //actionProvider.DragAndDrop(img2, img1).Perform();
-            ((IRenderedWebElement)img2).DragAndDropOn((IRenderedWebElement)img1);
+            Actions actionProvider = new Actions(driver);
+            actionProvider.DragAndDrop(img2, img1).Perform();
             Assert.AreEqual(img1.Location, img2.Location);
         }
 
@@ -80,19 +76,11 @@ namespace OpenQA.Selenium
             // Dragging too far left and up does not move the element. It will be at 
             // its original location after the drag.
             Point originalLocation = new Point(0, 0);
-            // The below is the proper way to accomplish the drag and drop.
-            // Uncomment when the interactions API has been completely implemented
-            // in all browsers.
-            //Actions actionProvider = new Actions(driver);
-            //actionProvider.DragAndDropToOffset(img, int.MinValue, int.MinValue).Perform();
-            ((IRenderedWebElement)img).DragAndDropBy(int.MinValue, int.MinValue);
+            Actions actionProvider = new Actions(driver);
+            actionProvider.DragAndDropToOffset(img, int.MinValue, int.MinValue).Perform();
             Assert.AreEqual(originalLocation, img.Location);
 
-            // The below is the proper way to accomplish the drag and drop.
-            // Uncomment when the interactions API has been completely implemented
-            // in all browsers.
-            //actionProvider.DragAndDropToOffset(img, int.MaxValue, int.MaxValue).Perform();
-            ((IRenderedWebElement)img).DragAndDropBy(int.MaxValue, int.MaxValue);
+            actionProvider.DragAndDropToOffset(img, int.MaxValue, int.MaxValue).Perform();
             //We don't know where the img is dragged to , but we know it's not too
             //far, otherwise this function will not return for a long long time
         }
@@ -180,26 +168,11 @@ namespace OpenQA.Selenium
 
         private Point drag(IWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)
         {
-            return drag(elem, initialLocation, moveRightBy, moveDownBy, false);
-        }
-
-        private Point drag(IWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy, bool useInteractions)
-        {
             Point expectedLocation = new Point(initialLocation.X, initialLocation.Y);
             expectedLocation.Offset(moveRightBy, moveDownBy);
 
-            // The below is the proper way to accomplish the drag and drop.
-            // Uncomment when the interactions API has been completely implemented
-            // in all browsers.
-            if (useInteractions)
-            {
-                Actions actionProvider = new Actions(driver);
-                actionProvider.DragAndDropToOffset(elem, moveRightBy, moveDownBy).Perform();
-            }
-            else
-            {
-                ((IRenderedWebElement)elem).DragAndDropBy(moveRightBy, moveDownBy);
-            }
+            Actions actionProvider = new Actions(driver);
+            actionProvider.DragAndDropToOffset(elem, moveRightBy, moveDownBy).Perform();
 
             return expectedLocation;
         }

@@ -55,7 +55,6 @@
     <Compile Include="RemoteTimeouts.cs" />
     <Compile Include="RemoteWebDriver.cs" />
     <Compile Include="RemoteWebElement.cs" />
-    <Compile Include="RenderedRemoteWebElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebDriver.Common\WebDriver.Common.csproj">
