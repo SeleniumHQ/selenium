@@ -233,6 +233,9 @@ rule %r[third_party/gecko-2/(linux|mac|win32)] do |t|
   mkdir_p t.name
 
   url = case t.name
+  when /linux64/
+    next unless Platform.linux?
+    "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-x86_64.sdk.tar.bz2"
   when /linux/
     next unless Platform.linux?
     "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2"
@@ -270,6 +273,9 @@ rule %r[third_party/gecko-2/(linux|mac|win32)] do |t|
       sh "tar", "jxf", path, "-C", destination
     end
 
+    # The directory was created - but for the move to replace it,
+    # it must be erased first.
+    rm_rf t.name
     mv "third_party/gecko-2/xulrunner-sdk", t.name
   rescue StandardError, Timeout::Error => ex
     # ignore errors - dependant targets will fall back to prebuilts
@@ -294,33 +300,18 @@ dll(:name => "libwebdriver_firefox_so",
     :prebuilt => "cpp/prebuilt/i386/libwebdriver-firefox.so",
     :out  => "cpp/i386/libwebdriver-firefox.so")
 
-# There is no official 64 bit gecko SDK. Fall back to trying to use the one on
-# system, but be ready for this to fail. I have a Ubuntu machine, so that's
-# what I'm basing this on. I understand that's a Bad Idea
-begin
-  pkg_config_gecko = sh "pkg-config --exists libxul"
-rescue
-  pkg_config_gecko = false
-end
-
-if pkg_config_gecko
-  libs_cmd = open("| pkg-config --libs libxul")
-  local_gecko_libs = libs_cmd.readline.gsub "\n", ""
-  cflags_cmd = open("| pkg-config --cflags libxul")
-  local_gecko_include = cflags_cmd.readline.gsub "\n", ""
-else
-  puts 'No Gecko SDK detected. Install xulrunner-dev (xulrunner-devel for macports) to compile 64-bit Firefox extension.'
-  local_gecko_include = ""
-  local_gecko_libs = ""
-end
+gecko_sdk_64bit = "third_party/gecko-2/linux64/"
+gecko_64bit_libs = "#{gecko_sdk_64bit}lib"
+gecko_64bit_include = "#{gecko_sdk_64bit}include"
 
 dll(:name => "libwebdriver_firefox_so64",
+    :deps => "third_party/gecko-2/linux64",
     :src  => FileList.new('cpp/webdriver-interactions/*_linux*.cpp') +
              FileList.new('cpp/webdriver-interactions/interactions_common.cpp') +
              FileList.new('cpp/webdriver-firefox/*.cpp'),
     :arch => "amd64",
-    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I cpp/webdriver-interactions -I cpp/imehandler/common #{local_gecko_include} `pkg-config gtk+-2.0 --cflags` ",
-    :link_args => "-Wall -Os #{local_gecko_libs} -lrt `pkg-config gtk+-2.0 --libs` -fno-rtti -fno-exceptions -shared  -fPIC",
+    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I cpp/webdriver-interactions -I cpp/imehandler/common -I #{gecko_64bit_include} `pkg-config gtk+-2.0 --cflags` ",
+    :link_args => "-Wall -Os -L#{gecko_64bit_libs} -L#{gecko_sdk_64bit}bin -lrt `pkg-config gtk+-2.0 --libs` -fno-rtti -fno-exceptions -shared  -fPIC -lxpcomglue_s_nomozalloc -lxpcom -lnspr4",
     :prebuilt => "cpp/prebuilt/amd64/libwebdriver-firefox.so",
     :out  => "cpp/amd64/libwebdriver-firefox.so")
 
