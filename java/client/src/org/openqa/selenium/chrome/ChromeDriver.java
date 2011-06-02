@@ -1,5 +1,6 @@
 package org.openqa.selenium.chrome;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -95,6 +96,18 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
   public ChromeDriver(ChromeDriverService service) {
     super(new ChromeCommandExecutor(service), DesiredCapabilities.chrome());
   }
+
+  /**
+   * Creates a new ChromeDriver instance. The {@code capabilities} will be passed to the
+   * chromedriver service.
+   *
+   * @param capabilities The capabilities required from the ChromeDriver.
+   */
+  public ChromeDriver(Capabilities capabilities) {
+    super(new ChromeCommandExecutor(ChromeDriverService.createDefaultService()),
+        capabilities);
+  }
+
 
   public <X> X getScreenshotAs(OutputType<X> target) {
     // Get the screenshot as base64.
