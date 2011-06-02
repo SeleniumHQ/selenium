@@ -19,11 +19,5 @@ namespace OpenQA.Selenium
         /// Gets an <see cref="IMouse"/> object for sending mouse commands to the browser.
         /// </summary>
         IMouse Mouse { get; }
-
-        /// <summary>
-        /// Gets an <see cref="IActionSequenceBuilder"/> object for building actions to send to the browser.
-        /// </summary>
-        [Obsolete("Use the Actions class directly instead.")]
-        IActionSequenceBuilder ActionBuilder { get; }
     }
 }

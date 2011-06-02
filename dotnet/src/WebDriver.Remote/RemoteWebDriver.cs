@@ -201,14 +201,6 @@ namespace OpenQA.Selenium.Remote
         {
             get { return new RemoteMouse(this); }
         }
-
-        /// <summary>
-        /// Gets an <see cref="IActionSequenceBuilder"/> object for building actions to send to the browser.
-        /// </summary>
-        public IActionSequenceBuilder ActionBuilder
-        {
-            get { return new DefaultActionSequenceBuilder(this); }
-        }
         #endregion
 
         #region Public properties

@@ -11,7 +11,7 @@ namespace OpenQA.Selenium.IE
     /// <summary>
     /// InternetExplorerWebElement allows you to have access to specific items that are found on the page.
     /// </summary>
-    /// <seealso cref="IRenderedWebElement"/>
+    /// <seealso cref="IWebElement"/>
     /// <seealso cref="ILocatable"/>
     /// <example>
     /// <code>

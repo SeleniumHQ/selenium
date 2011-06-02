@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Interactions
         private CompositeAction action = new CompositeAction();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultActionSequenceBuilder"/> class.
+        /// Initializes a new instance of the <see cref="Actions"/> class.
         /// </summary>
         /// <param name="driver">The <see cref="IWebDriver"/> object on which the actions built will be performed.</param>
         public Actions(IWebDriver driver)
@@ -50,7 +50,7 @@ namespace OpenQA.Selenium.Interactions
         /// Sends a modifier key down message to the browser.
         /// </summary>
         /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         /// <exception cref="ArgumentException">If the key sent is not is not one 
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyDown(string theKey)
@@ -63,7 +63,7 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         /// <param name="element">The element to which to send the key command.</param>
         /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         /// <exception cref="ArgumentException">If the key sent is not is not one 
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyDown(IWebElement element, string theKey)
@@ -77,7 +77,7 @@ namespace OpenQA.Selenium.Interactions
         /// Sends a modifier key up message to the browser.
         /// </summary>
         /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         /// <exception cref="ArgumentException">If the key sent is not is not one 
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyUp(string theKey)
@@ -90,7 +90,7 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         /// <param name="element">The element to which to send the key command.</param>
         /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         /// <exception cref="ArgumentException">If the key sent is not is not one 
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyUp(IWebElement element, string theKey)
@@ -104,7 +104,7 @@ namespace OpenQA.Selenium.Interactions
         /// Sends a sequence of keystrokes to the browser.
         /// </summary>
         /// <param name="keysToSend">The keystrokes to send to the browser.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions SendKeys(string keysToSend)
         {
             return this.SendKeys(null, keysToSend);
@@ -115,7 +115,7 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         /// <param name="element">The element to which to send the keystrokes.</param>
         /// <param name="keysToSend">The keystrokes to send to the browser.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions SendKeys(IWebElement element, string keysToSend)
         {
             ILocatable target = element as ILocatable;
@@ -127,7 +127,7 @@ namespace OpenQA.Selenium.Interactions
         /// Clicks and holds the mouse button down on the specified element.
         /// </summary>
         /// <param name="onElement">The element on which to click and hold.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ClickAndHold(IWebElement onElement)
         {
             ILocatable target = onElement as ILocatable;
@@ -139,7 +139,7 @@ namespace OpenQA.Selenium.Interactions
         /// Releases the mouse button on the specified element.
         /// </summary>
         /// <param name="onElement">The element on which to release the button.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Release(IWebElement onElement)
         {
             ILocatable target = onElement as ILocatable;
@@ -151,7 +151,7 @@ namespace OpenQA.Selenium.Interactions
         /// Clicks the mouse on the specified element.
         /// </summary>
         /// <param name="onElement">The element on which to click.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Click(IWebElement onElement)
         {
             ILocatable target = onElement as ILocatable;
@@ -162,7 +162,7 @@ namespace OpenQA.Selenium.Interactions
         /// <summary>
         /// Clicks the mouse at the last known mouse coordinates.
         /// </summary>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Click()
         {
             return this.Click(null);
@@ -172,7 +172,7 @@ namespace OpenQA.Selenium.Interactions
         /// Double-clicks the mouse on the specified element.
         /// </summary>
         /// <param name="onElement">The element on which to double-click.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DoubleClick(IWebElement onElement)
         {
             ILocatable target = onElement as ILocatable;
@@ -184,7 +184,7 @@ namespace OpenQA.Selenium.Interactions
         /// Moves the mouse to the specified element.
         /// </summary>
         /// <param name="toElement">The element to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement)
         {
             ILocatable target = toElement as ILocatable;
@@ -198,7 +198,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="toElement">The element to which to move the mouse.</param>
         /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
         /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY)
         {
             ILocatable target = toElement as ILocatable;
@@ -211,7 +211,7 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
         /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveByOffset(int offsetX, int offsetY)
         {
             return this.MoveToElement(null, offsetX, offsetY);
@@ -221,7 +221,7 @@ namespace OpenQA.Selenium.Interactions
         /// Right-clicks the mouse on the specified element.
         /// </summary>
         /// <param name="onElement">The element on which to right-click.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ContextClick(IWebElement onElement)
         {
             ILocatable target = onElement as ILocatable;
@@ -234,7 +234,7 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         /// <param name="source">The element on which the drag operation is started.</param>
         /// <param name="target">The element on which the drop is performed.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DragAndDrop(IWebElement source, IWebElement target)
         {
             ILocatable startElement = source as ILocatable;
@@ -252,7 +252,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="source">The element on which the drag operation is started.</param>
         /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
         /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="DefaultActionSequenceBuilder"/>.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DragAndDropToOffset(IWebElement source, int offsetX, int offsetY)
         {
             ILocatable startElement = source as ILocatable;

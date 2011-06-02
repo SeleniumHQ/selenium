@@ -10,7 +10,7 @@ namespace OpenQA.Selenium.Remote
     /// <summary>
     /// RemoteWebElement allows you to have access to specific items that are found on the page
     /// </summary>
-    /// <seealso cref="IRenderedWebElement"/>
+    /// <seealso cref="IWebElement"/>
     /// <seealso cref="ILocatable"/>
     public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver
     {

@@ -66,9 +66,7 @@
     <Compile Include="Interactions\MoveToOffsetAction.cs" />
     <Compile Include="Interactions\MoveMouseAction.cs" />
     <Compile Include="Interactions\DoubleClickAction.cs" />
-    <Compile Include="Interactions\DefaultActionSequenceBuilder.cs" />
     <Compile Include="Interactions\IAction.cs" />
-    <Compile Include="Interactions\IActionSequenceBuilder.cs" />
     <Compile Include="Interactions\Internal\ICoordinates.cs" />
     <Compile Include="Interactions\Internal\WebDriverAction.cs" />
     <Compile Include="Interactions\Internal\KeyboardAction.cs" />
