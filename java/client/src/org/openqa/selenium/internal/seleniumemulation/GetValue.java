@@ -41,6 +41,6 @@ public class GetValue extends SeleneseCommand<String> {
       }      
     }
 
-    return element.getValue();
+    return element.getAttribute("value");
   }
 }

@@ -202,7 +202,7 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 
     WebElement typer = driver.findElement(By.name("typer"));
     typer.sendKeys("bob");
-    assertEquals("bob", typer.getValue());
+    assertEquals("bob", typer.getAttribute("value"));
 
     driver.findElement(By.id("red")).click();
     driver.findElement(By.name("submit")).click();
@@ -215,7 +215,7 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
         "var callback = arguments[arguments.length - 1];"
         + "window.registerListener(arguments[arguments.length - 1]);");
     assertEquals("bob", text);
-    assertEquals("", typer.getValue());
+    assertEquals("", typer.getAttribute("value"));
 
     assertEquals("There should be 1 DIV (for the butter message) + 1 DIV (for the new label)",
         2, getNumDivElements());

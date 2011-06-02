@@ -28,10 +28,6 @@ public class StubElement implements WebElement, WrapsDriver {
   public void submit() {
   }
 
-  public String getValue() {
-    return null;
-  }
-
   public void sendKeys(CharSequence... keysToSend) {
   }
 

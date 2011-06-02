@@ -108,7 +108,7 @@ public class WaitingConditions {
     return new Callable<String>() {
 
       public String call() throws Exception {
-        String value = element.getValue();
+        String value = element.getAttribute("value");
         if (expectedValue.equals(value)) {
           return value;
         }

@@ -289,11 +289,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     public void submit() {
       element.submit();
     }
-  
-    public String getValue() {
-      return element.getValue();
-    }
-  
+
     public void sendKeys(CharSequence... keysToSend) {
       dispatcher.beforeChangeValueOf(element, driver);
       element.sendKeys(keysToSend);

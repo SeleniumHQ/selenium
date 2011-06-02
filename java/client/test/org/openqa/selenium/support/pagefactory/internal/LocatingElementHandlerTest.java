@@ -89,7 +89,7 @@ public class LocatingElementHandlerTest extends MockObjectTestCase {
 
     checking(new Expectations() {{
       allowing(driver).findElement(By.xpath("//input[@name='q']")); will(returnValue(element));
-      one(element).getValue(); will(returnValue(""));
+      one(element).getAttribute("value"); will(returnValue(""));
     }});
 
     PageFactory.initElements(driver, page);
@@ -116,7 +116,7 @@ public class LocatingElementHandlerTest extends MockObjectTestCase {
 
   public static class ChildPage extends Page {
     public void doChildQuery() {
-      query.getValue();
+      query.getAttribute("value");
     }
   }
 }

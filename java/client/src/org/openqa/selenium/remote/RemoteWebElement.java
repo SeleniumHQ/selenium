@@ -53,10 +53,6 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
   }
 
-  public String getValue() {
-    return (String) execute(DriverCommand.GET_ELEMENT_VALUE, ImmutableMap.of("id", id)).getValue();
-  }
-
   public void sendKeys(CharSequence... keysToSend) {
     execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keysToSend));
   }

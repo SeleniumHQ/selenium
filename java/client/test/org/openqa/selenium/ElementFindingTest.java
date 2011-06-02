@@ -130,7 +130,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
 
     WebElement element = driver.findElement(By.name("checky"));
 
-    assertThat(element.getValue(), is("furrfu"));
+    assertThat(element.getAttribute("value"), is("furrfu"));
   }
 
   public void testShouldFindElementsByClass() {
@@ -288,16 +288,16 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     driver.get(pages.formPage);
 
     WebElement element = driver.findElement(By.name("id-name1"));
-    assertThat(element.getValue(), is("name"));
+    assertThat(element.getAttribute("value"), is("name"));
 
     element = driver.findElement(By.id("id-name1"));
-    assertThat(element.getValue(), is("id"));
+    assertThat(element.getAttribute("value"), is("id"));
 
     element = driver.findElement(By.name("id-name2"));
-    assertThat(element.getValue(), is("name"));
+    assertThat(element.getAttribute("value"), is("name"));
 
     element = driver.findElement(By.id("id-name2"));
-    assertThat(element.getValue(), is("id"));
+    assertThat(element.getAttribute("value"), is("id"));
   }
 
   public void testShouldFindGrandChildren() {

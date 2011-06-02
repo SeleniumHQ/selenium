@@ -192,7 +192,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   public void testIssue80ClickShouldGenerateClickEvent() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("clickField"));
-    assertEquals("Hello", element.getValue());
+    assertEquals("Hello", element.getAttribute("value"));
 
     element.click();
 

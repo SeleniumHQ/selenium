@@ -141,7 +141,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
       // This is expected
     }
 
-    assertThat(element.getValue(), is(not("You don't see me")));
+    assertThat(element.getAttribute("value"), is(not("You don't see me")));
   }
 
   @JavascriptEnabled

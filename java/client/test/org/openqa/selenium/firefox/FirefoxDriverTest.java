@@ -76,7 +76,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     WebElement textarea = driver.findElement(By.id("withText"));
     String expectedText = "I like cheese\n\nIt's really nice";
     textarea.sendKeys(expectedText);
-    String seenText = textarea.getValue();
+    String seenText = textarea.getAttribute("value");
     assertThat(seenText, equalTo(expectedText));
   }
 
@@ -173,7 +173,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("ABC DEF");
 
-    assertThat(keyReporter.getValue(), is("ABC DEF"));
+    assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
   }
 
   @NeedsFreshDriver
@@ -208,7 +208,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("ABC DEF");
-    assertThat(keyReporter.getValue(), is("ABC DEF"));
+    assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
     
     // Key events in original window.
     driver.switchTo().window(originalWinHandle);
@@ -217,7 +217,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
     WebElement keyReporter2 = driver.findElement(By.id("keyReporter"));
     keyReporter2.sendKeys("QWERTY");
-    assertThat(keyReporter2.getValue(), is("QWERTY"));
+    assertThat(keyReporter2.getAttribute("value"), is("QWERTY"));
   }
   
   @NeedsFreshDriver
@@ -256,7 +256,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("ABC DEF");
-    assertThat(keyReporter.getValue(), is("ABC DEF"));
+    assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
   }
   
   public void testCanBlockInvalidSslCertificates() {
@@ -412,7 +412,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
               String s = randomString();
               inputField.clear();
               inputField.sendKeys(s);
-              String value = inputField.getValue();
+              String value = inputField.getAttribute("value");
               assertThat(value, is(s));
             }
           }

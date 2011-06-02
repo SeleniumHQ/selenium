@@ -173,7 +173,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   public void testShouldReturnTheContentsOfATextAreaAsItsValue() {
     driver.get(pages.formPage);
 
-    String value = driver.findElement(By.id("withText")).getValue();
+    String value = driver.findElement(By.id("withText")).getAttribute("value");
 
     assertThat(value, equalTo("Example text"));
   }

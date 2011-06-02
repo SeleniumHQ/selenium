@@ -61,7 +61,7 @@ public class I18nTest extends AbstractDriverTestCase {
 
     input.sendKeys(shalom);
 
-    assertEquals(shalom, input.getValue());
+    assertEquals(shalom, input.getAttribute("value"));
   }
 
   public void testEnteringHebrewTextFromRightToLeft() {
@@ -70,7 +70,7 @@ public class I18nTest extends AbstractDriverTestCase {
 
     input.sendKeys(tmunot);
 
-    assertEquals(tmunot, input.getValue());
+    assertEquals(tmunot, input.getAttribute("value"));
   }
 
   @Ignore(value = {IE, SELENESE})
@@ -135,7 +135,7 @@ public class I18nTest extends AbstractDriverTestCase {
     input.sendKeys("toukyou ");
     input.sendKeys(Keys.ENTER);
 
-    String elementValue = input.getValue();
+    String elementValue = input.getAttribute("value");
 
     ime.deactivate();
     assertFalse("IME engine should be off.", ime.isActivated());
@@ -176,7 +176,7 @@ public class I18nTest extends AbstractDriverTestCase {
     // Send the Romaji for "Tokyo". The space at the end instructs the IME to convert the word.
     input.sendKeys("toukyou ");
 
-    String elementValue = input.getValue();
+    String elementValue = input.getAttribute("value");
     // Turn OFF IME input first.
     input.sendKeys(Keys.ZENKAKU_HANKAKU);
 

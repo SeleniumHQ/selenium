@@ -193,10 +193,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return submit == null;
   }
 
-  public String getValue() {
-    return getAttribute("value");
-  }
-
   public void clear() {
     assertElementNotStale();
 
@@ -263,7 +259,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     switchFocusToThisIfNeeded();
 
     HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
-    keyboard.sendKeys(element, getValue(), keysContainer);
+    keyboard.sendKeys(element, getAttribute("value"), keysContainer);
 
     if (isInputElement() && keysContainer.wasSubmitKeyFound()) {
       submit();

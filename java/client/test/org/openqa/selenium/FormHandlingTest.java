@@ -94,7 +94,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
         .id("keyUpArea"));
     String cheesey = "Brie and cheddar";
     textarea.sendKeys(cheesey);
-    assertThat(textarea.getValue(), equalTo(cheesey));
+    assertThat(textarea.getAttribute("value"), equalTo(cheesey));
   }
 
   @Ignore(value = {SELENESE, IPHONE, IE},
@@ -122,7 +122,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By
         .xpath("//form[@name='someForm']/input[@id='username']"));
-    String originalValue = element.getValue();
+    String originalValue = element.getAttribute("value");
     assertThat(originalValue, equalTo("change"));
 
     element.clear();
@@ -130,7 +130,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
     element = driver.findElement(By
         .xpath("//form[@name='someForm']/input[@id='username']"));
-    String newFormValue = element.getValue();
+    String newFormValue = element.getAttribute("value");
     assertThat(newFormValue, equalTo("some text"));
   }
 
@@ -139,14 +139,14 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
-    assertThat(uploadElement.getValue(), equalTo(""));
+    assertThat(uploadElement.getAttribute("value"), equalTo(""));
 
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
 
     uploadElement.sendKeys(file.getAbsolutePath());
 
-    File value = new File(uploadElement.getValue());
+    File value = new File(uploadElement.getAttribute("value"));
     assertThat(value.getCanonicalPath(), equalTo(file.getCanonicalPath()));
   }
 
@@ -158,14 +158,14 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
-    assertThat(uploadElement.getValue(), equalTo(""));
+    assertThat(uploadElement.getAttribute("value"), equalTo(""));
 
     uploadElement.sendKeys(file.getAbsolutePath());
     uploadElement.submit();
 
     driver.get(pages.formPage);
     uploadElement = driver.findElement(By.id("upload"));
-    assertThat(uploadElement.getValue(), equalTo(""));
+    assertThat(uploadElement.getAttribute("value"), equalTo(""));
 
     uploadElement.sendKeys(file.getAbsolutePath());
     uploadElement.submit();
@@ -178,11 +178,11 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
     element.sendKeys("Some");
-    String value = element.getValue();
+    String value = element.getAttribute("value");
     assertThat(value, is("Some"));
 
     element.sendKeys(" text");
-    value = element.getValue();
+    value = element.getAttribute("value");
     assertThat(value, is("Some text"));
   }
 
@@ -194,7 +194,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("withText"));
 
     element.sendKeys(". Some text");
-    String value = element.getValue();
+    String value = element.getAttribute("value");
 
     assertThat(value, is("Example text. Some text"));
   }
@@ -203,11 +203,11 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
     element.sendKeys("Some text");
-    String value = element.getValue();
+    String value = element.getAttribute("value");
     assertThat(value.length(), is(greaterThan(0)));
 
     element.clear();
-    value = element.getValue();
+    value = element.getAttribute("value");
 
     assertThat(value.length(), is(0));
   }
@@ -215,18 +215,18 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   public void testEmptyTextBoxesShouldReturnAnEmptyStringNotNull() {
     driver.get(pages.formPage);
     WebElement emptyTextBox = driver.findElement(By.id("working"));
-    assertEquals(emptyTextBox.getValue(), "");
+    assertEquals(emptyTextBox.getAttribute("value"), "");
   }
 
   public void testShouldBeAbleToClearTextFromTextAreas() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
     element.sendKeys("Some text");
-    String value = element.getValue();
+    String value = element.getAttribute("value");
     assertThat(value.length(), is(greaterThan(0)));
 
     element.clear();
-    value = element.getValue();
+    value = element.getAttribute("value");
 
     assertThat(value.length(), is(0));
   }

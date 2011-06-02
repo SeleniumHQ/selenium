@@ -201,7 +201,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     clicker.click();
 
     waitFor(elementValueToEqual(clicker, "Clicked"));
-    assertThat(clicker.getValue(), equalTo("Clicked"));
+    assertThat(clicker.getAttribute("value"), equalTo("Clicked"));
   }
 
   @Ignore(ANDROID)

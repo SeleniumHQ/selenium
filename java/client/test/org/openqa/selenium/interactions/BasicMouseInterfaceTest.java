@@ -21,7 +21,6 @@ import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.NoSuchElementException;
@@ -166,7 +165,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
     dblClick.perform();
     assertEquals("Value should change to DoubleClicked.", "DoubleClicked",
-        toDoubleClick.getValue());
+        toDoubleClick.getAttribute("value"));
   }
 
   @JavascriptEnabled
@@ -180,7 +179,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
     contextClick.perform();
     assertEquals("Value should change to ContextClicked.", "ContextClicked",
-        toContextClick.getValue());
+        toContextClick.getAttribute("value"));
   }
 
   @JavascriptEnabled
@@ -194,7 +193,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
     contextClick.perform();
     assertEquals("Value should change to Clicked.", "Clicked",
-        toClick.getValue());
+        toClick.getAttribute("value"));
   }
 
   @JavascriptEnabled

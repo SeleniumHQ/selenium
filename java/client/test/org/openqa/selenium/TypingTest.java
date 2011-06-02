@@ -70,7 +70,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("abc def");
 
-    assertThat(keyReporter.getValue(), is("abc def"));
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
   }
 
   public void testShouldBeAbleToTypeCapitalLetters() {
@@ -79,7 +79,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("ABC DEF");
 
-    assertThat(keyReporter.getValue(), is("ABC DEF"));
+    assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
   }
 
   public void testShouldBeAbleToTypeQuoteMarks() {
@@ -88,7 +88,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("\"");
 
-    assertThat(keyReporter.getValue(), is("\""));
+    assertThat(keyReporter.getAttribute("value"), is("\""));
   }
 
   public void testShouldBeAbleToTypeTheAtCharacter() {
@@ -103,7 +103,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("@");
 
-    assertThat(keyReporter.getValue(), is("@"));
+    assertThat(keyReporter.getAttribute("value"), is("@"));
   }
 
   @Ignore(SELENESE)
@@ -113,7 +113,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("me@eXample.com");
 
-    assertThat(keyReporter.getValue(), is("me@eXample.com"));
+    assertThat(keyReporter.getAttribute("value"), is("me@eXample.com"));
   }
 
   @JavascriptEnabled
@@ -124,7 +124,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys(Keys.ARROW_LEFT);
 
-    assertThat(keyReporter.getValue(), is(""));
+    assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
   @Ignore({HTMLUNIT, SELENESE})
@@ -134,7 +134,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("Tet", Keys.ARROW_LEFT, "s");
 
-    assertThat(keyReporter.getValue(), is("Test"));
+    assertThat(keyReporter.getAttribute("value"), is("Test"));
   }
 
   @JavascriptEnabled
@@ -284,7 +284,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(result.getText().trim(), containsString("up: 39"));
 
     // And leave no rubbish/printable keys in the "keyReporter"
-    assertThat(element.getValue(), is(""));
+    assertThat(element.getAttribute("value"), is(""));
   }
 
   @JavascriptEnabled
@@ -297,7 +297,7 @@ public class TypingTest extends AbstractDriverTestCase {
     String numericLineCharsNonShifted = "`1234567890-=[]\\;,.'/42";
     element.sendKeys(numericLineCharsNonShifted);
 
-    assertThat(element.getValue(), is(numericLineCharsNonShifted));
+    assertThat(element.getAttribute("value"), is(numericLineCharsNonShifted));
   }
 
   @JavascriptEnabled
@@ -312,7 +312,7 @@ public class TypingTest extends AbstractDriverTestCase {
     String numericShiftsEtc = "~!@#$%^&*()_+{}:\"<>?|END~";
     element.sendKeys(numericShiftsEtc);
 
-    assertThat(element.getValue(), is(numericShiftsEtc));
+    assertThat(element.getAttribute("value"), is(numericShiftsEtc));
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
@@ -326,7 +326,7 @@ public class TypingTest extends AbstractDriverTestCase {
     String lowerAlphas = "abcdefghijklmnopqrstuvwxyz";
     element.sendKeys(lowerAlphas);
 
-    assertThat(element.getValue(), is(lowerAlphas));
+    assertThat(element.getAttribute("value"), is(lowerAlphas));
   }
 
   @JavascriptEnabled
@@ -341,7 +341,7 @@ public class TypingTest extends AbstractDriverTestCase {
     String upperAlphas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     element.sendKeys(upperAlphas);
 
-    assertThat(element.getValue(), is(upperAlphas));
+    assertThat(element.getAttribute("value"), is(upperAlphas));
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
@@ -358,7 +358,7 @@ public class TypingTest extends AbstractDriverTestCase {
         "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
     element.sendKeys(allPrintable);
 
-    assertThat(element.getValue(), is(allPrintable));
+    assertThat(element.getAttribute("value"), is(allPrintable));
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
@@ -371,7 +371,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
     element.sendKeys("a" + Keys.LEFT + "b" + Keys.RIGHT +
                      Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1");
-    assertThat(element.getValue(), is("ba1"));
+    assertThat(element.getAttribute("value"), is("ba1"));
   }
 
   @JavascriptEnabled
@@ -390,7 +390,7 @@ public class TypingTest extends AbstractDriverTestCase {
     element.sendKeys("abc" + Keys.HOME + "0" + Keys.LEFT + Keys.RIGHT +
                      Keys.PAGE_UP + Keys.PAGE_DOWN + Keys.END + "1" + Keys.HOME +
                      "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00");
-    assertThat(element.getValue(), is("0000abc1111"));
+    assertThat(element.getAttribute("value"), is("0000abc1111"));
   }
 
   @JavascriptEnabled
@@ -402,13 +402,13 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("abcdefghi");
-    assertThat(element.getValue(), is("abcdefghi"));
+    assertThat(element.getAttribute("value"), is("abcdefghi"));
 
     element.sendKeys(Keys.LEFT, Keys.LEFT, Keys.DELETE);
-    assertThat(element.getValue(), is("abcdefgi"));
+    assertThat(element.getAttribute("value"), is("abcdefgi"));
 
     element.sendKeys(Keys.LEFT, Keys.LEFT, Keys.BACK_SPACE);
-    assertThat(element.getValue(), is("abcdfgi"));
+    assertThat(element.getAttribute("value"), is("abcdfgi"));
   }
 
   @JavascriptEnabled
@@ -419,7 +419,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("abcd" + Keys.SPACE + "fgh" + Keys.SPACE + "ij");
-    assertThat(element.getValue(), is("abcd fgh ij"));
+    assertThat(element.getAttribute("value"), is("abcd fgh ij"));
   }
 
   @JavascriptEnabled
@@ -434,12 +434,12 @@ public class TypingTest extends AbstractDriverTestCase {
                      Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
                      Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
                      Keys.NUMPAD3 + "abcd");
-    assertThat(element.getValue(), is("abcd*-+.,09+;=/3abcd"));
+    assertThat(element.getAttribute("value"), is("abcd*-+.,09+;=/3abcd"));
 
     element.clear();
     element.sendKeys("FUNCTION" + Keys.F2 + "-KEYS" + Keys.F2);
     element.sendKeys("" + Keys.F2 + "-TOO" + Keys.F2);
-    assertThat(element.getValue(), is("FUNCTION-KEYS-TOO"));
+    assertThat(element.getAttribute("value"), is("FUNCTION-KEYS-TOO"));
   }
 
   @JavascriptEnabled
@@ -451,11 +451,11 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("abcd efgh");
-    assertThat(element.getValue(), is("abcd efgh"));
+    assertThat(element.getAttribute("value"), is("abcd efgh"));
 
     element.sendKeys(Keys.SHIFT, Keys.LEFT, Keys.LEFT, Keys.LEFT);
     element.sendKeys(Keys.DELETE);
-    assertThat(element.getValue(), is("abcd e"));
+    assertThat(element.getAttribute("value"), is("abcd e"));
   }
 
   @JavascriptEnabled
@@ -477,7 +477,7 @@ public class TypingTest extends AbstractDriverTestCase {
     element.sendKeys(Keys.HOME);
     element.sendKeys("" + Keys.SHIFT + Keys.END + Keys.DELETE);
 
-    assertThat(element.getValue(), is(""));
+    assertThat(element.getAttribute("value"), is(""));
     assertThat(result.getText(), containsString(" up: 16"));
   }
 
@@ -495,21 +495,21 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("done" + Keys.HOME);
-    assertThat(element.getValue(), is("done"));
+    assertThat(element.getAttribute("value"), is("done"));
 
     element.sendKeys("" + Keys.SHIFT + "ALL " + Keys.HOME);
-    assertThat(element.getValue(), is("ALL done"));
+    assertThat(element.getAttribute("value"), is("ALL done"));
 
     element.sendKeys(Keys.DELETE);
-    assertThat(element.getValue(), is("done"));
+    assertThat(element.getAttribute("value"), is("done"));
 
     element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME);
-    assertThat(element.getValue(), is("done"));
+    assertThat(element.getAttribute("value"), is("done"));
     assertThat(  // Note: trailing SHIFT up here
                  result.getText().trim(), containsString(" up: 16"));
 
     element.sendKeys("" + Keys.DELETE);
-    assertThat(element.getValue(), is(""));
+    assertThat(element.getAttribute("value"), is(""));
   }
 
   // control-x control-v here for cut & paste tests, these work on windows
@@ -530,31 +530,31 @@ public class TypingTest extends AbstractDriverTestCase {
 
     String paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG";
     element.sendKeys(paste);
-    assertThat(element.getValue(), is(paste));
+    assertThat(element.getAttribute("value"), is(paste));
 
     element.sendKeys("" + Keys.HOME + Keys.SHIFT + Keys.END);
     assertThat(result.getText().trim(), containsString(" up: 16"));
 
     element.sendKeys(Keys.CONTROL, "x");
-    assertThat(element.getValue(), is(""));
+    assertThat(element.getAttribute("value"), is(""));
 
     element.sendKeys(Keys.CONTROL, "v");
-    assertThat(element.getValue(), is(paste));
+    assertThat(element.getAttribute("value"), is(paste));
 
     element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +
                      Keys.SHIFT + Keys.END);
     element.sendKeys(Keys.CONTROL, "x" + "v");
-    assertThat(element.getValue(), is(paste));
+    assertThat(element.getAttribute("value"), is(paste));
 
     element.sendKeys(Keys.HOME);
     element.sendKeys(Keys.CONTROL, "v");
     element.sendKeys(Keys.CONTROL, "v" + "v");
     element.sendKeys(Keys.CONTROL, "v" + "v" + "v");
-    assertThat(element.getValue(), is("EFGEFGEFGEFGEFGEFG" + paste));
+    assertThat(element.getAttribute("value"), is("EFGEFGEFGEFGEFGEFG" + paste));
 
     element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME +
                      Keys.NULL + Keys.DELETE);
-    assertThat(element.getValue(), is(""));
+    assertThat(element.getAttribute("value"), is(""));
   }
 
   @JavascriptEnabled
@@ -565,7 +565,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("no-type"));
 
     element.sendKeys("Should Say Cheese");
-    assertThat(element.getValue(), is("Should Say Cheese"));
+    assertThat(element.getAttribute("value"), is("Should Say Cheese"));
   }
 
   @JavascriptEnabled
@@ -576,7 +576,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement silent = driver.findElement(By.name("suppress"));
 
     silent.sendKeys("s");
-    assertThat(silent.getValue(), is(""));
+    assertThat(silent.getAttribute("value"), is(""));
   }
 
   @JavascriptEnabled
@@ -635,6 +635,6 @@ public class TypingTest extends AbstractDriverTestCase {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("email"));
     email.sendKeys("foobar");
-    assertThat(email.getValue(), equalTo("foobar"));
+    assertThat(email.getAttribute("value"), equalTo("foobar"));
   }
 }

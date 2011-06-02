@@ -21,7 +21,7 @@ public class ValueMatcher extends TypeSafeMatcher<WebElement> {
 	
 	@Override
 	public boolean matchesSafely(WebElement item) {
-		return item.getValue().equals(value);
+		return item.getAttribute("value").equals(value);
 	}
 
 	public void describeTo(Description description) {

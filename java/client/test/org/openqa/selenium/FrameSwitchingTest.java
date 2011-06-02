@@ -81,7 +81,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
 
-    assertThat(driver.findElement(By.name("id-name1")).getValue(), equalTo("name"));
+    assertThat(driver.findElement(By.name("id-name1")).getAttribute("value"), equalTo("name"));
   }
 
   public void testShouldBeAbleToSwitchToAFrameByItsName() {
@@ -95,7 +95,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.get(pages.iframePage);
     driver.switchTo().frame("iframe1-name");
 
-    assertThat(driver.findElement(By.name("id-name1")).getValue(), equalTo("name"));
+    assertThat(driver.findElement(By.name("id-name1")).getAttribute("value"), equalTo("name"));
   }
 
   public void testShouldBeAbleToSwitchToAFrameByItsID() {
@@ -109,7 +109,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.get(pages.iframePage);
     driver.switchTo().frame("iframe1");
 
-    assertThat(driver.findElement(By.name("id-name1")).getValue(), equalTo("name"));
+    assertThat(driver.findElement(By.name("id-name1")).getAttribute("value"), equalTo("name"));
   }
 
   @Ignore(value = SELENESE, reason = "switchTo().frame(WebElement) not supported with Selenium")
@@ -128,7 +128,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.switchTo().frame(frame);
 
   WebElement element = driver.findElement(By.name("id-name1"));
-  assertThat(element.getValue(), equalTo("name"));
+  assertThat(element.getAttribute("value"), equalTo("name"));
   }
 
   @Ignore(value = SELENESE, reason = "switchTo().frame(WebElement) not supported with Selenium")

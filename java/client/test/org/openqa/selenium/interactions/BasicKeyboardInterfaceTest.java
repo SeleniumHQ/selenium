@@ -44,7 +44,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
 
     sendLowercase.perform();
 
-    assertThat(keyReporter.getValue(), is("abc def"));
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
 
   }
 
@@ -112,7 +112,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
         keyLoggingElement.getText()
             .equals("focus keydown keydown keypress keyup keydown keypress keyup keyup"));
 
-    assertThat(keysEventInput.getValue(), is("AB"));
+    assertThat(keysEventInput.getAttribute("value"), is("AB"));
   }
 
   @JavascriptEnabled
@@ -142,6 +142,6 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
 
     sendLowercase.perform();
 
-    assertThat(keyReporter.getValue(), is("abc def"));
+    assertThat(keyReporter.getAttribute("value"), is("abc def"));
   }
 }

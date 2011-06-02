@@ -150,7 +150,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 
     textarea.sendKeys(expectedText);
 
-    String seenText = textarea.getValue();
+    String seenText = textarea.getAttribute("value");
     assertThat(seenText, equalTo(expectedText));
   }
 
@@ -160,7 +160,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     WebElement input = driver.findElement(By.id("working"));
     String expectedValue = "10/03/2007 to 30/07/1993";
     input.sendKeys(expectedValue);
-    String seenValue = input.getValue();
+    String seenValue = input.getAttribute("value");
 
     assertThat(seenValue, equalTo(expectedValue));
   }

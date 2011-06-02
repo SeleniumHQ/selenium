@@ -54,18 +54,6 @@ public interface WebElement extends SearchContext {
   void submit();
 
   /**
-   * Get the value of the element's "value" attribute. If this value has been modified after the
-   * page has loaded (for example, through javascript) then this will reflect the current value of
-   * the "value" attribute.
-   *
-   * @return The value of the element's "value" attribute.
-   * @see WebElement#getAttribute(String)
-   * @deprecated Use WebElement#getAttribute("value") instead.
-   */
-  @Deprecated
-  String getValue();
-
-  /**
    * Use this method to simulate typing into an element, which may set its value.
    */
   void sendKeys(CharSequence... keysToSend);

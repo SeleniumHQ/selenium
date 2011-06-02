@@ -27,7 +27,7 @@ public class GetElementValue extends WebElementHandler {
   }
 
   public ResultType call() throws Exception {
-    response.setValue(getElement().getValue());
+    response.setValue(getElement().getAttribute("value"));
 
     return ResultType.SUCCESS;
   }
