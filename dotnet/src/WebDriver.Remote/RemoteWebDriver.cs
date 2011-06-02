@@ -342,32 +342,6 @@ namespace OpenQA.Selenium.Remote
         {
             return new RemoteTargetLocator(this);
         }
-
-        /// <summary>
-        /// Method for returning a collection of WindowHandles that the driver has access to
-        /// </summary>
-        /// <returns>Returns a ReadOnlyCollection of Window Handles</returns>
-        /// <example>
-        /// IWebDriver driver = new InternetExplorerDriver();
-        /// ReadOnlyCollection<![CDATA[<string>]]> windowNames = driver.GetWindowHandles();
-        /// </example>
-        public ReadOnlyCollection<string> GetWindowHandles()
-        {
-            return this.WindowHandles;
-        }
-
-        /// <summary>
-        /// Returns the Name of Window that the driver is working in
-        /// </summary>
-        /// <returns>Returns the name of the Window</returns>
-        /// <example>
-        /// IWebDriver driver = new InternetExplorerDriver();
-        /// string windowName = driver.GetWindowHandles();
-        /// </example>
-        public string GetWindowHandle()
-        {
-            return this.CurrentWindowHandle;
-        }
         #endregion
 
         #region IJavaScriptExecutor Members

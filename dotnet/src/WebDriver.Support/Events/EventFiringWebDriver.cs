@@ -244,30 +244,6 @@ namespace OpenQA.Selenium.Support.Events
         {
             return new EventFiringTargetLocator(this);
         }
-
-        /// <summary>
-        /// Get the window handles of open browser windows.
-        /// </summary>
-        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all window handles
-        /// of windows belonging to this driver instance.</returns>
-        /// <remarks>The set of window handles returned by this method can be used to 
-        /// iterate over all open windows of this <see cref="IWebDriver"/> instance by 
-        /// passing them to <c>SwitchTo().Window(string)</c></remarks>
-        public ReadOnlyCollection<string> GetWindowHandles()
-        {
-            return this.WindowHandles;
-        }
-
-        /// <summary>
-        /// Get the current window handle.
-        /// </summary>
-        /// <returns>An opaque handle to this window that uniquely identifies it 
-        /// within this driver instance.</returns>
-        public string GetWindowHandle()
-        {
-            return this.CurrentWindowHandle;
-        }
-
         #endregion
 
         #region ISearchContext Members
