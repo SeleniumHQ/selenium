@@ -230,18 +230,20 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 
 
 rule %r[third_party/gecko-2/(linux|mac|win32)] do |t|
-  case t.name
+  url = case t.name
   when /linux/
-    path = Downloader.fetch "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2"
+    "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2"
   when /mac/
-    path = Downloader.fetch "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.mac-i386.sdk.tar.bz2"
+    "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.mac-i386.sdk.tar.bz2"
   when /win32/
-    path = Downloader.fetch "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.win32.sdk.zip"
+    "http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.win32.sdk.zip"
   else
     raise "don't know where to fetch #{t.name}"
   end
 
   begin
+    path = Downloader.fetch url
+
     destination = "third_party/gecko-2"
 
     if Platform.windows?
@@ -264,8 +266,15 @@ rule %r[third_party/gecko-2/(linux|mac|win32)] do |t|
     end
 
     mv "third_party/gecko-2/xulrunner-sdk", t.name
+  rescue StandardError, Timeout::Error => ex
+    # ignore errors - dependant targets will fall back to prebuilts
+
+    mkdir_p t.name
+    $stderr.puts "Failed to download the Gecko 2 SDK - manually delete #{t.name} to retry."
+
+    next
   ensure
-    rm_rf path
+    rm_rf path if path && File.exist?(path)
   end
 end
 
