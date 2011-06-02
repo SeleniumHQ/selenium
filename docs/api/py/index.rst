@@ -1,7 +1,7 @@
 ============
 Introduction
 ============
-:Author: Miki Tebeka <miki@saucelabs.com>
+:Author: David Burns 
 
 Selenium Python Client Driver is a Python language binding for Selenium Remote
 Control (version 1.0 and 2.0).
@@ -26,10 +26,10 @@ Python Client
 Java Server
 -----------
 
-Download the server from http://selenium.googlecode.com/files/selenium-server-standalone-2.0b3.jar
+Download the server from http://selenium.googlecode.com/files/selenium-server-standalone-2.0rc2.jar
 ::
 
-    java -jar selenium-server-standalone-2.0b3.jar
+    java -jar selenium-server-standalone-2.0rc2.jar
 
 Example
 =======
