@@ -58,7 +58,6 @@ public class InternetExplorerDriverTestSuite extends TestCase {
     private static Capabilities buildDesiredCapabilities() {
       DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
       caps.setCapability(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-        System.out.println("caps = " + caps);
       return caps;
     }
   }
