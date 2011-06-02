@@ -272,6 +272,7 @@ end
 gecko_sdk = "third_party/gecko-2/linux/"
 
 dll(:name => "libwebdriver_firefox_so",
+    :deps => "third_party/gecko-2/linux",
     :src  => FileList.new('cpp/webdriver-interactions/*_linux*.cpp') +
              FileList.new('cpp/webdriver-interactions/interactions_common.cpp') +
              FileList.new('cpp/webdriver-firefox/*.cpp'),
