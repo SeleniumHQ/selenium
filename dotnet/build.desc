@@ -392,6 +392,7 @@ dotnet_docs(name = "docs",
     ":webdriverbackedselenium"
   ],
   project = "docgen/docs.shfbproj",
-  website = "web",
-  out = "build/docs/dotnet/WebDriver.chm"
+  website = "build/docs/dotnet/web",
+  helpfile = "WebDriver.chm",
+  out = "build/dotnet/WebDriver.chm"
 )

@@ -2,6 +2,22 @@ require 'albacore'
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/checks'
 
+# Monkey patch NUnitTestRunner.execute so as not to fail the build
+# when encountering a test failure and to redirect output from NUnit.
+class NUnitTestRunner
+  attr_accessor :output_redirect, :ignore_test_fail
+  def execute
+    command_params = get_command_parameters().join(" ")
+    unless output_redirect.nil?
+      command_params = command_params + " > " + @output_redirect
+    end
+    result = run_command "NUnit", command_params
+
+    failure_message = 'NUnit Failed. See Build Log For Detail'
+    fail_with_message failure_message if !result and !@ignore_test_fail
+  end
+end
+
 class VisualStudioMappings
   def add_all(fun)
     fun.add_mapping("visualc_library", CrazyFunVisualC::VisualCLibrary.new)
@@ -170,15 +186,23 @@ module CrazyFunDotNet
 
   class RunDotNetTests < Tasks
     def handle(fun, dir, args)
-      output_dir = 'build/dotnet'
+      base_output_dir = 'build'
+      output_dir = base_output_dir + '/dotnet'
+      test_log_dir = base_output_dir + '/test_logs'
+
       task_name = task_name(dir, args[:name])
       desc "Run the tests for #{task_name}"
 
       target = nunit "#{task_name}:run" do |nunit_task|
+        mkdir_p test_log_dir
         puts "Testing: #{task_name}"
         nunit_task.command = "third_party/csharp/nunit-2.5.9/nunit-console.exe"
         nunit_task.assemblies << [output_dir, args[:project]].join(File::SEPARATOR)
         nunit_task.options << "/nologo"
+        nunit_task.options << "/nodots"
+        nunit_task.options << "/xml=#{[test_log_dir, args[:project]].join(File::SEPARATOR)}.xml"
+        nunit_task.output_redirect = "#{[test_log_dir, args[:project]].join(File::SEPARATOR)}.log"
+        nunit_task.ignore_test_fail = true
       end
 
       add_dependencies(target, dir, args[:deps])
@@ -191,7 +215,7 @@ module CrazyFunDotNet
       task_name = task_name(dir, args[:name])
       desc "Generate documentation for #{task_name}"
 
-      web_documentation_path = File.join(File.dirname(args[:out]), args[:website])
+      web_documentation_path = args[:website]
       web_documentation_path_desc = web_documentation_path.gsub("/", Platform.dir_separator)
 
       doc_sources = resolve_doc_sources(dir, args[:srcs])
@@ -215,8 +239,8 @@ module CrazyFunDotNet
         msb.properties = {
           "OutputPath" => File.expand_path(web_documentation_path).gsub("/", Platform.dir_separator), 
           "DocumentationSources" => build_doc_sources_parameter(doc_sources),
-          "HtmlHelpName" => File.basename(args[:out], File.extname(args[:out])),
-          "HelpTitle" => File.basename(args[:out], File.extname(args[:out]))
+          "HtmlHelpName" => File.basename(args[:helpfile], File.extname(args[:helpfile])),
+          "HelpTitle" => File.basename(args[:helpfile], File.extname(args[:helpfile]))
         }
         msb.targets ["CoreCleanHelp", "CoreBuildHelp"]
         msb.solution = File.join(dir, args[:project]).gsub("/", Platform.dir_separator)
@@ -256,10 +280,10 @@ module CrazyFunDotNet
     def handle(fun, dir, args)
       task_name = task_name(dir, args[:name])
       help_file_path_desc = args[:out].gsub("/", Platform.dir_separator)
-      web_documentation_path = File.join(File.dirname(args[:out]), args[:website])
+      web_documentation_path = args[:website]
       file task_name do
         puts "Generating help file: at #{help_file_path_desc}"
-        mv File.join(web_documentation_path, File.basename(args[:out])), File.dirname(args[:out])
+        mv File.join(web_documentation_path, args[:helpfile]), File.dirname(args[:out])
       end
     end
   end
