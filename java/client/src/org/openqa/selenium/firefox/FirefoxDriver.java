@@ -194,11 +194,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
     return new FirefoxWebElement(this);
   }
 
-  @Override
-  public boolean isJavascriptEnabled() {
-    return true;
-  }
-
   public <X> X getScreenshotAs(OutputType<X> target) {
     // Get the screenshot as base64.
     String base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();

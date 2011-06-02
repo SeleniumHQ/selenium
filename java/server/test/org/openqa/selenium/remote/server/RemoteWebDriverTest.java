@@ -48,15 +48,6 @@ public class RemoteWebDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  /**
-   * Issue 248
-   * @see <a href="http://code.google.com/p/webdriver/issues/detail?id=248">Issue 248</a>
-   */
-  @JavascriptEnabled
-  public void testShouldBeAbleToCallIsJavascriptEnabled() {
-    assertTrue(((JavascriptExecutor) driver).isJavascriptEnabled());
-  }
-
   @Ignore(HTMLUNIT)
   public void testCanAugmentWebDriverInstanceIfNecessary() {
     if (!(driver instanceof RemoteWebDriver)) {

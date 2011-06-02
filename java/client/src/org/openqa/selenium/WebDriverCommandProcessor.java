@@ -287,7 +287,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
       throw new IllegalStateException("Driver instance must support JS.");
     }
 
-    if (!((JavascriptExecutor) driver).isJavascriptEnabled()) {
+    if (!((HasCapabilities) driver).getCapabilities().isJavascriptEnabled()) {
       throw new IllegalStateException("JS support must be enabled.");
     }
   }

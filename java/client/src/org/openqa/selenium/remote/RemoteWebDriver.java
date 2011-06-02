@@ -334,7 +334,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT, params).getValue();
   }
 
-  public boolean isJavascriptEnabled() {
+  private boolean isJavascriptEnabled() {
     return capabilities.isJavascriptEnabled();
   }
 

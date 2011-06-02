@@ -117,13 +117,4 @@ public interface JavascriptExecutor {
    * @return One of Boolean, Long, String, List, WebElement, or null.
    */
   Object executeAsyncScript(String script, Object... args);
-
-  /**
-   * It's not enough to simply support JavaScript, it also needs to be enabled
-   * too.
-   *
-   * @deprecated Only one driver instance allows us to toggle this value.
-   */
-  @Deprecated
-  boolean isJavascriptEnabled();
 }

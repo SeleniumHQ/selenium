@@ -17,10 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.StubDriver;
 
 public class StubInputDeviceDriver extends StubDriver implements JavascriptExecutor {
@@ -30,9 +27,5 @@ public class StubInputDeviceDriver extends StubDriver implements JavascriptExecu
 
   public Object executeAsyncScript(String script, Object... args) {
     return null;
-  }
-
-  public boolean isJavascriptEnabled() {
-    return false;
   }
 }

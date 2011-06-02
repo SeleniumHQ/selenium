@@ -195,9 +195,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     throw new UnsupportedOperationException("Underlying driver instance does not support executing javascript");
   }
 
-  public boolean isJavascriptEnabled() {
-    if (driver instanceof JavascriptExecutor) {
-      return ((JavascriptExecutor) driver).isJavascriptEnabled();
+  private boolean isJavascriptEnabled() {
+    if (driver instanceof HasCapabilities) {
+      return ((HasCapabilities) driver).getCapabilities().isJavascriptEnabled();
     }
 
     throw new UnsupportedOperationException("Underlying driver instance does not support executing javascript");
