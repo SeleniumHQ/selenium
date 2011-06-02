@@ -21,7 +21,6 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.internal.Locatable;
@@ -41,10 +40,6 @@ public class RenderedRemoteWebElement extends RemoteWebElement implements Render
     Point currentLocation = getLocation();
     Point destination = element.getLocation();
     dragAndDropBy(destination.x - currentLocation.x, destination.y - currentLocation.y);
-  }
-
-  public String getValueOfCssProperty(String propertyName) {
-    return getCssValue(propertyName);
   }
 
   public Point getLocationOnScreenOnceScrolledIntoView() {

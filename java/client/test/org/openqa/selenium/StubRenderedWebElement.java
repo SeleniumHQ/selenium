@@ -21,7 +21,4 @@ public class StubRenderedWebElement extends StubElement implements RenderedWebEl
 
   public void dragAndDropOn(RenderedWebElement element) { }
 
-  public String getValueOfCssProperty(String propertyName) {
-    return null;
-  }
 }

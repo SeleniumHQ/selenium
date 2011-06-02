@@ -39,11 +39,23 @@ import com.gargoylesoftware.htmlunit.html.HtmlScript;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
-
 import com.gargoylesoftware.htmlunit.javascript.host.Event;
+
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.InvalidElementStateException;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -52,7 +64,6 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
-import org.openqa.selenium.interactions.internal.Coordinates;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 
@@ -443,7 +454,7 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
   }
 
   private int readAndRound(final String property) {
-    final String cssValue = getValueOfCssProperty(property).replaceAll("[^0-9\\.]", "");
+    final String cssValue = getCssValue(property).replaceAll("[^0-9\\.]", "");
     if (cssValue.length() == 0) {
       return 5; // wrong... but better than nothing
     }
@@ -772,10 +783,6 @@ public class HtmlUnitWebElement implements RenderedWebElement, WrapsDriver,
     assertElementNotStale();
 
     return getEffectiveStyle(element, propertyName);
-  }
-
-  public String getValueOfCssProperty(String propertyName) {
-    return getCssValue(propertyName);
   }
 
   private String getEffectiveStyle(HtmlElement htmlElement, String propertyName) {

@@ -423,10 +423,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       delegate.dragAndDropOn(element);
     }
 
-    public String getValueOfCssProperty(String propertyName) {
-      return delegate.getValueOfCssProperty(propertyName);
-    }
-
     public Point getLocationOnScreenOnceScrolledIntoView() {
       return ((Locatable) delegate).getLocationOnScreenOnceScrolledIntoView();
     }
