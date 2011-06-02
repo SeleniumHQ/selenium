@@ -49,8 +49,8 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
 
-    ActionChainsGenerator actionsBuilder = ((HasInputDevices) driver).actionsBuilder();
-    Action selectThreeOptions = actionsBuilder.click(options.get(1))
+    Actions actions = new Actions(driver);
+    Action selectThreeOptions = actions.click(options.get(1))
         .keyDown(Keys.SHIFT)
         .click(options.get(2))
         .click(options.get(3))
@@ -78,8 +78,8 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
     List<WebElement> listItems = driver.findElements(By.tagName("li"));
 
-    ActionChainsGenerator actionsBuilder = ((HasInputDevices) driver).actionsBuilder();
-    Action selectThreeItems = actionsBuilder.keyDown(Keys.CONTROL)
+    Actions actions = new Actions(driver);
+    Action selectThreeItems = actions.keyDown(Keys.CONTROL)
         .click(listItems.get(1))
         .click(listItems.get(3))
         .click(listItems.get(5))
@@ -91,8 +91,8 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
     assertEquals("#item2 #item4 #item6", reportingElement.getText());
 
     // Now click on another element, make sure that's the only one selected.
-    actionsBuilder = ((HasInputDevices) driver).actionsBuilder();
-    actionsBuilder.click(listItems.get(6)).build().perform();
+    actions = new Actions(driver);
+    actions.click(listItems.get(6)).build().perform();
     assertEquals("#item7", reportingElement.getText());
   }
 }

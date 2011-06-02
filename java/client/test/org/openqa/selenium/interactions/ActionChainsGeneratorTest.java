@@ -60,10 +60,6 @@ public class ActionChainsGeneratorTest extends MockObjectTestCase {
         return dummyMouse;
       }
 
-      @Override
-      public ActionChainsGenerator actionsBuilder() {
-        return new Actions(this);
-      }
     };
   }
 
@@ -75,7 +71,7 @@ public class ActionChainsGeneratorTest extends MockObjectTestCase {
       one(dummyKeyboard).releaseKey(Keys.CONTROL);
     }});
 
-    ActionChainsGenerator builder = ((HasInputDevices) driver).actionsBuilder();
+    Actions builder = new Actions(driver);
 
     builder.keyDown(Keys.SHIFT).sendKeys("abc").keyUp(Keys.CONTROL);
 
@@ -91,7 +87,7 @@ public class ActionChainsGeneratorTest extends MockObjectTestCase {
       one(dummyKeyboard).pressKey(Keys.SHIFT);
     }});
 
-    ActionChainsGenerator builder = ((HasInputDevices) driver).actionsBuilder();
+    Actions builder = new Actions(driver);
 
     builder.keyDown(dummyLocatableElement, Keys.SHIFT);
 
@@ -128,7 +124,7 @@ public class ActionChainsGeneratorTest extends MockObjectTestCase {
       one(dummyKeyboard).releaseKey(Keys.CONTROL);
     }});
 
-    ActionChainsGenerator builder = ((HasInputDevices) driver).actionsBuilder();
+    Actions builder = new Actions(driver);
 
     builder.keyDown(dummyLocatableElement, Keys.SHIFT)
         .sendKeys(dummyElement2, "abc")

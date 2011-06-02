@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.interactions.ActionChainsGenerator;
-
 import java.util.List;
 import java.util.Set;
 
@@ -84,7 +82,4 @@ public class StubDriver implements WebDriver, HasInputDevices {
     return null;
   }
 
-  public ActionChainsGenerator actionsBuilder() {
-    return null;
-  }
 }

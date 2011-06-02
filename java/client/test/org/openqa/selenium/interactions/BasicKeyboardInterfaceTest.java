@@ -17,24 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.Ignore;
-import org.openqa.selenium.JavascriptEnabled;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.Ignore.Driver.*;
 
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
@@ -42,8 +29,8 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
  */
 @Ignore(IE)
 public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
-  private ActionChainsGenerator getBuilder(WebDriver driver) {
-    return ((HasInputDevices) driver).actionsBuilder();
+  private Actions getBuilder(WebDriver driver) {
+    return new Actions(driver);
   }
 
   @JavascriptEnabled

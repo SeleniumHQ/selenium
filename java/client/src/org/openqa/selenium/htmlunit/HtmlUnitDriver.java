@@ -47,8 +47,6 @@ import net.sourceforge.htmlunit.corejs.javascript.*;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.browserlaunchers.Proxies;
-import org.openqa.selenium.interactions.ActionChainsGenerator;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -506,10 +504,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public Mouse getMouse() {
     return mouse;
-  }
-
-  public ActionChainsGenerator actionsBuilder() {
-    return new Actions(this);
   }
 
   protected interface JavaScriptResultsCollection {

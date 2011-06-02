@@ -25,7 +25,7 @@ import org.openqa.selenium.internal.Locatable;
  * Builds a CompositeAction containing all actions specified
  * by the method calls.
  */
-public class Actions implements ActionChainsGenerator {
+public class Actions {
   protected Mouse mouse;
   protected Keyboard keyboard;
   private CompositeAction action;

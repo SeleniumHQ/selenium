@@ -18,8 +18,6 @@ limitations under the License.
 package org.openqa.selenium.support.events;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.ActionChainsGenerator;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
@@ -258,10 +256,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       throw new UnsupportedOperationException("Underlying driver does not implement advanced"
           + " user interactions yet.");
     }
-  }
-
-  public ActionChainsGenerator actionsBuilder() {
-    return new Actions(this);
   }
 
   private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver, Locatable {

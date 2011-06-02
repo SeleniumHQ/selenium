@@ -43,8 +43,8 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
  *
  */
 public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
-  private ActionChainsGenerator getBuilder(WebDriver driver) {
-    return ((HasInputDevices) driver).actionsBuilder();
+  private Actions getBuilder(WebDriver driver) {
+    return new Actions(driver);
   }
 
   private void performDragAndDropWithMouse() {

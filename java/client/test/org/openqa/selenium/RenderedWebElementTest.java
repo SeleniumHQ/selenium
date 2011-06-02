@@ -16,17 +16,15 @@ limitations under the License.
 */
 package org.openqa.selenium;
 
+import org.openqa.selenium.interactions.Actions;
+
+import java.util.concurrent.Callable;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.Ignore.Driver.*;
 import static org.openqa.selenium.TestWaiter.waitFor;
-
-import java.util.concurrent.Callable;
 
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 
@@ -107,7 +105,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     assertEquals("", item.getText());
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
-    ((HasInputDevices) driver).actionsBuilder().moveToElement(element).build().perform();
+    new Actions(driver).moveToElement(element).build().perform();
 
     waitFor(new Callable<Boolean>() {
 
@@ -162,7 +160,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
       return;
     }
 
-    ((HasInputDevices) driver).actionsBuilder().moveToElement(element).build().perform();
+    new Actions(driver).moveToElement(element).build().perform();
 
     WebElement target = driver.findElement(By.id("item1"));
     assertTrue(target.isDisplayed());
@@ -185,13 +183,13 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    ((HasInputDevices) driver).actionsBuilder().moveToElement(trackerDiv).build().perform();
+    new Actions(driver).moveToElement(trackerDiv).build().perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
     waitFor(fuzzyMatchingOfCoordinates(reporter, 50, 200));
 
-    ((HasInputDevices) driver).actionsBuilder().moveByOffset(10, 20).build().perform();
+    new Actions(driver).moveByOffset(10, 20).build().perform();
 
     waitFor(fuzzyMatchingOfCoordinates(reporter, 60, 220));
   }
@@ -209,7 +207,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    ((HasInputDevices) driver).actionsBuilder().moveToElement(trackerDiv, 95, 195).build()
+    new Actions(driver).moveToElement(trackerDiv, 95, 195).build()
         .perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
@@ -230,7 +228,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     driver.get(pages.mouseTrackerPage);
 
-    ((HasInputDevices) driver).actionsBuilder().moveByOffset(50, 100).build().perform();
+    new Actions(driver).moveByOffset(50, 100).build().perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 

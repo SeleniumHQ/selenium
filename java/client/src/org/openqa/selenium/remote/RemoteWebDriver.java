@@ -36,8 +36,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.ActionChainsGenerator;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
@@ -425,11 +423,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    */
   protected void log(SessionId sessionId, String commandName, Object toLog) {
     // By default do nothing
-  }
-
-  public ActionChainsGenerator actionsBuilder() {
-    //TODO(eranm): change this to use a different action chains generator.
-    return new Actions(this);
   }
 
   protected class RemoteWebDriverOptions implements Options {

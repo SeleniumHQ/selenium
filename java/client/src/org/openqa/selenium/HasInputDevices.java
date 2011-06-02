@@ -17,20 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.interactions.ActionChainsGenerator;
-
 
 /**
  * Interface implemented by each driver that allows access to the raw input devices.
- *
  */
 public interface HasInputDevices {
   Keyboard getKeyboard();
   Mouse getMouse();
-
-  /**
-   * @deprecated Use {@link org.openqa.selenium.interactions.Actions} instead.
-   */
-  @Deprecated
-  ActionChainsGenerator actionsBuilder();
 }
