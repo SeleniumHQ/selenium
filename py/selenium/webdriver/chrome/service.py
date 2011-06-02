@@ -79,6 +79,7 @@ class Service(object):
         try:
             if self.process:
                 os.kill(self.process.pid, signal.SIGTERM)
+                os.wait()
         except AttributeError:
             # kill may not be available under windows environment
             pass
