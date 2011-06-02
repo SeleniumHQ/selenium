@@ -736,60 +736,6 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Method for creating a cookie in the browser
-            /// </summary>
-            /// <param name="cookie"><see cref="Cookie"/> that represents a cookie in the browser</param>
-            public void AddCookie(Cookie cookie)
-            {
-                this.wrappedOptions.AddCookie(cookie);
-            }
-
-            /// <summary>
-            /// Method for getting a Collection of Cookies that are present in the browser
-            /// </summary>
-            /// <returns>ReadOnlyCollection of Cookies in the browser</returns>
-            public ReadOnlyCollection<Cookie> GetCookies()
-            {
-                return this.wrappedOptions.GetCookies();
-            }
-
-            /// <summary>
-            /// Method for returning a getting a cookie by name
-            /// </summary>
-            /// <param name="name">name of the cookie that needs to be returned</param>
-            /// <returns>A Cookie from the name</returns>
-            public Cookie GetCookieNamed(string name)
-            {
-                return this.wrappedOptions.GetCookieNamed(name);
-            }
-
-            /// <summary>
-            /// Delete a cookie in the browser by passing in a copy of a cookie
-            /// </summary>
-            /// <param name="cookie">An object that represents a copy of the cookie that needs to be deleted</param>
-            public void DeleteCookie(Cookie cookie)
-            {
-                this.wrappedOptions.DeleteCookie(cookie);
-            }
-
-            /// <summary>
-            /// Delete the cookie by passing in the name of the cookie
-            /// </summary>
-            /// <param name="name">The name of the cookie that is in the browser</param>
-            public void DeleteCookieNamed(string name)
-            {
-                this.wrappedOptions.DeleteCookieNamed(name);
-            }
-
-            /// <summary>
-            /// Delete All Cookies that are present in the browser
-            /// </summary>
-            public void DeleteAllCookies()
-            {
-                this.wrappedOptions.DeleteAllCookies();
-            }
-
-            /// <summary>
             /// Provides access to the timeouts defined for this driver.
             /// </summary>
             /// <returns>An object implementing the <see cref="ITimeouts"/> interface.</returns>
