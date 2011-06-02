@@ -110,7 +110,6 @@
     <Compile Include="NoSuchFrameException.cs" />
     <Compile Include="NotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Speed.cs" />
     <Compile Include="StaleElementReferenceException.cs" />
     <Compile Include="WebDriverException.cs" />
     <Compile Include="XPathLookupException.cs" />

@@ -32,25 +32,6 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets or sets the speed with which actions are executed in the browser.
-        /// </summary>
-        public Speed Speed
-        {
-            get
-            {
-                Response response = this.driver.InternalExecute(DriverCommand.GetSpeed, null);
-                return Speed.FromString(response.Value.ToString());
-            }
-
-            set
-            {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("speed", value.Description.ToUpperInvariant());
-                this.driver.InternalExecute(DriverCommand.SetSpeed, parameters);
-            }
-        }
-
-        /// <summary>
         /// Method for creating a cookie in the browser
         /// </summary>
         /// <param name="cookie"><see cref="Cookie"/> that represents a cookie in the browser</param>

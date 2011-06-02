@@ -34,13 +34,6 @@ namespace OpenQA.Selenium
         ICookieJar Cookies { get; }
 
         /// <summary>
-        /// Gets or sets a value representing the speed with which user interactions 
-        /// take place in the browser.
-        /// </summary>
-        [Obsolete("This property will be removed in a future release.")]
-        Speed Speed { get; set; }
-
-        /// <summary>
         /// Adds a cookie to the current page.
         /// </summary>
         /// <param name="cookie">The <see cref="Cookie"/> object to be added.</param>

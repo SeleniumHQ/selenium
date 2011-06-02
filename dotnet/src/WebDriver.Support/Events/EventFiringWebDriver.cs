@@ -728,22 +728,6 @@ namespace OpenQA.Selenium.Support.Events
 
             #region IOptions Members
             /// <summary>
-            /// Gets or sets the speed with which actions are executed in the browser.
-            /// </summary>
-            public Speed Speed
-            {
-                get
-                {
-                    return this.wrappedOptions.Speed;
-                }
-
-                set
-                {
-                    this.wrappedOptions.Speed = value;
-                }
-            }
-
-            /// <summary>
             /// Gets an object allowing the user to manipulate cookies on the page.
             /// </summary>
             public ICookieJar Cookies
