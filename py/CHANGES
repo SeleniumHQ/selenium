@@ -12,6 +12,14 @@ Selenium 2 Beta 4
 * Added Advanced User Interaction API. Only Available for HTMLUnit at the moment
 * Profiles now delete their temp folders when driver.quit() is called
 
+Selenium 2 Beta 3
+* Accept Untrusted Certificates in Firefox
+* Fixed Screenshots
+* Added DesiredCapabilities to simplify choosing Drivers
+* Fixed Firefox Profile creation
+* Added Firefox 4 support
+* DocStrings Improvements
+
 Selenium 2 Beta 2
 
 * New bindings landed. Change webdriver namespace to "selenium.webdriver"
@@ -28,10 +36,4 @@ Selenium 2 Beta 2
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
 
-Selenium 2 Beta 3
-* Accept Untrusted Certificates in Firefox
-* Fixed Screenshots
-* Added DesiredCapabilities to simplify choosing Drivers
-* Fixed Firefox Profile creation
-* Added Firefox 4 support
-* DocStrings Improvements
+
