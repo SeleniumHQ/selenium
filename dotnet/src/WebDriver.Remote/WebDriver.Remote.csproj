@@ -47,6 +47,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteAlert.cs" />
     <Compile Include="RemoteCookieJar.cs" />
+    <Compile Include="RemoteCoordinates.cs" />
     <Compile Include="RemoteKeyboard.cs" />
     <Compile Include="RemoteMouse.cs" />
     <Compile Include="RemoteNavigator.cs" />

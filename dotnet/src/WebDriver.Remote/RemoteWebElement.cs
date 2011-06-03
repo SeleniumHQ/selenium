@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -12,7 +13,7 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     /// <seealso cref="IWebElement"/>
     /// <seealso cref="ILocatable"/>
-    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver
+    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ILocatable
     {
         #region Private members
         private RemoteWebDriver driver;
@@ -145,6 +146,34 @@ namespace OpenQA.Selenium.Remote
                 Response commandResponse = this.Execute(DriverCommand.IsElementDisplayed, parameters);
                 return (bool)commandResponse.Value;
             }
+        }
+        #endregion
+
+        #region ILocatable Members
+        /// <summary>
+        /// Gets the point where the element would be when scrolled into view.
+        /// </summary>
+        public Point LocationOnScreenOnceScrolledIntoView
+        {
+            get
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", this.Id);
+                Response commandResponse = this.Execute(DriverCommand.GetElementLocationOnceScrolledIntoView, parameters);
+                Dictionary<string, object> rawLocation = (Dictionary<string, object>)commandResponse.Value;
+                int x = Convert.ToInt32(rawLocation["x"], CultureInfo.InvariantCulture);
+                int y = Convert.ToInt32(rawLocation["y"], CultureInfo.InvariantCulture);
+                return new Point(x, y);
+            }
+        }
+
+        /// <summary>
+        /// Gets the coordinates identifying the location of this element using
+        /// various frames of reference.
+        /// </summary>
+        public ICoordinates Coordinates
+        {
+            get { return new RemoteCoordinates(this); }
         }
         #endregion
 
