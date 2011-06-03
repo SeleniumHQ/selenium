@@ -405,6 +405,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Add cookie to unrelated domain silently fails for IE.")]
+        [IgnoreBrowser(Browser.Chrome, "Chrome returns incorrect error code when setting cookie")]
         [ExpectedException(typeof(WebDriverException))]
         public void ShouldNotShowCookieAddedToDifferentDomain()
         {

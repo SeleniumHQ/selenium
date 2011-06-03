@@ -113,7 +113,8 @@ namespace OpenQA.Selenium.Chrome
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.Start();
             DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(20));
-            HttpWebRequest request = HttpWebRequest.Create(this.serviceUrl) as HttpWebRequest;
+            Uri serviceHealthUri = new Uri(this.serviceUrl, new Uri("healthz", UriKind.Relative));
+            HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
             bool processStarted = false;
             while (!processStarted && DateTime.Now < timeout)
             {
