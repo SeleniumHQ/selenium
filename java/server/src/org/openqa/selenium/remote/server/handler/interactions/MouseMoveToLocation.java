@@ -66,7 +66,7 @@ public class MouseMoveToLocation extends WebDriverHandler implements JsonParamet
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    if (allParameters.containsKey(ELEMENT)) {
+    if (allParameters.containsKey(ELEMENT) && allParameters.get(ELEMENT) != null) {
       elementId = (String) allParameters.get(ELEMENT);
       elementProvided = true;
     } else {
