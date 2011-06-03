@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
 
 import com.google.common.collect.ImmutableMap;
@@ -26,7 +27,7 @@ import java.lang.reflect.Method;
 public class AddRotatable implements AugmenterProvider {
 
   public Class<?> getDescribedInterface() {
-    return AddRotatable.class;
+    return Rotatable.class;
   }
 
   public InterfaceImplementation getImplementation(Object value) {
