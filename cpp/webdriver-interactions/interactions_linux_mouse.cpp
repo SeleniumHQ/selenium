@@ -270,14 +270,29 @@ WD_RESULT mouseMoveTo(WINDOW_HANDLE windowHandle, long duration, long fromX, lon
   const int stepSizeInPixels = 5;
   int steps = pointsDistance / stepSizeInPixels;
 
+  // If the distance between the points is less than stepSizeInPixels,
+  // make sure enough move events aregenerated.
+  // * If the start and finish points are the same, one step is needed.
+  // Otherwise, generate at least 2 move events: one one the start
+  // point and the other on the end point.
+  if ((fromX == toX) && (fromY == toY)) {
+    steps = 1;
+  } else {
+    steps = max(steps, 2);
+  }
+
+  assert(steps > 0);
   LOG(DEBUG) << "From: (" << fromX << ", " << fromY << ") to: (" << toX << ", " << toY << ")";
   LOG(DEBUG) << "Distance: " << pointsDistance << " steps: " << steps;
 
-  for (int i = 0;i < steps + 1; ++i) {
-    //To avoid integer division rounding and cumulative floating point errors,
-    //calculate from scratch each time
-    int currentX = fromX + ((toX - fromX) * ((double)i) / max(steps, 1));
-    int currentY = fromY + ((toY - fromY) * ((double)i) / max(steps, 1));
+  for (int i = 0; i < steps; ++i) {
+    // To avoid integer division rounding and cumulative floating point errors,
+    // calculate from scratch each time. We adjust the divider to steps - 1
+    // to get a move event generated on the exact starting point as well
+    // as the end point.
+    int div_by = max(steps - 1, 1);
+    int currentX = fromX + ((toX - fromX) * ((double)i) / div_by);
+    int currentY = fromY + ((toY - fromY) * ((double)i) / div_by);
     LOG(DEBUG) << "Moving to: (" << currentX << ", " << currentY << ")";
     list<GdkEvent*> events_for_mouse = mousep_handler.CreateEventsForMouseMove(currentX, currentY);
     submit_and_free_events_list(events_for_mouse, timePerEvent);
