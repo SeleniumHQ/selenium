@@ -23,6 +23,9 @@ module Selenium
             caps.merge! 'chrome.switches' => switches.map { |e| e.to_s }
           end
 
+          if Chrome.path
+            caps.merge! 'chrome.binary' => Chrome.path
+          end
 
           @service = Service.default_service
           @service.start

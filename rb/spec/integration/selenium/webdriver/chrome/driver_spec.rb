@@ -1,6 +1,6 @@
 module Selenium
   module WebDriver
-    module Firefox
+    module Chrome
 
       describe Driver do
         it "should accept an array of custom command line switches" do
