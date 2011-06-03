@@ -29,6 +29,9 @@ class DesiredCapabilities(object):
                         "version": "",
                         "platform": "ANY",
                         "javascriptEnabled": True }
+    OPERA = {"browserName": "opera",
+                        "version": "",
+                        "platform": "ANY"}
 
     HTMLUNIT = {"browserName": "htmlunit",
                         "version": "",
