@@ -21,6 +21,8 @@
 #ifndef MONGOOSE_HEADER_INCLUDED
 #define  MONGOOSE_HEADER_INCLUDED
 
+#include <stddef.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
@@ -31,6 +33,7 @@ struct mg_connection;  // Handle for the individual connection
 
 // This structure contains information about the HTTP request.
 struct mg_request_info {
+  void *user_data;       // User-defined pointer passed to mg_start()
   char *request_method;  // "GET", "POST", etc
   char *uri;             // URL-decoded URI
   char *http_version;    // E.g. "1.0", "1.1"
@@ -53,7 +56,7 @@ enum mg_event {
   MG_NEW_REQUEST,   // New HTTP request has arrived from the client
   MG_HTTP_ERROR,    // HTTP error must be returned to the client
   MG_EVENT_LOG,     // Mongoose logs an event, request_info.log_message
-  MG_INIT_SSL,      // Mongoose initializes SSL. Instead of mg_connection *,
+  MG_INIT_SSL       // Mongoose initializes SSL. Instead of mg_connection *,
                     // SSL context is passed to the callback function.
 };
 
@@ -76,7 +79,7 @@ enum mg_event {
 typedef void * (*mg_callback_t)(enum mg_event event,
                                 struct mg_connection *conn,
                                 const struct mg_request_info *request_info);
-  
+
 
 // Start web server.
 //
@@ -91,14 +94,15 @@ typedef void * (*mg_callback_t)(enum mg_event event,
 //     "listening_ports", "80,443s",
 //     NULL
 //   };
-//   struct mg_context *ctx = mg_start(&my_func, options);
+//   struct mg_context *ctx = mg_start(&my_func, NULL, options);
 //
 // Please refer to http://code.google.com/p/mongoose/wiki/MongooseManual
 // for the list of valid option and their possible values.
 //
 // Return:
 //   web server context, or NULL on error.
-struct mg_context *mg_start(mg_callback_t callback, const char **options);
+struct mg_context *mg_start(mg_callback_t callback, void *user_data,
+                            const char **options);
 
 
 // Stop the web server.
@@ -136,8 +140,10 @@ const char **mg_get_valid_option_names(void);
 //
 // Return:
 //   1 on success, 0 on error.
-int mg_modify_passwords_file(struct mg_context *ctx, 
-    const char *passwords_file_name, const char *user, const char *password);
+int mg_modify_passwords_file(const char *passwords_file_name,
+                             const char *domain,
+                             const char *user,
+                             const char *password);
 
 // Send data to the client.
 int mg_write(struct mg_connection *, const void *buf, size_t len);
