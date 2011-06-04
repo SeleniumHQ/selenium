@@ -15,11 +15,25 @@ limitations under the License.
  */
 package org.openqa.grid.selenium;
 
+import java.net.URL;
+import java.util.logging.Logger;
+
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.json.JSONObject;
 import org.openqa.grid.selenium.utils.GridConfiguration;
+import org.openqa.grid.selenium.utils.GridRole;
+import org.openqa.grid.selenium.utils.WebDriverJSONConfigurationUtils;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
 public class GridLauncher {
+
+	private static final Logger log = Logger.getLogger(GridLauncher.class.getName());
 
 	public static void main(String[] args) throws Exception {
 
@@ -27,9 +41,11 @@ public class GridLauncher {
 
 		switch (config.getRole()) {
 		case NOT_GRID:
+			log.info("Launching a standalone server");
 			SeleniumServer.main(args);
 			break;
 		case HUB:
+			log.info("Launching a selenium grid server");
 			Hub h = Hub.getInstance();
 			h.registerServlets(config.getServlets());
 			h.setPort(config.getPort());
@@ -37,6 +53,7 @@ public class GridLauncher {
 			break;
 		case WEBDRIVER:
 		case REMOTE_CONTROL:
+			log.info("Launching a selenium grid node");
 			launchNode(config);
 			break;
 		default:
@@ -53,21 +70,58 @@ public class GridLauncher {
 	 */
 	public static void launchNode(GridConfiguration config) throws Exception {
 
-		SelfRegisteringRemote remote = SelfRegisteringRemote.create(config);
+		// should become the default case eventually.
+		if (config.getRole() == GridRole.WEBDRIVER && (config.getFile() != null || config.getCapabilities().size() == 0)) {
 
-		// loading the browsers specified command line if any, otherwise try 5 firefox, IE and chrome
-		if (config.getCapabilities().size()==0){
-			remote.addFirefoxSupport();
-			remote.addFirefoxSupport();
-			remote.addFirefoxSupport();
-			remote.addFirefoxSupport();
-			remote.addFirefoxSupport();
-			remote.addInternetExplorerSupport();
-			remote.addChromeSupport();
+			String resource = config.getFile();
+			if (resource == null) {
+				resource = "defaults/WebDriverDefaultNode.json";
+			}
+			JSONObject request = WebDriverJSONConfigurationUtils.parseRegistrationRequest(resource);
+			int port = request.getJSONObject("configuration").getInt("port");
+			RemoteControlConfiguration c = new RemoteControlConfiguration();
+			c.setPort(port);
+			SeleniumServer server = new SeleniumServer(c);
+			server.boot();
+			log.info("Registering the node to to hub :" + config.getRegistrationURL());
+			log.info("using the json request : " + request);
+			registerToHub(config.getRegistrationURL(), request.toString());
+
+		} else {
+			SelfRegisteringRemote remote = SelfRegisteringRemote.create(config);
+
+			// loading the browsers specified command line if any, otherwise try
+			// 5 firefox, IE and chrome
+			if (config.getCapabilities().size() == 0) {
+				remote.addFirefoxSupport();
+				remote.addFirefoxSupport();
+				remote.addFirefoxSupport();
+				remote.addFirefoxSupport();
+				remote.addFirefoxSupport();
+				remote.addInternetExplorerSupport();
+				remote.addChromeSupport();
+			}
+
+			remote.launchRemoteServer();
+			remote.registerToHub();
 		}
-		
-		remote.launchRemoteServer();
-		remote.registerToHub();
+
+	}
+
+	private static void registerToHub(URL registrationURL, String json) {
+		try {
+			BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST", registrationURL.toExternalForm());
+			r.setEntity(new StringEntity(json));
+
+			DefaultHttpClient client = new DefaultHttpClient();
+			HttpHost host = new HttpHost(registrationURL.getHost(), registrationURL.getPort());
+			HttpResponse response = client.execute(host, r);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new RuntimeException("Error sending the registration request.");
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Error sending the registration request.", e);
+		}
 	}
 
 }

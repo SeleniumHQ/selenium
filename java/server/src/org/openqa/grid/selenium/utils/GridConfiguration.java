@@ -6,6 +6,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -21,14 +22,15 @@ public class GridConfiguration {
 	private int port = 4444;
 	private String host;
 	private boolean throwOnCapabilityNotPresent = true;
-	
+
 	private String[] seleniumServerargs = new String[0];
 	private RemoteControlConfiguration nodeConfig = new RemoteControlConfiguration();
 	private NetworkUtils networkUtils = new NetworkUtils();
-	
+
 	private List<String> servlets = new ArrayList<String>();
-	
+
 	private List<DesiredCapabilities> capabilities = new ArrayList<DesiredCapabilities>();
+	private String file;
 
 	public static GridConfiguration parse(String[] args) {
 
@@ -81,16 +83,19 @@ public class GridConfiguration {
 				i++;
 				String v = getArgValue(args, i);
 				config.addCapabilityFromString(v);
-			}else if ("-servlet".equalsIgnoreCase(arg)) {
+			} else if ("-servlet".equalsIgnoreCase(arg)) {
 				i++;
 				String v = getArgValue(args, i);
 				config.addServlet(v);
-			}else if ("-throwCapabilityNotPresent".equalsIgnoreCase(arg)) {
+			} else if ("-throwCapabilityNotPresent".equalsIgnoreCase(arg)) {
 				i++;
 				String v = getArgValue(args, i);
 				config.setThrowOnCapabilityNotPresent(Boolean.parseBoolean(v));
-			}
-			else {
+			} else if ("-file".equalsIgnoreCase(arg)) {
+				i++;
+				String v = getArgValue(args, i);
+				config.setFile(v);
+			} else {
 				leftOver.add(arg);
 			}
 		}
@@ -103,6 +108,13 @@ public class GridConfiguration {
 		return config;
 	}
 
+	private void setFile(String v) {
+		if (role != GridRole.WEBDRIVER) {
+			throw new RuntimeException("Setting a file as config for a node is only for webdriver.");
+		}
+		this.file = v;
+	}
+
 	public boolean isThrowOnCapabilityNotPresent() {
 		return throwOnCapabilityNotPresent;
 	}
@@ -113,6 +125,7 @@ public class GridConfiguration {
 
 	/**
 	 * To get the list of extra servlet the hub should register.
+	 * 
 	 * @return
 	 */
 	public List<String> getServlets() {
@@ -129,20 +142,20 @@ public class GridConfiguration {
 
 	private void addCapabilityFromString(String capability) {
 		String[] s = capability.split(",");
-		if (s.length==0){
+		if (s.length == 0) {
 			throw new InvalidParameterException("-browser must be followed by a browser description");
 		}
 		DesiredCapabilities res = new DesiredCapabilities();
 		for (int i = 0; i < s.length; i++) {
-			if (s[i].split("=").length!=2){
-				throw new InvalidParameterException("-browser format is key1=value1,key2=value2 "+s[i]+" deosn't follow that format.");
+			if (s[i].split("=").length != 2) {
+				throw new InvalidParameterException("-browser format is key1=value1,key2=value2 " + s[i] + " deosn't follow that format.");
 			}
 			String key = s[i].split("=")[0];
 			String value = s[i].split("=")[1];
 			res.setCapability(key, value);
 		}
 		capabilities.add(res);
-		
+
 	}
 
 	/**
@@ -163,21 +176,35 @@ public class GridConfiguration {
 		String INDENT = "  ";
 		RemoteControlLauncher.printWrappedErrorLine("", "Error with the parameters :" + msg);
 		RemoteControlLauncher.printWrappedErrorLine("", "To use as a grid, specify a role and its arguments.");
-		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-role <hub|remotecontrol|webdriver> (default is no grid -- just run an RC server). When launching a node for webdriver"
-				+ " or remotecontrol, the parameters will be forwarded to the server on the node, so you can use something like -role remotecontrol -trustAllSSLCertificates."
-				+ " In that case, the SeleniumServer will be launch with the trustallCertificats option.");
-		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-hub <http://localhost:4444/grid/register> : the url that will be used to post the registration request.");
-		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-host <IP | hostname> : usually not needed and determined automatically. For exotic network configuration, network with VPN, " + "specifying the host might be necessary.");
+		RemoteControlLauncher
+				.printWrappedErrorLine(
+						INDENT,
+						"-role <hub|remotecontrol|webdriver> (default is no grid -- just run an RC server). When launching a node for webdriver"
+								+ " or remotecontrol, the parameters will be forwarded to the server on the node, so you can use something like -role remotecontrol -trustAllSSLCertificates."
+								+ " In that case, the SeleniumServer will be launch with the trustallCertificats option.");
+		RemoteControlLauncher.printWrappedErrorLine(INDENT,
+				"-hub <http://localhost:4444/grid/register> : the url that will be used to post the registration request.");
+		RemoteControlLauncher.printWrappedErrorLine(INDENT,
+				"-host <IP | hostname> : usually not needed and determined automatically. For exotic network configuration, network with VPN, "
+						+ "specifying the host might be necessary.");
 		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-port <xxxx> : the port the remote/hub will listen on.Default to 4444.");
-		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-nodeTimeout <xxxx> : the timeout in seconds before the hub automatically releases a node that hasn't received any requests for more than XX sec."
-				+ " The browser will be released for another test to use.This tupically takes care of the client crashes.");
-		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-maxConcurrent <x> : Defaults to 5. The maximum number of tests that can run at the same time on the node. "
-				+ "Different from the supported browsers.For a node that supports firefox 3.6, firefox 4.0  and IE8 for instance,maxConccurent=1 "
-				+ "will ensure that you never have more than 1 browserrunning. With maxConcurrent=2 you can have 2 firefox tests at the same time, or 1 IE and 1 FF. ");
-		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-servlet <com.mycompany.MyServlet> to register a new servlet on the hub. The servlet will accessible under the path  /grid/admin/MyServlet");
-		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-throwCapabilityNotPresent <true | false> default to true. If true, the hub will reject test request right away if no proxy is currently registered that can host that capability.");
-		
-		
+		RemoteControlLauncher.printWrappedErrorLine(INDENT,
+				"-nodeTimeout <xxxx> : the timeout in seconds before the hub automatically releases a node that hasn't received any requests for more than XX sec."
+						+ " The browser will be released for another test to use.This tupically takes care of the client crashes.");
+		RemoteControlLauncher
+				.printWrappedErrorLine(
+						INDENT,
+						"-maxConcurrent <x> : Defaults to 5. The maximum number of tests that can run at the same time on the node. "
+								+ "Different from the supported browsers.For a node that supports firefox 3.6, firefox 4.0  and IE8 for instance,maxConccurent=1 "
+								+ "will ensure that you never have more than 1 browserrunning. With maxConcurrent=2 you can have 2 firefox tests at the same time, or 1 IE and 1 FF. ");
+		RemoteControlLauncher
+				.printWrappedErrorLine(INDENT,
+						"-servlet <com.mycompany.MyServlet> to register a new servlet on the hub. The servlet will accessible under the path  /grid/admin/MyServlet");
+		RemoteControlLauncher
+				.printWrappedErrorLine(
+						INDENT,
+						"-throwCapabilityNotPresent <true | false> default to true. If true, the hub will reject test request right away if no proxy is currently registered that can host that capability.");
+
 		// -browser
 		// browserName=firefox,version=3.6,firefox_binary=/Users/freynaud
 		System.exit(-1);
@@ -268,6 +295,10 @@ public class GridConfiguration {
 
 	public void setMaxConcurrentTests(int maxConcurrent) {
 		this.maxConcurrent = maxConcurrent;
+	}
+
+	public String getFile() {
+		return file;
 	}
 
 }
