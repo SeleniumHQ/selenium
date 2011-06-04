@@ -18,6 +18,7 @@ public class RegistryTestHelper {
 			public Integer call() throws Exception {
 				Integer i = r.getAllProxies().size();
 				if (i != nodeNumber) {
+					System.err.println("IT WAS USEFUL");
 					return null;
 				} else {
 					return i;

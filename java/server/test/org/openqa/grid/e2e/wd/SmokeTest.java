@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.openqa.grid.e2e.utils.GridConfigurationMock;
+import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
@@ -30,6 +31,7 @@ public class SmokeTest {
 		remote.addFirefoxSupport();
 		remote.launchRemoteServer();
 		remote.registerToHub();
+		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}
 
 	@Test
