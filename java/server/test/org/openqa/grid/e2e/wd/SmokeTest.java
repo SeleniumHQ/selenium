@@ -26,7 +26,7 @@ public class SmokeTest {
 	public void prepare() throws Exception {
 		hub.start();
 
-		SelfRegisteringRemote remote =  SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
+		SelfRegisteringRemote remote = SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
 		remote.addFirefoxSupport();
 		remote.launchRemoteServer();
 		remote.registerToHub();
@@ -41,7 +41,9 @@ public class SmokeTest {
 			driver.get(hubURL + "/grid/console");
 			Assert.assertEquals(driver.getTitle(), "Grid overview");
 		} finally {
-			driver.quit();
+			if (driver != null) {
+				driver.quit();
+			}
 		}
 	}
 

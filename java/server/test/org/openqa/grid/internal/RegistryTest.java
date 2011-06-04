@@ -92,10 +92,37 @@ public class RegistryTest {
 		}
 
 	}
+	
+	@Test
+	public void emptyRegistryParam() {
+		Registry registry = Registry.getNewInstanceForTestOnly();
+		registry.setThrowOnCapabilityNotPresent(false);
+		try {
+
+			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+			newSessionRequest.process();
+		} finally {
+			registry.stop();
+		}
+
+	}
 
 	@Test(expected = CapabilityNotPresentOnTheGridException.class)
 	public void CapabilityNotPresentRegistry() {
 		Registry registry = Registry.getNewInstanceForTestOnly();
+		try {
+			registry.add(new RemoteProxy(req));
+
+			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+			newSessionRequest.process();
+		} finally {
+			registry.stop();
+		}
+	}
+	@Test
+	public void CapabilityNotPresentRegistryParam() {
+		Registry registry = Registry.getNewInstanceForTestOnly();
+		registry.setThrowOnCapabilityNotPresent(false);
 		try {
 			registry.add(new RemoteProxy(req));
 
@@ -141,7 +168,7 @@ public class RegistryTest {
 	 * try to simulate a real proxy. The proxy registration takes up to 1 sec to
 	 * register, and crashes in 10% of the case.
 	 * 
-	 * @author François Reynaud
+	 * @author FranÔøΩois Reynaud
 	 * 
 	 */
 	class MyRemoteProxy extends RemoteProxy implements RegistrationListener {
