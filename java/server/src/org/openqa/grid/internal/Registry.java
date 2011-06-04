@@ -63,6 +63,8 @@ public class Registry {
 	private Matcher matcherThread = new Matcher();
 	private boolean stop = false;
 
+	private boolean throwOnCapabilityNotPresent = true;
+
 	private Registry() {
 		matcherThread.start();
 
@@ -152,12 +154,21 @@ public class Registry {
 			lock.lock();
 
 			if (proxies.isEmpty()) {
-				throw new GridException("Empty pool of VM for setup " + request.getDesiredCapabilities());
-				//log.warning("Empty pool of nodes.");
+				if (throwOnCapabilityNotPresent) {
+					throw new GridException("Empty pool of VM for setup " + request.getDesiredCapabilities());
+				} else {
+					log.warning("Empty pool of nodes.");
+				}
+
 			}
 			if (!contains(request.getDesiredCapabilities())) {
-				throw new CapabilityNotPresentOnTheGridException(request.getDesiredCapabilities());
-				//log.warning("grid doesn't contain "+request.getDesiredCapabilities()+" at the moment.");
+
+				if (throwOnCapabilityNotPresent) {
+					throw new CapabilityNotPresentOnTheGridException(request.getDesiredCapabilities());
+				} else {
+					log.warning("grid doesn't contain " + request.getDesiredCapabilities() + " at the moment.");
+				}
+
 			}
 			newSessionRequests.add(request);
 			fireEventNewSessionAvailable();
@@ -180,7 +191,7 @@ public class Registry {
 	 * in the list of proxies. If something changes in the registry, the matcher
 	 * iteration is stopped to account for that change.
 	 */
-	
+
 	public void assignRequestToProxy() {
 
 		boolean force = false;
@@ -190,7 +201,7 @@ public class Registry {
 				if (force) {
 					force = false;
 				} else {
-					testSessionAvailable.await(5,TimeUnit.SECONDS);
+					testSessionAvailable.await(5, TimeUnit.SECONDS);
 				}
 				if (prioritizer != null) {
 					Collections.sort(newSessionRequests);
@@ -360,6 +371,20 @@ public class Registry {
 			lock.unlock();
 		}
 
+	}
+
+	/**
+	 * If throwOnCapabilityNotPresent is set to true, the hub will reject test
+	 * request for a capability that is not on the grid. No exception will be
+	 * thrown if the capability is present but busy.
+	 * 
+	 * If set to false, the test will be queued hoping a new proxy will register
+	 * later offering that capability.
+	 * 
+	 * @param throwOnCapabilityNotPresent
+	 */
+	public void setThrowOnCapabilityNotPresent(boolean throwOnCapabilityNotPresent) {
+		this.throwOnCapabilityNotPresent = throwOnCapabilityNotPresent;
 	}
 
 	public Lock getLock() {

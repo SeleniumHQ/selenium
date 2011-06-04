@@ -20,6 +20,8 @@ public class GridConfiguration {
 	private URL registrationURL;
 	private int port = 4444;
 	private String host;
+	private boolean throwOnCapabilityNotPresent = true;
+	
 	private String[] seleniumServerargs = new String[0];
 	private RemoteControlConfiguration nodeConfig = new RemoteControlConfiguration();
 	private NetworkUtils networkUtils = new NetworkUtils();
@@ -83,7 +85,12 @@ public class GridConfiguration {
 				i++;
 				String v = getArgValue(args, i);
 				config.addServlet(v);
-			} else {
+			}else if ("-throwCapabilityNotPresent".equalsIgnoreCase(arg)) {
+				i++;
+				String v = getArgValue(args, i);
+				config.setThrowOnCapabilityNotPresent(Boolean.parseBoolean(v));
+			}
+			else {
 				leftOver.add(arg);
 			}
 		}
@@ -94,6 +101,14 @@ public class GridConfiguration {
 			printHelpAndDie(e.getMessage());
 		}
 		return config;
+	}
+
+	public boolean isThrowOnCapabilityNotPresent() {
+		return throwOnCapabilityNotPresent;
+	}
+
+	public void setThrowOnCapabilityNotPresent(boolean throwOnCapabilityNotPresent) {
+		this.throwOnCapabilityNotPresent = throwOnCapabilityNotPresent;
 	}
 
 	/**
@@ -160,6 +175,9 @@ public class GridConfiguration {
 				+ "Different from the supported browsers.For a node that supports firefox 3.6, firefox 4.0  and IE8 for instance,maxConccurent=1 "
 				+ "will ensure that you never have more than 1 browserrunning. With maxConcurrent=2 you can have 2 firefox tests at the same time, or 1 IE and 1 FF. ");
 		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-servlet <com.mycompany.MyServlet> to register a new servlet on the hub. The servlet will accessible under the path  /grid/admin/MyServlet");
+		RemoteControlLauncher.printWrappedErrorLine(INDENT, "-throwCapabilityNotPresent <true | false> default to true. If true, the hub will reject test request right away if no proxy is currently registered that can host that capability.");
+		
+		
 		// -browser
 		// browserName=firefox,version=3.6,firefox_binary=/Users/freynaud
 		System.exit(-1);
