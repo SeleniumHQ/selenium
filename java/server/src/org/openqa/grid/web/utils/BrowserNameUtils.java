@@ -56,6 +56,9 @@ public class BrowserNameUtils {
 	}
 
 	private static String consoleIconName(DesiredCapabilities cap) {
+		if (cap.getBrowserName() == null){
+			return "missingBrowserName";
+		}
 		String browserString =cap.getBrowserName();
 		String ret = browserString;
 

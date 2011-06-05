@@ -6,6 +6,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openqa.grid.internal.exception.GridException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -153,6 +154,10 @@ public class GridConfiguration {
 			String key = s[i].split("=")[0];
 			String value = s[i].split("=")[1];
 			res.setCapability(key, value);
+		}
+		
+		if (res.getBrowserName() == null){
+			throw new GridException("You need to specify a browserName using browserName=XXX");
 		}
 		capabilities.add(res);
 
