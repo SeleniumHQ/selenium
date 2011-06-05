@@ -10,6 +10,7 @@ import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.selenium.proxy.WebRemoteProxy;
 import org.openqa.grid.web.utils.BrowserNameUtils;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class WebProxyHtmlRenderer implements HtmlRenderer {
 
@@ -60,7 +61,7 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
 	}
 
 	private String getIcon(Map<String, Object> capabilities) {
-		return "/grid/resources/images/" + BrowserNameUtils.consoleIconName((String) capabilities.get(BROWSER)) + ".png";
+		return BrowserNameUtils.getConsoleIconPath(new DesiredCapabilities(capabilities));
 	}
 
 }
