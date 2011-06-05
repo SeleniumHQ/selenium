@@ -53,6 +53,7 @@ public class RegistrationRequest {
 	public static final String BROWSER = "browserName";
 	public static final String PLATFORM = "platform";
 	public static final String VERSION = "version";
+	
 
 	// some special param for config
 	public static final String PROXY_CLASS = "proxy";
@@ -60,8 +61,11 @@ public class RegistrationRequest {
 	public static final String TIME_OUT = "timeout";
 	public static final String REMOTE_URL = "url";
 	public static final String MAX_SESSION = "maxSession";
+	public static final String AUTO_REGISTER = "register";
+	
 	public static final String MAX_TESTS_BEFORE_CLEAN = "maxTestBeforeClean";
 	public static final String CLEAN_SNAPSHOT = "cleanSnapshot";
+	
 
 	public RegistrationRequest() {
 	}

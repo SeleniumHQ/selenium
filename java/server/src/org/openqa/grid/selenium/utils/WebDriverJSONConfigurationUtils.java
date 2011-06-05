@@ -65,6 +65,7 @@ public class WebDriverJSONConfigurationUtils {
 			NetworkUtils util = new NetworkUtils();
 			String host = util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
 			cleaned = cleaned.replace("ip", host);
+			cleaned = cleaned.replace("host", host);
 		}
 		if (!cleaned.startsWith("http://")) {
 			cleaned = "http://" + cleaned;
@@ -82,7 +83,7 @@ public class WebDriverJSONConfigurationUtils {
 	}
 
 	private static boolean hostHasToBeGuessed(String nodeURL) {
-		if (nodeURL.toLowerCase().contains("ip")) {
+		if (nodeURL.toLowerCase().contains("ip") || nodeURL.toLowerCase().contains("host")) {
 			return true;
 		} else {
 			return false;

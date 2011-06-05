@@ -32,6 +32,7 @@ import org.openqa.grid.web.servlet.DriverServlet;
 import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
 import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
+import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.jetty.http.SocketListener;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.WebApplicationContext;
@@ -72,10 +73,10 @@ public class Hub {
 	 */
 	// TODO freynaud : have a separate config file with the servlet and their
 	// name to use for their path. param isn't convenient.
-	public static void main(String[] args) throws Exception {
+	/*public static void main(String[] args) throws Exception {
 		Hub hub = Hub.getInstance();
 		for (String s : args) {
-			Class<? extends Servlet> servletClass = hub.createServlet(s);
+			Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
 			if (s != null) {
 				String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
 				log.info("binding " + servletClass.getCanonicalName() + " to " + path);
@@ -84,16 +85,7 @@ public class Hub {
 		}
 		hub.start();
 
-	}
-
-	private Class<? extends Servlet> createServlet(String className) {
-		try {
-			return Class.forName(className).asSubclass(Servlet.class);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	}*/
 
 	private void addServlet(String key, Class<? extends Servlet> s) {
 		extraServlet.put(key, s);
@@ -238,7 +230,7 @@ public class Hub {
 		if (servlets == null)
 			return;
 		for (String s : servlets) {
-			Class<? extends Servlet> servletClass = createServlet(s);
+			Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
 			if (s != null) {
 				String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
 				log.info("binding " + servletClass.getCanonicalName() + " to " + path);

@@ -15,8 +15,13 @@ limitations under the License.
  */
 package org.openqa.grid.selenium;
 
+import static org.openqa.grid.common.RegistrationRequest.*;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
+
+import javax.servlet.Servlet;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -24,10 +29,19 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.json.JSONObject;
+
+import org.openqa.grid.internal.Registry;
 import org.openqa.grid.selenium.utils.GridConfiguration;
 import org.openqa.grid.selenium.utils.GridRole;
 import org.openqa.grid.selenium.utils.WebDriverJSONConfigurationUtils;
 import org.openqa.grid.web.Hub;
+import org.openqa.grid.web.servlet.ConsoleServlet;
+import org.openqa.grid.web.servlet.DriverServlet;
+import org.openqa.grid.web.utils.ExtraServletUtil;
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.jetty.Server;
+import org.openqa.jetty.jetty.servlet.ServletHandler;
+import org.openqa.jetty.jetty.servlet.WebApplicationContext;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
@@ -78,14 +92,46 @@ public class GridLauncher {
 				resource = "defaults/WebDriverDefaultNode.json";
 			}
 			JSONObject request = WebDriverJSONConfigurationUtils.parseRegistrationRequest(resource);
-			int port = request.getJSONObject("configuration").getInt("port");
+			JSONObject jsonConfig = request.getJSONObject("configuration");
+			int port = jsonConfig.getInt("port");
 			RemoteControlConfiguration c = new RemoteControlConfiguration();
 			c.setPort(port);
+
 			SeleniumServer server = new SeleniumServer(c);
+			Server jetty = server.getServer();
+
+			List<String> servlets = config.getServlets();
+			if (servlets != null) {
+
+			}
+
+			HttpContext extra = new HttpContext();
+			extra.setContextPath("/extra");
+			ServletHandler handler = new ServletHandler();
+
+			for (String s : servlets) {
+				Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
+				if (servletClass != null) {
+					String path = "/" + servletClass.getSimpleName() + "/*";
+					String clazz = servletClass.getCanonicalName();
+					handler.addServlet(path, clazz);
+					log.info("started extra node servlet visible at : http://xxx:"+port+"/extra"+path);
+				}
+			}
+
+			extra.addHandler(handler);
+			jetty.addContext(extra);
+
 			server.boot();
-			log.info("Registering the node to to hub :" + config.getRegistrationURL());
+
 			log.info("using the json request : " + request);
-			registerToHub(config.getRegistrationURL(), request.toString());
+
+			if (jsonConfig.has(AUTO_REGISTER) && !jsonConfig.getBoolean(AUTO_REGISTER)) {
+				log.info("no registration sent ( " + AUTO_REGISTER + " = false )");
+			} else {
+				log.info("Registering the node to to hub :" + config.getRegistrationURL());
+				registerToHub(config.getRegistrationURL(), request.toString());
+			}
 
 		} else {
 			SelfRegisteringRemote remote = SelfRegisteringRemote.create(config);
