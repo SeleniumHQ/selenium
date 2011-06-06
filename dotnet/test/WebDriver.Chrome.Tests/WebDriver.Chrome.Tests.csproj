@@ -46,26 +46,22 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WebDriver.Common\WebDriver.Common.csproj">
-      <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
-      <Name>WebDriver.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\WebDriver.Chrome\WebDriver.Chrome.csproj">
-      <Project>{FC3000BD-6144-46E6-BA7B-1CCE7E85DD27}</Project>
-      <Name>WebDriver.Chrome</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WebDriver.Common.Tests\WebDriver.Common.Tests.csproj">
-      <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>
-      <Name>WebDriver.Common.Tests</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="WebDriver.Chrome.Tests.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="WebDriver.Chrome.Tests.nunit">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WebDriver\WebDriver.csproj">
+      <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
+      <Name>WebDriver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebDriver.Common.Tests\WebDriver.Common.Tests.csproj">
+      <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>
+      <Name>WebDriver.Common.Tests</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

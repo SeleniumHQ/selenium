@@ -31,6 +31,7 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("iframe_page_heading"));
             driver.SwitchTo().Frame("iframe1");
             Assert.AreEqual(driver.CurrentWindowHandle, handle);
+            driver.SwitchTo().DefaultContent();
             driver.Close();
 
             driver.SwitchTo().Window(current);

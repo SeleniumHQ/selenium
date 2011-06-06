@@ -54,13 +54,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WebDriver.Android\WebDriver.Android.csproj">
-      <Project>{A683CE4A-2EF4-443C-9FEF-2AB033BCA37B}</Project>
-      <Name>WebDriver.Android</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\WebDriver.Common\WebDriver.Common.csproj">
-      <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
-      <Name>WebDriver.Common</Name>
+    <ProjectReference Include="..\..\src\WebDriver\WebDriver.csproj">
+      <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
+      <Name>WebDriver</Name>
     </ProjectReference>
     <ProjectReference Include="..\WebDriver.Common.Tests\WebDriver.Common.Tests.csproj">
       <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>

@@ -62,12 +62,6 @@
     <Compile Include="UI\UnexpectedTagNameException.cs" />
     <Compile Include="UI\WebDriverWait.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WebDriver.Common\WebDriver.Common.csproj">
-      <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
-      <Name>WebDriver.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -84,5 +78,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WebDriver\WebDriver.csproj">
+      <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
+      <Name>WebDriver</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

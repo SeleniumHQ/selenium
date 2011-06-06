@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.5.9.10348, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\third_party\csharp\nunit-2.5.9\framework\nunit.framework.dll</HintPath>
+      <HintPath>..\..\..\third_party\csharp\nunit-2.5.9\framework\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -49,30 +49,22 @@
     <Compile Include="TestInternetExplorerRemoteWebDriver.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WebDriver.Common\WebDriver.Common.csproj">
-      <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
-      <Name>WebDriver.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WebDriver.Common.Tests\WebDriver.Common.Tests.csproj">
-      <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>
-      <Name>webdriver-common-test</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\WebDriver.Remote.Common\WebDriver.Remote.Common.csproj">
-      <Project>{C2A1DAE4-BB20-4367-8ADC-D32EEA392D17}</Project>
-      <Name>WebDriver.Remote.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\WebDriver.Remote\WebDriver.Remote.csproj">
-      <Project>{32122F8D-CD64-495A-B9B0-5516FF67C79F}</Project>
-      <Name>WebDriver.Remote</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="WebDriver.Remote.Tests.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="WebDriver.Remote.Tests.nunit">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WebDriver\WebDriver.csproj">
+      <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
+      <Name>WebDriver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebDriver.Common.Tests\WebDriver.Common.Tests.csproj">
+      <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>
+      <Name>WebDriver.Common.Tests</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

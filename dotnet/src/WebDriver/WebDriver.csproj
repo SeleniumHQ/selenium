@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenQA.Selenium</RootNamespace>
+    <AssemblyName>WebDriver</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\build\cli\Debug\WebDriver.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\build\cli\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\build\cli\Release\WebDriver.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.1, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\third_party\csharp\dotnetzip-1.9\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\third_party\csharp\json-net-3.5r6\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Android\AndroidDriver.cs" />
+    <Compile Include="By.cs" />
+    <Compile Include="Chrome\ChromeCommandExecutor.cs" />
+    <Compile Include="Chrome\ChromeDriver.cs" />
+    <Compile Include="Chrome\ChromeDriverService.cs" />
+    <Compile Include="Chrome\ChromeWebElement.cs" />
+    <Compile Include="Cookie.cs" />
+    <Compile Include="ElementNotVisibleException.cs" />
+    <Compile Include="Firefox\FirefoxBinary.cs" />
+    <Compile Include="Firefox\FirefoxDriver.cs" />
+    <Compile Include="Firefox\FirefoxExtension.cs" />
+    <Compile Include="Firefox\FirefoxProfile.cs" />
+    <Compile Include="Firefox\FirefoxProfileManager.cs" />
+    <Compile Include="Firefox\FirefoxWebElement.cs" />
+    <Compile Include="Firefox\IExtensionConnection.cs" />
+    <Compile Include="Firefox\Internal\Executable.cs" />
+    <Compile Include="Firefox\Internal\ExtensionConnection.cs" />
+    <Compile Include="Firefox\Internal\ILock.cs" />
+    <Compile Include="Firefox\Internal\IniFileReader.cs" />
+    <Compile Include="Firefox\Internal\SocketLock.cs" />
+    <Compile Include="Firefox\Preferences.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IAlert.cs" />
+    <Compile Include="ICapabilities.cs" />
+    <Compile Include="ICookieJar.cs" />
+    <Compile Include="IE\InternetExplorerDriver.cs" />
+    <Compile Include="IE\InternetExplorerDriverServer.cs" />
+    <Compile Include="IE\InternetExplorerWebElement.cs" />
+    <Compile Include="Internal\NativeLibrary.cs" />
+    <Compile Include="Internal\NativeLibrarySafeHandle.cs" />
+    <Compile Include="Internal\NativeMethods.cs" />
+    <Compile Include="IHasCapabilities.cs" />
+    <Compile Include="IHasInputDevices.cs" />
+    <Compile Include="IJavascriptExecutor.cs" />
+    <Compile Include="IKeyboard.cs" />
+    <Compile Include="IllegalLocatorException.cs" />
+    <Compile Include="ILocatable.cs" />
+    <Compile Include="IMouse.cs" />
+    <Compile Include="INavigation.cs" />
+    <Compile Include="Interactions\Actions.cs" />
+    <Compile Include="Interactions\ButtonReleaseAction.cs" />
+    <Compile Include="Interactions\ClickAction.cs" />
+    <Compile Include="Interactions\ClickAndHoldAction.cs" />
+    <Compile Include="Interactions\CompositeAction.cs" />
+    <Compile Include="Interactions\ContextClickAction.cs" />
+    <Compile Include="Interactions\DoubleClickAction.cs" />
+    <Compile Include="Interactions\IAction.cs" />
+    <Compile Include="Interactions\ICoordinates.cs" />
+    <Compile Include="Interactions\KeyboardAction.cs" />
+    <Compile Include="Interactions\MouseAction.cs" />
+    <Compile Include="Interactions\SingleKeyAction.cs" />
+    <Compile Include="Interactions\WebDriverAction.cs" />
+    <Compile Include="Interactions\KeyDownAction.cs" />
+    <Compile Include="Interactions\KeyUpAction.cs" />
+    <Compile Include="Interactions\MoveMouseAction.cs" />
+    <Compile Include="Interactions\MoveToOffsetAction.cs" />
+    <Compile Include="Interactions\SendKeysAction.cs" />
+    <Compile Include="Internal\AsyncJavaScriptExecutor.cs" />
+    <Compile Include="Internal\FileUtilities.cs" />
+    <Compile Include="Internal\IFindsByClassName.cs" />
+    <Compile Include="Internal\IFindsByCssSelector.cs" />
+    <Compile Include="Internal\IFindsById.cs" />
+    <Compile Include="Internal\IFindsByLinkText.cs" />
+    <Compile Include="Internal\IFindsByName.cs" />
+    <Compile Include="Internal\IFindsByPartialLinkText.cs" />
+    <Compile Include="Internal\IFindsByTagName.cs" />
+    <Compile Include="Internal\IFindsByXPath.cs" />
+    <Compile Include="Internal\IWrapsDriver.cs" />
+    <Compile Include="Internal\IWrapsElement.cs" />
+    <Compile Include="Internal\ResourceUtilities.cs" />
+    <Compile Include="Internal\ReturnedCookie.cs" />
+    <Compile Include="InvalidCookieDomainException.cs" />
+    <Compile Include="InvalidElementStateException.cs" />
+    <Compile Include="IOptions.cs" />
+    <Compile Include="ISearchContext.cs" />
+    <Compile Include="ITakesScreenshot.cs" />
+    <Compile Include="ITargetLocator.cs" />
+    <Compile Include="ITimeouts.cs" />
+    <Compile Include="IWebDriver.cs" />
+    <Compile Include="IWebElement.cs" />
+    <Compile Include="Keys.cs" />
+    <Compile Include="NoAlertPresentException.cs" />
+    <Compile Include="NoSuchElementException.cs" />
+    <Compile Include="NoSuchFrameException.cs" />
+    <Compile Include="NoSuchWindowException.cs" />
+    <Compile Include="NotFoundException.cs" />
+    <Compile Include="Platform.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Remote\CapabilityType.cs" />
+    <Compile Include="Remote\Command.cs" />
+    <Compile Include="Remote\CommandInfo.cs" />
+    <Compile Include="Remote\CommandInfoRepository.cs" />
+    <Compile Include="Remote\DesiredCapabilities.cs" />
+    <Compile Include="Remote\DriverCommand.cs" />
+    <Compile Include="Remote\ErrorResponse.cs" />
+    <Compile Include="Remote\HttpCommandExecutor.cs" />
+    <Compile Include="Remote\ICommandExecutor.cs" />
+    <Compile Include="Remote\JsonConverters\CharArrayJsonConverter.cs" />
+    <Compile Include="Remote\JsonConverters\CookieJsonConverter.cs" />
+    <Compile Include="Remote\JsonConverters\DesiredCapabilitiesJsonConverter.cs" />
+    <Compile Include="Remote\JsonConverters\PlatformJsonConverter.cs" />
+    <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
+    <Compile Include="Remote\RemoteAlert.cs" />
+    <Compile Include="Remote\RemoteCookieJar.cs" />
+    <Compile Include="Remote\RemoteCoordinates.cs" />
+    <Compile Include="Remote\RemoteKeyboard.cs" />
+    <Compile Include="Remote\RemoteMouse.cs" />
+    <Compile Include="Remote\RemoteNavigator.cs" />
+    <Compile Include="Remote\RemoteOptions.cs" />
+    <Compile Include="Remote\RemoteTargetLocator.cs" />
+    <Compile Include="Remote\RemoteTimeouts.cs" />
+    <Compile Include="Remote\RemoteWebDriver.cs" />
+    <Compile Include="Remote\RemoteWebElement.cs" />
+    <Compile Include="Remote\Response.cs" />
+    <Compile Include="Remote\SessionId.cs" />
+    <Compile Include="Remote\StackTraceElement.cs" />
+    <Compile Include="Screenshot.cs" />
+    <Compile Include="StaleElementReferenceException.cs" />
+    <Compile Include="UnableToSetCookieException.cs" />
+    <Compile Include="UnhandledAlertException.cs" />
+    <Compile Include="WebDriverException.cs" />
+    <Compile Include="WebDriverResult.cs" />
+    <Compile Include="XPathLookupException.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>if %25PROCESSOR_ARCHITECTURE%25 == x86 (
+  if not defined PROCESSOR_ARCHITEW6432 (
+    if exist "$(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriver.dll" (
+      echo Detected 32-bit platform, found 32-bit native binary
+      echo Copying native code from Win32 build target
+      copy /y "$(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriver.dll" "$(TargetDir)"
+    ) else (
+      echo Detected 32-bit platform, missing 32-bit native binary
+      echo Copying native code from Win32 prebuilt location
+      copy /y "$(SolutionDir)cpp\prebuilt\Win32\Release\IEDriver.dll" "$(TargetDir)"
+    )
+    goto end
+  )
+)
+
+if exist "$(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriver.dll" (
+  echo Detected 64-bit platform, found 64-bit native binary
+  echo Copying native code from x64 build target
+  copy /y "$(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriver.dll" "$(TargetDir)"
+) else (
+  echo Detected 64-bit platform, missing 64-bit native binary
+  echo Copying native code from x64 prebuilt location
+  copy /y "$(SolutionDir)cpp\prebuilt\x64\Release\IEDriver.dll" "$(TargetDir)"
+)
+
+:end
+if exist $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi copy /y $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi $(TargetDir)
+</PostBuildEvent>
+  </PropertyGroup>
+</Project>

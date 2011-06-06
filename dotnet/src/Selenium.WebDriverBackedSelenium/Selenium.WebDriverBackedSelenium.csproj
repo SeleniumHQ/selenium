@@ -70,9 +70,9 @@
       <Project>{69F4FF0E-13DE-4AF6-B8AF-572A36239083}</Project>
       <Name>Selenium.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WebDriver.Common\WebDriver.Common.csproj">
-      <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
-      <Name>WebDriver.Common</Name>
+    <ProjectReference Include="..\WebDriver\WebDriver.csproj">
+      <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
+      <Name>WebDriver</Name>
     </ProjectReference>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Internal\AlertOverride.cs" />

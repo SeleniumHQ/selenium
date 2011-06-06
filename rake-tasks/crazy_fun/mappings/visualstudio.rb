@@ -23,12 +23,15 @@ class VisualStudioMappings
     fun.add_mapping("visualc_library", CrazyFunVisualC::VisualCLibrary.new)
 
     fun.add_mapping("dotnet_library", CrazyFunDotNet::DotNetLibrary.new)
+    fun.add_mapping("dotnet_library", CrazyFunDotNet::CreateShortTaskName.new)
 
     fun.add_mapping("dotnet_docs", CrazyFunDotNet::GenerateDotNetDocs.new)
     fun.add_mapping("dotnet_docs", CrazyFunDotNet::MoveDotNetHelpFile.new)
 
     fun.add_mapping("dotnet_test", CrazyFunDotNet::DotNetLibrary.new)
     fun.add_mapping("dotnet_test", CrazyFunDotNet::RunDotNetTests.new)
+    
+    fun.add_mapping("dotnet_release", CrazyFunDotNet::DotNetRelease.new)
   end
 end
 
@@ -183,6 +186,16 @@ module CrazyFunDotNet
       return buildable_targets
     end
   end
+  
+  class CreateShortTaskName < Tasks
+    def handle(fun, dir, args)
+      name = task_name(dir, args[:name])
+      if (name.end_with? "#{args[:name]}:#{args[:name]}")
+        name = name.sub(/:.*$/, "")
+        task name => task_name(dir, args[:name])
+      end
+    end
+  end
 
   class RunDotNetTests < Tasks
     def handle(fun, dir, args)
@@ -202,7 +215,7 @@ module CrazyFunDotNet
         nunit_task.options << "/nodots"
         nunit_task.options << "/xml=#{[test_log_dir, args[:project]].join(File::SEPARATOR)}.xml"
         nunit_task.output_redirect = "#{[test_log_dir, args[:project]].join(File::SEPARATOR)}.log"
-        nunit_task.ignore_test_fail = true
+        nunit_task.ignore_test_fail = !([nil, 'true'].include? ENV['haltonfailure'])
       end
 
       add_dependencies(target, dir, args[:deps])
@@ -224,13 +237,11 @@ module CrazyFunDotNet
         puts "Generating help website: at #{web_documentation_path_desc}"
 
         if ENV['DXROOT'].nil?
-          puts "Sandcastle documentation tools not found. Documentation will not be created."
-          return
+          fail "Sandcastle documentation tools not found. Documentation will not be created."
         end
 
         if ENV['SHFBROOT'].nil?
-          puts "Sandcastle Help File Builder not found. Documentation will not be created."
-          return
+          fail "Sandcastle Help File Builder not found. Documentation will not be created."
         end
 
         # TODO (JimEvans): Visual Studio 2010 migration.
@@ -285,6 +296,21 @@ module CrazyFunDotNet
         puts "Generating help file: at #{help_file_path_desc}"
         mv File.join(web_documentation_path, args[:helpfile]), File.dirname(args[:out])
       end
+    end
+  end
+
+  class DotNetRelease < Tasks
+    def handle(fun, dir, args)
+      output_dir = 'build/dotnet'
+      full_path = args[:out].gsub("/", Platform.dir_separator)
+      desc "Preparing: #{full_path}"
+      task_name = task_name(dir, args[:name])
+
+      target = file task_name do
+        zip(output_dir, args[:out])
+      end
+      
+      add_dependencies(target, dir, args[:deps])
     end
   end
 end

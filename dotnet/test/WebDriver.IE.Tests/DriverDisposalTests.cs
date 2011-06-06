@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using OpenQA.Selenium.IE;
 using System;
 using OpenQA.Selenium.Environment;
 

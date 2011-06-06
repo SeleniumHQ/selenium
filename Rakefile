@@ -211,8 +211,7 @@ task :clean do
   Android::Clean.new()
 end
 
-task :dotnet => [ "//dotnet:ie", "//dotnet:firefox", "//dotnet:chrome", "//dotnet:android", 
-"//dotnet:support", "//dotnet:core", "//dotnet:webdriverbackedselenium" ]
+task :dotnet => [ "//dotnet", "//dotnet:support", "//dotnet:core", "//dotnet:webdriverbackedselenium" ]
 
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.
