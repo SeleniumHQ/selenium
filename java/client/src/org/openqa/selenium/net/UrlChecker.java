@@ -45,7 +45,8 @@ public class UrlChecker {
     return new SimpleTimeLimiter(executor);
   }
 
-  public void waitUntilAvailable(final URL url, long timeout, TimeUnit unit) {
+  public void waitUntilAvailable(final URL url, long timeout, TimeUnit unit)
+      throws TimeoutException {
     long start = System.nanoTime();
     log.info("Waiting for " + url);
     try {
@@ -73,15 +74,16 @@ public class UrlChecker {
         }
       }, timeout, unit, true);
     } catch (UncheckedTimeoutException e) {
-      throw new RuntimeException(String.format(
+      throw new TimeoutException(String.format(
           "Timed out waiting for %s to be available after %d ms",
-          url, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)));
+          url, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }
   }
 
-  public void waitUntilUnavailable(final URL url, long timeout, TimeUnit unit) {
+  public void waitUntilUnavailable(final URL url, long timeout, TimeUnit unit)
+      throws TimeoutException {
     long start = System.nanoTime();
     log.info("Waiting for " + url);
     try {
@@ -109,9 +111,9 @@ public class UrlChecker {
         }
       }, timeout, unit, true);
     } catch (UncheckedTimeoutException e) {
-      throw new RuntimeException(String.format(
+      throw new TimeoutException(String.format(
           "Timed out waiting for %s to become unavailable after %d ms",
-          url, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)));
+          url, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }
@@ -123,5 +125,11 @@ public class UrlChecker {
     connection.setReadTimeout(READ_TIMEOUT_MS);
     connection.connect();
     return connection;
+  }
+
+  public static class TimeoutException extends Exception {
+    public TimeoutException(String s, Throwable throwable) {
+      super(s, throwable);
+    }
   }
 }

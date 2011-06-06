@@ -7,12 +7,10 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.os.CommandLine.findExecutable;
 
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
@@ -148,6 +146,8 @@ public class ChromeDriverService {
       pipe(process.getInputStream(), System.out);
       URL healthz = new URL(url.toString() + "/healthz");
       new UrlChecker().waitUntilAvailable(healthz, 20, SECONDS);
+    } catch (UrlChecker.TimeoutException e) {
+      throw new WebDriverException("Timed out waiting for ChromeDriver server to start.", e);
     } finally {
       lock.unlock();
     }
@@ -185,7 +185,9 @@ public class ChromeDriverService {
       new UrlChecker().waitUntilUnavailable(killUrl, 3, SECONDS);
       AsyncExecute.killProcess(process);
     } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
+      throw new WebDriverException(e);
+    } catch (UrlChecker.TimeoutException e) {
+      throw new WebDriverException("Timed out waiting for ChromeDriver server to shutdown.", e);
     } finally {
       process = null;
       lock.unlock();
