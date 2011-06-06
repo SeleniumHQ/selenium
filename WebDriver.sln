@@ -1,8 +1,8 @@
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "web", "common\src\web\", "{DB560F4B-1F41-4E8E-AC06-640D736E8A72}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFramework = "2.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		Debug.AspNetCompiler.VirtualPath = "/web"
 		Debug.AspNetCompiler.PhysicalPath = "common\src\web\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\web\"
@@ -24,21 +24,17 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "web", "common\src\web\", "{
 		StartServerOnDebug = "false"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-interactions", "cpp\webdriver-interactions\webdriver-interactions.vcproj", "{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-interactions", "cpp\webdriver-interactions\webdriver-interactions.vcxproj", "{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox", "cpp\webdriver-firefox\webdriver-firefox.vcproj", "{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox", "cpp\webdriver-firefox\webdriver-firefox.vcxproj", "{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "npchromedriver", "cpp\npchromedriver\npchromedriver.vcproj", "{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "npchromedriver", "cpp\npchromedriver\npchromedriver.vcxproj", "{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriver", "cpp\IEDriver\IEDriver.vcproj", "{BB72383B-427F-4191-B692-E4345A30E33C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9AEBD612-232D-40CB-BE2C-F2B911FD6228} = {9AEBD612-232D-40CB-BE2C-F2B911FD6228}
-		{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD} = {320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriver", "cpp\IEDriver\IEDriver.vcxproj", "{BB72383B-427F-4191-B692-E4345A30E33C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "json-cpp", "third_party\json-cpp\json-cpp.vcproj", "{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "json-cpp", "third_party\json-cpp\json-cpp.vcxproj", "{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mongoose", "third_party\mongoose\mongoose.vcproj", "{9AEBD612-232D-40CB-BE2C-F2B911FD6228}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mongoose", "third_party\mongoose\mongoose.vcxproj", "{9AEBD612-232D-40CB-BE2C-F2B911FD6228}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.Core", "dotnet\src\Selenium.Core\Selenium.Core.csproj", "{69F4FF0E-13DE-4AF6-B8AF-572A36239083}"
 EndProject
@@ -62,7 +58,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.Core.Tests", "dotn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.WebDriverBackedSelenium.Tests", "dotnet\test\Selenium.WebDriverBackedSelenium.Tests\Selenium.WebDriverBackedSelenium.Tests.csproj", "{68CF4628-4148-4627-ACA1-D4C225365D3F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imehandler", "cpp\imehandler\imehandler.vcproj", "{37F9EF6B-F69C-4764-9687-C63C608C476B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imehandler", "cpp\imehandler\imehandler.vcxproj", "{37F9EF6B-F69C-4764-9687-C63C608C476B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Android.Tests", "dotnet\test\WebDriver.Android.Tests\WebDriver.Android.Tests.csproj", "{3102A61F-3025-482C-9515-9FC239746658}"
 EndProject

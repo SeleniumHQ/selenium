@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <!-- The configuration and platform will be used to determine which
          assemblies to include from solution and project documentation
@@ -7,7 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5eb412cf-43cf-4f45-ad86-eae23cf68111}</ProjectGuid>
-    <SHFBSchemaVersion>1.8.0.3</SHFBSchemaVersion>
+    <SHFBSchemaVersion>1.9.3.0</SHFBSchemaVersion>
     <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual
          Studio adds them anyway -->
     <AssemblyName>Documentation</AssemblyName>
@@ -18,7 +19,7 @@
     <HtmlHelpName>WebDriver</HtmlHelpName>
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
     <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected</VisibleItems>
-    <FrameworkVersion>2.0.50727</FrameworkVersion>
+    <FrameworkVersion>.NET 3.5</FrameworkVersion>
     <PresentationStyle>vs2005</PresentationStyle>
     <DocumentationSources>
     </DocumentationSources>

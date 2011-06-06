@@ -47,16 +47,12 @@ module CrazyFunDotNet
       # Default parameters to csc.exe that we will use.
       # These should decline as more functionality is added
       # to the Albacore csc task.
-      # TODO (JimEvans): Visual Studio 2010 migration.
-      # Add a "/nostdlib+" element to the params array.
-      params = ["/nologo",
+      params = ["/nostdlib+",
+	            "/nologo",
                 "/noconfig",
                 "/filealign:512"]
 
-      # TODO (JimEvans): Visual Studio 2010 migration.
-      # Insert an mscorlib reference, since we compile with the
-      # nostdlib flag enabled.
-      # args[:refs].insert(0, "mscorlib.dll")
+      args[:refs].insert(0, "mscorlib.dll")
 
       embedded_resources = []
       buildable_references = resolve_buildable_targets(args[:refs])
@@ -89,9 +85,7 @@ module CrazyFunDotNet
           end
         end
 
-        # TODO (JimEvans): Visual Studio 2010 migration.
-        # Change :net35 to :net40
-        csc_task.use :net35
+        csc_task.use :net40
         csc_task.parameters params
         csc_task.compile FileList[[dir, args[:srcs]].join(File::SEPARATOR)]
         csc_task.output = args[:out]
@@ -244,9 +238,7 @@ module CrazyFunDotNet
           fail "Sandcastle Help File Builder not found. Documentation will not be created."
         end
 
-        # TODO (JimEvans): Visual Studio 2010 migration.
-        # Change :net35 to :net40.
-        msb.use :net35
+        msb.use :net40
         msb.properties = {
           "OutputPath" => File.expand_path(web_documentation_path).gsub("/", Platform.dir_separator), 
           "DocumentationSources" => build_doc_sources_parameter(doc_sources),
@@ -332,13 +324,12 @@ module CrazyFunVisualC
          
          target_task = task task_name => full_path
       else
-        # TODO (JimEvans): Visual Studio 2010 migration.
-        # Change :net35 to :net40. Optionally change build.desc
-        # files to refer to the .vcxproj files for the individual
+        # TODO (JimEvans): Change :net35 to :net40. Optionally change
+        # build.desc files to refer to the .vcxproj files for the individual
         # C++ projects, and resolve the project name here.
         target_task = msbuild task_name do |msb|
           puts "Compiling: #{task_name} as #{desc_path}"
-          msb.use :net35
+          msb.use :net40
           msb.properties :configuration => :Release, :platform => args[:platform]
           msb.targets args[:target]
           msb.solution = "WebDriver.sln"
