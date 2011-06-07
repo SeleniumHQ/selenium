@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -67,7 +68,8 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, CHROME, SELENESE})
+  @Ignore(value = {HTMLUNIT, CHROME, SELENESE, FIREFOX}, reason = "Currently broken in Firefox," +
+      " fix tracked in issue 1771.")
   public void testDragAndDropToElement() {
     if (!supportsNativeEvents) {
       System.out.println("Native events not supported. Skipping test");
@@ -106,19 +108,25 @@ public class DragAndDropTest extends AbstractDriverTestCase {
 
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
-//        Point expectedLocation = img.getLocation();
 
     Actions actions = new Actions(driver);
     actions.dragAndDropBy(img, Integer.MIN_VALUE, Integer.MIN_VALUE).perform();
-    assertEquals(new Point(0, 0), img.getLocation());
 
-    actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
+    // Image ends up on a negative offset because its top-left corner is
+    // hidden.
+    assertEquals(new Point(-12, -1), img.getLocation());
+
+    // TODO(eran): re-enable this test once moveto does not exceed the
+    // coordinates accepted by the browsers. At the moment, even though
+    // the maximal coordinates are limited, mouseUp fails because it cannot get
+    // the element at the given coordinates.
+    //actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
     //We don't know where the img is dragged to , but we know it's not too
     //far, otherwise this function will not return for a long long time
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE, CHROME, SELENESE})
+  @Ignore(value = {HTMLUNIT, IE, CHROME, SELENESE, FIREFOX}, reason = "See issue 1771.")
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     if (!supportsNativeEvents) {
       System.out.println("Native events not supported. Skipping test");

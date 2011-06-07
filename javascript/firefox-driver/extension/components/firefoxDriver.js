@@ -1075,11 +1075,8 @@ getBrowserSpecificOffset_ = function(inBrowser) {
     // to add to the x and y locations.
     var browserSpecificXOffset = 0;
     var browserSpecificYOffset = 0;
-    var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
-        getService(Components.interfaces.nsIXULAppInfo);
-    var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
-        getService(Components.interfaces.nsIVersionComparator);
-    if (versionChecker.compare(appInfo.version, '4') >= 0) {
+
+    if (webdriver.firefox.utils.isFirefox4()) {
       var rect = inBrowser.getBoundingClientRect();
       browserSpecificYOffset += rect.top;
       browserSpecificXOffset += rect.left;
@@ -1123,6 +1120,17 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
     var events = Utils.getNativeEvents();
     var node = Utils.getNodeForNativeEvents(elementForNode);
+
+    // Make sure destination coordinates are positive - there's no sense in
+    // generating mouse move events to negative offests and the native events
+    // library will indeed refuse to do so.
+    toX = Math.max(toX, 0);
+    toY = Math.max(toY, 0);
+
+    // TODO(eran): Figure out the size of the window - it's ok to drag past the body's
+    // boundaries, but not the window's boundaries.
+    toX = Math.min(toX, 4096);
+    toY = Math.min(toY, 4096);
 
     if (nativeEventsEnabled && events && node) {
       var currentPosition = respond.session.getMousePosition();
