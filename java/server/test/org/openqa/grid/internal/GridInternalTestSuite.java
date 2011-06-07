@@ -25,7 +25,8 @@ import org.openqa.grid.plugin.RemoteProxyInheritanceTest;
 	AddingProxyAgainFreesResources.class,
 	DefaultCapabilityMatcherTest.class,
 	SessionListenerTest.class,
-	RegistrationListenerTest.class
+	RegistrationListenerTest.class,
+	StatusServletTests.class
 }
 )
 public class GridInternalTestSuite {

@@ -437,4 +437,16 @@ public class Registry {
 		return prioritizer;
 	}
 
+	public RemoteProxy getProxyById(String id) {
+		if (id == null) {
+			return null;
+		}
+		for (RemoteProxy p : getAllProxies()) {
+			if (id.equals(p.getId())) {
+				return p;
+			}
+		}
+		return null;
+	}
+
 }

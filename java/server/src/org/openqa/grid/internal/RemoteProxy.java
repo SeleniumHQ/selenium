@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.grid.internal;
 
@@ -35,7 +35,6 @@ import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 
-
 /**
  * Proxy to a remote server executing the tests.
  * 
@@ -49,6 +48,8 @@ import org.openqa.grid.internal.utils.HtmlRenderer;
  */
 public class RemoteProxy implements Comparable<RemoteProxy> {
 
+	private RegistrationRequest request;
+	private String id;
 	// how many ms between 2 cycle checking if there are some session that have
 	// timed out. -1 means we never run the cleanup cycle. By default there is
 	// no timeout
@@ -57,7 +58,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
 	private static final Logger log = Logger.getLogger(RemoteProxy.class.getName());
 
-  // the URL the remote listen on.
+	// the URL the remote listen on.
 	protected URL remoteURL;
 
 	private Map<String, Object> config;
@@ -105,7 +106,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 	 * 
 	 */
 	public RemoteProxy(RegistrationRequest request) {
-
+		this.request = request;
 		this.config = request.getConfiguration();
 		String url = (String) config.get(REMOTE_URL);
 		if (url == null) {
@@ -115,9 +116,11 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 			// environement for instance, the IP of the host where the remote is
 			// will only be available after the host has been started.
 			this.remoteURL = null;
+			log.warning("URL was null. Not a problem if you set a meaningfull ID.");
 		} else {
 			try {
 				this.remoteURL = new URL(url);
+				this.id = remoteURL.toExternalForm();
 			} catch (MalformedURLException e) {
 				// should only happen when a bad config is sent.
 				throw new GridException("Not a correct url to register a remote : " + url);
@@ -149,7 +152,27 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 			}
 		}
 	}
+
+	/**
+	 * get the unique id for the node. Usually the url it listen on is a good
+	 * id. If the network keeps changing and the IP of the node is updated, you
+	 * need to define nodes with a different id.
+	 * 
+	 * @return
+	 */
+	public String getId() {
+		if (id == null) {
+			throw new RuntimeException("Bug. Trying to use the id on a proxy but it hasn't been set.");
+		}
+		return id;
+	}
+
+	protected void setId(String id) {
+		this.id = id;
+	}
+
 	private boolean stop = false;
+
 	public void teardown() {
 		stop = true;
 	}
@@ -193,6 +216,16 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
 	public Map<String, Object> getConfig() {
 		return config;
+	}
+
+	/**
+	 * return the registration request that created the proxy in the first
+	 * place.
+	 * 
+	 * @return
+	 */
+	public RegistrationRequest getOriginalRegistrationRequest() {
+		return request;
 	}
 
 	/**
@@ -319,11 +352,10 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((remoteURL == null) ? 0 : remoteURL.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
-	// TODO freynaud just URL ?
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -333,11 +365,10 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 		if (getClass() != obj.getClass())
 			return false;
 		RemoteProxy other = (RemoteProxy) obj;
-		if (getRemoteURL() == null) {
-			if (other.getRemoteURL() != null)
+		if (getId() == null) {
+			if (other.getId() != null)
 				return false;
-			// toExternalform to avoid slow network calls...
-		} else if (!getRemoteURL().toExternalForm().equals(other.getRemoteURL().toExternalForm()))
+		} else if (!getId().equals(other.getId()))
 			return false;
 		return true;
 	}
@@ -363,12 +394,11 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
 	/**
 	 * im millis
+	 * 
 	 * @return
 	 */
 	public int getTimeOut() {
 		return timeOut;
 	}
-
-	
 
 }

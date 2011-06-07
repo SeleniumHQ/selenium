@@ -30,6 +30,7 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.ConsoleServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
 import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
+import org.openqa.grid.web.servlet.ProxyStatusServlet;
 import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
@@ -73,19 +74,16 @@ public class Hub {
 	 */
 	// TODO freynaud : have a separate config file with the servlet and their
 	// name to use for their path. param isn't convenient.
-	/*public static void main(String[] args) throws Exception {
-		Hub hub = Hub.getInstance();
-		for (String s : args) {
-			Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
-			if (s != null) {
-				String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
-				log.info("binding " + servletClass.getCanonicalName() + " to " + path);
-				hub.addServlet(path, servletClass);
-			}
-		}
-		hub.start();
-
-	}*/
+	/*
+	 * public static void main(String[] args) throws Exception { Hub hub =
+	 * Hub.getInstance(); for (String s : args) { Class<? extends Servlet>
+	 * servletClass = ExtraServletUtil.createServlet(s); if (s != null) { String
+	 * path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
+	 * log.info("binding " + servletClass.getCanonicalName() + " to " + path);
+	 * hub.addServlet(path, servletClass); } } hub.start();
+	 * 
+	 * }
+	 */
 
 	private void addServlet(String key, Class<? extends Servlet> s) {
 		extraServlet.put(key, s);
@@ -141,11 +139,14 @@ public class Hub {
 
 			root.addServlet("/grid/console/*", ConsoleServlet.class.getName());
 			root.addServlet("/grid/register/*", RegistrationServlet.class.getName());
-			// TODO remove at some point. Here for backward compatibility of tests etc.
+			// TODO remove at some point. Here for backward compatibility of
+			// tests etc.
 			root.addServlet("/grid/driver/*", DriverServlet.class.getName());
 			root.addServlet("/wd/hub/*", DriverServlet.class.getName());
 			root.addServlet("/selenium-server/driver/*", DriverServlet.class.getName());
 			root.addServlet("/grid/resources/*", ResourceServlet.class.getName());
+
+			root.addServlet("/grid/status/*", ProxyStatusServlet.class.getName());
 
 			// Selenium Grid 1.0 compatibility routes for older nodes trying to
 			// work with the newer hub.
@@ -219,8 +220,6 @@ public class Hub {
 		}
 	}
 
-	
-	
 	/**
 	 * Configure the hub based on the parameter passed at launch.
 	 * 
