@@ -29,7 +29,7 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
 		builder.append("<fieldset>");
 		builder.append("<legend>").append(proxy.getClass().getSimpleName()).append("</legend>");
 		builder.append("listening on ").append(proxy.getRemoteURL());
-		if (((WebRemoteProxy)proxy).isDown()){
+		if (((WebRemoteProxy) proxy).isDown()) {
 			builder.append("(cannot be reached at the moment)");
 		}
 		builder.append("<br>");
@@ -39,12 +39,18 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
 		}
 
 		builder.append("Supports up to <b>").append(proxy.getMaxNumberOfConcurrentTestSessions()).append("</b> concurrent tests from : </u><br>");
-		
+
 		builder.append("");
 		for (TestSlot slot : proxy.getTestSlots()) {
 			TestSession session = slot.getSession();
-			builder.append("<img ");
-			builder.append("src='").append(getIcon(slot.getCapabilities())).append("' ");
+			
+			String icon = getIcon(slot.getCapabilities());
+			if (icon != null) {
+				builder.append("<img ");
+				builder.append("src='").append(icon).append("' ");
+			}else {
+				builder.append("<a href='#' ");
+			}
 
 			if (session != null) {
 				builder.append(" class='busy' ");
@@ -52,11 +58,18 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
 			} else {
 				builder.append(" title='").append(slot.getCapabilities()).append("' ");
 			}
-			builder.append("/>");
+			
+			if (icon != null) {
+				builder.append("/>");
+			}else {
+				builder.append(">");
+				builder.append(slot.getCapabilities().get("browserName"));
+				builder.append("</a>");
+			}
+			
 		}
 		builder.append("</fieldset>");
-		
-		
+
 		return builder.toString();
 	}
 

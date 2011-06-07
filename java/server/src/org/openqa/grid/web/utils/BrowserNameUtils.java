@@ -16,15 +16,15 @@ limitations under the License.
 
 package org.openqa.grid.web.utils;
 
-import static org.openqa.grid.common.RegistrationRequest.BROWSER;
+import java.io.InputStream;
+import java.util.Map;
 
-import com.google.common.collect.Maps;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.util.Map;
+import com.google.common.collect.Maps;
 
 /**
  * Utilities for dealing with browser names.
@@ -55,11 +55,12 @@ public class BrowserNameUtils {
 		return ret;
 	}
 
-	private static String consoleIconName(DesiredCapabilities cap) {
-		if (cap.getBrowserName() == null){
+	public static String consoleIconName(DesiredCapabilities cap) {
+		String browserString =cap.getBrowserName();
+		if (browserString == null || "".endsWith(browserString)){
 			return "missingBrowserName";
 		}
-		String browserString =cap.getBrowserName();
+		
 		String ret = browserString;
 
 		// Take care of any Grid 1.0 named environment translation.
@@ -85,32 +86,23 @@ public class BrowserNameUtils {
 
 		return ret;
 	}
-	
-	/*public static String consoleIconName(String browserString) {
-		String ret = browserString;
 
-		// Take care of any Grid 1.0 named environment translation.
-		if (browserString.charAt(0) != '*') {
-			browserString = lookupGrid1Environment(browserString);
-		}
 
-		// Map browser environments to icon names.
-		if (browserString.contains("iexplore") || browserString.startsWith("*iehta")) {
-			ret = "internet explorer";
-		} else if (browserString.contains("firefox") || browserString.startsWith("*chrome")) {
-			ret = "firefox";
-		} else if (browserString.startsWith("*safari")) {
-			ret = "safari";
-		} else if (browserString.startsWith("*googlechrome")) {
-			ret = "chrome";
-		}
-
-		return ret;
-	}*/
-
+	/**
+	 * get the icon representing the browser for the grid.
+	 * If the icon cannot be located, returns null.
+	 * @param cap
+	 * @return
+	 */
 	public static String getConsoleIconPath(DesiredCapabilities cap) {
 		String name = consoleIconName(cap);
-		return "/grid/resources/images/" + name + ".png";
+		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("images/"+name+".png");
+		if (in == null){
+			return null;
+		}else {
+			return "/grid/resources/images/" + name + ".png";
+		}
+		
 	}
 
 }
