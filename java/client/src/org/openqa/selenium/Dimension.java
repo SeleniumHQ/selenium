@@ -37,4 +37,9 @@ public class Dimension {
     // by 12 should provide a good hash value.
     return width << 12 + height;
   }
+
+  @Override
+  public String toString() {
+    return String.format("(%d, %d)", width, height);
+  }
 }
