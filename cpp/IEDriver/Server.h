@@ -19,6 +19,10 @@
 #include <sstream>
 #include <string>
 #include "mongoose.h"
+#include "CommandValues.h"
+#include "ErrorCodes.h"
+#include "IESession.h"
+#include "Response.h"
 #include "Session.h"
 
 #define SERVER_DEFAULT_PAGE "<html><head><title>WebDriver</title></head><body><p id='main'>This is the initial start page for the IE WebDriver.</p></body></html>"
@@ -27,10 +31,10 @@ using namespace std;
 
 namespace webdriver {
 
-class IEDriverServer {
+class Server {
 public:
-	IEDriverServer(int port);
-	virtual ~IEDriverServer(void);
+	Server(int port);
+	virtual ~Server(void);
 	int ProcessRequest(struct mg_connection* conn, const struct mg_request_info* request_info);
 	int session_count(void) const { return static_cast<int>(this->sessions_.size()); }
 	int port(void) const { return this->port_; }
@@ -38,14 +42,13 @@ public:
 private:
 	typedef std::map<std::string, int> VerbMap;
 	typedef std::map<std::string, VerbMap> UrlMap;
-	typedef std::map<std::wstring, HWND> SessionMap;
+	typedef std::map<std::wstring, SessionHandle> SessionMap;
 
 	int LookupCommand(const std::string& uri, const std::string& http_verb, std::wstring* session_id, std::wstring* locator);
 	std::wstring CreateSession(void);
 	void ShutDownSession(const std::wstring& session_id);
 	std::wstring ReadRequestBody(struct mg_connection* conn, const struct mg_request_info* request_info);
-	bool LookupSession(const std::wstring& session_id, HWND* session_window_handle);
-	bool SendCommandToSession(const HWND& session_window_handle, const std::wstring& serialized_command, std::wstring* serialized_response);
+	bool LookupSession(const std::wstring& session_id, SessionHandle* session_handle);
 	int SendResponseToBrowser(struct mg_connection* conn, const struct mg_request_info* request_info, const std::wstring& serialized_response);
 	void PopulateCommandRepository(void);
 

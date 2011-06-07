@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	void GetSessionCapabilitiesCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetSessionCapabilitiesCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		// ASSUMPTION: Version string will never be larger than 2 characters
 		// (+1 for the null terminator).
 		int version = session.browser_version();

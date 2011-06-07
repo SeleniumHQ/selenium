@@ -13,7 +13,7 @@
 
 #include "StdAfx.h"
 #include "Script.h"
-#include "Session.h"
+#include "IESessionWindow.h"
 #include "logging.h"
 
 namespace webdriver {
@@ -247,7 +247,7 @@ int Script::Execute() {
 	return return_code;
 }
 
-int Script::ConvertResultToJsonValue(const Session& session, Json::Value* value) {
+int Script::ConvertResultToJsonValue(const IESessionWindow& session, Json::Value* value) {
 	int status_code = SUCCESS;
 	if (this->ResultIsString()) { 
 		std::string string_value = "";
@@ -305,7 +305,7 @@ int Script::ConvertResultToJsonValue(const Session& session, Json::Value* value)
 			}
 			*value = result_object;
 		} else {
-			Session& mutable_session = const_cast<Session&>(session);
+			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
 			IHTMLElement* node = reinterpret_cast<IHTMLElement*>(this->result_.pdispVal);
 			ElementHandle element_wrapper;
 			mutable_session.AddManagedElement(node, &element_wrapper);
@@ -354,7 +354,7 @@ int Script::GetPropertyNameList(std::wstring* property_names) {
 	return SUCCESS;
 }
 
-int Script::GetPropertyValue(const Session& session, const std::wstring& property_name, Json::Value* property_value){
+int Script::GetPropertyValue(const IESessionWindow& session, const std::wstring& property_name, Json::Value* property_value){
 	std::wstring get_value_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();"; 
 	Script get_value_script_wrapper(this->script_engine_host_, get_value_script, 2);
 	get_value_script_wrapper.AddArgument(this->result_);
@@ -390,7 +390,7 @@ int Script::GetArrayLength(long* length) {
 	return SUCCESS;
 }
 
-int Script::GetArrayItem(const Session& session, long index, Json::Value* item){
+int Script::GetArrayItem(const IESessionWindow& session, long index, Json::Value* item){
 	std::wstring get_array_item_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();"; 
 	Script get_array_item_script_wrapper(this->script_engine_host_, get_array_item_script, 2);
 	get_array_item_script_wrapper.AddArgument(this->result_);

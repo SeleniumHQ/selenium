@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	void QuitCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void QuitCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		std::vector<std::wstring> managed_browser_handles;
 		session.GetManagedBrowserHandles(&managed_browser_handles);
 
@@ -41,7 +41,7 @@ protected:
 		}
 
 		// Calling quit will always result in an invalid session.
-		Session& mutable_session = const_cast<Session&>(session);
+		IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
 		mutable_session.set_is_valid(false);
 		response->SetResponse(SUCCESS, Json::Value::null);
 	}

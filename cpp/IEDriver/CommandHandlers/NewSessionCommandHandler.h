@@ -27,8 +27,8 @@ public:
 	}
 
 protected:
-	void NewSessionCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		Session& mutable_session = const_cast<Session&>(session);
+	void NewSessionCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+		IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
 		ParametersMap::const_iterator it = command_parameters.find("desiredCapabilities");
 		if (it != command_parameters.end()) {
 			Json::Value ignore_protected_mode_settings = it->second.get("ignoreProtectedModeSettings", false);

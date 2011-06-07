@@ -42,7 +42,7 @@ public:
 	}
 
 protected:
-	void ScreenshotCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void ScreenshotCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
 		session.GetCurrentBrowser(&browser_wrapper);
 		

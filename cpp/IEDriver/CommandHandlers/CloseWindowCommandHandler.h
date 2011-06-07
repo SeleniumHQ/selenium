@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	void CloseWindowCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void CloseWindowCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		// The session should end if the user sends a quit command,
 		// or if the user sends a close command with exactly 1 window
 		// open, per spec. Removing the window from the managed browser
@@ -45,7 +45,7 @@ protected:
 		browser_wrapper->Close();
 
 		if (current_window_count == 1) {
-			Session& mutable_session = const_cast<Session&>(session);
+			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
 			mutable_session.set_is_valid(false);
 		}
 		response->SetResponse(SUCCESS, Json::Value::null);

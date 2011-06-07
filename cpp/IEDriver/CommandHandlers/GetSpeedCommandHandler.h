@@ -26,7 +26,7 @@ public:
 	}
 
 protected:
-	void GetSpeedCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetSpeedCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		int speed = session.speed();
 		switch (speed) {
 		  case 1000:

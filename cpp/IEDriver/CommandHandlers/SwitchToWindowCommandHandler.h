@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	void ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("name");
 		if (name_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: name");
@@ -67,7 +67,7 @@ protected:
 					current_browser->SetFocusedFrameByElement(NULL);
 				}
 
-				Session& mutable_session = const_cast<Session&>(session);
+				IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
 				mutable_session.set_current_browser_id(found_browser_handle);
 				status_code = session.GetCurrentBrowser(&current_browser);
 				current_browser->set_wait_required(true);

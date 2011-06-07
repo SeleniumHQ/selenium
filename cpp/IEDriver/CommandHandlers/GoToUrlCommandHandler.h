@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	void GoToUrlCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GoToUrlCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator url_parameter_iterator = command_parameters.find("url");
 		if (url_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: url");

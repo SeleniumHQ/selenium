@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	virtual void ExecuteScriptCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	virtual void ExecuteScriptCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator script_parameter_iterator = command_parameters.find("script");
 		ParametersMap::const_iterator args_parameter_iterator = command_parameters.find("args");
 		if (script_parameter_iterator == command_parameters.end()) {
@@ -72,7 +72,7 @@ protected:
 		}
 	}
 
-	int ExecuteScriptCommandHandler::PopulateArgumentArray(const Session& session, Script& script_wrapper, Json::Value json_args) {
+	int ExecuteScriptCommandHandler::PopulateArgumentArray(const IESessionWindow& session, Script& script_wrapper, Json::Value json_args) {
 		int status_code = SUCCESS;
 		for (UINT arg_index = 0; arg_index < json_args.size(); ++arg_index) {
 			Json::Value arg = json_args[arg_index];
@@ -85,7 +85,7 @@ protected:
 		return status_code;
 	}
 
-	int ExecuteScriptCommandHandler::AddArgument(const Session& session, Script& script_wrapper, Json::Value arg) {
+	int ExecuteScriptCommandHandler::AddArgument(const IESessionWindow& session, Script& script_wrapper, Json::Value arg) {
 		int status_code = SUCCESS;
 		if (arg.isString()) {
 			std::wstring value = CA2W(arg.asString().c_str(), CP_UTF8);
@@ -118,7 +118,7 @@ protected:
 		return status_code;
 	}
 
-	int ExecuteScriptCommandHandler::WalkArray(const Session& session, Script& script_wrapper, Json::Value array_value) {
+	int ExecuteScriptCommandHandler::WalkArray(const IESessionWindow& session, Script& script_wrapper, Json::Value array_value) {
 		int status_code = SUCCESS;
 		Json::UInt array_size = array_value.size();
 		std::wstring array_script = L"(function(){ return function() { return [";
@@ -157,7 +157,7 @@ protected:
 		return status_code;
 	}
 
-	int ExecuteScriptCommandHandler::WalkObject(const Session& session, Script& script_wrapper, Json::Value object_value) {
+	int ExecuteScriptCommandHandler::WalkObject(const IESessionWindow& session, Script& script_wrapper, Json::Value object_value) {
 		int status_code = SUCCESS;
 		Json::Value::iterator it = object_value.begin();
 		int counter = 0;

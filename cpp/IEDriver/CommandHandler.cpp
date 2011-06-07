@@ -13,7 +13,7 @@
 
 #include "StdAfx.h"
 #include "CommandHandler.h"
-#include "Session.h"
+#include "IESessionWindow.h"
 
 namespace webdriver {
 
@@ -23,14 +23,14 @@ CommandHandler::CommandHandler() {
 CommandHandler::~CommandHandler() {
 }
 
-void CommandHandler::Execute(const Session& session, const Command& command, Response* response) {
+void CommandHandler::Execute(const IESessionWindow& session, const Command& command, Response* response) {
 	this->ExecuteInternal(session, command.locator_parameters(), command.command_parameters(), response);
 }
 
-void CommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response* response) {
+void CommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response* response) {
 }
 
-int CommandHandler::GetElement(const Session& session, const std::wstring& element_id, ElementHandle* element_wrapper) {
+int CommandHandler::GetElement(const IESessionWindow& session, const std::wstring& element_id, ElementHandle* element_wrapper) {
 	int status_code = EOBSOLETEELEMENT;
 	ElementHandle candidate_wrapper;
 	int result = session.GetManagedElement(element_id, &candidate_wrapper);
@@ -63,7 +63,7 @@ int CommandHandler::GetElement(const Session& session, const std::wstring& eleme
 		}
 
 		if (status_code != SUCCESS) {
-			Session& mutable_session = const_cast<Session&>(session);
+			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
 			mutable_session.RemoveManagedElement(element_id);
 		}
 	}

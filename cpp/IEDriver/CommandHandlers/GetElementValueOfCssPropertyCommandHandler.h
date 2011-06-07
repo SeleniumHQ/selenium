@@ -43,7 +43,7 @@ public:
 	}
 
 protected:
-	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		LocatorMap::const_iterator property_name_parameter_iterator = locator_parameters.find("propertyName");
 		if (id_parameter_iterator == locator_parameters.end()) {

@@ -28,7 +28,7 @@ public:
 	}
 
 protected:
-	void MouseDoubleClickCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void MouseDoubleClickCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
 		int status_code = session.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {

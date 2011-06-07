@@ -215,9 +215,11 @@
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="ElementFinder.cpp" />
     <ClCompile Include="HtmlDialog.cpp" />
-    <ClCompile Include="IEDriverServer.cpp" />
+    <ClCompile Include="IESession.cpp" />
+    <ClCompile Include="IESessionWindow.cpp" />
     <ClCompile Include="Response.cpp" />
     <ClCompile Include="Script.cpp" />
+    <ClCompile Include="Server.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -237,10 +239,12 @@
     <ClInclude Include="Element.h" />
     <ClInclude Include="ElementFinder.h" />
     <ClInclude Include="HtmlDialog.h" />
-    <ClInclude Include="IEDriverServer.h" />
+    <ClInclude Include="IESession.h" />
+    <ClInclude Include="IESessionWindow.h" />
     <ClInclude Include="messages.h" />
     <ClInclude Include="Response.h" />
     <ClInclude Include="Script.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

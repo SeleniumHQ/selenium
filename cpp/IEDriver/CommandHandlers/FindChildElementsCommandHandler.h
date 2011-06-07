@@ -28,7 +28,7 @@ public:
 	}
 
 protected:
-	void FindChildElementsCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void FindChildElementsCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
 		ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");

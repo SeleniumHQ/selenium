@@ -27,14 +27,14 @@ public:
 	}
 
 protected:
-	void SetSpeedCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void SetSpeedCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator speed_parameter_iterator = command_parameters.find("speed");
 		if (speed_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: speed");
 			return;
 		} else {
 			std::string speed = speed_parameter_iterator->second.asString();
-			Session& mutable_session = const_cast<Session&>(session);
+			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
 			if (strcmp(speed.c_str(), SPEED_SLOW) == 0) {
 				mutable_session.set_speed(1000);
 			} else if (strcmp(speed.c_str(), SPEED_MEDIUM) == 0) {

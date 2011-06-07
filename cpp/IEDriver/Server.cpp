@@ -13,12 +13,12 @@
 
 #include "StdAfx.h"
 #include <regex>
-#include "IEDriverServer.h"
+#include "Server.h"
 #include "logging.h"
 
 namespace webdriver {
 
-IEDriverServer::IEDriverServer(int port) {
+Server::Server(int port) {
 	// It's possible to set the log level at compile time using this:
     LOG::Level("FATAL");
     LOG(INFO) << "Starting IE Driver server on port: " << port;
@@ -26,7 +26,7 @@ IEDriverServer::IEDriverServer(int port) {
 	this->PopulateCommandRepository();
 }
 
-IEDriverServer::~IEDriverServer(void) {
+Server::~Server(void) {
 	if (this->sessions_.size() > 0) {
 		vector<std::wstring> session_ids;
 		SessionMap::iterator it = this->sessions_.begin();
@@ -40,49 +40,24 @@ IEDriverServer::~IEDriverServer(void) {
 	}
 }
 
-std::wstring IEDriverServer::CreateSession() {
-	unsigned int thread_id = 0;
-	HWND session_window_handle = NULL;
-	HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, EVENT_NAME);
-	HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &Session::ThreadProc, reinterpret_cast<void*>(&session_window_handle), 0, &thread_id));
-	if (event_handle != NULL) {
-		::WaitForSingleObject(event_handle, INFINITE);
-		::CloseHandle(event_handle);
-	}
+std::wstring Server::CreateSession() {
+	// TODO: make this generic and not tightly bound to the IESession class
+	SessionHandle session_handle(new IESession(this->port_));
+	std::wstring session_id = session_handle->Initialize();
 
-	if (thread_handle != NULL) {
-		::CloseHandle(thread_handle);
-	}
-
-	::SendMessage(session_window_handle, WD_INIT, static_cast<WPARAM>(this->port_), NULL);
-
-	vector<TCHAR> window_text_buffer(37);
-	::GetWindowText(session_window_handle, &window_text_buffer[0], 37);
-	std::wstring session_id = &window_text_buffer[0];
-
-	this->sessions_[session_id] = session_window_handle;
+	this->sessions_[session_id] = session_handle;
 	return session_id;
 }
 
-void IEDriverServer::ShutDownSession(const std::wstring& session_id) {
+void Server::ShutDownSession(const std::wstring& session_id) {
 	SessionMap::iterator it = this->sessions_.find(session_id);
 	if (it != this->sessions_.end()) {
-		DWORD process_id;
-		DWORD thread_id = ::GetWindowThreadProcessId(it->second, &process_id);
-		HANDLE thread_handle = ::OpenThread(SYNCHRONIZE, FALSE, thread_id);
-		::SendMessage(it->second, WM_CLOSE, NULL, NULL);
-		if (thread_handle != NULL) {
-			DWORD wait_result = ::WaitForSingleObject(thread_handle, 30000);
-			if (wait_result != WAIT_OBJECT_0) {
-				LOG(DEBUG) << "Waiting for thread to end returned " << wait_result;
-			}
-			::CloseHandle(thread_handle);
-		}
+		it->second->ShutDown();
 		this->sessions_.erase(session_id);
 	}
 }
 
-std::wstring IEDriverServer::ReadRequestBody(struct mg_connection* conn, const struct mg_request_info* request_info) {
+std::wstring Server::ReadRequestBody(struct mg_connection* conn, const struct mg_request_info* request_info) {
 	std::wstring request_body = L"";
 	int content_length = 0;
 	for (int header_index = 0; header_index < 64; ++header_index) {
@@ -112,7 +87,7 @@ std::wstring IEDriverServer::ReadRequestBody(struct mg_connection* conn, const s
 	return request_body;
 }
 
-int IEDriverServer::ProcessRequest(struct mg_connection* conn, const struct mg_request_info* request_info) {
+int Server::ProcessRequest(struct mg_connection* conn, const struct mg_request_info* request_info) {
 	int return_code = NULL;
 	std::string http_verb = request_info->request_method;
 	std::wstring request_body = L"{}";
@@ -139,8 +114,8 @@ int IEDriverServer::ProcessRequest(struct mg_connection* conn, const struct mg_r
 			}
 
 			std::wstring serialized_response = L"";
-			HWND session_window_handle = NULL;
-			if (!this->LookupSession(session_id, &session_window_handle)) {
+			SessionHandle session_handle = NULL;
+			if (!this->LookupSession(session_id, &session_handle)) {
 				// Hand-code the response for an invalid session id
 				serialized_response = L"{ \"status\" : 404, \"sessionId\" : \"" + session_id + L"\", \"value\" : \"session " + session_id + L" does not exist\" }";
 			} else {
@@ -150,7 +125,7 @@ int IEDriverServer::ProcessRequest(struct mg_connection* conn, const struct mg_r
 				std::wstring command_value = command_value_stream.str();
 
 				std::wstring serialized_command = L"{ \"command\" : " + command_value + L", \"locator\" : " + locator_parameters + L", \"parameters\" : " + request_body + L" }";
-				bool session_is_valid = this->SendCommandToSession(session_window_handle, serialized_command, &serialized_response);
+				bool session_is_valid = session_handle->ExecuteCommand(serialized_command, &serialized_response);
 				if (!session_is_valid) {
 					this->ShutDownSession(session_id);
 				}
@@ -163,41 +138,16 @@ int IEDriverServer::ProcessRequest(struct mg_connection* conn, const struct mg_r
 	return return_code;
 }
 
-bool IEDriverServer::LookupSession(const std::wstring& session_id, HWND* session_window_handle) {
+bool Server::LookupSession(const std::wstring& session_id, SessionHandle* session_handle) {
 	SessionMap::iterator it = this->sessions_.find(session_id);
 	if (it == this->sessions_.end()) {
 		return false;
 	}
-	*session_window_handle = it->second;
+	*session_handle = it->second;
 	return true;
 }
 
-bool IEDriverServer::SendCommandToSession(const HWND& session_window_handle, const std::wstring& serialized_command, std::wstring* serialized_response) {
-	// Sending a command consists of five actions:
-	// 1. Setting the command to be executed
-	// 2. Executing the command
-	// 3. Waiting for the response to be populated
-	// 4. Retrieving the response
-	// 5. Retrieving whether the command sent caused the session to be ready for shutdown
-	::SendMessage(session_window_handle, WD_SET_COMMAND, NULL, reinterpret_cast<LPARAM>(serialized_command.c_str()));
-	::PostMessage(session_window_handle, WD_EXEC_COMMAND, NULL, NULL);
-	
-	int response_length = static_cast<int>(::SendMessage(session_window_handle, WD_GET_RESPONSE_LENGTH, NULL, NULL));
-	while (response_length == 0) {
-		// Sleep a short time to prevent thread starvation on single-core machines.
-		::Sleep(10);
-		response_length = static_cast<int>(::SendMessage(session_window_handle, WD_GET_RESPONSE_LENGTH, NULL, NULL));
-	}
-
-	// Must add one to the length to handle the terminating character.
-	std::vector<TCHAR> response_buffer(response_length + 1);
-	::SendMessage(session_window_handle, WD_GET_RESPONSE, NULL, reinterpret_cast<LPARAM>(&response_buffer[0]));
-	*serialized_response = &response_buffer[0];
-	bool session_is_valid = ::SendMessage(session_window_handle, WD_IS_SESSION_VALID, NULL, NULL) != 0;
-	return session_is_valid;
-}
-
-int IEDriverServer::SendResponseToBrowser(struct mg_connection* conn, const struct mg_request_info* request_info, const std::wstring& serialized_response) {
+int Server::SendResponseToBrowser(struct mg_connection* conn, const struct mg_request_info* request_info, const std::wstring& serialized_response) {
 	int return_code = 0;
 	if (serialized_response.size() > 0) {
 		Response response;
@@ -227,7 +177,7 @@ int IEDriverServer::SendResponseToBrowser(struct mg_connection* conn, const stru
 	return return_code;
 }
 
-void IEDriverServer::SendWelcomePage(struct mg_connection* connection,
+void Server::SendWelcomePage(struct mg_connection* connection,
                 const struct mg_request_info* request_info) {
 	std::string page_body = SERVER_DEFAULT_PAGE;
 	std::ostringstream out;
@@ -248,7 +198,7 @@ void IEDriverServer::SendWelcomePage(struct mg_connection* connection,
 // OK, See Other, Not Found, Method Not Allowed, and Internal Error.
 // Internal Error, HTTP 500, is used as a catch all for any issue
 // not covered in the JSON protocol.
-void IEDriverServer::SendHttpOk(struct mg_connection* connection,
+void Server::SendHttpOk(struct mg_connection* connection,
                 const struct mg_request_info* request_info,
 				const std::wstring& body) {
 	std::string narrow_body = CW2A(body.c_str(), CP_UTF8);
@@ -266,7 +216,7 @@ void IEDriverServer::SendHttpOk(struct mg_connection* connection,
 	mg_write(connection, out.str().c_str(), out.str().size());
 }
 
-void IEDriverServer::SendHttpBadRequest(struct mg_connection* const connection,
+void Server::SendHttpBadRequest(struct mg_connection* const connection,
                         const struct mg_request_info* const request_info,
 				        const std::wstring& body) {
 	std::string narrow_body = CW2A(body.c_str(), CP_UTF8);
@@ -284,7 +234,7 @@ void IEDriverServer::SendHttpBadRequest(struct mg_connection* const connection,
 	mg_printf(connection, "%s", out.str().c_str());
 }
 
-void IEDriverServer::SendHttpInternalError(struct mg_connection* connection,
+void Server::SendHttpInternalError(struct mg_connection* connection,
                            const struct mg_request_info* request_info,
 						   const std::wstring& body) {
 	std::string narrow_body = CW2A(body.c_str(), CP_UTF8);
@@ -302,7 +252,7 @@ void IEDriverServer::SendHttpInternalError(struct mg_connection* connection,
 	mg_write(connection, out.str().c_str(), out.str().size());
 }
 
-void IEDriverServer::SendHttpNotFound(struct mg_connection* const connection,
+void Server::SendHttpNotFound(struct mg_connection* const connection,
                       const struct mg_request_info* const request_info,
 				      const std::wstring& body) {
 	std::string narrow_body = CW2A(body.c_str(), CP_UTF8);
@@ -320,7 +270,7 @@ void IEDriverServer::SendHttpNotFound(struct mg_connection* const connection,
 	mg_printf(connection, "%s", out.str().c_str());
 }
 
-void IEDriverServer::SendHttpMethodNotAllowed(struct mg_connection* connection,
+void Server::SendHttpMethodNotAllowed(struct mg_connection* connection,
 							const struct mg_request_info* request_info,
 							const std::wstring& allowed_methods) {
 	std::string narrow_body = CW2A(allowed_methods.c_str(), CP_UTF8);
@@ -333,7 +283,7 @@ void IEDriverServer::SendHttpMethodNotAllowed(struct mg_connection* connection,
 	mg_write(connection, out.str().c_str(), out.str().size());
 }
 
-void IEDriverServer::SendHttpNotImplemented(struct mg_connection* connection,
+void Server::SendHttpNotImplemented(struct mg_connection* connection,
 							const struct mg_request_info* request_info,
 							const std::string& body) {
 	std::ostringstream out;
@@ -345,7 +295,7 @@ void IEDriverServer::SendHttpNotImplemented(struct mg_connection* connection,
 	mg_write(connection, out.str().c_str(), out.str().size());
 }
 
-void IEDriverServer::SendHttpSeeOther(struct mg_connection* connection,
+void Server::SendHttpSeeOther(struct mg_connection* connection,
 							const struct mg_request_info* request_info,
 							const std::string& location) {
 	std::ostringstream out;
@@ -357,7 +307,7 @@ void IEDriverServer::SendHttpSeeOther(struct mg_connection* connection,
 	mg_write(connection, out.str().c_str(), out.str().size());
 }
 
-int IEDriverServer::LookupCommand(const std::string& uri, const std::string& http_verb, std::wstring* session_id, std::wstring* locator) {
+int Server::LookupCommand(const std::string& uri, const std::string& http_verb, std::wstring* session_id, std::wstring* locator) {
 	int value = NoCommand;
 	UrlMap::const_iterator it = this->commands_.begin();
 	for (; it != this->commands_.end(); ++it) {
@@ -423,7 +373,7 @@ int IEDriverServer::LookupCommand(const std::string& uri, const std::string& htt
 	return value;
 }
 
-void IEDriverServer::PopulateCommandRepository() {
+void Server::PopulateCommandRepository() {
 	this->commands_["/session"]["POST"] = NewSession;
 	this->commands_["/session/:sessionid"]["GET"] = GetSessionCapabilities;
 	this->commands_["/session/:sessionid"]["DELETE"] = Quit;

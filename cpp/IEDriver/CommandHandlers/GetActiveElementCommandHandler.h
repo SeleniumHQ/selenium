@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	void GetActiveElementCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetActiveElementCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
 		int status_code = session.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
@@ -61,7 +61,7 @@ protected:
 		}
 
 		if (element) {
-			Session& mutable_session = const_cast<Session&>(session);
+			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
 			IHTMLElement* dom_element;
 			HRESULT hr = element.CopyTo(&dom_element);
 			ElementHandle element_wrapper;

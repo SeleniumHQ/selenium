@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	void GetAllCookiesCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetAllCookiesCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		Json::Value response_value(Json::arrayValue);
 		BrowserHandle browser_wrapper;
 		int status_code = session.GetCurrentBrowser(&browser_wrapper);

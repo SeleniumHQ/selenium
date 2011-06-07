@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	void SwitchToFrameCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void SwitchToFrameCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		Json::Value frame_id = Json::Value::null;
 		ParametersMap::const_iterator it = command_parameters.find("id");
 		// TODO: When issue 1133 is fixed, the else block in the following code

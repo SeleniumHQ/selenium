@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	void GetAllWindowHandlesCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetAllWindowHandlesCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		Json::Value handles(Json::arrayValue);
 		std::vector<std::wstring> handle_list;
 		session.GetManagedBrowserHandles(&handle_list);

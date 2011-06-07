@@ -27,14 +27,14 @@ public:
 	}
 
 protected:
-	void SetImplicitWaitTimeoutCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void SetImplicitWaitTimeoutCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator ms_parameter_iterator = command_parameters.find("ms");
 		if (ms_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: ms");
 			return;
 		} else {
 			int timeout = ms_parameter_iterator->second.asInt();
-			Session& mutable_session = const_cast<Session&>(session);
+			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
 			mutable_session.set_implicit_wait_timeout(timeout);
 			response->SetResponse(SUCCESS, Json::Value::null);
 		}

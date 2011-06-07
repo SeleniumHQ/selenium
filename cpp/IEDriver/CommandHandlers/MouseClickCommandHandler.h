@@ -28,7 +28,7 @@ public:
 	}
 
 protected:
-	void MouseClickCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void MouseClickCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator button_parameter_iterator = command_parameters.find("button");
 		if (button_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: button");

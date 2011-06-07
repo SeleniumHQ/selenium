@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	void ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		std::string current_handle = CW2A(session.current_browser_id().c_str(), CP_UTF8);
 		response->SetResponse(SUCCESS, current_handle);
 	}

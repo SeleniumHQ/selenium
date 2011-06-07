@@ -27,7 +27,7 @@ namespace webdriver {
 
 // Forward declaration of classes to avoid
 // circular include files.
-class Session;
+class IESessionWindow;
 
 class CommandHandler {
 public:
@@ -36,11 +36,11 @@ public:
 
 	CommandHandler(void);
 	virtual ~CommandHandler(void);
-	void Execute(const Session& session, const Command& command, Response* response);
+	void Execute(const IESessionWindow& session, const Command& command, Response* response);
 
 protected:
-	virtual void ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response* response);
-	int GetElement(const Session& session, const std::wstring& element_id, ElementHandle* element_wrapper);
+	virtual void ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response* response);
+	int GetElement(const IESessionWindow& session, const std::wstring& element_id, ElementHandle* element_wrapper);
 	std::wstring ConvertVariantToWString(VARIANT* to_convert);
 };
 

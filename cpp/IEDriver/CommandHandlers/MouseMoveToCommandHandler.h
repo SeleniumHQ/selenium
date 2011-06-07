@@ -28,7 +28,7 @@ public:
 	}
 
 protected:
-	void MouseMoveToCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void MouseMoveToCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator element_parameter_iterator = command_parameters.find("element");
 		ParametersMap::const_iterator xoffset_parameter_iterator = command_parameters.find("xoffset");
 		ParametersMap::const_iterator yoffset_parameter_iterator = command_parameters.find("yoffset");
@@ -67,7 +67,7 @@ protected:
 			HWND browser_window_handle = browser_wrapper->GetWindowHandle();
 			LRESULT move_result = mouseMoveTo(browser_window_handle, session.speed(), start_x, start_y, end_x, end_y);
 
-			Session& mutable_session = const_cast<Session&>(session);
+			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
 			mutable_session.set_last_known_mouse_x(end_x);
 			mutable_session.set_last_known_mouse_y(end_y);
 
@@ -77,7 +77,7 @@ protected:
 	}
 
 private:
-	int MouseMoveToCommandHandler::GetElementCoordinates(const Session& session, const std::wstring& element_id, bool get_element_origin, long *x_coordinate, long *y_coordinate) {
+	int MouseMoveToCommandHandler::GetElementCoordinates(const IESessionWindow& session, const std::wstring& element_id, bool get_element_origin, long *x_coordinate, long *y_coordinate) {
 		ElementHandle target_element;
 		int status_code = this->GetElement(session, element_id, &target_element);
 		if (status_code != SUCCESS) {

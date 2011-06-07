@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	void DragElementCommandHandler::ExecuteInternal(const Session& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void DragElementCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		ParametersMap::const_iterator x_parameter_iterator = command_parameters.find("x");
 		ParametersMap::const_iterator y_parameter_iterator = command_parameters.find("y");

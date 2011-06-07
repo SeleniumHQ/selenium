@@ -25,12 +25,12 @@ void* event_handler(enum mg_event event_raised,
 	return &handler_result_code;
 }
 
-webdriver::IEDriverServer* StartServer(int port) {
+webdriver::Server* StartServer(int port) {
 	char buffer[10];
 	if (server == NULL) {
 		_itoa_s(port, buffer, 10, 10);
 		const char* options[] = { "listening_ports", buffer, "access_control_list", "-0.0.0.0/0,+127.0.0.1", "enable_keep_alive", "yes", NULL };
-		server = new webdriver::IEDriverServer(port);
+		server = new webdriver::Server(port);
 		ctx = mg_start(event_handler, NULL, options);
         if (ctx == NULL) {
             delete server;
@@ -40,7 +40,7 @@ webdriver::IEDriverServer* StartServer(int port) {
 	return server;
 }
 
-void StopServer(webdriver::IEDriverServer* myserver) {
+void StopServer(webdriver::Server* myserver) {
     if (ctx) {
 	    mg_stop(ctx);
         ctx = NULL;
