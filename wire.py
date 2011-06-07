@@ -233,8 +233,8 @@ Create a new session. The server should attempt to create a session that most \
 closely matches the desired capabilities.''').
       AddJsonParameter('desiredCapabilities',
                        '{object}',
-                       'A [JsonWireProtocol#Basic_Terms_and_Concepts desired '
-                       'capabilities] object.').
+                       'An object describing the session\'s '
+                       '[#Desired_Capabilities desired capabilities].').
       SetJavadoc(None, 'n/a').
       SetReturnType(None,
                     'A `303 See Other` redirect to `/session/:sessionId`, where'
@@ -245,9 +245,8 @@ closely matches the desired capabilities.''').
       Get('Retrieve the capabilities of the specified session.').
       SetJavadoc(None, 'n/a').
       SetReturnType('{object}',
-                    'A [JsonWireProtocol#Basic_Terms_and_Concepts '
-                    'capabilities] object describing the sessions actual '
-                    'capabilities.').
+                    'An object describing the session\'s '
+                    '[#Actual_Capabilities capabilities].').
       Delete('Delete the session.').
       SetJavadoc('java/org/openqa/selenium/WebDriver.html#quit()',
                  'WebDriver#quit()'))
@@ -338,9 +337,10 @@ client.  The function will be invoked with the provided `args` array and the \
 values may be accessed via the `arguments` object in the order specified.
 
 Arguments may be any JSON-primitive, array, or JSON object.  JSON objects that \
-define a !WebElement reference will be converted to the corresponding DOM \
-element. Likewise, any !WebElements in the script result will be returned to \
-the client as !WebElement JSON objects.''').
+define a [#WebElement_JSON_Object WebElement reference] will be converted to \
+the corresponding DOM element. Likewise, any !WebElements in the script result \
+will be returned to the client as [#WebElement_JSON_Object WebElement \
+JSON objects].''').
       AddJsonParameter('script', '{string}', 'The script to execute.').
       AddJsonParameter('args', '{Array.<*>}', 'The script arguments.').
       AddError('JavaScriptError', 'If the script throws an Error.').
@@ -372,9 +372,10 @@ final argument will always be a callback function that must be invoked to \
 signal that the script has finished.
 
 Arguments may be any JSON-primitive, array, or JSON object.  JSON objects that \
-define a !WebElement reference will be converted to the corresponding DOM \
-element. Likewise, any !WebElements in the script result will be returned to \
-the client as !WebElement JSON objects.''').
+define a [#WebElement_JSON_Object WebElement reference] will be converted to \
+the corresponding DOM element. Likewise, any !WebElements in the script result \
+will be returned to the client as [#WebElement_JSON_Object WebElement \
+JSON objects].''').
       AddJsonParameter('script', '{string}', 'The script to execute.').
       AddJsonParameter('args', '{Array.<*>}', 'The script arguments.').
       AddError('JavaScriptError',
@@ -1168,27 +1169,37 @@ The protocol will assume that the WebDriver API has been "flattened", but there\
 == Basic Terms and Concepts ==
 
 <dl>
-<dt>*Client*</dt>
-<dd>The machine on which the WebDriver API is being used.
+<dt>
+==== Client ====
+</dt>
+<dd>The machine on which the !WebDriver API is being used.
 
 </dd>
-<dt>*Server*</dt>
+<dt>
+==== Server ====
+</dt>
 <dd>The machine running the RemoteWebDriver. This term may also refer to a \
 specific browser that implements the wire protocol directly, such as the \
 FirefoxDriver or IPhoneDriver.
 
 </dd>
-<dt>*Session*</dt>
+<dt>
+==== Session ====
+</dt>
 <dd>The server should maintain one browser per session. Commands sent to a \
 session will be directed to the corresponding browser.
 
 </dd>
-<dt>*!WebElement*</dt>
-<dd>An object in the WebDriver API that represents a DOM element on the page.
+<dt>
+==== !WebElement ====
+</dt>
+<dd>An object in the !WebDriver API that represents a DOM element on the page.
 
 </dd>
-<dt>*!WebElement JSON Object*</dt>
-<dd>The JSON representation of a WebElement for transmission over the wire. \
+<dt>
+==== !WebElement JSON Object ====
+</dt>
+<dd>The JSON representation of a !WebElement for transmission over the wire. \
 This object will have the following properties:
 
 || *Key* || *Type* || *Description* ||
@@ -1197,7 +1208,9 @@ This ID should be used in all subsequent commands issued against the element. ||
 
 </dd>
 
-<dt>*Capabilities JSON Object*</dt>
+<dt>
+==== Capabilities JSON Object ====
+</dt>
 <dd>Not all server implementations will support every !WebDriver feature. \
 Therefore, the client and server should use JSON objects with the properties \
 listed below when describing which features a session supports.
@@ -1217,12 +1230,16 @@ screenshots of the current page. ||
 
 </dd>
 
-<dt>*Desired Capabilities*</dt>
+<dt>
+==== Desired Capabilities ====
+</dt>
 <dd>A Capabilities JSON Object sent by the client describing the capabilities \
 a new session created by the server should possess. Any omitted keys implicitly \
 indicate the corresponding capability is irrelevant.</dd>
 
-<dt>*Actual Capabilities*</dt>
+<dt>
+==== Actual Capabilities ====
+</dt>
 <dd>A Capabilities JSON Object returned by the server describing what \
 features a session actually supports. Any omitted keys implicitly indicate \
 the corresponding capability is not supported.</dd>
