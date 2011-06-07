@@ -2026,9 +2026,11 @@ function XPathEvaluator(newDefaultEngineName) {
             contextNode = inDocument;
         }
         
-        return getEngineFor(inDocument)
+        var result = getEngineFor(inDocument)
             .setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue)
             [methodName](xpath, contextNode, namespaceResolver);
+            
+        return result;
     }
     
 // public
@@ -2186,15 +2188,17 @@ function eval_xpath(xpath, inDocument, opts)
     xpathEvaluator.setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue);
     
     if (returnOnFirstMatch) {
-        var result = xpathEvaluator.selectSingleNode(inDocument, xpath,
+        var singleNode = xpathEvaluator.selectSingleNode(inDocument, xpath,
             contextNode, namespaceResolver);
+        
+        var results = (singleNode ? [ singleNode ] : []);
     }
     else {
-        var result = xpathEvaluator.selectNodes(inDocument, xpath, contextNode,
+        var results = xpathEvaluator.selectNodes(inDocument, xpath, contextNode,
             namespaceResolver);
     }
     
-    return result;
+    return results;
 }
 
 /**

@@ -191,6 +191,7 @@ function UIElement(uiElementShorthand)
             // args is now required
             var locator = parse_locator(this.getLocator(testcase.args));
             var results;
+            
             if (locator.type == 'xpath' || (locator.type == 'implicit' &&
                 locator.string.substring(0, 2) == '//')) {
                 // try using the javascript xpath engine to avoid namespace
@@ -206,6 +207,7 @@ function UIElement(uiElementShorthand)
                     : locator.type + '=' + locator.string;
                 results = eval_locator(locator, doc);
             }
+            
             if (results.length && results[0].hasAttribute('expected-result')) {
                 continue testcaseLoop;
             }
@@ -215,7 +217,7 @@ function UIElement(uiElementShorthand)
                 var msg = 'Testcase "' + testcase.name
                     + '" failed for UI element "' + this.name + '":';
                 if (!results.length) {
-                    msg += '\n"' + locator + '" did not match any elements!';
+                    msg += '\n"' + (locator.string || locator) + '" did not match any elements!';
                 }
                 else {
                     msg += '\n' + results[0] + ' was not the expected result!';
