@@ -998,6 +998,28 @@ available platform may be used. ||
 supplied JavaScript in the context of the current page. ||
 || takesScreenshot || boolean || Whether the session supports taking \
 screenshots of the current page. ||
+|| handlesAlerts || boolean || Whether the session can interact with modal \
+popups, such as `window.alert` and `window.confirm`. ||
+|| databaseEnabled || boolean || Whether the session can interact \
+database storage. ||
+|| locationContextEnabled || boolean || Whether the session can set and query \
+the browser's location context. ||
+|| applicationCacheEnabled || boolean || Whether the session can interact with \
+the application cache. ||
+|| browserConnectionEnabled || boolean || Whether the session can query for \
+the browser's connectivity and disable it if desired. ||
+|| cssSelectorsEnabled || boolean || Whether the session supports CSS \
+selectors when searching for elements. ||
+|| webStorageEnabled || boolean || Whether the session supports interactions \
+with [http://www.w3.org/TR/2009/WD-webstorage-20091029/ storage objects]. || 
+|| rotatable || boolean || Whether the session can rotate the current page's \
+current layout between portrait and landscape orientations (only applies to \
+mobile platforms). ||
+|| acceptSslCerts || boolean || Whether the session should accept all SSL \
+certs by default. ||
+|| nativeEvents || boolean || Whether the session is capable of generating \
+native events when simulating user input. ||
+
 
 </dd>
 
