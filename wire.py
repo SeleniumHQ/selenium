@@ -472,43 +472,16 @@ server assigned window handle, or by the value of its `name` attribute.''').
 
   resources.append(
       SessionResource('/session/:sessionId/cookie').
-      Get('''Retrieve all cookies visible to the current page. Each cookie \
-will be returned as a
-JSON object with the following properties:
-
-|| *Key* || *Type* || *Description* ||
-|| name || string || The name of the cookie. ||
-|| value || string || The cookie value. ||
-|| path || string || (Optional) The cookie path.^1^ ||
-|| domain || string || (Optional) The domain the cookie is visible to.^1^ ||
-|| secure || boolean || (Optional) Whether the cookie is a secure cookie.^1^ ||
-|| expiry || number || (Optional) When the cookie expires, specified in \
-seconds since midnight, January 1, 1970 UTC.^1^ ||
-
-^1^ Field should only be omitted if the server is incapable of providing the \
-information.
-''').
-      SetReturnType('{Array.<object>}', 'A list of cookies.').
+      Get('Retrieve all cookies visible to the current page.').
+      SetReturnType('{Array.<object>}', 'A list of [#Cookie_JSON_Object cookies].').
       SetJavadoc('java/org/openqa/selenium/WebDriver.Options.html#getCookies()',
                  'WebDriver.Options#getCookies()').
-      Post('''Set a cookie.  The cookie should be specified as a JSON object \
-with the following
-properties:
-
-|| *Key* || *Type* || *Description* ||
-|| name || string || The name of the cookie; may not be an empty string. ||
-|| value || string || The cookie value; may be an empty string. ||
-|| path || string || (Optional) The cookie path; defaults to `"/"`. ||
-|| domain || string || (Optional) The domain the cookie is visible to; \
-defaults to the domain of the current page. ||
-|| secure || boolean || (Optional) Whether the cookie is a secure cookie; \
-defaults to false. ||
-|| expiry || number || (Optional) When the cookie expires, in seconds since \
-midnight, January 1, 1970 UTC; if not provided, the cookie should be set to \
-expire when the browser is closed. ||
-\n''').
+      Post('''Set a cookie. If the [#Cookie_JSON_Object cookie] path is not \
+specified, it should be set to `"/"`. Likewise, if the domain is omitted, it \
+should default to the current page's domain.''').
       AddJsonParameter('cookie', '{object}',
-                       'A JSON object defining the cookie to add.').
+                       'A [#Cookie_JSON_Object JSON object] defining the '
+                       'cookie to add.').
       SetJavadoc('java/org/openqa/selenium/WebDriver.Options.html#addCookie(org.openqa.selenium.Cookie)',
                  'WebDriver.Options#addCookie(Cookie)').
       Delete('''Delete all cookies visible to the current page.''').
@@ -1225,6 +1198,24 @@ indicate the corresponding capability is irrelevant.</dd>
 <dd>A Capabilities JSON Object returned by the server describing what \
 features a session actually supports. Any omitted keys implicitly indicate \
 the corresponding capability is not supported.</dd>
+
+<dt>
+==== Cookie JSON Object ====
+</dt>
+<dd>
+A JSON object describing a Cookie.
+
+|| *Key* || *Type* || *Description* ||
+|| name || string || The name of the cookie. ||
+|| value || string || The cookie value. ||
+|| path || string || (Optional) The cookie path.^1^ ||
+|| domain || string || (Optional) The domain the cookie is visible to.^1^ ||
+|| secure || boolean || (Optional) Whether the cookie is a secure cookie.^1^ ||
+|| expiry || number || (Optional) When the cookie expires, specified in \
+seconds since midnight, January 1, 1970 UTC.^1^ ||
+
+^1^ When returning Cookie objects, the server should only omit an optional \
+field if it is incapable of providing the information.</dd>
 
 </dl>
 
