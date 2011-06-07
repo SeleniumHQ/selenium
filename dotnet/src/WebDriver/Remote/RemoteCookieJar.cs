@@ -76,7 +76,10 @@ namespace OpenQA.Selenium.Remote
         /// <param name="cookie">An object that represents a copy of the cookie that needs to be deleted</param>
         public void DeleteCookie(Cookie cookie)
         {
-            this.DeleteCookieNamed(cookie.Name);
+            if (cookie != null)
+            {
+                this.DeleteCookieNamed(cookie.Name);
+            }
         }
 
         /// <summary>
@@ -95,13 +98,16 @@ namespace OpenQA.Selenium.Remote
         public Cookie GetCookieNamed(string name)
         {
             Cookie cookieToReturn = null;
-            ReadOnlyCollection<Cookie> allCookies = this.AllCookies;
-            foreach (Cookie currentCookie in allCookies)
+            if (name != null)
             {
-                if (name.Equals(currentCookie.Name))
+                ReadOnlyCollection<Cookie> allCookies = this.AllCookies;
+                foreach (Cookie currentCookie in allCookies)
                 {
-                    cookieToReturn = currentCookie;
-                    break;
+                    if (name.Equals(currentCookie.Name))
+                    {
+                        cookieToReturn = currentCookie;
+                        break;
+                    }
                 }
             }
 

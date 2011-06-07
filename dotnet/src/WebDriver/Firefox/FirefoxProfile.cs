@@ -264,13 +264,20 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>A base64-encoded string containing the contents of the profile.</returns>
         public string ToBase64String()
         {
+            string base64zip = string.Empty;
             this.WriteToDisk();
-            ZipFile profileZipFile = new ZipFile();
-            profileZipFile.AddDirectory(this.profileDir);
-            MemoryStream profileMemoryStream = new MemoryStream();
-            profileZipFile.Save(profileMemoryStream);
-            string base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
-            this.Clean();
+            using (ZipFile profileZipFile = new ZipFile())
+            {
+                profileZipFile.AddDirectory(this.profileDir);
+                using (MemoryStream profileMemoryStream = new MemoryStream())
+                {
+                    profileZipFile.Save(profileMemoryStream);
+                    base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
+                }
+
+                this.Clean();
+            }
+
             return base64zip;
         }
         #endregion

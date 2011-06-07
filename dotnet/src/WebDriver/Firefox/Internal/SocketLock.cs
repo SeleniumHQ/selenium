@@ -98,7 +98,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 }
                 catch (IOException e)
                 {
-                    throw new WebDriverException("An unexpected error occured", e);
+                    throw new WebDriverException("An unexpected error occurred", e);
                 }
             }
             while (DateTime.Now < maxWait);

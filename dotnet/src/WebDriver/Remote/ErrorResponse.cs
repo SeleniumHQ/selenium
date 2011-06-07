@@ -45,37 +45,40 @@ namespace OpenQA.Selenium.Remote
         /// the properties of this <see cref="ErrorResponse"/>.</param>
         public ErrorResponse(Dictionary<string, object> responseValue)
         {
-            if (responseValue.ContainsKey("message"))
+            if (responseValue != null)
             {
-                this.message = responseValue["message"].ToString();
-            }
-
-            if (responseValue.ContainsKey("screen"))
-            {
-                this.screenshot = responseValue["screen"].ToString();
-            }
-
-            if (responseValue.ContainsKey("class"))
-            {
-                this.className = responseValue["class"].ToString();
-            }
-
-            if (responseValue.ContainsKey("stackTrace"))
-            {
-                object[] stackTraceArray = responseValue["stackTrace"] as object[];
-                if (stackTraceArray != null)
+                if (responseValue.ContainsKey("message"))
                 {
-                    List<StackTraceElement> stackTraceList = new List<StackTraceElement>();
-                    foreach (object rawStackTraceElement in stackTraceArray)
-                    {
-                        Dictionary<string, object> elementAsDictionary = rawStackTraceElement as Dictionary<string, object>;
-                        if (elementAsDictionary != null)
-                        {
-                            stackTraceList.Add(new StackTraceElement(elementAsDictionary));
-                        }
-                    }
+                    this.message = responseValue["message"].ToString();
+                }
 
-                    this.stackTrace = stackTraceList.ToArray();
+                if (responseValue.ContainsKey("screen"))
+                {
+                    this.screenshot = responseValue["screen"].ToString();
+                }
+
+                if (responseValue.ContainsKey("class"))
+                {
+                    this.className = responseValue["class"].ToString();
+                }
+
+                if (responseValue.ContainsKey("stackTrace"))
+                {
+                    object[] stackTraceArray = responseValue["stackTrace"] as object[];
+                    if (stackTraceArray != null)
+                    {
+                        List<StackTraceElement> stackTraceList = new List<StackTraceElement>();
+                        foreach (object rawStackTraceElement in stackTraceArray)
+                        {
+                            Dictionary<string, object> elementAsDictionary = rawStackTraceElement as Dictionary<string, object>;
+                            if (elementAsDictionary != null)
+                            {
+                                stackTraceList.Add(new StackTraceElement(elementAsDictionary));
+                            }
+                        }
+
+                        this.stackTrace = stackTraceList.ToArray();
+                    }
                 }
             }
         }

@@ -196,16 +196,17 @@ namespace OpenQA.Selenium.IE
 
         private void WriteNativeLibraryFile(Stream libraryStream)
         {
-            FileStream outputStream = File.Create(this.nativeLibraryPath);
-            byte[] buffer = new byte[1000];
-            int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
-            while (bytesRead > 0)
+            using (FileStream outputStream = File.Create(this.nativeLibraryPath))
             {
-                outputStream.Write(buffer, 0, bytesRead);
-                bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                byte[] buffer = new byte[1000];
+                int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                while (bytesRead > 0)
+                {
+                    outputStream.Write(buffer, 0, bytesRead);
+                    bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                }
             }
 
-            outputStream.Close();
             libraryStream.Close();
         }
 

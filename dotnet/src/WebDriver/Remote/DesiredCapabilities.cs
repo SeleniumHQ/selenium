@@ -62,26 +62,29 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public DesiredCapabilities(Dictionary<string, object> rawMap)
         {
-            foreach (string key in rawMap.Keys)
+            if (rawMap != null)
             {
-                if (key == CapabilityType.Platform)
+                foreach (string key in rawMap.Keys)
                 {
-                    object raw = rawMap[CapabilityType.Platform];
-                    string rawAsString = raw as string;
-                    Platform rawAsPlatform = raw as Platform;
-                    if (rawAsString != null)
+                    if (key == CapabilityType.Platform)
                     {
-                        PlatformType platformInfo = (PlatformType)Enum.Parse(typeof(PlatformType), rawAsString, true);
-                        this.capabilities[CapabilityType.Platform] = new Platform(platformInfo);
+                        object raw = rawMap[CapabilityType.Platform];
+                        string rawAsString = raw as string;
+                        Platform rawAsPlatform = raw as Platform;
+                        if (rawAsString != null)
+                        {
+                            PlatformType platformInfo = (PlatformType)Enum.Parse(typeof(PlatformType), rawAsString, true);
+                            this.capabilities[CapabilityType.Platform] = new Platform(platformInfo);
+                        }
+                        else if (rawAsPlatform != null)
+                        {
+                            this.SetCapability(CapabilityType.Platform, rawAsPlatform);
+                        }
                     }
-                    else if (rawAsPlatform != null)
+                    else
                     {
-                        this.SetCapability(CapabilityType.Platform, rawAsPlatform);
+                        this.SetCapability(key, rawMap[key]);
                     }
-                }
-                else
-                {
-                    this.SetCapability(key, rawMap[key]);
                 }
             }
         }

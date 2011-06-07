@@ -186,15 +186,17 @@ namespace OpenQA.Selenium.Firefox.Internal
             if (string.IsNullOrEmpty(binary))
             {
                 // Use "which firefox" for non-Windows OS.
-                Process proc = new Process();
-                proc.StartInfo.FileName = "which";
-                proc.StartInfo.Arguments = "firefox";
-                proc.StartInfo.CreateNoWindow = true;
-                proc.StartInfo.RedirectStandardOutput = true;
-                proc.StartInfo.UseShellExecute = false;
-                proc.Start();
-                proc.WaitForExit();
-                binary = proc.StandardOutput.ReadToEnd().Trim();
+                using (Process proc = new Process())
+                {
+                    proc.StartInfo.FileName = "which";
+                    proc.StartInfo.Arguments = "firefox";
+                    proc.StartInfo.CreateNoWindow = true;
+                    proc.StartInfo.RedirectStandardOutput = true;
+                    proc.StartInfo.UseShellExecute = false;
+                    proc.Start();
+                    proc.WaitForExit();
+                    binary = proc.StandardOutput.ReadToEnd().Trim();
+                }
             }
 
             return binary != null && File.Exists(binary) ? binary : FindBinary(new string[] { "firefox3", "firefox2", "firefox" });
@@ -205,21 +207,21 @@ namespace OpenQA.Selenium.Firefox.Internal
             string currentVersion = (string)mozillaKey.GetValue("CurrentVersion");
             if (string.IsNullOrEmpty(currentVersion))
             {
-                throw new WebDriverException("Unable to determine the current version of FireFox using the registry, please make sure you have installed FireFox and Jssh correctly");
+                throw new WebDriverException("Unable to determine the current version of FireFox using the registry, please make sure you have installed FireFox correctly");
             }
 
             RegistryKey currentMain = mozillaKey.OpenSubKey(string.Format(CultureInfo.InvariantCulture, @"{0}\Main", currentVersion));
             if (currentMain == null)
             {
                 throw new WebDriverException(
-                    "Unable to determine the current version of FireFox using the registry, please make sure you have installed FireFox and Jssh correctly");
+                    "Unable to determine the current version of FireFox using the registry, please make sure you have installed FireFox correctly");
             }
 
             string path = (string)currentMain.GetValue("PathToExe");
             if (!File.Exists(path))
             {
                 throw new WebDriverException(
-                    "FireFox executable listed in the registry does not exist, please make sure you have installed FireFox and Jssh correctly");
+                    "FireFox executable listed in the registry does not exist, please make sure you have installed FireFox correctly");
             }
 
             return path;

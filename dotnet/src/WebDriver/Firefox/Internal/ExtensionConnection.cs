@@ -135,40 +135,36 @@ namespace OpenQA.Selenium.Firefox.Internal
 
             for (newport = port; newport < port + 200; newport++)
             {
-                Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-                IPHostEntry hostEntry = Dns.GetHostEntry(host);
-
-                // Use the first IPv4 address that we find
-                IPAddress endPointAddress = IPAddress.Parse("127.0.0.1");
-                foreach (IPAddress ip in hostEntry.AddressList)
+                using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
                 {
-                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    IPHostEntry hostEntry = Dns.GetHostEntry(host);
+
+                    // Use the first IPv4 address that we find
+                    IPAddress endPointAddress = IPAddress.Parse("127.0.0.1");
+                    foreach (IPAddress ip in hostEntry.AddressList)
                     {
-                        endPointAddress = ip;
-                        break;
+                        if (ip.AddressFamily == AddressFamily.InterNetwork)
+                        {
+                            endPointAddress = ip;
+                            break;
+                        }
                     }
-                }
 
-                IPEndPoint address = new IPEndPoint(endPointAddress, newport);
+                    IPEndPoint address = new IPEndPoint(endPointAddress, newport);
 
-                try
-                {
-                    socket.Bind(address);
-                    return newport;
-                }
-                catch (SocketException)
-                {
-                    // Port is already bound. Skip it and continue
-                }
-                finally
-                {
-                    socket.Close();
+                    try
+                    {
+                        socket.Bind(address);
+                        return newport;
+                    }
+                    catch (SocketException)
+                    {
+                        // Port is already bound. Skip it and continue
+                    }
                 }
             }
 
-            throw new WebDriverException(
-                string.Format(CultureInfo.InvariantCulture, "Cannot find free port in the range {0} to {0} ", port, newport));
+            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot find free port in the range {0} to {1} ", port, newport));
         }
 
         private static List<IPEndPoint> ObtainLoopbackAddresses(int port)

@@ -105,7 +105,7 @@ namespace OpenQA.Selenium.Remote
             }
             else
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Unable to create URI from base {0} and relative path {1}", baseUri.ToString(), relativeUrl));
+                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Unable to create URI from base {0} and relative path {1}", baseUri == null ? string.Empty : baseUri.ToString(), relativeUrl));
             }
 
             return request;

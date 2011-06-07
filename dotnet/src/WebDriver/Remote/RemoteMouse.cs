@@ -85,6 +85,11 @@ namespace OpenQA.Selenium.Remote
         /// <param name="where">A <see cref="ICoordinates"/> describing where to move the mouse to.</param>
         public void MouseMove(ICoordinates where)
         {
+            if (where == null)
+            {
+                throw new ArgumentNullException("where", "where coordinates cannot be null");
+            }
+
             string elementId = where.AuxiliaryLocator.ToString();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("element", elementId);

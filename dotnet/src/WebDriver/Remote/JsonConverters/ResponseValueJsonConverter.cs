@@ -58,38 +58,44 @@ namespace OpenQA.Selenium.Remote
         /// <param name="serializer">JSON Serializer </param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, value);
+            if (serializer != null)
+            {
+                serializer.Serialize(writer, value);
+            }
         }
 
         private object ProcessToken(JsonReader reader)
         {
-            // Recursively processes a token. This is required for elements that next other elements.
+             // Recursively processes a token. This is required for elements that next other elements.
             object processedObject = null;
-            if (reader.TokenType == JsonToken.StartObject)
+            if (reader != null)
             {
-                Dictionary<string, object> dictionaryValue = new Dictionary<string, object>();
-                while (reader.Read() && reader.TokenType != JsonToken.EndObject)
+                if (reader.TokenType == JsonToken.StartObject)
                 {
-                    string elementKey = reader.Value.ToString();
-                    reader.Read();
-                    dictionaryValue.Add(elementKey, this.ProcessToken(reader));
-                }
+                    Dictionary<string, object> dictionaryValue = new Dictionary<string, object>();
+                    while (reader.Read() && reader.TokenType != JsonToken.EndObject)
+                    {
+                        string elementKey = reader.Value.ToString();
+                        reader.Read();
+                        dictionaryValue.Add(elementKey, this.ProcessToken(reader));
+                    }
 
-                processedObject = dictionaryValue;
-            }
-            else if (reader.TokenType == JsonToken.StartArray)
-            {
-                List<object> arrayValue = new List<object>();
-                while (reader.Read() && reader.TokenType != JsonToken.EndArray)
+                    processedObject = dictionaryValue;
+                }
+                else if (reader.TokenType == JsonToken.StartArray)
                 {
-                    arrayValue.Add(this.ProcessToken(reader));
-                }
+                    List<object> arrayValue = new List<object>();
+                    while (reader.Read() && reader.TokenType != JsonToken.EndArray)
+                    {
+                        arrayValue.Add(this.ProcessToken(reader));
+                    }
 
-                processedObject = arrayValue.ToArray();
-            }
-            else
-            {
-                processedObject = reader.Value;
+                    processedObject = arrayValue.ToArray();
+                }
+                else
+                {
+                    processedObject = reader.Value;
+                }
             }
 
             return processedObject;

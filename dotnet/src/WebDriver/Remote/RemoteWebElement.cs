@@ -256,6 +256,11 @@ namespace OpenQA.Selenium.Remote
         /// <param name="text">String containing what you would like to type onto the screen</param>
         public void SendKeys(string text)
         {
+            if (text == null)
+            {
+                throw new ArgumentNullException("text", "text cannot be null");
+            }
+
             // N.B. The Java remote server expects a CharSequence as the value input to
             // SendKeys. In JSON, these are serialized as an array of strings, with a
             // single character to each element of the array. Thus, we must use ToCharArray()
@@ -352,6 +357,11 @@ namespace OpenQA.Selenium.Remote
         /// <returns>ReadOnlyCollection of IWebElement</returns>
         public ReadOnlyCollection<IWebElement> FindElements(By by)
         {
+            if (by == null)
+            {
+                throw new ArgumentNullException("by", "by cannot be null");
+            }
+
             return by.FindElements(this);
         }
 
@@ -362,6 +372,11 @@ namespace OpenQA.Selenium.Remote
         /// <returns>IWebElement object so that you can interction that object</returns>
         public IWebElement FindElement(By by)
         {
+            if (by == null)
+            {
+                throw new ArgumentNullException("by", "by cannot be null");
+            }
+
             return by.FindElement(this);
         }
         #endregion

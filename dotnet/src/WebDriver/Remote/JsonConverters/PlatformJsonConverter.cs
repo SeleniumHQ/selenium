@@ -34,7 +34,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A value indicating if it can be converted</returns>
         public override bool CanConvert(Type objectType)
         {
-            return objectType.IsAssignableFrom(typeof(Platform));
+            return objectType != null && objectType.IsAssignableFrom(typeof(Platform));
         }
 
         /// <summary>
@@ -48,10 +48,13 @@ namespace OpenQA.Selenium.Remote
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             Platform platformValue = null;
-            if (reader.TokenType == JsonToken.String)
+            if (reader != null)
             {
-                PlatformType platformTypeValue = (PlatformType)Enum.Parse(objectType, reader.Value.ToString(), true);
-                platformValue = new Platform(platformTypeValue);
+                if (reader.TokenType == JsonToken.String)
+                {
+                    PlatformType platformTypeValue = (PlatformType)Enum.Parse(objectType, reader.Value.ToString(), true);
+                    platformValue = new Platform(platformTypeValue);
+                }
             }
 
             return platformValue;
@@ -65,10 +68,13 @@ namespace OpenQA.Selenium.Remote
         /// <param name="serializer">JSON Serializer Instance</param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            Platform platformValue = value as Platform;
-            if (platformValue != null)
+            if (writer != null)
             {
-                writer.WriteValue(platformValue.PlatformType.ToString("G").ToUpper(CultureInfo.InvariantCulture));
+                Platform platformValue = value as Platform;
+                if (platformValue != null)
+                {
+                    writer.WriteValue(platformValue.PlatformType.ToString("G").ToUpper(CultureInfo.InvariantCulture));
+                }
             }
         }
     }

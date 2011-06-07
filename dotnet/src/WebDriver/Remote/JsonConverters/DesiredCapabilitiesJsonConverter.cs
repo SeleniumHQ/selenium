@@ -35,7 +35,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A value indicating if it can be converted</returns>
         public override bool CanConvert(Type objectType)
         {
-            return objectType.IsAssignableFrom(typeof(DesiredCapabilities));
+            return objectType != null && objectType.IsAssignableFrom(typeof(DesiredCapabilities));
         }
 
         /// <summary>
@@ -48,7 +48,13 @@ namespace OpenQA.Selenium.Remote
         /// <returns>Platform from JSON reader</returns>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return serializer.Deserialize(reader);
+            object deserialized = null;
+            if (reader != null && serializer != null)
+            {
+                deserialized = serializer.Deserialize(reader);
+            }
+
+            return deserialized;
         }
 
         /// <summary>
@@ -59,17 +65,20 @@ namespace OpenQA.Selenium.Remote
         /// <param name="serializer">JSON serializer instance</param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            DesiredCapabilities capabilities = value as DesiredCapabilities;
-            if (capabilities != null)
+            if (writer != null)
             {
-                writer.WriteStartObject();
-                foreach (string name in capabilities.Capabilities.Keys)
+                DesiredCapabilities capabilities = value as DesiredCapabilities;
+                if (capabilities != null)
                 {
-                    writer.WritePropertyName(name);
-                    writer.WriteRawValue(JsonConvert.SerializeObject(capabilities.Capabilities[name], new PlatformJsonConverter()));
-                }
+                    writer.WriteStartObject();
+                    foreach (string name in capabilities.Capabilities.Keys)
+                    {
+                        writer.WritePropertyName(name);
+                        writer.WriteRawValue(JsonConvert.SerializeObject(capabilities.Capabilities[name], new PlatformJsonConverter()));
+                    }
 
-                writer.WriteEndObject();
+                    writer.WriteEndObject();
+                }
             }
         }
     }

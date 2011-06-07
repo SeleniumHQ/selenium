@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         /// <param name="driverService">The <see cref="ChromeDriverService"/> that drives the browser.</param>
         public ChromeCommandExecutor(ChromeDriverService driverService)
-            : base(driverService.ServiceUrl)
+            : base(driverService == null ? null : driverService.ServiceUrl)
         {
             this.service = driverService;
         }

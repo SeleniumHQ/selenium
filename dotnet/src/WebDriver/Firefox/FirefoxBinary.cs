@@ -130,6 +130,11 @@ namespace OpenQA.Selenium.Firefox
         [SecurityPermission(SecurityAction.Demand)]
         public void StartProfile(FirefoxProfile profile, string[] commandLineArguments)
         {
+            if (profile == null)
+            {
+                throw new ArgumentNullException("profile", "profile cannot be null");
+            }
+            
             if (commandLineArguments == null)
             {
                 commandLineArguments = new string[] { };
@@ -230,6 +235,11 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="profile">The <see cref="FirefoxProfile"/> to use to initialize the binary.</param>
         public void Clean(FirefoxProfile profile)
         {
+            if (profile == null)
+            {
+                throw new ArgumentNullException("profile", "profile cannot be null");
+            }
+
             this.StartProfile(profile, new string[] { "-silent" });
             try
             {
@@ -237,7 +247,7 @@ namespace OpenQA.Selenium.Firefox
             }
             catch (ThreadInterruptedException e)
             {
-                throw new WebDriverException("Thread was interupted", e);
+                throw new WebDriverException("Thread was interrupted", e);
             }
 
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
@@ -295,6 +305,11 @@ namespace OpenQA.Selenium.Firefox
         [SecurityPermission(SecurityAction.Demand)]
         protected void StartFirefoxProcess(Process builder)
         {
+            if (builder == null)
+            {
+                throw new ArgumentNullException("builder", "builder cannot be null");
+            }
+
             this.process = builder;
             this.process.Start();
             if (this.stream == null)
@@ -341,16 +356,17 @@ namespace OpenQA.Selenium.Firefox
                     Stream libraryStream = executingAssembly.GetManifestResourceStream(resourceName);
 
                     Directory.CreateDirectory(outSoPath);
-                    FileStream outputStream = File.Create(file);
-                    byte[] buffer = new byte[1000];
-                    int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
-                    while (bytesRead > 0)
+                    using (FileStream outputStream = File.Create(file))
                     {
-                        outputStream.Write(buffer, 0, bytesRead);
-                        bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                        byte[] buffer = new byte[1000];
+                        int bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                        while (bytesRead > 0)
+                        {
+                            outputStream.Write(buffer, 0, bytesRead);
+                            bytesRead = libraryStream.Read(buffer, 0, buffer.Length);
+                        }
                     }
 
-                    outputStream.Close();
                     libraryStream.Close();
                 }
 

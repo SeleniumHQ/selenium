@@ -155,12 +155,16 @@ namespace OpenQA.Selenium.Chrome
             // Locate a free port on the local machine by binding a socket to
             // an IPEndPoint using IPAddress.Any and port 0. The socket will
             // select a free port.
-            Socket portSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPEndPoint socketEndPoint = new IPEndPoint(IPAddress.Any, 0);
-            portSocket.Bind(socketEndPoint);
-            socketEndPoint = (IPEndPoint)portSocket.LocalEndPoint;
-            int listeningPort = socketEndPoint.Port;
-            portSocket.Close();
+            int listeningPort = 0;
+            using (Socket portSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+            {
+                IPEndPoint socketEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                portSocket.Bind(socketEndPoint);
+                socketEndPoint = (IPEndPoint)portSocket.LocalEndPoint;
+                listeningPort = socketEndPoint.Port;
+                //// portSocket.Close();
+            }
+
             return listeningPort;
         }
 

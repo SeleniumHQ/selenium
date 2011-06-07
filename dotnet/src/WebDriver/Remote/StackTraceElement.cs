@@ -46,24 +46,27 @@ namespace OpenQA.Selenium.Remote
         /// <param name="elementAttributes">A <see cref="Dictionary{K, V}"/> containing the names and values for the properties of this <see cref="StackTraceElement"/>.</param>
         public StackTraceElement(Dictionary<string, object> elementAttributes)
         {
-            if (elementAttributes.ContainsKey("className") && elementAttributes["className"] != null)
+            if (elementAttributes != null)
             {
-                this.className = elementAttributes["className"].ToString();
-            }
+                if (elementAttributes.ContainsKey("className") && elementAttributes["className"] != null)
+                {
+                    this.className = elementAttributes["className"].ToString();
+                }
 
-            if (elementAttributes.ContainsKey("methodName") && elementAttributes["methodName"] != null)
-            {
-                this.methodName = elementAttributes["methodName"].ToString();
-            }
+                if (elementAttributes.ContainsKey("methodName") && elementAttributes["methodName"] != null)
+                {
+                    this.methodName = elementAttributes["methodName"].ToString();
+                }
 
-            if (elementAttributes.ContainsKey("lineNumber"))
-            {
-                this.lineNumber = Convert.ToInt32(elementAttributes["lineNumber"], CultureInfo.InvariantCulture);
-            }
+                if (elementAttributes.ContainsKey("lineNumber"))
+                {
+                    this.lineNumber = Convert.ToInt32(elementAttributes["lineNumber"], CultureInfo.InvariantCulture);
+                }
 
-            if (elementAttributes.ContainsKey("fileName") && elementAttributes["fileName"] != null)
-            {
-                this.fileName = elementAttributes["fileName"].ToString();
+                if (elementAttributes.ContainsKey("fileName") && elementAttributes["fileName"] != null)
+                {
+                    this.fileName = elementAttributes["fileName"].ToString();
+                }
             }
         }
 
@@ -113,7 +116,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A string representation of the object.</returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "at {0}.{1} ({2), {3}", this.className, this.methodName, this.fileName, this.lineNumber);
+            return string.Format(CultureInfo.InvariantCulture, "at {0}.{1} ({2}, {3})", this.className, this.methodName, this.fileName, this.lineNumber);
         }
     }
 }

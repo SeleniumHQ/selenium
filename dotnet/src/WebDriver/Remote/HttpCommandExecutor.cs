@@ -83,6 +83,11 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A response from the browser</returns>
         public Response Execute(Command commandToExecute)
         {
+            if (commandToExecute == null)
+            {
+                throw new ArgumentNullException("commandToExecute", "commandToExecute cannot be null");
+            }
+
             CommandInfo info = CommandInfoRepository.Instance.GetCommandInfo(commandToExecute.Name);
             HttpWebRequest request = info.CreateWebRequest(this.remoteServerUri, commandToExecute);
             request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;

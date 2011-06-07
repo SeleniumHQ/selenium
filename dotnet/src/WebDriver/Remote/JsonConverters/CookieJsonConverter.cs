@@ -34,7 +34,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A value indicating if it can be converted</returns>
         public override bool CanConvert(Type objectType)
         {
-            return objectType.IsAssignableFrom(typeof(Cookie));
+            return objectType != null && objectType.IsAssignableFrom(typeof(Cookie));
         }
 
         /// <summary>
@@ -48,10 +48,13 @@ namespace OpenQA.Selenium.Remote
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             Platform platformValue = null;
-            if (reader.TokenType == JsonToken.String)
+            if (reader != null)
             {
-                PlatformType platformTypeValue = (PlatformType)Enum.Parse(objectType, reader.Value.ToString(), true);
-                platformValue = new Platform(platformTypeValue);
+                if (reader.TokenType == JsonToken.String)
+                {
+                    PlatformType platformTypeValue = (PlatformType)Enum.Parse(objectType, reader.Value.ToString(), true);
+                    platformValue = new Platform(platformTypeValue);
+                }
             }
 
             return platformValue;
@@ -65,45 +68,48 @@ namespace OpenQA.Selenium.Remote
         /// <param name="serializer">JSON serializer instance</param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            Cookie cookieValue = value as Cookie;
-            if (cookieValue != null)
+            if (writer != null)
             {
-                writer.WriteStartObject();
-                writer.WritePropertyName("name");
-                writer.WriteValue(cookieValue.Name);
-                writer.WritePropertyName("value");
-                writer.WriteValue(cookieValue.Value);
-                writer.WritePropertyName("path");
-                if (!string.IsNullOrEmpty(cookieValue.Path))
+                Cookie cookieValue = value as Cookie;
+                if (cookieValue != null)
                 {
-                    writer.WriteValue(cookieValue.Path);
-                }
-                else
-                {
-                    writer.WriteValue(string.Empty);
-                }
+                    writer.WriteStartObject();
+                    writer.WritePropertyName("name");
+                    writer.WriteValue(cookieValue.Name);
+                    writer.WritePropertyName("value");
+                    writer.WriteValue(cookieValue.Value);
+                    writer.WritePropertyName("path");
+                    if (!string.IsNullOrEmpty(cookieValue.Path))
+                    {
+                        writer.WriteValue(cookieValue.Path);
+                    }
+                    else
+                    {
+                        writer.WriteValue(string.Empty);
+                    }
 
-                writer.WritePropertyName("domain");
-                if (!string.IsNullOrEmpty(cookieValue.Domain))
-                {
-                    writer.WriteValue(cookieValue.Domain);
-                }
-                else
-                {
-                    writer.WriteValue(string.Empty);
-                }
+                    writer.WritePropertyName("domain");
+                    if (!string.IsNullOrEmpty(cookieValue.Domain))
+                    {
+                        writer.WriteValue(cookieValue.Domain);
+                    }
+                    else
+                    {
+                        writer.WriteValue(string.Empty);
+                    }
 
-                if (cookieValue.Expiry != null)
-                {
-                    writer.WritePropertyName("expiry");
-                    DateTime zeroDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-                    TimeSpan span = cookieValue.Expiry.Value.ToUniversalTime().Subtract(zeroDate);
-                    writer.WriteValue(span.TotalSeconds);
-                }
+                    if (cookieValue.Expiry != null)
+                    {
+                        writer.WritePropertyName("expiry");
+                        DateTime zeroDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                        TimeSpan span = cookieValue.Expiry.Value.ToUniversalTime().Subtract(zeroDate);
+                        writer.WriteValue(span.TotalSeconds);
+                    }
 
-                writer.WritePropertyName("secure");
-                writer.WriteValue(cookieValue.Secure);
-                writer.WriteEndObject();
+                    writer.WritePropertyName("secure");
+                    writer.WriteValue(cookieValue.Secure);
+                    writer.WriteEndObject();
+                }
             }
         }
     }

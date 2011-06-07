@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>True if can be converted else false</returns>
         public override bool CanConvert(Type objectType)
         {
-            return objectType.IsAssignableFrom(typeof(char[]));
+            return objectType != null && objectType.IsAssignableFrom(typeof(char[]));
         }
 
         /// <summary>
@@ -44,28 +44,31 @@ namespace OpenQA.Selenium.Remote
         /// <param name="serializer">JSON Serializer object instance</param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            // We need a custom writer for char arrays, such as are used with SendKeys.
-            // JSON.NET does not properly handle converting unicode characters to \uxxxx.
-            writer.WriteStartArray();
-            char[] arrayObject = value as char[];
-            if (arrayObject != null)
+            if (writer != null)
             {
-                foreach (char currentChar in arrayObject)
+                // We need a custom writer for char arrays, such as are used with SendKeys.
+                // JSON.NET does not properly handle converting unicode characters to \uxxxx.
+                writer.WriteStartArray();
+                char[] arrayObject = value as char[];
+                if (arrayObject != null)
                 {
-                    int codepoint = Convert.ToInt32(currentChar);
-                    if ((codepoint >= 32) && (codepoint <= 126))
+                    foreach (char currentChar in arrayObject)
                     {
-                        writer.WriteValue(currentChar);
-                    }
-                    else
-                    {
-                        string charRepresentation = "\\u" + Convert.ToString(codepoint, 16).PadLeft(4, '0');
-                        writer.WriteRawValue("\"" + charRepresentation + "\"");
+                        int codepoint = Convert.ToInt32(currentChar);
+                        if ((codepoint >= 32) && (codepoint <= 126))
+                        {
+                            writer.WriteValue(currentChar);
+                        }
+                        else
+                        {
+                            string charRepresentation = "\\u" + Convert.ToString(codepoint, 16).PadLeft(4, '0');
+                            writer.WriteRawValue("\"" + charRepresentation + "\"");
+                        }
                     }
                 }
-            }
 
-            writer.WriteEndArray();
+                writer.WriteEndArray();
+            }
         }
 
         /// <summary>

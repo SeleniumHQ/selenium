@@ -263,6 +263,11 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElement(By by)
         {
+            if (by == null)
+            {
+                throw new ArgumentNullException("by", "by cannot be null");
+            }
+
             return by.FindElement(this);
         }
 
@@ -279,6 +284,11 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElements(By by)
         {
+            if (by == null)
+            {
+                throw new ArgumentNullException("by", "by cannot be null");
+            }
+
             return by.FindElements(this);
         }
 
@@ -934,10 +944,10 @@ namespace OpenQA.Selenium.Remote
 
                         case WebDriverResult.Timeout:
                             throw new TimeoutException("The driver reported that the command timed out. There may "
-                                                       + "be several reasons for this. Check that the destination"
+                                                       + "be several reasons for this. Check that the destination "
                                                        + "site is in IE's 'Trusted Sites' (accessed from Tools->"
                                                        + "Internet Options in the 'Security' tab) If it is a "
-                                                       + "trusted site, then the request may have taken more than"
+                                                       + "trusted site, then the request may have taken more than "
                                                        + "a minute to finish.");
 
                         case WebDriverResult.NoSuchWindow:
