@@ -1043,11 +1043,11 @@ function getElementFromLocation(mouseLocation, doc) {
   var locationX = Math.round(mouseLocation.x);
   var locationY = Math.round(mouseLocation.y);
 
-  if ((locationX != 0) || (locationY != 0)) {
+  if (mouseLocation.initialized) {
     Logger.dumpn("Getting element from coordinates " + locationX + "," + locationY);
     elementForNode = doc.elementFromPoint(locationX, locationY);
   } else {
-    Logger.dumpn("currentX,Y are zero - using body");
+    Logger.dumpn("Mouse coordinates were not set - using body");
     elementForNode = doc.getElementsByTagName("body")[0];
   }
 
