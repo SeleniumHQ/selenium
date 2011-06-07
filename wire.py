@@ -223,28 +223,16 @@ class Method(object):
 
 def main():
   resources = []
-
+  
   resources.append(
       Resource('/session').
       Post('''
-Create a new session. The desired capabilities should be specified in a JSON
-object with the following properties:
-
-|| *Key* || *Type* || *Description* ||
-|| browserName || string || The name of the browser to use; should be one of \
-`{iphone|firefox|internet explorer|htmlunit|iphone|chrome}`||
-|| version || string || The desired browser version. ||
-|| javascriptEnabled || boolean || Whether the session should support \
-!JavaScript. ||
-|| platform || string || A key specifying the desired platform to launch the \
-browser on. Should be one of `{WINDOWS|XP|VISTA|MAC|LINUX|UNIX|ANY}` ||
-
-The server should attempt to create a session that most closely matches the \
-desired capabilities.''').
+Create a new session. The server should attempt to create a session that most \
+closely matches the desired capabilities.''').
       AddJsonParameter('desiredCapabilities',
                        '{object}',
-                       'A JSON object describing the desired capabilities for '
-                       'the new session.').
+                       'A [JsonWireProtocol#Basic_Terms_and_Concepts desired '
+                       'capabilities] object.').
       SetJavadoc(None, 'n/a').
       SetReturnType(None,
                     'A `303 See Other` redirect to `/session/:sessionId`, where'
@@ -252,24 +240,12 @@ desired capabilities.''').
 
   resources.append(
       SessionResource('/session/:sessionId').
-      Get('''Retrieve the capabilities of the specified session. The session's \
-capabilities
-will be returned in a JSON object with the following properties:
-
-|| *Key* || *Type* || *Description* ||
-|| browserName || string || The name of the browser to use; should be one of \
-`{iphone|firefox|internet explorer|htmlunit|iphone|chrome}`||
-|| version || string || The desired browser version. ||
-|| javascriptEnabled || boolean || Whether the session should support \
-!JavaScript. ||
-|| platform || string || A key specifying the desired platform to launch the \
-browser on. Should be one of `{WINDOWS|XP|VISTA|MAC|LINUX|UNIX|ANY}` ||
-|| nativeEvents || boolean || Whether the browser has native events enabled. ||
-
-''').
+      Get('Retrieve the capabilities of the specified session.').
       SetJavadoc(None, 'n/a').
       SetReturnType('{object}',
-                    'A JSON object with the session capabilities.').
+                    'A [JsonWireProtocol#Basic_Terms_and_Concepts '
+                    'capabilities] object describing the sessions actual '
+                    'capabilities.').
       Delete('Delete the session.').
       SetJavadoc('java/org/openqa/selenium/WebDriver.html#quit()',
                  'WebDriver#quit()'))
@@ -1187,7 +1163,7 @@ The protocol will assume that the WebDriver API has been "flattened", but there\
  approach, as demonstrated in the existing Java API. The wire protocol is\
  implemented in request/response pairs of "commands" and "responses".
 
-== Basic Concepts And Terms ==
+== Basic Terms and Concepts ==
 
 <dl>
 <dt>*Client*</dt>
@@ -1218,6 +1194,37 @@ This object will have the following properties:
 This ID should be used in all subsequent commands issued against the element. ||
 
 </dd>
+
+<dt>*Capabilities JSON Object*</dt>
+<dd>Not all server implementations will support every !WebDriver feature. \
+Therefore, the client and server should use JSON objects with the properties \
+listed below when describing which features a session supports.
+
+|| *Key* || *Type* || *Description* ||
+|| browserName || string || The name of the browser being used; should be one \
+of `{chrome|firefox|htmlunit|internet explorer|iphone}`. ||
+|| version || string || The browser version, or the empty string if unknown. ||
+|| platform || string || A key specifying which platform the browser is running \
+on. This value should be one of `{WINDOWS|XP|VISTA|MAC|LINUX|UNIX}`. When \
+requesting a new session, the client may specify `ANY` to indicate any \
+available platform may be used. ||
+|| javascriptEnabled || boolean || Whether the session supports executing user \
+supplied JavaScript in the context of the current page. ||
+|| takesScreenshot || boolean || Whether the session supports taking \
+screenshots of the current page. ||
+
+</dd>
+
+<dt>*Desired Capabilities*</dt>
+<dd>A Capabilities JSON Object sent by the client describing the capabilities \
+a new session created by the server should possess. Any omitted keys implicitly \
+indicate the corresponding capability is irrelevant.</dd>
+
+<dt>*Actual Capabilities*</dt>
+<dd>A Capabilities JSON Object returned by the server describing what \
+features a session actually supports. Any omitted keys implicitly indicate \
+the corresponding capability is not supported.</dd>
+
 </dl>
 
 = Messages =
