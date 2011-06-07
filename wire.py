@@ -471,24 +471,6 @@ server assigned window handle, or by the value of its `name` attribute.''').
       AddError('NoSuchWindow', 'If the window specified by `name` cannot be found.'))
 
   resources.append(
-      SessionResource('/session/:sessionId/speed').
-      Get('''Get the current user input speed. The server should return one of
-`{SLOW|MEDIUM|FAST}`. How these constants map to actual input speed is still \
-browser specific and
-not covered by the wire protocol.''').
-      SetReturnType('{string}', 'The current input speed mapped to one of `{SLOW|MEDIUM|FAST}`.').
-      SetJavadoc('java/org/openqa/selenium/WebDriver.Options.html#getSpeed()',
-                 'WebDriver.Options#getSpeed()').
-      Post('''Set the user input speed. The speed should be specified as one of
-`{SLOW|MEDIUM|FAST}`. How these constants map to actual input speed is still \
-browser specific and
-not covered by the wire protocol.''').
-      SetJavadoc('java/org/openqa/selenium/WebDriver.Options.html#setSpeed(org.openqa.selenium.Speed)',
-                 'WebDriver.Options#setSpeed(Speed)').
-      AddJsonParameter('speed', '{string}',
-                       'The new user input speed mapped to one of `{SLOW|MEDIUM|FAST}`.'))
-
-  resources.append(
       SessionResource('/session/:sessionId/cookie').
       Get('''Retrieve all cookies visible to the current page. Each cookie \
 will be returned as a
