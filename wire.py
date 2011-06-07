@@ -197,7 +197,9 @@ class Method(object):
   def ToWikiString(self, path):
     return '''
 <dl>
-<dd>*%s %s*</dd>
+<dd>
+==== %s %s ====
+</dd>
 <dd>
 <dl>
 <dd>%s</dd>%s%s%s%s%s
@@ -215,8 +217,8 @@ class Method(object):
     javadoc = '_N/A_'
     if self.javadoc_link:
       javadoc = '[%s %s]' % (self.javadoc_link, self.javadoc_comment)
-    return '|| %s || %s || %s || %s ||\n' % (
-        self.method, self.parent.path,
+    return '|| %s || [#%s_%s %s] || %s || %s ||\n' % (
+        self.method, self.method, self.parent.path, self.parent.path,
         self.summary[:self.summary.find('.') + 1].replace('\n', '').strip(),
         javadoc)
         
