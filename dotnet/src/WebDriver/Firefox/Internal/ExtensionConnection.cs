@@ -226,39 +226,42 @@ namespace OpenQA.Selenium.Firefox.Internal
             // the extension has been properly initialized.
             Socket extensionSocket = null;
             DateTime waitUntil = DateTime.Now.AddMilliseconds(timeToWaitInMilliSeconds);
-            while (!IsSocketConnected(extensionSocket) && waitUntil > DateTime.Now)
+            try
             {
-                foreach (IPEndPoint addr in this.addresses)
+                while (!IsSocketConnected(extensionSocket) && waitUntil > DateTime.Now)
                 {
-                    try
+                    foreach (IPEndPoint addr in this.addresses)
                     {
-                        extensionSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                        extensionSocket.Connect(addr);
-                        break;
-                    }
-                    catch (SocketException)
-                    {
-                        System.Threading.Thread.Sleep(250);
+                        try
+                        {
+                            extensionSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                            extensionSocket.Connect(addr);
+                            break;
+                        }
+                        catch (SocketException)
+                        {
+                            System.Threading.Thread.Sleep(250);
+                        }
                     }
                 }
-            }
 
-            // If the socket was either not created or not connected successfully,
-            // throw an exception. Otherwise, close the socket connection.
-            if (!IsSocketConnected(extensionSocket))
-            {
-                if (extensionSocket == null || extensionSocket.RemoteEndPoint == null)
+                // If the socket was either not created or not connected successfully,
+                // throw an exception.
+                if (!IsSocketConnected(extensionSocket))
                 {
-                    throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Failed to start up socket within {0}", timeToWaitInMilliSeconds));
-                }
-                else
-                {
-                    IPEndPoint endPoint = (IPEndPoint)extensionSocket.RemoteEndPoint;
-                    string formattedError = string.Format(CultureInfo.InvariantCulture, "Unable to connect to host {0} on port {1} after {2} ms", endPoint.Address.ToString(), endPoint.Port.ToString(CultureInfo.InvariantCulture), timeToWaitInMilliSeconds);
-                    throw new WebDriverException(formattedError);
+                    if (extensionSocket == null || extensionSocket.RemoteEndPoint == null)
+                    {
+                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Failed to start up socket within {0}", timeToWaitInMilliSeconds));
+                    }
+                    else
+                    {
+                        IPEndPoint endPoint = (IPEndPoint)extensionSocket.RemoteEndPoint;
+                        string formattedError = string.Format(CultureInfo.InvariantCulture, "Unable to connect to host {0} on port {1} after {2} ms", endPoint.Address.ToString(), endPoint.Port.ToString(CultureInfo.InvariantCulture), timeToWaitInMilliSeconds);
+                        throw new WebDriverException(formattedError);
+                    }
                 }
             }
-            else
+            finally
             {
                 extensionSocket.Close();
             }

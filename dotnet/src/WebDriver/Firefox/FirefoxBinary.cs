@@ -174,8 +174,6 @@ namespace OpenQA.Selenium.Firefox
             this.StartFirefoxProcess(builder);
 
             this.CopeWithTheStrangenessOfTheMac(builder);
-
-            // startOutputWatcher();
         }
 
         /// <summary>
@@ -287,6 +285,8 @@ namespace OpenQA.Selenium.Firefox
             {
                 this.process.Kill();
             }
+
+            this.process.Dispose();
         }
 
         /// <summary>
