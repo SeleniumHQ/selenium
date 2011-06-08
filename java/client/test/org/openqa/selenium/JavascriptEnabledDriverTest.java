@@ -123,6 +123,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
     driver.findElement(By.id("changeme")).setSelected();
 
+    waitForTitleChange("Page3");
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("3"));
   }
 
