@@ -141,6 +141,11 @@ public class JettyService extends Service {
           new org.eclipse.jetty.servlet.ServletContextHandler(server, "/hub",
               org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
       root.addServlet(new ServletHolder(new AndroidDriverServlet()), "/*");
+      
+      org.eclipse.jetty.servlet.ServletContextHandler healthz =
+        new org.eclipse.jetty.servlet.ServletContextHandler(server, "/wd/hub/healthz",
+            org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
+      healthz.addServlet(new ServletHolder(new HealthzServlet()), "/*");
 
       org.eclipse.jetty.servlet.ServletContextHandler resources =
         new org.eclipse.jetty.servlet.ServletContextHandler(server, "/resources",
@@ -169,7 +174,8 @@ public class JettyService extends Service {
       
       HandlerList handlers = new HandlerList();
       handlers.setHandlers(
-          new org.eclipse.jetty.server.Handler[] {resources,root, new DefaultHandler()});
+          new org.eclipse.jetty.server.Handler[] {healthz,
+              resources, root, new DefaultHandler()});
       server.setHandler(handlers);
 
     }
