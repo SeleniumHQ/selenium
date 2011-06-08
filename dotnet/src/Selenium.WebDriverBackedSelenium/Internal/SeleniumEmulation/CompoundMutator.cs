@@ -56,9 +56,12 @@ namespace Selenium.Internal.SeleniumEmulation
 
             nested.Append(script);
 
-            outputTo.Append("return eval('");
-            outputTo.Append(Escape(nested.ToString()));
-            outputTo.Append("');");
+            if (outputTo != null)
+            {
+                outputTo.Append("return eval('");
+                outputTo.Append(Escape(nested.ToString()));
+                outputTo.Append("');");
+            }
         }
         #endregion
 

@@ -21,6 +21,11 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <param name="declaration">The declaration to which to set the term.</param>
         public VariableDeclaration(string raw, string declaration)
         {
+            if (raw == null)
+            {
+                raw = string.Empty;
+            }
+
             this.declaration = declaration;
             raw = raw.Replace(".", "\\s*\\.\\s*")
                 .Replace("(", "\\(")
@@ -41,7 +46,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <param name="outputTo">The mutated script.</param>
         public void Mutate(string script, StringBuilder outputTo)
         {
-            if (!this.pattern.IsMatch(script))
+            if (outputTo == null || !this.pattern.IsMatch(script))
             {
                 return;
             }

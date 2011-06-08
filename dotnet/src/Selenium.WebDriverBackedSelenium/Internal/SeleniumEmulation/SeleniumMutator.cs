@@ -23,6 +23,11 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <param name="atom">The source code of the atom to execute.</param>
         public SeleniumMutator(string method, string atom)
         {
+            if (method == null)
+            {
+                method = string.Empty;
+            }
+
             string raw = ".*" + method.Replace(".", "\\s*\\.\\s*") + ".*";
             this.pattern = new Regex(raw);
             this.method = method;
@@ -41,7 +46,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <param name="outputTo">The mutated script.</param>
         public void Mutate(string script, StringBuilder outputTo)
         {
-            if (!this.pattern.IsMatch(script))
+            if (outputTo == null || !this.pattern.IsMatch(script))
             {
                 return;
             }

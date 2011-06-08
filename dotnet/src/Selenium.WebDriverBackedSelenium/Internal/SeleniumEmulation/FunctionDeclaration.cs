@@ -21,6 +21,11 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <param name="result">The result to which to set the term.</param>
         public FunctionDeclaration(string raw, string result)
         {
+            if (raw == null)
+            {
+                raw = string.Empty;
+            }
+
             string baseString = raw.Replace(".", "\\s*\\.\\s*");
             this.pattern = new Regex(".*" + baseString + "\\s*\\(\\s*\\).*");
             this.function = raw + " = function() { " + result + " }; ";
@@ -38,7 +43,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <param name="outputTo">The mutated script.</param>
         public void Mutate(string script, StringBuilder outputTo)
         {
-            if (!this.pattern.IsMatch(script))
+            if (outputTo == null || !this.pattern.IsMatch(script))
             {
                 return;
             }
