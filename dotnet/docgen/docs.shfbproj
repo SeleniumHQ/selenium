@@ -23,12 +23,13 @@
     <PresentationStyle>vs2005</PresentationStyle>
     <DocumentationSources>
     </DocumentationSources>
-    <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, Namespace, TypeParameter, AutoDocumentDispose</MissingTags>
+    <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, TypeParameter, AutoDocumentDispose</MissingTags>
     <CopyrightText>Copyright &amp;#169%3b 2011 WebDriver Committers</CopyrightText>
     <HelpTitle>WebDriver</HelpTitle>
     <FeedbackEMailLinkText>WebDriver Users Google Group</FeedbackEMailLinkText>
     <FeedbackEMailAddress>webdriver%40googlegroups.com</FeedbackEMailAddress>
     <ProjectLinkType>Local</ProjectLinkType>
+    <NamingMethod>MemberName</NamingMethod>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in
        order for Visual Studio to perform the build.  The others are optional
