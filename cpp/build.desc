@@ -1,9 +1,3 @@
-visualc_library(name = "chrome_dll",
-  platform = "Win32",
-  project = "npchromedriver/npchromedriver.vcxproj",
-  out = "Win32/Release/npchromedriver.dll"
-)
-
 visualc_library(name = "firefox_dll",
   platform = "Win32",
   project = "webdriver-firefox/webdriver-firefox.vcxproj",
