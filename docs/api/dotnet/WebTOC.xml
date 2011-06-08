@@ -1,0 +1,1814 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<HelpTOC>
+
+  <HelpTOCNode Id="cce5d42b-0b73-4fd1-a3a5-01da6039715f" Title="OpenQA.Selenium Namespace" Url="html/N_OpenQA_Selenium.htm">
+    <HelpTOCNode Id="93b9cc72-e4f5-4616-b856-39f413247181" Title="By Class" Url="html/T_OpenQA_Selenium_By.htm">
+      <HelpTOCNode Title="By Members" Url="html/AllMembers_T_OpenQA_Selenium_By.htm" />
+      <HelpTOCNode Title="By Constructor " Url="html/M_OpenQA_Selenium_By__ctor.htm" />
+      <HelpTOCNode Id="6eaf6e2b-5b8b-4f08-932a-565ea2fd8435" Title="By Methods" Url="html/Methods_T_OpenQA_Selenium_By.htm">
+        <HelpTOCNode Title="ClassName Method " Url="html/M_OpenQA_Selenium_By_ClassName.htm" />
+        <HelpTOCNode Title="CssSelector Method " Url="html/M_OpenQA_Selenium_By_CssSelector.htm" />
+        <HelpTOCNode Title="Equals Method " Url="html/M_OpenQA_Selenium_By_Equals.htm" />
+        <HelpTOCNode Title="FindElement Method " Url="html/M_OpenQA_Selenium_By_FindElement.htm" />
+        <HelpTOCNode Title="FindElements Method " Url="html/M_OpenQA_Selenium_By_FindElements.htm" />
+        <HelpTOCNode Title="GetHashCode Method " Url="html/M_OpenQA_Selenium_By_GetHashCode.htm" />
+        <HelpTOCNode Title="Id Method " Url="html/M_OpenQA_Selenium_By_Id.htm" />
+        <HelpTOCNode Title="LinkText Method " Url="html/M_OpenQA_Selenium_By_LinkText.htm" />
+        <HelpTOCNode Title="Name Method " Url="html/M_OpenQA_Selenium_By_Name.htm" />
+        <HelpTOCNode Title="PartialLinkText Method " Url="html/M_OpenQA_Selenium_By_PartialLinkText.htm" />
+        <HelpTOCNode Title="TagName Method " Url="html/M_OpenQA_Selenium_By_TagName.htm" />
+        <HelpTOCNode Title="ToString Method " Url="html/M_OpenQA_Selenium_By_ToString.htm" />
+        <HelpTOCNode Title="XPath Method " Url="html/M_OpenQA_Selenium_By_XPath.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="1ba9143a-80f6-4915-b720-cad9d7f469a0" Title="Cookie Class" Url="html/T_OpenQA_Selenium_Cookie.htm">
+      <HelpTOCNode Title="Cookie Members" Url="html/AllMembers_T_OpenQA_Selenium_Cookie.htm" />
+      <HelpTOCNode Id="5deefbb0-e771-4417-975a-bd9d51e12bc3" Title="Cookie Constructor " Url="html/Overload_OpenQA_Selenium_Cookie__ctor.htm">
+        <HelpTOCNode Title="Cookie Constructor (String, String)" Url="html/M_OpenQA_Selenium_Cookie__ctor.htm" />
+        <HelpTOCNode Title="Cookie Constructor (String, String, String)" Url="html/M_OpenQA_Selenium_Cookie__ctor_1.htm" />
+        <HelpTOCNode Title="Cookie Constructor (String, String, String, Nullable(DateTime))" Url="html/M_OpenQA_Selenium_Cookie__ctor_2.htm" />
+        <HelpTOCNode Title="Cookie Constructor (String, String, String, String, Nullable(DateTime))" Url="html/M_OpenQA_Selenium_Cookie__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="36d24dcd-8168-4d72-bf41-605ee470a0b2" Title="Cookie Methods" Url="html/Methods_T_OpenQA_Selenium_Cookie.htm">
+        <HelpTOCNode Title="Equals Method " Url="html/M_OpenQA_Selenium_Cookie_Equals.htm" />
+        <HelpTOCNode Title="GetHashCode Method " Url="html/M_OpenQA_Selenium_Cookie_GetHashCode.htm" />
+        <HelpTOCNode Title="ToString Method " Url="html/M_OpenQA_Selenium_Cookie_ToString.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="0996a4ff-361a-4aaf-ac3a-cdb2d74c335f" Title="Cookie Properties" Url="html/Properties_T_OpenQA_Selenium_Cookie.htm">
+        <HelpTOCNode Title="Domain Property " Url="html/P_OpenQA_Selenium_Cookie_Domain.htm" />
+        <HelpTOCNode Title="Expiry Property " Url="html/P_OpenQA_Selenium_Cookie_Expiry.htm" />
+        <HelpTOCNode Title="Name Property " Url="html/P_OpenQA_Selenium_Cookie_Name.htm" />
+        <HelpTOCNode Title="Path Property " Url="html/P_OpenQA_Selenium_Cookie_Path.htm" />
+        <HelpTOCNode Title="Secure Property " Url="html/P_OpenQA_Selenium_Cookie_Secure.htm" />
+        <HelpTOCNode Title="Value Property " Url="html/P_OpenQA_Selenium_Cookie_Value.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="d62f025c-f151-42ab-9dad-5e5c7fdbc002" Title="ElementNotVisibleException Class" Url="html/T_OpenQA_Selenium_ElementNotVisibleException.htm">
+      <HelpTOCNode Title="ElementNotVisibleException Members" Url="html/AllMembers_T_OpenQA_Selenium_ElementNotVisibleException.htm" />
+      <HelpTOCNode Id="6a29a649-a536-4f2d-bab6-82c8f876498f" Title="ElementNotVisibleException Constructor " Url="html/Overload_OpenQA_Selenium_ElementNotVisibleException__ctor.htm">
+        <HelpTOCNode Title="ElementNotVisibleException Constructor " Url="html/M_OpenQA_Selenium_ElementNotVisibleException__ctor.htm" />
+        <HelpTOCNode Title="ElementNotVisibleException Constructor (String)" Url="html/M_OpenQA_Selenium_ElementNotVisibleException__ctor_2.htm" />
+        <HelpTOCNode Title="ElementNotVisibleException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_ElementNotVisibleException__ctor_1.htm" />
+        <HelpTOCNode Title="ElementNotVisibleException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_ElementNotVisibleException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="ElementNotVisibleException Methods" Url="html/Methods_T_OpenQA_Selenium_ElementNotVisibleException.htm" />
+      <HelpTOCNode Title="ElementNotVisibleException Properties" Url="html/Properties_T_OpenQA_Selenium_ElementNotVisibleException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="b19f30f5-50a2-47c5-bc66-77c537df40c3" Title="IAlert Interface" Url="html/T_OpenQA_Selenium_IAlert.htm">
+      <HelpTOCNode Title="IAlert Members" Url="html/AllMembers_T_OpenQA_Selenium_IAlert.htm" />
+      <HelpTOCNode Id="b6c6c6da-d583-4027-a0e3-6a7d95ceece8" Title="IAlert Methods" Url="html/Methods_T_OpenQA_Selenium_IAlert.htm">
+        <HelpTOCNode Title="Accept Method " Url="html/M_OpenQA_Selenium_IAlert_Accept.htm" />
+        <HelpTOCNode Title="Dismiss Method " Url="html/M_OpenQA_Selenium_IAlert_Dismiss.htm" />
+        <HelpTOCNode Title="SendKeys Method " Url="html/M_OpenQA_Selenium_IAlert_SendKeys.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="75957d77-4a14-4171-8428-9c1fd12cb72b" Title="IAlert Properties" Url="html/Properties_T_OpenQA_Selenium_IAlert.htm">
+        <HelpTOCNode Title="Text Property " Url="html/P_OpenQA_Selenium_IAlert_Text.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="223624b1-7f17-4d12-a36f-d640604c3709" Title="ICapabilities Interface" Url="html/T_OpenQA_Selenium_ICapabilities.htm">
+      <HelpTOCNode Title="ICapabilities Members" Url="html/AllMembers_T_OpenQA_Selenium_ICapabilities.htm" />
+      <HelpTOCNode Id="5392eb4f-4322-45a8-a0c3-2aef3b250db3" Title="ICapabilities Methods" Url="html/Methods_T_OpenQA_Selenium_ICapabilities.htm">
+        <HelpTOCNode Title="GetCapability Method " Url="html/M_OpenQA_Selenium_ICapabilities_GetCapability.htm" />
+        <HelpTOCNode Title="HasCapability Method " Url="html/M_OpenQA_Selenium_ICapabilities_HasCapability.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="6da39ddc-ec1a-4f2e-9f06-b2c92afbc293" Title="ICapabilities Properties" Url="html/Properties_T_OpenQA_Selenium_ICapabilities.htm">
+        <HelpTOCNode Title="BrowserName Property " Url="html/P_OpenQA_Selenium_ICapabilities_BrowserName.htm" />
+        <HelpTOCNode Title="IsJavaScriptEnabled Property " Url="html/P_OpenQA_Selenium_ICapabilities_IsJavaScriptEnabled.htm" />
+        <HelpTOCNode Title="Platform Property " Url="html/P_OpenQA_Selenium_ICapabilities_Platform.htm" />
+        <HelpTOCNode Title="Version Property " Url="html/P_OpenQA_Selenium_ICapabilities_Version.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="59f253d9-21b5-4e2d-bdd9-0e73d02c2f93" Title="ICookieJar Interface" Url="html/T_OpenQA_Selenium_ICookieJar.htm">
+      <HelpTOCNode Title="ICookieJar Members" Url="html/AllMembers_T_OpenQA_Selenium_ICookieJar.htm" />
+      <HelpTOCNode Id="aa54a4e5-20fa-431d-b169-3e5eae3f1d4e" Title="ICookieJar Methods" Url="html/Methods_T_OpenQA_Selenium_ICookieJar.htm">
+        <HelpTOCNode Title="AddCookie Method " Url="html/M_OpenQA_Selenium_ICookieJar_AddCookie.htm" />
+        <HelpTOCNode Title="DeleteAllCookies Method " Url="html/M_OpenQA_Selenium_ICookieJar_DeleteAllCookies.htm" />
+        <HelpTOCNode Title="DeleteCookie Method " Url="html/M_OpenQA_Selenium_ICookieJar_DeleteCookie.htm" />
+        <HelpTOCNode Title="DeleteCookieNamed Method " Url="html/M_OpenQA_Selenium_ICookieJar_DeleteCookieNamed.htm" />
+        <HelpTOCNode Title="GetCookieNamed Method " Url="html/M_OpenQA_Selenium_ICookieJar_GetCookieNamed.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="d27bccf8-7f8c-4b39-91f4-950595bd7d60" Title="ICookieJar Properties" Url="html/Properties_T_OpenQA_Selenium_ICookieJar.htm">
+        <HelpTOCNode Title="AllCookies Property " Url="html/P_OpenQA_Selenium_ICookieJar_AllCookies.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c0882790-af61-43c9-93e5-35c85c53ff34" Title="IHasCapabilities Interface" Url="html/T_OpenQA_Selenium_IHasCapabilities.htm">
+      <HelpTOCNode Title="IHasCapabilities Members" Url="html/AllMembers_T_OpenQA_Selenium_IHasCapabilities.htm" />
+      <HelpTOCNode Id="257b1be8-9ee6-402c-923c-c160d2e38b28" Title="IHasCapabilities Properties" Url="html/Properties_T_OpenQA_Selenium_IHasCapabilities.htm">
+        <HelpTOCNode Title="Capabilities Property " Url="html/P_OpenQA_Selenium_IHasCapabilities_Capabilities.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="4379bded-c983-4820-a157-cb6c2792ba1b" Title="IHasInputDevices Interface" Url="html/T_OpenQA_Selenium_IHasInputDevices.htm">
+      <HelpTOCNode Title="IHasInputDevices Members" Url="html/AllMembers_T_OpenQA_Selenium_IHasInputDevices.htm" />
+      <HelpTOCNode Id="0d218b98-572c-44da-8dab-f41dcbdd7685" Title="IHasInputDevices Properties" Url="html/Properties_T_OpenQA_Selenium_IHasInputDevices.htm">
+        <HelpTOCNode Title="Keyboard Property " Url="html/P_OpenQA_Selenium_IHasInputDevices_Keyboard.htm" />
+        <HelpTOCNode Title="Mouse Property " Url="html/P_OpenQA_Selenium_IHasInputDevices_Mouse.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="3ea7db90-518b-4ad5-971e-2f9760e85aba" Title="IJavaScriptExecutor Interface" Url="html/T_OpenQA_Selenium_IJavaScriptExecutor.htm">
+      <HelpTOCNode Title="IJavaScriptExecutor Members" Url="html/AllMembers_T_OpenQA_Selenium_IJavaScriptExecutor.htm" />
+      <HelpTOCNode Id="cfe93e3f-2a27-4a63-916c-81507f40a002" Title="IJavaScriptExecutor Methods" Url="html/Methods_T_OpenQA_Selenium_IJavaScriptExecutor.htm">
+        <HelpTOCNode Title="ExecuteAsyncScript Method " Url="html/M_OpenQA_Selenium_IJavaScriptExecutor_ExecuteAsyncScript.htm" />
+        <HelpTOCNode Title="ExecuteScript Method " Url="html/M_OpenQA_Selenium_IJavaScriptExecutor_ExecuteScript.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="b507fc74-d68d-440f-83b1-926a93b39ed4" Title="IKeyboard Interface" Url="html/T_OpenQA_Selenium_IKeyboard.htm">
+      <HelpTOCNode Title="IKeyboard Members" Url="html/AllMembers_T_OpenQA_Selenium_IKeyboard.htm" />
+      <HelpTOCNode Id="66e5af82-b306-43c6-8e2b-ae5e4e85865e" Title="IKeyboard Methods" Url="html/Methods_T_OpenQA_Selenium_IKeyboard.htm">
+        <HelpTOCNode Title="PressKey Method " Url="html/M_OpenQA_Selenium_IKeyboard_PressKey.htm" />
+        <HelpTOCNode Title="ReleaseKey Method " Url="html/M_OpenQA_Selenium_IKeyboard_ReleaseKey.htm" />
+        <HelpTOCNode Title="SendKeys Method " Url="html/M_OpenQA_Selenium_IKeyboard_SendKeys.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="35f29160-365c-402f-b87e-a26b3737d446" Title="IllegalLocatorException Class" Url="html/T_OpenQA_Selenium_IllegalLocatorException.htm">
+      <HelpTOCNode Title="IllegalLocatorException Members" Url="html/AllMembers_T_OpenQA_Selenium_IllegalLocatorException.htm" />
+      <HelpTOCNode Id="b8a25444-2f66-41ce-b252-df1ba3678f4e" Title="IllegalLocatorException Constructor " Url="html/Overload_OpenQA_Selenium_IllegalLocatorException__ctor.htm">
+        <HelpTOCNode Title="IllegalLocatorException Constructor " Url="html/M_OpenQA_Selenium_IllegalLocatorException__ctor.htm" />
+        <HelpTOCNode Title="IllegalLocatorException Constructor (String)" Url="html/M_OpenQA_Selenium_IllegalLocatorException__ctor_2.htm" />
+        <HelpTOCNode Title="IllegalLocatorException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_IllegalLocatorException__ctor_1.htm" />
+        <HelpTOCNode Title="IllegalLocatorException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_IllegalLocatorException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="IllegalLocatorException Methods" Url="html/Methods_T_OpenQA_Selenium_IllegalLocatorException.htm" />
+      <HelpTOCNode Title="IllegalLocatorException Properties" Url="html/Properties_T_OpenQA_Selenium_IllegalLocatorException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="0d11a464-b726-4aae-b4a6-1652d1a136b2" Title="ILocatable Interface" Url="html/T_OpenQA_Selenium_ILocatable.htm">
+      <HelpTOCNode Title="ILocatable Members" Url="html/AllMembers_T_OpenQA_Selenium_ILocatable.htm" />
+      <HelpTOCNode Id="f0a6cbbe-1b1e-484c-a8c7-97fe2beb51b3" Title="ILocatable Properties" Url="html/Properties_T_OpenQA_Selenium_ILocatable.htm">
+        <HelpTOCNode Title="Coordinates Property " Url="html/P_OpenQA_Selenium_ILocatable_Coordinates.htm" />
+        <HelpTOCNode Title="LocationOnScreenOnceScrolledIntoView Property " Url="html/P_OpenQA_Selenium_ILocatable_LocationOnScreenOnceScrolledIntoView.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="0956c7e9-045a-450d-957b-f3a06812a673" Title="IMouse Interface" Url="html/T_OpenQA_Selenium_IMouse.htm">
+      <HelpTOCNode Title="IMouse Members" Url="html/AllMembers_T_OpenQA_Selenium_IMouse.htm" />
+      <HelpTOCNode Id="aee9ec6f-fc9e-42c4-9f47-89c0726860c9" Title="IMouse Methods" Url="html/Methods_T_OpenQA_Selenium_IMouse.htm">
+        <HelpTOCNode Title="Click Method " Url="html/M_OpenQA_Selenium_IMouse_Click.htm" />
+        <HelpTOCNode Title="ContextClick Method " Url="html/M_OpenQA_Selenium_IMouse_ContextClick.htm" />
+        <HelpTOCNode Title="DoubleClick Method " Url="html/M_OpenQA_Selenium_IMouse_DoubleClick.htm" />
+        <HelpTOCNode Title="MouseDown Method " Url="html/M_OpenQA_Selenium_IMouse_MouseDown.htm" />
+        <HelpTOCNode Id="a7e0f575-73ca-429a-a995-f3a3f037e7f8" Title="MouseMove Method " Url="html/Overload_OpenQA_Selenium_IMouse_MouseMove.htm">
+          <HelpTOCNode Title="MouseMove Method (ICoordinates)" Url="html/M_OpenQA_Selenium_IMouse_MouseMove.htm" />
+          <HelpTOCNode Title="MouseMove Method (ICoordinates, Int32, Int32)" Url="html/M_OpenQA_Selenium_IMouse_MouseMove_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="MouseUp Method " Url="html/M_OpenQA_Selenium_IMouse_MouseUp.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="16115465-48cc-4b69-b4e5-5b5851431869" Title="INavigation Interface" Url="html/T_OpenQA_Selenium_INavigation.htm">
+      <HelpTOCNode Title="INavigation Members" Url="html/AllMembers_T_OpenQA_Selenium_INavigation.htm" />
+      <HelpTOCNode Id="017b1418-8ca6-4c2b-ac55-60bee714c1f1" Title="INavigation Methods" Url="html/Methods_T_OpenQA_Selenium_INavigation.htm">
+        <HelpTOCNode Title="Back Method " Url="html/M_OpenQA_Selenium_INavigation_Back.htm" />
+        <HelpTOCNode Title="Forward Method " Url="html/M_OpenQA_Selenium_INavigation_Forward.htm" />
+        <HelpTOCNode Id="cd662336-d8de-46e3-a281-1e9e26567a12" Title="GoToUrl Method " Url="html/Overload_OpenQA_Selenium_INavigation_GoToUrl.htm">
+          <HelpTOCNode Title="GoToUrl Method (String)" Url="html/M_OpenQA_Selenium_INavigation_GoToUrl.htm" />
+          <HelpTOCNode Title="GoToUrl Method (Uri)" Url="html/M_OpenQA_Selenium_INavigation_GoToUrl_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Refresh Method " Url="html/M_OpenQA_Selenium_INavigation_Refresh.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="eb5ecdc4-9d58-42cb-a6d5-70366048ea44" Title="InvalidCookieDomainException Class" Url="html/T_OpenQA_Selenium_InvalidCookieDomainException.htm">
+      <HelpTOCNode Title="InvalidCookieDomainException Members" Url="html/AllMembers_T_OpenQA_Selenium_InvalidCookieDomainException.htm" />
+      <HelpTOCNode Id="7514c308-d3bb-4ced-ab60-04e8e5d51a7b" Title="InvalidCookieDomainException Constructor " Url="html/Overload_OpenQA_Selenium_InvalidCookieDomainException__ctor.htm">
+        <HelpTOCNode Title="InvalidCookieDomainException Constructor " Url="html/M_OpenQA_Selenium_InvalidCookieDomainException__ctor.htm" />
+        <HelpTOCNode Title="InvalidCookieDomainException Constructor (String)" Url="html/M_OpenQA_Selenium_InvalidCookieDomainException__ctor_2.htm" />
+        <HelpTOCNode Title="InvalidCookieDomainException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_InvalidCookieDomainException__ctor_1.htm" />
+        <HelpTOCNode Title="InvalidCookieDomainException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_InvalidCookieDomainException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="InvalidCookieDomainException Methods" Url="html/Methods_T_OpenQA_Selenium_InvalidCookieDomainException.htm" />
+      <HelpTOCNode Title="InvalidCookieDomainException Properties" Url="html/Properties_T_OpenQA_Selenium_InvalidCookieDomainException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="0a048b56-d140-4bd6-8cc5-811db1e86346" Title="InvalidElementStateException Class" Url="html/T_OpenQA_Selenium_InvalidElementStateException.htm">
+      <HelpTOCNode Title="InvalidElementStateException Members" Url="html/AllMembers_T_OpenQA_Selenium_InvalidElementStateException.htm" />
+      <HelpTOCNode Id="54189bd6-2501-41a7-892f-29aa7be08de0" Title="InvalidElementStateException Constructor " Url="html/Overload_OpenQA_Selenium_InvalidElementStateException__ctor.htm">
+        <HelpTOCNode Title="InvalidElementStateException Constructor " Url="html/M_OpenQA_Selenium_InvalidElementStateException__ctor.htm" />
+        <HelpTOCNode Title="InvalidElementStateException Constructor (String)" Url="html/M_OpenQA_Selenium_InvalidElementStateException__ctor_2.htm" />
+        <HelpTOCNode Title="InvalidElementStateException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_InvalidElementStateException__ctor_1.htm" />
+        <HelpTOCNode Title="InvalidElementStateException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_InvalidElementStateException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="InvalidElementStateException Methods" Url="html/Methods_T_OpenQA_Selenium_InvalidElementStateException.htm" />
+      <HelpTOCNode Title="InvalidElementStateException Properties" Url="html/Properties_T_OpenQA_Selenium_InvalidElementStateException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="0194422f-80f8-45fa-9bff-47cbffac7515" Title="IOptions Interface" Url="html/T_OpenQA_Selenium_IOptions.htm">
+      <HelpTOCNode Title="IOptions Members" Url="html/AllMembers_T_OpenQA_Selenium_IOptions.htm" />
+      <HelpTOCNode Id="84460979-09d3-4b5f-aba3-89110e4eebb1" Title="IOptions Methods" Url="html/Methods_T_OpenQA_Selenium_IOptions.htm">
+        <HelpTOCNode Title="Timeouts Method " Url="html/M_OpenQA_Selenium_IOptions_Timeouts.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="095456fd-ae00-4d0c-9664-717d00094bd1" Title="IOptions Properties" Url="html/Properties_T_OpenQA_Selenium_IOptions.htm">
+        <HelpTOCNode Title="Cookies Property " Url="html/P_OpenQA_Selenium_IOptions_Cookies.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="03d23419-810b-4551-92e9-f751500d54e1" Title="ISearchContext Interface" Url="html/T_OpenQA_Selenium_ISearchContext.htm">
+      <HelpTOCNode Title="ISearchContext Members" Url="html/AllMembers_T_OpenQA_Selenium_ISearchContext.htm" />
+      <HelpTOCNode Id="412ee1cd-3f4d-43d3-b154-95b6395a1e63" Title="ISearchContext Methods" Url="html/Methods_T_OpenQA_Selenium_ISearchContext.htm">
+        <HelpTOCNode Title="FindElement Method " Url="html/M_OpenQA_Selenium_ISearchContext_FindElement.htm" />
+        <HelpTOCNode Title="FindElements Method " Url="html/M_OpenQA_Selenium_ISearchContext_FindElements.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="540a377b-20b3-4d31-9262-0ec3a38d0784" Title="ITakesScreenshot Interface" Url="html/T_OpenQA_Selenium_ITakesScreenshot.htm">
+      <HelpTOCNode Title="ITakesScreenshot Members" Url="html/AllMembers_T_OpenQA_Selenium_ITakesScreenshot.htm" />
+      <HelpTOCNode Id="edeb488d-cfaf-41d5-b93f-df67b935cbd0" Title="ITakesScreenshot Methods" Url="html/Methods_T_OpenQA_Selenium_ITakesScreenshot.htm">
+        <HelpTOCNode Title="GetScreenshot Method " Url="html/M_OpenQA_Selenium_ITakesScreenshot_GetScreenshot.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="2bf9ad8b-e849-427b-ae7e-570c3560e780" Title="ITargetLocator Interface" Url="html/T_OpenQA_Selenium_ITargetLocator.htm">
+      <HelpTOCNode Title="ITargetLocator Members" Url="html/AllMembers_T_OpenQA_Selenium_ITargetLocator.htm" />
+      <HelpTOCNode Id="250f0d00-c111-43b5-98d7-e8455b9ff07a" Title="ITargetLocator Methods" Url="html/Methods_T_OpenQA_Selenium_ITargetLocator.htm">
+        <HelpTOCNode Title="ActiveElement Method " Url="html/M_OpenQA_Selenium_ITargetLocator_ActiveElement.htm" />
+        <HelpTOCNode Title="Alert Method " Url="html/M_OpenQA_Selenium_ITargetLocator_Alert.htm" />
+        <HelpTOCNode Title="DefaultContent Method " Url="html/M_OpenQA_Selenium_ITargetLocator_DefaultContent.htm" />
+        <HelpTOCNode Id="70e7a250-b810-427f-a26e-9d3c838af82f" Title="Frame Method " Url="html/Overload_OpenQA_Selenium_ITargetLocator_Frame.htm">
+          <HelpTOCNode Title="Frame Method (Int32)" Url="html/M_OpenQA_Selenium_ITargetLocator_Frame_1.htm" />
+          <HelpTOCNode Title="Frame Method (String)" Url="html/M_OpenQA_Selenium_ITargetLocator_Frame_2.htm" />
+          <HelpTOCNode Title="Frame Method (IWebElement)" Url="html/M_OpenQA_Selenium_ITargetLocator_Frame.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Window Method " Url="html/M_OpenQA_Selenium_ITargetLocator_Window.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="417d9f19-0b44-4079-be2b-9f0697a4bf2e" Title="ITimeouts Interface" Url="html/T_OpenQA_Selenium_ITimeouts.htm">
+      <HelpTOCNode Title="ITimeouts Members" Url="html/AllMembers_T_OpenQA_Selenium_ITimeouts.htm" />
+      <HelpTOCNode Id="8488643f-522f-46d2-88bf-a25d0b876cd2" Title="ITimeouts Methods" Url="html/Methods_T_OpenQA_Selenium_ITimeouts.htm">
+        <HelpTOCNode Title="ImplicitlyWait Method " Url="html/M_OpenQA_Selenium_ITimeouts_ImplicitlyWait.htm" />
+        <HelpTOCNode Title="SetScriptTimeout Method " Url="html/M_OpenQA_Selenium_ITimeouts_SetScriptTimeout.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="58288212-5fdd-4f50-b285-0d1d5f057769" Title="IWebDriver Interface" Url="html/T_OpenQA_Selenium_IWebDriver.htm">
+      <HelpTOCNode Title="IWebDriver Members" Url="html/AllMembers_T_OpenQA_Selenium_IWebDriver.htm" />
+      <HelpTOCNode Id="9e9c08f1-2088-45e2-a485-17bf7cc75c69" Title="IWebDriver Methods" Url="html/Methods_T_OpenQA_Selenium_IWebDriver.htm">
+        <HelpTOCNode Title="Close Method " Url="html/M_OpenQA_Selenium_IWebDriver_Close.htm" />
+        <HelpTOCNode Title="Manage Method " Url="html/M_OpenQA_Selenium_IWebDriver_Manage.htm" />
+        <HelpTOCNode Title="Navigate Method " Url="html/M_OpenQA_Selenium_IWebDriver_Navigate.htm" />
+        <HelpTOCNode Title="Quit Method " Url="html/M_OpenQA_Selenium_IWebDriver_Quit.htm" />
+        <HelpTOCNode Title="SwitchTo Method " Url="html/M_OpenQA_Selenium_IWebDriver_SwitchTo.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="23f7eb37-48f8-406a-90f5-57f9d95c66e7" Title="IWebDriver Properties" Url="html/Properties_T_OpenQA_Selenium_IWebDriver.htm">
+        <HelpTOCNode Title="CurrentWindowHandle Property " Url="html/P_OpenQA_Selenium_IWebDriver_CurrentWindowHandle.htm" />
+        <HelpTOCNode Title="PageSource Property " Url="html/P_OpenQA_Selenium_IWebDriver_PageSource.htm" />
+        <HelpTOCNode Title="Title Property " Url="html/P_OpenQA_Selenium_IWebDriver_Title.htm" />
+        <HelpTOCNode Title="Url Property " Url="html/P_OpenQA_Selenium_IWebDriver_Url.htm" />
+        <HelpTOCNode Title="WindowHandles Property " Url="html/P_OpenQA_Selenium_IWebDriver_WindowHandles.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c046ad4e-e4d2-4e1a-868e-768ccc595834" Title="IWebElement Interface" Url="html/T_OpenQA_Selenium_IWebElement.htm">
+      <HelpTOCNode Title="IWebElement Members" Url="html/AllMembers_T_OpenQA_Selenium_IWebElement.htm" />
+      <HelpTOCNode Id="9e2af271-6335-479c-97fa-c72af83781ce" Title="IWebElement Methods" Url="html/Methods_T_OpenQA_Selenium_IWebElement.htm">
+        <HelpTOCNode Title="Clear Method " Url="html/M_OpenQA_Selenium_IWebElement_Clear.htm" />
+        <HelpTOCNode Title="Click Method " Url="html/M_OpenQA_Selenium_IWebElement_Click.htm" />
+        <HelpTOCNode Title="GetAttribute Method " Url="html/M_OpenQA_Selenium_IWebElement_GetAttribute.htm" />
+        <HelpTOCNode Title="GetCssValue Method " Url="html/M_OpenQA_Selenium_IWebElement_GetCssValue.htm" />
+        <HelpTOCNode Title="Select Method " Url="html/M_OpenQA_Selenium_IWebElement_Select.htm" />
+        <HelpTOCNode Title="SendKeys Method " Url="html/M_OpenQA_Selenium_IWebElement_SendKeys.htm" />
+        <HelpTOCNode Title="Submit Method " Url="html/M_OpenQA_Selenium_IWebElement_Submit.htm" />
+        <HelpTOCNode Title="Toggle Method " Url="html/M_OpenQA_Selenium_IWebElement_Toggle.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="8fd34259-8bc5-40dd-9ce0-952c86a0b38c" Title="IWebElement Properties" Url="html/Properties_T_OpenQA_Selenium_IWebElement.htm">
+        <HelpTOCNode Title="Displayed Property " Url="html/P_OpenQA_Selenium_IWebElement_Displayed.htm" />
+        <HelpTOCNode Title="Enabled Property " Url="html/P_OpenQA_Selenium_IWebElement_Enabled.htm" />
+        <HelpTOCNode Title="Location Property " Url="html/P_OpenQA_Selenium_IWebElement_Location.htm" />
+        <HelpTOCNode Title="Selected Property " Url="html/P_OpenQA_Selenium_IWebElement_Selected.htm" />
+        <HelpTOCNode Title="Size Property " Url="html/P_OpenQA_Selenium_IWebElement_Size.htm" />
+        <HelpTOCNode Title="TagName Property " Url="html/P_OpenQA_Selenium_IWebElement_TagName.htm" />
+        <HelpTOCNode Title="Text Property " Url="html/P_OpenQA_Selenium_IWebElement_Text.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="d7d58e42-8db5-4436-9105-bbf4f031d96e" Title="Keys Class" Url="html/T_OpenQA_Selenium_Keys.htm">
+      <HelpTOCNode Title="Keys Members" Url="html/AllMembers_T_OpenQA_Selenium_Keys.htm" />
+      <HelpTOCNode Id="cbf7dc18-212d-484c-9b70-83a451abc76e" Title="Keys Fields" Url="html/Fields_T_OpenQA_Selenium_Keys.htm">
+        <HelpTOCNode Title="Add Field" Url="html/F_OpenQA_Selenium_Keys_Add.htm" />
+        <HelpTOCNode Title="Alt Field" Url="html/F_OpenQA_Selenium_Keys_Alt.htm" />
+        <HelpTOCNode Title="ArrowDown Field" Url="html/F_OpenQA_Selenium_Keys_ArrowDown.htm" />
+        <HelpTOCNode Title="ArrowLeft Field" Url="html/F_OpenQA_Selenium_Keys_ArrowLeft.htm" />
+        <HelpTOCNode Title="ArrowRight Field" Url="html/F_OpenQA_Selenium_Keys_ArrowRight.htm" />
+        <HelpTOCNode Title="ArrowUp Field" Url="html/F_OpenQA_Selenium_Keys_ArrowUp.htm" />
+        <HelpTOCNode Title="Backspace Field" Url="html/F_OpenQA_Selenium_Keys_Backspace.htm" />
+        <HelpTOCNode Title="Cancel Field" Url="html/F_OpenQA_Selenium_Keys_Cancel.htm" />
+        <HelpTOCNode Title="Clear Field" Url="html/F_OpenQA_Selenium_Keys_Clear.htm" />
+        <HelpTOCNode Title="Command Field" Url="html/F_OpenQA_Selenium_Keys_Command.htm" />
+        <HelpTOCNode Title="Control Field" Url="html/F_OpenQA_Selenium_Keys_Control.htm" />
+        <HelpTOCNode Title="Decimal Field" Url="html/F_OpenQA_Selenium_Keys_Decimal.htm" />
+        <HelpTOCNode Title="Delete Field" Url="html/F_OpenQA_Selenium_Keys_Delete.htm" />
+        <HelpTOCNode Title="Divide Field" Url="html/F_OpenQA_Selenium_Keys_Divide.htm" />
+        <HelpTOCNode Title="Down Field" Url="html/F_OpenQA_Selenium_Keys_Down.htm" />
+        <HelpTOCNode Title="End Field" Url="html/F_OpenQA_Selenium_Keys_End.htm" />
+        <HelpTOCNode Title="Enter Field" Url="html/F_OpenQA_Selenium_Keys_Enter.htm" />
+        <HelpTOCNode Title="Equal Field" Url="html/F_OpenQA_Selenium_Keys_Equal.htm" />
+        <HelpTOCNode Title="Escape Field" Url="html/F_OpenQA_Selenium_Keys_Escape.htm" />
+        <HelpTOCNode Title="F1 Field" Url="html/F_OpenQA_Selenium_Keys_F1.htm" />
+        <HelpTOCNode Title="F10 Field" Url="html/F_OpenQA_Selenium_Keys_F10.htm" />
+        <HelpTOCNode Title="F11 Field" Url="html/F_OpenQA_Selenium_Keys_F11.htm" />
+        <HelpTOCNode Title="F12 Field" Url="html/F_OpenQA_Selenium_Keys_F12.htm" />
+        <HelpTOCNode Title="F2 Field" Url="html/F_OpenQA_Selenium_Keys_F2.htm" />
+        <HelpTOCNode Title="F3 Field" Url="html/F_OpenQA_Selenium_Keys_F3.htm" />
+        <HelpTOCNode Title="F4 Field" Url="html/F_OpenQA_Selenium_Keys_F4.htm" />
+        <HelpTOCNode Title="F5 Field" Url="html/F_OpenQA_Selenium_Keys_F5.htm" />
+        <HelpTOCNode Title="F6 Field" Url="html/F_OpenQA_Selenium_Keys_F6.htm" />
+        <HelpTOCNode Title="F7 Field" Url="html/F_OpenQA_Selenium_Keys_F7.htm" />
+        <HelpTOCNode Title="F8 Field" Url="html/F_OpenQA_Selenium_Keys_F8.htm" />
+        <HelpTOCNode Title="F9 Field" Url="html/F_OpenQA_Selenium_Keys_F9.htm" />
+        <HelpTOCNode Title="Help Field" Url="html/F_OpenQA_Selenium_Keys_Help.htm" />
+        <HelpTOCNode Title="Home Field" Url="html/F_OpenQA_Selenium_Keys_Home.htm" />
+        <HelpTOCNode Title="Insert Field" Url="html/F_OpenQA_Selenium_Keys_Insert.htm" />
+        <HelpTOCNode Title="Left Field" Url="html/F_OpenQA_Selenium_Keys_Left.htm" />
+        <HelpTOCNode Title="LeftAlt Field" Url="html/F_OpenQA_Selenium_Keys_LeftAlt.htm" />
+        <HelpTOCNode Title="LeftControl Field" Url="html/F_OpenQA_Selenium_Keys_LeftControl.htm" />
+        <HelpTOCNode Title="LeftShift Field" Url="html/F_OpenQA_Selenium_Keys_LeftShift.htm" />
+        <HelpTOCNode Title="Meta Field" Url="html/F_OpenQA_Selenium_Keys_Meta.htm" />
+        <HelpTOCNode Title="Multiply Field" Url="html/F_OpenQA_Selenium_Keys_Multiply.htm" />
+        <HelpTOCNode Title="Null Field" Url="html/F_OpenQA_Selenium_Keys_Null.htm" />
+        <HelpTOCNode Title="NumberPad0 Field" Url="html/F_OpenQA_Selenium_Keys_NumberPad0.htm" />
+        <HelpTOCNode Title="NumberPad1 Field" Url="html/F_OpenQA_Selenium_Keys_NumberPad1.htm" />
+        <HelpTOCNode Title="NumberPad2 Field" Url="html/F_OpenQA_Selenium_Keys_NumberPad2.htm" />
+        <HelpTOCNode Title="NumberPad3 Field" Url="html/F_OpenQA_Selenium_Keys_NumberPad3.htm" />
+        <HelpTOCNode Title="NumberPad4 Field" Url="html/F_OpenQA_Selenium_Keys_NumberPad4.htm" />
+        <HelpTOCNode Title="NumberPad5 Field" Url="html/F_OpenQA_Selenium_Keys_NumberPad5.htm" />
+        <HelpTOCNode Title="NumberPad6 Field" Url="html/F_OpenQA_Selenium_Keys_NumberPad6.htm" />
+        <HelpTOCNode Title="NumberPad7 Field" Url="html/F_OpenQA_Selenium_Keys_NumberPad7.htm" />
+        <HelpTOCNode Title="NumberPad8 Field" Url="html/F_OpenQA_Selenium_Keys_NumberPad8.htm" />
+        <HelpTOCNode Title="NumberPad9 Field" Url="html/F_OpenQA_Selenium_Keys_NumberPad9.htm" />
+        <HelpTOCNode Title="PageDown Field" Url="html/F_OpenQA_Selenium_Keys_PageDown.htm" />
+        <HelpTOCNode Title="PageUp Field" Url="html/F_OpenQA_Selenium_Keys_PageUp.htm" />
+        <HelpTOCNode Title="Pause Field" Url="html/F_OpenQA_Selenium_Keys_Pause.htm" />
+        <HelpTOCNode Title="Return Field" Url="html/F_OpenQA_Selenium_Keys_Return.htm" />
+        <HelpTOCNode Title="Right Field" Url="html/F_OpenQA_Selenium_Keys_Right.htm" />
+        <HelpTOCNode Title="Semicolon Field" Url="html/F_OpenQA_Selenium_Keys_Semicolon.htm" />
+        <HelpTOCNode Title="Separator Field" Url="html/F_OpenQA_Selenium_Keys_Separator.htm" />
+        <HelpTOCNode Title="Shift Field" Url="html/F_OpenQA_Selenium_Keys_Shift.htm" />
+        <HelpTOCNode Title="Space Field" Url="html/F_OpenQA_Selenium_Keys_Space.htm" />
+        <HelpTOCNode Title="Subtract Field" Url="html/F_OpenQA_Selenium_Keys_Subtract.htm" />
+        <HelpTOCNode Title="Tab Field" Url="html/F_OpenQA_Selenium_Keys_Tab.htm" />
+        <HelpTOCNode Title="Up Field" Url="html/F_OpenQA_Selenium_Keys_Up.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="a58f291a-42fa-4fdc-b797-2368584730d4" Title="NoAlertPresentException Class" Url="html/T_OpenQA_Selenium_NoAlertPresentException.htm">
+      <HelpTOCNode Title="NoAlertPresentException Members" Url="html/AllMembers_T_OpenQA_Selenium_NoAlertPresentException.htm" />
+      <HelpTOCNode Id="d6c45e6d-ce03-4a53-a5bd-f9f7c93bd953" Title="NoAlertPresentException Constructor " Url="html/Overload_OpenQA_Selenium_NoAlertPresentException__ctor.htm">
+        <HelpTOCNode Title="NoAlertPresentException Constructor " Url="html/M_OpenQA_Selenium_NoAlertPresentException__ctor.htm" />
+        <HelpTOCNode Title="NoAlertPresentException Constructor (String)" Url="html/M_OpenQA_Selenium_NoAlertPresentException__ctor_2.htm" />
+        <HelpTOCNode Title="NoAlertPresentException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_NoAlertPresentException__ctor_1.htm" />
+        <HelpTOCNode Title="NoAlertPresentException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_NoAlertPresentException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="NoAlertPresentException Methods" Url="html/Methods_T_OpenQA_Selenium_NoAlertPresentException.htm" />
+      <HelpTOCNode Title="NoAlertPresentException Properties" Url="html/Properties_T_OpenQA_Selenium_NoAlertPresentException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="8d3cb303-f107-4433-a0d1-5dca252b9346" Title="NoSuchElementException Class" Url="html/T_OpenQA_Selenium_NoSuchElementException.htm">
+      <HelpTOCNode Title="NoSuchElementException Members" Url="html/AllMembers_T_OpenQA_Selenium_NoSuchElementException.htm" />
+      <HelpTOCNode Id="0415662e-cab4-4739-acbe-474887f2ba7a" Title="NoSuchElementException Constructor " Url="html/Overload_OpenQA_Selenium_NoSuchElementException__ctor.htm">
+        <HelpTOCNode Title="NoSuchElementException Constructor " Url="html/M_OpenQA_Selenium_NoSuchElementException__ctor.htm" />
+        <HelpTOCNode Title="NoSuchElementException Constructor (String)" Url="html/M_OpenQA_Selenium_NoSuchElementException__ctor_2.htm" />
+        <HelpTOCNode Title="NoSuchElementException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_NoSuchElementException__ctor_1.htm" />
+        <HelpTOCNode Title="NoSuchElementException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_NoSuchElementException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="NoSuchElementException Methods" Url="html/Methods_T_OpenQA_Selenium_NoSuchElementException.htm" />
+      <HelpTOCNode Title="NoSuchElementException Properties" Url="html/Properties_T_OpenQA_Selenium_NoSuchElementException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="a23a1cdb-7c97-4cca-9f2a-3ff316cfbefb" Title="NoSuchFrameException Class" Url="html/T_OpenQA_Selenium_NoSuchFrameException.htm">
+      <HelpTOCNode Title="NoSuchFrameException Members" Url="html/AllMembers_T_OpenQA_Selenium_NoSuchFrameException.htm" />
+      <HelpTOCNode Id="52d1e08d-b167-4e0d-ba52-3ede3cd4f301" Title="NoSuchFrameException Constructor " Url="html/Overload_OpenQA_Selenium_NoSuchFrameException__ctor.htm">
+        <HelpTOCNode Title="NoSuchFrameException Constructor " Url="html/M_OpenQA_Selenium_NoSuchFrameException__ctor.htm" />
+        <HelpTOCNode Title="NoSuchFrameException Constructor (String)" Url="html/M_OpenQA_Selenium_NoSuchFrameException__ctor_2.htm" />
+        <HelpTOCNode Title="NoSuchFrameException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_NoSuchFrameException__ctor_1.htm" />
+        <HelpTOCNode Title="NoSuchFrameException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_NoSuchFrameException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="NoSuchFrameException Methods" Url="html/Methods_T_OpenQA_Selenium_NoSuchFrameException.htm" />
+      <HelpTOCNode Title="NoSuchFrameException Properties" Url="html/Properties_T_OpenQA_Selenium_NoSuchFrameException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="598d5089-ab4a-4595-95fa-3c60253e7cd0" Title="NoSuchWindowException Class" Url="html/T_OpenQA_Selenium_NoSuchWindowException.htm">
+      <HelpTOCNode Title="NoSuchWindowException Members" Url="html/AllMembers_T_OpenQA_Selenium_NoSuchWindowException.htm" />
+      <HelpTOCNode Id="27bb7c12-8a98-4d8e-9cd7-5aabdc2c6bf2" Title="NoSuchWindowException Constructor " Url="html/Overload_OpenQA_Selenium_NoSuchWindowException__ctor.htm">
+        <HelpTOCNode Title="NoSuchWindowException Constructor " Url="html/M_OpenQA_Selenium_NoSuchWindowException__ctor.htm" />
+        <HelpTOCNode Title="NoSuchWindowException Constructor (String)" Url="html/M_OpenQA_Selenium_NoSuchWindowException__ctor_2.htm" />
+        <HelpTOCNode Title="NoSuchWindowException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_NoSuchWindowException__ctor_1.htm" />
+        <HelpTOCNode Title="NoSuchWindowException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_NoSuchWindowException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="NoSuchWindowException Methods" Url="html/Methods_T_OpenQA_Selenium_NoSuchWindowException.htm" />
+      <HelpTOCNode Title="NoSuchWindowException Properties" Url="html/Properties_T_OpenQA_Selenium_NoSuchWindowException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="1b63e1d2-b56d-4f86-8a20-5b24e0972194" Title="NotFoundException Class" Url="html/T_OpenQA_Selenium_NotFoundException.htm">
+      <HelpTOCNode Title="NotFoundException Members" Url="html/AllMembers_T_OpenQA_Selenium_NotFoundException.htm" />
+      <HelpTOCNode Id="dc01bc52-38a4-4608-964b-3f0fe4dd2f73" Title="NotFoundException Constructor " Url="html/Overload_OpenQA_Selenium_NotFoundException__ctor.htm">
+        <HelpTOCNode Title="NotFoundException Constructor " Url="html/M_OpenQA_Selenium_NotFoundException__ctor.htm" />
+        <HelpTOCNode Title="NotFoundException Constructor (String)" Url="html/M_OpenQA_Selenium_NotFoundException__ctor_2.htm" />
+        <HelpTOCNode Title="NotFoundException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_NotFoundException__ctor_1.htm" />
+        <HelpTOCNode Title="NotFoundException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_NotFoundException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="NotFoundException Methods" Url="html/Methods_T_OpenQA_Selenium_NotFoundException.htm" />
+      <HelpTOCNode Title="NotFoundException Properties" Url="html/Properties_T_OpenQA_Selenium_NotFoundException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="79eace9f-ceca-41d6-a29f-699cb08f50a8" Title="Platform Class" Url="html/T_OpenQA_Selenium_Platform.htm">
+      <HelpTOCNode Title="Platform Members" Url="html/AllMembers_T_OpenQA_Selenium_Platform.htm" />
+      <HelpTOCNode Title="Platform Constructor " Url="html/M_OpenQA_Selenium_Platform__ctor.htm" />
+      <HelpTOCNode Id="1189b47e-6635-44b2-afc7-6d699017e503" Title="Platform Methods" Url="html/Methods_T_OpenQA_Selenium_Platform.htm">
+        <HelpTOCNode Title="IsPlatformType Method " Url="html/M_OpenQA_Selenium_Platform_IsPlatformType.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="79935a76-af63-433d-b5f1-36b2718fffb7" Title="Platform Properties" Url="html/Properties_T_OpenQA_Selenium_Platform.htm">
+        <HelpTOCNode Title="CurrentPlatform Property " Url="html/P_OpenQA_Selenium_Platform_CurrentPlatform.htm" />
+        <HelpTOCNode Title="MajorVersion Property " Url="html/P_OpenQA_Selenium_Platform_MajorVersion.htm" />
+        <HelpTOCNode Title="MinorVersion Property " Url="html/P_OpenQA_Selenium_Platform_MinorVersion.htm" />
+        <HelpTOCNode Title="PlatformType Property " Url="html/P_OpenQA_Selenium_Platform_PlatformType.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Title="PlatformType Enumeration" Url="html/T_OpenQA_Selenium_PlatformType.htm" />
+    <HelpTOCNode Id="5d555566-392e-4485-8418-f2e080ebe0f8" Title="Screenshot Class" Url="html/T_OpenQA_Selenium_Screenshot.htm">
+      <HelpTOCNode Title="Screenshot Members" Url="html/AllMembers_T_OpenQA_Selenium_Screenshot.htm" />
+      <HelpTOCNode Title="Screenshot Constructor " Url="html/M_OpenQA_Selenium_Screenshot__ctor.htm" />
+      <HelpTOCNode Id="f33a6798-0800-4e7c-9f08-035e5c14a70f" Title="Screenshot Methods" Url="html/Methods_T_OpenQA_Selenium_Screenshot.htm">
+        <HelpTOCNode Title="SaveAsFile Method " Url="html/M_OpenQA_Selenium_Screenshot_SaveAsFile.htm" />
+        <HelpTOCNode Title="ToString Method " Url="html/M_OpenQA_Selenium_Screenshot_ToString.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="1f0034db-1106-4ee7-8bef-fd681d2ee057" Title="Screenshot Properties" Url="html/Properties_T_OpenQA_Selenium_Screenshot.htm">
+        <HelpTOCNode Title="AsBase64EncodedString Property " Url="html/P_OpenQA_Selenium_Screenshot_AsBase64EncodedString.htm" />
+        <HelpTOCNode Title="AsByteArray Property " Url="html/P_OpenQA_Selenium_Screenshot_AsByteArray.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="af624ae4-a397-4c15-9ecd-7ca1cc2d450b" Title="StaleElementReferenceException Class" Url="html/T_OpenQA_Selenium_StaleElementReferenceException.htm">
+      <HelpTOCNode Title="StaleElementReferenceException Members" Url="html/AllMembers_T_OpenQA_Selenium_StaleElementReferenceException.htm" />
+      <HelpTOCNode Id="642a8bf6-9519-442f-9d3d-ebf50f90eb6b" Title="StaleElementReferenceException Constructor " Url="html/Overload_OpenQA_Selenium_StaleElementReferenceException__ctor.htm">
+        <HelpTOCNode Title="StaleElementReferenceException Constructor " Url="html/M_OpenQA_Selenium_StaleElementReferenceException__ctor.htm" />
+        <HelpTOCNode Title="StaleElementReferenceException Constructor (String)" Url="html/M_OpenQA_Selenium_StaleElementReferenceException__ctor_2.htm" />
+        <HelpTOCNode Title="StaleElementReferenceException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_StaleElementReferenceException__ctor_1.htm" />
+        <HelpTOCNode Title="StaleElementReferenceException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_StaleElementReferenceException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="StaleElementReferenceException Methods" Url="html/Methods_T_OpenQA_Selenium_StaleElementReferenceException.htm" />
+      <HelpTOCNode Title="StaleElementReferenceException Properties" Url="html/Properties_T_OpenQA_Selenium_StaleElementReferenceException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="a720e238-2fda-43d4-83d9-edd839cb4e44" Title="UnableToSetCookieException Class" Url="html/T_OpenQA_Selenium_UnableToSetCookieException.htm">
+      <HelpTOCNode Title="UnableToSetCookieException Members" Url="html/AllMembers_T_OpenQA_Selenium_UnableToSetCookieException.htm" />
+      <HelpTOCNode Id="afbfbb51-849b-4b9f-a342-9c57165e8706" Title="UnableToSetCookieException Constructor " Url="html/Overload_OpenQA_Selenium_UnableToSetCookieException__ctor.htm">
+        <HelpTOCNode Title="UnableToSetCookieException Constructor " Url="html/M_OpenQA_Selenium_UnableToSetCookieException__ctor.htm" />
+        <HelpTOCNode Title="UnableToSetCookieException Constructor (String)" Url="html/M_OpenQA_Selenium_UnableToSetCookieException__ctor_2.htm" />
+        <HelpTOCNode Title="UnableToSetCookieException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_UnableToSetCookieException__ctor_1.htm" />
+        <HelpTOCNode Title="UnableToSetCookieException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_UnableToSetCookieException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="UnableToSetCookieException Methods" Url="html/Methods_T_OpenQA_Selenium_UnableToSetCookieException.htm" />
+      <HelpTOCNode Title="UnableToSetCookieException Properties" Url="html/Properties_T_OpenQA_Selenium_UnableToSetCookieException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="a03bdae3-9dc4-4cb1-a180-3885de45ed04" Title="UnhandledAlertException Class" Url="html/T_OpenQA_Selenium_UnhandledAlertException.htm">
+      <HelpTOCNode Title="UnhandledAlertException Members" Url="html/AllMembers_T_OpenQA_Selenium_UnhandledAlertException.htm" />
+      <HelpTOCNode Id="6c46c241-4f82-41cc-a3e6-6a3276b5aba3" Title="UnhandledAlertException Constructor " Url="html/Overload_OpenQA_Selenium_UnhandledAlertException__ctor.htm">
+        <HelpTOCNode Title="UnhandledAlertException Constructor " Url="html/M_OpenQA_Selenium_UnhandledAlertException__ctor.htm" />
+        <HelpTOCNode Title="UnhandledAlertException Constructor (String)" Url="html/M_OpenQA_Selenium_UnhandledAlertException__ctor_2.htm" />
+        <HelpTOCNode Title="UnhandledAlertException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_UnhandledAlertException__ctor_1.htm" />
+        <HelpTOCNode Title="UnhandledAlertException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_UnhandledAlertException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="UnhandledAlertException Methods" Url="html/Methods_T_OpenQA_Selenium_UnhandledAlertException.htm" />
+      <HelpTOCNode Title="UnhandledAlertException Properties" Url="html/Properties_T_OpenQA_Selenium_UnhandledAlertException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="22884c42-86c7-4c1a-b325-6c98034ff54f" Title="WebDriverException Class" Url="html/T_OpenQA_Selenium_WebDriverException.htm">
+      <HelpTOCNode Title="WebDriverException Members" Url="html/AllMembers_T_OpenQA_Selenium_WebDriverException.htm" />
+      <HelpTOCNode Id="b79e5ff5-d852-4790-9514-909673b1b6da" Title="WebDriverException Constructor " Url="html/Overload_OpenQA_Selenium_WebDriverException__ctor.htm">
+        <HelpTOCNode Title="WebDriverException Constructor " Url="html/M_OpenQA_Selenium_WebDriverException__ctor.htm" />
+        <HelpTOCNode Title="WebDriverException Constructor (String)" Url="html/M_OpenQA_Selenium_WebDriverException__ctor_2.htm" />
+        <HelpTOCNode Title="WebDriverException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_WebDriverException__ctor_1.htm" />
+        <HelpTOCNode Title="WebDriverException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_WebDriverException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="WebDriverException Methods" Url="html/Methods_T_OpenQA_Selenium_WebDriverException.htm" />
+      <HelpTOCNode Title="WebDriverException Properties" Url="html/Properties_T_OpenQA_Selenium_WebDriverException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Title="WebDriverResult Enumeration" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
+    <HelpTOCNode Id="704c1d72-b59b-413c-a235-dedb4fbce9e3" Title="XPathLookupException Class" Url="html/T_OpenQA_Selenium_XPathLookupException.htm">
+      <HelpTOCNode Title="XPathLookupException Members" Url="html/AllMembers_T_OpenQA_Selenium_XPathLookupException.htm" />
+      <HelpTOCNode Id="1b752d45-a49a-4e6c-9a69-2e7df99d3077" Title="XPathLookupException Constructor " Url="html/Overload_OpenQA_Selenium_XPathLookupException__ctor.htm">
+        <HelpTOCNode Title="XPathLookupException Constructor " Url="html/M_OpenQA_Selenium_XPathLookupException__ctor.htm" />
+        <HelpTOCNode Title="XPathLookupException Constructor (String)" Url="html/M_OpenQA_Selenium_XPathLookupException__ctor_2.htm" />
+        <HelpTOCNode Title="XPathLookupException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_XPathLookupException__ctor_1.htm" />
+        <HelpTOCNode Title="XPathLookupException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_XPathLookupException__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="XPathLookupException Methods" Url="html/Methods_T_OpenQA_Selenium_XPathLookupException.htm" />
+      <HelpTOCNode Title="XPathLookupException Properties" Url="html/Properties_T_OpenQA_Selenium_XPathLookupException.htm" />
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="8d66298d-9078-4cb9-931a-293658c1ec16" Title="OpenQA.Selenium.Android Namespace" Url="html/N_OpenQA_Selenium_Android.htm">
+    <HelpTOCNode Id="fdc8f16c-acdd-4f1c-892c-13e8c5246fbf" Title="AndroidDriver Class" Url="html/T_OpenQA_Selenium_Android_AndroidDriver.htm">
+      <HelpTOCNode Title="AndroidDriver Members" Url="html/AllMembers_T_OpenQA_Selenium_Android_AndroidDriver.htm" />
+      <HelpTOCNode Id="0e78286a-db1b-4016-97dc-8b725a3dba37" Title="AndroidDriver Constructor " Url="html/Overload_OpenQA_Selenium_Android_AndroidDriver__ctor.htm">
+        <HelpTOCNode Title="AndroidDriver Constructor " Url="html/M_OpenQA_Selenium_Android_AndroidDriver__ctor.htm" />
+        <HelpTOCNode Title="AndroidDriver Constructor (String)" Url="html/M_OpenQA_Selenium_Android_AndroidDriver__ctor_1.htm" />
+        <HelpTOCNode Title="AndroidDriver Constructor (Uri)" Url="html/M_OpenQA_Selenium_Android_AndroidDriver__ctor_2.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="511f43a3-e13d-48a2-add6-aa3090e4d64c" Title="AndroidDriver Methods" Url="html/Methods_T_OpenQA_Selenium_Android_AndroidDriver.htm">
+        <HelpTOCNode Title="Dispose Method " Url="html/Overload_OpenQA_Selenium_Android_AndroidDriver_Dispose.htm" />
+        <HelpTOCNode Title="FindElement Method " Url="html/Overload_OpenQA_Selenium_Android_AndroidDriver_FindElement.htm" />
+        <HelpTOCNode Title="FindElements Method " Url="html/Overload_OpenQA_Selenium_Android_AndroidDriver_FindElements.htm" />
+        <HelpTOCNode Title="GetScreenshot Method " Url="html/M_OpenQA_Selenium_Android_AndroidDriver_GetScreenshot.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="AndroidDriver Properties" Url="html/Properties_T_OpenQA_Selenium_Android_AndroidDriver.htm" />
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="7c6fc278-2196-4d36-bb4b-a3fe79271a27" Title="OpenQA.Selenium.Chrome Namespace" Url="html/N_OpenQA_Selenium_Chrome.htm">
+    <HelpTOCNode Id="0beb00ec-22b9-4a6a-bac9-c88b43b75c6f" Title="ChromeCommandExecutor Class" Url="html/T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm">
+      <HelpTOCNode Title="ChromeCommandExecutor Members" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm" />
+      <HelpTOCNode Title="ChromeCommandExecutor Constructor " Url="html/M_OpenQA_Selenium_Chrome_ChromeCommandExecutor__ctor.htm" />
+      <HelpTOCNode Id="d17b0090-6490-49ec-a449-46cd853e6f1b" Title="ChromeCommandExecutor Methods" Url="html/Methods_T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm">
+        <HelpTOCNode Title="Start Method " Url="html/M_OpenQA_Selenium_Chrome_ChromeCommandExecutor_Start.htm" />
+        <HelpTOCNode Title="Stop Method " Url="html/M_OpenQA_Selenium_Chrome_ChromeCommandExecutor_Stop.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="8c0af139-c455-44b6-bfc9-717b9b9c538c" Title="ChromeDriver Class" Url="html/T_OpenQA_Selenium_Chrome_ChromeDriver.htm">
+      <HelpTOCNode Title="ChromeDriver Members" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeDriver.htm" />
+      <HelpTOCNode Id="ca47f8a2-272e-417a-8f86-2110156be49f" Title="ChromeDriver Constructor " Url="html/Overload_OpenQA_Selenium_Chrome_ChromeDriver__ctor.htm">
+        <HelpTOCNode Title="ChromeDriver Constructor " Url="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor.htm" />
+        <HelpTOCNode Title="ChromeDriver Constructor (String)" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="8f19bf99-9792-4bdf-b557-b6cacf7a0ba8" Title="ChromeDriver Fields" Url="html/Fields_T_OpenQA_Selenium_Chrome_ChromeDriver.htm">
+        <HelpTOCNode Title="AcceptUntrustedCertificates Field" Url="html/F_OpenQA_Selenium_Chrome_ChromeDriver_AcceptUntrustedCertificates.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="8611b302-22f8-4b8b-af29-993507257721" Title="ChromeDriver Methods" Url="html/Methods_T_OpenQA_Selenium_Chrome_ChromeDriver.htm">
+        <HelpTOCNode Title="Dispose Method " Url="html/Overload_OpenQA_Selenium_Chrome_ChromeDriver_Dispose.htm" />
+        <HelpTOCNode Title="FindElement Method " Url="html/Overload_OpenQA_Selenium_Chrome_ChromeDriver_FindElement.htm" />
+        <HelpTOCNode Title="FindElements Method " Url="html/Overload_OpenQA_Selenium_Chrome_ChromeDriver_FindElements.htm" />
+        <HelpTOCNode Title="GetScreenshot Method " Url="html/M_OpenQA_Selenium_Chrome_ChromeDriver_GetScreenshot.htm" />
+        <HelpTOCNode Title="StartClient Method " Url="html/M_OpenQA_Selenium_Chrome_ChromeDriver_StartClient.htm" />
+        <HelpTOCNode Title="StopClient Method " Url="html/M_OpenQA_Selenium_Chrome_ChromeDriver_StopClient.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="ChromeDriver Properties" Url="html/Properties_T_OpenQA_Selenium_Chrome_ChromeDriver.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="c51217b3-fb23-4edb-8b7f-e4cae4618350" Title="ChromeDriverService Class" Url="html/T_OpenQA_Selenium_Chrome_ChromeDriverService.htm">
+      <HelpTOCNode Title="ChromeDriverService Members" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm" />
+      <HelpTOCNode Id="84a7170d-67f7-4d4a-88ac-024b96c33d03" Title="ChromeDriverService Methods" Url="html/Methods_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm">
+        <HelpTOCNode Id="4b8fc0ba-362f-45e8-b74b-3f005c4c21ff" Title="CreateDefaultService Method " Url="html/Overload_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService.htm">
+          <HelpTOCNode Title="CreateDefaultService Method " Url="html/M_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService.htm" />
+          <HelpTOCNode Title="CreateDefaultService Method (String)" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Dispose Method " Url="html/M_OpenQA_Selenium_Chrome_ChromeDriverService_Dispose.htm" />
+        <HelpTOCNode Title="Start Method " Url="html/M_OpenQA_Selenium_Chrome_ChromeDriverService_Start.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="373a7910-e400-43f3-bed9-d13ff380df20" Title="ChromeDriverService Properties" Url="html/Properties_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm">
+        <HelpTOCNode Title="IsRunning Property " Url="html/P_OpenQA_Selenium_Chrome_ChromeDriverService_IsRunning.htm" />
+        <HelpTOCNode Title="ServiceUrl Property " Url="html/P_OpenQA_Selenium_Chrome_ChromeDriverService_ServiceUrl.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="4740e3d7-f959-4412-8796-611dc359482c" Title="ChromeWebElement Class" Url="html/T_OpenQA_Selenium_Chrome_ChromeWebElement.htm">
+      <HelpTOCNode Title="ChromeWebElement Members" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm" />
+      <HelpTOCNode Title="ChromeWebElement Constructor " Url="html/M_OpenQA_Selenium_Chrome_ChromeWebElement__ctor.htm" />
+      <HelpTOCNode Id="0a45c92e-56b9-417e-9b36-7c27d1c4e04e" Title="ChromeWebElement Methods" Url="html/Methods_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm">
+        <HelpTOCNode Title="Equals Method " Url="html/M_OpenQA_Selenium_Chrome_ChromeWebElement_Equals.htm" />
+        <HelpTOCNode Title="FindElement Method " Url="html/Overload_OpenQA_Selenium_Chrome_ChromeWebElement_FindElement.htm" />
+        <HelpTOCNode Title="FindElements Method " Url="html/Overload_OpenQA_Selenium_Chrome_ChromeWebElement_FindElements.htm" />
+        <HelpTOCNode Title="GetHashCode Method " Url="html/M_OpenQA_Selenium_Chrome_ChromeWebElement_GetHashCode.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="ChromeWebElement Properties" Url="html/Properties_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm" />
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="8681ea71-358d-49ea-abe1-d5a0db5a57ff" Title="OpenQA.Selenium.Firefox Namespace" Url="html/N_OpenQA_Selenium_Firefox.htm">
+    <HelpTOCNode Id="9c4dd953-ebff-479a-9b8d-3206bc40a7bb" Title="FirefoxBinary Class" Url="html/T_OpenQA_Selenium_Firefox_FirefoxBinary.htm">
+      <HelpTOCNode Title="FirefoxBinary Members" Url="html/AllMembers_T_OpenQA_Selenium_Firefox_FirefoxBinary.htm" />
+      <HelpTOCNode Id="57ca7f63-0618-40ef-8731-c2e0a5a95784" Title="FirefoxBinary Constructor " Url="html/Overload_OpenQA_Selenium_Firefox_FirefoxBinary__ctor.htm">
+        <HelpTOCNode Title="FirefoxBinary Constructor " Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary__ctor.htm" />
+        <HelpTOCNode Title="FirefoxBinary Constructor (String)" Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="55fc2fa1-fb77-4f29-9948-0a46bc9b10f9" Title="FirefoxBinary Methods" Url="html/Methods_T_OpenQA_Selenium_Firefox_FirefoxBinary.htm">
+        <HelpTOCNode Title="Clean Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_Clean.htm" />
+        <HelpTOCNode Title="CreateProfile Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_CreateProfile.htm" />
+        <HelpTOCNode Title="Quit Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_Quit.htm" />
+        <HelpTOCNode Title="SetEnvironmentProperty Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_SetEnvironmentProperty.htm" />
+        <HelpTOCNode Title="StartFirefoxProcess Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_StartFirefoxProcess.htm" />
+        <HelpTOCNode Title="StartProfile Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_StartProfile.htm" />
+        <HelpTOCNode Title="ToString Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_ToString.htm" />
+        <HelpTOCNode Title="WaitForProcessExit Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_WaitForProcessExit.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="76d3a55b-cec5-4e96-90d3-9656ff2580c7" Title="FirefoxBinary Properties" Url="html/Properties_T_OpenQA_Selenium_Firefox_FirefoxBinary.htm">
+        <HelpTOCNode Title="ConsoleOutput Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxBinary_ConsoleOutput.htm" />
+        <HelpTOCNode Title="ExtraEnvironmentVariables Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxBinary_ExtraEnvironmentVariables.htm" />
+        <HelpTOCNode Title="IsOnLinux Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxBinary_IsOnLinux.htm" />
+        <HelpTOCNode Title="TimeoutInMilliseconds Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxBinary_TimeoutInMilliseconds.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="2675730a-1a4a-47fe-b31e-1efd10a37aab" Title="FirefoxDriver Class" Url="html/T_OpenQA_Selenium_Firefox_FirefoxDriver.htm">
+      <HelpTOCNode Title="FirefoxDriver Members" Url="html/AllMembers_T_OpenQA_Selenium_Firefox_FirefoxDriver.htm" />
+      <HelpTOCNode Id="73b3b3cd-aa98-45e0-a1a5-d50e6e3523bd" Title="FirefoxDriver Constructor " Url="html/Overload_OpenQA_Selenium_Firefox_FirefoxDriver__ctor.htm">
+        <HelpTOCNode Title="FirefoxDriver Constructor " Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor.htm" />
+        <HelpTOCNode Title="FirefoxDriver Constructor (FirefoxProfile)" Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_2.htm" />
+        <HelpTOCNode Title="FirefoxDriver Constructor (FirefoxBinary, FirefoxProfile)" Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="5424f22f-9d31-4980-a512-1c548885223e" Title="FirefoxDriver Fields" Url="html/Fields_T_OpenQA_Selenium_Firefox_FirefoxDriver.htm">
+        <HelpTOCNode Title="AcceptUntrustedCertificates Field" Url="html/F_OpenQA_Selenium_Firefox_FirefoxDriver_AcceptUntrustedCertificates.htm" />
+        <HelpTOCNode Title="DefaultEnableNativeEvents Field" Url="html/F_OpenQA_Selenium_Firefox_FirefoxDriver_DefaultEnableNativeEvents.htm" />
+        <HelpTOCNode Title="DefaultPort Field" Url="html/F_OpenQA_Selenium_Firefox_FirefoxDriver_DefaultPort.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="d5d57297-9e07-49c9-bdd5-f2cc144f51c9" Title="FirefoxDriver Methods" Url="html/Methods_T_OpenQA_Selenium_Firefox_FirefoxDriver.htm">
+        <HelpTOCNode Title="CreateElement Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver_CreateElement.htm" />
+        <HelpTOCNode Title="Dispose Method " Url="html/Overload_OpenQA_Selenium_Firefox_FirefoxDriver_Dispose.htm" />
+        <HelpTOCNode Title="FindElement Method " Url="html/Overload_OpenQA_Selenium_Firefox_FirefoxDriver_FindElement.htm" />
+        <HelpTOCNode Title="FindElements Method " Url="html/Overload_OpenQA_Selenium_Firefox_FirefoxDriver_FindElements.htm" />
+        <HelpTOCNode Title="GetScreenshot Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver_GetScreenshot.htm" />
+        <HelpTOCNode Title="PrepareEnvironment Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver_PrepareEnvironment.htm" />
+        <HelpTOCNode Title="StartClient Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver_StartClient.htm" />
+        <HelpTOCNode Title="StopClient Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver_StopClient.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="8285db27-070c-4e01-b749-44ca882e5eac" Title="FirefoxDriver Properties" Url="html/Properties_T_OpenQA_Selenium_Firefox_FirefoxDriver.htm">
+        <HelpTOCNode Title="Binary Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxDriver_Binary.htm" />
+        <HelpTOCNode Title="Profile Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxDriver_Profile.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="af9566e7-6068-41d6-a372-e4c5a40535c3" Title="FirefoxExtension Class" Url="html/T_OpenQA_Selenium_Firefox_FirefoxExtension.htm">
+      <HelpTOCNode Title="FirefoxExtension Members" Url="html/AllMembers_T_OpenQA_Selenium_Firefox_FirefoxExtension.htm" />
+      <HelpTOCNode Title="FirefoxExtension Constructor " Url="html/M_OpenQA_Selenium_Firefox_FirefoxExtension__ctor.htm" />
+      <HelpTOCNode Id="bc223c53-f184-4c6d-ad03-2bbe0cfbd142" Title="FirefoxExtension Methods" Url="html/Methods_T_OpenQA_Selenium_Firefox_FirefoxExtension.htm">
+        <HelpTOCNode Title="Install Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxExtension_Install.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c1386d54-4c49-4456-9fcc-50fddc39771f" Title="FirefoxProfile Class" Url="html/T_OpenQA_Selenium_Firefox_FirefoxProfile.htm">
+      <HelpTOCNode Title="FirefoxProfile Members" Url="html/AllMembers_T_OpenQA_Selenium_Firefox_FirefoxProfile.htm" />
+      <HelpTOCNode Id="d4b97922-5671-4a35-b2a6-c1b56fc47e85" Title="FirefoxProfile Constructor " Url="html/Overload_OpenQA_Selenium_Firefox_FirefoxProfile__ctor.htm">
+        <HelpTOCNode Title="FirefoxProfile Constructor " Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile__ctor.htm" />
+        <HelpTOCNode Title="FirefoxProfile Constructor (String)" Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile__ctor_1.htm" />
+        <HelpTOCNode Title="FirefoxProfile Constructor (String, Boolean)" Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile__ctor_2.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="281b8316-3171-4003-812d-9279f415575b" Title="FirefoxProfile Methods" Url="html/Methods_T_OpenQA_Selenium_Firefox_FirefoxProfile.htm">
+        <HelpTOCNode Title="AddExtension Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_AddExtension.htm" />
+        <HelpTOCNode Title="Clean Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_Clean.htm" />
+        <HelpTOCNode Title="FromBase64String Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_FromBase64String.htm" />
+        <HelpTOCNode Id="dc0c97e7-d3c5-4c32-b293-d903d7bda81b" Title="SetPreference Method " Url="html/Overload_OpenQA_Selenium_Firefox_FirefoxProfile_SetPreference.htm">
+          <HelpTOCNode Title="SetPreference Method (String, Boolean)" Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_SetPreference.htm" />
+          <HelpTOCNode Title="SetPreference Method (String, Int32)" Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_SetPreference_1.htm" />
+          <HelpTOCNode Title="SetPreference Method (String, String)" Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_SetPreference_2.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="ToBase64String Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_ToBase64String.htm" />
+        <HelpTOCNode Title="WriteToDisk Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_WriteToDisk.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="bfae12c1-638a-46bb-927d-af34e51905e7" Title="FirefoxProfile Properties" Url="html/Properties_T_OpenQA_Selenium_Firefox_FirefoxProfile.htm">
+        <HelpTOCNode Title="AcceptUntrustedCertificates Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_AcceptUntrustedCertificates.htm" />
+        <HelpTOCNode Title="AlwaysLoadNoFocusLibrary Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_AlwaysLoadNoFocusLibrary.htm" />
+        <HelpTOCNode Title="EnableNativeEvents Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_EnableNativeEvents.htm" />
+        <HelpTOCNode Title="IsRunning Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_IsRunning.htm" />
+        <HelpTOCNode Title="Port Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_Port.htm" />
+        <HelpTOCNode Title="ProfileDirectory Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_ProfileDirectory.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="3dda3528-a1fa-4436-94f8-c246ee6e8d52" Title="FirefoxProfileManager Class" Url="html/T_OpenQA_Selenium_Firefox_FirefoxProfileManager.htm">
+      <HelpTOCNode Title="FirefoxProfileManager Members" Url="html/AllMembers_T_OpenQA_Selenium_Firefox_FirefoxProfileManager.htm" />
+      <HelpTOCNode Title="FirefoxProfileManager Constructor " Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfileManager__ctor.htm" />
+      <HelpTOCNode Id="1c5edc3d-2f6b-401b-89a8-516d435544d0" Title="FirefoxProfileManager Methods" Url="html/Methods_T_OpenQA_Selenium_Firefox_FirefoxProfileManager.htm">
+        <HelpTOCNode Title="GetProfile Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfileManager_GetProfile.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="8ef72508-14a9-4d60-9755-50fc5b5765fd" Title="FirefoxProfileManager Properties" Url="html/Properties_T_OpenQA_Selenium_Firefox_FirefoxProfileManager.htm">
+        <HelpTOCNode Title="ExistingProfiles Property " Url="html/P_OpenQA_Selenium_Firefox_FirefoxProfileManager_ExistingProfiles.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="803f20d5-1e8d-4aa4-a902-ca73862af1dd" Title="FirefoxWebElement Class" Url="html/T_OpenQA_Selenium_Firefox_FirefoxWebElement.htm">
+      <HelpTOCNode Title="FirefoxWebElement Members" Url="html/AllMembers_T_OpenQA_Selenium_Firefox_FirefoxWebElement.htm" />
+      <HelpTOCNode Title="FirefoxWebElement Constructor " Url="html/M_OpenQA_Selenium_Firefox_FirefoxWebElement__ctor.htm" />
+      <HelpTOCNode Id="d3e43159-5892-4771-b04a-fac62ead5e3a" Title="FirefoxWebElement Methods" Url="html/Methods_T_OpenQA_Selenium_Firefox_FirefoxWebElement.htm">
+        <HelpTOCNode Title="Equals Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxWebElement_Equals.htm" />
+        <HelpTOCNode Title="FindElement Method " Url="html/Overload_OpenQA_Selenium_Firefox_FirefoxWebElement_FindElement.htm" />
+        <HelpTOCNode Title="FindElements Method " Url="html/Overload_OpenQA_Selenium_Firefox_FirefoxWebElement_FindElements.htm" />
+        <HelpTOCNode Title="GetHashCode Method " Url="html/M_OpenQA_Selenium_Firefox_FirefoxWebElement_GetHashCode.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="FirefoxWebElement Properties" Url="html/Properties_T_OpenQA_Selenium_Firefox_FirefoxWebElement.htm" />
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="72ca89d1-1f86-4983-907f-c325d8444e6b" Title="OpenQA.Selenium.IE Namespace" Url="html/N_OpenQA_Selenium_IE.htm">
+    <HelpTOCNode Id="d50ae9ae-6f5c-46c2-9271-47926dbc184e" Title="InternetExplorerDriver Class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerDriver.htm">
+      <HelpTOCNode Title="InternetExplorerDriver Members" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm" />
+      <HelpTOCNode Id="7d51214c-35fe-4abd-a7fd-307025934984" Title="InternetExplorerDriver Constructor " Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriver__ctor.htm">
+        <HelpTOCNode Title="InternetExplorerDriver Constructor " Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor.htm" />
+        <HelpTOCNode Title="InternetExplorerDriver Constructor (Int32)" Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_2.htm" />
+        <HelpTOCNode Title="InternetExplorerDriver Constructor (ICapabilities)" Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_1.htm" />
+        <HelpTOCNode Title="InternetExplorerDriver Constructor (Int32, ICapabilities)" Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="6ad97662-7e01-4ecf-af13-a1f1123306a0" Title="InternetExplorerDriver Methods" Url="html/Methods_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm">
+        <HelpTOCNode Title="Dispose Method " Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriver_Dispose.htm" />
+        <HelpTOCNode Title="FindElement Method " Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriver_FindElement.htm" />
+        <HelpTOCNode Title="FindElements Method " Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriver_FindElements.htm" />
+        <HelpTOCNode Title="GetScreenshot Method " Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver_GetScreenshot.htm" />
+        <HelpTOCNode Title="StartClient Method " Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver_StartClient.htm" />
+        <HelpTOCNode Title="StopClient Method " Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver_StopClient.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="InternetExplorerDriver Properties" Url="html/Properties_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="44ed0b91-d290-4c78-a00f-2275a5151467" Title="InternetExplorerWebElement Class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm">
+      <HelpTOCNode Title="InternetExplorerWebElement Members" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm" />
+      <HelpTOCNode Title="InternetExplorerWebElement Constructor " Url="html/M_OpenQA_Selenium_IE_InternetExplorerWebElement__ctor.htm" />
+      <HelpTOCNode Id="8241518a-d65a-44ee-8f58-88706a2f938c" Title="InternetExplorerWebElement Methods" Url="html/Methods_T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm">
+        <HelpTOCNode Title="FindElement Method " Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerWebElement_FindElement.htm" />
+        <HelpTOCNode Title="FindElements Method " Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerWebElement_FindElements.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="InternetExplorerWebElement Properties" Url="html/Properties_T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm" />
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="3b459b82-e7b2-4749-b1b3-bae2f2b41f4f" Title="OpenQA.Selenium.Interactions Namespace" Url="html/N_OpenQA_Selenium_Interactions.htm">
+    <HelpTOCNode Id="69b89257-66c5-4f4c-a262-6bf39f246a2c" Title="Actions Class" Url="html/T_OpenQA_Selenium_Interactions_Actions.htm">
+      <HelpTOCNode Title="Actions Members" Url="html/AllMembers_T_OpenQA_Selenium_Interactions_Actions.htm" />
+      <HelpTOCNode Title="Actions Constructor " Url="html/M_OpenQA_Selenium_Interactions_Actions__ctor.htm" />
+      <HelpTOCNode Id="f78d5af7-4b7f-47d0-b624-601ab082ee6e" Title="Actions Methods" Url="html/Methods_T_OpenQA_Selenium_Interactions_Actions.htm">
+        <HelpTOCNode Title="Build Method " Url="html/M_OpenQA_Selenium_Interactions_Actions_Build.htm" />
+        <HelpTOCNode Id="9779383f-9c84-4280-acc8-fa08a9e8c594" Title="Click Method " Url="html/Overload_OpenQA_Selenium_Interactions_Actions_Click.htm">
+          <HelpTOCNode Title="Click Method " Url="html/M_OpenQA_Selenium_Interactions_Actions_Click.htm" />
+          <HelpTOCNode Title="Click Method (IWebElement)" Url="html/M_OpenQA_Selenium_Interactions_Actions_Click_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="ClickAndHold Method " Url="html/M_OpenQA_Selenium_Interactions_Actions_ClickAndHold.htm" />
+        <HelpTOCNode Title="ContextClick Method " Url="html/M_OpenQA_Selenium_Interactions_Actions_ContextClick.htm" />
+        <HelpTOCNode Title="DoubleClick Method " Url="html/M_OpenQA_Selenium_Interactions_Actions_DoubleClick.htm" />
+        <HelpTOCNode Title="DragAndDrop Method " Url="html/M_OpenQA_Selenium_Interactions_Actions_DragAndDrop.htm" />
+        <HelpTOCNode Title="DragAndDropToOffset Method " Url="html/M_OpenQA_Selenium_Interactions_Actions_DragAndDropToOffset.htm" />
+        <HelpTOCNode Id="3612866b-e854-4c9e-87b4-b3f53e8760a8" Title="KeyDown Method " Url="html/Overload_OpenQA_Selenium_Interactions_Actions_KeyDown.htm">
+          <HelpTOCNode Title="KeyDown Method (String)" Url="html/M_OpenQA_Selenium_Interactions_Actions_KeyDown_1.htm" />
+          <HelpTOCNode Title="KeyDown Method (IWebElement, String)" Url="html/M_OpenQA_Selenium_Interactions_Actions_KeyDown.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="c73045e8-02f9-49b9-9a5d-bcbbe5a7380f" Title="KeyUp Method " Url="html/Overload_OpenQA_Selenium_Interactions_Actions_KeyUp.htm">
+          <HelpTOCNode Title="KeyUp Method (String)" Url="html/M_OpenQA_Selenium_Interactions_Actions_KeyUp_1.htm" />
+          <HelpTOCNode Title="KeyUp Method (IWebElement, String)" Url="html/M_OpenQA_Selenium_Interactions_Actions_KeyUp.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="MoveByOffset Method " Url="html/M_OpenQA_Selenium_Interactions_Actions_MoveByOffset.htm" />
+        <HelpTOCNode Id="ff26d3d6-ffa9-4c0d-be7c-094dd4047c7f" Title="MoveToElement Method " Url="html/Overload_OpenQA_Selenium_Interactions_Actions_MoveToElement.htm">
+          <HelpTOCNode Title="MoveToElement Method (IWebElement)" Url="html/M_OpenQA_Selenium_Interactions_Actions_MoveToElement.htm" />
+          <HelpTOCNode Title="MoveToElement Method (IWebElement, Int32, Int32)" Url="html/M_OpenQA_Selenium_Interactions_Actions_MoveToElement_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Perform Method " Url="html/M_OpenQA_Selenium_Interactions_Actions_Perform.htm" />
+        <HelpTOCNode Title="Release Method " Url="html/M_OpenQA_Selenium_Interactions_Actions_Release.htm" />
+        <HelpTOCNode Id="444cf683-3d43-4f0f-8b1a-a0a4c37e5a9b" Title="SendKeys Method " Url="html/Overload_OpenQA_Selenium_Interactions_Actions_SendKeys.htm">
+          <HelpTOCNode Title="SendKeys Method (String)" Url="html/M_OpenQA_Selenium_Interactions_Actions_SendKeys_1.htm" />
+          <HelpTOCNode Title="SendKeys Method (IWebElement, String)" Url="html/M_OpenQA_Selenium_Interactions_Actions_SendKeys.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="2326d93c-339f-4871-8e91-3a0dde084a95" Title="IAction Interface" Url="html/T_OpenQA_Selenium_Interactions_IAction.htm">
+      <HelpTOCNode Title="IAction Members" Url="html/AllMembers_T_OpenQA_Selenium_Interactions_IAction.htm" />
+      <HelpTOCNode Id="0fb17ed2-efc3-4cb0-bef6-0568ffdbdd5c" Title="IAction Methods" Url="html/Methods_T_OpenQA_Selenium_Interactions_IAction.htm">
+        <HelpTOCNode Title="Perform Method " Url="html/M_OpenQA_Selenium_Interactions_IAction_Perform.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="2f787e4e-5bd8-4a37-87ba-d207a60c97b9" Title="OpenQA.Selenium.Interactions.Internal Namespace" Url="html/N_OpenQA_Selenium_Interactions_Internal.htm">
+    <HelpTOCNode Id="c2c03857-6840-41fe-bfe4-c52e0c718195" Title="ICoordinates Interface" Url="html/T_OpenQA_Selenium_Interactions_Internal_ICoordinates.htm">
+      <HelpTOCNode Title="ICoordinates Members" Url="html/AllMembers_T_OpenQA_Selenium_Interactions_Internal_ICoordinates.htm" />
+      <HelpTOCNode Id="c8cceea3-e2b8-4551-9407-ed7d58a5b9bd" Title="ICoordinates Properties" Url="html/Properties_T_OpenQA_Selenium_Interactions_Internal_ICoordinates.htm">
+        <HelpTOCNode Title="AuxiliaryLocator Property " Url="html/P_OpenQA_Selenium_Interactions_Internal_ICoordinates_AuxiliaryLocator.htm" />
+        <HelpTOCNode Title="LocationInDom Property " Url="html/P_OpenQA_Selenium_Interactions_Internal_ICoordinates_LocationInDom.htm" />
+        <HelpTOCNode Title="LocationInViewport Property " Url="html/P_OpenQA_Selenium_Interactions_Internal_ICoordinates_LocationInViewport.htm" />
+        <HelpTOCNode Title="LocationOnScreen Property " Url="html/P_OpenQA_Selenium_Interactions_Internal_ICoordinates_LocationOnScreen.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="97b29751-27f0-4fa3-9f14-12b8d6af3cb8" Title="OpenQA.Selenium.Internal Namespace" Url="html/N_OpenQA_Selenium_Internal.htm">
+    <HelpTOCNode Id="2bebba2f-0951-4c32-a919-95f87b178b2d" Title="AsyncJavaScriptExecutor Class" Url="html/T_OpenQA_Selenium_Internal_AsyncJavaScriptExecutor.htm">
+      <HelpTOCNode Title="AsyncJavaScriptExecutor Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_AsyncJavaScriptExecutor.htm" />
+      <HelpTOCNode Title="AsyncJavaScriptExecutor Constructor " Url="html/M_OpenQA_Selenium_Internal_AsyncJavaScriptExecutor__ctor.htm" />
+      <HelpTOCNode Id="ab20a10c-9c9f-4cb6-8a6e-c636e0305427" Title="AsyncJavaScriptExecutor Methods" Url="html/Methods_T_OpenQA_Selenium_Internal_AsyncJavaScriptExecutor.htm">
+        <HelpTOCNode Title="ExecuteScript Method " Url="html/M_OpenQA_Selenium_Internal_AsyncJavaScriptExecutor_ExecuteScript.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="7fc5de12-f1c5-478e-91f3-e493edd5fd91" Title="AsyncJavaScriptExecutor Properties" Url="html/Properties_T_OpenQA_Selenium_Internal_AsyncJavaScriptExecutor.htm">
+        <HelpTOCNode Title="Timeout Property " Url="html/P_OpenQA_Selenium_Internal_AsyncJavaScriptExecutor_Timeout.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c25439fb-ca81-4afb-b2c6-7dc276d23c54" Title="IFindsByClassName Interface" Url="html/T_OpenQA_Selenium_Internal_IFindsByClassName.htm">
+      <HelpTOCNode Title="IFindsByClassName Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IFindsByClassName.htm" />
+      <HelpTOCNode Id="b7d48da2-294e-4280-ac5e-15b58d29ad60" Title="IFindsByClassName Methods" Url="html/Methods_T_OpenQA_Selenium_Internal_IFindsByClassName.htm">
+        <HelpTOCNode Title="FindElementByClassName Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByClassName_FindElementByClassName.htm" />
+        <HelpTOCNode Title="FindElementsByClassName Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByClassName_FindElementsByClassName.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="e1d3d520-0eee-474c-a195-ce96d4b9a269" Title="IFindsByCssSelector Interface" Url="html/T_OpenQA_Selenium_Internal_IFindsByCssSelector.htm">
+      <HelpTOCNode Title="IFindsByCssSelector Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IFindsByCssSelector.htm" />
+      <HelpTOCNode Id="a33ed795-cb76-4b8f-b497-35335351bca6" Title="IFindsByCssSelector Methods" Url="html/Methods_T_OpenQA_Selenium_Internal_IFindsByCssSelector.htm">
+        <HelpTOCNode Title="FindElementByCssSelector Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByCssSelector_FindElementByCssSelector.htm" />
+        <HelpTOCNode Title="FindElementsByCssSelector Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByCssSelector_FindElementsByCssSelector.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="e5948c50-d4f7-4fc4-8bb4-959affbe1ba7" Title="IFindsById Interface" Url="html/T_OpenQA_Selenium_Internal_IFindsById.htm">
+      <HelpTOCNode Title="IFindsById Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IFindsById.htm" />
+      <HelpTOCNode Id="3de43b05-1de6-4c22-b8d8-092e416a54a7" Title="IFindsById Methods" Url="html/Methods_T_OpenQA_Selenium_Internal_IFindsById.htm">
+        <HelpTOCNode Title="FindElementById Method " Url="html/M_OpenQA_Selenium_Internal_IFindsById_FindElementById.htm" />
+        <HelpTOCNode Title="FindElementsById Method " Url="html/M_OpenQA_Selenium_Internal_IFindsById_FindElementsById.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="5126b29a-5da5-4f78-9216-2b43db1f016b" Title="IFindsByLinkText Interface" Url="html/T_OpenQA_Selenium_Internal_IFindsByLinkText.htm">
+      <HelpTOCNode Title="IFindsByLinkText Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IFindsByLinkText.htm" />
+      <HelpTOCNode Id="e9a40df0-f9d1-4671-9532-88a4a9a345af" Title="IFindsByLinkText Methods" Url="html/Methods_T_OpenQA_Selenium_Internal_IFindsByLinkText.htm">
+        <HelpTOCNode Title="FindElementByLinkText Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByLinkText_FindElementByLinkText.htm" />
+        <HelpTOCNode Title="FindElementsByLinkText Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByLinkText_FindElementsByLinkText.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="3e468ac0-a276-4881-9a7b-4e5531c4685d" Title="IFindsByName Interface" Url="html/T_OpenQA_Selenium_Internal_IFindsByName.htm">
+      <HelpTOCNode Title="IFindsByName Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IFindsByName.htm" />
+      <HelpTOCNode Id="005977f8-fe13-483f-97e1-ce985385b5bc" Title="IFindsByName Methods" Url="html/Methods_T_OpenQA_Selenium_Internal_IFindsByName.htm">
+        <HelpTOCNode Title="FindElementByName Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByName_FindElementByName.htm" />
+        <HelpTOCNode Title="FindElementsByName Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByName_FindElementsByName.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="2da42d3d-b07c-4a6d-86e4-8cb3b877db14" Title="IFindsByPartialLinkText Interface" Url="html/T_OpenQA_Selenium_Internal_IFindsByPartialLinkText.htm">
+      <HelpTOCNode Title="IFindsByPartialLinkText Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IFindsByPartialLinkText.htm" />
+      <HelpTOCNode Id="a998e571-ab94-41f4-8e58-9183c11b7faa" Title="IFindsByPartialLinkText Methods" Url="html/Methods_T_OpenQA_Selenium_Internal_IFindsByPartialLinkText.htm">
+        <HelpTOCNode Title="FindElementByPartialLinkText Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByPartialLinkText_FindElementByPartialLinkText.htm" />
+        <HelpTOCNode Title="FindElementsByPartialLinkText Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByPartialLinkText_FindElementsByPartialLinkText.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="5d11642d-5479-4d4b-a411-d0b20befc7bf" Title="IFindsByTagName Interface" Url="html/T_OpenQA_Selenium_Internal_IFindsByTagName.htm">
+      <HelpTOCNode Title="IFindsByTagName Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IFindsByTagName.htm" />
+      <HelpTOCNode Id="48ac7460-5206-4134-b707-debaa7002f84" Title="IFindsByTagName Methods" Url="html/Methods_T_OpenQA_Selenium_Internal_IFindsByTagName.htm">
+        <HelpTOCNode Title="FindElementByTagName Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByTagName_FindElementByTagName.htm" />
+        <HelpTOCNode Title="FindElementsByTagName Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByTagName_FindElementsByTagName.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="5ea29155-0f90-4365-abec-5c00e7a711f0" Title="IFindsByXPath Interface" Url="html/T_OpenQA_Selenium_Internal_IFindsByXPath.htm">
+      <HelpTOCNode Title="IFindsByXPath Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IFindsByXPath.htm" />
+      <HelpTOCNode Id="48424c46-fd46-425f-bcce-a3a2c0da3a81" Title="IFindsByXPath Methods" Url="html/Methods_T_OpenQA_Selenium_Internal_IFindsByXPath.htm">
+        <HelpTOCNode Title="FindElementByXPath Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByXPath_FindElementByXPath.htm" />
+        <HelpTOCNode Title="FindElementsByXPath Method " Url="html/M_OpenQA_Selenium_Internal_IFindsByXPath_FindElementsByXPath.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c9904c72-b769-405a-b782-c3ab5da62a59" Title="IWrapsDriver Interface" Url="html/T_OpenQA_Selenium_Internal_IWrapsDriver.htm">
+      <HelpTOCNode Title="IWrapsDriver Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IWrapsDriver.htm" />
+      <HelpTOCNode Id="7225196f-b951-47fc-b0fa-8295cc0570cf" Title="IWrapsDriver Properties" Url="html/Properties_T_OpenQA_Selenium_Internal_IWrapsDriver.htm">
+        <HelpTOCNode Title="WrappedDriver Property " Url="html/P_OpenQA_Selenium_Internal_IWrapsDriver_WrappedDriver.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="64ef769c-0a1c-4ded-8a8e-244915ac7c0b" Title="IWrapsElement Interface" Url="html/T_OpenQA_Selenium_Internal_IWrapsElement.htm">
+      <HelpTOCNode Title="IWrapsElement Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IWrapsElement.htm" />
+      <HelpTOCNode Id="5b6bf7c7-a91b-42cb-a618-4b5dd8b788d8" Title="IWrapsElement Properties" Url="html/Properties_T_OpenQA_Selenium_Internal_IWrapsElement.htm">
+        <HelpTOCNode Title="WrappedElement Property " Url="html/P_OpenQA_Selenium_Internal_IWrapsElement_WrappedElement.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="a72d9106-c1bc-4c54-af8f-d722a0c6a018" Title="ResourceUtilities Class" Url="html/T_OpenQA_Selenium_Internal_ResourceUtilities.htm">
+      <HelpTOCNode Title="ResourceUtilities Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_ResourceUtilities.htm" />
+      <HelpTOCNode Id="b387a7ee-b783-4a75-b933-08e1a34b54fa" Title="ResourceUtilities Methods" Url="html/Methods_T_OpenQA_Selenium_Internal_ResourceUtilities.htm">
+        <HelpTOCNode Title="GetResourceStream Method " Url="html/M_OpenQA_Selenium_Internal_ResourceUtilities_GetResourceStream.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="e3df0b9c-82f1-41f3-aacb-0095952f2d03" Title="ReturnedCookie Class" Url="html/T_OpenQA_Selenium_Internal_ReturnedCookie.htm">
+      <HelpTOCNode Title="ReturnedCookie Members" Url="html/AllMembers_T_OpenQA_Selenium_Internal_ReturnedCookie.htm" />
+      <HelpTOCNode Title="ReturnedCookie Constructor " Url="html/M_OpenQA_Selenium_Internal_ReturnedCookie__ctor.htm" />
+      <HelpTOCNode Id="cf6eb890-3e22-4da8-91fe-a60b10f6ff82" Title="ReturnedCookie Methods" Url="html/Methods_T_OpenQA_Selenium_Internal_ReturnedCookie.htm">
+        <HelpTOCNode Title="ToString Method " Url="html/M_OpenQA_Selenium_Internal_ReturnedCookie_ToString.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="f983e586-a2f9-4f54-b0e9-517a75035403" Title="ReturnedCookie Properties" Url="html/Properties_T_OpenQA_Selenium_Internal_ReturnedCookie.htm">
+        <HelpTOCNode Title="CurrentHost Property " Url="html/P_OpenQA_Selenium_Internal_ReturnedCookie_CurrentHost.htm" />
+        <HelpTOCNode Title="Secure Property " Url="html/P_OpenQA_Selenium_Internal_ReturnedCookie_Secure.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="fc24efb7-88ff-4537-8542-9a66b44755db" Title="OpenQA.Selenium.Remote Namespace" Url="html/N_OpenQA_Selenium_Remote.htm">
+    <HelpTOCNode Id="e74027e4-6f89-467d-8bfc-9ee680e6681f" Title="CapabilityType Class" Url="html/T_OpenQA_Selenium_Remote_CapabilityType.htm">
+      <HelpTOCNode Title="CapabilityType Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_CapabilityType.htm" />
+      <HelpTOCNode Id="5bf1501b-2dd5-4826-8681-1efbd8bae772" Title="CapabilityType Fields" Url="html/Fields_T_OpenQA_Selenium_Remote_CapabilityType.htm">
+        <HelpTOCNode Title="BrowserName Field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_BrowserName.htm" />
+        <HelpTOCNode Title="HandlesAlerts Field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_HandlesAlerts.htm" />
+        <HelpTOCNode Title="IsJavaScriptEnabled Field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_IsJavaScriptEnabled.htm" />
+        <HelpTOCNode Title="Platform Field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_Platform.htm" />
+        <HelpTOCNode Title="Proxy Field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_Proxy.htm" />
+        <HelpTOCNode Title="Rotatable Field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_Rotatable.htm" />
+        <HelpTOCNode Title="SupportsFindingByCss Field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_SupportsFindingByCss.htm" />
+        <HelpTOCNode Title="TakesScreenshot Field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_TakesScreenshot.htm" />
+        <HelpTOCNode Title="Version Field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_Version.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="b3149a98-64f2-47e8-a055-3bc7c3cd44e4" Title="Command Class" Url="html/T_OpenQA_Selenium_Remote_Command.htm">
+      <HelpTOCNode Title="Command Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_Command.htm" />
+      <HelpTOCNode Id="22fcef04-3226-459a-b71d-391c30067ef5" Title="Command Constructor " Url="html/Overload_OpenQA_Selenium_Remote_Command__ctor.htm">
+        <HelpTOCNode Title="Command Constructor (DriverCommand, String)" Url="html/M_OpenQA_Selenium_Remote_Command__ctor.htm" />
+        <HelpTOCNode Title="Command Constructor (SessionId, DriverCommand, Dictionary(String, Object))" Url="html/M_OpenQA_Selenium_Remote_Command__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="c3f865fb-41bd-4dc7-8dbc-471302a4c743" Title="Command Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_Command.htm">
+        <HelpTOCNode Title="ToString Method " Url="html/M_OpenQA_Selenium_Remote_Command_ToString.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="5c3222f8-b7c1-4ae6-a88e-9798cbd18731" Title="Command Properties" Url="html/Properties_T_OpenQA_Selenium_Remote_Command.htm">
+        <HelpTOCNode Title="Name Property " Url="html/P_OpenQA_Selenium_Remote_Command_Name.htm" />
+        <HelpTOCNode Title="Parameters Property " Url="html/P_OpenQA_Selenium_Remote_Command_Parameters.htm" />
+        <HelpTOCNode Title="ParametersAsJsonString Property " Url="html/P_OpenQA_Selenium_Remote_Command_ParametersAsJsonString.htm" />
+        <HelpTOCNode Title="SessionId Property " Url="html/P_OpenQA_Selenium_Remote_Command_SessionId.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="4feffbd7-d0fe-49e9-ae3e-927bc760108a" Title="CommandInfo Class" Url="html/T_OpenQA_Selenium_Remote_CommandInfo.htm">
+      <HelpTOCNode Title="CommandInfo Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_CommandInfo.htm" />
+      <HelpTOCNode Title="CommandInfo Constructor " Url="html/M_OpenQA_Selenium_Remote_CommandInfo__ctor.htm" />
+      <HelpTOCNode Id="20d37ba3-1bc2-4122-b98a-7dd087090094" Title="CommandInfo Fields" Url="html/Fields_T_OpenQA_Selenium_Remote_CommandInfo.htm">
+        <HelpTOCNode Title="DeleteCommand Field" Url="html/F_OpenQA_Selenium_Remote_CommandInfo_DeleteCommand.htm" />
+        <HelpTOCNode Title="GetCommand Field" Url="html/F_OpenQA_Selenium_Remote_CommandInfo_GetCommand.htm" />
+        <HelpTOCNode Title="PostCommand Field" Url="html/F_OpenQA_Selenium_Remote_CommandInfo_PostCommand.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="732a595a-72e6-4116-adb2-e8bcd89350fb" Title="CommandInfo Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_CommandInfo.htm">
+        <HelpTOCNode Title="CreateWebRequest Method " Url="html/M_OpenQA_Selenium_Remote_CommandInfo_CreateWebRequest.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="c3cb906c-e7f3-4501-b879-de74b61434e5" Title="CommandInfo Properties" Url="html/Properties_T_OpenQA_Selenium_Remote_CommandInfo.htm">
+        <HelpTOCNode Title="Method Property " Url="html/P_OpenQA_Selenium_Remote_CommandInfo_Method.htm" />
+        <HelpTOCNode Title="ResourcePath Property " Url="html/P_OpenQA_Selenium_Remote_CommandInfo_ResourcePath.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="5baaec8e-6253-4706-a794-f589246351ca" Title="CommandInfoRepository Class" Url="html/T_OpenQA_Selenium_Remote_CommandInfoRepository.htm">
+      <HelpTOCNode Title="CommandInfoRepository Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_CommandInfoRepository.htm" />
+      <HelpTOCNode Id="ff84a6f7-5e86-4008-ba99-3eb7c75ecc51" Title="CommandInfoRepository Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_CommandInfoRepository.htm">
+        <HelpTOCNode Title="GetCommandInfo Method " Url="html/M_OpenQA_Selenium_Remote_CommandInfoRepository_GetCommandInfo.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="650ca6c7-e33a-474d-8009-efeab33eeacd" Title="CommandInfoRepository Properties" Url="html/Properties_T_OpenQA_Selenium_Remote_CommandInfoRepository.htm">
+        <HelpTOCNode Title="Instance Property " Url="html/P_OpenQA_Selenium_Remote_CommandInfoRepository_Instance.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="e958a8f4-6087-4a03-80b1-3de680371a1a" Title="DesiredCapabilities Class" Url="html/T_OpenQA_Selenium_Remote_DesiredCapabilities.htm">
+      <HelpTOCNode Title="DesiredCapabilities Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_DesiredCapabilities.htm" />
+      <HelpTOCNode Id="b047f21e-6701-493e-9fbb-d068bb10e6fe" Title="DesiredCapabilities Constructor " Url="html/Overload_OpenQA_Selenium_Remote_DesiredCapabilities__ctor.htm">
+        <HelpTOCNode Title="DesiredCapabilities Constructor " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities__ctor.htm" />
+        <HelpTOCNode Title="DesiredCapabilities Constructor (Dictionary(String, Object))" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities__ctor_1.htm" />
+        <HelpTOCNode Title="DesiredCapabilities Constructor (String, String, Platform)" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities__ctor_2.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="05456c38-d20d-4066-b96d-0b5bf4796eb4" Title="DesiredCapabilities Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_DesiredCapabilities.htm">
+        <HelpTOCNode Title="Android Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_Android.htm" />
+        <HelpTOCNode Title="Chrome Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_Chrome.htm" />
+        <HelpTOCNode Title="Equals Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_Equals.htm" />
+        <HelpTOCNode Title="Firefox Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_Firefox.htm" />
+        <HelpTOCNode Title="GetCapability Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_GetCapability.htm" />
+        <HelpTOCNode Title="GetHashCode Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_GetHashCode.htm" />
+        <HelpTOCNode Title="HasCapability Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_HasCapability.htm" />
+        <HelpTOCNode Title="HtmlUnit Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_HtmlUnit.htm" />
+        <HelpTOCNode Title="HtmlUnitWithJavaScript Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_HtmlUnitWithJavaScript.htm" />
+        <HelpTOCNode Title="InternetExplorer Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_InternetExplorer.htm" />
+        <HelpTOCNode Title="IPhone Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_IPhone.htm" />
+        <HelpTOCNode Title="Opera Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_Opera.htm" />
+        <HelpTOCNode Title="SetCapability Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_SetCapability.htm" />
+        <HelpTOCNode Title="ToString Method " Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_ToString.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="b8fdba64-95d5-4827-b11b-05b8aaa2e35a" Title="DesiredCapabilities Properties" Url="html/Properties_T_OpenQA_Selenium_Remote_DesiredCapabilities.htm">
+        <HelpTOCNode Title="BrowserName Property " Url="html/P_OpenQA_Selenium_Remote_DesiredCapabilities_BrowserName.htm" />
+        <HelpTOCNode Title="IsJavaScriptEnabled Property " Url="html/P_OpenQA_Selenium_Remote_DesiredCapabilities_IsJavaScriptEnabled.htm" />
+        <HelpTOCNode Title="Platform Property " Url="html/P_OpenQA_Selenium_Remote_DesiredCapabilities_Platform.htm" />
+        <HelpTOCNode Title="Version Property " Url="html/P_OpenQA_Selenium_Remote_DesiredCapabilities_Version.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Title="DriverCommand Enumeration" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+    <HelpTOCNode Id="c4b81b17-7055-40f1-b1dd-d66e96333488" Title="ErrorResponse Class" Url="html/T_OpenQA_Selenium_Remote_ErrorResponse.htm">
+      <HelpTOCNode Title="ErrorResponse Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_ErrorResponse.htm" />
+      <HelpTOCNode Id="0a7249d6-147a-4740-8a0b-b48eebb50573" Title="ErrorResponse Constructor " Url="html/Overload_OpenQA_Selenium_Remote_ErrorResponse__ctor.htm">
+        <HelpTOCNode Title="ErrorResponse Constructor " Url="html/M_OpenQA_Selenium_Remote_ErrorResponse__ctor.htm" />
+        <HelpTOCNode Title="ErrorResponse Constructor (Dictionary(String, Object))" Url="html/M_OpenQA_Selenium_Remote_ErrorResponse__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="ErrorResponse Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_ErrorResponse.htm" />
+      <HelpTOCNode Id="ec665104-f2e8-4ef8-9e3d-d4150a1d45c1" Title="ErrorResponse Properties" Url="html/Properties_T_OpenQA_Selenium_Remote_ErrorResponse.htm">
+        <HelpTOCNode Title="ClassName Property " Url="html/P_OpenQA_Selenium_Remote_ErrorResponse_ClassName.htm" />
+        <HelpTOCNode Title="Message Property " Url="html/P_OpenQA_Selenium_Remote_ErrorResponse_Message.htm" />
+        <HelpTOCNode Title="Screenshot Property " Url="html/P_OpenQA_Selenium_Remote_ErrorResponse_Screenshot.htm" />
+        <HelpTOCNode Title="StackTrace Property " Url="html/P_OpenQA_Selenium_Remote_ErrorResponse_StackTrace.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="5d642c9c-9247-4f1a-885d-8779e75bb592" Title="HttpCommandExecutor Class" Url="html/T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm">
+      <HelpTOCNode Title="HttpCommandExecutor Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm" />
+      <HelpTOCNode Id="a48e9a31-2b66-40bb-ad55-46ab04b0bc33" Title="HttpCommandExecutor Constructor " Url="html/Overload_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor.htm">
+        <HelpTOCNode Title="HttpCommandExecutor Constructor (Uri)" Url="html/M_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor.htm" />
+        <HelpTOCNode Title="HttpCommandExecutor Constructor (Uri, TimeSpan)" Url="html/M_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="dc12a6da-20d7-4c61-8724-0e75747dad4f" Title="HttpCommandExecutor Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm">
+        <HelpTOCNode Title="Execute Method " Url="html/M_OpenQA_Selenium_Remote_HttpCommandExecutor_Execute.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="5d987838-416d-4c12-a57b-936623b087e8" Title="ICommandExecutor Interface" Url="html/T_OpenQA_Selenium_Remote_ICommandExecutor.htm">
+      <HelpTOCNode Title="ICommandExecutor Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_ICommandExecutor.htm" />
+      <HelpTOCNode Id="649fadfa-8443-4032-9da1-974f29053c69" Title="ICommandExecutor Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_ICommandExecutor.htm">
+        <HelpTOCNode Title="Execute Method " Url="html/M_OpenQA_Selenium_Remote_ICommandExecutor_Execute.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="b4b5d3f6-2037-4f94-bd7f-7e98f7836d2f" Title="RemoteWebDriver Class" Url="html/T_OpenQA_Selenium_Remote_RemoteWebDriver.htm">
+      <HelpTOCNode Title="RemoteWebDriver Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_RemoteWebDriver.htm" />
+      <HelpTOCNode Id="948663b9-9752-41bf-ae5c-6184a81f8934" Title="RemoteWebDriver Constructor " Url="html/Overload_OpenQA_Selenium_Remote_RemoteWebDriver__ctor.htm">
+        <HelpTOCNode Title="RemoteWebDriver Constructor (ICapabilities)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor.htm" />
+        <HelpTOCNode Title="RemoteWebDriver Constructor (Uri, ICapabilities)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_2.htm" />
+        <HelpTOCNode Title="RemoteWebDriver Constructor (ICommandExecutor, ICapabilities)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="6f467abc-0b1b-4429-b5f8-14a76031aaf4" Title="RemoteWebDriver Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_RemoteWebDriver.htm">
+        <HelpTOCNode Title="Close Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Close.htm" />
+        <HelpTOCNode Title="CreateElement Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_CreateElement.htm" />
+        <HelpTOCNode Id="d97ab99a-b761-4847-9073-061990e95404" Title="Dispose Method " Url="html/Overload_OpenQA_Selenium_Remote_RemoteWebDriver_Dispose.htm">
+          <HelpTOCNode Title="Dispose Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Dispose.htm" />
+          <HelpTOCNode Title="Dispose Method (Boolean)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Dispose_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Execute Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Execute.htm" />
+        <HelpTOCNode Title="ExecuteAsyncScript Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_ExecuteAsyncScript.htm" />
+        <HelpTOCNode Title="ExecuteScript Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_ExecuteScript.htm" />
+        <HelpTOCNode Id="cd5b9c9f-15aa-45fb-a8b3-5d7407c51257" Title="FindElement Method " Url="html/Overload_OpenQA_Selenium_Remote_RemoteWebDriver_FindElement.htm">
+          <HelpTOCNode Title="FindElement Method (By)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElement.htm" />
+          <HelpTOCNode Title="FindElement Method (String, String)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElement_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="FindElementByClassName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementByClassName.htm" />
+        <HelpTOCNode Title="FindElementByCssSelector Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementByCssSelector.htm" />
+        <HelpTOCNode Title="FindElementById Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementById.htm" />
+        <HelpTOCNode Title="FindElementByLinkText Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementByLinkText.htm" />
+        <HelpTOCNode Title="FindElementByName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementByName.htm" />
+        <HelpTOCNode Title="FindElementByPartialLinkText Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementByPartialLinkText.htm" />
+        <HelpTOCNode Title="FindElementByTagName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementByTagName.htm" />
+        <HelpTOCNode Title="FindElementByXPath Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementByXPath.htm" />
+        <HelpTOCNode Id="0bf2c1b0-518f-4c28-b6d6-87deed61f636" Title="FindElements Method " Url="html/Overload_OpenQA_Selenium_Remote_RemoteWebDriver_FindElements.htm">
+          <HelpTOCNode Title="FindElements Method (By)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElements.htm" />
+          <HelpTOCNode Title="FindElements Method (String, String)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElements_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="FindElementsByClassName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementsByClassName.htm" />
+        <HelpTOCNode Title="FindElementsByCssSelector Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementsByCssSelector.htm" />
+        <HelpTOCNode Title="FindElementsById Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementsById.htm" />
+        <HelpTOCNode Title="FindElementsByLinkText Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementsByLinkText.htm" />
+        <HelpTOCNode Title="FindElementsByName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementsByName.htm" />
+        <HelpTOCNode Title="FindElementsByPartialLinkText Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementsByPartialLinkText.htm" />
+        <HelpTOCNode Title="FindElementsByTagName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementsByTagName.htm" />
+        <HelpTOCNode Title="FindElementsByXPath Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementsByXPath.htm" />
+        <HelpTOCNode Title="Manage Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Manage.htm" />
+        <HelpTOCNode Title="Navigate Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Navigate.htm" />
+        <HelpTOCNode Title="Quit Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Quit.htm" />
+        <HelpTOCNode Title="StartClient Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_StartClient.htm" />
+        <HelpTOCNode Title="StartSession Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_StartSession.htm" />
+        <HelpTOCNode Title="StopClient Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_StopClient.htm" />
+        <HelpTOCNode Title="SwitchTo Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_SwitchTo.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="5c7aee2f-45b7-4ddc-acfc-79c80ffdd9d0" Title="RemoteWebDriver Properties" Url="html/Properties_T_OpenQA_Selenium_Remote_RemoteWebDriver.htm">
+        <HelpTOCNode Title="Capabilities Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_Capabilities.htm" />
+        <HelpTOCNode Title="CommandExecutor Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_CommandExecutor.htm" />
+        <HelpTOCNode Title="CurrentWindowHandle Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_CurrentWindowHandle.htm" />
+        <HelpTOCNode Title="Keyboard Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_Keyboard.htm" />
+        <HelpTOCNode Title="Mouse Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_Mouse.htm" />
+        <HelpTOCNode Title="PageSource Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_PageSource.htm" />
+        <HelpTOCNode Title="SessionId Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_SessionId.htm" />
+        <HelpTOCNode Title="Title Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_Title.htm" />
+        <HelpTOCNode Title="Url Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_Url.htm" />
+        <HelpTOCNode Title="WindowHandles Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_WindowHandles.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="d4f4b004-c8a0-4835-a9f8-dc5f627531f3" Title="RemoteWebElement Class" Url="html/T_OpenQA_Selenium_Remote_RemoteWebElement.htm">
+      <HelpTOCNode Title="RemoteWebElement Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_RemoteWebElement.htm" />
+      <HelpTOCNode Title="RemoteWebElement Constructor " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement__ctor.htm" />
+      <HelpTOCNode Id="585b41d0-f384-44f2-b6d0-b3b5c214e772" Title="RemoteWebElement Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_RemoteWebElement.htm">
+        <HelpTOCNode Title="Clear Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Clear.htm" />
+        <HelpTOCNode Title="Click Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Click.htm" />
+        <HelpTOCNode Title="Equals Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Equals.htm" />
+        <HelpTOCNode Title="Execute Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Execute.htm" />
+        <HelpTOCNode Id="f373171b-c1d3-43f1-b3ec-ddaef9134524" Title="FindElement Method " Url="html/Overload_OpenQA_Selenium_Remote_RemoteWebElement_FindElement.htm">
+          <HelpTOCNode Title="FindElement Method (By)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElement.htm" />
+          <HelpTOCNode Title="FindElement Method (String, String)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElement_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="FindElementByClassName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementByClassName.htm" />
+        <HelpTOCNode Title="FindElementByCssSelector Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementByCssSelector.htm" />
+        <HelpTOCNode Title="FindElementById Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementById.htm" />
+        <HelpTOCNode Title="FindElementByLinkText Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementByLinkText.htm" />
+        <HelpTOCNode Title="FindElementByName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementByName.htm" />
+        <HelpTOCNode Title="FindElementByPartialLinkText Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementByPartialLinkText.htm" />
+        <HelpTOCNode Title="FindElementByTagName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementByTagName.htm" />
+        <HelpTOCNode Title="FindElementByXPath Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementByXPath.htm" />
+        <HelpTOCNode Id="d7272f4c-c4e3-4ba6-a94e-7a936d41d6b8" Title="FindElements Method " Url="html/Overload_OpenQA_Selenium_Remote_RemoteWebElement_FindElements.htm">
+          <HelpTOCNode Title="FindElements Method (By)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElements.htm" />
+          <HelpTOCNode Title="FindElements Method (String, String)" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElements_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="FindElementsByClassName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementsByClassName.htm" />
+        <HelpTOCNode Title="FindElementsByCssSelector Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementsByCssSelector.htm" />
+        <HelpTOCNode Title="FindElementsById Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementsById.htm" />
+        <HelpTOCNode Title="FindElementsByLinkText Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementsByLinkText.htm" />
+        <HelpTOCNode Title="FindElementsByName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementsByName.htm" />
+        <HelpTOCNode Title="FindElementsByPartialLinkText Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementsByPartialLinkText.htm" />
+        <HelpTOCNode Title="FindElementsByTagName Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementsByTagName.htm" />
+        <HelpTOCNode Title="FindElementsByXPath Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementsByXPath.htm" />
+        <HelpTOCNode Title="GetAttribute Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_GetAttribute.htm" />
+        <HelpTOCNode Title="GetCssValue Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_GetCssValue.htm" />
+        <HelpTOCNode Title="GetHashCode Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_GetHashCode.htm" />
+        <HelpTOCNode Title="Select Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Select.htm" />
+        <HelpTOCNode Title="SendKeys Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_SendKeys.htm" />
+        <HelpTOCNode Title="Submit Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Submit.htm" />
+        <HelpTOCNode Title="Toggle Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Toggle.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="6954a23d-3b12-414c-8c89-0d1ec6df8cb8" Title="RemoteWebElement Properties" Url="html/Properties_T_OpenQA_Selenium_Remote_RemoteWebElement.htm">
+        <HelpTOCNode Title="Coordinates Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Coordinates.htm" />
+        <HelpTOCNode Title="Displayed Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Displayed.htm" />
+        <HelpTOCNode Title="Enabled Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Enabled.htm" />
+        <HelpTOCNode Title="Id Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Id.htm" />
+        <HelpTOCNode Title="Location Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Location.htm" />
+        <HelpTOCNode Title="LocationOnScreenOnceScrolledIntoView Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_LocationOnScreenOnceScrolledIntoView.htm" />
+        <HelpTOCNode Title="Selected Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Selected.htm" />
+        <HelpTOCNode Title="Size Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Size.htm" />
+        <HelpTOCNode Title="TagName Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_TagName.htm" />
+        <HelpTOCNode Title="Text Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Text.htm" />
+        <HelpTOCNode Title="WrappedDriver Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_WrappedDriver.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="25b66bbb-e5a5-47bc-b102-ba82432f2026" Title="Response Class" Url="html/T_OpenQA_Selenium_Remote_Response.htm">
+      <HelpTOCNode Title="Response Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_Response.htm" />
+      <HelpTOCNode Id="dd95f4dd-722f-400a-a701-74b9704cde1b" Title="Response Constructor " Url="html/Overload_OpenQA_Selenium_Remote_Response__ctor.htm">
+        <HelpTOCNode Title="Response Constructor " Url="html/M_OpenQA_Selenium_Remote_Response__ctor.htm" />
+        <HelpTOCNode Title="Response Constructor (SessionId)" Url="html/M_OpenQA_Selenium_Remote_Response__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="b11e7859-b04d-4c92-8b1b-4ada0d2b8722" Title="Response Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_Response.htm">
+        <HelpTOCNode Title="FromJson Method " Url="html/M_OpenQA_Selenium_Remote_Response_FromJson.htm" />
+        <HelpTOCNode Title="ToJson Method " Url="html/M_OpenQA_Selenium_Remote_Response_ToJson.htm" />
+        <HelpTOCNode Title="ToString Method " Url="html/M_OpenQA_Selenium_Remote_Response_ToString.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="ba6d6a4c-6e0b-4e15-ae0f-0565926c350f" Title="Response Properties" Url="html/Properties_T_OpenQA_Selenium_Remote_Response.htm">
+        <HelpTOCNode Title="SessionId Property " Url="html/P_OpenQA_Selenium_Remote_Response_SessionId.htm" />
+        <HelpTOCNode Title="Status Property " Url="html/P_OpenQA_Selenium_Remote_Response_Status.htm" />
+        <HelpTOCNode Title="Value Property " Url="html/P_OpenQA_Selenium_Remote_Response_Value.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="1d168d6d-f5f0-4f10-aede-d7c3d2e3b876" Title="SessionId Class" Url="html/T_OpenQA_Selenium_Remote_SessionId.htm">
+      <HelpTOCNode Title="SessionId Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_SessionId.htm" />
+      <HelpTOCNode Title="SessionId Constructor " Url="html/M_OpenQA_Selenium_Remote_SessionId__ctor.htm" />
+      <HelpTOCNode Id="5b3826b6-92f7-4a64-a88b-189a141be08f" Title="SessionId Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_SessionId.htm">
+        <HelpTOCNode Title="Equals Method " Url="html/M_OpenQA_Selenium_Remote_SessionId_Equals.htm" />
+        <HelpTOCNode Title="GetHashCode Method " Url="html/M_OpenQA_Selenium_Remote_SessionId_GetHashCode.htm" />
+        <HelpTOCNode Title="ToString Method " Url="html/M_OpenQA_Selenium_Remote_SessionId_ToString.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="423aeb21-f69b-43b3-8ee4-addc1169f902" Title="StackTraceElement Class" Url="html/T_OpenQA_Selenium_Remote_StackTraceElement.htm">
+      <HelpTOCNode Title="StackTraceElement Members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_StackTraceElement.htm" />
+      <HelpTOCNode Id="f81b51cd-c8ca-4ba2-876d-f0badb2fcfc2" Title="StackTraceElement Constructor " Url="html/Overload_OpenQA_Selenium_Remote_StackTraceElement__ctor.htm">
+        <HelpTOCNode Title="StackTraceElement Constructor " Url="html/M_OpenQA_Selenium_Remote_StackTraceElement__ctor.htm" />
+        <HelpTOCNode Title="StackTraceElement Constructor (Dictionary(String, Object))" Url="html/M_OpenQA_Selenium_Remote_StackTraceElement__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="928a0cb2-00eb-4700-9eb3-2dde5b203ce8" Title="StackTraceElement Methods" Url="html/Methods_T_OpenQA_Selenium_Remote_StackTraceElement.htm">
+        <HelpTOCNode Title="ToString Method " Url="html/M_OpenQA_Selenium_Remote_StackTraceElement_ToString.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="326ecbe5-55ef-4717-ae11-06226c80627a" Title="StackTraceElement Properties" Url="html/Properties_T_OpenQA_Selenium_Remote_StackTraceElement.htm">
+        <HelpTOCNode Title="ClassName Property " Url="html/P_OpenQA_Selenium_Remote_StackTraceElement_ClassName.htm" />
+        <HelpTOCNode Title="FileName Property " Url="html/P_OpenQA_Selenium_Remote_StackTraceElement_FileName.htm" />
+        <HelpTOCNode Title="LineNumber Property " Url="html/P_OpenQA_Selenium_Remote_StackTraceElement_LineNumber.htm" />
+        <HelpTOCNode Title="MethodName Property " Url="html/P_OpenQA_Selenium_Remote_StackTraceElement_MethodName.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="f9aa956c-2f3c-4a0c-9632-9692b6c5fa03" Title="OpenQA.Selenium.Support.Events Namespace" Url="html/N_OpenQA_Selenium_Support_Events.htm">
+    <HelpTOCNode Id="e67969b6-91bc-48f8-8088-5b01611c2f78" Title="EventFiringWebDriver Class" Url="html/T_OpenQA_Selenium_Support_Events_EventFiringWebDriver.htm">
+      <HelpTOCNode Title="EventFiringWebDriver Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_Events_EventFiringWebDriver.htm" />
+      <HelpTOCNode Title="EventFiringWebDriver Constructor " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver__ctor.htm" />
+      <HelpTOCNode Id="f8f8b6e1-cf47-4fb0-a0b3-491f7af373e8" Title="EventFiringWebDriver Methods" Url="html/Methods_T_OpenQA_Selenium_Support_Events_EventFiringWebDriver.htm">
+        <HelpTOCNode Title="Close Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Close.htm" />
+        <HelpTOCNode Id="60925d19-0e0d-4d25-abad-c436eeda45f3" Title="Dispose Method " Url="html/Overload_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose.htm">
+          <HelpTOCNode Title="Dispose Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose.htm" />
+          <HelpTOCNode Title="Dispose Method (Boolean)" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="ExecuteAsyncScript Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteAsyncScript.htm" />
+        <HelpTOCNode Title="ExecuteScript Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteScript.htm" />
+        <HelpTOCNode Title="FindElement Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindElement.htm" />
+        <HelpTOCNode Title="FindElements Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindElements.htm" />
+        <HelpTOCNode Title="GetScreenshot Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_GetScreenshot.htm" />
+        <HelpTOCNode Title="Manage Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Manage.htm" />
+        <HelpTOCNode Title="Navigate Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Navigate.htm" />
+        <HelpTOCNode Title="OnElementClicked Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementClicked.htm" />
+        <HelpTOCNode Title="OnElementClicking Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementClicking.htm" />
+        <HelpTOCNode Title="OnElementValueChanged Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementValueChanged.htm" />
+        <HelpTOCNode Title="OnElementValueChanging Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementValueChanging.htm" />
+        <HelpTOCNode Title="OnException Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnException.htm" />
+        <HelpTOCNode Title="OnFindElementCompleted Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnFindElementCompleted.htm" />
+        <HelpTOCNode Title="OnFindingElement Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnFindingElement.htm" />
+        <HelpTOCNode Title="OnNavigated Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigated.htm" />
+        <HelpTOCNode Title="OnNavigatedBack Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatedBack.htm" />
+        <HelpTOCNode Title="OnNavigatedForward Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatedForward.htm" />
+        <HelpTOCNode Title="OnNavigating Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigating.htm" />
+        <HelpTOCNode Title="OnNavigatingBack Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatingBack.htm" />
+        <HelpTOCNode Title="OnNavigatingForward Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatingForward.htm" />
+        <HelpTOCNode Title="OnScriptExecuted Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnScriptExecuted.htm" />
+        <HelpTOCNode Title="OnScriptExecuting Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnScriptExecuting.htm" />
+        <HelpTOCNode Title="Quit Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Quit.htm" />
+        <HelpTOCNode Title="SwitchTo Method " Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_SwitchTo.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="0be63312-20f4-4c20-834b-85c73e9ddd84" Title="EventFiringWebDriver Properties" Url="html/Properties_T_OpenQA_Selenium_Support_Events_EventFiringWebDriver.htm">
+        <HelpTOCNode Title="CurrentWindowHandle Property " Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_CurrentWindowHandle.htm" />
+        <HelpTOCNode Title="PageSource Property " Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_PageSource.htm" />
+        <HelpTOCNode Title="Title Property " Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Title.htm" />
+        <HelpTOCNode Title="Url Property " Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Url.htm" />
+        <HelpTOCNode Title="WindowHandles Property " Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_WindowHandles.htm" />
+        <HelpTOCNode Title="WrappedDriver Property " Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_WrappedDriver.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="ef4bec60-2b30-4272-8bc2-66958889ea62" Title="EventFiringWebDriver Events" Url="html/Events_T_OpenQA_Selenium_Support_Events_EventFiringWebDriver.htm">
+        <HelpTOCNode Title="ElementClicked Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementClicked.htm" />
+        <HelpTOCNode Title="ElementClicking Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementClicking.htm" />
+        <HelpTOCNode Title="ElementValueChanged Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementValueChanged.htm" />
+        <HelpTOCNode Title="ElementValueChanging Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementValueChanging.htm" />
+        <HelpTOCNode Title="ExceptionThrown Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExceptionThrown.htm" />
+        <HelpTOCNode Title="FindElementCompleted Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindElementCompleted.htm" />
+        <HelpTOCNode Title="FindingElement Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindingElement.htm" />
+        <HelpTOCNode Title="Navigated Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Navigated.htm" />
+        <HelpTOCNode Title="NavigatedBack Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatedBack.htm" />
+        <HelpTOCNode Title="NavigatedForward Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatedForward.htm" />
+        <HelpTOCNode Title="Navigating Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Navigating.htm" />
+        <HelpTOCNode Title="NavigatingBack Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatingBack.htm" />
+        <HelpTOCNode Title="NavigatingForward Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatingForward.htm" />
+        <HelpTOCNode Title="ScriptExecuted Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ScriptExecuted.htm" />
+        <HelpTOCNode Title="ScriptExecuting Event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ScriptExecuting.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="66380b3d-76b5-4da2-88ef-942ad102b85d" Title="FindElementEventArgs Class" Url="html/T_OpenQA_Selenium_Support_Events_FindElementEventArgs.htm">
+      <HelpTOCNode Title="FindElementEventArgs Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_Events_FindElementEventArgs.htm" />
+      <HelpTOCNode Id="0811af47-e059-45f2-944f-5b6578291dff" Title="FindElementEventArgs Constructor " Url="html/Overload_OpenQA_Selenium_Support_Events_FindElementEventArgs__ctor.htm">
+        <HelpTOCNode Title="FindElementEventArgs Constructor (IWebDriver, By)" Url="html/M_OpenQA_Selenium_Support_Events_FindElementEventArgs__ctor.htm" />
+        <HelpTOCNode Title="FindElementEventArgs Constructor (IWebDriver, IWebElement, By)" Url="html/M_OpenQA_Selenium_Support_Events_FindElementEventArgs__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="FindElementEventArgs Methods" Url="html/Methods_T_OpenQA_Selenium_Support_Events_FindElementEventArgs.htm" />
+      <HelpTOCNode Id="f111b09b-d383-4e6b-a19b-aeb7a7d471ff" Title="FindElementEventArgs Properties" Url="html/Properties_T_OpenQA_Selenium_Support_Events_FindElementEventArgs.htm">
+        <HelpTOCNode Title="Driver Property " Url="html/P_OpenQA_Selenium_Support_Events_FindElementEventArgs_Driver.htm" />
+        <HelpTOCNode Title="Element Property " Url="html/P_OpenQA_Selenium_Support_Events_FindElementEventArgs_Element.htm" />
+        <HelpTOCNode Title="FindMethod Property " Url="html/P_OpenQA_Selenium_Support_Events_FindElementEventArgs_FindMethod.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="e394cf79-3085-4996-8fc3-f78cce25a03f" Title="WebDriverExceptionEventArgs Class" Url="html/T_OpenQA_Selenium_Support_Events_WebDriverExceptionEventArgs.htm">
+      <HelpTOCNode Title="WebDriverExceptionEventArgs Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_Events_WebDriverExceptionEventArgs.htm" />
+      <HelpTOCNode Title="WebDriverExceptionEventArgs Constructor " Url="html/M_OpenQA_Selenium_Support_Events_WebDriverExceptionEventArgs__ctor.htm" />
+      <HelpTOCNode Title="WebDriverExceptionEventArgs Methods" Url="html/Methods_T_OpenQA_Selenium_Support_Events_WebDriverExceptionEventArgs.htm" />
+      <HelpTOCNode Id="1cdef82f-03ee-4b62-b633-2291f95a1903" Title="WebDriverExceptionEventArgs Properties" Url="html/Properties_T_OpenQA_Selenium_Support_Events_WebDriverExceptionEventArgs.htm">
+        <HelpTOCNode Title="Driver Property " Url="html/P_OpenQA_Selenium_Support_Events_WebDriverExceptionEventArgs_Driver.htm" />
+        <HelpTOCNode Title="ThrownException Property " Url="html/P_OpenQA_Selenium_Support_Events_WebDriverExceptionEventArgs_ThrownException.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="389a1775-ed96-4937-8817-4d692379677b" Title="WebDriverNavigationEventArgs Class" Url="html/T_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs.htm">
+      <HelpTOCNode Title="WebDriverNavigationEventArgs Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs.htm" />
+      <HelpTOCNode Id="81a8b888-4c1f-4b7b-b426-b7b1fdf5b169" Title="WebDriverNavigationEventArgs Constructor " Url="html/Overload_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs__ctor.htm">
+        <HelpTOCNode Title="WebDriverNavigationEventArgs Constructor (IWebDriver)" Url="html/M_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs__ctor.htm" />
+        <HelpTOCNode Title="WebDriverNavigationEventArgs Constructor (IWebDriver, String)" Url="html/M_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="WebDriverNavigationEventArgs Methods" Url="html/Methods_T_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs.htm" />
+      <HelpTOCNode Id="062fe714-0751-4c78-a9c7-08ac63b87b2c" Title="WebDriverNavigationEventArgs Properties" Url="html/Properties_T_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs.htm">
+        <HelpTOCNode Title="Driver Property " Url="html/P_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs_Driver.htm" />
+        <HelpTOCNode Title="Url Property " Url="html/P_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs_Url.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="296680ee-7965-4f88-bc76-70c584267a09" Title="WebDriverScriptEventArgs Class" Url="html/T_OpenQA_Selenium_Support_Events_WebDriverScriptEventArgs.htm">
+      <HelpTOCNode Title="WebDriverScriptEventArgs Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_Events_WebDriverScriptEventArgs.htm" />
+      <HelpTOCNode Title="WebDriverScriptEventArgs Constructor " Url="html/M_OpenQA_Selenium_Support_Events_WebDriverScriptEventArgs__ctor.htm" />
+      <HelpTOCNode Title="WebDriverScriptEventArgs Methods" Url="html/Methods_T_OpenQA_Selenium_Support_Events_WebDriverScriptEventArgs.htm" />
+      <HelpTOCNode Id="224f212f-d01e-47aa-901b-2a4b833351be" Title="WebDriverScriptEventArgs Properties" Url="html/Properties_T_OpenQA_Selenium_Support_Events_WebDriverScriptEventArgs.htm">
+        <HelpTOCNode Title="Driver Property " Url="html/P_OpenQA_Selenium_Support_Events_WebDriverScriptEventArgs_Driver.htm" />
+        <HelpTOCNode Title="Script Property " Url="html/P_OpenQA_Selenium_Support_Events_WebDriverScriptEventArgs_Script.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="665ecae3-41da-4aa2-bbd2-f6cbfb8197c0" Title="WebElementEventArgs Class" Url="html/T_OpenQA_Selenium_Support_Events_WebElementEventArgs.htm">
+      <HelpTOCNode Title="WebElementEventArgs Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_Events_WebElementEventArgs.htm" />
+      <HelpTOCNode Title="WebElementEventArgs Constructor " Url="html/M_OpenQA_Selenium_Support_Events_WebElementEventArgs__ctor.htm" />
+      <HelpTOCNode Title="WebElementEventArgs Methods" Url="html/Methods_T_OpenQA_Selenium_Support_Events_WebElementEventArgs.htm" />
+      <HelpTOCNode Id="029f5904-c9c7-406b-af88-cef8d9770f0c" Title="WebElementEventArgs Properties" Url="html/Properties_T_OpenQA_Selenium_Support_Events_WebElementEventArgs.htm">
+        <HelpTOCNode Title="Driver Property " Url="html/P_OpenQA_Selenium_Support_Events_WebElementEventArgs_Driver.htm" />
+        <HelpTOCNode Title="Element Property " Url="html/P_OpenQA_Selenium_Support_Events_WebElementEventArgs_Element.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="abef82d0-b614-4611-b626-1d8616be557f" Title="OpenQA.Selenium.Support.PageObjects Namespace" Url="html/N_OpenQA_Selenium_Support_PageObjects.htm">
+    <HelpTOCNode Id="43ac08e0-b130-4e21-99db-c4bb54ff8ae0" Title="CacheLookupAttribute Class" Url="html/T_OpenQA_Selenium_Support_PageObjects_CacheLookupAttribute.htm">
+      <HelpTOCNode Title="CacheLookupAttribute Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_PageObjects_CacheLookupAttribute.htm" />
+      <HelpTOCNode Title="CacheLookupAttribute Constructor " Url="html/M_OpenQA_Selenium_Support_PageObjects_CacheLookupAttribute__ctor.htm" />
+      <HelpTOCNode Title="CacheLookupAttribute Methods" Url="html/Methods_T_OpenQA_Selenium_Support_PageObjects_CacheLookupAttribute.htm" />
+      <HelpTOCNode Title="CacheLookupAttribute Properties" Url="html/Properties_T_OpenQA_Selenium_Support_PageObjects_CacheLookupAttribute.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="5a2c49f8-fa63-44ba-b7ba-c14ce5c76139" Title="FindsByAttribute Class" Url="html/T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm">
+      <HelpTOCNode Title="FindsByAttribute Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm" />
+      <HelpTOCNode Title="FindsByAttribute Constructor " Url="html/M_OpenQA_Selenium_Support_PageObjects_FindsByAttribute__ctor.htm" />
+      <HelpTOCNode Title="FindsByAttribute Methods" Url="html/Methods_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm" />
+      <HelpTOCNode Id="3e91ee1e-4426-436e-b681-aa3bc1ce5b64" Title="FindsByAttribute Properties" Url="html/Properties_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm">
+        <HelpTOCNode Title="How Property " Url="html/P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_How.htm" />
+        <HelpTOCNode Title="Using Property " Url="html/P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_Using.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Title="How Enumeration" Url="html/T_OpenQA_Selenium_Support_PageObjects_How.htm" />
+    <HelpTOCNode Id="d6403a50-3c34-4622-b3e1-f70d41dddc70" Title="PageFactory Class" Url="html/T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm">
+      <HelpTOCNode Title="PageFactory Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm" />
+      <HelpTOCNode Id="57fd0bfe-4f7e-4df3-969f-082c032f1fc0" Title="PageFactory Methods" Url="html/Methods_T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm">
+        <HelpTOCNode Title="InitElements Method " Url="html/M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="efac7d5a-67cb-4621-a829-faa9fd697ced" Title="WebElementProxyComparer Class" Url="html/T_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer.htm">
+      <HelpTOCNode Title="WebElementProxyComparer Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer.htm" />
+      <HelpTOCNode Title="WebElementProxyComparer Constructor " Url="html/M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer__ctor.htm" />
+      <HelpTOCNode Id="64a3aa30-bb2e-4fee-92d1-b12c940e6a6c" Title="WebElementProxyComparer Methods" Url="html/Methods_T_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer.htm">
+        <HelpTOCNode Title="Equals Method " Url="html/M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer_Equals.htm" />
+        <HelpTOCNode Title="GetHashCode Method " Url="html/M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer_GetHashCode.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="d973d767-0c7b-4860-96ba-3cc0943e102a" Title="OpenQA.Selenium.Support.UI Namespace" Url="html/N_OpenQA_Selenium_Support_UI.htm">
+    <HelpTOCNode Id="342bd239-e955-4388-9093-1f1482c71939" Title="IClock Interface" Url="html/T_OpenQA_Selenium_Support_UI_IClock.htm">
+      <HelpTOCNode Title="IClock Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_UI_IClock.htm" />
+      <HelpTOCNode Id="dc574b3d-b9bf-4851-b82b-ba44ced7798a" Title="IClock Methods" Url="html/Methods_T_OpenQA_Selenium_Support_UI_IClock.htm">
+        <HelpTOCNode Title="IsNowBefore Method " Url="html/M_OpenQA_Selenium_Support_UI_IClock_IsNowBefore.htm" />
+        <HelpTOCNode Title="LaterBy Method " Url="html/M_OpenQA_Selenium_Support_UI_IClock_LaterBy.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="bdbd40a4-349e-440a-b09c-8f22f55eb01a" Title="IClock Properties" Url="html/Properties_T_OpenQA_Selenium_Support_UI_IClock.htm">
+        <HelpTOCNode Title="Now Property " Url="html/P_OpenQA_Selenium_Support_UI_IClock_Now.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="9101bd5d-0ab3-410b-838a-be3abd980bf5" Title="IWait(TSource) Interface" Url="html/T_OpenQA_Selenium_Support_UI_IWait_1.htm">
+      <HelpTOCNode Title="IWait(TSource) Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_UI_IWait_1.htm" />
+      <HelpTOCNode Id="dfe38766-084e-4f5e-af54-dbdafa314d86" Title="IWait(TSource) Methods" Url="html/Methods_T_OpenQA_Selenium_Support_UI_IWait_1.htm">
+        <HelpTOCNode Title="Until(TResult) Method " Url="html/M_OpenQA_Selenium_Support_UI_IWait_1_Until__1.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="ae1d3b9f-ccb8-4977-a5f9-12f45ed36b0e" Title="SelectElement Class" Url="html/T_OpenQA_Selenium_Support_UI_SelectElement.htm">
+      <HelpTOCNode Title="SelectElement Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_UI_SelectElement.htm" />
+      <HelpTOCNode Title="SelectElement Constructor " Url="html/M_OpenQA_Selenium_Support_UI_SelectElement__ctor.htm" />
+      <HelpTOCNode Id="cfa1cc30-4bb0-47ec-aaaf-d254a1211816" Title="SelectElement Methods" Url="html/Methods_T_OpenQA_Selenium_Support_UI_SelectElement.htm">
+        <HelpTOCNode Title="DeselectAll Method " Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_DeselectAll.htm" />
+        <HelpTOCNode Title="DeselectByIndex Method " Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_DeselectByIndex.htm" />
+        <HelpTOCNode Title="DeselectByText Method " Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_DeselectByText.htm" />
+        <HelpTOCNode Title="DeselectByValue Method " Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_DeselectByValue.htm" />
+        <HelpTOCNode Title="SelectByIndex Method " Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_SelectByIndex.htm" />
+        <HelpTOCNode Title="SelectByText Method " Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_SelectByText.htm" />
+        <HelpTOCNode Title="SelectByValue Method " Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_SelectByValue.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="5c201bc1-ff97-49fe-a7a7-7b1ed9c0147b" Title="SelectElement Properties" Url="html/Properties_T_OpenQA_Selenium_Support_UI_SelectElement.htm">
+        <HelpTOCNode Title="AllSelectedOptions Property " Url="html/P_OpenQA_Selenium_Support_UI_SelectElement_AllSelectedOptions.htm" />
+        <HelpTOCNode Title="IsMultiple Property " Url="html/P_OpenQA_Selenium_Support_UI_SelectElement_IsMultiple.htm" />
+        <HelpTOCNode Title="Options Property " Url="html/P_OpenQA_Selenium_Support_UI_SelectElement_Options.htm" />
+        <HelpTOCNode Title="SelectedOption Property " Url="html/P_OpenQA_Selenium_Support_UI_SelectElement_SelectedOption.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="8fecd060-d389-4a9c-a065-84602316a92d" Title="SystemClock Class" Url="html/T_OpenQA_Selenium_Support_UI_SystemClock.htm">
+      <HelpTOCNode Title="SystemClock Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_UI_SystemClock.htm" />
+      <HelpTOCNode Title="SystemClock Constructor " Url="html/M_OpenQA_Selenium_Support_UI_SystemClock__ctor.htm" />
+      <HelpTOCNode Id="ce8c5b53-84ff-434b-9807-89fc3ac64c3d" Title="SystemClock Methods" Url="html/Methods_T_OpenQA_Selenium_Support_UI_SystemClock.htm">
+        <HelpTOCNode Title="IsNowBefore Method " Url="html/M_OpenQA_Selenium_Support_UI_SystemClock_IsNowBefore.htm" />
+        <HelpTOCNode Title="LaterBy Method " Url="html/M_OpenQA_Selenium_Support_UI_SystemClock_LaterBy.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="7e0295f7-69e8-42c6-b17f-4fa075cd51e1" Title="SystemClock Properties" Url="html/Properties_T_OpenQA_Selenium_Support_UI_SystemClock.htm">
+        <HelpTOCNode Title="Now Property " Url="html/P_OpenQA_Selenium_Support_UI_SystemClock_Now.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="d5305688-9454-497b-8f2f-48d7e233a199" Title="UnexpectedTagNameException Class" Url="html/T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm">
+      <HelpTOCNode Title="UnexpectedTagNameException Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm" />
+      <HelpTOCNode Id="21bef49e-f75a-4168-b716-a82a5ac12b39" Title="UnexpectedTagNameException Constructor " Url="html/Overload_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor.htm">
+        <HelpTOCNode Title="UnexpectedTagNameException Constructor " Url="html/M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor.htm" />
+        <HelpTOCNode Title="UnexpectedTagNameException Constructor (String)" Url="html/M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_2.htm" />
+        <HelpTOCNode Title="UnexpectedTagNameException Constructor (SerializationInfo, StreamingContext)" Url="html/M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_1.htm" />
+        <HelpTOCNode Title="UnexpectedTagNameException Constructor (String, Exception)" Url="html/M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_3.htm" />
+        <HelpTOCNode Title="UnexpectedTagNameException Constructor (String, String)" Url="html/M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_4.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="UnexpectedTagNameException Methods" Url="html/Methods_T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm" />
+      <HelpTOCNode Title="UnexpectedTagNameException Properties" Url="html/Properties_T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="1c957090-434e-4201-afac-6be0ba7cb9b0" Title="WebDriverWait Class" Url="html/T_OpenQA_Selenium_Support_UI_WebDriverWait.htm">
+      <HelpTOCNode Title="WebDriverWait Members" Url="html/AllMembers_T_OpenQA_Selenium_Support_UI_WebDriverWait.htm" />
+      <HelpTOCNode Id="78d22e0d-586c-46b8-8dd8-a3986f1a499d" Title="WebDriverWait Constructor " Url="html/Overload_OpenQA_Selenium_Support_UI_WebDriverWait__ctor.htm">
+        <HelpTOCNode Title="WebDriverWait Constructor (IWebDriver, TimeSpan)" Url="html/M_OpenQA_Selenium_Support_UI_WebDriverWait__ctor.htm" />
+        <HelpTOCNode Title="WebDriverWait Constructor (IClock, IWebDriver, TimeSpan, TimeSpan)" Url="html/M_OpenQA_Selenium_Support_UI_WebDriverWait__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="76a56e3b-76f9-435b-bb3f-da0fe7ac0e3d" Title="WebDriverWait Methods" Url="html/Methods_T_OpenQA_Selenium_Support_UI_WebDriverWait.htm">
+        <HelpTOCNode Title="ThrowTimeoutException Method " Url="html/M_OpenQA_Selenium_Support_UI_WebDriverWait_ThrowTimeoutException.htm" />
+        <HelpTOCNode Title="Until(TResult) Method " Url="html/M_OpenQA_Selenium_Support_UI_WebDriverWait_Until__1.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="84052c90-a1fb-4ccd-a350-2bb40a7417b1" Title="Selenium Namespace" Url="html/N_Selenium.htm">
+    <HelpTOCNode Id="29a80df0-55c8-4d47-a640-40e7426efe1b" Title="DefaultRemoteCommand Class" Url="html/T_Selenium_DefaultRemoteCommand.htm">
+      <HelpTOCNode Title="DefaultRemoteCommand Members" Url="html/AllMembers_T_Selenium_DefaultRemoteCommand.htm" />
+      <HelpTOCNode Title="DefaultRemoteCommand Constructor " Url="html/M_Selenium_DefaultRemoteCommand__ctor.htm" />
+      <HelpTOCNode Id="db49bfd7-e409-44e4-b649-f05240808a92" Title="DefaultRemoteCommand Methods" Url="html/Methods_T_Selenium_DefaultRemoteCommand.htm">
+        <HelpTOCNode Title="Parse Method " Url="html/M_Selenium_DefaultRemoteCommand_Parse.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="25901e99-661d-432f-b34a-b57185ba8ecd" Title="DefaultRemoteCommand Properties" Url="html/Properties_T_Selenium_DefaultRemoteCommand.htm">
+        <HelpTOCNode Title="Args Property " Url="html/P_Selenium_DefaultRemoteCommand_Args.htm" />
+        <HelpTOCNode Title="Command Property " Url="html/P_Selenium_DefaultRemoteCommand_Command.htm" />
+        <HelpTOCNode Title="CommandString Property " Url="html/P_Selenium_DefaultRemoteCommand_CommandString.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="38d0fcc8-134c-4d31-867f-09d50c41cded" Title="DefaultSelenium Class" Url="html/T_Selenium_DefaultSelenium.htm">
+      <HelpTOCNode Title="DefaultSelenium Members" Url="html/AllMembers_T_Selenium_DefaultSelenium.htm" />
+      <HelpTOCNode Id="1df5d567-ff81-4bc6-9219-f93790abadec" Title="DefaultSelenium Constructor " Url="html/Overload_Selenium_DefaultSelenium__ctor.htm">
+        <HelpTOCNode Title="DefaultSelenium Constructor (ICommandProcessor)" Url="html/M_Selenium_DefaultSelenium__ctor.htm" />
+        <HelpTOCNode Title="DefaultSelenium Constructor (String, Int32, String, String)" Url="html/M_Selenium_DefaultSelenium__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="c32daaa4-0b18-4d3c-9ae6-44f8651b9fb6" Title="DefaultSelenium Fields" Url="html/Fields_T_Selenium_DefaultSelenium.htm">
+        <HelpTOCNode Title="commandProcessor Field" Url="html/F_Selenium_DefaultSelenium_commandProcessor.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="3435f408-e2e9-4713-a740-1df1880d7119" Title="DefaultSelenium Methods" Url="html/Methods_T_Selenium_DefaultSelenium.htm">
+        <HelpTOCNode Title="AddLocationStrategy Method " Url="html/M_Selenium_DefaultSelenium_AddLocationStrategy.htm" />
+        <HelpTOCNode Title="AddScript Method " Url="html/M_Selenium_DefaultSelenium_AddScript.htm" />
+        <HelpTOCNode Title="AddSelection Method " Url="html/M_Selenium_DefaultSelenium_AddSelection.htm" />
+        <HelpTOCNode Title="AllowNativeXpath Method " Url="html/M_Selenium_DefaultSelenium_AllowNativeXpath.htm" />
+        <HelpTOCNode Title="AltKeyDown Method " Url="html/M_Selenium_DefaultSelenium_AltKeyDown.htm" />
+        <HelpTOCNode Title="AltKeyUp Method " Url="html/M_Selenium_DefaultSelenium_AltKeyUp.htm" />
+        <HelpTOCNode Title="AnswerOnNextPrompt Method " Url="html/M_Selenium_DefaultSelenium_AnswerOnNextPrompt.htm" />
+        <HelpTOCNode Title="AssignId Method " Url="html/M_Selenium_DefaultSelenium_AssignId.htm" />
+        <HelpTOCNode Title="AttachFile Method " Url="html/M_Selenium_DefaultSelenium_AttachFile.htm" />
+        <HelpTOCNode Title="CaptureEntirePageScreenshot Method " Url="html/M_Selenium_DefaultSelenium_CaptureEntirePageScreenshot.htm" />
+        <HelpTOCNode Title="CaptureEntirePageScreenshotToString Method " Url="html/M_Selenium_DefaultSelenium_CaptureEntirePageScreenshotToString.htm" />
+        <HelpTOCNode Title="CaptureNetworkTraffic Method " Url="html/M_Selenium_DefaultSelenium_CaptureNetworkTraffic.htm" />
+        <HelpTOCNode Title="CaptureScreenshot Method " Url="html/M_Selenium_DefaultSelenium_CaptureScreenshot.htm" />
+        <HelpTOCNode Title="CaptureScreenshotToString Method " Url="html/M_Selenium_DefaultSelenium_CaptureScreenshotToString.htm" />
+        <HelpTOCNode Title="Check Method " Url="html/M_Selenium_DefaultSelenium_Check.htm" />
+        <HelpTOCNode Title="ChooseCancelOnNextConfirmation Method " Url="html/M_Selenium_DefaultSelenium_ChooseCancelOnNextConfirmation.htm" />
+        <HelpTOCNode Title="ChooseOkOnNextConfirmation Method " Url="html/M_Selenium_DefaultSelenium_ChooseOkOnNextConfirmation.htm" />
+        <HelpTOCNode Title="Click Method " Url="html/M_Selenium_DefaultSelenium_Click.htm" />
+        <HelpTOCNode Title="ClickAt Method " Url="html/M_Selenium_DefaultSelenium_ClickAt.htm" />
+        <HelpTOCNode Title="Close Method " Url="html/M_Selenium_DefaultSelenium_Close.htm" />
+        <HelpTOCNode Title="ContextMenu Method " Url="html/M_Selenium_DefaultSelenium_ContextMenu.htm" />
+        <HelpTOCNode Title="ContextMenuAt Method " Url="html/M_Selenium_DefaultSelenium_ContextMenuAt.htm" />
+        <HelpTOCNode Title="ControlKeyDown Method " Url="html/M_Selenium_DefaultSelenium_ControlKeyDown.htm" />
+        <HelpTOCNode Title="ControlKeyUp Method " Url="html/M_Selenium_DefaultSelenium_ControlKeyUp.htm" />
+        <HelpTOCNode Title="CreateCookie Method " Url="html/M_Selenium_DefaultSelenium_CreateCookie.htm" />
+        <HelpTOCNode Title="DeleteAllVisibleCookies Method " Url="html/M_Selenium_DefaultSelenium_DeleteAllVisibleCookies.htm" />
+        <HelpTOCNode Title="DeleteCookie Method " Url="html/M_Selenium_DefaultSelenium_DeleteCookie.htm" />
+        <HelpTOCNode Title="DeselectPopUp Method " Url="html/M_Selenium_DefaultSelenium_DeselectPopUp.htm" />
+        <HelpTOCNode Title="DoubleClick Method " Url="html/M_Selenium_DefaultSelenium_DoubleClick.htm" />
+        <HelpTOCNode Title="DoubleClickAt Method " Url="html/M_Selenium_DefaultSelenium_DoubleClickAt.htm" />
+        <HelpTOCNode Title="DragAndDrop Method " Url="html/M_Selenium_DefaultSelenium_DragAndDrop.htm" />
+        <HelpTOCNode Title="DragAndDropToObject Method " Url="html/M_Selenium_DefaultSelenium_DragAndDropToObject.htm" />
+        <HelpTOCNode Title="Dragdrop Method " Url="html/M_Selenium_DefaultSelenium_Dragdrop.htm" />
+        <HelpTOCNode Title="FireEvent Method " Url="html/M_Selenium_DefaultSelenium_FireEvent.htm" />
+        <HelpTOCNode Title="Focus Method " Url="html/M_Selenium_DefaultSelenium_Focus.htm" />
+        <HelpTOCNode Title="GetAlert Method " Url="html/M_Selenium_DefaultSelenium_GetAlert.htm" />
+        <HelpTOCNode Title="GetAllButtons Method " Url="html/M_Selenium_DefaultSelenium_GetAllButtons.htm" />
+        <HelpTOCNode Title="GetAllFields Method " Url="html/M_Selenium_DefaultSelenium_GetAllFields.htm" />
+        <HelpTOCNode Title="GetAllLinks Method " Url="html/M_Selenium_DefaultSelenium_GetAllLinks.htm" />
+        <HelpTOCNode Title="GetAllWindowIds Method " Url="html/M_Selenium_DefaultSelenium_GetAllWindowIds.htm" />
+        <HelpTOCNode Title="GetAllWindowNames Method " Url="html/M_Selenium_DefaultSelenium_GetAllWindowNames.htm" />
+        <HelpTOCNode Title="GetAllWindowTitles Method " Url="html/M_Selenium_DefaultSelenium_GetAllWindowTitles.htm" />
+        <HelpTOCNode Title="GetAttribute Method " Url="html/M_Selenium_DefaultSelenium_GetAttribute.htm" />
+        <HelpTOCNode Title="GetAttributeFromAllWindows Method " Url="html/M_Selenium_DefaultSelenium_GetAttributeFromAllWindows.htm" />
+        <HelpTOCNode Title="GetBodyText Method " Url="html/M_Selenium_DefaultSelenium_GetBodyText.htm" />
+        <HelpTOCNode Title="GetConfirmation Method " Url="html/M_Selenium_DefaultSelenium_GetConfirmation.htm" />
+        <HelpTOCNode Title="GetCookie Method " Url="html/M_Selenium_DefaultSelenium_GetCookie.htm" />
+        <HelpTOCNode Title="GetCookieByName Method " Url="html/M_Selenium_DefaultSelenium_GetCookieByName.htm" />
+        <HelpTOCNode Title="GetCSSCount Method " Url="html/M_Selenium_DefaultSelenium_GetCSSCount.htm" />
+        <HelpTOCNode Title="GetCursorPosition Method " Url="html/M_Selenium_DefaultSelenium_GetCursorPosition.htm" />
+        <HelpTOCNode Title="GetElementHeight Method " Url="html/M_Selenium_DefaultSelenium_GetElementHeight.htm" />
+        <HelpTOCNode Title="GetElementIndex Method " Url="html/M_Selenium_DefaultSelenium_GetElementIndex.htm" />
+        <HelpTOCNode Title="GetElementPositionLeft Method " Url="html/M_Selenium_DefaultSelenium_GetElementPositionLeft.htm" />
+        <HelpTOCNode Title="GetElementPositionTop Method " Url="html/M_Selenium_DefaultSelenium_GetElementPositionTop.htm" />
+        <HelpTOCNode Title="GetElementWidth Method " Url="html/M_Selenium_DefaultSelenium_GetElementWidth.htm" />
+        <HelpTOCNode Title="GetEval Method " Url="html/M_Selenium_DefaultSelenium_GetEval.htm" />
+        <HelpTOCNode Title="GetExpression Method " Url="html/M_Selenium_DefaultSelenium_GetExpression.htm" />
+        <HelpTOCNode Title="GetHtmlSource Method " Url="html/M_Selenium_DefaultSelenium_GetHtmlSource.htm" />
+        <HelpTOCNode Title="GetLocation Method " Url="html/M_Selenium_DefaultSelenium_GetLocation.htm" />
+        <HelpTOCNode Title="GetMouseSpeed Method " Url="html/M_Selenium_DefaultSelenium_GetMouseSpeed.htm" />
+        <HelpTOCNode Title="GetPrompt Method " Url="html/M_Selenium_DefaultSelenium_GetPrompt.htm" />
+        <HelpTOCNode Title="GetSelectedId Method " Url="html/M_Selenium_DefaultSelenium_GetSelectedId.htm" />
+        <HelpTOCNode Title="GetSelectedIds Method " Url="html/M_Selenium_DefaultSelenium_GetSelectedIds.htm" />
+        <HelpTOCNode Title="GetSelectedIndex Method " Url="html/M_Selenium_DefaultSelenium_GetSelectedIndex.htm" />
+        <HelpTOCNode Title="GetSelectedIndexes Method " Url="html/M_Selenium_DefaultSelenium_GetSelectedIndexes.htm" />
+        <HelpTOCNode Title="GetSelectedLabel Method " Url="html/M_Selenium_DefaultSelenium_GetSelectedLabel.htm" />
+        <HelpTOCNode Title="GetSelectedLabels Method " Url="html/M_Selenium_DefaultSelenium_GetSelectedLabels.htm" />
+        <HelpTOCNode Title="GetSelectedValue Method " Url="html/M_Selenium_DefaultSelenium_GetSelectedValue.htm" />
+        <HelpTOCNode Title="GetSelectedValues Method " Url="html/M_Selenium_DefaultSelenium_GetSelectedValues.htm" />
+        <HelpTOCNode Title="GetSelectOptions Method " Url="html/M_Selenium_DefaultSelenium_GetSelectOptions.htm" />
+        <HelpTOCNode Title="GetSpeed Method " Url="html/M_Selenium_DefaultSelenium_GetSpeed.htm" />
+        <HelpTOCNode Title="GetTable Method " Url="html/M_Selenium_DefaultSelenium_GetTable.htm" />
+        <HelpTOCNode Title="GetText Method " Url="html/M_Selenium_DefaultSelenium_GetText.htm" />
+        <HelpTOCNode Title="GetTitle Method " Url="html/M_Selenium_DefaultSelenium_GetTitle.htm" />
+        <HelpTOCNode Title="GetValue Method " Url="html/M_Selenium_DefaultSelenium_GetValue.htm" />
+        <HelpTOCNode Title="GetWhetherThisFrameMatchFrameExpression Method " Url="html/M_Selenium_DefaultSelenium_GetWhetherThisFrameMatchFrameExpression.htm" />
+        <HelpTOCNode Title="GetWhetherThisWindowMatchWindowExpression Method " Url="html/M_Selenium_DefaultSelenium_GetWhetherThisWindowMatchWindowExpression.htm" />
+        <HelpTOCNode Title="GetXpathCount Method " Url="html/M_Selenium_DefaultSelenium_GetXpathCount.htm" />
+        <HelpTOCNode Title="GoBack Method " Url="html/M_Selenium_DefaultSelenium_GoBack.htm" />
+        <HelpTOCNode Title="Highlight Method " Url="html/M_Selenium_DefaultSelenium_Highlight.htm" />
+        <HelpTOCNode Title="IgnoreAttributesWithoutValue Method " Url="html/M_Selenium_DefaultSelenium_IgnoreAttributesWithoutValue.htm" />
+        <HelpTOCNode Title="IsAlertPresent Method " Url="html/M_Selenium_DefaultSelenium_IsAlertPresent.htm" />
+        <HelpTOCNode Title="IsChecked Method " Url="html/M_Selenium_DefaultSelenium_IsChecked.htm" />
+        <HelpTOCNode Title="IsConfirmationPresent Method " Url="html/M_Selenium_DefaultSelenium_IsConfirmationPresent.htm" />
+        <HelpTOCNode Title="IsCookiePresent Method " Url="html/M_Selenium_DefaultSelenium_IsCookiePresent.htm" />
+        <HelpTOCNode Title="IsEditable Method " Url="html/M_Selenium_DefaultSelenium_IsEditable.htm" />
+        <HelpTOCNode Title="IsElementPresent Method " Url="html/M_Selenium_DefaultSelenium_IsElementPresent.htm" />
+        <HelpTOCNode Title="IsOrdered Method " Url="html/M_Selenium_DefaultSelenium_IsOrdered.htm" />
+        <HelpTOCNode Title="IsPromptPresent Method " Url="html/M_Selenium_DefaultSelenium_IsPromptPresent.htm" />
+        <HelpTOCNode Title="IsSomethingSelected Method " Url="html/M_Selenium_DefaultSelenium_IsSomethingSelected.htm" />
+        <HelpTOCNode Title="IsTextPresent Method " Url="html/M_Selenium_DefaultSelenium_IsTextPresent.htm" />
+        <HelpTOCNode Title="IsVisible Method " Url="html/M_Selenium_DefaultSelenium_IsVisible.htm" />
+        <HelpTOCNode Title="KeyDown Method " Url="html/M_Selenium_DefaultSelenium_KeyDown.htm" />
+        <HelpTOCNode Title="KeyDownNative Method " Url="html/M_Selenium_DefaultSelenium_KeyDownNative.htm" />
+        <HelpTOCNode Title="KeyPress Method " Url="html/M_Selenium_DefaultSelenium_KeyPress.htm" />
+        <HelpTOCNode Title="KeyPressNative Method " Url="html/M_Selenium_DefaultSelenium_KeyPressNative.htm" />
+        <HelpTOCNode Title="KeyUp Method " Url="html/M_Selenium_DefaultSelenium_KeyUp.htm" />
+        <HelpTOCNode Title="KeyUpNative Method " Url="html/M_Selenium_DefaultSelenium_KeyUpNative.htm" />
+        <HelpTOCNode Title="MetaKeyDown Method " Url="html/M_Selenium_DefaultSelenium_MetaKeyDown.htm" />
+        <HelpTOCNode Title="MetaKeyUp Method " Url="html/M_Selenium_DefaultSelenium_MetaKeyUp.htm" />
+        <HelpTOCNode Title="MouseDown Method " Url="html/M_Selenium_DefaultSelenium_MouseDown.htm" />
+        <HelpTOCNode Title="MouseDownAt Method " Url="html/M_Selenium_DefaultSelenium_MouseDownAt.htm" />
+        <HelpTOCNode Title="MouseDownRight Method " Url="html/M_Selenium_DefaultSelenium_MouseDownRight.htm" />
+        <HelpTOCNode Title="MouseDownRightAt Method " Url="html/M_Selenium_DefaultSelenium_MouseDownRightAt.htm" />
+        <HelpTOCNode Title="MouseMove Method " Url="html/M_Selenium_DefaultSelenium_MouseMove.htm" />
+        <HelpTOCNode Title="MouseMoveAt Method " Url="html/M_Selenium_DefaultSelenium_MouseMoveAt.htm" />
+        <HelpTOCNode Title="MouseOut Method " Url="html/M_Selenium_DefaultSelenium_MouseOut.htm" />
+        <HelpTOCNode Title="MouseOver Method " Url="html/M_Selenium_DefaultSelenium_MouseOver.htm" />
+        <HelpTOCNode Title="MouseUp Method " Url="html/M_Selenium_DefaultSelenium_MouseUp.htm" />
+        <HelpTOCNode Title="MouseUpAt Method " Url="html/M_Selenium_DefaultSelenium_MouseUpAt.htm" />
+        <HelpTOCNode Title="MouseUpRight Method " Url="html/M_Selenium_DefaultSelenium_MouseUpRight.htm" />
+        <HelpTOCNode Title="MouseUpRightAt Method " Url="html/M_Selenium_DefaultSelenium_MouseUpRightAt.htm" />
+        <HelpTOCNode Title="Open Method " Url="html/M_Selenium_DefaultSelenium_Open.htm" />
+        <HelpTOCNode Title="OpenWindow Method " Url="html/M_Selenium_DefaultSelenium_OpenWindow.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/M_Selenium_DefaultSelenium_Refresh.htm" />
+        <HelpTOCNode Title="RemoveAllSelections Method " Url="html/M_Selenium_DefaultSelenium_RemoveAllSelections.htm" />
+        <HelpTOCNode Title="RemoveScript Method " Url="html/M_Selenium_DefaultSelenium_RemoveScript.htm" />
+        <HelpTOCNode Title="RemoveSelection Method " Url="html/M_Selenium_DefaultSelenium_RemoveSelection.htm" />
+        <HelpTOCNode Title="RetrieveLastRemoteControlLogs Method " Url="html/M_Selenium_DefaultSelenium_RetrieveLastRemoteControlLogs.htm" />
+        <HelpTOCNode Title="Rollup Method " Url="html/M_Selenium_DefaultSelenium_Rollup.htm" />
+        <HelpTOCNode Title="RunScript Method " Url="html/M_Selenium_DefaultSelenium_RunScript.htm" />
+        <HelpTOCNode Title="Select Method " Url="html/M_Selenium_DefaultSelenium_Select.htm" />
+        <HelpTOCNode Title="SelectFrame Method " Url="html/M_Selenium_DefaultSelenium_SelectFrame.htm" />
+        <HelpTOCNode Title="SelectPopUp Method " Url="html/M_Selenium_DefaultSelenium_SelectPopUp.htm" />
+        <HelpTOCNode Title="SelectWindow Method " Url="html/M_Selenium_DefaultSelenium_SelectWindow.htm" />
+        <HelpTOCNode Title="SetBrowserLogLevel Method " Url="html/M_Selenium_DefaultSelenium_SetBrowserLogLevel.htm" />
+        <HelpTOCNode Title="SetContext Method " Url="html/M_Selenium_DefaultSelenium_SetContext.htm" />
+        <HelpTOCNode Title="SetCursorPosition Method " Url="html/M_Selenium_DefaultSelenium_SetCursorPosition.htm" />
+        <HelpTOCNode Title="SetExtensionJs Method " Url="html/M_Selenium_DefaultSelenium_SetExtensionJs.htm" />
+        <HelpTOCNode Title="SetMouseSpeed Method " Url="html/M_Selenium_DefaultSelenium_SetMouseSpeed.htm" />
+        <HelpTOCNode Title="SetSpeed Method " Url="html/M_Selenium_DefaultSelenium_SetSpeed.htm" />
+        <HelpTOCNode Title="SetTimeout Method " Url="html/M_Selenium_DefaultSelenium_SetTimeout.htm" />
+        <HelpTOCNode Title="ShiftKeyDown Method " Url="html/M_Selenium_DefaultSelenium_ShiftKeyDown.htm" />
+        <HelpTOCNode Title="ShiftKeyUp Method " Url="html/M_Selenium_DefaultSelenium_ShiftKeyUp.htm" />
+        <HelpTOCNode Title="ShutDownSeleniumServer Method " Url="html/M_Selenium_DefaultSelenium_ShutDownSeleniumServer.htm" />
+        <HelpTOCNode Id="3824a706-de91-466f-b8b5-0fe03d00754c" Title="Start Method " Url="html/Overload_Selenium_DefaultSelenium_Start.htm">
+          <HelpTOCNode Title="Start Method " Url="html/M_Selenium_DefaultSelenium_Start.htm" />
+          <HelpTOCNode Title="Start Method (String)" Url="html/M_Selenium_DefaultSelenium_Start_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Stop Method " Url="html/M_Selenium_DefaultSelenium_Stop.htm" />
+        <HelpTOCNode Title="Submit Method " Url="html/M_Selenium_DefaultSelenium_Submit.htm" />
+        <HelpTOCNode Title="Type Method " Url="html/M_Selenium_DefaultSelenium_Type.htm" />
+        <HelpTOCNode Title="TypeKeys Method " Url="html/M_Selenium_DefaultSelenium_TypeKeys.htm" />
+        <HelpTOCNode Title="Uncheck Method " Url="html/M_Selenium_DefaultSelenium_Uncheck.htm" />
+        <HelpTOCNode Title="UseXpathLibrary Method " Url="html/M_Selenium_DefaultSelenium_UseXpathLibrary.htm" />
+        <HelpTOCNode Title="WaitForCondition Method " Url="html/M_Selenium_DefaultSelenium_WaitForCondition.htm" />
+        <HelpTOCNode Title="WaitForFrameToLoad Method " Url="html/M_Selenium_DefaultSelenium_WaitForFrameToLoad.htm" />
+        <HelpTOCNode Title="WaitForPageToLoad Method " Url="html/M_Selenium_DefaultSelenium_WaitForPageToLoad.htm" />
+        <HelpTOCNode Title="WaitForPopUp Method " Url="html/M_Selenium_DefaultSelenium_WaitForPopUp.htm" />
+        <HelpTOCNode Title="WindowFocus Method " Url="html/M_Selenium_DefaultSelenium_WindowFocus.htm" />
+        <HelpTOCNode Title="WindowMaximize Method " Url="html/M_Selenium_DefaultSelenium_WindowMaximize.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="b0c49606-aa46-4216-b5f2-371e321a6f13" Title="DefaultSelenium Properties" Url="html/Properties_T_Selenium_DefaultSelenium.htm">
+        <HelpTOCNode Title="Processor Property " Url="html/P_Selenium_DefaultSelenium_Processor.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="1e7bbbc2-6522-4dae-9f53-b5d0af0b439e" Title="HttpCommandProcessor Class" Url="html/T_Selenium_HttpCommandProcessor.htm">
+      <HelpTOCNode Title="HttpCommandProcessor Members" Url="html/AllMembers_T_Selenium_HttpCommandProcessor.htm" />
+      <HelpTOCNode Id="695c6f7b-610b-4566-8d2a-2f8c6df5b9ce" Title="HttpCommandProcessor Constructor " Url="html/Overload_Selenium_HttpCommandProcessor__ctor.htm">
+        <HelpTOCNode Title="HttpCommandProcessor Constructor (String, String, String)" Url="html/M_Selenium_HttpCommandProcessor__ctor_1.htm" />
+        <HelpTOCNode Title="HttpCommandProcessor Constructor (String, Int32, String, String)" Url="html/M_Selenium_HttpCommandProcessor__ctor.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="362b2dbf-7dcc-427b-b15e-0cf5df77d511" Title="HttpCommandProcessor Methods" Url="html/Methods_T_Selenium_HttpCommandProcessor.htm">
+        <HelpTOCNode Title="CreateWebRequest Method " Url="html/M_Selenium_HttpCommandProcessor_CreateWebRequest.htm" />
+        <HelpTOCNode Title="DoCommand Method " Url="html/M_Selenium_HttpCommandProcessor_DoCommand.htm" />
+        <HelpTOCNode Title="GetBoolean Method " Url="html/M_Selenium_HttpCommandProcessor_GetBoolean.htm" />
+        <HelpTOCNode Title="GetBooleanArray Method " Url="html/M_Selenium_HttpCommandProcessor_GetBooleanArray.htm" />
+        <HelpTOCNode Title="GetNumber Method " Url="html/M_Selenium_HttpCommandProcessor_GetNumber.htm" />
+        <HelpTOCNode Title="GetNumberArray Method " Url="html/M_Selenium_HttpCommandProcessor_GetNumberArray.htm" />
+        <HelpTOCNode Title="GetString Method " Url="html/M_Selenium_HttpCommandProcessor_GetString.htm" />
+        <HelpTOCNode Title="GetStringArray Method " Url="html/M_Selenium_HttpCommandProcessor_GetStringArray.htm" />
+        <HelpTOCNode Title="parseCSV Method " Url="html/M_Selenium_HttpCommandProcessor_parseCSV.htm" />
+        <HelpTOCNode Title="ReadResponse Method " Url="html/M_Selenium_HttpCommandProcessor_ReadResponse.htm" />
+        <HelpTOCNode Title="SetExtensionJs Method " Url="html/M_Selenium_HttpCommandProcessor_SetExtensionJs.htm" />
+        <HelpTOCNode Id="3543d54b-23e9-426d-a0f6-7e3e671a2fef" Title="Start Method " Url="html/Overload_Selenium_HttpCommandProcessor_Start.htm">
+          <HelpTOCNode Title="Start Method " Url="html/M_Selenium_HttpCommandProcessor_Start.htm" />
+          <HelpTOCNode Title="Start Method (Object)" Url="html/M_Selenium_HttpCommandProcessor_Start_1.htm" />
+          <HelpTOCNode Title="Start Method (String)" Url="html/M_Selenium_HttpCommandProcessor_Start_2.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Stop Method " Url="html/M_Selenium_HttpCommandProcessor_Stop.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="4acac0e3-cd83-4486-8f27-4cf25d5dcd5d" Title="HttpCommandProcessor Properties" Url="html/Properties_T_Selenium_HttpCommandProcessor.htm">
+        <HelpTOCNode Title="Url Property " Url="html/P_Selenium_HttpCommandProcessor_Url.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="7c00d018-3043-4de1-b8d2-6c8254814d6b" Title="ICommandProcessor Interface" Url="html/T_Selenium_ICommandProcessor.htm">
+      <HelpTOCNode Title="ICommandProcessor Members" Url="html/AllMembers_T_Selenium_ICommandProcessor.htm" />
+      <HelpTOCNode Id="c0d05390-0afa-4d9c-be5a-d8a3e0f220e4" Title="ICommandProcessor Methods" Url="html/Methods_T_Selenium_ICommandProcessor.htm">
+        <HelpTOCNode Title="DoCommand Method " Url="html/M_Selenium_ICommandProcessor_DoCommand.htm" />
+        <HelpTOCNode Title="GetBoolean Method " Url="html/M_Selenium_ICommandProcessor_GetBoolean.htm" />
+        <HelpTOCNode Title="GetBooleanArray Method " Url="html/M_Selenium_ICommandProcessor_GetBooleanArray.htm" />
+        <HelpTOCNode Title="GetNumber Method " Url="html/M_Selenium_ICommandProcessor_GetNumber.htm" />
+        <HelpTOCNode Title="GetNumberArray Method " Url="html/M_Selenium_ICommandProcessor_GetNumberArray.htm" />
+        <HelpTOCNode Title="GetString Method " Url="html/M_Selenium_ICommandProcessor_GetString.htm" />
+        <HelpTOCNode Title="GetStringArray Method " Url="html/M_Selenium_ICommandProcessor_GetStringArray.htm" />
+        <HelpTOCNode Title="SetExtensionJs Method " Url="html/M_Selenium_ICommandProcessor_SetExtensionJs.htm" />
+        <HelpTOCNode Id="cfcc8af7-c5db-4594-b302-09f2b57e4383" Title="Start Method " Url="html/Overload_Selenium_ICommandProcessor_Start.htm">
+          <HelpTOCNode Title="Start Method " Url="html/M_Selenium_ICommandProcessor_Start.htm" />
+          <HelpTOCNode Title="Start Method (Object)" Url="html/M_Selenium_ICommandProcessor_Start_1.htm" />
+          <HelpTOCNode Title="Start Method (String)" Url="html/M_Selenium_ICommandProcessor_Start_2.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Stop Method " Url="html/M_Selenium_ICommandProcessor_Stop.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="3bf96e56-e5cc-484f-a4f8-1c22dccbb361" Title="IRemoteCommand Interface" Url="html/T_Selenium_IRemoteCommand.htm">
+      <HelpTOCNode Title="IRemoteCommand Members" Url="html/AllMembers_T_Selenium_IRemoteCommand.htm" />
+      <HelpTOCNode Id="7974bc19-f711-4adf-9358-df4c8f25561b" Title="IRemoteCommand Properties" Url="html/Properties_T_Selenium_IRemoteCommand.htm">
+        <HelpTOCNode Title="CommandString Property " Url="html/P_Selenium_IRemoteCommand_CommandString.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="70c74a40-24bc-443a-9e60-dfb69eb5be59" Title="ISelenium Interface" Url="html/T_Selenium_ISelenium.htm">
+      <HelpTOCNode Title="ISelenium Members" Url="html/AllMembers_T_Selenium_ISelenium.htm" />
+      <HelpTOCNode Id="86c14e57-6c8d-43c8-b130-1bb45897daad" Title="ISelenium Methods" Url="html/Methods_T_Selenium_ISelenium.htm">
+        <HelpTOCNode Title="AddLocationStrategy Method " Url="html/M_Selenium_ISelenium_AddLocationStrategy.htm" />
+        <HelpTOCNode Title="AddScript Method " Url="html/M_Selenium_ISelenium_AddScript.htm" />
+        <HelpTOCNode Title="AddSelection Method " Url="html/M_Selenium_ISelenium_AddSelection.htm" />
+        <HelpTOCNode Title="AllowNativeXpath Method " Url="html/M_Selenium_ISelenium_AllowNativeXpath.htm" />
+        <HelpTOCNode Title="AltKeyDown Method " Url="html/M_Selenium_ISelenium_AltKeyDown.htm" />
+        <HelpTOCNode Title="AltKeyUp Method " Url="html/M_Selenium_ISelenium_AltKeyUp.htm" />
+        <HelpTOCNode Title="AnswerOnNextPrompt Method " Url="html/M_Selenium_ISelenium_AnswerOnNextPrompt.htm" />
+        <HelpTOCNode Title="AssignId Method " Url="html/M_Selenium_ISelenium_AssignId.htm" />
+        <HelpTOCNode Title="AttachFile Method " Url="html/M_Selenium_ISelenium_AttachFile.htm" />
+        <HelpTOCNode Title="CaptureEntirePageScreenshot Method " Url="html/M_Selenium_ISelenium_CaptureEntirePageScreenshot.htm" />
+        <HelpTOCNode Title="CaptureEntirePageScreenshotToString Method " Url="html/M_Selenium_ISelenium_CaptureEntirePageScreenshotToString.htm" />
+        <HelpTOCNode Title="CaptureScreenshot Method " Url="html/M_Selenium_ISelenium_CaptureScreenshot.htm" />
+        <HelpTOCNode Title="CaptureScreenshotToString Method " Url="html/M_Selenium_ISelenium_CaptureScreenshotToString.htm" />
+        <HelpTOCNode Title="Check Method " Url="html/M_Selenium_ISelenium_Check.htm" />
+        <HelpTOCNode Title="ChooseCancelOnNextConfirmation Method " Url="html/M_Selenium_ISelenium_ChooseCancelOnNextConfirmation.htm" />
+        <HelpTOCNode Title="ChooseOkOnNextConfirmation Method " Url="html/M_Selenium_ISelenium_ChooseOkOnNextConfirmation.htm" />
+        <HelpTOCNode Title="Click Method " Url="html/M_Selenium_ISelenium_Click.htm" />
+        <HelpTOCNode Title="ClickAt Method " Url="html/M_Selenium_ISelenium_ClickAt.htm" />
+        <HelpTOCNode Title="Close Method " Url="html/M_Selenium_ISelenium_Close.htm" />
+        <HelpTOCNode Title="ContextMenu Method " Url="html/M_Selenium_ISelenium_ContextMenu.htm" />
+        <HelpTOCNode Title="ContextMenuAt Method " Url="html/M_Selenium_ISelenium_ContextMenuAt.htm" />
+        <HelpTOCNode Title="ControlKeyDown Method " Url="html/M_Selenium_ISelenium_ControlKeyDown.htm" />
+        <HelpTOCNode Title="ControlKeyUp Method " Url="html/M_Selenium_ISelenium_ControlKeyUp.htm" />
+        <HelpTOCNode Title="CreateCookie Method " Url="html/M_Selenium_ISelenium_CreateCookie.htm" />
+        <HelpTOCNode Title="DeleteAllVisibleCookies Method " Url="html/M_Selenium_ISelenium_DeleteAllVisibleCookies.htm" />
+        <HelpTOCNode Title="DeleteCookie Method " Url="html/M_Selenium_ISelenium_DeleteCookie.htm" />
+        <HelpTOCNode Title="DeselectPopUp Method " Url="html/M_Selenium_ISelenium_DeselectPopUp.htm" />
+        <HelpTOCNode Title="DoubleClick Method " Url="html/M_Selenium_ISelenium_DoubleClick.htm" />
+        <HelpTOCNode Title="DoubleClickAt Method " Url="html/M_Selenium_ISelenium_DoubleClickAt.htm" />
+        <HelpTOCNode Title="DragAndDrop Method " Url="html/M_Selenium_ISelenium_DragAndDrop.htm" />
+        <HelpTOCNode Title="DragAndDropToObject Method " Url="html/M_Selenium_ISelenium_DragAndDropToObject.htm" />
+        <HelpTOCNode Title="Dragdrop Method " Url="html/M_Selenium_ISelenium_Dragdrop.htm" />
+        <HelpTOCNode Title="FireEvent Method " Url="html/M_Selenium_ISelenium_FireEvent.htm" />
+        <HelpTOCNode Title="Focus Method " Url="html/M_Selenium_ISelenium_Focus.htm" />
+        <HelpTOCNode Title="GetAlert Method " Url="html/M_Selenium_ISelenium_GetAlert.htm" />
+        <HelpTOCNode Title="GetAllButtons Method " Url="html/M_Selenium_ISelenium_GetAllButtons.htm" />
+        <HelpTOCNode Title="GetAllFields Method " Url="html/M_Selenium_ISelenium_GetAllFields.htm" />
+        <HelpTOCNode Title="GetAllLinks Method " Url="html/M_Selenium_ISelenium_GetAllLinks.htm" />
+        <HelpTOCNode Title="GetAllWindowIds Method " Url="html/M_Selenium_ISelenium_GetAllWindowIds.htm" />
+        <HelpTOCNode Title="GetAllWindowNames Method " Url="html/M_Selenium_ISelenium_GetAllWindowNames.htm" />
+        <HelpTOCNode Title="GetAllWindowTitles Method " Url="html/M_Selenium_ISelenium_GetAllWindowTitles.htm" />
+        <HelpTOCNode Title="GetAttribute Method " Url="html/M_Selenium_ISelenium_GetAttribute.htm" />
+        <HelpTOCNode Title="GetAttributeFromAllWindows Method " Url="html/M_Selenium_ISelenium_GetAttributeFromAllWindows.htm" />
+        <HelpTOCNode Title="GetBodyText Method " Url="html/M_Selenium_ISelenium_GetBodyText.htm" />
+        <HelpTOCNode Title="GetConfirmation Method " Url="html/M_Selenium_ISelenium_GetConfirmation.htm" />
+        <HelpTOCNode Title="GetCookie Method " Url="html/M_Selenium_ISelenium_GetCookie.htm" />
+        <HelpTOCNode Title="GetCookieByName Method " Url="html/M_Selenium_ISelenium_GetCookieByName.htm" />
+        <HelpTOCNode Title="GetCursorPosition Method " Url="html/M_Selenium_ISelenium_GetCursorPosition.htm" />
+        <HelpTOCNode Title="GetElementHeight Method " Url="html/M_Selenium_ISelenium_GetElementHeight.htm" />
+        <HelpTOCNode Title="GetElementIndex Method " Url="html/M_Selenium_ISelenium_GetElementIndex.htm" />
+        <HelpTOCNode Title="GetElementPositionLeft Method " Url="html/M_Selenium_ISelenium_GetElementPositionLeft.htm" />
+        <HelpTOCNode Title="GetElementPositionTop Method " Url="html/M_Selenium_ISelenium_GetElementPositionTop.htm" />
+        <HelpTOCNode Title="GetElementWidth Method " Url="html/M_Selenium_ISelenium_GetElementWidth.htm" />
+        <HelpTOCNode Title="GetEval Method " Url="html/M_Selenium_ISelenium_GetEval.htm" />
+        <HelpTOCNode Title="GetExpression Method " Url="html/M_Selenium_ISelenium_GetExpression.htm" />
+        <HelpTOCNode Title="GetHtmlSource Method " Url="html/M_Selenium_ISelenium_GetHtmlSource.htm" />
+        <HelpTOCNode Title="GetLocation Method " Url="html/M_Selenium_ISelenium_GetLocation.htm" />
+        <HelpTOCNode Title="GetMouseSpeed Method " Url="html/M_Selenium_ISelenium_GetMouseSpeed.htm" />
+        <HelpTOCNode Title="GetPrompt Method " Url="html/M_Selenium_ISelenium_GetPrompt.htm" />
+        <HelpTOCNode Title="GetSelectedId Method " Url="html/M_Selenium_ISelenium_GetSelectedId.htm" />
+        <HelpTOCNode Title="GetSelectedIds Method " Url="html/M_Selenium_ISelenium_GetSelectedIds.htm" />
+        <HelpTOCNode Title="GetSelectedIndex Method " Url="html/M_Selenium_ISelenium_GetSelectedIndex.htm" />
+        <HelpTOCNode Title="GetSelectedIndexes Method " Url="html/M_Selenium_ISelenium_GetSelectedIndexes.htm" />
+        <HelpTOCNode Title="GetSelectedLabel Method " Url="html/M_Selenium_ISelenium_GetSelectedLabel.htm" />
+        <HelpTOCNode Title="GetSelectedLabels Method " Url="html/M_Selenium_ISelenium_GetSelectedLabels.htm" />
+        <HelpTOCNode Title="GetSelectedValue Method " Url="html/M_Selenium_ISelenium_GetSelectedValue.htm" />
+        <HelpTOCNode Title="GetSelectedValues Method " Url="html/M_Selenium_ISelenium_GetSelectedValues.htm" />
+        <HelpTOCNode Title="GetSelectOptions Method " Url="html/M_Selenium_ISelenium_GetSelectOptions.htm" />
+        <HelpTOCNode Title="GetSpeed Method " Url="html/M_Selenium_ISelenium_GetSpeed.htm" />
+        <HelpTOCNode Title="GetTable Method " Url="html/M_Selenium_ISelenium_GetTable.htm" />
+        <HelpTOCNode Title="GetText Method " Url="html/M_Selenium_ISelenium_GetText.htm" />
+        <HelpTOCNode Title="GetTitle Method " Url="html/M_Selenium_ISelenium_GetTitle.htm" />
+        <HelpTOCNode Title="GetValue Method " Url="html/M_Selenium_ISelenium_GetValue.htm" />
+        <HelpTOCNode Title="GetWhetherThisFrameMatchFrameExpression Method " Url="html/M_Selenium_ISelenium_GetWhetherThisFrameMatchFrameExpression.htm" />
+        <HelpTOCNode Title="GetWhetherThisWindowMatchWindowExpression Method " Url="html/M_Selenium_ISelenium_GetWhetherThisWindowMatchWindowExpression.htm" />
+        <HelpTOCNode Title="GetXpathCount Method " Url="html/M_Selenium_ISelenium_GetXpathCount.htm" />
+        <HelpTOCNode Title="GoBack Method " Url="html/M_Selenium_ISelenium_GoBack.htm" />
+        <HelpTOCNode Title="Highlight Method " Url="html/M_Selenium_ISelenium_Highlight.htm" />
+        <HelpTOCNode Title="IgnoreAttributesWithoutValue Method " Url="html/M_Selenium_ISelenium_IgnoreAttributesWithoutValue.htm" />
+        <HelpTOCNode Title="IsAlertPresent Method " Url="html/M_Selenium_ISelenium_IsAlertPresent.htm" />
+        <HelpTOCNode Title="IsChecked Method " Url="html/M_Selenium_ISelenium_IsChecked.htm" />
+        <HelpTOCNode Title="IsConfirmationPresent Method " Url="html/M_Selenium_ISelenium_IsConfirmationPresent.htm" />
+        <HelpTOCNode Title="IsCookiePresent Method " Url="html/M_Selenium_ISelenium_IsCookiePresent.htm" />
+        <HelpTOCNode Title="IsEditable Method " Url="html/M_Selenium_ISelenium_IsEditable.htm" />
+        <HelpTOCNode Title="IsElementPresent Method " Url="html/M_Selenium_ISelenium_IsElementPresent.htm" />
+        <HelpTOCNode Title="IsOrdered Method " Url="html/M_Selenium_ISelenium_IsOrdered.htm" />
+        <HelpTOCNode Title="IsPromptPresent Method " Url="html/M_Selenium_ISelenium_IsPromptPresent.htm" />
+        <HelpTOCNode Title="IsSomethingSelected Method " Url="html/M_Selenium_ISelenium_IsSomethingSelected.htm" />
+        <HelpTOCNode Title="IsTextPresent Method " Url="html/M_Selenium_ISelenium_IsTextPresent.htm" />
+        <HelpTOCNode Title="IsVisible Method " Url="html/M_Selenium_ISelenium_IsVisible.htm" />
+        <HelpTOCNode Title="KeyDown Method " Url="html/M_Selenium_ISelenium_KeyDown.htm" />
+        <HelpTOCNode Title="KeyDownNative Method " Url="html/M_Selenium_ISelenium_KeyDownNative.htm" />
+        <HelpTOCNode Title="KeyPress Method " Url="html/M_Selenium_ISelenium_KeyPress.htm" />
+        <HelpTOCNode Title="KeyPressNative Method " Url="html/M_Selenium_ISelenium_KeyPressNative.htm" />
+        <HelpTOCNode Title="KeyUp Method " Url="html/M_Selenium_ISelenium_KeyUp.htm" />
+        <HelpTOCNode Title="KeyUpNative Method " Url="html/M_Selenium_ISelenium_KeyUpNative.htm" />
+        <HelpTOCNode Title="MetaKeyDown Method " Url="html/M_Selenium_ISelenium_MetaKeyDown.htm" />
+        <HelpTOCNode Title="MetaKeyUp Method " Url="html/M_Selenium_ISelenium_MetaKeyUp.htm" />
+        <HelpTOCNode Title="MouseDown Method " Url="html/M_Selenium_ISelenium_MouseDown.htm" />
+        <HelpTOCNode Title="MouseDownAt Method " Url="html/M_Selenium_ISelenium_MouseDownAt.htm" />
+        <HelpTOCNode Title="MouseDownRight Method " Url="html/M_Selenium_ISelenium_MouseDownRight.htm" />
+        <HelpTOCNode Title="MouseDownRightAt Method " Url="html/M_Selenium_ISelenium_MouseDownRightAt.htm" />
+        <HelpTOCNode Title="MouseMove Method " Url="html/M_Selenium_ISelenium_MouseMove.htm" />
+        <HelpTOCNode Title="MouseMoveAt Method " Url="html/M_Selenium_ISelenium_MouseMoveAt.htm" />
+        <HelpTOCNode Title="MouseOut Method " Url="html/M_Selenium_ISelenium_MouseOut.htm" />
+        <HelpTOCNode Title="MouseOver Method " Url="html/M_Selenium_ISelenium_MouseOver.htm" />
+        <HelpTOCNode Title="MouseUp Method " Url="html/M_Selenium_ISelenium_MouseUp.htm" />
+        <HelpTOCNode Title="MouseUpAt Method " Url="html/M_Selenium_ISelenium_MouseUpAt.htm" />
+        <HelpTOCNode Title="MouseUpRight Method " Url="html/M_Selenium_ISelenium_MouseUpRight.htm" />
+        <HelpTOCNode Title="MouseUpRightAt Method " Url="html/M_Selenium_ISelenium_MouseUpRightAt.htm" />
+        <HelpTOCNode Title="Open Method " Url="html/M_Selenium_ISelenium_Open.htm" />
+        <HelpTOCNode Title="OpenWindow Method " Url="html/M_Selenium_ISelenium_OpenWindow.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/M_Selenium_ISelenium_Refresh.htm" />
+        <HelpTOCNode Title="RemoveAllSelections Method " Url="html/M_Selenium_ISelenium_RemoveAllSelections.htm" />
+        <HelpTOCNode Title="RemoveScript Method " Url="html/M_Selenium_ISelenium_RemoveScript.htm" />
+        <HelpTOCNode Title="RemoveSelection Method " Url="html/M_Selenium_ISelenium_RemoveSelection.htm" />
+        <HelpTOCNode Title="RetrieveLastRemoteControlLogs Method " Url="html/M_Selenium_ISelenium_RetrieveLastRemoteControlLogs.htm" />
+        <HelpTOCNode Title="Rollup Method " Url="html/M_Selenium_ISelenium_Rollup.htm" />
+        <HelpTOCNode Title="RunScript Method " Url="html/M_Selenium_ISelenium_RunScript.htm" />
+        <HelpTOCNode Title="Select Method " Url="html/M_Selenium_ISelenium_Select.htm" />
+        <HelpTOCNode Title="SelectFrame Method " Url="html/M_Selenium_ISelenium_SelectFrame.htm" />
+        <HelpTOCNode Title="SelectPopUp Method " Url="html/M_Selenium_ISelenium_SelectPopUp.htm" />
+        <HelpTOCNode Title="SelectWindow Method " Url="html/M_Selenium_ISelenium_SelectWindow.htm" />
+        <HelpTOCNode Title="SetBrowserLogLevel Method " Url="html/M_Selenium_ISelenium_SetBrowserLogLevel.htm" />
+        <HelpTOCNode Title="SetContext Method " Url="html/M_Selenium_ISelenium_SetContext.htm" />
+        <HelpTOCNode Title="SetCursorPosition Method " Url="html/M_Selenium_ISelenium_SetCursorPosition.htm" />
+        <HelpTOCNode Title="SetExtensionJs Method " Url="html/M_Selenium_ISelenium_SetExtensionJs.htm" />
+        <HelpTOCNode Title="SetMouseSpeed Method " Url="html/M_Selenium_ISelenium_SetMouseSpeed.htm" />
+        <HelpTOCNode Title="SetSpeed Method " Url="html/M_Selenium_ISelenium_SetSpeed.htm" />
+        <HelpTOCNode Title="SetTimeout Method " Url="html/M_Selenium_ISelenium_SetTimeout.htm" />
+        <HelpTOCNode Title="ShiftKeyDown Method " Url="html/M_Selenium_ISelenium_ShiftKeyDown.htm" />
+        <HelpTOCNode Title="ShiftKeyUp Method " Url="html/M_Selenium_ISelenium_ShiftKeyUp.htm" />
+        <HelpTOCNode Title="ShutDownSeleniumServer Method " Url="html/M_Selenium_ISelenium_ShutDownSeleniumServer.htm" />
+        <HelpTOCNode Title="Start Method " Url="html/M_Selenium_ISelenium_Start.htm" />
+        <HelpTOCNode Title="Stop Method " Url="html/M_Selenium_ISelenium_Stop.htm" />
+        <HelpTOCNode Title="Submit Method " Url="html/M_Selenium_ISelenium_Submit.htm" />
+        <HelpTOCNode Title="Type Method " Url="html/M_Selenium_ISelenium_Type.htm" />
+        <HelpTOCNode Title="TypeKeys Method " Url="html/M_Selenium_ISelenium_TypeKeys.htm" />
+        <HelpTOCNode Title="Uncheck Method " Url="html/M_Selenium_ISelenium_Uncheck.htm" />
+        <HelpTOCNode Title="UseXpathLibrary Method " Url="html/M_Selenium_ISelenium_UseXpathLibrary.htm" />
+        <HelpTOCNode Title="WaitForCondition Method " Url="html/M_Selenium_ISelenium_WaitForCondition.htm" />
+        <HelpTOCNode Title="WaitForFrameToLoad Method " Url="html/M_Selenium_ISelenium_WaitForFrameToLoad.htm" />
+        <HelpTOCNode Title="WaitForPageToLoad Method " Url="html/M_Selenium_ISelenium_WaitForPageToLoad.htm" />
+        <HelpTOCNode Title="WaitForPopUp Method " Url="html/M_Selenium_ISelenium_WaitForPopUp.htm" />
+        <HelpTOCNode Title="WindowFocus Method " Url="html/M_Selenium_ISelenium_WindowFocus.htm" />
+        <HelpTOCNode Title="WindowMaximize Method " Url="html/M_Selenium_ISelenium_WindowMaximize.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="95187c63-a2e1-49e2-98ea-36b6ecf137f0" Title="SeleniumException Class" Url="html/T_Selenium_SeleniumException.htm">
+      <HelpTOCNode Title="SeleniumException Members" Url="html/AllMembers_T_Selenium_SeleniumException.htm" />
+      <HelpTOCNode Id="669d16b6-6c0a-4a0b-b958-2bcff2afb3b4" Title="SeleniumException Constructor " Url="html/Overload_Selenium_SeleniumException__ctor.htm">
+        <HelpTOCNode Title="SeleniumException Constructor " Url="html/M_Selenium_SeleniumException__ctor.htm" />
+        <HelpTOCNode Title="SeleniumException Constructor (String)" Url="html/M_Selenium_SeleniumException__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="SeleniumException Methods" Url="html/Methods_T_Selenium_SeleniumException.htm" />
+      <HelpTOCNode Title="SeleniumException Properties" Url="html/Properties_T_Selenium_SeleniumException.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="35101053-4e63-4166-8d6d-da6447dab0ee" Title="WebDriverBackedSelenium Class" Url="html/T_Selenium_WebDriverBackedSelenium.htm">
+      <HelpTOCNode Title="WebDriverBackedSelenium Members" Url="html/AllMembers_T_Selenium_WebDriverBackedSelenium.htm" />
+      <HelpTOCNode Id="311e9825-7508-406a-8221-37c5addfbd75" Title="WebDriverBackedSelenium Constructor " Url="html/Overload_Selenium_WebDriverBackedSelenium__ctor.htm">
+        <HelpTOCNode Title="WebDriverBackedSelenium Constructor (IWebDriver, String)" Url="html/M_Selenium_WebDriverBackedSelenium__ctor.htm" />
+        <HelpTOCNode Title="WebDriverBackedSelenium Constructor (IWebDriver, Uri)" Url="html/M_Selenium_WebDriverBackedSelenium__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="WebDriverBackedSelenium Fields" Url="html/Fields_T_Selenium_WebDriverBackedSelenium.htm" />
+      <HelpTOCNode Id="22eaaf3a-9311-422c-bdc8-fc4143ba7128" Title="WebDriverBackedSelenium Methods" Url="html/Methods_T_Selenium_WebDriverBackedSelenium.htm">
+        <HelpTOCNode Title="Start Method " Url="html/Overload_Selenium_WebDriverBackedSelenium_Start.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="2a549392-5448-484b-90b9-749aaba94714" Title="WebDriverBackedSelenium Properties" Url="html/Properties_T_Selenium_WebDriverBackedSelenium.htm">
+        <HelpTOCNode Title="UnderlyingWebDriver Property " Url="html/P_Selenium_WebDriverBackedSelenium_UnderlyingWebDriver.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="4f7a8fce-320b-4bf4-9690-a05ec06c3ce8" Title="WebDriverCommandProcessor Class" Url="html/T_Selenium_WebDriverCommandProcessor.htm">
+      <HelpTOCNode Title="WebDriverCommandProcessor Members" Url="html/AllMembers_T_Selenium_WebDriverCommandProcessor.htm" />
+      <HelpTOCNode Id="dd3e7316-737f-49f6-bb80-8305ebec97a3" Title="WebDriverCommandProcessor Constructor " Url="html/Overload_Selenium_WebDriverCommandProcessor__ctor.htm">
+        <HelpTOCNode Title="WebDriverCommandProcessor Constructor (String, IWebDriver)" Url="html/M_Selenium_WebDriverCommandProcessor__ctor.htm" />
+        <HelpTOCNode Title="WebDriverCommandProcessor Constructor (Uri, IWebDriver)" Url="html/M_Selenium_WebDriverCommandProcessor__ctor_1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="665d23eb-c2cb-4ad0-afef-ac085c762113" Title="WebDriverCommandProcessor Methods" Url="html/Methods_T_Selenium_WebDriverCommandProcessor.htm">
+        <HelpTOCNode Title="DoCommand Method " Url="html/M_Selenium_WebDriverCommandProcessor_DoCommand.htm" />
+        <HelpTOCNode Title="GetBoolean Method " Url="html/M_Selenium_WebDriverCommandProcessor_GetBoolean.htm" />
+        <HelpTOCNode Title="GetBooleanArray Method " Url="html/M_Selenium_WebDriverCommandProcessor_GetBooleanArray.htm" />
+        <HelpTOCNode Title="GetNumber Method " Url="html/M_Selenium_WebDriverCommandProcessor_GetNumber.htm" />
+        <HelpTOCNode Title="GetNumberArray Method " Url="html/M_Selenium_WebDriverCommandProcessor_GetNumberArray.htm" />
+        <HelpTOCNode Title="GetString Method " Url="html/M_Selenium_WebDriverCommandProcessor_GetString.htm" />
+        <HelpTOCNode Title="GetStringArray Method " Url="html/M_Selenium_WebDriverCommandProcessor_GetStringArray.htm" />
+        <HelpTOCNode Title="SetExtensionJs Method " Url="html/M_Selenium_WebDriverCommandProcessor_SetExtensionJs.htm" />
+        <HelpTOCNode Id="697e5669-aa8a-4cbf-9896-fcb3f6828cb6" Title="Start Method " Url="html/Overload_Selenium_WebDriverCommandProcessor_Start.htm">
+          <HelpTOCNode Title="Start Method " Url="html/M_Selenium_WebDriverCommandProcessor_Start.htm" />
+          <HelpTOCNode Title="Start Method (Object)" Url="html/M_Selenium_WebDriverCommandProcessor_Start_1.htm" />
+          <HelpTOCNode Title="Start Method (String)" Url="html/M_Selenium_WebDriverCommandProcessor_Start_2.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Stop Method " Url="html/M_Selenium_WebDriverCommandProcessor_Stop.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="9cbc767d-4359-4e46-bf6e-4cd59edba241" Title="WebDriverCommandProcessor Properties" Url="html/Properties_T_Selenium_WebDriverCommandProcessor.htm">
+        <HelpTOCNode Title="UnderlyingWebDriver Property " Url="html/P_Selenium_WebDriverCommandProcessor_UnderlyingWebDriver.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="d3bd3095-6fd9-4e55-bc44-3334ce80a2bf" Title="Selenium.Internal.SeleniumEmulation Namespace" Url="html/N_Selenium_Internal_SeleniumEmulation.htm">
+    <HelpTOCNode Id="5e7d43ad-eb1b-4203-a972-9d05fd294608" Title="CompoundMutator Class" Url="html/T_Selenium_Internal_SeleniumEmulation_CompoundMutator.htm">
+      <HelpTOCNode Title="CompoundMutator Members" Url="html/AllMembers_T_Selenium_Internal_SeleniumEmulation_CompoundMutator.htm" />
+      <HelpTOCNode Title="CompoundMutator Constructor " Url="html/M_Selenium_Internal_SeleniumEmulation_CompoundMutator__ctor.htm" />
+      <HelpTOCNode Id="c243894f-a050-4447-bf94-ed5609dafb83" Title="CompoundMutator Methods" Url="html/Methods_T_Selenium_Internal_SeleniumEmulation_CompoundMutator.htm">
+        <HelpTOCNode Title="Mutate Method " Url="html/M_Selenium_Internal_SeleniumEmulation_CompoundMutator_Mutate.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="a1762c94-c749-4455-8198-c355ebbe33c3" Title="FunctionDeclaration Class" Url="html/T_Selenium_Internal_SeleniumEmulation_FunctionDeclaration.htm">
+      <HelpTOCNode Title="FunctionDeclaration Members" Url="html/AllMembers_T_Selenium_Internal_SeleniumEmulation_FunctionDeclaration.htm" />
+      <HelpTOCNode Title="FunctionDeclaration Constructor " Url="html/M_Selenium_Internal_SeleniumEmulation_FunctionDeclaration__ctor.htm" />
+      <HelpTOCNode Id="30e5a792-3095-4177-8e17-88f21487b87c" Title="FunctionDeclaration Methods" Url="html/Methods_T_Selenium_Internal_SeleniumEmulation_FunctionDeclaration.htm">
+        <HelpTOCNode Title="Mutate Method " Url="html/M_Selenium_Internal_SeleniumEmulation_FunctionDeclaration_Mutate.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="f9a7be3a-f756-4839-aefe-fb02cf1bbc17" Title="IFilterFunction Interface" Url="html/T_Selenium_Internal_SeleniumEmulation_IFilterFunction.htm">
+      <HelpTOCNode Title="IFilterFunction Members" Url="html/AllMembers_T_Selenium_Internal_SeleniumEmulation_IFilterFunction.htm" />
+      <HelpTOCNode Id="5f62cbec-4c96-4ccc-9dab-b9bea2564be8" Title="IFilterFunction Methods" Url="html/Methods_T_Selenium_Internal_SeleniumEmulation_IFilterFunction.htm">
+        <HelpTOCNode Title="FilterElements Method " Url="html/M_Selenium_Internal_SeleniumEmulation_IFilterFunction_FilterElements.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="6ce1a02f-d655-4d14-bb91-93f6acaf7967" Title="IScriptMutator Interface" Url="html/T_Selenium_Internal_SeleniumEmulation_IScriptMutator.htm">
+      <HelpTOCNode Title="IScriptMutator Members" Url="html/AllMembers_T_Selenium_Internal_SeleniumEmulation_IScriptMutator.htm" />
+      <HelpTOCNode Id="5b7cea40-0409-480f-82bb-9255ae99b788" Title="IScriptMutator Methods" Url="html/Methods_T_Selenium_Internal_SeleniumEmulation_IScriptMutator.htm">
+        <HelpTOCNode Title="Mutate Method " Url="html/M_Selenium_Internal_SeleniumEmulation_IScriptMutator_Mutate.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="3599b1a9-eec2-4eed-8aa9-b90f502d6d01" Title="JavaScriptLibrary Class" Url="html/T_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary.htm">
+      <HelpTOCNode Title="JavaScriptLibrary Members" Url="html/AllMembers_T_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary.htm" />
+      <HelpTOCNode Id="6a7f5be8-c642-4b75-88ba-79aaa3ff821e" Title="JavaScriptLibrary Methods" Url="html/Methods_T_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary.htm">
+        <HelpTOCNode Title="CallEmbeddedHtmlUtilities Method " Url="html/M_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary_CallEmbeddedHtmlUtilities.htm" />
+        <HelpTOCNode Title="CallEmbeddedSelenium Method " Url="html/M_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary_CallEmbeddedSelenium.htm" />
+        <HelpTOCNode Title="ExecuteScript Method " Url="html/M_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary_ExecuteScript.htm" />
+        <HelpTOCNode Title="GetSeleniumScript Method " Url="html/M_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary_GetSeleniumScript.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="ec449074-f4ed-49bc-b37c-d62cb25e3805" Title="SeleniumMutator Class" Url="html/T_Selenium_Internal_SeleniumEmulation_SeleniumMutator.htm">
+      <HelpTOCNode Title="SeleniumMutator Members" Url="html/AllMembers_T_Selenium_Internal_SeleniumEmulation_SeleniumMutator.htm" />
+      <HelpTOCNode Title="SeleniumMutator Constructor " Url="html/M_Selenium_Internal_SeleniumEmulation_SeleniumMutator__ctor.htm" />
+      <HelpTOCNode Id="40241c9c-2a66-4c67-b507-bcb4b7e8233a" Title="SeleniumMutator Methods" Url="html/Methods_T_Selenium_Internal_SeleniumEmulation_SeleniumMutator.htm">
+        <HelpTOCNode Title="Mutate Method " Url="html/M_Selenium_Internal_SeleniumEmulation_SeleniumMutator_Mutate.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="1eff42f2-fa16-46b9-9cab-9195d02e1666" Title="VariableDeclaration Class" Url="html/T_Selenium_Internal_SeleniumEmulation_VariableDeclaration.htm">
+      <HelpTOCNode Title="VariableDeclaration Members" Url="html/AllMembers_T_Selenium_Internal_SeleniumEmulation_VariableDeclaration.htm" />
+      <HelpTOCNode Title="VariableDeclaration Constructor " Url="html/M_Selenium_Internal_SeleniumEmulation_VariableDeclaration__ctor.htm" />
+      <HelpTOCNode Id="405a7932-7f26-4499-97fd-c1678f73a5f1" Title="VariableDeclaration Methods" Url="html/Methods_T_Selenium_Internal_SeleniumEmulation_VariableDeclaration.htm">
+        <HelpTOCNode Title="Mutate Method " Url="html/M_Selenium_Internal_SeleniumEmulation_VariableDeclaration_Mutate.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+</HelpTOC>
