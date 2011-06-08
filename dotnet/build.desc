@@ -101,5 +101,6 @@ dotnet_release(name = "release",
     ":webdriverbackedselenium",
     ":docs"
   ],
-  out = "build/dotnet/WebDriver.zip"
+  version = "2.0rc3",
+  out = "selenium-dotnet.zip"
 )

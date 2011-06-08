@@ -48,7 +48,7 @@ module CrazyFunDotNet
       # These should decline as more functionality is added
       # to the Albacore csc task.
       params = ["/nostdlib+",
-	            "/nologo",
+                "/nologo",
                 "/noconfig",
                 "/filealign:512"]
 
@@ -294,12 +294,19 @@ module CrazyFunDotNet
   class DotNetRelease < Tasks
     def handle(fun, dir, args)
       output_dir = 'build/dotnet'
-      full_path = args[:out].gsub("/", Platform.dir_separator)
+      file_name = args[:out].chomp(File.extname(args[:out])) + "-" + args[:version] + File.extname(args[:out])
+      output_file = File.join(output_dir, file_name)
+
+      full_path = output_file.gsub("/", Platform.dir_separator)
       desc "Preparing: #{full_path}"
       task_name = task_name(dir, args[:name])
 
       target = file task_name do
-        zip(output_dir, args[:out])
+        puts "Preparing release file: #{full_path}"
+        if File.exists? output_file
+          File.delete output_file
+        end
+        zip(output_dir, output_file)
       end
       
       add_dependencies(target, dir, args[:deps])
@@ -331,8 +338,8 @@ module CrazyFunVisualC
           puts "Compiling: #{task_name} as #{desc_path}"
           msb.use :net40
           msb.properties :configuration => :Release, :platform => args[:platform]
-          msb.targets args[:target]
-          msb.solution = "WebDriver.sln"
+          msb.solution = File.join(dir, args[:project])
+          msb.targets = ["Build"]
           msb.parameters "/nologo"
           msb.verbosity = "quiet"
         end

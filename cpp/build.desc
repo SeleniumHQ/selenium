@@ -1,14 +1,12 @@
 visualc_library(name = "chrome_dll",
   platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "npchromedriver",
+  project = "npchromedriver/npchromedriver.vcxproj",
   out = "Win32/Release/npchromedriver.dll"
 )
 
 visualc_library(name = "firefox_dll",
   platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "webdriver-firefox",
+  project = "webdriver-firefox/webdriver-firefox.vcxproj",
   out = "Win32/Release/webdriver-firefox.dll"
 )
 
@@ -45,8 +43,7 @@ gcc_library(name = "imehandler64",
 
 visualc_library(name = "imehandler_dll",
   platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "imehandler",
+  project = "imehandler/imehandler.vcxproj",
   out = "Win32/Release/imehandler.dll"
 )
 
@@ -57,8 +54,7 @@ visualc_library(name = "ie_win32_dll",
     ":sizzle"
   ],
   platform = "Win32",
-  solution = "WebDriver.sln",
-  target = "IEDriver",
+  project = "IEDriver/IEDriver.vcxproj",
   out = "Win32/Release/IEDriver.dll"
 )
 
@@ -69,8 +65,7 @@ visualc_library(name = "ie_x64_dll",
     ":sizzle"
   ],
   platform = "x64",
-  solution = "WebDriver.sln",
-  target = "IEDriver",
+  project = "IEDriver/IEDriver.vcxproj",
   out = "x64/Release/IEDriver.dll"
 )
 
