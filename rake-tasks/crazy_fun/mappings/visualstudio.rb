@@ -287,6 +287,8 @@ module CrazyFunDotNet
       file task_name do
         puts "Generating help file: at #{help_file_path_desc}"
         mv File.join(web_documentation_path, args[:helpfile]), File.dirname(args[:out])
+		File.rename(File.join(web_documentation_path, "Index.html"), "index.html")
+		File.rename(File.join(web_documentation_path, "styles", "Presentation.css"), "presentation.css")
       end
     end
   end
