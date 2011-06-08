@@ -1,4 +1,23 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="PageFactory.cs" company="WebDriver Committers">
+// Copyright 2007-2011 WebDriver committers
+// Copyright 2007-2011 Google Inc.
+// Portions copyright 2007 ThoughtWorks, Inc
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// </copyright>
+
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
 using OpenQA.Selenium.Internal;
@@ -25,6 +44,11 @@ namespace OpenQA.Selenium.Support.PageObjects
         public static void InitElements(ISearchContext driver, object page)
         {
             const BindingFlags BindingOptions = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
+            if (page == null)
+            {
+                throw new ArgumentNullException("page", "page cannot be null");
+            }
+
             var type = page.GetType();
             var fields = type.GetFields(BindingOptions);
             var properties = type.GetProperties(BindingOptions);
@@ -134,6 +158,11 @@ namespace OpenQA.Selenium.Support.PageObjects
             /// <param name="invocation">An IInvocation object describing the actual implementation.</param>
             public void Intercept(IInvocation invocation)
             {
+                if (invocation == null)
+                {
+                    throw new ArgumentNullException("invocation", "invocation cannot be null");
+                }
+
                 if (invocation.Method.Name == "get_WrappedElement")
                 {
                     invocation.ReturnValue = this.WrappedElement;

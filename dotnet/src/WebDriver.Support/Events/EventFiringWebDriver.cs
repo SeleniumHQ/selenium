@@ -1,20 +1,21 @@
-﻿/* Copyright notice and license
-Copyright 2007-2010 WebDriver committers
-Copyright 2007-2010 Google Inc.
-Portions copyright 2007 ThoughtWorks, Inc
+﻿// <copyright file="EventFiringWebDriver.cs" company="WebDriver Committers">
+// Copyright 2007-2011 WebDriver committers
+// Copyright 2007-2011 Google Inc.
+// Portions copyright 2007 ThoughtWorks, Inc
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// </copyright>
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -191,6 +192,7 @@ namespace OpenQA.Selenium.Support.Events
         {
             get { return this.driver.CurrentWindowHandle; }
         }
+
         /// <summary>
         /// Gets the window handles of open browser windows.
         /// </summary>
@@ -669,6 +671,11 @@ namespace OpenQA.Selenium.Support.Events
             /// <param name="url">Uri object of where you want the browser to go to</param>
             public void GoToUrl(Uri url)
             {
+                if (url == null)
+                {
+                    throw new ArgumentNullException("url", "url cannot be null");
+                }
+
                 WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver, url.ToString());
                 this.parentDriver.OnNavigating(e);
                 this.wrappedNavigation.GoToUrl(url);
