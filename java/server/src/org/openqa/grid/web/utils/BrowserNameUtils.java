@@ -82,6 +82,8 @@ public class BrowserNameUtils {
 			ret = "safari";
 		} else if (browserString.startsWith("*googlechrome")) {
 			ret = "chrome";
+		} else if (browserString.startsWith("opera")) {
+			ret = "opera";
 		}
 
 		return ret;
