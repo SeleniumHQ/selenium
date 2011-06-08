@@ -126,8 +126,7 @@ function NSGetModule(aCompMgr, aFileSpec) {
   return ServerModule;
 }
 
-WebDriverServer.prototype.classID = CLASS_ID;
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-if (XPCOMUtils.generateNSGetFactory) {
-  const NSGetFactory = XPCOMUtils.generateNSGetFactory([WebDriverServer]);
+function NSGetFactory() {
+  return ServerFactory;
 }
+WebDriverServer.prototype.classID = CLASS_ID;
