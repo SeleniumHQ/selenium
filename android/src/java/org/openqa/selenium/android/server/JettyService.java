@@ -138,7 +138,7 @@ public class JettyService extends Service {
   protected void configureHandlers() {
     if (server != null) {
       org.eclipse.jetty.servlet.ServletContextHandler root =
-          new org.eclipse.jetty.servlet.ServletContextHandler(server, "/hub",
+          new org.eclipse.jetty.servlet.ServletContextHandler(server, "/wd/hub",
               org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
       root.addServlet(new ServletHolder(new AndroidDriverServlet()), "/*");
       
