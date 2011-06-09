@@ -37,6 +37,7 @@ import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.jetty.http.SocketListener;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.WebApplicationContext;
+import org.openqa.selenium.net.NetworkUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import com.google.common.collect.Maps;
@@ -60,7 +61,7 @@ public class Hub {
 	private Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
 	private static Map<String, String> grid1Mapping = Maps.newHashMap();
 	private static Hub INSTANCE = new Hub(4444, Registry.getInstance());
-
+	private NetworkUtils utils = new NetworkUtils();
 	public static Hub getInstance() {
 		return INSTANCE;
 	}
@@ -111,13 +112,7 @@ public class Hub {
 	}
 
 	private Hub(int port, Registry registry) {
-		InetAddress addr;
-		try {
-			addr = InetAddress.getLocalHost();
-		} catch (UnknownHostException e) {
-			throw new InstantiationError("cannot find hub ip");
-		}
-		host = addr.getHostAddress();
+		host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
 		this.port = port;
 		this.registry = registry;
 		registry.setHub(this);
