@@ -39,6 +39,8 @@ public class WebDriverRequestHandler extends RequestHandler {
 		super(request, response, registry);
 	}
 
+	
+
 	@Override
 	public RequestType extractRequestType() {
 

@@ -22,6 +22,9 @@ public class CapabilityNotPresentOnTheGridException extends GridException {
 
 	private static final long serialVersionUID = -5382151149204616537L;
 
+	public CapabilityNotPresentOnTheGridException(String msg) {
+		super(msg);
+	}
 	public CapabilityNotPresentOnTheGridException(Map<String, Object> capabilities) {
 		super("cannot find : " + capabilities);
 	}

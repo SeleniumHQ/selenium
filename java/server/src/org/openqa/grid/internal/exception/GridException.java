@@ -16,7 +16,9 @@ limitations under the License.
 
 package org.openqa.grid.internal.exception;
 
-public class GridException extends RuntimeException {
+import org.openqa.selenium.WebDriverException;
+
+public class GridException extends WebDriverException {
 
 	private static final long serialVersionUID = -3994209521865743841L;
 
