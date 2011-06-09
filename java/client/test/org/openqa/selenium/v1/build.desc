@@ -3,6 +3,15 @@ java_library(name = "test-webdriver",
   srcs = [
     "internal/**/*.java",
     "support/*.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium:webdriver-api",
+    "//java/client/src/org/openqa/selenium:webdriver-backed-selenium",
+    "//java/client/src/org/openqa/selenium/remote",
+    "//java/client/src/org/openqa/selenium/support",
+    "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
+    "//java/client/test/org/openqa/selenium:base",
+    "//third_party/java/junit",
   ])
 
 java_library(name = "test-selenium",

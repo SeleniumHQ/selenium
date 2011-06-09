@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
+import com.thoughtworks.selenium.BrowserConfigurationOptions;
+
 import junit.framework.TestCase;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StubDriver;
@@ -24,6 +26,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverCommandProcessor;
 
 public class WebDriverCommandProcessorTest extends TestCase {
+  public void testDriverNeedNotImplementHasCapabilities() {
+    WebDriver driver = new StubJsDriver();
+
+    try {
+      new WebDriverCommandProcessor("http://www.example.com", driver);
+    } catch (ClassCastException e) {
+      fail(e.getMessage());
+    }
+  }
+
   public void testRequiresAJavascriptEnabledDriver() {
     WebDriver driver = new StubDriver();
 
@@ -34,17 +46,12 @@ public class WebDriverCommandProcessorTest extends TestCase {
     }
   }
 
-  public void testRequiresJavascriptToBeEnabled() {
-    WebDriver driver = new StubJsDriver();
-
-    try {
-      new WebDriverCommandProcessor("http://example.com", driver);
-      fail("Was not expected to succeed");
-    } catch (IllegalStateException expected) {
-    }
-  }
-  
   private static class StubJsDriver extends StubDriver implements JavascriptExecutor {
+
+    @Override
+    public String getWindowHandle() {
+      return null;
+    }
 
     public Object executeScript(String script, Object... args) {
       return null;

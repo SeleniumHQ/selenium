@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
@@ -280,11 +281,15 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     return seleneseMethods.get(methodName);
   }
 
-  private void assertDriverSupportsJavascript(WebDriver driver) {
-    // TODO(simon): We're starting to need a "describe" interface for checks
-    // like this.
+  @VisibleForTesting
+  protected void assertDriverSupportsJavascript(WebDriver driver) {
     if (!(driver instanceof JavascriptExecutor)) {
       throw new IllegalStateException("Driver instance must support JS.");
+    }
+
+    if (!(driver instanceof HasCapabilities)) {
+      // Might be proxy. Bail.
+      return;
     }
 
     if (!((HasCapabilities) driver).getCapabilities().isJavascriptEnabled()) {
