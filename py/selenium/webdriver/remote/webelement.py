@@ -15,7 +15,6 @@
 
 """WebElement implementation."""
 from command import Command
-import warnings
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchAttributeException
 
@@ -46,14 +45,6 @@ class WebElement(object):
     def submit(self):
         """Submits a form."""
         self._execute(Command.SUBMIT_ELEMENT)
-
-    @property
-    def value(self):
-        """Gets the value of the element's value attribute. Note that this call has been
-            deprecated and will be removed in a future version
-        """
-        warnings.warn("value property has been deprecated, please use get_attribute('value')")
-        return self._execute(Command.GET_ELEMENT_VALUE)['value']
 
     def clear(self):
         """Clears the text if it's a text entry element."""

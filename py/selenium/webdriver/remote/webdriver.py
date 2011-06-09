@@ -14,7 +14,6 @@
 # limitations under the License.
 """The WebDriver implementation."""
 import base64
-import warnings
 from command import Command
 from webelement import WebElement
 from remote_connection import RemoteConnection
@@ -355,18 +354,6 @@ class WebDriver(object):
         """
         return self.execute(Command.GET_PAGE_SOURCE)['value']
 
-    
-    def get_page_source(self):
-        """Gets the source of the current page.
-        Usage:
-            driver.get_page_source()
-        Note: 
-            This call has been deprecated. Please use page_source property
-        """
-        warnings.warn("""Please note this has been deprecated. use page_source 
-                       property instead""")
-        return self.execute(Command.GET_PAGE_SOURCE)['value']
-    
     def close(self):
         """Closes the current window.
         Usage:
@@ -392,17 +379,6 @@ class WebDriver(object):
         """
         return self.execute(Command.GET_CURRENT_WINDOW_HANDLE)['value']
     
-    def get_current_window_handle(self):
-        """Returns the handle of the current window.
-        Usage:
-            driver.get_current_window_handle()
-        Note: this method has been deprecated. Please use current_window_handle 
-            property"
-        """
-        warnings.warn("""Please note this has been deprecated. Use 
-                current_window_handle property instead""")
-        return self.execute(Command.GET_CURRENT_WINDOW_HANDLE)['value']
-    
     @property
     def window_handles(self):
         """Returns the handles of all windows within the current session.
@@ -411,17 +387,6 @@ class WebDriver(object):
         """
         return self.execute(Command.GET_WINDOW_HANDLES)['value']
 
-    def get_window_handles(self):
-        """Returns the handles of all windows within the current session.
-        Usage:
-            driver.get_window_handles()
-        Note: this method has been deprecated. Please use window_handles
-            property
-        """
-        warnings.warn("""Please note this has been deprecated. Use 
-                    window_handles property""")
-        return self.execute(Command.GET_WINDOW_HANDLES)['value']
-    
     #Target Locators
     def switch_to_active_element(self):
         """Returns the element with focus, or BODY if nothing has focus.
