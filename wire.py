@@ -198,7 +198,12 @@ class Method(object):
 
 def main():
   resources = []
-  
+ 
+  resources.append(Resource('/status').
+      Get('Gets the server\'s status').
+      SetReturnType(None, 'A status of 0 is returned if the server is ready \
+(HTTP 200 OK response)'))
+ 
   resources.append(
       Resource('/session').
       Post('''
