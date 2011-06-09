@@ -17,16 +17,22 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import static java.util.logging.Level.SEVERE;
+
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class FindElement extends ResponseAwareWebDriverHandler implements JsonParametersAware {
+  private static Logger log = Logger.getLogger(FindElement.class.getName());
   private volatile By by;
 
   public FindElement(Session session) {
@@ -38,11 +44,19 @@ public class FindElement extends ResponseAwareWebDriverHandler implements JsonPa
   }
 
   public ResultType call() throws Exception {
-    WebElement element = getDriver().findElement(by);
-    String elementId = getKnownElements().add(element);
-    response.setValue(ImmutableMap.of("ELEMENT", elementId));
+    try {
+      WebElement element = getDriver().findElement(by);
+      String elementId = getKnownElements().add(element);
+      response.setValue(ImmutableMap.of("ELEMENT", elementId));
 
-    return ResultType.SUCCESS;
+      return ResultType.SUCCESS;
+    } catch (RuntimeException e) {
+      // Add logging to detect when issue #1800 occurs
+      if (!(e instanceof NoSuchElementException)) {
+        log.log(SEVERE, "Unexpected exception during findElement", e);
+      }
+      throw e;
+    }
   }
 
   @Override
