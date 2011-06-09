@@ -143,7 +143,7 @@ public class JettyService extends Service {
       root.addServlet(new ServletHolder(new AndroidDriverServlet()), "/*");
       
       org.eclipse.jetty.servlet.ServletContextHandler healthz =
-        new org.eclipse.jetty.servlet.ServletContextHandler(server, "/wd/hub/healthz",
+        new org.eclipse.jetty.servlet.ServletContextHandler(server, "/wd/hub/status",
             org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
       healthz.addServlet(new ServletHolder(new HealthzServlet()), "/*");
 
