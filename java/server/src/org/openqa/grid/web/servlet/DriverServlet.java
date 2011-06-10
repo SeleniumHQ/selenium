@@ -114,7 +114,9 @@ public class DriverServlet extends RegistryBasedServlet {
 					in.close();
 					response.getOutputStream().close();
 				}
-			}
+			} else {
+                throw(new IOException(e));
+            }
 		}
 
 	}
