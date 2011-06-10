@@ -7,6 +7,8 @@ require 'rake-tasks/files'
 require 'yaml'
 require 'net/telnet'
 
+include Rake::DSL if defined?(Rake::DSL)
+
 Rake.application.instance_variable_set "@name", "go"
 verbose false
 

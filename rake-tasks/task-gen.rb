@@ -47,9 +47,9 @@ $targets = {}
 def build_deps_(srcs)
   deps = []
 
-  if (srcs.nil?) then return deps end
+  return deps unless srcs
 
-  srcs.each do |src|
+  Array(srcs).each do |src|
     if ($targets[src]) then
      deps += $targets[src][:deps]
     else
