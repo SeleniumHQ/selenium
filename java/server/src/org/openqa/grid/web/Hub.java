@@ -18,6 +18,7 @@ package org.openqa.grid.web;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -58,6 +59,7 @@ public class Hub {
 	private Server server;
 	private Registry registry;
 	private Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
+    private static Map<String, Integer> grid1Config = Maps.newHashMap();
 	private static Map<String, String> grid1Mapping = Maps.newHashMap();
 	private static Hub INSTANCE = new Hub(4444, Registry.getInstance());
 	private NetworkUtils utils = new NetworkUtils();
@@ -197,8 +199,12 @@ public class Hub {
 	}
 
 	public static Map<String, String> getGrid1Mapping() {
-		return Hub.grid1Mapping;
+		return Collections.unmodifiableMap(Hub.grid1Mapping);
 	}
+
+    public static Map<String, Integer> getGrid1Config() {
+        return Collections.unmodifiableMap(Hub.grid1Config);
+    }
 
 	private void loadGrid1Config() {
 		InputStream input = Class.class.getResourceAsStream("/grid_configuration.yml");
@@ -215,6 +221,13 @@ public class Hub {
 			for (Map<String, String> environment : environments) {
 				grid1Mapping.put(environment.get("name"), environment.get("browser"));
 			}
+
+            // Now pull out each of the grid config values.
+            Integer cleanupCycle = hub.get("remoteControlPollingIntervalInSeconds") == null ? 180 : (Integer) hub.get("remoteControlPollingIntervalInSeconds");
+            grid1Config.put("cleanupCycle", cleanupCycle * 1000);
+
+            Integer timeout = hub.get("sessionMaxIdleTimeInSeconds") == null ? 300 : (Integer) hub.get("sessionMaxIdleTimeInSeconds");
+            grid1Config.put("timeout", timeout * 1000);
 		} else {
 			log.info("Did not find a Grid 1.0 configuration file.  Skipping Grid 1.0 setup.");
 		}

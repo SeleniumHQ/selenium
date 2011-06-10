@@ -34,6 +34,7 @@ import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
 import org.openqa.grid.internal.utils.HtmlRenderer;
+import org.openqa.grid.web.Hub;
 
 /**
  * Proxy to a remote server executing the tests.
@@ -113,10 +114,10 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 			// no URL isn't always a problem.
 			// The remote proxy only knows where the remote is if the remote
 			// itself initiate the registration process. In a virtual
-			// environement for instance, the IP of the host where the remote is
+			// environment for instance, the IP of the host where the remote is
 			// will only be available after the host has been started.
 			this.remoteURL = null;
-			log.warning("URL was null. Not a problem if you set a meaningfull ID.");
+			log.warning("URL was null. Not a problem if you set a meaningful ID.");
 		} else {
 			try {
 				this.remoteURL = new URL(url);
@@ -128,8 +129,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 		}
 
 		maxConcurrentSession = request.getConfigAsInt(RegistrationRequest.MAX_SESSION, 1);
-		cleanUpCycle = request.getConfigAsInt(RegistrationRequest.CLEAN_UP_CYCLE, -1);
-		timeOut = request.getConfigAsInt(RegistrationRequest.TIME_OUT, -1);
+		cleanUpCycle = Hub.getGrid1Config().get("cleanupCycle") == null ? request.getConfigAsInt(RegistrationRequest.CLEAN_UP_CYCLE, -1) : Hub.getGrid1Config().get("cleanupCycle");
+		timeOut = Hub.getGrid1Config().get("timeout") == null ? request.getConfigAsInt(RegistrationRequest.TIME_OUT, -1) : Hub.getGrid1Config().get("timeout");
 
 		List<Map<String, Object>> capabilities = request.getCapabilities();
 
