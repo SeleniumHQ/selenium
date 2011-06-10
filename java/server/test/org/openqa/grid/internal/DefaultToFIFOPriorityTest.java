@@ -4,7 +4,6 @@ import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +77,7 @@ public class DefaultToFIFOPriorityTest {
 		while (requests.size() != MAX) {
 			Thread.sleep(250);
 		}
-		session.terminateSyncronousFOR_TEST_ONLY();
+		session.terminateSynchronousFOR_TEST_ONLY();
 	}
 
 

@@ -40,7 +40,7 @@ public interface TestSessionListener {
 	 * Will be run after the proxy slot is reserved for the test, but before the
 	 * first command is forwarded to the remote.
 	 * 
-	 * Gives a change to do a setup on the remote before the test start.
+	 * Gives a chance to do a setup on the remote before the test start.
 	 * 
 	 * WARNING : beforeSession should NOT throw exception. If an exception is
 	 * thrown, the session is considered invalid and the resources will be

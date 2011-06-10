@@ -437,7 +437,7 @@ public class TestSession {
 	 * 
 	 * @see TestSession#terminate()
 	 */
-	void terminateSyncronousFOR_TEST_ONLY() {
+	void terminateSynchronousFOR_TEST_ONLY() {
 		slot._release();
 	}
 

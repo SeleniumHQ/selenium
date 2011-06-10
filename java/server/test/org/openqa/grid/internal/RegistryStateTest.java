@@ -64,7 +64,7 @@ public class RegistryStateTest {
 			newSessionRequest.process();
 			TestSession session = newSessionRequest.getTestSession();
 
-			session.terminateSyncronousFOR_TEST_ONLY();
+			session.terminateSynchronousFOR_TEST_ONLY();
 			Assert.assertEquals(0,registry.getActiveSessions().size());
 		} finally {
 			registry.stop();
@@ -90,7 +90,7 @@ public class RegistryStateTest {
 			Assert.assertEquals(1,registry.getAllProxies().size());
 			Assert.assertEquals(1,registry.getUsedProxies().size());
 
-			session.terminateSyncronousFOR_TEST_ONLY();
+			session.terminateSynchronousFOR_TEST_ONLY();
 			Assert.assertEquals(0,registry.getActiveSessions().size());
 			Assert.assertEquals(1,registry.getAllProxies().size());
 			Assert.assertEquals(0,registry.getUsedProxies().size());
@@ -109,7 +109,7 @@ public class RegistryStateTest {
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
 			newSessionRequest.process();
 			TestSession session = newSessionRequest.getTestSession();
-			session.terminateSyncronousFOR_TEST_ONLY();
+			session.terminateSynchronousFOR_TEST_ONLY();
 			Assert.assertEquals(0,registry.getActiveSessions().size());
 		
 		} finally {
@@ -132,7 +132,7 @@ public class RegistryStateTest {
 			TestSession s = registry.getSession("1234");
 			Assert.assertNotNull(s);
 			Assert.assertEquals(s, session);
-			session.terminateSyncronousFOR_TEST_ONLY();
+			session.terminateSynchronousFOR_TEST_ONLY();
 			Assert.assertEquals(0,registry.getActiveSessions().size());
 
 			TestSession s2 = registry.getSession("1234");

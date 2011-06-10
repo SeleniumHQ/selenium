@@ -228,7 +228,7 @@ public class ParallelTest {
 
 			// release them
 			for (TestSession session : used) {
-				session.terminateSyncronousFOR_TEST_ONLY();
+				session.terminateSynchronousFOR_TEST_ONLY();
 			}
 			Assert.assertEquals(registry.getActiveSessions().size(), 0);
 			used.clear();
@@ -245,7 +245,7 @@ public class ParallelTest {
 
 			Assert.assertEquals(registry.getActiveSessions().size(), 5);
 
-			used.get(0).terminateSyncronousFOR_TEST_ONLY();
+			used.get(0).terminateSynchronousFOR_TEST_ONLY();
 
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
 			newSessionRequest.process();

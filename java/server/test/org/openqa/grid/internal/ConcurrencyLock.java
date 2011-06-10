@@ -98,7 +98,7 @@ public class ConcurrencyLock {
 			TestSession s = newSessionRequest.getTestSession();
 			Thread.sleep(2000);
 			results.add("FF");
-			s.terminateSyncronousFOR_TEST_ONLY();
+			s.terminateSynchronousFOR_TEST_ONLY();
 		} else {
 			// wait for 1 sec before starting IE to make sure the FF proxy is
 			// busy with the 3 FF requests.

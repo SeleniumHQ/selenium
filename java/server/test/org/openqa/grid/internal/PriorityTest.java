@@ -108,7 +108,7 @@ public class PriorityTest {
 		
 		// free the grid : the queue is consumed, and the test with the highest
 		// priority should be processed.
-		session.terminateSyncronousFOR_TEST_ONLY();
+		session.terminateSynchronousFOR_TEST_ONLY();
 
 	}
 
