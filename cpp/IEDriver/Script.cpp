@@ -319,7 +319,7 @@ int Script::ConvertResultToJsonValue(const IESessionWindow& session, Json::Value
 
 std::wstring Script::GetResultObjectTypeName() {
 	std::wstring name = L"";
-	if (this->result_.vt == VT_DISPATCH) {
+	if (this->result_.vt == VT_DISPATCH && this->result_.pdispVal) {
 		CComPtr<ITypeInfo> typeinfo;
 		HRESULT get_type_info_result = this->result_.pdispVal->GetTypeInfo(0, LOCALE_USER_DEFAULT, &typeinfo);
 		TYPEATTR* type_attr;
