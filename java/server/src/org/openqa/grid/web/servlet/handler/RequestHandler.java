@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -139,7 +140,15 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 	public void process() {
 		switch (getRequestType()) {
 		case START_SESSION:
-			handleNewSession();
+            try {
+    			handleNewSession();
+            } catch (Exception e) {
+                // Make sure we yank the session from the request queue, since any returned error will propagate to the
+                // client, so there's no chance of this request ever succeeding.
+                registry.getNewSessionRequests().remove(this);
+
+                throw(new RuntimeException(e));
+            }
 			break;
 		case REGULAR:
 		case STOP_SESSION:
@@ -184,7 +193,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 			registry.addNewSessionRequest(this);
 			sessionHasBeenAssigned.await();
 		} catch (InterruptedException e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		} finally {
 			lock.unlock();
 		}
