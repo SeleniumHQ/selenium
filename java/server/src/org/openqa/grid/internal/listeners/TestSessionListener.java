@@ -19,7 +19,7 @@ package org.openqa.grid.internal.listeners;
 import org.openqa.grid.internal.TestSession;
 
 /**
- * To be impletented by a class extending RemoteProxy.
+ * To be implemented by a class extending RemoteProxy.
  * 
  * WARNING : the before and after are executed by the proxy on the remote, and
  * the action taken in those method are not isolated, and can have consequences
