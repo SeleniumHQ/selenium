@@ -16,10 +16,8 @@ limitations under the License.
 package org.openqa.grid.web;
 
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -28,6 +26,7 @@ import javax.servlet.Servlet;
 
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.ConsoleServlet;
+import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
 import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
 import org.openqa.grid.web.servlet.ProxyStatusServlet;
@@ -62,6 +61,7 @@ public class Hub {
 	private static Map<String, String> grid1Mapping = Maps.newHashMap();
 	private static Hub INSTANCE = new Hub(4444, Registry.getInstance());
 	private NetworkUtils utils = new NetworkUtils();
+
 	public static Hub getInstance() {
 		return INSTANCE;
 	}
@@ -131,7 +131,9 @@ public class Hub {
 
 			WebApplicationContext root = server.addWebApplication("", ".");
 			root.setAttribute(Registry.KEY, registry);
-
+			
+			root.addServlet("/*",DisplayHelpServlet.class.getName());
+			
 			root.addServlet("/grid/console/*", ConsoleServlet.class.getName());
 			root.addServlet("/grid/register/*", RegistrationServlet.class.getName());
 			// TODO remove at some point. Here for backward compatibility of
@@ -152,6 +154,9 @@ public class Hub {
 			for (Map.Entry<String, Class<? extends Servlet>> entry : extraServlet.entrySet()) {
 				root.addServlet(entry.getKey(), entry.getValue().getName());
 			}
+			
+			
+
 		} catch (Throwable e) {
 			throw new RuntimeException("Error initializing the hub" + e.getMessage(), e);
 		}
