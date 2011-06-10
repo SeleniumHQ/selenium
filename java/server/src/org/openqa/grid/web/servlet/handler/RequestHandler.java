@@ -58,6 +58,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 	private Map<String, Object> desiredCapabilities = null;
 	private RequestType requestType = null;
 	private TestSession session = null;
+    private long created;
 
 	private boolean showWarning = true;
 
@@ -87,6 +88,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 		this.request = request;
 		this.response = response;
 		this.registry = registry;
+        this.created = System.currentTimeMillis();
 	}
 
 	/**
@@ -401,4 +403,8 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 			return false;
 		return true;
 	}
+
+    public long getCreated() {
+        return created;
+    }
 }
