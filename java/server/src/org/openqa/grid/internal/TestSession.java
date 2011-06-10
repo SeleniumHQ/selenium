@@ -318,7 +318,7 @@ public class TestSession {
             // to the underlying response body).  This breaks any client expecting the chunk size.  We could try to
             // recreate it, but since the chunks are already read in and decoded, you'd end up with a single chunk, which
             // isn't all that useful.  So, we return the response as a traditional response with a Content-Length header,
-            // obviating the need for Transfer-Encoding header.
+            // obviating the need for the Transfer-Encoding header.
             if (name.equalsIgnoreCase("Transfer-Encoding") && value.equalsIgnoreCase("chunked")) {
                 continue;
             }
