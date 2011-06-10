@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.lang.reflect.Method;
-
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
@@ -26,6 +24,8 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_ALERTS;
+
+import java.lang.reflect.Method;
 
 @Ignore(value = CHROME, reason = "Not implemented yet")
 public class AlertsTest extends AbstractDriverTestCase {
@@ -86,7 +86,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE})
+  @Ignore({ ANDROID, HTMLUNIT, IE, IPHONE, SELENESE })
   public void testShouldAllowAUserToAcceptAPrompt() {
     if (!isCapableOfHandlingAlerts(driver)) {
       return;
@@ -109,7 +109,7 @@ public class AlertsTest extends AbstractDriverTestCase {
     if (!isCapableOfHandlingAlerts(driver)) {
       return;
     }
-    
+
     driver.get(alertPage);
 
     driver.findElement(By.id("prompt")).click();
@@ -159,6 +159,43 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @Ignore
+  public void testAlertShouldNotAllowAdditionalCommandsIfDimissed() {
+    if (!isCapableOfHandlingAlerts(driver)) {
+      return;
+    }
+
+    driver.get(alertPage);
+
+    driver.findElement(By.id("alert")).click();
+
+    Alert alert = switchToAlert(driver);
+    alert.dismiss();
+
+    try {
+      alert.getText();
+    } catch (NoAlertPresentException expected) {}
+  }
+
+  @JavascriptEnabled
+  @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE})
+  public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
+    if (!isCapableOfHandlingAlerts(driver)) {
+      return;
+    }
+
+    driver.get(alertPage);
+    driver.switchTo().frame("iframeWithAlert");
+
+    driver.findElement(By.id("alertInFrame")).click();
+
+    Alert alert = switchToAlert(driver);
+    alert.accept();
+
+    // If we can perform any action, we're good to go
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
+
+  @Ignore
   public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith() {
     if (!isCapableOfHandlingAlerts(driver)) {
       return;
@@ -175,24 +212,6 @@ public class AlertsTest extends AbstractDriverTestCase {
 
     // But the next call should be good.
     assertEquals("Testing Alerts", driver.getTitle());
-  }
-
-  @Ignore
-  public void testAlertShouldNotAllowAdditionalCommandsIfDimissed() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
-
-    driver.get(alertPage);
-
-    driver.findElement(By.id("alert")).click();
-
-    Alert alert = switchToAlert(driver);
-    alert.dismiss();
-
-    try {
-      alert.getText();
-    } catch (NoAlertPresentException expected) {}
   }
 
   private Alert switchToAlert(WebDriver driver) {

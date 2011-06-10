@@ -142,6 +142,8 @@ webdriver.modals.findAssociatedDriver_ = function(window) {
     var chrome = allWindows.getNext().QueryInterface(CI.nsIDOMWindow);
     if (chrome.content == window) {
       return chrome.fxdriver;
+    } else if(chrome.content.parent == window.parent) {
+      return chrome.fxdriver;
     }
   }
 
