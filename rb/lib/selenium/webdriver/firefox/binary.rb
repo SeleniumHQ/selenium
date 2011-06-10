@@ -15,7 +15,7 @@ module Selenium
         QUIT_TIMEOUT = 5
 
         def start_with(profile, profile_path, *args)
-          profile_path = profile_path.gsub("/", "\\") if Platform.win?
+          profile_path = profile_path.gsub("/", "\\") if Platform.windows?
 
           ENV['XRE_CONSOLE_LOG']           = profile.log_file if profile.log_file
           ENV['XRE_PROFILE_PATH']          = profile_path

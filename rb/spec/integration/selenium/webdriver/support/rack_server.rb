@@ -19,7 +19,7 @@ module Selenium
         def start
           if Platform.jruby?
             start_threaded
-          elsif Platform.win?
+          elsif Platform.windows?
             start_windows
           else
             start_forked

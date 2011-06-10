@@ -42,7 +42,7 @@ module Selenium
       NOT_CONNECTED_ERRORS << Errno::EPERM if Platform.cygwin?
 
       CONNECTED_ERRORS = [Errno::EISCONN]
-      CONNECTED_ERRORS << Errno::EINVAL if Platform.win?
+      CONNECTED_ERRORS << Errno::EINVAL if Platform.windows?
 
       if Platform.jruby?
         # we use a plain TCPSocket here since JRuby has issues select()ing on a connecting socket

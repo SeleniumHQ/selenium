@@ -72,7 +72,7 @@ module Selenium
         !!(RUBY_VERSION =~ /^1\.9/)
       end
 
-      def win?
+      def windows?
         os == :windows
       end
 
@@ -89,7 +89,7 @@ module Selenium
       end
 
       def wrap_in_quotes_if_necessary(str)
-        win? && !cygwin? ? %{"#{str}"} : str
+        windows? && !cygwin? ? %{"#{str}"} : str
       end
 
       def cygwin_path(path, opts = {})
@@ -115,7 +115,7 @@ module Selenium
 
       def find_binary(*binary_names)
         paths = ENV['PATH'].split(File::PATH_SEPARATOR)
-        binary_names.map! { |n| "#{n}.exe" } if win?
+        binary_names.map! { |n| "#{n}.exe" } if windows?
 
         binary_names.each do |binary_name|
           paths.each do |path|
@@ -147,7 +147,7 @@ if __FILE__ == $0
     :ruby187?  => Selenium::WebDriver::Platform.ruby187?,
     :ruby19?   => Selenium::WebDriver::Platform.ruby19?,
     :jruby?    => Selenium::WebDriver::Platform.jruby?,
-    :win?      => Selenium::WebDriver::Platform.win?,
+    :windows?  => Selenium::WebDriver::Platform.windows?,
     :home      => Selenium::WebDriver::Platform.home,
     :bitsize   => Selenium::WebDriver::Platform.bitsize,
     :localhost => Selenium::WebDriver::Platform.localhost
