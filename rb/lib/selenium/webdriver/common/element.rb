@@ -122,7 +122,7 @@ module Selenium
 
             arg
           else
-            arg
+            arg.to_s
           end
         end
 
