@@ -38,7 +38,6 @@ describe "Element" do
 
       element.send_keys path
 
-      # work around IE's fakename paths
       element.attribute('value').should include(File.basename(path))
     end
   end
