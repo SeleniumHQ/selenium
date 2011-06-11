@@ -112,17 +112,21 @@ module Selenium
       #
 
       def send_keys(*args)
-        args.each do |arg|
+        values = args.map do |arg|
           case arg
           when Symbol
-            arg = Keys[arg]
+            Keys[arg]
           when Array
             arg = arg.map { |e| e.kind_of?(Symbol) ? Keys[e] : e }.join
             arg << Keys[:null]
-          end
 
-          bridge.sendKeysToElement(@id, arg.to_s)
+            arg
+          else
+            arg
+          end
         end
+
+        bridge.sendKeysToElement @id, values
       end
       alias_method :send_key, :send_keys
 

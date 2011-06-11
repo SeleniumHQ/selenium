@@ -366,8 +366,8 @@ module Selenium
           Dimension.new data['width'], data['height']
         end
 
-        def sendKeysToElement(element, string)
-          execute :sendKeysToElement, {:id => element}, {:value => string.split(//u)}
+        def sendKeysToElement(element, keys)
+          execute :sendKeysToElement, {:id => element}, {:value => keys}
         end
 
         def clearElement(element)
