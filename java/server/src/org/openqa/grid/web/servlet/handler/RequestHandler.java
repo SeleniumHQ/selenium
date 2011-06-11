@@ -38,6 +38,7 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.TestSessionListener;
+import org.openqa.grid.web.Hub;
 
 /**
  * Base stuff to handle the request coming from a remote. Ideally, there should
@@ -193,7 +194,21 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 			// signal, and only after that await will be reached, never
 			// signalled
 			registry.addNewSessionRequest(this);
-			sessionHasBeenAssigned.await();
+
+            // Maintain compatibility with Grid 1.x, which had the ability to specify how long to wait before canceling
+            // a request.
+            if (Hub.getGrid1Config().containsKey("newSessionWaitTimeout")) {
+                long startTime = System.currentTimeMillis();
+    			sessionHasBeenAssigned.await(Hub.getGrid1Config().get("newSessionWaitTimeout"), TimeUnit.MILLISECONDS);
+                long endTime = System.currentTimeMillis();
+
+                if ((session == null) && ((endTime - startTime) >= Hub.getGrid1Config().get("newSessionWaitTimeout"))) {
+                    throw new RuntimeException("Request timed out waiting for a node to become available.");
+                }
+            } else {
+                // Wait until a proxy becomes available to handle the request.
+                sessionHasBeenAssigned.await();
+            }
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {

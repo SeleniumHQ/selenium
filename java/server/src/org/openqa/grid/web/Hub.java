@@ -206,7 +206,7 @@ public class Hub {
         return Collections.unmodifiableMap(Hub.grid1Config);
     }
 
-	private void loadGrid1Config() {
+	protected void loadGrid1Config() {
 		InputStream input = Class.class.getResourceAsStream("/grid_configuration.yml");
 
 		if (input != null) {
@@ -228,6 +228,8 @@ public class Hub {
 
             Integer timeout = hub.get("sessionMaxIdleTimeInSeconds") == null ? 300 : (Integer) hub.get("sessionMaxIdleTimeInSeconds");
             grid1Config.put("timeout", timeout * 1000);
+
+            grid1Config.put("newSessionWaitTimeout", ((Integer) hub.get("newSessionMaxWaitTimeInSeconds")) * 1000);
 		} else {
 			log.info("Did not find a Grid 1.0 configuration file.  Skipping Grid 1.0 setup.");
 		}

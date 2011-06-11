@@ -10,6 +10,7 @@ public class HubTest {
         // The values in the config file are in seconds, but we use milliseconds internally, so make sure they get converted.
         Assert.assertEquals(180000, Hub.getGrid1Config().get("timeout").intValue());
         Assert.assertEquals(60000, Hub.getGrid1Config().get("cleanupCycle").intValue());
+        Assert.assertEquals(120000, Hub.getGrid1Config().get("newSessionWaitTimeout").intValue());
     }
 
     @Test
