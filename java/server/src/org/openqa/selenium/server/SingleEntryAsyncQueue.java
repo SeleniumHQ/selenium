@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.server;
 
-import static java.lang.System.currentTimeMillis;
-
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
+
+import static java.lang.System.currentTimeMillis;
 
 /**
  * <p>Holds the command to be next run in the browser</p>
@@ -35,89 +35,89 @@ import java.util.logging.Logger;
  * @version $Revision: 734 $
  */
 public class SingleEntryAsyncQueue<T> {
-    public static final long MILLISECONDS = 1000L;
-    private static final Logger log = Logger.getLogger(SingleEntryAsyncQueue.class.getName());
+  public static final long MILLISECONDS = 1000L;
+  private static final Logger log = Logger.getLogger(SingleEntryAsyncQueue.class.getName());
   private final AtomicReference<T> poisonData;
-    private final long timeoutInSeconds;
-    private final ArrayBlockingQueue<T> holder;
+  private final long timeoutInSeconds;
+  private final ArrayBlockingQueue<T> holder;
 
-    public SingleEntryAsyncQueue(long timeoutInSecs) {
-        timeoutInSeconds = timeoutInSecs;
-        holder = new ArrayBlockingQueue<T>(1);
-        poisonData = new AtomicReference<T>();
+  public SingleEntryAsyncQueue(long timeoutInSecs) {
+    timeoutInSeconds = timeoutInSecs;
+    holder = new ArrayBlockingQueue<T>(1);
+    poisonData = new AtomicReference<T>();
+  }
+
+  public long getTimeoutInSeconds() {
+    return timeoutInSeconds;
+  }
+
+  protected void setPoison(T poisonInstance) {
+    poisonData.set(poisonInstance);
+  }
+
+  protected boolean isPoison(T poisonSample) {
+    T poison = poisonData.get();
+    return null != poison && poison.equals(poisonSample);
+  }
+
+  protected T pollToGetContentUntilTimeout() {
+    T result = holder.poll(); // in case it's already there
+    if (null != result) {
+      log.fine("data was waiting: " + result);
+      return result;
     }
 
-    public long getTimeoutInSeconds() {
-        return timeoutInSeconds;
+    if (timeoutInSeconds <= 0) {
+      return null;
     }
 
-    protected void setPoison(T poisonInstance) {
-        poisonData.set(poisonInstance);
-    }
-
-    protected boolean isPoison(T poisonSample) {
-        T poison = poisonData.get();
-        return null != poison && poison.equals(poisonSample);
-    }
-
-    protected T pollToGetContentUntilTimeout() {
-        T result = holder.poll(); // in case it's already there
-        if (null != result) {
-            log.fine("data was waiting: " + result);
-            return result;
-        }
-
-        if (timeoutInSeconds <= 0) {
-            return null;
-        }
-
-        long deadline = currentTimeMillis() + (timeoutInSeconds * MILLISECONDS);
-        for(long now = currentTimeMillis(); now < deadline; now = currentTimeMillis()) {
-            try {
-                log.fine("waiting for data for at most " + timeoutInSeconds + " more s");
-                result = holder.poll(deadline - now, TimeUnit.MILLISECONDS);
-                log.fine("data from polling: " + result);
-                return result;
-            } catch (InterruptedException ie) {
-                log.fine("was interrupted; resuming wait");
-                continue;
-            }
-        }
-
-        return null;
-    }
-
-    protected boolean putContent(T thing) {
-        final boolean result;
-        log.fine("putting command: " + thing);
-        result = holder.offer(thing);
-        log.fine("..command put?: " + result);
+    long deadline = currentTimeMillis() + (timeoutInSeconds * MILLISECONDS);
+    for (long now = currentTimeMillis(); now < deadline; now = currentTimeMillis()) {
+      try {
+        log.fine("waiting for data for at most " + timeoutInSeconds + " more s");
+        result = holder.poll(deadline - now, TimeUnit.MILLISECONDS);
+        log.fine("data from polling: " + result);
         return result;
+      } catch (InterruptedException ie) {
+        log.fine("was interrupted; resuming wait");
+        continue;
+      }
     }
 
-    protected boolean isEmpty() {
-        return (0 == holder.size());
-    }
+    return null;
+  }
 
-    protected T peek() {
-        return holder.peek();
-    }
+  protected boolean putContent(T thing) {
+    final boolean result;
+    log.fine("putting command: " + thing);
+    result = holder.offer(thing);
+    log.fine("..command put?: " + result);
+    return result;
+  }
 
-    /**
-     * Clears the contents of the holder (if any) and also
-     * feeds 'poison' data a pending listener (if any);
-     *
-     * @return true if poison was set and sent to any listeners.
-     */
-    protected boolean poisonPollers() {
-        if (null == poisonData.get()) {
-            holder.clear();
-            return false;
-        }
-        // offer poison content.  If something is already there,
-        // then the next listener will already have something to get.
-        putContent(poisonData.get());
-        return true;
+  protected boolean isEmpty() {
+    return (0 == holder.size());
+  }
+
+  protected T peek() {
+    return holder.peek();
+  }
+
+  /**
+   * Clears the contents of the holder (if any) and also
+   * feeds 'poison' data a pending listener (if any);
+   *
+   * @return true if poison was set and sent to any listeners.
+   */
+  protected boolean poisonPollers() {
+    if (null == poisonData.get()) {
+      holder.clear();
+      return false;
     }
-    
+    // offer poison content.  If something is already there,
+    // then the next listener will already have something to get.
+    putContent(poisonData.get());
+    return true;
+  }
+
 }

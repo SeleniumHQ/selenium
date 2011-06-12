@@ -149,7 +149,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             justLoaded, retrying, closing);
       } else if (
           -1 != req.getRequestURL().indexOf("selenium-server/core/scripts/user-extensions.js")
-          || -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")) {
+              || -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")) {
         // ignore failure to find these items...
       } else {
         log.fine("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
@@ -160,7 +160,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         String apparentFile = extractNameOfFileThatCouldntBeFound(e);
         if (apparentFile != null) {
           log.severe("Could not start browser; it appears that " + apparentFile
-                       + " is missing or inaccessible");
+              + " is missing or inaccessible");
         }
       }
       throw e;
@@ -238,11 +238,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     if (sc != null) {
       writer.write(sc.toString());
       log.fine("res to " + uniqueId +
-                   ": " + sc.toString());
+          ": " + sc.toString());
     } else {
       log.fine("res empty");
     }
-    for (int pad = 998 - buf.size(); pad-- > 0;) {
+    for (int pad = 998 - buf.size(); pad-- > 0; ) {
       writer.write(" ");
     }
     writer.write("\015\012");
@@ -517,7 +517,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
           setSpeedForSession(sessionId, speed);
         } catch (NumberFormatException e) {
           return "ERROR: setSlowMode expects a string containing an integer, but saw '"
-                 + values.get(0) + "'";
+              + values.get(0) + "'";
         }
         results = "OK";
         break;
@@ -625,8 +625,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         setDomain(sessionId, urlDomain);
       } else if (!url.startsWith(domain)) {
         log.warning("you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
-                    + "this may lead to a 'Permission denied' from the browser (unless it is running as *iehta or *chrome,\n"
-                    + "or alternatively the selenium server is running in proxy injection mode)");
+            + "this may lead to a 'Permission denied' from the browser (unless it is running as *iehta or *chrome,\n"
+            + "or alternatively the selenium server is running in proxy injection mode)");
       }
     }
   }

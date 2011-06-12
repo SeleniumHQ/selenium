@@ -19,21 +19,24 @@ package org.openqa.selenium.server;
 
 /**
  * Represents a single remote action
+ *
  * @version $Id: $
  */
 public interface RemoteCommand {
-    /** Return the URL query string which will be sent to the browser */
-    String getCommandURLString();
+  /**
+   * Return the URL query string which will be sent to the browser
+   */
+  String getCommandURLString();
 
-    String getCommand();
+  String getCommand();
 
-    String getField();
+  String getField();
 
-    String getValue();
+  String getValue();
 
-    // In proxy injection mode, the selenium JavaScript cannot maintain its own state because it is
-    // part of the test application window, and therefore can and will be reloaded at any time.
-    // Therefore some state is maintained on the selenium server, and is sent along with each
-    // command.  This state is kept in the following field:
-    String getPiggybackedJavaScript();
+  // In proxy injection mode, the selenium JavaScript cannot maintain its own state because it is
+  // part of the test application window, and therefore can and will be reloaded at any time.
+  // Therefore some state is maintained on the selenium server, and is sent along with each
+  // command.  This state is kept in the following field:
+  String getPiggybackedJavaScript();
 }

@@ -7,5 +7,5 @@ import java.io.IOException;
 
 public interface ResourceLocator {
 
-    Resource getResource(HttpContext context, String pathInContext) throws IOException;
+  Resource getResource(HttpContext context, String pathInContext) throws IOException;
 }

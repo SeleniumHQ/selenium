@@ -27,68 +27,68 @@ import java.util.logging.Logger;
  */
 public class CommandResultHolder {
 
-    private static final Logger log = Logger.getLogger(CommandResultHolder.class.getName());
+  private static final Logger log = Logger.getLogger(CommandResultHolder.class.getName());
   private static final String poisonResult = "CommandResultHolder.POISON";
-	protected static final String CMD_TIMED_OUT_MSG = "ERROR: Command timed out";
-	protected static final String CMD_NULL_RESULT_MSG = "ERROR: Got a null result";
+  protected static final String CMD_TIMED_OUT_MSG = "ERROR: Command timed out";
+  protected static final String CMD_NULL_RESULT_MSG = "ERROR: Got a null result";
 
-	private final String queueId;
-	private final SingleEntryAsyncQueue<String> holder;
-    
-    public CommandResultHolder(String queueId, long timeoutInSeconds) {
-      holder = new SingleEntryAsyncQueue<String>(timeoutInSeconds);
-      holder.setPoison(poisonResult);
-      this.queueId = queueId;
+  private final String queueId;
+  private final SingleEntryAsyncQueue<String> holder;
+
+  public CommandResultHolder(String queueId, long timeoutInSeconds) {
+    holder = new SingleEntryAsyncQueue<String>(timeoutInSeconds);
+    holder.setPoison(poisonResult);
+    this.queueId = queueId;
+  }
+
+  /**
+   * Get a result out of the result holder (from the browser), waiting no
+   * longer than the timeout.
+   *
+   * @return the result from the result holder
+   */
+  public String getResult() {
+    String result;
+    log.fine(hdr() + "called");
+
+    // wait until data arrives before the timeout
+    result = holder.pollToGetContentUntilTimeout();
+
+    if (null == result) {
+      // if there is no result, then it timed out.
+      result = CMD_TIMED_OUT_MSG;
+    } else if (holder.isPoison(result)) {
+      // if queue was poisoned, then just return indicator of a null result.
+      result = CMD_NULL_RESULT_MSG;
     }
 
-    /**
-     * Get a result out of the result holder (from the browser), waiting no
-     * longer than the timeout.  
-     * 
-     * @return the result from the result holder
-     */
-    public String getResult() {
-      String result;
-      log.fine(hdr() + "called");
-
-      // wait until data arrives before the timeout
-      result = holder.pollToGetContentUntilTimeout();
-
-      if (null == result) {
-        // if there is no result, then it timed out.
-		result = CMD_TIMED_OUT_MSG;
-      } else if (holder.isPoison(result)) {
-        // if queue was poisoned, then just return indicator of a null result.
-        result = CMD_NULL_RESULT_MSG;
-      }
-
-      StringBuilder msg = new StringBuilder(hdr() + "-> " + result);
-      if (CMD_TIMED_OUT_MSG.equals(result)) {
-          msg.append(" after ").append(holder.getTimeoutInSeconds()).append(" seconds.");
-      }
-      log.fine(msg.toString());
-
-      return result;
+    StringBuilder msg = new StringBuilder(hdr() + "-> " + result);
+    if (CMD_TIMED_OUT_MSG.equals(result)) {
+      msg.append(" after ").append(holder.getTimeoutInSeconds()).append(" seconds.");
     }
+    log.fine(msg.toString());
 
-    public boolean putResult(String res) {
-      return holder.putContent(res);
-    }
+    return result;
+  }
 
-    public boolean isEmpty() {
-      return holder.isEmpty();
-    }
+  public boolean putResult(String res) {
+    return holder.putContent(res);
+  }
 
-    public String peek() {
-      return holder.peek();
-    }
+  public boolean isEmpty() {
+    return holder.isEmpty();
+  }
 
-    public void poisonPollers() {
-      holder.poisonPollers();
-    }
+  public String peek() {
+    return holder.peek();
+  }
 
-    private String hdr() {
-        return "\t" + CommandQueue.getIdentification("commandResultHolder", queueId) + " getResult() ";
-    }
-    
+  public void poisonPollers() {
+    holder.poisonPollers();
+  }
+
+  private String hdr() {
+    return "\t" + CommandQueue.getIdentification("commandResultHolder", queueId) + " getResult() ";
+  }
+
 }
