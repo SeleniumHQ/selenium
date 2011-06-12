@@ -386,6 +386,39 @@ public class SelectTest extends MockObjectTestCase {
     select.selectByVisibleText("foo bar");
   }
 
+  public void testShouldIndicateWhetherASelectIsMultipleCorrectly() {
+    final WebElement element1 = mock(WebElement.class, "false1");
+    final WebElement element2 = mock(WebElement.class, "false2");
+    final WebElement element3 = mock(WebElement.class, "true1");
+    final WebElement element4 = mock(WebElement.class, "true2");
+
+    checking(new Expectations() {{
+      allowing(element1).getTagName(); will(returnValue("select"));
+      allowing(element1).getAttribute("multiple"); will(returnValue("false"));
+
+      allowing(element2).getTagName(); will(returnValue("select"));
+      allowing(element2).getAttribute("multiple"); will(returnValue(null));
+
+      allowing(element3).getTagName(); will(returnValue("select"));
+      allowing(element3).getAttribute("multiple"); will(returnValue("true"));
+
+      allowing(element4).getTagName(); will(returnValue("select"));
+      allowing(element4).getAttribute("multiple"); will(returnValue("multiple"));
+    }});
+
+    Select select1 = new Select(element1);
+    assertFalse(select1.isMultiple());
+
+    Select select2 = new Select(element2);
+    assertFalse(select2.isMultiple());
+
+    Select select3 = new Select(element3);
+    assertTrue(select3.isMultiple());
+
+    Select select4 = new Select(element4);
+    assertTrue(select4.isMultiple());
+  }
+
   public void testShouldThrowAnExceptionIfThereAreNoElementsToSelect() {
     final WebElement element = mock(WebElement.class);
 

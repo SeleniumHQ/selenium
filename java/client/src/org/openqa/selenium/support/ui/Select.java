@@ -50,7 +50,9 @@ public class Select {
     this.element = element;
 
     String value = element.getAttribute("multiple");
-    isMulti = value != null;
+
+    // The atoms normalize the returned value, but check for "false"
+    isMulti = (value != null && !"false".equals(value));
   }
 
   /**
