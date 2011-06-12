@@ -106,7 +106,9 @@ public interface WebElement extends SearchContext {
    *
    * @return Whether the toggled element is selected (true) or not (false) after this toggle is
    *         complete
+   * @deprecated To be removed. Determine the current state using {@link #isSelected()}
    */
+  @Deprecated
   boolean toggle();
 
   /**
@@ -120,7 +122,10 @@ public interface WebElement extends SearchContext {
   /**
    * Select an element. This method will work against radio buttons, "option" elements within a
    * "select" and checkboxes
+   *
+   * @deprecated Please use "click" instead
    */
+  @Deprecated
   void setSelected();
 
   /**
