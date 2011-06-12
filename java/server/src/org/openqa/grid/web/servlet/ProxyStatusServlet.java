@@ -39,7 +39,6 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
 	}
 
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		System.out.println("TEST");
 		response.setContentType("text/html");
 		response.setCharacterEncoding("UTF-8");
 		response.setStatus(200);
