@@ -1,0 +1,204 @@
+#!/usr/bin/python
+
+# Copyright 2011 WebDriver committers
+# Copyright 2011 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Tests for advanced user interactions."""
+import os
+import time
+import unittest
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.remote.webdriver import WebDriver
+
+class AdvancedUserInteractionTest(unittest.TestCase):
+    def performDragAndDropWithMouse(self):
+        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        self._loadPage("draggableLists")
+        dragReporter = self.driver.find_element_by_id("dragging_reports")
+        toDrag = self.driver.find_element_by_id("rightitem-3")
+        dragInto = self.driver.find_element_by_id("sortable1")
+
+        holdItem = ActionChains(self.driver).click_and_hold(toDrag)
+        moveToSpecificItem = ActionChains(self.driver) \
+            .move_to_element(self.driver.find_element_by_id("leftitem-4"))
+        moveToOtherList = ActionChains(self.driver).move_to_element(dragInto)
+        drop = ActionChains(self.driver).release(dragInto)
+        self.assertEqual("Nothing happened.", dragReporter.text)
+
+        holdItem.perform()
+        moveToSpecificItem.perform()
+        moveToOtherList.perform()
+        self.assertEqual("Nothing happened. DragOut", dragReporter.text)
+
+        drop.perform()
+
+    def testDraggingElementWithMouseMovesItToAnotherList(self):
+        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        self.performDragAndDropWithMouse()
+        dragInto = self.driver.find_element_by_id("sortable1")
+        self.assertEqual(6, len(dragInto.find_elements_by_tag_name("li")))
+
+    def _testDraggingElementWithMouseFiresEvents(self):
+        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface.
+        Disabled since this test doesn't work with HTMLUNIT.
+        """
+        self.performDragAndDropWithMouse()
+        dragReporter = self.driver.find_element_by_id("dragging_reports")
+        self.assertEqual("Nothing happened. DragOut DropIn RightItem 3", dragReporter.text)
+
+    def _isElementAvailable(self, id):
+        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        try:
+            self.driver.find_element_by_id(id)
+            return True
+        except:
+            return False
+
+    def testDragAndDrop(self):
+        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        self._loadPage("droppableItems")
+        waitEndTime = time.time() + 15
+
+        while (not self._isElementAvailable("draggable") and
+            time.time() < waitEndTime):
+          time.sleep(0.2)
+
+        if not self._isElementAvailable("draggable"):
+            raise "Could not find draggable element after 15 seconds."
+
+        toDrag = self.driver.find_element_by_id("draggable")
+        dropInto = self.driver.find_element_by_id("droppable")
+
+        holdDrag = ActionChains(self.driver) \
+            .click_and_hold(toDrag)
+        move = ActionChains(self.driver) \
+            .move_to_element(dropInto)
+        drop = ActionChains(self.driver).release(dropInto)
+    
+        holdDrag.perform()
+        move.perform()
+        drop.perform()
+
+        dropInto = self.driver.find_element_by_id("droppable")
+        text = dropInto.find_element_by_tag_name("p").text
+        self.assertEqual("Dropped!", text)
+
+    def testDoubleClick(self):
+        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        self._loadPage("javascriptPage")
+        toDoubleClick = self.driver.find_element_by_id("doubleClickField")
+
+        dblClick = ActionChains(self.driver) \
+            .double_click(toDoubleClick)
+
+        dblClick.perform()
+        self.assertEqual("DoubleClicked", toDoubleClick.get_attribute('value'))
+
+    def testContextClick(self):
+        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        self._loadPage("javascriptPage")
+        toContextClick = self.driver.find_element_by_id("doubleClickField")
+
+        contextClick = ActionChains(self.driver) \
+            .context_click(toContextClick)
+
+        contextClick.perform()
+        self.assertEqual("ContextClicked",
+            toContextClick.get_attribute('value'))
+
+    def testMoveAndClick(self):
+        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        self._loadPage("javascriptPage")
+        toClick = self.driver.find_element_by_id("clickField")
+
+        click = ActionChains(self.driver) \
+            .move_to_element(toClick) \
+            .click()
+
+        click.perform()
+        self.assertEqual("Clicked", toClick.get_attribute('value'))
+
+    def testCannotMoveToANullLocator(self):
+        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        self._loadPage("javascriptPage")
+
+        try:
+            move = ActionChains(self.driver) \
+                .move_to_element(None)
+      
+            move.perform()
+            self.fail("Shouldn't be allowed to click on null element.")
+        except AttributeError:
+            pass # Expected.
+
+        try:
+            ActionChains(self.driver).click().perform()
+            self.fail("Shouldn't be allowed to click without a context.")
+        except WebDriverException:
+            pass # Expected.
+
+    def _testClickingOnFormElements(self):
+        """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest.
+        Disabled since this test doesn't work with HTMLUNIT.
+        """
+        self._loadPage("formSelectionPage")
+        options = self.driver.find_elements_by_tag_name("option")
+        selectThreeOptions = ActionChains(self.driver) \
+            .click(options[1]) \
+            .key_down(Keys.SHIFT) \
+            .click(options[2]) \
+            .click(options[3]) \
+            .key_up(Keys.SHIFT)
+        selectThreeOptions.perform()
+
+        showButton = self.driver.find_element_by_name("showselected")
+        showButton.click()
+
+        resultElement = self.driver.find_element_by_id("result")
+        self.assertEqual("roquefort parmigiano cheddar", resultElement.text)
+
+    def testSelectingMultipleItems(self):
+        """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
+        self._loadPage("selectableItems")
+        reportingElement = self.driver.find_element_by_id("infodiv")
+        self.assertEqual("no info", reportingElement.text)
+
+        listItems = self.driver.find_elements_by_tag_name("li")
+        selectThreeItems = ActionChains(self.driver) \
+            .key_down(Keys.CONTROL) \
+            .click(listItems[1]) \
+            .click(listItems[3]) \
+            .click(listItems[5]) \
+            .key_up(Keys.CONTROL)
+        selectThreeItems.perform()
+
+        self.assertEqual("#item2 #item4 #item6", reportingElement.text)
+
+        # Now click on another element, make sure that's the only one selected.
+        actionsBuilder = ActionChains(self.driver)
+        actionsBuilder.click(listItems[6]).perform()
+        self.assertEqual("#item7", reportingElement.text)
+
+    def _pageURL(self, name):
+        return "http://localhost:%d/%s.html" % (self.webserver.port, name)
+
+    def _loadSimplePage(self):
+        self._loadPage("simpleTest")
+
+    def _loadPage(self, name):
+        self.driver.get(self._pageURL(name))
