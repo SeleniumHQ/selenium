@@ -173,6 +173,7 @@ module Selenium
       #
 
       def select
+        warn "#{self.class}#select is deprecated. Please use #{self.class}#click and determine the current state with #{self.class}#selected?"
         bridge.setElementSelected @id
       end
 
@@ -189,6 +190,7 @@ module Selenium
       #
 
       def toggle
+        warn "#{self.class}#toggle is deprecated. Please use #{self.class}#click and determine the current state with #{self.class}#selected?"
         bridge.toggleElement @id
       end
 
