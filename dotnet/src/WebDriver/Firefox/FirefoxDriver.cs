@@ -121,11 +121,26 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
         /// to be used in starting Firefox.</param>
         public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile)
-            : base(CreateExtensionConnection(binary, profile), DesiredCapabilities.Firefox())
+            : this(binary, profile, TimeSpan.FromSeconds(60))
         {
             this.binary = binary;
             this.profile = profile;
-        } 
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given profile, binary environment, and timeout value.
+        /// </summary>
+        /// <param name="binary">A <see cref="FirefoxBinary"/> object representing the operating system 
+        /// environmental settings used when running Firefox.</param>
+        /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
+        /// to be used in starting Firefox.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
+            : base(CreateExtensionConnection(binary, profile, commandTimeout), DesiredCapabilities.Firefox())
+        {
+            this.binary = binary;
+            this.profile = profile;
+        }
         #endregion
 
         #region Properties
@@ -208,7 +223,7 @@ namespace OpenQA.Selenium.Firefox
         #endregion
 
         #region Private methods
-        private static ExtensionConnection CreateExtensionConnection(FirefoxBinary binary, FirefoxProfile profile)
+        private static ExtensionConnection CreateExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
         {
             FirefoxProfile profileToUse = profile;
 
@@ -222,7 +237,7 @@ namespace OpenQA.Selenium.Firefox
                 profileToUse = new FirefoxProfile();
             }
 
-            ExtensionConnection extension = new ExtensionConnection(binary, profileToUse, "localhost");
+            ExtensionConnection extension = new ExtensionConnection(binary, profileToUse, "localhost", commandTimeout);
             return extension;
         }
         #endregion

@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.Chrome
         /// Initializes a new instance of the ChromeDriver class.
         /// </summary>
         public ChromeDriver()
-            : this(ChromeDriverService.CreateDefaultService())
+            : this(ChromeDriverService.CreateDefaultService(), TimeSpan.FromSeconds(60))
         {
         }
 
@@ -78,7 +78,17 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
         public ChromeDriver(string chromeDriverDirectory)
-            : this(ChromeDriverService.CreateDefaultService(chromeDriverDirectory))
+            : this(chromeDriverDirectory, TimeSpan.FromSeconds(60))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ChromeDriver class using the specified path to the directory containing ChromeDriver.exe and command timeout.
+        /// </summary>
+        /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public ChromeDriver(string chromeDriverDirectory, TimeSpan commandTimeout)
+            : this(ChromeDriverService.CreateDefaultService(chromeDriverDirectory), commandTimeout)
         {
         }
 
@@ -86,8 +96,9 @@ namespace OpenQA.Selenium.Chrome
         /// Initializes a new instance of the ChromeDriver class using the specified <see cref="ChromeDriverService"/>.
         /// </summary>
         /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
-        private ChromeDriver(ChromeDriverService service)
-            : base(new ChromeCommandExecutor(service), DesiredCapabilities.Chrome())
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        private ChromeDriver(ChromeDriverService service, TimeSpan commandTimeout)
+            : base(new ChromeCommandExecutor(service, commandTimeout), DesiredCapabilities.Chrome())
         {
         }
         #endregion

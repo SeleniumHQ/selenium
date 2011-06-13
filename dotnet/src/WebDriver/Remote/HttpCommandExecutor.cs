@@ -28,22 +28,13 @@ namespace OpenQA.Selenium.Remote
     /// <summary>
     /// Provides a way of executing Commands over HTTP
     /// </summary>
-    public class HttpCommandExecutor : ICommandExecutor
+    internal class HttpCommandExecutor : ICommandExecutor
     {
         private const string JsonMimeType = "application/json";
         private const string ContentTypeHeader = JsonMimeType + ";charset=utf-8";
         private const string RequestAcceptHeader = JsonMimeType + ", image/png";
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
-
-        /// <summary>
-        /// Initializes a new instance of the HttpCommandExecutor class
-        /// </summary>
-        /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
-        public HttpCommandExecutor(Uri addressOfRemoteServer)
-            : this(addressOfRemoteServer, TimeSpan.FromSeconds(60))
-        {
-        }
 
         /// <summary>
         /// Initializes a new instance of the HttpCommandExecutor class

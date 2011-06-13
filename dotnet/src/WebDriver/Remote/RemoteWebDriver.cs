@@ -96,7 +96,18 @@ namespace OpenQA.Selenium.Remote
         /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities)
-            : this(new HttpCommandExecutor(remoteAddress), desiredCapabilities)
+            : this(remoteAddress, desiredCapabilities, TimeSpan.FromSeconds(60))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the RemoteWebDriver class using the specified remote address, desired capabilties, and command timeout.
+        /// </summary>
+        /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities, TimeSpan commandTimeout)
+            : this(new HttpCommandExecutor(remoteAddress, commandTimeout), desiredCapabilities)
         {
         }
         #endregion

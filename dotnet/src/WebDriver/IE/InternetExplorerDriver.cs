@@ -101,7 +101,18 @@ namespace OpenQA.Selenium.IE
         /// <param name="port">The port to use to communicate with the IE server.</param>
         /// <param name="desiredCapabilities">The desired capabilities of the IE driver.</param>
         public InternetExplorerDriver(int port, ICapabilities desiredCapabilities)
-            : base(CreateServerUri(port), desiredCapabilities)
+            : this(port, desiredCapabilities, TimeSpan.FromSeconds(60))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class for the specified port, desired capabilities, and command timeout.
+        /// </summary>
+        /// <param name="port">The port to use to communicate with the IE server.</param>
+        /// <param name="desiredCapabilities">The desired capabilities of the IE driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public InternetExplorerDriver(int port, ICapabilities desiredCapabilities, TimeSpan commandTimeout)
+            : base(CreateServerUri(port), desiredCapabilities, commandTimeout)
         {
         }
 

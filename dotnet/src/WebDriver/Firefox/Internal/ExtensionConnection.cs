@@ -39,6 +39,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         private FirefoxBinary process;
         private HttpCommandExecutor executor;
         private string host;
+        private TimeSpan timeout;
         #endregion
 
         #region Constructor
@@ -48,9 +49,11 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// <param name="binary">The <see cref="FirefoxBinary"/> on which to make the connection.</param>
         /// <param name="profile">The <see cref="FirefoxProfile"/> creating the connection.</param>
         /// <param name="host">The name of the host on which to connect to the Firefox extension (usually "localhost").</param>
-        public ExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, string host)
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public ExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, string host, TimeSpan commandTimeout)
         {
             this.host = host;
+            this.timeout = commandTimeout;
             this.profile = profile;
             if (binary == null)
             {
@@ -91,7 +94,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                     this.SetAddress(portToUse);
 
                     // TODO (JimEvans): Get a better url algorithm.
-                    this.executor = new HttpCommandExecutor(new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}/hub/", this.host, portToUse)));
+                    this.executor = new HttpCommandExecutor(new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}/hub/", this.host, portToUse)), this.timeout);
                 }
                 finally
                 {
