@@ -132,6 +132,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <remarks>The <see cref="Select"/> method is valid for radio buttons, 
         /// "option" elements within a "select" element, and checkboxes.</remarks>
+        [Obsolete("This method will be removed in a future version. Use the Click() method instead.")]
         void Select();
 
         /// <summary>
@@ -176,6 +177,7 @@ namespace OpenQA.Selenium
         /// <remarks>If the element is a checkbox, the <see cref="Toggle"/> method
         /// will toggle the element's state from selected to not selected, or from not selected 
         /// to selected.</remarks>
+        [Obsolete("This method will be removed in a future version. Use the Click() method instead.")]
         bool Toggle();
 
         /// <summary>
