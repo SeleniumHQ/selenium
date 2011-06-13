@@ -13,10 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
+
 """WebElement implementation."""
 from command import Command
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchAttributeException
+
 
 
 class WebElement(object):
@@ -65,6 +68,8 @@ class WebElement(object):
 
     def toggle(self):
         """Toggles the element state."""
+        warnings.warn("This method has been deprecated and removed soon.\
+                        Please use 'click'", DeprecationWarning)
         resp = self._execute(Command.TOGGLE_ELEMENT)
         return resp['value']
 
@@ -74,6 +79,8 @@ class WebElement(object):
 
     def select(self):
         """Selects an element."""
+        warnings.warn("This method has been deprecated and removed soon. Determine\
+                        it's state with is_selected(). ",DeprecationWarning)
         self._execute(Command.SET_ELEMENT_SELECTED)
 
     def is_enabled(self):

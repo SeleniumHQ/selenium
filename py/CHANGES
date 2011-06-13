@@ -1,6 +1,7 @@
 Selenium 2 RC 3
 * Added Opera to Desired Capabilities
 * Removed deprecrated methods
+* Deprecated toggle() and select() methods. This will be removed in the next release
 
 Selenium 2 Beta 4
 * Fix for using existing Firefox Profiles
