@@ -79,8 +79,8 @@ class WebElement(object):
 
     def select(self):
         """Selects an element."""
-        warnings.warn("This method has been deprecated and removed soon. Determine\
-                        it's state with is_selected(). ",DeprecationWarning)
+        warnings.warn("This method has been deprecated and removed soon.\
+                        Please use 'click'", DeprecationWarning)
         self._execute(Command.SET_ELEMENT_SELECTED)
 
     def is_enabled(self):
