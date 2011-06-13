@@ -35,6 +35,7 @@ public:
 	bool IsSelected(void);
 	bool IsCheckBox(void);
 	bool IsRadioButton(void);
+	bool IsOption(void);
 	int Click(void);
 	int Hover(void);
 	int DragBy(const int offset_x, const int offset_y, const int drag_speed);

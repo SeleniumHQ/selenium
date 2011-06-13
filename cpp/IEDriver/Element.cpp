@@ -260,6 +260,14 @@ bool Element::IsSelected() {
 	return selected;
 }
 
+bool Element::IsOption() {
+	CComQIPtr<IHTMLOptionElement> option(this->element_);
+	if (!option) {
+		return false;
+	}
+	return true;
+}
+
 bool Element::IsCheckBox() {
 	CComQIPtr<IHTMLInputElement> input(this->element_);
 	if (!input) {

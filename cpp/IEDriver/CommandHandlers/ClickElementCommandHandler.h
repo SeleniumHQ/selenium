@@ -15,6 +15,7 @@
 #define WEBDRIVER_IE_CLICKELEMENTCOMMANDHANDLER_H_
 
 #include "Session.h"
+#include "logging.h"
 
 namespace webdriver {
 
@@ -46,11 +47,16 @@ protected:
 			ElementHandle element_wrapper;
 			status_code = this->GetElement(session, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
-				status_code = element_wrapper->Click();
-				browser_wrapper->set_wait_required(true);
-				if (status_code != SUCCESS) {
-					response->SetErrorResponse(status_code, "Cannot click on element");
+				if (element_wrapper->IsOption()) {
+					this->SimulateOptionElementClick(element_wrapper, response);
 					return;
+				} else {
+					status_code = element_wrapper->Click();
+					browser_wrapper->set_wait_required(true);
+					if (status_code != SUCCESS) {
+						response->SetErrorResponse(status_code, "Cannot click on element");
+						return;
+					}
 				}
 			} else {
 				response->SetErrorResponse(status_code, "Element is no longer valid");
@@ -59,6 +65,65 @@ protected:
 
 			response->SetResponse(SUCCESS, Json::Value::null);
 		}
+	}
+
+private:
+	void SimulateOptionElementClick(ElementHandle element_wrapper, Response* response) {
+		// This is a simulated click. There may be issues if there are things like
+		// alert() messages in certain events. A potential way to handle these
+		// problems is to marshal the select element onto a separate thread and
+		// perform the operation there.
+		bool currently_selected = element_wrapper->IsSelected();
+		CComQIPtr<IHTMLOptionElement> option(element_wrapper->element());
+
+		CComPtr<IHTMLElement> parent_element;
+		HRESULT hr = element_wrapper->element()->get_parentElement(&parent_element);
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Cannot get parent element";
+			response->SetErrorResponse(ENOSUCHELEMENT, "cannot get parent element");
+			return;
+		}
+
+		CComQIPtr<IHTMLSelectElement> select(parent_element);
+		if (!select) {
+			LOG(WARN) << "Parent element is not a select element";
+			response->SetErrorResponse(ENOSUCHELEMENT, "Parent element is not a select element");
+			return;
+		}
+
+		VARIANT_BOOL multiple;
+		hr = select->get_multiple(&multiple);
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Cannot determine if parent element supports multiple selection";
+			response->SetErrorResponse(ENOSUCHELEMENT, "Cannot determine if parent element supports multiple selection");
+			return;
+		}
+
+		bool parent_is_multiple = multiple == VARIANT_TRUE;
+		if (parent_is_multiple || (!parent_is_multiple && !currently_selected)) {
+			if (currently_selected) {
+				hr = option->put_selected(VARIANT_FALSE);
+			} else {
+				hr = option->put_selected(VARIANT_TRUE);
+			}
+
+			if (FAILED(hr)) {
+				LOGHR(WARN, hr) << "Failed to set selection";
+				response->SetErrorResponse(EEXPECTEDERROR, "Failed to set selection");
+				return;
+			}
+
+			// Looks like we'll need to fire the event on the select element and not the option. 
+			// Assume for now that the parent node is a select. Which is dumb.
+			CComQIPtr<IHTMLDOMNode> parent(parent_element);
+			if (!parent) {
+				LOG(WARN) << "Parent element is not a DOM node";
+				response->SetErrorResponse(ENOSUCHELEMENT, "Parent element is not a DOM node");
+				return;
+			}
+			element_wrapper->FireEvent(parent, L"onchange");
+		}
+		response->SetResponse(SUCCESS, Json::Value::null);
 	}
 };
 
