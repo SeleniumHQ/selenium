@@ -35,7 +35,7 @@ namespace Selenium.Internal.SeleniumEmulation
         {
             this.alert.ReplaceAlertMethod();
             IWebElement element = this.finder.FindElement(driver, locator);
-            element.Select();
+            element.Click();
             return null;
         }
     }

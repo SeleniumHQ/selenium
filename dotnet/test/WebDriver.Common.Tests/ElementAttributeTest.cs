@@ -141,7 +141,7 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             IWebElement checkbox = driver.FindElement(By.XPath("//input[@id='checky']"));
             Assert.AreEqual(null, checkbox.GetAttribute("checked"));
-            checkbox.Select();
+            checkbox.Click();
             Assert.AreEqual("true", checkbox.GetAttribute("checked"));
         }
 
@@ -157,7 +157,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual(null, initiallyNotSelected.GetAttribute("selected"), "false");
             Assert.AreEqual("true", initiallySelected.GetAttribute("selected"), "true");
 
-            initiallyNotSelected.Select();
+            initiallyNotSelected.Click();
             Assert.AreEqual(null, neverSelected.GetAttribute("selected"));
             Assert.AreEqual("true", initiallyNotSelected.GetAttribute("selected"));
             Assert.AreEqual(null, initiallySelected.GetAttribute("selected"));

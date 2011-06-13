@@ -200,7 +200,7 @@ namespace OpenQA.Selenium
 
             driver.SwitchTo().Frame(2);
             IWebElement checkbox = driver.FindElement(By.XPath("//input[@name='checky']"));
-            checkbox.Toggle();
+            checkbox.Click();
             checkbox.Submit();
 
             Assert.AreEqual("Success!", driver.FindElement(By.XPath("//p")).Text);
@@ -405,7 +405,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "2");
 
             driver.SwitchTo().DefaultContent().SwitchTo().Frame("third");
-            driver.FindElement(By.Id("changeme")).Select();
+            driver.FindElement(By.Id("changeme")).Click();
 
             driver.SwitchTo().DefaultContent().SwitchTo().Frame("second");
             Assert.AreEqual(driver.FindElement(By.Id("pageNumber")).Text, "2");

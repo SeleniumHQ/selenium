@@ -33,7 +33,7 @@ namespace Selenium.Internal.SeleniumEmulation
             IWebElement element = this.finder.FindElement(driver, locator);
             if (element.Selected == true)
             {
-                element.Toggle();
+                element.Click();
             }
 
             return null;

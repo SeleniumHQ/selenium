@@ -118,7 +118,7 @@ namespace OpenQA.Selenium.Support.UI
             {
                 if (option.Text == text)
                 {
-                    option.Select();
+                    option.Click();
                     if (!this.IsMultiple)
                     {
                         return;
@@ -137,7 +137,7 @@ namespace OpenQA.Selenium.Support.UI
             {
                 if (option.GetAttribute("value") == value)
                 {
-                    option.Select();
+                    option.Click();
                     if (!this.IsMultiple)
                     {
                         return;
@@ -156,7 +156,7 @@ namespace OpenQA.Selenium.Support.UI
             {
                 if (option.GetAttribute("index").Equals(index.ToString(CultureInfo.InvariantCulture)))
                 {
-                    option.Select();
+                    option.Click();
                     if (!this.IsMultiple)
                     {
                         return;
@@ -177,7 +177,7 @@ namespace OpenQA.Selenium.Support.UI
                 {
                     if (option.Selected)
                     {
-                        option.Toggle();
+                        option.Click();
                     }
 
                     if (!this.IsMultiple)
@@ -200,7 +200,7 @@ namespace OpenQA.Selenium.Support.UI
                 {
                     if (option.Selected)
                     {
-                        option.Toggle();
+                        option.Click();
                     }
 
                     if (!this.IsMultiple)
@@ -223,7 +223,7 @@ namespace OpenQA.Selenium.Support.UI
                 {
                     if (option.Selected)
                     {
-                        option.Toggle();
+                        option.Click();
                     }
 
                     if (!this.IsMultiple)
@@ -248,7 +248,7 @@ namespace OpenQA.Selenium.Support.UI
             {
                 if (webElement.Selected)
                 {
-                    webElement.Toggle();
+                    webElement.Click();
                 }
             }
         }

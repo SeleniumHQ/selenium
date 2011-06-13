@@ -47,7 +47,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
 
-            driver.FindElement(By.Id("changeme")).Select();
+            driver.FindElement(By.Id("changeme")).Click();
 
             Assert.AreEqual("Page3", driver.Title);
         }
@@ -60,7 +60,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
 
-            driver.FindElement(By.Id("changeme")).Select();
+            driver.FindElement(By.Id("changeme")).Click();
 
             Assert.AreEqual("3", driver.FindElement(By.Id("pageNumber")).Text);
         }

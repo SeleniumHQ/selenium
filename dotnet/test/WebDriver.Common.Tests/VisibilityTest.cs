@@ -87,7 +87,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("untogglable"));
-            element.Toggle();
+            element.Click();
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("untogglable"));
-            element.Select();
+            element.Click();
         }
 
         [Test]

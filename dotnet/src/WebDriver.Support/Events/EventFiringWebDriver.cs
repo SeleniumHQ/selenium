@@ -1014,6 +1014,7 @@ namespace OpenQA.Selenium.Support.Events
             /// <summary>
             /// Select or unselect element. This operation only applies to input elements such as checkboxes, options in a select and radio buttons.
             /// </summary>
+            [Obsolete("This method will be removed in a future version. Use the Click() method instead.")]
             public void Select()
             {
                 this.underlyingElement.Select();
@@ -1033,6 +1034,7 @@ namespace OpenQA.Selenium.Support.Events
             /// If the element is a checkbox this will toggle the elements state from selected to not selected, or from not selected to selected
             /// </summary>
             /// <returns>Whether the toggled element is selected (true) or not (false) after this toggle is complete</returns>
+            [Obsolete("This method will be removed in a future version. Use the Click() method instead.")]
             public bool Toggle()
             {
                 WebElementEventArgs e = new WebElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement);

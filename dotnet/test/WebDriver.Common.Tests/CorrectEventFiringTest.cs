@@ -165,20 +165,21 @@ namespace OpenQA.Selenium
             IWebElement foo = allOptions[0];
             IWebElement bar = allOptions[1];
 
-            foo.Select();
+            foo.Click();
             Assert.AreEqual(driver.FindElement(By.Id("result")).Text, initialTextValue);
-            bar.Select();
+            bar.Click();
             Assert.AreEqual(driver.FindElement(By.Id("result")).Text, "bar");
         }
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.IE, "IE does not fire change event when clicking on checkbox")]
         public void ShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox()
         {
             driver.Url = javascriptPage;
             IWebElement checkbox = driver.FindElement(By.Id("checkbox"));
 
-            checkbox.Select();
+            checkbox.Click();
             Assert.AreEqual(driver.FindElement(By.Id("result")).Text, "checkbox thing");
         }
 

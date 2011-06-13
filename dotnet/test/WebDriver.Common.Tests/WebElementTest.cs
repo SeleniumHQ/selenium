@@ -15,19 +15,10 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement checkbox = driver.FindElement(By.Id("checkbox1"));
             Assert.IsFalse(checkbox.Selected);
-            Assert.IsTrue(checkbox.Toggle());
+            checkbox.Click();
             Assert.IsTrue(checkbox.Selected);
-            Assert.IsFalse(checkbox.Toggle());
+            checkbox.Click();
             Assert.IsFalse(checkbox.Selected);
-        }
-
-        [Test]
-        [ExpectedException(typeof(InvalidElementStateException))]
-        public void ShouldThrowExceptionOnNonToggableElement()
-        {
-            driver.Url = simpleTestPage;
-            IWebElement text = driver.FindElement(By.Id("oneline"));
-            Assert.IsFalse(text.Toggle());
         }
 
         [Test]

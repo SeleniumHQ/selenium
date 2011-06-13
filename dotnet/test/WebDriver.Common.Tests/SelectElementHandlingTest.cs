@@ -19,9 +19,9 @@ namespace OpenQA.Selenium
 
             IWebElement option = options[0];
             Assert.IsTrue(option.Selected);
-            option.Toggle();
+            option.Click();
             Assert.IsFalse(option.Selected);
-            option.Toggle();
+            option.Click();
             Assert.IsTrue(option.Selected);
 
             option = options[2];
@@ -38,7 +38,7 @@ namespace OpenQA.Selenium
             IWebElement select = driver.FindElement(By.XPath("//select[@name='selectomatic']"));
             ReadOnlyCollection<IWebElement> options = select.FindElements(By.TagName("option"));
             IWebElement option = options[0];
-            option.Toggle();
+            option.Click();
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace OpenQA.Selenium
             Assert.IsTrue(one.Selected);
             Assert.IsFalse(two.Selected);
 
-            two.Select();
+            two.Click();
             Assert.IsFalse(one.Selected);
             Assert.IsTrue(two.Selected);
         }
@@ -66,7 +66,10 @@ namespace OpenQA.Selenium
             ReadOnlyCollection<IWebElement> options = multiSelect.FindElements(By.TagName("option"));
             foreach (IWebElement option in options)
             {
-                option.Select();
+                if (!option.Selected)
+                {
+                    option.Click();
+                }
             }
 
             for (int i = 0; i < options.Count; i++)

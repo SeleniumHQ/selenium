@@ -91,7 +91,7 @@ namespace Selenium.Internal.SeleniumEmulation
                 {
                     if (opt.Selected)
                     {
-                        opt.Toggle();
+                        opt.Click();
                     }
                 }
             }
@@ -99,7 +99,7 @@ namespace Selenium.Internal.SeleniumEmulation
             IWebElement option = this.LocateOption(optionLocator);
             if (option != null)
             {
-                option.Select();
+                option.Click();
             }
         }
 
@@ -114,7 +114,7 @@ namespace Selenium.Internal.SeleniumEmulation
             IWebElement option = this.LocateOption(optionLocator);
             if (option != null)
             {
-                option.Select();
+                option.Click();
             }
         }
 
@@ -129,7 +129,7 @@ namespace Selenium.Internal.SeleniumEmulation
             IWebElement option = this.LocateOption(optionLocator);
             if (option != null && option.Selected)
             {
-                option.Toggle();
+                option.Click();
             }
         }
 

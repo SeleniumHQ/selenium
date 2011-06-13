@@ -44,7 +44,7 @@ namespace Selenium.Internal.SeleniumEmulation
             {
                 if (option.Selected)
                 {
-                    option.Toggle();
+                    option.Click();
                 }
             }
 
