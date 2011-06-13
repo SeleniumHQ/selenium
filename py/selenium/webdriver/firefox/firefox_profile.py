@@ -73,6 +73,7 @@ class FirefoxProfile(object):
         "javascript.options.showInConsole": "true",
         "browser.dom.window.dump.enabled": "true",
         "webdriver_accept_untrusted_certs": "true",
+        "webdriver_enable_native_events": "true",
         "dom.max_script_run_time": "30"
         }
 
@@ -133,6 +134,14 @@ class FirefoxProfile(object):
     @accept_untrusted_certs.setter
     def accept_untrusted_certs(self, value):
         self.default_preferences["webdriver_accept_untrusted_certs"] = str(value)
+
+    @property
+    def native_events_enabled(self):
+        return bool(self.default_preferences['webdriver_enable_native_events'])
+
+    @native_events_enabled.setter
+    def native_events_enabled(self, value):
+        self.default_preferences['webdriver_enable_native_events'] = str(value)
 
     @property
     def encoded(self):
