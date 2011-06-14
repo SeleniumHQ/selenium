@@ -29,20 +29,19 @@ import org.openqa.selenium.lift.find.Finder;
  */
 public interface TestContext {
 
-	public abstract void goTo(String url);
+  void goTo(String url);
 
-	public abstract void assertPresenceOf(Finder<WebElement, WebDriver> finder);
+  void assertPresenceOf(Finder<WebElement, WebDriver> finder);
 
-	public abstract void assertPresenceOf(
-			Matcher<Integer> cardinalityConstraint,
-			Finder<WebElement, WebDriver> finder);
+  void assertPresenceOf(Matcher<Integer> cardinalityConstraint,
+      Finder<WebElement, WebDriver> finder);
 
-	public abstract void type(String input, Finder<WebElement, WebDriver> finder);
+  void type(String input, Finder<WebElement, WebDriver> finder);
 
-	public abstract void clickOn(Finder<WebElement, WebDriver> finder);
+  void clickOn(Finder<WebElement, WebDriver> finder);
 
-	public abstract void waitFor(Finder<WebElement, WebDriver> finder, long timeout);
+  void waitFor(Finder<WebElement, WebDriver> finder, long timeout);
 
-	public abstract void quit();
+  void quit();
 
 }
