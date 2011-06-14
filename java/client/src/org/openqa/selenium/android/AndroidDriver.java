@@ -98,7 +98,7 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
 
   private static URL getDefaultUrl() {
     try {
-      return new URL("http://localhost:8080/hub");
+      return new URL("http://localhost:8080/wd/hub");
     } catch (MalformedURLException e) {
       throw new WebDriverException("Malformed default remote URL: " + e.getMessage());
     }
