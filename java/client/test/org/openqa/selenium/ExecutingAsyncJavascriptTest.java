@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import org.junit.Test;
@@ -14,8 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Ignore(value = {IE, CHROME},
-    reason = "IE: Every test appears to be failing. Chrome: not implemented yet")
+@Ignore(value = {IE, CHROME, OPERA},
+    reason = "IE: Every test appears to be failing. Chrome, Opera: not implemented yet")
 public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 
   private JavascriptExecutor executor;

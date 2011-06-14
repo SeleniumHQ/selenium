@@ -2,6 +2,7 @@ package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class SlowLoadingPageTest extends AbstractDriverTestCase {
@@ -24,7 +25,7 @@ public class SlowLoadingPageTest extends AbstractDriverTestCase {
     assertElapsed(LOAD_TIME_IN_SECONDS * 1000, now - start);
   }
 
-  @Ignore(value = {IE, IPHONE, SELENESE},
+  @Ignore(value = {IE, IPHONE, SELENESE, OPERA},
       reason = "Selenium: refresh is unsupported; Others: untested")
   public void testRefreshShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();

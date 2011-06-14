@@ -25,6 +25,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class TextPagesTest extends AbstractDriverTestCase {
@@ -38,7 +39,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore({IE, FIREFOX, SELENESE, CHROME, IPHONE})
+  @Ignore({IE, FIREFOX, SELENESE, CHROME, IPHONE, OPERA})
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
 
@@ -57,7 +58,8 @@ public class TextPagesTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({IE, IPHONE, SELENESE})
+  @Ignore(value = {IE, IPHONE, SELENESE, OPERA}, reason =
+      "Opera: creates DOM for displaying text pages")
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
 

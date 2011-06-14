@@ -19,6 +19,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
@@ -34,7 +35,7 @@ public class ClickTest extends AbstractDriverTestCase {
   @Override
   protected void tearDown() throws Exception {
     driver.switchTo().defaultContent();
-    
+
     super.tearDown();
   }
 
@@ -58,7 +59,8 @@ public class ClickTest extends AbstractDriverTestCase {
     assertEquals("Latch was reset", Boolean.TRUE, samePage);
   }
 
-  @Ignore(value = IPHONE, reason = "Frame switching is unsupported")
+  @Ignore(value = {IPHONE, OPERA}, reason = "iPhone: Frame switching is unsupported"
+      + "Opera: Incorrect runtime retrieved")
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -68,10 +70,11 @@ public class ClickTest extends AbstractDriverTestCase {
     assertTrue("Target did not reload",
         driver.getPageSource().contains("Hello WebDriver"));
   }
-  
+
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE},
-      reason = "iPhone: Frame switching is unsupported")
+  @Ignore(value = {IPHONE, SELENESE, OPERA},
+      reason = "iPhone: Frame switching is unsupported"
+      + "Opera: Incorrect runtime retrieved")
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -86,8 +89,9 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE},
-      reason = "iPhone: Frame switching is unsupported")
+  @Ignore(value = {IPHONE, SELENESE, OPERA},
+      reason = "iPhone: Frame switching is unsupported"
+      + "Opera: Incorrect runtime retrieved")
   public void testJsLoactedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 

@@ -22,6 +22,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -134,7 +135,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(newFormValue, equalTo("some text"));
   }
 
-  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, IE},
+  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, IE, OPERA},
       reason = "Does not yet support file uploads")
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
@@ -150,7 +151,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(value.getCanonicalPath(), equalTo(file.getCanonicalPath()));
   }
 
-  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID},
+  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},
       reason = "Does not yet support file uploads")
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
     File file = File.createTempFile("test", "txt");

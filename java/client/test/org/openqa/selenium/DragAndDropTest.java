@@ -29,6 +29,7 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 @Ignore({IPHONE, ANDROID})
@@ -47,7 +48,8 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, CHROME, SELENESE})
+  @Ignore(value = {HTMLUNIT, CHROME, SELENESE, OPERA},
+      reason = "Opera: last assert fails in desktop because <5px mousemove")
   public void testDragAndDrop() throws Exception {
     if (!supportsNativeEvents) {
       System.out.println("Native events not supported. Skipping test");
@@ -193,7 +195,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     Pattern pattern = Pattern.compile("start( move)* down( move)+ up");
 
     Matcher matcher = pattern.matcher(reporterText);
-    
+
     assertTrue("Reporter text:" + reporterText, matcher.matches());
   }
 

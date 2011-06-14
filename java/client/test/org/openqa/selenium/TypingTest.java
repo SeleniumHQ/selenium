@@ -27,6 +27,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class TypingTest extends AbstractDriverTestCase {
@@ -301,7 +302,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
+  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA},
           reason = "untested user agent")
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
@@ -346,7 +347,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE}, reason = "untested user agents")
+  @Ignore(value = {HTMLUNIT, SELENESE, OPERA}, reason = "untested user agents")
   public void testAllPrintableKeys() {
     driver.get(pages.javascriptPage);
 
@@ -425,7 +426,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
           reason = "untested user agents")
-  public void testNumberpadAndFunctionKeys() {
+  public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("keyReporter"));
@@ -435,16 +436,24 @@ public class TypingTest extends AbstractDriverTestCase {
                      Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
                      Keys.NUMPAD3 + "abcd");
     assertThat(element.getAttribute("value"), is("abcd*-+.,09+;=/3abcd"));
-
-    element.clear();
-    element.sendKeys("FUNCTION" + Keys.F2 + "-KEYS" + Keys.F2);
-    element.sendKeys("" + Keys.F2 + "-TOO" + Keys.F2);
-    assertThat(element.getAttribute("value"), is("FUNCTION-KEYS-TOO"));
   }
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
           reason = "untested user agents")
+  public void testFunctionKeys() {
+    driver.get(pages.javascriptPage);
+
+    WebElement element = driver.findElement(By.id("keyReporter"));
+
+    element.sendKeys("FUNCTION" + Keys.F4 + "-KEYS" + Keys.F4);
+    element.sendKeys("" + Keys.F4 + "-TOO" + Keys.F4);
+    assertThat(element.getAttribute("value"), is("FUNCTION-KEYS-TOO"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA},
+          reason = "untested user agents. Opera: F2 focuses location bar")
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
 
@@ -475,10 +484,11 @@ public class TypingTest extends AbstractDriverTestCase {
     element.sendKeys("!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG");
 
     element.sendKeys(Keys.HOME);
-    element.sendKeys("" + Keys.SHIFT + Keys.END + Keys.DELETE);
-
-    assertThat(element.getAttribute("value"), is(""));
+    element.sendKeys("" + Keys.SHIFT + Keys.END);
     assertThat(result.getText(), containsString(" up: 16"));
+
+    element.sendKeys(Keys.DELETE);
+    assertThat(element.getAttribute("value"), is(""));
   }
 
   @JavascriptEnabled
@@ -592,7 +602,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, SELENESE, CHROME})
+  @Ignore(value = {HTMLUNIT, IE, SELENESE, CHROME, OPERA})
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 
@@ -613,7 +623,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, SELENESE, CHROME})
+  @Ignore(value = {HTMLUNIT, IE, SELENESE, CHROME, OPERA})
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 
@@ -628,7 +638,7 @@ public class TypingTest extends AbstractDriverTestCase {
     element.sendKeys(Keys.LEFT, Keys.LEFT, "F", Keys.DELETE, Keys.END, "ee!");
 
     assertEquals("Fishee!", element.getText());
-  }  
+  }
 
   @JavascriptEnabled
   public void testShouldBeAbleToTypeOnAnEmailInputField() {

@@ -29,6 +29,7 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
@@ -315,7 +316,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled 
-  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID},
+  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},
       reason = "Does not yet support file uploads")
   public void testUploadingFileShouldFireOnChangeEvent() throws IOException {
     driver.get(pages.formPage);
@@ -363,7 +364,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
     assertTrue("No " + eventName + " fired: " + text, conditionMet);
   }
-  
+
   private void assertEventNotFired(String eventName) {
     WebElement result = driver.findElement(By.id("result"));
     String text = result.getText();

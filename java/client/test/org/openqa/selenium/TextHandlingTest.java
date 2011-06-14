@@ -36,6 +36,7 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 
@@ -137,8 +138,9 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 //                "        "));
 //    }
 
-  @Ignore(value = {SELENESE, IPHONE, CHROME, IE}, reason = "iPhone: sendKeys is broken;"
-      + " Chrome: not handling a space character properly.")
+  @Ignore(value = {SELENESE, IPHONE, CHROME, IE, OPERA}, reason = "iPhone: sendKeys is broken;"
+      + " Chrome: not handling a space character properly."
+      + " Opera: inserts \r\n instead of \n.")
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
@@ -203,7 +205,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, is("Some text" + newLine + "Some more text"));
   }
 
-  @Ignore({FIREFOX, HTMLUNIT, IE, SELENESE})
+  @Ignore({FIREFOX, HTMLUNIT, IE, SELENESE, OPERA})
   public void testShouldHandleNestedBlockLevelElements() {
     driver.get(pages.simpleTestPage);
 
@@ -254,7 +256,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, IPHONE})
+  @Ignore({SELENESE, IPHONE, OPERA})
   public void testShouldOnlyIncludeVisibleText() {
     driver.get(pages.javascriptPage);
 
@@ -274,14 +276,14 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertTrue(text.contains("some text"));
     assertFalse(text.contains("some more text"));
   }
-  
+
   public void testShouldGetTextWhichIsAValidJSONObject() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("simpleJsonText"));
     assertEquals("{a=\"b\", c=1, d=true}", element.getText());
     //assertEquals("{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.getText());
   }
-  
+
   public void testShouldGetTextWhichIsAValidComplexJSONObject() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("complexJsonText"));

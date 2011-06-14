@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class MiscTest extends AbstractDriverTestCase {
@@ -32,7 +33,7 @@ public class MiscTest extends AbstractDriverTestCase {
     assertTrue(pages.simpleTestPage.equalsIgnoreCase(driver.getCurrentUrl()));
 
     driver.get(pages.javascriptPage);
-    assertTrue(pages.javascriptPage.equalsIgnoreCase(driver.getCurrentUrl()));    
+    assertTrue(pages.javascriptPage.equalsIgnoreCase(driver.getCurrentUrl()));
   }
 
   @JavascriptEnabled
@@ -51,8 +52,9 @@ public class MiscTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, IE, SELENESE},
+  @Ignore(value = {ANDROID, CHROME, IE, SELENESE, OPERA},
       reason = "Chrome: returns XML content formatted for display as HTML document"
+          + "Opera: includes XML doctype"
           + "Others: untested")
   public void testShouldBeAbleToGetTheSourceOfAnXmlDocument() {
     driver.get(pages.simpleXmlDocument);

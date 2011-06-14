@@ -27,6 +27,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
@@ -112,7 +113,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.name("id-name1")).getAttribute("value"), equalTo("name"));
   }
 
-  @Ignore(value = SELENESE, reason = "switchTo().frame(WebElement) not supported with Selenium")
+  @Ignore(value = {SELENESE, OPERA}, reason = "switchTo().frame(WebElement) not supported with Selenium"
+      + "Opera: Unsupported")
   public void testShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.framesetPage);
     WebElement frame = driver.findElement(By.tagName("frame"));
@@ -122,6 +124,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   }
 
 //  @Ignore(value = SELENESE, reason = "switchTo().frame(WebElement) not supported with Selenium")
+  @Ignore(value = OPERA, reason = "Opera: Unsupported")
   public void testShouldBeAbleToSwitchToAnIFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.iframePage);
     WebElement frame = driver.findElement(By.tagName("iframe"));
@@ -131,7 +134,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   assertThat(element.getAttribute("value"), equalTo("name"));
   }
 
-  @Ignore(value = SELENESE, reason = "switchTo().frame(WebElement) not supported with Selenium")
+  @Ignore(value = {SELENESE, OPERA}, reason = "switchTo().frame(WebElement) not supported with Selenium "
+      + "Opera: Unsupported")
   public void testShouldEnsureElementIsAFrameBeforeSwitching() {
     driver.get(pages.framesetPage);
     WebElement frame = driver.findElement(By.tagName("frameset"));
@@ -172,6 +176,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
   }
 
+  @Ignore({OPERA})
   public void testShouldSelectChildFramesByChainedCalls() {
     driver.get(pages.framesetPage);
 
@@ -229,11 +234,12 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     checkbox.submit();
 
     // TODO(simon): this should not be needed, and is only here because IE's submit returns too soon.
+
     waitFor(WaitingConditions.elementTextToEqual(driver, By.xpath("//p"), "Success!"));
     assertThat(driver.findElement(By.xpath("//p")).getText(), equalTo("Success!"));
   }
 
-  @Ignore(value = ANDROID, reason = "Android does not detect that the select frame has disappeared")
+  @Ignore(value = {ANDROID, OPERA}, reason = "Android does not detect that the select frame has disappeared")
   public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() throws Exception {
     driver.get(pages.framesetPage);
 
@@ -273,6 +279,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     return waitFor(elementToExist(driver, "greeting")).getText();
   }
 
+  @Ignore({OPERA})
   public void testShouldBeAbleToClickInAFrame() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("third");
@@ -286,6 +293,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(getTextOfGreetingElement(), equalTo("Success!"));
   }
 
+  @Ignore({OPERA})
   public void testShouldBeAbleToClickInASubFrame() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("sixth")
@@ -357,8 +365,9 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.switchTo().frame("iframe1");
     assertThat(driver.getCurrentUrl(), equalTo(url));
   }
-  
-  @Ignore(value = {IE, HTMLUNIT}, reason = "Appears to uncover an HtmlUnit bug")
+
+  @Ignore(value = {IE, HTMLUNIT, OPERA}, reason = "Appears to uncover an HtmlUnit bug" +
+      "Opera: Original runtime still exists inside Opera")
   @JavascriptEnabled
   public void testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs() {
     driver.get(pages.deletingFrame);

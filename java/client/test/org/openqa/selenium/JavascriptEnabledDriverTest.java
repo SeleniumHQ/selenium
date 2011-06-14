@@ -28,6 +28,7 @@ import static org.junit.matchers.JUnitMatchers.either;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -116,7 +117,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, SELENESE, IPHONE},
+  @Ignore(value = {IE, SELENESE, IPHONE, OPERA},
       reason = "iPhone: does not detect that a new page loaded.")
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
@@ -185,7 +186,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     element.click();
 
     waitForTitleChange("We Arrive Here");
-    
+
     assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
   }
 
@@ -291,21 +292,21 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
    * "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
-  @Ignore({IE, SELENESE, IPHONE})
+  @Ignore({IE, SELENESE, IPHONE, OPERA})
   @JavascriptEnabled
   @NeedsFreshDriver
   public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
     driver.get(pages.javascriptPage);
-    
+
     String handle = driver.getWindowHandle();
     driver.findElement(By.id("new_window")).click();
-    
+
     driver.switchTo().window("close_me");
-    
+
     driver.findElement(By.id("close")).click();
-    
+
     driver.switchTo().window(handle);
-    
+
     // If we haven't seen an exception or hung the test has passed
   }
 }

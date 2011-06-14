@@ -5,6 +5,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 import org.openqa.selenium.AbstractDriverTestCase;
@@ -17,7 +18,7 @@ import org.openqa.selenium.JavascriptExecutor;
  *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
-@Ignore(value = { HTMLUNIT, IE, IPHONE, CHROME, CHROME_NON_WINDOWS, REMOTE })
+@Ignore(value = { HTMLUNIT, IE, IPHONE, CHROME, CHROME_NON_WINDOWS, REMOTE, OPERA })
 public class JsApiTestCase extends AbstractDriverTestCase {
 
   private static final long TWO_MINUTES = 2 * 60 * 1000;

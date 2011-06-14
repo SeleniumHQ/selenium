@@ -27,6 +27,7 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 
@@ -86,7 +87,7 @@ public class I18nTest extends AbstractDriverTestCase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, FIREFOX}, reason="Not implemented on anything other than"
+  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, FIREFOX, OPERA}, reason="Not implemented on anything other than"
       + "Firefox/Linux at the moment.")
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
     if (!Platform.getCurrent().is(Platform.LINUX)) {
@@ -146,7 +147,7 @@ public class I18nTest extends AbstractDriverTestCase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT}, reason="Not implemented on anything other than"
+  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, OPERA}, reason="Not implemented on anything other than"
       + "Firefox/Linux at the moment.")
   public void testShouldBeAbleToInputJapanese() {
     if (!Platform.getCurrent().is(Platform.LINUX)) {

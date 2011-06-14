@@ -28,6 +28,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
@@ -140,7 +141,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(cookies.toString(), cookies.contains(cookie2));
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, OPERA})
   public void testAddCookiesWithDifferentPathsThatAreRelatedToOurs() {
     driver.get(pages.simpleTestPage);
     driver.manage().deleteAllCookies();
@@ -161,11 +162,13 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
     driver.get(appServer.whereIs(""));
     cookies = options.getCookies();
-    assertFalse(cookies.toString(), cookies.contains(cookie1));
-    assertTrue(cookies.toString(), cookies.contains(cookie2));
+    assertFalse("Not supposed to contain cookie1 (" + cookie1 +
+        ") but has: " + cookies.toString(), cookies.contains(cookie1));
+    assertTrue("Supposed to contain cookie2 (" + cookie2 +
+        ") but has: " + cookies.toString(), cookies.contains(cookie2));
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, OPERA})
   public void testCanSetCookiesOnADifferentPathOfTheSameHost() {
     Cookie cookie1 = new Cookie("fish", "cod", "/common/animals");
     Cookie cookie2 = new Cookie("planet", "earth", "/common/galaxy");
@@ -178,8 +181,10 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     driver.get(appServer.whereIs("animals"));
     Set<Cookie> cookies = options.getCookies();
 
-    assertTrue(cookies.toString(), cookies.contains(cookie1));
-    assertFalse(cookies.toString(), cookies.contains(cookie2));
+    assertTrue("Supposed to contain cookie1 (" + cookie1 +
+        ") but has: " + cookies.toString(), cookies.contains(cookie1));
+    assertFalse("Not supposed to contain cookie2 (" + cookie2 +
+        ") but has: " + cookies.toString(), cookies.contains(cookie2));
 
     driver.get(appServer.whereIs("galaxy"));
     cookies = options.getCookies();
@@ -309,7 +314,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull(driver.manage().getCookieNamed("name"));
   }
 
-  @Ignore({SELENESE, IE})
+  @Ignore({SELENESE, IE, OPERA})
   public void testCookieIntegrity() {
     String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
 
@@ -338,7 +343,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertEquals(cookie1, retrievedCookie);
   }
 
-  @Ignore(value = {ANDROID, IE, SELENESE}, reason =
+  @Ignore(value = {ANDROID, IE, SELENESE, OPERA}, reason =
       "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info; " +
       "Other suppressed browsers have not been tested.")
   public void testRetainsCookieExpiry() {

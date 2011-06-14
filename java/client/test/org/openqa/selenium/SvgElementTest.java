@@ -22,6 +22,7 @@ import java.util.List;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -29,7 +30,7 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 
 public class SvgElementTest extends AbstractDriverTestCase {
 
-  @Ignore({HTMLUNIT, IE, CHROME, REMOTE, SELENESE})
+  @Ignore({HTMLUNIT, IE, CHROME, REMOTE, SELENESE, OPERA})
   public void testShouldClickOnGraphVisualElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));

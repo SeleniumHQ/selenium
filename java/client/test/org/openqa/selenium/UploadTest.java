@@ -9,11 +9,12 @@ import java.io.PrintWriter;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 /**
  * Demonstrates how to use WebDriver with a file input element.
- * 
+ *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 @Ignore(value = {IPHONE, ANDROID}, reason = "File uploads not allowed on the iPhone")
@@ -31,8 +32,8 @@ public class UploadTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, SELENESE},
-          reason = "Chrome: File input elements are not supported yet")
+  @Ignore(value = {CHROME, SELENESE, OPERA},
+          reason = "Chrome, Opera: File input elements are not supported yet")
   public void testFileUploading() throws Exception {
     driver.get(pages.uploadPage);
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());

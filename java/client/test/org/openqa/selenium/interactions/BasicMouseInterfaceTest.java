@@ -34,6 +34,7 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
@@ -75,7 +76,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
   public void testDraggingElementWithMouseMovesItToAnotherList() {
     if (!supportsNativeEvents()) {
       System.out.println("Skipping mouse test: needs native events");
@@ -88,7 +89,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE})
+  @Ignore({HTMLUNIT, ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
   public void testDraggingElementWithMouseFiresEvents() {
@@ -114,7 +115,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
   public void testDragAndDrop() throws InterruptedException {
     if (!supportsNativeEvents()) {
       System.out.println("Skipping mouse test: needs native events");
@@ -155,7 +156,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 
@@ -169,7 +170,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
   public void testContextClick() {
     driver.get(pages.javascriptPage);
 
@@ -183,7 +184,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
   public void testMoveAndClick() {
     driver.get(pages.javascriptPage);
 
@@ -197,7 +198,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE})
+  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
 

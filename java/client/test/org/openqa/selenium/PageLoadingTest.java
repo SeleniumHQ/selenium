@@ -25,6 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
@@ -136,7 +137,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  @Ignore({IE, CHROME, SELENESE, IPHONE})
+  @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA})
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
     driver.get(url);
@@ -159,7 +160,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=208">
    *     Issue 208</a>
    */
-  @Ignore(value = {IE, SELENESE, IPHONE}, reason = "Untested user-agents")
+  @Ignore(value = {IE, SELENESE, IPHONE, OPERA}, reason = "Untested user-agents")
   @JavascriptEnabled
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
       throws Exception {
