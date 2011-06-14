@@ -17,7 +17,12 @@ java_library(name = "base",
 java_library(name = "clock",
   srcs = [
     "Clock.java",
+    "Duration.java",
+    "Sleeper.java",
     "SystemClock.java",
+  ],
+  deps = [
+    "//third_party/java/guava-libraries",
   ])
 
 java_library(name = "components",
@@ -44,6 +49,8 @@ java_library(name = "elements",
 java_library(name = "wait",
   srcs = [
     "ExpectedCondition.java",
+    "ExpectedConditions.java",
+    "FluentWait.java",
     "Wait.java",
     "WebDriverWait.java",
   ],

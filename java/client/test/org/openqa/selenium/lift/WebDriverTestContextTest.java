@@ -23,7 +23,6 @@ import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
-import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.TickingClock;
 
 import java.util.Arrays;
@@ -47,7 +46,7 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
   WebElement element = mock(WebElement.class);
   Finder<WebElement, WebDriver> finder = mockFinder();
   private static final int CLOCK_INCREMENT = 300;
-  Clock clock = new TickingClock(CLOCK_INCREMENT);
+  TickingClock clock = new TickingClock(CLOCK_INCREMENT);
   final int TIMEOUT = CLOCK_INCREMENT * 3;
   
   public void testIsCreatedWithAWebDriverImplementation() throws Exception {
@@ -128,8 +127,8 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
   }
   
   public void testSupportsWaitingForElementToAppear() throws Exception {
-    context = new WebDriverTestContext(webdriver, clock);
-    
+    context = new WebDriverTestContext(webdriver, clock, clock);
+
     checking(new Expectations() {{ 
       one(finder).findFrom(webdriver); will(returnValue(oneElement()));
       one(element).isDisplayed(); will(returnValue(true));
@@ -139,7 +138,7 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
   }
   
   public void testSupportsWaitingForElementToAppearWithTimeout() throws Exception {
-    context = new WebDriverTestContext(webdriver, clock);
+    context = new WebDriverTestContext(webdriver, clock, clock);
     
     checking(new Expectations() {{ 
       exactly(2).of(finder).findFrom(webdriver); will(returnValue(oneElement()));
@@ -150,7 +149,7 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
   }
   
   public void testFailsAssertionIfElementNotDisplayedBeforeTimeout() throws Exception {
-    context = new WebDriverTestContext(webdriver, clock);
+    context = new WebDriverTestContext(webdriver, clock, clock);
     
     checking(new Expectations() {{ 
       atLeast(1).of(finder).findFrom(webdriver); will(returnValue(oneElement()));

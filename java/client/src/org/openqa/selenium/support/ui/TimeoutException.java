@@ -17,14 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import org.openqa.selenium.WebDriverException;
-
 /**
  * A simple exception that is thrown if an {@link ExpectedCondition} is not met
  * met by a {@link Wait}. See the documentation in {@link WebDriverWait} for
  * more information.
+ *
+ * @deprecated Use {@link org.openqa.selenium.TimeoutException}
  */
-public class TimeoutException extends WebDriverException {
+@Deprecated
+public class TimeoutException extends org.openqa.selenium.TimeoutException {
   /**
    * Time out a test, indicating why the timeout occurred.
    */

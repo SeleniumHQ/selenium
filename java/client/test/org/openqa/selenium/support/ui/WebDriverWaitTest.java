@@ -20,41 +20,18 @@ package org.openqa.selenium.support.ui;
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class WebDriverWaitTest extends MockObjectTestCase {
-  @SuppressWarnings("unchecked")
-  public void testShouldWaitUntilReturnValueOfConditionIsNotNull() {
-    final ExpectedCondition<String> condition = mock(ExpectedCondition.class);
 
-    checking(new Expectations() {{
-      one(condition).apply(null); will(returnValue(null));
-      one(condition).apply(null); will(returnValue("done"));
-    }});
-
-
-    WebDriverWait wait = new WebDriverWait(new FakeClock(), null, 5, 0);
-    wait.until(condition);
-  }
-
-  @SuppressWarnings("unchecked")
-  public void testShouldWaitUntilABooleanResultIsTrue() {
-    final ExpectedCondition<Boolean> condition = mock(ExpectedCondition.class);
-
-    checking(new Expectations() {{
-      one(condition).apply(null); will(returnValue(false));
-      one(condition).apply(null); will(returnValue(true));
-    }});
-
-
-    WebDriverWait wait = new WebDriverWait(new FakeClock(), null, 5, 0);
-    wait.until(condition);
-  }
+  private WebDriver mockDriver = mock(WebDriver.class);
 
   public void testShouldThrowAnExceptionIfTheTimerRunsOut() {
-    Clock clock = new TickingClock(500);
-    WebDriverWait wait = new WebDriverWait(clock, null, 1, 0);
+    TickingClock clock = new TickingClock(200);
+    WebDriverWait wait = new WebDriverWait(mockDriver, clock, clock, 1, 200);
 
     try {
       wait.until(new FalseExpectation());
@@ -70,47 +47,41 @@ public class WebDriverWaitTest extends MockObjectTestCase {
 
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
     checking(new Expectations() {{
-      one(condition).apply(null); will(throwException(new NoSuchElementException("foo")));
-      one(condition).apply(null); will(returnValue(element));
+      one(condition).apply(mockDriver); will(throwException(new NoSuchElementException("foo")));
+      one(condition).apply(mockDriver); will(returnValue(element));
     }});
 
-    Clock clock = new TickingClock(500);
-    Wait wait = new WebDriverWait(clock, null, 5, 0);
+    TickingClock clock = new TickingClock(500);
+    Wait wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
+    assertSame(element, wait.until(condition));
+  }
 
+  @SuppressWarnings("unchecked")
+  public void testShouldSilentlyCaptureNoSuchFrameExceptions() {
+
+    final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
+    checking(new Expectations() {{
+      one(condition).apply(mockDriver); will(throwException(new NoSuchFrameException("foo")));
+      one(condition).apply(mockDriver); will(returnValue(true));
+    }});
+
+    TickingClock clock = new TickingClock(500);
+    Wait wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
     wait.until(condition);
   }
 
   @SuppressWarnings("unchecked")
-  public void testShouldPassWebDriverFromConstructorToExpectation() {
-    final WebDriver driver = mock(WebDriver.class);
-    final ExpectedCondition<String> condition = mock(ExpectedCondition.class);
+  public void testShouldSilentlyCaptureNoSuchWindowExceptions() {
 
+    final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
     checking(new Expectations() {{
-      one(condition).apply(driver); will(returnValue("foo"));
+      one(condition).apply(mockDriver); will(throwException(new NoSuchWindowException("foo")));
+      one(condition).apply(mockDriver); will(returnValue(true));
     }});
 
-    Clock clock = new TickingClock(500);
-    Wait wait = new WebDriverWait(clock, driver, 5, 0);
-
+    TickingClock clock = new TickingClock(500);
+    Wait wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
     wait.until(condition);
-  }
-
-  @SuppressWarnings("unchecked")
-  public void testShouldChainNoSuchElementExceptionWhenTimingOut() {
-    final ExpectedCondition<WebElement> expectation = mock(ExpectedCondition.class);
-
-    checking(new Expectations() {{
-      allowing(expectation).apply(null); will(returnValue(new NoSuchElementException("foo")));
-    }});
-
-    Clock clock = new TickingClock(500);
-    Wait wait = new WebDriverWait(clock, null, 1, 0);
-
-    try {
-      wait.until(expectation);
-    } catch (TimeoutException e) {
-      assertTrue(e.getCause() instanceof NoSuchElementException);
-    }
   }
 
   private static class FalseExpectation implements ExpectedCondition<Boolean> {
