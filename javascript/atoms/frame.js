@@ -66,25 +66,30 @@ bot.frame.findFrameByIdOrName = function(idOrName, opt_root) {
   // Lookup frame by name
   var frame = domWindow.frames[idOrName];
   if (frame) {
-    return goog.dom.getFrameContentWindow(frame);
+    if (frame.document) {
+      return frame;
+    } else {
+      return goog.dom.getFrameContentWindow(frame);
+    }
   }
   // Lookup frame by id
   var frames = bot.locators.findElements({tagName: 'frame'},
       domWindow.document);
-  goog.array.some(frames, function(frame) {
-    if (frame.id == idOrName) {
-      return goog.dom.getFrameContentWindow(frame);
+  for (var i = 0; i < frames.length; i++) {
+    if (frames[i].id == idOrName){
+      return goog.dom.getFrameContentWindow(frames[i]);
     }
-  });
+  }
 
   // Lookup iframe by id or name
   var iframes = bot.locators.findElements({tagName: 'iframe'},
       domWindow.document);
-  goog.array.some(iframes, function(iframe) {
-    if (iframe.id == idOrName) {
-      return goog.dom.getFrameContentWindow(iframe);
+  for (var i = 0; i < iframes.length; i++) {
+    if (iframes[i].id == idOrName) {
+      return goog.dom.getFrameContentWindow(iframes[i]);
     }
-  });
+
+  }
   return null;
 };
 
