@@ -116,7 +116,9 @@ public class DragAndDropTest extends AbstractDriverTestCase {
 
     // Image ends up on a negative offset because its top-left corner is
     // hidden.
-    assertEquals(new Point(-12, -1), img.getLocation());
+    Point newLocation = img.getLocation();
+    assertTrue("Top-left corner of the element should have negative offset",
+        newLocation.getX() < 0 && newLocation.getY() < 0);
 
     // TODO(eran): re-enable this test once moveto does not exceed the
     // coordinates accepted by the browsers. At the moment, even though
