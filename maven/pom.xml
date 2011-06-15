@@ -196,6 +196,15 @@
                         <skipTests>true</skipTests>
                     </configuration>
                 </plugin>
+                <!-- See http://maven.apache.org/plugins/maven-enforcer-plugin/ -->
+                <plugin>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <configuration>
+                        <rules>
+                            <dependencyConvergence />
+                        </rules>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
