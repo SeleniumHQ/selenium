@@ -2,6 +2,8 @@
 ==================
 
 * Deprecate Element#{toggle,select}
+* Chrome.path= now sets the path to Chrome, Chrome.driver_path= the path to the chromedriver server.
+
 
 0.2.1 (2011-06-01)
 ==================
