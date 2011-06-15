@@ -184,8 +184,12 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
+  @Ignore({ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
   public void testMoveAndClick() {
+    if (!supportsNativeEvents()) {
+      System.out.println("Skipping mouse test: needs native events");
+      return;
+    }
     driver.get(pages.javascriptPage);
 
     WebElement toClick = driver.findElement(By.id("clickField"));

@@ -1220,7 +1220,7 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
     var currentPosition = respond.session.getMousePosition();
     var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
-    events.click(node, node, currentPosition.x + browserOffset.x,
+    events.click(node, currentPosition.x + browserOffset.x,
         currentPosition.y + browserOffset.y, 1);
 
     var dummyIndicator = {
