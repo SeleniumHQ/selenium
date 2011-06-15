@@ -7,7 +7,7 @@ module Selenium
   module WebDriver
 
     module Chrome
-      def self.server_path=(path)
+      def self.driver_path=(path)
         Service.executable_path = path
       end
 

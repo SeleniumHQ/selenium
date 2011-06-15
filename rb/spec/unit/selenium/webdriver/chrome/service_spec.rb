@@ -15,7 +15,7 @@ module Selenium
         it "uses the user-provided path if set" do
           Platform.stub!(:os => :unix)
           Platform.stub!(:assert_executable).with("/some/path")
-          Chrome.path = "/some/path"
+          Chrome.driver_path = "/some/path"
 
           ChildProcess.should_receive(:build).
                        with { |*args| args.first.should == "/some/path" }.
