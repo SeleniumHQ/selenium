@@ -49,7 +49,6 @@ java_library(name = "elements",
 java_library(name = "wait",
   srcs = [
     "ExpectedCondition.java",
-    "ExpectedConditions.java",
     "FluentWait.java",
     "Wait.java",
     "WebDriverWait.java",
