@@ -740,8 +740,8 @@ public class JavascriptDomAccessor {
     return "var topLeftX = 0;" +
         "var topLeftY = 0; "+
         "if (element.getBoundingClientRect) {" +
-        "  topLeftX = element.getBoundingClientRect().left;" +
-        "  topLeftY = element.getBoundingClientRect().top;" +
+        "  topLeftX = element.getClientRects()[0].left;" +
+        "  topLeftY = element.getClientRects()[0].top;" +
         "}";
   }
   
