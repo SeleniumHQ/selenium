@@ -141,7 +141,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
     driver.get(pages.xhtmlTestPage);
 

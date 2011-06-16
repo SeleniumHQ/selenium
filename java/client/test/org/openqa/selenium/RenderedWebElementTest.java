@@ -118,7 +118,6 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testShouldCorrectlyIdentifyThatAnElementHasWidth() {
     driver.get(pages.xhtmlTestPage);
 

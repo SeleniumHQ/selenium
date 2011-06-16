@@ -29,6 +29,7 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
 import static org.openqa.selenium.remote.DriverCommand.GET;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE;
@@ -68,6 +69,7 @@ import org.openqa.selenium.internal.selenesedriver.GetElementAttribute;
 import org.openqa.selenium.internal.selenesedriver.GetElementText;
 import org.openqa.selenium.internal.selenesedriver.GetElementValue;
 import org.openqa.selenium.internal.selenesedriver.GetPageSource;
+import org.openqa.selenium.internal.selenesedriver.GetSize;
 import org.openqa.selenium.internal.selenesedriver.GetTagName;
 import org.openqa.selenium.internal.selenesedriver.GetTitle;
 import org.openqa.selenium.internal.selenesedriver.GetUrl;
@@ -141,7 +143,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     Exception toUse = e;
     if (e instanceof SeleniumException) {
       // World of fragility. *sigh*
-       if (e.getMessage().matches("ERROR: Element .+ not found")) {
+       if (e.getMessage().matches("ERROR: (Threw an exception: )?Element .+ not found")) {
         toUse = new StaleElementReferenceException(e.getMessage(), e);
       }
     }
@@ -178,6 +180,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     addCommand(IMPLICITLY_WAIT, timeouts);
     addCommand(GET, new GetUrl());
     addCommand(GET_ELEMENT_ATTRIBUTE, new GetElementAttribute());
+    addCommand(GET_ELEMENT_SIZE, new GetSize());
     addCommand(GET_ELEMENT_TEXT, new GetElementText());
     addCommand(GET_ELEMENT_VALUE, new GetElementValue());
     addCommand(GET_ELEMENT_TAG_NAME, new GetTagName());

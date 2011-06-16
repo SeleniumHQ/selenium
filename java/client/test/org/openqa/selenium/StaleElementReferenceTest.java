@@ -34,7 +34,6 @@ public class StaleElementReferenceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
