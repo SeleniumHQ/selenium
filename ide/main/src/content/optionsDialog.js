@@ -86,7 +86,7 @@ function loadOptions() {
     }
 
     this.plugins = new PluginCollection(this.Preferences.getString("plugins"));
-    loadPluginList();
+    this.plugins.callWhenReady(loadPluginList, this); //Samit: Enh: Work with async Addon Manager for Firefox 4
 }
 
 function loadFormatList() {
