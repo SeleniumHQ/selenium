@@ -192,6 +192,14 @@ function Editor(window) {
 
     this.oldtc = null;
     this.alreadySaved = false;
+
+    //Samit: Enh: display a webpage on the first start (and also on locale change if the version string is localised)
+    var versionString = Editor.getString('selenium-ide.version');
+    if (!this.app.options.currentVersion || this.app.options.currentVersion != versionString) {
+        openTabOrWindow('http://code.google.com/p/selenium/wiki/SeIDEReleaseNotes');
+        this.app.options.currentVersion = versionString;
+        Preferences.save(this.app.options, 'currentVersion');
+    }
 }
 
 Editor.prototype.saveTC = function(){

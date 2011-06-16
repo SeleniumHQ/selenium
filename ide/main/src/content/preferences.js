@@ -157,6 +157,9 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
     enableExperimentalFeatures:
     "false",
 
+    currentVersion:
+    "",
+
     recordOnOpen:
     "true"
 };
