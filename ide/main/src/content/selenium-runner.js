@@ -349,6 +349,20 @@ function continueCurrentTest() {
 	}
 }
 
+//Samit: Enh: Determine is we are running under Firefox 4 or under mac, so we can fallback on the Selenium Core to do the show
+var useHighlightFromCore_ = (function() {
+    try {
+        var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
+                getService(Components.interfaces.nsIXULAppInfo);
+        var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
+                getService(Components.interfaces.nsIVersionComparator);
+
+        return (versionChecker.compare(appInfo.version, '4.0') >= 0);
+    } catch(e) {
+        return false;
+    }
+})() || (navigator.appVersion.indexOf("Mac") != -1);
+
 function showElement(locator) {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var contentWindow = wm.getMostRecentWindow('navigator:browser').getBrowser().contentWindow;
@@ -377,9 +391,11 @@ function showElement(locator) {
             }
         }
         if (e) {
-            if (navigator.appVersion.indexOf("Mac") != -1) {
+            /* Samit: Since Firefox 4 broke the flasher, simply use the now enhanced version of the highlight from Selenium Core */
+            if (useHighlightFromCore_) {
                 //Samit: Enh: Provide this functionality on Macs by using the builtin highlight function since flasher component is not supported on Mac
                 // see the dom inspector bug for more info - https://bugzilla.mozilla.org/show_bug.cgi?id=368608
+                e.scrollIntoView();
                 highlight(e);
             }else {
                 var flasher = Components.classes["@mozilla.org/inspector/flasher;1"].createInstance()
