@@ -81,19 +81,21 @@ public class RegistryTest {
 	}
 
 	@Test(expected = GridException.class)
-	public void emptyRegistry() {
+	public void emptyRegistry() throws Throwable {
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		try {
 
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
 			newSessionRequest.process();
+		} catch (RuntimeException rte) {
+			throw rte.getCause();
 		} finally {
 			registry.stop();
 		}
 
 	}
-	
-	//@Test(timeout=2000) excepted timeout here.How to specify that in junit ?
+
+	// @Test(timeout=2000) excepted timeout here.How to specify that in junit ?
 	public void emptyRegistryParam() {
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		registry.setThrowOnCapabilityNotPresent(false);
@@ -108,19 +110,22 @@ public class RegistryTest {
 	}
 
 	@Test(expected = CapabilityNotPresentOnTheGridException.class)
-	public void CapabilityNotPresentRegistry() {
+	public void CapabilityNotPresentRegistry() throws Throwable {
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		try {
 			registry.add(new RemoteProxy(req));
 
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
 			newSessionRequest.process();
+		} catch (RuntimeException rte) {
+			throw rte.getCause();
 		} finally {
+
 			registry.stop();
 		}
 	}
-	
-	//@Test(timeout=2000) excepted timeout here.How to specify that in junit ?
+
+	// @Test(timeout=2000) excepted timeout here.How to specify that in junit ?
 	public void CapabilityNotPresentRegistryParam() {
 		Registry registry = Registry.getNewInstanceForTestOnly();
 		registry.setThrowOnCapabilityNotPresent(false);
