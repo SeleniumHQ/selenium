@@ -162,7 +162,7 @@ public class FluentWait<T> implements Wait<T> {
    * @param <V> The function's expected return type.
    * @return The functions' return value.
    */
-  public <V> V until(Function<T, V> isTrue) {
+  public <V> V until(Function<? super T, V> isTrue) {
     long end = clock.laterBy(timeout.in(MILLISECONDS));
     RuntimeException lastException = null;
     while (true) {
