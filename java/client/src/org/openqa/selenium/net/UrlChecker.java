@@ -45,30 +45,31 @@ public class UrlChecker {
     return new SimpleTimeLimiter(executor);
   }
 
-  public void waitUntilAvailable(final URL url, long timeout, TimeUnit unit)
+  public void waitUntilAvailable(long timeout, TimeUnit unit, final URL... urls)
       throws TimeoutException {
     long start = System.nanoTime();
-    log.info("Waiting for " + url);
+    log.info("Waiting for " + urls);
     try {
       timeLimiter.callWithTimeout(new Callable<Void>() {
         public Void call() throws InterruptedException {
           HttpURLConnection connection = null;
 
           while (true) {
-            try {
-              log.info("Polling " + url);
-              connection = connectToUrl(url);
-              if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                return null;
-              }
-            } catch (IOException e) {
-              // Ok, try again.
-            } finally {
-              if (connection != null) {
-                connection.disconnect();
+            for (URL url : urls) {
+              try {
+                log.info("Polling " + url);
+                connection = connectToUrl(url);
+                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                  return null;
+                }
+              } catch (IOException e) {
+                // Ok, try again.
+              } finally {
+                if (connection != null) {
+                  connection.disconnect();
+                }
               }
             }
-
             MILLISECONDS.sleep(POLL_INTERVAL_MS);
           }
         }
@@ -76,13 +77,13 @@ public class UrlChecker {
     } catch (UncheckedTimeoutException e) {
       throw new TimeoutException(String.format(
           "Timed out waiting for %s to be available after %d ms",
-          url, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
+          urls, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }
   }
 
-  public void waitUntilUnavailable(final URL url, long timeout, TimeUnit unit)
+  public void waitUntilUnavailable(long timeout, TimeUnit unit, final URL url)
       throws TimeoutException {
     long start = System.nanoTime();
     log.info("Waiting for " + url);

@@ -1,12 +1,6 @@
 // Copyright 2011 Google Inc. All Rights Reserved.
 package org.openqa.selenium.chrome;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.os.CommandLine.findExecutable;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.net.PortProber;
@@ -19,6 +13,10 @@ import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static com.google.common.base.Preconditions.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.os.CommandLine.findExecutable;
 
 /**
  * Manages the life and death of a chromedriver server.
@@ -144,8 +142,10 @@ public class ChromeDriverService {
       process = processBuilder.start();
       pipe(process.getErrorStream(), System.err);
       pipe(process.getInputStream(), System.out);
+
+      URL status = new URL(url.toString() + "/status");
       URL healthz = new URL(url.toString() + "/healthz");
-      new UrlChecker().waitUntilAvailable(healthz, 20, SECONDS);
+      new UrlChecker().waitUntilAvailable(20, SECONDS, status, healthz);
     } catch (UrlChecker.TimeoutException e) {
       throw new WebDriverException("Timed out waiting for ChromeDriver server to start.", e);
     } finally {
@@ -182,7 +182,7 @@ public class ChromeDriverService {
         return;
       }
       URL killUrl = new URL(url.toString() + "/shutdown");
-      new UrlChecker().waitUntilUnavailable(killUrl, 3, SECONDS);
+      new UrlChecker().waitUntilUnavailable(3, SECONDS, killUrl);
       AsyncExecute.killProcess(process);
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);
