@@ -83,7 +83,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void setSelected() {
-    click();
+    execute(DriverCommand.SET_ELEMENT_SELECTED, ImmutableMap.of("id", id));
   }
 
   public boolean isEnabled() {
