@@ -42,16 +42,16 @@ module Selenium
       #   driver.mouse.move_to(element, 5, 5)
       #
 
-      def move_to(element, down_by = nil, right_by = nil)
+      def move_to(element, offset_right = nil, offset_down = nil)
         unless element.kind_of? Element
           raise TypeError, "expected #{Element}, got #{element.inspect}:#{element.class}"
         end
 
-        @bridge.mouseMoveTo element.ref, down_by, right_by
+        @bridge.mouseMoveTo element.ref, right_by, down_by
       end
 
-      def move_by(down_by, right_by)
-        @bridge.mouseMoveTo nil, down_by, right_by
+      def move_by(right_by, down_by)
+        @bridge.mouseMoveTo nil, right_by, down_by
       end
 
       private
