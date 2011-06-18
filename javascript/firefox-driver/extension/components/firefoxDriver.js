@@ -536,8 +536,10 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
   var elements;
   switch (method) {
     case FirefoxDriver.ElementLocator.ID:
-      selector = './/*[@id="' + selector + '"]';
-      // Fall-through
+      elements = this.findElementsByXPath_(
+          theDocument, './/*[@id="' + selector + '"]', rootNode);
+      break;
+
     case FirefoxDriver.ElementLocator.XPATH:
       elements = this.findElementsByXPath_(
           theDocument, selector, rootNode);
