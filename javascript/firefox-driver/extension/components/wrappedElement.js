@@ -51,7 +51,10 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
       versionChecker.compare(appInfo.platformVersion, "1.9") >= 0;
   var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
 
-  if (this.enableNativeEvents && nativeEvents && node && useNativeClick && thmgr_cls) {
+  // For now, we need to bypass native events for option elements
+  var isOption = "option" == element.tagName.toLowerCase();
+
+  if (!isOption && this.enableNativeEvents && nativeEvents && node && useNativeClick && thmgr_cls) {
     Logger.dumpn("Using native events for click");
     var loc = Utils.getLocationOnceScrolledIntoView(element);
     var x = loc.x + (loc.width ? loc.width / 2 : 0);
