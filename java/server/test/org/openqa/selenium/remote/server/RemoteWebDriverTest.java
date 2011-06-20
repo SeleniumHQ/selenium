@@ -23,17 +23,73 @@ import static org.openqa.selenium.OutputType.BASE64;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Ignore;
-import org.openqa.selenium.JavascriptEnabled;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.ScreenshotException;
 
+import com.google.common.io.ByteStreams;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class RemoteWebDriverTest extends AbstractDriverTestCase {
+
+  public void testCanCheckServerStatusIndependentlyOfSessions() throws IOException, JSONException {
+    if (!(driver instanceof RemoteWebDriver)) {
+      System.out.println("Skipping test: driver is not a remote webdriver");
+      return;
+    }
+
+    RemoteWebDriver remote = (RemoteWebDriver) driver;
+    CommandExecutor executor = remote.getCommandExecutor();
+
+    if (!(executor instanceof HttpCommandExecutor)) {
+      System.out.println("Skipping test: driver is not using a HttpCommandExecutor");
+      return;
+    }
+
+    HttpCommandExecutor httpExecutor = (HttpCommandExecutor) executor;
+    URL statusUrl = new URL(httpExecutor.getAddressOfRemoteServer() + "/status");
+    HttpURLConnection connection = null;
+    try {
+      System.out.println("Opening connection to " + statusUrl);
+      connection = (HttpURLConnection) statusUrl.openConnection();
+      connection.connect();
+
+      assertEquals(200, connection.getResponseCode());
+
+      String raw = new String(ByteStreams.toByteArray(connection.getInputStream()));
+      JSONObject response = new JSONObject(raw);
+      assertEquals(raw, ErrorCodes.SUCCESS, response.getInt("status"));
+
+      JSONObject value = response.getJSONObject("value");
+      assertHasKeys(value, "os", "build", "java");
+      assertHasKeys(value.getJSONObject("os"), "name", "arch", "version");
+      assertHasKeys(value.getJSONObject("build"), "version", "revision", "time");
+      assertHasKeys(value.getJSONObject("java"), "version");
+    } finally {
+      if (connection != null) {
+        connection.disconnect();
+      }
+    }
+  }
+
+  private static void assertHasKeys(JSONObject object, String... keys) {
+    for (String key : keys) {
+      assertTrue("Object does not contain expected key: " + key + " (" + object + ")",
+          object.has(key));
+    }
+  }
 
   @Ignore(HTMLUNIT)
   public void testShouldBeAbleToGrabASnapshotOnException() {

@@ -19,6 +19,7 @@ java_library(name = "server",
     "rest/*.java",
   ],
   deps = [
+    "//java/client/src/org/openqa/selenium:base",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/remote",
     "//java/client/src/org/openqa/selenium/support/events",

@@ -132,3 +132,17 @@ def AndroidSDK?
   end
   $androidSDK
 end
+
+# Not everyone is using a command-line subversion client.
+def svn?
+  present?('svn')
+end
+
+def svn_revision?
+  return 'unknown' unless svn?
+
+  cmd = open('|svn info')
+  lines = cmd.readlines.select {|x| x =~ /^Revision: \d+/}
+  cmd.close
+  lines[0].split(' ')[1]
+end

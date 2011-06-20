@@ -120,6 +120,9 @@ public class DriverServlet extends HttpServlet {
 
     postMapper.bind("/config/drivers", AddConfig.class).on(ResultType.SUCCESS, new EmptyResult());
 
+    getMapper.bind("/status", Status.class)
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+
     postMapper.bind("/session", NewSession.class)
         .on(ResultType.SUCCESS, new RedirectResult("/session/:sessionId"));
     getMapper.bind("/session/:sessionId", GetSessionCapabilities.class)

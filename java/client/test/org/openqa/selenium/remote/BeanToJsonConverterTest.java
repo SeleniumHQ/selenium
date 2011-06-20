@@ -41,6 +41,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 
@@ -244,17 +245,23 @@ public class BeanToJsonConverterTest extends TestCase {
     assertTrue(json.contains("\"stackTrace\""));
     verifyStackTraceInJson(json, stackTrace);
   }
-  public void testShouldBeAbleToConvertAWebDriverException() {
+
+  public void testShouldBeAbleToConvertAWebDriverException() throws JSONException {
     RuntimeException clientError = new WebDriverException("foo bar baz!");
     StackTraceElement[] stackTrace = clientError.getStackTrace();
-    String json = new BeanToJsonConverter().convert(clientError);
+    String raw = new BeanToJsonConverter().convert(clientError);
 
-    assertTrue(json.contains("\"message\":\"foo bar baz!\\nSystem info:"));
-    assertTrue(json.contains("systemInformation"));
-    assertTrue(json.contains("driverInformation"));
-    assertTrue(json.contains("\"class\":\"org.openqa.selenium.WebDriverException\""));
-    assertTrue(json.contains("\"stackTrace\""));
-    verifyStackTraceInJson(json, stackTrace);
+    JSONObject json = new JSONObject(raw);
+    assertTrue(raw, json.has("buildInformation"));
+    assertTrue(raw, json.has("systemInformation"));
+    assertTrue(raw, json.has("driverInformation"));
+
+    assertTrue(raw, json.has("message"));
+    assertThat(json.getString("message"), containsString("foo bar baz!\n"));
+    assertThat(json.getString("class"), is(WebDriverException.class.getName()));
+
+    assertTrue(raw, json.has("stackTrace"));
+    verifyStackTraceInJson(raw, stackTrace);
   }
 
   public void testShouldConvertDatesToMillisecondsInUtcTime() {

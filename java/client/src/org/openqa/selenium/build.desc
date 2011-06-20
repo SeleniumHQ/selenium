@@ -13,6 +13,10 @@ java_library(name = "base",
     "Capabilities.java",
     "Platform.java",
     "WebDriverException.java",
+    "internal/BuildInfo.java",
+  ],
+  resources = [
+    { "//java/client/src/org/openqa/selenium/internal:build_info" : "org/openqa/selenium/internal/build.properties" },
   ])
 
 java_library(name = "webdriver-api",

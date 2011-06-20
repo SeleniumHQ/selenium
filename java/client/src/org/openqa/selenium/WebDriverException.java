@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.internal.BuildInfo;
+
 public class WebDriverException extends RuntimeException {
 
   public WebDriverException() {
@@ -44,9 +46,10 @@ public class WebDriverException extends RuntimeException {
     String supportMessage = getSupportUrl() == null ?
         "" : "For documentation on this error, please visit: " + getSupportUrl() + "\n";
 
-    return String.format("%s%sSystem info: %s\nDriver info: %s",
+    return String.format("%s%s%s\nSystem info: %s\nDriver info: %s",
                          originalMessageString == null ? "" : originalMessageString + "\n",
-                         supportMessage ,
+                         supportMessage,
+                         getBuildInformation(),
                          getSystemInformation(),
                          getDriverInformation());
   }
@@ -61,6 +64,10 @@ public class WebDriverException extends RuntimeException {
 
   public String getSupportUrl() {
     return null;
+  }
+
+  public BuildInfo getBuildInformation() {
+    return new BuildInfo();
   }
 
   public String getDriverInformation() {
