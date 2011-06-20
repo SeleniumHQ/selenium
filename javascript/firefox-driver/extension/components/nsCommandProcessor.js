@@ -398,6 +398,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
   // These commands do not require a session.
   if (command.name == 'newSession' ||
       command.name == 'quit' ||
+      command.name == 'getStatus' ||
       command.name == 'getWindowHandles') {
     try {
       this[command.name](response, command.parameters);
@@ -558,6 +559,39 @@ nsCommandProcessor.prototype.searchWindows_ = function(search_criteria,
 
 
 /**
+ * Responds with general status information about this process.
+ * @param {Response} response The object to send the command response in.
+ */
+nsCommandProcessor.prototype.getStatus = function(response) {
+  var xulRuntime = Components.classes['@mozilla.org/xre/app-info;1'].
+      getService(Components.interfaces.nsIXULRuntime);
+
+  response.value = {
+    'os': {
+      'arch': (function() {
+        try {
+          // See https://developer.mozilla.org/en/XPCOM_ABI
+          return (xulRuntime.XPCOMABI || 'unknown').split('-')[0];
+        } catch (ignored) {
+          return 'unknown'
+        }
+      })(),
+      // See https://developer.mozilla.org/en/OS_TARGET
+      'name': xulRuntime.OS,
+      'version': 'unknown'
+    },
+    // TODO: load these values from build.properties
+    'build': {
+      'revision': 'unknown',
+      'time': 'unknown',
+      'version': 'unknown'
+    }
+  };
+  response.send();
+};
+
+
+/**
  * Locates the most recently used FirefoxDriver window.
  * @param {Response} response The object to send the command response in.
  */
@@ -598,9 +632,10 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     'handlesAlerts': true,
     'javascriptEnabled': true,
     'nativeEvents': Utils.useNativeEvents(),
-    'platform': xulRuntime.OS,          // same as Platform.valueOf("name");
+    // See https://developer.mozilla.org/en/OS_TARGET
+    'platform': xulRuntime.OS,
     'takesScreenshot': true,
-    'version': appInfo.version,
+    'version': appInfo.version
   };
 
   response.send();

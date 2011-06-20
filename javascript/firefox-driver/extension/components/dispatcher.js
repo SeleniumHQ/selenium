@@ -125,6 +125,9 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/config/drivers').  // Recognised, but not supported.
       on(Request.Method.POST, Dispatcher.notImplemented);
 
+  this.bind_('/status').
+      on(Request.Method.GET, Dispatcher.executeAs('getStatus'));
+
   this.bind_('/session').
       on(Request.Method.POST, Dispatcher.translateNewSession());
 
