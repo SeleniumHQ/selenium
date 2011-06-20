@@ -52,5 +52,6 @@
 	<classpathentry kind="lib" path="third_party/java/cssparser/cssparser-0.9.5.jar"/>
 	<classpathentry kind="lib" path="third_party/java/nekohtml/nekohtml-1.9.14.jar"/>
 	<classpathentry kind="lib" path="third_party/java/xml/xalan-2.7.1.jar"/>
+	<classpathentry kind="lib" path="third_party/java/opera-driver/webdriver-opera-v0.4.3.jar"/>
 	<classpathentry kind="output" path="out/production/selenium"/>
 </classpath>
