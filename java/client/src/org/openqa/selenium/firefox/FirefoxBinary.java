@@ -101,6 +101,7 @@ public class FirefoxBinary {
 
   protected void startOutputWatcher() {
     outputWatcher = new Thread(new OutputWatcher(process, stream), "Firefox output watcher");
+    outputWatcher.setDaemon(true);
     outputWatcher.start();
   }
 
@@ -233,9 +234,7 @@ public class FirefoxBinary {
     }
 
     startFirefoxProcess(builder);
-
-    outputWatcher = new Thread(new OutputWatcher(process, stream));
-    outputWatcher.start();
+    startOutputWatcher();
   }
 
   /**
