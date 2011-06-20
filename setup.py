@@ -120,7 +120,6 @@ setup(
     package_data={
         'selenium.webdriver.firefox': ['*.xpi'],
         'selenium.webdriver.ie': ['*.dll'],
-        'selenium.webdriver.chrome': ['*.zip'],
     },
     include_package_data=True,
     install_requires=['distribute', 'rdflib'],
