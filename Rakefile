@@ -188,7 +188,7 @@ task :test_py => [
 ]
 
 task :test_dotnet => [
-  "//dotnet:firefox-test"
+  "//dotnet/test:firefox:run"
 ]
 
 task :test => [ :test_javascript, :test_java, :test_rb ]
