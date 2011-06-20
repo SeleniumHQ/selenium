@@ -19,6 +19,7 @@ package org.openqa.selenium.internal.selenesedriver;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+
 import com.thoughtworks.selenium.Selenium;
 
 import java.util.List;
@@ -38,7 +39,9 @@ public class FindElements extends AbstractElementFinder<List<Map<String, String>
     List<Map<String, String>> toReturn = Lists.newArrayList();
 
     for (String key : allKeys) {
-      toReturn.add(newElement(key));
+      if (key.length() > 0) {
+        toReturn.add(newElement(key));
+      }
     }
 
     return toReturn;

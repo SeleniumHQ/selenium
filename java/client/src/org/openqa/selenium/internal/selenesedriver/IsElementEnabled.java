@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 
 import java.util.Map;
 
@@ -25,6 +26,10 @@ public class IsElementEnabled extends ElementFunction<Boolean> {
   public Boolean apply(Selenium selenium, Map<String, ?> args) {
     String locator = getLocator(args);
 
-    return selenium.isEditable(locator);
+    try {
+      return selenium.isEditable(locator);
+    } catch (SeleniumException e) {
+      return false;
+    }
   }
 }

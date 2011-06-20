@@ -1,16 +1,15 @@
 package org.openqa.selenium;
 
-import java.util.List;
-
-import org.junit.Test;
-
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
+import org.junit.Test;
+
+import java.util.List;
 
 /**
  * @author jmleyba@gmail.com (Jason Leyba)
@@ -97,7 +96,7 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
     List<WebElement> elements = driver.findElements(By.id("redbox"));
-    assertTrue(elements.isEmpty());
+    assertTrue(elements.toString(), elements.isEmpty());
   }
 
   @Test
