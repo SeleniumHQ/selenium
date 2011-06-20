@@ -85,6 +85,7 @@ limitations under the License.
         <checkbox id="recordAbsoluteURL" label="&options.recordAbsoluteURL.description;"/>
         <checkbox id="showDeveloperTools" label="&options.showDeveloperTools.description;" oncommand="updateReloadButton(this.checked)"/>
         <checkbox id="enableExperimentalFeatures" label="&options.enableExperimentalFeatures.label;"/>
+        <checkbox id="disableFormatChangeMsg" label="&options.disableFormatChangeMsg.label;"/>
         <checkbox id="recordOnOpen" label="&options.recordOnOpen.description;"/>
       </tabpanel>
       <tabpanel id="formats" orient="vertical">

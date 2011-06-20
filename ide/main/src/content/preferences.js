@@ -157,6 +157,9 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
     enableExperimentalFeatures:
     "false",
 
+    disableFormatChangeMsg:
+    "false",
+
     currentVersion:
     "",
 

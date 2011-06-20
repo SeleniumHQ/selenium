@@ -98,7 +98,7 @@ Application.prototype = {
         if (this.currentFormat != format) {
             //if (!(this.currentFormat.isReversible && this.currentFormat.isReversible())){
                 //prompt that user will lose changes
-                if (confirm(Editor.getString('format.switch.warn'))){
+                if (this.getBooleanOption('disableFormatChangeMsg') || confirm(Editor.getString('format.switch.warn'))){
                     //user wants to take the risk
                     //change the current format
                     this.setCurrentFormat(format);

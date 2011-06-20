@@ -24,5 +24,6 @@
 <!ENTITY options.user-ext.reload.tooltip "Reload Selenium Core and its extensions">
 <!ENTITY options.showDeveloperTools.description "Activate developer tools">
 <!ENTITY options.enableExperimentalFeatures.label "Enable experimental features">
+<!ENTITY options.disableFormatChangeMsg.label "Disable format change warning messages">
 
 <!ENTITY options.recordOnOpen.description "Start recording immediately on open">
