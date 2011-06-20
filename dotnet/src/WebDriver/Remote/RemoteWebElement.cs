@@ -229,15 +229,43 @@ namespace OpenQA.Selenium.Remote
         }
         #endregion
 
+        private bool Selectable
+        {
+            get
+            {
+                string tagName = this.TagName.ToLowerInvariant();
+                string elementType = this.GetAttribute("type");
+                elementType = elementType == null ? string.Empty : elementType.ToLowerInvariant();
+
+                return tagName == "option" || (tagName == "input" && (elementType == "radio" || elementType == "checkbox"));
+            }
+        }
+
         #region IWebElement methods
         /// <summary>
         /// Select or unselect element. This operation only applies to input elements such as checkboxes, options in a select and radio buttons.
         /// </summary>
         public void Select()
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.elementId);
-            this.Execute(DriverCommand.SetElementSelected, parameters);
+            if (!this.Displayed)
+            {
+                throw new ElementNotVisibleException("You may not select an element that is not displayed");
+            }
+
+            if (!this.Enabled)
+            {
+                throw new InvalidElementStateException("Cannot select a disabled element");
+            }
+
+            if (!this.Selectable)
+            {
+                throw new InvalidElementStateException("You may only set selectable items selected");
+            }
+
+            if (!this.Selected)
+            {
+                this.Click();
+            }
         }
 
         /// <summary>
