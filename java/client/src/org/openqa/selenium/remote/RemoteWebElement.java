@@ -83,7 +83,30 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void setSelected() {
-    execute(DriverCommand.SET_ELEMENT_SELECTED, ImmutableMap.of("id", id));
+    if (!isDisplayed()) {
+      throw new ElementNotVisibleException("You may not select an element that is not displayed");
+    }
+
+    if (!isEnabled()) {
+      throw new InvalidElementStateException("Cannot select a disabled element");
+    }
+
+    if (!isSelectable()) {
+      throw new InvalidElementStateException("You may only set selectable items selected");
+    }
+
+    if (!isSelected()) {
+      click();
+    }
+  }
+
+  private boolean isSelectable() {
+    String tagName = getTagName().toLowerCase();
+    String type = getAttribute("type");
+    type = type == null ? "" : type.toLowerCase();
+
+    return "option".equals(tagName) ||
+        ("input".equals(tagName) && ("radio".equals(type) || "checkbox".equals(type)));
   }
 
   public boolean isEnabled() {

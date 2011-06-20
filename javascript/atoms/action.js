@@ -80,6 +80,25 @@ bot.action.checkEnabled_ = function(element) {
 
 
 /**
+ * Throws an error if an element is not currently shown and enabled.
+ * @param {!Element} element The element to check.
+ * @see bot.dom.isShown
+ * @see bot.dom.isEnabled
+ * @private
+ */
+bot.action.checkShownAndEnabled_ = function(element) {
+  if (!bot.action.isShown_(element)) {
+    throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
+        'Element is not currently visible and may not be manipulated');
+  }
+  if (!bot.dom.isEnabled(element)) {
+    throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
+        'Element is not currently enabled and may not be manipulated');
+  }
+};
+
+
+/**
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element could be checked or selected.
  */
@@ -181,6 +200,18 @@ bot.action.selectInputElement_ = function(element, selected) {
 
 
 /**
+ * Given an element, find the first ancestor which is a SELECT.
+ * @param {!Element} child The start point of the search.
+ * @return {Element} The SELECT element or null.
+ * @private
+ */
+bot.action.getSelect_ = function(child) {
+  return (/** @type {Element} */
+      goog.dom.getAncestor(child, bot.action.isSelectElement_));
+};
+
+
+/**
  * Sets the selected state of an OPTION element.
  * @param {!Element} element The element to manipulate.
  * @param {boolean} selected Whether the final state of the element should be
@@ -189,8 +220,7 @@ bot.action.selectInputElement_ = function(element, selected) {
  * @private
  */
 bot.action.selectOptionElement_ = function(element, selected) {
-  var select = (/** @type {!Element} */
-      goog.dom.getAncestor(element, bot.action.isSelectElement_));
+  var select = bot.action.getSelect_(element);
 
   if (!select.multiple && !selected) {
     throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
@@ -220,8 +250,7 @@ bot.action.selectOptionElement_ = function(element, selected) {
  */
 bot.action.setSelected = function(element, selected) {
   // TODO(user): Fire more than just change events: mousemove, keydown, etc?
-  bot.action.checkEnabled_(element);
-  bot.action.checkShown_(element);
+   bot.action.checkShownAndEnabled_(element);
 
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     bot.action.selectInputElement_(element, selected);
@@ -414,6 +443,8 @@ bot.action.click = function(element) {
     'related': undefined
   };
 
+  var originalState = bot.action.isSelectable(element) && bot.action.isSelected(element);
+
   // Abort the click sequence if any of the event listeners hide
   // the element. Open question: the remaining click events should be fired
   // somewhere, but where?
@@ -456,6 +487,19 @@ bot.action.click = function(element) {
       if (anchor && anchor.href) {
         bot.action.followHref_(anchor);
       }
+    }
+  }
+
+  if (bot.action.isSelectable(element) && bot.dom.isEnabled(element)) {
+    // If this is a radio button, a second click should not disable it.
+    if (element.tagName.toLowerCase() == "input" && element.type &&
+        element.type.toLowerCase() == "radio" && bot.action.isSelected(element)) {
+      return;
+    }
+
+    var select = bot.action.getSelect_(element);
+    if (!select || select.multiple || !originalState) {
+      bot.action.setSelected(element, !originalState);
     }
   }
 };

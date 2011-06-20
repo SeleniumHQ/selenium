@@ -15,7 +15,6 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
   
   public void testShouldBeAbleToSelectAnEnabledUnselectedCheckbox() {
     driver.get(pages.formPage);
-    System.out.println("On page: " + driver.getCurrentUrl());
     assertCanSelect(enabledUnselectedCheckbox());
   }
   

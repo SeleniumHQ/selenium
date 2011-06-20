@@ -126,6 +126,21 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   Utils.installClickListener(respond, WebLoadingListener);
 
   Logger.dumpn("Clicking");
+
+  // Check to see if this is an option element. If it is, and the parent isn't a multiple
+  // select, then click on the select first.
+  var tagName = element.tagName.toLowerCase();
+  if ("option" == tagName) {
+    var parent = element;
+    while (parent.parentNode != null && parent.tagName.toLowerCase() != "select") {
+      parent = parent.parentNode;
+    }
+
+    if (parent && parent.tagName.toLowerCase() == "select" && !parent.multiple) {
+      bot.action.click(parent);
+    }
+  }
+
   bot.action.click(element);
 };
 FirefoxDriver.prototype.clickElement.preconditions =

@@ -117,10 +117,28 @@
       assertEquals(index, ss.selectedIndex);
     }
 
+    function testShouldBeAbleToSelectAnOptionFromASingleSelectUsingAClick() {
+      var ss = goog.dom.$('singleSelect');
+      var index = ss.selectedIndex == 0 ? 1 : 0;
+      var notSelected = ss.options[index];
+      expectChangeEvent(ss);
+      bot.action.click(notSelected);
+      assertChangeFired();
+      assertEquals(index, ss.selectedIndex);
+    }
+
     function testShouldNotBeAbleToDeselectAnOptionFromASingleSelect() {
       var ss = goog.dom.$('singleSelect');
       var option = ss.options[ss.selectedIndex];
       assertThrows(goog.partial(bot.action.setSelected, option, false));
+    }
+
+    function testClickShouldDoNothingIfOptionInSingleSelectAlreadySelected() {
+      var ss = goog.dom.$('singleSelect');
+      var selected = ss.options[ss.selectedIndex];
+
+      doNotExpectChangeEvent(ss);
+      bot.action.click(selected);
     }
 
     function testShouldDoNothingIfOptionIsAlreadyInTheDesiredState() {
@@ -130,7 +148,6 @@
       doNotExpectChangeEvent(ss);
       bot.action.setSelected(selected, true);
     }
-
 
     function testShouldNotBeAbleToDeselectAnOptionInASingleSelectEvenIfItIsAlreadyUnselected() {
       var ss = goog.dom.$('singleSelect');
@@ -147,6 +164,20 @@
 
       assertThrows(goog.partial(bot.action.setSelected, selected, false));
       assertThrows(goog.partial(bot.action.setSelected, notSelected, true));
+    }
+
+    function testClickingOnAnOptionInADisabledSelectDoesNotSelectedAnything() {
+      var  ds = goog.dom.$('disabledSelect');
+      var selected = ds.options[ds.selectedIndex];
+      var notSelected = ds.options[ds.selectedIndex == 0 ? 1 : 0];
+
+      doNotExpectChangeEvent(ds);
+
+      // Clicking should be a no-op
+      bot.action.click(selected);
+      assertTrue(selected.selected);
+      bot.action.click(notSelected);
+      assertFalse(notSelected.selected);
     }
 
     function testShouldBeAbleToSelectAnEnabledOptionFromASelectThatHasADisabledOptionInIt() {
@@ -173,6 +204,9 @@
       var oranges = ms.options[1];
       var cherries = ms.options[2];
 
+      oranges.selected = false;
+      cherries.selected = false;
+
       assertFalse(bot.action.isSelected(oranges));
       assertFalse(bot.action.isSelected(cherries));
 
@@ -187,6 +221,10 @@
       var red = ms.options[0];
       var green = ms.options[1];
       var blue = ms.options[2];
+
+      red.selected = true;
+      green.selected = true;
+      blue.selected = true;
 
       expectChangeEvent(ms);
 
@@ -238,6 +276,19 @@
       assertChangeFired(3);
     }
 
+     function testShouldBeAbleToToggleCheckboxesUsingClicks() {
+      var cb1 = goog.dom.$('check1');
+      var state = !!cb1.checked;
+
+      expectChangeEvent(cb1);
+
+      bot.action.click(cb1);
+      assertFalse(!!cb1.checked == state);
+
+      bot.action.click(cb1);
+      assertTrue(!!cb1.checked == state);
+    }
+
     function testShouldBeAbleToSelectMultipleCheckboxesFromTheSameGroup() {
       var cb1 = goog.dom.$('check1');
       var cb2 = goog.dom.$('check2');
@@ -278,6 +329,15 @@
       assertThrows(goog.partial(bot.action.setSelected, radio, false));
     }
 
+    function testShouldNotBeAbleToDeselectARadioButtonByClicking() {
+      var radio = goog.dom.$('selectedRadio');
+      doNotExpectChangeEvent(radio);
+
+      bot.action.click(radio);
+
+      assertTrue(!!radio.checked);
+    }
+
     function testShouldNotBeAbleToManipulateADisabledRadiobutton() {
       var radio = goog.dom.$('disabledRadio');
       doNotExpectChangeEvent(radio);
@@ -288,6 +348,8 @@
       var r1 = goog.dom.$('radio1');
       var r2 = goog.dom.$('radio2');
       var r3 = goog.dom.$('radio3');
+      var r4 = goog.dom.$('radio4');
+      r4.checked =true;
 
       assertFalse('precondition failed', bot.action.isSelected(r1));
       assertFalse('precondition failed', bot.action.isSelected(r2));
@@ -542,6 +604,8 @@
       <input id="radio2" type="radio" name="radiogroup" value="Radio2"/>
       <label for="radio3">Radio 3</label>
       <input id="radio3" type="radio" name="radiogroup" value="Radio3"/>
+      <label for="radio4">Clear the state of the other buttons</label>
+      <input id="radio4" type="radio" name="radiogroup" value="Radio4"/>
     </div>
   </form>
   <script>
