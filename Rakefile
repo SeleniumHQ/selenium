@@ -130,6 +130,7 @@ task :test_grid => [
 task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test:run" ]
+task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test:run" ]
 task :test_remote => [ "//java/server/test/org/openqa/selenium/remote/server:test:run" ]
 task :test_support => [
   "//java/client/test/org/openqa/selenium/lift:test:run",
