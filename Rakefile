@@ -38,7 +38,7 @@ require 'rake-tasks/ie_code_generator'
 # download helper
 require 'rake-tasks/downloader'
 
-version = "2.0rc2"
+version = "2.0rc3"
 ide_version = "1.0.12"
 
 # The build system used by webdriver is layered on top of rake, and we call it
