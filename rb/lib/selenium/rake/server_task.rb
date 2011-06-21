@@ -3,6 +3,7 @@ require 'rake'
 
 module Selenium
   module Rake
+    include ::Rake::DSL if defined?(::Rake::DSL)
 
     class MissingJarFileError < StandardError
     end
