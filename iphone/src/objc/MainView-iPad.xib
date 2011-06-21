@@ -57,7 +57,7 @@
 					<object class="IBUILabel" id="620147200">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">258</int>
-						<string key="NSFrame">{{20, 20}, {728, 29}}</string>
+						<string key="NSFrame">{{20, 970}, {728, 29}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -80,7 +80,7 @@
 					<object class="IBUIView" id="522308582">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{0, 60}, {768, 900}}</string>
+						<string key="NSFrame">{{0, 0}, {768, 960}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
@@ -179,9 +179,9 @@
 						<reference key="object" ref="191373211"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="620147200"/>
 							<reference ref="563449215"/>
 							<reference ref="522308582"/>
+							<reference ref="620147200"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
