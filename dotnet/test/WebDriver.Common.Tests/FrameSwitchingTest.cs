@@ -358,7 +358,19 @@ namespace OpenQA.Selenium
             IWebElement addIFrame = driver.FindElement(By.Id("addBackFrame"));
             addIFrame.Click();
 
-            driver.SwitchTo().Frame("iframe1");
+            timeout = DateTime.Now.Add(TimeSpan.FromMilliseconds(4000));
+            while (DateTime.Now < timeout)
+            {
+                try
+                {
+                    driver.SwitchTo().Frame("iframe1");
+                    break;
+                }
+                catch (NoSuchFrameException)
+                {
+                }
+            }
+
             try
             {
                 driver.FindElement(By.Id("checkbox"));

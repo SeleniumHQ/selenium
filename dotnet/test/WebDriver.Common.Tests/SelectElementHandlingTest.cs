@@ -38,7 +38,7 @@ namespace OpenQA.Selenium
             IWebElement select = driver.FindElement(By.XPath("//select[@name='selectomatic']"));
             ReadOnlyCollection<IWebElement> options = select.FindElements(By.TagName("option"));
             IWebElement option = options[0];
-            option.Click();
+            option.Toggle();
         }
 
         [Test]

@@ -14,14 +14,14 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToSelectAnEnabledUnselectedCheckbox()
         {
             driver.Url = (formsPage);
-            AssertCanSelect(this.EnabledUnselectedCheckbox, false);
+            AssertCanSelect(this.EnabledUnselectedCheckbox);
         }
 
         [Test]
         public void ShouldBeAbleToSelectAnEnabledUnselectedRadioButton()
         {
             driver.Url = formsPage;
-            AssertCanSelect(this.EnabledUnselectedRadioButton, true);
+            AssertCanSelect(this.EnabledUnselectedRadioButton);
         }
 
         [Test]
@@ -217,7 +217,7 @@ namespace OpenQA.Selenium
         {
             try
             {
-                element.Click();
+                element.Select();
                 Assert.Fail(string.Format(assertCannotPerformActionFormat_action_element, "select", Describe(element)));
             }
             catch (InvalidElementStateException)
@@ -226,22 +226,22 @@ namespace OpenQA.Selenium
             }
         }
 
-        private static void AssertCanSelect(IWebElement element, bool repeatedSelectsAreSelected)
+        private static void AssertCanSelect(IWebElement element)
         {
             AssertNotSelected(element);
 
-            element.Click();
+            element.Select();
             AssertSelected(element);
 
-            element.Click();
-            AssertSelected(element, repeatedSelectsAreSelected);
+            element.Select();
+            AssertSelected(element);
         }
 
         private static void AssertSelectingPreservesAlreadySelectedStatus(IWebElement element)
         {
             AssertSelected(element);
 
-            element.Click();
+            element.Select();
             AssertSelected(element);
         }
 
@@ -292,7 +292,7 @@ namespace OpenQA.Selenium
         {
             try
             {
-                element.Click();
+                element.Toggle();
                 Assert.Fail(string.Format(assertCannotPerformActionFormat_action_element, "toggle", Describe(element)));
             }
             catch (InvalidElementStateException)
