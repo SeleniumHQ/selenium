@@ -58,6 +58,41 @@ limitations under the License.
       }
     }
 
+    function testAddWindowToCache() {
+      var id = bot.inject.cache.addElement(window.frames[0]);
+      assertEquals(window.frames[0], bot.inject.cache.getElement(id));
+    }
+
+
+    function testAddWindowToCacheMultipleTimesReusesIds() {
+      var id1 = bot.inject.cache.addElement(window.frames[0]);
+      var id2 = bot.inject.cache.addElement(window.frames[0]);
+      assertEquals(id1, id2);
+    }
+
+
+    function testGetElementThrowsIfWindowIsClosed() {
+      var win = {document:1, closed:1};
+      var id = bot.inject.cache.addElement(win);
+      assertThrows(goog.partial(bot.inject.cache.getElement, id));
+    }
+
+
+    function testShouldWrapAndUnwrapWindow() {
+      var win = window.frames[0];
+      var wrapped = bot.inject.wrapValue(win);
+      assertNotNull(wrapped);
+      assertNotUndefined(wrapped);
+      assertTrue(goog.isObject(wrapped));
+      assertTrue(goog.object.containsKey(wrapped, bot.inject.WINDOW_KEY));
+
+      var id = wrapped[bot.inject.WINDOW_KEY];
+      var res = bot.inject.cache.getElement(id);
+      assertEquals(window.frames[0], res);
+      assertEquals(window.frames[0], bot.inject.unwrapValue_(wrapped));
+    }
+
+    
     function testShouldBeAbleToCacheElements() {
       var id = bot.inject.cache.addElement(document.body);
       var el = bot.inject.cache.getElement(id);
@@ -71,7 +106,7 @@ limitations under the License.
       assertEquals(id1, id2);
     }
 
-
+    
     function testShouldThrowIfElementDoesNotExistInTheCache() {
       assertThrows(goog.partial(bot.inject.cache.getElement, 'not-there'));
     }

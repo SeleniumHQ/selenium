@@ -26,6 +26,7 @@
 goog.provide('bot.inject');
 goog.provide('bot.inject.cache');
 
+goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('goog.array');
@@ -52,6 +53,13 @@ bot.inject.Response;
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
  */
 bot.inject.ELEMENT_KEY = 'ELEMENT';
+
+/**
+ * Key used to identify Window objects in the WebDriver wire protocol.
+ * @type {Sstring}
+ * @const
+ */
+bot.inject.WINDOW_KEY = 'WINDOW';
 
 
 /**
@@ -107,6 +115,14 @@ bot.inject.wrapValue = function(value) {
         return ret;
       }
 
+      // Check if this is a Window
+      if (goog.object.containsKey(value, 'document')) {
+        var ret = {};
+        ret[bot.inject.WINDOW_KEY] =
+            bot.inject.cache.addElement((/**@type{!Window}*/value));
+        return ret;
+      }
+
       if (goog.isArrayLike(value)) {
         return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
             bot.inject.wrapValue);
@@ -136,11 +152,19 @@ bot.inject.unwrapValue_ = function(value, opt_doc) {
     return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
         function(v) { return bot.inject.unwrapValue_(v, opt_doc); });
   } else if (goog.isObject(value)) {
-    return goog.object.containsKey(value, bot.inject.ELEMENT_KEY) ?
-        bot.inject.cache.getElement(value[bot.inject.ELEMENT_KEY], opt_doc) :
-        goog.object.map(value, function(val) {
-          return bot.inject.unwrapValue_(val, opt_doc);
-        });
+    if (goog.object.containsKey(value, bot.inject.ELEMENT_KEY)) {
+      return bot.inject.cache.getElement(value[bot.inject.ELEMENT_KEY],
+          opt_doc);
+    }
+
+    if (goog.object.containsKey(value, bot.inject.WINDOW_KEY)) {
+      return bot.inject.cache.getElement(value[bot.inject.WINDOW_KEY],
+          opt_doc);
+    }
+
+    return goog.object.map(value, function(val) {
+        return bot.inject.unwrapValue_(val, opt_doc);
+    });
   }
   return value;
 };
@@ -169,7 +193,7 @@ bot.inject.recompileFunction_ = function(fn, theWindow) {
 };
 
 
-/**
+/*
  * Executes an injected script. This function should never be called from
  * within JavaScript itself. Instead, it is used from an external source that
  * is injecting a script for execution.
@@ -206,7 +230,7 @@ bot.inject.recompileFunction_ = function(fn, theWindow) {
  *     string format.
  */
 bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
-  var win = opt_window || window;
+  var win = opt_window || bot.getWindow();
   var ret;
   try {
     fn = bot.inject.recompileFunction_(fn, win);
@@ -396,7 +420,7 @@ bot.inject.cache.getCache_ = function(opt_doc) {
 
 /**
  * Adds an element to its ownerDocument's cache.
- * @param {Element} el The element to add.
+ * @param {(Element|Window)} el The element or Window object to add.
  * @return {string} The key generated for the cached element.
  */
 bot.inject.cache.addElement = function(el) {
@@ -433,6 +457,16 @@ bot.inject.cache.getElement = function(key, opt_doc) {
   }
 
   var el = cache[key];
+
+  // If this is a Window check if it's closed
+  if (goog.object.containsKey(el, 'document')) {
+    if(el.closed) {
+      delete cache[key];
+      throw new bot.Error(bot.ErrorCode.NO_SUCH_WINDOW,
+          'Window has been closed.');
+    }
+    return el;
+  }
 
   // Make sure the element is still attached to the DOM before returning.
   var node = el;
