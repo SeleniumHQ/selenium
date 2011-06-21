@@ -174,7 +174,20 @@ module Selenium
 
       def select
         warn "#{self.class}#select is deprecated. Please use #{self.class}#click and determine the current state with #{self.class}#selected?"
-        bridge.setElementSelected @id
+
+        unless displayed?
+          raise Error::ElementNotDisplayedError, "you may not select an element that is not displayed"
+        end
+
+        unless enabled?
+          raise Error::InvalidElementStateError, "cannot select a disabled element"
+        end
+
+        unless selectable?
+          raise Error::InvalidElementStateError, "you may only select options, radios or checkboxes"
+        end
+
+        click unless selected?
       end
 
       #
@@ -310,6 +323,15 @@ module Selenium
 
       def as_json(opts = nil)
         { :ELEMENT => @id }
+      end
+
+      private
+
+      def selectable?
+        tn = tag_name.downcase
+        type = attribute(:type).to_s.downcase
+
+        tn == "option" || (tn == "input" && %w[radio checkbox].include?(type))
       end
 
     end # Element
