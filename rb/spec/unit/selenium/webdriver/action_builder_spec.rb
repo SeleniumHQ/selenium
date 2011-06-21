@@ -55,12 +55,33 @@ describe Selenium::WebDriver::ActionBuilder do
             move_to(element).
             context_click(element).perform
   end
-  
+
+  it "should drag and drop" do
+    source = element
+    target = Selenium::WebDriver::Element.new(bridge, 'element2')
+
+    mouse.should_receive(:down).with(source)
+    mouse.should_receive(:move_to).with(target)
+    mouse.should_receive(:up)
+
+    builder.drag_and_drop(source, target).perform
+  end
+
+  it "should drag and drop with offsets" do
+    source = element
+
+    mouse.should_receive(:down).with(source)
+    mouse.should_receive(:move_by).with(-300, 400)
+    mouse.should_receive(:up)
+
+    builder.drag_and_drop_by(source, -300, 400).perform
+  end
+
   it "can move the mouse by coordinates" do
     mouse.should_receive(:down).with(element)
     mouse.should_receive(:move_by).with(-300, 400)
     mouse.should_receive(:up)
-    
+
     builder.click_and_hold(element).
             move_by(-300, 400).
             release.perform

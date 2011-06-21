@@ -86,6 +86,14 @@ module Selenium
         self
       end
 
+      def drag_and_drop_by(source, down_by, right_by)
+        click_and_hold source
+        move_by        down_by, right_by
+        release
+
+        self
+      end
+
       def perform
         @actions.each { |receiver, method, args|
           @devices.fetch(receiver).__send__(method, *args)
