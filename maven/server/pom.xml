@@ -79,7 +79,6 @@
                                 <copy todir="src/main/java" includeEmptyDirs="false">
                                     <fileset dir="../../java/server/src">
                                         <include name="**/*.java" />
-                                        <exclude name="**/grid/**/*.java" />
                                     </fileset>
                                 </copy>
                             </tasks>
