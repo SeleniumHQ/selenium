@@ -45,6 +45,12 @@ public class SelfRegisteringSelenium extends SelfRegisteringRemote {
 		}
 
 	}
+	
+	public void addChromeSupport() {
+		DesiredCapabilities chrome = new DesiredCapabilities("*googlechrome", "", Platform.getCurrent());
+		getGridConfig().getCapabilities().add(chrome);
+	}
+	
 
 	@Override
 	public RegistrationRequest getRegistrationRequest() {

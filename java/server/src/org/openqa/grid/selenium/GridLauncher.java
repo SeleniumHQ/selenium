@@ -15,9 +15,9 @@ limitations under the License.
  */
 package org.openqa.grid.selenium;
 
-import static org.openqa.grid.common.RegistrationRequest.*;
+import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
+
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,19 +29,16 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.json.JSONObject;
-
-import org.openqa.grid.internal.Registry;
 import org.openqa.grid.selenium.utils.GridConfiguration;
 import org.openqa.grid.selenium.utils.GridRole;
 import org.openqa.grid.selenium.utils.WebDriverJSONConfigurationUtils;
 import org.openqa.grid.web.Hub;
-import org.openqa.grid.web.servlet.ConsoleServlet;
-import org.openqa.grid.web.servlet.DriverServlet;
+import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
-import org.openqa.jetty.jetty.servlet.WebApplicationContext;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
@@ -102,25 +99,24 @@ public class GridLauncher {
 
 			List<String> servlets = config.getServlets();
 			if (servlets != null) {
+				HttpContext extra = new HttpContext();
 
-			}
+				extra.setContextPath("/extra");
+				ServletHandler handler = new ServletHandler();
+				handler.addServlet("/resources/*", ResourceServlet.class.getName());
 
-			HttpContext extra = new HttpContext();
-			extra.setContextPath("/extra");
-			ServletHandler handler = new ServletHandler();
-
-			for (String s : servlets) {
-				Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
-				if (servletClass != null) {
-					String path = "/" + servletClass.getSimpleName() + "/*";
-					String clazz = servletClass.getCanonicalName();
-					handler.addServlet(path, clazz);
-					log.info("started extra node servlet visible at : http://xxx:"+port+"/extra"+path);
+				for (String s : servlets) {
+					Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
+					if (servletClass != null) {
+						String path = "/" + servletClass.getSimpleName() + "/*";
+						String clazz = servletClass.getCanonicalName();
+						handler.addServlet(path, clazz);
+						log.info("started extra node servlet visible at : http://xxx:" + port + "/extra" + path);
+					}
 				}
+				extra.addHandler(handler);
+				jetty.addContext(extra);
 			}
-
-			extra.addHandler(handler);
-			jetty.addContext(extra);
 
 			server.boot();
 
@@ -136,16 +132,30 @@ public class GridLauncher {
 		} else {
 			SelfRegisteringRemote remote = SelfRegisteringRemote.create(config);
 
+			int maxInstance = 5;
 			// loading the browsers specified command line if any, otherwise try
-			// 5 firefox, IE and chrome
+			// the default
 			if (config.getCapabilities().size() == 0) {
-				remote.addFirefoxSupport();
-				remote.addFirefoxSupport();
-				remote.addFirefoxSupport();
-				remote.addFirefoxSupport();
-				remote.addFirefoxSupport();
+
+				// 1 IE
 				remote.addInternetExplorerSupport();
-				remote.addChromeSupport();
+
+				
+				// 5 FF
+				for (int i = 0; i < maxInstance; i++) {
+					remote.addFirefoxSupport();
+				}
+
+				// 5 chrome + opera if webdriver, 1 for selenium.
+				if (remote instanceof SelfRegisteringWebDriver) {
+					for (int i = 0; i < maxInstance; i++) {
+						remote.addChromeSupport();
+					}
+					remote.addCustomBrowser(DesiredCapabilities.opera());
+				} else {
+					remote.addChromeSupport();
+				}
+
 			}
 
 			remote.launchRemoteServer();

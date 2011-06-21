@@ -43,7 +43,7 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 		try {
 			return new URL(url);
 		} catch (Throwable e) {
-			throw new RuntimeException("URL for the node doesn't seem correct: "+url+" , "+e.getMessage());
+			throw new RuntimeException("URL for the node doesn't seem correct: " + url + " , " + e.getMessage());
 		}
 	}
 
@@ -55,12 +55,16 @@ public class SelfRegisteringWebDriver extends SelfRegisteringRemote {
 		return request;
 	}
 
+	public void addChromeSupport() {
+		DesiredCapabilities chrome = DesiredCapabilities.chrome();
+		chrome.setPlatform(Platform.getCurrent());
+		getGridConfig().getCapabilities().add(chrome);
+	}
 
-	
 	@Override
 	public void addFirefoxSupport() {
 		DesiredCapabilities ff = DesiredCapabilities.firefox();
-		ff.setCapability(PLATFORM, Platform.getCurrent());	
+		ff.setCapability(PLATFORM, Platform.getCurrent());
 		getGridConfig().getCapabilities().add(ff);
 	}
 

@@ -98,11 +98,10 @@ public abstract class SelfRegisteringRemote {
 	public abstract void addSafariSupport();
 
 	public abstract void addFirefoxSupport();
+	
+	public abstract void addChromeSupport();
 
-	public void addChromeSupport() {
-		DesiredCapabilities chrome = new DesiredCapabilities("chrome", "10.0", Platform.getCurrent());
-		getGridConfig().getCapabilities().add(chrome);
-	}
+	
 
 	public void setTimeout(long timeoutMillis, long cycleMillis) {
 		config.put(RegistrationRequest.TIME_OUT, timeoutMillis);
