@@ -203,7 +203,7 @@ LocatorBuilders.prototype.getCSSSubPath = function(e) {
         }
     }
     if (this.getNodeNbr(e))
-        return e.nodeName.toLowerCase() + ':nth(' + this.getNodeNbr(e) + ')';
+        return e.nodeName.toLowerCase() + ':nth-of-type(' + this.getNodeNbr(e) + ')';
     else
         return e.nodeName.toLowerCase();
 };
