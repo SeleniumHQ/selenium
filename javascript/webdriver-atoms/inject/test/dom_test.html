@@ -98,10 +98,10 @@ limitations under the License.
     }
 
     function testGetAttributeWithProperty() {
-      var working = webdriver.inject.locators.findElement("id", "working");
-      assertEquals("",
+      var working = webdriver.inject.locators.findElement("id", "after");
+      assertEquals("background-color: green; ",
           getValueFromJSONObject(webdriver.inject.dom.getAttributeValue(
-              getValueFromJSONObject(working))))
+              getValueFromJSONObject(working), "style")))
     }
 
     function getValueFromJSONObject(arg) {
