@@ -33,6 +33,7 @@ import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
 import org.openqa.grid.web.servlet.ProxyStatusServlet;
 import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
+import org.openqa.grid.web.servlet.TestSessionStatusServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.jetty.http.SocketListener;
 import org.openqa.jetty.jetty.Server;
@@ -145,7 +146,8 @@ public class Hub {
 			root.addServlet("/selenium-server/driver/*", DriverServlet.class.getName());
 			root.addServlet("/grid/resources/*", ResourceServlet.class.getName());
 
-			root.addServlet("/grid/status/*", ProxyStatusServlet.class.getName());
+			root.addServlet("/grid/api/proxy/*", ProxyStatusServlet.class.getName());
+			root.addServlet("/grid/api/testsession/*", TestSessionStatusServlet.class.getName());
 
 			// Selenium Grid 1.0 compatibility routes for older nodes trying to
 			// work with the newer hub.
