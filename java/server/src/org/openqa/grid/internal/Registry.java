@@ -409,6 +409,11 @@ public class Registry {
 		return res;
 	}
 
+	/**
+	 * gets the test session associated to this external key. The external key is the session used by webdriver. 
+	 * @param externalKey
+	 * @return null if the hub doesn't have a node associated to the provided externalKey 
+ 	 */
 	public TestSession getSession(String externalKey) {
 		if (externalKey == null) {
 			return null;
@@ -420,6 +425,8 @@ public class Registry {
 		}
 		return null;
 	}
+	
+	
 
 	public List<RequestHandler> getNewSessionRequests() {
 		return newSessionRequests;
