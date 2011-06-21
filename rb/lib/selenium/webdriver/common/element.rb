@@ -242,6 +242,7 @@ module Selenium
       #
 
       def drag_and_drop_by(right_by, down_by)
+        warn "#{self.class}#drag_and_drop_{by,on} is deprecated. Please use Selenium::WebDriver::Driver#action (and Selenium::WebDriver::ActionBuilder) instead."
         bridge.dragElement @id, right_by, down_by
       end
 

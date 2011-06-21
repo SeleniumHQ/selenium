@@ -118,13 +118,14 @@ describe "Element" do
     size.height.should > 0
   end
 
-  not_compliant_on :browser => :chrome do
+  compliant_on :driver => [:firefox, :ie] do
     it "should drag and drop" do
       driver.navigate.to url_for("dragAndDropTest.html")
 
       img1 = driver.find_element(:id, "test1")
       img2 = driver.find_element(:id, "test2")
 
+      # TODO: use the interactions API here
       img1.drag_and_drop_by 100, 100
       img2.drag_and_drop_on(img1)
 
