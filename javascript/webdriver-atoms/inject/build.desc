@@ -85,3 +85,23 @@ js_fragment(name = "submit",
   function = "webdriver.inject.action.submit",
   deps = [":deps"])
 
+js_fragment(name = "frame_by_id_or_name",
+  module = "webdriver.inject.frame",
+  function = "webdriver.inject.frame.findFrameByIdOrName",
+  deps = [":deps"])
+
+js_fragment(name = "frame_by_index",
+  module = "webdriver.inject.frame",
+  function = "webdriver.inject.frame.findFrameByIndex",
+  deps = [":deps"])
+
+js_fragment(name = "default_content",
+  module = "webdriver.inject.frame",
+  function = "webdriver.inject.frame.defaultContent",
+  deps = [":deps"])
+
+js_fragment(name = "get_frame_window",
+  module = "webdriver.inject.frame",
+  function = "webdriver.inject.frame.getFrameWindow",
+  deps = [":deps"])
+

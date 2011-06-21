@@ -4,6 +4,8 @@ goog.addDependency("../../../javascript/webdriver-atoms/interactions.js", ['webd
 goog.addDependency("../../../javascript/webdriver-atoms/web_element.js", ['webdriver.element'], ['bot.dom', 'goog.dom', 'goog.dom.TagName', 'goog.math', 'goog.string', 'goog.style']);
 goog.addDependency("../../../javascript/webdriver-atoms/logging.js", ['webdriver.debug.Console'], ['goog.debug.LogManager', 'goog.debug.Logger.Level', 'goog.debug.TextFormatter']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/action.js", ['webdriver.inject.action'], ['bot.action', 'bot.inject']);
+goog.addDependency("../../../javascript/webdriver-atoms/inject/frame.js", ['webdriver.inject.frame'], ['bot.frame', 'webdriver.inject', 'bot.inject.cache']);
+goog.addDependency("../../../javascript/webdriver-atoms/inject/execute_script.js", ['webdriver.inject'], ['bot.inject', 'goog.json']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/find_element.js", ['webdriver.inject.locators'], ['bot.inject', 'bot.locators']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/dom.js", ['webdriver.inject.dom'], ['bot.action', 'bot.dom', 'bot.inject', 'webdriver.element']);
 goog.addDependency("../../../javascript/jsunit/app/jsUnitTracer.js", [], []);
@@ -141,7 +143,7 @@ goog.addDependency("../../../javascript/atoms/script.js", ['bot.script'], ['bot.
 goog.addDependency("../../../javascript/atoms/keys.js", ['bot.keys'], ['bot.Error', 'bot.ErrorCode', 'bot.action', 'bot.events', 'goog.dom.selection', 'goog.events.EventType', 'goog.events.KeyCodes', 'goog.userAgent']);
 goog.addDependency("../../../javascript/atoms/dom.js", ['bot.dom'], ['bot', 'bot.locators.xpath', 'goog.array', 'goog.dom', 'goog.dom.NodeIterator', 'goog.dom.NodeType', 'goog.dom.TagName', 'goog.math.Rect', 'goog.math.Size', 'goog.string', 'goog.style']);
 goog.addDependency("../../../javascript/atoms/error.js", ['bot.Error', 'bot.ErrorCode'], ['goog.debug.Error', 'goog.object']);
-goog.addDependency("../../../javascript/atoms/inject.js", ['bot.inject', 'bot.inject.cache'], ['bot.Error', 'bot.ErrorCode', 'goog.array', 'goog.dom', 'goog.dom.NodeType', 'goog.events', 'goog.json', 'goog.object']);
+goog.addDependency("../../../javascript/atoms/inject.js", ['bot.inject', 'bot.inject.cache'], ['bot', 'bot.Error', 'bot.ErrorCode', 'goog.array', 'goog.dom', 'goog.dom.NodeType', 'goog.events', 'goog.json', 'goog.object']);
 goog.addDependency("../../../javascript/atoms/test/text_util.js", [], ['bot.dom', 'goog.array', 'goog.dom', 'goog.testing.TestCase']);
 goog.addDependency("../../../javascript/atoms/test/window_focus.js", [], []);
 goog.addDependency("../../../javascript/atoms/test/test_bootstrap.js", [], []);
