@@ -190,7 +190,7 @@ public class ParallelTest {
 		}
 	}
 
-	@Test(timeout=50000)
+	@Test(timeout=10000)
 	public void releaseAndReserve() throws InterruptedException {
 		Registry registry = new Registry();
 		RemoteProxy p1 = null;
