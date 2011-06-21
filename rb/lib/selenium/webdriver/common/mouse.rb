@@ -42,7 +42,7 @@ module Selenium
       #   driver.mouse.move_to(element, 5, 5)
       #
 
-      def move_to(element, offset_right = nil, offset_down = nil)
+      def move_to(element, right_by = nil, down_by = nil)
         unless element.kind_of? Element
           raise TypeError, "expected #{Element}, got #{element.inspect}:#{element.class}"
         end

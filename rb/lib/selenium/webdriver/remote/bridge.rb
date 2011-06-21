@@ -407,8 +407,8 @@ module Selenium
         end
         alias_method :switchToActiveElement, :getActiveElement
 
-        def dragElement(element, rigth_by, down_by)
-          execute :dragElement, {:id => element}, :x => rigth_by, :y => down_by
+        def dragElement(element, right_by, down_by)
+          execute :dragElement, {:id => element}, :x => right_by, :y => down_by
         end
 
         def elementEquals(element, other)

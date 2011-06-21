@@ -8,6 +8,11 @@ module Selenium
     module DriverExtensions
       module HasInputDevices
 
+        #
+        # @return [ActionBuilder]
+        # @api public
+        #
+
         def action
           ActionBuilder.new mouse, keyboard
         end
