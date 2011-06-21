@@ -64,9 +64,13 @@ namespace OpenQA.Selenium.Internal
             }
 
             string resourceFilePath = Path.Combine(Path.GetDirectoryName(currentDirectory), Path.GetFileName(fileName));
-            if (File.Exists(resourceFilePath) || File.Exists(fileName))
+            if (File.Exists(resourceFilePath))
             {
                 resourceStream = new FileStream(resourceFilePath, FileMode.Open, FileAccess.Read);
+            }
+            else if (File.Exists(fileName))
+            {
+                resourceStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
             }
             else
             {

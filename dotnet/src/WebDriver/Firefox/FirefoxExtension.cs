@@ -72,7 +72,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="profileDir">The Firefox profile directory into which to install the extension.</param>
         public void Install(string profileDir)
         {
-            string tempFileName = Path.Combine(Path.GetTempPath(), this.extensionFileName);
+            string tempFileName = Path.Combine(Path.GetTempPath(), Path.GetFileName(this.extensionFileName));
             if (Directory.Exists(tempFileName))
             {
                 Directory.Delete(tempFileName, true);
