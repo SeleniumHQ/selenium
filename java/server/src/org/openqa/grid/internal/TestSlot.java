@@ -221,6 +221,7 @@ public class TestSlot {
 		String internalKey = currentSession.getInternalKey();
 		currentSession = null;
 		proxy.getRegistry().release(internalKey);
+		beingReleased = false;
 
 	}
 
