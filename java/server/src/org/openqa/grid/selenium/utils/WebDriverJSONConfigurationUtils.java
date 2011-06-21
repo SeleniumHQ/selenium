@@ -15,18 +15,24 @@ import org.openqa.selenium.net.NetworkUtils;
 
 public class WebDriverJSONConfigurationUtils {
 
-	public static JSONObject parseRegistrationRequest(String resource) throws IOException {
-		StringBuilder b = new StringBuilder();
-		
+	/**
+	 * load a json file from the resource or file system.
+	 * 
+	 * @param resource
+	 * @return
+	 * @throws IOException
+	 * @throws JSONException
+	 */
+	public static JSONObject loadJSON(String resource) throws IOException, JSONException {
 		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-		
+
 		if (in == null) {
-			in = new FileInputStream(resource); 
+			in = new FileInputStream(resource);
 		}
-		if (in == null){
+		if (in == null) {
 			throw new RuntimeException(resource + " is not a valid resource.");
 		}
-
+		StringBuilder b = new StringBuilder();
 		InputStreamReader inputreader = new InputStreamReader(in);
 		BufferedReader buffreader = new BufferedReader(inputreader);
 		String line;
@@ -35,10 +41,17 @@ public class WebDriverJSONConfigurationUtils {
 		}
 
 		String json = b.toString();
+		JSONObject o = new JSONObject(json);
+		return o;
+	}
+
+	// freynaud TODO separate loading and validation.
+	public static JSONObject parseRegistrationRequest(String resource) throws IOException, JSONException {
+
+		JSONObject o = loadJSON(resource);
 		String nodeURL = null;
 		int port;
 		try {
-			JSONObject o = new JSONObject(json);
 			JSONObject nodeConfig = o.getJSONObject("configuration");
 			nodeURL = (String) nodeConfig.get(RegistrationRequest.REMOTE_URL);
 			if (nodeURL != null) {
@@ -55,7 +68,7 @@ public class WebDriverJSONConfigurationUtils {
 			nodeConfig.put("port", port);
 			return o;
 		} catch (JSONException e) {
-			throw new RuntimeException("Cannot parse JSON object " + json, e);
+			throw new RuntimeException("Cannot parse JSON object " + o, e);
 		}
 	}
 
@@ -64,8 +77,11 @@ public class WebDriverJSONConfigurationUtils {
 		if (hostHasToBeGuessed(cleaned)) {
 			NetworkUtils util = new NetworkUtils();
 			String host = util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-			cleaned = cleaned.replace("ip", host);
-			cleaned = cleaned.replace("host", host);
+			if ("ip".equalsIgnoreCase(cleaned) || "host".equalsIgnoreCase(cleaned) ){
+				cleaned = cleaned.replace("ip", host);
+				cleaned = cleaned.replace("host", host);	
+			}
+			
 		}
 		if (!cleaned.startsWith("http://")) {
 			cleaned = "http://" + cleaned;
