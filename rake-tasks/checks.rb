@@ -142,7 +142,13 @@ def svn_revision?
   return 'unknown' unless svn?
 
   cmd = open('|svn info')
-  lines = cmd.readlines.select {|x| x =~ /^Revision: \d+/}
+  line = cmd.readlines.find { |x| x =~ /^Revision: \d+/}
   cmd.close
-  lines[0].split(' ')[1]
+
+  if line
+    line.split(' ')[1]
+  else
+    # this isn't a subversion checkout (e.g. git-svn)
+    'unknown'
+  end
 end
