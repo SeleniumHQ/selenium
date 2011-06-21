@@ -35,8 +35,7 @@ limitations under the License.
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />  
 
-  <supports-screens android:anyDensity="true"
-                    android:resizeable="true"/>
+  <supports-screens android:resizeable="true"/>
 
   <application android:label="WebDriver Client" android:icon="@drawable/selenium_icon">
     <activity android:name=".MainActivity" android:label="WebDriver">
