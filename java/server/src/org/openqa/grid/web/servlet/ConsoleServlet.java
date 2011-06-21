@@ -64,6 +64,18 @@ public class ConsoleServlet extends RegistryBasedServlet {
 	}
 
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		int refresh = -1;
+
+		if (request.getParameter("refresh") != null) {
+			try {
+				refresh = Integer.parseInt(request.getParameter("refresh"));
+			} catch (NumberFormatException e) {
+				// ignore wrong param
+			}
+
+		}
+
 		response.setContentType("text/html");
 		response.setCharacterEncoding("UTF-8");
 		response.setStatus(200);
@@ -73,6 +85,9 @@ public class ConsoleServlet extends RegistryBasedServlet {
 		builder.append("<html>");
 		builder.append("<head>");
 
+		if (refresh !=-1) {
+			builder.append("<meta http-equiv='refresh' content='" + refresh + "'>");
+		}
 		builder.append("<title>Grid overview</title>");
 
 		builder.append("<style>");
@@ -82,10 +97,10 @@ public class ConsoleServlet extends RegistryBasedServlet {
 		builder.append("}");
 		builder.append("</style>");
 		builder.append("</head>");
-		
+
 		builder.append("<body>");
 		builder.append("<H1>Grid Hub ");
-		builder.append(coreVersion + "[" + coreRevision+"]");
+		builder.append(coreVersion + "[" + coreRevision + "]");
 		builder.append("</H1>");
 
 		for (RemoteProxy proxy : getRegistry().getAllProxies()) {
@@ -131,8 +146,8 @@ public class ConsoleServlet extends RegistryBasedServlet {
 		}
 		coreVersion = p.getProperty("selenium.core.version");
 		coreRevision = p.getProperty("selenium.core.revision");
-		if (coreVersion==null){
-			log.severe("Cannot load selenium.core.version from VERSION.txt" );
+		if (coreVersion == null) {
+			log.severe("Cannot load selenium.core.version from VERSION.txt");
 		}
 	}
 
