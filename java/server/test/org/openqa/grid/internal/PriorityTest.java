@@ -47,10 +47,10 @@ public class PriorityTest {
 	 */
 	@BeforeClass
 	public static void setup() throws InterruptedException {
-		registry = Registry.getNewInstanceForTestOnly();
+		registry = new Registry();
 		registry.setPrioritizer(highestNumberHasPriority);
 		ff.put(APP, "FF");
-		p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444");
+		p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444",registry);
 		registry.add(p1);
 
 		// create 5 sessionRequest, with priority =1 .. 5

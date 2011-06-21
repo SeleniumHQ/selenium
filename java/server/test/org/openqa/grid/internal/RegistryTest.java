@@ -21,23 +21,15 @@ public class RegistryTest {
 
 	private static final int TOTAL_THREADS = 100;
 
-	static RemoteProxy p1 = null;
-	static RemoteProxy p2 = null;
-	static RemoteProxy p3 = null;
-	static RemoteProxy p4 = null;
-
-	@BeforeClass
-	public static void setup() {
-		p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/");
-		p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/");
-		p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/");
-		p4 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/");
-
-	}
+		
 
 	@Test
 	public void addProxy() {
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		Registry registry = new Registry();
+		RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/",registry);
+		RemoteProxy p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/",registry);
+		RemoteProxy p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/",registry);
+		RemoteProxy p4 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/",registry);
 		try {
 			registry.add(p1);
 			registry.add(p2);
@@ -51,7 +43,12 @@ public class RegistryTest {
 
 	@Test
 	public void addDuppedProxy() {
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		Registry registry = new Registry();
+		RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/",registry);
+		RemoteProxy p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/",registry);
+		RemoteProxy p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/",registry);
+		RemoteProxy p4 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/",registry);
+	
 		try {
 			registry.add(p1);
 			registry.add(p2);
@@ -82,7 +79,7 @@ public class RegistryTest {
 
 	@Test(expected = GridException.class)
 	public void emptyRegistry() throws Throwable {
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		Registry registry = new Registry();
 		try {
 
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
@@ -97,7 +94,7 @@ public class RegistryTest {
 
 	// @Test(timeout=2000) excepted timeout here.How to specify that in junit ?
 	public void emptyRegistryParam() {
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		Registry registry = new Registry();
 		registry.setThrowOnCapabilityNotPresent(false);
 		try {
 
@@ -111,9 +108,9 @@ public class RegistryTest {
 
 	@Test(expected = CapabilityNotPresentOnTheGridException.class)
 	public void CapabilityNotPresentRegistry() throws Throwable {
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		Registry registry = new Registry();
 		try {
-			registry.add(new RemoteProxy(req));
+			registry.add(new RemoteProxy(req, registry));
 
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
 			newSessionRequest.process();
@@ -127,10 +124,10 @@ public class RegistryTest {
 
 	// @Test(timeout=2000) excepted timeout here.How to specify that in junit ?
 	public void CapabilityNotPresentRegistryParam() {
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		Registry registry = new Registry();
 		registry.setThrowOnCapabilityNotPresent(false);
 		try {
-			registry.add(new RemoteProxy(req));
+			registry.add(new RemoteProxy(req, registry));
 
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
 			newSessionRequest.process();
@@ -147,13 +144,13 @@ public class RegistryTest {
 
 	@Test(timeout = 1000)
 	public void registerAtTheSameTime() throws InterruptedException {
-		final Registry registry = Registry.getNewInstanceForTestOnly();
+		final Registry registry = new Registry();
 		try {
 			for (int i = 0; i < TOTAL_THREADS; i++) {
 				new Thread(new Runnable() {
 
 					public void run() {
-						registry.add(new RemoteProxy(req));
+						registry.add(new RemoteProxy(req, registry));
 						increment();
 					}
 				}).start();
@@ -178,8 +175,8 @@ public class RegistryTest {
 	 * 
 	 */
 	class MyRemoteProxy extends RemoteProxy implements RegistrationListener {
-		public MyRemoteProxy(RegistrationRequest request) {
-			super(request);
+		public MyRemoteProxy(RegistrationRequest request, Registry registry) {
+			super(request, registry);
 
 		}
 
@@ -203,14 +200,14 @@ public class RegistryTest {
 
 	@Test(timeout = 2000)
 	public void registerAtTheSameTimeWithListener() throws InterruptedException {
-		final Registry registry = Registry.getNewInstanceForTestOnly();
+		final Registry registry = new Registry();
 
 		try {
 			for (int i = 0; i < TOTAL_THREADS; i++) {
 				new Thread(new Runnable() {
 
 					public void run() {
-						registry.add(new MyRemoteProxy(req));
+						registry.add(new MyRemoteProxy(req, registry));
 						increment2();
 					}
 				}).start();

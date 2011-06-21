@@ -77,9 +77,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
 	private CapabilityMatcher capabilityHelper = new DefaultCapabilityMatcher();
 
-	public void setRegistry(Registry registry) {
-		this.registry = registry;
-	}
+
 
 	public Registry getRegistry() {
 		return registry;
@@ -106,8 +104,9 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 	 * @param request
 	 * 
 	 */
-	public RemoteProxy(RegistrationRequest request) {
+	public RemoteProxy(RegistrationRequest request,Registry registry) {
 		this.request = request;
+		this.registry = registry;
 		this.config = request.getConfiguration();
 		String url = (String) config.get(REMOTE_URL);
 		if (url == null) {
@@ -129,8 +128,15 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 		}
 
 		maxConcurrentSession = request.getConfigAsInt(RegistrationRequest.MAX_SESSION, 1);
-		cleanUpCycle = Hub.getGrid1Config().get("cleanupCycle") == null ? request.getConfigAsInt(RegistrationRequest.CLEAN_UP_CYCLE, -1) : Hub.getGrid1Config().get("cleanupCycle");
-		timeOut = Hub.getGrid1Config().get("timeout") == null ? request.getConfigAsInt(RegistrationRequest.TIME_OUT, -1) : Hub.getGrid1Config().get("timeout");
+		
+		
+		// load the default set in the hub.
+		cleanUpCycle = registry.getConfiguration().getCleanupCycle();
+		timeOut = registry.getConfiguration().getTimeout();
+		
+		// but overwrite that if the node specifically ask for something.
+		cleanUpCycle = request.getConfigAsInt(RegistrationRequest.CLEAN_UP_CYCLE,cleanUpCycle);
+		timeOut = request.getConfigAsInt(RegistrationRequest.TIME_OUT, timeOut);
 
 		List<Map<String, Object>> capabilities = request.getCapabilities();
 
@@ -325,7 +331,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 	 * @return a new instance built from the request.
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <T extends RemoteProxy> T getNewInstance(RegistrationRequest request) {
+	public static final <T extends RemoteProxy> T getNewInstance(RegistrationRequest request,Registry registry) {
 		try {
 			String proxyClass = request.getRemoteProxyClass();
 			if (proxyClass == null) {
@@ -334,8 +340,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 			}
 			Class<?> clazz = Class.forName(proxyClass);
 			log.fine("Using class " + clazz.getName());
-			Object[] args = new Object[] { request };
-			Class<?>[] argsClass = new Class[] { RegistrationRequest.class };
+			Object[] args = new Object[] { request,registry };
+			Class<?>[] argsClass = new Class[] { RegistrationRequest.class,Registry.class };
 			Constructor<?> c = clazz.getConstructor(argsClass);
 			Object proxy = c.newInstance(args);
 			if (proxy instanceof RemoteProxy) {

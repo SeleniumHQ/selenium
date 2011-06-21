@@ -4,7 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.openqa.grid.e2e.utils.GridConfigurationMock;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
@@ -25,12 +25,16 @@ import org.testng.annotations.Test;
  */
 public class EndToEndWebDriver {
 
-	private Hub hub = Hub.getNewInstanceForTest(PortProber.findFreePort(), Registry.getNewInstanceForTestOnly());
-	private URL hubURL = hub.getUrl();
+	private Hub hub ;
+	private URL hubURL;
 
 	@BeforeClass(alwaysRun = true)
 	public void prepare() throws Exception {
-
+		GridHubConfiguration config = new GridHubConfiguration();
+		config.setPort(PortProber.findFreePort());
+		hub = new Hub(config);
+		hubURL = hub.getUrl();
+		
 		hub.start();
 		hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
 

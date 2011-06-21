@@ -11,9 +11,9 @@ public class MyCustomProxy extends RemoteProxy {
 	public static URL MY_URL;
 	public static boolean MY_BOOLEAN = true;
 
-	public MyCustomProxy(RegistrationRequest request) {
+	public MyCustomProxy(RegistrationRequest request, Registry registry) {
 
-		super(request);
+		super(request, registry);
 		try {
 			MY_URL = new URL("http://www.google.com");
 		} catch (MalformedURLException e) {

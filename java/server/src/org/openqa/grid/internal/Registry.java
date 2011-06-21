@@ -33,6 +33,7 @@ import org.openqa.grid.internal.exception.CapabilityNotPresentOnTheGridException
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 
@@ -50,7 +51,6 @@ public class Registry {
 
 	private List<RequestHandler> newSessionRequests = new ArrayList<RequestHandler>();
 
-	private static Registry INSTANCE = null;
 	private Hub hub;
 
 	// lock for anything modifying the tests session currently running on this
@@ -62,10 +62,24 @@ public class Registry {
 	private final Set<TestSession> activeTestSessions = new CopyOnWriteArraySet<TestSession>();
 	private Matcher matcherThread = new Matcher();
 	private boolean stop = false;
-
 	private boolean throwOnCapabilityNotPresent = true;
+	private int newSessionWaitTimeout;
+	
+	private GridHubConfiguration configuration;
+	
 
-	private Registry() {
+	public Registry() {
+		this(null,new GridHubConfiguration());
+	}
+	public Registry(Hub hub, GridHubConfiguration config) {
+		this.hub = hub;
+		
+		this.newSessionWaitTimeout = config.getNewSessionWaitTimeout();
+		this.throwOnCapabilityNotPresent = config.isThrowOnCapabilityNotPresent();
+		this.prioritizer = config.getPrioritizer();
+		
+		this.configuration = config;
+		
 		matcherThread.start();
 
 		// freynaud : TODO
@@ -76,6 +90,20 @@ public class Registry {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public GridHubConfiguration getConfiguration() {
+		return configuration;
+	}
+	/**
+	 * how long a session can remains in the newSession queue before being quicked out
+	 * @return
+	 */
+	public int getNewSessionWaitTimeout() {
+		return newSessionWaitTimeout;
+	}
+	public void setNewSessionWaitTimeout(int newSessionWaitTimeout) {
+		this.newSessionWaitTimeout = newSessionWaitTimeout;
 	}
 
 	/**
@@ -130,19 +158,8 @@ public class Registry {
 
 	}
 
-	public static synchronized Registry getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new Registry();
-		}
-		return INSTANCE;
-	}
-
 	public Hub getHub() {
 		return hub;
-	}
-
-	public static Registry getNewInstanceForTestOnly() {
-		return new Registry();
 	}
 
 	public void setHub(Hub hub) {
@@ -308,6 +325,9 @@ public class Registry {
 	 * @param proxy
 	 */
 	public void add(RemoteProxy proxy) {
+		if (proxy == null){
+			return;
+		}
 		log.fine("adding  " + proxy);
 		try {
 			lock.lock();
@@ -339,7 +359,6 @@ public class Registry {
 			}
 
 			registeringProxies.add(proxy);
-			proxy.setRegistry(this);
 			matcherThread.registryHasBeenModified(false);
 			fireEventNewSessionAvailable();
 		} finally {
@@ -410,10 +429,13 @@ public class Registry {
 	}
 
 	/**
-	 * gets the test session associated to this external key. The external key is the session used by webdriver. 
+	 * gets the test session associated to this external key. The external key
+	 * is the session used by webdriver.
+	 * 
 	 * @param externalKey
-	 * @return null if the hub doesn't have a node associated to the provided externalKey 
- 	 */
+	 * @return null if the hub doesn't have a node associated to the provided
+	 *         externalKey
+	 */
 	public TestSession getSession(String externalKey) {
 		if (externalKey == null) {
 			return null;
@@ -425,8 +447,6 @@ public class Registry {
 		}
 		return null;
 	}
-	
-	
 
 	public List<RequestHandler> getNewSessionRequests() {
 		return newSessionRequests;

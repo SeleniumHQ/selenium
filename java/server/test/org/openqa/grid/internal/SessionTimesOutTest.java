@@ -39,8 +39,8 @@ public class SessionTimesOutTest {
 
 	class MyRemoteProxyTimeout extends RemoteProxy implements TimeoutListener {
 
-		public MyRemoteProxyTimeout(RegistrationRequest request) {
-			super(request);
+		public MyRemoteProxyTimeout(RegistrationRequest request,Registry registry) {
+			super(request,registry);
 		}
 
 		public void beforeRelease(TestSession session) {
@@ -56,9 +56,10 @@ public class SessionTimesOutTest {
 	@Test(timeout = 2000)
 	public void testTimeout() throws InterruptedException {
 
-		RemoteProxy p1 = new MyRemoteProxyTimeout(req);
+		Registry registry = new Registry();
+		RemoteProxy p1 = new MyRemoteProxyTimeout(req,registry);
 
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		
 		try {
 			registry.add(p1);
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
@@ -82,8 +83,8 @@ public class SessionTimesOutTest {
 
 	class MyRemoteProxyTimeoutSlow extends RemoteProxy implements TimeoutListener {
 
-		public MyRemoteProxyTimeoutSlow(RegistrationRequest request) {
-			super(request);
+		public MyRemoteProxyTimeoutSlow(RegistrationRequest request,Registry registry) {
+			super(request,registry);
 		}
 
 		public void beforeRelease(TestSession session) {
@@ -99,9 +100,10 @@ public class SessionTimesOutTest {
 
 	@Test(timeout = 5000)
 	public void testTimeoutSlow() throws InterruptedException {
-		RemoteProxy p1 = new MyRemoteProxyTimeoutSlow(req);
+		Registry registry = new Registry();
+		RemoteProxy p1 = new MyRemoteProxyTimeoutSlow(req,registry);
 
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		
 		try {
 			registry.add(p1);
 
@@ -137,8 +139,8 @@ public class SessionTimesOutTest {
 
 	class MyBuggyRemoteProxyTimeout extends RemoteProxy implements TimeoutListener {
 
-		public MyBuggyRemoteProxyTimeout(RegistrationRequest request) {
-			super(request);
+		public MyBuggyRemoteProxyTimeout(RegistrationRequest request,Registry registry) {
+			super(request,registry);
 		}
 
 		public void beforeRelease(TestSession session) {
@@ -149,10 +151,10 @@ public class SessionTimesOutTest {
 	// a proxy throwing an exception will end up not releasing the resources.
 	@Test(timeout = 1000, expected = IllegalAccessError.class)
 	public void testTimeoutBug() throws InterruptedException {
+		final Registry registry = new Registry();
+		RemoteProxy p1 = new MyBuggyRemoteProxyTimeout(req,registry);
 
-		RemoteProxy p1 = new MyBuggyRemoteProxyTimeout(req);
-
-		final Registry registry = Registry.getNewInstanceForTestOnly();
+		
 		try {
 			registry.add(p1);
 
@@ -181,8 +183,8 @@ public class SessionTimesOutTest {
 
 	class MyStupidConfig extends RemoteProxy implements TimeoutListener {
 
-		public MyStupidConfig(RegistrationRequest request) {
-			super(request);
+		public MyStupidConfig(RegistrationRequest request,Registry registry) {
+			super(request,registry);
 		}
 
 		public void beforeRelease(TestSession session) {
@@ -200,7 +202,7 @@ public class SessionTimesOutTest {
 		for (Object[] c : configs) {
 			int timeout = (Integer) c[0];
 			int cycle = (Integer) c[1];
-			Registry registry = Registry.getNewInstanceForTestOnly();
+			Registry registry = new Registry();
 
 			RegistrationRequest req = new RegistrationRequest();
 			Map<String, Object> app1 = new HashMap<String, Object>();
@@ -213,7 +215,7 @@ public class SessionTimesOutTest {
 
 			req.setConfiguration(config);
 
-			registry.add(new MyStupidConfig(req));
+			registry.add(new MyStupidConfig(req,registry));
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
 			newSessionRequest.process();
 			TestSession session = newSessionRequest.getTestSession();

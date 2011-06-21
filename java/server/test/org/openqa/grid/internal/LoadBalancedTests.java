@@ -24,7 +24,7 @@ public class LoadBalancedTests {
 
 	@BeforeClass
 	public static void setup() {
-		registry = Registry.getNewInstanceForTestOnly();
+		registry =  new Registry();
 		// A request that will create a proxy with 5 slots. Each slot can host a
 		// firefox.
 		Map<String, Object> config = new HashMap<String, Object>();
@@ -38,7 +38,7 @@ public class LoadBalancedTests {
 		for (int i = 0; i < 5; i++) {
 			config.put(REMOTE_URL, "http://machine"+i+":4444");
 			request.setConfiguration(config);
-			registry.add(new RemoteProxy(request));
+			registry.add(new RemoteProxy(request,registry));
 		}
 	}
 

@@ -5,7 +5,7 @@ import java.net.URL;
 
 import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.By;
@@ -21,14 +21,17 @@ import org.testng.annotations.Test;
 // see http://code.google.com/p/selenium/issues/detail?id=1586
 public class Issue1586 {
 
-	private Hub hub = Hub.getNewInstanceForTest(PortProber.findFreePort(), Registry.getNewInstanceForTestOnly());
-	private URL hubURL = hub.getUrl();
+	private Hub hub;
+	private URL hubURL;
 
 	@BeforeClass(alwaysRun = true)
 	public void prepare() throws Exception {
-
+		GridHubConfiguration config = new GridHubConfiguration();
+		config.setPort(PortProber.findFreePort());
+		hub = new Hub(config);
+		hubURL = hub.getUrl();
 		hub.start();
-		hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
+
 		SelfRegisteringRemote remote = SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
 		remote.addFirefoxSupport();
 		remote.launchRemoteServer();
@@ -51,8 +54,8 @@ public class Issue1586 {
 				submitButton.click();
 				driver.getCurrentUrl(); // fails here
 			}
-		}finally {
-			if (driver !=null){
+		} finally {
+			if (driver != null) {
 				driver.quit();
 			}
 		}

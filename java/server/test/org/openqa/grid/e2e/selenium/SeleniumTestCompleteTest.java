@@ -2,7 +2,7 @@ package org.openqa.grid.e2e.selenium;
 
 import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
@@ -25,7 +25,10 @@ public class SeleniumTestCompleteTest {
 
 	@BeforeClass(alwaysRun = true)
 	public void setup() throws Exception {
-		hub = Hub.getNewInstanceForTest(PortProber.findFreePort(), Registry.getNewInstanceForTestOnly());
+		GridHubConfiguration config = new GridHubConfiguration();
+		config.setPort(PortProber.findFreePort());
+		hub = new Hub(config);
+		
 		hub.start();
 
 		// register a selenium 1

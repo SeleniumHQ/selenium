@@ -52,6 +52,8 @@ import org.openqa.grid.web.Hub;
  */
 public abstract class RequestHandler implements Comparable<RequestHandler> {
 	private Registry registry;
+	
+
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private String body = null;
@@ -59,7 +61,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 	private Map<String, Object> desiredCapabilities = null;
 	private RequestType requestType = null;
 	private TestSession session = null;
-    private long created;
+	private long created;
 
 	private boolean showWarning = true;
 
@@ -89,7 +91,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 		this.request = request;
 		this.response = response;
 		this.registry = registry;
-        this.created = System.currentTimeMillis();
+		this.created = System.currentTimeMillis();
 	}
 
 	/**
@@ -143,15 +145,16 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 	public void process() {
 		switch (getRequestType()) {
 		case START_SESSION:
-            try {
-    			handleNewSession();
-            } catch (Exception e) {
-                // Make sure we yank the session from the request queue, since any returned error will propagate to the
-                // client, so there's no chance of this request ever succeeding.
-                registry.getNewSessionRequests().remove(this);
+			try {
+				handleNewSession();
+			} catch (Exception e) {
+				// Make sure we yank the session from the request queue, since
+				// any returned error will propagate to the
+				// client, so there's no chance of this request ever succeeding.
+				registry.getNewSessionRequests().remove(this);
 
-                throw(new RuntimeException(e));
-            }
+				throw (new RuntimeException(e));
+			}
 			break;
 		case REGULAR:
 		case STOP_SESSION:
@@ -195,20 +198,21 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 			// signalled
 			registry.addNewSessionRequest(this);
 
-            // Maintain compatibility with Grid 1.x, which had the ability to specify how long to wait before canceling
-            // a request.
-            if (Hub.getGrid1Config().containsKey("newSessionWaitTimeout")) {
-                long startTime = System.currentTimeMillis();
-    			sessionHasBeenAssigned.await(Hub.getGrid1Config().get("newSessionWaitTimeout"), TimeUnit.MILLISECONDS);
-                long endTime = System.currentTimeMillis();
+			// Maintain compatibility with Grid 1.x, which had the ability to
+			// specify how long to wait before canceling
+			// a request.
+			if (registry.getNewSessionWaitTimeout() != -1) {
+				long startTime = System.currentTimeMillis();
+				sessionHasBeenAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS);
+				long endTime = System.currentTimeMillis();
 
-                if ((session == null) && ((endTime - startTime) >= Hub.getGrid1Config().get("newSessionWaitTimeout"))) {
-                    throw new RuntimeException("Request timed out waiting for a node to become available.");
-                }
-            } else {
-                // Wait until a proxy becomes available to handle the request.
-                sessionHasBeenAssigned.await();
-            }
+				if ((session == null) && ((endTime - startTime) >= registry.getNewSessionWaitTimeout())) {
+					throw new RuntimeException("Request timed out waiting for a node to become available.");
+				}
+			} else {
+				// Wait until a proxy becomes available to handle the request.
+				sessionHasBeenAssigned.await();
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
@@ -419,7 +423,11 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 		return true;
 	}
 
-    public long getCreated() {
-        return created;
-    }
+	public long getCreated() {
+		return created;
+	}
+	
+	public Registry getRegistry() {
+		return registry;
+	}
 }

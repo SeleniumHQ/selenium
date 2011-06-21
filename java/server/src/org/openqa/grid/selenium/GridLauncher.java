@@ -18,6 +18,7 @@ package org.openqa.grid.selenium;
 import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
 import java.net.URL;
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,6 +30,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.json.JSONObject;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.selenium.utils.GridConfiguration;
 import org.openqa.grid.selenium.utils.GridRole;
 import org.openqa.grid.selenium.utils.WebDriverJSONConfigurationUtils;
@@ -57,9 +59,25 @@ public class GridLauncher {
 			break;
 		case HUB:
 			log.info("Launching a selenium grid server");
-			Hub h = Hub.getInstance();
-			h.registerServlets(config.getServlets());
-			h.setPort(config.getPort());
+			GridHubConfiguration c = null;
+			
+			// try a grid1 config 
+			if (config.getFile() != null) {
+				try {
+					c = GridHubConfiguration.loadFromGridYml(config.getFile());
+				} catch (InvalidParameterException e) {
+					// ignore
+				}
+			}
+
+			// default
+			if (c==null){
+				c = new GridHubConfiguration();
+				c.setPort(config.getPort());
+			}
+			
+			c.setServlets(config.getServlets());
+			Hub h = new Hub(c);
 			h.start();
 			break;
 		case WEBDRIVER:
@@ -140,7 +158,6 @@ public class GridLauncher {
 				// 1 IE
 				remote.addInternetExplorerSupport();
 
-				
 				// 5 FF
 				for (int i = 0; i < maxInstance; i++) {
 					remote.addFirefoxSupport();

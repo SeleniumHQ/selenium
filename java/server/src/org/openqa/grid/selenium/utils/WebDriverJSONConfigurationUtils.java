@@ -2,6 +2,7 @@ package org.openqa.grid.selenium.utils;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,7 +28,11 @@ public class WebDriverJSONConfigurationUtils {
 		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
 
 		if (in == null) {
-			in = new FileInputStream(resource);
+			try {
+				in = new FileInputStream(resource);
+			} catch (FileNotFoundException e) {
+				// ignore
+			}
 		}
 		if (in == null) {
 			throw new RuntimeException(resource + " is not a valid resource.");

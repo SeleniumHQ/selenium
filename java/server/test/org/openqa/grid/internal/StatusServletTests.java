@@ -25,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.ProxyStatusServlet;
 import org.openqa.grid.web.servlet.TestSessionStatusServlet;
@@ -49,9 +50,10 @@ public class StatusServletTests {
 
 	@BeforeClass
 	public static void setup() throws Exception {
-		registry = Registry.getNewInstanceForTestOnly();
-		hub = Hub.getNewInstanceForTest(PortProber.findFreePort(), registry);
-
+		GridHubConfiguration c = new GridHubConfiguration();
+		c.setPort(PortProber.findFreePort());
+		hub = new Hub(c);
+		registry = hub.getRegistry();
 		proxyApi = new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/proxy");
 		testSessionApi = new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/testsession");
 
@@ -59,10 +61,10 @@ public class StatusServletTests {
 
 		hub.start();
 
-		p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/");
-		p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/");
-		p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/");
-		p4 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/");
+		p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/",registry);
+		p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/",registry);
+		p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/",registry);
+		p4 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/",registry);
 
 		RegistrationRequest req = new RegistrationRequest();
 		Map<String, Object> capability = new HashMap<String, Object>();
@@ -72,7 +74,7 @@ public class StatusServletTests {
 		Map<String, Object> config = new HashMap<String, Object>();
 		config.put("url", "http://machine5:4444/");
 		req.setConfiguration(config);
-		customProxy = new MyCustomProxy(req);
+		customProxy = new MyCustomProxy(req,registry);
 
 		registry.add(p1);
 		registry.add(p2);

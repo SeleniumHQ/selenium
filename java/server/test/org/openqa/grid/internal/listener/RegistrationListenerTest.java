@@ -25,8 +25,8 @@ public class RegistrationListenerTest {
 
 	class MyRemoteProxy extends RemoteProxy implements RegistrationListener {
 
-		public MyRemoteProxy(RegistrationRequest request) {
-			super(request);
+		public MyRemoteProxy(RegistrationRequest request,Registry registry) {
+			super(request,registry);
 		}
 
 		public void beforeRegistration() {
@@ -55,8 +55,8 @@ public class RegistrationListenerTest {
 
 	@Test(timeout = 5000)
 	public void testRegistration() {
-		Registry registry = Registry.getNewInstanceForTestOnly();
-		registry.add(new MyRemoteProxy(req));
+		Registry registry = new Registry();
+		registry.add(new MyRemoteProxy(req,registry));
 
 		MockedRequestHandler request = new MockedNewSessionRequestHandler(registry,app1);
 		request.process();
@@ -71,12 +71,12 @@ public class RegistrationListenerTest {
 	/**
 	 * this proxy will throw an exception on registration the first time.
 	 * 
-	 * @author François Reynaud
+	 * @author Fran√ßois Reynaud
 	 * 
 	 */
 	class MyBuggyRemoteProxy extends RemoteProxy implements RegistrationListener {
-		public MyBuggyRemoteProxy(RegistrationRequest request) {
-			super(request);
+		public MyBuggyRemoteProxy(RegistrationRequest request,Registry registry) {
+			super(request,registry);
 		}
 
 		public void beforeRegistration() {
@@ -94,9 +94,9 @@ public class RegistrationListenerTest {
 	 */
 	@Test
 	public void testBugRegistration() {
-		Registry registry = Registry.getNewInstanceForTestOnly();
-		registry.add(new MyBuggyRemoteProxy(req));
-		registry.add(new MyBuggyRemoteProxy(req));
+		Registry registry = new Registry();
+		registry.add(new MyBuggyRemoteProxy(req,registry));
+		registry.add(new MyBuggyRemoteProxy(req,registry));
 
 		Assert.assertEquals(registry.getAllProxies().size(), 1);
 	}
@@ -104,8 +104,8 @@ public class RegistrationListenerTest {
 	static boolean slowRemoteUp = false;
 
 	class MySlowRemoteProxy extends RemoteProxy implements RegistrationListener {
-		public MySlowRemoteProxy(RegistrationRequest request) {
-			super(request);
+		public MySlowRemoteProxy(RegistrationRequest request,Registry registry) {
+			super(request,registry);
 		}
 
 		public void beforeRegistration() {
@@ -118,7 +118,7 @@ public class RegistrationListenerTest {
 		}
 	}
 
-	Registry registry = Registry.getNewInstanceForTestOnly();
+	Registry registry = new Registry();
 
 	/**
 	 * register a regular proxy for app1 and a slow one.
@@ -128,10 +128,10 @@ public class RegistrationListenerTest {
 	 */
 	@Test(timeout=2000)
 	public void registerSomeSlow() {
-		registry.add(new RemoteProxy(req));
+		registry.add(new RemoteProxy(req,registry));
 		new Thread(new Runnable() {
 			public void run() {
-				registry.add(new MySlowRemoteProxy(req));
+				registry.add(new MySlowRemoteProxy(req,registry));
 			}
 		}).start();
 

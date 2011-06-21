@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.grid.e2e.utils.GridConfigurationMock;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
@@ -24,12 +24,16 @@ import com.thoughtworks.selenium.Selenium;
  * 
  */
 public class MultiRCTest {
-	private Hub hub = Hub.getNewInstanceForTest(PortProber.findFreePort(), Registry.getNewInstanceForTestOnly());
-	private URL hubURL = hub.getUrl();
+	private Hub hub;
+	private URL hubURL;
 	List<Selenium> seleniums = new ArrayList<Selenium>();
 
 	@BeforeClass(alwaysRun = true)
 	public void prepare() throws Exception {
+		GridHubConfiguration config = new GridHubConfiguration();
+		config.setPort(PortProber.findFreePort());
+		hub = new Hub(config);
+		hubURL = hub.getUrl();
 		hub.start();
 
 		for (int i = 0; i < 5; i++) {

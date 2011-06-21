@@ -18,7 +18,7 @@ public class RemoteProxyFactory {
 	 * @param registry
 	 * @return
 	 */
-	public static RemoteProxy getNewBasicRemoteProxy(String appName, String url) {
+	public static RemoteProxy getNewBasicRemoteProxy(String appName, String url,Registry registry) {
 
 		RegistrationRequest req = new RegistrationRequest();
 
@@ -29,7 +29,7 @@ public class RemoteProxyFactory {
 		Map<String, Object> config = new HashMap<String, Object>();
 		config.put("url", url);
 		req.setConfiguration(config);
-		return new RemoteProxy(req);
+		return new RemoteProxy(req,registry);
 
 	}
 
@@ -42,7 +42,7 @@ public class RemoteProxyFactory {
 	 * @param registry
 	 * @return
 	 */
-	public static RemoteProxy getNewBasicRemoteProxy(Map<String, Object> cap, String url) {
+	public static RemoteProxy getNewBasicRemoteProxy(Map<String, Object> cap, String url,Registry registry) {
 
 		RegistrationRequest req = new RegistrationRequest();
 
@@ -51,7 +51,7 @@ public class RemoteProxyFactory {
 		Map<String, Object> config = new HashMap<String, Object>();
 		config.put("url", url);
 		req.setConfiguration(config);
-		return new RemoteProxy(req);
+		return new RemoteProxy(req,registry);
 
 	}
 
@@ -64,7 +64,7 @@ public class RemoteProxyFactory {
 	 * @param registry
 	 * @return
 	 */
-	public static RemoteProxy getNewBasicRemoteProxy(List<Map<String, Object>> caps, String url) {
+	public static RemoteProxy getNewBasicRemoteProxy(List<Map<String, Object>> caps, String url,Registry registry) {
 
 		RegistrationRequest req = new RegistrationRequest();
 
@@ -73,7 +73,7 @@ public class RemoteProxyFactory {
 		Map<String, Object> config = new HashMap<String, Object>();
 		config.put("url", url);
 		req.setConfiguration(config);
-		return new RemoteProxy(req);
+		return new RemoteProxy(req,registry);
 
 	}
 

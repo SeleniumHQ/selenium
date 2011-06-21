@@ -65,7 +65,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
 		log.fine("getting the following registration request  : " + registrationRequest.toString());
 
 		RegistrationRequest server = RegistrationRequest.getNewInstance(registrationRequest.toString());
-		final RemoteProxy proxy = RemoteProxy.getNewInstance(server);
+		final RemoteProxy proxy = RemoteProxy.getNewInstance(server,getRegistry());
 		reply(response, "ok");
 
 		new Thread(new Runnable() {

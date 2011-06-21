@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
@@ -31,8 +32,8 @@ import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 
 public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListener {
 
-	public SeleniumRemoteProxy(RegistrationRequest request) {
-		super(request);
+	public SeleniumRemoteProxy(RegistrationRequest request,Registry regidtry) {
+		super(request,regidtry);
 	}
 
 	private static final Logger log = Logger.getLogger(SeleniumRemoteProxy.class.getName());

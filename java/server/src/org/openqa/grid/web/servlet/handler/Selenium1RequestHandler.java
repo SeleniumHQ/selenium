@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.utils.BrowserNameUtils;
 
 /**
@@ -38,9 +37,9 @@ import org.openqa.grid.web.utils.BrowserNameUtils;
  */
 public class Selenium1RequestHandler extends RequestHandler {
 
-    private static final Logger log = Logger.getLogger(Selenium1RequestHandler.class.getName());
+	private static final Logger log = Logger.getLogger(Selenium1RequestHandler.class.getName());
 
-    Selenium1RequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
+	Selenium1RequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
 		super(request, response, registry);
 		if (getRequestBody() == null) {
 			throw new InstantiationError("Cannot create a selenium1 request handler from a request without body");
@@ -93,16 +92,18 @@ public class Selenium1RequestHandler extends RequestHandler {
 				// TODO freynaud : more splitting, like trying to guess the
 				// plateform or version ?
 
-                // We don't want to process Grid 1.0 environment names because they use an explicit mapping
-                // to a browser launcher string.
-                if (Hub.getGrid1Mapping().containsKey(envt)) {
-                    cap.put(RegistrationRequest.BROWSER, envt);
-                }
+				// We don't want to process Grid 1.0 environment names because
+				// they use an explicit mapping
+				// to a browser launcher string.
+				if (getRegistry().getConfiguration().getGrid1Mapping().containsKey(envt)) {
+					cap.put(RegistrationRequest.BROWSER, envt);
+				}
 
-                // Otherwise, process the environment string to extract the target browser and platform.
-                else {
-                    cap.putAll(BrowserNameUtils.parseGrid2Environment(envt));
-                }
+				// Otherwise, process the environment string to extract the
+				// target browser and platform.
+				else {
+					cap.putAll(BrowserNameUtils.parseGrid2Environment(envt));
+				}
 
 				return cap;
 			}
@@ -111,7 +112,8 @@ public class Selenium1RequestHandler extends RequestHandler {
 		throw new RuntimeException("Error");
 	}
 
-	// TODO freynaud do some real parsing here instead. BrowserString to Capabilities service or so.
+	// TODO freynaud do some real parsing here instead. BrowserString to
+	// Capabilities service or so.
 	@Override
 	public String forwardNewSessionRequest(TestSession session) {
 		String responseBody = null;
@@ -124,18 +126,20 @@ public class Selenium1RequestHandler extends RequestHandler {
 			for (String piece : pieces) {
 				if (piece.startsWith("1=")) {
 					piece = URLDecoder.decode(piece, "UTF-8");
-                    String parts[] = piece.split("1=");
+					String parts[] = piece.split("1=");
 
-                    // We don't want to process Grid 1.0 environment names because they use an explicit mapping
-                    // to a browser launcher string.
-                    if (Hub.getGrid1Mapping().containsKey(parts[1])) {
-                        piece = String.format("1=%s", URLEncoder.encode(BrowserNameUtils.lookupGrid1Environment(parts[1]), "UTF-8"));
-                    }
+					// We don't want to process Grid 1.0 environment names
+					// because they use an explicit mapping
+					// to a browser launcher string.
+					if (getRegistry().getConfiguration().getGrid1Mapping().containsKey(parts[1])) {
+						piece = String.format("1=%s", URLEncoder.encode(BrowserNameUtils.lookupGrid1Environment(parts[1], getRegistry()), "UTF-8"));
+					}
 
-                    // Otherwise, the requested environment includes the browser name before the space.
-                    else {
-                        piece = (String) BrowserNameUtils.parseGrid2Environment(piece).get(RegistrationRequest.BROWSER);
-                    }
+					// Otherwise, the requested environment includes the browser
+					// name before the space.
+					else {
+						piece = (String) BrowserNameUtils.parseGrid2Environment(piece).get(RegistrationRequest.BROWSER);
+					}
 				}
 				builder.append(piece + "&");
 			}

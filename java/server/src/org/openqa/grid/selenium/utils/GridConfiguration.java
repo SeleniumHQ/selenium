@@ -110,9 +110,6 @@ public class GridConfiguration {
 	}
 
 	private void setFile(String v) {
-		if (role != GridRole.WEBDRIVER) {
-			throw new RuntimeException("Setting a file as config for a node is only for webdriver.");
-		}
 		this.file = v;
 	}
 

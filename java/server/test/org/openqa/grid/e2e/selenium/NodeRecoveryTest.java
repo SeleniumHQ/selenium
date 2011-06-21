@@ -2,8 +2,8 @@ package org.openqa.grid.e2e.selenium;
 
 
 import org.openqa.grid.e2e.utils.GridConfigurationMock;
-import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
 import org.openqa.grid.selenium.utils.GridConfiguration;
 import org.openqa.grid.web.Hub;
@@ -26,7 +26,10 @@ public class NodeRecoveryTest {
 
 	@BeforeClass(alwaysRun = true)
 	public void setup() throws Exception {
-		hub = Hub.getNewInstanceForTest(PortProber.findFreePort(), Registry.getNewInstanceForTestOnly());
+		GridHubConfiguration config = new GridHubConfiguration();
+		config.setPort(PortProber.findFreePort());
+		hub = new Hub(config);
+		
 		hub.start();
 
 		proxy = GridConfigurationMock.seleniumConfig(hub.getRegistrationURL());

@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.web.Hub;
+import org.openqa.grid.internal.Registry;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -30,8 +30,9 @@ import com.google.common.collect.Maps;
  * Utilities for dealing with browser names.
  */
 public class BrowserNameUtils {
-	public static String lookupGrid1Environment(String browserString) {
-		String translatedBrowserString = Hub.getGrid1Mapping().get(browserString);
+	
+	public static String lookupGrid1Environment(String browserString,Registry registry) {
+		String translatedBrowserString = registry.getConfiguration().getGrid1Mapping().get(browserString);
 
 		return (translatedBrowserString == null) ? browserString : translatedBrowserString;
 	}
@@ -55,7 +56,7 @@ public class BrowserNameUtils {
 		return ret;
 	}
 
-	public static String consoleIconName(DesiredCapabilities cap) {
+	public static String consoleIconName(DesiredCapabilities cap,Registry registry) {
 		String browserString =cap.getBrowserName();
 		if (browserString == null || "".endsWith(browserString)){
 			return "missingBrowserName";
@@ -65,7 +66,7 @@ public class BrowserNameUtils {
 
 		// Take care of any Grid 1.0 named environment translation.
 		if (browserString.charAt(0) != '*') {
-			browserString = lookupGrid1Environment(browserString);
+			browserString = lookupGrid1Environment(browserString,registry);
 		}
 
 		// Map browser environments to icon names.
@@ -100,8 +101,8 @@ public class BrowserNameUtils {
 	 * @param cap
 	 * @return
 	 */
-	public static String getConsoleIconPath(DesiredCapabilities cap) {
-		String name = consoleIconName(cap);
+	public static String getConsoleIconPath(DesiredCapabilities cap,Registry registry) {
+		String name = consoleIconName(cap,registry);
 		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("images/"+name+".png");
 		if (in == null){
 			return null;

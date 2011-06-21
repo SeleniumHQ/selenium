@@ -10,15 +10,17 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 
 
 
 public class RemoteProxyInheritanceTest {
 
-	
+	private Registry registry = new Registry();
 	@Test
 	public void defaultToRemoteProxy() {
+		
 		RegistrationRequest req = new RegistrationRequest();
 		Map<String, Object> app1 = new HashMap<String, Object>();
 		Map<String, Object> config = new HashMap<String, Object>();
@@ -29,7 +31,7 @@ public class RemoteProxyInheritanceTest {
 		req.setConfiguration(config);
 
 		// requires Custom1 & Custom1 set in config to work.
-		RemoteProxy p = RemoteProxy.getNewInstance(req);
+		RemoteProxy p = RemoteProxy.getNewInstance(req,registry);
 		Assert.assertEquals( RemoteProxy.class,p.getClass());
 	}
 	
@@ -49,7 +51,7 @@ public class RemoteProxyInheritanceTest {
 		req.addDesiredCapabilitiy(app1);
 		req.setConfiguration(config);
 
-		RemoteProxy p = RemoteProxy.getNewInstance(req);
+		RemoteProxy p = RemoteProxy.getNewInstance(req,registry);
 
 		Assert.assertEquals(p.getClass(), MyRemoteProxy.class);
 		MyRemoteProxy myRemoteProxy = (MyRemoteProxy) p;
@@ -72,7 +74,7 @@ public class RemoteProxyInheritanceTest {
 		req.addDesiredCapabilitiy(app1);
 		req.setConfiguration(config);
 
-		RemoteProxy.getNewInstance(req);
+		RemoteProxy.getNewInstance(req,registry);
 	}
 	
 	@Test(expected=InvalidParameterException.class)
@@ -88,7 +90,7 @@ public class RemoteProxyInheritanceTest {
 		req.addDesiredCapabilitiy(app1);
 		req.setConfiguration(config);
 
-		RemoteProxy.getNewInstance(req);
+		RemoteProxy.getNewInstance(req,registry);
 	}
 	
 	// when some mandatory param are missing -> InvalidParameterException
@@ -105,7 +107,7 @@ public class RemoteProxyInheritanceTest {
 		req.setConfiguration(config);
 
 		// requires Custom1 & Custom1 set in config to work.
-		RemoteProxy.getNewInstance(req);
+		RemoteProxy.getNewInstance(req,registry);
 	}
 	
 	

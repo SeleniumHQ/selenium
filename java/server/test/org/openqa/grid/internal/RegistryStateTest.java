@@ -53,9 +53,11 @@ public class RegistryStateTest {
 
 	@Test
 	public void sessionIsRemoved() throws InterruptedException {
-		RemoteProxy p1 = new RemoteProxy(req);
+		Registry registry = new Registry();
 		
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		RemoteProxy p1 = new RemoteProxy(req,registry);
+		
+		
 
 		try {
 			registry.add(p1);
@@ -73,8 +75,9 @@ public class RegistryStateTest {
 
 	@Test(timeout = 5000)
 	public void basichecks() throws InterruptedException {
-		RemoteProxy p1 = new RemoteProxy(req);
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		Registry registry = new Registry();
+		RemoteProxy p1 = new RemoteProxy(req,registry);
+		
 		try {
 			registry.add(p1);
 
@@ -101,8 +104,9 @@ public class RegistryStateTest {
 
 	@Test(timeout=4000)
 	public void sessionIsRemoved2() throws InterruptedException {
-		RemoteProxy p1 = new RemoteProxy(req);
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		Registry registry = new Registry();
+		RemoteProxy p1 = new RemoteProxy(req,registry);
+		
 		try {
 			registry.add(p1);
 
@@ -119,8 +123,9 @@ public class RegistryStateTest {
 
 	@Test(timeout=4000)
 	public void sessionByExtKey() throws InterruptedException {
-		RemoteProxy p1 = new RemoteProxy(req);
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		Registry registry = new Registry();
+		RemoteProxy p1 = new RemoteProxy(req,registry);
+		
 		try {
 			registry.add(p1);
 
@@ -146,8 +151,9 @@ public class RegistryStateTest {
 
 	@Test
 	public void sessionByExtKeyNull() {
-		RemoteProxy p1 = new RemoteProxy(req);
-		Registry registry = Registry.getNewInstanceForTestOnly();
+		Registry registry = new Registry();
+		RemoteProxy p1 = new RemoteProxy(req,registry);
+		
 		try {
 			registry.add(p1);
 

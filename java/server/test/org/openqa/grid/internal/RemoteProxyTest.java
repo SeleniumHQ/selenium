@@ -22,17 +22,19 @@ public class RemoteProxyTest {
 
 	private static Map<String, Object> app1Capability = new HashMap<String, Object>();
 	private static Map<String, Object> app2Capability = new HashMap<String, Object>();
-
+	private static Registry registry = new Registry();
+	
 	@BeforeClass
 	public static void setup() {
+		
 		app1Capability.put(APP, "app1");
 		app2Capability.put(APP, "app2");
 
-		p1 = RemoteProxyFactory.getNewBasicRemoteProxy(app1Capability, "http://machine1:4444/");
+		p1 = RemoteProxyFactory.getNewBasicRemoteProxy(app1Capability, "http://machine1:4444/",registry);
 		List<Map<String, Object>> caps = new ArrayList<Map<String,Object>>();
 		caps.add(app1Capability);
 		caps.add(app2Capability);
-		p2 = RemoteProxyFactory.getNewBasicRemoteProxy(caps, "http://machine4:4444/");
+		p2 = RemoteProxyFactory.getNewBasicRemoteProxy(caps, "http://machine4:4444/",registry);
 
 	}
 
@@ -54,7 +56,7 @@ public class RemoteProxyTest {
 		request.addDesiredCapabilitiy(cap);
 		request.setConfiguration(config);
 
-		new RemoteProxy(request);
+		new RemoteProxy(request,registry);
 	}
 	
 	

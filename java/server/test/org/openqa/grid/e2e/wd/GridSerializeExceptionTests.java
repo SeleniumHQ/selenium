@@ -4,8 +4,7 @@ import java.net.URL;
 
 import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.exception.CapabilityNotPresentOnTheGridException;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriverException;
@@ -20,11 +19,17 @@ public class GridSerializeExceptionTests {
 
 	
 	
-	private Hub hub = Hub.getNewInstanceForTest(PortProber.findFreePort(), Registry.getNewInstanceForTestOnly());
-	private URL hubURL = hub.getUrl();
+	private Hub hub;
+	private URL hubURL;
 
 	@BeforeClass(alwaysRun = false)
 	public void prepare() throws Exception {
+		
+		GridHubConfiguration config = new GridHubConfiguration();
+		config.setPort(PortProber.findFreePort());
+		hub = new Hub(config);
+		hubURL = hub.getUrl();
+		
 		hub.start();
 
 		SelfRegisteringRemote remote = SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
@@ -34,14 +39,10 @@ public class GridSerializeExceptionTests {
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}
 
-	@Test(expectedExceptions=CapabilityNotPresentOnTheGridException.class)
+	@Test(expectedExceptions=WebDriverException.class)
 	public void testwebdriver() throws Throwable {
 		DesiredCapabilities ff = DesiredCapabilities.firefox();
-		try {
-			new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
-		} catch (WebDriverException e) {
-			throw e.getCause();
-		}	
+		new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);	
 	}
 
 	@AfterClass(alwaysRun = false)

@@ -1,10 +1,8 @@
 package org.openqa.grid.e2e.misc;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.concurrent.Callable;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -13,22 +11,23 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.openqa.grid.e2e.utils.GridConfigurationMock;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.selenium.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.TestWaiter;
 import org.openqa.selenium.net.PortProber;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class Grid1HeartbeatTests {
-	private Hub hub = Hub.getNewInstanceForTest(PortProber.findFreePort(), Registry.getNewInstanceForTestOnly());
+	private Hub hub;
 
 	@BeforeClass(alwaysRun = true)
 	public void setup() throws Exception {
+		GridHubConfiguration config = new GridHubConfiguration();
+		config.setPort(PortProber.findFreePort());
+		hub = new Hub(config);
 		hub.start();
-		System.out.println(hub.getRegistrationURL());
 	}
 
 	@Test

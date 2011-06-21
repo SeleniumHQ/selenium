@@ -74,7 +74,7 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
 	}
 
 	private String getIcon(Map<String, Object> capabilities) {
-		return BrowserNameUtils.getConsoleIconPath(new DesiredCapabilities(capabilities));
+		return BrowserNameUtils.getConsoleIconPath(new DesiredCapabilities(capabilities),proxy.getRegistry());
 	}
 
 }

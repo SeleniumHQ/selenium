@@ -2,6 +2,7 @@ package org.openqa.grid.internal;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openqa.grid.internal.configuration.Grid1ConfigurationLoaderTest;
 import org.openqa.grid.internal.listener.RegistrationListenerTest;
 import org.openqa.grid.internal.listener.SessionListenerTest;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcherTest;
@@ -26,7 +27,8 @@ import org.openqa.grid.plugin.RemoteProxyInheritanceTest;
 	DefaultCapabilityMatcherTest.class,
 	SessionListenerTest.class,
 	RegistrationListenerTest.class,
-	StatusServletTests.class
+	StatusServletTests.class,
+	Grid1ConfigurationLoaderTest.class
 }
 )
 public class GridInternalTestSuite {

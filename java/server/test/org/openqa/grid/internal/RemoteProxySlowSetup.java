@@ -15,12 +15,12 @@ public class RemoteProxySlowSetup {
 	private static Registry registry;
 
 	@BeforeClass
-	public static   void setup() {
-		registry = Registry.getNewInstanceForTestOnly();
+	public static void setup() {
+		registry = new Registry();
 		// create 2 proxy that are equal and have a slow onRegistration
 		// p1.equals(p2) = true
-		p1 = new SlowRemoteSetup();
-		p2 = new SlowRemoteSetup();
+		p1 = new SlowRemoteSetup(registry);
+		p2 = new SlowRemoteSetup(registry);
 	}
 
 	// the first onRegistration should be executed, but the 2nd shouldn't.
@@ -37,17 +37,13 @@ public class RemoteProxySlowSetup {
 			}
 		}).start();
 		Thread.sleep(1500);
-		
+
 		// check that the beforeRegistration has only been called once.
 		Assert.assertFalse(SlowRemoteSetup.error);
 		// and there is only 1 proxy registered at the end.
-		Assert.assertEquals(1,registry.getAllProxies().size());
+		Assert.assertEquals(1, registry.getAllProxies().size());
 
 	}
-
-	
-
-	
 
 	@AfterClass
 	public static void teardown() {
@@ -55,23 +51,22 @@ public class RemoteProxySlowSetup {
 	}
 }
 
-
 class SlowRemoteSetup extends RemoteProxy implements RegistrationListener {
 
 	boolean flag = false;
 	static boolean error = false;
-	
-	// update flag to true. It should happen only once, so if flag is already true, set error to true.
-	private synchronized void updateFlag(){
-		if (flag){
+
+	// update flag to true. It should happen only once, so if flag is already
+	// true, set error to true.
+	private synchronized void updateFlag() {
+		if (flag) {
 			error = true;
 		}
 		flag = true;
 	}
-	
-	
-	public SlowRemoteSetup() {
-		super(new RegistrationRequest());
+
+	public SlowRemoteSetup(Registry registry) {
+		super(new RegistrationRequest(), registry);
 	}
 
 	public void beforeRegistration() {

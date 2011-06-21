@@ -39,12 +39,12 @@ public class ConcurrencyLock {
 	 */
 	@BeforeClass
 	public static void setup() {
-		registry = Registry.getNewInstanceForTestOnly();
+		registry =  new Registry();
 		ie.put(APP, "IE");
 		ff.put(APP, "FF");
 
-		p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ie, "http://machine1:4444");
-		p2 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine2:4444");
+		p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ie, "http://machine1:4444",registry);
+		p2 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine2:4444",registry);
 		registry.add(p1);
 		registry.add(p2);
 

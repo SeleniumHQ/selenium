@@ -30,6 +30,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHttpRequest;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.RemoteException;
@@ -42,8 +43,8 @@ import org.openqa.grid.selenium.utils.WebProxyHtmlRenderer;
 
 public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListener, SelfHealingProxy, CommandListener {
 
-	public WebRemoteProxy(RegistrationRequest request) {
-		super(request);
+	public WebRemoteProxy(RegistrationRequest request,Registry registry) {
+		super(request,registry);
 	}
 
 	public abstract void beforeRelease(TestSession session);
