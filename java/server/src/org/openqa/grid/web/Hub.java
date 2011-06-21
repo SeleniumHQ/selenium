@@ -228,10 +228,14 @@ public class Hub {
             Integer cleanupCycle = hub.get("remoteControlPollingIntervalInSeconds") == null ? 180 : (Integer) hub.get("remoteControlPollingIntervalInSeconds");
             grid1Config.put("cleanupCycle", cleanupCycle * 1000);
 
+            
             Integer timeout = hub.get("sessionMaxIdleTimeInSeconds") == null ? 300 : (Integer) hub.get("sessionMaxIdleTimeInSeconds");
             grid1Config.put("timeout", timeout * 1000);
 
-            grid1Config.put("newSessionWaitTimeout", ((Integer) hub.get("newSessionMaxWaitTimeInSeconds")) * 1000);
+            if ( hub.get("newSessionMaxWaitTimeInSeconds")!=null){
+            	grid1Config.put("newSessionWaitTimeout", ((Integer) hub.get("newSessionMaxWaitTimeInSeconds")) * 1000);	
+            }
+            
 		} else {
 			log.info("Did not find a Grid 1.0 configuration file.  Skipping Grid 1.0 setup.");
 		}
