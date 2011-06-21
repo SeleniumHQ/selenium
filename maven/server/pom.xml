@@ -29,37 +29,7 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-android-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-chrome-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-firefox-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-htmlunit-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-ie-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-iphone-driver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-support</artifactId>
+            <artifactId>selenium-java</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -97,8 +67,8 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <tasks>
-                                <!-- Extract everything but the *.class files and MANIFEST.MF from server-nodeps.jar to target/temp ... -->
-                                <unjar src="../../build/java/server/src/org/openqa/selenium/server/server-nodeps.jar" dest="target/temp">
+                                <!-- Extract everything but the *.class files and MANIFEST.MF from selenium-nodeps.jar to target/temp ... -->
+                                <unjar src="../../build/java/server/src/org/openqa/grid/selenium/selenium-nodeps.jar" dest="target/temp">
                                     <patternset>
                                         <exclude name="**/*.class" />
                                         <exclude name="META-INF/MANIFEST.MF" />
@@ -112,6 +82,7 @@
                                                 <present targetdir="../chrome-driver/target/classes" />
                                                 <present targetdir="../firefox-driver/target/classes" />
                                                 <present targetdir="../ie-driver/target/classes" />
+                                                <present targetdir="../java/target/classes" />
                                             </or>
                                         </not>
                                         <exclude name="build.desc" />

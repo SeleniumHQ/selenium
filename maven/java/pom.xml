@@ -46,7 +46,6 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-support</artifactId>
             <version>${project.version}</version>
-            <optional>true</optional>
         </dependency>
         <!-- We need JUnit for SeleneseTestCase ... -->
         <dependency>
@@ -79,6 +78,7 @@
                                         <include name="**/*.java" />
                                         <not>
                                             <or>
+                                                <present targetdir="../android-driver/src/main/java" />
                                                 <present targetdir="../api/src/main/java" />
                                                 <present targetdir="../chrome-driver/src/main/java" />
                                                 <present targetdir="../firefox-driver/src/main/java" />
@@ -89,7 +89,6 @@
                                                 <present targetdir="../support/src/main/java" />
                                             </or>
                                         </not>
-                                        <exclude name="org/openqa/selenium/android/**" />
                                     </fileset>
                                 </copy>
                             </tasks>
@@ -108,6 +107,7 @@
                                     <patternset>
                                         <include name="scripts/selenium/*.js" />
                                         <include name="**/seleniumemulation/*.js" />
+                                        <include name="org/openqa/selenium/internal/build.properties" />
                                     </patternset>
                                 </unjar>
                             </tasks>
