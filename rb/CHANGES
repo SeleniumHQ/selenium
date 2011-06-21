@@ -1,9 +1,12 @@
 0.2.2 (???)
 ==================
 
-* Deprecate Element#{toggle,select}
+* Deprecate Element#{toggle,select,drag_and_drop_*}
 * Chrome.path= now sets the path to Chrome, Chrome.driver_path= the path to the chromedriver server.
-
+* Fix argument names in Mouse#move_to and Mouse#move_by.
+* Support Firefox 5
+* Chrome and Firefox drivers now includes the HasInputDevices module.
+* Selenium::Rake::ServerTask now works with Rake 0.9.
 
 0.2.1 (2011-06-01)
 ==================
@@ -29,7 +32,7 @@
 * Fix bug where locators would fail if Object.prototype had been modified.
 * Various IE fixes
   - Issues: #698, #1444
-  - Improved handling of showModalDialog() 
+  - Improved handling of showModalDialog()
   - Full-size screenshots
 * Allow users to override the dom.max_script_run_time preference in Firefox.
 * Removed DesiredCapabilities.safari, which was never supported anyway.
