@@ -21,8 +21,16 @@
 goog.provide('webdriver.inject');
 
 goog.require('bot.inject');
-goog.require('goog.json')
+goog.require('bot.inject.cache');
 
+/**
+ * Wrapper to allow passing a seliazed window object to executeScript.
+ *
+ * @param fn {!string} The function to execute
+ * @param args {Array.<*>} Array of arguments to pass to fn.
+ * @param opt_window {!{bot.inject.WINDOW_KEY:string}=} The serialized window
+ * object to be read from the cache.
+ */
 webdriver.inject.executeScript = function(fn, args, opt_window) {
   var win;
   try {

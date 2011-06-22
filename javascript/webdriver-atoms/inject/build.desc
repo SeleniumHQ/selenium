@@ -1,12 +1,13 @@
 
 js_binary(name = "webdriver-inject",
   deps = [
-    ":deps"
+    ":deps",
   ])
 
 js_deps(name = "deps",
   srcs = "*.js",
-  deps = "//javascript/atoms:deps")
+  deps = ["//javascript/atoms:deps",
+          "//javascript/webdriver-atoms:deps"])
 
 js_test(name = "test",
   srcs = [

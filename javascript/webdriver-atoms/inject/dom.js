@@ -22,7 +22,7 @@ goog.provide('webdriver.inject.dom');
 goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('bot.inject');
-goog.require('webdriver.element')
+goog.require('webdriver.element');
 
 /**
  * Gets the visisble text for the given element.

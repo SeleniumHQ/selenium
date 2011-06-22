@@ -20,7 +20,7 @@
 goog.provide('webdriver.inject.frame');
 
 goog.require('bot.frame');
-goog.require('webdriver.inject');
+goog.require('bot.inject');
 goog.require('bot.inject.cache');
 
 
@@ -34,7 +34,7 @@ goog.require('bot.inject.cache');
  *     the wire protocol.
  */
 webdriver.inject.frame.findFrameByIdOrName = function(idOrName, opt_root) {
-  return webdriver.inject.executeScript(bot.frame.findFrameByIdOrName,
+  return bot.inject.executeScript(bot.frame.findFrameByIdOrName,
       [idOrName, opt_root], true);
 };
 
@@ -49,7 +49,7 @@ webdriver.inject.frame.findFrameByIdOrName = function(idOrName, opt_root) {
  *     the wire protocol.
  */
 webdriver.inject.frame.findFrameByIndex = function(index, opt_root) {
-  return webdriver.inject.executeScript(bot.frame.findFrameByIndex,
+  return bot.inject.executeScript(bot.frame.findFrameByIndex,
       [index, opt_root], true);
 };
 
@@ -59,7 +59,7 @@ webdriver.inject.frame.findFrameByIndex = function(index, opt_root) {
  * which is the top window.
  */
 webdriver.inject.frame.defaultContent = function() {
-  return webdriver.inject.executeScript(bot.frame.defaultContent,
+  return bot.inject.executeScript(bot.frame.defaultContent,
       [], true);
 };
 
@@ -70,6 +70,6 @@ webdriver.inject.frame.defaultContent = function() {
  * wrapped in a JSON string as defined by the wire protocol.
  */
 webdriver.inject.frame.getFrameWindow = function(element) {
-  return webdriver.inject.executeScript(bot.frame.getFrameWindow,
+  return bot.inject.executeScript(bot.frame.getFrameWindow,
       [element], true);
 };
