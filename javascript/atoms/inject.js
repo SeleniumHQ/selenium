@@ -193,7 +193,7 @@ bot.inject.recompileFunction_ = function(fn, theWindow) {
 };
 
 
-/*
+/**
  * Executes an injected script. This function should never be called from
  * within JavaScript itself. Instead, it is used from an external source that
  * is injecting a script for execution.
