@@ -49,7 +49,7 @@ public class Registry {
 
 	private static final Logger log = Logger.getLogger(Registry.class.getName());
 
-	private List<RequestHandler> newSessionRequests = new ArrayList<RequestHandler>();
+	private List<RequestHandler> newSessionRequests = new CopyOnWriteArrayList<RequestHandler>();
 
 	private Hub hub;
 
