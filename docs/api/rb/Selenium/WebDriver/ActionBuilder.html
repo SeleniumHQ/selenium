@@ -3,16 +3,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Class: Selenium::WebDriver::ActionBuilder</title>
-<link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
-<link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+<title>
+  Class: Selenium::WebDriver::ActionBuilder
+  
+    &mdash; Documentation by YARD 0.7.1
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   relpath = '../..';
   if (relpath != '') relpath += '/';
 </script>
-<script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
-<script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
 
   </head>
   <body>
@@ -33,11 +43,14 @@
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Class List</a>
-  <a id="method_list_link" href="#">Method List</a>
-  <a id ="file_list_link" href="#">File List</a>
+  
+    <a id="class_list_link" href="#">Class List</a>
+  
+    <a id="method_list_link" href="#">Method List</a>
+  
+    <a id="file_list_link" href="#">File List</a>
+  
 </div>
-
       <div class="clear"></div>
     </div>
     
@@ -78,6 +91,36 @@
   
 </dl>
 <div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+The ActionBuilder provides the user a way to set up and perform complex
+user interactions.
+</p>
+<p>
+This class should not be instantiated directly, but is created by
+Selenium::WebDriver::DriverExtensions::HasInputDevices#action, which is
+available on Driver instances that support the user interaction API.
+</p>
+<p>
+Example:
+</p>
+<pre class="code">
+ <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='key_down identifier id'>key_down</span><span class='lparen token'>(</span><span class='symbol val'>:shift</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+               <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+               <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='second_element identifier id'>second_element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+               <span class='key_up identifier id'>key_up</span><span class='lparen token'>(</span><span class='symbol val'>:shift</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+               <span class='drag_and_drop identifier id'>drag_and_drop</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='third_element identifier id'>third_element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+               <span class='perform identifier id'>perform</span>
+</pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
 
 
 
@@ -198,6 +241,27 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#drag_and_drop_by-instance_method" title="#drag_and_drop_by (instance method)">- (Object) <strong>drag_and_drop_by</strong>(source, right_by, down_by) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (ActionBuilder) <strong>initialize</strong>(mouse, keyboard) </a>
     
 
@@ -210,7 +274,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -266,7 +330,7 @@ A new instance of ActionBuilder.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#move_by-instance_method" title="#move_by (instance method)">- (Object) <strong>move_by</strong>(down_by, right_by) </a>
+      <a href="#move_by-instance_method" title="#move_by (instance method)">- (Object) <strong>move_by</strong>(right_by, down_by) </a>
     
 
     
@@ -287,7 +351,7 @@ A new instance of ActionBuilder.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#move_to-instance_method" title="#move_to (instance method)">- (Object) <strong>move_to</strong>(element, down_by = nil, right_by = nil) </a>
+      <a href="#move_to-instance_method" title="#move_to (instance method)">- (Object) <strong>move_to</strong>(element, right_by = nil, down_by = nil) </a>
     
 
     
@@ -383,7 +447,11 @@ A new instance of ActionBuilder.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>
 A new instance of ActionBuilder
 </p>
 
@@ -398,17 +466,17 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-5
-6
-7
-8
-9
-10
-11
-12</pre>
+28
+29
+30
+31
+32
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 5</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 28</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='mouse identifier id'>mouse</span><span class='comma token'>,</span> <span class='keyboard identifier id'>keyboard</span><span class='rparen token'>)</span>
   <span class='@devices ivar id'>@devices</span>    <span class='assign token'>=</span> <span class='lbrace token'>{</span>
@@ -444,13 +512,13 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-51
-52
-53
-54</pre>
+74
+75
+76
+77</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 74</span>
 
 <span class='def def kw'>def</span> <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
   <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:click</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
@@ -475,13 +543,13 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-41
-42
-43
-44</pre>
+64
+65
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 64</span>
 
 <span class='def def kw'>def</span> <span class='click_and_hold identifier id'>click_and_hold</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
   <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:down</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
@@ -506,13 +574,13 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-76
-77
-78
-79</pre>
+99
+100
+101
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 76</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 99</span>
 
 <span class='def def kw'>def</span> <span class='context_click identifier id'>context_click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
   <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:context_click</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
@@ -537,13 +605,13 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-56
-57
-58
-59</pre>
+79
+80
+81
+82</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 79</span>
 
 <span class='def def kw'>def</span> <span class='double_click identifier id'>double_click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
   <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:double_click</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
@@ -568,21 +636,58 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-81
-82
-83
-84
-85
-86
-87</pre>
+104
+105
+106
+107
+108
+109
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 104</span>
 
 <span class='def def kw'>def</span> <span class='drag_and_drop identifier id'>drag_and_drop</span><span class='lparen token'>(</span><span class='source identifier id'>source</span><span class='comma token'>,</span> <span class='target identifier id'>target</span><span class='rparen token'>)</span>
   <span class='click_and_hold identifier id'>click_and_hold</span> <span class='source identifier id'>source</span>
   <span class='move_to identifier id'>move_to</span>        <span class='target identifier id'>target</span>
   <span class='release identifier id'>release</span>        <span class='target identifier id'>target</span>
+
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="drag_and_drop_by-instance_method">
+  
+    - (<tt>Object</tt>) <strong>drag_and_drop_by</strong>(source, right_by, down_by) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+112
+113
+114
+115
+116
+117
+118</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 112</span>
+
+<span class='def def kw'>def</span> <span class='drag_and_drop_by identifier id'>drag_and_drop_by</span><span class='lparen token'>(</span><span class='source identifier id'>source</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
+  <span class='click_and_hold identifier id'>click_and_hold</span> <span class='source identifier id'>source</span>
+  <span class='move_by identifier id'>move_by</span>        <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span>
+  <span class='release identifier id'>release</span>
 
   <span class='self self kw'>self</span>
 <span class='end end kw'>end</span>
@@ -605,17 +710,17 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-14
-15
-16
-17
-18
-19
-20
-21</pre>
+37
+38
+39
+40
+41
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 37</span>
 
 <span class='def def kw'>def</span> <span class='key_down identifier id'>key_down</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='if if kw'>if</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='first identifier id'>first</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Element constant id'>Element</span>
@@ -644,17 +749,17 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-23
-24
-25
-26
-27
-28
-29
-30</pre>
+46
+47
+48
+49
+50
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 46</span>
 
 <span class='def def kw'>def</span> <span class='key_up identifier id'>key_up</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='if if kw'>if</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='first identifier id'>first</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Element constant id'>Element</span>
@@ -673,7 +778,7 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="move_by-instance_method">
   
-    - (<tt>Object</tt>) <strong>move_by</strong>(down_by, right_by) 
+    - (<tt>Object</tt>) <strong>move_by</strong>(right_by, down_by) 
   
 
   
@@ -683,16 +788,16 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-71
-72
-73
-74</pre>
+94
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 94</span>
 
-<span class='def def kw'>def</span> <span class='move_by identifier id'>move_by</span><span class='lparen token'>(</span><span class='down_by identifier id'>down_by</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='rparen token'>)</span>
-  <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:move_by</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='down_by identifier id'>down_by</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+<span class='def def kw'>def</span> <span class='move_by identifier id'>move_by</span><span class='lparen token'>(</span><span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
+  <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:move_by</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
   <span class='self self kw'>self</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -704,7 +809,7 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="move_to-instance_method">
   
-    - (<tt>Object</tt>) <strong>move_to</strong>(element, down_by = nil, right_by = nil) 
+    - (<tt>Object</tt>) <strong>move_to</strong>(element, right_by = nil, down_by = nil) 
   
 
   
@@ -714,22 +819,22 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-61
-62
-63
-64
-65
-66
-67
-68
-69</pre>
+84
+85
+86
+87
+88
+89
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 84</span>
 
-<span class='def def kw'>def</span> <span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='down_by identifier id'>down_by</span> <span class='andop op'>&amp;&amp;</span> <span class='right_by identifier id'>right_by</span>
-    <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:move_to</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+<span class='def def kw'>def</span> <span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='right_by identifier id'>right_by</span> <span class='andop op'>&amp;&amp;</span> <span class='down_by identifier id'>down_by</span>
+    <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:move_to</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
   <span class='else else kw'>else</span>
     <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:move_to</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
   <span class='end end kw'>end</span>
@@ -755,14 +860,14 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-89
-90
-91
-92
-93</pre>
+120
+121
+122
+123
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 120</span>
 
 <span class='def def kw'>def</span> <span class='perform identifier id'>perform</span>
   <span class='@actions ivar id'>@actions</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='receiver identifier id'>receiver</span><span class='comma token'>,</span> <span class='method identifier id'>method</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='bitor op'>|</span>
@@ -788,13 +893,13 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-46
-47
-48
-49</pre>
+69
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 69</span>
 
 <span class='def def kw'>def</span> <span class='release identifier id'>release</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
   <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:up</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
@@ -819,17 +924,17 @@ A new instance of ActionBuilder
       <pre class="lines">
 
 
-32
-33
-34
-35
-36
-37
-38
-39</pre>
+55
+56
+57
+58
+59
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 55</span>
 
 <span class='def def kw'>def</span> <span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='if if kw'>if</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='first identifier id'>first</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Element constant id'>Element</span>
@@ -850,9 +955,9 @@ A new instance of ActionBuilder
 </div>
     
     <div id="footer">
-  Generated on Wed Jun  1 21:07:54 2011 by 
+  Generated on Wed Jun 22 17:45:16 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.8 (ruby-1.8.7).
+  0.7.1 (ruby-1.8.7).
 </div>
 
   </body>

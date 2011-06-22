@@ -23,7 +23,7 @@ function createDefineLinks() {
     function() {
         $(this).prev().hide();
         $(this).parent().prev().height(tHeight);
-        $(this).text("more...")
+        $(this).text("more...");
     });
 }
 
@@ -38,7 +38,7 @@ function createFullTreeLinks() {
     function() {
         $(this).parent().toggleClass('showAll');
         $(this).parent().prev().height(tHeight);
-        $(this).text("show all")
+        $(this).text("show all");
     });
 }
 
@@ -93,13 +93,14 @@ function keyboardShortcuts() {
   if (window.top.frames.main) return;
   $(document).keypress(function(evt) {
     if (evt.altKey || evt.ctrlKey || evt.metaKey || evt.shiftKey) return;
-    if (typeof evt.orignalTarget !== "undefined" &&  
-        (evt.originalTarget.nodeName == "INPUT" || 
-        evt.originalTarget.nodeName == "TEXTAREA")) return;
+    if (typeof evt.target !== "undefined" &&
+        (evt.target.nodeName == "INPUT" ||
+        evt.target.nodeName == "TEXTAREA")) return;
     switch (evt.charCode) {
       case 67: case 99:  $('#class_list_link').click(); break;  // 'c'
       case 77: case 109: $('#method_list_link').click(); break; // 'm'
       case 70: case 102: $('#file_list_link').click(); break;   // 'f'
+      default: break;
     }
   });
 }
@@ -139,31 +140,32 @@ function fixOutsideWorldLinks() {
 }
 
 function generateTOC() {
-  if ($('#filecontents').length == 0) return;
+  if ($('#filecontents').length === 0) return;
   var _toc = $('<ol class="top"></ol>');
   var show = false;
   var toc = _toc;
   var counter = 0;
   var tags = ['h2', 'h3', 'h4', 'h5', 'h6'];
+  var i;
   if ($('#filecontents h1').length > 1) tags.unshift('h1');
-  for (i in tags) { tags[i] = '#filecontents ' + tags[i] }
-  var lastTag = parseInt(tags[0][1]);
+  for (i = 0; i < tags.length; i++) { tags[i] = '#filecontents ' + tags[i]; }
+  var lastTag = parseInt(tags[0][1], 10);
   $(tags.join(', ')).each(function() {
     if (this.id == "filecontents") return;
     show = true;
-    var thisTag = parseInt(this.tagName[1]);
-    if (this.id.length == 0) {
+    var thisTag = parseInt(this.tagName[1], 10);
+    if (this.id.length === 0) {
       var proposedId = $(this).text().replace(/[^a-z0-9-]/ig, '_');
-      if ($('#' + proposedId).length > 0) proposedId += counter++;
+      if ($('#' + proposedId).length > 0) { proposedId += counter; counter++; }
       this.id = proposedId;
     }
     if (thisTag > lastTag) { 
-      for (var i = 0; i < thisTag - lastTag; i++) { 
+      for (i = 0; i < thisTag - lastTag; i++) { 
         var tmp = $('<ol/>'); toc.append(tmp); toc = tmp; 
       } 
     }
     if (thisTag < lastTag) { 
-      for (var i = 0; i < lastTag - thisTag; i++) toc = toc.parent(); 
+      for (i = 0; i < lastTag - thisTag; i++) toc = toc.parent(); 
     }
     toc.append('<li><a href="#' + this.id + '">' + $(this).text() + '</a></li>');
     lastTag = thisTag;
@@ -185,7 +187,7 @@ function generateTOC() {
     $(this).text('float');
     $('#toc').toggleClass('nofloat');
   }, function() {
-    $(this).text('left')
+    $(this).text('left');
     $('#toc').toggleClass('nofloat');
   });
 }

@@ -3,16 +3,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Module: Selenium::WebDriver::DriverExtensions::HasInputDevices</title>
-<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
-<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+<title>
+  Module: Selenium::WebDriver::DriverExtensions::HasInputDevices
+  
+    &mdash; Documentation by YARD 0.7.1
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   relpath = '../../..';
   if (relpath != '') relpath += '/';
 </script>
-<script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
-<script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
 
   </head>
   <body>
@@ -33,11 +43,14 @@
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Class List</a>
-  <a id="method_list_link" href="#">Method List</a>
-  <a id ="file_list_link" href="#">File List</a>
+  
+    <a id="class_list_link" href="#">Class List</a>
+  
+    <a id="method_list_link" href="#">Method List</a>
+  
+    <a id="file_list_link" href="#">File List</a>
+  
 </div>
-
       <div class="clear"></div>
     </div>
     
@@ -46,7 +59,7 @@
     <div id="content"><h1>Module: Selenium::WebDriver::DriverExtensions::HasInputDevices
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 
 <dl class="box">
@@ -64,6 +77,20 @@
 </dl>
 <div class="clear"></div>
 
+<div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This module is part of a private API.</strong> 
+  You should avoid using this module if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+
 
 
 
@@ -78,7 +105,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#action-instance_method" title="#action (instance method)">- (Object) <strong>action</strong> </a>
+      <a href="#action-instance_method" title="#action (instance method)">- (ActionBuilder) <strong>action</strong> </a>
     
 
     
@@ -150,22 +177,43 @@
       <div class="method_details first">
   <p class="signature first" id="action-instance_method">
   
-    - (<tt>Object</tt>) <strong>action</strong> 
+    - (<tt><span class='object_link'><a href="../ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>action</strong> 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-11
-12
-13</pre>
+16
+17
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_input_devices.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_input_devices.rb', line 16</span>
 
 <span class='def def kw'>def</span> <span class='action identifier id'>action</span>
   <span class='ActionBuilder constant id'>ActionBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='mouse identifier id'>mouse</span><span class='comma token'>,</span> <span class='keyboard identifier id'>keyboard</span>
@@ -201,12 +249,12 @@
       <pre class="lines">
 
 
-27
-28
-29</pre>
+32
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_input_devices.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_input_devices.rb', line 32</span>
 
 <span class='def def kw'>def</span> <span class='keyboard identifier id'>keyboard</span>
   <span class='Keyboard constant id'>Keyboard</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='@bridge ivar id'>@bridge</span>
@@ -242,12 +290,12 @@
       <pre class="lines">
 
 
-19
-20
-21</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_input_devices.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_input_devices.rb', line 24</span>
 
 <span class='def def kw'>def</span> <span class='mouse identifier id'>mouse</span>
   <span class='Mouse constant id'>Mouse</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='@bridge ivar id'>@bridge</span>
@@ -263,9 +311,9 @@
 </div>
     
     <div id="footer">
-  Generated on Wed Jun  1 21:07:52 2011 by 
+  Generated on Wed Jun 22 17:45:17 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.8 (ruby-1.8.7).
+  0.7.1 (ruby-1.8.7).
 </div>
 
   </body>

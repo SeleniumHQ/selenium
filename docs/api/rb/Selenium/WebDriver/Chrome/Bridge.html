@@ -3,16 +3,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Class: Selenium::WebDriver::Chrome::Bridge</title>
-<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
-<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+<title>
+  Class: Selenium::WebDriver::Chrome::Bridge
+  
+    &mdash; Documentation by YARD 0.7.1
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   relpath = '../../..';
   if (relpath != '') relpath += '/';
 </script>
-<script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
-<script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
 
   </head>
   <body>
@@ -33,11 +43,14 @@
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Class List</a>
-  <a id="method_list_link" href="#">Method List</a>
-  <a id ="file_list_link" href="#">File List</a>
+  
+    <a id="class_list_link" href="#">Class List</a>
+  
+    <a id="method_list_link" href="#">Method List</a>
+  
+    <a id="file_list_link" href="#">File List</a>
+  
 </div>
-
       <div class="clear"></div>
     </div>
     
@@ -110,6 +123,19 @@
   
   
 
+
+  
+  
+  
+  <h2>Instance Attribute Summary</h2>
+  
+  <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Remote::Bridge</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Remote/Bridge.html#capabilities-instance_method" title="Selenium::WebDriver::Remote::Bridge#capabilities (method)">capabilities</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#context-instance_method" title="Selenium::WebDriver::Remote::Bridge#context (method)">context</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#http-instance_method" title="Selenium::WebDriver::Remote::Bridge#http (method)">http</a></span></p>
+
+  
+  
+  
+
   
     <h2>
       Instance Method Summary
@@ -131,7 +157,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -152,7 +178,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -173,7 +199,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -196,7 +222,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -220,7 +246,7 @@ A new instance of Bridge.
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -263,7 +289,11 @@ A new instance of Bridge.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>
 A new instance of Bridge
 </p>
 
@@ -308,7 +338,10 @@ A new instance of Bridge
 35
 36
 37
-38</pre>
+38
+39
+40
+41</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 8</span>
@@ -331,6 +364,9 @@ A new instance of Bridge
     <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span> <span class='string val'>'chrome.switches'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='switches identifier id'>switches</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span> <span class='rbrace token'>}</span>
   <span class='end end kw'>end</span>
 
+  <span class='if if kw'>if</span> <span class='Chrome constant id'>Chrome</span><span class='dot token'>.</span><span class='path identifier id'>path</span>
+    <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span> <span class='string val'>'chrome.binary'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Chrome constant id'>Chrome</span><span class='dot token'>.</span><span class='path identifier id'>path</span>
+  <span class='end end kw'>end</span>
 
   <span class='@service ivar id'>@service</span> <span class='assign token'>=</span> <span class='Service constant id'>Service</span><span class='dot token'>.</span><span class='default_service identifier id'>default_service</span>
   <span class='@service ivar id'>@service</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
@@ -364,18 +400,30 @@ A new instance of Bridge
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-40
-41
-42</pre>
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 43</span>
 
 <span class='def def kw'>def</span> <span class='browser identifier id'>browser</span>
   <span class='symbol val'>:chrome</span>
@@ -393,18 +441,30 @@ A new instance of Bridge
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-48
-49
-50</pre>
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 54</span>
 
 <span class='def def kw'>def</span> <span class='capabilities identifier id'>capabilities</span>
   <span class='@capabilities ivar id'>@capabilities</span> <span class='opasgn op'>||=</span> <span class='Remote constant id'>Remote</span><span class='colon2 op'>::</span><span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='chrome identifier id'>chrome</span>
@@ -422,21 +482,39 @@ A new instance of Bridge
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-44
-45
-46</pre>
+47
+48
+49
+50
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 47</span>
 
 <span class='def def kw'>def</span> <span class='driver_extensions identifier id'>driver_extensions</span>
-  <span class='lbrack token'>[</span><span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='TakesScreenshot constant id'>TakesScreenshot</span><span class='rbrack token'>]</span>
+  <span class='lbrack token'>[</span>
+    <span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='TakesScreenshot constant id'>TakesScreenshot</span><span class='comma token'>,</span>
+    <span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='HasInputDevices constant id'>HasInputDevices</span>
+  <span class='rbrack token'>]</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -451,20 +529,32 @@ A new instance of Bridge
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-52
-53
-54
-55
-56</pre>
+58
+59
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/bridge.rb', line 58</span>
 
 <span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
   <span class='super super kw'>super</span>
@@ -482,9 +572,9 @@ A new instance of Bridge
 </div>
     
     <div id="footer">
-  Generated on Wed Jun  1 21:07:48 2011 by 
+  Generated on Wed Jun 22 17:45:13 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.8 (ruby-1.8.7).
+  0.7.1 (ruby-1.8.7).
 </div>
 
   </body>

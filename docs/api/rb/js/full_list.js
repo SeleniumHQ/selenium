@@ -13,7 +13,7 @@ function fullListSearch() {
   
   $('#search input').keyup(function() {
     searchString = this.value.toLowerCase();
-    if (searchString == "") {
+    if (searchString === "") {
       clearTimeout(inSearch);
       inSearch = null;
       $('#full_list, #content').removeClass('insearch');
@@ -40,7 +40,7 @@ function fullListSearch() {
   });
   
   $('#search input').focus();
-  $('#full_list').after("<div id='noresults'></div>")
+  $('#full_list').after("<div id='noresults'></div>");
 }
 
 var lastRowClass = '';
@@ -59,8 +59,9 @@ function searchItem() {
         '<strong>$1</strong>'));
     }
 
-    if (searchCache.length == searchIndex + 1) {
-      return searchDone();
+    if (searchCache.length === searchIndex + 1) {
+      searchDone();
+      return;
     }
     else {
       searchIndex++;
@@ -71,7 +72,7 @@ function searchItem() {
 
 function searchDone() {
   highlight(true);
-  if ($('#full_list li:visible').size() == 0) {
+  if ($('#full_list li:visible').size() === 0) {
     $('#noresults').text('No results were found.').hide().fadeIn();
   }
   else {
@@ -137,7 +138,7 @@ function escapeShortcut() {
   $(document).keydown(function(evt) {
     if (evt.which == 27) {
       $('#search_frame', window.top.document).slideUp(100);
-      $('#search a', window.top.document).removeClass('active inactive')
+      $('#search a', window.top.document).removeClass('active inactive');
       $(window.top).focus();
     }
   });
