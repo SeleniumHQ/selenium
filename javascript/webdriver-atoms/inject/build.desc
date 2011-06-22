@@ -108,6 +108,6 @@ js_fragment(name = "get_frame_window",
 
 js_fragment(name = "execute_script",
   module = "webdriver.inject",
-  funtion = "webdriver.inject.executeScript",
+  function = "webdriver.inject.executeScript",
   deps = [":deps"])
 
