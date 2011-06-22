@@ -80,7 +80,13 @@ public class Registry {
 		this.prioritizer = config.getPrioritizer();
 		
 		this.configuration = config;
-		
+
+        matcherThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            public void uncaughtException(Thread t, Throwable e) {
+                log.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
+            }
+        });
+
 		matcherThread.start();
 
 		// freynaud : TODO
