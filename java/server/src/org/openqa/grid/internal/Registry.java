@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openqa.grid.internal.exception.CapabilityNotPresentOnTheGridException;
@@ -263,7 +264,9 @@ public class Registry {
 			} catch (QueueIsStateException q) {
 				log.fine("something modified the queue while the matcher was looking at it.Restarting the iteration from 0.");
 				force = true;
-			}
+			} catch (Throwable t) {
+                log.log(Level.SEVERE, "Unhandled exception in Matcher thread.", t);
+            }
 		}
 
 	}
