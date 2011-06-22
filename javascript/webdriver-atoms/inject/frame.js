@@ -38,6 +38,13 @@ webdriver.inject.frame.findFrameByIdOrName = function(idOrName, opt_root) {
       [idOrName, opt_root], true);
 };
 
+/**
+ * @return {string} A string representing the currently active element.
+ */
+webdriver.inject.frame.activeElement = function() {
+  return bot.inject.executeScript(bot.frame.activeElement, [], true);
+}
+
 
 /**
  *Finds a frame by index.

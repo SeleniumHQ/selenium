@@ -35,6 +35,14 @@ bot.frame.defaultContent = function() {
 
 
 /**
+ * @return {!Element} The currently active element.
+ */
+bot.frame.activeElement = function() {
+  return document.activeElement || document.body;
+};
+
+
+/**
  * Returns a reference to the window object corresponding to the given element.
  * Note that the element must be a frame or an iframe.
  *
