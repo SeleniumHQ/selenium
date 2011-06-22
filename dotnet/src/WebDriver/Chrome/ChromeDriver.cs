@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.Chrome
         /// Initializes a new instance of the ChromeDriver class.
         /// </summary>
         public ChromeDriver()
-            : this(ChromeDriverService.CreateDefaultService(), TimeSpan.FromSeconds(60))
+            : this(ChromeDriverService.CreateDefaultService(), DesiredCapabilities.Chrome(), TimeSpan.FromSeconds(60))
         {
         }
 
@@ -78,17 +78,37 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
         public ChromeDriver(string chromeDriverDirectory)
-            : this(chromeDriverDirectory, TimeSpan.FromSeconds(60))
+            : this(chromeDriverDirectory, DesiredCapabilities.Chrome())
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the ChromeDriver class using the specified path to the directory containing ChromeDriver.exe and command timeout.
+        /// Initializes a new instance of the ChromeDriver class using the capabilities.
+        /// </summary>
+        /// <param name="capabilities">The desired capabilities of the Chrome driver.</param>
+        public ChromeDriver(ICapabilities capabilities)
+            : this(ChromeDriverService.CreateDefaultService(), capabilities, TimeSpan.FromSeconds(60))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ChromeDriver class using the specified path to the directory containing ChromeDriver.exe and capabilities.
         /// </summary>
         /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
+        /// <param name="capabilities">The desired capabilities of the Chrome driver.</param>
+        public ChromeDriver(string chromeDriverDirectory, ICapabilities capabilities)
+            : this(ChromeDriverService.CreateDefaultService(chromeDriverDirectory), capabilities, TimeSpan.FromSeconds(60))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ChromeDriver class using the specified path to the directory containing ChromeDriver.exe, command timeout, and capabilities.
+        /// </summary>
+        /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
+        /// <param name="capabilities">The desired capabilities of the Chrome driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public ChromeDriver(string chromeDriverDirectory, TimeSpan commandTimeout)
-            : this(ChromeDriverService.CreateDefaultService(chromeDriverDirectory), commandTimeout)
+        public ChromeDriver(string chromeDriverDirectory, ICapabilities capabilities, TimeSpan commandTimeout)
+            : this(ChromeDriverService.CreateDefaultService(chromeDriverDirectory), capabilities, commandTimeout)
         {
         }
 
@@ -97,8 +117,9 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        private ChromeDriver(ChromeDriverService service, TimeSpan commandTimeout)
-            : base(new ChromeCommandExecutor(service, commandTimeout), DesiredCapabilities.Chrome())
+        /// <param name="capabilities">The desired capabilities of the Chrome driver.</param>
+        private ChromeDriver(ChromeDriverService service, ICapabilities capbilities, TimeSpan commandTimeout)
+            : base(new ChromeCommandExecutor(service, commandTimeout), capbilities)
         {
         }
         #endregion
