@@ -219,7 +219,7 @@ LocatorBuilders.add('ui', function(pageElement) {
     
 LocatorBuilders.add('id', function(e) {
         if (e.id) {
-            return e.id;
+            return 'id=' + e.id;
         }
         return null;
     });
@@ -236,7 +236,7 @@ LocatorBuilders.add('link', function(e) {
 
 LocatorBuilders.add('name', function(e) {
         if (e.name) {
-            return e.name;
+            return 'name=' + e.name;
         }
         return null;
     });
