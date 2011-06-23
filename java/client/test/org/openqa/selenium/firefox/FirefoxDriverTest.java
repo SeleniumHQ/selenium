@@ -472,6 +472,11 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
   }
 
+  // See http://code.google.com/p/selenium/issues/detail?id=1774
+  public void testCanStartFirefoxDriverWithSubclassOfFirefoxProfile() {
+    new FirefoxDriver(new CustomFirefoxProfile()).quit();
+    new FirefoxDriver(new FirefoxProfile(){}).quit();
+  }
 
   private WebDriver newFirefoxDriver() {
     return newFirefoxDriver(new FirefoxProfile());
@@ -487,4 +492,6 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
     return new FirefoxDriver(profile);
   }
+
+  private static class CustomFirefoxProfile extends FirefoxProfile {} 
 }
