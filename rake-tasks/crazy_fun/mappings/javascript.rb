@@ -16,7 +16,7 @@ class JavascriptMappings
     fun.add_mapping("js_binary", Javascript::AddDependencies.new)
     fun.add_mapping("js_binary", Javascript::Compile.new)
 
-    fun.add_mapping("js_fragment", Javascript::CheckPreconditions.new)
+    fun.add_mapping("js_fragment", Javascript::CheckFragmentPreconditions.new)
     fun.add_mapping("js_fragment", Javascript::CreateTask.new)
     fun.add_mapping("js_fragment", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_fragment", Javascript::CreateExportFile.new)
@@ -44,7 +44,7 @@ class JavascriptMappings
     #   deps - A list of js_fragment dependencies that should be compiled.
     #   utf8 - Whether to use char or wchar_t for the generated header. Defaults
     #          to wchar_t.
-    fun.add_mapping("js_fragment_header", Javascript::CheckFragmentPreconditions.new)
+    fun.add_mapping("js_fragment_header", Javascript::CheckFragmentHeaderPreconditions.new)
     fun.add_mapping("js_fragment_header", Javascript::CreateTask.new)
     fun.add_mapping("js_fragment_header", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_fragment_header", Javascript::AddDependencies.new)
@@ -120,6 +120,14 @@ module Javascript
   end
   
   class CheckFragmentPreconditions
+    def handle(fun, dir, args)
+      CheckPreconditions.new.handle(fun, dir, args)
+      raise StandardError, ":module must be set" if args[:module].nil?
+      raise StandardError, ":function must be set" if args[:function].nil?
+    end
+  end
+
+  class CheckFragmentHeaderPreconditions
     def handle(fun, dir, args)
       raise StandardError, ":name must be set" if args[:name].nil?
       raise StandardError, ":deps must be set" if args[:deps].nil?
@@ -296,6 +304,7 @@ module Javascript
             "-f \"--output_wrapper='#{wrapper}'\" " <<
             "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" " <<
             "-f \"--define=goog.NATIVE_ARRAY_PROTOTYPES=false\" " <<
+            '-f "--formatting=PRETTY_PRINT" ' <<
             "#{defines} " <<
             "-p third_party/closure/goog/ " <<
             "-p javascript " <<
