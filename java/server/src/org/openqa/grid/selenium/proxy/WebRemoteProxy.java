@@ -43,8 +43,20 @@ import org.openqa.grid.selenium.utils.WebProxyHtmlRenderer;
 
 public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListener, SelfHealingProxy, CommandListener {
 
-	public WebRemoteProxy(RegistrationRequest request,Registry registry) {
-		super(request,registry);
+	private long pollingInterval = 10000;
+
+	public WebRemoteProxy(RegistrationRequest request, Registry registry) {
+		super(request, registry);
+
+		try {
+			Integer p = (Integer) request.getConfiguration().get(RegistrationRequest.NODE_POLLING);
+			if (p != null) {
+				pollingInterval = p.intValue();
+			}
+		} catch (NumberFormatException e) {
+			// TODO freynaud log config error.
+
+		}
 	}
 
 	public abstract void beforeRelease(TestSession session);
@@ -77,7 +89,7 @@ public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListe
 
 	public boolean isAlive() {
 		String url = getRemoteURL().toExternalForm() + "/status";
-		BasicHttpRequest r = new BasicHttpRequest("GET",url );
+		BasicHttpRequest r = new BasicHttpRequest("GET", url);
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpHost host = new HttpHost(getRemoteURL().getHost(), getRemoteURL().getPort());
 		HttpResponse response;
@@ -89,15 +101,16 @@ public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListe
 			return false;
 		}
 		int code = response.getStatusLine().getStatusCode();
-		return code == 404 || code == 500;
+		// webdriver returns a 200 on /status. selenium RC returns a 404
+		return code == 200 || code ==404;
 	}
 
 	public void startPolling() {
-		pollingThread =new Thread(new Runnable() {
+		pollingThread = new Thread(new Runnable() {
 			public void run() {
 				while (poll) {
 					try {
-						Thread.sleep(10000);
+						Thread.sleep(pollingInterval);
 						if (!isAlive()) {
 							if (!down) {
 								nbFailedPoll++;
