@@ -78,37 +78,41 @@ public class WebDriverJSONConfigurationUtils {
 	}
 
 	private static URL buildNodeURL(String nodeURL) {
-		String cleaned = nodeURL.toLowerCase();
-		if (hostHasToBeGuessed(cleaned)) {
-			NetworkUtils util = new NetworkUtils();
-			String host = util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-			if ("ip".equalsIgnoreCase(cleaned) || "host".equalsIgnoreCase(cleaned) ){
-				cleaned = cleaned.replace("ip", host);
-				cleaned = cleaned.replace("host", host);	
-			}
-			
-		}
-		if (!cleaned.startsWith("http://")) {
-			cleaned = "http://" + cleaned;
-		}
-		if (!cleaned.endsWith("/wd/hub")) {
-			cleaned = cleaned + "/wd/hub";
-		}
 		try {
-			URL res = new URL(cleaned);
-			return res;
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("Error cleaning up url " + nodeURL + ", failed after conveting it to " + cleaned);
+			URL url = new URL(nodeURL);
+			String cleaned = nodeURL.toLowerCase();
+			if (hostHasToBeGuessed(url)) {
+				NetworkUtils util = new NetworkUtils();
+				String guessedHost = util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+				String host = url.getHost();
+
+				if ("ip".equalsIgnoreCase(host) || "host".equalsIgnoreCase(host)) {
+					cleaned = cleaned.replace("ip", guessedHost);
+					cleaned = cleaned.replace("host", guessedHost);
+				}
+
+			}
+			if (!cleaned.startsWith("http://")) {
+				cleaned = "http://" + cleaned;
+			}
+			if (!cleaned.endsWith("/wd/hub")) {
+				cleaned = cleaned + "/wd/hub";
+			}
+			try {
+				URL res = new URL(cleaned);
+				return res;
+			} catch (MalformedURLException e) {
+				throw new RuntimeException("Error cleaning up url " + nodeURL + ", failed after conveting it to " + cleaned);
+			}
+		} catch (MalformedURLException e1) {
+			throw new RuntimeException("url provided :" + nodeURL + " is not correct.");
 		}
 
 	}
 
-	private static boolean hostHasToBeGuessed(String nodeURL) {
-		if (nodeURL.toLowerCase().contains("ip") || nodeURL.toLowerCase().contains("host")) {
-			return true;
-		} else {
-			return false;
-		}
+	private static boolean hostHasToBeGuessed(URL nodeURL) {
+		String host = nodeURL.getHost().toLowerCase();
+		return ("ip".equals(host) || "host".equals(host));
 	}
 
 }
