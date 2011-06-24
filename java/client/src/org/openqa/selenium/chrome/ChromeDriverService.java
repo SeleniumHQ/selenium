@@ -84,7 +84,8 @@ public class ChromeDriverService {
     String defaultPath = findExecutable("chromedriver");
     String exePath = System.getProperty(CHROME_DRIVER_EXE_PROPERTY, defaultPath);
     checkState(exePath != null,
-        "The path to the chromedriver executable must be set by the %s system property",
+        "The path to the chromedriver executable must be set by the %s system property;" +
+            " fore more information, see http://code.google.com/p/selenium/wiki/ChromeDriver",
         CHROME_DRIVER_EXE_PROPERTY);
 
     File exe = new File(exePath);
