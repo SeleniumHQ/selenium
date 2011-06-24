@@ -306,6 +306,7 @@ public class TestSession {
 
 		HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
 		HttpResponse proxyResponse = client.execute(host, proxyRequest);
+        lastActivity = System.currentTimeMillis();
 
 		response.setStatus(proxyResponse.getStatusLine().getStatusCode());
 		HttpEntity responseBody = proxyResponse.getEntity();
