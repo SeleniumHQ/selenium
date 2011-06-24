@@ -117,9 +117,9 @@ public class ChromeDriverService {
         return false;
       }
       process.exitValue();
-      return true;
-    } catch (IllegalThreadStateException e) {
       return false;
+    } catch (IllegalThreadStateException e) {
+      return true;
     } finally {
       lock.unlock();
     }
