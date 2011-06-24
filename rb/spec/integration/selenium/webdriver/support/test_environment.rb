@@ -57,7 +57,7 @@ module Selenium
           @remote_server ||= (
             path = File.join(root_folder, "build/java/server/src/org/openqa/selenium/server/server-standalone.jar")
             Selenium::Server.new(path,
-              :port       => 44444, # TODO: random port
+              :port       => PortProber.random,
               :log        => !!$DEBUG,
               :background => true,
               :timeout    => 60
