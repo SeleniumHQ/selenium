@@ -29,6 +29,22 @@
       assertEquals('Child 3', goog.dom.getTextContent(children[2]));
     }
 
+    /** @bug http://code.google.com/p/selenium/issues/detail?id=1918 */
+    function testFindSingleByClassName_targetClassHasDots() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var found = bot.locators.findElement({className: 'name.with.dots'}, parent);
+      assertEquals(goog.dom.$('dotted_1'), found);
+    }
+
+    /** @bug http://code.google.com/p/selenium/issues/detail?id=1918 */
+    function testFindManyByClassName_targetClassHasDot() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var found = bot.locators.findElements({className: 'name.with.dots'}, parent);
+      assertEquals(2, found.length);
+      assertEquals(goog.dom.$('dotted_1'), found[0]);
+      assertEquals(goog.dom.$('dotted_2'), found[1]);
+    }
+
     function testCanFindChildElementByCss() {
       if (!document['querySelector']) {
         return;  // Skip this until we get selectors working on all browsers
@@ -182,6 +198,8 @@
     <p name="child" id="child" class="child">Child 1</p>
     <p name="child" id="child" class="child">Child 2</p>
     <p name="child" id="child" class="child">Child 3</p>
+    <div id="dotted_1" class="name.with.dots">dotted class</div>
+    <div id="dotted_2" class="name.with.dots">another dotted class</div>
   </div>
 
   <p name="child">Me either</p>
