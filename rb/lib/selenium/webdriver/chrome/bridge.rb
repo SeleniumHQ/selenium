@@ -6,8 +6,10 @@ module Selenium
       class Bridge < Remote::Bridge
 
         def initialize(opts = {})
-          http_client = opts.delete(:http_client)
-          switches    = opts.delete(:switches)
+          http_client   = opts.delete(:http_client)
+          switches      = opts.delete(:switches)
+          native_events = opts.delete(:native_events)
+          verbose       = opts.delete(:verbose)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -23,9 +25,9 @@ module Selenium
             caps.merge! 'chrome.switches' => switches.map { |e| e.to_s }
           end
 
-          if Chrome.path
-            caps.merge! 'chrome.binary' => Chrome.path
-          end
+          caps.merge! 'chrome.binary'       => Chrome.path if Chrome.path
+          caps.merge! 'chrome.nativeEvents' => true if native_events
+          caps.merge! 'chrome.verbose'      => true if verbose
 
           @service = Service.default_service
           @service.start
