@@ -1,8 +1,6 @@
 $LOAD_PATH.unshift File.expand_path(".")
 
 require 'rake'
-require 'rake/testtask'
-require 'rake/rdoctask'
 require 'rake-tasks/files'
 require 'yaml'
 require 'net/telnet'
