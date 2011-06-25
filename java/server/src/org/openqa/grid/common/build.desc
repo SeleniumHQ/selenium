@@ -1,10 +1,11 @@
 
 java_library(name = "common",
-  srcs = [ "*.java" ],
+  srcs = [ "**/*.java" ],
   resources = [
     "defaults/",
   ],
   deps = [
+  	"//java/server/src/org/openqa/selenium/server",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
   ])

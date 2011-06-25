@@ -14,14 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.grid.internal.exception;
+package org.openqa.grid.common.exception;
 
+import java.util.Map;
 
-public class GridException extends RuntimeException {
+public class CapabilityNotPresentOnTheGridException extends GridException {
 
-	private static final long serialVersionUID = -3994209521865743841L;
+	private static final long serialVersionUID = -5382151149204616537L;
 
-	public GridException(String msg) {
+	public CapabilityNotPresentOnTheGridException(String msg) {
 		super(msg);
+	}
+	public CapabilityNotPresentOnTheGridException(Map<String, Object> capabilities) {
+		super("cannot find : " + capabilities);
 	}
 }

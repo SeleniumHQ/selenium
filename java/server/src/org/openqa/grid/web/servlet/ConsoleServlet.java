@@ -18,6 +18,8 @@ package org.openqa.grid.web.servlet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -26,8 +28,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openqa.grid.common.defaults.GridDocHelper;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 import com.google.common.io.ByteStreams;
@@ -85,7 +89,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 		builder.append("<html>");
 		builder.append("<head>");
 
-		if (refresh !=-1) {
+		if (refresh != -1) {
 			builder.append("<meta http-equiv='refresh' content='" + refresh + "'>");
 		}
 		builder.append("<title>Grid overview</title>");
@@ -119,6 +123,12 @@ public class ConsoleServlet extends RegistryBasedServlet {
 		}
 		builder.append("</ul>");
 
+		if (request.getParameter("config") != null) {
+			builder.append(getConfigInfo(request.getParameter("configDebug") != null));
+		} else {
+			builder.append("<a href='?config=true&configDebug=true'>view config</a>");
+		}
+
 		builder.append("</body>");
 		builder.append("</html>");
 
@@ -129,6 +139,94 @@ public class ConsoleServlet extends RegistryBasedServlet {
 			in.close();
 			response.getOutputStream().close();
 		}
+	}
+
+	/**
+	 * retracing how the hub config was built to help debugging.
+	 * 
+	 * @return
+	 */
+	private String getConfigInfo(boolean verbose) {
+		StringBuilder builder = new StringBuilder();
+
+		GridHubConfiguration config = getRegistry().getConfiguration();
+		builder.append("<b>Config for the hub :</b><br/>");
+		builder.append(prettyHtmlPrint(config));
+
+		if (verbose) {
+
+			GridHubConfiguration tmp = new GridHubConfiguration();
+			tmp.loadDefault();
+
+			builder.append("<b>Config details :</b><br/>");
+			builder.append("<b>hub launched with :</b>");
+			for (int i = 0; i < config.getArgs().length; i++) {
+				builder.append(config.getArgs()[i] + " ");
+			}
+
+			builder.append("<br/><b>the final configuration comes from :</b><br/>");
+			builder.append("<b>the default :</b><br/>");
+			builder.append(prettyHtmlPrint(tmp));
+
+			builder.append("<b>updated with grid1 config :</b>");
+			if (config.getGrid1Yml() != null) {
+				builder.append(config.getGrid1Yml() + "<br/>");
+				tmp.loadFromGridYml(config.getGrid1Yml());
+				builder.append(prettyHtmlPrint(tmp));
+			} else {
+				builder.append("No grid1 file specified. To specify one, use -grid1Yml XXX.yml where XXX.yml is a grid1 config file</br>");
+			}
+
+			builder.append("<br/><b>updated with grid2 config : </b>");
+			if (config.getGrid2JSON() != null) {
+				builder.append(config.getGrid2JSON() + "<br/>");
+				tmp.loadFromJSON(config.getGrid2JSON());
+				builder.append(prettyHtmlPrint(tmp));
+			} else {
+				builder.append("No hub config file specified. To specify one, use -hubConfig XXX.json where XXX.json is a hub config file</br>");
+			}
+
+			builder.append("<br/><b>updated with params :</b></br>");
+			tmp.loadFromCommandLine(config.getArgs());
+			builder.append(prettyHtmlPrint(tmp));
+		}
+		return builder.toString();
+	}
+
+	private String key(String key) {
+		return "<abbr title='" + GridDocHelper.getHubParam(key) + "'>" + key + " : </abbr>";
+	}
+
+	private String prettyHtmlPrint(GridHubConfiguration config) {
+		StringBuilder b = new StringBuilder();
+
+		b.append(key("host")).append(config.getHost()).append("</br>");
+		b.append(key("port")).append(config.getPort()).append("</br>");
+		b.append(key("cleanupCycle")).append(config.getCleanupCycle()).append("</br>");
+		b.append(key("timeout")).append(config.getTimeout()).append("</br>");
+
+		b.append(key("newSessionWaitTimeout")).append(config.getNewSessionWaitTimeout()).append("</br>");
+		b.append(key("grid1Mapping")).append(config.getGrid1Mapping()).append("</br>");
+		b.append(key("throwOnCapabilityNotPresent")).append(config.isThrowOnCapabilityNotPresent()).append("</br>");
+
+		b.append(key("capabilityMatcher"))
+				.append(config.getCapabilityMatcher() == null ? "null" : config.getCapabilityMatcher().getClass().getCanonicalName()).append("</br>");
+		b.append(key("prioritizer")).append(config.getPrioritizer() == null ? "null" : config.getPrioritizer().getClass().getCanonicalName())
+				.append("</br>");
+		b.append(key("servlets"));
+		for (String s : config.getServlets()) {
+			b.append(s.getClass().getCanonicalName() + ",");
+		}
+		b.append("</br></br>");
+		b.append("<u>all params :</u></br></br>");
+		List<String> keys = new ArrayList<String>();
+		keys.addAll(config.getAllParams().keySet());
+		Collections.sort(keys);
+		for (String s : keys) {
+			b.append(key(s.replaceFirst("-", "")) + config.getAllParams().get(s) + "</br>");
+		}
+		b.append("</br>");
+		return b.toString();
 	}
 
 	private void getVersion() {

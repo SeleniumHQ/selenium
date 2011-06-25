@@ -174,10 +174,10 @@ public class RemoteControlLauncher {
                 configuration.setHonorSystemProxy(true);
             } else if (arg.startsWith("-D")) {
                 setSystemProperty(arg);
-            } else {
+            } /*else {
                 usage("unrecognized argument " + arg);
                 System.exit(1);
-            }
+            }*/
         }
         if (configuration.userJSInjection() && !configuration.getProxyInjectionModeArg()) {
             System.err.println("User js injection can only be used w/ -proxyInjectionMode");

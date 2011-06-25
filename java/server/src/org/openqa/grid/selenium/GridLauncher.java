@@ -18,7 +18,6 @@ package org.openqa.grid.selenium;
 import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
 import java.net.URL;
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -30,10 +29,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.json.JSONObject;
+import org.openqa.grid.common.JSONConfigurationUtils;
+import org.openqa.grid.common.defaults.GridDocHelper;
+import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.selenium.utils.GridConfiguration;
 import org.openqa.grid.selenium.utils.GridRole;
-import org.openqa.grid.selenium.utils.WebDriverJSONConfigurationUtils;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
@@ -51,39 +52,33 @@ public class GridLauncher {
 	public static void main(String[] args) throws Exception {
 
 		GridConfiguration config = GridConfiguration.parse(args);
+		GridRole role = GridRole.find(args);
 
-		switch (config.getRole()) {
+		switch (role) {
 		case NOT_GRID:
 			log.info("Launching a standalone server");
 			SeleniumServer.main(args);
 			break;
 		case HUB:
 			log.info("Launching a selenium grid server");
-			GridHubConfiguration c = null;
-			
-			// try a grid1 config 
-			if (config.getFile() != null) {
-				try {
-					c = GridHubConfiguration.loadFromGridYml(config.getFile());
-				} catch (InvalidParameterException e) {
-					// ignore
-				}
+			try {
+				GridHubConfiguration c = GridHubConfiguration.build(args);
+				Hub h = new Hub(c);
+				h.start();
+			} catch (GridConfigurationException e) {
+				e.printStackTrace();
+				GridDocHelper.helpHub(e.getMessage());
 			}
-
-			// default
-			if (c==null){
-				c = new GridHubConfiguration();
-				c.setPort(config.getPort());
-			}
-			
-			c.setServlets(config.getServlets());
-			Hub h = new Hub(c);
-			h.start();
 			break;
 		case WEBDRIVER:
 		case REMOTE_CONTROL:
 			log.info("Launching a selenium grid node");
-			launchNode(config);
+			try {
+				launchNode(config);
+			} catch (GridConfigurationException e) {
+				e.printStackTrace();
+				GridDocHelper.helpHub(e.getMessage());
+			}
 			break;
 		default:
 			throw new RuntimeException("NI");
@@ -106,7 +101,7 @@ public class GridLauncher {
 			if (resource == null) {
 				resource = "defaults/WebDriverDefaultNode.json";
 			}
-			JSONObject request = WebDriverJSONConfigurationUtils.parseRegistrationRequest(resource);
+			JSONObject request = JSONConfigurationUtils.parseRegistrationRequest(resource);
 			JSONObject jsonConfig = request.getJSONObject("configuration");
 			int port = jsonConfig.getInt("port");
 			RemoteControlConfiguration c = new RemoteControlConfiguration();
@@ -149,7 +144,7 @@ public class GridLauncher {
 
 		} else {
 			SelfRegisteringRemote remote = SelfRegisteringRemote.create(config);
-
+			System.out.println("created with " + config.getNodeRemoteControlConfiguration().getPort());
 			int maxInstance = 5;
 			// loading the browsers specified command line if any, otherwise try
 			// the default

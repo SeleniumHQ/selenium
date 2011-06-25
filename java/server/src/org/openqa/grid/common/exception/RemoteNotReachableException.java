@@ -1,4 +1,4 @@
-package org.openqa.grid.internal.exception;
+package org.openqa.grid.common.exception;
 
 public class RemoteNotReachableException extends RemoteException {
 

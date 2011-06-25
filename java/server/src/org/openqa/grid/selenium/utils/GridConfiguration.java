@@ -6,7 +6,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openqa.grid.internal.exception.GridException;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
