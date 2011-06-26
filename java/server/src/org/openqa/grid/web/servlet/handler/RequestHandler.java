@@ -52,7 +52,6 @@ import org.openqa.grid.web.Hub;
  */
 public abstract class RequestHandler implements Comparable<RequestHandler> {
 	private Registry registry;
-	
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -145,16 +144,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 	public void process() {
 		switch (getRequestType()) {
 		case START_SESSION:
-			try {
-				handleNewSession();
-			} catch (Exception e) {
-				// Make sure we yank the session from the request queue, since
-				// any returned error will propagate to the
-				// client, so there's no chance of this request ever succeeding.
-				registry.getNewSessionRequests().remove(this);
-
-				throw (new RuntimeException(e));
-			}
+			handleNewSession();
 			break;
 		case REGULAR:
 		case STOP_SESSION:
@@ -426,7 +416,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 	public long getCreated() {
 		return created;
 	}
-	
+
 	public Registry getRegistry() {
 		return registry;
 	}
