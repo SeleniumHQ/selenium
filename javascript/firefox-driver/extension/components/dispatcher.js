@@ -284,6 +284,8 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.POST, Dispatcher.executeAs('mouseUp'));
   this.bind_('/session/:sessionId/click').
       on(Request.Method.POST, Dispatcher.executeAs('mouseClick'));
+  this.bind_('/session/:sessionId/doubleclick').
+      on(Request.Method.POST, Dispatcher.executeAs('mouseDoubleClick'));
 
 
   // --------------------------------------------------------------------------

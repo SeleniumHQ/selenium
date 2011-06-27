@@ -6,11 +6,12 @@ overlay chrome://browser/content/browser.xul chrome://fxdriver/content/fxdriver.
 overlay chrome://browser/content/browser.xul chrome://fxdriver/content/fx4driver.xul application={ec8030f7-c20a-464f-9b0e-13a3a9e97384} appversion>=4.0
 
 interfaces components/nsICommandProcessor.xpt
-interfaces components/wdICoordinate.xpt
 interfaces components/nsIHttpServer.xpt
-interfaces components/wdIMouse.xpt
 interfaces components/nsINativeEvents.xpt
 interfaces components/nsIResponseHandler.xpt
+interfaces components/wdICoordinate.xpt
+interfaces components/wdIMouse.xpt
+interfaces components/wdIStatus.xpt
 
 component {c8fffaba-9b7a-41aa-872d-7e7366c16715} components/badCertListener.js
 contract @mozilla.org/security/certoverride;1 {c8fffaba-9b7a-41aa-872d-7e7366c16715}
@@ -38,9 +39,6 @@ contract @googlecode.com/webdriver/wdsessionstoreservice;1 {b54195d3-841e-47df-b
 
 component {E8F9FEFE-C513-4097-98BE-BE00A41D3645} components/syntheticMouse.js
 contract @googlecode.com/webdriver/syntheticmouse;1 {E8F9FEFE-C513-4097-98BE-BE00A41D3645}
-
-contract @googlecode.com/webdriver/coordinate;1 {B8D08F9B-DB29-4897-BCC3-91FF1414540F}
-
 
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox.dll ABI=WINNT_x86-msvc
 binary-component platform/WINNT_x86-msvc/components/imehandler.dll ABI=WINNT_x86-msvc

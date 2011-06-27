@@ -163,3 +163,23 @@ webdriver.firefox.utils.unwrapFor4 = function(doc) {
   }
   return doc;
 };
+
+
+/**
+ * @param {!Element} element The element to use
+ * @param {int} x X coordinate
+ * @param {int} y Y coordinate
+ */
+webdriver.firefox.utils.newCoordinates = function(element, x, y) {
+  return {
+    QueryInterface: function(iid) {
+      if (iid.equals(Components.interfaces.wdICoorinate) ||
+          iid.equals(Components.interfaces.nsISupports))
+        return this;
+      throw Components.results.NS_NOINTERFACE;
+    },
+    auxiliary: element ? new XPCNativeWrapper(element) : null,
+    x: x,
+    y: y
+  };
+}

@@ -33,6 +33,7 @@ goog.require('goog.userAgent');
  * @enum {number}
  */
 bot.events.Button = {
+  NONE: null,  // So that we can move a mouse without a button being down
   LEFT: (goog.userAgent.IE ? 1 : 0),
   MIDDLE: (goog.userAgent.IE ? 4 : 1),
   RIGHT: (goog.userAgent.IE ? 2 : 2)

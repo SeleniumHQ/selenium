@@ -15,14 +15,14 @@
  limitations under the License.
  */
 
-#include "nsIDOMHTMLElement.idl"
 #include "nsISupports.idl"
 
-[scriptable, uuid(B8D08F9B-DB29-4897-BCC3-91FF1414540F)]
-interface wdICoordinate : nsISupports
+/**
+ * Response data for use in webdriver components
+ */
+[scriptable, uuid(C48A22D4-38FF-4230-8DDC-15503A24CCE9)]
+interface wdIStatus : nsISupports
 {
-  attribute long x;
-  attribute long y;
-
-  attribute nsISupports auxiliary;
+  readonly attribute wstring message;
+  readonly attribute long status;
 };

@@ -18,8 +18,6 @@
 
 
 Components.utils.import('resource://fxdriver/modules/atoms.js');
-// TODO(simon): Port this hack back into closure proper
-//goog.userAgent.GECKO = true;
 
 var FirefoxDriver = FirefoxDriver || function(){};
 
@@ -122,29 +120,22 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
 
   Logger.dumpn("Falling back to synthesized click");
 
-  var browser = respond.session.getBrowser();
-
+  // TODO(simon): Delete the above and sink most of it into a "nativeMouse"
   Utils.installWindowCloseListener(respond);
-
   Utils.installClickListener(respond, WebLoadingListener);
 
-  Logger.dumpn("Clicking");
-
-  // Check to see if this is an option element. If it is, and the parent isn't a multiple
-  // select, then click on the select first.
-  var tagName = element.tagName.toLowerCase();
-  if ("option" == tagName) {
-    var parent = element;
-    while (parent.parentNode != null && parent.tagName.toLowerCase() != "select") {
-      parent = parent.parentNode;
-    }
-
-    if (parent && parent.tagName.toLowerCase() == "select" && !parent.multiple) {
-      bot.action.click(parent);
-    }
+  var wrapped = XPCNativeWrapper(element);
+  var res = this.mouse.move(wrapped, null, null);
+  if (res.status != ErrorCode.SUCCESS) {
+    respond.status = res.status;
+    respond.value = res.message;
+    respond.send();
+    return;
   }
 
-  bot.action.click(element);
+  res = this.mouse.click(wrapped);
+  respond.status = res.status;
+  respond.value = res.message;
 };
 FirefoxDriver.prototype.clickElement.preconditions =
     [ webdriver.preconditions.visible ];
@@ -531,7 +522,7 @@ FirefoxDriver.prototype.dragElement = function(respond, parameters) {
   var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY
       + movementY);
 
-  // Restrict the desitnation into the sensible dimension
+  // Restrict the destination into the sensible dimension
   var body = element.ownerDocument.body;
 
   if (clientFinishX > body.scrollWidth)
@@ -628,3 +619,5 @@ FirefoxDriver.prototype.getElementLocationOnceScrolledIntoView = function(
   };
   respond.send();
 };
+
+

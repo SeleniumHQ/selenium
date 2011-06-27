@@ -21,8 +21,6 @@ var CU = Components.utils;
 
 CU.import("resource://gre/modules/XPCOMUtils.jsm");
 
-const CONSOLE = CC["@mozilla.org/consoleservice;1"].
-                  getService(CI["nsIConsoleService"]);
 
 function SyntheticMouse() {
   // Get the wonder of the events
@@ -34,45 +32,206 @@ function SyntheticMouse() {
 
   this.QueryInterface = webdriver.firefox.utils.queryInterface(this,
       [CI.nsISupports, CI.wdIMouse]);
+
+  // Declare the state we'll be using
+  this.buttonDown = bot.events.Button.NONE;
+  this.lastElement = null;
 }
+
+
+SyntheticMouse.prototype.newResponse = function(status, message) {
+  return {
+    status: status,
+    message: message,
+    QueryInterface: function(iid) {
+      if (iid.equals(Components.interfaces.wdIStatus) ||
+          iid.equals(Components.interfaces.nsISupports))
+        return this;
+      throw Components.results.NS_NOINTERFACE;
+    }
+  };
+};
+
+
+SyntheticMouse.prototype.isElementShown = function(element) {
+  if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
+    return this.newResponse(ErrorCode.ELEMENT_NOT_VISIBLE,
+        'Element is not currently visible and so may not be interacted with')
+  }
+};
+
+
+SyntheticMouse.prototype.getElement_ = function(coords) {
+  return coords.auxiliary ?
+      webdriver.firefox.utils.unwrap(coords.auxiliary) : this.lastElement;
+};
 
 // wdIMouse
 
-SyntheticMouse.prototype.mouseMove = function(coordinates) {
-  if (!coordinates.auxiliary) {
-    throw new bot.Error("No element specified for mouse move.");
+SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
+  // TODO(simon): find the current "body" element iff element == null
+  var element = target ? 
+      webdriver.firefox.utils.unwrap(target) : this.lastElement;
+  
+  if (this.lastElement && element && this.lastElement != element) {
+    var currLoc = Utils.getElementLocation(this.lastElement);
+    var targetLoc = Utils.getElementLocation(element);
+    xOffset += targetLoc['x'] - currLoc['x'];
+    yOffset += targetLoc['y'] - currLoc['y'];
   }
-
-  var element = webdriver.firefox.utils.unwrap(coordinates.auxiliary);
-
+  this.lastElement = element;
+  
   if (goog.isFunction(element.scrollIntoView)) {
     element.scrollIntoView();
   }
+  
+  // Which element shall we pretend to be leaving?
+  var parent = bot.dom.getParentElement(element);
 
-  var parent = element.parent;
-  while (parent && parent.nodeType != goog.dom.NodeType.ELEMENT) {
-    parent = parent.parent;
-  }
-
+  // TODO(simon): if no offset is specified, use the centre of the element    
   var fireAndCheck = function(e, eventName, opt_coordinates) {
     if (!e) {
       return false;
     }
     bot.events.fire(e, eventName, opt_coordinates);
-    return bot.dom.isShown(element, /*ignoreOpacity=*/true);
+    return true;
   };
 
-  var proceed = fireAndCheck(parent, goog.events.EventType.MOUSEOUT) &&
-      fireAndCheck(element, goog.events.EventType.MOUSEOVER, coordinates) &&
-      fireAndCheck(element, goog.events.EventType.MOUSEMOVE, coordinates);
+  var button = this.buttonDown;
+  var botCoords = {
+    'x': 0,
+    'y': 0,
+    'button': button
+  };
 
-  if (!proceed) {
-    return;
+  var intermediateSteps = 3;
+  var xInc = Math.floor(xOffset / intermediateSteps);
+  var yInc = Math.floor(yOffset / intermediateSteps);
+  var currX = 0;
+  var currY = 0;
+  
+  var proceed = fireAndCheck(parent, goog.events.EventType.MOUSEOUT) &&
+      fireAndCheck(element, goog.events.EventType.MOUSEOVER, botCoords);
+    for (var i = 0; i < intermediateSteps && proceed; i++) {
+      botCoords['x'] = xInc;  currX += xInc;
+      botCoords['y'] = yInc;  currY += yInc;
+      proceed = fireAndCheck(element, goog.events.EventType.MOUSEMOVE, botCoords);
+  }
+  
+  botCoords['x'] = xOffset - currX;
+  botCoords['y'] = yOffset - currY;
+  
+  proceed = fireAndCheck(element, goog.events.EventType.MOUSEMOVE, botCoords);
+
+  if (!proceed || !bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
+    return this.newResponse(ErrorCode.SUCCESS, "ok");
   }
 
   if (element.onmouseover) {
     element.onmouseover();
   }
+
+  return this.newResponse(ErrorCode.SUCCESS, "ok");
+};
+
+
+SyntheticMouse.prototype.click = function(target) {
+  var element = target ? webdriver.firefox.utils.unwrap(target) : this.lastElement;
+
+  var error = this.isElementShown(element);
+  if (error) {
+    return error;
+  }
+
+  // Check to see if this is an option element. If it is, and the parent isn't a multiple
+  // select, then click on the select first.
+  var tagName = element.tagName.toLowerCase();
+  if ("option" == tagName) {
+    Logger.dumpn("Looks like an option element");
+    var parent = element;
+    while (parent.parentNode != null && parent.tagName.toLowerCase() != "select") {
+      parent = parent.parentNode;
+    }
+
+    if (parent && parent.tagName.toLowerCase() == "select" && !parent.multiple) {
+      bot.action.click(parent);
+    }
+  }
+
+  Logger.dumpn("About to do a bot.action.click on " + element);
+  try {
+    bot.action.click(target);
+  } catch (notShown) {
+    // TODO(simon): This is the lamest bit of code I've written today. Stop being lame.
+    // I suspect that we're not consistently storing the reference to the
+    // element correctly, as this path is only reached if "this.lastElement" needs 
+    // unwrapping on versions of firefox prior to 4.
+    bot.action.click(element);
+  }
+  return this.newResponse(ErrorCode.SUCCESS, "ok");
+};
+
+
+SyntheticMouse.prototype.doubleClick = function(target) {
+  var element = target ? webdriver.firefox.utils.unwrap(target) : this.lastElement;
+  
+  var error = this.isElementShown(element);
+  if (error) {
+    return error;
+  }
+
+  if (goog.isFunction(element.scrollIntoView)) {
+    element.scrollIntoView();
+  }
+
+  // TODO(simon): This implementation isn't good enough.
+  var size = goog.style.getSize(element);
+  var botCoords = {
+    x: Math.floor(size.width / 2),
+    y: Math.floor(size.height / 2),
+    button: bot.events.Button.LEFT
+  };
+  bot.events.fire(element, goog.events.EventType.DBLCLICK, botCoords);
+
+  return this.newResponse(ErrorCode.SUCCESS, "ok");
+};
+
+
+SyntheticMouse.prototype.down = function(coordinates) {
+  var element = this.getElement_(coordinates);
+  
+  // TODO(simon): This implementation isn't good enough. Again
+  // Defaults to left mouse button, which is right.
+  Logger.dumpn("Mouse down.");
+  this.buttonDown = bot.events.Button.LEFT;
+  var botCoords = {
+    'x': coordinates['x'],
+    'y': coordinates['y'],
+    'button': bot.events.Button.LEFT
+  }
+  bot.events.fire(element, goog.events.EventType.MOUSEDOWN, botCoords);
+
+  return this.newResponse(ErrorCode.SUCCESS, "ok");
+};
+
+
+SyntheticMouse.prototype.up = function(coordinates) {
+  var element = this.getElement_(coordinates);
+  
+  // TODO(simon): This implementation isn't good enough. Again
+  // Defaults to left mouse button, which is the correct one.
+  var button = this.buttonDown;
+  var botCoords = {
+    'x': coordinates['x'],
+    'y': coordinates['y'],
+    'button': button
+  };
+  bot.events.fire(element, goog.events.EventType.MOUSEMOVE, botCoords);
+  bot.events.fire(element, goog.events.EventType.MOUSEUP, botCoords);
+  
+  this.buttonDown = bot.events.Button.NONE;
+
+  return this.newResponse(ErrorCode.SUCCESS, "ok");
 };
 
 

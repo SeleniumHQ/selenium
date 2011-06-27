@@ -17,15 +17,27 @@
 
 #include "nsISupports.idl"
 #include "wdICoordinate.idl"
+#include "wdIStatus.idl"
 
 /**
  * Models a mouse device.
+ *
+ * TODO(simon): Consider replacing "coordinates" with "target" and removing the
+ * coordinates interface.
  */
 [scriptable, uuid(6291C63C-30B2-4C69-9212-7DEB1ED40DC4)]
 interface wdIMouse : nsISupports
 {
   /**
-   * Move the mouse cursor to a specified location
+   * Move the mouse cursor to a specified location. If x and y are specified
+   * they are offsets from the "where" parameter
    */
-  void mouseMove(in wdICoordinate where);
+  void move(in nsISupports target, in PRInt32 xOffset, in PRInt32 yOffset, [retval] out wdIStatus result);
+
+  void down(in wdICoordinate where, [retval] out wdIStatus result);
+  void up(in wdICoordinate where, [retval] out wdIStatus result);
+
+  void click(in nsISupports target, [retval] out wdIStatus result);
+  void doubleClick(in nsISupports where, [retval] out wdIStatus result);
+  void contextClick(in wdICoordinate where, [retval] out wdIStatus result);
 };

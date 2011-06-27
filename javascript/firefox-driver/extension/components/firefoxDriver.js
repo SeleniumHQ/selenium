@@ -41,18 +41,8 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   FirefoxDriver.listenerScript = Utils.loadUrl("resource://fxdriver/evaluate.js");
 
   this.jsTimer = new Timer();
+  this.mouse = Utils.newInstance("@googlecode.com/webdriver/syntheticmouse;1", "wdIMouse");
 }
-
-
-/**
- * Enumeration of supported speed values.
- * @enum {number}
- */
-FirefoxDriver.Speed = {
-  SLOW: 1,
-  MEDIUM: 10,
-  FAST: 100
-};
 
 
 FirefoxDriver.prototype.__defineGetter__("id", function() {
@@ -1050,11 +1040,11 @@ function getElementFromLocation(mouseLocation, doc) {
     elementForNode = doc.elementFromPoint(locationX, locationY);
   } else {
     Logger.dumpn("Mouse coordinates were not set - using body");
+    throw new bot.Error("EEEEEKKKK!");
     elementForNode = doc.getElementsByTagName("body")[0];
   }
 
   return webdriver.firefox.utils.unwrap(elementForNode);
-  //return elementForNode;
 }
 
 function generateErrorForNativeEvents(nativeEventsEnabled, nativeEventsObj, nodeForInteraction) {
@@ -1096,8 +1086,20 @@ FirefoxDriver.prototype.getBrowserSpecificOffset_ = function(inBrowser) {
 
 FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   var doc = respond.session.getDocument();
-  var coords = webdriver.firefox.events.buildCoordinates(parameters, doc);
-
+  
+  // Fast path first
+  if (!this.enableNativeEvents) {
+    var raw = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
+    var target = raw ? new XPCNativeWrapper(raw) : null;
+    Logger.dumpn("Calling move with: " + parameters['xoffset'] + ', ' + parameters['yoffset'] + ", " + target);
+    var result = this.mouse.move(target, parameters['xoffset'], parameters['yoffset']);
+    
+    respond['status'] = result['status'];
+    respond['result'] = result['message'];
+    respond.send();
+    return;
+  }
+  
   var mouseMoveTo = function(coordinates, nativeEventsEnabled) {
     var elementForNode = null;
 
@@ -1153,14 +1155,25 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
   };
 
+  var coords = webdriver.firefox.events.buildCoordinates(parameters, doc);
   mouseMoveTo(coords, this.enableNativeEvents);
 
   respond.send();
 };
 
 FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
+  if (!this.enableNativeEvents) {
+    var coords = webdriver.firefox.utils.newCoordinates(null, 0, 0);
+    var result = this.mouse.down(coords);
+    
+    respond['status'] = result['status'];
+    respond['value'] = result['message'];
+    respond.send();
+    return;
+  }
+  
   var doc = respond.session.getDocument();
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);;
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);;  
 
   var events = Utils.getNativeEvents();
   var node = Utils.getNodeForNativeEvents(elementForNode);
@@ -1186,8 +1199,18 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
 }
 
 FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
+  if (!this.enableNativeEvents) {
+    var coords = webdriver.firefox.utils.newCoordinates(null, 0, 0);
+    var result = this.mouse.up(coords);
+    
+    respond['status'] = result['status'];
+    respond['value'] = result['message'];
+    respond.send();
+    return;
+  }
+  
   var doc = respond.session.getDocument();
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);;
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
   var events = Utils.getNativeEvents();
   var node = Utils.getNodeForNativeEvents(elementForNode);
@@ -1213,6 +1236,18 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
 
 FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
   var doc = respond.session.getDocument();
+  
+  Utils.installWindowCloseListener(respond);
+  Utils.installClickListener(respond, WebLoadingListener);
+  
+  if (!this.enableNativeEvents) {
+    var result = this.mouse.click(null);
+    
+    respond['status'] = result['status'];
+    respond['value'] = result['message'];
+    return;
+  }
+  
   var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);;
 
   var events = Utils.getNativeEvents();
@@ -1237,3 +1272,14 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
 
   respond.send();
 }
+
+
+FirefoxDriver.prototype.mouseDoubleClick = function(respond, parameters) {
+  Utils.installWindowCloseListener(respond);
+  Utils.installClickListener(respond, WebLoadingListener);
+
+  var response = this.mouse.doubleClick(null);
+  respond.status = response.status;
+  respond.value = response.message;
+  respond.send();
+};

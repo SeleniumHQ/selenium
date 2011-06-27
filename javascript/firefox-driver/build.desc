@@ -7,6 +7,9 @@ mozilla_xpt(name = "response_handler_xpt",
 mozilla_xpt(name = "httpd_xpt",
   srcs = [ "extension/idl/nsIHttpServer.idl" ])
 
+mozilla_xpt(name = "status_xpt",
+  srcs = [ "extension/idl/wdIStatus.idl" ])
+
 mozilla_xpt(name = "coordinates_xpt",
   srcs = [ "extension/idl/wdICoordinate.idl" ])
 
@@ -23,11 +26,12 @@ mozilla_extension(name = "webdriver",
   components = [
     "extension/components/*.js",
     ":command_processor_xpt",
-    ":httpd_xpt",
-    "//cpp:native_events_xpt",
-    ":response_handler_xpt",
     ":coordinates_xpt",
+    ":httpd_xpt",
     ":mouse_xpt",
+    ":response_handler_xpt",
+    ":status_xpt",
+    "//cpp:native_events_xpt",
   ],
   resources = [
     { "//cpp:firefox_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },

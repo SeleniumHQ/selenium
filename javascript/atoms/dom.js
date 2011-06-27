@@ -318,9 +318,8 @@ bot.dom.isEnabled = function(el) {
  *
  * @param {!Node} node The node who's parent is desired.
  * @return {Element} The parent element, if available, null otherwise.
- * @private
  */
-bot.dom.getParentElement_ = function(node) {
+bot.dom.getParentElement = function(node) {
   var elem = node.parentNode;
 
   while (elem &&
@@ -381,7 +380,7 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
   if (value != 'inherit') {
     return goog.isDef(value) ? value : null;
   }
-  var parent = bot.dom.getParentElement_(elem);
+  var parent = bot.dom.getParentElement(elem);
   return parent ? bot.dom.getCascadedStyle_(parent, styleName) : null;
 };
 
@@ -484,7 +483,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
       return false;
     }
-    var parent = bot.dom.getParentElement_(e);
+    var parent = bot.dom.getParentElement(e);
     return !parent || displayed(parent);
   }
   if (!displayed(elem)) {
@@ -760,7 +759,7 @@ bot.dom.getOpacityNonIE_ = function(elem) {
   }
 
   // Let's apply the parent opacity to the element.
-  var parentElement = bot.dom.getParentElement_(elem);
+  var parentElement = bot.dom.getParentElement(elem);
   if (parentElement) {
     elemOpacity = elemOpacity * bot.dom.getOpacityNonIE_(parentElement);
   }
