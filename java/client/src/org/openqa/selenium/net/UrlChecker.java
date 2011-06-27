@@ -12,10 +12,9 @@ import com.google.common.util.concurrent.UncheckedTimeoutException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 /**
@@ -29,10 +28,19 @@ public class UrlChecker {
   private static final int READ_TIMEOUT_MS = 1000;
   private static final long POLL_INTERVAL_MS = 500;
 
+  private static final AtomicInteger THREAD_COUNTER = new AtomicInteger(1);
+  private static final ExecutorService THREAD_POOL = Executors.newCachedThreadPool(new ThreadFactory() {
+    public Thread newThread(Runnable r) {
+      Thread t = new Thread(r, "UrlChecker-" + THREAD_COUNTER.incrementAndGet());
+      t.setDaemon(true);
+      return t;
+    }
+  });
+
   private final TimeLimiter timeLimiter;
 
   public UrlChecker() {
-    this(createSimpleTimeLimiter());
+    this(new SimpleTimeLimiter(THREAD_POOL));
   }
 
   @VisibleForTesting
@@ -40,15 +48,10 @@ public class UrlChecker {
     this.timeLimiter = timeLimiter;
   }
 
-  private static TimeLimiter createSimpleTimeLimiter() {
-    ExecutorService executor = Executors.newFixedThreadPool(1);
-    return new SimpleTimeLimiter(executor);
-  }
-
   public void waitUntilAvailable(long timeout, TimeUnit unit, final URL... urls)
       throws TimeoutException {
     long start = System.nanoTime();
-    log.fine("Waiting for " + urls);
+    log.fine("Waiting for " + Arrays.toString(urls));
     try {
       timeLimiter.callWithTimeout(new Callable<Void>() {
         public Void call() throws InterruptedException {
@@ -77,7 +80,7 @@ public class UrlChecker {
     } catch (UncheckedTimeoutException e) {
       throw new TimeoutException(String.format(
           "Timed out waiting for %s to be available after %d ms",
-          urls, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
+          Arrays.toString(urls), MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }
