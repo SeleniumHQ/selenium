@@ -70,7 +70,7 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     WebElement toSelect = enabledUnselectedRadioButton();
     assertNotSelected(toSelect);
     
-    toSelect.setSelected();
+    toSelect.click();
     assertNotSelected(originallySelected);
     assertSelected(toSelect);
   }
@@ -250,7 +250,8 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
   }
   
   private static void assertTogglingSwapsSelectedStateFrom(WebElement element, boolean originalState) {
-    boolean isNowSelected = element.toggle();
+    element.click();
+    boolean isNowSelected = element.isSelected(); 
     assertThat(
         String.format("Expected element %s to have been toggled to %s but was %s",
             describe(element),
