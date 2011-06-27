@@ -18,17 +18,14 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.Mouse;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.interactions.internal.BaseAction;
-import org.openqa.selenium.interactions.internal.MouseRelatedAction;
 
 /**
  * Moves the mouse to an element.
  *
  */
-public class MoveMouseAction extends MouseRelatedAction implements Action {
+public class MoveMouseAction extends MouseAction implements Action {
   public MoveMouseAction(Mouse mouse, Locatable locationProvider) {
     super(mouse, locationProvider);
     if (locationProvider == null) {

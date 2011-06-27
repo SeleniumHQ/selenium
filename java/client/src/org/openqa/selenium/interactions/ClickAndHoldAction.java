@@ -19,13 +19,13 @@ package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.interactions.internal.MouseRelatedAction;
+import org.openqa.selenium.interactions.internal.MouseAction;
 
 /**
  * Presses the left mouse button without releasing it.
  *
  */
-public class ClickAndHoldAction extends MouseRelatedAction implements Action {
+public class ClickAndHoldAction extends MouseAction implements Action {
   public ClickAndHoldAction(Mouse mouse, Locatable locationProvider) {
     super(mouse, locationProvider);
   }

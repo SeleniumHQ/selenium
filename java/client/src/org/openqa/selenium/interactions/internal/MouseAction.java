@@ -7,10 +7,10 @@ import org.openqa.selenium.internal.Locatable;
 /**
  * Base class for all mouse-related actions.
  */
-public class MouseRelatedAction extends BaseAction {
+public class MouseAction extends BaseAction {
   protected final Mouse mouse;
 
-  protected MouseRelatedAction(Mouse mouse, Locatable locationProvider) {
+  protected MouseAction(Mouse mouse, Locatable locationProvider) {
     super(locationProvider);
     this.mouse = mouse;
   }

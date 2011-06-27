@@ -19,13 +19,13 @@ package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.interactions.internal.MouseRelatedAction;
+import org.openqa.selenium.interactions.internal.MouseAction;
 
 /**
  * Double-clicks an element.
  *
  */
-public class DoubleClickAction extends MouseRelatedAction implements Action {
+public class DoubleClickAction extends MouseAction implements Action {
   public DoubleClickAction(Mouse mouse, Locatable locationProvider) {
     super(mouse, locationProvider);
   }

@@ -22,14 +22,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.BaseAction;
-import org.openqa.selenium.interactions.internal.MouseRelatedAction;
+import org.openqa.selenium.interactions.internal.MouseAction;
 
 /**
  * Releases the left mouse button
  *
  */
 
-public class ButtonReleaseAction extends MouseRelatedAction implements Action {
+public class ButtonReleaseAction extends MouseAction implements Action {
   public ButtonReleaseAction(Mouse mouse, Locatable locationProvider) {
     super(mouse, locationProvider);
   }

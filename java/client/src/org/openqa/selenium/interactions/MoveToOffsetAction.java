@@ -18,14 +18,14 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.Mouse;
-import org.openqa.selenium.interactions.internal.MouseRelatedAction;
+import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.internal.Locatable;
 
 /**
  * Move the mouse to a location within the element provided. The coordinates
  * provided specify the offset from the top-left corner of the element.
  */
-public class MoveToOffsetAction extends MouseRelatedAction implements Action {
+public class MoveToOffsetAction extends MouseAction implements Action {
   private final int xOffset;
   private final int yOffset;
 
