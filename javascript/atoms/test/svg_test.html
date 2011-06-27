@@ -38,6 +38,19 @@
       bot.action.focusOnElement(otherElement);
       bot.action.focusOnElement(element);
     }
+
+    function testCanFindElementsWithinFramedSvg() {
+      var doc = window.frames['chart'].document.documentElement;
+      var element = bot.locators.findElement({tagName: 'text'}, doc);
+      assertEquals('title', element.id);
+    }
+
+    function testLocatingSvgElementsByTagNameIsCaseSensitive() {
+      // Just documenting this for posterity...
+      var doc = window.frames['chart'].document.documentElement;
+      assertNull(bot.locators.findElement({tagName: 'TEXT'}, doc));
+      assertNotNull(bot.locators.findElement({tagName: 'text'}, doc));
+    }
   </script>
 </head>
 <body>

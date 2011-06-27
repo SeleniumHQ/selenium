@@ -16,8 +16,6 @@
 goog.provide('bot.locators.tagName');
 
 goog.require('goog.array');
-goog.require('goog.dom');
-goog.require('goog.dom.DomHelper');
 
 
 /**
@@ -29,9 +27,7 @@ goog.require('goog.dom.DomHelper');
  *     such element could be found.
  */
 bot.locators.tagName.single = function(target, root) {
-  var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
-      target, null, root);
-  return elements[0] || null;
+  return root.getElementsByTagName(target)[0] || null;
 };
 
 
@@ -43,6 +39,5 @@ bot.locators.tagName.single = function(target, root) {
  * @return {goog.array.ArrayLike} All matching elements, or an empty list.
  */
 bot.locators.tagName.many = function(target, root) {
-  return goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
-      target, null, root);
+  return root.getElementsByTagName(target);
 };
