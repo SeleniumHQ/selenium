@@ -44,7 +44,7 @@ public class ClickTest extends AbstractDriverTestCase {
     waitFor(elementToExist(driver, "normal"));
     driver.findElement(By.id("normal")).click();
 
-    assertEquals("XHTML Test Page", driver.getTitle());
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @JavascriptEnabled

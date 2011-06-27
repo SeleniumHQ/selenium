@@ -17,12 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.CapabilityType;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -32,30 +26,18 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.openqa.selenium.interactions.Actions;
+
 @Ignore({IPHONE, ANDROID})
 public class DragAndDropTest extends AbstractDriverTestCase {
-
-  private boolean supportsNativeEvents;
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    if (driver instanceof HasCapabilities) {
-      Capabilities caps = ((HasCapabilities) driver).getCapabilities();
-      supportsNativeEvents = caps.is(CapabilityType.HAS_NATIVE_EVENTS);
-    }
-  }
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, CHROME, SELENESE, OPERA},
       reason = "Opera: last assert fails in desktop because <5px mousemove")
   public void testDragAndDrop() throws Exception {
-    if (!supportsNativeEvents) {
-      System.out.println("Native events not supported. Skipping test");
-      return;
-    }
-
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
     Point expectedLocation = img.getLocation();
@@ -73,11 +55,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   @Ignore(value = {HTMLUNIT, CHROME, SELENESE, FIREFOX}, reason = "Currently broken in Firefox," +
       " fix tracked in issue 1771.")
   public void testDragAndDropToElement() {
-    if (!supportsNativeEvents) {
-      System.out.println("Native events not supported. Skipping test");
-      return;
-    }
-
     driver.get(pages.dragAndDropPage);
     WebElement img1 = driver.findElement(By.id("test1"));
     WebElement img2 = driver.findElement(By.id("test2"));
@@ -88,11 +65,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({HTMLUNIT, CHROME, SELENESE})
   public void testElementInDiv() {
-    if (!supportsNativeEvents) {
-      System.out.println("Native events not supported. Skipping test");
-      return;
-    }
-
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
     Point expectedLocation = img.getLocation();
@@ -103,11 +75,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({HTMLUNIT, IE, CHROME, SELENESE})
   public void testDragTooFar() {
-    if (!supportsNativeEvents) {
-      System.out.println("Native events not supported. Skipping test");
-      return;
-    }
-
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
 
@@ -132,11 +99,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, IE, CHROME, SELENESE, FIREFOX}, reason = "See issue 1771.")
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
-    if (!supportsNativeEvents) {
-      System.out.println("Native events not supported. Skipping test");
-      return;
-    }
-
     driver.get(pages.dragAndDropPage);
 
     JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -157,18 +119,15 @@ public class DragAndDropTest extends AbstractDriverTestCase {
 
   private void drag(WebElement elem, Point expectedLocation,
                     int moveRightBy, int moveDownBy) {
-    new Actions(driver).dragAndDropBy(elem, moveRightBy, moveDownBy).perform();
+    new Actions(driver)
+        .dragAndDropBy(elem, moveRightBy, moveDownBy)
+        .perform();
     expectedLocation.move(expectedLocation.x + moveRightBy, expectedLocation.y + moveDownBy);
   }
 
   @JavascriptEnabled
   @Ignore({HTMLUNIT, CHROME, IE, SELENESE})
   public void testDragAndDropOnJQueryItems() {
-    if (!supportsNativeEvents) {
-      System.out.println("Native events not supported. Skipping test");
-      return;
-    }
-
     driver.get(pages.droppableItems);
 
     WebElement toDrag = driver.findElement(By.id("draggable"));

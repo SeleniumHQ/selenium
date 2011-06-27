@@ -17,17 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.Ignore;
-import org.openqa.selenium.JavascriptEnabled;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -37,6 +26,14 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
+import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Ignore;
+import org.openqa.selenium.JavascriptEnabled;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 /**
  * Tests operations that involve mouse and keyboard.
@@ -78,11 +75,6 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
   public void testDraggingElementWithMouseMovesItToAnotherList() {
-    if (!supportsNativeEvents()) {
-      System.out.println("Skipping mouse test: needs native events");
-      return;
-    }
-
     performDragAndDropWithMouse();
     WebElement dragInto = driver.findElement(By.id("sortable1"));
     assertEquals(6, dragInto.findElements(By.tagName("li")).size());
@@ -93,11 +85,6 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
   public void testDraggingElementWithMouseFiresEvents() {
-    if (!supportsNativeEvents()) {
-      System.out.println("Skipping mouse test: needs native events");
-      return;
-    }
-
     performDragAndDropWithMouse();
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
     // This is failing under HtmlUnit. A bug was filed.
@@ -117,11 +104,6 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
   public void testDragAndDrop() throws InterruptedException {
-    if (!supportsNativeEvents()) {
-      System.out.println("Skipping mouse test: needs native events");
-      return;
-    }
-
     driver.get(pages.droppableItems);
 
     long waitEndTime = System.currentTimeMillis() + 15000;
@@ -186,10 +168,6 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
   public void testMoveAndClick() {
-    if (!supportsNativeEvents()) {
-      System.out.println("Skipping mouse test: needs native events");
-      return;
-    }
     driver.get(pages.javascriptPage);
 
     WebElement toClick = driver.findElement(By.id("clickField"));
@@ -222,19 +200,5 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
       // expected
     }
 
-  }
-
-  private boolean supportsNativeEvents() {
-    if (Platform.getCurrent().is(Platform.WINDOWS)) {
-      return true;
-    }
-
-    if (driver instanceof HasCapabilities) {
-      Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
-      Object nativeEvents = capabilities.getCapability("nativeEvents");
-      return nativeEvents != null && (Boolean) nativeEvents;
-    }
-
-    return false;
   }
 }
