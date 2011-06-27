@@ -56,7 +56,7 @@ public class SingleTestSuite extends TestCase {
       }};
 
   public static Test suite() throws Exception {
-    String driver = SELENIUM;
+    String driver = HTML_UNIT_JS;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -69,8 +69,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ImplicitWaitTest")
-        .method("testShouldStillFailToFindElementsByIdWhenImplicitWaitsAreEnabled")
+        .onlyRun("SelectElementHandlingTest")
+//        .method("testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices")
         .exclude(ALL)
         .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
         .outputTestNames()

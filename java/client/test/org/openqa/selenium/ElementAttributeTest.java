@@ -129,7 +129,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     driver.get(pages.formPage);
     WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
     assertThat(checkbox.getAttribute("checked"), equalTo(null));
-    checkbox.setSelected();
+    checkbox.click();
     assertThat(checkbox.getAttribute("checked"), equalTo("true"));
   }
 
@@ -143,7 +143,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(initiallyNotSelected.getAttribute("selected"), equalTo(null));
     assertThat(initiallySelected.getAttribute("selected"), equalTo("true"));
 
-    initiallyNotSelected.setSelected();
+    initiallyNotSelected.click();
     assertThat(neverSelected.getAttribute("selected"), equalTo(null));
     assertThat(initiallyNotSelected.getAttribute("selected"), equalTo("true"));
     assertThat(initiallySelected.getAttribute("selected"), equalTo(null));

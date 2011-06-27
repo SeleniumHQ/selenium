@@ -18,16 +18,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.concurrent.Callable;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
+
+import java.util.concurrent.Callable;
 
 public class VisibilityTest extends AbstractDriverTestCase {
 
@@ -95,20 +94,6 @@ public class VisibilityTest extends AbstractDriverTestCase {
     try {
       element.click();
       fail("You should not be able to click on an invisible element");
-    } catch (ElementNotVisibleException e) {
-      // This is expected
-    }
-  }
-
-  @JavascriptEnabled
-  @Ignore(SELENESE)
-  public void testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed() {
-    driver.get(pages.javascriptPage);
-    WebElement element = driver.findElement(By.id("untogglable"));
-
-    try {
-      element.setSelected();
-      fail("You should not be able to select an invisible element");
     } catch (ElementNotVisibleException e) {
       // This is expected
     }

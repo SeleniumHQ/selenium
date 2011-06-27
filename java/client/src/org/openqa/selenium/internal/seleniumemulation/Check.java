@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class Check extends SeleneseCommand<Void> {
   private final AlertOverride alertOverride;
@@ -32,7 +33,10 @@ public class Check extends SeleneseCommand<Void> {
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
     alertOverride.replaceAlertMethod(driver);
 
-    finder.findElement(driver, locator).setSelected();
+    WebElement element = finder.findElement(driver, locator);
+    if (!element.isSelected()) {
+      element.click();
+    }
     
     return null;
   }

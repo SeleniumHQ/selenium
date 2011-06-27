@@ -213,8 +213,7 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.POST, Dispatcher.executeAs('clearElement'));
 
   this.bind_('/session/:sessionId/element/:id/selected').
-      on(Request.Method.GET, Dispatcher.executeAs('isElementSelected')).
-      on(Request.Method.POST, Dispatcher.executeAs('setElementSelected'));
+      on(Request.Method.GET, Dispatcher.executeAs('isElementSelected'));
 
   this.bind_('/session/:sessionId/element/:id/enabled').
       on(Request.Method.GET, Dispatcher.executeAs('isElementEnabled'));

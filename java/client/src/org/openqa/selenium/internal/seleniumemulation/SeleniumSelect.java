@@ -55,14 +55,18 @@ public class SeleniumSelect {
     }
     
     WebElement option = findOption(optionLocator);
-    option.setSelected();
+    if (!option.isSelected()) {
+      option.click();
+    }
   }
 
   public void addSelection(String optionLocator) {
     assertSupportsMultipleSelections();
 
     WebElement option = findOption(optionLocator);
-    option.setSelected();
+    if (!option.isSelected()) {
+      option.click();
+    }
   }
 
   public void removeSelection(String optionLocator) {

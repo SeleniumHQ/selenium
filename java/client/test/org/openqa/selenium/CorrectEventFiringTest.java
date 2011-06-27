@@ -175,10 +175,10 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     WebElement foo = allOptions.get(0);
     WebElement bar = allOptions.get(1);
 
-    foo.setSelected();
+    foo.click();
     assertThat(driver.findElement(By.id("result")).getText(),
                equalTo(initialTextValue));
-    bar.setSelected();
+    bar.click();
     assertThat(driver.findElement(By.id("result")).getText(),
                equalTo("bar"));
   }
@@ -189,7 +189,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
     WebElement checkbox = driver.findElement(By.id("checkbox"));
 
-    checkbox.setSelected();
+    checkbox.click();
     assertThat(driver.findElement(By.id("result")).getText(),
                equalTo("checkbox thing"));
   }

@@ -110,7 +110,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
-    driver.findElement(By.id("changeme")).setSelected();
+    driver.findElement(By.id("changeme")).click();
 
     waitForTitleChange("Page3");
     assertThat(driver.getTitle(), equalTo("Page3"));
@@ -122,7 +122,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
-    driver.findElement(By.id("changeme")).setSelected();
+    driver.findElement(By.id("changeme")).click();
 
     waitForTitleChange("Page3");
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("3"));

@@ -109,15 +109,6 @@ public interface WebElement extends SearchContext {
   boolean isSelected();
 
   /**
-   * Select an element. This method will work against radio buttons, "option" elements within a
-   * "select" and checkboxes
-   *
-   * @deprecated Please use "click" instead
-   */
-  @Deprecated
-  void setSelected();
-
-  /**
    * Is the element currently enabled or not? This will generally return true for everything but
    * disabled input elements.
    *

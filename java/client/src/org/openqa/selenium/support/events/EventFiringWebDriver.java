@@ -17,21 +17,38 @@ limitations under the License.
 
 package org.openqa.selenium.support.events;
 
-import org.openqa.selenium.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.HasInputDevices;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keyboard;
+import org.openqa.selenium.Mouse;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
 import org.openqa.selenium.support.events.internal.EventFiringMouse;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance
@@ -195,14 +212,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     throw new UnsupportedOperationException("Underlying driver instance does not support executing javascript");
   }
 
-  private boolean isJavascriptEnabled() {
-    if (driver instanceof HasCapabilities) {
-      return ((HasCapabilities) driver).getCapabilities().isJavascriptEnabled();
-    }
-
-    throw new UnsupportedOperationException("Underlying driver instance does not support executing javascript");
-  }
-
   private Object[] unpackWrappedArgs(Object... args) {
     // Walk the args: the various drivers expect unpacked versions of the elements
     Object[] usedArgs = new Object[args.length];
@@ -312,10 +321,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   
     public boolean isSelected() {
       return element.isSelected();
-    }
-  
-    public void setSelected() {
-      element.setSelected();
     }
   
     public boolean isEnabled() {

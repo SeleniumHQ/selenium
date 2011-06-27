@@ -2,7 +2,6 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
@@ -10,8 +9,6 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 public class ElementSelectingTest extends AbstractDriverTestCase {
   private static final boolean UNSELECTED = false;
   private static final boolean SELECTED = true;
-  private static final String assertCannotPerformActionFormat_action_element =
-    "Expected exception - should not be able to %s element %s";
   
   public void testShouldBeAbleToSelectAnEnabledUnselectedCheckbox() {
     driver.get(pages.formPage);
@@ -22,18 +19,6 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     driver.get(pages.formPage);
     assertCanSelect(enabledUnselectedRadioButton());
   }
-  
-  
-  public void testSelectingAlreadySelectedCheckboxShouldBeNoop() {
-    driver.get(pages.formPage);
-    assertSelectingPreservesAlreadySelectedStatus(enabledSelectedCheckbox());
-  }
-  
-  public void testSelectingAlreadySelectedRadioButtonShouldBeNoop() {
-    driver.get(pages.formPage);
-    assertSelectingPreservesAlreadySelectedStatus(enabledSelectedRadioButton());
-  }
-  
   
   public void testShouldNotBeAbleToSelectADisabledCheckbox() {
     driver.get(pages.formPage);
@@ -54,12 +39,6 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     driver.get(pages.formPage);
     assertCannotSelect(randomlyDisabledUnselectedRadioButton());
   }
-  
-  public void testShouldNotBeAbleToSelectUnselectableElement() {
-    driver.get(pages.formPage);
-    assertCannotSelect(nonSelectableElement());
-  }
-  
   
   public void testSelectingRadioButtonShouldUnselectItsSibling() {
     driver.get(pages.formPage);
@@ -171,28 +150,15 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
   }
 
   private static void assertCannotSelect(WebElement element) {
-    try {
-      element.setSelected();
-      fail(String.format(assertCannotPerformActionFormat_action_element, "select", describe(element)));
-    } catch (InvalidElementStateException e) {
-      //Expected
-    }
+    boolean previous = element.isSelected();
+    element.click();
+    assertEquals(previous, element.isSelected());
   }
   
   private static void assertCanSelect(WebElement element) {
     assertNotSelected(element);
     
-    element.setSelected();
-    assertSelected(element);
-    
-    element.setSelected();
-    assertSelected(element);
-  }
-  
-  private static void assertSelectingPreservesAlreadySelectedStatus(WebElement element) {
-    assertSelected(element);
-    
-    element.setSelected();
+    element.click();
     assertSelected(element);
   }
   
@@ -269,11 +235,6 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
   
   private WebElement randomlyDisabledUnselectedRadioButton() {
     return driver.findElement(By.id("randomly_disabled_nothing"));
-  }
-
-  private WebElement selectedNonMultipleSelectOption() {
-    WebElement select = driver.findElement(By.name("selectomatic"));
-    return select.findElements(By.tagName("option")).get(0);
   }
 
   private WebElement selectedMultipleSelectOption() {

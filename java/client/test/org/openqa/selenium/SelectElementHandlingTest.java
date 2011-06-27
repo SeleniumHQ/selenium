@@ -56,7 +56,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     assertThat(one.isSelected(), is(true));
     assertThat(two.isSelected(), is(false));
 
-    two.setSelected();
+    two.click();
     assertThat(one.isSelected(), is(false));
     assertThat(two.isSelected(), is(true));
   }
@@ -68,7 +68,9 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     WebElement multiSelect = driver.findElement(By.id("multi"));
     List<WebElement> options = multiSelect.findElements(By.tagName("option"));
     for (WebElement option : options) {
-      option.setSelected();
+      if (!option.isSelected()) {
+        option.click();
+      }
     }
 
     for (int i = 0; i < options.size(); i++) {
