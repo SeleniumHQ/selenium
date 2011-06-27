@@ -116,10 +116,10 @@ namespace OpenQA.Selenium.Chrome
         /// Initializes a new instance of the ChromeDriver class using the specified <see cref="ChromeDriverService"/>.
         /// </summary>
         /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
-        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         /// <param name="capabilities">The desired capabilities of the Chrome driver.</param>
-        private ChromeDriver(ChromeDriverService service, ICapabilities capbilities, TimeSpan commandTimeout)
-            : base(new ChromeCommandExecutor(service, commandTimeout), capbilities)
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        private ChromeDriver(ChromeDriverService service, ICapabilities capabilities, TimeSpan commandTimeout)
+            : base(new ChromeCommandExecutor(service, commandTimeout), capabilities)
         {
         }
         #endregion
