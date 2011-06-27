@@ -113,7 +113,7 @@ public class Select {
 
     boolean matched = false;
     for (WebElement option : options) {
-      option.setSelected();
+      setSelected(option);
       if (!isMultiple()) {  return;  }
       matched = true;
     }
@@ -130,7 +130,7 @@ public class Select {
       }
       for (WebElement option : candidates) {
         if (text.equals(option.getText())) {
-          option.setSelected();
+          setSelected(option);
           if (!isMultiple()) {  return;  }
           matched = true;
         }
@@ -166,7 +166,7 @@ public class Select {
     boolean matched = false;
     for (WebElement option : getOptions()) {
       if (match.equals(option.getAttribute("index"))) {
-        option.setSelected();
+        setSelected(option);
         if (!isMultiple()) {  return;  }
         matched = true;
       }
@@ -192,7 +192,7 @@ public class Select {
 
     boolean matched = false;
     for (WebElement option : options) {
-      option.setSelected();
+      setSelected(option);
       if (!isMultiple()) {  return;  }
       matched = true;
     }
@@ -215,7 +215,7 @@ public class Select {
 
     for (WebElement option : getOptions()) {
       if (option.isSelected()) {
-        option.toggle();
+        option.click();
       }
     }
   }
@@ -235,7 +235,7 @@ public class Select {
     List<WebElement> options = element.findElements(By.xpath(builder.toString()));
     for (WebElement option : options) {
       if (option.isSelected()) {
-        option.toggle();
+        option.click();
       }
     }
   }
@@ -251,7 +251,7 @@ public class Select {
 
     for (WebElement option : getOptions()) {
       if (match.equals(option.getAttribute("index")) && option.isSelected()) {
-        option.toggle();
+        option.click();
       }
     }
   }
@@ -271,7 +271,7 @@ public class Select {
     List<WebElement> options = element.findElements(By.xpath(builder.toString()));
     for (WebElement option : options) {
       if (option.isSelected()) {
-        option.toggle();
+        option.click();
       }
     }
   }
@@ -300,5 +300,11 @@ public class Select {
 
     // Otherwise return the quoted string
     return String.format("\"%s\"", toEscape);
+  }
+  
+  private void setSelected(WebElement option) {
+	if (!option.isSelected()) {
+	  option.click();
+	}
   }
 }

@@ -158,7 +158,8 @@ public class SelectTest extends MockObjectTestCase {
       allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.xpath(".//option[. = \"fish\"]")); will(returnValue(options));
-      exactly(1).of(firstOption).setSelected();
+      exactly(1).of(firstOption).isSelected(); will(returnValue(false));
+      exactly(1).of(firstOption).click();
     }});
 
     Select select = new Select(element);
@@ -176,9 +177,11 @@ public class SelectTest extends MockObjectTestCase {
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
       exactly(1).of(firstOption).getAttribute("index"); will(returnValue("0"));
-      never(firstOption).setSelected();
+      allowing(firstOption).isSelected(); will(returnValue(true));
+      never(firstOption).click();
       exactly(1).of(secondOption).getAttribute("index"); will(returnValue("1"));
-      exactly(1).of(secondOption).setSelected();
+      allowing(secondOption).isSelected(); will(returnValue(false));
+      exactly(1).of(secondOption).click();
     }});
 
     Select select = new Select(element);
@@ -194,7 +197,8 @@ public class SelectTest extends MockObjectTestCase {
       allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.xpath(".//option[@value = \"b\"]")); will(returnValue(options));
-      exactly(1).of(firstOption).setSelected();
+      exactly(1).of(firstOption).isSelected(); will(returnValue(false));
+      exactly(1).of(firstOption).click();
     }});
 
     Select select = new Select(element);
@@ -213,9 +217,9 @@ public class SelectTest extends MockObjectTestCase {
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
       exactly(1).of(firstOption).isSelected(); will(returnValue(true));
-      exactly(1).of(firstOption).toggle();
+      exactly(1).of(firstOption).click();
       exactly(1).of(secondOption).isSelected(); will(returnValue(false));
-      never(secondOption).toggle();
+      never(secondOption).click();
     }});
 
     Select select = new Select(element);
@@ -243,9 +247,9 @@ public class SelectTest extends MockObjectTestCase {
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.xpath(".//option[. = \"b\"]")); will(returnValue(options));
       exactly(1).of(firstOption).isSelected(); will(returnValue(true));
-      exactly(1).of(firstOption).toggle();
+      exactly(1).of(firstOption).click();
       exactly(1).of(secondOption).isSelected(); will(returnValue(false));
-      never(secondOption).toggle();
+      never(secondOption).click();
     }});
 
     Select select = new Select(element);
@@ -264,9 +268,9 @@ public class SelectTest extends MockObjectTestCase {
       exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
       exactly(1).of(firstOption).getAttribute("index"); will(returnValue("2"));
       exactly(1).of(firstOption).isSelected(); will(returnValue(true));
-      exactly(1).of(firstOption).toggle();
+      exactly(1).of(firstOption).click();
       exactly(1).of(secondOption).getAttribute("index"); will(returnValue("1"));
-      never(secondOption).setSelected();
+      never(secondOption).click();
     }});
 
     Select select = new Select(element);
@@ -284,9 +288,9 @@ public class SelectTest extends MockObjectTestCase {
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.xpath(".//option[@value = \"b\"]")); will(returnValue(options));
       exactly(1).of(firstOption).isSelected(); will(returnValue(true));
-      exactly(1).of(firstOption).toggle();
+      exactly(1).of(firstOption).click();
       exactly(1).of(secondOption).isSelected(); will(returnValue(false));
-      never(secondOption).toggle();
+      never(secondOption).click();
     }});
 
     Select select = new Select(element);
@@ -379,7 +383,8 @@ public class SelectTest extends MockObjectTestCase {
       one(element).findElements(xpath1); will(returnValue(Collections.EMPTY_LIST));
       one(element).findElements(xpath2); will(returnValue(Collections.singletonList(firstOption)));
       one(firstOption).getText(); will(returnValue("foo bar"));
-      one(firstOption).setSelected();
+      one(firstOption).isSelected(); will(returnValue(false));
+      one(firstOption).click();
     }});
 
     Select select = new Select(element);
