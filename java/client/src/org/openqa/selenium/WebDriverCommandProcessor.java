@@ -323,7 +323,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("controlKeyUp", new ControlKeyUp(keyState));
     seleneseMethods.put("deleteAllVisibleCookies", new DeleteAllVisibleCookies());
     seleneseMethods.put("deleteCookie", new DeleteCookie());
-    seleneseMethods.put("doubleClick", new DoubleClick(elementFinder));
+    seleneseMethods.put("doubleClick", new DoubleClick(alertOverride, elementFinder));
     seleneseMethods.put("dragdrop", new DragAndDrop(elementFinder));
     seleneseMethods.put("dragAndDrop", new DragAndDrop(elementFinder));
     seleneseMethods.put("fireEvent", new FireEvent(elementFinder, javascriptLibrary));
