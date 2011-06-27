@@ -101,17 +101,6 @@ public interface WebElement extends SearchContext {
   String getAttribute(String name);
 
   /**
-   * If the element is a checkbox this will toggle the elements state from selected to not
-   * selected, or from not selected to selected.
-   *
-   * @return Whether the toggled element is selected (true) or not (false) after this toggle is
-   *         complete
-   * @deprecated To be removed. Determine the current state using {@link #isSelected()}
-   */
-  @Deprecated
-  boolean toggle();
-
-  /**
    * Determine whether or not this element is selected or not. This operation only applies to
    * input elements such as checkboxes, options in a select and radio buttons.
    *

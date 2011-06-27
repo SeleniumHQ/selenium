@@ -101,20 +101,6 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, IPHONE}, reason = "iPhone: toggle not yet implemented")
-  public void testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed() {
-    driver.get(pages.javascriptPage);
-    WebElement element = driver.findElement(By.id("untogglable"));
-
-    try {
-      element.toggle();
-      fail("You should not be able to toggle an invisible element");
-    } catch (ElementNotVisibleException e) {
-      // This is expected
-    }
-  }
-
-  @JavascriptEnabled
   @Ignore(SELENESE)
   public void testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);

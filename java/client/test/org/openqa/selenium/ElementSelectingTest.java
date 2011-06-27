@@ -86,9 +86,15 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     assertCanToggle(enabledSelectedCheckbox());
   }
   
-  public void testShouldNotBeAbleToToggleEnabledRadioButton() {
+  public void testClickingOnASelectedRadioButtonShouldLeaveItSelected() {
     driver.get(pages.formPage);
-    assertCannotToggle(enabledSelectedRadioButton());
+    
+    WebElement button = enabledSelectedRadioButton();
+    assertTrue(button.isSelected());
+    
+    button.click();
+    
+    assertTrue(button.isSelected());
   }
 
   @Ignore(SELENESE)
@@ -96,42 +102,6 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     driver.get(pages.formPage);
     assertCanToggle(selectedMultipleSelectOption());
   }
-  
-  
-  @Ignore({FIREFOX, SELENESE})
-  public void testShouldNotBeAbleToToggleADisabledCheckbox() {
-    driver.get(pages.formPage);
-    assertCannotToggle(disabledUnselectedCheckbox());
-  }
-
-  @Ignore({FIREFOX, SELENESE})
-  public void testShouldNotBeAbleToToggleADisabledCheckboxDisabledWithRandomString() {
-    driver.get(pages.formPage);
-    assertCannotToggle(randomlyDisabledSelectedCheckbox());
-  }
-  
-  public void testShouldNotBeAbleToToggleADisabledRadioButton() {
-    driver.get(pages.formPage);
-    assertCannotToggle(disabledUnselectedRadioButton());
-  }
-
-  public void testShouldNotBeAbleToToggleADisabledRadioButtonDisabledWithRandomString() {
-    driver.get(pages.formPage);
-    assertCannotToggle(randomlyDisabledUnselectedRadioButton());
-  }
-  
-  @Ignore({IE, SELENESE})
-  public void testShouldNotBeAbleToToggleAnEnabledNonMultiSelectOption() {
-    driver.get(pages.formPage);
-    assertCannotToggle(selectedNonMultipleSelectOption());
-  }
-  
-  @Ignore(SELENESE)
-  public void testShouldNotBeAbleToToggleUnselectableElement() {
-    driver.get(pages.formPage);
-    assertCannotToggle(nonSelectableElement());
-  }
-  
   
   public void testShouldBeAbleToToggleSelectableCheckboxByClickingOnIt() {
     driver.get(pages.formPage);
@@ -261,16 +231,6 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     assertSelected(element, !originalState);
   }
 
-  private static void assertCannotToggle(WebElement element) {
-    try {
-      element.toggle();
-      fail(String.format(assertCannotPerformActionFormat_action_element, "toggle", describe(element)));
-    } catch (InvalidElementStateException e) {
-      //Expected
-    }
-  }
-
-  
   //TODO: Test disabled multi-selects
   //TODO: Test selecting options
   

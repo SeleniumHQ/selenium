@@ -35,7 +35,7 @@ public class Uncheck extends SeleneseCommand<Void> {
 
     WebElement element = finder.findElement(driver, locator);
     if (element.isSelected())
-      element.toggle();
+      element.click();
 
     return null;
   }

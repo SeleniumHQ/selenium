@@ -49,7 +49,7 @@ public class SeleniumSelect {
     if (isMultiple()) {
       for (WebElement opt : select.findElements(By.tagName("option"))) {
         if (opt.isSelected()) {
-          opt.toggle();
+          opt.click();
         }
       }
     }
@@ -70,7 +70,7 @@ public class SeleniumSelect {
 
     WebElement option = findOption(optionLocator);
     if (option.isSelected()) {
-      option.toggle();
+      option.click();
     }
   }
 

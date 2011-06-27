@@ -210,8 +210,6 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     postMapper.bind("/session/:sessionId/element/:id/selected", SetElementSelected.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/element/:id/toggle", ToggleElement.class)
-        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/element/:id/enabled", GetElementEnabled.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/element/:id/displayed", GetElementDisplayed.class)

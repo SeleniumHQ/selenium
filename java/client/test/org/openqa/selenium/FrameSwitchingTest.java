@@ -230,7 +230,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
 
     driver.switchTo().frame(2);
     WebElement checkbox = driver.findElement(By.xpath("//input[@name='checky']"));
-    checkbox.toggle();
+    checkbox.click();
     checkbox.submit();
 
     // TODO(simon): this should not be needed, and is only here because IE's submit returns too soon.

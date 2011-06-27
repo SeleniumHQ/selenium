@@ -37,29 +37,13 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
 
     WebElement option = options.get(0);
     assertThat(option.isSelected(), is(true));
-    option.toggle();
+    option.click();
     assertThat(option.isSelected(), is(false));
-    option.toggle();
+    option.click();
     assertThat(option.isSelected(), is(true));
 
     option = options.get(2);
     assertThat(option.isSelected(), is(true));
-  }
-
-  @Ignore({IE, SELENESE, IPHONE})
-  public void testShouldNotBeAbleToDeselectAnOptionFromANormalSelect() {
-    driver.get(pages.formPage);
-
-    WebElement select = driver.findElement(By.xpath("//select[@name='selectomatic']"));
-    List<WebElement> options = select.findElements(By.tagName("option"));
-    WebElement option = options.get(0);
-
-    try {
-      option.toggle();
-      fail("Should not have succeeded");
-    } catch (InvalidElementStateException e) {
-      // This is expected
-    }
   }
 
   @Ignore(SELENESE)

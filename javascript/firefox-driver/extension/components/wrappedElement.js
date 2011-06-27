@@ -420,51 +420,6 @@ FirefoxDriver.prototype.setElementSelected.preconditions =
     [ webdriver.preconditions.visible ];
 
 
-FirefoxDriver.prototype.toggleElement = function(respond, parameters) {
-  var element = Utils.getElementAt(parameters.id,
-                                   respond.session.getDocument());
-
-  try {
-    var checkbox =
-        element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
-    if (checkbox.type == "checkbox") {
-      checkbox.checked = !checkbox.checked;
-      Utils.fireHtmlEvent(checkbox, "change");
-      respond.value = checkbox.checked;
-      respond.send();
-      return;
-    }
-  } catch(e) {
-  }
-
-  try {
-    var option =
-        element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
-
-    // Find our containing select and see if it allows multiple selections
-    var select = option.parentNode;
-    while (select && select.tagName != "SELECT") {
-      select = select.parentNode;
-    }
-
-    if (select && select.multiple) {
-      option.selected = !option.selected;
-      Utils.fireHtmlEvent(option, "change");
-      respond.value = option.selected;
-      respond.send();
-      return;
-    }
-  } catch(e) {
-  }
-
-    throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
-      "You may only toggle an element that is either a checkbox or an "  +
-      "option in a select that allows multiple selections");
-};
-FirefoxDriver.prototype.toggleElement.preconditions =
-    [ webdriver.preconditions.visible ];
-
-
 FirefoxDriver.prototype.isElementDisplayed = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());

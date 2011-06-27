@@ -106,7 +106,7 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
             exactly(3).of(mockedDriver).findElement(By.name("foo")); will(returnValue(mockedElement));
             one(mockedElement).clear();
             one(mockedElement).sendKeys("some text");
-            one(mockedElement).toggle();
+            one(mockedElement).click();
         }});
 
         EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
@@ -116,11 +116,9 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
 
         testedDriver.findElement(By.name("foo")).clear();
         testedDriver.findElement(By.name("foo")).sendKeys("some text");
-        testedDriver.findElement(By.name("foo")).toggle();
+        testedDriver.findElement(By.name("foo")).click();
 
         assertEquals(
-            "beforeChangeValueOf\n" +
-            "afterChangeValueOf\n" +
             "beforeChangeValueOf\n" +
             "afterChangeValueOf\n" +
             "beforeChangeValueOf\n" +

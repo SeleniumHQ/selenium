@@ -310,13 +310,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return element.getAttribute(name);
     }
   
-    public boolean toggle() {
-      dispatcher.beforeChangeValueOf(element, driver);
-      boolean result = element.toggle();
-      dispatcher.afterChangeValueOf(element, driver);
-      return result;
-    }
-  
     public boolean isSelected() {
       return element.isSelected();
     }
