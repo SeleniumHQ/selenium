@@ -54,7 +54,8 @@ js_binary(name = "atoms",
     "js/events.js",
     "js/firefox-utils.js",
     "js/preconditions.js",
-    "js/exported_symbols.js"
+    "js/exported_symbols.js",
+    "js/locators.js",
   ],
   deps = [ "//javascript/webdriver-atoms:deps" ])
 

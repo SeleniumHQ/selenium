@@ -30,6 +30,7 @@ import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.DevMode;
 import org.openqa.selenium.Ignore;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.NoSuchElementException;
@@ -476,6 +477,27 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   public void testCanStartFirefoxDriverWithSubclassOfFirefoxProfile() {
     new FirefoxDriver(new CustomFirefoxProfile()).quit();
     new FirefoxDriver(new FirefoxProfile(){}).quit();
+  }
+
+  /**
+   * Tests that we do not pollute the global namespace with Sizzle in Firefox 3.
+   */
+  public void testSearchingByCssDoesNotPolluteGlobalNamespaceWithSizzleLibrary() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.cssSelector("div.content"));
+    assertEquals(true,
+        ((JavascriptExecutor) driver).executeScript("return typeof Sizzle == 'undefined';"));
+  }
+
+  /**
+   * Tests that we do not pollute the global namespace with Sizzle in Firefox 3.
+   */
+  public void testSearchingByCssDoesNotOverwriteExistingSizzleDefinition() {
+    driver.get(pages.xhtmlTestPage);
+    ((JavascriptExecutor) driver).executeScript("window.Sizzle = 'original sizzle value';");
+    driver.findElement(By.cssSelector("div.content"));
+    assertEquals("original sizzle value",
+        ((JavascriptExecutor) driver).executeScript("return window.Sizzle + '';"));
   }
 
   private WebDriver newFirefoxDriver() {

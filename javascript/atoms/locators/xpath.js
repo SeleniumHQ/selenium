@@ -20,8 +20,41 @@ goog.provide('bot.locators.xpath');
 goog.require('bot');
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.dom.xml');
+goog.require('goog.dom.NodeType');
 
+
+/**
+ * XPathResult enum values. These are defined separately since
+ * the context running this script may not support the XPathResult
+ * type.
+ * @enum {number}
+ * @see http://www.w3.org/TR/DOM-Level-3-XPath/xpath.html#XPathResult
+ */
+bot.locators.xpath.XPathResult = {
+  ORDERED_NODE_SNAPSHOT_TYPE: 7,
+  FIRST_ORDERED_NODE_TYPE: 9
+};
+
+
+/**
+ * Evaluates an XPath expression using a W3 XPathEvaluator.
+ * @param {!(Document|Element)} node The document or element to perform the
+ *     search under.
+ * @param {string} path The xpath to search for.
+ * @param {!bot.locators.xpath.XPathResult} resultType The desired result type.
+ * @return {XPathResult} The XPathResult or null if the root's ownerDocument
+ *     does not support XPathEvaluators.
+ * @private
+ * @see http://www.w3.org/TR/DOM-Level-3-XPath/xpath.html#XPathEvaluator-evaluate
+ */
+bot.locators.xpath.evaluate_ = function(node, path, resultType) {
+  var doc = goog.dom.getOwnerDocument(node);
+  if (!doc.implementation.hasFeature('XPath', '3.0')) {
+    return null;
+  }
+  var resolver = doc.createNSResolver(doc.documentElement);
+  return doc.evaluate(path, node, resolver, resultType, null);
+};
 
 /**
  * Find an element by using an xpath expression
@@ -37,39 +70,16 @@ bot.locators.xpath.single = function(target, root) {
   // in the context of the Firefox extension (XPathResult isn't defined as well).
   function selectSingleNode(node, path) {
     var doc = goog.dom.getOwnerDocument(node);
-
     if (node.selectSingleNode) {
       if (doc.setProperty) {
         doc.setProperty('SelectionLanguage', 'XPath');
       }
       return node.selectSingleNode(path);
-    } else if (doc.implementation.hasFeature('XPath', '3.0')) {
-      var resolver = doc.createNSResolver(doc.documentElement);
-      var resultType;
-      if (typeof XPathResult != 'undefined') {
-        resultType = XPathResult.FIRST_ORDERED_NODE_TYPE;
-      } else {
-        // XPathResult is not defined in the Firefox extension context.
-        // It's possible to access it using
-        // Components.interfaces.nsIDOMXPathResult. Another option would be to
-        // define it to be 9, according to the standard:
-        // http://www.w3.org/TR/DOM-Level-3-XPath/ecma-script-binding.html
-        if (!bot.isFirefoxExtension()) {
-          // The document supports XPath, however XPathResult is not defined
-          // and this is not happening inside a Firefox extension. This is
-          // an unfamiliar case, indicate.
-          throw Error("Document claims it supports XPath yet XPathResult " +
-            "is not defined. Please report this to Selenium developers");
-        }
-        resultType = Components.interfaces.nsIDOMXPathResult.
-            FIRST_ORDERED_NODE_TYPE;
-      }
-      var result = doc.evaluate(path, node, resolver,
-          resultType, null);
-      return result.singleNodeValue;
     }
-    return null;
-  };
+    var result = bot.locators.xpath.evaluate_(node, path,
+        bot.locators.xpath.XPathResult.FIRST_ORDERED_NODE_TYPE);
+    return result ? result.singleNodeValue : null;
+  }
 
   var node = selectSingleNode(root, target);
 
@@ -82,7 +92,7 @@ bot.locators.xpath.single = function(target, root) {
     throw Error('Returned node is not an element: ' + target);
   }
 
-  return (/**@type{Element}*/node);  // Type verified above.
+  return (/**@type {Element}*/node);  // Type verified above.
 };
 
 
@@ -94,7 +104,36 @@ bot.locators.xpath.single = function(target, root) {
  * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
  */
 bot.locators.xpath.many = function(target, root) {
-  var nodes = goog.dom.xml.selectNodes(root, target);
+  // Note: This code was copied from Closure (goog.dom.xml.selectNodes)
+  // since the current implement referes to 'document' which is not
+  // defined in the context of the Firefox extension (XPathResult isn't
+  // defined either).
+  function selectNodes(node, path) {
+    var doc = goog.dom.getOwnerDocument(node);
+
+    if (node.selectNodes) {
+      if (doc.setProperty) {
+        doc.setProperty('SelectionLanguage', 'XPath');
+      }
+      return node.selectNodes(path);
+    }
+    var results = [];
+    var nodes = bot.locators.xpath.evaluate_(node, path,
+        bot.locators.xpath.XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    if (nodes) {
+      var count = nodes.snapshotLength;
+      for (var i = 0; i < count; ++i) {
+        var item = nodes.snapshotItem(i);
+        if (item.nodeType != goog.dom.NodeType.ELEMENT) {
+          throw Error('Returned nodes must be elements: ' + target);
+        }
+        results.push(item);
+      }
+    }
+    return results;
+  }
+
+  var nodes = selectNodes(root, target);
 
   // Only return elements
   goog.array.forEach(nodes, function(node) {
@@ -104,5 +143,5 @@ bot.locators.xpath.many = function(target, root) {
   });
 
   // Type-cast to account for an inconsistency in closure type annotations.
-  return (/**@type{!goog.array.ArrayLike}*/nodes);
+  return (/**@type {!goog.array.ArrayLike}*/nodes);
 };

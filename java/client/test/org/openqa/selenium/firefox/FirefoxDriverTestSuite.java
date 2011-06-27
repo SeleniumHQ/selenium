@@ -38,6 +38,11 @@ public class FirefoxDriverTestSuite extends TestCase {
 //    System.setProperty("webdriver.development", "true");
 //  System.setProperty("webdriver.firefox.useExisting", "true");
 
+//    System.setProperty("webdriver.firefox.bin", "/Applications/Firefox3.app/Contents/MacOS/firefox-bin");
+//    System.setProperty("webdriver.firefox.bin", "/Applications/Firefox3_6.app/Contents/MacOS/firefox-bin");
+//    System.setProperty("webdriver.firefox.bin", "/Applications/Firefox4.app/Contents/MacOS/firefox-bin");
+//    System.setProperty("webdriver.firefox.bin", "/Applications/Firefox5.app/Contents/MacOS/firefox-bin");
+
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
         .usingDriver(FirefoxDriver.class)

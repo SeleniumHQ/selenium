@@ -296,63 +296,26 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
   docElement.setAttribute('webdriver', 'true');
 };
 
+
 /**
- * Searches for the first element in {@code theDocument} matching the given
- * {@code xpath} expression.
- * @param {nsIDOMDocument} theDocument The document to search in.
- * @param {string} xpath The XPath expression to evaluate.
- * @param {nsIDOMNode} opt_contextNode The context node for the query; defaults
- *     to {@code theDocument}.
- * @return {nsIDOMNode} The first matching node.
+ * Map of strategy keys used by the wire protocol to those used by the
+ * automation atoms.
+ *
+ *  TODO: this really needs to be handled by bot.locators.
+ *
+ * @type {!Object.<string, string>}
+ * @const
  * @private
  */
-FirefoxDriver.prototype.findElementByXPath_ = function(theDocument, xpath,
-                                                       opt_contextNode) {
-  var contextNode = opt_contextNode || theDocument;
-  return theDocument.evaluate(xpath, contextNode, null,
-      Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE, null).
-      singleNodeValue;
-};
-
-
-/**
- * Searches for elements matching the given {@code xpath} expression in the
- * specified document.
- * @param {nsIDOMDocument} theDocument The document to search in.
- * @param {string} xpath The XPath expression to evaluate.
- * @param {nsIDOMNode} opt_contextNode The context node for the query; defaults
- *     to {@code theDocument}.
- * @return {Array.<nsIDOMNode>} The matching nodes.
- * @private
- */
-FirefoxDriver.prototype.findElementsByXPath_ = function(theDocument, xpath,
-                                                        opt_contextNode) {
-  var contextNode = opt_contextNode || theDocument;
-  var result = theDocument.evaluate(xpath, contextNode, null,
-      Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-  var elements = [];
-  var element = result.iterateNext();
-  while (element) {
-    elements.push(element);
-    element = result.iterateNext();
-  }
-  return elements;
-};
-
-
-/**
- * An enumeration of the supported element locator methods.
- * @enum {string}
- */
-FirefoxDriver.ElementLocator = {
-  ID: 'id',
-  NAME: 'name',
-  CLASS_NAME: 'class name',
-  CSS_SELECTOR: 'css selector',
-  TAG_NAME: 'tag name',
-  LINK_TEXT: 'link text',
-  PARTIAL_LINK_TEXT: 'partial link text',
-  XPATH: 'xpath'
+FirefoxDriver.WIRE_TO_ATOMS_STRATEGY_ = {
+  'id': 'id',
+  'name': 'name',
+  'class name': 'className',
+  'css selector': 'css',
+  'tag name': 'tagName',
+  'link text': 'linkText',
+  'partial link text': 'partialLinkText',
+  'xpath': 'xpath'
 };
 
 
@@ -360,7 +323,7 @@ FirefoxDriver.ElementLocator = {
  * Finds an element on the current page. The response value will be the UUID of
  * the located element, or an error message if an element could not be found.
  * @param {Response} respond Object to send the command response with.
- * @param {FirefoxDriver.ElementLocator} method The locator method to use.
+ * @param {string} method The locator method to use.
  * @param {string} selector What to search for; see {@code ElementLocator} for
  *     details on what the selector should be for each element.
  * @param {string} opt_parentElementId If defined, the search will be restricted
@@ -379,73 +342,10 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
   var rootNode = typeof opt_parentElementId == 'string' ?
       Utils.getElementAt(opt_parentElementId, theDocument) : theDocument;
 
-  var element;
-  switch (method) {
-    case FirefoxDriver.ElementLocator.ID:
-      element = rootNode === theDocument ?
-          theDocument.getElementById(selector) :
-          this.findElementByXPath_(
-              theDocument, './/*[@id="' + selector + '"]', rootNode);
-      break;
+  var target = {};
+  target[FirefoxDriver.WIRE_TO_ATOMS_STRATEGY_[method] || method] = selector;
 
-    case FirefoxDriver.ElementLocator.NAME:
-      element = rootNode.getElementsByName ?
-          rootNode.getElementsByName(selector)[0] :
-          this.findElementByXPath_(
-              theDocument, './/*[@name ="' + selector + '"]', rootNode);
-      break;
-
-    case FirefoxDriver.ElementLocator.CLASS_NAME:
-      element = rootNode.getElementsByClassName ?
-                rootNode.getElementsByClassName(selector)[0] :  // FF 3+
-                this.findElementByXPath_(theDocument,           // FF 2
-                    '//*[contains(concat(" ",normalize-space(@class)," ")," ' +
-                    selector + ' ")]', rootNode);
-      break;
-
-    case FirefoxDriver.ElementLocator.CSS_SELECTOR:
-      var tempRespond = {
-        session: respond.session,
-        send: function() {
-          var found = tempRespond.value;
-          respond.value = found ? found : "Unable to find element using css: " + selector;
-          respond.status = found ? ErrorCode.SUCCESS : ErrorCode.NO_SUCH_ELEMENT;
-          respond.send();
-        }
-      };
-      var execute = goog.bind(this.executeScript, this);
-      Utils.findByCss(rootNode, theDocument, selector, true, tempRespond, execute);
-      return;
-
-    case FirefoxDriver.ElementLocator.TAG_NAME:
-      element = rootNode.getElementsByTagName(selector)[0];
-      break;
-
-    case FirefoxDriver.ElementLocator.XPATH:
-      element = this.findElementByXPath_(theDocument, selector, rootNode);
-      break;
-
-    case FirefoxDriver.ElementLocator.LINK_TEXT:
-    case FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT:
-      var allLinks = rootNode.getElementsByTagName('A');
-      for (var i = 0; i < allLinks.length && !element; i++) {
-        var text = webdriver.element.getText(allLinks[i]);
-        if (FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT == method) {
-          if (text.indexOf(selector) != -1) {
-            element = allLinks[i];
-          }
-        } else if (text == selector) {
-          element = allLinks[i];
-        }
-      }
-      break;
-
-    default:
-      throw new WebDriverError(ErrorCode.UNKNOWN_COMMAND,
-          'Unsupported element locator method: ' + method);
-      return;
-  }
-
+  var element = bot.locators.findElement(target, rootNode);
   if (element) {
     var id = Utils.addToKnownElements(element, respond.session.getDocument());
     respond.value = {'ELEMENT': id};
@@ -504,7 +404,7 @@ FirefoxDriver.prototype.findChildElement = function(respond, parameters) {
  * Finds elements on the current page. The response value will an array of UUIDs
  * for the located elements.
  * @param {Response} respond Object to send the command response with.
- * @param {FirefoxDriver.ElementLocator} method The locator method to use.
+ * @param {string} method The locator method to use.
  * @param {string} selector What to search for; see {@code ElementLocator} for
  *     details on what the selector should be for each element.
  * @param {string} opt_parentElementId If defined, the search will be restricted
@@ -523,60 +423,10 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
   var rootNode = typeof opt_parentElementId == 'string' ?
       Utils.getElementAt(opt_parentElementId, theDocument) : theDocument;
 
-  var elements;
-  switch (method) {
-    case FirefoxDriver.ElementLocator.ID:
-      elements = this.findElementsByXPath_(
-          theDocument, './/*[@id="' + selector + '"]', rootNode);
-      break;
+  var target = {};
+  target[FirefoxDriver.WIRE_TO_ATOMS_STRATEGY_[method] || method] = selector;
 
-    case FirefoxDriver.ElementLocator.XPATH:
-      elements = this.findElementsByXPath_(
-          theDocument, selector, rootNode);
-      break;
-
-    case FirefoxDriver.ElementLocator.NAME:
-      elements = rootNode.getElementsByName ?
-          rootNode.getElementsByName(selector) :
-          this.findElementsByXPath_(
-              theDocument, './/*[@name="' + selector + '"]', rootNode);
-      break;
-
-    case FirefoxDriver.ElementLocator.CSS_SELECTOR:
-      var execute = goog.bind(this.executeScript, this);
-      Utils.findByCss(rootNode, theDocument, selector, false, respond, execute);
-      return;
-
-    case FirefoxDriver.ElementLocator.TAG_NAME:
-      elements = rootNode.getElementsByTagName(selector);
-      break;
-
-    case FirefoxDriver.ElementLocator.CLASS_NAME:
-      elements = rootNode.getElementsByClassName ?
-      rootNode.getElementsByClassName(selector) :  // FF 3+
-      this.findElementsByXPath_(theDocument,       // FF 2
-          './/*[contains(concat(" ",normalize-space(@class)," ")," ' +
-          selector + ' ")]', rootNode);
-      break;
-
-    case FirefoxDriver.ElementLocator.LINK_TEXT:
-    case FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT:
-      elements =  rootNode.getElementsByTagName('A');
-      elements = Array.filter(elements, function(element) {
-        var text = webdriver.element.getText(element);
-        if (FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT == method) {
-          return text.indexOf(selector) != -1;
-        } else {
-          return text == selector;
-        }
-      });
-      break;
-
-    default:
-      throw new WebDriverError(ErrorCode.UNKNOWN_COMMAND,
-          'Unsupported element locator method: ' + method);
-      return;
-  }
+  var elements = bot.locators.findElements(target, rootNode);
 
   var elementIds = [];
   for (var j = 0; j < elements.length; j++) {
