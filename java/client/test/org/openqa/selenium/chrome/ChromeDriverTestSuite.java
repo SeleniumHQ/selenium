@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.chrome;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -42,7 +41,6 @@ public class ChromeDriverTestSuite extends TestCase {
     Test rawTest = new TestSuiteBuilder()
         .addSourceDir("java/client/test")
         .exclude(CHROME)
-        .exclude(CHROME_NON_WINDOWS)
         .usingDriver(DriverForTest.class)
         .includeJavascriptTests()
         .keepDriverInstance()
