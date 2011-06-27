@@ -19,20 +19,25 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 public class DoubleClick extends SeleneseCommand<Void> {
+  private final AlertOverride alertOverride;
   private final ElementFinder finder;
 
-  public DoubleClick(ElementFinder finder) {
-
+  public DoubleClick(AlertOverride alertOverride, ElementFinder finder) {
+    this.alertOverride = alertOverride;
     this.finder = finder;
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    alertOverride.replaceAlertMethod(driver);
+
     WebElement element = finder.findElement(driver, locator);
-    element.click();
-    element.click();
+
+    new Actions(driver).doubleClick(element).perform();
+
     return null;
   }
 }
