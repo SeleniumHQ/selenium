@@ -83,16 +83,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [ExpectedException(typeof(ElementNotVisibleException))]
-        public void ShouldNotBeAbleToToggleAnElementThatIsNotDisplayed()
-        {
-            driver.Url = javascriptPage;
-            IWebElement element = driver.FindElement(By.Id("untogglable"));
-            element.Click();
-        }
-
-        [Test]
-        [Category("Javascript")]
-        [ExpectedException(typeof(ElementNotVisibleException))]
         public void ShouldNotBeAbleToSelectAnElementThatIsNotDisplayed()
         {
             driver.Url = javascriptPage;

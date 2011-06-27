@@ -128,14 +128,6 @@ namespace OpenQA.Selenium
         void Click();
 
         /// <summary>
-        /// Selects this element.
-        /// </summary>
-        /// <remarks>The <see cref="Select"/> method is valid for radio buttons, 
-        /// "option" elements within a "select" element, and checkboxes.</remarks>
-        [Obsolete("This method will be removed in a future version. Use the Click() method instead.")]
-        void Select();
-
-        /// <summary>
         /// Gets the value of the specified attribute for this element.
         /// </summary>
         /// <param name="attributeName">The name of the attribute.</param>
@@ -169,16 +161,6 @@ namespace OpenQA.Selenium
         /// </list>
         /// </remarks>
         string GetAttribute(string attributeName);
-
-        /// <summary>
-        /// Toggles the state of this element.
-        /// </summary>
-        /// <returns><see langword="true"/> if the element is selected; <see langword="false"/> otherwise.</returns>
-        /// <remarks>If the element is a checkbox, the <see cref="Toggle"/> method
-        /// will toggle the element's state from selected to not selected, or from not selected 
-        /// to selected.</remarks>
-        [Obsolete("This method will be removed in a future version. Use the Click() method instead.")]
-        bool Toggle();
 
         /// <summary>
         /// Gets the value of a CSS property of this element.

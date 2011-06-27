@@ -29,19 +29,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE driver allows deselecting option from a single-select selectlist")]
-        [ExpectedException(typeof(InvalidElementStateException))]
-        public void ShouldNotBeAbleToDeselectAnOptionFromANormalSelect()
-        {
-            driver.Url = formsPage;
-
-            IWebElement select = driver.FindElement(By.XPath("//select[@name='selectomatic']"));
-            ReadOnlyCollection<IWebElement> options = select.FindElements(By.TagName("option"));
-            IWebElement option = options[0];
-            option.Toggle();
-        }
-
-        [Test]
         public void ShouldBeAbleToChangeTheSelectedOptionInASelect()
         {
             driver.Url = formsPage;

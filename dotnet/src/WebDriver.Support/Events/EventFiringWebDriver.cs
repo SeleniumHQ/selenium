@@ -1012,15 +1012,6 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Select or unselect element. This operation only applies to input elements such as checkboxes, options in a select and radio buttons.
-            /// </summary>
-            [Obsolete("This method will be removed in a future version. Use the Click() method instead.")]
-            public void Select()
-            {
-                this.underlyingElement.Select();
-            }
-
-            /// <summary>
             /// If this current element is a form, or an element within a form, then this will be submitted to the remote server. If this causes the current page to change, then this method will block until the new page is loaded.
             /// </summary>
             /// <param name="attributeName">Attribute you wish to get details of</param>
@@ -1028,20 +1019,6 @@ namespace OpenQA.Selenium.Support.Events
             public string GetAttribute(string attributeName)
             {
                 return this.underlyingElement.GetAttribute(attributeName);
-            }
-
-            /// <summary>
-            /// If the element is a checkbox this will toggle the elements state from selected to not selected, or from not selected to selected
-            /// </summary>
-            /// <returns>Whether the toggled element is selected (true) or not (false) after this toggle is complete</returns>
-            [Obsolete("This method will be removed in a future version. Use the Click() method instead.")]
-            public bool Toggle()
-            {
-                WebElementEventArgs e = new WebElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement);
-                this.parentDriver.OnElementValueChanging(e);
-                bool toggleValue = this.underlyingElement.Toggle();
-                this.parentDriver.OnElementValueChanged(e);
-                return toggleValue;
             }
 
             /// <summary>

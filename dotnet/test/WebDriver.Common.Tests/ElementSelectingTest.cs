@@ -25,122 +25,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void SelectingAlreadySelectedRadioButtonShouldBeNoop()
-        {
-            driver.Url = formsPage;
-            AssertSelectingPreservesAlreadySelectedStatus(this.EnabledSelectedRadioButton);
-        }
-
-        [Test]
-        public void ShouldNotBeAbleToSelectADisabledCheckbox()
-        {
-            driver.Url = formsPage;
-            AssertCannotSelect(this.DisabledUnselectedCheckbox);
-        }
-
-        [Test]
-        public void ShouldNotBeAbleToSelectADisabledCheckboxDisabledWithRandomString()
-        {
-            driver.Url = formsPage;
-            AssertCannotSelect(this.RandomlyDisabledSelectedCheckbox);
-        }
-
-        [Test]
-        public void ShouldNotBeAbleToSelectADisabledRadioButton()
-        {
-            driver.Url = formsPage;
-            AssertCannotSelect(this.DisabledUnselectedRadioButton);
-        }
-
-        [Test]
-        public void ShouldNotBeAbleToSelectADisabledRadioButtonDisabledWithRandomString()
-        {
-            driver.Url = formsPage;
-            AssertCannotSelect(this.RandomlyDisabledUnselectedRadioButton);
-        }
-
-        [Test]
-        public void SelectingRadioButtonShouldUnselectItsSibling()
-        {
-            driver.Url = formsPage;
-
-            IWebElement originallySelected = this.EnabledSelectedRadioButton;
-            AssertSelected(originallySelected);
-
-            IWebElement toSelect = this.EnabledUnselectedRadioButton;
-            AssertNotSelected(toSelect);
-
-            toSelect.Click();
-            AssertNotSelected(originallySelected);
-            AssertSelected(toSelect);
-        }
-
-        [Test]
-        public void ShouldBeAbleToToggleAnEnabledUnselectedCheckbox()
-        {
-            driver.Url = formsPage;
-            AssertCanToggle(this.EnabledUnselectedCheckbox);
-        }
-
-        [Test]
-        public void ShouldBeAbleToToggleAnEnabledSelectedCheckbox()
-        {
-            driver.Url = formsPage;
-            AssertCanToggle(this.EnabledSelectedCheckbox);
-        }
-
-        [Test]
-        public void ShouldBeAbleToToggleEnabledRadioButton()
-        {
-            driver.Url = formsPage;
-            AssertSelectingPreservesAlreadySelectedStatus(this.EnabledSelectedRadioButton);
-        }
-
-        [Test]
-        public void ShouldBeAbleToToggleEnabledMultiSelectOption()
-        {
-            driver.Url = formsPage;
-            AssertCanToggle(this.SelectedMultipleSelectOption);
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Firefox)]
-        public void ShouldNotBeAbleToToggleADisabledCheckbox()
-        {
-            driver.Url = formsPage;
-            AssertCannotToggle(this.DisabledUnselectedCheckbox);
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Firefox)]
-        public void ShouldNotBeAbleToToggleADisabledCheckboxDisabledWithRandomString()
-        {
-            driver.Url = formsPage;
-            AssertCannotToggle(this.RandomlyDisabledSelectedCheckbox);
-        }
-
-        [Test]
-        public void ShouldNotBeAbleToToggleADisabledRadioButton()
-        {
-            driver.Url = formsPage;
-            AssertCannotToggle(this.DisabledUnselectedRadioButton);
-        }
-
-        [Test]
-        public void ShouldNotBeAbleToToggleADisabledRadioButtonDisabledWithRandomString()
-        {
-            driver.Url = formsPage;
-            AssertCannotToggle(this.RandomlyDisabledUnselectedRadioButton);
-        }
-
-        [Test]
-        public void ShouldNotBeAbleToToggleAnEnabledNonMultiSelectOption()
-        {
-            driver.Url = formsPage;
-            AssertSelectingPreservesAlreadySelectedStatus(this.SelectedNonMultipleSelectOption);
-        }
-
-        [Test]
         public void ShouldBeAbleToToggleSelectableCheckboxByClickingOnIt()
         {
             driver.Url = formsPage;
@@ -217,7 +101,7 @@ namespace OpenQA.Selenium
         {
             try
             {
-                element.Select();
+                element.Click();
                 Assert.Fail(string.Format(assertCannotPerformActionFormat_action_element, "select", Describe(element)));
             }
             catch (InvalidElementStateException)
@@ -230,18 +114,7 @@ namespace OpenQA.Selenium
         {
             AssertNotSelected(element);
 
-            element.Select();
-            AssertSelected(element);
-
-            element.Select();
-            AssertSelected(element);
-        }
-
-        private static void AssertSelectingPreservesAlreadySelectedStatus(IWebElement element)
-        {
-            AssertSelected(element);
-
-            element.Select();
+            element.Click();
             AssertSelected(element);
         }
 
@@ -287,20 +160,6 @@ namespace OpenQA.Selenium
             Assert.AreNotEqual(isNowSelected, originalState, string.Format("Expected element {0} to have been toggled to {1} but was {2}", Describe(element), SelectedToString(!originalState), SelectedToString(originalState)));
             AssertSelected(element, !originalState);
         }
-
-        private static void AssertCannotToggle(IWebElement element)
-        {
-            try
-            {
-                element.Toggle();
-                Assert.Fail(string.Format(assertCannotPerformActionFormat_action_element, "toggle", Describe(element)));
-            }
-            catch (InvalidElementStateException)
-            {
-                //Expected
-            }
-        }
-
 
         //TODO: Test disabled multi-selects
         //TODO: Test selecting options
@@ -375,15 +234,6 @@ namespace OpenQA.Selenium
             get
             {
                 return driver.FindElement(By.Id("randomly_disabled_nothing"));
-            }
-        }
-
-        private IWebElement SelectedNonMultipleSelectOption
-        {
-            get
-            {
-                IWebElement select = driver.FindElement(By.Name("selectomatic"));
-                return select.FindElements(By.TagName("option"))[0];
             }
         }
 

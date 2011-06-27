@@ -243,32 +243,6 @@ namespace OpenQA.Selenium.Remote
 
         #region IWebElement methods
         /// <summary>
-        /// Select or unselect element. This operation only applies to input elements such as checkboxes, options in a select and radio buttons.
-        /// </summary>
-        public void Select()
-        {
-            if (!this.Displayed)
-            {
-                throw new ElementNotVisibleException("You may not select an element that is not displayed");
-            }
-
-            if (!this.Enabled)
-            {
-                throw new InvalidElementStateException("Cannot select a disabled element");
-            }
-
-            if (!this.Selectable)
-            {
-                throw new InvalidElementStateException("You may only set selectable items selected");
-            }
-
-            if (!this.Selected)
-            {
-                this.Click();
-            }
-        }
-
-        /// <summary>
         /// Method to clear the text out of an Input element
         /// </summary>
         public void Clear()
@@ -350,18 +324,6 @@ namespace OpenQA.Selenium.Remote
             }
 
             return attributeValue;
-        }
-
-        /// <summary>
-        /// If the element is a checkbox this will toggle the elements state from selected to not selected, or from not selected to selected
-        /// </summary>
-        /// <returns>Whether the toggled element is selected (true) or not (false) after this toggle is complete</returns>
-        public bool Toggle()
-        {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.elementId);
-            Response commandResponse = this.Execute(DriverCommand.ToggleElement, parameters);
-            return (bool)commandResponse.Value;
         }
 
         /// <summary>
