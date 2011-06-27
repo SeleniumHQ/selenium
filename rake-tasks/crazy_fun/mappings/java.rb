@@ -1,4 +1,5 @@
 require 'rake-tasks/crazy_fun/mappings/common'
+require 'rake-tasks/checks.rb'
 
 class JavaMappings
   def add_all(fun)
@@ -176,6 +177,12 @@ module CrazyFunJava
       end
     end
 
+    def modify_manifest(manifest)
+      manifest.attribute(:name => 'Selenium-Version', :value => version)
+      manifest.attribute(:name => 'Selenium-Revision', :value => svn_revision?)
+      manifest.attribute(:name => 'Selenium-Build-Time', :value => Time.new.gmtime.strftime('%F %T'))
+    end
+
   end
 
   class FailedPrecondition < StandardError
@@ -322,10 +329,11 @@ module CrazyFunJava
       file jar do
         CrazyFunJava.ant.jar(:jarfile => jar, :basedir => temp_dir(dir, args[:name]),
             :excludes => '.svn', :duplicate => 'preserve') do |ant|
-          if (args[:main])
-            ant.manifest do |ant|
+          ant.manifest do |ant|
+            if (args[:main])
               ant.attribute(:name => 'Main-Class', :value => args[:main])
             end
+            modify_manifest(ant)
           end
         end
       end
@@ -577,10 +585,11 @@ module CrazyFunJava
           cp.each do |j|
             ant.zipfileset(:src => j, :excludes => "META-INF/BCKEY.DSA,META-INF/BCKEY.SF")
           end
-          if (args[:main])
-            ant.manifest do |ant|
+          ant.manifest do |ant|
+            if (args[:main])
               ant.attribute(:name => 'Main-Class', :value => args[:main])
             end
+            modify_manifest(ant)
           end
         end
       end
@@ -617,10 +626,11 @@ module CrazyFunJava
               ant.zipfileset(:src => j, :excludes => "META-INF/BCKEY.DSA,META-INF/BCKEY.SF")
             end
           end
-          if (args[:main])
-            ant.manifest do |ant|
+          ant.manifest do |ant|
+            if (args[:main])
               ant.attribute(:name => 'Main-Class', :value => args[:main])
             end
+            modify_manifest(ant)
           end
         end
       end
