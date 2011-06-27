@@ -106,6 +106,19 @@ public class HtmlUnitWebElement implements WrapsDriver,
       //TODO: The javadoc for this method implies we shouldn't throw for
       //element not visible either
     }
+    
+    // TODO(simon): It appears as if clicking on html options doesn't toggle state
+    if (element instanceof HtmlOption) {
+      boolean currentlySelected = isSelected();
+      ((HtmlOption) element).setSelected(!currentlySelected);
+      if (currentlySelected) {
+    	element.removeAttribute("selected");
+      } else {
+    	element.setAttribute("selected", "true");
+      }
+      // Now fall through
+    }
+    
     HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
     mouse.click(getCoordinates());
   }
@@ -289,7 +302,11 @@ public class HtmlUnitWebElement implements WrapsDriver,
     if ("disabled".equals(lowerName)) {
       return isEnabled() ? "false" : "true";
     }
-
+    if (element instanceof HtmlElement && "multiple".equals(lowerName)) {
+      return ((HtmlSelect) element).getMultipleAttribute() == null ? 
+          "false" : "true";    	
+    }
+    
     for (String booleanAttribute: booleanAttributes) {
       if (booleanAttribute.equals(lowerName)) {
         if (value.equals(DomElement.ATTRIBUTE_NOT_DEFINED)) {
@@ -362,7 +379,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         HtmlOption option = (HtmlOption) element;
         HtmlSelect select = option.getEnclosingSelect();
         if (select.isMultipleSelectEnabled()) {
-          option.setSelected(!option.isSelected());
+          click();
           return isSelected();
         }
       }
@@ -381,7 +398,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     if (element instanceof HtmlInput) {
       return ((HtmlInput) element).isChecked();
     } else if (element instanceof HtmlOption) {
-      return ((HtmlOption) element).isSelected();
+      return ((HtmlOption) element).hasAttribute("selected");
     }
 
     throw new UnsupportedOperationException(
@@ -403,7 +420,9 @@ public class HtmlUnitWebElement implements WrapsDriver,
     if (element instanceof HtmlInput) {
       ((HtmlInput) element).setChecked(true);
     } else if (element instanceof HtmlOption) {
-      ((HtmlOption) element).setSelected(true);
+      if (!isSelected()) {
+        click();
+      }
     } else {
       throw new InvalidElementStateException(
           "Unable to select element. Tag name is: " + element.getTagName());
