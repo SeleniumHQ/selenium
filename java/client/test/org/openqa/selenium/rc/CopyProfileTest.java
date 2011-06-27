@@ -4,7 +4,11 @@ import junit.framework.TestCase;
 
 import java.net.MalformedURLException;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.Ignore;
+import org.openqa.selenium.Pages;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.SeleniumServerInstance;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
@@ -13,7 +17,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -24,7 +27,7 @@ import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
 // TODO(reorg): This test is never run. It must be.
 
-@Ignore(value = {HTMLUNIT, IE, IPHONE, CHROME, CHROME_NON_WINDOWS, SELENESE, OPERA},
+@Ignore(value = {HTMLUNIT, IE, IPHONE, CHROME, SELENESE, OPERA},
     reason = "Firefox specific test, but needs to be in remote")
 public class CopyProfileTest extends TestCase {
   private SeleniumServerInstance selenium;
