@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.eclipse.jdt.internal.compiler.flow.FinallyFlowContext;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -68,8 +69,8 @@ public class RegistryTest {
 	@BeforeClass
 	public static void prepareReqRequest() {
 		Map<String, Object> config = new HashMap<String, Object>();
-		app1.put(APP, "app1");
-		app2.put(APP, "app2");
+		app1.put("browserName", "app1");
+		app2.put("browserName", "app2");
 		config.put(REMOTE_URL, "http://machine1:4444");
 		config.put(MAX_SESSION, 5);
 		req = new RegistrationRequest();
@@ -80,15 +81,14 @@ public class RegistryTest {
 	@Test(expected = GridException.class)
 	public void emptyRegistry() throws Throwable {
 		Registry registry = new Registry();
+		System.out.println(registry);
 		try {
-
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
 			newSessionRequest.process();
-		} catch (RuntimeException rte) {
-			throw rte.getCause();
-		} finally {
-			registry.stop();
+		}finally{
+			
 		}
+			
 
 	}
 
@@ -111,13 +111,11 @@ public class RegistryTest {
 		Registry registry = new Registry();
 		try {
 			registry.add(new RemoteProxy(req, registry));
-
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+			System.out.println(newSessionRequest.getDesiredCapabilities());
 			newSessionRequest.process();
-		} catch (RuntimeException rte) {
-			throw rte.getCause();
-		} finally {
-
+			System.out.println("new "+newSessionRequest.getTestSession());
+		}  finally {
 			registry.stop();
 		}
 	}
@@ -131,6 +129,7 @@ public class RegistryTest {
 
 			MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
 			newSessionRequest.process();
+			
 		} finally {
 			registry.stop();
 		}

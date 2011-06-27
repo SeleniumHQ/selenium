@@ -10,7 +10,7 @@ import org.openqa.grid.common.RegistrationRequest;
 public class RemoteProxyFactory {
 
 	/**
-	 * Create a simple proxy with 1 capability : {"applicationName=appName"} and
+	 * Create a simple proxy with 1 capability : {"browserName=appName"} and
 	 * the configuration {"url=url"}
 	 * 
 	 * @param appName
@@ -23,7 +23,7 @@ public class RemoteProxyFactory {
 		RegistrationRequest req = new RegistrationRequest();
 
 		Map<String, Object> capability = new HashMap<String, Object>();
-		capability.put("applicationName", appName);
+		capability.put("browserName", appName);
 		req.addDesiredCapabilitiy(capability);
 
 		Map<String, Object> config = new HashMap<String, Object>();

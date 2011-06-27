@@ -68,7 +68,7 @@ public class StatusServletTests {
 
 		RegistrationRequest req = new RegistrationRequest();
 		Map<String, Object> capability = new HashMap<String, Object>();
-		capability.put("applicationName", "custom app");
+		capability.put("browserName", "custom app");
 		req.addDesiredCapabilitiy(capability);
 
 		Map<String, Object> config = new HashMap<String, Object>();
@@ -83,7 +83,7 @@ public class StatusServletTests {
 		registry.add(customProxy);
 
 		Map<String, Object> cap = new HashMap<String, Object>();
-		cap.put("applicationName", "app1");
+		cap.put("browserName", "app1");
 
 		MockedRequestHandler newSessionRequest = new MockedRequestHandler(registry);
 		newSessionRequest.setRequestType(RequestType.START_SESSION);
