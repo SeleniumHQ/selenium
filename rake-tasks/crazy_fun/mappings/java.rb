@@ -178,9 +178,11 @@ module CrazyFunJava
     end
 
     def modify_manifest(manifest)
-      manifest.attribute(:name => 'Selenium-Version', :value => version)
-      manifest.attribute(:name => 'Selenium-Revision', :value => svn_revision?)
-      manifest.attribute(:name => 'Selenium-Build-Time', :value => Time.new.gmtime.strftime('%F %T'))
+      manifest.section(:name => 'Build-Info') do |section|
+        section.attribute(:name => 'Selenium-Version', :value => version)
+        section.attribute(:name => 'Selenium-Revision', :value => svn_revision?)
+        section.attribute(:name => 'Selenium-Build-Time', :value => Time.new.gmtime.strftime('%F %T'))
+      end
     end
 
   end

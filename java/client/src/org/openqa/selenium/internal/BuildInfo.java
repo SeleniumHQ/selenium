@@ -13,14 +13,20 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 /**
  * Reads information about how the current application was built from a
@@ -28,51 +34,48 @@ import java.util.Properties;
  */
 public class BuildInfo {
 
-  private static final String BUILD_PROPERTIES_LOCATION = String.format("/%s/build.properties",
-      BuildInfo.class.getPackage().getName().replace(".", "/"));
-
   private static final Properties BUILD_PROPERTIES = loadBuildProperties();
 
   private static Properties loadBuildProperties() {
     Properties properties = new Properties();
 
-    URL url = BuildInfo.class.getResource(BUILD_PROPERTIES_LOCATION);
+    Manifest manifest = null;
+    try {
+      URL url = BuildInfo.class.getProtectionDomain().getCodeSource().getLocation();
+      File file = new File(url.toURI());
+      JarFile jar = new JarFile(file);
+      manifest = jar.getManifest();
+    } catch (NullPointerException ignored) {
+    } catch (URISyntaxException ignored) {
+    } catch (IOException ignored) {
+    }
 
-    // Just move along if the build.properties file is missing from the jar.
-    if (url == null) {
+    if (manifest == null) {
       return properties;
     }
 
-    InputStream stream = null;
-    try {
-      stream = url.openStream();
-      properties.load(stream);
-    } catch (IOException ignored) {
-      // No worries, we'll just return "unknown" for everything.
-    } finally {
-      if (stream != null) {
-        try {
-          stream.close();
-        } catch (IOException ignored) {
-        }
-      }
+    Attributes attributes = manifest.getAttributes("Build-Info");
+    Set<Entry<Object, Object>> entries = attributes.entrySet();
+    for (Entry<Object, Object> e : entries) {
+      properties.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
     }
+
     return properties;
   }
 
   /** @return The embedded release label or "unknown". */
   public String getReleaseLabel() {
-    return BUILD_PROPERTIES.getProperty("version", "unknown");
+    return BUILD_PROPERTIES.getProperty("Selenium-Version", "unknown");
   }
 
   /** @return The embedded build revision or "unknown". */
   public String getBuildRevision() {
-    return BUILD_PROPERTIES.getProperty("revision", "unknown");
+    return BUILD_PROPERTIES.getProperty("Selenium-Revision", "unknown");
   }
 
   /** @return The embedded build time or "unknown". */
   public String getBuildTime() {
-    return BUILD_PROPERTIES.getProperty("time", "unknown");
+    return BUILD_PROPERTIES.getProperty("Selenium-Build-Time", "unknown");
   }
 
   @Override

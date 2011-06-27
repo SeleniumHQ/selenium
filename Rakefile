@@ -574,18 +574,6 @@ end
 desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "javascript/deps.js"
 
-# Don't use a file task; we want this to always be regenerated.
-task :build_info do
-  output = "build/build.properties"
-  mkdir_p File.dirname(output)
-  File.open(output, "w") do |out|
-    out << "version=#{version}\n"
-    out << "revision=#{svn_revision?}\n"
-    out << "time=#{Time.new.gmtime.strftime('%F %T')}\n"
-  end
-end
-Rake::Task[:build_info].out = 'build/build.properties'
-
 task :release => [
     '//java/server/src/org/openqa/selenium/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium:zip',

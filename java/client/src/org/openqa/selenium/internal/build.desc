@@ -4,6 +4,7 @@ java_library(name = "codecs",
     "Base64Encoder.java",
   ])
 
-rake_task(name = "build_info",
-  task_name = "build_info",
-  out = "build/build.properties")
+java_library(name = "build_info",
+  srcs = [
+    "BuildInfo.java",
+  ])
