@@ -304,7 +304,6 @@ module Javascript
             "-f \"--output_wrapper='#{wrapper}'\" " <<
             "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" " <<
             "-f \"--define=goog.NATIVE_ARRAY_PROTOTYPES=false\" " <<
-            '-f "--formatting=PRETTY_PRINT" ' <<
             "#{defines} " <<
             "-p third_party/closure/goog/ " <<
             "-p javascript " <<
