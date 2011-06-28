@@ -199,15 +199,6 @@ module Selenium
       end
 
       #
-      # Toggle this element
-      #
-
-      def toggle
-        warn "#{self.class}#toggle is deprecated. Please use #{self.class}#click and determine the current state with #{self.class}#selected?"
-        bridge.toggleElement @id
-      end
-
-      #
       # Get the value of the given CSS property
       #
 

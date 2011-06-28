@@ -52,11 +52,6 @@ describe "Element" do
     driver.find_element(:id, "withText").attribute("nonexistent").should be_nil
   end
 
-  it "should toggle" do
-    driver.navigate.to url_for("formPage.html")
-    driver.find_element(:id, "checky").toggle
-  end
-
   it "should clear" do
     driver.navigate.to url_for("formPage.html")
     driver.find_element(:id, "withText").clear

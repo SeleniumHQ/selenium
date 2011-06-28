@@ -390,10 +390,6 @@ module Selenium
           execute :submitElement, :id => element
         end
 
-        def toggleElement(element)
-          execute :toggleElement, :id => element
-        end
-
         def setElementSelected(element)
           execute :setElementSelected, :id => element
         end
