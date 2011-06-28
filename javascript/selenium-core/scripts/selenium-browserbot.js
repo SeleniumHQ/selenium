@@ -341,7 +341,9 @@ BrowserBot.prototype._modifyWindow = function(win) {
     }
 
     this.modifyWindowToRecordPopUpDialogs(win, this);
-    win[this.uniqueId] = 1;
+    
+    //Commenting out for issue 1854
+    //win[this.uniqueId] = 1;
 
     // In proxyInjection mode, we have our own mechanism for detecting page loads
     if (!this.proxyInjectionMode) {
