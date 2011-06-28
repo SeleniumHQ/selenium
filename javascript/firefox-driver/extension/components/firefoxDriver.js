@@ -890,7 +890,6 @@ function getElementFromLocation(mouseLocation, doc) {
     elementForNode = doc.elementFromPoint(locationX, locationY);
   } else {
     Logger.dumpn("Mouse coordinates were not set - using body");
-    throw new bot.Error("EEEEEKKKK!");
     elementForNode = doc.getElementsByTagName("body")[0];
   }
 
