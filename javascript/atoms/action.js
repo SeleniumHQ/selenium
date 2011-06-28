@@ -458,7 +458,14 @@ bot.action.click = function(element) {
     return;
   }
 
-  bot.events.fire(element, goog.events.EventType.MOUSEDOWN, coords);
+  // Hilariously, if this is an option on a webkit-based browser, this mouse
+  //down will cause  the select to open and block the remaining execution.
+  var tagName = element.tagName.toLowerCase();
+  if (goog.userAgent.WEBKIT && ("option" == tagName || "select" == tagName)) {
+    // TODO(simon): we should be doing better than this.
+  } else {
+    bot.events.fire(element, goog.events.EventType.MOUSEDOWN, coords);
+  }
   if (!bot.action.isShown_(element)) {
     return;
   }
