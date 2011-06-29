@@ -355,7 +355,7 @@ Utils.useNativeEvents = function() {
   return false;
 }
 
-Utils.type = function(doc, element, text, opt_useNativeEvents) {
+Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer) {
 
   // For consistency between native and synthesized events, convert common
   // escape sequences to their Key enum aliases.
@@ -384,7 +384,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents) {
     // Now do the native thing.
     obj.sendKeys(node, text);
 
-    Utils.waitForNativeEventsProcessing(element, obj, pageUnloadedIndicator);
+    Utils.waitForNativeEventsProcessing(element, obj, pageUnloadedIndicator, jsTimer);
 
     return;
   }
@@ -1182,7 +1182,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
   contentWindow.setTimeout(checkForLoad, 50);
 };
 
-Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnloadedData) {
+Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnloadedData, jsTimer) {
   var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
   var node = Utils.getNodeForNativeEvents(element);
 
@@ -1198,16 +1198,13 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
     // all of the keyboard events before returning control to the caller
     // code (otherwise the caller may not find all of the keystrokes it
     // has entered).
-    var the_window = element.ownerDocument.defaultView;
-    Logger.dumpn("On window: " + the_window);
-
     var doneNativeEventWait = false;
 
-    if (the_window) {
-      the_window.setTimeout(function() {
-        Logger.dumpn("Done native event wait.");
-        doneNativeEventWait = true; }, 100);
-    }
+    var callback = function() {
+      Logger.dumpn("Done native event wait.");
+      doneNativeEventWait = true; };
+
+    jsTimer.setTimeout(callback, 100);
 
     nativeEvents.hasUnhandledEvents(node, hasEvents);
 

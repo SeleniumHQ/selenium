@@ -949,7 +949,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     return;
   }
   
-  var mouseMoveTo = function(coordinates, nativeEventsEnabled) {
+  var mouseMoveTo = function(coordinates, nativeEventsEnabled, jsTimer) {
     var elementForNode = null;
 
     if (coordinates.auxiliary) {
@@ -995,7 +995,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
         wasUnloaded: false
       };
 
-      Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator);
+      Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, jsTimer);
 
       respond.session.setMousePosition(toX, toY);
     } else {
@@ -1005,7 +1005,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   };
 
   var coords = webdriver.firefox.events.buildCoordinates(parameters, doc);
-  mouseMoveTo(coords, this.enableNativeEvents);
+  mouseMoveTo(coords, this.enableNativeEvents, this.jsTimer);
 
   respond.send();
 };
@@ -1038,7 +1038,7 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
       wasUnloaded: false
     };
 
-    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator);
+    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
 
   } else {
     throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
@@ -1075,7 +1075,7 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
       wasUnloaded: false
     };
 
-    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator);
+    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
   } else {
     throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
   }
@@ -1113,7 +1113,7 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
       wasUnloaded: false
     };
 
-    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator);
+    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
 
   } else {
     throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);

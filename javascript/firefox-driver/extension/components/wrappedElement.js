@@ -98,7 +98,8 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
 
       respond.session.setMousePosition(x, y);
 
-      Utils.waitForNativeEventsProcessing(element, nativeEvents, pageUnloadedIndicator);
+      Utils.waitForNativeEventsProcessing(element, nativeEvents,
+          pageUnloadedIndicator, this.jsTimer);
 
       respond.send();
 
@@ -198,7 +199,8 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
     use = element.ownerDocument.getElementsByTagName("html")[0];
   }
 
-  Utils.type(respond.session.getDocument(), use, parameters.value.join(''), this.enableNativeEvents);
+  Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
+      this.enableNativeEvents, this.jsTimer);
 
   respond.send();
 };
