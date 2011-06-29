@@ -49,6 +49,16 @@ webdriver.firefox.events.buildCoordinates = function(parameters, doc) {
     auxiliaryToReturn = new XPCNativeWrapper(element);
   }
 
+  // An element was specified, but not an offset within the element.
+  // In this case, the default behaivour is to use the middle of the
+  // element as the coordinates.
+
+  if (goog.isNull(x) && element) {
+    var size = goog.style.getSize(element);
+    x =  size.width / 2;
+    y =  size.height / 2;
+  }
+
   return {
     x: x,
     y: y,
