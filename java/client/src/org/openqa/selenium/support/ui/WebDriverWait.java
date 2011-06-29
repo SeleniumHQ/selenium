@@ -20,6 +20,7 @@ package org.openqa.selenium.support.ui;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.NotFoundException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -62,6 +63,7 @@ public class WebDriverWait extends FluentWait<WebDriver> {
     withTimeout(timeOutInSeconds, TimeUnit.SECONDS);
     pollingEvery(sleepTimeOut, TimeUnit.MILLISECONDS);
     ignoring(NotFoundException.class);
+    ignoring(StaleElementReferenceException.class);
   }
 }
                        
