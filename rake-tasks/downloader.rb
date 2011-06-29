@@ -34,7 +34,7 @@ class Downloader
         progress += segment.length
         segment_count += 1
 
-        if segment_count % 25 == 0
+        if segment_count % 15 == 0
           report_progress(progress, total)
           segment_count = 0
         end
