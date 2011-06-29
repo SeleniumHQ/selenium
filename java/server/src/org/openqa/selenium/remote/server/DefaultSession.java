@@ -17,6 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import java.util.Iterator;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
@@ -34,12 +41,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import sun.misc.Service;
 
 /**
  * The default session implementation.
@@ -54,7 +56,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DefaultSession implements Session {
   private final SessionId sessionId;
-  private final EventFiringWebDriver driver;
+  private final WebDriver driver;
     /**
      * The cache of known elements.
      *
@@ -70,11 +72,7 @@ public class DefaultSession implements Session {
   //This method is to avoid constructor escape of partially constructed session object
   public static Session createSession(final DriverFactory factory,
                                       SessionId sessionId, final Capabilities capabilities) throws Exception {
-    DefaultSession session = new DefaultSession(factory, sessionId, capabilities);
-    if (!session.browserCreator.isAndroid()){
-      session.driver.register(new SnapshotScreenListener(session));
-    }
-    return session;
+      return new DefaultSession(factory, sessionId, capabilities);
   }
 
   private DefaultSession(final DriverFactory factory, SessionId sessionId, final Capabilities capabilities) throws Exception {
@@ -88,12 +86,32 @@ public class DefaultSession implements Session {
                                     new LinkedBlockingQueue<Runnable>());
 
     // Ensure that the browser is created on the single thread.
-    this.driver = execute(webDriverFutureTask);
+    EventFiringWebDriver initialDriver = execute(webDriverFutureTask);
+
+    if (!browserCreator.isAndroid()){
+      // Memo to self; this is not a constructor escape of "this" - probably ;)
+      initialDriver.register(new SnapshotScreenListener(this));
+    }
+
+    this.driver = postProcess(initialDriver);
     this.capabilities = browserCreator.getCapabilityDescription();
     updateLastAccessTime();
   }
 
-  /**
+    private WebDriver postProcess(WebDriver initialDriver )
+    {
+       @SuppressWarnings( { "unchecked" } )
+       Iterator<WebDriverPostProcessor> ps = Service.providers(WebDriverPostProcessor.class);
+       WebDriver result = initialDriver;
+       while (ps.hasNext()) {
+           WebDriverPostProcessor postProcessor = ps.next();
+           result = postProcessor.transform(result);
+       }
+       return result;
+    }
+
+
+    /**
    * Touches the session.
    */
   public void updateLastAccessTime() {
