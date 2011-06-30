@@ -203,7 +203,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE,IPHONE}, reason = "iPhone: focus doesn't change as expected")
+  @Ignore(value = {IPHONE}, reason = "iPhone: focus doesn't change as expected")
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(pages.javascriptPage);
 
@@ -214,7 +214,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, IPHONE})
+  @Ignore({IPHONE})
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(pages.simpleTestPage);
 
