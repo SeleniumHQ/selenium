@@ -219,6 +219,41 @@
       assertTrue(isShown(iframeTitle));
       bot.setWindow(originalWindow);
     }
+
+    /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
+    function testInvisibleSelectsOptionsAreNotShown() {
+      var select = goog.dom.$('invisiSelect');
+      assertEquals(0, bot.dom.getOpacity(select));
+      assertFalse(bot.dom.isShown(select));
+      assertFalse(bot.dom.isShown(select.firstChild));
+    }
+
+    /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
+    function testInvisibleSelectsOptionsAreShownWhenIgnoringOpacity() {
+      var select = goog.dom.$('invisiSelect');
+      assertEquals(0, bot.dom.getOpacity(select));
+      assertFalse(bot.dom.isShown(select));
+      assertTrue('Select should be visible when ignoring opacity',
+          bot.dom.isShown(select, true));
+      assertTrue('Option should be visible when ignoring opacity',
+          bot.dom.isShown(select.firstChild, true));
+    }
+
+    /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
+    function testMapsForInvisibleImagesAreShownWhenIgnoringOpacity() {
+      var img = goog.dom.$('invisiImg');
+      assertEquals(0, bot.dom.getOpacity(img));
+      assertFalse(bot.dom.isShown(img));
+      assertTrue(bot.dom.isShown(img, true));
+
+      var map = goog.dom.$('invisiShownMap');
+      assertFalse(bot.dom.isShown(map));
+      assertTrue(bot.dom.isShown(map, true));
+
+      var area = goog.dom.$('invisiShownArea');
+      assertFalse(bot.dom.isShown(area));
+      assertTrue(bot.dom.isShown(area, true));
+    }
   </script>
 
   <style type="text/css">
@@ -299,6 +334,7 @@
   <option id="hiddenOption">
 </select>
 <option id="orphanOption"></option>
+<select id="invisiSelect" style="opacity:0; filter:alpha(opacity=0)"><option>Test</option></select>
 
 <img usemap="#shownMap" src="testdata/map.png" width="91" height="31">
 <map id="shownMap" name="shownMap">
@@ -310,6 +346,11 @@
 </map>
 <map id="noImageMap" name="noImageMap"></map>
 <map id="noNameMap"></map>
+<img id="invisiImg" usemap="#invisiShownMap" src="testdata/map.png" width="91" height="31"
+    style="opacity:0; filter:alpha(opacity=0)">
+<map id="invisiShownMap" name="invisiShownMap">
+  <area id="invisiShownArea" shape="rect" coords="0,0,1,1" href="#">
+</map>
 <area id="orphanArea" shape="rect" coords="0,0,1,1" href="#"></area>
 
 <a id="containsNestedBlock" href="#"><div style="display:block;">text</div></a>

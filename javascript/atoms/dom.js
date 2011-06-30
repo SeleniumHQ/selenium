@@ -427,7 +427,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     var select = /**@type {Element}*/ (goog.dom.getAncestor(elem, function(e) {
       return bot.dom.isElement(e, goog.dom.TagName.SELECT);
     }));
-    return !!select && bot.dom.isShown(select);
+    return !!select && bot.dom.isShown(select, opt_ignoreOpacity);
   }
 
   // Map is shown iff image that uses it is shown.
@@ -455,7 +455,8 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
                bot.dom.getAttribute(n, 'usemap') == '#' + elem.name;
       });
     }
-    return !!mapImage && bot.dom.isShown((/** @type {!Element} */ mapImage));
+    return !!mapImage && bot.dom.isShown((/** @type {!Element} */ mapImage),
+        opt_ignoreOpacity);
   }
 
   // Area is shown iff enclosing map is shown.
@@ -463,7 +464,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     var map = /**@type {Element}*/ (goog.dom.getAncestor(elem, function(e) {
       return bot.dom.isElement(e, goog.dom.TagName.MAP);
     }));
-    return !!map && bot.dom.isShown(map);
+    return !!map && bot.dom.isShown(map, opt_ignoreOpacity);
   }
 
   // Any hidden input is not shown.

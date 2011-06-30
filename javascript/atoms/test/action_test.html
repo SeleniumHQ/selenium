@@ -487,6 +487,17 @@
       assertSubmitFired();
     }
 
+    /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
+    function testShouldBeAbleToSelectAnOptionFromAnInvisibleSelectUsingClick() {
+      var ss = goog.dom.$('invisiSelect');
+      var index = ss.selectedIndex == 0 ? 1 : 0;
+      var notSelected = ss.options[index];
+      expectChangeEvent(ss);
+      bot.action.click(notSelected);
+      assertChangeFired();
+      assertEquals(index, ss.selectedIndex);
+    }
+
   </script>
 </head>
 <body>
@@ -502,6 +513,14 @@
     <div>
       <label for="singleSelect">Single option select</label>
       <select id="singleSelect">
+        <option value="foo">FOO</option>
+        <option value="bar" selected>BAR</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="invisiSelect">Invisible single option select</label>
+      <select id="invisiSelect" style="opacity:0; filter:alpha(opacity=0)">
         <option value="foo">FOO</option>
         <option value="bar" selected>BAR</option>
       </select>

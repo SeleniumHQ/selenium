@@ -497,11 +497,9 @@ bot.action.click = function(element) {
     }
   }
 
-  if (!bot.dom.isShown(element)) {
-    return;
-  }
-
-  if (bot.action.isSelectable(element) && bot.dom.isEnabled(element)) {
+  if (bot.action.isShown_(element) &&
+      bot.action.isSelectable(element) &&
+      bot.dom.isEnabled(element)) {
     // If this is a radio button, a second click should not disable it.
     if (element.tagName.toLowerCase() == "input" && element.type &&
         element.type.toLowerCase() == "radio" && bot.action.isSelected(element)) {
