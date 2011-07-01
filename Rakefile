@@ -120,6 +120,10 @@ task :test_javascript => [
   '//javascript/selenium-core:test:run']
 task :test_android => ["//java/client/test/org/openqa/selenium/android:android-test:run"]
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" ]
+task :test_chrome_atoms => [
+  '//javascript/atoms:test_chrome:run',
+  '//javascript/chrome-driver:test:run',
+  '//javascript/webdriver-atoms:test_chrome:run']
 task :test_htmlunit => [ "//java/client/test/org/openqa/selenium/htmlunit:test:run" ]
 task :test_grid => [
   "//java/server/test/org/openqa/grid/common:test:run",

@@ -19,6 +19,17 @@ js_test(name = "test",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
 
+js_test(name = "test_chrome",
+  srcs = [ "test/*_test.html" ],
+  path = "/javascript/webdriver-atoms/test",
+  sysproperties = [
+    { "selenium.browser" : "org.openqa.selenium.chrome.ChromeDriver" },
+  ],
+  deps = [
+    ":deps",
+    "//java/client/src/org/openqa/selenium/chrome",
+    "//java/client/test/org/openqa/selenium/javascript",
+  ])
 
 
 js_fragment(name = "clear",
