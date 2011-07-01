@@ -19,31 +19,32 @@ describe "Driver" do
     driver.find_element(:id, 'dynamo').text.should == "What's for dinner?"
   end
 
-  it "should save a screenshot" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    path = "screenshot_tmp.png"
+  not_compliant_on :browser => :opera do
+    it "should save a screenshot" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      path = "screenshot_tmp.png"
 
-    begin
-      driver.save_screenshot path
-      File.exist?(path).should be_true # sic
-      File.size(path).should > 0
-    ensure
-      File.delete(path) if File.exist?(path)
+      begin
+        driver.save_screenshot path
+        File.exist?(path).should be_true # sic
+        File.size(path).should > 0
+      ensure
+        File.delete(path) if File.exist?(path)
+      end
     end
-  end
 
-  it "should return a screenshot in the specified format" do
-    driver.navigate.to url_for("xhtmlTest.html")
+    it "should return a screenshot in the specified format" do
+      driver.navigate.to url_for("xhtmlTest.html")
 
-    ss = driver.screenshot_as(:png)
-    ss.should be_kind_of(String)
-    ss.size.should > 0
+      ss = driver.screenshot_as(:png)
+      ss.should be_kind_of(String)
+      ss.size.should > 0
+    end
   end
 
   it "raises an error when given an unknown format" do
     lambda { driver.screenshot_as(:jpeg) }.should raise_error(WebDriver::Error::UnsupportedOperationError)
   end
-
 
   describe "one element" do
     it "should find by id" do
@@ -156,20 +157,22 @@ describe "Driver" do
       element.text.should == "Foo"
     end
 
-    it "should unwrap elements in deep objects" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      result = driver.execute_script(<<-SCRIPT)
-        var e1 = document.getElementById('id1');
-        var body = document.body;
+    not_compliant_on :browser => :opera do
+      it "should unwrap elements in deep objects" do
+        driver.navigate.to url_for("xhtmlTest.html")
+        result = driver.execute_script(<<-SCRIPT)
+          var e1 = document.getElementById('id1');
+          var body = document.body;
 
-        return {
-          elements: {'body' : body, other: [e1] }
-        };
-      SCRIPT
+          return {
+            elements: {'body' : body, other: [e1] }
+          };
+        SCRIPT
 
-      result.should be_kind_of(Hash)
-      result['elements']['body'].should be_kind_of(WebDriver::Element)
-      result['elements']['other'].first.should be_kind_of(WebDriver::Element)
+        result.should be_kind_of(Hash)
+        result['elements']['body'].should be_kind_of(WebDriver::Element)
+        result['elements']['other'].first.should be_kind_of(WebDriver::Element)
+      end
     end
 
     it "should return booleans" do
@@ -220,7 +223,7 @@ describe "Driver" do
     end
   end
 
-  not_compliant_on :browser => :chrome do
+  not_compliant_on :browser => [:chrome, :opera] do
     describe "execute async script" do
       before {
         driver.manage.timeouts.script_timeout = 0
