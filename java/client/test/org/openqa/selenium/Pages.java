@@ -58,6 +58,7 @@ public class Pages {
   public String ajaxyPage;
   public String mapVisibilityPage;
   public String mouseTrackerPage;
+  public String dynamicallyModifiedPage;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -98,5 +99,6 @@ public class Pages {
     underscorePage = appServer.whereIs("underscore.html");
     uploadPage = appServer.whereIs("upload.html");
     xhtmlTestPage = appServer.whereIs("xhtmlTest.html");
+    dynamicallyModifiedPage = appServer.whereIs("dynamicallyModifiedPage.html");
   }
 }
