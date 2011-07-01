@@ -40,7 +40,7 @@ class GeckoSDKs
 
         next
       ensure
-        rm_rf path if path && File.exist?(path)
+        rm_rf sdk if sdk && File.exist?(sdk)
       end
     end
   end
@@ -74,7 +74,7 @@ class GeckoSDKs
         end
       end
     else
-      puts "Unpacking: #{File.basename path}"
+      puts "Unpacking: #{File.basename path} to #{destination}"
       sh "tar", "jxf", path, "-C", destination
     end
   end
