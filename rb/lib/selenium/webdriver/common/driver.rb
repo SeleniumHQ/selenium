@@ -35,6 +35,8 @@ module Selenium
                      Android::Bridge.new(*args)
                    when :iphone
                      IPhone::Bridge.new(*args)
+                   when :opera
+                     Opera::Bridge.new(*args)
                    else
                      raise ArgumentError, "unknown driver: #{browser.inspect}"
                    end

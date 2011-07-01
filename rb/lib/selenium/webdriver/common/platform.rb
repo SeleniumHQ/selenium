@@ -103,10 +103,14 @@ module Selenium
         File.chmod 0766, file
       end
 
-      def assert_executable(path)
+      def assert_file(path)
         unless File.file? path
           raise Error::WebDriverError, "not a file: #{path.inspect}"
         end
+      end
+
+      def assert_executable(path)
+        assert_file(path)
 
         unless File.executable? path
           raise Error::WebDriverError, "not executable: #{path.inspect}"

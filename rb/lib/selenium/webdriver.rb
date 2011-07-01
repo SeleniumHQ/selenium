@@ -39,6 +39,7 @@ module Selenium
     autoload :IPhone,  'selenium/webdriver/iphone'
     autoload :Remote,  'selenium/webdriver/remote'
     autoload :Firefox, 'selenium/webdriver/firefox'
+    autoload :Opera,   'selenium/webdriver/opera'
 
     # @api private
 
@@ -49,7 +50,7 @@ module Selenium
     #
     # Create a new Driver instance with the correct bridge for the given browser
     #
-    # @param browser [:ie, :internet_explorer, :remote, :chrome, :firefox, :ff, :android, :iphone]
+    # @param browser [:ie, :internet_explorer, :remote, :chrome, :firefox, :ff, :android, :iphone, :opera]
     #   the driver type to use
     # @param *rest
     #   arguments passed to Bridge.new
@@ -62,6 +63,7 @@ module Selenium
     # @see Selenium::WebDriver::Chrome::Bridge
     # @see Selenium::WebDriver::Android::Bridge
     # @see Selenium::WebDriver::IPhone::Bridge
+    # @see Selenium::WebDriver::Opera::Bridge
     #
     # @example
     #

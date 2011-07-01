@@ -93,8 +93,10 @@ module Selenium
 
           def opera(opts = {})
             new({
-              :browser_name       => "opera",
-              :javascript_enabled => true
+              :browser_name          => "opera",
+              :javascript_enabled    => true,
+              :takes_screenshot      => true,
+              :css_selectors_enabled => true,
             }.merge(opts))
           end
 
