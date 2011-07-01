@@ -1,5 +1,4 @@
 require 'selenium/server'
-
 require 'selenium/webdriver/opera/service'
 require 'selenium/webdriver/opera/bridge'
 

@@ -21,6 +21,7 @@ module Selenium
           @service.start
 
           remote_opts = {
+            :url => @service.uri,
             :desired_capabilities => caps
           }
 

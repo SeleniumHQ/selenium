@@ -25,7 +25,12 @@ module Selenium
         end
 
         def initialize(jar, opts = {})
-          @server = Selenium::Server.new File.expand_path(jar), opts.merge(:background => true)
+          opts.merge! :background => true, :port => PortProber.random, :log => !!$DEBUG
+          @server = Selenium::Server.new File.expand_path(jar), opts
+        end
+
+        def uri
+          @server.webdriver_url
         end
 
         def start
