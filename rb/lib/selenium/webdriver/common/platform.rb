@@ -131,7 +131,7 @@ module Selenium
         info = Socket.getaddrinfo "localhost", 80, Socket::AF_INET, Socket::SOCK_STREAM
 
         if info.empty?
-          raise Error::WebDriverError, "unable to translate 'localhost' for TCP+IPv6"
+          raise Error::WebDriverError, "unable to translate 'localhost' for TCP + IPv4"
         end
 
         info[0][3]
