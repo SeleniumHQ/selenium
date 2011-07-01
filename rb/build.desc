@@ -10,6 +10,7 @@ rubygem(
     "//rb:ie",
     "//rb:iphone",
     "//rb:remote",
+    "//rb:opera",
     "//rb:rc-client"
   ],
   gemdeps = [
@@ -161,6 +162,29 @@ ruby_test(name = "iphone",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [ ":iphone" ]
+)
+
+ruby_library(name = "opera",
+  srcs = [
+    "lib/selenium/webdriver/opera/**/*.rb",
+    "lib/selenium/webdriver/opera.rb"
+  ],
+  deps = [
+    ":common",
+    ":remote"
+  ]
+)
+
+ruby_test(name = "opera",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/opera/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    "//java/server/src/org/openqa/selenium/server:server:uber",
+    ":opera"
+  ]
 )
 
 ruby_library(name = "remote",

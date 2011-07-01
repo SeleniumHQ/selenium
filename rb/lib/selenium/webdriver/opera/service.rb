@@ -25,7 +25,7 @@ module Selenium
         end
 
         def initialize(jar, opts = {})
-          @server = Selenium::Server.new File.expand_path(jar), opts.merge!({ :background => true })
+          @server = Selenium::Server.new File.expand_path(jar), opts.merge(:background => true)
         end
 
         def start

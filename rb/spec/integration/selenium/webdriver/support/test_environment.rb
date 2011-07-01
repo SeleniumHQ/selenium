@@ -55,14 +55,17 @@ module Selenium
 
         def remote_server
           @remote_server ||= (
-            path = File.join(root_folder, "build/java/server/src/org/openqa/selenium/server/server-standalone.jar")
-            Selenium::Server.new(path,
+            Selenium::Server.new(remote_server_jar,
               :port       => PortProber.random,
               :log        => !!$DEBUG,
               :background => true,
               :timeout    => 60
             )
           )
+        end
+
+        def remote_server_jar
+          @remote_server_jar ||= File.join(root_folder, "build/java/server/src/org/openqa/selenium/server/server-standalone.jar")
         end
 
         def quit
@@ -111,6 +114,9 @@ module Selenium
               :url                  => remote_server.webdriver_url,
               :http_client          => http_client
             )
+          when :opera
+            ENV['SELENIUM_SERVER_JAR'] = remote_server_jar
+            instance = WebDriver::Driver.for :opera
           else
             instance = WebDriver::Driver.for driver
           end
