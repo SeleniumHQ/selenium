@@ -138,7 +138,7 @@ def svn?
   present?('svn')
 end
 
-def svn_revision?
+def svn_revision
   return 'unknown' unless svn?
 
   cmd = open('|svn info')
