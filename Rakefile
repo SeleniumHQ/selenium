@@ -501,7 +501,10 @@ file "cpp/IEDriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
 end
 task :sizzle_header => [ "cpp/IEDriver/sizzle.h" ]
 
-file "javascript/deps.js" => FileList["third_party/closure/goog/**/*.js", "javascript/*-atom*/*.js"] do
+file "javascript/deps.js" => FileList[
+    "third_party/closure/goog/**/*.js",
+    "javascript/*-atom*/*.js",
+    "javascript/chrome-driver/*.js" ] do
   our_cmd = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "
   our_cmd << "--output_mode=deps --path=javascript "
   our_cmd << "--dep=third_party/closure/goog"
