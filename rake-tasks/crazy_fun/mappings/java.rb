@@ -287,12 +287,12 @@ module CrazyFunJava
             :srcdir               => '.',
             :destdir              => out_dir,
             :includeAntRuntime    => false,
-  			:optimize             => true,
-  			:debug                => true,
-  			:nowarn               => true,
-    		:source               => '1.5',
+            :optimize             => true,
+            :debug                => true,
+            :nowarn               => true,
+            :source               => '1.5',
             :target               => '1.5'
-  		  ) { |ant|
+          ) { |ant|
             ant.classpath(:refid => "#{args[:name]}.path")
 
             args[:srcs].each do |src_glob|
