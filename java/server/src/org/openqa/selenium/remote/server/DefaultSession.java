@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -41,7 +40,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
-import sun.misc.Service;
 
 /**
  * The default session implementation.
@@ -93,23 +91,10 @@ public class DefaultSession implements Session {
       initialDriver.register(new SnapshotScreenListener(this));
     }
 
-    this.driver = postProcess(initialDriver);
+    this.driver = initialDriver;
     this.capabilities = browserCreator.getCapabilityDescription();
     updateLastAccessTime();
   }
-
-    private WebDriver postProcess(WebDriver initialDriver )
-    {
-       @SuppressWarnings( { "unchecked" } )
-       Iterator<WebDriverPostProcessor> ps = Service.providers(WebDriverPostProcessor.class);
-       WebDriver result = initialDriver;
-       while (ps.hasNext()) {
-           WebDriverPostProcessor postProcessor = ps.next();
-           result = postProcessor.transform(result);
-       }
-       return result;
-    }
-
 
     /**
    * Touches the session.
