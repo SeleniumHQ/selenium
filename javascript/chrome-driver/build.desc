@@ -1,15 +1,3 @@
-
-mozilla_extension(name = "chrome-driver",
-  srcs  = [ 
-    "*",
-    "icons/*",
-  ],
-  resources = [
-    { "//cpp:chrome_dll" : "npchromedriver.dll" },
-    { "**" : "./" }
-  ],
-  out = "chrome-extension.zip")
-
 # Used for http://src.chromium.org/svn/trunk/third_party/webdriver/atoms.h
 js_fragment_header(name = "atoms",
   deps = [
