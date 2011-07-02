@@ -241,8 +241,4 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     WebElement select = driver.findElement(By.name("multi"));
     return select.findElements(By.tagName("option")).get(0);
   }
-
-  private WebElement nonSelectableElement() {
-    return driver.findElement(By.tagName("div"));
-  }
 }
