@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.corebased.TestAddSelection;
 import com.thoughtworks.selenium.corebased.TestCheckUncheck;
 import com.thoughtworks.selenium.corebased.TestCommandError;
 import com.thoughtworks.selenium.corebased.TestComments;
+import com.thoughtworks.selenium.corebased.TestCssLocators;
 import com.thoughtworks.selenium.corebased.TestEditable;
 import com.thoughtworks.selenium.corebased.TestElementIndex;
 import com.thoughtworks.selenium.corebased.TestElementOrder;
@@ -61,6 +62,7 @@ import org.junit.runners.Suite;
     TestCheckUncheck.class,
     TestCommandError.class,
     TestComments.class,
+    TestCssLocators.class,
     TestEditable.class,
     TestElementIndex.class,
     TestElementOrder.class,

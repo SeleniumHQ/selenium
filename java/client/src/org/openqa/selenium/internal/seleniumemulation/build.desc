@@ -16,6 +16,7 @@ java_library(name = "seleniumemulation",
     { "//javascript/selenium-atoms:isTextPresent" : "org/openqa/selenium/internal/seleniumemulation/isTextPresent.js" },
     { "//javascript/selenium-atoms:isVisible" : "org/openqa/selenium/internal/seleniumemulation/isVisible.js" },
     { "//javascript/selenium-atoms:type" : "org/openqa/selenium/internal/seleniumemulation/type.js" },
+    { "//third_party/js/sizzle" : "org/openqa/selenium/internal/seleniumemulation/sizzle.js" },
   ],
   deps = [
     "//java/client/src/com/thoughtworks/selenium",

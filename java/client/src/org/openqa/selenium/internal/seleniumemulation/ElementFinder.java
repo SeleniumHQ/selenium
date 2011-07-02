@@ -17,27 +17,34 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Maps;
-
-import com.thoughtworks.selenium.SeleniumException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
-import java.util.Map;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Charsets;
+import com.google.common.collect.Maps;
+import com.google.common.io.Resources;
+import com.thoughtworks.selenium.SeleniumException;
 
 public class ElementFinder {
-
+  private final static Logger log = Logger.getLogger(ElementFinder.class.getName());
   private final String findElement;
-  private Map<String, String> additionalLocators = Maps.newHashMap();
+  private final String sizzle;
+  private final Map<String, String> additionalLocators = Maps.newHashMap();
 
   @VisibleForTesting
   protected ElementFinder() {
     findElement = null;
+    sizzle = null;
   }
 
   public ElementFinder(JavascriptLibrary library) {
@@ -47,6 +54,17 @@ public class ElementFinder {
     String linkTextLocator = "return (" + library.getSeleniumScript("linkLocator.js") + ").call(null, arguments[0], document)";
 
     add("link", linkTextLocator);
+    
+    try {
+      URL url = Resources.getResource(getClass().getPackage().getName().replace(".", "/") + "/sizzle.js");
+      sizzle = Resources.toString(url, Charsets.UTF_8) + 
+          "var results = []; " +
+          "try { Sizzle(arguments[0], document, results);} " +
+          "catch (ignored) {} " +
+          "return results.length ? results[0] : null;";
+    } catch (IOException e) {
+      throw new SeleniumException("Cannot read sizzle");
+    }
   }
 
   public WebElement findElement(WebDriver driver, String locator) {
@@ -106,10 +124,26 @@ public class ElementFinder {
     }
 
     if (locator.startsWith("css=")) {
-      return driver.findElement(By.cssSelector(locator.substring("css=".length())));
+      System.out.println("Looking for css directly");
+      String selector = locator.substring("css=".length());
+      try {
+        return driver.findElement(By.cssSelector(selector));
+      } catch (WebDriverException e) {
+        return fallbackToSizzle(driver, selector);
+      }
     }
 
     return null;
   }
 
+  private WebElement fallbackToSizzle(WebDriver driver, String locator) {
+    WebElement toReturn = (WebElement) ((JavascriptExecutor) driver).executeScript(sizzle, locator);
+    if (toReturn != null) {
+      log.warning("You are using a Sizzle locator as a CSS Selector. " +
+          "Please use the Sizzle library directly via the JavascriptExecutor or a plain CSS " +
+          "selector. Your locator was: " + locator);
+      return toReturn;
+    }
+    throw new NoSuchElementException("Cannot locate element even after falling back to Sizzle: " + locator);
+  }
 }

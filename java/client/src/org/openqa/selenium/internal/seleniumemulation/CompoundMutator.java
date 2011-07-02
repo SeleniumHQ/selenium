@@ -37,6 +37,22 @@ public class CompoundMutator implements ScriptMutator {
     addMutator(new VariableDeclaration("selenium.browserbot", "selenium.browserbot = {};"));
     addMutator(new VariableDeclaration(
         "selenium.browserbot.baseUrl", "selenium.browserbot.baseUrl = '" + baseUrl + "';"));
+    addMutator(new VariableDeclaration(
+        "browserVersion", "var browserVersion = {};"));
+    addMutator(new VariableDeclaration(
+            "browserVersion.isFirefox", 
+            "browserVersion.isFirefox = navigator.userAgent.indexOf('Firefox') != -1 || " +
+            "navigator.userAgent.indexOf('Namoroka') != -1 " +
+            "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
+    addMutator(new VariableDeclaration(
+            "browserVersion.isGecko",
+            "browserVersion.isGecko = navigator.userAgent.indexOf('Firefox') != -1 || " +
+            "navigator.userAgent.indexOf('Namoroka') != -1 " +
+            "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
+    addMutator(new VariableDeclaration(
+            "browserVersion.firefoxVersion", 
+            "var r = /.*[Firefox|Namoroka|Shiretoko]\\/([\\d\\.]+).*/.exec(navigator.userAgent);" +
+            "browserVersion.firefoxVersion = r ? r[1] : '';"));
 
     addMutator(new FunctionDeclaration("selenium.page",
         "if (!selenium.browserbot) { selenium.browserbot = {} }; return selenium.browserbot;"));
@@ -72,6 +88,8 @@ public class CompoundMutator implements ScriptMutator {
     outputTo.append("return eval('");
     outputTo.append(escape(nested.toString()));
     outputTo.append("');");
+    
+    System.out.println(outputTo);
   }
 
   private String escape(String escapee) {

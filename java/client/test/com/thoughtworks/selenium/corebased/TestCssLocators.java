@@ -1,6 +1,7 @@
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+import com.thoughtworks.selenium.Selenium;
 
 import org.junit.Test;
 
@@ -66,10 +67,6 @@ public class TestCssLocators extends InternalSelenseTestBase {
 
 		verifyEquals(selenium.getText("css=th:first-child"), "theHeaderText");
 
-		verifyEquals(selenium.getText("css=a:lang(en)"), "this is the first element");
-
-		verifyEquals(selenium.getText("css=#linkPseudoTest :link"), "link pseudo test");
-
 		// descendant combinator
 
 		verifyEquals(selenium.getText("css=div#combinatorTest a"), "and grandson");
@@ -96,19 +93,11 @@ public class TestCssLocators extends InternalSelenseTestBase {
 
 		// pseudo class test
 
-		verifyTrue(selenium.isElementPresent("css=html:root"));
-
 		verifyEquals(selenium.getText("css=div#structuralPseudo :nth-child(2n)"), "span2");
 
 		verifyEquals(selenium.getText("css=div#structuralPseudo :nth-child(2)"), "span2");
 
 		verifyEquals(selenium.getText("css=div#structuralPseudo :nth-child(-n+6)"), "span1");
-
-		verifyEquals(selenium.getText("css=div#structuralPseudo :nth-last-child(4n+1)"), "span4");
-
-		verifyEquals(selenium.getText("css=div#structuralPseudo :nth-last-child(2)"), "div3");
-
-		verifyEquals(selenium.getText("css=div#structuralPseudo :nth-last-child(-n+6)"), "span3");
 
 		verifyEquals(selenium.getText("css=div#structuralPseudo :first-child"), "span1");
 
@@ -136,5 +125,33 @@ public class TestCssLocators extends InternalSelenseTestBase {
 		// combinator test
 
 		verifyEquals(selenium.getText("css=div#combinatorTest span#firstChild ~ span"), "another child");
+				
+		if (isCapableOfAdvancedSelectors(selenium)) {
+		    // Versions of firefox prior to 3.5 don't propogate the lang property.
+	      verifyEquals(selenium.getText("css=a:lang(en)"), "this is the first element");
+
+	      verifyEquals(selenium.getText("css=#linkPseudoTest :link"), "link pseudo test");
+		  
+		    verifyTrue(selenium.isElementPresent("css=html:root"));
+		  
+	      verifyEquals(selenium.getText("css=div#structuralPseudo :nth-last-child(4n+1)"), "span4");
+
+	      verifyEquals(selenium.getText("css=div#structuralPseudo :nth-last-child(2)"), "div3");
+
+	      verifyEquals(selenium.getText("css=div#structuralPseudo :nth-last-child(-n+6)"), "span3");
+		}
 	}
+
+  private boolean isCapableOfAdvancedSelectors(Selenium selenium) {
+    String isFirefox = selenium.getEval("browserVersion.isFirefox;");
+    String version = selenium.getEval("browserVersion.firefoxVersion");
+    
+    if (Boolean.valueOf(isFirefox)) {
+      if (version != null && version.startsWith("3.0")) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
 }
