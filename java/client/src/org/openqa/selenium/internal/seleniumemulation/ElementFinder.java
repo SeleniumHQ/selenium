@@ -124,7 +124,6 @@ public class ElementFinder {
     }
 
     if (locator.startsWith("css=")) {
-      System.out.println("Looking for css directly");
       String selector = locator.substring("css=".length());
       try {
         return driver.findElement(By.cssSelector(selector));

@@ -88,8 +88,6 @@ public class CompoundMutator implements ScriptMutator {
     outputTo.append("return eval('");
     outputTo.append(escape(nested.toString()));
     outputTo.append("');");
-    
-    System.out.println(outputTo);
   }
 
   private String escape(String escapee) {
