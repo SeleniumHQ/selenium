@@ -2,6 +2,7 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
@@ -76,7 +77,7 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     assertTrue(button.isSelected());
   }
 
-  @Ignore(SELENESE)
+  @Ignore({CHROME, SELENESE})
   public void testShouldBeAbleToToggleEnabledMultiSelectOption() {
     driver.get(pages.formPage);
     assertCanToggle(selectedMultipleSelectOption());

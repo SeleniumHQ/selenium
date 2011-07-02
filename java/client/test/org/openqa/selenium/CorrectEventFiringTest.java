@@ -164,7 +164,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE})
+  @Ignore(value = {CHROME, IPHONE, SELENESE})
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
     //Intentionally not looking up the select tag.  See selenium r7937 for details.

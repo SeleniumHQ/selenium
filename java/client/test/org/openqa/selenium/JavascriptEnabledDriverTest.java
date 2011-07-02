@@ -25,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.matchers.JUnitMatchers.either;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -105,7 +106,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 //	}
 
   @JavascriptEnabled
-  @Ignore(value = {IE, SELENESE, IPHONE},
+  @Ignore(value = {CHROME, IE, SELENESE, IPHONE},
       reason = "iPhone: does not detect that a new page loaded.")
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
@@ -117,7 +118,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, SELENESE, IPHONE, OPERA},
+  @Ignore(value = {CHROME, IE, SELENESE, IPHONE, OPERA},
       reason = "iPhone: does not detect that a new page loaded.")
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);

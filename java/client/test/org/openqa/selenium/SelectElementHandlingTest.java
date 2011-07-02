@@ -21,6 +21,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
@@ -28,7 +29,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class SelectElementHandlingTest extends AbstractDriverTestCase {
 
-  @Ignore({IE, SELENESE, IPHONE, OPERA})
+  @Ignore({CHROME, IE, SELENESE, IPHONE, OPERA})
   public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
@@ -46,7 +47,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     assertThat(option.isSelected(), is(true));
   }
 
-  @Ignore(SELENESE)
+  @Ignore({CHROME, SELENESE})
   public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
@@ -61,7 +62,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     assertThat(two.isSelected(), is(true));
   }
 
-  @Ignore({SELENESE})
+  @Ignore({CHROME, SELENESE})
   public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
