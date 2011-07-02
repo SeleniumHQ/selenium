@@ -20,11 +20,12 @@
 goog.provide('webdriver.firefox.locators');
 
 goog.require('bot.locators');
+goog.require('bot.userAgent');
 goog.require('goog.dom');
 goog.require('webdriver.firefox.utils');
 
 
-if (webdriver.firefox.utils.compareVersion('3.5') < 0) {
+if (bot.userAgent.isVersion('3.5')) {
   bot.locators.add('css', (function() {
     var sizzle = [
         'var originalSizzle = window.Sizzle;',

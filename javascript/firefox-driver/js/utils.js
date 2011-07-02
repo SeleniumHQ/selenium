@@ -19,6 +19,7 @@
 goog.provide('Utils');
 
 goog.require('bot.dom');
+goog.require('bot.userAgent');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
 goog.require('ErrorCode');
@@ -282,7 +283,7 @@ Utils.getElementAt = function(index, rawDoc) {
 Utils.isAttachedToDom = function(element) {
   // In Firefox 4, our DOM nodes need to be wrapped in XPCNativeWrappers
   function wrapNode(node) {
-    if (webdriver.firefox.utils.isFirefox4()) {
+    if (bot.userAgent.isFirefox4()) {
       return node ? new XPCNativeWrapper(node) : null;
     }
     return node;

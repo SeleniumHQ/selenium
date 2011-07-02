@@ -917,7 +917,7 @@ getBrowserSpecificOffset_ = function(inBrowser) {
     var browserSpecificXOffset = 0;
     var browserSpecificYOffset = 0;
 
-    if (webdriver.firefox.utils.isFirefox4()) {
+    if (bot.userAgent.isFirefox4()) {
       var rect = inBrowser.getBoundingClientRect();
       browserSpecificYOffset += rect.top;
       browserSpecificXOffset += rect.left;

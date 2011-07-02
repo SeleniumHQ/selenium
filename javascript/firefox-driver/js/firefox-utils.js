@@ -24,6 +24,7 @@
 
 goog.provide('webdriver.firefox.utils');
 
+goog.require('bot.userAgent');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('goog.array');
@@ -146,32 +147,8 @@ webdriver.firefox.utils.unwrapXpcOnly = function(thing) {
 };
 
 
-/**
- * @return {boolean} Whether this is FF4 or newer.
- */
-webdriver.firefox.utils.isFirefox4 = function() {
-  return webdriver.firefox.utils.compareVersion('4.0b1') >= 0;
-};
-
-
-/**
- * @param {string} version The version to compare against.
- * @return {number} A value less than zero if the current version is older
- *     than the provided value, zero if they are the same, and a value
- *     greater than zero if the current version is newer.
- */
-webdriver.firefox.utils.compareVersion = function(version) {
-  var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
-      getService(Components.interfaces.nsIXULAppInfo);
-  var versionChecker = Components.
-      classes['@mozilla.org/xpcom/version-comparator;1'].
-      getService(Components.interfaces.nsIVersionComparator);
-  return versionChecker.compare(appInfo.version, version);
-};
-
-
 webdriver.firefox.utils.unwrapFor4 = function(doc) {
-  if (webdriver.firefox.utils.isFirefox4()) {
+  if (bot.userAgent.isFirefox4()) {
     return webdriver.firefox.utils.unwrap(doc);
   }
   return doc;
