@@ -347,6 +347,18 @@
       bot.action.click(clickJacker);
       assertEquals(1, bot.dom.getOpacity(clickJacker));
     }
+
+    function testShouldFireChangeEventWhenSelectingItemsViaAClick() {
+      // Clear the state of the page
+      var aOption = findElement({id: 'a'});
+      aOption.selected = true;
+      divConsole.clear();
+
+      var bOption = findElement({id: 'b'});
+      bot.action.click(bOption);
+
+
+    }
   </script>
 </head>
 <body>
@@ -395,5 +407,26 @@
   </div>
   <iframe id="iframe" src="testdata/click_iframe.html">
   </iframe>
+
+  <form action="#" method="get">
+    <select name="options" onchange="log.info('changed')">
+      <option id="a" selected>a</option>
+      <option id="b">b</option>
+    </select>
+
+    <br>
+
+    <label for="checky">I am a checkbox</label>
+    <input type="checkbox" name="checky" onchange="log.info('change')">
+
+    <br>
+
+    <input type="radio" name="rad" value="cheese puffs" onchange="log.info('cheese')">Cheese
+    <input type="radio" name="rad" value="fizzy beverage" onchange="log.info('fizz')">Salty, fizzy water
+    <input type="radio" name="rad" value="peas" checked onchange="log.info('peas')">Peas (yummy)
+
+  </form>
+
+
 </body>
 </html>
