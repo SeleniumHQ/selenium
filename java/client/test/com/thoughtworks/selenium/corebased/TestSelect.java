@@ -10,7 +10,7 @@ public class TestSelect extends InternalSelenseTestBase {
 		assertEquals(selenium.getSelectedLabel("theSelect"), "Second Option");;
 		selenium.select("theSelect", "index=4");
 		verifyEquals(selenium.getSelectedLabel("theSelect"), "Fifth Option");
-		verifyEquals(selenium.getSelectedIndex("theSelect"), "4");;
+		verifyEquals(selenium.getSelectedIndex("theSelect"), "4");
 		verifyEquals(selenium.getSelectedLabel("theSelect"), "Fifth Option");
 		verifyEquals(join(selenium.getSelectedLabels("theSelect"), ','), "Fifth Option");
 		selenium.select("theSelect", "Third Option");
