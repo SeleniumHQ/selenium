@@ -47,7 +47,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     assertThat(option.isSelected(), is(true));
   }
 
-  @Ignore({CHROME, SELENESE})
+  @Ignore({CHROME, OPERA, SELENESE})
   public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));

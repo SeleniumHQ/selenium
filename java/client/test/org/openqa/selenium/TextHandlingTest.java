@@ -156,7 +156,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(seenText, equalTo(expectedText));
   }
 
-  @Ignore(value = {SELENESE})
+  @Ignore(value = {OPERA, SELENESE})
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("working"));

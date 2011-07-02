@@ -34,6 +34,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
@@ -460,6 +461,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(OPERA)
   public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(pages.javascriptPage);
 

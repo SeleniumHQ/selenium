@@ -52,7 +52,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, CHROME, SELENESE, FIREFOX}, reason = "Currently broken in Firefox," +
+  @Ignore(value = {HTMLUNIT, CHROME, SELENESE, FIREFOX, OPERA}, reason = "Currently broken in Firefox," +
       " fix tracked in issue 1771.")
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
@@ -63,7 +63,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, CHROME, SELENESE})
+  @Ignore({HTMLUNIT, CHROME, OPERA, SELENESE})
   public void testElementInDiv() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
@@ -73,7 +73,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE, CHROME, SELENESE})
+  @Ignore({HTMLUNIT, IE, CHROME, OPERA, SELENESE})
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
@@ -97,7 +97,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, CHROME, SELENESE, FIREFOX}, reason = "See issue 1771.")
+  @Ignore(value = {HTMLUNIT, IE, CHROME, OPERA, SELENESE, FIREFOX}, reason = "See issue 1771.")
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
@@ -126,7 +126,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, CHROME, IE, SELENESE})
+  @Ignore({HTMLUNIT, CHROME, IE, OPERA, SELENESE})
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
 

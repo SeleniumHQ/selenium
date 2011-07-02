@@ -23,7 +23,6 @@ import java.util.concurrent.Callable;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -74,7 +73,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({IE, FIREFOX, REMOTE, SELENESE})
+  @Ignore({IE, FIREFOX, OPERA, REMOTE, SELENESE})
   public void testShouldBeAbleToIterateOverAllOpenWindows() throws Exception {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
@@ -134,7 +133,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SELENESE)
+  @Ignore({OPERA, SELENESE})
   public void testCanObtainAWindowHandle() {
     driver.get(pages.xhtmlTestPage);
 
@@ -143,7 +142,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     assertNotNull(currentHandle);
   }
 
-  @Ignore(SELENESE)
+  @Ignore({OPERA, SELENESE})
   public void testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();

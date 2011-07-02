@@ -106,7 +106,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 //	}
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, IE, SELENESE, IPHONE},
+  @Ignore(value = {CHROME, IE, IPHONE, OPERA, SELENESE},
       reason = "iPhone: does not detect that a new page loaded.")
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
@@ -153,7 +153,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE},
+  @Ignore(value = {IPHONE, OPERA},
       reason = "iPhone: sendKeys not implemented correctly")
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
@@ -225,7 +225,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, FIREFOX, REMOTE, SELENESE},
+  @Ignore(value = {IE, FIREFOX, OPERA, REMOTE, SELENESE},
           reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
