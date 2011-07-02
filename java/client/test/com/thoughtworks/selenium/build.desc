@@ -54,6 +54,18 @@ java_test(name = "ie-emulation-test",
     ":rc-tests",
   ])
 
+java_test(name = "opera-emulation-test",
+  test_suite = "com.thoughtworks.selenium.WebDriverSeleniumTestSuite",
+  deps = [
+    ":rc-tests",
+  ],
+  sysproperties = [
+    { "selenium.browser" : "com.opera.core.systems.OperaDriver" },
+  ],
+  deps = [
+    ":rc-tests",
+  ])
+
 java_test(name = "firefox-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
