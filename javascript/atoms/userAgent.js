@@ -33,7 +33,6 @@ bot.userAgent.isVersion = function(version) {
     // Common case
     return goog.userAgent.product.isVersion(version);
   }
-  
   // This code path is only hit in a firefox extension
   if (goog.userAgent.GECKO && Components && Components['classes']) {
     var cc = Components['classes'];
@@ -43,7 +42,7 @@ bot.userAgent.isVersion = function(version) {
     var versionChecker = cc["@mozilla.org/xpcom/version-comparator;1"].
         getService(ci['nsIVersionComparator']);
 
-    return versionChecker.compare(appInfo.platformVersion, '' + version) >= 0;
+    return versionChecker.compare(appInfo.version, '' + version) >= 0;
   }
 
   // Fail stupid
