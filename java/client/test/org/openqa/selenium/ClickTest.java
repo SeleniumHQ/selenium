@@ -39,7 +39,7 @@ public class ClickTest extends AbstractDriverTestCase {
     super.tearDown();
   }
 
-  @Ignore(value = {IPHONE,SELENESE}, reason = "iPhone: Frame switching is unsupported")
+  @Ignore(value = {IPHONE}, reason = "iPhone: Frame switching is unsupported")
   public void testCanClickOnALinkAndFollowIt() {
     waitFor(elementToExist(driver, "normal"));
     driver.findElement(By.id("normal")).click();
