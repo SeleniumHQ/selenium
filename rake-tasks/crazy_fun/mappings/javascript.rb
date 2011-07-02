@@ -216,11 +216,16 @@ module Javascript
         end
         dirs = dirs.keys
 
+        declared = args[:defines] || [];
+        defines = declared.collect {|d| "-f \"--define=#{d}\" "}
+        defines = defines.join
+
         cmd = calcdeps +
            " -o compiled " <<
            '-f "--third_party=true" ' <<
            '-f "--formatting=PRETTY_PRINT" ' <<
            "-f \"--js_output_file=#{output}\" " <<
+           defines <<
            "-i " <<
            js_files.join(" -i ") <<
            " -p third_party/closure/goog -p " <<

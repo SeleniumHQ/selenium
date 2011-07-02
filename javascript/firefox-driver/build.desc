@@ -57,6 +57,9 @@ js_binary(name = "atoms",
     "js/exported_symbols.js",
     "js/locators.js",
   ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
   deps = [ "//javascript/webdriver-atoms:deps" ])
 
 js_binary(name = "utils",
@@ -69,6 +72,9 @@ js_binary(name = "utils",
     "js/timer.js",
     "js/utils.js",
     "js/utils_exports.js"
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
   ],
   deps = [
     "//javascript/webdriver-atoms:deps"
