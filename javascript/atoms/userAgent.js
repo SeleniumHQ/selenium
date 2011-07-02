@@ -42,10 +42,10 @@ bot.userAgent.isVersion = function(version) {
         getService(ci['nsIXULAppInfo']);
     var versionChecker = cc["@mozilla.org/xpcom/version-comparator;1"].
         getService(ci['nsIVersionComparator']);
-  
-    return versionChecker.compare(appInfo.platformVersion, '' + version) < 0;
+
+    return versionChecker.compare(appInfo.platformVersion, '' + version) >= 0;
   }
-  
+
   // Fail stupid
   return false;
 };
