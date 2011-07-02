@@ -28,14 +28,15 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.events');
+goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.events.EventType');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product.isVersion');
 goog.require('goog.Uri');
-
 
 /**
  * Determines if an element is shown on the page and may be manipulated by the
@@ -398,6 +399,24 @@ bot.action.submit = function(element) {
 
 
 /**
+ * @param {!Element} element The element to check.
+ * @return Whether the element blocks js execution when mouse down fires on an
+ *   option.
+ * @private
+ */
+bot.action.blocksOnMouseDown_ = function(element) {
+  var isFirefox3 = goog.userAgent.GECKO && !bot.userAgent.isVersion(4);
+
+  if (goog.userAgent.WEBKIT || isFirefox3) {
+    var tagName = element.tagName.toLowerCase();
+    return ("option" == tagName || "select" == tagName);
+  }
+  
+  return false;
+}
+
+
+/**
  * Simulates a click sequence on the given {@code element}. A click sequence
  * is defined as the following events:
  * <ol>
@@ -460,8 +479,8 @@ bot.action.click = function(element) {
 
   // Hilariously, if this is an option on a webkit-based browser, this mouse
   //down will cause  the select to open and block the remaining execution.
-  var tagName = element.tagName.toLowerCase();
-  if (goog.userAgent.WEBKIT && ("option" == tagName || "select" == tagName)) {
+
+  if (bot.action.blocksOnMouseDown_(element)) {
     // TODO(simon): we should be doing better than this.
   } else {
     bot.events.fire(element, goog.events.EventType.MOUSEDOWN, coords);
