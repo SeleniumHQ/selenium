@@ -162,19 +162,28 @@ if (windows?)
 #  task :'test-core' => [:'test-core-safari']
 end
 
-task :test_java => [
-  "//java/client/test/org/openqa/selenium/atoms:test:run",
-  "//java/client/test/org/openqa/selenium/support:test:run",
+task :test_java_webdriver => [
   "//java/client/test/org/openqa/selenium/htmlunit:test:run",
   "//java/client/test/org/openqa/selenium/firefox:test:run",
   "//java/client/test/org/openqa/selenium/ie:test:run",
   "//java/server/test/org/openqa/selenium/remote/server:test:run",
+]
+if (present?("chromedriver"))
+  task :test_java_webdriver => [:test_chrome]
+end
+if (opera?)
+  task :test_java_webdriver => [:test_opera]
+end
+
+
+task :test_java => [
+  "//java/client/test/org/openqa/selenium/atoms:test:run",
+  "//java/client/test/org/openqa/selenium/support:test:run",
+  :test_java_webdriver,
   :test_selenium,
   "test_grid"
 # Can't be sure that android is installed.
 #  :test_android,
-# Chrome isn't stable enough to include here.
-#  "//chrome:test:run"
 ]
 
 task :test_rb => [
