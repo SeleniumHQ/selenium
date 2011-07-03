@@ -48,9 +48,17 @@ def present?(arg)
     File.exists?(prefix + File::SEPARATOR + arg)
   end
 
+  if !bool && mac?
+    bool = File.exists?("/Applications/#{arg}.app")
+  end
+
   PRESENT_CACHE[arg] = bool
 
   bool
+end
+
+def opera?
+  present?("opera") || present?("Opera")
 end
 
 def java?
