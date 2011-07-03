@@ -167,7 +167,6 @@ public class SelfRegisteringRemote {
 			log.info("no registration sent ( " + AUTO_REGISTER + " = false )");
 		} else {
 			final Integer o = (Integer) nodeConfig.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE);
-			System.out.println("O:" + o);
 			if (o != null) {
 
 				new Thread(new Runnable() {
