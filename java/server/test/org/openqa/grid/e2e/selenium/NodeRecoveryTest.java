@@ -38,8 +38,8 @@ public class NodeRecoveryTest {
 		// register a selenium 1 with a timeout of 3 sec
 		node.addBrowser(new DesiredCapabilities("*firefox","3.6",Platform.getCurrent()),1);
 		node.setTimeout(originalTimeout, 1000);
-		node.launchRemoteServer();
-		node.registerToHub();
+		node.startRemoteServer();
+		node.sendRegistrationRequest();
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}
 
@@ -66,8 +66,8 @@ public class NodeRecoveryTest {
 		
 		
 		// restart it
-		node.launchRemoteServer();
-		node.registerToHub();
+		node.startRemoteServer();
+		node.sendRegistrationRequest();
 		
 		// wait for 5 sec : the timeout of the original node should be reached, and the session freed
 		Thread.sleep(5000);

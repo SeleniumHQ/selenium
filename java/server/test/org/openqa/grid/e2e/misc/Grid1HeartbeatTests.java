@@ -57,8 +57,8 @@ public class Grid1HeartbeatTests {
 		// register a selenium 1
 		SelfRegisteringRemote selenium1 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
 		selenium1.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 1);
-		selenium1.launchRemoteServer();
-		selenium1.registerToHub();
+		selenium1.startRemoteServer();
+		selenium1.sendRegistrationRequest();
 
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 

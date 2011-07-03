@@ -4,6 +4,7 @@ import java.net.URL;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.selenium.net.PortProber;
 
@@ -18,6 +19,22 @@ public class GridTestHelper {
 		}
 
 		req.getConfiguration().put(RegistrationRequest.PORT, PortProber.findFreePort());
+
+		// some values have to be computed again after changing internals.
+		String base = "http://" + req.getConfiguration().get(RegistrationRequest.HOST) + ":" + req.getConfiguration().get(RegistrationRequest.PORT);
+		String url = null;
+		switch (req.getRole()) {
+		case REMOTE_CONTROL:
+			url = base + "/selenium-server/driver";
+			break;
+		case WEBDRIVER:
+			url = base + "/wd/hub";
+			break;
+		default:
+			throw new GridConfigurationException("Cannot launch a node with role " + req.getRole());
+		}
+		req.getConfiguration().put(RegistrationRequest.REMOTE_URL, url);
+
 		req.getConfiguration().put(RegistrationRequest.HUB_HOST, hub.getHost());
 		req.getConfiguration().put(RegistrationRequest.HUB_PORT, hub.getPort());
 

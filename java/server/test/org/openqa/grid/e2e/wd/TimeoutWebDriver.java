@@ -40,8 +40,8 @@ public class TimeoutWebDriver {
 		remote.setTimeout(5000,250);
 		remote.addBrowser(DesiredCapabilities.firefox(),1);
 		
-		remote.launchRemoteServer();
-		remote.registerToHub();
+		remote.startRemoteServer();
+		remote.sendRegistrationRequest();
 		
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}

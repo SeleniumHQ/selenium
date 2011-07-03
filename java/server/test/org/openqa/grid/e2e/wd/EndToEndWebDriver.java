@@ -44,16 +44,16 @@ public class EndToEndWebDriver {
 
 		remote.setMaxConcurrent(5);
 		remote.setTimeout(-1, -1);
-		remote.launchRemoteServer();
-		remote.registerToHub();
+		remote.startRemoteServer();
+		remote.sendRegistrationRequest();
 
 		SelfRegisteringRemote remote2 = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
 		remote2.addBrowser(DesiredCapabilities.firefox(), 5);
 
 		remote2.setMaxConcurrent(5);
 		remote2.setTimeout(-1, -1);
-		remote2.launchRemoteServer();
-		remote2.registerToHub();
+		remote2.startRemoteServer();
+		remote2.sendRegistrationRequest();
 
 	}
 

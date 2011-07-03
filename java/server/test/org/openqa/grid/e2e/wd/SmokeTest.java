@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.openqa.grid.common.GridRole;
+import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
@@ -39,8 +40,10 @@ public class SmokeTest {
 		SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
 		remote.addBrowser(DesiredCapabilities.firefox(),1);
 		
-		remote.launchRemoteServer();
-		remote.registerToHub();
+		remote.startRemoteServer();
+		
+		remote.getConfiguration().put(RegistrationRequest.TIME_OUT,-1);
+		remote.sendRegistrationRequest();
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}
 
@@ -49,7 +52,7 @@ public class SmokeTest {
 		WebDriver driver = null;
 		try {
 			DesiredCapabilities ff = DesiredCapabilities.firefox();
-			driver = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+			driver = new RemoteWebDriver(new URL(hubURL + "/wd/hub"), ff);
 			driver.get(hubURL + "/grid/console");
 			Assert.assertEquals(driver.getTitle(), "Grid overview");
 		} finally {

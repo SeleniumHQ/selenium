@@ -23,6 +23,7 @@
 		"port": 5555,
 		"host": ip,
 		"register" = true ,
+		"registerCycle" = 5000 ,
 		"hubPort" : 4444
 	}
 }

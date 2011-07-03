@@ -41,8 +41,8 @@ public class SmokeTest {
 		SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.REMOTE_CONTROL);
 		remote.addBrowser(new DesiredCapabilities("*firefox","3.6",Platform.getCurrent()), 1);
 		
-		remote.launchRemoteServer();
-		remote.registerToHub();
+		remote.startRemoteServer();
+		remote.sendRegistrationRequest();
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}
 

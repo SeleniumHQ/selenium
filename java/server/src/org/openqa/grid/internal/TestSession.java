@@ -287,21 +287,7 @@ public class TestSession {
             proxyRequest.setHeader(headerName, request.getHeader(headerName));
 		}
 
-		DefaultHttpClient client = getClient(); /*
-												 * new DefaultHttpClient();
-												 * client.setRedirectHandler(new
-												 * RedirectHandler() { public
-												 * boolean
-												 * isRedirectRequested(HttpResponse
-												 * response, HttpContext
-												 * context) { return false; }
-												 * public URI
-												 * getLocationURI(HttpResponse
-												 * response, HttpContext
-												 * context) throws
-												 * ProtocolException { return
-												 * null; } });
-												 */
+		DefaultHttpClient client = getClient(); 
 
 		HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
 		HttpResponse proxyResponse = client.execute(host, proxyRequest);

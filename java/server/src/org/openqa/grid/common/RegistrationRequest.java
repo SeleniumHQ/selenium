@@ -66,6 +66,7 @@ public class RegistrationRequest {
 	public static final String VERSION = "version";
 
 	// some special param for config
+	public static final String REGISTER_CYCLE = "registerCycle";
 	public static final String PROXY_CLASS = "proxy";
 	public static final String CLEAN_UP_CYCLE = "cleanUpCycle";
 	public static final String TIME_OUT = "timeout";

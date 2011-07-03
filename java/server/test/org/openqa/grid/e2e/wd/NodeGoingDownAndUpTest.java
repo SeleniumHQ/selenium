@@ -41,17 +41,17 @@ public class NodeGoingDownAndUpTest {
 		remote.getConfiguration().put(RegistrationRequest.NODE_POLLING, 250);
 		remote2.getConfiguration().put(RegistrationRequest.NODE_POLLING, 250);
 		
-		remote.launchRemoteServer();
-		remote2.launchRemoteServer();
+		remote.startRemoteServer();
+		remote2.startRemoteServer();
 		
-		remote.registerToHub();
-		remote2.registerToHub();
+		remote.sendRegistrationRequest();
+		remote2.sendRegistrationRequest();
 		
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 2);
 	}
 
 	@Test
-	public void test() throws Exception {
+	public void markdown() throws Exception {
 		// should be up
 		Thread.sleep(300);
 		for (RemoteProxy proxy : registry.getAllProxies()){
@@ -66,14 +66,17 @@ public class NodeGoingDownAndUpTest {
 			Assert.assertTrue(((WebRemoteProxy)proxy).isDown());	
 		}
 		// and back up
-		remote.launchRemoteServer();
-		remote2.launchRemoteServer();
+		remote.startRemoteServer();
+		remote2.startRemoteServer();
 		Thread.sleep(300);
 		// should be down
 		for (RemoteProxy proxy : registry.getAllProxies()){
 			Assert.assertFalse(((WebRemoteProxy)proxy).isDown());	
 		}
 	}
+	
+	
+	
 
 	@AfterClass(alwaysRun = false)
 	public void stop() throws Exception {

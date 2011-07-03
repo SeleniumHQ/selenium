@@ -48,8 +48,8 @@ public class ConfigInheritanceTest {
 		remote.getConfiguration().put("A2","proxyA2");
 		remote.getConfiguration().put("B2", 50);
 		
-		remote.launchRemoteServer();
-		remote.registerToHub();
+		remote.startRemoteServer();
+		remote.sendRegistrationRequest();
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}
 

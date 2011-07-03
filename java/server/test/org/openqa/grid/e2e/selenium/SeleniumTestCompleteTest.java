@@ -39,8 +39,8 @@ public class SeleniumTestCompleteTest {
 		SelfRegisteringRemote selenium1 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
 		selenium1.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 1);
 		selenium1.setTimeout(5000, 2000);
-		selenium1.launchRemoteServer();
-		selenium1.registerToHub();
+		selenium1.startRemoteServer();
+		selenium1.sendRegistrationRequest();
 
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}

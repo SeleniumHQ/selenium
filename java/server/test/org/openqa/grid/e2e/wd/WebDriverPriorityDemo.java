@@ -45,10 +45,10 @@ public class WebDriverPriorityDemo {
 		SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
 		remote.addBrowser(DesiredCapabilities.firefox(),1);
 		
-		remote.launchRemoteServer();
+		remote.startRemoteServer();
 		remote.setMaxConcurrent(1);
 		remote.setTimeout(-1, -1);
-		remote.registerToHub();
+		remote.sendRegistrationRequest();
 
 		// assigning a priority rule where requests with the flag "important"
 		// go first.
