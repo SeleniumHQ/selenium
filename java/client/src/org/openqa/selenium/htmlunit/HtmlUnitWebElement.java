@@ -34,6 +34,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlHtml;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlOption;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
 import com.gargoylesoftware.htmlunit.html.HtmlScript;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
@@ -67,6 +68,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -299,11 +301,26 @@ public class HtmlUnitWebElement implements WrapsDriver,
         ("selected".equals(lowerName) || "checked".equals(lowerName))) {
       return ((HtmlInput)element).isChecked() ? "true" : null;
     }
+
+    if ("href".equals(lowerName) || "src".equals(lowerName)) {
+      if (!element.hasAttribute(name)) {
+        return null;
+      }
+
+      String link = element.getAttribute(name).trim();
+      HtmlPage page = (HtmlPage) element.getPage();
+      try {
+        return page.getFullyQualifiedUrl(link).toString();
+      } catch (MalformedURLException e) {
+        return null;
+      }
+    }
     if ("disabled".equals(lowerName)) {
       return isEnabled() ? "false" : "true";
     }
-    if (element instanceof HtmlElement && "multiple".equals(lowerName)) {
-      return ((HtmlSelect) element).getMultipleAttribute() == null ? 
+
+    if ("multiple".equals(lowerName) && element instanceof HtmlSelect) {
+      return ((HtmlSelect) element).getMultipleAttribute() == null ?
           "false" : "true";    	
     }
     

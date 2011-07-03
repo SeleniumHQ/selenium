@@ -40,6 +40,22 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(attribute, is(nullValue()));
   }
 
+  @Ignore({CHROME, OPERA})
+  public void testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag() {
+      driver.get(pages.simpleTestPage);
+      WebElement img = driver.findElement(By.id("validImgTag"));
+      String attribute = img.getAttribute("src");
+      assertThat(attribute, equalTo(appServer.whereIs("icon.gif")));
+    }
+
+  @Ignore({CHROME, OPERA})
+  public void testShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag() {
+      driver.get(pages.simpleTestPage);
+      WebElement img = driver.findElement(By.id("validAnchorTag"));
+      String attribute = img.getAttribute("href");
+      assertThat(attribute, equalTo(appServer.whereIs("icon.gif")));
+    }
+
   public void testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty() {
     driver.get(pages.simpleTestPage);
     WebElement body = driver.findElement(By.xpath("//body"));
