@@ -34,6 +34,7 @@ import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -106,7 +107,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 	public RemoteProxy(RegistrationRequest request, Registry registry) {
 		this.request = request;
 		this.registry = registry;
-		this.config = request.getConfiguration();
+		this.config = mergeConfig(registry.getConfiguration().getAllParams(), request.getConfiguration());
 		String url = (String) config.get(REMOTE_URL);
 		if (url == null) {
 			// no URL isn't always a problem.
@@ -126,15 +127,9 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 			}
 		}
 
-		maxConcurrentSession = request.getConfigAsInt(RegistrationRequest.MAX_SESSION, 1);
-
-		// load the default set in the hub.
-		cleanUpCycle = registry.getConfiguration().getCleanupCycle();
-		timeOut = registry.getConfiguration().getTimeout();
-
-		// but overwrite that if the node specifically ask for something.
-		cleanUpCycle = request.getConfigAsInt(RegistrationRequest.CLEAN_UP_CYCLE, cleanUpCycle);
-		timeOut = request.getConfigAsInt(RegistrationRequest.TIME_OUT, timeOut);
+		maxConcurrentSession = (Integer) this.config.get(RegistrationRequest.MAX_SESSION);
+		cleanUpCycle = (Integer) this.config.get(RegistrationRequest.CLEAN_UP_CYCLE);
+		timeOut = (Integer) this.config.get(RegistrationRequest.TIME_OUT);
 
 		List<DesiredCapabilities> capabilities = request.getCapabilities();
 
@@ -160,6 +155,23 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 				new Thread(new CleanUpThread(this)).start();
 			}
 		}
+	}
+
+	/**
+	 * merge the param from config 1 and 2. If a param is present in both,
+	 * config2 value is used.
+	 * 
+	 * @param configuration1
+	 * @param configuration2
+	 * @return
+	 */
+	private Map<String, Object> mergeConfig(Map<String, Object> configuration1, Map<String, Object> configuration2) {
+		Map<String, Object> res = new HashMap<String, Object>();
+		res.putAll(configuration1);
+		for (String key : configuration2.keySet()) {
+			res.put(key, configuration2.get(key));
+		}
+		return res;
 	}
 
 	/**

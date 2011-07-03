@@ -294,6 +294,12 @@ public class RegistrationRequest {
 		}
 	}
 
+	public static RegistrationRequest webdriverNoCapabilities(){
+		RegistrationRequest res = build("-role","webdriver");
+		res.capabilities.clear();
+		return res;
+	}
+	
 	public static RegistrationRequest build(String... args) {
 		RegistrationRequest res = new RegistrationRequest();
 		res.args = args;

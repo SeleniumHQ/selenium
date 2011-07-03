@@ -8,7 +8,7 @@
 	"throwOnCapabilityNotPresent" : true,	
 	"nodePolling" : 180000 ,
 	
-	"cleanupCycle":5000,
+	"cleanUpCycle":5000,
 	"timeout":300000,
 	"maxSession":5,
 		
