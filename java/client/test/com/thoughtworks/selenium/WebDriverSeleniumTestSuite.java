@@ -20,6 +20,8 @@ package com.thoughtworks.selenium;
 import com.thoughtworks.selenium.corebased.TestAddLocationStrategy;
 import com.thoughtworks.selenium.corebased.TestAddSelection;
 import com.thoughtworks.selenium.corebased.TestCheckUncheck;
+import com.thoughtworks.selenium.corebased.TestClick;
+import com.thoughtworks.selenium.corebased.TestClickAt;
 import com.thoughtworks.selenium.corebased.TestCommandError;
 import com.thoughtworks.selenium.corebased.TestComments;
 import com.thoughtworks.selenium.corebased.TestCssLocators;
@@ -60,6 +62,7 @@ import org.junit.runners.Suite;
     TestAddLocationStrategy.class,
     TestAddSelection.class,
     TestCheckUncheck.class,
+    TestClickAt.class,
     TestCommandError.class,
     TestComments.class,
     TestCssLocators.class,

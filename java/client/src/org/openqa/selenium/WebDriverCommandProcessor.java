@@ -35,6 +35,7 @@ import org.openqa.selenium.internal.seleniumemulation.AttachFile;
 import org.openqa.selenium.internal.seleniumemulation.CaptureScreenshotToString;
 import org.openqa.selenium.internal.seleniumemulation.Check;
 import org.openqa.selenium.internal.seleniumemulation.Click;
+import org.openqa.selenium.internal.seleniumemulation.ClickAt;
 import org.openqa.selenium.internal.seleniumemulation.Close;
 import org.openqa.selenium.internal.seleniumemulation.CompoundMutator;
 import org.openqa.selenium.internal.seleniumemulation.ControlKeyDown;
@@ -314,6 +315,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("attachFile", new AttachFile(elementFinder));
     seleneseMethods.put("captureScreenshotToString", new CaptureScreenshotToString());
     seleneseMethods.put("click", new Click(alertOverride, elementFinder));
+    seleneseMethods.put("clickAt", new ClickAt(alertOverride, elementFinder));
     seleneseMethods.put("check", new Check(alertOverride, elementFinder));
     seleneseMethods.put("chooseCancelOnNextConfirmation", new SetNextConfirmationState(false));
     seleneseMethods.put("chooseOkOnNextConfirmation", new SetNextConfirmationState(true));

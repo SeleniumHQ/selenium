@@ -24,6 +24,7 @@ import com.thoughtworks.selenium.corebased.TestBasicAuth;
 import com.thoughtworks.selenium.corebased.TestBrowserVersion;
 import com.thoughtworks.selenium.corebased.TestCheckUncheck;
 import com.thoughtworks.selenium.corebased.TestClick;
+import com.thoughtworks.selenium.corebased.TestClickAt;
 import com.thoughtworks.selenium.corebased.TestClickBlankTarget;
 import com.thoughtworks.selenium.corebased.TestClickJavascriptHref;
 import com.thoughtworks.selenium.corebased.TestClickJavascriptHrefChrome;
@@ -107,6 +108,7 @@ import org.junit.runners.Suite;
     TestBrowserVersion.class,
     TestCheckUncheck.class,
     TestClick.class,
+    TestClickAt.class,
     TestClickBlankTarget.class,
     TestClickJavascriptHref.class,
     TestClickJavascriptHrefChrome.class,
