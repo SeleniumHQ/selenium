@@ -1,4 +1,4 @@
-package org.openqa.grid.common.defaults;
+package org.openqa.grid.common;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,30 +7,25 @@ import java.util.Properties;
 import org.apache.commons.lang.WordUtils;
 
 public class GridDocHelper {
-	private static Properties hubProperties = load("defaults/HubParameters.properties");
-	private static Properties nodeProperties = load("defaults/NodeParameters.properties");
+	private static Properties gridProperties = load("defaults/GridParameters.properties");
+	
 
-	public static void helpHub(String msg) {
-		printHelpInConsole(hubProperties, msg);
+	public static void printHelp(String msg) {
+		printHelpInConsole(gridProperties, msg);
 	}
 
-	public static void helpNode(String msg) {
-		printHelpInConsole(nodeProperties, msg);
+	
+
+	public static String getGridParam(String param) {
+		return getParam(gridProperties, param);
 	}
 
-	public static String getNodeParam(String param) {
-		return getParam(nodeProperties, param);
-	}
-
-	public static String getHubParam(String param) {
-		return getParam(hubProperties, param);
-	}
-
+	
 	private static String getParam(Properties p, String param) {
 		if (param == null) {
 			return "";
 		}
-		String s = (String) hubProperties.get(param);
+		String s = (String) gridProperties.get(param);
 		if (s == null) {
 			return "No help specified for " + param;
 		} else {
@@ -64,8 +59,6 @@ public class GridDocHelper {
 		}
 	}
 
-	public static void main(String[] args) {
-		helpHub(null);
-	}
+	
 
 }

@@ -6,11 +6,8 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -98,9 +95,10 @@ public class GridHubConfiguration {
 	private String grid1Yml = null;
 	private String grid2JSON = null;
 
-	public GridHubConfiguration(){
+	public GridHubConfiguration() {
 		loadDefault();
 	}
+
 	/**
 	 * builds a grid configuration from the parameters passed command line.
 	 * 
@@ -180,13 +178,7 @@ public class GridHubConfiguration {
 		List<String> params = helper.getKeys();
 		for (String param : params) {
 			String value = helper.getParamValue(param);
-			if (value.split(",").length != 1) {
-				List<String> values = Arrays.asList(value.split(","));
-				allParams.put(param, value);
-			} else {
-				allParams.put(param, value);
-			}
-
+			allParams.put(param, value);
 		}
 
 	}
@@ -216,13 +208,12 @@ public class GridHubConfiguration {
 		Map<String, Object> hub = (Map<String, Object>) config.get("hub");
 		List<Map<String, String>> environments = (List<Map<String, String>>) hub.get("environments");
 
-		
 		// Now pull out each of the grid config values.
 		Integer p = (Integer) hub.get("port");
 		if (p != null) {
 			this.port = p;
 		}
-		
+
 		// Store a copy of the environment names => browser strings
 		for (Map<String, String> environment : environments) {
 			getGrid1Mapping().put(environment.get("name"), environment.get("browser"));

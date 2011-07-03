@@ -3,7 +3,6 @@ package org.openqa.grid.internal;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -27,11 +26,8 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
-import org.openqa.grid.web.servlet.ProxyStatusServlet;
-import org.openqa.grid.web.servlet.TestSessionStatusServlet;
 import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class StatusServletTests {
 

@@ -20,7 +20,9 @@
 		"timeout":30000,
 		"proxy":"org.openqa.grid.selenium.proxy.WebDriverRemoteProxy",
 		"maxSession":5,
-		"url":"http://ip:5555/wd/hub",
-		
+		"port": 5555,
+		"host": ip,
+		"register" = true ,
+		"hubPort" : 4444
 	}
 }

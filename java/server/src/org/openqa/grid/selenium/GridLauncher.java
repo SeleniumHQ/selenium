@@ -17,7 +17,9 @@ package org.openqa.grid.selenium;
 
 import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,19 +31,19 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.json.JSONObject;
-import org.openqa.grid.common.JSONConfigurationUtils;
-import org.openqa.grid.common.defaults.GridDocHelper;
+import org.openqa.grid.common.GridDocHelper;
+import org.openqa.grid.common.GridRole;
+import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.utils.GridConfiguration;
-import org.openqa.grid.selenium.utils.GridRole;
+import org.openqa.grid.internal.utils.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
@@ -51,7 +53,6 @@ public class GridLauncher {
 
 	public static void main(String[] args) throws Exception {
 
-		GridConfiguration config = GridConfiguration.parse(args);
 		GridRole role = GridRole.find(args);
 
 		switch (role) {
@@ -67,17 +68,18 @@ public class GridLauncher {
 				h.start();
 			} catch (GridConfigurationException e) {
 				e.printStackTrace();
-				GridDocHelper.helpHub(e.getMessage());
+				GridDocHelper.printHelp(e.getMessage());
 			}
 			break;
 		case WEBDRIVER:
 		case REMOTE_CONTROL:
 			log.info("Launching a selenium grid node");
 			try {
-				launchNode(config);
+				RegistrationRequest c = RegistrationRequest.build(args);
+				launchNode(c);
 			} catch (GridConfigurationException e) {
 				e.printStackTrace();
-				GridDocHelper.helpHub(e.getMessage());
+				GridDocHelper.printHelp(e.getMessage());
 			}
 			break;
 		default:
@@ -92,25 +94,19 @@ public class GridLauncher {
 	 * @param config
 	 * @throws Exception
 	 */
-	public static void launchNode(GridConfiguration config) throws Exception {
+	public static void launchNode(RegistrationRequest node) throws Exception {
+		
+		node.validate();
 
-		// should become the default case eventually.
-		if (config.getRole() == GridRole.WEBDRIVER && (config.getFile() != null || config.getCapabilities().size() == 0)) {
+		RemoteControlConfiguration configuration = node.getRemoteControlConfiguration();
+		System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0");
 
-			String resource = config.getFile();
-			if (resource == null) {
-				resource = "defaults/WebDriverDefaultNode.json";
-			}
-			JSONObject request = JSONConfigurationUtils.parseRegistrationRequest(resource);
-			JSONObject jsonConfig = request.getJSONObject("configuration");
-			int port = jsonConfig.getInt("port");
-			RemoteControlConfiguration c = new RemoteControlConfiguration();
-			c.setPort(port);
+		SeleniumServer server = new SeleniumServer(configuration);
+		Server jetty = server.getServer();
 
-			SeleniumServer server = new SeleniumServer(c);
-			Server jetty = server.getServer();
-
-			List<String> servlets = config.getServlets();
+		String servletsStr = (String) node.getConfiguration().get(GridNodeConfiguration.SERVLETS);
+		if (servletsStr != null) {
+			List<String> servlets = Arrays.asList(servletsStr.split(","));
 			if (servlets != null) {
 				HttpContext extra = new HttpContext();
 
@@ -124,56 +120,68 @@ public class GridLauncher {
 						String path = "/" + servletClass.getSimpleName() + "/*";
 						String clazz = servletClass.getCanonicalName();
 						handler.addServlet(path, clazz);
-						log.info("started extra node servlet visible at : http://xxx:" + port + "/extra" + path);
+						log.info("started extra node servlet visible at : http://xxx:" + node.getConfiguration().get(RegistrationRequest.PORT)
+								+ "/extra" + path);
 					}
 				}
 				extra.addHandler(handler);
 				jetty.addContext(extra);
 			}
-
-			server.boot();
-
-			log.info("using the json request : " + request);
-
-			if (jsonConfig.has(AUTO_REGISTER) && !jsonConfig.getBoolean(AUTO_REGISTER)) {
-				log.info("no registration sent ( " + AUTO_REGISTER + " = false )");
-			} else {
-				log.info("Registering the node to to hub :" + config.getRegistrationURL());
-				registerToHub(config.getRegistrationURL(), request.toString());
-			}
-
-		} else {
-			SelfRegisteringRemote remote = SelfRegisteringRemote.create(config);
-			System.out.println("created with " + config.getNodeRemoteControlConfiguration().getPort());
-			int maxInstance = 5;
-			// loading the browsers specified command line if any, otherwise try
-			// the default
-			if (config.getCapabilities().size() == 0) {
-
-				// 1 IE
-				remote.addInternetExplorerSupport();
-
-				// 5 FF
-				for (int i = 0; i < maxInstance; i++) {
-					remote.addFirefoxSupport();
-				}
-
-				// 5 chrome + opera if webdriver, 1 for selenium.
-				if (remote instanceof SelfRegisteringWebDriver) {
-					for (int i = 0; i < maxInstance; i++) {
-						remote.addChromeSupport();
-					}
-					remote.addCustomBrowser(DesiredCapabilities.opera());
-				} else {
-					remote.addChromeSupport();
-				}
-
-			}
-
-			remote.launchRemoteServer();
-			remote.registerToHub();
 		}
 
+		server.boot();
+
+		
+		log.info("using the json request : " + node.toJSON());
+
+		Boolean register = (Boolean)node.getConfiguration().get(AUTO_REGISTER);
+		
+		if (!register) {
+			log.info("no registration sent ( " + AUTO_REGISTER + " = false )");
+		} else {
+			String tmp = "http://" + node.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":" + node.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/register";
+			URL registration = new URL(tmp);
+			log.info("Registering the node to to hub :" + registration);
+			registerToHub(registration, node.toJSON().toString());
+		}
+
+	}
+
+	private static URL buildNodeURL(String nodeURL) {
+		try {
+			URL url = new URL(nodeURL);
+			String cleaned = nodeURL.toLowerCase();
+			if (hostHasToBeGuessed(url)) {
+				NetworkUtils util = new NetworkUtils();
+				String guessedHost = util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+				String host = url.getHost();
+
+				if ("ip".equalsIgnoreCase(host) || "host".equalsIgnoreCase(host)) {
+					cleaned = cleaned.replace("ip", guessedHost);
+					cleaned = cleaned.replace("host", guessedHost);
+				}
+
+			}
+			if (!cleaned.startsWith("http://")) {
+				cleaned = "http://" + cleaned;
+			}
+			if (!cleaned.endsWith("/wd/hub")) {
+				cleaned = cleaned + "/wd/hub";
+			}
+			try {
+				URL res = new URL(cleaned);
+				return res;
+			} catch (MalformedURLException e) {
+				throw new RuntimeException("Error cleaning up url " + nodeURL + ", failed after conveting it to " + cleaned);
+			}
+		} catch (MalformedURLException e1) {
+			throw new RuntimeException("url provided :" + nodeURL + " is not correct.");
+		}
+	}
+
+	private static boolean hostHasToBeGuessed(URL nodeURL) {
+		String host = nodeURL.getHost().toLowerCase();
+		return ("ip".equals(host) || "host".equals(host));
 	}
 
 	private static void registerToHub(URL registrationURL, String json) {

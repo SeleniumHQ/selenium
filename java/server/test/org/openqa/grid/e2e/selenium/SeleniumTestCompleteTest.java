@@ -1,11 +1,14 @@
 package org.openqa.grid.e2e.selenium;
 
-import org.openqa.grid.e2e.utils.GridConfigurationMock;
+import org.openqa.grid.common.GridRole;
+import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,7 +19,7 @@ import com.thoughtworks.selenium.Selenium;
 /**
  * checks that the browser is properly stopped when a selenium1 session times
  * out.
- *
+ * 
  * 
  */
 public class SeleniumTestCompleteTest {
@@ -28,16 +31,17 @@ public class SeleniumTestCompleteTest {
 		GridHubConfiguration config = new GridHubConfiguration();
 		config.setPort(PortProber.findFreePort());
 		hub = new Hub(config);
-		
+
 		hub.start();
 
 		// register a selenium 1
-		SelfRegisteringRemote selenium1 = SelfRegisteringRemote.create(GridConfigurationMock.seleniumConfig(hub.getRegistrationURL()));
-		selenium1.addFirefoxSupport();
+
+		SelfRegisteringRemote selenium1 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+		selenium1.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 1);
 		selenium1.setTimeout(5000, 2000);
 		selenium1.launchRemoteServer();
 		selenium1.registerToHub();
-		
+
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}
 

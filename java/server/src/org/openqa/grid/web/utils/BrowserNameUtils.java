@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -36,6 +37,9 @@ public class BrowserNameUtils {
 
 		return (translatedBrowserString == null) ? browserString : translatedBrowserString;
 	}
+	
+	
+	
 
 	public static Map<String, Object> parseGrid2Environment(String environment) {
 		Map<String, Object> ret = Maps.newHashMap();
@@ -58,7 +62,7 @@ public class BrowserNameUtils {
 
 	public static String consoleIconName(DesiredCapabilities cap,Registry registry) {
 		String browserString =cap.getBrowserName();
-		if (browserString == null || "".endsWith(browserString)){
+		if (browserString == null || "".equals(browserString)){
 			return "missingBrowserName";
 		}
 		

@@ -46,8 +46,13 @@ public class CommandLineOptionHelper {
 	}
 
 	public List<String> getParamValues(String name) {
-		String value = getParamValue(name);
-		return Arrays.asList(value.split(","));
+		if (isParamPresent(name)){
+			String value = getParamValue(name);
+			return Arrays.asList(value.split(","));	
+		}else {
+			return new ArrayList<String>();
+		}
+		
 	}
 
 	public List<String> getKeys() {

@@ -3,10 +3,13 @@ package org.openqa.grid.e2e.misc;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.openqa.grid.e2e.utils.GridConfigurationMock;
+import org.openqa.grid.common.GridRole;
+import org.openqa.grid.e2e.utils.GridTestHelper;
+import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -32,17 +35,20 @@ public class Selenium1WebDriverTests {
 		hub.start();
 
 		// register a selenium 1
-		SelfRegisteringRemote selenium1 = SelfRegisteringRemote.create(GridConfigurationMock.seleniumConfig(hub.getRegistrationURL()));
-		selenium1.addFirefoxSupport();
+		SelfRegisteringRemote selenium1 =GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+		selenium1.addBrowser(new DesiredCapabilities("*firefox","3.6",Platform.getCurrent()), 1);
 		selenium1.launchRemoteServer();
 		selenium1.registerToHub();
 		
 		
 		// register a webdriver
-		SelfRegisteringRemote webdriver = SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
-		webdriver.addFirefoxSupport();
+		SelfRegisteringRemote webdriver = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
+		webdriver.addBrowser(DesiredCapabilities.firefox(), 1);
 		webdriver.launchRemoteServer();
 		webdriver.registerToHub();
+		RegistryTestHelper.waitForNode(hub.getRegistry(), 2);
+		
+		
 	}
 
 	@Test

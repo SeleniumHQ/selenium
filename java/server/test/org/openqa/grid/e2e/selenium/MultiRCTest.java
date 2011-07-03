@@ -4,11 +4,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openqa.grid.e2e.utils.GridConfigurationMock;
+import org.openqa.grid.common.GridRole;
+import org.openqa.grid.e2e.utils.GridTestHelper;
+import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -37,13 +41,12 @@ public class MultiRCTest {
 		hub.start();
 
 		for (int i = 0; i < 5; i++) {
-			SelfRegisteringRemote remote = SelfRegisteringRemote.create(GridConfigurationMock.seleniumConfig(hub.getRegistrationURL()));
-			remote.addFirefoxSupport();
-			remote.addSafariSupport();
-			remote.addInternetExplorerSupport();
+			SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.REMOTE_CONTROL);
+			remote.addBrowser(new DesiredCapabilities("*firefox","3.6",Platform.getCurrent()), 5);
 			remote.launchRemoteServer();
 			remote.registerToHub();
 		}
+		RegistryTestHelper.waitForNode(hub.getRegistry(), 5);
 
 	}
 
@@ -51,7 +54,6 @@ public class MultiRCTest {
 	public void multifirefox() {
 		Selenium selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", hubURL + "");
 		seleniums.add(selenium);
-		System.out.println("selenium !");
 		selenium.start();
 		selenium.open(hubURL + "/grid/console");
 	}

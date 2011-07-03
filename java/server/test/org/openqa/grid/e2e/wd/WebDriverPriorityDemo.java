@@ -4,10 +4,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
-import org.openqa.grid.e2e.utils.GridConfigurationMock;
+import org.openqa.grid.common.GridRole;
+import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.PortProber;
@@ -41,11 +42,12 @@ public class WebDriverPriorityDemo {
 		hub.start();
 		hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
 
-		SelfRegisteringRemote remote =  SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
-		remote.addFirefoxSupport();
-		remote.setMaxConcurrentSession(1);
-		remote.setTimeout(-1, -1);
+		SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+		remote.addBrowser(DesiredCapabilities.firefox(),1);
+		
 		remote.launchRemoteServer();
+		remote.setMaxConcurrent(1);
+		remote.setTimeout(-1, -1);
 		remote.registerToHub();
 
 		// assigning a priority rule where requests with the flag "important"
@@ -103,6 +105,7 @@ public class WebDriverPriorityDemo {
 	public void sendTheImportantOne() throws MalformedURLException, InterruptedException {
 		while (hub.getRegistry().getNewSessionRequests().size() != 5) {
 			Thread.sleep(250);
+			System.out.println(hub.getRegistry().getNewSessionRequests().size());
 		}
 		Assert.assertEquals(hub.getRegistry().getNewSessionRequests().size(), 5);
 		Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);

@@ -9,12 +9,16 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.openqa.grid.e2e.utils.GridConfigurationMock;
+import org.openqa.grid.common.GridRole;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -51,16 +55,16 @@ public class Grid1HeartbeatTests {
 	@Test
 	public void testIsRegistered() throws Exception {
 		// register a selenium 1
-		SelfRegisteringRemote selenium1 = SelfRegisteringRemote.create(GridConfigurationMock.seleniumConfig(hub.getRegistrationURL()));
+		SelfRegisteringRemote selenium1 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+		selenium1.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 1);
 		selenium1.launchRemoteServer();
 		selenium1.registerToHub();
-		
+
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
-		
 
 		// Check that the node is registered with the hub.
-		URL heartbeatUrl = new URL(String.format("http://%s:%s/heartbeat?host=%s&port=%s", hub.getHost(), hub.getPort(), selenium1.getGridConfig()
-				.getHost(), selenium1.getGridConfig().getNodeRemoteControlConfiguration().getPort()));
+		URL heartbeatUrl = new URL(String.format("http://%s:%s/heartbeat?host=%s&port=%s", hub.getHost(), hub.getPort(), selenium1.getConfiguration()
+				.get(RegistrationRequest.HOST), selenium1.getConfiguration().get(RegistrationRequest.PORT)));
 
 		HttpRequest request = new HttpGet(heartbeatUrl.toString());
 

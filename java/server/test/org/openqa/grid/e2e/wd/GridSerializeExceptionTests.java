@@ -2,10 +2,11 @@ package org.openqa.grid.e2e.wd;
 
 import java.net.URL;
 
-import org.openqa.grid.e2e.utils.GridConfigurationMock;
+import org.openqa.grid.common.GridRole;
+import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
@@ -32,8 +33,9 @@ public class GridSerializeExceptionTests {
 		
 		hub.start();
 
-		SelfRegisteringRemote remote = SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
-		remote.addChromeSupport();
+		SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+		//remote.addBrowser(DesiredCapabilities.firefox(),1);
+		
 		remote.launchRemoteServer();
 		remote.registerToHub();
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);

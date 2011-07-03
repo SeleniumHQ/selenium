@@ -3,10 +3,11 @@ package org.openqa.grid.e2e.misc;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.openqa.grid.e2e.utils.GridConfigurationMock;
+import org.openqa.grid.common.GridRole;
+import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -32,10 +33,12 @@ public class Issue1586 {
 		hubURL = hub.getUrl();
 		hub.start();
 
-		SelfRegisteringRemote remote = SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
-		remote.addFirefoxSupport();
-		remote.launchRemoteServer();
-		remote.registerToHub();
+		// register a webdriver
+		SelfRegisteringRemote webdriver = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
+		webdriver.addBrowser(DesiredCapabilities.firefox(), 1);
+		webdriver.launchRemoteServer();
+		webdriver.registerToHub();
+
 		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}
 

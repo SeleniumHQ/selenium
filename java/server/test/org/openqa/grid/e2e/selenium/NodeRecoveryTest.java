@@ -1,13 +1,16 @@
 package org.openqa.grid.e2e.selenium;
 
 
-import org.openqa.grid.e2e.utils.GridConfigurationMock;
+import org.openqa.grid.common.GridRole;
+import org.openqa.grid.e2e.utils.GridTestHelper;
+import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.SelfRegisteringRemote;
-import org.openqa.grid.selenium.utils.GridConfiguration;
+import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -18,7 +21,6 @@ import com.thoughtworks.selenium.Selenium;
 public class NodeRecoveryTest {
 
 	private Hub hub;
-	GridConfiguration proxy;
 	SelfRegisteringRemote node; 
 	
 	int originalTimeout =3000;
@@ -32,16 +34,16 @@ public class NodeRecoveryTest {
 		
 		hub.start();
 
-		proxy = GridConfigurationMock.seleniumConfig(hub.getRegistrationURL());
-		node = SelfRegisteringRemote.create(proxy);
+		node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
 		// register a selenium 1 with a timeout of 3 sec
-		node.addFirefoxSupport();
+		node.addBrowser(new DesiredCapabilities("*firefox","3.6",Platform.getCurrent()),1);
 		node.setTimeout(originalTimeout, 1000);
 		node.launchRemoteServer();
 		node.registerToHub();
+		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}
 
-	@Test(enabled=false)
+	@Test
 	public void test() throws Exception {
 		
 		Assert.assertEquals(hub.getRegistry().getAllProxies().size(), 1);
@@ -61,7 +63,7 @@ public class NodeRecoveryTest {
 		// change its config.
 		node.setTimeout(newtimeout, 1000);
 		
-		System.out.println(node.getRegistrationRequest().toJSON());
+		
 		
 		// restart it
 		node.launchRemoteServer();

@@ -24,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -34,7 +35,7 @@ import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
 import org.openqa.grid.internal.utils.HtmlRenderer;
-import org.openqa.grid.web.Hub;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
  * Proxy to a remote server executing the tests.
@@ -77,8 +78,6 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
 	private CapabilityMatcher capabilityHelper = new DefaultCapabilityMatcher();
 
-
-
 	public Registry getRegistry() {
 		return registry;
 	}
@@ -104,7 +103,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 	 * @param request
 	 * 
 	 */
-	public RemoteProxy(RegistrationRequest request,Registry registry) {
+	public RemoteProxy(RegistrationRequest request, Registry registry) {
 		this.request = request;
 		this.registry = registry;
 		this.config = request.getConfiguration();
@@ -128,27 +127,30 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 		}
 
 		maxConcurrentSession = request.getConfigAsInt(RegistrationRequest.MAX_SESSION, 1);
-		
-		
+
 		// load the default set in the hub.
 		cleanUpCycle = registry.getConfiguration().getCleanupCycle();
 		timeOut = registry.getConfiguration().getTimeout();
-		
+
 		// but overwrite that if the node specifically ask for something.
-		cleanUpCycle = request.getConfigAsInt(RegistrationRequest.CLEAN_UP_CYCLE,cleanUpCycle);
+		cleanUpCycle = request.getConfigAsInt(RegistrationRequest.CLEAN_UP_CYCLE, cleanUpCycle);
 		timeOut = request.getConfigAsInt(RegistrationRequest.TIME_OUT, timeOut);
 
-		List<Map<String, Object>> capabilities = request.getCapabilities();
+		List<DesiredCapabilities> capabilities = request.getCapabilities();
 
-		for (Map<String, Object> capability : capabilities) {
-			Object maxInstance = capability.get(MAX_INSTANCES);
+		for (DesiredCapabilities capability : capabilities) {
+			Object maxInstance = capability.getCapability(MAX_INSTANCES);
 			if (maxInstance == null) {
 				log.warning("Max instance not specified. Using default = 1 instance");
 				maxInstance = "1";
 			}
 			int value = new Integer(maxInstance.toString()).intValue();
 			for (int i = 0; i < value; i++) {
-				testSlots.add(new TestSlot(this, capability));
+				Map<String, Object> c = new HashMap<String, Object>();
+				for (String k : capability.asMap().keySet()) {
+					c.put(k, capability.getCapability(k));
+				}
+				testSlots.add(new TestSlot(this, c));
 			}
 		}
 
@@ -331,7 +333,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 	 * @return a new instance built from the request.
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <T extends RemoteProxy> T getNewInstance(RegistrationRequest request,Registry registry) {
+	public static final <T extends RemoteProxy> T getNewInstance(RegistrationRequest request, Registry registry) {
 		try {
 			String proxyClass = request.getRemoteProxyClass();
 			if (proxyClass == null) {
@@ -340,8 +342,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 			}
 			Class<?> clazz = Class.forName(proxyClass);
 			log.fine("Using class " + clazz.getName());
-			Object[] args = new Object[] { request,registry };
-			Class<?>[] argsClass = new Class[] { RegistrationRequest.class,Registry.class };
+			Object[] args = new Object[] { request, registry };
+			Class<?>[] argsClass = new Class[] { RegistrationRequest.class, Registry.class };
 			Constructor<?> c = clazz.getConstructor(argsClass);
 			Object proxy = c.newInstance(args);
 			if (proxy instanceof RemoteProxy) {

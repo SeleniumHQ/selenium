@@ -28,7 +28,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openqa.grid.common.defaults.GridDocHelper;
+import org.openqa.grid.common.GridDocHelper;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
@@ -194,7 +194,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 	}
 
 	private String key(String key) {
-		return "<abbr title='" + GridDocHelper.getHubParam(key) + "'>" + key + " : </abbr>";
+		return "<abbr title='" + GridDocHelper.getGridParam(key) + "'>" + key + " : </abbr>";
 	}
 
 	private String prettyHtmlPrint(GridHubConfiguration config) {

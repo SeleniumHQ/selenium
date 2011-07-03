@@ -1,6 +1,5 @@
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
@@ -8,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.eclipse.jdt.internal.compiler.flow.FinallyFlowContext;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

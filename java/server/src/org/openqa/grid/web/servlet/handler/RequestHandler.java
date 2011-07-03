@@ -52,6 +52,7 @@ import org.openqa.grid.web.Hub;
  */
 public abstract class RequestHandler implements Comparable<RequestHandler> {
 	private Registry registry;
+	
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -144,8 +145,8 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 	public void process() {
 		switch (getRequestType()) {
 		case START_SESSION:
-			handleNewSession();
-			break;
+				handleNewSession();
+						break;
 		case REGULAR:
 		case STOP_SESSION:
 			session = getSession();
@@ -416,7 +417,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 	public long getCreated() {
 		return created;
 	}
-
+	
 	public Registry getRegistry() {
 		return registry;
 	}

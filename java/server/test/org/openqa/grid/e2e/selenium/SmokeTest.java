@@ -2,11 +2,15 @@ package org.openqa.grid.e2e.selenium;
 
 import java.net.URL;
 
-import org.openqa.grid.e2e.utils.GridConfigurationMock;
+import org.openqa.grid.common.GridRole;
+import org.openqa.grid.e2e.utils.GridTestHelper;
+import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -33,12 +37,13 @@ public class SmokeTest {
 		hubURL = hub.getUrl();
 		hub.start();
 
-		SelfRegisteringRemote remote = SelfRegisteringRemote.create(GridConfigurationMock.seleniumConfig(hub.getRegistrationURL()));
-		remote.addFirefoxSupport();
-		remote.addSafariSupport();
-		remote.addInternetExplorerSupport();
+		
+		SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.REMOTE_CONTROL);
+		remote.addBrowser(new DesiredCapabilities("*firefox","3.6",Platform.getCurrent()), 1);
+		
 		remote.launchRemoteServer();
 		remote.registerToHub();
+		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 	}
 
 	@Test(timeOut = 10000)

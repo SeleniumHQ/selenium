@@ -1,7 +1,5 @@
 package org.openqa.grid.selenium.utils;
 
-import static org.openqa.grid.common.RegistrationRequest.BROWSER;
-
 import java.util.Map;
 
 import org.openqa.grid.internal.RemoteProxy;

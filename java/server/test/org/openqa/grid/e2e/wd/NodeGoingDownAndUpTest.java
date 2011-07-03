@@ -1,14 +1,13 @@
 package org.openqa.grid.e2e.wd;
 
-import java.net.MalformedURLException;
-
+import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.e2e.utils.GridConfigurationMock;
+import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.selenium.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.WebRemoteProxy;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
@@ -34,13 +33,13 @@ public class NodeGoingDownAndUpTest {
 		registry = hub.getRegistry(); 
 		hub.start();
 
-		remote = SelfRegisteringRemote.create(GridConfigurationMock.seleniumConfig(hub.getRegistrationURL()));
-		remote2 = SelfRegisteringRemote.create(GridConfigurationMock.webdriverConfig(hub.getRegistrationURL()));
-		// polling every 250 ms
-		remote.getRegistrationRequest().getConfiguration().put(RegistrationRequest.NODE_POLLING, 250);
-		remote2.getRegistrationRequest().getConfiguration().put(RegistrationRequest.NODE_POLLING, 250);		
-		remote.addFirefoxSupport();
-		remote2.addFirefoxSupport();
+		
+		
+		remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
+		remote2 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+		
+		remote.getConfiguration().put(RegistrationRequest.NODE_POLLING, 250);
+		remote2.getConfiguration().put(RegistrationRequest.NODE_POLLING, 250);
 		
 		remote.launchRemoteServer();
 		remote2.launchRemoteServer();
