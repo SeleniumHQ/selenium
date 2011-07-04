@@ -1,3 +1,6 @@
+Selenium 2
+* Removed toggle() and select()
+
 Selenium 2 RC 3
 * Added Opera to Desired Capabilities
 * Removed deprecrated methods

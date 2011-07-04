@@ -100,46 +100,34 @@ class FormHandlingTests(unittest.TestCase):
         self._loadPage("formPage")
         checkbox = self.driver.find_element_by_id("checky")
         self.assertEqual(checkbox.is_selected(), False)
-        checkbox.select()
+        checkbox.click()
         self.assertEqual(checkbox.is_selected(), True)
-        checkbox.select()
-        self.assertEqual(checkbox.is_selected(), True)
+        checkbox.click()
+        self.assertEqual(checkbox.is_selected(), False)
         
     def testShouldToggleTheCheckedStateOfACheckbox(self):
         self._loadPage("formPage")
         checkbox = self.driver.find_element_by_id("checky")
         self.assertEqual(checkbox.is_selected(), False)
-        checkbox.toggle()
+        checkbox.click()
         self.assertEqual(checkbox.is_selected(), True)
-        checkbox.toggle()
+        checkbox.click()
         self.assertEqual(checkbox.is_selected(), False)
         
     def testTogglingACheckboxShouldReturnItsCurrentState(self):
         self._loadPage("formPage")
         checkbox = self.driver.find_element_by_id("checky")
         self.assertEqual(checkbox.is_selected(), False)
-        isChecked = checkbox.toggle()
-        self.assertEqual(isChecked, True)
-        isChecked = checkbox.toggle()
-        self.assertEqual(isChecked, False)
-        
-    def testShouldNotBeAbleToSelectSomethingThatIsDisabled(self):
-        self._loadPage("formPage")
-        radioButton = self.driver.find_element_by_id("nothing")
-        self.assertEqual(radioButton.is_enabled(), False)
-        try:
-            radioButton.select()
-            self.fail("Expected WebDriverException but didnt get it")
-        except WebDriverException, e:
-            pass
-        except Exception, e:
-            self.fail("Expected WebDriverException but got " + str(type(e)))
+        checkbox.click()
+        self.assertEqual(checkbox.is_selected(), True)
+        checkbox.click()
+        self.assertEqual(checkbox.is_selected(), False)
         
     def testShouldBeAbleToSelectARadioButton(self):
         self._loadPage("formPage")
         radioButton = self.driver.find_element_by_id("peas")
         self.assertEqual(radioButton.is_selected(), False)
-        radioButton.select()
+        radioButton.click()
         self.assertEqual(radioButton.is_selected(), True)
         
     def testShouldBeAbleToSelectARadioButtonByClickingOnIt(self):
@@ -161,7 +149,7 @@ class FormHandlingTests(unittest.TestCase):
     #def testShouldThrowAnExceptionWhenTogglingTheStateOfARadioButton(self):
     #    self._loadPage("formPage")
     #    radioButton = self.driver.find_element_by_id("cheese"))
-    #    radioButton.toggle()
+    #    radioButton.click()
         
 
         
@@ -172,7 +160,7 @@ class FormHandlingTests(unittest.TestCase):
     #
     #    select = self.driver.find_element_by_name("selectomatic"))
     #    option = select.find_elements_by_tag_name("option"))[0]
-    #    option.toggle()
+    #    option.click()
         
     def testTogglingAnOptionShouldToggleOptionsInAMultiSelect(self):    
         self._loadPage("formPage")
@@ -181,18 +169,18 @@ class FormHandlingTests(unittest.TestCase):
         option = select.find_elements_by_tag_name("option")[0]
 
         selected = option.is_selected()
-        current = option.toggle()
-        self.assertFalse(selected == current)
+        option.click()
+        self.assertFalse(selected == option.is_selected())
 
-        current = option.toggle()
-        self.assertTrue(selected == current)
+        option.click()
+        self.assertTrue(selected == option.is_selected())
         
     def testShouldThrowAnExceptionWhenSelectingAnUnselectableElement(self):    
         self._loadPage("formPage")
     
         element = self.driver.find_element_by_xpath("//title")
         try:
-            element.select()
+            element.click()
             self.fail("Expected WebDriverException to have been thrown")
         except WebDriverException, e:
             pass
@@ -247,12 +235,12 @@ class FormHandlingTests(unittest.TestCase):
         cheese = self.driver.find_element_by_id("cheese")
         peas = self.driver.find_element_by_id("peas")
 
-        cheese.select()
+        cheese.click()
 
         self.assertEqual(True, cheese.is_selected())
         self.assertEqual(False, peas.is_selected())
 
-        peas.select()
+        peas.click()
 
         self.assertEqual(False, cheese.is_selected())
         self.assertEqual(True, peas.is_selected())

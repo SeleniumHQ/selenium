@@ -87,15 +87,15 @@ class CorrectEventFiringTests(unittest.TestCase):
         foo = allOptions[0]
         bar = allOptions[1]
 
-        foo.select()
+        foo.click()
         self.assertEqual(self.driver.find_element_by_id("result").text, initialTextValue)
-        bar.select()
+        bar.click()
         self.assertEqual(self.driver.find_element_by_id("result").text, "bar")
 
     def testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox(self):
         self._loadPage("javascriptPage")
         checkbox = self.driver.find_element_by_id("checkbox")
-        checkbox.select()
+        checkbox.click()
         self.assertEqual(self.driver.find_element_by_id("result").text, "checkbox thing")
         
 

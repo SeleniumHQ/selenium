@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import warnings
 
 """WebElement implementation."""
 from command import Command
@@ -66,22 +65,9 @@ class WebElement(object):
 
         return attributeValue
 
-    def toggle(self):
-        """Toggles the element state."""
-        warnings.warn("This method has been deprecated and removed soon.\
-                        Please use 'click'", DeprecationWarning)
-        resp = self._execute(Command.TOGGLE_ELEMENT)
-        return resp['value']
-
     def is_selected(self):
         """Whether the element is selected."""
         return self._execute(Command.IS_ELEMENT_SELECTED)['value']
-
-    def select(self):
-        """Selects an element."""
-        warnings.warn("This method has been deprecated and removed soon.\
-                        Please use 'click'", DeprecationWarning)
-        self._execute(Command.SET_ELEMENT_SELECTED)
 
     def is_enabled(self):
         """Whether the element is enabled."""

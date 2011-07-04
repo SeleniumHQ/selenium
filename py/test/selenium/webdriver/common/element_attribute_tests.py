@@ -111,7 +111,7 @@ class ElementAttributeTests(unittest.TestCase):
         self._loadPage("formPage")
         checkbox = self.driver.find_element_by_xpath("//input[@id='checky']")
         self.assertTrue(checkbox.get_attribute("checked") is None)
-        checkbox.select()
+        checkbox.click()
         self.assertEqual("true", checkbox.get_attribute("checked"))
         
     def testShouldReturnTheValueOfSelectedForRadioButtonsEvenIfTheyLackThatAttribute(self):
@@ -124,7 +124,7 @@ class ElementAttributeTests(unittest.TestCase):
         self.assertTrue(initiallyNotSelected.get_attribute("selected") is None, "false")
         self.assertEqual("true", initiallySelected.get_attribute("selected"), "true")
 
-        initiallyNotSelected.select()
+        initiallyNotSelected.click()
         self.assertTrue(neverSelected.get_attribute("selected") is None)
         self.assertEqual("true", initiallyNotSelected.get_attribute("selected"))
         self.assertTrue(initiallySelected.get_attribute("selected") is None)

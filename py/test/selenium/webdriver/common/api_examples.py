@@ -142,7 +142,7 @@ class ApiExampleTest (unittest.TestCase):
         self._loadPage("frameset")
         self.driver.switch_to_frame("third")
         checkbox = self.driver.find_element_by_id("checky")
-        checkbox.toggle()
+        checkbox.click()
         checkbox.submit()
 
     def testIsEnabled(self):
@@ -157,9 +157,9 @@ class ApiExampleTest (unittest.TestCase):
         elem = self.driver.find_element_by_id("multi")
         option_elems = elem.find_elements_by_xpath("option")
         self.assertTrue(option_elems[0].is_selected())
-        option_elems[0].toggle()
+        option_elems[0].click()
         self.assertFalse(option_elems[0].is_selected())
-        option_elems[0].toggle()
+        option_elems[0].click()
         self.assertTrue(option_elems[0].is_selected())
         self.assertTrue(option_elems[2].is_selected())
 

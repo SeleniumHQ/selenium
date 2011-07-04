@@ -37,7 +37,7 @@ class SelectElementHandlingTests(unittest.TestCase):
         self.assertTrue(one.is_selected())
         self.assertFalse(two.is_selected())
 
-        two.select()
+        two.click()
         self.assertFalse(one.is_selected())
         self.assertTrue(two.is_selected())
 
@@ -47,7 +47,8 @@ class SelectElementHandlingTests(unittest.TestCase):
         multiSelect = self.driver.find_element(by=By.ID, value="multi")
         options = multiSelect.find_elements(by=By.TAG_NAME, value="option")
         for option in options:
-            option.select()
+            if not option.is_selected():
+                option.click()
 
         for i in range(len(options)):
             option = options[i]

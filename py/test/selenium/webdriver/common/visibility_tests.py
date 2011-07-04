@@ -81,8 +81,8 @@ class VisibilityTests(unittest.TestCase):
         element = self.driver.find_element(by=By.ID, value="untogglable")
 
         try:
-            element.toggle()
-            self.fail("You should not be able to toggle an invisible element")
+            element.click()
+            self.fail("You should not be able to click an invisible element")
         except ElementNotVisibleException,e:
             pass
 
@@ -91,8 +91,8 @@ class VisibilityTests(unittest.TestCase):
         element = self.driver.find_element(by=By.ID, value="untogglable")
 
         try:
-            element.select()
-            self.fail("You should not be able to select an invisible element")
+            element.click()
+            self.fail("You should not be able to click an invisible element")
         except ElementNotVisibleException,e:
             pass
 
