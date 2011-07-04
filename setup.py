@@ -74,7 +74,7 @@ setup(
     long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
     src_root=src_root,
-    classifiers=['Development Status :: 4 - Beta',
+    classifiers=['Development Status :: 5 - Production/Stable',
                      'Intended Audience :: Developers',
                      'License :: OSI Approved :: Apache Software License',
                      'Operating System :: POSIX',
