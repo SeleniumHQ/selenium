@@ -319,6 +319,7 @@ Utils.getNativeEvents = function() {
     var obj = Components.classes[cid].createInstance();
     return obj.QueryInterface(Components.interfaces.nsINativeEvents);
   } catch(e) {
+    Logger.dumpn(e);
     // Unable to retrieve native events. No biggie, because we fall back to
     // synthesis later
     return undefined;
