@@ -246,7 +246,7 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-2/linux'  , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2'
   sdks.add 'third_party/gecko-2/linux64', 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-x86_64.sdk.tar.bz2'
-  sdks.add 'third_party/gecko-2/mac'    , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.mac-i386.sdk.tar.bz2'
+  sdks.add 'third_party/gecko-2/mac'    , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.mac-x86_64.sdk.tar.bz2'
   sdks.add 'third_party/gecko-2/win32'  , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.win32.sdk.zip'
 end
 

@@ -7,6 +7,7 @@ class MozillaMappings
     fun.add_mapping("mozilla_xpt", Mozilla::Xpt::CheckPreconditions.new)
     fun.add_mapping("mozilla_xpt", Mozilla::Xpt::CreateTask.new)
     fun.add_mapping("mozilla_xpt", Mozilla::Xpt::CreateShortNameTask.new)
+    fun.add_mapping("mozilla_xpt", Mozilla::Xpt::AddDependencies.new)
     fun.add_mapping("mozilla_xpt", Mozilla::Xpt::Compile.new)
     
     fun.add_mapping("mozilla_extension", Mozilla::Xpi::CheckPreconditions.new)
@@ -49,6 +50,21 @@ class BaseXpt < Tasks
 
     Platform.path_for(xpt)
   end
+
+  def gecko_sdk_path(gecko_version)
+    gecko = ["third_party", "gecko-#{gecko_version}"]
+    if windows?
+      gecko << "win32"
+    elsif linux?
+      gecko << "linux"
+    elsif mac?
+      gecko << "mac"
+    else
+      gecko << "unknown"
+    end
+
+    gecko.join(Platform.dir_separator)
+  end
 end
   
 class CreateTask < BaseXpt
@@ -80,6 +96,15 @@ class CreateShortNameTask < BaseXpt
   end
 end
 
+class AddDependencies < BaseXpt
+  def handle(fun, dir, args)
+    out_file = Rake::Task[xpt_name(dir, args)]
+
+    # For now, depend on gecko-2
+    out_file.enhance [ gecko_sdk_path("2") ]
+  end
+end
+  
 class Compile < BaseXpt
   def handle(fun, dir, args)
     xpt = xpt_name(dir, args)
@@ -87,16 +112,7 @@ class Compile < BaseXpt
     file xpt do
       puts "Building: #{task_name(dir, args[:name])} as #{xpt}"
 
-      gecko = %w[third_party gecko-2]
-      if windows?
-        gecko << "win32"
-      elsif linux?
-        gecko << "linux"
-      elsif mac?
-        gecko << "mac"
-      else
-        # TODO(simon): Should just copy the prebuilt xpt
-      end
+      gecko = gecko_sdk_path("2")
 
       incl = [gecko, "idl"].join(Platform.dir_separator)
 
