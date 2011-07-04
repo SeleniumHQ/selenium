@@ -9,7 +9,7 @@ module Selenium
       class Service
         START_TIMEOUT = 20
         STOP_TIMEOUT  = 5
-        MISSING_TEXT  = "Unable to find the chromedriver executable. Please download the server from http://code.google.com/p/selenium/downloads/list and place it somewhere on your PATH. More info at http://code.google.com/p/selenium/wiki/ChromeDriver."
+        MISSING_TEXT  = "Unable to find the chromedriver executable. Please download the server from http://code.google.com/p/chromium/downloads/list and place it somewhere on your PATH. More info at http://code.google.com/p/selenium/wiki/ChromeDriver."
 
         attr_reader :uri
 
