@@ -122,7 +122,7 @@ setup(
         'selenium.webdriver.ie': ['*.dll'],
     },
     include_package_data=True,
-    install_requires=['rdflib'],
+    install_requires=['rdflib==3.1.0'],
     zip_safe=False,
 
 )
