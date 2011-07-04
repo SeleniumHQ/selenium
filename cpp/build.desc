@@ -1,7 +1,15 @@
 visualc_library(name = "firefox_dll",
   platform = "Win32",
   project = "webdriver-firefox/webdriver-firefox.vcxproj",
+  file_deps = "third_party/gecko-2/win32",
   out = "Win32/Release/webdriver-firefox.dll"
+)
+
+visualc_library(name = "firefox5_dll",
+  platform = "Win32",
+  project = "webdriver-firefox/webdriver-firefox-5.vcxproj",
+  file_deps = "third_party/gecko-5/win32",
+  out = "Win32/Release/webdriver-firefox-5.dll"
 )
 
 mozilla_xpt(name = "native_events_xpt",

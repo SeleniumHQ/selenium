@@ -27,6 +27,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-interactions", "cpp\webdriver-interactions\webdriver-interactions.vcxproj", "{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox", "cpp\webdriver-firefox\webdriver-firefox.vcxproj", "{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-5", "cpp\webdriver-firefox\webdriver-firefox-5.vcxproj", "{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriver", "cpp\IEDriver\IEDriver.vcxproj", "{BB72383B-427F-4191-B692-E4345A30E33C}"
 EndProject

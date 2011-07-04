@@ -40,7 +40,8 @@ contract @googlecode.com/webdriver/wdsessionstoreservice;1 {b54195d3-841e-47df-b
 component {E8F9FEFE-C513-4097-98BE-BE00A41D3645} components/syntheticMouse.js
 contract @googlecode.com/webdriver/syntheticmouse;1 {E8F9FEFE-C513-4097-98BE-BE00A41D3645}
 
-binary-component platform/WINNT_x86-msvc/components/webdriver-firefox.dll ABI=WINNT_x86-msvc
+binary-component platform/WINNT_x86-msvc/components/webdriver-firefox.dll ABI=WINNT_x86-msvc appversion<5
+binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-5.dll ABI=WINNT_x86-msvc appversion>=5
 binary-component platform/WINNT_x86-msvc/components/imehandler.dll ABI=WINNT_x86-msvc
 binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-ff4.so ABI=Linux_x86_64-gcc3 appversion<5
 binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-ff5.so ABI=Linux_x86_64-gcc3 appversion>=5.0

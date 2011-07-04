@@ -350,6 +350,7 @@ module CrazyFunVisualC
       target_task.out = full_path
 
       add_dependencies(target_task, dir, args[:deps])
+      target_task.enhance [ args[:file_deps] ] if args[:file_deps]
     end
   end
 end
