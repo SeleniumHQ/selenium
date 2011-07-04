@@ -148,8 +148,10 @@ module Selenium
           end
 
           def likely_windows_path
-            path = "#{ ENV['PROGRAMFILES'] || "\\Program Files" }\\Mozilla Firefox\\firefox.exe"
-            path if File.executable?(path)
+            [
+              "#{ ENV['PROGRAMFILES'] || "\\Program Files" }\\Mozilla Firefox\\firefox.exe",
+              "#{ ENV['ProgramFiles(x86)'] || "\\Program Files (x86)" }\\Mozilla Firefox\\firefox.exe"
+            ].find { |path| File.executable?(path) }
           end
         end # class << self
 
