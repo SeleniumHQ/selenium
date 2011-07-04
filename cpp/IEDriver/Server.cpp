@@ -332,11 +332,9 @@ int Server::LookupCommand(const std::string& uri, const std::string& http_verb, 
 			param_start_pos = url_candidate.find_first_of(":");
 		}
 
-		std::string::const_iterator uri_start = uri.begin();
-		std::string::const_iterator uri_end = uri.end(); 
 		std::tr1::regex matcher("^" + url_candidate + "$");
 		std::tr1::match_results<std::string::const_iterator> matches;
-		if (std::tr1::regex_search(uri_start, uri_end, matches, matcher)) {
+		if (std::tr1::regex_search(uri, matches, matcher)) {
 			VerbMap::const_iterator verb_iterator = it->second.find(http_verb);
 			if (verb_iterator != it->second.end()) {
 				value = verb_iterator->second;
@@ -347,7 +345,7 @@ int Server::LookupCommand(const std::string& uri, const std::string& http_verb, 
 						param += ",";
 					}
 
-					std::string locator_param_value(matches[i + 1].first, matches[i + 1].second);
+					std::string locator_param_value = matches[i + 1].str();
 					param += " \"" + locator_param_names[i] + "\" : \"" + locator_param_value + "\"";
 					if (locator_param_names[i] == "sessionid") {
 						session_id->append(CA2W(locator_param_value.c_str(), CP_UTF8));

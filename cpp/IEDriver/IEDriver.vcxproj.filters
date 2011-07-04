@@ -85,9 +85,6 @@
     <ClInclude Include="CommandHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CommandValues.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DocumentHost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -323,6 +320,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IESessionWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandValues.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

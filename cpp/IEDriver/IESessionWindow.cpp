@@ -68,7 +68,7 @@ LRESULT IESessionWindow::OnInit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& b
 	// If we wanted to be a little more clever, we could create a struct 
 	// containing the HWND and the port number and pass them into the
 	// ThreadProc via lpParameter and avoid this message handler altogether.
-	this->port_ = (int)wParam;
+	this->port_ = static_cast<int>(wParam);
 	return 0;
 }
 

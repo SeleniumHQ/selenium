@@ -11,8 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_IEDRIVERSERVER_H_
-#define WEBDRIVER_IE_IEDRIVERSERVER_H_
+#ifndef WEBDRIVER_IE_SERVER_H_
+#define WEBDRIVER_IE_SERVER_H_
 
 #include <vector>
 #include <map>
@@ -68,4 +68,4 @@ private:
 
 } //namespace WebDriver
 
-#endif // WEBDRIVER_IE_IEDRIVERSERVER_H_
+#endif // WEBDRIVER_IE_SERVER_H_
