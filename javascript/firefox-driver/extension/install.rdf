@@ -3,7 +3,7 @@
 
     <Description about="urn:mozilla:install-manifest">
         <em:id>fxdriver@googlecode.com</em:id>
-        <em:version>2.0rc3</em:version>
+        <em:version>2.0</em:version>
         <em:type>2</em:type>
         <em:name>Firefox WebDriver</em:name>
         <em:description>WebDriver implementation for Firefox</em:description>
