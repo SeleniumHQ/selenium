@@ -370,7 +370,12 @@ public class RegistrationRequest {
 		List<String> params = helper.getKeys();
 		for (String param : params) {
 			String value = helper.getParamValue(param);
-			configuration.put(param.replaceFirst("-", ""), value);
+			try {
+				int i = Integer.parseInt(value);
+				configuration.put(param.replaceFirst("-", ""), i);
+			}catch (NumberFormatException e) {
+				configuration.put(param.replaceFirst("-", ""), value);
+			}
 		}
 		// handle the core config, do a bit of casting.
 		// handle the core config, do a bit of casting.
