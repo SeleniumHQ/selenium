@@ -167,15 +167,20 @@ public class SelfRegisteringRemote {
 			log.info("no registration sent ( " + AUTO_REGISTER + " = false )");
 		} else {
 			final Integer o = (Integer) nodeConfig.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE);
-			if (o != null) {
-
+			if (o != null && o.intValue() > 0) {
 				new Thread(new Runnable() {
 
 					public void run() {
+						boolean first = true;
 						log.info("starting auto register thread. Will try to register every " + o + " ms.");
 						while (true) {
 							try {
-								registerToHub(true);
+								boolean checkForPresence = true;
+								if (first) {
+									first = false;
+									checkForPresence = false;
+								}
+								registerToHub(checkForPresence);
 							} catch (GridException e) {
 								log.info("couldn't register this node : " + e.getMessage());
 							}
@@ -221,7 +226,6 @@ public class SelfRegisteringRemote {
 				BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST", registration.toExternalForm());
 				String json = nodeConfig.toJSON().toString();
 				r.setEntity(new StringEntity(json));
-				
 
 				DefaultHttpClient client = new DefaultHttpClient();
 				HttpHost host = new HttpHost(registration.getHost(), registration.getPort());
@@ -244,7 +248,7 @@ public class SelfRegisteringRemote {
 			String tmp = "http://" + node.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
 					+ node.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/api/proxy";
 			URL api = new URL(tmp);
-			HttpHost host =  new HttpHost(api.getHost(), api.getPort());
+			HttpHost host = new HttpHost(api.getHost(), api.getPort());
 
 			DefaultHttpClient client = new DefaultHttpClient();
 			BasicHttpRequest r = new BasicHttpRequest("GET", api.toExternalForm() + "?id="

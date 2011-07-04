@@ -16,8 +16,6 @@
 	],
 "configuration":
 	{
-		"cleanUpCycle":2000,
-		"timeout":30000,
 		"proxy":"org.openqa.grid.selenium.proxy.WebDriverRemoteProxy",
 		"maxSession":5,
 		"port": 5555,
