@@ -25,11 +25,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Selenium WebDriver")]
-[assembly: AssemblyDescription("Selenium WebDriver .NET Bindings")]
+[assembly: AssemblyDescription("Selenium WebDriver API .NET Bindings")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Selenium Committers")]
 [assembly: AssemblyProduct("Selenium")]
-[assembly: AssemblyCopyright("Copyright © Selenium Committers 2011")]
+[assembly: AssemblyCopyright("Copyright © Software Freedom Conservatory 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
