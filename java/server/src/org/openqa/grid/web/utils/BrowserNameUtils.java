@@ -77,7 +77,10 @@ public class BrowserNameUtils {
 		if (browserString.contains("iexplore") || browserString.startsWith("*iehta")) {
 			ret = "internet explorer";
 		} else if (browserString.contains("firefox") || browserString.startsWith("*chrome")) {
-			if (cap.getVersion()!=null && cap.getVersion().toLowerCase().equals("aurora") ||
+			if (cap.getVersion()!=null && cap.getVersion().toLowerCase().equals("beta") ||
+			    cap.getBrowserName().toLowerCase().contains("beta")) {
+				ret = "firefoxbeta";
+			} else if (cap.getVersion()!=null && cap.getVersion().toLowerCase().equals("aurora") ||
 			    cap.getBrowserName().toLowerCase().contains("aurora")) {
 				ret = "aurora";
 			} else if (cap.getVersion()!=null && cap.getVersion().toLowerCase().equals("nightly") ||
