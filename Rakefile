@@ -248,35 +248,11 @@ GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-2/linux64', 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-x86_64.sdk.tar.bz2'
   sdks.add 'third_party/gecko-2/mac'    , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.mac-x86_64.sdk.tar.bz2'
   sdks.add 'third_party/gecko-2/win32'  , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.win32.sdk.zip'
+  sdks.add 'third_party/gecko-5/linux'  , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.linux-i686.sdk.tar.bz2'
+  sdks.add 'third_party/gecko-5/linux64', 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.linux-x86_64.sdk.tar.bz2'
+  sdks.add 'third_party/gecko-5/mac'    , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.mac-i386.sdk.tar.bz2'
+  sdks.add 'third_party/gecko-5/win32'  , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.win32.sdk.zip'
 end
-
-gecko_sdk = "third_party/gecko-2/linux/"
-
-dll(:name => "libwebdriver_firefox_so",
-    :deps => "third_party/gecko-2/linux",
-    :src  => FileList.new('cpp/webdriver-interactions/*_linux*.cpp') +
-             FileList.new('cpp/webdriver-interactions/interactions_common.cpp') +
-             FileList.new('cpp/webdriver-firefox/*.cpp'),
-    :arch => "i386",
-    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I cpp/webdriver-interactions -I cpp/imehandler/common -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
-    :link_args => "-Wall -fno-rtti -fno-exceptions -shared  -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s_nomozalloc -lxpcom -lnspr4 -lrt `pkg-config gtk+-2.0 --libs`",
-    :prebuilt => "cpp/prebuilt/i386/libwebdriver-firefox.so",
-    :out  => "cpp/i386/libwebdriver-firefox.so")
-
-gecko_sdk_64bit = "third_party/gecko-2/linux64/"
-gecko_64bit_libs = "#{gecko_sdk_64bit}lib"
-gecko_64bit_include = "#{gecko_sdk_64bit}include"
-
-dll(:name => "libwebdriver_firefox_so64",
-    :deps => "third_party/gecko-2/linux64",
-    :src  => FileList.new('cpp/webdriver-interactions/*_linux*.cpp') +
-             FileList.new('cpp/webdriver-interactions/interactions_common.cpp') +
-             FileList.new('cpp/webdriver-firefox/*.cpp'),
-    :arch => "amd64",
-    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I cpp/webdriver-interactions -I cpp/imehandler/common -I #{gecko_64bit_include} `pkg-config gtk+-2.0 --cflags` ",
-    :link_args => "-Wall -Os -L#{gecko_64bit_libs} -L#{gecko_sdk_64bit}bin -lrt `pkg-config gtk+-2.0 --libs` -fno-rtti -fno-exceptions -shared  -fPIC -lxpcomglue_s_nomozalloc -lxpcom -lnspr4",
-    :prebuilt => "cpp/prebuilt/amd64/libwebdriver-firefox.so",
-    :out  => "cpp/amd64/libwebdriver-firefox.so")
 
 task :'selenium-server_zip' do
   temp = "build/selenium-server_zip"

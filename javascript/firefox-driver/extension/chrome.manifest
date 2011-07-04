@@ -1,6 +1,6 @@
 resource fxdriver resource/ 
 
-content fxdriver content/ xpcnativewrappers=yes
+content fxdriver content/
 
 overlay chrome://browser/content/browser.xul chrome://fxdriver/content/fxdriver.xul application={ec8030f7-c20a-464f-9b0e-13a3a9e97384} appversion<4.0
 overlay chrome://browser/content/browser.xul chrome://fxdriver/content/fx4driver.xul application={ec8030f7-c20a-464f-9b0e-13a3a9e97384} appversion>=4.0
@@ -42,5 +42,7 @@ contract @googlecode.com/webdriver/syntheticmouse;1 {E8F9FEFE-C513-4097-98BE-BE0
 
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox.dll ABI=WINNT_x86-msvc
 binary-component platform/WINNT_x86-msvc/components/imehandler.dll ABI=WINNT_x86-msvc
-binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox.so ABI=Linux_x86-gcc3
-binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so ABI=Linux_x86_64-gcc3
+binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-ff4.so ABI=Linux_x86_64-gcc3 appversion<5
+binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-ff5.so ABI=Linux_x86_64-gcc3 appversion>=5.0
+binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-ff4.so ABI=Linux_x86-gcc3 appversion<5
+binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-ff5.so ABI=Linux_x86-gcc3 appversion>=5.0

@@ -7,13 +7,33 @@ visualc_library(name = "firefox_dll",
 mozilla_xpt(name = "native_events_xpt",
   srcs = [ "webdriver-firefox/nsINativeEvents.idl" ])
 
-rake_task(name = "libwebdriver_firefox_so",
-  task_name = "libwebdriver_firefox_so",
-  out = "build/cpp/i386/libwebdriver-firefox.so")
+mozilla_lib(name = "webdriver_firefox_ff4",
+  srcs = [ "webdriver-interactions/*_linux*.cpp",
+    "webdriver-interactions/interactions_common.*",
+    "webdriver-firefox/*.cpp"],
+  arch = "i386",
+  geckoversion="2")
 
-rake_task(name = "libwebdriver_firefox_so64",
-  task_name = "libwebdriver_firefox_so64",
-  out = "build/cpp/amd64/libwebdriver-firefox.so")
+mozilla_lib(name = "webdriver_firefox_ff4_64",
+  srcs = [ "webdriver-interactions/*_linux*.cpp",
+    "webdriver-interactions/interactions_common.*",
+    "webdriver-firefox/*.cpp"],
+  arch = "amd64",
+  geckoversion="2")
+
+mozilla_lib(name = "webdriver_firefox_ff5",
+  srcs = [ "webdriver-interactions/*_linux*.cpp",
+    "webdriver-interactions/interactions_common.*",
+    "webdriver-firefox/*.cpp"],
+  arch = "i386",
+  geckoversion="5")
+
+mozilla_lib(name = "webdriver_firefox_ff5_64",
+  srcs = [ "webdriver-interactions/*_linux*.cpp",
+    "webdriver-interactions/interactions_common.*",
+    "webdriver-firefox/*.cpp"],
+  arch = "amd64",
+  geckoversion="5")
 
 gcc_library(name = "noblur",
   srcs = [ "linux-specific/*.c" ],
