@@ -51,6 +51,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 
 
 public class FirefoxDriverTest extends AbstractDriverTestCase {
@@ -112,6 +113,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
       try {
         WebDriver secondDriver = newFirefoxDriver(profile);
+	waitFor(pageTitleToBe(secondDriver, "We Leave From Here"));
         String title = secondDriver.getTitle();
         secondDriver.quit();
 
