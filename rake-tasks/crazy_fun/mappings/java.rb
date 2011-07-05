@@ -456,10 +456,12 @@ module CrazyFunJava
                 end
               end
 
+              if (debug?)
+                ant.jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=#{suspend?},address=5005")
+              end
+
               if (args[:args])
-                ant.jvmarg do |jarg|
-                  jarg.line = args[:args]
-                end
+                ant.jvmarg(:line => args[:args])
               end
 
               ant.test(:name => name, :todir => 'build/test_logs')
@@ -468,6 +470,14 @@ module CrazyFunJava
           end
         end
       end
+    end
+
+    def suspend?
+      ENV['suspend'] == 'true' ? 'y' : 'n'
+    end
+
+    def debug?
+      [nil, 'true'].include? ENV['debug']
     end
 
     def halt_on_error?
