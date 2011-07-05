@@ -1,4 +1,4 @@
 java_library(name = "jna",
   deps = [
-    "jna.jar"
+    "jna-3.3.0.jar"
   ])
