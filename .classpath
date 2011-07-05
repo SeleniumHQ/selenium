@@ -21,7 +21,7 @@
 	<classpathentry kind="lib" path="third_party/java/commons-codec/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="third_party/java/hamcrest/hamcrest-all-1.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/commons-logging/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="third_party/java/jna/jna.jar"/>
+	<classpathentry kind="lib" path="third_party/java/jna/jna-3.3.0.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar"/>
 	<classpathentry kind="lib" path="third_party/java/mx4j/mx4j-tools-3.0.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-webapp-7.2.0.v20101020.jar"/>
