@@ -30,6 +30,7 @@ public class Pages {
   public String redirectPage;
   public String javascriptEnhancedForm;
   public String javascriptPage;
+  public String macbethPage;
   public String framesetPage;
   public String iframePage;
   public String dragAndDropPage;
@@ -82,6 +83,7 @@ public class Pages {
     iframePage = appServer.whereIs("iframes.html");
     javascriptEnhancedForm = appServer.whereIs("javascriptEnhancedForm.html");
     javascriptPage = appServer.whereIs("javascriptPage.html");
+    macbethPage = appServer.whereIs("macbeth.html");
     mapVisibilityPage = appServer.whereIs("map_visibility.html");
     metaRedirectPage = appServer.whereIs("meta-redirect.html");
     mouseTrackerPage = appServer.whereIs("mousePositionTracker.html");

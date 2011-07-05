@@ -21,7 +21,9 @@
 
 goog.provide('bot.events');
 
+goog.require('bot');
 goog.require('bot.dom');
+goog.require('bot.userAgent');
 goog.require('goog.dom');
 goog.require('goog.events.EventType');
 goog.require('goog.userAgent');
@@ -397,4 +399,14 @@ bot.events.fire = function(target, type, opt_args) {
   var event = init(target, type, opt_args);
 
   return bot.events.dispatchEvent_(target, type, event);
+};
+
+bot.events.areSynthesisedEventsTrusted = function() {
+  return !goog.userAgent.IE &&
+      (goog.userAgent.GECKO &&
+       bot.isFirefoxExtension() && bot.userAgent.isVersion(4));
+};
+
+bot.events.synthesisedEventsCanOpenJavascriptWindows = function() {
+  return goog.userAgent.GECKO && bot.isFirefoxExtension();
 };

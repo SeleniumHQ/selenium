@@ -502,15 +502,13 @@ bot.action.click = function(element) {
   var performDefault =
       bot.events.fire(element, goog.events.EventType.CLICK, coords);
 
-  if ((goog.userAgent.IE || goog.userAgent.GECKO) &&
-      !bot.isFirefoxExtension()) {
+  if (!bot.events.areSynthesisedEventsTrusted()) {
     if (performDefault) {
       var anchor = /**@type {Element}*/ (goog.dom.getAncestor(element,
           function(e) {
             return bot.dom.isElement(e, goog.dom.TagName.A);
           }, true));
-  
-      if (anchor && anchor.href) {
+      if (anchor && anchor.href && !(anchor.target && bot.events.synthesisedEventsCanOpenJavascriptWindows())) {
         bot.action.followHref_(anchor);
       }
     }
@@ -542,13 +540,32 @@ bot.action.followHref_ = function(anchorElement) {
   var targetHref = anchorElement.href;
   var owner = goog.dom.getWindow(goog.dom.getOwnerDocument(anchorElement));
 
-  var destination = goog.Uri.resolve(owner.location.href, targetHref);
+  var destination = goog.Uri.resolve(owner.location.href, targetHref).toString();
 
   if (anchorElement.target) {
     owner.open(destination, anchorElement.target);
   } else {
-    owner.location.href = destination;
+    if (bot.action.isOnlyHashChange_(destination, owner.location.href)) {
+      var destinationHashParts = destination.split("#");
+      destinationHashParts.splice(0, 1);
+      owner.location.hash = destinationHashParts.join("#");
+    } else {
+      owner.location.href = destination;
+    }
   }
+};
+
+/**
+ * Determine whether navigating between the two URLs is only a change in hash,
+ * indicating that a new HTTP request should not be made for the navigation.
+ *
+ * @param {!string} url1
+ * @param {!string} url2
+ * @return {!boolean}
+ * @private
+ */
+bot.action.isOnlyHashChange_ = function(url1, url2) {
+  return url1.split("#")[0] === url2.split("#")[0];
 };
 
 

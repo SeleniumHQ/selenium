@@ -25,6 +25,7 @@ import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
 
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
@@ -36,6 +37,8 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementToExist;
 
 /**
  * Tests combined input actions.
@@ -95,5 +98,36 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
     actions = new Actions(driver);
     actions.click(listItems.get(6)).build().perform();
     assertEquals("#item7", reportingElement.getText());
+  }
+
+  @Ignore(SELENESE)
+  public void testCanClickOnLinks() {
+    driver.get(appServer.whereIs("clicks.html"));
+
+    waitFor(elementToExist(driver, "normal"));
+    WebElement link = driver.findElement(By.id("normal"));
+
+    new Actions(driver)
+        .click(link)
+        .perform()
+    ;
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+  
+  @Ignore({OPERA, HTMLUNIT, SELENESE})
+  public void testCanClickOnLinksWithAnOffset() {
+    driver.get(appServer.whereIs("clicks.html"));
+
+    waitFor(elementToExist(driver, "normal"));
+    WebElement link = driver.findElement(By.id("normal"));
+
+    new Actions(driver)
+        .moveToElement(link, 1, 1)
+        .click()
+        .perform()
+    ;
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 }
