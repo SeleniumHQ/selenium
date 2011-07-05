@@ -29,7 +29,7 @@ public class ClickTest extends AbstractDriverTestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
-    driver.get(appServer.whereIs("clicks.html"));
+    driver.get(pages.clicksPage);
   }
 
   @Override
