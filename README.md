@@ -123,8 +123,19 @@ More general, but basic, help for 'go' ...
 
 Remember, "go" is just a wrapper around "rake", so you can use the standard rake commands such as "rake -T" to get more information about available targets.
 
+# Maven per se
+
+If it is not clear already, Selenium is not built with Maven, it is built with 'Crazy Fun' though that is invoked with 'go' as outlined above so you do not really have to learn too much about that.
+
+That said, it is possible to relatively quickly build selenium pieces for Maven to use.  You are only really going to want to do this when you are testing the cutting-edge of Selenium development (which we welcome) against your application.  Here is the quickest way to build and deploy into you local maven repository, while skipping Selenium's own tests.
+
+   ./go release
+   cd maven
+   mvn clean install
+
+This sequence will push some seven or so jars into you local Maven repository with something like 'selenium-server-2.0-SNAPSHOT.jar' as the name.
+
 # Last word on building the bits and pieces of Selenium
 
 Refer [Building Web Driver wiki page](http://code.google.com/p/selenium/wiki/BuildingWebDriver)
-
 
