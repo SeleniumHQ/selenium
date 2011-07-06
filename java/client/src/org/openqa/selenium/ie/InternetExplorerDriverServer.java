@@ -20,6 +20,7 @@ package org.openqa.selenium.ie;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.win32.StdCallLibrary;
+
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
@@ -31,7 +32,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class InternetExplorerDriverServer {
   // Constantly reloading the DLL causes JVM crashes. Prefer a static field this one time.
