@@ -1,9 +1,9 @@
 
 java_library(name = "server-with-tests",
-  main = "org.openqa.selenium.server.SeleniumServer",
+  main = "org.openqa.grid.selenium.GridLauncher",
   resources = [
     "tests",
   ],
   deps = [
-    "//java/server/src/org/openqa/selenium/server",
+    "//java/server/src/org/openqa/grid/selenium",
   ])

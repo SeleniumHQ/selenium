@@ -182,7 +182,7 @@ ruby_test(name = "opera",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/src/org/openqa/selenium/server:server:uber",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
     ":opera"
   ]
 )
@@ -204,7 +204,7 @@ ruby_test(name = "remote",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    "//java/server/src/org/openqa/selenium/server:server:uber",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
     ":remote"
   ]
 )

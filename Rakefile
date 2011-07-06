@@ -107,7 +107,7 @@ task :iphone_client => ['//java/client/src/org/openqa/selenium/iphone']
 task :iphone => [:iphone_server, :iphone_client]
 
 desc 'Build the standalone server'
-task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/server:server:uber'
+task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium:uber'
 
 task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//javascript/selenium-atoms", "se_ide:setup_proxy" ]
