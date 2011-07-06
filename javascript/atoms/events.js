@@ -410,3 +410,7 @@ bot.events.areSynthesisedEventsTrusted = function() {
 bot.events.synthesisedEventsCanOpenJavascriptWindows = function() {
   return goog.userAgent.GECKO && bot.isFirefoxExtension();
 };
+
+bot.events.synthesisedEventsCanCauseHashChanges = function() {
+  return bot.events.synthesisedEventsCanOpenJavascriptWindows();
+};

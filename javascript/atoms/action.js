@@ -499,7 +499,7 @@ bot.action.click = function(element) {
     return;
   }
 
-  var performDefault =
+  var performDefault = 
       bot.events.fire(element, goog.events.EventType.CLICK, coords);
 
   if (!bot.events.areSynthesisedEventsTrusted()) {
@@ -508,7 +508,9 @@ bot.action.click = function(element) {
           function(e) {
             return bot.dom.isElement(e, goog.dom.TagName.A);
           }, true));
-      if (anchor && anchor.href && !(anchor.target && bot.events.synthesisedEventsCanOpenJavascriptWindows())) {
+      if (anchor && anchor.href &&
+          !(anchor.target && bot.events.synthesisedEventsCanOpenJavascriptWindows()) &&
+          !(bot.action.isOnlyHashChange_(anchor) && bot.events.synthesisedEventsCanCauseHashChanges())) {
         bot.action.followHref_(anchor);
       }
     }
@@ -545,7 +547,7 @@ bot.action.followHref_ = function(anchorElement) {
   if (anchorElement.target) {
     owner.open(destination, anchorElement.target);
   } else {
-    if (bot.action.isOnlyHashChange_(destination, owner.location.href)) {
+    if (bot.action.isOnlyHashChange_(anchorElement)) {
       var destinationHashParts = destination.split("#");
       destinationHashParts.splice(0, 1);
       owner.location.hash = destinationHashParts.join("#");
@@ -556,16 +558,29 @@ bot.action.followHref_ = function(anchorElement) {
 };
 
 /**
+ * Gets the URL that the document owning the link element is currently on.
+ * 
+ * @param {!Element} anchorElement
+ * @return {!string}
+ * @private
+ */
+bot.action.getSourceUrlOfLink_ = function(anchorElement) {
+  var owner = goog.dom.getWindow(goog.dom.getOwnerDocument(anchorElement));
+  return owner.location.href;
+};
+
+/**
  * Determine whether navigating between the two URLs is only a change in hash,
  * indicating that a new HTTP request should not be made for the navigation.
  *
- * @param {!string} url1
- * @param {!string} url2
+ * @param {!Element} anchorElement
  * @return {!boolean}
  * @private
  */
-bot.action.isOnlyHashChange_ = function(url1, url2) {
-  return url1.split("#")[0] === url2.split("#")[0];
+bot.action.isOnlyHashChange_ = function(anchorElement) {
+  var sourceUrl = bot.action.getSourceUrlOfLink_(anchorElement);
+  var destinationUrl = goog.Uri.resolve(sourceUrl, anchorElement.href).toString()
+  return sourceUrl.split("#")[0] === destinationUrl.split("#")[0];
 };
 
 
