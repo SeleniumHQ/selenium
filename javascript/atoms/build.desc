@@ -8,11 +8,13 @@ js_deps(name = "deps",
   srcs = [
     "*.js",
     "locators/*.js",
+    "html5/*.js",
   ])
 
 js_test(name = "test",
   srcs = [
     "test/*_test.html",
+    "test/html5/*_test.html",
   ],
   path = "/javascript/atoms/test",
   deps = [

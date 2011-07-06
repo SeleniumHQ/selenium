@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>HTML5 storage with nested frames</title>
+  <script src="../test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.frame');
+    goog.require('bot.storage');
+    goog.require('bot.html5');
+    goog.require('goog.testing.jsunit');
+  </script>
+  
+  <script type="text/javascript">
+    function testNestedFrameLocalStorage() {
+      if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        return;
+      }
+
+      var window = bot.frame.findFrameByIdOrName('frame_a');
+      assertNotNull(window);
+
+      var localStorage_ = bot.storage.getLocalStorage(window);
+      assertEquals('bar11', localStorage_.getItem('foo1'));      
+    }
+
+    function testUniqueWindowLocalStorage() {
+      if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        return;
+      }
+
+      var localStorage_ = bot.storage.getLocalStorage();
+      assertEquals('bar11', localStorage_.getItem('foo1'));
+      assertEquals('bar_b11', localStorage_.getItem('foo_b1'));
+    }
+
+    function testNestedFrameSessionStorage() {
+      if (!bot.html5.isSupported(bot.html5.API.SESSION_STORAGE)) {
+        return;
+      }
+
+      var window = bot.frame.findFrameByIdOrName('frame_a');
+      assertNotNull(window);
+
+      var sessionStorage_ = bot.storage.getSessionStorage(window);
+      assertEquals('bar22', sessionStorage_.getItem('foo2'));      
+    }
+
+    function testUniqueWindowSessionStorage() {
+      if (!bot.html5.isSupported(bot.html5.API.SESSION_STORAGE)) {
+        return;
+      }
+
+      var sessionStorage_ = bot.storage.getSessionStorage();
+      assertEquals('bar22', sessionStorage_.getItem('foo2'));
+      assertEquals('bar_b22', sessionStorage_.getItem('foo_b2'));
+    }
+  </script>
+</head>
+<body>
+<iframe id="frame_a" src="frame_a.html"></iframe>
+</body>
+</html>
