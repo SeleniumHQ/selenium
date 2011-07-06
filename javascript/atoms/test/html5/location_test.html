@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HTML5 Geo-location test</title>
+  <script type="text/javascript" src="../test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot');
+    goog.require('bot.geolocation');
+    goog.require('bot.html5');
+    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.testing.jsunit');    
+    goog.require('goog.userAgent.product.isVersion');
+  </script>
+
+  <script type="text/javascript">
+    var asyncTestCase = null;
+
+    /**
+     * Tested with Chrome and Firefox. This method checks if the device location
+     * can be retrieved, i.e. non-null value of Position within the timeout
+     * period.
+     */
+    function testLocationWithinDefaultInterval() {
+      if (!bot.html5.isSupported(bot.html5.API.GEOLOCATION)) {
+        return;
+      }
+
+      function onSuccess(position) {
+        asyncTestCase.continueTesting();
+        //5s (default timeout) should definitely be sufficient
+        //to retrieve a position.
+      }
+
+      function onError(error) {
+        asyncTestCase.continueTesting();
+        fail('When enabled, location should be known within 10s');
+      }
+      
+      try {
+        bot.geolocation.getCurrentPosition(onSuccess, onError);
+        asyncTestCase.waitForAsync('geolocation.getCurrentPosition');
+      } catch (e) {
+        assertEquals(e.code, bot.ErrorCode.UNKNOWN_ERROR);
+      }
+    };
+
+    /**
+     * Tested with Chrome and Firefox. It checks if the device location cannot
+     * can be retrieved, i.e. null value of Position, when requested to
+     * retrieve the position with high accuracy and immediately (no cached).
+     * Note: Firefox seems to return the position even in this case.
+     * The HTML5 standard states If the value of the timeout variable is 0,
+     * invoke the errorCallback (if present) with a new PositionError object
+     * whose code attribute is set to TIMEOUT.
+     */
+    function testLocationNoTimeout() {
+      if (!bot.html5.isSupported(bot.html5.API.GEOLOCATION)) {
+        return;
+      }
+
+      // Adding an additional checking for Firefox.
+      //TODO: Testing required on other browser in this case.
+      if (goog.userAgent.product.FIREFOX) {
+        return;
+      }
+
+      var posOptions = {
+        enableHighAccuracy: true,
+        maximumAge:0,
+        timeout: 0
+      };
+
+      function onSuccess(position) {
+        asyncTestCase.continueTesting();
+        fail('Location within 0s timeout interval and 0s max age fails');
+      }
+
+      function onError(error) {
+        asyncTestCase.continueTesting();
+      }
+
+      try {
+        bot.geolocation.getCurrentPosition(onSuccess, onError, posOptions);
+        asyncTestCase.waitForAsync('geolocation.getCurrentPosition');
+      } catch (e) {
+        assertEquals(e.code, bot.ErrorCode.UNKNOWN_ERROR);
+      }
+    };
+
+    // TODO: Tests required to check the returned value.
+  </script>
+</head>
+<body>
+  <script>
+    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+    asyncTestCase.stepTimeout = 15 * 1000;
+  </script>
+</body>
+</html>
