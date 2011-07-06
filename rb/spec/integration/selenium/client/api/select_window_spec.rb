@@ -41,5 +41,6 @@ describe "Window Selection" do
     page.location.should =~ %r{/tests/html/test_select_window_popup.html}
 
     page.click "closePage2"
+    page.select_window "null"
   end
 end
