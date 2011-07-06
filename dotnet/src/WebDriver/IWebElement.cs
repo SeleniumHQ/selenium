@@ -124,14 +124,19 @@ namespace OpenQA.Selenium
         /// Clicks this element. 
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Click this element. If the click causes a new page to load, the <see cref="Click"/> 
         /// method will attempt to block until the page has loaded. After calling the 
         /// <see cref="Click"/> method, you should discard all references to this 
         /// element unless you know that the element and the page will still be present. 
         /// Otherwise, any further operations performed on this element will have an undefined.
         /// behavior.
+        /// </para>
+        /// <para>
+        /// If this element is not clickable, then this operation is ignored. This allows you to
+        /// simulate a users to accidentally missing the target when clicking. 
+        /// </para>
         /// </remarks>
-        /// <exception cref="InvalidElementStateException">Thrown when the target element is not enabled.</exception>
         /// <exception cref="ElementNotVisibleException">Thrown when the target element is not visible.</exception>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         void Click();

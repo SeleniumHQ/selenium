@@ -204,10 +204,6 @@ int Element::GetLocationOnceScrolledIntoView(long* x, long* y, long* width, long
         return EELEMENTNOTDISPLAYED;
     }
 
-    if (!this->IsEnabled()) {
-        return EELEMENTNOTENABLED;
-    }
-
 	long top = 0, left = 0, element_width = 0, element_height = 0;
 	result = this->GetLocation(&left, &top, &element_width, &element_height);
 	if (result != SUCCESS || !this->IsClickPointInViewPort(left, top, element_width, element_height)) {
