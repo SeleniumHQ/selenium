@@ -20,7 +20,7 @@ class GeckoSDKs
   private
 
   def define_rule(path, url)
-    file path do
+    download_task = file(path) do
       mkdir_p path
       next unless platform_matches?(path)
 
@@ -42,6 +42,11 @@ class GeckoSDKs
       ensure
         rm_rf sdk if sdk && File.exist?(sdk)
       end
+    end
+
+    # this really shouldn't be necessary.
+    if Platform.windows?
+      file path.gsub("/", "\\") => download_task
     end
   end
 
