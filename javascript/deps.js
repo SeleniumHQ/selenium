@@ -153,5 +153,7 @@ goog.addDependency("../../../javascript/atoms/locators/id.js", ['bot.locators.id
 goog.addDependency("../../../javascript/atoms/locators/locators.js", ['bot.locators'], ['bot', 'bot.locators.className', 'bot.locators.css', 'bot.locators.id', 'bot.locators.linkText', 'bot.locators.name', 'bot.locators.partialLinkText', 'bot.locators.tagName', 'bot.locators.xpath', 'goog.array', 'goog.object']);
 goog.addDependency("../../../javascript/atoms/locators/xpath.js", ['bot.locators.xpath'], ['bot', 'goog.array', 'goog.dom', 'goog.dom.NodeType']);
 goog.addDependency("../../../javascript/atoms/locators/name.js", ['bot.locators.name'], ['bot.dom', 'goog.array', 'goog.dom']);
+goog.addDependency("../../../javascript/atoms/html5/location.js", ['bot.geolocation'], ['bot', 'bot.html5']);
 goog.addDependency("../../../javascript/atoms/html5/storage.js", ['bot.storage'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.html5']);
 goog.addDependency("../../../javascript/atoms/html5/html5_browser.js", ['bot.html5'], ['bot', 'bot.Error', 'bot.ErrorCode']);
+goog.addDependency("../../../javascript/atoms/html5/connection.js", ['bot.connection'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.html5']);
