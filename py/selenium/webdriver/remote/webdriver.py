@@ -531,6 +531,10 @@ class WebDriver(object):
         """
         return self.execute(Command.FIND_ELEMENTS,
                              {'using': by, 'value': value})['value']
+    @property
+    def desired_capabilities(self):
+        """ returns the drivers current desired capabilities being used"""
+        return self.capabilities
     
     def get_screenshot_as_file(self, filename):
         """Gets the screenshot of the current window. Returns False if there is 
