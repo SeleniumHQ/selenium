@@ -52,7 +52,6 @@ public class ElementFinder {
     findElement = "return (" + rawScript + ")(arguments[0]);";
 
     String linkTextLocator = "return (" + library.getSeleniumScript("linkLocator.js") + ").call(null, arguments[0], document)";
-
     add("link", linkTextLocator);
     
     try {
@@ -62,6 +61,7 @@ public class ElementFinder {
           "try { Sizzle(arguments[0], document, results);} " +
           "catch (ignored) {} " +
           "return results.length ? results[0] : null;";
+      add("sizzle", sizzle);
     } catch (IOException e) {
       throw new SeleniumException("Cannot read sizzle");
     }
@@ -93,10 +93,9 @@ public class ElementFinder {
       if (toReturn != null) {
         return toReturn;
       }
-
-      return (WebElement) ((JavascriptExecutor) driver)
-          .executeScript(findElement, locator);
+      return (WebElement) ((JavascriptExecutor) driver).executeScript(findElement, locator);
     } catch (WebDriverException e) {
+      e.printStackTrace();
       throw new SeleniumException("Element " + locator + " not found", e);
     }
   }
@@ -110,6 +109,7 @@ public class ElementFinder {
     if (index == -1) {
       return null;
     }
+
 
     String key = locator.substring(0, index);
     return additionalLocators.get(key);
@@ -130,6 +130,10 @@ public class ElementFinder {
       } catch (WebDriverException e) {
         return fallbackToSizzle(driver, selector);
       }
+    }
+
+    if (locator.startsWith("link=")) {
+
     }
 
     return null;
