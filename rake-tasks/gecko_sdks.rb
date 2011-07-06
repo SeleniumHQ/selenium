@@ -22,7 +22,7 @@ class GeckoSDKs
   def define_rule(path, url)
     download_task = file(path) do
       mkdir_p path
-      next unless platform_matches?(path)
+      next if offline? || !platform_matches?(path)
 
       begin
         sdk = Downloader.fetch url
@@ -61,6 +61,10 @@ class GeckoSDKs
     else
       raise "unknown platform #{path.inspect}"
     end
+  end
+
+  def offline?
+    ENV['offline'] == "true"
   end
 
   def unpack(path, destination)
