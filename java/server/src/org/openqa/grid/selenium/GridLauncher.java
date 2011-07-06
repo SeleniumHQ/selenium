@@ -15,46 +15,15 @@ limitations under the License.
  */
 package org.openqa.grid.selenium;
 
-import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
 
-import javax.servlet.Servlet;
-
-import junit.framework.Assert;
-
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpRequest;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.grid.common.GridDocHelper;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.internal.utils.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
-import org.openqa.grid.web.servlet.ResourceServlet;
-import org.openqa.grid.web.utils.ExtraServletUtil;
-import org.openqa.jetty.http.HttpContext;
-import org.openqa.jetty.jetty.Server;
-import org.openqa.jetty.jetty.servlet.ServletHandler;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
 public class GridLauncher {
