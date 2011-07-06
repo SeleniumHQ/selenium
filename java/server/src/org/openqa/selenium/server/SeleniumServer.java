@@ -27,6 +27,7 @@ import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.jetty.util.MultiException;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
@@ -271,7 +272,10 @@ public class SeleniumServer implements SslCertificateGenerator {
     String rcRevision = p.getProperty("selenium.rc.revision");
     String coreVersion = p.getProperty("selenium.core.version");
     String coreRevision = p.getProperty("selenium.core.revision");
-    LOGGER.info("v" + rcVersion + " [" + rcRevision + "], with Core v" + coreVersion + " [" + coreRevision + "]");
+    BuildInfo info = new BuildInfo();
+    LOGGER.info(String.format(
+        "v%s%s, with Core v%s%s. Built from revision %s",
+        rcVersion, rcRevision, coreVersion, coreRevision, info.getBuildRevision()));
   }
 
 
