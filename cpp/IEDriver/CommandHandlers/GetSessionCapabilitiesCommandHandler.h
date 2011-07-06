@@ -43,6 +43,7 @@ protected:
 		capabilities["nativeEvents"] = true;
 		capabilities["cssSelectorsEnabled"] = true;
 		capabilities["takesScreenshot"] = true;
+		capabilities["handlesAlerts"] = true;
 		response->SetResponse(SUCCESS, capabilities);
 	}
 };
