@@ -34,19 +34,21 @@ namespace OpenQA.Selenium
     public interface IWebElement : ISearchContext
     {
         /// <summary>
-        /// Gets a value indicating the tag name of this element.
+        /// Gets the tag name of this element.
         /// </summary>
         /// <remarks>
         /// The <see cref="TagName"/> property returns the tag name of the
         /// element, not the value of the name attribute. For example, it will return
         /// "input" for an element specifiedby the HTML markup &lt;input name="foo" /&gt;. 
         /// </remarks>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         string TagName { get; }
 
         /// <summary>
-        /// Gets a value indicating the innerText of this element, without any leading 
-        /// or trailing whitespace.
+        /// Gets the innerText of this element, without any leading or trailing whitespace,
+        /// and with other whitespace collapsed.
         /// </summary>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         string Text { get; }
 
         /// <summary>
@@ -54,6 +56,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <remarks>The <see cref="Enabled"/> property will generally 
         /// return <see langword="true"/> for everything except explicitly disabled input elements.</remarks>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         bool Enabled { get; }
 
         /// <summary>
@@ -61,17 +64,20 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <remarks>This operation only applies to input elements such as checkboxes,
         /// options in a select element and radio buttons.</remarks>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         bool Selected { get; }
 
         /// <summary>
-        /// Gets the coordinates of the upper-left corner of this element relative 
-        /// to the upper-left corner of the page.
+        /// Gets a <see cref="Point"/> object containgin the coordinates of the upper-left corner
+        /// of this element relative to the upper-left corner of the page.
         /// </summary>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         Point Location { get; }
 
         /// <summary>
-        /// Gets the height and width of this element.
+        /// Gets a <see cref="Size"/> object containing the height and width of this element.
         /// </summary>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         Size Size { get; }
 
         /// <summary>
@@ -80,6 +86,7 @@ namespace OpenQA.Selenium
         /// <remarks>The <see cref="Displayed"/> property avoids the problem 
         /// of having to parse an element's "style" attribute to determine
         /// visibility of an element.</remarks>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         bool Displayed { get; }
 
         /// <summary>
@@ -88,6 +95,7 @@ namespace OpenQA.Selenium
         /// <remarks>If this element is a text entry element, the <see cref="Clear"/>
         /// method will clear the value. It has no effect on other elements. Text entry elements 
         /// are defined as elements with INPUT or TEXTAREA tags.</remarks>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         void Clear();
 
         /// <summary>
@@ -98,6 +106,9 @@ namespace OpenQA.Selenium
         /// backspaces, function keys, and so on. Valid special keys are defined in 
         /// <see cref="Keys"/>.</remarks>
         /// <seealso cref="Keys"/>
+        /// <exception cref="InvalidElementStateException">Thrown when the target element is not enabled.</exception>
+        /// <exception cref="ElementNotVisibleException">Thrown when the target element is not visible.</exception>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         void SendKeys(string text);
 
         /// <summary>
@@ -106,25 +117,23 @@ namespace OpenQA.Selenium
         /// <remarks>If this current element is a form, or an element within a form, 
         /// then this will be submitted to the web server. If this causes the current 
         /// page to change, then this method will block until the new page is loaded.</remarks>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         void Submit();
 
         /// <summary>
         /// Clicks this element. 
         /// </summary>
         /// <remarks>
-        /// <para>
         /// Click this element. If the click causes a new page to load, the <see cref="Click"/> 
-        /// method will block until the page has loaded. After calling the 
+        /// method will attempt to block until the page has loaded. After calling the 
         /// <see cref="Click"/> method, you should discard all references to this 
         /// element unless you know that the element and the page will still be present. 
         /// Otherwise, any further operations performed on this element will have an undefined.
         /// behavior.
-        /// </para>
-        /// <para>
-        /// If this element is not clickable, then this operation is ignored. This allows you to
-        /// simulate a users to accidentally missing the target when clicking. 
-        /// </para>
         /// </remarks>
+        /// <exception cref="InvalidElementStateException">Thrown when the target element is not enabled.</exception>
+        /// <exception cref="ElementNotVisibleException">Thrown when the target element is not visible.</exception>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         void Click();
 
         /// <summary>
@@ -160,6 +169,7 @@ namespace OpenQA.Selenium
         /// </item>
         /// </list>
         /// </remarks>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         string GetAttribute(string attributeName);
 
         /// <summary>
@@ -172,6 +182,7 @@ namespace OpenQA.Selenium
         /// Color values should be returned as hex strings. For example, a 
         /// "background-color" property set as "green" in the HTML source, will
         /// return "#008000" for its value.</remarks>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         string GetCssValue(string propertyName);
     }
 }
