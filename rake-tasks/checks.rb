@@ -147,11 +147,13 @@ def svn?
 end
 
 def svn_revision
-  output = if File.directory?(".svn") && svn?
-            `svn info`
-           elsif File.directory?(".git") && present?("git")
-             `git svn info`
-           end
+  @svn_revision ||= (
+    output = if File.directory?(".svn") && svn?
+              `svn info`
+             elsif File.directory?(".git") && present?("git")
+               `git svn info`
+             end
 
-  output.to_s[/Revision: (\d+)/, 1] || 'unknown'
+    output.to_s[/Revision: (\d+)/, 1] || 'unknown'
+  )
 end
