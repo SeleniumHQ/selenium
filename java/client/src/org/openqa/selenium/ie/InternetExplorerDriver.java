@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium.ie;
 
@@ -52,13 +52,13 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
    */
   public final static String INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS = "ignoreProtectedModeSettings";
 
-  private Pointer server;
-  private IEServer lib;
-  private int port;
+  private InternetExplorerDriverServer server;
   private WindowsProxyManager proxyManager;
 
   public InternetExplorerDriver() {
-    setup(DesiredCapabilities.internetExplorer());
+    assertOnWindows();
+
+    setup(DesiredCapabilities.internetExplorer(), 0);
   }
 
   public InternetExplorerDriver(Capabilities capabilities) {
@@ -66,12 +66,13 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
 
     proxyManager = new WindowsProxyManager(true, "webdriver-ie", 0, 0);
     prepareProxy(capabilities);
-    setup(capabilities);
+    setup(capabilities, 0);
   }
 
   public InternetExplorerDriver(int port) {
-    this.port = port;
-    setup(DesiredCapabilities.internetExplorer());
+    assertOnWindows();
+
+    setup(DesiredCapabilities.internetExplorer(), port);
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {
@@ -89,12 +90,10 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
       }
   }
 
-  private void setup(Capabilities capabilities) {
-    if (port == 0) {
-      port = PortProber.findFreePort();
-    }
+  private void setup(Capabilities capabilities, int port) {
+    server = new InternetExplorerDriverServer(port);
     startClient();
-    setCommandExecutor(new HttpCommandExecutor(getServerUrl(port)));
+    setCommandExecutor(new HttpCommandExecutor(server.getUrl()));
     setElementConverter(new JsonToWebElementConverter(this) {
       @Override
       protected RemoteWebElement newRemoteWebElement() {
@@ -105,77 +104,12 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   }
 
   protected void startClient() {
-    initializeLib();
-    server = lib.StartServer(port);
+    server.start();
   }
 
   protected void stopClient() {
     if (server != null) {
-      lib.StopServer(server);
-    }
-  }
-
-  private static URL getServerUrl(int port) {
-    try {
-      return new URL("http://localhost:" + port);
-    } catch (MalformedURLException e) {
-      throw new WebDriverException(e);
-    }
-  }
-
-  private void initializeLib() {
-    synchronized (this) {
-      if (lib != null) {
-        return;
-      }
-
-      File parentDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver",
-          "libs");
-      try {
-        FileHandler.copyResource(parentDir, getClass(), "IEDriver.dll");
-      } catch (IOException ioe) {
-        // TODO(simon): Delete this. Test code should not be in production code
-        try {
-          if (Boolean.getBoolean("webdriver.development")) {
-            String arch = System.getProperty("os.arch", "")
-                .contains("64") ? "x64" : "Win32";
-
-            List<String> sourcePaths = new ArrayList<String>();
-            sourcePaths.add("build\\cpp\\" + arch + "\\Debug");
-            sourcePaths.add("..\\build\\cpp\\" + arch + "\\Debug");
-            sourcePaths.add("..\\..\\build\\cpp\\" + arch + "\\Debug");
-            boolean copied = false;
-            for (String path : sourcePaths) {
-              File sourceFile = new File(path, "IEDriver.dll");
-              if (sourceFile.exists()) {
-                FileHandler.copy(sourceFile, new File(
-                    parentDir, "IEDriver.dll"));
-                copied = true;
-                break;
-              }
-            }
-            if (!copied) {
-              throw new WebDriverException(
-                  "Couldn't find IEDriver.dll: " + arch);
-            }
-          } else {
-            throw new WebDriverException(ioe);
-          }
-        } catch (IOException ioe2) {
-          throw new WebDriverException(ioe2);
-        }
-      }
-      System.setProperty("jna.library.path",
-          System.getProperty("jna.library.path", "")
-              + File.pathSeparator + parentDir);
-
-      try {
-        lib = (IEServer) Native.loadLibrary("IEDriver", IEServer.class);
-      } catch (UnsatisfiedLinkError e) {
-        System.out.println("new File(\".\").getAbsolutePath() = "
-            + new File(".").getAbsolutePath());
-        throw new WebDriverException(e);
-      }
+      server.stop();
     }
   }
 
@@ -200,11 +134,5 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
       }
     };
     Runtime.getRuntime().addShutdownHook(cleanupThread);
-  }
-
-  private interface IEServer extends StdCallLibrary {
-    Pointer StartServer(int port);
-
-    void StopServer(Pointer server);
   }
 }
