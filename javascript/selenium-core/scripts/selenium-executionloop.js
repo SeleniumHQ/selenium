@@ -119,7 +119,7 @@ TestLoop.prototype = {
     _handleCommandError : function(e) {
         if (!e.isSeleniumError) {
             LOG.exception(e);
-            var msg = "Command execution failure. Please search the forum at http://clearspace.openqa.org for error details from the log window.";
+            var msg = "Command execution failure. Please search the user group at https://groups.google.com/forum/#!forum/selenium-users for error details from the log window.";
             msg += "  The error message is: " + extractExceptionMessage(e);
             return this.commandError(msg);
         } else {
