@@ -204,12 +204,14 @@ class Build < BaseGcc
     out = Gcc::out_name(dir, args)
     gecko_sdk = MozBinary::gecko_sdk_path args
     gecko_sdk += Platform.dir_separator
+    xpcom_lib = args[:xpcom_lib] || "xpcomglue_s_nomozalloc"
 
     file out do
       puts "Compiling an xpcom component: #{task_name(dir, args[:name])} as #{out}"
       is_32_bit = "amd64" != args[:arch]
-      compiler_args = "-Wall -fPIC -fshort-wchar -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I cpp/webdriver-interactions -I cpp/imehandler/common -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`"
-      linker_args =  "-Wall -fshort-wchar -fno-rtti -fno-exceptions -shared  -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s_nomozalloc -lxpcom -lnspr4 -lrt `pkg-config gtk+-2.0 --libs`"
+      base_compiler_args = "-Wall -fPIC -fshort-wchar -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I cpp/webdriver-interactions -I cpp/imehandler/common -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`"
+      compiler_args = [args[:args], base_compiler_args].join " "
+      linker_args =  "-Wall -fshort-wchar -fno-rtti -fno-exceptions -shared  -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -l#{xpcom_lib} -lxpcom -lnspr4 -lrt `pkg-config gtk+-2.0 --libs`"
       gcc(fun, dir, args[:srcs], compiler_args, linker_args, out, is_32_bit)
     end
   end

@@ -15,6 +15,15 @@ visualc_library(name = "firefox5_dll",
 mozilla_xpt(name = "native_events_xpt",
   srcs = [ "webdriver-firefox/nsINativeEvents.idl" ])
 
+mozilla_lib(name = "webdriver_firefox_ff3",
+  srcs = [ "webdriver-interactions/*_linux*.cpp",
+    "webdriver-interactions/interactions_common.*",
+    "webdriver-firefox/*.cpp"],
+  arch = "i386",
+  args = "-DGECKO_19_COMPATIBILITY",
+  xpcom_lib = "xpcomglue_s",
+  geckoversion="1.9.2")
+
 mozilla_lib(name = "webdriver_firefox_ff4",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",

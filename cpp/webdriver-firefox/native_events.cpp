@@ -1,5 +1,7 @@
 #include "build_environment.h"
 
+#ifndef GECKO_19_COMPATIBILITY
+
 #ifndef BUILD_ON_UNIX
 #define MOZ_NO_MOZALLOC
 #include <mozilla-config.h>
@@ -7,12 +9,24 @@
 
 #include <xpcom-config.h>
 
+#else // Gecko 1.9
+#ifdef BUILD_ON_UNIX
+#include <xpcom-config.h>
+#endif
+#endif
+
 #include "errorcodes.h"
 #include "interactions.h"
 #include "logging.h"
 #include "native_events.h"
 #include "library_loading.h"
+
+#ifndef GECKO_19_COMPATIBILITY
 #include "mozilla/ModuleUtils.h"
+#else
+#include "nsIGenericFactory.h"
+#endif
+
 #include "nsIComponentManager.h"
 #include "nsComponentManagerUtils.h"
 #include <assert.h>
@@ -358,6 +372,9 @@ NS_IMETHODIMP nsNativeEvents::ImeGetAvailableEngines(nsIArray **enginesList)
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsNativeEvents)
 
+// Common case - build for Gecko SDK 2 and up
+#ifndef GECKO_19_COMPATIBILITY
+
 NS_DEFINE_NAMED_CID(EVENTS_CID);
 
 static const mozilla::Module::CIDEntry kNativeEventsCIDs[] = {
@@ -381,3 +398,18 @@ NSMODULE_DEFN(nsNativeEvents) = &kNativeEventsModule;
 
 NS_IMPL_MOZILLA192_NSGETMODULE(&kNativeEventsModule)
 
+#else
+// Gecko 1.9
+
+static nsModuleComponentInfo components[] =
+{
+  {
+    EVENTS_CLASSNAME, 
+    EVENTS_CID,
+    EVENTS_CONTRACTID,
+    nsNativeEventsConstructor,
+  }
+};
+
+NS_IMPL_NSGETMODULE("NativeEventsModule", components) 
+#endif
