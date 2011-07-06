@@ -31,10 +31,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class InternetExplorerDriverServer {
   // Constantly reloading the DLL causes JVM crashes. Prefer a static field this one time.
-  private static IEServer lib;
+  private static IEServer lib = initializeLib();
+
   private Pointer server;
   private int port;
 
@@ -43,8 +45,6 @@ public class InternetExplorerDriverServer {
   }
 
   public URL getUrl() {
-    initializeLib();
-
     if (!lib.ServerIsRunning()) {
       throw new WebDriverException("Server has not yet been started");
     }
@@ -56,8 +56,6 @@ public class InternetExplorerDriverServer {
   }
 
   public void start() {
-    initializeLib();
-
     if (lib.ServerIsRunning()) {
       port = lib.GetServerPort();
       return;
@@ -77,14 +75,10 @@ public class InternetExplorerDriverServer {
     }
   }
 
-  private synchronized void initializeLib() {
-    if (lib != null) {
-      return;
-    }
-
+  private static IEServer initializeLib() {
     File parentDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "libs");
     try {
-      FileHandler.copyResource(parentDir, getClass(), "IEDriver.dll");
+      FileHandler.copyResource(parentDir, InternetExplorerDriverServer.class, "IEDriver.dll");
     } catch (IOException ioe) {
       // TODO(simon): Delete this. Test code should not be in production code
       try {
@@ -122,7 +116,7 @@ public class InternetExplorerDriverServer {
             + File.pathSeparator + parentDir);
 
     try {
-      lib = (IEServer) Native.loadLibrary("IEDriver", IEServer.class);
+      return (IEServer) Native.loadLibrary("IEDriver", IEServer.class);
     } catch (UnsatisfiedLinkError e) {
       System.out.println("new File(\".\").getAbsolutePath() = "
           + new File(".").getAbsolutePath());
