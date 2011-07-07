@@ -104,7 +104,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
 		builder.append("<body>");
 		builder.append("<H1>Grid Hub ");
-		builder.append(coreVersion + "[" + coreRevision + "]");
+		builder.append(coreVersion + coreRevision);
 		builder.append("</H1>");
 
 		for (RemoteProxy proxy : getRegistry().getAllProxies()) {
