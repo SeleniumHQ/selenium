@@ -63,7 +63,6 @@ public class WebDriverWait extends FluentWait<WebDriver> {
     withTimeout(timeOutInSeconds, TimeUnit.SECONDS);
     pollingEvery(sleepTimeOut, TimeUnit.MILLISECONDS);
     ignoring(NotFoundException.class);
-    ignoring(StaleElementReferenceException.class);
   }
 }
                        

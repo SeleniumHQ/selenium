@@ -85,20 +85,6 @@ public class WebDriverWaitTest extends MockObjectTestCase {
     wait.until(condition);
   }
 
-  @SuppressWarnings("unchecked")
-  public void testShouldSilentlyCaptureStaleElementReferenceExceptions() {
-
-    final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
-    checking(new Expectations() {{
-      one(condition).apply(mockDriver); will(throwException(new StaleElementReferenceException("foo")));
-      one(condition).apply(mockDriver); will(returnValue(true));
-    }});
-
-    TickingClock clock = new TickingClock(500);
-    Wait wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
-    wait.until(condition);
-  }
-  
   private static class FalseExpectation implements ExpectedCondition<Boolean> {
     public Boolean apply(WebDriver driver) {
       return false;
