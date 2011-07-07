@@ -10,6 +10,7 @@ namespace OpenQA.Selenium
     public class SelectElementHandlingTest : DriverTestFixture
     {
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver.exe does not allow deselect on click")]
         public void ShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices()
         {
             driver.Url = formsPage;
