@@ -28,7 +28,7 @@ module Selenium
           driver.keyboard.send_keys "ab"
           driver.keyboard.release :shift
 
-          event_input.value.should == "AB"
+          event_input.attribute(:value).should == "AB"
           keylogger.text.should == "focus keydown keydown keypress keyup keydown keypress keyup keyup"
         end
 
