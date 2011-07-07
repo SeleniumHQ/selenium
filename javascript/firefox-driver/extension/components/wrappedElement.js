@@ -199,10 +199,13 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
     use = element.ownerDocument.getElementsByTagName("html")[0];
   }
 
-  Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
-      this.enableNativeEvents, this.jsTimer);
+  // We may need a beat for firefox to hand over focus.
+  this.jsTimer.setTimeout(function() {
+    Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
+        this.enableNativeEvents, this.jsTimer);
 
-  respond.send();
+    respond.send();
+  }, 0);
 };
 FirefoxDriver.prototype.sendKeysToElement.preconditions =
     [ webdriver.preconditions.visible, webdriver.preconditions.enabled ];
