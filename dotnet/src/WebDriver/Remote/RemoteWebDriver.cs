@@ -153,6 +153,13 @@ namespace OpenQA.Selenium.Remote
                     // drivers, in that no exeception is thrown when going to an
                     // invalid URL.
                 }
+                catch (NotImplementedException)
+                {
+                    // Chrome throws NotImplementedException if the URL is invalid.
+                    // Catch the exeception, if any. This is consistent with other
+                    // drivers, in that no exeception is thrown when going to an
+                    // invalid URL.
+                }
             }
         }
 
