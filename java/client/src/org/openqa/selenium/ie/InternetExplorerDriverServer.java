@@ -75,7 +75,10 @@ public class InternetExplorerDriverServer {
     }
   }
 
-  private static synchronized IEServer initializeLib() {
+  private static IEServer initializeLib() {
+    if (lib != null) {
+      return lib;
+    }
     File parentDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "libs");
     try {
       FileHandler.copyResource(parentDir, InternetExplorerDriverServer.class, "IEDriver.dll");
