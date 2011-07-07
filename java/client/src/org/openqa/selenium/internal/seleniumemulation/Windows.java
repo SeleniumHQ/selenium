@@ -82,7 +82,6 @@ public class Windows {
     } catch (NoSuchFrameException e) {
       throw new SeleniumException(e.getMessage(), e);
     }
-
   }
 
   private void selectWindowWithTitle(WebDriver driver, String title) {

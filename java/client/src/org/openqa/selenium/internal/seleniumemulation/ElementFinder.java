@@ -117,10 +117,10 @@ public class ElementFinder {
 
   private WebElement findElementDirectlyIfNecessary(WebDriver driver, String locator) {
     if (locator.startsWith("xpath=")) {
-      return driver.findElement(By.xpath(locator.substring("xpath=".length())));
+      return xpathWizardry(driver, locator.substring("xpath=".length()));
     }
     if (locator.startsWith("//")) {
-      return driver.findElement(By.xpath(locator));
+      return xpathWizardry(driver, locator);
     }
 
     if (locator.startsWith("css=")) {
@@ -137,6 +137,18 @@ public class ElementFinder {
     }
 
     return null;
+  }
+
+  private WebElement xpathWizardry(WebDriver driver, String xpath) {
+    try {
+      return driver.findElement(By.xpath(xpath));
+    } catch (WebDriverException ignored) {} // Because we have inconsitent return values
+
+    if (xpath.endsWith("/")) {
+      return driver.findElement(By.xpath(xpath.substring(0, xpath.length() - 1)));
+    }
+
+    throw new NoSuchElementException("Cannot find an element with the xpath: " + xpath);
   }
 
   private WebElement fallbackToSizzle(WebDriver driver, String locator) {

@@ -31,6 +31,8 @@ public class TestCssLocators extends InternalSelenseTestBase {
 
 		selenium.open("../tests/html/test_locators.html");
 
+    boolean isIe = "true".equals(selenium.getEval("browserVersion.isIE;"));
+
 		// css2 selector test
 
 		// universal selector
@@ -99,10 +101,6 @@ public class TestCssLocators extends InternalSelenseTestBase {
 
 		verifyEquals(selenium.getText("css=div#structuralPseudo :nth-child(-n+6)"), "span1");
 
-		verifyEquals(selenium.getText("css=div#structuralPseudo :first-child"), "span1");
-
-		verifyEquals(selenium.getText("css=div#structuralPseudo :last-child"), "div4");
-
 		verifyEquals(selenium.getText("css=div#onlyChild span:only-child"), "only child");
 
 		verifyTrue(selenium.isElementPresent("css=span:empty"));
@@ -120,13 +118,19 @@ public class TestCssLocators extends InternalSelenseTestBase {
 
 		verifyEquals(selenium.getText("css=div#structuralPseudo span:not(:first-child)"), "span2");
 
-		verifyEquals(selenium.getText("css=div#structuralPseudo :not(span):not(:last-child)"), "div1");
-
 		// combinator test
 
 		verifyEquals(selenium.getText("css=div#combinatorTest span#firstChild ~ span"), "another child");
-				
-		if (isCapableOfAdvancedSelectors(selenium)) {
+
+    if (!isIe) {
+        verifyEquals(selenium.getText("css=div#structuralPseudo :first-child"), "span1");
+
+		    verifyEquals(selenium.getText("css=div#structuralPseudo :last-child"), "div4");
+
+  	    verifyEquals(selenium.getText("css=div#structuralPseudo :not(span):not(:last-child)"), "div1");
+    }
+
+		if (isCapableOfAdvancedSelectors(selenium, isIe)) {
 		    // Versions of firefox prior to 3.5 don't propogate the lang property.
 	      verifyEquals(selenium.getText("css=a:lang(en)"), "this is the first element");
 
@@ -142,10 +146,15 @@ public class TestCssLocators extends InternalSelenseTestBase {
 		}
 	}
 
-  private boolean isCapableOfAdvancedSelectors(Selenium selenium) {
+  private boolean isCapableOfAdvancedSelectors(Selenium selenium, boolean isIe) {
     String isFirefox = selenium.getEval("browserVersion.isFirefox;");
+
     String version = selenium.getEval("browserVersion.firefoxVersion");
-    
+
+    if (isIe) {
+      return false;
+    }
+
     if (Boolean.valueOf(isFirefox)) {
       if (version != null && version.startsWith("3.0")) {
         return false;

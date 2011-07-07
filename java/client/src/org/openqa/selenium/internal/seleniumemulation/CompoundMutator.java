@@ -40,19 +40,22 @@ public class CompoundMutator implements ScriptMutator {
     addMutator(new VariableDeclaration(
         "browserVersion", "var browserVersion = {};"));
     addMutator(new VariableDeclaration(
-            "browserVersion.isFirefox", 
-            "browserVersion.isFirefox = navigator.userAgent.indexOf('Firefox') != -1 || " +
-            "navigator.userAgent.indexOf('Namoroka') != -1 " +
-            "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
+        "browserVersion.isFirefox",
+        "browserVersion.isFirefox = navigator.userAgent.indexOf('Firefox') != -1 || " +
+        "navigator.userAgent.indexOf('Namoroka') != -1 " +
+        "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
     addMutator(new VariableDeclaration(
-            "browserVersion.isGecko",
-            "browserVersion.isGecko = navigator.userAgent.indexOf('Firefox') != -1 || " +
-            "navigator.userAgent.indexOf('Namoroka') != -1 " +
-            "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
+        "browserVersion.isGecko",
+        "browserVersion.isGecko = navigator.userAgent.indexOf('Firefox') != -1 || " +
+        "navigator.userAgent.indexOf('Namoroka') != -1 " +
+        "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
     addMutator(new VariableDeclaration(
-            "browserVersion.firefoxVersion", 
-            "var r = /.*[Firefox|Namoroka|Shiretoko]\\/([\\d\\.]+).*/.exec(navigator.userAgent);" +
-            "browserVersion.firefoxVersion = r ? r[1] : '';"));
+        "browserVersion.firefoxVersion",
+        "var r = /.*[Firefox|Namoroka|Shiretoko]\\/([\\d\\.]+).*/.exec(navigator.userAgent);" +
+        "browserVersion.firefoxVersion = r ? r[1] : '';"));
+    addMutator(new VariableDeclaration(
+        "browserVersion.isIE",
+        "browserVersion.isIE = navigator.appName == 'Microsoft Internet Explorer';"));
 
     addMutator(new FunctionDeclaration("selenium.page",
         "if (!selenium.browserbot) { selenium.browserbot = {} }; return selenium.browserbot;"));
