@@ -9,6 +9,7 @@
     <html:script type="application/javascript">
         var ide_api = new API();
         ide_api.addPlugin("pythonformatters@seleniumhq.org");
+        ide_api.addPluginProvidedFormatter("pythonwdformatter", "Python 2 (WebDriver)", "chrome://python-formatters/content/formats/python2-wd.js");
         ide_api.addPluginProvidedFormatter("pythonformatters", "Python 2 (Remote Control)", "chrome://python-formatters/content/formats/python2-rc.js");
     </html:script>
 </overlay>

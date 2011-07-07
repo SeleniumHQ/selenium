@@ -9,6 +9,7 @@
     <html:script type="application/javascript">
         var ide_api = new API();
         ide_api.addPlugin("csharpformatters@seleniumhq.org");
-        ide_api.addPluginProvidedFormatter("csharpformatters", "C# (Remote Control)", "chrome://csharp-formatters/content/formats/cs-rc.js");
+        ide_api.addPluginProvidedFormatter("csharpwdformatter", "C# (WebDriver)", "chrome://csharp-formatters/content/formats/cs-wd.js");
+        ide_api.addPluginProvidedFormatter("csharpformatter", "C# (Remote Control)", "chrome://csharp-formatters/content/formats/cs-rc.js");
     </html:script>
 </overlay>

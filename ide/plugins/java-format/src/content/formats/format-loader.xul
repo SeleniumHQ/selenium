@@ -11,6 +11,7 @@
     <html:script type="application/javascript">
         var ide_api = new API();
         ide_api.addPlugin("javaformatters@seleniumhq.org");
+        ide_api.addPluginProvidedFormatter("webdriverjunit4formatter", "JUnit 4 (WebDriver)", "chrome://java-formatters/content/formats/webdriver-junit4.js");
         ide_api.addPluginProvidedFormatter("junit3formatter", "JUnit 3 (Remote Control)", "chrome://java-formatters/content/formats/java-rc.js");
         ide_api.addPluginProvidedFormatter("junit4formatter", "JUnit 4 (Remote Control)", "chrome://java-formatters/content/formats/java-rc-junit4.js");
         ide_api.addPluginProvidedFormatter("testngformatter", "TestNG (Remote Control)", "chrome://java-formatters/content/formats/java-rc-testng.js");
