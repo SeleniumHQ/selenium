@@ -65,7 +65,7 @@ module Selenium
         end
 
         def remote_server_jar
-          @remote_server_jar ||= File.join(root_folder, "build/java/server/src/org/openqa/selenium/server/server-standalone.jar")
+          @remote_server_jar ||= File.join(root_folder, "build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar")
         end
 
         def quit
