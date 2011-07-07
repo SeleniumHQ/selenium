@@ -54,6 +54,21 @@ public class CommandLineOptionHelper {
 		}
 		
 	}
+	
+	/**
+	 * get all occurences of -name
+	 * @param name
+	 * @return
+	 */
+	public List<String> getAll(String name) {
+		List<String> res = new ArrayList<String>();
+		for (int i = 0; i < args.length; i++) {
+			if (name.equals(args[i])) {
+				res.add(args[i+1]);
+			}
+		}
+		return res;
+	}
 
 	public List<String> getKeys() {
 		List<String> keys = new ArrayList<String>();

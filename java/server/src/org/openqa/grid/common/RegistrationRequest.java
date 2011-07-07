@@ -409,9 +409,10 @@ public class RegistrationRequest {
 		}
 
 		// capabilities parsing.
-		List<String> l = helper.getParamValues("-browser");
+		List<String> l = helper.getAll("-browser");
 
 		if (l.size() != 0) {
+			capabilities.clear();
 			for (String s : l) {
 				DesiredCapabilities c = addCapabilityFromString(s);
 				capabilities.add(c);
@@ -421,6 +422,7 @@ public class RegistrationRequest {
 	}
 
 	private DesiredCapabilities addCapabilityFromString(String capability) {
+		System.out.println("adding "+capability);
 		String[] s = capability.split(",");
 		if (s.length == 0) {
 			throw new GridConfigurationException("-browser must be followed by a browser description");
@@ -441,6 +443,8 @@ public class RegistrationRequest {
 		return res;
 
 	}
+	
+	
 
 	public JSONObject getRegistrationRequest() {
 		try {
