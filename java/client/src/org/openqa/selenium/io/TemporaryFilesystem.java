@@ -52,6 +52,12 @@ public class TemporaryFilesystem {
     return instance;
   }
 
+  public static void setTemporaryDirectory(File directory) {
+    synchronized (TemporaryFilesystem.class) {
+      instance = new TemporaryFilesystem(directory.getAbsolutePath());
+    }
+  }
+
   public static TemporaryFilesystem getTmpFsBasedOn(String directory) {
     return new TemporaryFilesystem(directory);
   }

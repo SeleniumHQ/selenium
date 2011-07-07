@@ -98,6 +98,36 @@ public class TemporaryFilesystemTest extends TestCase {
     assertTrue(tmpFs.shouldReap());
   }
 
+  @Test
+  public void testShouldBeAbleToModifyDefaultInstance() throws IOException {
+    // Create a temp file *outside* of the directory owned by the current
+    // TemporaryFilesystem instance.
+    File otherTempDir = File.createTempFile("TemporaryFilesystem", "NewDir");
+    otherTempDir.delete();
+    String otherTempDirPath = otherTempDir.getAbsolutePath();
+
+    if (! otherTempDir.mkdirs()) {
+      throw new RuntimeException("Error creating other temporary directory: " +
+          otherTempDirPath);
+    }
+
+    TemporaryFilesystem.setTemporaryDirectory(otherTempDir);
+
+    // Now create a file in the default instance, which should point to the temporary
+    // directory just specified.
+    File createdDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("xzy", "zzyip");
+    boolean isInOtherDir = createdDir.getAbsolutePath().startsWith(otherTempDirPath);
+
+    // Cleanup - rid of the temporary directory and the directory containing it.
+    TemporaryFilesystem.getDefaultTmpFS().deleteTemporaryFiles();
+    otherTempDir.delete();
+
+    // Reset to the default dir
+    TemporaryFilesystem.setTemporaryDirectory(new File(System.getProperty("java.io.tmpdir")));
+
+    assertTrue("Directory should have been created in the provided temp dir.", isInOtherDir);
+  }
+
   private void createDummyFilesystemContent(File dir) throws IOException {
     assertTrue(dir.isDirectory());
     File.createTempFile("cleanup", "file", dir);
