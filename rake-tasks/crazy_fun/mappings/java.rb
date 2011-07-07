@@ -464,7 +464,8 @@ module CrazyFunJava
                 ant.jvmarg(:line => args[:args])
               end
 
-              ant.test(:name => name, :todir => 'build/test_logs')
+              logfile = "TEST-#{args[:name]}-#{name}"
+              ant.test(:name => name, :todir => 'build/test_logs', :outfile => logfile)
             end
             CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
           end
