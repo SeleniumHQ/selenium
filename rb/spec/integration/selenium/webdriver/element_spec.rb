@@ -63,12 +63,12 @@ describe "Element" do
     cheese = driver.find_element(:id, "cheese")
     peas   = driver.find_element(:id, "peas")
 
-    cheese.select
+    cheese.click
 
     cheese.should be_selected
     peas.should_not be_selected
 
-    peas.select
+    peas.click
 
     peas.should be_selected
     cheese.should_not be_selected
@@ -120,9 +120,9 @@ describe "Element" do
       img1 = driver.find_element(:id, "test1")
       img2 = driver.find_element(:id, "test2")
 
-      # TODO: use the interactions API here
-      img1.drag_and_drop_by 100, 100
-      img2.drag_and_drop_on(img1)
+      driver.action.drag_and_drop_by(img1, 100, 100).
+                    drag_and_drop(img2, img1).
+                    perform
 
       img1.location.should == img2.location
     end

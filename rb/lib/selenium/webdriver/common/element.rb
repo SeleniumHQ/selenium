@@ -47,17 +47,6 @@ module Selenium
       end
 
       #
-      # Get the value of this element
-      #
-      # @return [String]
-      #
-
-      def value
-        warn "#{self.class}#value is deprecated, please use #{self.class}#attribute('value')"
-        bridge.getElementValue @id
-      end
-
-      #
       # Get the value of a the given attribute of the element. Will return the current value, even if
       # this has been modified after the page has been loaded. More exactly, this method will return
       # the value of the given attribute, unless that attribute is not present, in which case the
@@ -169,28 +158,6 @@ module Selenium
       end
 
       #
-      # Select this element
-      #
-
-      def select
-        warn "#{self.class}#select is deprecated. Please use #{self.class}#click and determine the current state with #{self.class}#selected?"
-
-        unless displayed?
-          raise Error::ElementNotDisplayedError, "you may not select an element that is not displayed"
-        end
-
-        unless enabled?
-          raise Error::InvalidElementStateError, "cannot select a disabled element"
-        end
-
-        unless selectable?
-          raise Error::InvalidElementStateError, "you may only select options, radios or checkboxes"
-        end
-
-        click unless selected?
-      end
-
-      #
       # Submit this element
       #
 
@@ -234,36 +201,6 @@ module Selenium
 
       def size
         bridge.getElementSize @id
-      end
-
-      #
-      # Drag and drop this element
-      #
-      # @param [Integer] right_by
-      #   number of pixels to drag right
-      # @param [Integer] down_by
-      #   number of pixels to drag down
-      #
-
-      def drag_and_drop_by(right_by, down_by)
-        warn "#{self.class}#drag_and_drop_{by,on} is deprecated. Please use Selenium::WebDriver::Driver#action (and Selenium::WebDriver::ActionBuilder) instead."
-        bridge.dragElement @id, right_by, down_by
-      end
-
-      #
-      # Drag and drop this element on the given element
-      #
-      # @param [WebDriver::Element] other
-      #
-
-      def drag_and_drop_on(other)
-        current_location = location()
-        destination      = other.location
-
-        right = destination.x - current_location.x
-        down  = destination.y - current_location.y
-
-        drag_and_drop_by right, down
       end
 
       #-------------------------------- sugar  --------------------------------
