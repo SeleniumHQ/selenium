@@ -1,16 +1,17 @@
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.remote.CapabilityType;
 
 public class TestClickAt extends InternalSelenseTestBase {
-  @Test
+  @Test @Ignore
   public void testClickAt() throws Exception {
     selenium.open("../tests/html/test_click_page1.html");
     verifyEquals(selenium.getText("link"), "Click here for next page");
