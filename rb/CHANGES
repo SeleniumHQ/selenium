@@ -1,5 +1,12 @@
-0.2.3 (???)
+2.0.0 (2011-07-08)
 ==================
+
+* Remove deprecated methods Element#{toggle,select,drag_and_drop_*,value}.
+* Add ability to pass :verbose, :native_events to the Chrome driver.
+* Synthetic mouse implementation for Firefox - improves drag and drop support platforms without native events.
+* Added Selenium::WebDriver::Opera (requires the remote server).
+* Fix for locating Firefox on 64-bit Windows when missing from the registry.
+* Fix native events on Firefox 4, 5.
 
 0.2.2 (2011-06-22)
 ==================
