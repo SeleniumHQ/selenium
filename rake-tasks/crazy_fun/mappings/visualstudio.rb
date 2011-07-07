@@ -330,24 +330,31 @@ module CrazyFunVisualC
          file full_path do
            copy_prebuilt(fun, full_path)
          end
-         
-         target_task = task task_name => full_path
-      else
-        # TODO (JimEvans): Change :net35 to :net40. Optionally change
-        # build.desc files to refer to the .vcxproj files for the individual
-        # C++ projects, and resolve the project name here.
-        target_task = msbuild task_name do |msb|
-          puts "Compiling: #{task_name} as #{desc_path}"
-          msb.use :net40
-          msb.properties :configuration => :Release, :platform => args[:platform]
-          msb.solution = File.join(dir, args[:project])
-          msb.targets = ["Build"]
-          msb.parameters "/nologo"
-          msb.verbosity = "quiet"
-        end
-      end
 
-      target_task.out = full_path
+         target_task = task task_name => full_path
+
+         target_task.out = full_path
+      else
+        file desc_path do
+          t = msbuild "#{task_name}.compile" do |msb|
+            # TODO (JimEvans): Change :net35 to :net40. Optionally change
+            # build.desc files to refer to the .vcxproj files for the individual
+            # C++ projects, and resolve the project name here.
+            puts "Compiling: #{task_name} as #{desc_path}"
+            msb.use :net40
+            msb.properties :configuration => :Release, :platform => args[:platform]
+            msb.solution = File.join(dir, args[:project])
+            msb.targets = ["Build"]
+            msb.parameters "/nologo"
+            msb.verbosity = "quiet"
+          end
+          t.execute
+        end
+
+        task task_name => desc_path
+        Rake::Task[task_name].out = desc_path
+        target_task = Rake::Task[desc_path]
+      end
 
       add_dependencies(target_task, dir, args[:deps])
       target_task.enhance [ args[:file_deps] ] if args[:file_deps]
