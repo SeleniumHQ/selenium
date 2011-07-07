@@ -17,6 +17,7 @@
 
 package com.thoughtworks.selenium;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import org.openqa.selenium.net.Urls;
 
@@ -134,7 +135,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     
     // for testing
     protected Writer getOutputStreamWriter(HttpURLConnection conn) throws IOException {
-      return new BufferedWriter(new OutputStreamWriter(conn.getOutputStream())); 
+      return new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(), Charsets.UTF_8));
     }
     
     // for testing
