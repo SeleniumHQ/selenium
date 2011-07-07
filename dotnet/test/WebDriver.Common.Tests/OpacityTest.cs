@@ -9,6 +9,8 @@ namespace OpenQA.Selenium
     public class OpacityTest : DriverTestFixture
     {
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Chrome does not yet handle opacity")]
+        [IgnoreBrowser(Browser.IE, "IE9 handles this correctly; other versions do not")]
         public void ShouldBeAbleToClickOnElementsWithOpacityZero()
         {
             driver.Url = clickJackerPage;
