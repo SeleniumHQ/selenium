@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.grid.common.CommandLineOptionHelper;
 import org.openqa.grid.common.JSONConfigurationUtils;
+import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.yaml.snakeyaml.Yaml;
@@ -241,6 +242,7 @@ public class GridHubConfiguration {
 			newSessionWaitTimeout = newSessionWait.intValue() * 1000;
 		}
 
+        allParams.put(RegistrationRequest.MAX_SESSION, 1);
 	}
 
 	/**
