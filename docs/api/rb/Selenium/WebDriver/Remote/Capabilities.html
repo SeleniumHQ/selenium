@@ -98,10 +98,9 @@
   <strong>This class is part of a private API.</strong> 
   You should avoid using this class if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-Specification of the desired and/or actual capabilities of the browser that
-the server is being asked to create.
-</p>
+
+<p>Specification of the desired and/or actual capabilities of the browser that
+the server is being asked to create.</p>
 
 
   </div>
@@ -394,9 +393,8 @@ the server is being asked to create.
   <span class="private note title">Private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Allows setting arbitrary capabilities.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Allows setting arbitrary capabilities.</p>
 </div></span>
   
 </li>
@@ -462,9 +460,8 @@ Allows setting arbitrary capabilities.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Firefox-specific options:.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Firefox-specific options:.</p>
 </div></span>
   
 </li>
@@ -548,9 +545,8 @@ Firefox-specific options:.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
-Firefox-specific options:
-</p>
+    
+<p>Firefox-specific options:</p>
 
 
   </div>
@@ -569,9 +565,8 @@ Firefox-specific options:
       
       
         &mdash;
-        <div class='inline'><p>
-a customizable set of options
-</p>
+        <div class='inline'>
+<p>a customizable set of options</p>
 </div>
       
     </li>
@@ -586,9 +581,8 @@ a customizable set of options
       
       
         &mdash;
-        <div class='inline'><p>
-a customizable set of options
-</p>
+        <div class='inline'>
+<p>a customizable set of options</p>
 </div>
       
     </li>
@@ -603,9 +597,8 @@ a customizable set of options
       
       
         &mdash;
-        <div class='inline'><p>
-a customizable set of options
-</p>
+        <div class='inline'>
+<p>a customizable set of options</p>
 </div>
       
     </li>
@@ -620,9 +613,8 @@ a customizable set of options
       
       
         &mdash;
-        <div class='inline'><p>
-a customizable set of options
-</p>
+        <div class='inline'>
+<p>a customizable set of options</p>
 </div>
       
     </li>
@@ -637,9 +629,8 @@ a customizable set of options
       
       
         &mdash;
-        <div class='inline'><p>
-a customizable set of options
-</p>
+        <div class='inline'>
+<p>a customizable set of options</p>
 </div>
       
     </li>
@@ -654,9 +645,8 @@ a customizable set of options
       
       
         &mdash;
-        <div class='inline'><p>
-a customizable set of options
-</p>
+        <div class='inline'>
+<p>a customizable set of options</p>
 </div>
       
     </li>
@@ -671,9 +661,8 @@ a customizable set of options
       
       
         &mdash;
-        <div class='inline'><p>
-a customizable set of options
-</p>
+        <div class='inline'>
+<p>a customizable set of options</p>
 </div>
       
     </li>
@@ -688,9 +677,8 @@ a customizable set of options
       
       
         &mdash;
-        <div class='inline'><p>
-a customizable set of options
-</p>
+        <div class='inline'>
+<p>a customizable set of options</p>
 </div>
       
     </li>
@@ -705,9 +693,8 @@ a customizable set of options
       
       
         &mdash;
-        <div class='inline'><p>
-a customizable set of options
-</p>
+        <div class='inline'>
+<p>a customizable set of options</p>
 </div>
       
     </li>
@@ -724,13 +711,13 @@ a customizable set of options
       <pre class="lines">
 
 
-142
-143
 144
-145</pre>
+145
+146
+147</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 142</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 144</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
   <span class='@capabilities ivar id'>@capabilities</span> <span class='assign token'>=</span> <span class='DEFAULTS constant id'>DEFAULTS</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span>
@@ -1074,8 +1061,6 @@ a customizable set of options
       <pre class="lines">
 
 
-105
-106
 107
 108
 109
@@ -1092,10 +1077,12 @@ a customizable set of options
 120
 121
 122
-123</pre>
+123
+124
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 105</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 107</span>
 
 <span class='def def kw'>def</span> <span class='json_create identifier id'>json_create</span><span class='lparen token'>(</span><span class='data identifier id'>data</span><span class='rparen token'>)</span>
   <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
@@ -1152,15 +1139,19 @@ a customizable set of options
 96
 97
 98
-99</pre>
+99
+100
+101</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 94</span>
 
 <span class='def def kw'>def</span> <span class='opera identifier id'>opera</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
   <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
-    <span class='symbol val'>:browser_name</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;opera&quot;</span><span class='comma token'>,</span>
-    <span class='symbol val'>:javascript_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span>
+    <span class='symbol val'>:browser_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;opera&quot;</span><span class='comma token'>,</span>
+    <span class='symbol val'>:javascript_enabled</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
+    <span class='symbol val'>:takes_screenshot</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
+    <span class='symbol val'>:css_selectors_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
   <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -1200,13 +1191,13 @@ a customizable set of options
       <pre class="lines">
 
 
-210
-211
 212
-213</pre>
+213
+214
+215</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 210</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 212</span>
 
 <span class='def def kw'>def</span> <span class='eq op'>==</span><span class='lparen token'>(</span><span class='other identifier id'>other</span><span class='rparen token'>)</span>
   <span class='return return kw'>return</span> <span class='false false kw'>false</span> <span class='unless unless_mod kw'>unless</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span>
@@ -1243,12 +1234,12 @@ a customizable set of options
       <pre class="lines">
 
 
-155
-156
-157</pre>
+157
+158
+159</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 155</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 157</span>
 
 <span class='def def kw'>def</span> <span class='aref op'>[]</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
   <span class='@capabilities ivar id'>@capabilities</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span>
@@ -1272,9 +1263,8 @@ a customizable set of options
   <strong>This method is part of a private API.</strong> 
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-Allows setting arbitrary capabilities.
-</p>
+
+<p>Allows setting arbitrary capabilities.</p>
 
 
   </div>
@@ -1287,12 +1277,12 @@ Allows setting arbitrary capabilities.
       <pre class="lines">
 
 
-151
-152
-153</pre>
+153
+154
+155</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 151</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 153</span>
 
 <span class='def def kw'>def</span> <span class='aset op'>[]=</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='comma token'>,</span> <span class='value identifier id'>value</span><span class='rparen token'>)</span>
   <span class='@capabilities ivar id'>@capabilities</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
@@ -1328,8 +1318,6 @@ Allows setting arbitrary capabilities.
       <pre class="lines">
 
 
-183
-184
 185
 186
 187
@@ -1349,10 +1337,12 @@ Allows setting arbitrary capabilities.
 201
 202
 203
-204</pre>
+204
+205
+206</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 185</span>
 
 <span class='def def kw'>def</span> <span class='as_json identifier id'>as_json</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
   <span class='hash identifier id'>hash</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span>
@@ -1407,12 +1397,12 @@ Allows setting arbitrary capabilities.
       <pre class="lines">
 
 
-218
-219
-220</pre>
+220
+221
+222</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 218</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 220</span>
 
 <span class='def def kw'>def</span> <span class='capabilities identifier id'>capabilities</span>
   <span class='@capabilities ivar id'>@capabilities</span>
@@ -1448,18 +1438,18 @@ Allows setting arbitrary capabilities.
       <pre class="lines">
 
 
-159
-160
 161
 162
 163
 164
 165
 166
-167</pre>
+167
+168
+169</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 159</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 161</span>
 
 <span class='def def kw'>def</span> <span class='merge! fid id'>merge!</span><span class='lparen token'>(</span><span class='other identifier id'>other</span><span class='rparen token'>)</span>
   <span class='if if kw'>if</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:capabilities</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='capabilities identifier id'>capabilities</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Hash constant id'>Hash</span><span class='rparen token'>)</span>
@@ -1501,8 +1491,6 @@ Allows setting arbitrary capabilities.
       <pre class="lines">
 
 
-169
-170
 171
 172
 173
@@ -1510,10 +1498,12 @@ Allows setting arbitrary capabilities.
 175
 176
 177
-178</pre>
+178
+179
+180</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 169</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 171</span>
 
 <span class='def def kw'>def</span> <span class='proxy= identifier id'>proxy=</span><span class='lparen token'>(</span><span class='proxy identifier id'>proxy</span><span class='rparen token'>)</span>
   <span class='case case kw'>case</span> <span class='proxy identifier id'>proxy</span>
@@ -1556,12 +1546,12 @@ Allows setting arbitrary capabilities.
       <pre class="lines">
 
 
-206
-207
-208</pre>
+208
+209
+210</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 206</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 208</span>
 
 <span class='def def kw'>def</span> <span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='as_json identifier id'>as_json</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
@@ -1577,7 +1567,7 @@ Allows setting arbitrary capabilities.
 </div>
     
     <div id="footer">
-  Generated on Wed Jun 22 17:45:16 2011 by 
+  Generated on Fri Jul 08 01:19:24 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.1 (ruby-1.8.7).
 </div>

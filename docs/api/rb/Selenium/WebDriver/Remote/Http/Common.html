@@ -120,9 +120,8 @@
   <strong>This constant is part of a private API.</strong> 
   You should avoid using this constant if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-same as chromium/gecko
-</p>
+
+<p>same as chromium/gecko</p>
 
 
   </div>
@@ -196,9 +195,8 @@ same as chromium/gecko
   <span class="private note title">Private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute timeout.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute timeout.</p>
 </div></span>
   
 </li>
@@ -209,39 +207,6 @@ Returns the value of attribute timeout.
 
 
 
-  
-    <h2>
-      Class Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#timeout%3D-class_method" title="timeout= (class method)">+ (Object) <strong>timeout=</strong>(timeout) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  <span class="private note title">Private</span>
-
-  
-    <span class="summary_desc"><div class='inline'><p>
-deprecated.
-</p>
-</div></span>
-  
-</li>
-
-      
-    </ul>
   
     <h2>
       Instance Method Summary
@@ -289,9 +254,8 @@ deprecated.
   <span class="private note title">Private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of Common.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of Common.</p>
 </div></span>
   
 </li>
@@ -316,9 +280,8 @@ A new instance of Common.
   <strong>This method is part of a private API.</strong> 
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-A new instance of Common
-</p>
+
+<p>A new instance of Common</p>
 
 
   </div>
@@ -331,12 +294,12 @@ A new instance of Common
       <pre class="lines">
 
 
-19
-20
-21</pre>
+13
+14
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 13</span>
 
 <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span>
   <span class='@timeout ivar id'>@timeout</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
@@ -368,9 +331,8 @@ A new instance of Common
   <strong>This method is part of a private API.</strong> 
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-Returns the value of attribute timeout
-</p>
+
+<p>Returns the value of attribute timeout</p>
 
 
   </div>
@@ -383,12 +345,12 @@ Returns the value of attribute timeout
       <pre class="lines">
 
 
-16
-17
-18</pre>
+10
+11
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 10</span>
 
 <span class='def def kw'>def</span> <span class='timeout identifier id'>timeout</span>
   <span class='@timeout ivar id'>@timeout</span>
@@ -401,71 +363,6 @@ Returns the value of attribute timeout
     
   </div>
 
-
-  <div id="class_method_details" class="method_details_list">
-    <h2>Class Method Details</h2>
-    
-    
-      <div class="method_details first">
-  <p class="signature first" id="timeout=-class_method">
-  
-    + (<tt>Object</tt>) <strong>timeout=</strong>(timeout) 
-  
-
-  
-</p><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong> 
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-<p>
-deprecated.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  <h3>Raises:</h3>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="../../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">Error::WebDriverError</a></span></tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-11
-12
-13
-14</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 11</span>
-
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='timeout identifier id'>timeout</span><span class='assign token'>=</span><span class='lparen token'>(</span><span class='timeout identifier id'>timeout</span><span class='rparen token'>)</span>
-  <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span>
-    <span class='string val'>&quot;Configuration of HTTP timeouts has changed. See http://code.google.com/p/selenium/wiki/RubyBindings for updated intructions.&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-  </div>
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
@@ -496,6 +393,12 @@ deprecated.
       <pre class="lines">
 
 
+17
+18
+19
+20
+21
+22
 23
 24
 25
@@ -508,16 +411,10 @@ deprecated.
 32
 33
 34
-35
-36
-37
-38
-39
-40
-41</pre>
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 17</span>
 
 <span class='def def kw'>def</span> <span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='comma token'>,</span> <span class='command_hash identifier id'>command_hash</span><span class='rparen token'>)</span>
   <span class='url identifier id'>url</span>      <span class='assign token'>=</span> <span class='server_url identifier id'>server_url</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='url identifier id'>url</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='URI constant id'>URI</span><span class='rparen token'>)</span>
@@ -549,7 +446,7 @@ deprecated.
 </div>
     
     <div id="footer">
-  Generated on Wed Jun 22 17:45:16 2011 by 
+  Generated on Fri Jul 08 01:19:24 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.1 (ruby-1.8.7).
 </div>
