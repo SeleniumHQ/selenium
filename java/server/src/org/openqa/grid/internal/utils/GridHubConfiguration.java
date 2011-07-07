@@ -223,7 +223,7 @@ public class GridHubConfiguration {
 		// Now pull out each of the grid config values.
 		Integer poll = (Integer) hub.get("remoteControlPollingIntervalInSeconds");
 		if (poll != null) {
-			allParams.put("nodePolling", poll.intValue() * 1000);
+			allParams.put(RegistrationRequest.NODE_POLLING, poll.intValue() * 1000);
 			cleanupCycle = poll.intValue() * 1000;
 		}
 
@@ -232,7 +232,7 @@ public class GridHubConfiguration {
 			timeout = timeout.intValue() * 1000;
 		}
 
-		Integer port = (Integer) hub.get("port");
+		Integer port = (Integer) hub.get(RegistrationRequest.PORT);
 		if (port != null) {
 			port = port.intValue();
 		}
@@ -257,23 +257,23 @@ public class GridHubConfiguration {
 			JSONObject o = JSONConfigurationUtils.loadJSON(resource);
 
 			// handling the core config.
-			if (o.has("host") && !o.isNull("host")) {
-				host = o.getString("host");
+			if (o.has(RegistrationRequest.HOST) && !o.isNull(RegistrationRequest.HOST)) {
+				host = o.getString(RegistrationRequest.HOST);
 			}
-			if (o.has("port") && !o.isNull("port")) {
-				port = o.getInt("port");
+			if (o.has(RegistrationRequest.PORT) && !o.isNull(RegistrationRequest.PORT)) {
+				port = o.getInt(RegistrationRequest.PORT);
 			}
-			if (o.has("cleanUpCycle") && !o.isNull("cleanUpCycle")) {
-				cleanupCycle = o.getInt("cleanUpCycle");
+			if (o.has(RegistrationRequest.CLEAN_UP_CYCLE) && !o.isNull(RegistrationRequest.CLEAN_UP_CYCLE)) {
+				cleanupCycle = o.getInt(RegistrationRequest.CLEAN_UP_CYCLE);
 			}
-			if (o.has("timeout") && !o.isNull("timeout")) {
-				timeout = o.getInt("timeout");
+			if (o.has(RegistrationRequest.TIME_OUT) && !o.isNull(RegistrationRequest.TIME_OUT)) {
+				timeout = o.getInt(RegistrationRequest.TIME_OUT);
 			}
 			if (o.has("newSessionWaitTimeout") && !o.isNull("newSessionWaitTimeout")) {
 				newSessionWaitTimeout = o.getInt("newSessionWaitTimeout");
 			}
-			if (o.has("servlets") && !o.isNull("servlets")) {
-				JSONArray jsservlets = o.getJSONArray("servlets");
+			if (o.has(RegistrationRequest.SERVLETS) && !o.isNull(RegistrationRequest.SERVLETS)) {
+				JSONArray jsservlets = o.getJSONArray(RegistrationRequest.SERVLETS);
 				for (int i = 0; i < jsservlets.length(); i++) {
 					servlets.add(jsservlets.getString(i));
 				}
