@@ -6,6 +6,7 @@
         <em:name>Selenium IDE: Ruby Formatters</em:name>
         <em:version>1.1.0</em:version>
         <em:creator>Adam Goucher</em:creator>
+        <em:developer>Samit Badle</em:developer>
         <em:description>Ruby code formatters for Selenium IDE</em:description>
         <em:type>2</em:type>
         <em:homepageURL>http://seleniumhq.org/projects/ide</em:homepageURL>
