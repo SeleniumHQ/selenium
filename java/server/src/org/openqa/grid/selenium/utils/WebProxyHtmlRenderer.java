@@ -1,5 +1,9 @@
 package org.openqa.grid.selenium.utils;
 
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 import org.openqa.grid.internal.RemoteProxy;
@@ -26,17 +30,18 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<fieldset>");
 		builder.append("<legend>").append(proxy.getClass().getSimpleName()).append("</legend>");
-		builder.append("listening on ").append(proxy.getRemoteURL());
+        builder.append("listening on ").append(proxy.getRemoteURL());
+
 		if (((WebRemoteProxy) proxy).isDown()) {
 			builder.append("(cannot be reached at the moment)");
 		}
-		builder.append("<br>");
+		builder.append("<br />");
 		if (proxy.getTimeOut() > 0) {
 			int inSec = proxy.getTimeOut() / 1000;
-			builder.append("test session time out after ").append(inSec).append(" sec.<br>");
+			builder.append("test session time out after ").append(inSec).append(" sec.<br />");
 		}
 
-		builder.append("Supports up to <b>").append(proxy.getMaxNumberOfConcurrentTestSessions()).append("</b> concurrent tests from : </u><br>");
+		builder.append("Supports up to <b>").append(proxy.getMaxNumberOfConcurrentTestSessions()).append("</b> concurrent tests from: <br />");
 
 		builder.append("");
 		for (TestSlot slot : proxy.getTestSlots()) {
