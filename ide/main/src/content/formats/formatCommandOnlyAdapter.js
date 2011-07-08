@@ -124,3 +124,6 @@ function indent() {
 	return this.lastIndent || '';
 }
 
+function setIndent(i) {
+  this.lastIndent = indents(i);
+}
