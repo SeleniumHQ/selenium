@@ -2,7 +2,7 @@ prune *
 recursive-include py/selenium/webdriver *.py
 recursive-include py/selenium/webdriver/common *.py
 recursive-include py/selenium/common *.py
-recursive-include py/selenium/webdriver/chrome *.py *.zip
+recursive-include py/selenium/webdriver/chrome *.py
 recursive-include py/selenium/webdriver/firefox *.py *.xpi
 recursive-include py/selenium/webdriver/ie *.py *.dll
 recursive-include py/selenium/webdriver/remote *.py
