@@ -1,10 +1,10 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="grid-tests" verbose="1">
-    <test name="grid-tests">
-        <packages>
-        	<package name="org.openqa.grid.common"/>
-            <package name="org.openqa.grid.internal.*"/>
-            <package name="org.openqa.grid.plugin"/>
-        </packages>
-    </test>
+  <test name="grid-tests">
+    <packages>
+      <package name="org.openqa.grid.common"/>
+      <package name="org.openqa.grid.internal.*"/>
+      <package name="org.openqa.grid.plugin"/>
+    </packages>
+  </test>
 </suite>

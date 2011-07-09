@@ -19,42 +19,40 @@ import com.thoughtworks.selenium.Selenium;
 /**
  * checks that the browser is properly stopped when a selenium1 session times
  * out.
- * 
- * 
  */
 public class SeleniumTestCompleteTest {
 
-	private Hub hub;
+  private Hub hub;
 
-	@BeforeClass(alwaysRun = true)
-	public void setup() throws Exception {
-		GridHubConfiguration config = new GridHubConfiguration();
-		config.setPort(PortProber.findFreePort());
-		hub = new Hub(config);
+  @BeforeClass(alwaysRun = true)
+  public void setup() throws Exception {
+    GridHubConfiguration config = new GridHubConfiguration();
+    config.setPort(PortProber.findFreePort());
+    hub = new Hub(config);
 
-		hub.start();
+    hub.start();
 
-		// register a selenium 1
+    // register a selenium 1
 
-		SelfRegisteringRemote selenium1 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
-		selenium1.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 1);
-		selenium1.setTimeout(5000, 2000);
-		selenium1.startRemoteServer();
-		selenium1.sendRegistrationRequest();
+    SelfRegisteringRemote selenium1 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+    selenium1.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 1);
+    selenium1.setTimeout(5000, 2000);
+    selenium1.startRemoteServer();
+    selenium1.sendRegistrationRequest();
 
-		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
-	}
+    RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
+  }
 
-	@Test
-	public void test() throws InterruptedException {
-		String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/console";
+  @Test
+  public void test() throws InterruptedException {
+    String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/console";
 
-		Selenium selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", url);
-		selenium.start();
-		selenium.open(url);
-		Thread.sleep(8000);
+    Selenium selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", url);
+    selenium.start();
+    selenium.open(url);
+    Thread.sleep(8000);
 
-		Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
+    Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
 
-	}
+  }
 }

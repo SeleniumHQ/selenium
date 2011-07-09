@@ -13,39 +13,41 @@ import org.openqa.grid.web.servlet.handler.WebDriverRequestHandler;
 
 public class MockedRequestHandler extends WebDriverRequestHandler {
 
-	public MockedRequestHandler(Registry registry) {
-		super(null, null, registry);
-	}
+  public MockedRequestHandler(Registry registry) {
+    super(null, null, registry);
+  }
 
-	public MockedRequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
-		super(request, response, registry);
-	}
+  public MockedRequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
+    super(request, response, registry);
+  }
 
-	@Override
-	public String forwardNewSessionRequest(TestSession session) {
-		//System.out.println("forwarding to " + session.getInternalKey());
-		return "";
-	}
-	
-	@Override
-	protected void forwardRequest(TestSession session, RequestHandler handler) throws java.io.IOException {
-		//System.out.println("forwarding request to "+session);
-	};
-	
+  @Override
+  public String forwardNewSessionRequest(TestSession session) {
+    //System.out.println("forwarding to " + session.getInternalKey());
+    return "";
+  }
 
-	public void setSession(TestSession session) {
-		super.setSession(session);
-	}
-	
-	public TestSession getTestSession() {
-		return super.getSession();
-	}
+  @Override
+  protected void forwardRequest(TestSession session, RequestHandler handler) throws java.io.IOException {
+    //System.out.println("forwarding request to "+session);
+  }
 
-	public void setDesiredCapabilities(Map<String, Object> desiredCapabilities) {
-		super.setDesiredCapabilities(desiredCapabilities);
-	}
+  ;
 
-	public void setRequestType(RequestType requestType) {
-		super.setRequestType(requestType);
-	}
+
+  public void setSession(TestSession session) {
+    super.setSession(session);
+  }
+
+  public TestSession getTestSession() {
+    return super.getSession();
+  }
+
+  public void setDesiredCapabilities(Map<String, Object> desiredCapabilities) {
+    super.setDesiredCapabilities(desiredCapabilities);
+  }
+
+  public void setRequestType(RequestType requestType) {
+    super.setRequestType(requestType);
+  }
 }

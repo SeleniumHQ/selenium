@@ -18,37 +18,36 @@ import org.testng.annotations.Test;
 
 public class GridSerializeExceptionTests {
 
-	
-	
-	private Hub hub;
-	private URL hubURL;
 
-	@BeforeClass(alwaysRun = false)
-	public void prepare() throws Exception {
-		
-		GridHubConfiguration config = new GridHubConfiguration();
-		config.setPort(PortProber.findFreePort());
-		hub = new Hub(config);
-		hubURL = hub.getUrl();
-		
-		hub.start();
+  private Hub hub;
+  private URL hubURL;
 
-		SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
-		//remote.addBrowser(DesiredCapabilities.firefox(),1);
-		
-		remote.startRemoteServer();
-		remote.sendRegistrationRequest();
-		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
-	}
+  @BeforeClass(alwaysRun = false)
+  public void prepare() throws Exception {
 
-	@Test(expectedExceptions=WebDriverException.class)
-	public void testwebdriver() throws Throwable {
-		DesiredCapabilities ff = DesiredCapabilities.firefox();
-		new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);	
-	}
+    GridHubConfiguration config = new GridHubConfiguration();
+    config.setPort(PortProber.findFreePort());
+    hub = new Hub(config);
+    hubURL = hub.getUrl();
 
-	@AfterClass(alwaysRun = false)
-	public void stop() throws Exception {
-		hub.stop();
-	}
+    hub.start();
+
+    SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+    //remote.addBrowser(DesiredCapabilities.firefox(),1);
+
+    remote.startRemoteServer();
+    remote.sendRegistrationRequest();
+    RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
+  }
+
+  @Test(expectedExceptions = WebDriverException.class)
+  public void testwebdriver() throws Throwable {
+    DesiredCapabilities ff = DesiredCapabilities.firefox();
+    new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+  }
+
+  @AfterClass(alwaysRun = false)
+  public void stop() throws Exception {
+    hub.stop();
+  }
 }

@@ -19,58 +19,58 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@Test(groups = { "slow", "firefox" })
+@Test(groups = {"slow", "firefox"})
 public class TimeoutWebDriver {
 
-	private Hub hub;
-	private URL hubURL;
+  private Hub hub;
+  private URL hubURL;
 
-	@BeforeClass(alwaysRun = false)
-	public void prepare() throws Exception {
-		GridHubConfiguration config = new GridHubConfiguration();
-		config.setPort(PortProber.findFreePort());
-		hub = new Hub(config);
-		hubURL = hub.getUrl();
-		
-		hub.start();
-		
-		SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
-		
-		remote.setMaxConcurrent(1);
-		remote.setTimeout(5000,250);
-		remote.addBrowser(DesiredCapabilities.firefox(),1);
-		
-		remote.startRemoteServer();
-		remote.sendRegistrationRequest();
-		
-		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
-	}
+  @BeforeClass(alwaysRun = false)
+  public void prepare() throws Exception {
+    GridHubConfiguration config = new GridHubConfiguration();
+    config.setPort(PortProber.findFreePort());
+    hub = new Hub(config);
+    hubURL = hub.getUrl();
 
-	@Test
-	public void testOk() throws MalformedURLException, InterruptedException {
-		DesiredCapabilities ff = DesiredCapabilities.firefox();
-		WebDriver driver = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
-		Assert.assertTrue(hub.getRegistry().getActiveSessions().size() == 1);
-		driver.get(hubURL + "/grid/console");
-		Assert.assertEquals(driver.getTitle(), "Grid overview");
-		driver.quit();
-	}
-	
-	@Test(expectedExceptions = WebDriverException.class)
-	public void testTimeout() throws MalformedURLException, InterruptedException {
-		DesiredCapabilities ff = DesiredCapabilities.firefox();
-		WebDriver driver = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
-		Assert.assertTrue(hub.getRegistry().getActiveSessions().size() == 1);
-		driver.get(hubURL + "/grid/console");
-		Assert.assertEquals(driver.getTitle(), "Grid overview");
-		Thread.sleep(7000);
-		// sould throw here. The session has timed out.
-		driver.quit();
-	}
+    hub.start();
 
-	@AfterClass(alwaysRun = false)
-	public void stop() throws Exception {
-		Assert.assertTrue(hub.getRegistry().getActiveSessions().size() == 0);
-		hub.stop();
-	}
+    SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+
+    remote.setMaxConcurrent(1);
+    remote.setTimeout(5000, 250);
+    remote.addBrowser(DesiredCapabilities.firefox(), 1);
+
+    remote.startRemoteServer();
+    remote.sendRegistrationRequest();
+
+    RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
+  }
+
+  @Test
+  public void testOk() throws MalformedURLException, InterruptedException {
+    DesiredCapabilities ff = DesiredCapabilities.firefox();
+    WebDriver driver = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+    Assert.assertTrue(hub.getRegistry().getActiveSessions().size() == 1);
+    driver.get(hubURL + "/grid/console");
+    Assert.assertEquals(driver.getTitle(), "Grid overview");
+    driver.quit();
+  }
+
+  @Test(expectedExceptions = WebDriverException.class)
+  public void testTimeout() throws MalformedURLException, InterruptedException {
+    DesiredCapabilities ff = DesiredCapabilities.firefox();
+    WebDriver driver = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+    Assert.assertTrue(hub.getRegistry().getActiveSessions().size() == 1);
+    driver.get(hubURL + "/grid/console");
+    Assert.assertEquals(driver.getTitle(), "Grid overview");
+    Thread.sleep(7000);
+    // sould throw here. The session has timed out.
+    driver.quit();
+  }
+
+  @AfterClass(alwaysRun = false)
+  public void stop() throws Exception {
+    Assert.assertTrue(hub.getRegistry().getActiveSessions().size() == 0);
+    hub.stop();
+  }
 }

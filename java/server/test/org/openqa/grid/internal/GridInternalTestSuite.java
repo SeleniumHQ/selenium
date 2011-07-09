@@ -11,24 +11,24 @@ import org.openqa.grid.plugin.RemoteProxyInheritanceTest;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     RemoteProxyInheritanceTest.class,
-	SmokeTest.class,
-	SessionTimesOutTest.class,
-	RemoteProxyTest.class,
-	RemoteProxySlowSetup.class,
-	RegistryTest.class,
-	RegistryStateTest.class,
-	PriorityTestLoad.class,
-	PriorityTest.class,
-	ParallelTest.class,
-	LoadBalancedTests.class,
-	DefaultToFIFOPriorityTest.class,
-	ConcurrencyLock.class,
-	AddingProxyAgainFreesResources.class,
-	DefaultCapabilityMatcherTest.class,
-	SessionListenerTest.class,
-	RegistrationListenerTest.class,
-	StatusServletTests.class,
-	Grid1ConfigurationLoaderTest.class
+    SmokeTest.class,
+    SessionTimesOutTest.class,
+    RemoteProxyTest.class,
+    RemoteProxySlowSetup.class,
+    RegistryTest.class,
+    RegistryStateTest.class,
+    PriorityTestLoad.class,
+    PriorityTest.class,
+    ParallelTest.class,
+    LoadBalancedTests.class,
+    DefaultToFIFOPriorityTest.class,
+    ConcurrencyLock.class,
+    AddingProxyAgainFreesResources.class,
+    DefaultCapabilityMatcherTest.class,
+    SessionListenerTest.class,
+    RegistrationListenerTest.class,
+    StatusServletTests.class,
+    Grid1ConfigurationLoaderTest.class
 }
 )
 public class GridInternalTestSuite {

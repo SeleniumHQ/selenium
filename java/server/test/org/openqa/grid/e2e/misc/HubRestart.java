@@ -18,66 +18,66 @@ import org.testng.annotations.Test;
 
 public class HubRestart {
 
-	private Hub hub;
-	private Registry registry;
-	private SelfRegisteringRemote remote;
-	private SelfRegisteringRemote remote2;
-	private GridHubConfiguration config = new GridHubConfiguration();
+  private Hub hub;
+  private Registry registry;
+  private SelfRegisteringRemote remote;
+  private SelfRegisteringRemote remote2;
+  private GridHubConfiguration config = new GridHubConfiguration();
 
-	@BeforeClass(alwaysRun = false)
-	public void prepare() throws Exception {
+  @BeforeClass(alwaysRun = false)
+  public void prepare() throws Exception {
 
-		config.setPort(PortProber.findFreePort());
-		hub = new Hub(config);
-		registry = hub.getRegistry();
-		hub.start();
+    config.setPort(PortProber.findFreePort());
+    hub = new Hub(config);
+    registry = hub.getRegistry();
+    hub.start();
 
-		remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
-		remote2 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+    remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
+    remote2 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
 
-		remote.getConfiguration().put(RegistrationRequest.REGISTER_CYCLE, 250);
-		remote2.getConfiguration().put(RegistrationRequest.REGISTER_CYCLE, 250);
+    remote.getConfiguration().put(RegistrationRequest.REGISTER_CYCLE, 250);
+    remote2.getConfiguration().put(RegistrationRequest.REGISTER_CYCLE, 250);
 
-		remote.startRemoteServer();
-		remote2.startRemoteServer();
+    remote.startRemoteServer();
+    remote2.startRemoteServer();
 
-	}
+  }
 
-	@Test(timeOut = 5000)
-	public void nodeRegisterAgain() throws Exception {
+  @Test(timeOut = 5000)
+  public void nodeRegisterAgain() throws Exception {
 
-		// every 5 sec, the node register themselves again.
-		Assert.assertEquals(remote.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), 250);
-		Assert.assertEquals(remote2.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), 250);
-		remote.startRegistrationProcess();
-		remote2.startRegistrationProcess();
+    // every 5 sec, the node register themselves again.
+    Assert.assertEquals(remote.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), 250);
+    Assert.assertEquals(remote2.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), 250);
+    remote.startRegistrationProcess();
+    remote2.startRegistrationProcess();
 
-		// should be up
-		RegistryTestHelper.waitForNode(hub.getRegistry(), 2);
+    // should be up
+    RegistryTestHelper.waitForNode(hub.getRegistry(), 2);
 
-		// crashing the hub.
-		hub.stop();
+    // crashing the hub.
+    hub.stop();
 
-		// check that the remote do not crash if there is no hub to reply.
-		Thread.sleep(1000);
-		
-		// and starting a new hub
-		hub = new Hub(config);
-		registry = hub.getRegistry();
-		// should be empty
-		Assert.assertEquals(registry.getAllProxies().size(), 0);
-		hub.start();
+    // check that the remote do not crash if there is no hub to reply.
+    Thread.sleep(1000);
 
-		// the node will appear again after 250 ms.
-		RegistryTestHelper.waitForNode(hub.getRegistry(), 2);
+    // and starting a new hub
+    hub = new Hub(config);
+    registry = hub.getRegistry();
+    // should be empty
+    Assert.assertEquals(registry.getAllProxies().size(), 0);
+    hub.start();
 
-	}
+    // the node will appear again after 250 ms.
+    RegistryTestHelper.waitForNode(hub.getRegistry(), 2);
 
-	@AfterClass(alwaysRun = false)
-	public void stop() throws Exception {
-		hub.stop();
-		remote.stopRemoteServer();
-		remote2.stopRemoteServer();
+  }
 
-	}
+  @AfterClass(alwaysRun = false)
+  public void stop() throws Exception {
+    hub.stop();
+    remote.stopRemoteServer();
+    remote2.stopRemoteServer();
+
+  }
 }

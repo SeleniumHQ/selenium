@@ -21,168 +21,166 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * 
  * how to setup a grid that does not use FIFO for the requests.
- * 
  */
 public class WebDriverPriorityDemo {
 
-	private Hub hub;
-	private URL hubURL;
+  private Hub hub;
+  private URL hubURL;
 
-	// start a small grid that only has 1 testing slot : firefox
-	@BeforeClass(alwaysRun = true)
-	public void prepare() throws Exception {
+  // start a small grid that only has 1 testing slot : firefox
+  @BeforeClass(alwaysRun = true)
+  public void prepare() throws Exception {
 
-		GridHubConfiguration config = new GridHubConfiguration();
-		config.setPort(PortProber.findFreePort());
-		hub = new Hub(config);
-		hubURL = hub.getUrl();
-		
-		hub.start();
-		hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
+    GridHubConfiguration config = new GridHubConfiguration();
+    config.setPort(PortProber.findFreePort());
+    hub = new Hub(config);
+    hubURL = hub.getUrl();
 
-		SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
-		remote.addBrowser(DesiredCapabilities.firefox(),1);
-		
-		remote.startRemoteServer();
-		remote.setMaxConcurrent(1);
-		remote.setTimeout(-1, -1);
-		remote.sendRegistrationRequest();
+    hub.start();
+    hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
 
-		// assigning a priority rule where requests with the flag "important"
-		// go first.
-		hub.getRegistry().setPrioritizer(new Prioritizer() {
-			public int compareTo(Map<String, Object> a, Map<String, Object> b) {
-				boolean aImportant = a.get("_important") == null ? false : Boolean.parseBoolean(a.get("_important").toString());
-				boolean bImportant = b.get("_important") == null ? false : Boolean.parseBoolean(b.get("_important").toString());
-				if (aImportant == bImportant) {
-					return 0;
-				}
-				if (aImportant && !bImportant) {
-					return -1;
-				} else {
-					return 1;
-				}
-			}
-		});
-	}
+    SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+    remote.addBrowser(DesiredCapabilities.firefox(), 1);
 
-	WebDriver runningOne;
+    remote.startRemoteServer();
+    remote.setMaxConcurrent(1);
+    remote.setTimeout(-1, -1);
+    remote.sendRegistrationRequest();
 
-	// mark the grid 100% busy = having 1 firefox test running.
-	@Test
-	public void test() throws MalformedURLException, InterruptedException {
-		DesiredCapabilities ff = DesiredCapabilities.firefox();
-		runningOne = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
-		runningOne.get(hubURL + "/grid/console");
-		Assert.assertEquals(runningOne.getTitle(), "Grid overview");
+    // assigning a priority rule where requests with the flag "important"
+    // go first.
+    hub.getRegistry().setPrioritizer(new Prioritizer() {
+      public int compareTo(Map<String, Object> a, Map<String, Object> b) {
+        boolean aImportant = a.get("_important") == null ? false : Boolean.parseBoolean(a.get("_important").toString());
+        boolean bImportant = b.get("_important") == null ? false : Boolean.parseBoolean(b.get("_important").toString());
+        if (aImportant == bImportant) {
+          return 0;
+        }
+        if (aImportant && !bImportant) {
+          return -1;
+        } else {
+          return 1;
+        }
+      }
+    });
+  }
 
-	}
+  WebDriver runningOne;
 
-	// queuing 5 requests on the grid.
-	@Test(dependsOnMethods = "test")
-	public void sendMoreRequests() throws MalformedURLException {
-		for (int i = 0; i < 5; i++) {
-			new Thread(new Runnable() {
-				public void run() {
-					DesiredCapabilities ff = DesiredCapabilities.firefox();
-					try {
-						new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-					}
-				}
-			}).start();
-		}
-	}
+  // mark the grid 100% busy = having 1 firefox test running.
+  @Test
+  public void test() throws MalformedURLException, InterruptedException {
+    DesiredCapabilities ff = DesiredCapabilities.firefox();
+    runningOne = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+    runningOne.get(hubURL + "/grid/console");
+    Assert.assertEquals(runningOne.getTitle(), "Grid overview");
 
-	WebDriver importantOne;
-	boolean importantOneStarted = false;
+  }
 
-	// adding a request with high priority at the end of the queue
-	@Test(dependsOnMethods = "sendMoreRequests", timeOut = 30000)
-	public void sendTheImportantOne() throws MalformedURLException, InterruptedException {
-		while (hub.getRegistry().getNewSessionRequests().size() != 5) {
-			Thread.sleep(250);
-			System.out.println(hub.getRegistry().getNewSessionRequests().size());
-		}
-		Assert.assertEquals(hub.getRegistry().getNewSessionRequests().size(), 5);
-		Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
+  // queuing 5 requests on the grid.
+  @Test(dependsOnMethods = "test")
+  public void sendMoreRequests() throws MalformedURLException {
+    for (int i = 0; i < 5; i++) {
+      new Thread(new Runnable() {
+        public void run() {
+          DesiredCapabilities ff = DesiredCapabilities.firefox();
+          try {
+            new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+          } catch (MalformedURLException e) {
+            e.printStackTrace();
+          }
+        }
+      }).start();
+    }
+  }
 
-		final DesiredCapabilities ff = DesiredCapabilities.firefox();
-		ff.setCapability("_important", true);
+  WebDriver importantOne;
+  boolean importantOneStarted = false;
 
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					importantOne = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
-					importantOneStarted = true;
-				} catch (MalformedURLException e) {
-					throw new RuntimeException("bug", e);
-				}
+  // adding a request with high priority at the end of the queue
+  @Test(dependsOnMethods = "sendMoreRequests", timeOut = 30000)
+  public void sendTheImportantOne() throws MalformedURLException, InterruptedException {
+    while (hub.getRegistry().getNewSessionRequests().size() != 5) {
+      Thread.sleep(250);
+      System.out.println(hub.getRegistry().getNewSessionRequests().size());
+    }
+    Assert.assertEquals(hub.getRegistry().getNewSessionRequests().size(), 5);
+    Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
 
-			}
-		}).start();
+    final DesiredCapabilities ff = DesiredCapabilities.firefox();
+    ff.setCapability("_important", true);
 
-	}
+    new Thread(new Runnable() {
+      public void run() {
+        try {
+          importantOne = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+          importantOneStarted = true;
+        } catch (MalformedURLException e) {
+          throw new RuntimeException("bug", e);
+        }
 
-	// then 5 more non-important requests
-	@Test(dependsOnMethods = "sendTheImportantOne")
-	public void sendMoreRequests2() throws MalformedURLException {
-		for (int i = 0; i < 5; i++) {
-			new Thread(new Runnable() {
-				public void run() {
-					DesiredCapabilities ff = DesiredCapabilities.firefox();
-					try {
-						new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-					}
-				}
-			}).start();
-		}
-	}
+      }
+    }).start();
 
-	@Test(dependsOnMethods = "sendMoreRequests2", timeOut = 20000)
-	public void validateStateAndPickTheImportantOne() throws InterruptedException {
-		try {
-			while (hub.getRegistry().getNewSessionRequests().size() != 11) {
-				Thread.sleep(500);
-			}
-			// queue = 5 + 1 important + 5.
-			Assert.assertEquals(hub.getRegistry().getNewSessionRequests().size(), 11);
+  }
 
-			// 1 firefox still running
-			Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
+  // then 5 more non-important requests
+  @Test(dependsOnMethods = "sendTheImportantOne")
+  public void sendMoreRequests2() throws MalformedURLException {
+    for (int i = 0; i < 5; i++) {
+      new Thread(new Runnable() {
+        public void run() {
+          DesiredCapabilities ff = DesiredCapabilities.firefox();
+          try {
+            new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+          } catch (MalformedURLException e) {
+            e.printStackTrace();
+          }
+        }
+      }).start();
+    }
+  }
 
-			// closing the running test.
-			runningOne.quit();
+  @Test(dependsOnMethods = "sendMoreRequests2", timeOut = 20000)
+  public void validateStateAndPickTheImportantOne() throws InterruptedException {
+    try {
+      while (hub.getRegistry().getNewSessionRequests().size() != 11) {
+        Thread.sleep(500);
+      }
+      // queue = 5 + 1 important + 5.
+      Assert.assertEquals(hub.getRegistry().getNewSessionRequests().size(), 11);
 
-			// validating new expected state
-			while (!(hub.getRegistry().getActiveSessions().size() == 1 && hub.getRegistry().getNewSessionRequests().size() == 10)) {
-				Thread.sleep(250);
-				Reporter.log("waiting for correct state.");
-			}
-			
-			// TODO freynaud : sometines does not start. FF pops up, but address bar remains empty.
-			while (!importantOneStarted) {
-				Thread.sleep(250);
-				Reporter.log("waiting for browser to start");
-			}
-			importantOne.get(hubURL + "/grid/console");
-			Assert.assertEquals(importantOne.getTitle(), "Grid overview");
-		} finally {
-			// cleaning the queue to avoid having some browsers left over after
-			// the test
-			hub.getRegistry().getNewSessionRequests().clear();
-			importantOne.quit();
-		}
+      // 1 firefox still running
+      Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
 
-	}
+      // closing the running test.
+      runningOne.quit();
 
-	@AfterClass(alwaysRun = true)
-	public void stop() throws Exception {
-		hub.stop();
-	}
+      // validating new expected state
+      while (!(hub.getRegistry().getActiveSessions().size() == 1 && hub.getRegistry().getNewSessionRequests().size() == 10)) {
+        Thread.sleep(250);
+        Reporter.log("waiting for correct state.");
+      }
+
+      // TODO freynaud : sometines does not start. FF pops up, but address bar remains empty.
+      while (!importantOneStarted) {
+        Thread.sleep(250);
+        Reporter.log("waiting for browser to start");
+      }
+      importantOne.get(hubURL + "/grid/console");
+      Assert.assertEquals(importantOne.getTitle(), "Grid overview");
+    } finally {
+      // cleaning the queue to avoid having some browsers left over after
+      // the test
+      hub.getRegistry().getNewSessionRequests().clear();
+      importantOne.quit();
+    }
+
+  }
+
+  @AfterClass(alwaysRun = true)
+  public void stop() throws Exception {
+    hub.stop();
+  }
 }

@@ -22,50 +22,50 @@ import org.testng.annotations.Test;
 // see http://code.google.com/p/selenium/issues/detail?id=1586
 public class Issue1586 {
 
-	private Hub hub;
-	private URL hubURL;
+  private Hub hub;
+  private URL hubURL;
 
-	@BeforeClass(alwaysRun = true)
-	public void prepare() throws Exception {
-		GridHubConfiguration config = new GridHubConfiguration();
-		config.setPort(PortProber.findFreePort());
-		hub = new Hub(config);
-		hubURL = hub.getUrl();
-		hub.start();
+  @BeforeClass(alwaysRun = true)
+  public void prepare() throws Exception {
+    GridHubConfiguration config = new GridHubConfiguration();
+    config.setPort(PortProber.findFreePort());
+    hub = new Hub(config);
+    hubURL = hub.getUrl();
+    hub.start();
 
-		// register a webdriver
-		SelfRegisteringRemote webdriver = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
-		webdriver.addBrowser(DesiredCapabilities.firefox(), 1);
-		webdriver.startRemoteServer();
-		webdriver.sendRegistrationRequest();
+    // register a webdriver
+    SelfRegisteringRemote webdriver = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
+    webdriver.addBrowser(DesiredCapabilities.firefox(), 1);
+    webdriver.startRemoteServer();
+    webdriver.sendRegistrationRequest();
 
-		RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
-	}
+    RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
+  }
 
-	@Test
-	public void test() throws MalformedURLException, InterruptedException {
-		DesiredCapabilities ff = DesiredCapabilities.firefox();
-		WebDriver driver = null;
-		try {
-			driver = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
-			for (int i = 0; i < 20; i++) {
-				driver.get("http://code.google.com/p/selenium/");
-				WebElement keywordInput = driver.findElement(By.name("q"));
-				keywordInput.clear();
-				keywordInput.sendKeys("test");
-				WebElement submitButton = driver.findElement(By.name("projectsearch"));
-				submitButton.click();
-				driver.getCurrentUrl(); // fails here
-			}
-		} finally {
-			if (driver != null) {
-				driver.quit();
-			}
-		}
-	}
+  @Test
+  public void test() throws MalformedURLException, InterruptedException {
+    DesiredCapabilities ff = DesiredCapabilities.firefox();
+    WebDriver driver = null;
+    try {
+      driver = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+      for (int i = 0; i < 20; i++) {
+        driver.get("http://code.google.com/p/selenium/");
+        WebElement keywordInput = driver.findElement(By.name("q"));
+        keywordInput.clear();
+        keywordInput.sendKeys("test");
+        WebElement submitButton = driver.findElement(By.name("projectsearch"));
+        submitButton.click();
+        driver.getCurrentUrl(); // fails here
+      }
+    } finally {
+      if (driver != null) {
+        driver.quit();
+      }
+    }
+  }
 
-	@AfterClass(alwaysRun = true)
-	public void stop() throws Exception {
-		hub.stop();
-	}
+  @AfterClass(alwaysRun = true)
+  public void stop() throws Exception {
+    hub.stop();
+  }
 }
