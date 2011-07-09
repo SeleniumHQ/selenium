@@ -52,16 +52,13 @@ public class Hub {
 
 	private static final Logger log = Logger.getLogger(Hub.class.getName());
 
-	private GridHubConfiguration config;
-	private int port;
+    private int port;
 	private String host;
 	private Server server;
 	private Registry registry;
 	private Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
 
-	private NetworkUtils utils = new NetworkUtils();
-
-	private void addServlet(String key, Class<? extends Servlet> s) {
+    private void addServlet(String key, Class<? extends Servlet> s) {
 		extraServlet.put(key, s);
 	}
 
@@ -75,14 +72,13 @@ public class Hub {
 	}
 
 	public Hub(GridHubConfiguration config) {
-		this.config = config;
-
 		registry = new Registry(this, config);
 
 		if (config.getHost() != null) {
 			host = config.getHost();
 		} else {
-			host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+            NetworkUtils utils = new NetworkUtils();
+            host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
 		}
 		this.port = config.getPort();
 
