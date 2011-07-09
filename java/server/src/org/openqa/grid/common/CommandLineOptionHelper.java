@@ -20,11 +20,11 @@ public class CommandLineOptionHelper {
 	}
 
 	public boolean isParamPresent(String name) {
-		for (int i = 0; i < args.length; i++) {
-			if (name.equalsIgnoreCase(args[i])) {
-				return true;
-			}
-		}
+    for (String arg : args) {
+      if (name.equalsIgnoreCase(arg)) {
+        return true;
+      }
+    }
 		return false;
 	}
 
@@ -72,11 +72,11 @@ public class CommandLineOptionHelper {
 
 	public List<String> getKeys() {
 		List<String> keys = new ArrayList<String>();
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].startsWith("-")) {
-				keys.add(args[i]);
-			}
-		}
+    for (String arg : args) {
+      if (arg.startsWith("-")) {
+        keys.add(arg);
+      }
+    }
 		return keys;
 	}
 

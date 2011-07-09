@@ -130,14 +130,14 @@ public class GridNodeConfiguration {
 			throw new GridConfigurationException("-browser must be followed by a browser description");
 		}
 		DesiredCapabilities res = new DesiredCapabilities();
-		for (int i = 0; i < s.length; i++) {
-			if (s[i].split("=").length != 2) {
-				throw new GridConfigurationException("-browser format is key1=value1,key2=value2 " + s[i] + " deosn't follow that format.");
-			}
-			String key = s[i].split("=")[0];
-			String value = s[i].split("=")[1];
-			res.setCapability(key, value);
-		}
+    for (String capabilityPair : s) {
+      if (capabilityPair.split("=").length != 2) {
+        throw new GridConfigurationException("-browser format is key1=value1,key2=value2 " + capabilityPair + " deosn't follow that format.");
+      }
+      String key = capabilityPair.split("=")[0];
+      String value = capabilityPair.split("=")[1];
+      res.setCapability(key, value);
+    }
 
 		if (res.getBrowserName() == null) {
 			throw new GridConfigurationException("You need to specify a browserName using browserName=XXX");
