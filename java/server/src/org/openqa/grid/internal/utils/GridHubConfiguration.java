@@ -242,7 +242,7 @@ public class GridHubConfiguration {
 			newSessionWaitTimeout = newSessionWait.intValue() * 1000;
 		}
 
-        allParams.put(RegistrationRequest.MAX_SESSION, 1);
+    allParams.put(RegistrationRequest.MAX_SESSION, 1);
 	}
 
 	/**

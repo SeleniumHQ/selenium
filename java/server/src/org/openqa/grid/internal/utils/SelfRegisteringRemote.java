@@ -65,7 +65,7 @@ public class SelfRegisteringRemote {
 	public URL getRemoteURL() {
 		String base = "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HOST) + ":"
 				+ nodeConfig.getConfiguration().get(RegistrationRequest.PORT);
-		String url = null;
+		String url;
 		switch (nodeConfig.getRole()) {
 		case REMOTE_CONTROL:
 			url = base + "/selenium-server/driver";

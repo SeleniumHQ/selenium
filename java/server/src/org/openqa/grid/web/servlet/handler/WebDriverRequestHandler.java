@@ -77,7 +77,7 @@ public class WebDriverRequestHandler extends RequestHandler {
 		if (sessionIndex != -1) {
 			sessionIndex += "/session/".length();
 			int nextSlash = path.indexOf("/", sessionIndex);
-			String session = null;
+			String session;
 			if (nextSlash != -1) {
 				session = path.substring(sessionIndex, nextSlash);
 			} else {

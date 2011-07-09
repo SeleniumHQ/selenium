@@ -155,7 +155,6 @@ public class GridNodeConfiguration {
 				a.put(capa);
 			}
 
-			JSONObject c = new JSONObject();
 			res.put("configuration", new JSONObject(configuration));
 			return res;
 		} catch (JSONException e) {

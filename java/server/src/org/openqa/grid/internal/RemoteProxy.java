@@ -139,7 +139,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 				log.warning("Max instance not specified. Using default = 1 instance");
 				maxInstance = "1";
 			}
-			int value = new Integer(maxInstance.toString()).intValue();
+			int value = Integer.parseInt(maxInstance.toString());
 			for (int i = 0; i < value; i++) {
 				Map<String, Object> c = new HashMap<String, Object>();
 				for (String k : capability.asMap().keySet()) {

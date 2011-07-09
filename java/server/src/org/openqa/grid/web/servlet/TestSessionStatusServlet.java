@@ -75,7 +75,7 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
 		res.put("success", false);
 
 		// the id can be specified via a param, or in the json request.
-		String session = null;
+		String session;
 		if (requestJSON == null) {
 			session = request.getParameter("session");
 		} else {

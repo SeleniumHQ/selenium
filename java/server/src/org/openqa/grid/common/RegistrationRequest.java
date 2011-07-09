@@ -335,7 +335,7 @@ public class RegistrationRequest {
 		// some values can be calculated.
 		if (res.configuration.get(REMOTE_URL) == null) {
 			String base = "http://" + res.configuration.get(HOST) + ":" + res.configuration.get(PORT);
-			String url = null;
+			String url;
 			switch (res.getRole()) {
 			case REMOTE_CONTROL:
 				url = base + "/selenium-server/driver";
@@ -454,7 +454,6 @@ public class RegistrationRequest {
 				a.put(capa);
 			}
 
-			JSONObject c = new JSONObject();
 			res.put("configuration", new JSONObject(configuration));
 			return res;
 		} catch (JSONException e) {

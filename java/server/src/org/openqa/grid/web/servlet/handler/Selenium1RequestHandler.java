@@ -116,7 +116,7 @@ public class Selenium1RequestHandler extends RequestHandler {
 	// Capabilities service or so.
 	@Override
 	public String forwardNewSessionRequest(TestSession session) {
-		String responseBody = null;
+		String responseBody;
 
 		try {
 			String body = getRequestBody();
