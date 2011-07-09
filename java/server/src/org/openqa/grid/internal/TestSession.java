@@ -69,12 +69,13 @@ import com.google.common.io.ByteStreams;
  * out)
  */
 public class TestSession {
-
   private static final Logger log = Logger.getLogger(TestSession.class.getName());
+  private static final int MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED = 5000;
 
   private final String internalKey;
   private final TestSlot slot;
   private String externalKey = null;
+  private long sessionCreatedAt;
   private long lastActivity;
   private final Map<String, Object> requestedCapabilities;
   private Map<String, Object> objects = new HashMap<String, Object>();
@@ -125,6 +126,7 @@ public class TestSession {
    */
   public void setExternalKey(String externalKey) {
     this.externalKey = externalKey;
+    sessionCreatedAt = lastActivity;
   }
 
   /**
@@ -141,6 +143,13 @@ public class TestSession {
       return System.currentTimeMillis() - lastActivity;
     }
 
+  }
+
+  public boolean isOrphaned() {
+    long now = System.currentTimeMillis();
+    // The session needs to have been open for at least the time interval and we need to have not seen any new
+    // commands during that time frame.
+    return (((now - sessionCreatedAt) > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED) && (sessionCreatedAt == lastActivity));
   }
 
   /**

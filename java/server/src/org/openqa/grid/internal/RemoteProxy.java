@@ -224,6 +224,12 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
                 ((TimeoutListener) proxy).beforeRelease(session);
                 session.terminate();
               }
+
+              if (session.isOrphaned()) {
+                log.warning("session " + session + " has been ORPHANED and will be released");
+                ((TimeoutListener) proxy).beforeRelease(session);
+                session.terminate();
+              }
             }
           } catch (Throwable t) {
             log.warning("Error executing the timeout when cleaning up slot " + slot + t.getMessage());
