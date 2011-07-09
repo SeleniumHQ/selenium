@@ -456,8 +456,7 @@ public class TestSession {
 	 * 
 	 * @return true is the remote replied successfully to the request.
 	 */
-	public boolean sendSelenium1TestComplete(TestSession session) throws ClientProtocolException, IOException {
-
+	public boolean sendSelenium1TestComplete(TestSession session) throws IOException {
 		URL url = slot.getProxy().getRemoteURL();
 		BasicHttpRequest req = new BasicHttpRequest("POST", url.toExternalForm() + "/?cmd=testComplete&sessionId=" + session.getExternalKey());
 		DefaultHttpClient client = new DefaultHttpClient();
@@ -475,7 +474,6 @@ public class TestSession {
 			log.severe("Error releasing. Server corrupted ?");
 		}
 		return ok;
-
 	}
 
 	/**
