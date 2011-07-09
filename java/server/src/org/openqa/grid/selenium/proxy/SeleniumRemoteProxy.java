@@ -82,11 +82,4 @@ public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListen
 		}
 		return matchFFprofileToo;
 	}
-
-	@Override
-	public void beforeCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
-		super.beforeCommand(session, request, response);
-	}
-
-
 }
