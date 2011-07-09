@@ -523,7 +523,7 @@ public class RegistrationRequest {
 			params.add("-" + key);
 			params.add("" + configuration.get(key));
 		}
-		return RemoteControlLauncher.parseLauncherOptions(params.toArray(new String[0]));
+		return RemoteControlLauncher.parseLauncherOptions(params.toArray(new String[params.size()]));
 	}
 
 	public String[] getArgs() {
