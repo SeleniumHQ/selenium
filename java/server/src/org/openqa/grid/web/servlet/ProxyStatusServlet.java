@@ -126,7 +126,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
 		Class<?>[] argsClass = new Class[] {};
 		try {
 			Method m = proxy.getClass().getDeclaredMethod(method, argsClass);
-			return m.invoke(proxy, new Object[0]);
+			return m.invoke(proxy);
 		} catch (Throwable e) {
 			throw new RuntimeException(e.getClass() + " - " + e.getMessage());
 		}
