@@ -32,8 +32,8 @@ import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 
 public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListener {
 
-	public SeleniumRemoteProxy(RegistrationRequest request,Registry regidtry) {
-		super(request,regidtry);
+	public SeleniumRemoteProxy(RegistrationRequest request, Registry registry) {
+		super(request, registry);
 	}
 
 	private static final Logger log = Logger.getLogger(SeleniumRemoteProxy.class.getName());
