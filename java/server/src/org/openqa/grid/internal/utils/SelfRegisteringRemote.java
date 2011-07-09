@@ -224,7 +224,7 @@ public class SelfRegisteringRemote {
 				log.info("Registering the node to hub :" + registration);
 
 				BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST", registration.toExternalForm());
-				String json = nodeConfig.toJSON().toString();
+				String json = nodeConfig.toJSON();
 				r.setEntity(new StringEntity(json));
 
 				DefaultHttpClient client = new DefaultHttpClient();
