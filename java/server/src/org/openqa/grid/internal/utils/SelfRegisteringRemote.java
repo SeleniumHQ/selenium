@@ -267,7 +267,7 @@ public class SelfRegisteringRemote {
 
 	private static JSONObject extractObject(HttpResponse resp) throws IOException, JSONException {
 		BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-		StringBuffer s = new StringBuffer();
+    StringBuilder s = new StringBuilder();
 		String line;
 		while ((line = rd.readLine()) != null) {
 			s.append(line);

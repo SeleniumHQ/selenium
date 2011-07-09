@@ -57,7 +57,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
 
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
-		StringBuffer registrationRequest = new StringBuffer();
+    StringBuilder registrationRequest = new StringBuilder();
 		String line;
 		while ((line = rd.readLine()) != null) {
 			registrationRequest.append(line);

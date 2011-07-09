@@ -58,7 +58,7 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
 		JSONObject requestJSON = null;
 		if (request.getInputStream() != null) {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
-			StringBuffer s = new StringBuffer();
+      StringBuilder s = new StringBuilder();
 			String line;
 			while ((line = rd.readLine()) != null) {
 				s.append(line);
