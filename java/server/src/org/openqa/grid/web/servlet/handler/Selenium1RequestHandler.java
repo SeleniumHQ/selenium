@@ -141,7 +141,7 @@ public class Selenium1RequestHandler extends RequestHandler {
 						piece = (String) BrowserNameUtils.parseGrid2Environment(piece).get(RegistrationRequest.BROWSER);
 					}
 				}
-				builder.append(piece + "&");
+        builder.append(piece).append("&");
 			}
 
 			responseBody = session.forward(getRequest(), getResponse(), builder.toString(), true);

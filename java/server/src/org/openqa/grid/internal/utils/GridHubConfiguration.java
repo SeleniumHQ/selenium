@@ -430,7 +430,7 @@ public class GridHubConfiguration {
 		b.append("prioritizer: ").append(prioritizer == null ? "null" : prioritizer.getClass().getCanonicalName()).append("\n");
 		b.append("servlets: ");
 		for (String s : servlets) {
-			b.append(s.getClass().getCanonicalName() + ",");
+      b.append(s.getClass().getCanonicalName()).append(",");
 		}
 		b.append("\n\n");
 		b.append("all params :\n");
@@ -438,7 +438,7 @@ public class GridHubConfiguration {
 		keys.addAll(allParams.keySet());
 		Collections.sort(keys);
 		for (String s : keys) {
-			b.append(s.replaceFirst("-", "") + ":" + allParams.get(s) + "\n");
+      b.append(s.replaceFirst("-", "")).append(":").append(allParams.get(s)).append("\n");
 		}
 		return b.toString();
 	}

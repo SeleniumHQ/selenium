@@ -374,18 +374,18 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		b.append("session :" + session + " , ");
-		b.append("cap : " + getDesiredCapabilities());
+    b.append("session :").append(session).append(" , ");
+    b.append("cap : ").append(getDesiredCapabilities());
 		b.append("\n");
 		return b.toString();
 	}
 
 	public String debug() {
 		StringBuilder b = new StringBuilder();
-		b.append("\nmethod: " + request.getMethod());
-		b.append("\npathInfo: " + request.getPathInfo());
-		b.append("\nuri: " + request.getRequestURI());
-		b.append("\ncontent :" + getRequestBody());
+    b.append("\nmethod: ").append(request.getMethod());
+    b.append("\npathInfo: ").append(request.getPathInfo());
+    b.append("\nuri: ").append(request.getRequestURI());
+    b.append("\ncontent :").append(getRequestBody());
 		return b.toString();
 	}
 

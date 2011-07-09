@@ -90,7 +90,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 		builder.append("<head>");
 
 		if (refresh != -1) {
-			builder.append("<meta http-equiv='refresh' content='" + refresh + "'>");
+			builder.append(String.format("<meta http-equiv='refresh' content='%d' />", refresh));
 		}
 		builder.append("<title>Grid overview</title>");
 
@@ -104,7 +104,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
 		builder.append("<body>");
 		builder.append("<H1>Grid Hub ");
-		builder.append(coreVersion + coreRevision);
+    builder.append(coreVersion).append(coreRevision);
 		builder.append("</H1>");
 
 		for (RemoteProxy proxy : getRegistry().getAllProxies()) {
@@ -114,12 +114,12 @@ public class ConsoleServlet extends RegistryBasedServlet {
 		List<RequestHandler> l = getRegistry().getNewSessionRequests();
 
 		if (l.size() != 0) {
-			builder.append(l.size() + " requests waiting for a slot to be free.");
+			builder.append(String.format("%d requests waiting for a slot to be free.", l.size()));
 		}
 
 		builder.append("<ul>");
 		for (RequestHandler req : l) {
-			builder.append("<li>" + req.getDesiredCapabilities() + "</li>");
+      builder.append("<li>").append(req.getDesiredCapabilities()).append("</li>");
 		}
 		builder.append("</ul>");
 
@@ -161,7 +161,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 			builder.append("<b>Config details :</b><br/>");
 			builder.append("<b>hub launched with :</b>");
 			for (int i = 0; i < config.getArgs().length; i++) {
-				builder.append(config.getArgs()[i] + " ");
+        builder.append(config.getArgs()[i]).append(" ");
 			}
 
 			builder.append("<br/><b>the final configuration comes from :</b><br/>");
@@ -170,7 +170,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
 			builder.append("<b>updated with grid1 config :</b>");
 			if (config.getGrid1Yml() != null) {
-				builder.append(config.getGrid1Yml() + "<br/>");
+        builder.append(config.getGrid1Yml()).append("<br/>");
 				tmp.loadFromGridYml(config.getGrid1Yml());
 				builder.append(prettyHtmlPrint(tmp));
 			} else {
@@ -179,7 +179,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
 			builder.append("<br/><b>updated with grid2 config : </b>");
 			if (config.getGrid2JSON() != null) {
-				builder.append(config.getGrid2JSON() + "<br/>");
+        builder.append(config.getGrid2JSON()).append("<br/>");
 				tmp.loadFromJSON(config.getGrid2JSON());
 				builder.append(prettyHtmlPrint(tmp));
 			} else {
@@ -215,7 +215,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 				.append("</br>");
 		b.append(key("servlets"));
 		for (String s : config.getServlets()) {
-			b.append(s.getClass().getCanonicalName() + ",");
+      b.append(s.getClass().getCanonicalName()).append(",");
 		}
 		b.append("</br></br>");
 		b.append("<u>all params :</u></br></br>");
@@ -223,7 +223,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 		keys.addAll(config.getAllParams().keySet());
 		Collections.sort(keys);
 		for (String s : keys) {
-			b.append(key(s.replaceFirst("-", "")) + config.getAllParams().get(s) + "</br>");
+      b.append(key(s.replaceFirst("-", ""))).append(config.getAllParams().get(s)).append("</br>");
 		}
 		b.append("</br>");
 		return b.toString();
