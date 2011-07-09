@@ -271,8 +271,7 @@ public class TestSession {
 			r.setEntity(new InputStreamEntity(body, request.getContentLength()));
 			proxyRequest = r;
 		} else {
-			BasicHttpRequest r = new BasicHttpRequest(request.getMethod(), uri);
-			proxyRequest = r;
+			proxyRequest = new BasicHttpRequest(request.getMethod(), uri);
 		}
 
 		for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
@@ -330,13 +329,12 @@ public class TestSession {
 				StringBuilder sb = new StringBuilder();
 				String line;
 				try {
-					InputStream is = in;
-					BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+					BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 					while ((line = reader.readLine()) != null) {
 						// TODO freynaud bug ?
 						sb.append(line);/* .append("\n") */
 					}
-					is.close();
+					in.close();
 				} catch (UnsupportedEncodingException e) {
 					throw new RuntimeException(e);
 				} catch (IOException e) {

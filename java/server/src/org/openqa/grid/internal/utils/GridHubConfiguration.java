@@ -381,8 +381,7 @@ public class GridHubConfiguration {
 			Class<?>[] argsClass = new Class[] {};
 			Constructor<?> c = p.getConstructor(argsClass);
 			Object[] args = new Object[] {};
-			Prioritizer prio = (Prioritizer) c.newInstance(args);
-			prioritizer = prio;
+			prioritizer = (Prioritizer) c.newInstance(args);
 		} catch (Throwable e) {
 			throw new GridConfigurationException("Error creating the prioritize from class " + prioritizerClass + " : " + e.getMessage(), e);
 		}
@@ -398,8 +397,7 @@ public class GridHubConfiguration {
 			Class<?>[] argsClass = new Class[] {};
 			Constructor<?> c = p.getConstructor(argsClass);
 			Object[] args = new Object[] {};
-			CapabilityMatcher cm = (CapabilityMatcher) c.newInstance(args);
-			matcher = cm;
+			matcher = (CapabilityMatcher) c.newInstance(args);
 		} catch (Throwable e) {
 			throw new GridConfigurationException("Error creating the capability matcher from class " + matcherClass + " : " + e.getMessage(), e);
 		}

@@ -178,8 +178,7 @@ public class RegistrationRequest {
 			return defaultValue;
 		}
 		if (o instanceof Integer) {
-			Integer i = (Integer) o;
-			return i;
+			return (Integer) o;
 		}
 		try {
 			return Integer.parseInt(o.toString());
