@@ -1,9 +1,5 @@
 package org.openqa.grid.selenium.utils;
 
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.Map;
 
 import org.openqa.grid.internal.RemoteProxy;
