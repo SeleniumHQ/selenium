@@ -410,7 +410,7 @@ public class RegistrationRequest {
 		// capabilities parsing.
 		List<String> l = helper.getAll("-browser");
 
-		if (l.size() != 0) {
+		if (!l.isEmpty()) {
 			capabilities.clear();
 			for (String s : l) {
 				DesiredCapabilities c = addCapabilityFromString(s);

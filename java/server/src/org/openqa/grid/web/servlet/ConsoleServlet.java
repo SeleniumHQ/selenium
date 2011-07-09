@@ -113,7 +113,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
 		List<RequestHandler> l = getRegistry().getNewSessionRequests();
 
-		if (l.size() != 0) {
+		if (!l.isEmpty()) {
 			builder.append(String.format("%d requests waiting for a slot to be free.", l.size()));
 		}
 

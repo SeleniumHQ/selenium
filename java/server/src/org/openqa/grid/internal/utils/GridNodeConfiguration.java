@@ -115,7 +115,7 @@ public class GridNodeConfiguration {
 		// capabilities parsing.
 		List<String> l = helper.getParamValues("-browser");
 
-		if (l.size() != 0) {
+		if (!l.isEmpty()) {
 			for (String s : l) {
 				DesiredCapabilities c = addCapabilityFromString(s);
 				capabilities.add(c);
