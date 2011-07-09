@@ -20,11 +20,9 @@ import org.openqa.grid.internal.RemoteProxy;
 
 
 /**
- * 
  * To be returned by {@link RemoteProxy#getHtmlRender()}
  * Allow to customized how the summary of the RemoteProxy will be shown on the hub console.
- * 
  */
 public interface HtmlRenderer {
-	public String renderSummary();
+  public String renderSummary();
 }

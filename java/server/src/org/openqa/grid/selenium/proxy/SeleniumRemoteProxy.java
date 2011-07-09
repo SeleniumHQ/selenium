@@ -32,54 +32,54 @@ import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 
 public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListener {
 
-	public SeleniumRemoteProxy(RegistrationRequest request, Registry registry) {
-		super(request, registry);
-	}
+  public SeleniumRemoteProxy(RegistrationRequest request, Registry registry) {
+    super(request, registry);
+  }
 
-	private static final Logger log = Logger.getLogger(SeleniumRemoteProxy.class.getName());
+  private static final Logger log = Logger.getLogger(SeleniumRemoteProxy.class.getName());
 
   @Override
-	public void beforeRelease(TestSession session) {
-		// release the resources remotely.
-		if (session.getExternalKey() == null) {
-			throw new IllegalStateException("No internal key yet. Did the app start properly?");
-		}
-		System.err.println("timing out " + session);
-		boolean ok;
-		try {
-			ok = session.sendSelenium1TestComplete(session);
-		} catch (Throwable t) {
-			t.printStackTrace();
-			ok = false;
-		}
-		if (!ok) {
-			log.warning("Error releasing the resources on timeout for session " + session);
-		}
+  public void beforeRelease(TestSession session) {
+    // release the resources remotely.
+    if (session.getExternalKey() == null) {
+      throw new IllegalStateException("No internal key yet. Did the app start properly?");
+    }
+    System.err.println("timing out " + session);
+    boolean ok;
+    try {
+      ok = session.sendSelenium1TestComplete(session);
+    } catch (Throwable t) {
+      t.printStackTrace();
+      ok = false;
+    }
+    if (!ok) {
+      log.warning("Error releasing the resources on timeout for session " + session);
+    }
 
-	}
+  }
 
-	private CapabilityMatcher matchFFprofileToo;
+  private CapabilityMatcher matchFFprofileToo;
 
-	
-	// TODO freynaud : no real point checking that.
-	@Override
-	public CapabilityMatcher getCapabilityHelper() {
-		if (matchFFprofileToo == null) {
-			matchFFprofileToo = new DefaultCapabilityMatcher() {
-				@Override
-				public boolean matches(Map<String, Object> currentCapability, Map<String, Object> requestedCapability) {
-					String path = (String) requestedCapability.get("profilePath");
-					if (path != null && !path.equals(currentCapability.get("profilePath"))) {
-						return false;
-					}
-					if (path == null && currentCapability.get("profilePath") != null) {
-						return false;
-					}
 
-					return super.matches(currentCapability, requestedCapability);
-				}
-			};
-		}
-		return matchFFprofileToo;
-	}
+  // TODO freynaud : no real point checking that.
+  @Override
+  public CapabilityMatcher getCapabilityHelper() {
+    if (matchFFprofileToo == null) {
+      matchFFprofileToo = new DefaultCapabilityMatcher() {
+        @Override
+        public boolean matches(Map<String, Object> currentCapability, Map<String, Object> requestedCapability) {
+          String path = (String) requestedCapability.get("profilePath");
+          if (path != null && !path.equals(currentCapability.get("profilePath"))) {
+            return false;
+          }
+          if (path == null && currentCapability.get("profilePath") != null) {
+            return false;
+          }
+
+          return super.matches(currentCapability, requestedCapability);
+        }
+      };
+    }
+    return matchFFprofileToo;
+  }
 }

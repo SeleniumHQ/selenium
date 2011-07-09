@@ -41,132 +41,129 @@ import org.openqa.selenium.net.NetworkUtils;
 import com.google.common.collect.Maps;
 
 /**
- * 
  * Jetty server. Main entry point for everything about the grid.
- * 
+ * <p/>
  * Except for unit tests, this should be a singleton.
- * 
- * 
  */
 public class Hub {
 
-	private static final Logger log = Logger.getLogger(Hub.class.getName());
+  private static final Logger log = Logger.getLogger(Hub.class.getName());
 
-    private int port;
-	private String host;
-	private Server server;
-	private Registry registry;
-	private Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
+  private int port;
+  private String host;
+  private Server server;
+  private Registry registry;
+  private Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
 
-    private void addServlet(String key, Class<? extends Servlet> s) {
-		extraServlet.put(key, s);
-	}
+  private void addServlet(String key, Class<? extends Servlet> s) {
+    extraServlet.put(key, s);
+  }
 
-	/**
-	 * get the registry backing up the hub state.
-	 * 
-	 * @return
-	 */
-	public Registry getRegistry() {
-		return registry;
-	}
+  /**
+   * get the registry backing up the hub state.
+   *
+   * @return
+   */
+  public Registry getRegistry() {
+    return registry;
+  }
 
-	public Hub(GridHubConfiguration config) {
-		registry = new Registry(this, config);
+  public Hub(GridHubConfiguration config) {
+    registry = new Registry(this, config);
 
-		if (config.getHost() != null) {
-			host = config.getHost();
-		} else {
-            NetworkUtils utils = new NetworkUtils();
-            host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-		}
-		this.port = config.getPort();
+    if (config.getHost() != null) {
+      host = config.getHost();
+    } else {
+      NetworkUtils utils = new NetworkUtils();
+      host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+    }
+    this.port = config.getPort();
 
-		for (String s : config.getServlets()) {
-			Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
-			if (s != null) {
-				String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
-				log.info("binding " + servletClass.getCanonicalName() + " to " + path);
-				addServlet(path, servletClass);
-			}
-		}
+    for (String s : config.getServlets()) {
+      Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
+      if (s != null) {
+        String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
+        log.info("binding " + servletClass.getCanonicalName() + " to " + path);
+        addServlet(path, servletClass);
+      }
+    }
 
-		initServer();
+    initServer();
 
-	}
+  }
 
-	private void initServer() {
-		try {
-			server = new Server();
-			SocketListener socketListener = new SocketListener();
-			socketListener.setMaxIdleTimeMs(60000);
-			socketListener.setPort(port);
-			server.addListener(socketListener);
+  private void initServer() {
+    try {
+      server = new Server();
+      SocketListener socketListener = new SocketListener();
+      socketListener.setMaxIdleTimeMs(60000);
+      socketListener.setPort(port);
+      server.addListener(socketListener);
 
-			WebApplicationContext root = server.addWebApplication("", ".");
-			root.setAttribute(Registry.KEY, registry);
+      WebApplicationContext root = server.addWebApplication("", ".");
+      root.setAttribute(Registry.KEY, registry);
 
-			root.addServlet("/*", DisplayHelpServlet.class.getName());
+      root.addServlet("/*", DisplayHelpServlet.class.getName());
 
-			root.addServlet("/grid/console/*", ConsoleServlet.class.getName());
-			root.addServlet("/grid/register/*", RegistrationServlet.class.getName());
-			// TODO remove at some point. Here for backward compatibility of
-			// tests etc.
-			root.addServlet("/grid/driver/*", DriverServlet.class.getName());
-			root.addServlet("/wd/hub/*", DriverServlet.class.getName());
-			root.addServlet("/selenium-server/driver/*", DriverServlet.class.getName());
-			root.addServlet("/grid/resources/*", ResourceServlet.class.getName());
+      root.addServlet("/grid/console/*", ConsoleServlet.class.getName());
+      root.addServlet("/grid/register/*", RegistrationServlet.class.getName());
+      // TODO remove at some point. Here for backward compatibility of
+      // tests etc.
+      root.addServlet("/grid/driver/*", DriverServlet.class.getName());
+      root.addServlet("/wd/hub/*", DriverServlet.class.getName());
+      root.addServlet("/selenium-server/driver/*", DriverServlet.class.getName());
+      root.addServlet("/grid/resources/*", ResourceServlet.class.getName());
 
-			root.addServlet("/grid/api/proxy/*", ProxyStatusServlet.class.getName());
-			root.addServlet("/grid/api/testsession/*", TestSessionStatusServlet.class.getName());
+      root.addServlet("/grid/api/proxy/*", ProxyStatusServlet.class.getName());
+      root.addServlet("/grid/api/testsession/*", TestSessionStatusServlet.class.getName());
 
-			// Selenium Grid 1.0 compatibility routes for older nodes trying to
-			// work with the newer hub.
-			root.addServlet("/registration-manager/register/*", RegistrationServlet.class.getName());
-			root.addServlet("/heartbeat", Grid1HeartbeatServlet.class.getName());
+      // Selenium Grid 1.0 compatibility routes for older nodes trying to
+      // work with the newer hub.
+      root.addServlet("/registration-manager/register/*", RegistrationServlet.class.getName());
+      root.addServlet("/heartbeat", Grid1HeartbeatServlet.class.getName());
 
-			// Load any additional servlets provided by the user.
-			for (Map.Entry<String, Class<? extends Servlet>> entry : extraServlet.entrySet()) {
-				root.addServlet(entry.getKey(), entry.getValue().getName());
-			}
+      // Load any additional servlets provided by the user.
+      for (Map.Entry<String, Class<? extends Servlet>> entry : extraServlet.entrySet()) {
+        root.addServlet(entry.getKey(), entry.getValue().getName());
+      }
 
-		} catch (Throwable e) {
-			throw new RuntimeException("Error initializing the hub" + e.getMessage(), e);
-		}
-	}
+    } catch (Throwable e) {
+      throw new RuntimeException("Error initializing the hub" + e.getMessage(), e);
+    }
+  }
 
-	public int getPort() {
-		return port;
-	}
+  public int getPort() {
+    return port;
+  }
 
-	public String getHost() {
-		return host;
-	}
+  public String getHost() {
+    return host;
+  }
 
-	public void start() throws Exception {
-		initServer();
-		server.start();
-	}
+  public void start() throws Exception {
+    initServer();
+    server.start();
+  }
 
-	public void stop() throws Exception {
-		server.stop();
-	}
+  public void stop() throws Exception {
+    server.stop();
+  }
 
-	public URL getUrl() {
-		try {
-			return new URL("http://" + getHost() + ":" + getPort());
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e.getMessage());
-		}
-	}
+  public URL getUrl() {
+    try {
+      return new URL("http://" + getHost() + ":" + getPort());
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e.getMessage());
+    }
+  }
 
-	public URL getRegistrationURL() {
-		String uri = "http://" + getHost() + ":" + getPort() + "/grid/register/";
-		try {
-			return new URL(uri);
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
-	}
+  public URL getRegistrationURL() {
+    String uri = "http://" + getHost() + ":" + getPort() + "/grid/register/";
+    try {
+      return new URL(uri);
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
 }

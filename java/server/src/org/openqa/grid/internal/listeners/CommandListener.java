@@ -23,31 +23,30 @@ import org.openqa.grid.internal.TestSession;
 
 /**
  * wrapped around each request received and forwarded by the hub.
- * 
  */
 public interface CommandListener {
 
-	/**
-	 * Executed before the hub forwards the request. reading the content of the
-	 * request stream will prevent the content from being forwarded.
-	 * 
-	 * Throwing an exception will prevent the forward to the remote.
-	 * 
-	 * @param session
-	 * @param request
-	 * @param response
-	 */
-	public void beforeCommand(TestSession session, HttpServletRequest request, HttpServletResponse response);
+  /**
+   * Executed before the hub forwards the request. reading the content of the
+   * request stream will prevent the content from being forwarded.
+   * <p/>
+   * Throwing an exception will prevent the forward to the remote.
+   *
+   * @param session
+   * @param request
+   * @param response
+   */
+  public void beforeCommand(TestSession session, HttpServletRequest request, HttpServletResponse response);
 
-	/**
-	 * Executed just before the forwards returns.
-	 * 
-	 * Throwing an exception will result in an error for the client.
-	 * 
-	 * @param session
-	 * @param request
-	 * @param response
-	 */
-	public void afterCommand(TestSession session, HttpServletRequest request, HttpServletResponse response);
+  /**
+   * Executed just before the forwards returns.
+   * <p/>
+   * Throwing an exception will result in an error for the client.
+   *
+   * @param session
+   * @param request
+   * @param response
+   */
+  public void afterCommand(TestSession session, HttpServletRequest request, HttpServletResponse response);
 
 }

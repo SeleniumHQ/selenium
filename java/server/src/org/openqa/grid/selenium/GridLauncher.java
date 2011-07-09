@@ -28,44 +28,44 @@ import org.openqa.selenium.server.SeleniumServer;
 
 public class GridLauncher {
 
-	private static final Logger log = Logger.getLogger(GridLauncher.class.getName());
+  private static final Logger log = Logger.getLogger(GridLauncher.class.getName());
 
-	public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
 
-		GridRole role = GridRole.find(args);
+    GridRole role = GridRole.find(args);
 
-		switch (role) {
-		case NOT_GRID:
-			log.info("Launching a standalone server");
-			SeleniumServer.main(args);
-			break;
-		case HUB:
-			log.info("Launching a selenium grid server");
-			try {
-				GridHubConfiguration c = GridHubConfiguration.build(args);
-				Hub h = new Hub(c);
-				h.start();
-			} catch (GridConfigurationException e) {
-				e.printStackTrace();
-				GridDocHelper.printHelp(e.getMessage());
-			}
-			break;
-		case WEBDRIVER:
-		case REMOTE_CONTROL:
-			log.info("Launching a selenium grid node");
-			try {
-				RegistrationRequest c = RegistrationRequest.build(args);
-				SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
-				remote.startRemoteServer();
-				remote.startRegistrationProcess();
-			} catch (GridConfigurationException e) {
-				e.printStackTrace();
-				GridDocHelper.printHelp(e.getMessage());
-			}
-			break;
-		default:
-			throw new RuntimeException("NI");
-		}
-	}
+    switch (role) {
+      case NOT_GRID:
+        log.info("Launching a standalone server");
+        SeleniumServer.main(args);
+        break;
+      case HUB:
+        log.info("Launching a selenium grid server");
+        try {
+          GridHubConfiguration c = GridHubConfiguration.build(args);
+          Hub h = new Hub(c);
+          h.start();
+        } catch (GridConfigurationException e) {
+          e.printStackTrace();
+          GridDocHelper.printHelp(e.getMessage());
+        }
+        break;
+      case WEBDRIVER:
+      case REMOTE_CONTROL:
+        log.info("Launching a selenium grid node");
+        try {
+          RegistrationRequest c = RegistrationRequest.build(args);
+          SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
+          remote.startRemoteServer();
+          remote.startRegistrationProcess();
+        } catch (GridConfigurationException e) {
+          e.printStackTrace();
+          GridDocHelper.printHelp(e.getMessage());
+        }
+        break;
+      default:
+        throw new RuntimeException("NI");
+    }
+  }
 
 }

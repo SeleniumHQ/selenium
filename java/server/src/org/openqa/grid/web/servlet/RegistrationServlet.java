@@ -36,63 +36,63 @@ import org.openqa.grid.internal.utils.GridHubConfiguration;
  * used to create a RemoteProxy and add it to the grid.
  */
 public class RegistrationServlet extends RegistryBasedServlet {
-	private static final long serialVersionUID = -8670670577712086527L;
-	private static final Logger log = Logger.getLogger(RegistrationServlet.class.getName());
+  private static final long serialVersionUID = -8670670577712086527L;
+  private static final Logger log = Logger.getLogger(RegistrationServlet.class.getName());
 
-	public RegistrationServlet() {
-		this(null);
-	}
+  public RegistrationServlet() {
+    this(null);
+  }
 
-	public RegistrationServlet(Registry registry) {
-		super(registry);
-	}
+  public RegistrationServlet(Registry registry) {
+    super(registry);
+  }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		process(request, response);
-	}
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    process(request, response);
+  }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		process(request, response);
-	}
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    process(request, response);
+  }
 
-	protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
+  protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
     StringBuilder registrationRequest = new StringBuilder();
-		String line;
-		while ((line = rd.readLine()) != null) {
-			registrationRequest.append(line);
-		}
-		rd.close();
-		log.fine("getting the following registration request  : " + registrationRequest.toString());
+    String line;
+    while ((line = rd.readLine()) != null) {
+      registrationRequest.append(line);
+    }
+    rd.close();
+    log.fine("getting the following registration request  : " + registrationRequest.toString());
 
-		// getting the settings from registration
-		RegistrationRequest server = RegistrationRequest.getNewInstance(registrationRequest.toString());
+    // getting the settings from registration
+    RegistrationRequest server = RegistrationRequest.getNewInstance(registrationRequest.toString());
 
-		// for non specified param, use what is on the hub.
-		GridHubConfiguration hubConfig = getRegistry().getConfiguration();
-		for (String key : hubConfig.getAllParams().keySet()) {
-			if (!server.getConfiguration().containsKey(key)) {
-				server.getConfiguration().put(key, hubConfig.getAllParams().get(key));
-			}
-		}
-		
-		// TODO freynaud : load template desiredCapability from the hub. Is that usefull?
+    // for non specified param, use what is on the hub.
+    GridHubConfiguration hubConfig = getRegistry().getConfiguration();
+    for (String key : hubConfig.getAllParams().keySet()) {
+      if (!server.getConfiguration().containsKey(key)) {
+        server.getConfiguration().put(key, hubConfig.getAllParams().get(key));
+      }
+    }
 
-		final RemoteProxy proxy = RemoteProxy.getNewInstance(server, getRegistry());
-		reply(response, "ok");
+    // TODO freynaud : load template desiredCapability from the hub. Is that usefull?
 
-		new Thread(new Runnable() {
-			public void run() {
-				getRegistry().add(proxy);
-				log.fine("proxy added " + proxy.getRemoteURL());
-			}
-		}).start();
-	}
+    final RemoteProxy proxy = RemoteProxy.getNewInstance(server, getRegistry());
+    reply(response, "ok");
 
-	protected void reply(HttpServletResponse response, String content) throws IOException {
-		response.setContentType("text/html");
-		response.setCharacterEncoding("UTF-8");
-		response.setStatus(200);
-		response.getWriter().print(content);
-	}
+    new Thread(new Runnable() {
+      public void run() {
+        getRegistry().add(proxy);
+        log.fine("proxy added " + proxy.getRemoteURL());
+      }
+    }).start();
+  }
+
+  protected void reply(HttpServletResponse response, String content) throws IOException {
+    response.setContentType("text/html");
+    response.setCharacterEncoding("UTF-8");
+    response.setStatus(200);
+    response.getWriter().print(content);
+  }
 }

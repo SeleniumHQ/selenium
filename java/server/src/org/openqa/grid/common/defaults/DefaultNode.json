@@ -1,27 +1,27 @@
 {
-"capabilities":
-	[
-		{
-			"browserName": "firefox",
-			"maxInstances": 5
-		},
-		{
-			"browserName": "chrome",
-			"maxInstances": 5
-		},
-		{
-			"browserName": "internet explorer",
-			"maxInstances": 1
-		}
-	],
+  "capabilities":
+      [
+        {
+          "browserName": "firefox",
+          "maxInstances": 5
+        },
+        {
+          "browserName": "chrome",
+          "maxInstances": 5
+        },
+        {
+          "browserName": "internet explorer",
+          "maxInstances": 1
+        }
+      ],
   "configuration":
-	{
-		"proxy": "org.openqa.grid.selenium.proxy.WebDriverRemoteProxy",
-		"maxSession": 5,
-		"port": 5555,
-		"host": ip,
-		"register": true,
-		"registerCycle": 5000,
-		"hubPort": 4444
-	}
+  {
+    "proxy": "org.openqa.grid.selenium.proxy.WebDriverRemoteProxy",
+    "maxSession": 5,
+    "port": 5555,
+    "host": ip,
+    "register": true,
+    "registerCycle": 5000,
+    "hubPort": 4444
+  }
 }

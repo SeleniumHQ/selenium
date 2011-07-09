@@ -18,13 +18,13 @@ package org.openqa.grid.internal;
 
 public class GridException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public GridException(String msg, Throwable t) {
-		super(msg, t);
-	}
+  public GridException(String msg, Throwable t) {
+    super(msg, t);
+  }
 
-	public GridException(String msg) {
-		super(msg);
-	}
+  public GridException(String msg) {
+    super(msg);
+  }
 }

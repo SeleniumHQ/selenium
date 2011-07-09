@@ -29,32 +29,31 @@ import javax.servlet.http.HttpServletResponse;
  * Serves the static resources used by the console for instance. Uses URL
  * java.lang.ClassLoader.findResource(String name) to find the resources,
  * allowing to add icons etc in the jars of the plugins.
- * 
  */
 public class ResourceServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 7253742807937667039L;
+  private static final long serialVersionUID = 7253742807937667039L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		process(request, response);
-	}
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    process(request, response);
+  }
 
-	protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String resource = request.getPathInfo().replace(request.getServletPath(), "");
-		if (resource.startsWith("/"))
-			resource = resource.replaceFirst("/", "");
-		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-		if (in == null) {
-			throw new Error("Cannot find resource " + resource);
-		}
+  protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String resource = request.getPathInfo().replace(request.getServletPath(), "");
+    if (resource.startsWith("/"))
+      resource = resource.replaceFirst("/", "");
+    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+    if (in == null) {
+      throw new Error("Cannot find resource " + resource);
+    }
 
-		try {
-			ByteStreams.copy(in, response.getOutputStream());
-		} finally {
-			in.close();
-			response.getOutputStream();
-		}
+    try {
+      ByteStreams.copy(in, response.getOutputStream());
+    } finally {
+      in.close();
+      response.getOutputStream();
+    }
 
-	}
+  }
 
 }

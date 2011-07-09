@@ -20,129 +20,129 @@ import org.openqa.grid.internal.RemoteProxy;
 
 public class ProxyStatusServlet extends RegistryBasedServlet {
 
-	private static final long serialVersionUID = 7653463271803124556L;
+  private static final long serialVersionUID = 7653463271803124556L;
 
-	public ProxyStatusServlet() {
-		this(null);
-	}
+  public ProxyStatusServlet() {
+    this(null);
+  }
 
-	public ProxyStatusServlet(Registry registry) {
-		super(registry);
-	}
+  public ProxyStatusServlet(Registry registry) {
+    super(registry);
+  }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		process(request, response);
-	}
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    process(request, response);
+  }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		process(request, response);
-	}
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    process(request, response);
+  }
 
-	protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		response.setContentType("text/html");
-		response.setCharacterEncoding("UTF-8");
-		response.setStatus(200);
-		JSONObject res;
-		try {
-			res = getResponse(request);
-			response.getWriter().print(res);
-			response.getWriter().close();
-		} catch (JSONException e) {
-			throw new GridException(e.getMessage());
-		}
+  protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentType("text/html");
+    response.setCharacterEncoding("UTF-8");
+    response.setStatus(200);
+    JSONObject res;
+    try {
+      res = getResponse(request);
+      response.getWriter().print(res);
+      response.getWriter().close();
+    } catch (JSONException e) {
+      throw new GridException(e.getMessage());
+    }
 
-	}
+  }
 
-	private JSONObject getResponse(HttpServletRequest request) throws IOException, JSONException {
-		JSONObject requestJSON = null;
-		if (request.getInputStream() != null) {
-			BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
+  private JSONObject getResponse(HttpServletRequest request) throws IOException, JSONException {
+    JSONObject requestJSON = null;
+    if (request.getInputStream() != null) {
+      BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
       StringBuilder s = new StringBuilder();
-			String line;
-			while ((line = rd.readLine()) != null) {
-				s.append(line);
-			}
-			rd.close();
-			String json = s.toString();
-			if (json != null && !"".equals(json)) {
-				requestJSON = new JSONObject(json);
-			}
+      String line;
+      while ((line = rd.readLine()) != null) {
+        s.append(line);
+      }
+      rd.close();
+      String json = s.toString();
+      if (json != null && !"".equals(json)) {
+        requestJSON = new JSONObject(json);
+      }
 
-		}
+    }
 
-		JSONObject res = new JSONObject();
-		res.put("success", false);
+    JSONObject res = new JSONObject();
+    res.put("success", false);
 
-		// the id can be specified via a param, or in the json request.
-		String id;
-		if (requestJSON == null) {
-			id = request.getParameter("id");
-		} else {
-			if (!requestJSON.has("id")) {
-				res.put("msg", "you need to specify at least an id when call the node  status service.");
-				return res;
-			} else {
-				id = requestJSON.getString("id");
-			}
-		}
+    // the id can be specified via a param, or in the json request.
+    String id;
+    if (requestJSON == null) {
+      id = request.getParameter("id");
+    } else {
+      if (!requestJSON.has("id")) {
+        res.put("msg", "you need to specify at least an id when call the node  status service.");
+        return res;
+      } else {
+        id = requestJSON.getString("id");
+      }
+    }
 
-		// id is defined from here.
-		RemoteProxy proxy = getRegistry().getProxyById(id);
-		if (proxy == null) {
-			res.put("msg", "Cannot find proxy with ID =" + id + " in the registry.");
-			return res;
-		} else {
-			res.put("msg", "proxy found !");
-			res.put("success", true);
-			res.put("id", proxy.getId());
-			res.put("request", proxy.getOriginalRegistrationRequest().getAssociatedJSON());
+    // id is defined from here.
+    RemoteProxy proxy = getRegistry().getProxyById(id);
+    if (proxy == null) {
+      res.put("msg", "Cannot find proxy with ID =" + id + " in the registry.");
+      return res;
+    } else {
+      res.put("msg", "proxy found !");
+      res.put("success", true);
+      res.put("id", proxy.getId());
+      res.put("request", proxy.getOriginalRegistrationRequest().getAssociatedJSON());
 
-			// maybe the request was for more info
-			if (requestJSON != null) {
-				// use basic (= no objects ) reflexion to get the extra stuff
-				// requested.
-				List<String> methods = getExtraMethodsRequested(requestJSON);
+      // maybe the request was for more info
+      if (requestJSON != null) {
+        // use basic (= no objects ) reflexion to get the extra stuff
+        // requested.
+        List<String> methods = getExtraMethodsRequested(requestJSON);
 
-				List<String> errors = new ArrayList<String>();
-				for (String method : methods) {
-					try {
-						Object o = getValueByReflection(proxy, method);
-						res.put(method, o);
-					} catch (Throwable t) {
-						errors.add(t.getMessage());
-					}
-				}
-				if (!errors.isEmpty()) {
-					res.put("success", false);
-					res.put("errors", errors.toString());
-				}
-			}
-			return res;
-		}
+        List<String> errors = new ArrayList<String>();
+        for (String method : methods) {
+          try {
+            Object o = getValueByReflection(proxy, method);
+            res.put(method, o);
+          } catch (Throwable t) {
+            errors.add(t.getMessage());
+          }
+        }
+        if (!errors.isEmpty()) {
+          res.put("success", false);
+          res.put("errors", errors.toString());
+        }
+      }
+      return res;
+    }
 
-	}
+  }
 
-	private Object getValueByReflection(RemoteProxy proxy, String method) {
-		Class<?>[] argsClass = new Class[] {};
-		try {
-			Method m = proxy.getClass().getDeclaredMethod(method, argsClass);
-			return m.invoke(proxy);
-		} catch (Throwable e) {
-			throw new RuntimeException(e.getClass() + " - " + e.getMessage());
-		}
-	}
+  private Object getValueByReflection(RemoteProxy proxy, String method) {
+    Class<?>[] argsClass = new Class[]{};
+    try {
+      Method m = proxy.getClass().getDeclaredMethod(method, argsClass);
+      return m.invoke(proxy);
+    } catch (Throwable e) {
+      throw new RuntimeException(e.getClass() + " - " + e.getMessage());
+    }
+  }
 
-	private List<String> getExtraMethodsRequested(JSONObject request) {
-		List<String> res = new ArrayList<String>();
+  private List<String> getExtraMethodsRequested(JSONObject request) {
+    List<String> res = new ArrayList<String>();
 
-		for (Iterator iterator = request.keys(); iterator.hasNext();) {
-			String key = (String) iterator.next();
-			if (!"id".equals(key)) {
-				res.add(key);
-			}
+    for (Iterator iterator = request.keys(); iterator.hasNext(); ) {
+      String key = (String) iterator.next();
+      if (!"id".equals(key)) {
+        res.add(key);
+      }
 
-		}
-		return res;
-	}
+    }
+    return res;
+  }
 
 }

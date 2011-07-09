@@ -23,11 +23,9 @@ import org.openqa.grid.internal.RemoteProxy;
 /**
  * Used to find out if a capabilities requested by the client matches something
  * on the remote and should be forwarded by the grid.
- * 
+ *
  * @link {@link RemoteProxy#setCapabilityHelper(CapabilityHelper)}
- * 
- * 
  */
 public interface CapabilityMatcher {
-	public boolean matches(Map<String, Object> currentCapability, Map<String, Object> requestedCapability);
+  public boolean matches(Map<String, Object> currentCapability, Map<String, Object> requestedCapability);
 }

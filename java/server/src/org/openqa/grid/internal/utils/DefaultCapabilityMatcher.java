@@ -25,84 +25,83 @@ import org.openqa.selenium.Platform;
 
 /**
  * Default (naive) implementation of the capability matcher.
- * 
+ * <p/>
  * The default capability matcher will look at all the key from the request do
  * not start with _ and will try to find a node that has at least those
  * capabilities.
- * 
  */
 public class DefaultCapabilityMatcher implements CapabilityMatcher {
 
-	private static final Logger log = Logger.getLogger(DefaultCapabilityMatcher.class.getName());
-	private static final String GRID_TOKEN = "_";
-	
-	// temporary fix to only check to most meaningful desiredCapability params
-	private static List<String> toConsider = new ArrayList<String>();
-	
-	public DefaultCapabilityMatcher() {
-		toConsider.add("platform");
-		toConsider.add("browserName");
-		toConsider.add("version");
-		toConsider.add("applicationName");
-		
-	}
+  private static final Logger log = Logger.getLogger(DefaultCapabilityMatcher.class.getName());
+  private static final String GRID_TOKEN = "_";
 
-	public boolean matches(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
-		if (nodeCapability == null || requestedCapability == null) {
-			return false;
-		}
-		for (String key : requestedCapability.keySet()) {
-			// ignore capabilities that are targeted at grid internal for the
-			// matching
-			// TODO freynaud only consider version, browser and OS for now
-			if (!key.startsWith(GRID_TOKEN) && toConsider.contains(key)) {
-				if (requestedCapability.get(key) != null) {
-					String value = requestedCapability.get(key).toString();
-					if (!("ANY".equalsIgnoreCase(value) || "".equals(value) || "*".equals(value))) {
-						Platform requested = exctractPlatform(requestedCapability.get(key));
-						// special case for platform
-						if (requested != null) {
-							Platform node = exctractPlatform(nodeCapability.get(key));
-							if (node == null){
-								return false;
-							}
-							if (!node.is(requested)) {
-								return false;
-							}
-						} else {
-							if (!requestedCapability.get(key).equals(nodeCapability.get(key))) {
-								return false;
-							}
-						}
-					} else {
-						// null value matches anything.
-					}
-				}
-			}		
-		}
-		return true;
-	}
+  // temporary fix to only check to most meaningful desiredCapability params
+  private static List<String> toConsider = new ArrayList<String>();
 
-	Platform exctractPlatform(Object o) {
-		if (o == null) {
-			return null;
-		}
-		if (o instanceof Platform) {
-			return (Platform) o;
-		} else if (o instanceof String) {
-			String name = o.toString();
-			for (Platform os : Platform.values()) {
-				for (String matcher : os.getPartOfOsName()) {
-					if ("".equals(matcher))
-						continue;
-					if (name.equalsIgnoreCase(matcher)) {
-						return os;
-					}
-				}
-			}
-			return null;
-		} else {
-			return null;
-		}
-	}
+  public DefaultCapabilityMatcher() {
+    toConsider.add("platform");
+    toConsider.add("browserName");
+    toConsider.add("version");
+    toConsider.add("applicationName");
+
+  }
+
+  public boolean matches(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
+    if (nodeCapability == null || requestedCapability == null) {
+      return false;
+    }
+    for (String key : requestedCapability.keySet()) {
+      // ignore capabilities that are targeted at grid internal for the
+      // matching
+      // TODO freynaud only consider version, browser and OS for now
+      if (!key.startsWith(GRID_TOKEN) && toConsider.contains(key)) {
+        if (requestedCapability.get(key) != null) {
+          String value = requestedCapability.get(key).toString();
+          if (!("ANY".equalsIgnoreCase(value) || "".equals(value) || "*".equals(value))) {
+            Platform requested = exctractPlatform(requestedCapability.get(key));
+            // special case for platform
+            if (requested != null) {
+              Platform node = exctractPlatform(nodeCapability.get(key));
+              if (node == null) {
+                return false;
+              }
+              if (!node.is(requested)) {
+                return false;
+              }
+            } else {
+              if (!requestedCapability.get(key).equals(nodeCapability.get(key))) {
+                return false;
+              }
+            }
+          } else {
+            // null value matches anything.
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  Platform exctractPlatform(Object o) {
+    if (o == null) {
+      return null;
+    }
+    if (o instanceof Platform) {
+      return (Platform) o;
+    } else if (o instanceof String) {
+      String name = o.toString();
+      for (Platform os : Platform.values()) {
+        for (String matcher : os.getPartOfOsName()) {
+          if ("".equals(matcher))
+            continue;
+          if (name.equalsIgnoreCase(matcher)) {
+            return os;
+          }
+        }
+      }
+      return null;
+    } else {
+      return null;
+    }
+  }
 }

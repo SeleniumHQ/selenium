@@ -27,39 +27,38 @@ import org.openqa.grid.internal.TestSlot;
  * Default html render that doesn't assume anything about a proxy ( in
  * particular, it doesn't assume it's a selenium1 or 2 proxy.) , and just
  * display very basic info about it for the console.
- * 
  */
 public class DefaultHtmlRenderer implements HtmlRenderer {
 
-	private RemoteProxy proxy;
+  private RemoteProxy proxy;
 
-	@SuppressWarnings("unused")
-	private DefaultHtmlRenderer() {
-	}
+  @SuppressWarnings("unused")
+  private DefaultHtmlRenderer() {
+  }
 
-	public DefaultHtmlRenderer(RemoteProxy proxy) {
-		this.proxy = proxy;
-	}
+  public DefaultHtmlRenderer(RemoteProxy proxy) {
+    this.proxy = proxy;
+  }
 
-	public String renderSummary() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("<fieldset>");
-		builder.append("<legend>").append(proxy.getClass().getSimpleName()).append("</legend>");
+  public String renderSummary() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("<fieldset>");
+    builder.append("<legend>").append(proxy.getClass().getSimpleName()).append("</legend>");
     builder.append("listening on ").append(proxy.getRemoteURL());
-		if (proxy.getTimeOut() > 0) {
-			int inSec = proxy.getTimeOut() / 1000;
-			builder.append("test session time out after ").append(inSec).append(" sec.");
-		}
+    if (proxy.getTimeOut() > 0) {
+      int inSec = proxy.getTimeOut() / 1000;
+      builder.append("test session time out after ").append(inSec).append(" sec.");
+    }
 
-		builder.append("<br>Supports up to <b>").append(proxy.getMaxNumberOfConcurrentTestSessions()).append("</b> concurrent tests from : </u><br>");
+    builder.append("<br>Supports up to <b>").append(proxy.getMaxNumberOfConcurrentTestSessions()).append("</b> concurrent tests from : </u><br>");
 
-		for (TestSlot slot : proxy.getTestSlots()) {
-			builder.append(slot.getCapabilities().containsKey(BROWSER) ? slot.getCapabilities().get(BROWSER) : slot.getCapabilities().get(APP));
-			TestSession session = slot.getSession();
-			builder.append(session == null ? "(free)" : "(busy, session " + session + ")");
-			builder.append("<br>");
-		}
-		builder.append("</fieldset>");
-		return builder.toString();
-	}
+    for (TestSlot slot : proxy.getTestSlots()) {
+      builder.append(slot.getCapabilities().containsKey(BROWSER) ? slot.getCapabilities().get(BROWSER) : slot.getCapabilities().get(APP));
+      TestSession session = slot.getSession();
+      builder.append(session == null ? "(free)" : "(busy, session " + session + ")");
+      builder.append("<br>");
+    }
+    builder.append("</fieldset>");
+    return builder.toString();
+  }
 }

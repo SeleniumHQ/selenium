@@ -18,18 +18,17 @@ package org.openqa.grid.internal.listeners;
 
 /**
  * To be implemented by a class extending RemoteProxy
- * 
  */
 public interface RegistrationListener {
 
-	/**
-	 * Will be run before the proxy you register is added to the Registry,
-	 * letting you run the configuration / validation necessary before the proxy
-	 * becomes accessible to the clients.
-	 * 
-	 * 
-	 * If an exception is thrown, the proxy won't be registered.
-	 */
-	public void beforeRegistration();
+  /**
+   * Will be run before the proxy you register is added to the Registry,
+   * letting you run the configuration / validation necessary before the proxy
+   * becomes accessible to the clients.
+   * <p/>
+   * <p/>
+   * If an exception is thrown, the proxy won't be registered.
+   */
+  public void beforeRegistration();
 
 }

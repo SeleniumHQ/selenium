@@ -27,37 +27,37 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.CapabilityType;
 
 public class WebDriverRemoteProxy extends WebRemoteProxy implements TestSessionListener {
-	private static final Logger log = Logger.getLogger(WebDriverRemoteProxy.class.getName());
+  private static final Logger log = Logger.getLogger(WebDriverRemoteProxy.class.getName());
 
-	public WebDriverRemoteProxy(RegistrationRequest request,Registry registry) {
-		super(request,registry);
-	}
+  public WebDriverRemoteProxy(RegistrationRequest request, Registry registry) {
+    super(request, registry);
+  }
 
-	@Override
-	public void beforeRelease(TestSession session) {
-		// release the resources remotly.
-		if (session.getExternalKey() == null) {
-			throw new IllegalStateException("No internal key yet. Did the app start properlty?");
-		}
-		System.err.println("timing out " + session);
-		boolean ok = session.sendDeleteSessionRequest();
-		if (!ok) {
-			log.warning("Error releasing the resources on timeout for session " + session);
-		}
-	}
+  @Override
+  public void beforeRelease(TestSession session) {
+    // release the resources remotly.
+    if (session.getExternalKey() == null) {
+      throw new IllegalStateException("No internal key yet. Did the app start properlty?");
+    }
+    System.err.println("timing out " + session);
+    boolean ok = session.sendDeleteSessionRequest();
+    if (!ok) {
+      log.warning("Error releasing the resources on timeout for session " + session);
+    }
+  }
 
-	public void beforeSession(TestSession session) {
-		Map<String, Object> cap = session.getRequestedCapabilities();
-		if ("firefox".equals(cap.get(CapabilityType.BROWSER_NAME))) {
-			if (session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null && cap.get(FirefoxDriver.BINARY) == null) {
-				session.getRequestedCapabilities().put(FirefoxDriver.BINARY, session.getSlot().getCapabilities().get(FirefoxDriver.BINARY));
-			}
-		}
-	}
+  public void beforeSession(TestSession session) {
+    Map<String, Object> cap = session.getRequestedCapabilities();
+    if ("firefox".equals(cap.get(CapabilityType.BROWSER_NAME))) {
+      if (session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null && cap.get(FirefoxDriver.BINARY) == null) {
+        session.getRequestedCapabilities().put(FirefoxDriver.BINARY, session.getSlot().getCapabilities().get(FirefoxDriver.BINARY));
+      }
+    }
+  }
 
-	public void afterSession(TestSession session) {
-		// ignore
+  public void afterSession(TestSession session) {
+    // ignore
 
-	}
+  }
 
 }

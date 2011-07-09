@@ -19,18 +19,18 @@ import java.util.Map;
 
 public interface Prioritizer {
 
-	/**
-	 * priority of a is lower than b : compare(a,b) > 0
-	 * 
-	 * priority of b is lower than a : compare(a,b) < 0
-	 * 
-	 * a and b have the same priority : compare(a,b) = 0
-	 * 
-	 * @param a
-	 * @param b
-	 * @return a negative number is a is less important than b, a positive
-	 *         number is a is more important than b, 0 if a and b are equaly as
-	 *         important.
-	 */
-	public int compareTo(Map<String, Object> a, Map<String, Object> b);
+  /**
+   * priority of a is lower than b : compare(a,b) > 0
+   * <p/>
+   * priority of b is lower than a : compare(a,b) < 0
+   * <p/>
+   * a and b have the same priority : compare(a,b) = 0
+   *
+   * @param a
+   * @param b
+   * @return a negative number is a is less important than b, a positive
+   *         number is a is more important than b, 0 if a and b are equaly as
+   *         important.
+   */
+  public int compareTo(Map<String, Object> a, Map<String, Object> b);
 }

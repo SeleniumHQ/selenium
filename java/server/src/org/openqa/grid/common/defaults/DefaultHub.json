@@ -1,14 +1,14 @@
 {
-	"host": null,
-	"port": 4444,
-	"newSessionWaitTimeout": -1,
-	"servlets" : [],
-	"prioritizer": null,
-	"capabilityMatcher": "org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
-	"throwOnCapabilityNotPresent": true,
-	"nodePolling": 5000,
-	
-	"cleanUpCycle": 5000,
-	"timeout": 300000,
-	"maxSession": 5
+  "host": null,
+  "port": 4444,
+  "newSessionWaitTimeout": -1,
+  "servlets" : [],
+  "prioritizer": null,
+  "capabilityMatcher": "org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
+  "throwOnCapabilityNotPresent": true,
+  "nodePolling": 5000,
+
+  "cleanUpCycle": 5000,
+  "timeout": 300000,
+  "maxSession": 5
 }
