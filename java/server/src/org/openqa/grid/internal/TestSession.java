@@ -172,10 +172,8 @@ public class TestSession {
 		if (getClass() != obj.getClass())
 			return false;
 		TestSession other = (TestSession) obj;
-		if (!internalKey.equals(other.internalKey))
-			return false;
-		return true;
-	}
+        return internalKey.equals(other.internalKey);
+    }
 
 	@Override
 	public String toString() {
@@ -445,11 +443,7 @@ public class TestSession {
 		try {
 			HttpResponse response = client.execute(new HttpHost(remoteURL.getHost(), remoteURL.getPort()), request);
 			int code = response.getStatusLine().getStatusCode();
-			if (code >= 200 && code <= 299) {
-				ok = true;
-			} else {
-				ok = false;
-			}
+            ok = (code >= 200) && (code <= 299);
 		} catch (Throwable e) {
 			ok = false;
 			// corrupted or the something else already sent the DELETE.
@@ -476,11 +470,7 @@ public class TestSession {
 		boolean ok = false;
 		try {
 			int code = response.getStatusLine().getStatusCode();
-			if (code >= 200 && code <= 299) {
-				ok = true;
-			} else {
-				ok = false;
-			}
+            ok = (code >= 200) && (code <= 299);
 		} catch (Throwable e) {
 			ok = false;
 			// corrupted or the something else already sent the DELETE.
