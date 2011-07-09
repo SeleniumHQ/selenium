@@ -17,5 +17,5 @@ limitations under the License.
 package org.openqa.grid.web.servlet.handler;
 
 public enum RequestType {
-	START_SESSION, STOP_SESSION, REGULAR;
+	START_SESSION, STOP_SESSION, REGULAR
 }
