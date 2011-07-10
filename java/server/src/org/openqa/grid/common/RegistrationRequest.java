@@ -276,15 +276,15 @@ public class RegistrationRequest {
       RegistrationRequest request = new RegistrationRequest();
 
       Map<String, Object> configuration = Maps.newHashMap();
-      configuration.put("proxy", "org.openqa.grid.selenium.proxy.SeleniumRemoteProxy");
+      configuration.put(PROXY_CLASS, "org.openqa.grid.selenium.proxy.SeleniumRemoteProxy");
       configuration
-          .put("url", String.format("http://%s:%s/selenium-server/driver", registrationInfo.get("host"), registrationInfo.get("port")));
+          .put(REMOTE_URL, String.format("http://%s:%s/selenium-server/driver", registrationInfo.get("host"), registrationInfo.get("port")));
       request.setConfiguration(configuration);
 
       DesiredCapabilities cap = new DesiredCapabilities();
       // cap.put("platform", "LINUX");
       // TODO freynaud envt or browser ?
-      cap.setCapability("browserName", registrationInfo.get("environment"));
+      cap.setCapability(BROWSER, registrationInfo.get("environment"));
       cap.setCapability("environment", registrationInfo.get("environment"));
       request.capabilities.add(cap);
 
