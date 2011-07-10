@@ -15,10 +15,15 @@ limitations under the License.
  */
 package org.openqa.grid.web;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
 
 import javax.servlet.Servlet;
 
@@ -39,6 +44,8 @@ import org.openqa.jetty.jetty.servlet.WebApplicationContext;
 import org.openqa.selenium.net.NetworkUtils;
 
 import com.google.common.collect.Maps;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.log.TerseFormatter;
 
 /**
  * Jetty server. Main entry point for everything about the grid.
@@ -69,6 +76,20 @@ public class Hub {
   }
 
   public Hub(GridHubConfiguration config) {
+    String logFilename = config.getLogFilename() == null ? RemoteControlConfiguration.getDefaultLogOutFile() : config.getLogFilename();
+    if (logFilename != null) {
+      try {
+        Handler logFile = new FileHandler(new File(logFilename).getAbsolutePath(), true);
+        logFile.setFormatter(new TerseFormatter(true));
+        logFile.setLevel(Level.FINE);
+
+        Logger.getLogger("").setLevel(Level.FINE);
+        Logger.getLogger("").addHandler(logFile);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
     registry = new Registry(this, config);
 
     if (config.getHost() != null) {

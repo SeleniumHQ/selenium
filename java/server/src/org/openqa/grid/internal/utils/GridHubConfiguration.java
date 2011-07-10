@@ -87,6 +87,11 @@ public class GridHubConfiguration {
    */
   private boolean throwOnCapabilityNotPresent = true;
 
+  /**
+   * The filename to use for logging.  Default value is <code>null</code> and indicates logging to STDOUT.
+   */
+  private String logFilename;
+
   private Map<String, Object> allParams = new HashMap<String, Object>();
 
   /**
@@ -173,6 +178,9 @@ public class GridHubConfiguration {
     }
     if (helper.isParamPresent("-servlets")) {
       servlets = helper.getParamValues("-servlets");
+    }
+    if (helper.isParamPresent("-log")) {
+      logFilename = helper.getParamValue("-log");
     }
 
     // storing them all.
@@ -329,6 +337,10 @@ public class GridHubConfiguration {
 
   public List<String> getServlets() {
     return servlets;
+  }
+
+  public String getLogFilename() {
+    return logFilename;
   }
 
   public Map<String, String> getGrid1Mapping() {
