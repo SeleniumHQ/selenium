@@ -34,7 +34,6 @@ import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.remote.DesiredCapabilities;
 

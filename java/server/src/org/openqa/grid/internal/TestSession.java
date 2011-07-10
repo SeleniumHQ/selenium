@@ -40,7 +40,6 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.ProtocolException;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.RedirectHandler;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
