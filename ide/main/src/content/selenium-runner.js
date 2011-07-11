@@ -63,6 +63,15 @@ MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowTo
     return BrowserBot.prototype.modifyWindowToRecordPopUpDialogs.call(this, windowToModify, browserBot);
 };
 
+//Samit: Fix: Fixing the Alerts not working in Selenium IDE v1.0.11/12
+MozillaBrowserBot.prototype.windowNeedsModifying = function(win, uniqueId) {
+  if (!win[uniqueId]) {
+    win[uniqueId] = 1;
+    return true;
+  }
+  return false;
+};
+
 Selenium.prototype.doPause = function(waitTime) {
     currentTest.pauseInterval = waitTime;
 };
