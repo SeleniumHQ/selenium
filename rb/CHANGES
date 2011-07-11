@@ -1,3 +1,9 @@
+2.0.1 (2011-07-11)
+==================
+
+* Make sure at_exit hooks aren't inherited by child processes.
+
+
 2.0.0 (2011-07-08)
 ==================
 
