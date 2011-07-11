@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shfbBuild product="Sandcastle Help File Builder Utilities" version="1.9.3.0" projectFile="C:\Projects\WebDriver\trunk\dotnet\docgen\docs.shfbproj" started="6/8/2011 12:08:51 PM">
+<shfbBuild product="Sandcastle Help File Builder Utilities" version="1.9.3.0" projectFile="C:\Projects\WebDriver\trunk\dotnet\docgen\docs.shfbproj" started="7/7/2011 3:30:38 PM">
 <buildStep step="Initializing">
 </buildStep>
 <buildStep step="FindingTools">
@@ -31,7 +31,7 @@ Copying XML comments files
 </buildStep>
 <buildStep step="GenerateSharedContent">
 Generating shared content files (en-US, English (United States))...
-    Last step completed in 00:00:00.0312
+    Last step completed in 00:00:00.1560
 </buildStep>
 <buildStep step="GenerateApiFilter">
 Generating API filter for MRefBuilder...
@@ -43,16 +43,16 @@ Generating reflection information...
   MrefBuilder (v2.6.10621.1)
   Copyright c Microsoft 2006
   Info: Loaded 4 assemblies for reflection and 0 dependency assemblies.
-  Info: Wrote information on 14 namespaces, 114 types, and 1118 members
+  Info: Wrote information on 14 namespaces, 112 types, and 1114 members
   XslTransform (v2.6.10621.1)
   Copyright c Microsoft 2005-2006
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\MergeDuplicates.xsl&#39;.
   reflection.all -&gt; reflection.org
-    Last step completed in 00:00:02.2152
+    Last step completed in 00:00:06.9888
 </buildStep>
 <buildStep step="GenerateNamespaceSummaries">
 Generating namespace summary information...
-    Last step completed in 00:00:00.0312
+    Last step completed in 00:00:00.0780
 </buildStep>
 <buildStep step="ApplyVisibilityProperties">
 Applying visibility properties to reflection information file
@@ -68,14 +68,14 @@ Transforming reflection output...
   XslTransform (v2.6.10621.1)
   Copyright c Microsoft 2005-2006
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\ApplyVSDocModel.xsl&#39;.
-  reflection.org -&gt; C:\Users\jevans.BOSIDOMAIN\AppData\Local\Temp\tmpDD.tmp
+  reflection.org -&gt; C:\Users\jevans.BOSIDOMAIN\AppData\Local\Temp\tmp9521.tmp
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\AddGuidFilenames.xsl&#39;.
-  C:\Users\jevans.BOSIDOMAIN\AppData\Local\Temp\tmpDD.tmp -&gt; reflection.xml
+  C:\Users\jevans.BOSIDOMAIN\AppData\Local\Temp\tmp9521.tmp -&gt; reflection.xml
   XslTransform (v2.6.10621.1)
   Copyright c Microsoft 2005-2006
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\ReflectionToManifest.xsl&#39;.
   reflection.xml -&gt; manifest.xml
-    Last step completed in 00:00:02.3868
+    Last step completed in 00:00:02.8704
 </buildStep>
 <buildStep step="ModifyHelpTopicFilenames">
 Modifying help topic filenames in reflection information file
@@ -130,11 +130,15 @@ Modifying help topic filenames in reflection information file
     Unique name M_OpenQA_Selenium_XPathLookupException__ctor_3 generated for M:OpenQA.Selenium.XPathLookupException.#ctor(System.String,System.Exception)
     Unique name M_OpenQA_Selenium_Android_AndroidDriver__ctor_1 generated for M:OpenQA.Selenium.Android.AndroidDriver.#ctor(System.String)
     Unique name M_OpenQA_Selenium_Android_AndroidDriver__ctor_2 generated for M:OpenQA.Selenium.Android.AndroidDriver.#ctor(System.Uri)
-    Unique name M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_1 generated for M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String)
+    Unique name M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_1 generated for M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.ICapabilities)
+    Unique name M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_2 generated for M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String)
+    Unique name M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_3 generated for M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String,OpenQA.Selenium.ICapabilities)
+    Unique name M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_4 generated for M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String,OpenQA.Selenium.ICapabilities,System.TimeSpan)
     Unique name M_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_1 generated for M:OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService(System.String)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxBinary__ctor_1 generated for M:OpenQA.Selenium.Firefox.FirefoxBinary.#ctor(System.String)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_1 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxBinary,OpenQA.Selenium.Firefox.FirefoxProfile)
-    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_2 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxProfile)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_2 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxBinary,OpenQA.Selenium.Firefox.FirefoxProfile,System.TimeSpan)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_3 generated for M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxProfile)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxProfile__ctor_1 generated for M:OpenQA.Selenium.Firefox.FirefoxProfile.#ctor(System.String)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxProfile__ctor_2 generated for M:OpenQA.Selenium.Firefox.FirefoxProfile.#ctor(System.String,System.Boolean)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxProfile_SetPreference_1 generated for M:OpenQA.Selenium.Firefox.FirefoxProfile.SetPreference(System.String,System.Int32)
@@ -142,6 +146,7 @@ Modifying help topic filenames in reflection information file
     Unique name M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_1 generated for M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(OpenQA.Selenium.ICapabilities)
     Unique name M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_2 generated for M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.Int32)
     Unique name M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_3 generated for M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.Int32,OpenQA.Selenium.ICapabilities)
+    Unique name M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_4 generated for M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.Int32,OpenQA.Selenium.ICapabilities,System.TimeSpan)
     Unique name M_OpenQA_Selenium_Interactions_Actions_Click_1 generated for M:OpenQA.Selenium.Interactions.Actions.Click(OpenQA.Selenium.IWebElement)
     Unique name M_OpenQA_Selenium_Interactions_Actions_KeyDown_1 generated for M:OpenQA.Selenium.Interactions.Actions.KeyDown(System.String)
     Unique name M_OpenQA_Selenium_Interactions_Actions_KeyUp_1 generated for M:OpenQA.Selenium.Interactions.Actions.KeyUp(System.String)
@@ -151,9 +156,9 @@ Modifying help topic filenames in reflection information file
     Unique name M_OpenQA_Selenium_Remote_DesiredCapabilities__ctor_1 generated for M:OpenQA.Selenium.Remote.DesiredCapabilities.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object})
     Unique name M_OpenQA_Selenium_Remote_DesiredCapabilities__ctor_2 generated for M:OpenQA.Selenium.Remote.DesiredCapabilities.#ctor(System.String,System.String,OpenQA.Selenium.Platform)
     Unique name M_OpenQA_Selenium_Remote_ErrorResponse__ctor_1 generated for M:OpenQA.Selenium.Remote.ErrorResponse.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object})
-    Unique name M_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor_1 generated for M:OpenQA.Selenium.Remote.HttpCommandExecutor.#ctor(System.Uri,System.TimeSpan)
     Unique name M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_1 generated for M:OpenQA.Selenium.Remote.RemoteWebDriver.#ctor(OpenQA.Selenium.Remote.ICommandExecutor,OpenQA.Selenium.ICapabilities)
     Unique name M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_2 generated for M:OpenQA.Selenium.Remote.RemoteWebDriver.#ctor(System.Uri,OpenQA.Selenium.ICapabilities)
+    Unique name M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_3 generated for M:OpenQA.Selenium.Remote.RemoteWebDriver.#ctor(System.Uri,OpenQA.Selenium.ICapabilities,System.TimeSpan)
     Unique name M_OpenQA_Selenium_Remote_RemoteWebDriver_Dispose_1 generated for M:OpenQA.Selenium.Remote.RemoteWebDriver.Dispose(System.Boolean)
     Unique name M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElement_1 generated for M:OpenQA.Selenium.Remote.RemoteWebDriver.FindElement(System.String,System.String)
     Unique name M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElements_1 generated for M:OpenQA.Selenium.Remote.RemoteWebDriver.FindElements(System.String,System.String)
@@ -181,7 +186,7 @@ Modifying help topic filenames in reflection information file
     Unique name M_Selenium_WebDriverCommandProcessor__ctor_1 generated for M:Selenium.WebDriverCommandProcessor.#ctor(System.Uri,OpenQA.Selenium.IWebDriver)
     Unique name M_Selenium_WebDriverCommandProcessor_Start_1 generated for M:Selenium.WebDriverCommandProcessor.Start(System.Object)
     Unique name M_Selenium_WebDriverCommandProcessor_Start_2 generated for M:Selenium.WebDriverCommandProcessor.Start(System.String)
-    Last step completed in 00:00:00.1248
+    Last step completed in 00:00:00.1404
 </buildStep>
 <buildStep step="CopyStandardContent">
 Copying standard help content...
@@ -399,7 +404,7 @@ C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\script_manifold.js
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\SplitScreen.js -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\scripts\SplitScreen.js
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\styles\Presentation.css -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\styles\Presentation.css
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\styles\Whidbey\presentation.css -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\styles\Whidbey\presentation.css
-    Last step completed in 00:00:00.4836
+    Last step completed in 00:00:00.7488
 </buildStep>
 <buildStep step="CopyAdditionalContent">
 Copying additional content files...
@@ -418,17 +423,17 @@ Generating intermediate table of contents file...
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\CreateVSToc.xsl&#39;.
   reflection.xml -&gt; toc.xml
 Generating conceptual content intermediate TOC file...
-    Last step completed in 00:00:00.5460
+    Last step completed in 00:00:00.5148
 </buildStep>
 <buildStep step="CreateBuildAssemblerConfigs">
 Creating Sandcastle configuration files...
     sandcastle.config
-    Last step completed in 00:00:00.0468
+    Last step completed in 00:00:00.2496
 </buildStep>
 <buildStep step="MergeCustomConfigs">
 Merging custom build component configurations
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\sandcastle.config
-    Last step completed in 00:00:00.0936
+    Last step completed in 00:00:00.1248
 </buildStep>
 <buildStep step="BuildReferenceTopics">
 Building reference help topics...
@@ -440,7 +445,7 @@ Building reference help topics...
   Info: CopyFromIndexComponent: Instantiating component.
   Info: CopyFromIndexComponent: Searching for files that match &#39;*.xml&#39;.
   Info: CopyFromIndexComponent: Searching for files that match &#39;reflection.xml&#39;.
-  Info: CopyFromIndexComponent: Indexed 204355 elements in 409 files.
+  Info: CopyFromIndexComponent: Indexed 204344 elements in 409 files.
   Info: CopyFromIndexComponent: Loaded 0 copy components.
   Info: CopyFromIndexComponent: Instantiating component.
   Info: CopyFromIndexComponent: Loaded 0 copy components.
@@ -1097,7 +1102,7 @@ Building reference help topics...
   Info: CopyFromIndexComponent: Searching for files that match &#39;C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Webdriver.Support.xml&#39;.
   Info: CopyFromIndexComponent: Searching for files that match &#39;C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\ThoughtWorks.Selenium.Core.xml&#39;.
   Info: CopyFromIndexComponent: Searching for files that match &#39;C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Selenium.WebDriverBackedSelenium.xml&#39;.
-  Info: CopyFromIndexComponent: Indexed 134153 elements in 122 files.
+  Info: CopyFromIndexComponent: Indexed 134155 elements in 122 files.
   Info: CopyFromIndexComponent: Loaded 0 copy components.
   Info: ForEachComponent: Instantiating component.
   Info: ForEachComponent: Loading subcomponents.
@@ -1178,7 +1183,7 @@ Building reference help topics...
   Info: ResolveReferenceLinksComponent2: Creating MSDN URL resolver.
   Info: ResolveReferenceLinksComponent2: Searching directory &#39;C:\Program Files (x86)\Sandcastle\Data\Reflection&#39; for targets files of the form &#39;*.xml&#39;.
   Info: ResolveReferenceLinksComponent2: Searching directory &#39;C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working&#39; for targets files of the form &#39;reflection.xml&#39;.
-  Info: ResolveReferenceLinksComponent2: Loaded 204355 reference targets.
+  Info: ResolveReferenceLinksComponent2: Loaded 204344 reference targets.
   Info: SaveComponent: Instantiating component.
   Info: MultiFormatOutputComponent: Loading components for Website format
   Info: SharedContentComponent: Instantiating component.
@@ -1222,7 +1227,7 @@ Building reference help topics...
   Info: ResolveReferenceLinksComponent2: Creating MSDN URL resolver.
   Info: ResolveReferenceLinksComponent2: Searching directory &#39;C:\Program Files (x86)\Sandcastle\Data\Reflection&#39; for targets files of the form &#39;*.xml&#39;.
   Info: ResolveReferenceLinksComponent2: Searching directory &#39;C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working&#39; for targets files of the form &#39;reflection.xml&#39;.
-  Info: ResolveReferenceLinksComponent2: Loaded 204355 reference targets.
+  Info: ResolveReferenceLinksComponent2: Loaded 204344 reference targets.
   Info: SaveComponent: Instantiating component.
   Info: BuildAssembler: Building topic N:OpenQA.Selenium
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.By
@@ -1427,14 +1432,12 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IWebElement.GetAttribute(System.String)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IWebElement.GetCssValue(System.String)
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.IWebElement.Location
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.IWebElement.Select
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.IWebElement.Selected
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IWebElement.SendKeys(System.String)
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.IWebElement.Size
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IWebElement.Submit
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.IWebElement.TagName
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.IWebElement.Text
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.IWebElement.Toggle
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.Keys
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Keys
   Info: BuildAssembler: Building topic Fields.T:OpenQA.Selenium.Keys
@@ -1626,12 +1629,6 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Android.AndroidDriver.#ctor(System.Uri)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Android.AndroidDriver.GetScreenshot
   Info: BuildAssembler: Building topic N:OpenQA.Selenium.Chrome
-  Info: BuildAssembler: Building topic T:OpenQA.Selenium.Chrome.ChromeCommandExecutor
-  Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Chrome.ChromeCommandExecutor
-  Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Chrome.ChromeCommandExecutor
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Chrome.ChromeCommandExecutor.#ctor(OpenQA.Selenium.Chrome.ChromeDriverService)
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Chrome.ChromeCommandExecutor.Start
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Chrome.ChromeCommandExecutor.Stop
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.Chrome.ChromeDriver
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Chrome.ChromeDriver
   Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Chrome.ChromeDriver
@@ -1642,7 +1639,10 @@ Building reference help topics...
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Chrome.ChromeDriver.FindElement
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Chrome.ChromeDriver.FindElements
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(OpenQA.Selenium.ICapabilities)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String,OpenQA.Selenium.ICapabilities)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String,OpenQA.Selenium.ICapabilities,System.TimeSpan)
   Info: BuildAssembler: Building topic F:OpenQA.Selenium.Chrome.ChromeDriver.AcceptUntrustedCertificates
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Chrome.ChromeDriver.GetScreenshot
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Chrome.ChromeDriver.StartClient
@@ -1698,6 +1698,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Firefox.FirefoxDriver.FindElements
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxBinary,OpenQA.Selenium.Firefox.FirefoxProfile)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxBinary,OpenQA.Selenium.Firefox.FirefoxProfile,System.TimeSpan)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Firefox.FirefoxDriver.#ctor(OpenQA.Selenium.Firefox.FirefoxProfile)
   Info: BuildAssembler: Building topic F:OpenQA.Selenium.Firefox.FirefoxDriver.AcceptUntrustedCertificates
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Firefox.FirefoxDriver.Binary
@@ -1766,6 +1767,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(OpenQA.Selenium.ICapabilities)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.Int32)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.Int32,OpenQA.Selenium.ICapabilities)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.Int32,OpenQA.Selenium.ICapabilities,System.TimeSpan)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.GetScreenshot
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.StartClient
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.StopClient
@@ -1966,13 +1968,6 @@ Building reference help topics...
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.ErrorResponse.Message
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.ErrorResponse.Screenshot
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.ErrorResponse.StackTrace
-  Info: BuildAssembler: Building topic T:OpenQA.Selenium.Remote.HttpCommandExecutor
-  Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Remote.HttpCommandExecutor
-  Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Remote.HttpCommandExecutor
-  Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Remote.HttpCommandExecutor.#ctor
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.HttpCommandExecutor.#ctor(System.Uri)
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.HttpCommandExecutor.#ctor(System.Uri,System.TimeSpan)
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.HttpCommandExecutor.Execute(OpenQA.Selenium.Remote.Command)
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.Remote.ICommandExecutor
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Remote.ICommandExecutor
   Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Remote.ICommandExecutor
@@ -1988,6 +1983,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.RemoteWebDriver.#ctor(OpenQA.Selenium.ICapabilities)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.RemoteWebDriver.#ctor(OpenQA.Selenium.Remote.ICommandExecutor,OpenQA.Selenium.ICapabilities)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.RemoteWebDriver.#ctor(System.Uri,OpenQA.Selenium.ICapabilities)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.RemoteWebDriver.#ctor(System.Uri,OpenQA.Selenium.ICapabilities,System.TimeSpan)
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.RemoteWebDriver.Capabilities
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.RemoteWebDriver.Close
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.RemoteWebDriver.CommandExecutor
@@ -2072,14 +2068,12 @@ Building reference help topics...
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.RemoteWebElement.Id
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.RemoteWebElement.Location
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.RemoteWebElement.LocationOnScreenOnceScrolledIntoView
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.RemoteWebElement.Select
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.RemoteWebElement.Selected
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.RemoteWebElement.SendKeys(System.String)
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.RemoteWebElement.Size
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.RemoteWebElement.Submit
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.RemoteWebElement.TagName
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.RemoteWebElement.Text
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.RemoteWebElement.Toggle
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.RemoteWebElement.WrappedDriver
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.Remote.Response
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Remote.Response
@@ -2741,14 +2735,14 @@ Building reference help topics...
   Info: BuildAssembler: Building topic Methods.T:Selenium.Internal.SeleniumEmulation.VariableDeclaration
   Info: BuildAssembler: Building topic M:Selenium.Internal.SeleniumEmulation.VariableDeclaration.#ctor(System.String,System.String)
   Info: BuildAssembler: Building topic M:Selenium.Internal.SeleniumEmulation.VariableDeclaration.Mutate(System.String,System.Text.StringBuilder)
-  Info: Processed 1498 topics
-    Last step completed in 00:02:26.3592
+  Info: Processed 1487 topics
+    Last step completed in 00:02:47.2164
 </buildStep>
 <buildStep step="CombiningIntermediateTocFiles">
 Combining conceptual and API intermediate TOC files...
 
 Clearing any prior web output
-    Last step completed in 00:00:01.2948
+    Last step completed in 00:00:00.0156
 </buildStep>
 <buildStep step="ExtractingHtmlInfo">
 Extracting HTML info for HTML Help 1 and/or website...
@@ -2760,17 +2754,17 @@ E-Mail: Eric@EWoodruff.us
 Using LCID &#39;1033&#39;, code page &#39;65001&#39;, encoding charset &#39;UTF-8&#39;.
 
 Processing Help 1 files in C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\HtmlHelp1
-Processed 1498 HTML files
+Processed 1487 HTML files
 Sorting keywords and generating See Also indices
 Saving HTML Help 1 keyword index to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebDriver.hhk
 Saving HTML Help 1 table of contents to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebDriver.hhc
 
 Processing website files in C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website
-Processed 1498 HTML files
+Processed 1487 HTML files
 Sorting keywords and generating See Also indices
 Saving website keyword index to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebKI.xml
 Saving website table of contents to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebTOC.xml
-    Last step completed in 00:00:06.0216
+    Last step completed in 00:00:15.7716
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating HTML Help 1 table of contents file...
@@ -2782,7 +2776,7 @@ Generating HTML Help 1 index file...
 </buildStep>
 <buildStep step="GenerateHelpProject">
 Generating HTML Help 1 project file...
-    Last step completed in 00:00:00.0312
+    Last step completed in 00:00:00.0624
 </buildStep>
 <buildStep step="CompilingHelpFile">
 Compiling HTML Help 1 file...
@@ -2797,13 +2791,13 @@ Compiling HTML Help 1 file...
   
   
   
-  Compile time: 0 minutes, 19 seconds
+  Compile time: 0 minutes, 22 seconds
   
-  1,500	Topics
+  1,489	Topics
   
-  21,233	Local links
+  21,113	Local links
   
-  7,790	Internet links
+  7,735	Internet links
   
   0	Graphics
   
@@ -2811,11 +2805,11 @@ Compiling HTML Help 1 file...
   
   
   
-  Created c:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,077,776 bytes
+  Created c:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,077,108 bytes
   
-  Compression decreased file by 19,455,013 bytes.
+  Compression decreased file by 19,332,389 bytes.
   
-    Last step completed in 00:00:20.7168
+    Last step completed in 00:00:23.9148
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating website table of contents file...
@@ -2824,7 +2818,7 @@ Generating website table of contents file...
 <buildStep step="GenerateFullTextIndex">
 Generating full-text index for the website...
 
-    Last step completed in 00:00:07.1916
+    Last step completed in 00:00:07.6752
 </buildStep>
 <buildStep step="CopyingWebsiteFiles">
 Copying website files to output folder...
@@ -2859,7 +2853,6 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\fti\FTI
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\fti\FTI_Files.bin -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\fti\FTI_Files.bin
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Android_AndroidDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Android_AndroidDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_By.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_By.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Chrome_ChromeDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Chrome_ChromeDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm
@@ -2922,7 +2915,6 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Al
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Remote_CommandInfoRepository.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Remote_CommandInfoRepository.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Remote_DesiredCapabilities.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Remote_DesiredCapabilities.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Remote_ErrorResponse.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Remote_ErrorResponse.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Remote_ICommandExecutor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Remote_ICommandExecutor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Remote_RemoteWebDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Remote_RemoteWebDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Remote_RemoteWebElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Remote_RemoteWebElement.htm
@@ -3072,7 +3064,6 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\F_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\F_Selenium_DefaultSelenium_commandProcessor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\F_Selenium_DefaultSelenium_commandProcessor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Android_AndroidDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Android_AndroidDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_By.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_By.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Chrome_ChromeDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Chrome_ChromeDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm
@@ -3127,7 +3118,6 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Me
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Remote_CommandInfoRepository.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Remote_CommandInfoRepository.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Remote_DesiredCapabilities.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Remote_DesiredCapabilities.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Remote_ErrorResponse.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Remote_ErrorResponse.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Remote_ICommandExecutor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Remote_ICommandExecutor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Remote_RemoteWebDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Remote_RemoteWebDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Remote_RemoteWebElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Remote_RemoteWebElement.htm
@@ -3189,9 +3179,6 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_By_ToString.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_By_ToString.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_By_XPath.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_By_XPath.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_By__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_By__ctor.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeCommandExecutor_Start.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeCommandExecutor_Start.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeCommandExecutor_Stop.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeCommandExecutor_Stop.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeCommandExecutor__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeCommandExecutor__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeDriverService_Dispose.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeDriverService_Dispose.htm
@@ -3201,6 +3188,9 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeDriver_StopClient.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeDriver_StopClient.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeDriver__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeDriver__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_1.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_2.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_2.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_3.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_3.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_4.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_4.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeWebElement_Equals.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeWebElement_Equals.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeWebElement_GetHashCode.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeWebElement_GetHashCode.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Chrome_ChromeWebElement__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Chrome_ChromeWebElement__ctor.htm
@@ -3233,6 +3223,7 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_2.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_2.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_3.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Firefox_FirefoxDriver__ctor_3.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Firefox_FirefoxExtension_Install.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Firefox_FirefoxExtension_Install.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Firefox_FirefoxExtension__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Firefox_FirefoxExtension__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Firefox_FirefoxProfileManager_GetProfile.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Firefox_FirefoxProfileManager_GetProfile.htm
@@ -3268,6 +3259,7 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_2.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_2.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_3.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_3.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_4.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_4.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IE_InternetExplorerWebElement__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IE_InternetExplorerWebElement__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IJavaScriptExecutor_ExecuteAsyncScript.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IJavaScriptExecutor_ExecuteAsyncScript.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IJavaScriptExecutor_ExecuteScript.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IJavaScriptExecutor_ExecuteScript.htm
@@ -3362,10 +3354,8 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IWebElement_Click.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IWebElement_Click.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IWebElement_GetAttribute.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IWebElement_GetAttribute.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IWebElement_GetCssValue.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IWebElement_GetCssValue.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IWebElement_Select.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IWebElement_Select.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IWebElement_SendKeys.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IWebElement_SendKeys.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IWebElement_Submit.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IWebElement_Submit.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_IWebElement_Toggle.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_IWebElement_Toggle.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_NoAlertPresentException__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_NoAlertPresentException__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_NoAlertPresentException__ctor_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_NoAlertPresentException__ctor_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_NoAlertPresentException__ctor_2.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_NoAlertPresentException__ctor_2.htm
@@ -3413,9 +3403,6 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_DesiredCapabilities__ctor_2.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_DesiredCapabilities__ctor_2.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_ErrorResponse__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_ErrorResponse__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_ErrorResponse__ctor_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_ErrorResponse__ctor_1.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_HttpCommandExecutor_Execute.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_HttpCommandExecutor_Execute.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_ICommandExecutor_Execute.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_ICommandExecutor_Execute.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebDriver_Close.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebDriver_Close.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebDriver_CreateElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebDriver_CreateElement.htm
@@ -3454,6 +3441,7 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_2.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_2.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_3.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_3.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Clear.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Clear.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Click.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Click.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Equals.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Equals.htm
@@ -3481,10 +3469,8 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebElement_GetAttribute.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebElement_GetAttribute.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebElement_GetCssValue.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebElement_GetCssValue.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebElement_GetHashCode.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebElement_GetHashCode.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Select.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Select.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebElement_SendKeys.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebElement_SendKeys.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Submit.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Submit.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Toggle.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebElement_Toggle.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_RemoteWebElement__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_RemoteWebElement__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_Response_FromJson.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_Response_FromJson.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_Response_ToJson.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_Response_ToJson.htm
@@ -4006,7 +3992,6 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Ov
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Remote_Command__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Remote_Command__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Remote_DesiredCapabilities__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Remote_DesiredCapabilities__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Remote_ErrorResponse__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Remote_ErrorResponse__ctor.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Remote_RemoteWebDriver_Dispose.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Remote_RemoteWebDriver_Dispose.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Remote_RemoteWebDriver_FindElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Remote_RemoteWebDriver_FindElement.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Remote_RemoteWebDriver_FindElements.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Remote_RemoteWebDriver_FindElements.htm
@@ -4243,7 +4228,6 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_Selenium_WebDriverCommandProcessor_UnderlyingWebDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_Selenium_WebDriverCommandProcessor_UnderlyingWebDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Android_AndroidDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Android_AndroidDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_By.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_By.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Chrome_ChromeDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Chrome_ChromeDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Chrome_ChromeDriverService.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Chrome_ChromeDriverService.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Chrome_ChromeWebElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Chrome_ChromeWebElement.htm
@@ -4308,7 +4292,6 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Remote_DesiredCapabilities.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Remote_DesiredCapabilities.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Remote_DriverCommand.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Remote_DriverCommand.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Remote_ErrorResponse.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Remote_ErrorResponse.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Remote_ICommandExecutor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Remote_ICommandExecutor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Remote_RemoteWebDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Remote_RemoteWebDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Remote_RemoteWebElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Remote_RemoteWebElement.htm
@@ -4465,15 +4448,15 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\scripts
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\styles\highlight.css -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\styles\highlight.css
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\styles\Presentation.css -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\styles\Presentation.css
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\styles\Whidbey\presentation.css -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\styles\Whidbey\presentation.css
-    Last step completed in 00:00:02.0280
+    Last step completed in 00:00:04.1184
 </buildStep>
 <buildStep step="CleanIntermediates">
 Removing intermediate files...
-    Last step completed in 00:00:00.6240
+    Last step completed in 00:00:00.5772
 </buildStep>
 <buildStep step="Completed">
 
-Build completed successfully at 06/08/2011 12:12 PM.  Total time: 00:03:10.5852
+Build completed successfully at 07/07/2011 03:34 PM.  Total time: 00:03:51.7224
 
 </buildStep>
 </shfbBuild>

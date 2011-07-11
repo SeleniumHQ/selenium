@@ -170,17 +170,6 @@
   <HelpKINode Title="ChooseOkOnNextConfirmation method" Url="html/M_Selenium_DefaultSelenium_ChooseOkOnNextConfirmation.htm" />
   <HelpKINode Title="ChooseOkOnNextConfirmation method" Url="html/M_Selenium_ISelenium_ChooseOkOnNextConfirmation.htm" />
   <HelpKINode Title="Chrome method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_Chrome.htm" />
-  <HelpKINode Title="ChromeCommandExecutor class" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm" />
-  <HelpKINode Title="ChromeCommandExecutor class" Url="html/T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm" />
-  <HelpKINode Title="ChromeCommandExecutor class">
-    <HelpKINode Title="about ChromeCommandExecutor class" Url="html/T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm" />
-    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm" />
-    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Chrome_ChromeCommandExecutor__ctor.htm" />
-    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm" />
-  </HelpKINode>
-  <HelpKINode Title="ChromeCommandExecutor.ChromeCommandExecutor constructor" Url="html/M_OpenQA_Selenium_Chrome_ChromeCommandExecutor__ctor.htm" />
-  <HelpKINode Title="ChromeCommandExecutor.Start method" Url="html/M_OpenQA_Selenium_Chrome_ChromeCommandExecutor_Start.htm" />
-  <HelpKINode Title="ChromeCommandExecutor.Stop method" Url="html/M_OpenQA_Selenium_Chrome_ChromeCommandExecutor_Stop.htm" />
   <HelpKINode Title="ChromeDriver class" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeDriver.htm" />
   <HelpKINode Title="ChromeDriver class" Url="html/T_OpenQA_Selenium_Chrome_ChromeDriver.htm" />
   <HelpKINode Title="ChromeDriver class">
@@ -731,7 +720,6 @@
   <HelpKINode Title="EventFiringWebDriver.WindowHandles property" Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_WindowHandles.htm" />
   <HelpKINode Title="EventFiringWebDriver.WrappedDriver property" Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_WrappedDriver.htm" />
   <HelpKINode Title="ExceptionThrown event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExceptionThrown.htm" />
-  <HelpKINode Title="Execute method" Url="html/M_OpenQA_Selenium_Remote_HttpCommandExecutor_Execute.htm" />
   <HelpKINode Title="Execute method" Url="html/M_OpenQA_Selenium_Remote_ICommandExecutor_Execute.htm" />
   <HelpKINode Title="Execute method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Execute.htm" />
   <HelpKINode Title="Execute method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Execute.htm" />
@@ -1155,16 +1143,6 @@
   <HelpKINode Title="How property" Url="html/P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_How.htm" />
   <HelpKINode Title="HtmlUnit method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_HtmlUnit.htm" />
   <HelpKINode Title="HtmlUnitWithJavaScript method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_HtmlUnitWithJavaScript.htm" />
-  <HelpKINode Title="HttpCommandExecutor class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm" />
-  <HelpKINode Title="HttpCommandExecutor class" Url="html/T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm" />
-  <HelpKINode Title="HttpCommandExecutor class">
-    <HelpKINode Title="about HttpCommandExecutor class" Url="html/T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm" />
-    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm" />
-    <HelpKINode Title="constructor" Url="html/Overload_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor.htm" />
-    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm" />
-  </HelpKINode>
-  <HelpKINode Title="HttpCommandExecutor.Execute method" Url="html/M_OpenQA_Selenium_Remote_HttpCommandExecutor_Execute.htm" />
-  <HelpKINode Title="HttpCommandExecutor.HttpCommandExecutor constructor" Url="html/Overload_OpenQA_Selenium_Remote_HttpCommandExecutor__ctor.htm" />
   <HelpKINode Title="HttpCommandProcessor class" Url="html/AllMembers_T_Selenium_HttpCommandProcessor.htm" />
   <HelpKINode Title="HttpCommandProcessor class" Url="html/T_Selenium_HttpCommandProcessor.htm" />
   <HelpKINode Title="HttpCommandProcessor class">
@@ -1810,14 +1788,12 @@
   <HelpKINode Title="IWebElement.GetAttribute method" Url="html/M_OpenQA_Selenium_IWebElement_GetAttribute.htm" />
   <HelpKINode Title="IWebElement.GetCssValue method" Url="html/M_OpenQA_Selenium_IWebElement_GetCssValue.htm" />
   <HelpKINode Title="IWebElement.Location property" Url="html/P_OpenQA_Selenium_IWebElement_Location.htm" />
-  <HelpKINode Title="IWebElement.Select method" Url="html/M_OpenQA_Selenium_IWebElement_Select.htm" />
   <HelpKINode Title="IWebElement.Selected property" Url="html/P_OpenQA_Selenium_IWebElement_Selected.htm" />
   <HelpKINode Title="IWebElement.SendKeys method" Url="html/M_OpenQA_Selenium_IWebElement_SendKeys.htm" />
   <HelpKINode Title="IWebElement.Size property" Url="html/P_OpenQA_Selenium_IWebElement_Size.htm" />
   <HelpKINode Title="IWebElement.Submit method" Url="html/M_OpenQA_Selenium_IWebElement_Submit.htm" />
   <HelpKINode Title="IWebElement.TagName property" Url="html/P_OpenQA_Selenium_IWebElement_TagName.htm" />
   <HelpKINode Title="IWebElement.Text property" Url="html/P_OpenQA_Selenium_IWebElement_Text.htm" />
-  <HelpKINode Title="IWebElement.Toggle method" Url="html/M_OpenQA_Selenium_IWebElement_Toggle.htm" />
   <HelpKINode Title="IWrapsDriver interface" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IWrapsDriver.htm" />
   <HelpKINode Title="IWrapsDriver interface" Url="html/T_OpenQA_Selenium_Internal_IWrapsDriver.htm" />
   <HelpKINode Title="IWrapsDriver interface">
@@ -2119,8 +2095,6 @@
   <HelpKINode Title="OpenQA.Selenium.By class" Url="html/AllMembers_T_OpenQA_Selenium_By.htm" />
   <HelpKINode Title="OpenQA.Selenium.By class" Url="html/T_OpenQA_Selenium_By.htm" />
   <HelpKINode Title="OpenQA.Selenium.Chrome namespace" Url="html/N_OpenQA_Selenium_Chrome.htm" />
-  <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeCommandExecutor class" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm" />
-  <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeCommandExecutor class" Url="html/T_OpenQA_Selenium_Chrome_ChromeCommandExecutor.htm" />
   <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeDriver class" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeDriver.htm" />
   <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeDriver class" Url="html/T_OpenQA_Selenium_Chrome_ChromeDriver.htm" />
   <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeDriverService class" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm" />
@@ -2253,8 +2227,6 @@
   <HelpKINode Title="OpenQA.Selenium.Remote.DriverCommand enumeration" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.ErrorResponse class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_ErrorResponse.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.ErrorResponse class" Url="html/T_OpenQA_Selenium_Remote_ErrorResponse.htm" />
-  <HelpKINode Title="OpenQA.Selenium.Remote.HttpCommandExecutor class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm" />
-  <HelpKINode Title="OpenQA.Selenium.Remote.HttpCommandExecutor class" Url="html/T_OpenQA_Selenium_Remote_HttpCommandExecutor.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.ICommandExecutor interface" Url="html/AllMembers_T_OpenQA_Selenium_Remote_ICommandExecutor.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.ICommandExecutor interface" Url="html/T_OpenQA_Selenium_Remote_ICommandExecutor.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.RemoteWebDriver class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_RemoteWebDriver.htm" />
@@ -2477,14 +2449,12 @@
   <HelpKINode Title="RemoteWebElement.Location property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Location.htm" />
   <HelpKINode Title="RemoteWebElement.LocationOnScreenOnceScrolledIntoView property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_LocationOnScreenOnceScrolledIntoView.htm" />
   <HelpKINode Title="RemoteWebElement.RemoteWebElement constructor" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement__ctor.htm" />
-  <HelpKINode Title="RemoteWebElement.Select method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Select.htm" />
   <HelpKINode Title="RemoteWebElement.Selected property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Selected.htm" />
   <HelpKINode Title="RemoteWebElement.SendKeys method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_SendKeys.htm" />
   <HelpKINode Title="RemoteWebElement.Size property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Size.htm" />
   <HelpKINode Title="RemoteWebElement.Submit method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Submit.htm" />
   <HelpKINode Title="RemoteWebElement.TagName property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_TagName.htm" />
   <HelpKINode Title="RemoteWebElement.Text property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Text.htm" />
-  <HelpKINode Title="RemoteWebElement.Toggle method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Toggle.htm" />
   <HelpKINode Title="RemoteWebElement.WrappedDriver property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_WrappedDriver.htm" />
   <HelpKINode Title="RemoveAllSelections method" Url="html/M_Selenium_DefaultSelenium_RemoveAllSelections.htm" />
   <HelpKINode Title="RemoveAllSelections method" Url="html/M_Selenium_ISelenium_RemoveAllSelections.htm" />
@@ -2561,8 +2531,6 @@
   <HelpKINode Title="ScriptExecuting event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ScriptExecuting.htm" />
   <HelpKINode Title="Secure property" Url="html/P_OpenQA_Selenium_Cookie_Secure.htm" />
   <HelpKINode Title="Secure property" Url="html/P_OpenQA_Selenium_Internal_ReturnedCookie_Secure.htm" />
-  <HelpKINode Title="Select method" Url="html/M_OpenQA_Selenium_IWebElement_Select.htm" />
-  <HelpKINode Title="Select method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Select.htm" />
   <HelpKINode Title="Select method" Url="html/M_Selenium_DefaultSelenium_Select.htm" />
   <HelpKINode Title="Select method" Url="html/M_Selenium_ISelenium_Select.htm" />
   <HelpKINode Title="SelectByIndex method" Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_SelectByIndex.htm" />
@@ -2740,7 +2708,6 @@
     <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_StaleElementReferenceException.htm" />
   </HelpKINode>
   <HelpKINode Title="StaleElementReferenceException.StaleElementReferenceException constructor" Url="html/Overload_OpenQA_Selenium_StaleElementReferenceException__ctor.htm" />
-  <HelpKINode Title="Start method" Url="html/M_OpenQA_Selenium_Chrome_ChromeCommandExecutor_Start.htm" />
   <HelpKINode Title="Start method" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriverService_Start.htm" />
   <HelpKINode Title="Start method" Url="html/M_Selenium_ISelenium_Start.htm" />
   <HelpKINode Title="Start method" Url="html/Overload_Selenium_DefaultSelenium_Start.htm" />
@@ -2756,7 +2723,6 @@
   <HelpKINode Title="StartProfile method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_StartProfile.htm" />
   <HelpKINode Title="StartSession method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_StartSession.htm" />
   <HelpKINode Title="Status property" Url="html/P_OpenQA_Selenium_Remote_Response_Status.htm" />
-  <HelpKINode Title="Stop method" Url="html/M_OpenQA_Selenium_Chrome_ChromeCommandExecutor_Stop.htm" />
   <HelpKINode Title="Stop method" Url="html/M_Selenium_DefaultSelenium_Stop.htm" />
   <HelpKINode Title="Stop method" Url="html/M_Selenium_HttpCommandProcessor_Stop.htm" />
   <HelpKINode Title="Stop method" Url="html/M_Selenium_ICommandProcessor_Stop.htm" />
@@ -2811,8 +2777,6 @@
   <HelpKINode Title="Title property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_Title.htm" />
   <HelpKINode Title="Title property" Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Title.htm" />
   <HelpKINode Title="ToBase64String method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_ToBase64String.htm" />
-  <HelpKINode Title="Toggle method" Url="html/M_OpenQA_Selenium_IWebElement_Toggle.htm" />
-  <HelpKINode Title="Toggle method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Toggle.htm" />
   <HelpKINode Title="ToggleElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
   <HelpKINode Title="ToJson method" Url="html/M_OpenQA_Selenium_Remote_Response_ToJson.htm" />
   <HelpKINode Title="ToString method" Url="html/M_OpenQA_Selenium_By_ToString.htm" />
