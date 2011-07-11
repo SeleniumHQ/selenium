@@ -39,6 +39,6 @@ RSpec.configure do |c|
   end
 end
 
-at_exit { GlobalTestEnv.quit }
+WebDriver::Platform.exit_hook { GlobalTestEnv.quit }
 
 $stdout.sync = true

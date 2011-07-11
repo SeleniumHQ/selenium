@@ -117,6 +117,14 @@ module Selenium
         end
       end
 
+      def exit_hook(&blk)
+        pid = Process.pid
+
+        at_exit do
+          yield if Process.pid == pid
+        end
+      end
+
       def find_binary(*binary_names)
         paths = ENV['PATH'].split(File::PATH_SEPARATOR)
         binary_names.map! { |n| "#{n}.exe" } if windows?

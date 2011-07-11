@@ -45,7 +45,7 @@ module Selenium
             raise Error::WebDriverError, "unable to connect to chromedriver #{@uri}"
           end
 
-          at_exit { stop } # make sure we don't leave the server running
+          Platform.exit_hook { stop } # make sure we don't leave the server running
         end
 
         def stop

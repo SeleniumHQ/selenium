@@ -35,7 +35,7 @@ module Selenium
         end
       end
 
-      at_exit { reap! }
+      Platform.exit_hook { reap! }
 
     end # FileReaper
   end # WebDriver

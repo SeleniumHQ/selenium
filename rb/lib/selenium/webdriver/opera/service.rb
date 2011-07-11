@@ -35,7 +35,7 @@ module Selenium
 
         def start
           @server.start
-          at_exit { stop }  # make sure we don't leave the server running
+          Platform.exit_hook { stop }  # make sure we don't leave the server running
         end
 
         def stop
