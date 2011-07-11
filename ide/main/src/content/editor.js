@@ -652,23 +652,42 @@ Editor.prototype.resetWindow = function() {
             alert("Error: [" + err + "] while trying to reset window size and position.");
         }
     }
-}
+};
 
 //Samit: Enh: Introduced experimental features to enable or disable experimental and unstable features
 Editor.prototype.updateExperimentalFeatures = function(show) {
-    $("menu_choose_format").disabled = !show;
+    //$("menu_choose_format").disabled = !show;
     if (show == false && this.app.options.selectedFormat != 'default') {
         //reset format to html
         this.app.setCurrentFormat(this.app.formats.selectFormat('default'));
     }
-}
+};
+
+Editor.prototype.showFormatsPopup = function(e) {
+    if (this.app.getBooleanOption('enableExperimentalFeatures')) {
+        this.populateFormatsPopup(e, this.app.getCurrentFormat());
+    } else {
+        XulUtils.clearChildren(e);
+        XulUtils.appendMenuItem(e, {
+                    label: "Want the formats back? Click to read more",
+                    value: "stuff"});
+    }
+};
+
+Editor.prototype.formatsPopupClicked = function(value) {
+    if (this.app.getBooleanOption('enableExperimentalFeatures')) {
+        this.app.userSetCurrentFormat(this.app.formats.selectFormat(value));
+    } else {
+        openTabOrWindow("http://blog.reallysimplethoughts.com/2011/06/10/does-selenium-ide-v1-0-11-support-changing-formats/");
+    }
+};
 
 //Samit: Ref: Refactored the developer tools to be simpler
 Editor.prototype.updateDeveloperTools = function(show) {
     //use when the developer tools have to be enabled or not
     $("reload-button").hidden = !show;
     $("reload-button").disabled = !show;
-}
+};
 
 Editor.prototype.addCommand = function(command,target,value,window,insertBeforeLastCommand) {
     this.log.debug("addCommand: command=" + command + ", target=" + target + ", value=" + value + " window.name=" + window.name);

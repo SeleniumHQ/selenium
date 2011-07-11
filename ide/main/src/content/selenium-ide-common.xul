@@ -209,7 +209,7 @@ limitations under the License.
     <menupopup id="options-popup" onpopupshowing="window.editor.onPopupOptions()">
       <menuitem label="&optionsCmd.label;" oncommand="window.editor.openSeleniumIDEPreferences();" accesskey="O" insertbefore="menu-reset-window" />
       <menu id="menu_choose_format" label="&formatCmd.label;" accesskey="F" insertbefore="menu-reset-window">
-        <menupopup id="popup_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.app.getCurrentFormat())" oncommand="window.editor.app.userSetCurrentFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
+        <menupopup id="popup_formats" onpopupshowing="window.editor.showFormatsPopup(this)" oncommand="window.editor.formatsPopupClicked(event.target.getAttribute('value'))">
         </menupopup>
       </menu>
       <menu id="clipboardFormatMenu" label="&clipboardFormatCmd.label;" insertbefore="menu-reset-window">
