@@ -18,6 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSet;
+
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
@@ -1095,27 +1098,22 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         return new HashSet<Cookie>();
       }
 
-      Set<com.gargoylesoftware.htmlunit.util.Cookie>
-          rawCookies =
-          webClient.getCookieManager().getCookies(url);
-
-      Set<Cookie> retCookies = new HashSet<Cookie>();
-      for (com.gargoylesoftware.htmlunit.util.Cookie c : rawCookies) {
-        if (c.getPath() != null && getPath().toLowerCase().startsWith(c.getPath())) {
-          retCookies.add(new Cookie.Builder(c.getName(), c.getValue())
+      return ImmutableSet.copyOf(Collections2.transform(
+        webClient.getCookieManager().getCookies(url),
+        htmlUnitCookieToSeleniumCookieTransformer));
+    }
+    
+    private final com.google.common.base.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, org.openqa.selenium.Cookie> htmlUnitCookieToSeleniumCookieTransformer =
+        new com.google.common.base.Function<com.gargoylesoftware.htmlunit.util.Cookie, org.openqa.selenium.Cookie>() {
+          public org.openqa.selenium.Cookie apply(com.gargoylesoftware.htmlunit.util.Cookie c) {
+            return new Cookie.Builder(c.getName(), c.getValue())
               .domain(c.getDomain())
               .path(c.getPath())
               .expiresOn(c.getExpires())
               .isSecure(c.isSecure())
-              .build());
-        }
-      }
-      return retCookies;
-    }
-
-    private String getPath() {
-      return getRawUrl().getPath();
-    }
+              .build();
+          }
+    };
 
     private String getDomainForCookie() {
       URL current = getRawUrl();
