@@ -55,7 +55,7 @@
 
 - (void) deleteAllCookies {
   NSHTTPCookieStorage* cookieStorage =
-  [NSHTTPCookieStorage sharedHTTPCookieStorage];
+      [NSHTTPCookieStorage sharedHTTPCookieStorage];
   NSArray* theCookies = [cookieStorage cookiesForURL:[self currentUrl]];
   for (NSHTTPCookie *cookie in theCookies) {
     [cookieStorage deleteCookie:cookie];
@@ -64,22 +64,22 @@
 
 - (NSArray*) getCookies {
   NSHTTPCookieStorage* cookieStorage =
-  [NSHTTPCookieStorage sharedHTTPCookieStorage];
+      [NSHTTPCookieStorage sharedHTTPCookieStorage];
   NSArray* theCookies = [cookieStorage cookiesForURL:[self currentUrl]];
   NSMutableArray* toReturn = [NSMutableArray arrayWithCapacity:
                               [theCookies count]];
   for (NSHTTPCookie *cookie in theCookies) {
     NSMutableDictionary* cookieDict =
-    [NSMutableDictionary dictionaryWithObjectsAndKeys:
-     [cookie name], @"name",
-     [cookie value], @"value",
-     [cookie domain], @"domain",
-     [cookie path], @"path",
-     [NSNumber numberWithBool:[cookie isSecure]], @"secure",
-     nil];
+        [NSMutableDictionary dictionaryWithObjectsAndKeys:
+         [cookie name], @"name",
+         [cookie value], @"value",
+         [cookie domain], @"domain",
+         [cookie path], @"path",
+         [NSNumber numberWithBool:[cookie isSecure]], @"secure",
+         nil];
     
     NSDate* expires = [cookie expiresDate];
-    if (expires != nil) {
+    if ([expires isKindOfClass:[NSDate class]]) {
       NSNumber* expiry =
           [NSNumber numberWithLong:[expires timeIntervalSince1970]];
       [cookieDict setObject:expiry forKey:@"expiry"];
@@ -93,13 +93,12 @@
   cookie = [cookie objectForKey:@"cookie"];
   NSURL* currentUrl = [self currentUrl];
   NSString* domain = [cookie objectForKey:@"domain"];
-  
-  if (domain == nil) {
+  if (domain == (id)[NSNull null] || domain.length == 0) {
     domain = [currentUrl host];
   } else {
     // Strip off the port if the domain has one.
     domain = [[domain componentsSeparatedByString:@":"] objectAtIndex:0];
-    if (![[currentUrl host] isEqualToString:domain]) {
+    if (![[currentUrl host] hasSuffix:domain]) {
       @throw [NSException webDriverExceptionWithMessage:
               [NSString stringWithFormat:
                @"You may only set cookies for the current domain:"
@@ -108,24 +107,22 @@
     }
   }
   
-  
   NSString* path = [cookie objectForKey:@"path"];
-  if (path == nil) {
+  if (path == (id)[NSNull null] || path.length == 0) {
     path = @"/";
   }
-  
   // We need to convert the cookie data from the format used by WebDriver to one
   // recognized by the NSHTTPCookie class.
   NSMutableDictionary* cookieProperties =
-  [NSMutableDictionary dictionaryWithObjectsAndKeys:
-   [cookie objectForKey:@"name"], NSHTTPCookieName,
-   [cookie objectForKey:@"value"], NSHTTPCookieValue,
-   domain, NSHTTPCookieDomain,
-   path, NSHTTPCookiePath,
-   nil];
-
+      [NSMutableDictionary dictionaryWithObjectsAndKeys:
+       [cookie objectForKey:@"name"], NSHTTPCookieName,
+       [cookie objectForKey:@"value"], NSHTTPCookieValue,
+       domain, NSHTTPCookieDomain,
+       path, NSHTTPCookiePath,
+       nil];
+  
   NSNumber* expires = [cookie objectForKey:@"expiry"];
-  if (expires != nil) {
+  if ([expires isKindOfClass:[NSNumber class]]) {
     NSDate* expiresDate =
         [NSDate dateWithTimeIntervalSince1970:[expires doubleValue]];
     [cookieProperties setObject:expiresDate forKey:NSHTTPCookieExpires];
@@ -192,7 +189,7 @@
            [NSNumber numberWithBool:[cookie isSecure]], @"secure",
            nil];
       NSDate* expires = [cookie expiresDate];
-      if (expires != nil) {
+      if ([expires isKindOfClass:[NSDate class]]) {
         [cookieDict setObject:[expires description] forKey:@"expires"];
       }
       return cookieDict;
