@@ -25,21 +25,19 @@ describe "Element" do
     key_reporter.attribute('value').should == "Test"
   end
 
-  not_compliant_on :browser => :chrome do
-    it "should handle file uploads" do
-      driver.navigate.to url_for("formPage.html")
+  it "should handle file uploads" do
+    driver.navigate.to url_for("formPage.html")
 
-      element = driver.find_element(:id, 'upload')
-      element.attribute('value').should be_empty
+    element = driver.find_element(:id, 'upload')
+    element.attribute('value').should be_empty
 
-      file = Tempfile.new('file-upload')
-      path = file.path
-      path.gsub!("/", "\\") if WebDriver::Platform.windows?
+    file = Tempfile.new('file-upload')
+    path = file.path
+    path.gsub!("/", "\\") if WebDriver::Platform.windows?
 
-      element.send_keys path
+    element.send_keys path
 
-      element.attribute('value').should include(File.basename(path))
-    end
+    element.attribute('value').should include(File.basename(path))
   end
 
   it "should get attribute value" do
