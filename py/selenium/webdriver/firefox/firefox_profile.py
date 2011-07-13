@@ -175,12 +175,16 @@ class FirefoxProfile(object):
         f.close()
 
     def _read_existing_userjs(self):
-        f = open(os.path.join(self.profile_dir, 'user.js'), "r")
-        tmp_usr = f.readlines()
-        f.close()
-        for usr in tmp_usr:
-            matches = re.search('user_pref\("(.*)",\s(.*)\)', usr)
-            self.default_preferences[matches.group(1)] = matches.group(2)
+        try:
+            f = open(os.path.join(self.profile_dir, 'user.js'), "r")
+            tmp_usr = f.readlines()
+            f.close()
+            for usr in tmp_usr:
+                matches = re.search('user_pref\("(.*)",\s(.*)\)', usr)
+                self.default_preferences[matches.group(1)] = matches.group(2)
+        except:
+            # The profile given hasn't had any changes made, i.e no users.js
+            pass
 
     def _install_extension(self, extension):
         tempdir = tempfile.mkdtemp()
