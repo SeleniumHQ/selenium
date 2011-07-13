@@ -134,12 +134,6 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     final WebElement area = driver.findElement(By.id("mtgt_unnamed_0"));
 
-    waitFor(new Callable<Boolean>() {
-      public Boolean call() throws Exception {
-        return area.isDisplayed();
-      }
-    });
-
     boolean isShown = area.isDisplayed();
     assertTrue("The element and the enclosing map should be considered shown.", isShown);
   }
