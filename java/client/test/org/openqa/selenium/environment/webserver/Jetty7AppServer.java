@@ -24,6 +24,7 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.ssl.SslSocketConnector;
 import org.eclipse.jetty.servlets.MultiPartFilter;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.net.NetworkUtils;
 
@@ -47,9 +48,12 @@ public class Jetty7AppServer implements AppServer {
   private int securePort;
   private File path;
   private File jsSrcRoot;
-  private File thirdPartyJsRoot;                                                                          
+  private File thirdPartyJsRoot;
   private final Server server;
-  private WebAppContext context;
+  private WebAppContext defaultContext;
+  private WebAppContext jsContext;
+  private WebAppContext thirdPartyJsContext;
+
   private ContextHandlerCollection handlers;
   private final String hostName;
 
@@ -72,15 +76,20 @@ public class Jetty7AppServer implements AppServer {
 
     handlers = new ContextHandlerCollection();
 
-    context = addWebApplication(DEFAULT_CONTEXT_PATH, path);
-    addWebApplication(JS_SRC_CONTEXT_PATH, jsSrcRoot);
-    addWebApplication(THIRD_PARTY_JS_CONTEXT_PATH, thirdPartyJsRoot);
+    defaultContext = addWebApplication(DEFAULT_CONTEXT_PATH, path);
+    jsContext = addWebApplication(JS_SRC_CONTEXT_PATH, jsSrcRoot);
+    thirdPartyJsContext = addWebApplication(THIRD_PARTY_JS_CONTEXT_PATH,
+        thirdPartyJsRoot);
 
     server.setHandler(handlers);
 
     addServlet("Redirecter", "/redirect", RedirectServlet.class);
     addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
-    addServlet("Manifest", "/manifest/*", ManifestServlet.class);
+        
+    addServlet(defaultContext, "Manifest", "/manifest/*", ManifestServlet.class);
+    addServlet(defaultContext, "Manifest", "*.appcache", ManifestServlet.class);
+    addServlet(jsContext, "Manifest", "*.appcache", ManifestServlet.class);
+    
     addServlet("Uploader", "/upload", UploadServlet.class);
     addServlet("Unusual encoding", "/encoding", EncodingServlet.class);
     addServlet("Sleeper", "/sleep", SleepingServlet.class);
@@ -185,8 +194,13 @@ public class Jetty7AppServer implements AppServer {
 
   public void addServlet(String name, String url,
       Class<? extends Servlet> servletClass) {
+    addServlet(defaultContext, name, url, servletClass);
+  }
+
+  public void addServlet(WebAppContext context, String name, String url,
+      Class<? extends Servlet> servletClass) {
     try {
-      context.addServlet(servletClass, url);
+      context.addServlet(new ServletHolder(servletClass), url);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -194,7 +208,7 @@ public class Jetty7AppServer implements AppServer {
 
   public void addFilter(Class<? extends Filter> filter, String path,
       int dispatches) {
-    context.addFilter(filter, path, dispatches);
+    defaultContext.addFilter(filter, path, dispatches);
   }
 
   private WebAppContext addWebApplication(String contextPath, File rootDir) {

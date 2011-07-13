@@ -18,17 +18,40 @@ limitations under the License.
 
 package org.openqa.selenium.environment.webserver;
 
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class ManifestServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+
+    String servletPath = request.getServletPath();
+    String manifestPath = this.getServletContext().getRealPath(servletPath);
+    String manifestContent = "";
+
+    InputStream is = null;
+    try {
+      is = new FileInputStream(manifestPath);
+      manifestContent = new String(ByteStreams.toByteArray(is));
+    } catch (IOException e) {
+      throw new ServletException("Failed to read cache-manifest file: " + manifestPath) ;
+    } finally {
+      Closeables.closeQuietly(is);
+    }
+
     response.setContentType("text/cache-manifest");
-    response.getWriter().println("CACHE MANIFEST");
-    response.getWriter().println("/common/html5/cached.js");
+    response.setStatus(HttpServletResponse.SC_OK);
+    response.getWriter().println(manifestContent);
+    response.flushBuffer();
+    response.getWriter().close();
+
   }
 }
