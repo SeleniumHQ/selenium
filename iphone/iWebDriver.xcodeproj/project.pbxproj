@@ -64,6 +64,7 @@
 		73140F851208D9A500A1F920 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73140F821208D9A500A1F920 /* MainWindow-iPad.xib */; };
 		731C4511128BBF4000261249 /* GeoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 731C450E128BBF4000261249 /* GeoLocation.m */; };
 		731C4512128BBF4000261249 /* Storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 731C4510128BBF4000261249 /* Storage.m */; };
+		73417ED613B3DD0700D47D70 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73417ED513B3DD0700D47D70 /* CoreLocation.framework */; };
 		739E3625122D78A8002D739F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739E3624122D78A8002D739F /* CoreLocation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		73D14FCD1289B6540074E63B /* Database.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D14FCC1289B6540074E63B /* Database.m */; };
 		8301250C0EFF044900BA9BE6 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 839988650EE515C90074D106 /* Session.m */; };
@@ -171,7 +172,6 @@
 		289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlipsideViewController.m; path = Classes/FlipsideViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* iWebDriver_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iWebDriver_Prefix.pch; sourceTree = "<group>"; };
-		641E1FE012EE038C0035A51A /* errorcodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = errorcodes.h; path = "../cpp/webdriver-interactions/errorcodes.h"; sourceTree = SOURCE_ROOT; };
 		642C489E112260150064EB9C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		642C48A3112260480064EB9C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		643822E812C0305900F0C7CC /* atoms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = atoms.h; sourceTree = "<group>"; };
@@ -202,6 +202,10 @@
 		731C450E128BBF4000261249 /* GeoLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoLocation.m; sourceTree = "<group>"; usesTabs = 0; };
 		731C450F128BBF4000261249 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
 		731C4510128BBF4000261249 /* Storage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Storage.m; sourceTree = "<group>"; tabWidth = 1; usesTabs = 0; };
+		73417D6813B3B76D00D47D70 /* errorcodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = errorcodes.h; path = "src/cpp/webdriver-interactions/errorcodes.h"; sourceTree = SOURCE_ROOT; };
+		73417ED513B3DD0700D47D70 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		73417F4513B3E2AB00D47D70 /* GTMObjC2Runtime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMObjC2Runtime.h; sourceTree = "<group>"; };
+		73417F4613B3E2AB00D47D70 /* GTMUnitTestDevLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMUnitTestDevLog.h; sourceTree = "<group>"; };
 		739E3624122D78A8002D739F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		73D14FCB1289B6540074E63B /* Database.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Database.h; sourceTree = "<group>"; };
 		73D14FCC1289B6540074E63B /* Database.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Database.m; sourceTree = "<group>"; };
@@ -302,6 +306,7 @@
 				839D642B0F2EB400009645BF /* libCocoaHTTPServer.a in Frameworks */,
 				649EDC8610C5989200E66D06 /* libsqlite3.dylib in Frameworks */,
 				642C48A4112260480064EB9C /* QuartzCore.framework in Frameworks */,
+				73417ED613B3DD0700D47D70 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +389,7 @@
 				644F14EC10AB4EF400858ECA /* Settings.bundle */,
 				642C489E112260150064EB9C /* QuartzCore.framework */,
 				642C48A3112260480064EB9C /* QuartzCore.framework */,
+				73417ED513B3DD0700D47D70 /* CoreLocation.framework */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -487,8 +493,8 @@
 		839986AC0EE3AA720074D106 /* Web server extensions */ = {
 			isa = PBXGroup;
 			children = (
+				73417D6813B3B76D00D47D70 /* errorcodes.h */,
 				643822E812C0305900F0C7CC /* atoms.h */,
-				641E1FE012EE038C0035A51A /* errorcodes.h */,
 				FD61E6970FE150E5006E1274 /* WebDriverUtilities.h */,
 				FD61E6980FE150E5006E1274 /* WebDriverUtilities.m */,
 				FD61E6A50FE151D2006E1274 /* WebDriverPreferences.h */,
@@ -547,6 +553,8 @@
 		839988E50EE6053C0074D106 /* GTM Unit testing */ = {
 			isa = PBXGroup;
 			children = (
+				73417F4513B3E2AB00D47D70 /* GTMObjC2Runtime.h */,
+				73417F4613B3E2AB00D47D70 /* GTMUnitTestDevLog.h */,
 				839988FD0EE605670074D106 /* GTMIPhoneUnitTestDelegate.h */,
 				839988FE0EE605670074D106 /* GTMIPhoneUnitTestDelegate.m */,
 				839988FF0EE605670074D106 /* GTMIPhoneUnitTestMain.m */,
@@ -637,6 +645,7 @@
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "iWebDriver" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -881,7 +890,7 @@
 				PRODUCT_NAME = iWebDriver;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphonesimulator4.0;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = i386;
@@ -914,7 +923,7 @@
 				PRODUCT_NAME = iWebDriver;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphonesimulator4.0;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = i386;
@@ -951,7 +960,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = Tests;
 				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos3.2;
+				SDKROOT = iphoneos;
 				VALID_ARCHS = i386;
 			};
 			name = Debug;
@@ -986,7 +995,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = Tests;
 				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos3.2;
+				SDKROOT = iphoneos;
 				VALID_ARCHS = i386;
 				ZERO_LINK = NO;
 			};
