@@ -19,6 +19,7 @@ package org.openqa.selenium.firefox;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 
@@ -36,7 +37,7 @@ public class NativeEventsFirefoxDriverTestSuite extends TestCase {
           .create();
     }
 
-    return null;
+    return new TestSuite();
   }
 
   public static class TestFirefoxDriverWithNativeEvents extends FirefoxDriver {
