@@ -22,7 +22,6 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementToExist;
 
 public class ClickTest extends AbstractDriverTestCase {
   @Override
@@ -41,7 +40,6 @@ public class ClickTest extends AbstractDriverTestCase {
 
   @Ignore(value = {IPHONE}, reason = "iPhone: Frame switching is unsupported")
   public void testCanClickOnALinkAndFollowIt() {
-    waitFor(elementToExist(driver, "normal"));
     driver.findElement(By.id("normal")).click();
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
