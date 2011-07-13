@@ -43,6 +43,9 @@ protected:
 			std::wstring mechanism = CA2W(using_parameter_iterator->second.asString().c_str(), CP_UTF8);
 			std::wstring value = CA2W(value_parameter_iterator->second.asString().c_str(), CP_UTF8);
 
+			StringUtilities::ReplaceAllSubstrings(L"\\", L"\\\\", &value);
+			StringUtilities::ReplaceAllSubstrings(L"\"", L"\\\"", &value);
+
 			std::wstring mechanism_translation;
 			int status_code = executor.GetElementFindMethod(mechanism, &mechanism_translation);
 			if (status_code != SUCCESS) {

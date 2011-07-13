@@ -238,6 +238,22 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldFindElementByLinkTextContainingDoubleQuote()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement element = driver.FindElement(By.LinkText("link with \" (double quote)"));
+            Assert.AreEqual("quote", element.GetAttribute("id"));
+        }
+
+        [Test]
+        public void ShouldFindElementByLinkTextContainingBackslash()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement element = driver.FindElement(By.LinkText("link with \\ (backslash)"));
+            Assert.AreEqual("backslash", element.GetAttribute("id"));
+        }
+
+        [Test]
         public void ShouldFindElementByPartialLinkTextContainingEqualsSign()
         {
             driver.Url = xhtmlTestPage;
