@@ -95,7 +95,6 @@ public class ElementFinder {
       }
       return (WebElement) ((JavascriptExecutor) driver).executeScript(findElement, locator);
     } catch (WebDriverException e) {
-      e.printStackTrace();
       throw new SeleniumException("Element " + locator + " not found", e);
     }
   }
