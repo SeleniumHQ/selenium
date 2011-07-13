@@ -14,7 +14,9 @@
 #ifndef WEBDRIVER_IE_SCREENSHOTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SCREENSHOTCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 #include "logging.h"
 #include <atlimage.h>
 #include <atlenc.h>
@@ -32,7 +34,7 @@ int max_height = 0;
 
 namespace webdriver {
 
-class ScreenshotCommandHandler : public CommandHandler {
+class ScreenshotCommandHandler : public IECommandHandler {
 public:
 	ScreenshotCommandHandler(void) {
 		this->image_ = NULL;
@@ -42,9 +44,9 @@ public:
 	}
 
 protected:
-	void ScreenshotCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void ScreenshotCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
-		int status_code = session.GetCurrentBrowser(&browser_wrapper);
+		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get window");
 			return;
@@ -53,18 +55,18 @@ protected:
 		this->image_ = new CImage();
 		HRESULT hr = this->CaptureBrowser(browser_wrapper);
 		if (FAILED(hr)) {
-			response->SetResponse(SUCCESS, "");
+			response->SetSuccessResponse("");
 			return;
 		}
 
 		std::string base64_screenshot = "";
 		hr = this->GetBase64Data(base64_screenshot);
 		if (FAILED(hr)) {
-			response->SetResponse(SUCCESS, "");
+			response->SetSuccessResponse("");
 			return;
 		}
 
-		response->SetResponse(SUCCESS, base64_screenshot);
+		response->SetSuccessResponse(base64_screenshot);
 		delete this->image_;
 	}
 

@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_ISELEMENTDISPLAYEDCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_ISELEMENTDISPLAYEDCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class IsElementDisplayedCommandHandler : public CommandHandler {
+class IsElementDisplayedCommandHandler : public IECommandHandler {
 public:
 	IsElementDisplayedCommandHandler(void) {
 	}
@@ -27,7 +29,7 @@ public:
 	}
 
 protected:
-	void IsElementDisplayedCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void IsElementDisplayedCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
@@ -36,19 +38,19 @@ protected:
 			std::wstring element_id = CA2W(id_parameter_iterator->second.c_str(), CP_UTF8);
 
 			BrowserHandle browser_wrapper;
-			int status_code = session.GetCurrentBrowser(&browser_wrapper);
+			int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
 
 			ElementHandle element_wrapper;
-			status_code = this->GetElement(session, element_id, &element_wrapper);
+			status_code = this->GetElement(executor, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				bool result;
 				status_code = element_wrapper->IsDisplayed(&result);
 				if (status_code == SUCCESS) {
-					response->SetResponse(SUCCESS, result);
+					response->SetSuccessResponse(result);
 				} else {
 					response->SetErrorResponse(status_code, "Error determining if element is displayed");
 					return;

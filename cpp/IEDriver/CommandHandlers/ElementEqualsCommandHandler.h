@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_ELEMENTEQUALSCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_ELEMENTEQUALSCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class ElementEqualsCommandHandler : public CommandHandler {
+class ElementEqualsCommandHandler : public IECommandHandler {
 public:
 	ElementEqualsCommandHandler(void) {
 	}
@@ -27,7 +29,7 @@ public:
 	}
 
 protected:
-	void ElementEqualsCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void ElementEqualsCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		LocatorMap::const_iterator other_parameter_iterator = locator_parameters.find("other");
 		if (id_parameter_iterator == locator_parameters.end()) {
@@ -42,20 +44,20 @@ protected:
 			std::wstring other_element_id = CA2W(other_parameter_iterator->second.c_str(), CP_UTF8);
 
 			BrowserHandle browser_wrapper;
-			int status_code = session.GetCurrentBrowser(&browser_wrapper);
+			int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
 
 			ElementHandle element_wrapper;
-			status_code = this->GetElement(session, element_id, &element_wrapper);
+			status_code = this->GetElement(executor, element_id, &element_wrapper);
 			if (status_code == SUCCESS)
 			{
 				ElementHandle other_element_wrapper;
-				status_code = this->GetElement(session, other_element_id, &other_element_wrapper);
+				status_code = this->GetElement(executor, other_element_id, &other_element_wrapper);
 				if (status_code == SUCCESS) {
-					response->SetResponse(SUCCESS, (element_wrapper->element() == other_element_wrapper->element()));
+					response->SetSuccessResponse((element_wrapper->element() == other_element_wrapper->element()));
 					return;
 				} else {
 					response->SetErrorResponse(status_code, "Element specified by 'other' is no longer valid");

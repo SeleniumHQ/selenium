@@ -14,11 +14,14 @@
 #ifndef WEBDRIVER_IE_GETELEMENTLOCATIONONCESCROLLEDINTOVIEWCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETELEMENTLOCATIONONCESCROLLEDINTOVIEWCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
+#include "../Generated/atoms.h"
 
 namespace webdriver {
 
-class GetElementLocationOnceScrolledIntoViewCommandHandler : public CommandHandler {
+class GetElementLocationOnceScrolledIntoViewCommandHandler : public IECommandHandler {
 public:
 	GetElementLocationOnceScrolledIntoViewCommandHandler(void) {
 	}
@@ -27,7 +30,7 @@ public:
 	}
 
 protected:
-	void GetElementLocationOnceScrolledIntoViewCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetElementLocationOnceScrolledIntoViewCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		if (id_parameter_iterator == locator_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
@@ -36,14 +39,14 @@ protected:
 			std::wstring element_id = CA2W(id_parameter_iterator->second.c_str(), CP_UTF8);
 
 			BrowserHandle browser_wrapper;
-			int status_code = session.GetCurrentBrowser(&browser_wrapper);
+			int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
 
 			ElementHandle element_wrapper;
-			status_code = this->GetElement(session, element_id, &element_wrapper);
+			status_code = this->GetElement(executor, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				long x, y, width, height;
 				status_code = element_wrapper->GetLocationOnceScrolledIntoView(&x, &y, &width, &height);
@@ -51,7 +54,7 @@ protected:
 					Json::Value response_value;
 					response_value["x"] = x;
 					response_value["y"] = y;
-					response->SetResponse(SUCCESS, response_value);
+					response->SetSuccessResponse(response_value);
 					return;
 				} else {
 					response->SetErrorResponse(status_code, "Unable to get element location.");

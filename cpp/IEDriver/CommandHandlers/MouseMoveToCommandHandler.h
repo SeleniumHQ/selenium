@@ -15,11 +15,13 @@
 #define WEBDRIVER_IE_MOUSEMOVETOCOMMANDHANDLER_H_
 
 #include "interactions.h"
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class MouseMoveToCommandHandler : public CommandHandler {
+class MouseMoveToCommandHandler : public IECommandHandler {
 public:
 	MouseMoveToCommandHandler(void) {
 	}
@@ -28,7 +30,7 @@ public:
 	}
 
 protected:
-	void MouseMoveToCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void MouseMoveToCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator element_parameter_iterator = command_parameters.find("element");
 		ParametersMap::const_iterator xoffset_parameter_iterator = command_parameters.find("xoffset");
 		ParametersMap::const_iterator yoffset_parameter_iterator = command_parameters.find("yoffset");
@@ -40,14 +42,14 @@ protected:
 		} else {
 			int status_code = SUCCESS;
 
-			long start_x = session.last_known_mouse_x();
-			long start_y = session.last_known_mouse_y();
+			long start_x = executor.last_known_mouse_x();
+			long start_y = executor.last_known_mouse_y();
 
 			long end_x = start_x;
 			long end_y = start_y;
 			if (element_specified && !element_parameter_iterator->second.isNull()) {
 				std::wstring element_id = CA2W(element_parameter_iterator->second.asCString(), CP_UTF8);
-				status_code = this->GetElementCoordinates(session, element_id, offset_specified, &end_x, &end_y);
+				status_code = this->GetElementCoordinates(executor, element_id, offset_specified, &end_x, &end_y);
 				if (status_code != SUCCESS) {
 					response->SetErrorResponse(status_code, "Unable to locate element with id " + element_parameter_iterator->second.asString());
 				}
@@ -59,27 +61,27 @@ protected:
 			}
 
 			BrowserHandle browser_wrapper;
-			status_code = session.GetCurrentBrowser(&browser_wrapper);
+			status_code = executor.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get current browser");
 			}
 
 			HWND browser_window_handle = browser_wrapper->GetWindowHandle();
-			LRESULT move_result = mouseMoveTo(browser_window_handle, session.speed(), start_x, start_y, end_x, end_y);
+			LRESULT move_result = mouseMoveTo(browser_window_handle, executor.speed(), start_x, start_y, end_x, end_y);
 
-			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
-			mutable_session.set_last_known_mouse_x(end_x);
-			mutable_session.set_last_known_mouse_y(end_y);
+			IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+			mutable_executor.set_last_known_mouse_x(end_x);
+			mutable_executor.set_last_known_mouse_y(end_y);
 
-			response->SetResponse(SUCCESS, Json::Value::null);
+			response->SetSuccessResponse(Json::Value::null);
 			return;
 		}
 	}
 
 private:
-	int MouseMoveToCommandHandler::GetElementCoordinates(const IESessionWindow& session, const std::wstring& element_id, bool get_element_origin, long *x_coordinate, long *y_coordinate) {
+	int MouseMoveToCommandHandler::GetElementCoordinates(const IECommandExecutor& executor, const std::wstring& element_id, bool get_element_origin, long *x_coordinate, long *y_coordinate) {
 		ElementHandle target_element;
-		int status_code = this->GetElement(session, element_id, &target_element);
+		int status_code = this->GetElement(executor, element_id, &target_element);
 		if (status_code != SUCCESS) {
 			return status_code;
 		}

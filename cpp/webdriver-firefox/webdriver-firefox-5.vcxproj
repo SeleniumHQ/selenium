@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}</ProjectGuid>
+    <ProjectGuid>{FD15C665-943A-43A5-B93A-D16291706BE0}</ProjectGuid>
     <RootNamespace>webdriverfirefox</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

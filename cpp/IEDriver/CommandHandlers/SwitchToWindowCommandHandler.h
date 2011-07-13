@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_SWITCHTOWINDOWCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SWITCHTOWINDOWCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class SwitchToWindowCommandHandler : public CommandHandler {
+class SwitchToWindowCommandHandler : public IECommandHandler {
 public:
 	SwitchToWindowCommandHandler(void) {
 	}
@@ -27,7 +29,7 @@ public:
 	}
 
 protected:
-	void ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("name");
 		if (name_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: name");
@@ -37,10 +39,10 @@ protected:
 			std::string desired_name = name_parameter_iterator->second.asString();
 
 			std::vector<std::wstring> handle_list;
-			session.GetManagedBrowserHandles(&handle_list);
+			executor.GetManagedBrowserHandles(&handle_list);
 			for (unsigned int i = 0; i < handle_list.size(); ++i) {
 				BrowserHandle browser_wrapper;
-				int get_handle_loop_status_code = session.GetManagedBrowser(handle_list[i], &browser_wrapper);
+				int get_handle_loop_status_code = executor.GetManagedBrowser(handle_list[i], &browser_wrapper);
 				if (get_handle_loop_status_code == SUCCESS) {
 					std::string browser_name = CW2A(browser_wrapper->GetWindowName().c_str(), CP_UTF8);
 					if (browser_name == desired_name) {
@@ -62,16 +64,16 @@ protected:
 			} else {
 				// Reset the path to the focused frame before switching window context.
 				BrowserHandle current_browser;
-				int status_code = session.GetCurrentBrowser(&current_browser);
+				int status_code = executor.GetCurrentBrowser(&current_browser);
 				if (status_code == SUCCESS) {
 					current_browser->SetFocusedFrameByElement(NULL);
 				}
 
-				IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
-				mutable_session.set_current_browser_id(found_browser_handle);
-				status_code = session.GetCurrentBrowser(&current_browser);
+				IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+				mutable_executor.set_current_browser_id(found_browser_handle);
+				status_code = executor.GetCurrentBrowser(&current_browser);
 				current_browser->set_wait_required(true);
-				response->SetResponse(SUCCESS, Json::Value::null);
+				response->SetSuccessResponse(Json::Value::null);
 			}
 		}
 	}

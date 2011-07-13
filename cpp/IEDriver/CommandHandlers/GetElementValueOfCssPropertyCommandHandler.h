@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GETELEMENTVALUEOFCSSPROPERTYCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETELEMENTVALUEOFCSSPROPERTYCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GetElementValueOfCssPropertyCommandHandler : public CommandHandler {
+class GetElementValueOfCssPropertyCommandHandler : public IECommandHandler {
 public:
 	GetElementValueOfCssPropertyCommandHandler(void) {
 		this->colour_names_hex_code_map_[L"aqua"] = L"#00ffff";
@@ -43,7 +45,7 @@ public:
 	}
 
 protected:
-	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		LocatorMap::const_iterator property_name_parameter_iterator = locator_parameters.find("propertyName");
 		if (id_parameter_iterator == locator_parameters.end()) {
@@ -57,14 +59,14 @@ protected:
 			std::wstring name = CA2W(property_name_parameter_iterator->second.c_str(), CP_UTF8);
 
 			BrowserHandle browser_wrapper;
-			int status_code = session.GetCurrentBrowser(&browser_wrapper);
+			int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
 
 			ElementHandle element_wrapper;
-			status_code = this->GetElement(session, element_id, &element_wrapper);
+			status_code = this->GetElement(executor, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				// The atom is just the definition of an anonymous
 				// function: "function() {...}"; Wrap it in another function so we can
@@ -90,7 +92,7 @@ protected:
 					std::transform(raw_value.begin(), raw_value.end(), raw_value.begin(), tolower);
 					std::wstring style_value = this->MangleColour(name, raw_value);
 					std::string style_value_str = CW2A(style_value.c_str(), CP_UTF8);
-					response->SetResponse(SUCCESS, style_value_str);
+					response->SetSuccessResponse(style_value_str);
 					return;
 				} else {
 					response->SetErrorResponse(status_code, "Unable to get element style value");

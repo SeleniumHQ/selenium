@@ -11,34 +11,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_SESSION_H_
-#define WEBDRIVER_IE_SESSION_H_
-
-#include <string>
-#include <memory>
-
-using namespace std;
+#include "IEServer.h"
+#include "IESession.h"
 
 namespace webdriver {
 
-class Session {
-public:
-	Session(int port);
-	virtual ~Session(void);
+IEServer::IEServer(int port) : Server(port) {
+}
 
-	virtual std::wstring Initialize(void) = 0;
-	virtual void ShutDown(void) = 0;
-	virtual bool ExecuteCommand(const std::wstring& serialized_command, std::wstring* serialized_response) = 0;
+IEServer::~IEServer(void) {
+}
 
-protected:
-	int port(void) const { return this->port_; }
+SessionHandle IEServer::InitializeSession() {
+	SessionHandle session_handle(new IESession());
+	int port = this->port();
+	session_handle->Initialize(&port);
+	return session_handle;
+}
 
-private:
-	int port_;
-};
-
-typedef std::tr1::shared_ptr<Session> SessionHandle;
-
-} // namespace webdriver
-
-#endif // WEBDRIVER_IE_SESSION_H_
+} //namespace webdriver

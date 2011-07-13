@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GOFORWARDCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GOFORWARDCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GoForwardCommandHandler : public CommandHandler {
+class GoForwardCommandHandler : public IECommandHandler {
 public:
 	GoForwardCommandHandler(void) {
 	}
@@ -27,15 +29,15 @@ public:
 	}
 
 protected:
-	void GoForwardCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GoForwardCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
-		int status_code = session.GetCurrentBrowser(&browser_wrapper);
+		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
 		}
 		status_code = browser_wrapper->NavigateForward();
-		response->SetResponse(SUCCESS, Json::Value::null);
+		response->SetSuccessResponse(Json::Value::null);
 	}
 };
 

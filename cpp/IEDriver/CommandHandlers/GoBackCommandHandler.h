@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GOBACKCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GOBACKCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GoBackCommandHandler : public CommandHandler {
+class GoBackCommandHandler : public IECommandHandler {
 public:
 	GoBackCommandHandler(void) {
 	}
@@ -27,15 +29,15 @@ public:
 	}
 
 protected:
-	void GoBackCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GoBackCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
-		int status_code = session.GetCurrentBrowser(&browser_wrapper);
+		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
 		}
 		status_code = browser_wrapper->NavigateBack();
-		response->SetResponse(SUCCESS, Json::Value::null);
+		response->SetSuccessResponse(Json::Value::null);
 	}
 };
 

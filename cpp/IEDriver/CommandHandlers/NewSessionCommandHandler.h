@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_NEWSESSIONCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_NEWSESSIONCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class NewSessionCommandHandler : public CommandHandler {
+class NewSessionCommandHandler : public IECommandHandler {
 public:
 	NewSessionCommandHandler(void) {
 	}
@@ -27,23 +29,23 @@ public:
 	}
 
 protected:
-	void NewSessionCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
+	void NewSessionCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+		IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
 		ParametersMap::const_iterator it = command_parameters.find("desiredCapabilities");
 		if (it != command_parameters.end()) {
 			Json::Value ignore_protected_mode_settings = it->second.get("ignoreProtectedModeSettings", false);
-			mutable_session.set_ignore_protected_mode_settings(ignore_protected_mode_settings.asBool());
+			mutable_executor.set_ignore_protected_mode_settings(ignore_protected_mode_settings.asBool());
 		}
-		int result_code = mutable_session.CreateNewBrowser();
+		int result_code = mutable_executor.CreateNewBrowser();
 		if (result_code != SUCCESS) {
 			// The browser was not created successfully, therefore the
 			// session must be marked as invalid so the server can
 			// properly shut it down.
-			mutable_session.set_is_valid(false);
+			mutable_executor.set_is_valid(false);
 			response->SetErrorResponse(result_code, "Unexpected error launching Internet Explorer. Protected Mode must be set to the same value (enabled or disabled) for all zones.");
 			return;
 		}
-		std::string id = CW2A(session.session_id().c_str(), CP_UTF8);
+		std::string id = CW2A(executor.session_id().c_str(), CP_UTF8);
 		response->SetResponse(303, "/session/" + id);
 	}
 };

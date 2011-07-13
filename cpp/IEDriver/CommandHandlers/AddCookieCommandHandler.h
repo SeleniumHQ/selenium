@@ -14,12 +14,14 @@
 #ifndef WEBDRIVER_IE_ADDCOOKIECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_ADDCOOKIECOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 #include <ctime>
 
 namespace webdriver {
 
-class AddCookieCommandHandler : public CommandHandler {
+class AddCookieCommandHandler : public IECommandHandler {
 public:
 	AddCookieCommandHandler(void) {
 	}
@@ -28,7 +30,7 @@ public:
 	}
 
 protected:
-	void AddCookieCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void AddCookieCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator cookie_parameter_iterator = command_parameters.find("cookie");
 		if (cookie_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: cookie");
@@ -82,7 +84,7 @@ protected:
 		}
 
 		BrowserHandle browser_wrapper;
-		session.GetCurrentBrowser(&browser_wrapper);
+		executor.GetCurrentBrowser(&browser_wrapper);
 
 		std::wstring cookie = CA2W(cookie_string.c_str(), CP_UTF8);
 		int status_code = browser_wrapper->AddCookie(cookie);
@@ -90,7 +92,7 @@ protected:
 			response->SetErrorResponse(status_code, "Unable to add cookie to page");
 		}
 
-		response->SetResponse(SUCCESS, Json::Value::null);
+		response->SetSuccessResponse(Json::Value::null);
 	}
 
 private:

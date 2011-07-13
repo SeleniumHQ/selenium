@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GETSESSIONCAPABILITIESCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETSESSIONCAPABILITIESCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GetSessionCapabilitiesCommandHandler : public CommandHandler {
+class GetSessionCapabilitiesCommandHandler : public IECommandHandler {
 public:
 	GetSessionCapabilitiesCommandHandler(void) {
 	}
@@ -27,10 +29,10 @@ public:
 	}
 
 protected:
-	void GetSessionCapabilitiesCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetSessionCapabilitiesCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		// ASSUMPTION: Version string will never be larger than 2 characters
 		// (+1 for the null terminator).
-		int version = session.browser_version();
+		int version = executor.browser_version();
 		char buffer[3];
 		_itoa_s(version, buffer, 3, 10);
 		std::string version_string = buffer;
@@ -44,7 +46,7 @@ protected:
 		capabilities["cssSelectorsEnabled"] = true;
 		capabilities["takesScreenshot"] = true;
 		capabilities["handlesAlerts"] = true;
-		response->SetResponse(SUCCESS, capabilities);
+		response->SetSuccessResponse(capabilities);
 	}
 };
 

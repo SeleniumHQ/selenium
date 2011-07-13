@@ -25,10 +25,9 @@ namespace webdriver {
 // Forward declaration of classes to avoid
 // circular include files.
 class Browser;
-class IESessionWindow;
+class IECommandExecutor;
 
-class Script
-{
+class Script {
 public:
 	Script(IHTMLDocument2* document, std::wstring script_source, unsigned long argument_count);
 	~Script(void);
@@ -59,13 +58,13 @@ public:
 	bool ResultIsIDispatch(void);
 
 	int Execute(void);
-	int ConvertResultToJsonValue(const IESessionWindow& session, Json::Value* value);
+	int ConvertResultToJsonValue(const IECommandExecutor& executor, Json::Value* value);
 
 private:
 	int GetArrayLength(long* length);
-	int GetArrayItem(const IESessionWindow& session, long index, Json::Value* item);
+	int GetArrayItem(const IECommandExecutor& executor, long index, Json::Value* item);
 	int GetPropertyNameList(std::wstring* property_names);
-	int GetPropertyValue(const IESessionWindow& session, const std::wstring& property_name, Json::Value* property_value);
+	int GetPropertyValue(const IECommandExecutor& executor, const std::wstring& property_name, Json::Value* property_value);
 	std::wstring GetResultObjectTypeName(void);
 	bool CreateAnonymousFunction(VARIANT* result);
 

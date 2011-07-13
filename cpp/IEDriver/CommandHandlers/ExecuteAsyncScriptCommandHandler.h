@@ -14,7 +14,9 @@
 #ifndef WEBDRIVER_IE_EXECUTEASYNCSCRIPTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_EXECUTEASYNCSCRIPTCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 #include "ExecuteScriptCommandHandler.h"
 
 #define GUID_STRING_LEN 40
@@ -30,7 +32,7 @@ public:
 	}
 
 protected:
-	void ExecuteAsyncScriptCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void ExecuteAsyncScriptCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator script_parameter_iterator = command_parameters.find("script");
 		ParametersMap::const_iterator args_parameter_iterator = command_parameters.find("args");
 		if (script_parameter_iterator == command_parameters.end()) {
@@ -54,7 +56,7 @@ protected:
 
 			Json::Value json_args = args_parameter_iterator->second;
 
-			int timeout_value = session.async_script_timeout();
+			int timeout_value = executor.async_script_timeout();
 			wchar_t timeout_buffer[12] = {0};
 			_itow_s(timeout_value, &timeout_buffer[0], 12, 10);
 			std::wstring timeout = &timeout_buffer[0];
@@ -102,7 +104,7 @@ protected:
 			polling_script += L"};})();";
 
 			BrowserHandle browser_wrapper;
-			int status_code = session.GetCurrentBrowser(&browser_wrapper);
+			int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
@@ -111,7 +113,7 @@ protected:
 			CComPtr<IHTMLDocument2> doc;
 			browser_wrapper->GetDocument(&doc);
 			Script async_script_wrapper(doc, async_script, json_args.size());
-			status_code = this->PopulateArgumentArray(session, async_script_wrapper, json_args);
+			status_code = this->PopulateArgumentArray(executor, async_script_wrapper, json_args);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Error setting arguments for script");
 				return;
@@ -137,7 +139,7 @@ protected:
 						break;
 					}
 
-					polling_script_wrapper.ConvertResultToJsonValue(session, &polling_result);
+					polling_script_wrapper.ConvertResultToJsonValue(executor, &polling_result);
 					
 					Json::UInt index = 0;
 					std::string narrow_pending_id(CW2A(pending_id.c_str(), CP_UTF8));
@@ -152,7 +154,7 @@ protected:
 							break;
 						}
 					} else {
-						response->SetResponse(SUCCESS, polling_result);
+						response->SetSuccessResponse(polling_result);
 						break;
 					}
 				}

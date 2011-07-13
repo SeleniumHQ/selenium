@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_REFRESHCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_REFRESHCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class RefreshCommandHandler : public CommandHandler {
+class RefreshCommandHandler : public IECommandHandler {
 public:
 	RefreshCommandHandler(void) {
 	}
@@ -27,15 +29,15 @@ public:
 	}
 
 protected:
-	void RefreshCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void RefreshCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
-		int status_code = session.GetCurrentBrowser(&browser_wrapper);
+		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
 		}
 		status_code = browser_wrapper->Refresh();
-		response->SetResponse(SUCCESS, Json::Value::null);
+		response->SetSuccessResponse(Json::Value::null);
 	}
 };
 

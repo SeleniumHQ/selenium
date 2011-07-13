@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_QUITCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_QUITCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class QuitCommandHandler : public CommandHandler {
+class QuitCommandHandler : public IECommandHandler {
 public:
 	QuitCommandHandler(void) {
 	}
@@ -27,23 +29,23 @@ public:
 	}
 
 protected:
-	void QuitCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void QuitCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		std::vector<std::wstring> managed_browser_handles;
-		session.GetManagedBrowserHandles(&managed_browser_handles);
+		executor.GetManagedBrowserHandles(&managed_browser_handles);
 
 		std::vector<std::wstring>::iterator end = managed_browser_handles.end();
 		for (std::vector<std::wstring>::iterator it = managed_browser_handles.begin(); it != end; ++it) {
 			BrowserHandle browser_wrapper;
-			int status_code = session.GetManagedBrowser(*it, &browser_wrapper);
+			int status_code = executor.GetManagedBrowser(*it, &browser_wrapper);
 			if (status_code == SUCCESS && !browser_wrapper->is_closing()) {
 				browser_wrapper->Close();
 			}
 		}
 
 		// Calling quit will always result in an invalid session.
-		IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
-		mutable_session.set_is_valid(false);
-		response->SetResponse(SUCCESS, Json::Value::null);
+		IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+		mutable_executor.set_is_valid(false);
+		response->SetSuccessResponse(Json::Value::null);
 	}
 };
 

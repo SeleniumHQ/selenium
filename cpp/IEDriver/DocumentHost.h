@@ -26,7 +26,7 @@ namespace webdriver {
 
 class DocumentHost {
 public:
-	DocumentHost(HWND hwnd, HWND session_handle);
+	DocumentHost(HWND hwnd, HWND executor_handle);
 	virtual ~DocumentHost(void);
 
 	virtual void GetDocument(IHTMLDocument2** doc) = 0;
@@ -69,7 +69,7 @@ protected:
 	HWND window_handle(void) const { return this->window_handle_; }
 	void set_window_handle(const HWND window_handle) { this->window_handle_ = window_handle; }
 
-	HWND session_handle(void) const { return this->session_handle_; }
+	HWND executor_handle(void) const { return this->executor_handle_; }
 
 	void set_is_closing(const bool value) { this->is_closing_ = value; }
 
@@ -81,7 +81,7 @@ private:
 	BrowserFactory factory_;
 	CComPtr<IHTMLWindow2> focused_frame_window_;
 	HWND window_handle_;
-	HWND session_handle_;
+	HWND executor_handle_;
 	std::wstring browser_id_;
 	bool wait_required_;
 	bool is_closing_;

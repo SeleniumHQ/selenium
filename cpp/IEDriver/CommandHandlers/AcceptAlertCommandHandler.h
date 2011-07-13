@@ -13,11 +13,13 @@
 #ifndef WEBDRIVER_IE_ACCEPTALERTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_ACCEPTALERTCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class AcceptAlertCommandHandler : public CommandHandler {
+class AcceptAlertCommandHandler : public IECommandHandler {
 public:
 	AcceptAlertCommandHandler(void) {
 	}
@@ -26,9 +28,9 @@ public:
 	}
 
 protected:
-	void AcceptAlertCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void AcceptAlertCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
-		session.GetCurrentBrowser(&browser_wrapper);
+		executor.GetCurrentBrowser(&browser_wrapper);
 		// This sleep is required to give IE time to draw the dialog.
 		::Sleep(100);
 		HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
@@ -67,7 +69,7 @@ protected:
 			} else {
 				// Now click on the OK button of the Alert
 				::SendMessage(alert_handle, WM_COMMAND, param, NULL);
-				response->SetResponse(SUCCESS, Json::Value::null);
+				response->SetSuccessResponse(Json::Value::null);
 			}
 		}
 	}

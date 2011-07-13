@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_SENDKEYSTOALERTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SENDKEYSTOALERTCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class SendKeysToAlertCommandHandler : public CommandHandler {
+class SendKeysToAlertCommandHandler : public IECommandHandler {
 public:
 
 	SendKeysToAlertCommandHandler(void)
@@ -29,7 +31,7 @@ public:
 	{
 	}
 protected:
-	void SendKeysToAlertCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void SendKeysToAlertCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator text_parameter_iterator = command_parameters.find("text");
 		if (text_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: text");
@@ -37,7 +39,7 @@ protected:
 		}
 
 		BrowserHandle browser_wrapper;
-		session.GetCurrentBrowser(&browser_wrapper);
+		executor.GetCurrentBrowser(&browser_wrapper);
 		// This sleep is required to give IE time to draw the dialog.
 		::Sleep(100);
 		HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
@@ -60,7 +62,7 @@ protected:
 			} else {
 				std::wstring text = CA2W(text_parameter_iterator->second.asString().c_str(), CP_UTF8);
 				::SendMessage(text_box_handle, WM_SETTEXT, NULL, (LPARAM)text.c_str());
-				response->SetResponse(SUCCESS, Json::Value::null);
+				response->SetSuccessResponse(Json::Value::null);
 			}
 		}
 	}

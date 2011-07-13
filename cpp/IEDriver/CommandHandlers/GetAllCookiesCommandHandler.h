@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GETALLCOOKIESCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETALLCOOKIESCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GetAllCookiesCommandHandler : public CommandHandler {
+class GetAllCookiesCommandHandler : public IECommandHandler {
 public:
 	GetAllCookiesCommandHandler(void) {
 	}
@@ -27,10 +29,10 @@ public:
 	}
 
 protected:
-	void GetAllCookiesCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetAllCookiesCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		Json::Value response_value(Json::arrayValue);
 		BrowserHandle browser_wrapper;
-		int status_code = session.GetCurrentBrowser(&browser_wrapper);
+		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
@@ -53,7 +55,7 @@ protected:
 			response_value.append(cookie_value);
 		}
 
-		response->SetResponse(SUCCESS, response_value);
+		response->SetSuccessResponse(response_value);
 	}
 
 private:

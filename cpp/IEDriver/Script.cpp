@@ -11,9 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "StdAfx.h"
 #include "Script.h"
-#include "IESessionWindow.h"
+#include "IECommandExecutor.h"
 #include "logging.h"
 
 namespace webdriver {
@@ -247,7 +246,7 @@ int Script::Execute() {
 	return return_code;
 }
 
-int Script::ConvertResultToJsonValue(const IESessionWindow& session, Json::Value* value) {
+int Script::ConvertResultToJsonValue(const IECommandExecutor& executor, Json::Value* value) {
 	int status_code = SUCCESS;
 	if (this->ResultIsString()) { 
 		std::string string_value = "";
@@ -272,7 +271,7 @@ int Script::ConvertResultToJsonValue(const IESessionWindow& session, Json::Value
 
 			for (long i = 0; i < length; ++i) {
 				Json::Value array_item_result;
-				int array_item_status = this->GetArrayItem(session, i, &array_item_result);
+				int array_item_status = this->GetArrayItem(executor, i, &array_item_result);
 				result_array[i] = array_item_result;
 			}
 			*value = result_array;
@@ -299,16 +298,16 @@ int Script::ConvertResultToJsonValue(const IESessionWindow& session, Json::Value
 
 			for (size_t i = 0; i < property_names.size(); ++i) {
 				Json::Value property_value_result;
-				int property_value_status = this->GetPropertyValue(session, property_names[i], &property_value_result);
+				int property_value_status = this->GetPropertyValue(executor, property_names[i], &property_value_result);
 				std::string name(CW2A(property_names[i].c_str(), CP_UTF8));
 				result_object[name] = property_value_result;
 			}
 			*value = result_object;
 		} else {
-			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
+			IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
 			IHTMLElement* node = reinterpret_cast<IHTMLElement*>(this->result_.pdispVal);
 			ElementHandle element_wrapper;
-			mutable_session.AddManagedElement(node, &element_wrapper);
+			mutable_executor.AddManagedElement(node, &element_wrapper);
 			*value = element_wrapper->ConvertToJson();
 		}
 	} else {
@@ -354,7 +353,7 @@ int Script::GetPropertyNameList(std::wstring* property_names) {
 	return SUCCESS;
 }
 
-int Script::GetPropertyValue(const IESessionWindow& session, const std::wstring& property_name, Json::Value* property_value){
+int Script::GetPropertyValue(const IECommandExecutor& executor, const std::wstring& property_name, Json::Value* property_value){
 	std::wstring get_value_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();"; 
 	Script get_value_script_wrapper(this->script_engine_host_, get_value_script, 2);
 	get_value_script_wrapper.AddArgument(this->result_);
@@ -364,7 +363,7 @@ int Script::GetPropertyValue(const IESessionWindow& session, const std::wstring&
 		return get_value_result;
 	}
 
-	int property_value_status = get_value_script_wrapper.ConvertResultToJsonValue(session, property_value);
+	int property_value_status = get_value_script_wrapper.ConvertResultToJsonValue(executor, property_value);
 	return SUCCESS;
 }
 
@@ -390,7 +389,7 @@ int Script::GetArrayLength(long* length) {
 	return SUCCESS;
 }
 
-int Script::GetArrayItem(const IESessionWindow& session, long index, Json::Value* item){
+int Script::GetArrayItem(const IECommandExecutor& executor, long index, Json::Value* item){
 	std::wstring get_array_item_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();"; 
 	Script get_array_item_script_wrapper(this->script_engine_host_, get_array_item_script, 2);
 	get_array_item_script_wrapper.AddArgument(this->result_);
@@ -400,7 +399,7 @@ int Script::GetArrayItem(const IESessionWindow& session, long index, Json::Value
 		return get_item_result;
 	}
 
-	int array_item_status = get_array_item_script_wrapper.ConvertResultToJsonValue(session, item);
+	int array_item_status = get_array_item_script_wrapper.ConvertResultToJsonValue(executor, item);
 	return SUCCESS;
 }
 

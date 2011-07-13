@@ -92,7 +92,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;$(ProjectDir)..\webdriver-interactions;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -102,6 +102,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -120,7 +121,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;$(ProjectDir)..\webdriver-interactions;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -130,6 +131,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -146,7 +148,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;$(ProjectDir)..\webdriver-interactions;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -154,6 +156,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -171,7 +174,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;$(ProjectDir)..\webdriver-interactions;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\json-cpp\include\json;$(ProjectDir)..\..\third_party\mongoose;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -179,6 +182,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -190,6 +194,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\third_party\mongoose\mongoose.vcxproj">
+      <Project>{9aebd612-232d-40cb-be2c-f2b911fd6228}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\webdriver-interactions\webdriver-interactions.vcxproj">
       <Project>{87fa39a1-958e-478a-8ab9-6d5e5aaa3886}</Project>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
@@ -200,27 +207,27 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\third_party\mongoose\mongoose.vcxproj">
-      <Project>{9aebd612-232d-40cb-be2c-f2b911fd6228}</Project>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    <ProjectReference Include="..\webdriver-server\webdriver-server.vcxproj">
+      <Project>{35a23a16-ef17-4cc3-8854-785025a304f3}</Project>
+      <Private>true</Private>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Browser.cpp" />
     <ClCompile Include="BrowserFactory.cpp" />
-    <ClCompile Include="Command.cpp" />
-    <ClCompile Include="CommandHandler.cpp" />
     <ClCompile Include="DocumentHost.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="ElementFinder.cpp" />
     <ClCompile Include="HtmlDialog.cpp" />
+    <ClCompile Include="IECommandExecutor.cpp" />
+    <ClCompile Include="IECommandHandler.cpp" />
+    <ClCompile Include="IEServer.cpp" />
     <ClCompile Include="IESession.cpp" />
-    <ClCompile Include="IESessionWindow.cpp" />
-    <ClCompile Include="Response.cpp" />
     <ClCompile Include="Script.cpp" />
-    <ClCompile Include="Server.cpp" />
-    <ClCompile Include="Session.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -232,20 +239,16 @@
   <ItemGroup>
     <ClInclude Include="Browser.h" />
     <ClInclude Include="BrowserFactory.h" />
-    <ClInclude Include="Command.h" />
-    <ClInclude Include="CommandHandler.h" />
-    <ClInclude Include="CommandValues.h" />
     <ClInclude Include="DocumentHost.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="ElementFinder.h" />
     <ClInclude Include="HtmlDialog.h" />
+    <ClInclude Include="IECommandExecutor.h" />
+    <ClInclude Include="IECommandHandler.h" />
+    <ClInclude Include="IEServer.h" />
     <ClInclude Include="IESession.h" />
-    <ClInclude Include="IESessionWindow.h" />
     <ClInclude Include="messages.h" />
-    <ClInclude Include="Response.h" />
     <ClInclude Include="Script.h" />
-    <ClInclude Include="Server.h" />
-    <ClInclude Include="Session.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WebDriver.h" />
@@ -257,7 +260,6 @@
     <ClInclude Include="CommandHandlers\DeleteAllCookiesCommandHandler.h" />
     <ClInclude Include="CommandHandlers\DeleteCookieCommandHandler.h" />
     <ClInclude Include="CommandHandlers\DismissAlertCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\DragElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\ElementEqualsCommandHandler.h" />
     <ClInclude Include="CommandHandlers\ExecuteAsyncScriptCommandHandler.h" />
     <ClInclude Include="CommandHandlers\ExecuteScriptCommandHandler.h" />
@@ -277,16 +279,13 @@
     <ClInclude Include="CommandHandlers\GetElementSizeCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementTagNameCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementTextCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\GetElementValueCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementValueOfCssPropertyCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetPageSourceCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetSessionCapabilitiesCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\GetSpeedCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetTitleCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GoBackCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GoForwardCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GoToUrlCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\HoverOverElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\IsElementDisplayedCommandHandler.h" />
     <ClInclude Include="CommandHandlers\IsElementEnabledCommandHandler.h" />
     <ClInclude Include="CommandHandlers\IsElementSelectedCommandHandler.h" />
@@ -303,13 +302,10 @@
     <ClInclude Include="CommandHandlers\SendKeysToAlertCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SendModifierKeyCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SetAsyncScriptTimeoutCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\SetElementSelectedCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SetImplicitWaitTimeoutCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\SetSpeedCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SubmitElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SwitchToFrameCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SwitchToWindowCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\ToggleElementCommandHandler.h" />
     <ClInclude Include="Generated\atoms.h" />
     <ClInclude Include="Generated\cookies.h" />
     <ClInclude Include="Generated\jsxpath.h" />

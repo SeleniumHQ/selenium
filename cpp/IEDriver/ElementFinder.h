@@ -29,14 +29,14 @@ class ElementFinder {
 public:
 	ElementFinder();
 	virtual ~ElementFinder(void);
-	virtual int FindElement(const IESessionWindow& session, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element);
-	virtual int FindElements(const IESessionWindow& session, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements);
+	virtual int FindElement(const IECommandExecutor& executor, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element);
+	virtual int FindElements(const IECommandExecutor& executor, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements);
 
 private:
-	int FindElementByCssSelector(const IESessionWindow& session, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element);
-	int ElementFinder::FindElementsByCssSelector(const IESessionWindow& session, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements);
-	int FindElementByXPath(const IESessionWindow& session, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element);
-	int FindElementsByXPath(const IESessionWindow& session, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements);
+	int FindElementByCssSelector(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element);
+	int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements);
+	int FindElementByXPath(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element);
+	int FindElementsByXPath(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements);
 	int InjectXPathEngine(BrowserHandle browser_wrapper);
 };
 

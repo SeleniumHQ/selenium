@@ -29,12 +29,6 @@
     <ClCompile Include="BrowserFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Command.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DocumentHost.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -47,28 +41,25 @@
     <ClCompile Include="HtmlDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Response.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Script.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Session.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WebDriver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="IESession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Server.cpp">
+    <ClCompile Include="IEServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IESessionWindow.cpp">
+    <ClCompile Include="IECommandExecutor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IECommandHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WebDriver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,12 +68,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BrowserFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Command.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DocumentHost.h">
@@ -100,13 +85,7 @@
     <ClInclude Include="messages.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Response.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Script.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Session.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
@@ -140,9 +119,6 @@
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
     <ClInclude Include="CommandHandlers\DismissAlertCommandHandler.h">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandHandlers\DragElementCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
     <ClInclude Include="CommandHandlers\ElementEqualsCommandHandler.h">
@@ -202,9 +178,6 @@
     <ClInclude Include="CommandHandlers\GetElementTextCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
-    <ClInclude Include="CommandHandlers\GetElementValueCommandHandler.h">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClInclude>
     <ClInclude Include="CommandHandlers\GetElementValueOfCssPropertyCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
@@ -212,9 +185,6 @@
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
     <ClInclude Include="CommandHandlers\GetSessionCapabilitiesCommandHandler.h">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandHandlers\GetSpeedCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
     <ClInclude Include="CommandHandlers\GetTitleCommandHandler.h">
@@ -227,9 +197,6 @@
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
     <ClInclude Include="CommandHandlers\GoToUrlCommandHandler.h">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandHandlers\HoverOverElementCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
     <ClInclude Include="CommandHandlers\IsElementDisplayedCommandHandler.h">
@@ -280,13 +247,7 @@
     <ClInclude Include="CommandHandlers\SetAsyncScriptTimeoutCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
-    <ClInclude Include="CommandHandlers\SetElementSelectedCommandHandler.h">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClInclude>
     <ClInclude Include="CommandHandlers\SetImplicitWaitTimeoutCommandHandler.h">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandHandlers\SetSpeedCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
     <ClInclude Include="CommandHandlers\SubmitElementCommandHandler.h">
@@ -296,9 +257,6 @@
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
     <ClInclude Include="CommandHandlers\SwitchToWindowCommandHandler.h">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandHandlers\ToggleElementCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
     <ClInclude Include="Generated\atoms.h">
@@ -316,14 +274,14 @@
     <ClInclude Include="IESession.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Server.h">
+    <ClInclude Include="IEServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IESessionWindow.h">
+    <ClInclude Include="IECommandExecutor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CommandValues.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="IECommandHandler.h">
+      <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

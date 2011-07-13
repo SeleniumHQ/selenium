@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_CLOSEWINDOWCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_CLOSEWINDOWCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class CloseWindowCommandHandler : public CommandHandler {
+class CloseWindowCommandHandler : public IECommandHandler {
 public:
 	CloseWindowCommandHandler(void) {
 	}
@@ -27,17 +29,17 @@ public:
 	}
 
 protected:
-	void CloseWindowCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void CloseWindowCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		// The session should end if the user sends a quit command,
 		// or if the user sends a close command with exactly 1 window
 		// open, per spec. Removing the window from the managed browser
 		// list depends on events, which may be asynchronous, so cache
 		// the window count *before* closing the current window.
-		size_t current_window_count = session.managed_window_count();
+		size_t current_window_count = executor.managed_window_count();
 
 		// TODO: Check HRESULT values for errors.
 		BrowserHandle browser_wrapper;
-		int status_code = session.GetCurrentBrowser(&browser_wrapper);
+		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
@@ -45,10 +47,10 @@ protected:
 		browser_wrapper->Close();
 
 		if (current_window_count == 1) {
-			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
-			mutable_session.set_is_valid(false);
+			IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+			mutable_executor.set_is_valid(false);
 		}
-		response->SetResponse(SUCCESS, Json::Value::null);
+		response->SetSuccessResponse(Json::Value::null);
 	}
 };
 

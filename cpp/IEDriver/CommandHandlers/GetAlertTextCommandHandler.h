@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GETALERTTEXTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETALERTTEXTCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GetAlertTextCommandHandler : public CommandHandler {
+class GetAlertTextCommandHandler : public IECommandHandler {
 public:
 	GetAlertTextCommandHandler(void) {
 	}
@@ -27,9 +29,9 @@ public:
 	}
 
 protected:
-	void GetAlertTextCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetAlertTextCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
-		session.GetCurrentBrowser(&browser_wrapper);
+		executor.GetCurrentBrowser(&browser_wrapper);
 		// This sleep is required to give IE time to draw the dialog.
 		::Sleep(100);
 		HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
@@ -55,7 +57,7 @@ protected:
 				::GetWindowText(label_handle, &text_buffer[0], text_length + 1);
 				std::wstring alert_text = &text_buffer[0];
 				std::string alert_text_value = CW2A(alert_text.c_str(), CP_UTF8);
-				response->SetResponse(SUCCESS, alert_text_value);
+				response->SetSuccessResponse(alert_text_value);
 			}
 		}
 	}

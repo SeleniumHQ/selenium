@@ -11,14 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "StdAfx.h"
 #include "DocumentHost.h"
 #include "Generated/cookies.h"
 #include "messages.h"
 
 namespace webdriver {
 
-DocumentHost::DocumentHost(HWND hwnd, HWND session_handle) {
+DocumentHost::DocumentHost(HWND hwnd, HWND executor_handle) {
 	// NOTE: COM should be initialized on this thread, so we
 	// could use CoCreateGuid() and StringFromGUID2() instead.
 	UUID guid;
@@ -34,7 +33,7 @@ DocumentHost::DocumentHost(HWND hwnd, HWND session_handle) {
 	::RpcStringFree(&guid_string);
 
 	this->window_handle_ = hwnd;
-	this->session_handle_ = session_handle;
+	this->executor_handle_ = executor_handle;
 	this->is_closing_ = false;
 	this->wait_required_ = false;
 	this->focused_frame_window_ = NULL;
@@ -209,7 +208,7 @@ void DocumentHost::PostQuitMessage() {
 	this->set_is_closing(true);
 	LPWSTR message_payload = new WCHAR[this->browser_id_.size() + 1];
 	wcscpy_s(message_payload, this->browser_id_.size() + 1, this->browser_id_.c_str());
-	::PostMessage(this->session_handle(), WD_BROWSER_QUIT, NULL, reinterpret_cast<LPARAM>(message_payload));
+	::PostMessage(this->executor_handle(), WD_BROWSER_QUIT, NULL, reinterpret_cast<LPARAM>(message_payload));
 }
 
 bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {

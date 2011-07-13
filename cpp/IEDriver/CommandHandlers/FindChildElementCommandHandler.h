@@ -15,11 +15,13 @@
 #define WEBDRIVER_IE_FINDCHILDELEMENTCOMMANDHANDLER_H_
 
 #include <ctime>
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class FindChildElementCommandHandler : public CommandHandler {
+class FindChildElementCommandHandler : public IECommandHandler {
 public:
 	FindChildElementCommandHandler(void) {
 	}
@@ -28,7 +30,7 @@ public:
 	}
 
 protected:
-	void FindChildElementCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void FindChildElementCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
 		ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
@@ -46,7 +48,7 @@ protected:
 			std::wstring value = CA2W(value_parameter_iterator->second.asString().c_str(), CP_UTF8);
 
 			std::wstring mechanism_translation;
-			int status_code = session.GetElementFindMethod(mechanism, &mechanism_translation);
+			int status_code = executor.GetElementFindMethod(mechanism, &mechanism_translation);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unknown finder mechanism: " + using_parameter_iterator->second.asString());
 				return;
@@ -55,19 +57,19 @@ protected:
 			std::wstring element_id = CA2W(id_parameter_iterator->second.c_str(), CP_UTF8);
 
 			ElementHandle parent_element_wrapper;
-			status_code = this->GetElement(session, element_id, &parent_element_wrapper);
+			status_code = this->GetElement(executor, element_id, &parent_element_wrapper);
 
 			if (status_code == SUCCESS) {
 				Json::Value found_element;
 
-				int timeout = session.implicit_wait_timeout();
+				int timeout = executor.implicit_wait_timeout();
 				clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
 				if (timeout > 0 && timeout < 1000) {
 					end += 1 * CLOCKS_PER_SEC;
 				}
 
 				do {
-					status_code = session.LocateElement(parent_element_wrapper, mechanism_translation, value, &found_element);
+					status_code = executor.LocateElement(parent_element_wrapper, mechanism_translation, value, &found_element);
 					if (status_code == SUCCESS) {
 						break;
 					} else {
@@ -77,7 +79,7 @@ protected:
 				} while (clock() < end);
 
 				if (status_code == SUCCESS) {
-					response->SetResponse(SUCCESS, found_element);
+					response->SetSuccessResponse(found_element);
 					return;
 				} else {
 					response->SetErrorResponse(status_code, "Unable to find element with " + using_parameter_iterator->second.asString() + " == " + value_parameter_iterator->second.asString());

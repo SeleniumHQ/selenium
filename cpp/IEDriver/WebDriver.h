@@ -14,7 +14,7 @@
 #ifndef WEBDRIVER_IE_WEBDRIVER_H_
 #define WEBDRIVER_IE_WEBDRIVER_H_
 
-#include "Server.h"
+#include "IEServer.h"
 
 #define EXPORT __declspec(dllexport)
 
@@ -23,12 +23,7 @@ extern "C" {
 #endif
 
 webdriver::Server* server = NULL;
-static void* event_handler(enum mg_event event_raised, 
-							struct mg_connection* conn, 
-							const struct mg_request_info* request_info);
 
-struct mg_context* ctx = NULL;
-int handler_result_code;
 EXPORT webdriver::Server* StartServer(int port);
 EXPORT void StopServer(webdriver::Server* myserver);
 EXPORT int GetServerSessionCount();

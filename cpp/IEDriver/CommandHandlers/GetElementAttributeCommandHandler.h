@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GETELEMENTATTRIBUTECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETELEMENTATTRIBUTECOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GetElementAttributeCommandHandler : public CommandHandler {
+class GetElementAttributeCommandHandler : public IECommandHandler {
 public:
 	GetElementAttributeCommandHandler(void) {
 	}
@@ -27,7 +29,7 @@ public:
 	}
 
 protected:
-	void GetElementAttributeCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetElementAttributeCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		LocatorMap::const_iterator name_parameter_iterator = locator_parameters.find("name");
 		if (id_parameter_iterator == locator_parameters.end()) {
@@ -41,14 +43,14 @@ protected:
 			std::wstring name = CA2W(name_parameter_iterator->second.c_str(), CP_UTF8);
 
 			BrowserHandle browser_wrapper;
-			int status_code = session.GetCurrentBrowser(&browser_wrapper);
+			int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
 
 			ElementHandle element_wrapper;
-			status_code = this->GetElement(session, element_id, &element_wrapper);
+			status_code = this->GetElement(executor, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				CComVariant value_variant;
 				status_code = element_wrapper->GetAttributeValue(name, &value_variant);
@@ -59,10 +61,10 @@ protected:
 					if (value_variant.vt != VT_EMPTY && value_variant.vt != VT_NULL) {
 						std::wstring value = this->ConvertVariantToWString(&value_variant);
 						std::string value_str = CW2A(value.c_str(), CP_UTF8);
-						response->SetResponse(SUCCESS, value_str);
+						response->SetSuccessResponse(value_str);
 						return;
 					} else {
-						response->SetResponse(SUCCESS, Json::Value::null);
+						response->SetSuccessResponse(Json::Value::null);
 						return;
 					}
 				}

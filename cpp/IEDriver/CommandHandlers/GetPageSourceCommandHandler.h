@@ -14,12 +14,14 @@
 #ifndef WEBDRIVER_IE_GETPAGESOURCECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETPAGESOURCECOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 #include "logging.h"
 
 namespace webdriver {
 
-class GetPageSourceCommandHandler : public CommandHandler {
+class GetPageSourceCommandHandler : public IECommandHandler {
 public:
 	GetPageSourceCommandHandler(void) {
 	}
@@ -28,9 +30,9 @@ public:
 	}
 
 protected:
-	void GetPageSourceCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetPageSourceCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
-		int status_code = session.GetCurrentBrowser(&browser_wrapper);
+		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
@@ -54,7 +56,7 @@ protected:
 		HRESULT hr = doc3->get_documentElement(&document_element);
 		if (FAILED(hr)) {
 			LOGHR(WARN, hr) << "Unable to get document element from page";
-			response->SetResponse(SUCCESS, "");
+			response->SetSuccessResponse("");
 			return;
 		}
 
@@ -62,7 +64,7 @@ protected:
 		hr = document_element->get_outerHTML(&html);
 		if (FAILED(hr)) {
 			LOGHR(WARN, hr) << "Have document element but cannot read source.";
-			response->SetResponse(SUCCESS, "");
+			response->SetSuccessResponse("");
 			return;
 		}
 

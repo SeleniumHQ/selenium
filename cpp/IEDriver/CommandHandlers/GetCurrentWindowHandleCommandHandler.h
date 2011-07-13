@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GETCURRENTWINDOWHANDLECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETCURRENTWINDOWHANDLECOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GetCurrentWindowHandleCommandHandler : public CommandHandler {
+class GetCurrentWindowHandleCommandHandler : public IECommandHandler {
 public:
 	GetCurrentWindowHandleCommandHandler(void) {
 	}
@@ -27,9 +29,9 @@ public:
 	}
 
 protected:
-	void ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		std::string current_handle = CW2A(session.current_browser_id().c_str(), CP_UTF8);
-		response->SetResponse(SUCCESS, current_handle);
+	void ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+		std::string current_handle = CW2A(executor.current_browser_id().c_str(), CP_UTF8);
+		response->SetSuccessResponse(current_handle);
 	}
 };
 

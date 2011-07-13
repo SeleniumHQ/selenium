@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GETTITLECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETTITLECOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GetTitleCommandHandler : public CommandHandler {
+class GetTitleCommandHandler : public IECommandHandler {
 public:
 	GetTitleCommandHandler(void) {
 	}
@@ -27,16 +29,16 @@ public:
 	}
 
 protected:
-	void GetTitleCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetTitleCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
-		int status_code = session.GetCurrentBrowser(&browser_wrapper);
+		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
 		}
 		std::string title = CW2A(browser_wrapper->GetTitle().c_str(), CP_UTF8);
 
-		response->SetResponse(SUCCESS, title);
+		response->SetSuccessResponse(title);
 	}
 };
 

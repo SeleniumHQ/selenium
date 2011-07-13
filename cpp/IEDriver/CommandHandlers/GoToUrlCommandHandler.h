@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GOTOURLCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GOTOURLCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GoToUrlCommandHandler : public CommandHandler {
+class GoToUrlCommandHandler : public IECommandHandler {
 public:
 	GoToUrlCommandHandler(void) {
 	}
@@ -27,14 +29,14 @@ public:
 	}
 
 protected:
-	void GoToUrlCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GoToUrlCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator url_parameter_iterator = command_parameters.find("url");
 		if (url_parameter_iterator == command_parameters.end()) {
 			response->SetErrorResponse(400, "Missing parameter: url");
 			return;
 		} else {
 			BrowserHandle browser_wrapper;
-			int status_code = session.GetCurrentBrowser(&browser_wrapper);
+			int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
@@ -46,7 +48,7 @@ protected:
 			// TODO: check result for error
 			status_code = browser_wrapper->NavigateToUrl(url);
 			browser_wrapper->SetFocusedFrameByElement(NULL);
-			response->SetResponse(SUCCESS, Json::Value::null);
+			response->SetSuccessResponse(Json::Value::null);
 		}
 	}
 };

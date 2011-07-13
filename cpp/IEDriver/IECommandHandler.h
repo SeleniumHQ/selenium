@@ -17,9 +17,10 @@
 #include <map>
 #include <string>
 #include "json.h"
-#include "Command.h"
+#include "command_handler.h"
+#include "command.h"
 #include "Element.h"
-#include "Response.h"
+#include "response.h"
 
 using namespace std;
 
@@ -27,24 +28,20 @@ namespace webdriver {
 
 // Forward declaration of classes to avoid
 // circular include files.
-class IESessionWindow;
+class IECommandExecutor;
 
-class CommandHandler {
+class IECommandHandler : public CommandHandler<IECommandExecutor> {
 public:
-	typedef std::map<std::string, std::string> LocatorMap;
-	typedef std::map<std::string, Json::Value> ParametersMap;
-
-	CommandHandler(void);
-	virtual ~CommandHandler(void);
-	void Execute(const IESessionWindow& session, const Command& command, Response* response);
+	IECommandHandler(void);
+	virtual ~IECommandHandler(void);
 
 protected:
-	virtual void ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response* response);
-	int GetElement(const IESessionWindow& session, const std::wstring& element_id, ElementHandle* element_wrapper);
+	virtual void ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response* response);
+	int GetElement(const IECommandExecutor& executor, const std::wstring& element_id, ElementHandle* element_wrapper);
 	std::wstring ConvertVariantToWString(VARIANT* to_convert);
 };
 
-typedef std::tr1::shared_ptr<CommandHandler> CommandHandlerHandle;
+typedef std::tr1::shared_ptr<IECommandHandler> CommandHandlerHandle;
 
 } // namespace webdriver
 

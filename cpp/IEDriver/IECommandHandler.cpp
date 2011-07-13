@@ -11,29 +11,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "StdAfx.h"
-#include "CommandHandler.h"
-#include "IESessionWindow.h"
+#include "command_handler.h"
+#include "IECommandHandler.h"
+#include "IECommandExecutor.h"
 
 namespace webdriver {
 
-CommandHandler::CommandHandler() {
+IECommandHandler::IECommandHandler() {
 }
 
-CommandHandler::~CommandHandler() {
+IECommandHandler::~IECommandHandler() {
 }
 
-void CommandHandler::Execute(const IESessionWindow& session, const Command& command, Response* response) {
-	this->ExecuteInternal(session, command.locator_parameters(), command.command_parameters(), response);
+void IECommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response* response) {
+	response->SetErrorResponse(501, "Command not implemented");
 }
 
-void CommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response* response) {
-}
-
-int CommandHandler::GetElement(const IESessionWindow& session, const std::wstring& element_id, ElementHandle* element_wrapper) {
+int IECommandHandler::GetElement(const IECommandExecutor& executor, const std::wstring& element_id, ElementHandle* element_wrapper) {
 	int status_code = EOBSOLETEELEMENT;
 	ElementHandle candidate_wrapper;
-	int result = session.GetManagedElement(element_id, &candidate_wrapper);
+	int result = executor.GetManagedElement(element_id, &candidate_wrapper);
 	if (result != SUCCESS) {
 		status_code = 404;
 	} else {
@@ -63,15 +60,15 @@ int CommandHandler::GetElement(const IESessionWindow& session, const std::wstrin
 		}
 
 		if (status_code != SUCCESS) {
-			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
-			mutable_session.RemoveManagedElement(element_id);
+			IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+			mutable_executor.RemoveManagedElement(element_id);
 		}
 	}
 
 	return status_code;
 }
 
-std::wstring CommandHandler::ConvertVariantToWString(VARIANT* to_convert) {
+std::wstring IECommandHandler::ConvertVariantToWString(VARIANT* to_convert) {
 	VARTYPE type = to_convert->vt;
 	switch(type) {
 		case VT_BOOL:

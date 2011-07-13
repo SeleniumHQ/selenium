@@ -15,11 +15,13 @@
 #define WEBDRIVER_IE_FINDELEMENTCOMMANDHANDLER_H_
 
 #include <ctime>
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class FindElementCommandHandler : public CommandHandler {
+class FindElementCommandHandler : public IECommandHandler {
 public:
 	FindElementCommandHandler(void) {
 	}
@@ -28,7 +30,7 @@ public:
 	}
 
 protected:
-	void FindElementCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void FindElementCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
 		ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
 		if (using_parameter_iterator == command_parameters.end()) {
@@ -42,13 +44,13 @@ protected:
 			std::wstring value = CA2W(value_parameter_iterator->second.asString().c_str(), CP_UTF8);
 
 			std::wstring mechanism_translation;
-			int status_code = session.GetElementFindMethod(mechanism, &mechanism_translation);
+			int status_code = executor.GetElementFindMethod(mechanism, &mechanism_translation);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unknown finder mechanism: " + using_parameter_iterator->second.asString());
 				return;
 			}
 
-			int timeout = session.implicit_wait_timeout();
+			int timeout = executor.implicit_wait_timeout();
 			clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
 			if (timeout > 0 && timeout < 1000) {
 				end += 1 * CLOCKS_PER_SEC;
@@ -56,7 +58,7 @@ protected:
 
 			Json::Value found_element;
 			do {
-				status_code = session.LocateElement(ElementHandle(), mechanism_translation, value, &found_element);
+				status_code = executor.LocateElement(ElementHandle(), mechanism_translation, value, &found_element);
 				if (status_code == SUCCESS) {
 					break;
 				} else {
@@ -66,12 +68,21 @@ protected:
 			} while (clock() < end);
 			
 			if (status_code == SUCCESS) {
-				response->SetResponse(SUCCESS, found_element);
+				response->SetSuccessResponse(found_element);
 				return;
 			} else {
 				response->SetErrorResponse(status_code, "Unable to find element with " + using_parameter_iterator->second.asString() + " == " + value_parameter_iterator->second.asString());
 				return;
 			}
+		}
+	}
+
+private:
+	void FindElementCommandHandler::FixSearchString(std::wstring* search_string) {
+		size_t pos = search_string->find(L"\"");
+		while (pos != std::wstring::npos) {
+			search_string->replace(pos, 1, L"\\\"");
+			pos = search_string->find(L"\"", pos + 2);
 		}
 	}
 };

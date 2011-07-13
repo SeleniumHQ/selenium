@@ -14,12 +14,14 @@
 #ifndef WEBDRIVER_IE_GETCURRENTURLCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETCURRENTURLCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 #include "logging.h"
 
 namespace webdriver {
 
-class GetCurrentUrlCommandHandler : public CommandHandler {
+class GetCurrentUrlCommandHandler : public IECommandHandler {
 public:
 	GetCurrentUrlCommandHandler(void) {
 	}
@@ -28,9 +30,9 @@ public:
 	}
 
 protected:
-	void GetCurrentUrlCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetCurrentUrlCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
-		int status_code = session.GetCurrentBrowser(&browser_wrapper);
+		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
@@ -48,12 +50,12 @@ protected:
 		HRESULT hr = doc->get_URL(&url);
 		if (FAILED(hr)) {
 			LOGHR(WARN, hr) << "Unable to get current URL";
-			response->SetResponse(SUCCESS, "");
+			response->SetSuccessResponse("");
 			return;
 		}
 
 		std::string url_str = CW2A((LPCWSTR)url, CP_UTF8);
-		response->SetResponse(SUCCESS, url_str);
+		response->SetSuccessResponse(url_str);
 	}
 };
 

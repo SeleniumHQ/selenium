@@ -11,10 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_IESESSIONWINDOW_H_
-#define WEBDRIVER_IE_IESESSIONWINDOW_H_
+#ifndef WEBDRIVER_IE_IECOMMANDEXECUTOR_H_
+#define WEBDRIVER_IE_IECOMMANDEXECUTOR_H_
 
-#include "StdAfx.h"
 #include <Objbase.h>
 #include <algorithm>
 #include <map>
@@ -22,23 +21,19 @@
 #include <vector>
 #include <unordered_map>
 #include "Browser.h"
-#include "Command.h"
-#include "CommandHandler.h"
-#include "CommandValues.h"
+#include "command.h"
+#include "command_types.h"
+#include "IECommandHandler.h"
 #include "Element.h"
 #include "ElementFinder.h"
 #include "HtmlDialog.h"
 #include "messages.h"
-#include "Response.h"
+#include "response.h"
 
 #define WAIT_TIME_IN_MILLISECONDS 200
 #define FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS 250
 
 #define EVENT_NAME L"WD_START_EVENT"
-
-#define SPEED_SLOW "SLOW"
-#define SPEED_MEDIUM "MEDIUM"
-#define SPEED_FAST "FAST"
 
 using namespace std;
 
@@ -48,7 +43,7 @@ namespace webdriver {
 // want to synchronize access to the command handler. For that we
 // use SendMessage() most of the time, and SendMessage() requires
 // a window handle.
-class IESessionWindow : public CWindowImpl<IESessionWindow> {
+class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 public:
 	DECLARE_WND_CLASS(L"WebDriverWndClass")
 
@@ -173,4 +168,4 @@ private:
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_IESESSIONWINDOW_H_
+#endif // WEBDRIVER_IE_IECOMMANDEXECUTOR_H_

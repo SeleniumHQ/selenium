@@ -16,11 +16,13 @@
 #define WEBDRIVER_IE_SENDMODIFIERKEYCOMMANDHANDLER_H_
 
 #include "interactions.h"
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class SendModifierKeyCommandHandler : public CommandHandler {
+class SendModifierKeyCommandHandler : public IECommandHandler {
 public:
 	SendModifierKeyCommandHandler(void) {
 	}
@@ -29,7 +31,7 @@ public:
 	}
 
 protected:
-	void SendModifierKeyCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void SendModifierKeyCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
 		ParametersMap::const_iterator is_down_parameter_iterator = command_parameters.find("isdown");
 		if (value_parameter_iterator == command_parameters.end()) {
@@ -42,7 +44,7 @@ protected:
 			bool press_key = is_down_parameter_iterator->second.asBool();
 			std::wstring key = CA2W(value_parameter_iterator->second.asCString(), CP_UTF8);
 			BrowserHandle browser_wrapper;
-			session.GetCurrentBrowser(&browser_wrapper);
+			executor.GetCurrentBrowser(&browser_wrapper);
 			HWND window_handle = browser_wrapper->GetWindowHandle();
 			if (press_key) {
 				sendKeyPress(window_handle, key.c_str());
@@ -50,7 +52,7 @@ protected:
 				sendKeyRelease(window_handle, key.c_str());
 			}
 
-			response->SetResponse(SUCCESS, Json::Value::null);
+			response->SetSuccessResponse(Json::Value::null);
 		}
 	}
 };

@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GETALLWINDOWHANDLESCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETALLWINDOWHANDLESCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GetAllWindowHandlesCommandHandler : public CommandHandler {
+class GetAllWindowHandlesCommandHandler : public IECommandHandler {
 public:
 	GetAllWindowHandlesCommandHandler(void) {
 	}
@@ -27,16 +29,16 @@ public:
 	}
 
 protected:
-	void GetAllWindowHandlesCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetAllWindowHandlesCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		Json::Value handles(Json::arrayValue);
 		std::vector<std::wstring> handle_list;
-		session.GetManagedBrowserHandles(&handle_list);
+		executor.GetManagedBrowserHandles(&handle_list);
 		for (unsigned int i = 0; i < handle_list.size(); ++i) {
 			std::string handle = CW2A(handle_list[i].c_str(), CP_UTF8);
 			handles.append(handle);
 		}
 
-		response->SetResponse(SUCCESS, handles);
+		response->SetSuccessResponse(handles);
 	}
 };
 

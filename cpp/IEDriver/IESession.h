@@ -14,24 +14,23 @@
 #ifndef WEBDRIVER_IE_IESESSION_H_
 #define WEBDRIVER_IE_IESESSION_H_
 
-#include "Session.h"
+#include "session.h"
 
 using namespace std;
 
-namespace webdriver
-{
+namespace webdriver {
 
 class IESession : public Session {
 public:
-	IESession(int port);
+	IESession();
 	virtual ~IESession(void);
 
-	std::wstring Initialize(void);
+	void Initialize(void* init_params);
 	void ShutDown(void);
 	bool ExecuteCommand(const std::wstring& serialized_command, std::wstring* serialized_response);
 
 private:
-	HWND session_window_handle_;
+	HWND executor_window_handle_;
 };
 
 } // namespace webdriver

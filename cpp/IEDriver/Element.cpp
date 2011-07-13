@@ -22,7 +22,6 @@
 #pragma warning (disable: 6309)
 #pragma warning (disable: 6387)
 
-#include "StdAfx.h"
 #include "Element.h"
 #include "Browser.h"
 #include "Generated/atoms.h"

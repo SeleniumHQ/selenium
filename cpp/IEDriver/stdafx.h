@@ -21,5 +21,11 @@
 #include <comdef.h>
 #include <comutil.h>
 
+// A macro to disallow the copy constructor and operator= functions
+// This should be used in the private: declarations for a class
+#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
+  TypeName(const TypeName&);               \
+  void operator=(const TypeName&)
+
 // TODO: reference additional headers your program requires here
 

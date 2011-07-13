@@ -11,16 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "StdAfx.h"
-#include "Session.h"
+// precompile.cpp : source file that includes just the standard includes
+// precompile.obj will contain the pre-compiled type information
 
-namespace webdriver {
+#include "precompile.h"
 
-Session::Session(int port) {
-	this->port_ = port;
-}
-
-Session::~Session() {
-}
-
-} // namespace webdriver
+// Additional headers should be referenced in precompile.h, not in this file

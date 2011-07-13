@@ -15,7 +15,9 @@
 #define WEBDRIVER_IE_SENDKEYSCOMMANDHANDLER_H_
 
 #include <ctime>
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 #include "interactions.h"
 #include "logging.h"
 
@@ -29,7 +31,7 @@ const LPCTSTR fileDialogNames[] = {
 
 namespace webdriver {
 
-class SendKeysCommandHandler : public CommandHandler {
+class SendKeysCommandHandler : public IECommandHandler {
 public:
 	struct FileNameData {
 		HWND main;
@@ -45,7 +47,7 @@ public:
 	}
 
 protected:
-	void SendKeysCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response)
+	void SendKeysCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response)
 	{
 		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
 		ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
@@ -66,7 +68,7 @@ protected:
 			}
 
 			BrowserHandle browser_wrapper;
-			int status_code = session.GetCurrentBrowser(&browser_wrapper);
+			int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 			if (status_code != SUCCESS) {
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
@@ -76,7 +78,7 @@ protected:
 			::GetClassName(window_handle, pszClassName, 25);
 
 			ElementHandle element_wrapper;
-			status_code = this->GetElement(session, element_id, &element_wrapper);
+			status_code = this->GetElement(executor, element_id, &element_wrapper);
 
 			if (status_code == SUCCESS) {
 				bool displayed;
@@ -118,8 +120,8 @@ protected:
 
 				this->WaitUntilElementFocused(element);
 
-				sendKeys(window_handle, keys.c_str(), session.speed());
-				response->SetResponse(SUCCESS, Json::Value::null);
+				sendKeys(window_handle, keys.c_str(), executor.speed());
+				response->SetSuccessResponse(Json::Value::null);
 				return;
 			} else {
 				response->SetErrorResponse(status_code, "Element is no longer valid");

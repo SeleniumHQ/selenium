@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_SWITCHTOFRAMECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SWITCHTOFRAMECOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class SwitchToFrameCommandHandler : public CommandHandler {
+class SwitchToFrameCommandHandler : public IECommandHandler {
 public:
 	SwitchToFrameCommandHandler(void) {
 	}
@@ -27,7 +29,7 @@ public:
 	}
 
 protected:
-	void SwitchToFrameCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void SwitchToFrameCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		Json::Value frame_id = Json::Value::null;
 		ParametersMap::const_iterator it = command_parameters.find("id");
 		// TODO: When issue 1133 is fixed, the else block in the following code
@@ -39,7 +41,7 @@ protected:
 		//	return;
 		}
 		BrowserHandle browser_wrapper;
-		int status_code = session.GetCurrentBrowser(&browser_wrapper);
+		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
@@ -55,7 +57,7 @@ protected:
 				std::wstring frame_element_id = CA2W(element_id.asString().c_str(), CP_UTF8);
 
 				ElementHandle frame_element_wrapper;
-				status_code = this->GetElement(session, frame_element_id, &frame_element_wrapper);
+				status_code = this->GetElement(executor, frame_element_id, &frame_element_wrapper);
 				if (status_code == SUCCESS) {
 					status_code = browser_wrapper->SetFocusedFrameByElement(frame_element_wrapper->element());
 				}
@@ -71,7 +73,7 @@ protected:
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "No frame found");
 		} else {
-			response->SetResponse(SUCCESS, Json::Value::null);
+			response->SetSuccessResponse(Json::Value::null);
 		}
 	}
 };

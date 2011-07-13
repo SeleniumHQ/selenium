@@ -11,7 +11,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "StdAfx.h"
 #include "Browser.h"
 #include "logging.h"
 #include <comutil.h>
@@ -44,7 +43,7 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, D
 	// showModalDialog function().
 	IWebBrowser2* browser;
 	LPSTREAM message_payload;
-	::SendMessage(this->session_handle(), WD_BROWSER_NEW_WINDOW, NULL, (LPARAM)&message_payload);
+	::SendMessage(this->executor_handle(), WD_BROWSER_NEW_WINDOW, NULL, (LPARAM)&message_payload);
 	HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IWebBrowser2, reinterpret_cast<void**>(&browser));
 	*ppDisp = browser;
 }
@@ -427,7 +426,7 @@ void Browser::CheckDialogType(HWND dialog_window_handle) {
 	if (GetClassNameA(dialog_window_handle, &window_class_name[0], 34)) {
 		if (strcmp("Internet Explorer_TridentDlgFrame", &window_class_name[0]) == 0) {
 			HWND content_window_handle = this->FindContentWindowHandle(dialog_window_handle);
-			::PostMessage(this->session_handle(), WD_NEW_HTML_DIALOG, NULL, reinterpret_cast<LPARAM>(content_window_handle));
+			::PostMessage(this->executor_handle(), WD_NEW_HTML_DIALOG, NULL, reinterpret_cast<LPARAM>(content_window_handle));
 		}
 	}
 }

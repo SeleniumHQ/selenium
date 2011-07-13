@@ -11,11 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "StdAfx.h"
 #include "Generated/atoms.h"
 #include "Generated/jsxpath.h"
 #include "Generated/sizzle.h"
-#include "IESessionWindow.h"
+#include "IECommandExecutor.h"
 
 namespace webdriver {
 
@@ -25,14 +24,14 @@ ElementFinder::ElementFinder() {
 ElementFinder::~ElementFinder() {
 }
 
-int ElementFinder::FindElement(const IESessionWindow& session, const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) {
+int ElementFinder::FindElement(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) {
 	BrowserHandle browser;
-	int status_code = session.GetCurrentBrowser(&browser);
+	int status_code = executor.GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		if (mechanism == L"css") {
-			return this->FindElementByCssSelector(session, parent_wrapper, criteria, found_element);
+			return this->FindElementByCssSelector(executor, parent_wrapper, criteria, found_element);
 		} else if (mechanism == L"xpath") {
-			return this->FindElementByXPath(session, parent_wrapper, criteria, found_element);
+			return this->FindElementByXPath(executor, parent_wrapper, criteria, found_element);
 		} else {
 			std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + criteria + L"\" }; };})();";
 			CComPtr<IHTMLDocument2> doc;
@@ -59,7 +58,7 @@ int ElementFinder::FindElement(const IESessionWindow& session, const ElementHand
 
 				status_code = script_wrapper.Execute();
 				if (status_code == SUCCESS && script_wrapper.ResultIsElement()) {
-					script_wrapper.ConvertResultToJsonValue(session, found_element);
+					script_wrapper.ConvertResultToJsonValue(executor, found_element);
 				} else {
 					status_code = ENOSUCHELEMENT;
 				}
@@ -71,14 +70,14 @@ int ElementFinder::FindElement(const IESessionWindow& session, const ElementHand
 	return status_code;
 }
 
-int ElementFinder::FindElements(const IESessionWindow& session, const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) {
+int ElementFinder::FindElements(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) {
 	BrowserHandle browser;
-	int status_code = session.GetCurrentBrowser(&browser);
+	int status_code = executor.GetCurrentBrowser(&browser);
 	if (status_code == SUCCESS) {
 		if (mechanism == L"css") {
-			return this->FindElementsByCssSelector(session, parent_wrapper, criteria, found_elements);
+			return this->FindElementsByCssSelector(executor, parent_wrapper, criteria, found_elements);
 		} else if (mechanism == L"xpath") {
-			return this->FindElementsByXPath(session, parent_wrapper, criteria, found_elements);
+			return this->FindElementsByXPath(executor, parent_wrapper, criteria, found_elements);
 		} else {
 			std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + criteria + L"\" }; };})();";
 			CComPtr<IHTMLDocument2> doc;
@@ -106,7 +105,7 @@ int ElementFinder::FindElements(const IESessionWindow& session, const ElementHan
 				status_code = script_wrapper.Execute();
 				if (status_code == SUCCESS) {
 					if (script_wrapper.ResultIsArray() || script_wrapper.ResultIsElementCollection()) {
-						script_wrapper.ConvertResultToJsonValue(session, found_elements);
+						script_wrapper.ConvertResultToJsonValue(executor, found_elements);
 					}
 				}
 			}
@@ -115,11 +114,11 @@ int ElementFinder::FindElements(const IESessionWindow& session, const ElementHan
 	return status_code;
 }
 
-int ElementFinder::FindElementByCssSelector(const IESessionWindow& session, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element) {
+int ElementFinder::FindElementByCssSelector(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element) {
 	int result = ENOSUCHELEMENT;
 
 	BrowserHandle browser;
-	result = session.GetCurrentBrowser(&browser);
+	result = executor.GetCurrentBrowser(&browser);
 	if (result != SUCCESS) {
 		return result;
 	}
@@ -149,18 +148,18 @@ int ElementFinder::FindElementByCssSelector(const IESessionWindow& session, cons
 		if (!script_wrapper.ResultIsElement()) {
 			result = ENOSUCHELEMENT;
 		} else {
-			result = script_wrapper.ConvertResultToJsonValue(session, found_element);
+			result = script_wrapper.ConvertResultToJsonValue(executor, found_element);
 		}
 	}
 
 	return result;
 }
 
-int ElementFinder::FindElementsByCssSelector(const IESessionWindow& session, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements) {
+int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements) {
 	int result = ENOSUCHELEMENT;
 
 	BrowserHandle browser;
-	result = session.GetCurrentBrowser(&browser);
+	result = executor.GetCurrentBrowser(&browser);
 	if (result != SUCCESS) {
 		return result;
 	}
@@ -206,7 +205,7 @@ int ElementFinder::FindElementsByCssSelector(const IESessionWindow& session, con
 				get_element_script_wrapper.AddArgument(i);
 				result = get_element_script_wrapper.Execute();
 				Json::Value json_element;
-				get_element_script_wrapper.ConvertResultToJsonValue(session, &json_element);
+				get_element_script_wrapper.ConvertResultToJsonValue(executor, &json_element);
 				found_elements->append(json_element);
 			}
 		}
@@ -215,11 +214,11 @@ int ElementFinder::FindElementsByCssSelector(const IESessionWindow& session, con
 	return result;
 }
 
-int ElementFinder::FindElementByXPath(const IESessionWindow& session, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element) {
+int ElementFinder::FindElementByXPath(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element) {
 	int result = ENOSUCHELEMENT;
 
 	BrowserHandle browser;
-	result = session.GetCurrentBrowser(&browser);
+	result = executor.GetCurrentBrowser(&browser);
 	if (result != SUCCESS) {
 		return result;
 	}
@@ -254,18 +253,18 @@ int ElementFinder::FindElementByXPath(const IESessionWindow& session, const Elem
 		if (!script_wrapper.ResultIsElement()) {
 			result = ENOSUCHELEMENT;
 		} else {
-			result = script_wrapper.ConvertResultToJsonValue(session, found_element);
+			result = script_wrapper.ConvertResultToJsonValue(executor, found_element);
 		}
 	}
 
 	return result;
 }
 
-int ElementFinder::FindElementsByXPath(const IESessionWindow& session, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements) {
+int ElementFinder::FindElementsByXPath(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements) {
 	int result = ENOSUCHELEMENT;
 
 	BrowserHandle browser;
-	result = session.GetCurrentBrowser(&browser);
+	result = executor.GetCurrentBrowser(&browser);
 	if (result != SUCCESS) {
 		return result;
 	}
@@ -315,7 +314,7 @@ int ElementFinder::FindElementsByXPath(const IESessionWindow& session, const Ele
 				get_element_script_wrapper.AddArgument(i);
 				result = get_element_script_wrapper.Execute();
 				Json::Value json_element;
-				get_element_script_wrapper.ConvertResultToJsonValue(session, &json_element);
+				get_element_script_wrapper.ConvertResultToJsonValue(executor, &json_element);
 				found_elements->append(json_element);
 			}
 		}

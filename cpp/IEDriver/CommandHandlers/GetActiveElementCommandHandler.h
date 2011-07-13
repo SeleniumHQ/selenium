@@ -14,11 +14,13 @@
 #ifndef WEBDRIVER_IE_GETACTIVEELEMENTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETACTIVEELEMENTCOMMANDHANDLER_H_
 
-#include "Session.h"
+#include "../Browser.h"
+#include "../IECommandHandler.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GetActiveElementCommandHandler : public CommandHandler {
+class GetActiveElementCommandHandler : public IECommandHandler {
 public:
 	GetActiveElementCommandHandler(void) 	{
 	}
@@ -27,9 +29,9 @@ public:
 	}
 
 protected:
-	void GetActiveElementCommandHandler::ExecuteInternal(const IESessionWindow& session, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
+	void GetActiveElementCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		BrowserHandle browser_wrapper;
-		int status_code = session.GetCurrentBrowser(&browser_wrapper);
+		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
@@ -61,12 +63,12 @@ protected:
 		}
 
 		if (element) {
-			IESessionWindow& mutable_session = const_cast<IESessionWindow&>(session);
+			IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
 			IHTMLElement* dom_element;
 			HRESULT hr = element.CopyTo(&dom_element);
 			ElementHandle element_wrapper;
-			mutable_session.AddManagedElement(dom_element, &element_wrapper);
-			response->SetResponse(SUCCESS, element_wrapper->ConvertToJson());
+			mutable_executor.AddManagedElement(dom_element, &element_wrapper);
+			response->SetSuccessResponse(element_wrapper->ConvertToJson());
 		}
 	}
 };
