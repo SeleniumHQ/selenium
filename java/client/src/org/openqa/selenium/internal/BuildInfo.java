@@ -29,8 +29,9 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 /**
- * Reads information about how the current application was built from a
- * properties file embedded in the JAR.
+ * Reads information about how the current application was built from
+ * the Build-Info section of the manifest in the jar file, which contains
+ * this class.
  */
 public class BuildInfo {
 
