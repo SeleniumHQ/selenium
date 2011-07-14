@@ -20,8 +20,8 @@
 
     <build>
         <plugins>
-            <!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
             <plugin>
+                <!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
@@ -60,6 +60,24 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <!-- See http://maven.apache.org/plugins/maven-jar-plugin -->
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestSections>
+                            <manifestSection>
+                                <name>Build-Info</name>
+                                <manifestEntries>
+                                    <Selenium-Version>${version}</Selenium-Version>
+                                    <Selenium-Revision>unknown</Selenium-Revision>
+                                    <Selenium-Build-Time>${maven.build.timestamp}</Selenium-Build-Time>
+                                </manifestEntries>
+                            </manifestSection>
+                        </manifestSections>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>
