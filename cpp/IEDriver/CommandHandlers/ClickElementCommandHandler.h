@@ -14,6 +14,7 @@
 #ifndef WEBDRIVER_IE_CLICKELEMENTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_CLICKELEMENTCOMMANDHANDLER_H_
 
+#include "../Generated/atoms.h"
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
@@ -50,7 +51,7 @@ protected:
 			status_code = this->GetElement(executor, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
 				if (element_wrapper->IsOption()) {
-					this->SimulateOptionElementClick(element_wrapper, response);
+					this->SimulateOptionElementClick(browser_wrapper, element_wrapper, response);
 					return;
 				} else {
 					status_code = element_wrapper->Click();
@@ -70,12 +71,11 @@ protected:
 	}
 
 private:
-	void SimulateOptionElementClick(ElementHandle element_wrapper, Response* response) {
+	void SimulateOptionElementClick(BrowserHandle browser_wrapper, ElementHandle element_wrapper, Response* response) {
 		// This is a simulated click. There may be issues if there are things like
 		// alert() messages in certain events. A potential way to handle these
 		// problems is to marshal the select element onto a separate thread and
 		// perform the operation there.
-		bool currently_selected = element_wrapper->IsSelected();
 		CComQIPtr<IHTMLOptionElement> option(element_wrapper->element());
 
 		CComPtr<IHTMLElement> parent_element;
@@ -86,7 +86,13 @@ private:
 			return;
 		}
 
-		CComQIPtr<IHTMLSelectElement> select(parent_element);
+		CComPtr<IHTMLSelectElement> select;
+		HRESULT select_hr = parent_element.QueryInterface<IHTMLSelectElement>(&select);
+		while (SUCCEEDED(hr) && FAILED(select_hr)) {
+			hr = parent_element->get_parentElement(&parent_element);
+			select_hr = parent_element.QueryInterface<IHTMLSelectElement>(&select);
+		}
+
 		if (!select) {
 			LOG(WARN) << "Parent element is not a select element";
 			response->SetErrorResponse(ENOSUCHELEMENT, "Parent element is not a select element");
@@ -102,29 +108,31 @@ private:
 		}
 
 		bool parent_is_multiple = multiple == VARIANT_TRUE;
-		if (parent_is_multiple || (!parent_is_multiple && !currently_selected)) {
-			if (currently_selected) {
-				hr = option->put_selected(VARIANT_FALSE);
-			} else {
-				hr = option->put_selected(VARIANT_TRUE);
-			}
 
-			if (FAILED(hr)) {
-				LOGHR(WARN, hr) << "Failed to set selection";
-				response->SetErrorResponse(EEXPECTEDERROR, "Failed to set selection");
-				return;
-			}
+		int status_code = SUCCESS;
+		CComPtr<IHTMLDocument2> doc;
+		browser_wrapper->GetDocument(&doc);
 
-			// Looks like we'll need to fire the event on the select element and not the option. 
-			// Assume for now that the parent node is a select. Which is dumb.
-			CComQIPtr<IHTMLDOMNode> parent(parent_element);
-			if (!parent) {
-				LOG(WARN) << "Parent element is not a DOM node";
-				response->SetErrorResponse(ENOSUCHELEMENT, "Parent element is not a DOM node");
-				return;
-			}
-			element_wrapper->FireEvent(parent, L"onchange");
+		// The atom is just the definition of an anonymous
+		// function: "function() {...}"; Wrap it in another function so we can
+		// invoke it with our arguments without polluting the current namespace.
+		std::wstring script_source = L"(function() { return (";
+		script_source += atoms::CLICK;
+		script_source += L")})();";
+
+		// If not multi-select, click the parent (<select>) element.
+		if (!parent_is_multiple) {
+			Script click_parent_script_wrapper(doc, script_source, 1);
+			click_parent_script_wrapper.AddArgument(parent_element);
+			status_code = click_parent_script_wrapper.Execute();
 		}
+
+		Script script_wrapper(doc, script_source, 1);
+		script_wrapper.AddArgument(element_wrapper->element());
+		status_code = script_wrapper.Execute();
+
+		// Require a short sleep here to let the browser update the DOM.
+		::Sleep(100);
 		response->SetSuccessResponse(Json::Value::null);
 	}
 };

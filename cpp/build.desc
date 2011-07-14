@@ -102,6 +102,7 @@ visualc_library(name = "ie_x64_dll",
 
 js_fragment_header(name = "atoms",
   deps = [
+    "//javascript/webdriver-atoms:click:ie",
     "//javascript/webdriver-atoms:clear:ie",
     "//javascript/webdriver-atoms:find_element:ie",
     "//javascript/webdriver-atoms:find_elements:ie",

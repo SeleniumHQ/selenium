@@ -39,7 +39,6 @@ public:
 	int Click(void);
 	int Hover(void);
 	int DragBy(const int offset_x, const int offset_y, const int drag_speed);
-	void FireEvent(IHTMLDOMNode* fire_event_on, const std::wstring& event_name);
 
 	std::wstring element_id(void) const { return this->element_id_; }
 	IHTMLElement* element(void) { return this->element_; }
