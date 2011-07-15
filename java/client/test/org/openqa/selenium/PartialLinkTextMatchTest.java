@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.Collection;
+import java.util.List;
 
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -62,10 +62,10 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
 
-    Collection<WebElement> elements =
+    List<WebElement> elements =
         elem.findElements(By.partialLinkText("link"));
     assertNotNull(elements);
-    assertEquals(3, elements.size());
+    assertEquals(6, elements.size());
   }
   
   public void testCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
