@@ -51,7 +51,7 @@ namespace OpenQA.Selenium
 
             ReadOnlyCollection<IWebElement> elements = elem.FindElements(By.PartialLinkText("link"));
             Assert.IsNotNull(elements);
-            Assert.AreEqual(3, elements.Count);
+            Assert.AreEqual(6, elements.Count);
         }
         
         [Test]

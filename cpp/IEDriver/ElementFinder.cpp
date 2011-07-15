@@ -33,7 +33,9 @@ int ElementFinder::FindElement(const IECommandExecutor& executor, const ElementH
 		} else if (mechanism == L"xpath") {
 			return this->FindElementByXPath(executor, parent_wrapper, criteria, found_element);
 		} else {
-			std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + criteria + L"\" }; };})();";
+			std::wstring sanitized_criteria = criteria;
+			this->SanitizeCriteria(mechanism, &sanitized_criteria);
+			std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + sanitized_criteria + L"\" }; };})();";
 			CComPtr<IHTMLDocument2> doc;
 			browser->GetDocument(&doc);
 
@@ -79,7 +81,9 @@ int ElementFinder::FindElements(const IECommandExecutor& executor, const Element
 		} else if (mechanism == L"xpath") {
 			return this->FindElementsByXPath(executor, parent_wrapper, criteria, found_elements);
 		} else {
-			std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + criteria + L"\" }; };})();";
+			std::wstring sanitized_criteria = criteria;
+			this->SanitizeCriteria(mechanism, &sanitized_criteria);
+			std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + sanitized_criteria + L"\" }; };})();";
 			CComPtr<IHTMLDocument2> doc;
 			browser->GetDocument(&doc);
 
@@ -336,6 +340,13 @@ int ElementFinder::InjectXPathEngine(BrowserHandle browser_wrapper) {
 	int status_code = script_wrapper.Execute();
 
 	return status_code;
+}
+
+void ElementFinder::SanitizeCriteria(const std::wstring& mechanism, std::wstring* criteria) {
+	if (mechanism == L"linkText" || mechanism == L"partialLinkText") {
+		StringUtilities::ReplaceAllSubstrings(L"\\", L"\\\\", criteria);
+		StringUtilities::ReplaceAllSubstrings(L"\"", L"\\\"", criteria);
+	}
 }
 
 } // namespace webdriver
