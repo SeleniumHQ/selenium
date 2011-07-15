@@ -106,4 +106,16 @@ public class ClickTest extends AbstractDriverTestCase {
     assertTrue("Target did not reload",
         driver.getPageSource().contains("Hello WebDriver"));
   }
+
+  @JavascriptEnabled
+  public void testCanClickOnAnElementWithTopSetToANegativeNumber() {
+    String page = appServer.whereIs("styledPage.html");
+    driver.get(page);
+    WebElement searchBox = driver.findElement(By.name("searchBox"));
+    searchBox.sendKeys("Cheese");
+    driver.findElement(By.name("btn")).click();
+
+    String log = driver.findElement(By.id("log")).getText();
+    assertEquals("click", log);
+  }
 }

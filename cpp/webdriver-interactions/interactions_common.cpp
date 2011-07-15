@@ -16,6 +16,7 @@ limitations under the License.
 */
 
 #include "interactions_common.h"
+#include "logging.h"
 
 #include <assert.h>
 #include <math.h>
@@ -23,10 +24,29 @@ limitations under the License.
 
 unsigned long distanceBetweenPoints(long fromX, long fromY, long toX, long toY)
 {
+  if (fromX < 0) {
+	  LOG(WARN) << "From X appears to be < 0. Rounding to 0. " << fromX;
+	  fromX = 0;
+  }
+  if (fromY < 0) {
+	  LOG(WARN) << "From Y appears to be < 0. Rounding to 0. " << fromY;
+	  fromY = 0;
+  }
+  if (toX < 0) {
+	  LOG(WARN) << "To X appears to be < 0. Rounding to 0. " << toX;
+	  toX = 0;
+  }
+  if (toY < 0) {
+	  LOG(WARN) << "From X appears to be < 0. Rounding to 0. " << toY;
+	  toY = 0;
+  }
+  
+	
   assert(fromX >= 0);
   assert(fromY >= 0);
   assert(toX >= 0);
   assert(toY >= 0);
+  
 
   long xDiff = abs(toX - fromX);
   long yDiff = abs(toY - fromY);
