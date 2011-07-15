@@ -101,6 +101,18 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertEventFired("mousemove");
   }
 
+  @JavascriptEnabled
+  @Ignore({SELENESE, HTMLUNIT})
+  public void testShouldNotThrowIfEventHandlerThrows() {
+    driver.get(pages.javascriptPage);
+
+    try {
+      driver.findElement(By.id("throwing-mouseover")).click();
+    } catch(WebDriverException e) {
+      fail("Error in event handler should not have propagated: " + e);
+    }
+  }
+
   @Ignore(value = {CHROME, SELENESE, FIREFOX, ANDROID},
       reason = "Webkit bug 22261. Firefox 3.6 wants focus")
   @JavascriptEnabled

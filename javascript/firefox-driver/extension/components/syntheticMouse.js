@@ -128,7 +128,7 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   }
 
   if (element.onmouseover) {
-    element.onmouseover();
+    try { element.onmouseover(); } catch(e) {}
   }
 
   return this.newResponse(ErrorCode.SUCCESS, "ok");
