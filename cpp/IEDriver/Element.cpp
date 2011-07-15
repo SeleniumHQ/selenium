@@ -130,36 +130,6 @@ int Element::Click() {
 	return status_code;
 }
 
-int Element::Hover() {
-	long x = 0, y = 0, w = 0, h = 0;
-	int status_code = this->GetLocationOnceScrolledIntoView(&x, &y, &w, &h);
-
-	if (status_code == SUCCESS) {
-		long click_x = x + (w ? w / 2 : 0);
-		long click_y = y + (h ? h / 2 : 0);
-
-		// Create a mouse move, mouse down, mouse up OS event
-		LRESULT lresult = mouseMoveTo(this->containing_window_handle_, 100, 0, 0, click_x, click_y);
-	}
-	return status_code;
-}
-
-int Element::DragBy(const int offset_x, const int offset_y, const int drag_speed) {
-	long x = 0, y = 0, w = 0, h = 0;
-	int status_code = this->GetLocationOnceScrolledIntoView(&x, &y, &w, &h);
-
-	if (status_code == SUCCESS) {
-		long click_x = x + (w ? w / 2 : 0);
-		long click_y = y + (h ? h / 2 : 0);
-
-		// Create a mouse move, mouse down, mouse up OS event
-		LRESULT lresult = mouseDownAt(this->containing_window_handle_, click_x, click_y, MOUSEBUTTON_LEFT);
-		lresult = mouseMoveTo(this->containing_window_handle_, (long)drag_speed, click_x, click_y, click_x + offset_x, click_y + offset_y);
-		lresult = mouseUpAt(this->containing_window_handle_, click_x + offset_x, click_y + offset_y, MOUSEBUTTON_LEFT);
-	}
-	return status_code;
-}
-
 int Element::GetAttributeValue(const std::wstring& attribute_name, VARIANT* attribute_value) {
 	int status_code = SUCCESS;
 
@@ -253,38 +223,6 @@ bool Element::IsSelected() {
 	}
 
 	return selected;
-}
-
-bool Element::IsOption() {
-	CComQIPtr<IHTMLOptionElement> option(this->element_);
-	if (!option) {
-		return false;
-	}
-	return true;
-}
-
-bool Element::IsCheckBox() {
-	CComQIPtr<IHTMLInputElement> input(this->element_);
-	if (!input) {
-		return false;
-	}
-
-	CComBSTR type_name;
-	input->get_type(&type_name);
-	std::wstring std_type_name(type_name);
-	return _wcsicmp(std_type_name.c_str(), L"checkbox") == 0;
-}
-
-bool Element::IsRadioButton() {
-	CComQIPtr<IHTMLInputElement> input(this->element_);
-	if (!input) {
-		return false;
-	}
-
-	CComBSTR type_name;
-	input->get_type(&type_name);
-	std::wstring std_type_name(type_name);
-	return _wcsicmp(std_type_name.c_str(), L"radio") == 0;
 }
 
 int Element::GetLocation(long* x, long* y, long* width, long* height) {

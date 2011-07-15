@@ -50,8 +50,7 @@ protected:
 			ElementHandle element_wrapper;
 			status_code = this->GetElement(executor, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
-				if (element_wrapper->IsOption()) {
-					this->SimulateOptionElementClick(browser_wrapper, element_wrapper, response);
+				if (this->ClickOption(browser_wrapper, element_wrapper, response)) {
 					return;
 				} else {
 					status_code = element_wrapper->Click();
@@ -71,19 +70,22 @@ protected:
 	}
 
 private:
-	void SimulateOptionElementClick(BrowserHandle browser_wrapper, ElementHandle element_wrapper, Response* response) {
+	bool ClickOption(BrowserHandle browser_wrapper, ElementHandle element_wrapper, Response* response) {
+		CComQIPtr<IHTMLOptionElement> option(element_wrapper->element());
+		if (option == NULL) {
+			return false;
+		}
+
 		// This is a simulated click. There may be issues if there are things like
 		// alert() messages in certain events. A potential way to handle these
 		// problems is to marshal the select element onto a separate thread and
 		// perform the operation there.
-		CComQIPtr<IHTMLOptionElement> option(element_wrapper->element());
-
 		CComPtr<IHTMLElement> parent_element;
 		HRESULT hr = element_wrapper->element()->get_parentElement(&parent_element);
 		if (FAILED(hr)) {
 			LOGHR(WARN, hr) << "Cannot get parent element";
 			response->SetErrorResponse(ENOSUCHELEMENT, "cannot get parent element");
-			return;
+			return true;
 		}
 
 		CComPtr<IHTMLSelectElement> select;
@@ -96,7 +98,7 @@ private:
 		if (!select) {
 			LOG(WARN) << "Parent element is not a select element";
 			response->SetErrorResponse(ENOSUCHELEMENT, "Parent element is not a select element");
-			return;
+			return true;
 		}
 
 		VARIANT_BOOL multiple;
@@ -104,7 +106,7 @@ private:
 		if (FAILED(hr)) {
 			LOGHR(WARN, hr) << "Cannot determine if parent element supports multiple selection";
 			response->SetErrorResponse(ENOSUCHELEMENT, "Cannot determine if parent element supports multiple selection");
-			return;
+			return true;
 		}
 
 		bool parent_is_multiple = multiple == VARIANT_TRUE;
@@ -134,6 +136,7 @@ private:
 		// Require a short sleep here to let the browser update the DOM.
 		::Sleep(100);
 		response->SetSuccessResponse(Json::Value::null);
+		return true;
 	}
 };
 

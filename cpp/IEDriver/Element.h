@@ -33,12 +33,7 @@ public:
 	int IsDisplayed(bool* result);
 	bool IsEnabled(void);
 	bool IsSelected(void);
-	bool IsCheckBox(void);
-	bool IsRadioButton(void);
-	bool IsOption(void);
 	int Click(void);
-	int Hover(void);
-	int DragBy(const int offset_x, const int offset_y, const int drag_speed);
 
 	std::wstring element_id(void) const { return this->element_id_; }
 	IHTMLElement* element(void) { return this->element_; }
