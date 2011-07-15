@@ -15,9 +15,10 @@
 
 """Exceptions that may happen in all the webdriver code."""
 class WebDriverException(Exception):
-    def __init__(self, msg=None, screen=None):
+    def __init__(self, msg=None, screen=None, stacktrace=None):
         self.msg = msg
         self.screen = screen
+        self.stacktrace = stacktrace
 
 class ErrorInResponseException(WebDriverException):
     """An error has occurred on the server side.

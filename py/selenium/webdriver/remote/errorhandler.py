@@ -94,10 +94,15 @@ class ErrorHandler(object):
         message = ''
         if 'message' in value:
             message = value['message']
+
         screen = None
         if 'screen' in value:
             screen = value['screen']
-        # TODO:  What about 'stackTrace'?
+
+        stacktrace = None
+        if 'stackTrace' in value:
+            stacktrace = "Method %s threw an error in %s" % \
+                (value['stackTrace'][0]['methodName'],value['stackTrace'][0]['fileName'])
         if exception_class == ErrorInResponseException:
             raise exception_class(response, message)
-        raise exception_class(message, screen)
+        raise exception_class(message, screen, stacktrace)
