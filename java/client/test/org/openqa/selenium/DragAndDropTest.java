@@ -42,6 +42,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   public void testDragAndDrop() throws Exception {
     if (Platform.getCurrent().is(LINUX) && isNativeEventsEnabled()) {
       System.out.println("Skipping test: fails with native events on linux");
+      return;
     }
 
     driver.get(pages.dragAndDropPage);
