@@ -94,7 +94,10 @@ class ErrorHandler(object):
         message = ''
         if 'message' in value:
             message = value['message']
-        # TODO:  What about 'screen' and 'stackTrace'?
+        screen = None
+        if 'screen' in value:
+            screen = value['screen']
+        # TODO:  What about 'stackTrace'?
         if exception_class == ErrorInResponseException:
             raise exception_class(response, message)
-        raise exception_class(message)
+        raise exception_class(message, screen)
