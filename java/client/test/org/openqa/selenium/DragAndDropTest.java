@@ -25,11 +25,13 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.Platform.LINUX;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.CapabilityType;
 
 @Ignore({IPHONE, ANDROID})
 public class DragAndDropTest extends AbstractDriverTestCase {
@@ -38,6 +40,10 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   @Ignore(value = {HTMLUNIT, CHROME, SELENESE, OPERA},
       reason = "Opera: last assert fails in desktop because <5px mousemove")
   public void testDragAndDrop() throws Exception {
+    if (Platform.getCurrent().is(LINUX) && isNativeEventsEnabled()) {
+      System.out.println("Skipping test: fails with native events on linux");
+    }
+
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
     Point expectedLocation = img.getLocation();
@@ -168,4 +174,11 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     }
   }
 
+  private boolean isNativeEventsEnabled() {
+    if (!(driver instanceof HasCapabilities)) {
+      return false;
+    }
+
+    return ((HasCapabilities) driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS);
+  }
 }
