@@ -7,13 +7,6 @@ java_library(name = "ui",
     ":wait"
   ])
 
-java_library(name = "base",
-  srcs = [
-    "TimeoutException.java",
-  ], deps = [
-    "//java/client/src/org/openqa/selenium:webdriver-api",
-  ])
-
 java_library(name = "clock",
   srcs = [
     "Clock.java",
@@ -31,7 +24,6 @@ java_library(name = "components",
     "SlowLoadableComponent.java",
   ],
   deps = [
-    ":base",
     ":clock",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//third_party/java/junit",
@@ -54,7 +46,6 @@ java_library(name = "wait",
     "WebDriverWait.java",
   ],
   deps = [
-    ":base",
     ":clock",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//third_party/java/guava-libraries",
