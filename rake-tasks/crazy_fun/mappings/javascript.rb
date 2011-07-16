@@ -50,6 +50,12 @@ class JavascriptMappings
     fun.add_mapping("js_fragment_header", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment_header", Javascript::ConcatenateHeaders.new)
     fun.add_mapping("js_fragment_header", Javascript::CopyHeader.new)
+
+    # Compiles a list of |js_fragments| into a Java source file.
+    fun.add_mapping("js_fragment_java", Javascript::CreateTask.new)
+    fun.add_mapping("js_fragment_java", Javascript::CreateTaskShortName.new)
+    fun.add_mapping("js_fragment_java", Javascript::AddDependencies.new)
+    fun.add_mapping("js_fragment_java", Javascript::ConcatenateJava.new)
     
     fun.add_mapping("js_test", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_test", Javascript::CreateTask.new)
@@ -331,23 +337,25 @@ module Javascript
   class GenerateAtoms < BaseJs
 
     MAX_LINE_LENGTH = 80
-    MAX_STR_LENGTH = MAX_LINE_LENGTH - "    L\"\"\n".length
+    MAX_STR_LENGTH_CPP = MAX_LINE_LENGTH - "    L\"\"\n".length
+    MAX_STR_LENGTH_JAVA = MAX_LINE_LENGTH - "        \n".length
     COPYRIGHT =
-          "// Copyright 2011 WebDriver committers\n" +
-          "// Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
-          "// you may not use this file except in compliance with the License.\n" +
-          "// You may obtain a copy of the License at\n" +
-          "//\n" +
-          "//     http://www.apache.org/licenses/LICENSE-2.0\n" +
-          "//\n" +
-          "// Unless required by applicable law or agreed to in writing, software\n" +
-          "// distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
-          "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
-          "// See the License for the specific language governing permissions and\n" +
-          "// limitations under the License.\n"
+          "/*\n" +
+          " * Copyright 2011 WebDriver committers\n" +
+          " * Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+          " * you may not use this file except in compliance with the License.\n" +
+          " * You may obtain a copy of the License at\n" +
+          " *\n" +
+          " *     http://www.apache.org/licenses/LICENSE-2.0\n" +
+          " *\n" +
+          " * Unless required by applicable law or agreed to in writing, software\n" +
+          " * distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+          " * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+          " * See the License for the specific language governing permissions and\n" +
+          " * limitations under the License.\n" +
+          " */\n"
 
-
-    def write_atom_string_literal(to_file, dir, atom, utf8)
+    def write_atom_string_literal(to_file, dir, atom, language, utf8 = true)
       # Check that the |atom| task actually generates a JavaScript file.
       if (File.exists?(atom))
         atom_file = atom
@@ -384,12 +392,23 @@ module Javascript
       contents.gsub!(/'/, "'")
 
       atom_type = utf8 ? "char" : "wchar_t"
-      max_str_length = MAX_STR_LENGTH
-      max_str_length += 1 if utf8  # Don't need the 'L' on each line for UTF8.
-      line_format = utf8 ? "    \"%s\"" : "    L\"%s\""
+      max_str_length = language == :cpp ? MAX_STR_LENGTH_CPP : MAX_STR_LENGTH_JAVA
+      max_str_length += 1 if utf8
+
+      if language == :cpp
+        # Don't need the 'L' on each line for UTF8.
+        line_format = utf8 ? "    \"%s\"" : "    L\"%s\""
+      elsif language == :java
+        line_format = "        \"%s\""
+      end
 
       to_file << "\n"
-      to_file << "const #{atom_type}* const #{atom_upper} =\n"
+
+      if language == :cpp
+        to_file << "const #{atom_type}* const #{atom_upper} =\n"
+      elsif language == :java
+        to_file << "    #{atom_upper}(\n"
+      end
 
       # Make the header file play nicely in a terminal: limit lines to 80
       # characters, but make sure we don't cut off a line in the middle
@@ -401,11 +420,17 @@ module Javascript
         line = contents[0, diff]
         contents.slice!(0..diff - 1)
         to_file << line_format % line
+        to_file << " +" if language == :java
         to_file << "\n"
       end
 
       to_file << line_format % contents if contents.length > 0
-      to_file << ";\n"
+
+      if language == :java
+        to_file << "\n    ),\n"
+      elsif language == :cpp
+        to_file << ";\n"
+      end
     end
 
     def generate_header(dir, name, task_name, output, js_files, utf8)
@@ -429,7 +454,7 @@ module Javascript
           out << "namespace atoms {\n"
 
           js_files.each do |js_file|
-            write_atom_string_literal(out, dir, js_file, utf8)
+            write_atom_string_literal(out, dir, js_file, :cpp, utf8)
           end
 
           out << "\n"
@@ -440,6 +465,65 @@ module Javascript
         end
       end
     end
+
+    def generate_java(dir, name, task_name, output, js_files)
+      file output => js_files do
+        task_name =~ /([a-z]+)-driver/
+        implementation = $1.capitalize
+        output_dir = File.dirname(output)
+        mkdir_p output_dir unless File.exists?(output_dir)
+        class_name = implementation + "Atoms"
+        output = output_dir + "/" + class_name + ".java"
+
+        puts "Preparing #{task_name} as #{output}"
+
+        File.open(output, "w") do |out|
+          out << COPYRIGHT
+          out << "\n"
+          out << "package com.opera.core.systems.internal;\n"
+          out << "\n"
+          out << "import java.util.EnumSet;\n"
+          out << "import java.util.HashMap;\n"
+          out << "import java.util.Map;\n"
+          out << "\n"
+          out << "/*\n"
+          out << " * AUTO GENERATED - DO NOT EDIT BY HAND\n"
+          out << " */\n"
+          out << "\n"
+          out << "public enum #{implementation}Atoms {\n"
+
+          js_files.each do |js_file|
+            write_atom_string_literal(out, dir, js_file, :java)
+          end
+
+          out << ";\n"
+          out << "\n"
+          out << "    private String value;\n"
+          out << "\n"
+          out << "    public String getValue() {\n"
+          out << "        return value;\n"
+          out << "    }\n"
+          out << "\n"
+          out << "    private #{class_name}(String value) {\n"
+          out << "        this.value = value;\n"
+          out << "    }\n"
+          out << "\n"
+          out << "    private static final Map<String, String> lookup = new HashMap<String, String>();\n"
+          out << "\n"
+          out << "    static {\n"
+          out << "        for (#{class_name} key : EnumSet.allOf(#{class_name}.class))\n"
+          out << "          lookup.put(key.name(), key.value);\n"
+          out << "    }\n"
+          out << "\n"
+          out << "    public static String get(String key) {\n"
+          out << "        return lookup.get(key);\n"
+          out << "    }\n"
+          out << "\n"
+          out << "}\n"
+        end
+      end
+    end
+
   end
 
   class ConcatenateHeaders < GenerateAtoms
@@ -447,8 +531,7 @@ module Javascript
       js = js_name(dir, args[:name])
       output = js.sub(/\.js$/, '.h')
       task_name = task_name(dir, args[:name])
-      generate_header(dir, args[:name], task_name, output, args[:deps],
-                      args[:utf8])
+      generate_header(dir, args[:name], task_name, output, args[:deps], args[:utf8])
       task task_name => [output]
     end
   end

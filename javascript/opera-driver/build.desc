@@ -1,0 +1,21 @@
+# Used for https://github.com/operasoftware/operadriver/tree/master/src/com/opera/core/systems/internal/OperaAtoms.java
+
+js_fragment_java(name = "atoms",
+  deps = [
+    "//javascript/webdriver-atoms:clear",
+    "//javascript/webdriver-atoms:execute_script",
+    "//javascript/webdriver-atoms:execute_async_script",
+    "//javascript/webdriver-atoms:find_element",
+    "//javascript/webdriver-atoms:find_elements",
+    "//javascript/webdriver-atoms:get_attribute",
+    "//javascript/webdriver-atoms:get_effective_style",
+    "//javascript/webdriver-atoms:get_location",
+    "//javascript/webdriver-atoms:get_size",
+    "//javascript/webdriver-atoms:get_text",
+    "//javascript/webdriver-atoms:is_displayed",
+    "//javascript/webdriver-atoms:is_enabled",
+    "//javascript/webdriver-atoms:is_selected",
+    "//javascript/webdriver-atoms:set_selected",
+    "//javascript/webdriver-atoms:submit",
+    "//javascript/webdriver-atoms:toggle",
+  ])
