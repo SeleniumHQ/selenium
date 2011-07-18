@@ -23,6 +23,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 import java.util.logging.Logger;
 
@@ -50,10 +51,23 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
     long timeoutInMillis = Long.parseLong(timeout);
 
     // Micro sleep before we continue in case an async click needs processing.
-    pause();
+    hesitate(timeToWait);
 
-    Object result = ((JavascriptExecutor) driver).executeScript(
+    Object result;
+    try {
+       result = ((JavascriptExecutor) driver).executeScript(
         "return !!document['readyState'];");
+    } catch (WebDriverException e) {
+      // Page might still be loading. Give it a chance to get some content.
+      hesitate(500);
+      try {
+        result = ((JavascriptExecutor) driver).executeScript(
+          "return !!document['readyState'];");
+      } catch (WebDriverException e2) {
+        log.warning("Cannot determine whether page supports ready state. Abandoning wait.");
+        return null;
+      }
+    }
 
     log.fine("Does browser support readyState: " + result);
 
@@ -62,14 +76,14 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
 
     wait.wait(String.format("Failed to load page within %s ms", timeout), timeoutInMillis);
 
-    pause();
+    hesitate(timeToWait);
 
     return null;
   }
 
-  private void pause() {
+  private void hesitate(long duration) {
     try {
-      Thread.sleep(timeToWait);
+      Thread.sleep(duration);
     } catch (InterruptedException e) {
       throw Throwables.propagate(e);
     }
