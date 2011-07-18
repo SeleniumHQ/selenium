@@ -101,8 +101,10 @@ class ErrorHandler(object):
 
         stacktrace = None
         if 'stackTrace' in value:
-            stacktrace = "Method %s threw an error in %s" % \
-                (value['stackTrace'][0]['methodName'],value['stackTrace'][0]['fileName'])
+            zeroeth = value['stackTrace'][0]
+            if zeroeth.has_key('methodName'):
+                stacktrace = "Method %s threw an error in %s" % \
+                    (zeroeth['methodName'], zeroeth['fileName'])
         if exception_class == ErrorInResponseException:
             raise exception_class(response, message)
         raise exception_class(message, screen, stacktrace)
