@@ -73,6 +73,19 @@ namespace OpenQA.Selenium.Firefox
     /// </example>
     public class FirefoxDriver : RemoteWebDriver, ITakesScreenshot
     {
+        #region Public members
+        /// <summary>
+        /// The name of the ICapabilities setting to use to define a custom Firefox profile.
+        /// </summary>
+        public static readonly string ProfileCapabilityName = "firefox_profile";
+        
+        /// <summary>
+        /// The name of the ICapabilities setting to use to define a custom location for the
+        /// Firefox executable.
+        /// </summary>
+        public static readonly string BinaryCapabilityName = "firefox_binary";
+        #endregion
+
         #region Private members
         /// <summary>
         /// The default port on which to communicate with the Firefox extension.
@@ -114,6 +127,16 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given set of capabilities.
+        /// </summary>
+        /// <param name="capabilities">The <see cref="ICapabilities"/> object containing the desired
+        /// capabilities of this FirefoxDriver.</param>
+        public FirefoxDriver(ICapabilities capabilities)
+            : this(ExtractBinary(capabilities), ExtractProfile(capabilities))
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given profile and binary environment.
         /// </summary>
         /// <param name="binary">A <see cref="FirefoxBinary"/> object representing the operating system 
@@ -123,8 +146,6 @@ namespace OpenQA.Selenium.Firefox
         public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile)
             : this(binary, profile, TimeSpan.FromSeconds(60))
         {
-            this.binary = binary;
-            this.profile = profile;
         }
 
         /// <summary>
@@ -223,6 +244,69 @@ namespace OpenQA.Selenium.Firefox
         #endregion
 
         #region Private methods
+        private static FirefoxBinary ExtractBinary(ICapabilities capabilities)
+        {
+            if (capabilities.GetCapability(BinaryCapabilityName) != null)
+            {
+                string file = capabilities.GetCapability(BinaryCapabilityName).ToString();
+                return new FirefoxBinary(file);
+            }
+ 
+            return new FirefoxBinary();
+        }
+
+        private static FirefoxProfile ExtractProfile(ICapabilities capabilities)
+        {
+            FirefoxProfile profile = new FirefoxProfile();
+            if (capabilities.GetCapability(ProfileCapabilityName) != null)
+            {
+                object raw = capabilities.GetCapability(ProfileCapabilityName);
+                FirefoxProfile rawAsProfile = raw as FirefoxProfile;
+                string rawAsString = raw as string;
+                if (rawAsProfile != null)
+                {
+                    profile = rawAsProfile;
+                }
+                else if (rawAsString != null)
+                {
+                    try
+                    {
+                        profile = FirefoxProfile.FromBase64String(rawAsString);
+                    }
+                    catch (IOException e)
+                    {
+                        throw new WebDriverException("Unable to create profile from specified string", e);
+                    }
+                }
+            }
+
+            if (capabilities.GetCapability(CapabilityType.Proxy) != null)
+            {
+                Proxy proxy = null;
+                object raw = capabilities.GetCapability(CapabilityType.Proxy);
+                Proxy rawAsProxy = raw as Proxy;
+                Dictionary<string, object> rawAsMap = raw as Dictionary<string, object>;
+                if (rawAsProxy != null)
+                {
+                    proxy = rawAsProxy;
+                }
+                else if (rawAsMap != null)
+                {
+                    proxy = new Proxy(rawAsMap);
+                }
+
+                profile.SetProxyPreferences(proxy);
+            }
+
+            if (capabilities.GetCapability(CapabilityType.AcceptSslCertificates) != null)
+            {
+                bool acceptCerts = (bool)capabilities.GetCapability(CapabilityType.AcceptSslCertificates);
+                profile.AcceptUntrustedCertificates = acceptCerts;
+            }
+
+            return profile;
+        }
+
         private static ExtensionConnection CreateExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
         {
             FirefoxProfile profileToUse = profile;

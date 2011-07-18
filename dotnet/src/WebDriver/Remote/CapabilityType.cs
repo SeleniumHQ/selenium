@@ -71,5 +71,15 @@ namespace OpenQA.Selenium.Remote
         /// Capability name used to indicate whether the browser supports rotation.
         /// </summary>
         public static readonly string Rotatable = "rotatable";
+
+        /// <summary>
+        /// Capability name used to indicate whether the browser accepts SSL certificates.
+        /// </summary>
+        public static readonly string AcceptSslCertificates = "acceptSslCerts";
+
+        /// <summary>
+        /// Capability name used to indicate whether the browser uses native events.
+        /// </summary>
+        public static readonly string HasNativeEvents = "nativeEvents";
     }
 }

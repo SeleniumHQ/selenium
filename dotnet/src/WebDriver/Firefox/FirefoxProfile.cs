@@ -218,6 +218,45 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Set proxy preferences for this profile.
+        /// </summary>
+        /// <param name="proxy">The <see cref="Proxy"/> object defining the proxy 
+        /// preferences for the profile.</param>
+        public void SetProxyPreferences(Proxy proxy)
+        {
+            if (proxy == null)
+            {
+                throw new ArgumentNullException("proxy", "proxy must not be null");
+            }
+
+            if (proxy.Kind == ProxyKind.Unspecified)
+            {
+                return;
+            }
+
+            this.SetPreference("network.proxy.type", (int)proxy.Kind);
+
+            switch (proxy.Kind)
+            {
+                case ProxyKind.Manual:// By default, assume we're proxying the lot
+                    this.SetPreference("network.proxy.no_proxies_on", string.Empty);
+
+                    this.SetManualProxyPreference("ftp", proxy.FtpProxy);
+                    this.SetManualProxyPreference("http", proxy.HttpProxy);
+                    this.SetManualProxyPreference("ssl", proxy.SslProxy);
+                    if (proxy.NoProxy != null)
+                    {
+                        this.SetPreference("network.proxy.no_proxies_on", proxy.NoProxy);
+                    }
+
+                    break;
+                case ProxyKind.ProxyAutoConfigure:
+                    this.SetPreference("network.proxy.autoconfig_url", proxy.ProxyAutoConfigUrl);
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Writes this in-memory representation of a profile to disk.
         /// </summary>
         public void WriteToDisk()
@@ -511,6 +550,26 @@ namespace OpenQA.Selenium.Firefox
                 {
                     writer.WriteLine(string.Format(CultureInfo.InvariantCulture, "user_pref(\"{0}\", {1});", prefKey, preferences[prefKey]));
                 }
+            }
+        }
+
+        /// <summary>
+        /// Sets a preference for a manually specified proxy.
+        /// </summary>
+        /// <param name="key">The protocol for which to set the proxy.</param>
+        /// <param name="settingString">The setting for the proxy.</param>
+        private void SetManualProxyPreference(string key, string settingString)
+        {
+            if (settingString == null)
+            {
+                return;
+            }
+
+            string[] hostPort = settingString.Split(':');
+            this.SetPreference("network.proxy." + key, hostPort[0]);
+            if (hostPort.Length > 1)
+            {
+                this.SetPreference("network.proxy." + key + "_port", int.Parse(hostPort[1], CultureInfo.InvariantCulture));
             }
         }
         #endregion
