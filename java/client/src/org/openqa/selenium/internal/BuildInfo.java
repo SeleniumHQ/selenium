@@ -55,10 +55,14 @@ public class BuildInfo {
       return properties;
     }
 
-    Attributes attributes = manifest.getAttributes("Build-Info");
-    Set<Entry<Object, Object>> entries = attributes.entrySet();
-    for (Entry<Object, Object> e : entries) {
-      properties.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
+    try {
+      Attributes attributes = manifest.getAttributes("Build-Info");
+      Set<Entry<Object, Object>> entries = attributes.entrySet();
+      for (Entry<Object, Object> e : entries) {
+        properties.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
+      }
+    } catch (NullPointerException e) {
+      // Fall through
     }
 
     return properties;
