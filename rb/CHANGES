@@ -1,3 +1,10 @@
+2.1.0 (2011-07-18)
+==================
+
+* Various improvments to the IE driver (#2049, #1870)
+* Atoms fixes (#1776, #1972).
+* Synthetic mouse clicks do not propagate errors in onmouseover.
+
 2.0.1 (2011-07-11)
 ==================
 
