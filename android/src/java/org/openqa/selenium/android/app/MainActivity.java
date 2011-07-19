@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
+import com.google.common.io.Closeables;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Set;
@@ -49,6 +51,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.webkit.CookieManager;
@@ -343,14 +346,23 @@ public class MainActivity extends Activity {
   
   public byte[] takeScreenshot() {
     Picture pic = currentView.capturePicture();
-    Bitmap bitmap = Bitmap.createBitmap(
-        currentView.getWidth() - currentView.getVerticalScrollbarWidth(),
-        currentView.getHeight(), Config.RGB_565);
-    Canvas cv = new Canvas(bitmap);
+    // Bitmap of the entire document
+    Bitmap raw = Bitmap.createBitmap(
+        pic.getWidth(),
+        pic.getHeight(),
+        Config.RGB_565);
+    // Drawing on a canvas
+    Canvas cv = new Canvas(raw);
     cv.drawPicture(pic);
-    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    // Cropping to what's actually displayed on screen
+    Bitmap cropped = Bitmap.createBitmap(raw,
+      currentView.getScrollX(),
+      currentView.getScrollY(),
+      currentView.getWidth() - currentView.getVerticalScrollbarWidth(),
+      currentView.getHeight());
     
-    if (!bitmap.compress(CompressFormat.PNG, 100, stream)) {
+    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    if (!cropped.compress(CompressFormat.PNG, 100, stream)) {
       throw new RuntimeException(
           "Error while compressing screenshot image.");
     }
@@ -359,7 +371,9 @@ public class MainActivity extends Activity {
       stream.close();
     } catch (IOException e) {
       throw new RuntimeException(
-          "Error while capturing screenshot: " + e.getMessage());
+          "I/O Error while capturing screenshot: " + e.getMessage());
+    } finally {
+      Closeables.closeQuietly(stream);
     }
     byte[] rawPng = stream.toByteArray();
     return rawPng;
