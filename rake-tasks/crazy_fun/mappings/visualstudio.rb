@@ -95,6 +95,7 @@ module CrazyFunDotNet
         csc_task.debug = :pdbonly
         csc_task.references references
         csc_task.resources embedded_resources
+        csc_task.keyfile = args[:keyfile] unless args[:keyfile].nil?
 
         copy_resources(dir, to_copy, output_dir)
         unless args[:files].nil?

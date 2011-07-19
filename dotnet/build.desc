@@ -16,6 +16,7 @@ dotnet_library(name = "dotnet",
     {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
     {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
   ],
+  keyfile = "WebDriver.snk",
   out = "build/dotnet/WebDriver.dll",
   doc = "build/dotnet/WebDriver.xml"
 )
@@ -31,8 +32,9 @@ dotnet_library(name = "support",
     ":dotnet",
     "third_party/csharp/Castle.Core.2.5.2/Castle.Core.dll"
   ],
-  out = "build/dotnet/Webdriver.Support.dll",
-  doc = "build/dotnet/Webdriver.Support.xml"
+  keyfile = "WebDriver.snk",
+  out = "build/dotnet/WebDriver.Support.dll",
+  doc = "build/dotnet/WebDriver.Support.xml"
 )
 
 dotnet_library(name = "core",
@@ -44,6 +46,7 @@ dotnet_library(name = "core",
     "System.Xml.dll",
     "System.Web.dll"
   ],
+  keyfile = "WebDriver.snk",
   out = "build/dotnet/ThoughtWorks.Selenium.Core.dll",
   doc = "build/dotnet/ThoughtWorks.Selenium.Core.xml"
 )
@@ -76,6 +79,7 @@ dotnet_library(name = "webdriverbackedselenium",
     {"//javascript/selenium-atoms:isVisible" : "isVisible.js" },
     {"//javascript/selenium-atoms:type" : "type.js" }
   ],
+  keyfile = "WebDriver.snk",
   out = "build/dotnet/Selenium.WebDriverBackedSelenium.dll",
   doc = "build/dotnet/Selenium.WebDriverBackedSelenium.xml"
 )
