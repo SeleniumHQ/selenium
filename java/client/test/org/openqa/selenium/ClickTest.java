@@ -18,10 +18,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
+
+import org.openqa.selenium.interactions.Actions;
 
 public class ClickTest extends AbstractDriverTestCase {
   @Override
@@ -117,5 +120,21 @@ public class ClickTest extends AbstractDriverTestCase {
 
     String log = driver.findElement(By.id("log")).getText();
     assertEquals("click", log);
+  }
+
+  @JavascriptEnabled
+  @Ignore(HTMLUNIT)
+  public void testShouldSetRelatedTargetForMouseOver() {
+    driver.get(pages.javascriptPage);
+
+    driver.findElement(By.id("movable")).click();
+
+    String log = driver.findElement(By.id("result")).getText();
+    assertEquals("parent matches? true", log);
+  }
+
+  @Ignore
+  public void testShouldSetRelatedTargetForMouseOut() {
+    fail("Must. Write. Meamingful. Test (but we don't fire mouse outs synthetically");
   }
 }

@@ -101,7 +101,8 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   var botCoords = {
     'x': 0,
     'y': 0,
-    'button': button
+    'button': button,
+    'related': parent
   };
 
   var intermediateSteps = 3;
@@ -109,8 +110,8 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   var yInc = Math.floor(yOffset / intermediateSteps);
   var currX = 0;
   var currY = 0;
-  
-  var proceed = fireAndCheck(parent, goog.events.EventType.MOUSEOUT) &&
+
+  var proceed = fireAndCheck(parent, goog.events.EventType.MOUSEOUT, {'related': element}) &&
       fireAndCheck(element, goog.events.EventType.MOUSEOVER, botCoords);
     for (var i = 0; i < intermediateSteps && proceed; i++) {
       botCoords['x'] = xInc;  currX += xInc;

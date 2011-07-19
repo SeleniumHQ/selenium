@@ -266,6 +266,12 @@
 
 <a id="throwing-mouseover" onmouseover="throw new Error()" href="#throwing-mouseover">Mouse over me will throw a JS error</a>
 
+<div id="parent">
+    <span id="movable" onmouseover="var p = document.getElementById('parent'); displayMessage('parent matches? ' + (p == event.relatedTarget));">
+        Click on me to show the related target
+    </span>
+</div>
+
 </body>
 </html>
 

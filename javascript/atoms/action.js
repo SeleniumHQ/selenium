@@ -448,6 +448,8 @@ bot.action.click = function(element) {
   // Guaranteed to not return null since we've verified element is shown.
   var size = goog.style.getSize(element);
 
+  var parent = bot.dom.getParentElement(element);
+
   // Use string properties for indices so that the compiler does not
   // obfuscate them.
   var coords = {
@@ -459,7 +461,7 @@ bot.action.click = function(element) {
     'control': undefined,
     'shift': undefined,
     'meta': undefined,
-    'related': undefined
+    'related': parent
   };
 
   var originalState = bot.action.isSelectable(element) && bot.action.isSelected(element);
@@ -467,7 +469,7 @@ bot.action.click = function(element) {
   // Abort the click sequence if any of the event listeners hide
   // the element. Open question: the remaining click events should be fired
   // somewhere, but where?
-  bot.events.fire(element, goog.events.EventType.MOUSEOVER);
+  bot.events.fire(element, goog.events.EventType.MOUSEOVER, {'related': parent});
   if (!bot.action.isShown_(element)) {
     return;
   }

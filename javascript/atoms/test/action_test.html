@@ -498,6 +498,19 @@
       assertEquals(index, ss.selectedIndex);
     }
 
+    function testClickShouldSetRelatedTargetForMoves() {
+      var parent = goog.dom.$('parent');
+      var target = goog.dom.$('clickable');
+
+      var fired = 0;
+
+      goog.events.listenOnce(target, goog.events.EventType.MOUSEOVER,
+              function(e) { fired++; assertEquals(parent, e.relatedTarget) });
+
+      bot.action.click(target);
+
+      assertEquals(1, fired);
+    }
   </script>
 </head>
 <body>
@@ -625,6 +638,10 @@
       <input id="radio3" type="radio" name="radiogroup" value="Radio3"/>
       <label for="radio4">Clear the state of the other buttons</label>
       <input id="radio4" type="radio" name="radiogroup" value="Radio4"/>
+    </div>
+
+    <div id="parent">
+      <span id="clickable">I can haz clicks</span>
     </div>
   </form>
   <script>
