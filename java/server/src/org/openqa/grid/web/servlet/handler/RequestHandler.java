@@ -349,6 +349,9 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     if (session == null) {
       String externalKey = extractSession();
       session = registry.getSession(externalKey);
+      if (session==null){
+        log.warning("Cannot find session "+externalKey+" in the registry.");
+      }
     }
     return session;
   }
