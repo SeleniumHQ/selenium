@@ -1,15 +1,17 @@
-// Copyright 2011 WebDriver committers
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright 2011 WebDriver committers
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /* AUTO GENERATED - DO NOT EDIT BY HAND */
 #ifndef WEBDRIVER_ATOMS_H_
@@ -324,18 +326,18 @@ const wchar_t* const CLICK =
     L"c}function Fb(a){var b=(F(a)?G(F(a)):window).location.href,a=tb(b,a.href"
     L").toString();return b.split(\"#\")[0]===a.split(\"#\")[0]};function Gb(a"
     L"){xb(a);var b=F(a).activeElement;w(a.scrollIntoView)&&a.scrollIntoView()"
-    L";var c=La(a),d={x:c.width/2,y:c.height/2,button:i,bubble:i,alt:i,control"
-    L":i,shift:i,meta:i,related:i},c=yb(a)&&zb(a);P(a,\"mouseover\");M(a,!0)&&"
-    L"(P(a,\"mousemove\",d),M(a,!0)&&(Db(a)||P(a,\"mousedown\",d),M(a,!0)&&(Cb"
-    L"(a,b),M(a,!0)&&(P(a,\"mouseup\",d),M(a,!0)&&(P(a,\"click\",d)&&(b=H(a,fu"
-    L"nction(a){return K(a,\"A\")},!0))&&b.href&&(!Fb(b)||1)&&Eb(b),M(a,!0)&&y"
-    L"b(a)&&Ua(a)&&!(a.tagName.toLowerCase()==\"input\"&&a.type&&a.type.toLowe"
-    L"rCase()==\n\"radio\"&&zb(a))&&(b=H(a,Ab),(!b||b.multiple||!c)&&Bb(a,!c))"
-    L")))))}var Y=\"_\".split(\".\"),Z=q;!(Y[0]in Z)&&Z.execScript&&Z.execScri"
-    L"pt(\"var \"+Y[0]);for(var $;Y.length&&($=Y.shift());)!Y.length&&Gb!==i?Z"
-    L"[$]=Gb:Z=Z[$]?Z[$]:Z[$]={};; return this._.apply(null,arguments);}.apply"
-    L"({navigator:typeof window!='undefined'?window.navigator:null}, arguments"
-    L");}";
+    L";var c=La(a),d=Va(a),e={x:c.width/2,y:c.height/2,button:i,bubble:i,alt:i"
+    L",control:i,shift:i,meta:i,related:d},c=yb(a)&&zb(a);P(a,\"mouseover\",{r"
+    L"elated:d});M(a,!0)&&(P(a,\"mousemove\",e),M(a,!0)&&(Db(a)||P(a,\"mousedo"
+    L"wn\",e),M(a,!0)&&(Cb(a,b),M(a,!0)&&(P(a,\"mouseup\",e),M(a,!0)&&(P(a,\"c"
+    L"lick\",e)&&(b=H(a,function(a){return K(a,\"A\")},!0))&&b.href&&(!Fb(b)||"
+    L"1)&&Eb(b),M(a,!0)&&yb(a)&&Ua(a)&&!(a.tagName.toLowerCase()==\"input\"&&"
+    L"\na.type&&a.type.toLowerCase()==\"radio\"&&zb(a))&&(b=H(a,Ab),(!b||b.mul"
+    L"tiple||!c)&&Bb(a,!c)))))))}var Y=\"_\".split(\".\"),Z=q;!(Y[0]in Z)&&Z.e"
+    L"xecScript&&Z.execScript(\"var \"+Y[0]);for(var $;Y.length&&($=Y.shift())"
+    L";)!Y.length&&Gb!==i?Z[$]=Gb:Z=Z[$]?Z[$]:Z[$]={};; return this._.apply(nu"
+    L"ll,arguments);}.apply({navigator:typeof window!='undefined'?window.navig"
+    L"ator:null}, arguments);}";
 
 const wchar_t* const CLEAR =
     L"function(){return function(){var j=void 0,n=null,o=this;\nfunction q(a){"
