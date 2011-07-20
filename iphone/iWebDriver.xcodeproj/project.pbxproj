@@ -202,10 +202,10 @@
 		731C450E128BBF4000261249 /* GeoLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoLocation.m; sourceTree = "<group>"; usesTabs = 0; };
 		731C450F128BBF4000261249 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
 		731C4510128BBF4000261249 /* Storage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Storage.m; sourceTree = "<group>"; tabWidth = 1; usesTabs = 0; };
-		73417D6813B3B76D00D47D70 /* errorcodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = errorcodes.h; path = "src/cpp/webdriver-interactions/errorcodes.h"; sourceTree = SOURCE_ROOT; };
 		73417ED513B3DD0700D47D70 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		73417F4513B3E2AB00D47D70 /* GTMObjC2Runtime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMObjC2Runtime.h; sourceTree = "<group>"; };
 		73417F4613B3E2AB00D47D70 /* GTMUnitTestDevLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMUnitTestDevLog.h; sourceTree = "<group>"; };
+		73576C0713D7832A00C76F95 /* errorcodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = errorcodes.h; path = "../../../cpp/webdriver-interactions/errorcodes.h"; sourceTree = "<group>"; };
 		739E3624122D78A8002D739F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		73D14FCB1289B6540074E63B /* Database.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Database.h; sourceTree = "<group>"; };
 		73D14FCC1289B6540074E63B /* Database.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Database.m; sourceTree = "<group>"; };
@@ -493,7 +493,7 @@
 		839986AC0EE3AA720074D106 /* Web server extensions */ = {
 			isa = PBXGroup;
 			children = (
-				73417D6813B3B76D00D47D70 /* errorcodes.h */,
+				73576C0713D7832A00C76F95 /* errorcodes.h */,
 				643822E812C0305900F0C7CC /* atoms.h */,
 				FD61E6970FE150E5006E1274 /* WebDriverUtilities.h */,
 				FD61E6980FE150E5006E1274 /* WebDriverUtilities.m */,
