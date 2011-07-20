@@ -86,8 +86,7 @@ protected:
 		BrowserHandle browser_wrapper;
 		executor.GetCurrentBrowser(&browser_wrapper);
 
-		std::wstring cookie = CA2W(cookie_string.c_str(), CP_UTF8);
-		int status_code = browser_wrapper->AddCookie(cookie);
+		int status_code = browser_wrapper->AddCookie(cookie_string);
 		if (status_code != SUCCESS) {
 			response->SetErrorResponse(status_code, "Unable to add cookie to page");
 		}

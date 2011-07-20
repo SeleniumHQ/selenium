@@ -27,7 +27,7 @@ public:
 
 	void Initialize(void* init_params);
 	void ShutDown(void);
-	bool ExecuteCommand(const std::wstring& serialized_command, std::wstring* serialized_response);
+	bool ExecuteCommand(const std::string& serialized_command, std::string* serialized_response);
 
 private:
 	HWND executor_window_handle_;

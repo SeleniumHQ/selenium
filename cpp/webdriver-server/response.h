@@ -27,8 +27,8 @@ class Response {
   Response(void);
   explicit Response(const std::string& session_id);
   virtual ~Response(void);
-  std::wstring Serialize(void);
-  void Deserialize(const std::wstring& json);
+  std::string Serialize(void);
+  void Deserialize(const std::string& json);
 
   int status_code(void) const { return this->status_code_; }
 

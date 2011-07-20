@@ -37,8 +37,7 @@ public:
 
 protected:
 	virtual void ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response* response);
-	int GetElement(const IECommandExecutor& executor, const std::wstring& element_id, ElementHandle* element_wrapper);
-	std::wstring ConvertVariantToWString(VARIANT* to_convert);
+	int GetElement(const IECommandExecutor& executor, const std::string& element_id, ElementHandle* element_wrapper);
 };
 
 typedef std::tr1::shared_ptr<IECommandHandler> CommandHandlerHandle;

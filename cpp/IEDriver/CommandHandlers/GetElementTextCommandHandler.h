@@ -36,7 +36,7 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
 			return;
 		} else {
-			std::wstring element_id = CA2W(id_parameter_iterator->second.c_str(), CP_UTF8);
+			std::string element_id = id_parameter_iterator->second;
 
 			BrowserHandle browser_wrapper;
 			int status_code = executor.GetCurrentBrowser(&browser_wrapper);
@@ -61,15 +61,10 @@ protected:
 				script_wrapper.AddArgument(element_wrapper->element());
 				status_code = script_wrapper.Execute();
 
-				CComVariant text_variant;
 				if (status_code == SUCCESS) {
-					HRESULT hr = ::VariantCopy(&text_variant, &script_wrapper.result());
-				}
-
-				if (status_code == SUCCESS) {
-					std::wstring text = this->ConvertVariantToWString(&text_variant);
-					std::string text_str = CW2A(text.c_str(), CP_UTF8);
-					response->SetSuccessResponse(text_str);
+					std::string text = "";
+					bool is_null = script_wrapper.ConvertResultToString(&text);
+					response->SetSuccessResponse(text);
 					return;
 				} else {
 					response->SetErrorResponse(status_code, "Unable to get element text");

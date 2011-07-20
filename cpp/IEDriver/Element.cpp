@@ -41,7 +41,7 @@ Element::Element(IHTMLElement* element, HWND containing_window_handle) {
 	// RPC_WSTR is currently typedef'd in RpcDce.h (pulled in by rpc.h)
 	// as unsigned short*. It needs to be typedef'd as wchar_t* 
 	wchar_t* cast_guid_string = reinterpret_cast<wchar_t*>(guid_string);
-	this->element_id_ = cast_guid_string;
+	this->element_id_ = CW2A(cast_guid_string, CP_UTF8);
 
 	::RpcStringFree(&guid_string);
 
@@ -54,8 +54,7 @@ Element::~Element(void) {
 
 Json::Value Element::ConvertToJson() {
 	Json::Value json_wrapper;
-	std::string id(CW2A(this->element_id_.c_str(), CP_UTF8));
-	json_wrapper["ELEMENT"] = id;
+	json_wrapper["ELEMENT"] = this->element_id_;
 	return json_wrapper;
 }
 
@@ -81,6 +80,14 @@ int Element::IsDisplayed(bool* result) {
 	}
 
 	return status_code;
+}
+
+std::string Element::GetTagName() {
+	CComBSTR tag_name_bstr;
+	this->element_->get_tagName(&tag_name_bstr);
+	tag_name_bstr.ToLower();
+	std::string tag_name = CW2A(tag_name_bstr, CP_UTF8);
+	return tag_name;
 }
 
 bool Element::IsEnabled() {
@@ -130,7 +137,8 @@ int Element::Click() {
 	return status_code;
 }
 
-int Element::GetAttributeValue(const std::wstring& attribute_name, VARIANT* attribute_value) {
+int Element::GetAttributeValue(const std::string& attribute_name, std::string* attribute_value, bool* value_is_null) {
+	std::wstring wide_attribute_name = CA2W(attribute_name.c_str(), CP_UTF8);
 	int status_code = SUCCESS;
 
 	// The atom is just the definition of an anonymous
@@ -144,11 +152,12 @@ int Element::GetAttributeValue(const std::wstring& attribute_name, VARIANT* attr
 	this->GetContainingDocument(false, &doc);
 	Script script_wrapper(doc, script_source, 2);
 	script_wrapper.AddArgument(this->element_);
-	script_wrapper.AddArgument(attribute_name);
+	script_wrapper.AddArgument(wide_attribute_name);
 	status_code = script_wrapper.Execute();
-
+	
+	CComVariant value_variant;
 	if (status_code == SUCCESS) {
-		HRESULT hr = ::VariantCopy(attribute_value, &script_wrapper.result());
+		*value_is_null = !script_wrapper.ConvertResultToString(attribute_value);
 	}
 
 	return SUCCESS;

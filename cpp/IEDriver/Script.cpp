@@ -17,7 +17,20 @@
 
 namespace webdriver {
 
+Script::Script(IHTMLDocument2* document, std::string script_source, unsigned long argument_count) {
+	std::wstring wide_script = CA2W(script_source.c_str(), CP_UTF8);
+	this->Initialize(document, wide_script, argument_count);
+}
+
 Script::Script(IHTMLDocument2* document, std::wstring script_source, unsigned long argument_count) {
+	this->Initialize(document, script_source, argument_count);
+}
+
+Script::~Script(void) {
+	::SafeArrayDestroy(this->argument_array_);
+}
+
+void Script::Initialize(IHTMLDocument2* document, const std::wstring& script_source, const unsigned long argument_count) {
 	this->script_engine_host_ = document;
 	this->source_code_ = script_source;
 	this->argument_count_ = argument_count;
@@ -32,8 +45,9 @@ Script::Script(IHTMLDocument2* document, std::wstring script_source, unsigned lo
 	::VariantInit(&this->result_);
 }
 
-Script::~Script(void) {
-	::SafeArrayDestroy(this->argument_array_);
+void Script::AddArgument(const std::string& argument) {
+	std::wstring wide_argument = CA2W(argument.c_str(), CP_UTF8);
+	this->AddArgument(wide_argument);
 }
 
 void Script::AddArgument(const std::wstring& argument) {
@@ -314,6 +328,45 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor, Json::Va
 		status_code = EUNKNOWNSCRIPTRESULT;
 	}
 	return status_code;
+}
+
+bool Script::ConvertResultToString(std::string* value) {
+	VARTYPE type = this->result_.vt;
+	switch(type) {
+		case VT_BOOL:
+			*value = this->result_.boolVal == VARIANT_TRUE ? "true" : "false";
+			return true;
+
+		case VT_BSTR:
+			if (!this->result_.bstrVal) {
+				*value = "";
+			} else {
+				std::string str_value = CW2A(this->result_.bstrVal, CP_UTF8);
+				*value = str_value;
+			}
+			return true;
+	
+		case VT_I4:
+			{
+				char* buffer = reinterpret_cast<char*>(malloc(sizeof(char) * MAX_DIGITS_OF_NUMBER));
+				if (buffer != NULL) {
+					_i64toa_s(this->result_.lVal, buffer, MAX_DIGITS_OF_NUMBER, BASE_TEN_BASE);
+				}
+				*value = buffer;
+			}
+			return true;
+
+		case VT_EMPTY:
+		case VT_NULL:
+			*value = "";
+			return false;
+
+		// This is lame
+		case VT_DISPATCH:
+			*value = "";
+			return true;
+	}
+	return false;
 }
 
 std::wstring Script::GetResultObjectTypeName() {

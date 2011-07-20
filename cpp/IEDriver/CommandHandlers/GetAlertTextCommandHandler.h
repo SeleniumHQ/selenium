@@ -43,7 +43,7 @@ protected:
 			// Retry up to 10 times to find the dialog.
 			int max_wait = 10;
 			while ((label_handle == NULL) && --max_wait) {
-				::EnumChildWindows(alert_handle, &GetAlertTextCommandHandler::FindTextLabel, (LPARAM)&label_handle);
+				::EnumChildWindows(alert_handle, &GetAlertTextCommandHandler::FindTextLabel, reinterpret_cast<LPARAM>(&label_handle));
 				if (label_handle == NULL) {
 					::Sleep(50);
 				}

@@ -38,36 +38,18 @@ protected:
 			return;
 		}
 
-		std::wstring cookie_string = browser_wrapper->GetCookies();
-		while (cookie_string.size() > 0) {
-			size_t cookie_delimiter_pos = cookie_string.find(L"; ");
-			std::wstring cookie_element = cookie_string.substr(0, cookie_delimiter_pos);
-			if (cookie_delimiter_pos == std::wstring::npos)
-			{
-				cookie_string = L"";
-			}
-			else
-			{
-				cookie_string = cookie_string.substr(cookie_delimiter_pos + 2);
-			}
-
-			Json::Value cookie_value(this->CreateJsonValueForCookie(cookie_element));
-			response_value.append(cookie_value);
+		std::map<std::string, std::string> cookies;
+		browser_wrapper->GetCookies(&cookies);
+		std::map<std::string, std::string>::const_iterator it = cookies.begin();
+		for (; it != cookies.end(); ++it) {
+			Json::Value cookie;
+			cookie["name"] = it->first;
+			cookie["value"] = it->second;
+			cookie["secure"] = false;
+			response_value.append(cookie);
 		}
 
 		response->SetSuccessResponse(response_value);
-	}
-
-private:
-	Json::Value GetAllCookiesCommandHandler::CreateJsonValueForCookie(std::wstring cookie) {
-		size_t cookie_element_separator_pos(cookie.find_first_of(L"="));
-		std::string cookie_element_name(CW2A(cookie.substr(0, cookie_element_separator_pos).c_str(), CP_UTF8));
-		std::string cookie_element_value(CW2A(cookie.substr(cookie_element_separator_pos + 1).c_str(), CP_UTF8));
-		Json::Value cookie_value;
-		cookie_value["name"] = cookie_element_name;
-		cookie_value["value"] = cookie_element_value;
-		cookie_value["secure"] = false;
-		return cookie_value;
 	}
 };
 

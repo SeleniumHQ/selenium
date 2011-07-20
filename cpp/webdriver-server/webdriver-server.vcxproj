@@ -145,7 +145,6 @@
     <ClCompile Include="command.cc" />
     <ClCompile Include="response.cc" />
     <ClCompile Include="server.cc" />
-    <ClCompile Include="string_utilities.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command.h" />
@@ -155,7 +154,6 @@
     <ClInclude Include="response.h" />
     <ClInclude Include="server.h" />
     <ClInclude Include="session.h" />
-    <ClInclude Include="string_utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\third_party\json-cpp\json-cpp.vcxproj">

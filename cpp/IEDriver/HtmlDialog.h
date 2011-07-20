@@ -51,8 +51,8 @@ public:
 	void Close(void);
 	bool Wait(void);
 	HWND GetWindowHandle(void);
-	std::wstring GetWindowName(void);
-	std::wstring GetTitle(void);
+	std::string GetWindowName(void);
+	std::string GetTitle(void);
 	HWND GetActiveDialogWindowHandle(void);
 	HWND GetTopLevelWindowHandle(void);
 
@@ -61,7 +61,7 @@ public:
 	void SetWidth(long width);
 	void SetHeight(long height);
 
-	int NavigateToUrl(const std::wstring& url);
+	int NavigateToUrl(const std::string& url);
 	int NavigateBack(void);
 	int NavigateForward(void);
 	int Refresh(void);

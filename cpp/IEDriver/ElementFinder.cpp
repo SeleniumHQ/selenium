@@ -344,8 +344,16 @@ int ElementFinder::InjectXPathEngine(BrowserHandle browser_wrapper) {
 
 void ElementFinder::SanitizeCriteria(const std::wstring& mechanism, std::wstring* criteria) {
 	if (mechanism == L"linkText" || mechanism == L"partialLinkText") {
-		StringUtilities::ReplaceAllSubstrings(L"\\", L"\\\\", criteria);
-		StringUtilities::ReplaceAllSubstrings(L"\"", L"\\\"", criteria);
+		this->ReplaceAllSubstrings(L"\\", L"\\\\", criteria);
+		this->ReplaceAllSubstrings(L"\"", L"\\\"", criteria);
+	}
+}
+
+void ElementFinder::ReplaceAllSubstrings(const std::wstring& to_replace, const std::wstring& replace_with, std::wstring* str) {
+	size_t pos = str->find(to_replace);
+	while (pos != std::wstring::npos) {
+		str->replace(pos, to_replace.length(), replace_with);
+		pos = str->find(to_replace, pos + replace_with.length());
 	}
 }
 

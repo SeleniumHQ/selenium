@@ -25,7 +25,6 @@
 #include "mongoose.h"
 #include "response.h"
 #include "session.h"
-#include "string_utilities.h"
 
 namespace webdriver {
 
@@ -54,42 +53,42 @@ class Server {
  private:
   typedef std::map<std::string, int> VerbMap;
   typedef std::map<std::string, VerbMap> UrlMap;
-  typedef std::map<std::wstring, SessionHandle> SessionMap;
+  typedef std::map<std::string, SessionHandle> SessionMap;
 
   int LookupCommand(const std::string& uri,
                     const std::string& http_verb,
-                    std::wstring* session_id,
-                    std::wstring* locator);
-  std::wstring DispatchCommand(const std::string& url,
+                    std::string* session_id,
+                    std::string* locator);
+  std::string DispatchCommand(const std::string& url,
                                const std::string& http_verb,
-                               const std::wstring& command_body);
-  std::wstring CreateSession(void);
-  void ShutDownSession(const std::wstring& session_id);
-  std::wstring ReadRequestBody(struct mg_connection* conn,
-                               const struct mg_request_info* request_info);
-  bool LookupSession(const std::wstring& session_id,
+                               const std::string& command_body);
+  std::string CreateSession(void);
+  void ShutDownSession(const std::string& session_id);
+  std::string ReadRequestBody(struct mg_connection* conn,
+                              const struct mg_request_info* request_info);
+  bool LookupSession(const std::string& session_id,
                      SessionHandle* session_handle);
   int SendResponseToClient(struct mg_connection* conn,
                            const struct mg_request_info* request_info,
-                           const std::wstring& serialized_response);
+                           const std::string& serialized_response);
   void PopulateCommandRepository(void);
 
   void SendHttpOk(mg_connection* connection,
                   const mg_request_info* request_info,
-                  const std::wstring& body,
+                  const std::string& body,
                   const std::string& content_type);
   void SendHttpBadRequest(mg_connection* connection,
                           const mg_request_info* request_info,
-                          const std::wstring& body);
+                          const std::string& body);
   void SendHttpInternalError(mg_connection* connection,
                              const mg_request_info* request_info,
-                             const std::wstring& body);
+                             const std::string& body);
   void SendHttpMethodNotAllowed(mg_connection* connection,
                                 const mg_request_info* request_info,
                                 const std::string& allowed_methods);
   void SendHttpNotFound(mg_connection* connection,
                         const mg_request_info* request_info,
-                        const std::wstring& body);
+                        const std::string& body);
   void SendHttpNotImplemented(mg_connection* connection,
                               const mg_request_info* request_info,
                               const std::string& body);

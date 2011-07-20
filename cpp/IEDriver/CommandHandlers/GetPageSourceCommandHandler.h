@@ -38,38 +38,8 @@ protected:
 			return;
 		}
 
-		CComPtr<IHTMLDocument2> doc;
-		browser_wrapper->GetDocument(&doc);
-		
-		CComPtr<IHTMLDocument3> doc3;
-		CComQIPtr<IHTMLDocument3> doc_qi_pointer(doc);
-		if (doc_qi_pointer) {
-			doc3 = doc_qi_pointer.Detach();
-		}
-
-		if (!doc3) {
-			response->SetErrorResponse(ENOSUCHDOCUMENT, "Unable to get document");
-			return;
-		}
-
-		CComPtr<IHTMLElement> document_element;
-		HRESULT hr = doc3->get_documentElement(&document_element);
-		if (FAILED(hr)) {
-			LOGHR(WARN, hr) << "Unable to get document element from page";
-			response->SetSuccessResponse("");
-			return;
-		}
-
-		CComBSTR html;
-		hr = document_element->get_outerHTML(&html);
-		if (FAILED(hr)) {
-			LOGHR(WARN, hr) << "Have document element but cannot read source.";
-			response->SetSuccessResponse("");
-			return;
-		}
-
-		std::string page_source = CW2A(html, CP_UTF8);
-		response->SetResponse(SUCCESS,page_source);
+		std::string page_source = browser_wrapper->GetPageSource();
+		response->SetSuccessResponse(page_source);
 	}
 };
 

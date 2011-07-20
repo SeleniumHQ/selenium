@@ -36,8 +36,7 @@ protected:
 			response->SetErrorResponse(status_code, "Unable to get browser");
 			return;
 		}
-		std::string title = CW2A(browser_wrapper->GetTitle().c_str(), CP_UTF8);
-
+		std::string title = browser_wrapper->GetTitle();
 		response->SetSuccessResponse(title);
 	}
 };

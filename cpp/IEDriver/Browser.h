@@ -75,8 +75,8 @@ public:
 	bool Wait(void);
 	void Close(void);
 	void GetDocument(IHTMLDocument2** doc);
-	std::wstring GetWindowName(void);
-	std::wstring GetTitle(void);
+	std::string GetWindowName(void);
+	std::string GetTitle(void);
 	HWND GetWindowHandle(void);
 	HWND GetTopLevelWindowHandle(void);
 	HWND GetActiveDialogWindowHandle(void);
@@ -86,7 +86,7 @@ public:
 	void SetWidth(long width);
 	void SetHeight(long height);
 
-	int NavigateToUrl(const std::wstring& url);
+	int NavigateToUrl(const std::string& url);
 	int NavigateBack(void);
 	int NavigateForward(void);
 	int Refresh(void);

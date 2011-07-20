@@ -58,7 +58,7 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter: value");
 			return;
 		} else {
-			std::wstring element_id = CA2W(id_parameter_iterator->second.c_str(), CP_UTF8);
+			std::string element_id = id_parameter_iterator->second;
 
 			std::wstring keys = L"";
 			Json::Value key_array = value_parameter_iterator->second;
@@ -74,8 +74,6 @@ protected:
 				return;
 			}
 			HWND window_handle = browser_wrapper->GetWindowHandle();
-			TCHAR pszClassName[25];
-			::GetClassName(window_handle, pszClassName, 25);
 
 			ElementHandle element_wrapper;
 			status_code = this->GetElement(executor, element_id, &element_wrapper);
@@ -110,7 +108,7 @@ protected:
 					key_data.ieProcId = ie_process_id;
 
 					unsigned int thread_id;
-					HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &SendKeysCommandHandler::SetFileValue, (void *) &key_data, 0, &thread_id));
+					HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL, 0, &SendKeysCommandHandler::SetFileValue, reinterpret_cast<void*>(&key_data), 0, &thread_id));
 
 					element->click();
 					// We're now blocked until the dialog closes.
@@ -151,7 +149,7 @@ private:
 			while ((dialog_window_handle == ie_main_window_handle) && --max_wait) {
 				ProcessWindowInfo process_win_info;
 				process_win_info.dwProcessId = data->ieProcId;
-				::EnumWindows(&BrowserFactory::FindDialogWindowForProcess, (LPARAM)&process_win_info);
+				::EnumWindows(&BrowserFactory::FindDialogWindowForProcess, reinterpret_cast<LPARAM>(&process_win_info));
 				if (process_win_info.hwndBrowser != NULL) {
 					dialog_window_handle = process_win_info.hwndBrowser;
 				}
@@ -166,8 +164,7 @@ private:
 		return SendKeysToFileUploadAlert(dialog_window_handle, data->text);
 	}
 
-	static bool SendKeysToFileUploadAlert(HWND dialog_window_handle, const wchar_t* value) 
-	{
+	static bool SendKeysToFileUploadAlert(HWND dialog_window_handle, const wchar_t* value) {
 		HWND edit_field_window_handle = NULL;
 		int maxWait = 10;
 		while (!edit_field_window_handle && --maxWait) {
@@ -185,7 +182,7 @@ private:
 			size_t curr = 0;
 
 			while (expected != curr) {
-				::SendMessage(edit_field_window_handle, WM_SETTEXT, 0, (LPARAM) filename);
+				::SendMessage(edit_field_window_handle, WM_SETTEXT, 0, reinterpret_cast<LPARAM>(filename));
 				wait(1000);
 				curr = ::SendMessage(edit_field_window_handle, WM_GETTEXTLENGTH, 0, 0);
 			}
@@ -197,8 +194,7 @@ private:
 					total += ::SendMessage(open_window_handle, WM_LBUTTONDOWN, 0, 0);
 					total += ::SendMessage(open_window_handle, WM_LBUTTONUP, 0, 0);
 
-					if (total == 0)
-					{
+					if (total == 0) {
 						return true;
 					}
 

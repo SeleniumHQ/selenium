@@ -38,24 +38,8 @@ protected:
 			return;
 		}
 
-		CComPtr<IHTMLDocument2> doc;
-		browser_wrapper->GetDocument(&doc);
-
-		if (!doc) {
-			response->SetResponse(ENOSUCHDOCUMENT, "Unable to get document");
-			return;
-		}
-
-		CComBSTR url;
-		HRESULT hr = doc->get_URL(&url);
-		if (FAILED(hr)) {
-			LOGHR(WARN, hr) << "Unable to get current URL";
-			response->SetSuccessResponse("");
-			return;
-		}
-
-		std::string url_str = CW2A((LPCWSTR)url, CP_UTF8);
-		response->SetSuccessResponse(url_str);
+		std::string url = browser_wrapper->GetCurrentUrl();
+		response->SetSuccessResponse(url);
 	}
 };
 

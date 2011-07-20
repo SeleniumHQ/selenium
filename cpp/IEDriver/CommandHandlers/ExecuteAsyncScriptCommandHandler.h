@@ -61,7 +61,7 @@ protected:
 			_itow_s(timeout_value, &timeout_buffer[0], 12, 10);
 			std::wstring timeout = &timeout_buffer[0];
 
-			std::wstring script_body = CA2W(script_parameter_iterator->second.asString().c_str(), CP_UTF8);
+			std::wstring script_body = CA2W(script_parameter_iterator->second.asCString(), CP_UTF8);
 
 			std::wstring async_script = L"(function() { return function(){\n";
 			async_script += L"document.__$webdriverAsyncExecutor = {\n";

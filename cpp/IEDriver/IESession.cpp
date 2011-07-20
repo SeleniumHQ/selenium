@@ -44,7 +44,7 @@ void IESession::Initialize(void* init_params) {
 
 	vector<TCHAR> window_text_buffer(37);
 	::GetWindowText(executor_window_handle, &window_text_buffer[0], 37);
-	std::wstring session_id = &window_text_buffer[0];
+	std::string session_id = CW2A(&window_text_buffer[0], CP_UTF8);
 
 	this->executor_window_handle_ = executor_window_handle;
 	this->set_session_id(session_id);
@@ -64,7 +64,7 @@ void IESession::ShutDown(void) {
 	}
 }
 
-bool IESession::ExecuteCommand(const std::wstring& serialized_command, std::wstring* serialized_response) {
+bool IESession::ExecuteCommand(const std::string& serialized_command, std::string* serialized_response) {
 	// Sending a command consists of five actions:
 	// 1. Setting the command to be executed
 	// 2. Executing the command
@@ -82,7 +82,7 @@ bool IESession::ExecuteCommand(const std::wstring& serialized_command, std::wstr
 	}
 
 	// Must add one to the length to handle the terminating character.
-	std::vector<TCHAR> response_buffer(response_length + 1);
+	std::vector<char> response_buffer(response_length + 1);
 	::SendMessage(this->executor_window_handle_, WD_GET_RESPONSE, NULL, reinterpret_cast<LPARAM>(&response_buffer[0]));
 	*serialized_response = &response_buffer[0];
 	bool session_is_valid = ::SendMessage(this->executor_window_handle_, WD_IS_SESSION_VALID, NULL, NULL) != 0;

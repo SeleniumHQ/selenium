@@ -31,11 +31,10 @@ public:
 protected:
 	void GetAllWindowHandlesCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
 		Json::Value handles(Json::arrayValue);
-		std::vector<std::wstring> handle_list;
+		std::vector<std::string> handle_list;
 		executor.GetManagedBrowserHandles(&handle_list);
 		for (unsigned int i = 0; i < handle_list.size(); ++i) {
-			std::string handle = CW2A(handle_list[i].c_str(), CP_UTF8);
-			handles.append(handle);
+			handles.append(handle_list[i]);
 		}
 
 		response->SetSuccessResponse(handles);

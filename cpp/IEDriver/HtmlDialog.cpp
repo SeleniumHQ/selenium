@@ -72,21 +72,21 @@ HWND HtmlDialog::GetWindowHandle() {
 	return this->window_handle();
 }
 
-std::wstring HtmlDialog::GetWindowName() {
-	return L"";
+std::string HtmlDialog::GetWindowName() {
+	return "";
 }
 
-std::wstring HtmlDialog::GetTitle() {
+std::string HtmlDialog::GetTitle() {
 	CComPtr<IHTMLDocument2> doc;
 	this->GetDocument(&doc);
 	CComBSTR title;
 	HRESULT hr = doc->get_title(&title);
 	if (FAILED(hr)) {
 		LOGHR(WARN, hr) << "Unable to get document title";
-		return L"";
+		return "";
 	}
 
-	std::wstring title_string(title);
+	std::string title_string = CW2A(title, CP_UTF8);
 	return title_string;
 }
 
@@ -118,7 +118,7 @@ void HtmlDialog::SetWidth(long width) {
 void HtmlDialog::SetHeight(long height) {
 }
 
-int HtmlDialog::NavigateToUrl(const std::wstring& url) {
+int HtmlDialog::NavigateToUrl(const std::string& url) {
 	// Cannot force navigation on windows opened with showModalDialog();
 	return ENOTIMPLEMENTED;
 }

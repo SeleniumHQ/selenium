@@ -37,33 +37,19 @@ protected:
 			return;
 		}
 
-		std::wstring cookie_string = browser_wrapper->GetCookies();
-		while (cookie_string.size() > 0) {
-			size_t cookie_delimiter_pos = cookie_string.find(L"; ");
-			std::wstring cookie_element = cookie_string.substr(0, cookie_delimiter_pos);
-			if (cookie_delimiter_pos == std::wstring::npos) {
-				cookie_string = L"";
-			} else {
-				cookie_string = cookie_string.substr(cookie_delimiter_pos + 2);
-			}
-
-			std::wstring cookie_name = this->GetCookieName(cookie_element);
+		std::map<std::string, std::string> cookies;
+		browser_wrapper->GetCookies(&cookies);
+		std::map<std::string, std::string>::const_iterator it = cookies.begin();
+		for (; it != cookies.end(); ++it) {
+			std::string cookie_name = it->first;
 			status_code = browser_wrapper->DeleteCookie(cookie_name);
 			if (status_code != SUCCESS) {
-				std::string error_cookie_name(CW2A(cookie_name.c_str(), CP_UTF8));
-				response->SetErrorResponse(status_code, "Unable to delete cookie with name '" + error_cookie_name + "'");
+				response->SetErrorResponse(status_code, "Unable to delete cookie with name '" + cookie_name + "'");
 				return;
 			}
 		}
 
 		response->SetSuccessResponse(Json::Value::null);
-	}
-
-private:
-	std::wstring DeleteAllCookiesCommandHandler::GetCookieName(const std::wstring& cookie) {
-		size_t cookie_separator_pos = cookie.find_first_of(L"=");
-		std::wstring cookie_name = cookie.substr(0, cookie_separator_pos);
-		return cookie_name;
 	}
 };
 

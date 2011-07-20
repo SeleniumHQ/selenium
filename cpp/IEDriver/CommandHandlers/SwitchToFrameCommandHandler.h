@@ -54,7 +54,7 @@ protected:
 			if (element_id.isNull()) {
 				status_code = ENOSUCHFRAME;
 			} else {
-				std::wstring frame_element_id = CA2W(element_id.asString().c_str(), CP_UTF8);
+				std::string frame_element_id = element_id.asString();
 
 				ElementHandle frame_element_wrapper;
 				status_code = this->GetElement(executor, frame_element_id, &frame_element_wrapper);
@@ -63,7 +63,7 @@ protected:
 				}
 			}
 		} else if (frame_id.isString()) {
-			std::wstring frame_name = CA2W(frame_id.asString().c_str(), CP_UTF8);
+			std::string frame_name = frame_id.asString();
 			status_code = browser_wrapper->SetFocusedFrameByName(frame_name);
 		} else if(frame_id.isIntegral()) {
 			int frame_index = frame_id.asInt();

@@ -51,7 +51,7 @@ protected:
 			// Retry up to 10 times to find the dialog.
 			int max_wait = 10;
 			while ((text_box_handle == NULL) && --max_wait) {
-				::EnumChildWindows(alert_handle, &SendKeysToAlertCommandHandler::FindTextBox, (LPARAM)&text_box_handle);
+				::EnumChildWindows(alert_handle, &SendKeysToAlertCommandHandler::FindTextBox, reinterpret_cast<LPARAM>(&text_box_handle));
 				if (text_box_handle == NULL) {
 					::Sleep(50);
 				}
@@ -60,8 +60,8 @@ protected:
 			if (text_box_handle == NULL) {
 				response->SetErrorResponse(EUNHANDLEDERROR, "Could not find text box");
 			} else {
-				std::wstring text = CA2W(text_parameter_iterator->second.asString().c_str(), CP_UTF8);
-				::SendMessage(text_box_handle, WM_SETTEXT, NULL, (LPARAM)text.c_str());
+				std::wstring text = CA2W(text_parameter_iterator->second.asCString(), CP_UTF8);
+				::SendMessage(text_box_handle, WM_SETTEXT, NULL, reinterpret_cast<LPARAM>(text.c_str()));
 				response->SetSuccessResponse(Json::Value::null);
 			}
 		}

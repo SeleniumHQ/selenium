@@ -43,7 +43,7 @@ protected:
 			// Retry up to 10 times to find the dialog.
 			int max_wait = 10;
 			while ((button_handle == NULL) && --max_wait) {
-				::EnumChildWindows(alert_handle, &AcceptAlertCommandHandler::FindOKButton, (LPARAM)&button_handle);
+				::EnumChildWindows(alert_handle, &AcceptAlertCommandHandler::FindOKButton, reinterpret_cast<LPARAM>(&button_handle));
 				if (button_handle == NULL) {
 					::Sleep(50);
 				}
@@ -55,7 +55,7 @@ protected:
 			if (button_handle == NULL) {
 				max_wait = 10;
 				while ((button_handle == NULL) && --max_wait) {
-					::EnumChildWindows(alert_handle, &AcceptAlertCommandHandler::FindCancelButton, (LPARAM)&button_handle);
+					::EnumChildWindows(alert_handle, &AcceptAlertCommandHandler::FindCancelButton, reinterpret_cast<LPARAM>(&button_handle));
 					if (button_handle == NULL) {
 						::Sleep(50);
 					} else {

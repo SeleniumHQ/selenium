@@ -44,20 +44,12 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter: value");
 			return;
 		} else {
-			std::wstring mechanism = CA2W(using_parameter_iterator->second.asString().c_str(), CP_UTF8);
-			std::wstring value = CA2W(value_parameter_iterator->second.asString().c_str(), CP_UTF8);
-
-			std::wstring mechanism_translation;
-			int status_code = executor.GetElementFindMethod(mechanism, &mechanism_translation);
-			if (status_code != SUCCESS) {
-				response->SetErrorResponse(status_code, "Unknown finder mechanism: " + using_parameter_iterator->second.asString());
-				return;
-			}
-
-			std::wstring element_id = CA2W(id_parameter_iterator->second.c_str(), CP_UTF8);
+			std::string mechanism = using_parameter_iterator->second.asString();
+			std::string value = value_parameter_iterator->second.asString();
+			std::string element_id = id_parameter_iterator->second;
 
 			ElementHandle parent_element_wrapper;
-			status_code = this->GetElement(executor, element_id, &parent_element_wrapper);
+			int status_code = this->GetElement(executor, element_id, &parent_element_wrapper);
 
 			if (status_code == SUCCESS) {
 				Json::Value found_elements(Json::arrayValue);
@@ -68,10 +60,12 @@ protected:
 					end += 1 * CLOCKS_PER_SEC;
 				}
 
-				status_code = SUCCESS;
 				do {
-					status_code = executor.LocateElements(parent_element_wrapper, mechanism_translation, value, &found_elements);
+					status_code = executor.LocateElements(parent_element_wrapper, mechanism, value, &found_elements);
 					if (status_code == SUCCESS && found_elements.size() > 0) {
+						break;
+					} else if (status_code == EUNHANDLEDERROR) {
+						response->SetErrorResponse(status_code, "Unknown finder mechanism: " + mechanism);
 						break;
 					} else {
 						// Release the thread so that the browser doesn't starve.

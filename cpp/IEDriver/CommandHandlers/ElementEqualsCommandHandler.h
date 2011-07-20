@@ -40,8 +40,8 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter in URL: other");
 			return;
 		} else {
-			std::wstring element_id = CA2W(id_parameter_iterator->second.c_str(), CP_UTF8);
-			std::wstring other_element_id = CA2W(other_parameter_iterator->second.c_str(), CP_UTF8);
+			std::string element_id = id_parameter_iterator->second;
+			std::string other_element_id = other_parameter_iterator->second;
 
 			BrowserHandle browser_wrapper;
 			int status_code = executor.GetCurrentBrowser(&browser_wrapper);

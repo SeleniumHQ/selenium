@@ -33,8 +33,8 @@ public:
 	virtual void Close(void) = 0;
 	virtual bool Wait(void) = 0;
 	virtual HWND GetWindowHandle(void) = 0;
-	virtual std::wstring GetWindowName(void) = 0;
-	virtual std::wstring GetTitle(void) = 0;
+	virtual std::string GetWindowName(void) = 0;
+	virtual std::string GetTitle(void) = 0;
 	virtual HWND GetActiveDialogWindowHandle(void) = 0;
 	virtual HWND GetTopLevelWindowHandle(void) = 0;
 
@@ -43,17 +43,20 @@ public:
 	virtual void SetWidth(long width) = 0;
 	virtual void SetHeight(long height) = 0;
 
-	virtual int NavigateToUrl(const std::wstring& url) = 0;
+	virtual int NavigateToUrl(const std::string& url) = 0;
 	virtual int NavigateBack(void) = 0;
 	virtual int NavigateForward(void) = 0;
 	virtual int Refresh(void) = 0;
 
-	std::wstring GetCookies(void);
-	int AddCookie(const std::wstring& cookie);
-	int DeleteCookie(const std::wstring& cookie_name);
+	std::string GetCurrentUrl(void);
+	std::string GetPageSource(void);
+
+	void GetCookies(std::map<std::string, std::string>* cookies);
+	int AddCookie(const std::string& cookie);
+	int DeleteCookie(const std::string& cookie_name);
 	
 	int SetFocusedFrameByIndex(const int frame_index);
-	int SetFocusedFrameByName(const std::wstring& frame_name);
+	int SetFocusedFrameByName(const std::string& frame_name);
 	int SetFocusedFrameByElement(IHTMLElement* frame_element);
 
 	bool wait_required(void) const { return this->wait_required_; }
@@ -61,7 +64,7 @@ public:
 
 	bool is_closing(void) const { return this->is_closing_; }
 
-	std::wstring browser_id(void) const { return this->browser_id_; }
+	std::string browser_id(void) const { return this->browser_id_; }
 
 protected:
 	void PostQuitMessage(void);
@@ -82,7 +85,7 @@ private:
 	CComPtr<IHTMLWindow2> focused_frame_window_;
 	HWND window_handle_;
 	HWND executor_handle_;
-	std::wstring browser_id_;
+	std::string browser_id_;
 	bool wait_required_;
 	bool is_closing_;
 };

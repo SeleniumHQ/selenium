@@ -30,11 +30,11 @@ public:
 
 protected:
 	void QuitCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		std::vector<std::wstring> managed_browser_handles;
+		std::vector<std::string> managed_browser_handles;
 		executor.GetManagedBrowserHandles(&managed_browser_handles);
 
-		std::vector<std::wstring>::iterator end = managed_browser_handles.end();
-		for (std::vector<std::wstring>::iterator it = managed_browser_handles.begin(); it != end; ++it) {
+		std::vector<std::string>::iterator end = managed_browser_handles.end();
+		for (std::vector<std::string>::iterator it = managed_browser_handles.begin(); it != end; ++it) {
 			BrowserHandle browser_wrapper;
 			int status_code = executor.GetManagedBrowser(*it, &browser_wrapper);
 			if (status_code == SUCCESS && !browser_wrapper->is_closing()) {

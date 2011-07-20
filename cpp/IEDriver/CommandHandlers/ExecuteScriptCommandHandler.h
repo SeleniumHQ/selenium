@@ -39,8 +39,8 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter: args");
 			return;
 		} else {
-			std::wstring script_body = CA2W(script_parameter_iterator->second.asString().c_str(), CP_UTF8);
-			const std::wstring script_source = L"(function() { return function(){" + script_body + L"};})();";
+			std::string script_body = script_parameter_iterator->second.asString();
+			const std::string script_source = "(function() { return function(){" + script_body + "};})();";
 
 			Json::Value json_args(args_parameter_iterator->second);
 
@@ -90,7 +90,7 @@ protected:
 	int ExecuteScriptCommandHandler::AddArgument(const IECommandExecutor& executor, Script& script_wrapper, Json::Value arg) {
 		int status_code = SUCCESS;
 		if (arg.isString()) {
-			std::wstring value = CA2W(arg.asString().c_str(), CP_UTF8);
+			std::string value = arg.asString();
 			script_wrapper.AddArgument(value);
 		} else if (arg.isInt()) {
 			int int_number = arg.asInt();
@@ -105,7 +105,7 @@ protected:
 			this->WalkArray(executor, script_wrapper, arg);
 		} else if (arg.isObject()) {
 			if (arg.isMember("ELEMENT")) {
-				std::wstring element_id = CA2W(arg["ELEMENT"].asString().c_str(), CP_UTF8);
+				std::string element_id = arg["ELEMENT"].asString();
 
 				ElementHandle element_wrapper;
 				status_code = this->GetElement(executor, element_id, &element_wrapper);
@@ -163,19 +163,19 @@ protected:
 		int status_code = SUCCESS;
 		Json::Value::iterator it = object_value.begin();
 		int counter = 0;
-		std::wstring object_script = L"(function(){ return function() { return {";
+		std::string object_script = "(function(){ return function() { return {";
 		for (; it != object_value.end(); ++it) {
 			if (counter != 0) {
-				object_script += L",";
+				object_script += ",";
 			}
-			std::vector<wchar_t> counter_buffer(10);
-			_itow_s(counter, &counter_buffer[0], 10, 10);
-			std::wstring counter_string = &counter_buffer[0];
-			std::wstring name = CA2W(it.memberName(), CP_UTF8);
-			object_script += name + L":arguments[" + counter_string + L"]";
+			std::vector<char> counter_buffer(10);
+			_itoa_s(counter, &counter_buffer[0], 10, 10);
+			std::string counter_string = &counter_buffer[0];
+			std::string name = it.memberName();
+			object_script += name + ":arguments[" + counter_string + "]";
 			++counter;
 		}
-		object_script += L"};}})();";
+		object_script += "};}})();";
 
 		BrowserHandle browser;
 		executor.GetCurrentBrowser(&browser);

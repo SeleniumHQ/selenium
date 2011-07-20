@@ -40,15 +40,8 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter: value");
 			return;
 		} else {
-			std::wstring mechanism = CA2W(using_parameter_iterator->second.asString().c_str(), CP_UTF8);
-			std::wstring value = CA2W(value_parameter_iterator->second.asString().c_str(), CP_UTF8);
-
-			std::wstring mechanism_translation;
-			int status_code = executor.GetElementFindMethod(mechanism, &mechanism_translation);
-			if (status_code != SUCCESS) {
-				response->SetErrorResponse(status_code, "Unknown finder mechanism: " + using_parameter_iterator->second.asString());
-				return;
-			}
+			std::string mechanism = using_parameter_iterator->second.asString();
+			std::string value = value_parameter_iterator->second.asString();
 
 			int timeout = executor.implicit_wait_timeout();
 			clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
@@ -56,10 +49,14 @@ protected:
 				end += 1 * CLOCKS_PER_SEC;
 			}
 
+			int status_code = SUCCESS;
 			Json::Value found_element;
 			do {
-				status_code = executor.LocateElement(ElementHandle(), mechanism_translation, value, &found_element);
+				status_code = executor.LocateElement(ElementHandle(), mechanism, value, &found_element);
 				if (status_code == SUCCESS) {
+					break;
+				} else if (status_code == EUNHANDLEDERROR) {
+					response->SetErrorResponse(status_code, "Unknown finder mechanism: " + mechanism);
 					break;
 				} else {
 					// Release the thread so that the browser doesn't starve.
@@ -71,18 +68,9 @@ protected:
 				response->SetSuccessResponse(found_element);
 				return;
 			} else {
-				response->SetErrorResponse(status_code, "Unable to find element with " + using_parameter_iterator->second.asString() + " == " + value_parameter_iterator->second.asString());
+				response->SetErrorResponse(status_code, "Unable to find element with " + mechanism + " == " + value);
 				return;
 			}
-		}
-	}
-
-private:
-	void FindElementCommandHandler::FixSearchString(std::wstring* search_string) {
-		size_t pos = search_string->find(L"\"");
-		while (pos != std::wstring::npos) {
-			search_string->replace(pos, 1, L"\\\"");
-			pos = search_string->find(L"\"", pos + 2);
 		}
 	}
 };

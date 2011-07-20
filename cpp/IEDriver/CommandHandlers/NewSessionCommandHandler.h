@@ -45,7 +45,7 @@ protected:
 			response->SetErrorResponse(result_code, "Unexpected error launching Internet Explorer. Protected Mode must be set to the same value (enabled or disabled) for all zones.");
 			return;
 		}
-		std::string id = CW2A(executor.session_id().c_str(), CP_UTF8);
+		std::string id = executor.session_id();
 		response->SetResponse(303, "/session/" + id);
 	}
 };

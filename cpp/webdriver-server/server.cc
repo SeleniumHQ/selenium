@@ -15,7 +15,7 @@
 #include "server.h"
 #include "logging.h"
 
-#define SERVER_DEFAULT_PAGE L"<html><head><title>WebDriver</title></head><body><p id='main'>This is the initial start page for the WebDriver server.</p></body></html>"
+#define SERVER_DEFAULT_PAGE "<html><head><title>WebDriver</title></head><body><p id='main'>This is the initial start page for the WebDriver server.</p></body></html>"
 #define HTML_CONTENT_TYPE "text/html"
 #define JSON_CONTENT_TYPE "application/json"
 
@@ -32,7 +32,7 @@ Server::Server(const int port) {
 Server::~Server(void) {
   SessionMap::iterator it = this->sessions_.begin();
   for (; it != this->sessions_.end(); ++it) {
-    std::wstring session_id = it->first;
+    std::string session_id = it->first;
     this->ShutDownSession(session_id);
   }
 }
@@ -74,7 +74,7 @@ int Server::ProcessRequest(struct mg_connection* conn,
     const struct mg_request_info* request_info) {
   int http_response_code = NULL;
   std::string http_verb = request_info->request_method;
-  std::wstring request_body = L"{}";
+  std::string request_body = "{}";
   if (http_verb == "POST") {
     request_body = this->ReadRequestBody(conn, request_info);
   }
@@ -86,7 +86,7 @@ int Server::ProcessRequest(struct mg_connection* conn,
                      HTML_CONTENT_TYPE);
     http_response_code = 200;
   } else {
-    std::wstring serialized_response = this->DispatchCommand(request_info->uri,
+    std::string serialized_response = this->DispatchCommand(request_info->uri,
                                                              http_verb,
                                                              request_body);
     http_response_code = this->SendResponseToClient(conn,
@@ -97,14 +97,14 @@ int Server::ProcessRequest(struct mg_connection* conn,
   return http_response_code;
 }
 
-std::wstring Server::CreateSession() {
+std::string Server::CreateSession() {
   SessionHandle session_handle= this->InitializeSession();
-  std::wstring session_id = session_handle->session_id();
+  std::string session_id = session_handle->session_id();
   this->sessions_[session_id] = session_handle;
   return session_id;
 }
 
-void Server::ShutDownSession(const std::wstring& session_id) {
+void Server::ShutDownSession(const std::string& session_id) {
   SessionMap::iterator it = this->sessions_.find(session_id);
   if (it != this->sessions_.end()) {
     it->second->ShutDown();
@@ -112,9 +112,9 @@ void Server::ShutDownSession(const std::wstring& session_id) {
   }
 }
 
-std::wstring Server::ReadRequestBody(struct mg_connection* conn,
+std::string Server::ReadRequestBody(struct mg_connection* conn,
     const struct mg_request_info* request_info) {
-  std::wstring request_body = L"";
+  std::string request_body = "";
   int content_length = 0;
   for (int header_index = 0; header_index < 64; ++header_index) {
     if (request_info->http_headers[header_index].name == NULL) {
@@ -127,29 +127,28 @@ std::wstring Server::ReadRequestBody(struct mg_connection* conn,
     }
   }
   if (content_length == 0) {
-    request_body = L"{}";
+    request_body = "{}";
   } else {
-    std::vector<char> input_buffer(content_length + 1);
+    std::vector<char> buffer(content_length + 1);
     int bytes_read = 0;
     while (bytes_read < content_length) {
       bytes_read += mg_read(conn,
-                            &input_buffer[bytes_read],
+                            &buffer[bytes_read],
                             content_length - bytes_read);
     }
-    input_buffer[content_length] = '\0';
-    std::wstring body = StringUtilities::CharBufferToWideString(input_buffer);
-    request_body.append(body);
+    buffer[content_length] = '\0';
+    request_body.append(&buffer[0]);
   }
 
   return request_body;
 }
 
-std::wstring Server::DispatchCommand(const std::string& uri,
+std::string Server::DispatchCommand(const std::string& uri,
                                      const std::string& http_verb,
-                                     const std::wstring& command_body) {
-  std::wstring session_id = L"";
-  std::wstring locator_parameters = L"";
-  std::wstring serialized_response = L"";
+                                     const std::string& command_body) {
+  std::string session_id = "";
+  std::string locator_parameters = "";
+  std::string serialized_response = "";
   int command = this->LookupCommand(uri,
                                     http_verb,
                                     &session_id,
@@ -157,22 +156,20 @@ std::wstring Server::DispatchCommand(const std::string& uri,
   if (command == NoCommand) {
     if (locator_parameters.size() != 0) {
       // Hand-code the response for an invalid HTTP verb for URL
-      serialized_response.append(L"{ \"status\" : 405, ");
-      serialized_response.append(L"\"sessionId\" : \"<no session>\", ");
-      serialized_response.append(L"\"value\" : \"");
+      serialized_response.append("{ \"status\" : 405, ");
+      serialized_response.append("\"sessionId\" : \"<no session>\", ");
+      serialized_response.append("\"value\" : \"");
       serialized_response.append(locator_parameters);
-      serialized_response.append(L"\" }");
+      serialized_response.append("\" }");
     } else {
       // Hand-code the response for an unknown URL
-      std::wstring url = StringUtilities::NarrowStringToWideString(uri);
-      std::wstring verb = StringUtilities::NarrowStringToWideString(http_verb);
-      serialized_response.append(L"{ \"status\" : 404, ");
-      serialized_response.append(L"\"sessionId\" : \"<no session>\", ");
-      serialized_response.append(L"\"value\" : \"Command not found: ");
-      serialized_response.append(verb);
-      serialized_response.append(L" ");
-      serialized_response.append(url);
-      serialized_response.append(L"\" }");
+      serialized_response.append("{ \"status\" : 404, ");
+      serialized_response.append("\"sessionId\" : \"<no session>\", ");
+      serialized_response.append("\"value\" : \"Command not found: ");
+      serialized_response.append(http_verb);
+      serialized_response.append(" ");
+      serialized_response.append(uri);
+      serialized_response.append("\" }");
     }
   } else {
     if (command == NewSession) {
@@ -182,25 +179,25 @@ std::wstring Server::DispatchCommand(const std::string& uri,
     SessionHandle session_handle = NULL;
     if (!this->LookupSession(session_id, &session_handle)) {
       // Hand-code the response for an invalid session id
-      serialized_response.append(L"{ \"status\" : 404, ");
-      serialized_response.append(L"\"sessionId\" : \"");
+      serialized_response.append("{ \"status\" : 404, ");
+      serialized_response.append("\"sessionId\" : \"");
       serialized_response.append(session_id);
-      serialized_response.append(L"\", ");
-      serialized_response.append(L"\"value\" : \"session ");
+      serialized_response.append("\", ");
+      serialized_response.append("\"value\" : \"session ");
       serialized_response.append(session_id);
-      serialized_response.append(L" does not exist\" }");
+      serialized_response.append(" does not exist\" }");
     } else {
       // Compile the serialized JSON representation of the command by hand.
-      std::wstringstream command_value_stream;
+      std::stringstream command_value_stream;
       command_value_stream << command;
-      std::wstring command_value = command_value_stream.str();
+      std::string command_value = command_value_stream.str();
 
-      std::wstring serialized_command = L"{ \"command\" : " + command_value;
-      serialized_command.append(L", \"locator\" : ");
+      std::string serialized_command = "{ \"command\" : " + command_value;
+      serialized_command.append(", \"locator\" : ");
       serialized_command.append(locator_parameters);
-      serialized_command.append(L", \"parameters\" : ");
+      serialized_command.append(", \"parameters\" : ");
       serialized_command.append(command_body);
-      serialized_command.append(L" }");
+      serialized_command.append(" }");
       bool session_is_valid = session_handle->ExecuteCommand(
           serialized_command,
           &serialized_response);
@@ -213,7 +210,7 @@ std::wstring Server::DispatchCommand(const std::string& uri,
 }
 
 
-bool Server::LookupSession(const std::wstring& session_id,
+bool Server::LookupSession(const std::string& session_id,
                            SessionHandle* session_handle) {
   SessionMap::iterator it = this->sessions_.find(session_id);
   if (it == this->sessions_.end()) {
@@ -225,7 +222,7 @@ bool Server::LookupSession(const std::wstring& session_id,
 
 int Server::SendResponseToClient(struct mg_connection* conn,
                                  const struct mg_request_info* request_info,
-                                 const std::wstring& serialized_response) {
+                                 const std::string& serialized_response) {
   int return_code = 0;
   if (serialized_response.size() > 0) {
     Response response;
@@ -271,18 +268,17 @@ int Server::SendResponseToClient(struct mg_connection* conn,
 // not covered in the JSON protocol.
 void Server::SendHttpOk(struct mg_connection* connection,
                         const struct mg_request_info* request_info,
-                        const std::wstring& body,
+                        const std::string& body,
                         const std::string& content_type) {
-  std::string narrow_body = StringUtilities::WideStringToNarrowString(body);
   std::ostringstream out;
   out << "HTTP/1.1 200 OK\r\n"
-    << "Content-Length: " << strlen(narrow_body.c_str()) << "\r\n"
+    << "Content-Length: " << strlen(body.c_str()) << "\r\n"
     << "Content-Type: " << content_type << "; charset=UTF-8\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n"
     << "Connection: close\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
-    out << narrow_body << "\r\n";
+    out << body << "\r\n";
   }
 
   mg_write(connection, out.str().c_str(), out.str().size());
@@ -290,17 +286,16 @@ void Server::SendHttpOk(struct mg_connection* connection,
 
 void Server::SendHttpBadRequest(struct mg_connection* const connection,
                                 const struct mg_request_info* request_info,
-                                const std::wstring& body) {
-  std::string narrow_body = StringUtilities::WideStringToNarrowString(body);
+                                const std::string& body) {
   std::ostringstream out;
   out << "HTTP/1.1 400 Bad Request\r\n"
-    << "Content-Length: " << strlen(narrow_body.c_str()) << "\r\n"
+    << "Content-Length: " << strlen(body.c_str()) << "\r\n"
     << "Content-Type: application/json; charset=UTF-8\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n"
     << "Connection: close\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
-    out << narrow_body << "\r\n";
+    out << body << "\r\n";
   }
 
   mg_printf(connection, "%s", out.str().c_str());
@@ -308,17 +303,16 @@ void Server::SendHttpBadRequest(struct mg_connection* const connection,
 
 void Server::SendHttpInternalError(struct mg_connection* connection,
                                    const struct mg_request_info* request_info,
-                                   const std::wstring& body) {
-  std::string narrow_body = StringUtilities::WideStringToNarrowString(body);
+                                   const std::string& body) {
   std::ostringstream out;
   out << "HTTP/1.1 500 Internal Server Error\r\n"
-    << "Content-Length: " << strlen(narrow_body.c_str()) << "\r\n"
+    << "Content-Length: " << strlen(body.c_str()) << "\r\n"
     << "Content-Type: application/json; charset=UTF-8\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n"
     << "Connection: close\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
-    out << narrow_body << "\r\n";
+    out << body << "\r\n";
   }
 
   mg_write(connection, out.str().c_str(), out.str().size());
@@ -326,17 +320,16 @@ void Server::SendHttpInternalError(struct mg_connection* connection,
 
 void Server::SendHttpNotFound(struct mg_connection* const connection,
                               const struct mg_request_info* request_info,
-                              const std::wstring& body) {
-  std::string narrow_body = StringUtilities::WideStringToNarrowString(body);
+                              const std::string& body) {
   std::ostringstream out;
   out << "HTTP/1.1 404 Not Found\r\n"
-    << "Content-Length: " << strlen(narrow_body.c_str()) << "\r\n"
+    << "Content-Length: " << strlen(body.c_str()) << "\r\n"
     << "Content-Type: application/json; charset=UTF-8\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n"
     << "Connection: close\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
-    out << narrow_body << "\r\n";
+    out << body << "\r\n";
   }
 
   mg_printf(connection, "%s", out.str().c_str());
@@ -381,8 +374,8 @@ void Server::SendHttpSeeOther(struct mg_connection* connection,
 
 int Server::LookupCommand(const std::string& uri,
                           const std::string& http_verb,
-                          std::wstring* session_id,
-                          std::wstring* locator) {
+                          std::string* session_id,
+                          std::string* locator) {
   int value = NoCommand;
   UrlMap::const_iterator it = this->commands_.begin();
   for (; it != this->commands_.end(); ++it) {
@@ -428,21 +421,20 @@ int Server::LookupCommand(const std::string& uri,
           param.append(locator_param_value);
           param.append("\"");
           if (locator_param_names[i] == "sessionid") {
-            session_id->append(CA2W(locator_param_value.c_str(), CP_UTF8));
+            session_id->append(locator_param_value);
           }
         }
 
         param.append(" }");
-        std::wstring wide_param(param.begin(), param.end());
-        locator->append(wide_param);
+        locator->append(param);
         break;
       } else {
         verb_iterator = it->second.begin();
         for (; verb_iterator != it->second.end(); ++verb_iterator) {
           if (locator->size() != 0) {
-            locator->append(L",");
+            locator->append(",");
           }
-          locator->append(CA2W(verb_iterator->first.c_str(), CP_UTF8));
+          locator->append(verb_iterator->first);
         }
       }
     }

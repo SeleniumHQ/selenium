@@ -30,7 +30,7 @@ public:
 
 protected:
 	void ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		std::string current_handle = CW2A(executor.current_browser_id().c_str(), CP_UTF8);
+		std::string current_handle = executor.current_browser_id();
 		response->SetSuccessResponse(current_handle);
 	}
 };

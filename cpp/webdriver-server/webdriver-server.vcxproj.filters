@@ -21,9 +21,6 @@
     <ClCompile Include="response.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="string_utilities.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="server.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -39,9 +36,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="session.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="string_utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="precompile.h">

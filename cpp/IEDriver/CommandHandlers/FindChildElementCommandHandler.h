@@ -44,20 +44,12 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter: value");
 			return;
 		} else {
-			std::wstring mechanism = CA2W(using_parameter_iterator->second.asString().c_str(), CP_UTF8);
-			std::wstring value = CA2W(value_parameter_iterator->second.asString().c_str(), CP_UTF8);
-
-			std::wstring mechanism_translation;
-			int status_code = executor.GetElementFindMethod(mechanism, &mechanism_translation);
-			if (status_code != SUCCESS) {
-				response->SetErrorResponse(status_code, "Unknown finder mechanism: " + using_parameter_iterator->second.asString());
-				return;
-			}
-
-			std::wstring element_id = CA2W(id_parameter_iterator->second.c_str(), CP_UTF8);
+			std::string mechanism = using_parameter_iterator->second.asString();
+			std::string value = value_parameter_iterator->second.asString();
+			std::string element_id = id_parameter_iterator->second;
 
 			ElementHandle parent_element_wrapper;
-			status_code = this->GetElement(executor, element_id, &parent_element_wrapper);
+			int status_code = this->GetElement(executor, element_id, &parent_element_wrapper);
 
 			if (status_code == SUCCESS) {
 				Json::Value found_element;
@@ -69,8 +61,11 @@ protected:
 				}
 
 				do {
-					status_code = executor.LocateElement(parent_element_wrapper, mechanism_translation, value, &found_element);
+					status_code = executor.LocateElement(parent_element_wrapper, mechanism, value, &found_element);
 					if (status_code == SUCCESS) {
+						break;
+					} else if (status_code == EUNHANDLEDERROR) {
+						response->SetErrorResponse(status_code, "Unknown finder mechanism: " + mechanism);
 						break;
 					} else {
 						// Release the thread so that the browser doesn't starve.
@@ -82,7 +77,7 @@ protected:
 					response->SetSuccessResponse(found_element);
 					return;
 				} else {
-					response->SetErrorResponse(status_code, "Unable to find element with " + using_parameter_iterator->second.asString() + " == " + value_parameter_iterator->second.asString());
+					response->SetErrorResponse(status_code, "Unable to find element with " + mechanism + " == " + value);
 					return;
 				}
 			} else {

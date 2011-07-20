@@ -28,14 +28,15 @@ public:
 	Element(IHTMLElement* element, HWND containing_window_handle);
 	virtual ~Element(void);
 	Json::Value ConvertToJson(void);
+	std::string GetTagName(void);
 	int GetLocationOnceScrolledIntoView(long* x, long* y, long* width, long* height);
-	int GetAttributeValue(const std::wstring& attribute_name, VARIANT* attribute_value);
+	int GetAttributeValue(const std::string& attribute_name, std::string* attribute_value, bool* value_is_null);
 	int IsDisplayed(bool* result);
 	bool IsEnabled(void);
 	bool IsSelected(void);
 	int Click(void);
 
-	std::wstring element_id(void) const { return this->element_id_; }
+	std::string element_id(void) const { return this->element_id_; }
 	IHTMLElement* element(void) { return this->element_; }
 
 private:
@@ -45,7 +46,7 @@ private:
 	int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
 	int GetParentDocument(IHTMLWindow2* parent_window, IHTMLDocument2** parent_doc);
 
-	std::wstring element_id_;
+	std::string element_id_;
 	CComPtr<IHTMLElement> element_;
 	HWND containing_window_handle_;
 };

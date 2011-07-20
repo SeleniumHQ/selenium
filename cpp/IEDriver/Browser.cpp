@@ -43,7 +43,7 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, D
 	// showModalDialog function().
 	IWebBrowser2* browser;
 	LPSTREAM message_payload;
-	::SendMessage(this->executor_handle(), WD_BROWSER_NEW_WINDOW, NULL, (LPARAM)&message_payload);
+	::SendMessage(this->executor_handle(), WD_BROWSER_NEW_WINDOW, NULL, reinterpret_cast<LPARAM>(&message_payload));
 	HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IWebBrowser2, reinterpret_cast<void**>(&browser));
 	*ppDisp = browser;
 }
@@ -99,29 +99,29 @@ void Browser::GetDocument(IHTMLDocument2** doc) {
 	}
 }
 
-std::wstring Browser::GetTitle() {
+std::string Browser::GetTitle() {
 	CComPtr<IDispatch> dispatch;
 	HRESULT hr = this->browser_->get_Document(&dispatch);
 	if (FAILED(hr)) {
 		LOGHR(DEBUG, hr) << "Unable to get document";
-		return L"";
+		return "";
 	}
 
 	CComPtr<IHTMLDocument2> doc;
 	hr = dispatch->QueryInterface(&doc);
 	if (FAILED(hr)) {
 		LOGHR(WARN, hr) << "Have document but cannot cast";
-		return L"";
+		return "";
 	}
 
 	CComBSTR title;
 	hr = doc->get_title(&title);
 	if (FAILED(hr)) {
 		LOGHR(WARN, hr) << "Unable to get document title";
-		return L"";
+		return "";
 	}
 
-	std::wstring title_string = title;
+	std::string title_string = CW2A(title, CP_UTF8);
 	return title_string;
 }
 
@@ -142,28 +142,28 @@ HWND Browser::GetWindowHandle() {
 	return this->window_handle();
 }
 
-std::wstring Browser::GetWindowName() {
+std::string Browser::GetWindowName() {
 	CComPtr<IDispatch> dispatch;
 	HRESULT hr = this->browser_->get_Document(&dispatch);
 	if (FAILED(hr)) {
-		return L"";
+		return "";
 	}
 	CComQIPtr<IHTMLDocument2> doc(dispatch);
 	if (!doc) {
-		return L"";
+		return "";
 	}
 
 	CComPtr<IHTMLWindow2> window;
 	hr = doc->get_parentWindow(&window);
 	if (FAILED(hr)) {
-		return L"";
+		return "";
 	}
 
-	std::wstring name = L"";
+	std::string name = "";
 	CComBSTR window_name;
 	hr = window->get_name(&window_name);
 	if (window_name) {
-		name = window_name;
+		name = CW2A(window_name, CP_UTF8);
 	}
 	return name;
 }
@@ -207,8 +207,9 @@ void Browser::Close() {
 	}
 }
 
-int Browser::NavigateToUrl(const std::wstring& url) {
-	CComVariant url_variant(url.c_str());
+int Browser::NavigateToUrl(const std::string& url) {
+	std::wstring wide_url = CA2W(url.c_str(), CP_UTF8);
+	CComVariant url_variant(wide_url.c_str());
 	CComVariant dummy;
 
 	// TODO: check HRESULT for error
@@ -440,7 +441,7 @@ HWND Browser::FindContentWindowHandle(HWND top_level_window_handle) {
 	::GetWindowThreadProcessId(top_level_window_handle, &process_id);
 	process_window_info.dwProcessId = process_id;
 
-	::EnumChildWindows(top_level_window_handle, &BrowserFactory::FindChildWindowForProcess, (LPARAM)&process_window_info);
+	::EnumChildWindows(top_level_window_handle, &BrowserFactory::FindChildWindowForProcess, reinterpret_cast<LPARAM>(&process_window_info));
 	return process_window_info.hwndBrowser;
 }
 

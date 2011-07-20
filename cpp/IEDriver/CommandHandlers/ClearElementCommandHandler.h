@@ -38,7 +38,7 @@ protected:
 		} else {
 			std::wstring text = L"";
 			int status_code = SUCCESS;
-			std::wstring element_id(CA2W(id_parameter_iterator->second.c_str(), CP_UTF8));
+			std::string element_id = id_parameter_iterator->second;
 
 			BrowserHandle browser_wrapper;
 			status_code = executor.GetCurrentBrowser(&browser_wrapper);

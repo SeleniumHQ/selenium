@@ -88,16 +88,18 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 	// RPC_WSTR is currently typedef'd in RpcDce.h (pulled in by rpc.h)
 	// as unsigned short*. It needs to be typedef'd as wchar_t* 
 	wchar_t* cast_guid_string = reinterpret_cast<wchar_t*>(guid_string);
-	this->session_id_ = cast_guid_string;
+	this->SetWindowText(cast_guid_string);
+
+	std::string session_id = CW2A(cast_guid_string, CP_UTF8);
+	this->session_id_ = session_id;
 	this->is_valid_ = true;
 
 	::RpcStringFree(&guid_string);
-	this->SetWindowText(this->session_id_.c_str());
 
 	this->PopulateCommandHandlers();
 	this->PopulateElementFinderMethods();
-	this->current_browser_id_ = L"";
-	this->serialized_response_ = L"";
+	this->current_browser_id_ = "";
+	this->serialized_response_ = "";
 	this->ignore_protected_mode_settings_ = false;
 	this->speed_ = 0;
 	this->implicit_wait_timeout_ = 0;
@@ -117,12 +119,8 @@ LRESULT IECommandExecutor::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 }
 
 LRESULT IECommandExecutor::OnSetCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-	LPCTSTR raw_command = reinterpret_cast<LPCTSTR>(lParam);
-	std::wstring json_command(raw_command);
-
-	// JsonCpp only understands narrow strings, so we have to convert.
-	std::string converted_command(CW2A(json_command.c_str(), CP_UTF8));
-	this->current_command_.Populate(converted_command);
+	LPCSTR json_command = reinterpret_cast<LPCSTR>(lParam);
+	this->current_command_.Populate(json_command);
 	return 0;
 }
 
@@ -140,11 +138,11 @@ LRESULT IECommandExecutor::OnGetResponseLength(UINT uMsg, WPARAM wParam, LPARAM 
 }
 
 LRESULT IECommandExecutor::OnGetResponse(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-	LPWSTR str = reinterpret_cast<LPWSTR>(lParam);
-	wcscpy_s(str, this->serialized_response_.size() + 1, this->serialized_response_.c_str());
+	LPSTR str = reinterpret_cast<LPSTR>(lParam);
+	strcpy_s(str, this->serialized_response_.size() + 1, this->serialized_response_.c_str());
 
 	// Reset the serialized response for the next command.
-	this->serialized_response_ = L"";
+	this->serialized_response_ = "";
 	return 0;
 }
 
@@ -181,14 +179,14 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM l
 }
 
 LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-	LPCTSTR str = reinterpret_cast<LPCTSTR>(lParam);
-	std::wstring browser_id(str);
+	LPCSTR str = reinterpret_cast<LPCSTR>(lParam);
+	std::string browser_id(str);
 	delete[] str;
 	BrowserMap::iterator found_iterator = this->managed_browsers_.find(browser_id);
 	if (found_iterator != this->managed_browsers_.end()) {
 		this->managed_browsers_.erase(browser_id);
 		if (this->managed_browsers_.size() == 0) {
-			this->current_browser_id_ = L"";
+			this->current_browser_id_ = "";
 		}
 	}
 	return 0;
@@ -252,8 +250,7 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
 }
 
 void IECommandExecutor::DispatchCommand() {
-	std::string session_id = CW2A(this->session_id_.c_str(), CP_UTF8);
-	Response response(session_id);
+	Response response(this->session_id_);
 	CommandHandlerMap::const_iterator found_iterator = this->command_handlers_.find(this->current_command_.command_type());
 
 	if (found_iterator == this->command_handlers_.end()) {
@@ -279,8 +276,8 @@ int IECommandExecutor::GetCurrentBrowser(BrowserHandle* browser_wrapper) const {
 	return this->GetManagedBrowser(this->current_browser_id_, browser_wrapper);
 }
 
-int IECommandExecutor::GetManagedBrowser(const std::wstring& browser_id, BrowserHandle* browser_wrapper) const {
-	if (browser_id == L"") {
+int IECommandExecutor::GetManagedBrowser(const std::string& browser_id, BrowserHandle* browser_wrapper) const {
+	if (browser_id == "") {
 		return ENOSUCHDRIVER;
 	}
 
@@ -293,7 +290,7 @@ int IECommandExecutor::GetManagedBrowser(const std::wstring& browser_id, Browser
 	return SUCCESS;
 }
 
-void IECommandExecutor::GetManagedBrowserHandles(std::vector<std::wstring>* managed_browser_handles) const {
+void IECommandExecutor::GetManagedBrowserHandles(std::vector<std::string>* managed_browser_handles) const {
 	// TODO: Enumerate windows looking for browser windows
 	// created by showModalDialog().
 	BrowserMap::const_iterator it = this->managed_browsers_.begin();
@@ -304,7 +301,7 @@ void IECommandExecutor::GetManagedBrowserHandles(std::vector<std::wstring>* mana
 
 void IECommandExecutor::AddManagedBrowser(BrowserHandle browser_wrapper) {
 	this->managed_browsers_[browser_wrapper->browser_id()] = browser_wrapper;
-	if (this->current_browser_id_ == L"") {
+	if (this->current_browser_id_ == "") {
 		this->current_browser_id_ = browser_wrapper->browser_id();
 	}
 }
@@ -325,7 +322,7 @@ int IECommandExecutor::CreateNewBrowser(void) {
 	return SUCCESS;
 }
 
-int IECommandExecutor::GetManagedElement(const std::wstring& element_id, ElementHandle* element_wrapper) const {
+int IECommandExecutor::GetManagedElement(const std::string& element_id, ElementHandle* element_wrapper) const {
 	ElementMap::const_iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator == this->managed_elements_.end()) {
 		return ENOSUCHELEMENT;
@@ -362,7 +359,7 @@ void IECommandExecutor::AddManagedElement(IHTMLElement* element, ElementHandle* 
 	}
 }
 
-void IECommandExecutor::RemoveManagedElement(const std::wstring& element_id) {
+void IECommandExecutor::RemoveManagedElement(const std::string& element_id) {
 	ElementMap::iterator found_iterator = this->managed_elements_.find(element_id);
 	if (found_iterator != this->managed_elements_.end()) {
 		this->managed_elements_.erase(element_id);
@@ -372,12 +369,11 @@ void IECommandExecutor::RemoveManagedElement(const std::wstring& element_id) {
 void IECommandExecutor::ListManagedElements() {
 	ElementMap::iterator it = this->managed_elements_.begin();
 	for (; it != this->managed_elements_.end(); ++it) {
-		std::string id = CW2A(it->first.c_str(), CP_UTF8);
-		std::cout << id << "\n";
+		std::cout << it->first << "\n";
 	}
 }
 
-int IECommandExecutor::GetElementFindMethod(const std::wstring& mechanism, std::wstring* translation) const {
+int IECommandExecutor::GetElementFindMethod(const std::string& mechanism, std::wstring* translation) const {
 	ElementFindMethodMap::const_iterator found_iterator = this->element_find_methods_.find(mechanism);
 	if (found_iterator == this->element_find_methods_.end()) {
 		return EUNHANDLEDERROR;
@@ -387,23 +383,35 @@ int IECommandExecutor::GetElementFindMethod(const std::wstring& mechanism, std::
 	return SUCCESS;
 }
 
-int IECommandExecutor::LocateElement(const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) const {
-	return this->element_finder().FindElement(*this, parent_wrapper, mechanism, criteria, found_element);
+int IECommandExecutor::LocateElement(const ElementHandle parent_wrapper, const std::string& mechanism, const std::string& criteria, Json::Value* found_element) const {
+	std::wstring mechanism_translation = L"";
+	int status_code = this->GetElementFindMethod(mechanism, &mechanism_translation);
+	if (status_code != SUCCESS) {
+		return status_code;
+	}
+	std::wstring wide_criteria = CA2W(criteria.c_str(), CP_UTF8);
+	return this->element_finder().FindElement(*this, parent_wrapper, mechanism_translation, wide_criteria, found_element);
 }
 
-int IECommandExecutor::LocateElements(const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) const {
-	return this->element_finder().FindElements(*this, parent_wrapper, mechanism, criteria, found_elements);
+int IECommandExecutor::LocateElements(const ElementHandle parent_wrapper, const std::string& mechanism, const std::string& criteria, Json::Value* found_elements) const {
+	std::wstring mechanism_translation = L"";
+	int status_code = this->GetElementFindMethod(mechanism, &mechanism_translation);
+	if (status_code != SUCCESS) {
+		return status_code;
+	}
+	std::wstring wide_criteria = CA2W(criteria.c_str(), CP_UTF8);
+	return this->element_finder().FindElements(*this, parent_wrapper, mechanism_translation, wide_criteria, found_elements);
 }
 
 void IECommandExecutor::PopulateElementFinderMethods(void) {
-	this->element_find_methods_[L"id"] = L"id";
-	this->element_find_methods_[L"name"] = L"name";
-	this->element_find_methods_[L"tag name"] = L"tagName";
-	this->element_find_methods_[L"link text"] = L"linkText";
-	this->element_find_methods_[L"partial link text"] = L"partialLinkText";
-	this->element_find_methods_[L"class name"] = L"className";
-	this->element_find_methods_[L"xpath"] = L"xpath";
-	this->element_find_methods_[L"css selector"] = L"css";
+	this->element_find_methods_["id"] = L"id";
+	this->element_find_methods_["name"] = L"name";
+	this->element_find_methods_["tag name"] = L"tagName";
+	this->element_find_methods_["link text"] = L"linkText";
+	this->element_find_methods_["partial link text"] = L"partialLinkText";
+	this->element_find_methods_["class name"] = L"className";
+	this->element_find_methods_["xpath"] = L"xpath";
+	this->element_find_methods_["css selector"] = L"css";
 }
 
 void IECommandExecutor::PopulateCommandHandlers() {

@@ -39,8 +39,8 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter in URL: name");
 			return;
 		} else {
-			std::wstring element_id = CA2W(id_parameter_iterator->second.c_str(), CP_UTF8);
-			std::wstring name = CA2W(name_parameter_iterator->second.c_str(), CP_UTF8);
+			std::string element_id = id_parameter_iterator->second;
+			std::string name = name_parameter_iterator->second;
 
 			BrowserHandle browser_wrapper;
 			int status_code = executor.GetCurrentBrowser(&browser_wrapper);
@@ -52,19 +52,18 @@ protected:
 			ElementHandle element_wrapper;
 			status_code = this->GetElement(executor, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
-				CComVariant value_variant;
-				status_code = element_wrapper->GetAttributeValue(name, &value_variant);
+				std::string value = "";
+				bool is_null;
+				status_code = element_wrapper->GetAttributeValue(name, &value, &is_null);
 				if (status_code != SUCCESS) {
 					response->SetErrorResponse(status_code, "Unable to get attribute");
 					return;
 				} else {
-					if (value_variant.vt != VT_EMPTY && value_variant.vt != VT_NULL) {
-						std::wstring value = this->ConvertVariantToWString(&value_variant);
-						std::string value_str = CW2A(value.c_str(), CP_UTF8);
-						response->SetSuccessResponse(value_str);
+					if (is_null) {
+						response->SetSuccessResponse(Json::Value::null);
 						return;
 					} else {
-						response->SetSuccessResponse(Json::Value::null);
+						response->SetSuccessResponse(value);
 						return;
 					}
 				}

@@ -48,7 +48,7 @@ protected:
 			long end_x = start_x;
 			long end_y = start_y;
 			if (element_specified && !element_parameter_iterator->second.isNull()) {
-				std::wstring element_id = CA2W(element_parameter_iterator->second.asCString(), CP_UTF8);
+				std::string element_id = element_parameter_iterator->second.asString();
 				status_code = this->GetElementCoordinates(executor, element_id, offset_specified, &end_x, &end_y);
 				if (status_code != SUCCESS) {
 					response->SetErrorResponse(status_code, "Unable to locate element with id " + element_parameter_iterator->second.asString());
@@ -79,7 +79,7 @@ protected:
 	}
 
 private:
-	int MouseMoveToCommandHandler::GetElementCoordinates(const IECommandExecutor& executor, const std::wstring& element_id, bool get_element_origin, long *x_coordinate, long *y_coordinate) {
+	int MouseMoveToCommandHandler::GetElementCoordinates(const IECommandExecutor& executor, const std::string& element_id, bool get_element_origin, long *x_coordinate, long *y_coordinate) {
 		ElementHandle target_element;
 		int status_code = this->GetElement(executor, element_id, &target_element);
 		if (status_code != SUCCESS) {

@@ -35,15 +35,11 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter in URL: id");
 			return;
 		} else {
-			std::wstring element_id = CA2W(id_parameter_iterator->second.c_str(), CP_UTF8);
+			std::string element_id = id_parameter_iterator->second;
 			ElementHandle element_wrapper;
 			int status_code = this->GetElement(executor, element_id, &element_wrapper);
 			if (status_code == SUCCESS) {
-				CComBSTR temp;
-				element_wrapper->element()->get_tagName(&temp);
-				std::wstring tag_name = (BSTR)temp;
-				std::transform(tag_name.begin(), tag_name.end(), tag_name.begin(), tolower);
-				std::string return_value = CW2A(tag_name.c_str(), CP_UTF8);
+				std::string return_value = element_wrapper->GetTagName();
 				response->SetSuccessResponse(return_value);
 				return;
 			} else {

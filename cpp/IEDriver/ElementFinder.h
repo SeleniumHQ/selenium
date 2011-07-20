@@ -39,6 +39,7 @@ private:
 	int FindElementsByXPath(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements);
 	int InjectXPathEngine(BrowserHandle browser_wrapper);
 	void SanitizeCriteria(const std::wstring& mechanism, std::wstring* criteria);
+	void ReplaceAllSubstrings(const std::wstring& to_replace, const std::wstring& replace_with, std::wstring* str);
 };
 
 } // namespace webdriver

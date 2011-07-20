@@ -41,11 +41,9 @@ protected:
 				response->SetErrorResponse(status_code, "Unable to get browser");
 				return;
 			}
-			std::wstring url = CA2W(url_parameter_iterator->second.asString().c_str(), CP_UTF8);
-			CComVariant url_variant(url.c_str());
-			CComVariant dummy;
 
 			// TODO: check result for error
+			std::string url = url_parameter_iterator->second.asString();
 			status_code = browser_wrapper->NavigateToUrl(url);
 			browser_wrapper->SetFocusedFrameByElement(NULL);
 			response->SetSuccessResponse(Json::Value::null);

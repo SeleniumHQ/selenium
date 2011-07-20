@@ -12,7 +12,6 @@
 // limitations under the License.
 
 #include "response.h"
-#include "string_utilities.h"
 
 namespace webdriver {
 
@@ -27,25 +26,23 @@ Response::Response(const std::string& session_id) {
 Response::~Response(void) {
 }
 
-void Response::Deserialize(const std::wstring& json) {
+void Response::Deserialize(const std::string& json) {
   Json::Value response_object;
   Json::Reader reader;
-  std::string input = StringUtilities::WideStringToNarrowString(json);
-  reader.parse(input, response_object);
+  reader.parse(json, response_object);
   this->status_code_ = response_object["status"].asInt();
   this->session_id_ = response_object["sessionId"].asString();
   this->value_ = response_object["value"];
 }
 
-std::wstring Response::Serialize(void) {
+std::string Response::Serialize(void) {
   Json::Value json_object;
   json_object["status"] = this->status_code_;
   json_object["sessionId"] = this->session_id_;
   json_object["value"] = this->value_;
   Json::FastWriter writer;
   std::string output(writer.write(json_object));
-  std::wstring response = StringUtilities::NarrowStringToWideString(output);
-  return response;
+  return output;
 }
 
 void Response::SetSuccessResponse(const Json::Value& response_value) {

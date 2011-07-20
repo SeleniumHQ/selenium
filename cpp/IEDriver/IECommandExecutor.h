@@ -77,28 +77,28 @@ public:
 	LRESULT OnIsSessionValid(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-	std::wstring session_id(void) const { return this->session_id_; }
+	std::string session_id(void) const { return this->session_id_; }
 
 	static unsigned int WINAPI ThreadProc(LPVOID lpParameter);
 	static unsigned int WINAPI WaitThreadProc(LPVOID lpParameter);
 
-	std::wstring current_browser_id(void) const { return this->current_browser_id_; }
-	void set_current_browser_id(const std::wstring& browser_id) { this->current_browser_id_ = browser_id; }
+	std::string current_browser_id(void) const { return this->current_browser_id_; }
+	void set_current_browser_id(const std::string& browser_id) { this->current_browser_id_ = browser_id; }
 
 	int CreateNewBrowser(void);
 
-	int GetManagedBrowser(const std::wstring& browser_id, BrowserHandle* browser_wrapper) const;
+	int GetManagedBrowser(const std::string& browser_id, BrowserHandle* browser_wrapper) const;
 	int GetCurrentBrowser(BrowserHandle* browser_wrapper) const;
-	void GetManagedBrowserHandles(std::vector<std::wstring> *managed_browser_handles) const;
+	void GetManagedBrowserHandles(std::vector<std::string> *managed_browser_handles) const;
 
-	int GetManagedElement(const std::wstring& element_id, ElementHandle* element_wrapper) const;
+	int GetManagedElement(const std::string& element_id, ElementHandle* element_wrapper) const;
 	void AddManagedElement(IHTMLElement* element, ElementHandle* element_wrapper);
-	void RemoveManagedElement(const std::wstring& element_id);
+	void RemoveManagedElement(const std::string& element_id);
 	void ListManagedElements(void);
 
-	int GetElementFindMethod(const std::wstring& mechanism, std::wstring* translation) const;
-	int LocateElement(const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element) const;
-	int LocateElements(const ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements) const;
+	int GetElementFindMethod(const std::string& mechanism, std::wstring* translation) const;
+	int LocateElement(const ElementHandle parent_wrapper, const std::string& mechanism, const std::string& criteria, Json::Value* found_element) const;
+	int LocateElements(const ElementHandle parent_wrapper, const std::string& mechanism, const std::string& criteria, Json::Value* found_elements) const;
 
 	int speed(void) const { return this->speed_; }
 	void set_speed(const int speed) { this->speed_ = speed; }
@@ -127,9 +127,9 @@ public:
 	size_t managed_window_count(void) const { return this->managed_browsers_.size(); }
 
 private:
-	typedef std::tr1::unordered_map<std::wstring, BrowserHandle> BrowserMap;
-	typedef std::tr1::unordered_map<std::wstring, ElementHandle> ElementMap;
-	typedef std::map<std::wstring, std::wstring> ElementFindMethodMap;
+	typedef std::tr1::unordered_map<std::string, ElementHandle> ElementMap;
+	typedef std::tr1::unordered_map<std::string, BrowserHandle> BrowserMap;
+	typedef std::map<std::string, std::wstring> ElementFindMethodMap;
 	typedef std::map<int, CommandHandlerHandle> CommandHandlerMap;
 
 	void AddManagedBrowser(BrowserHandle browser_wrapper);
@@ -144,7 +144,7 @@ private:
 	ElementFindMethodMap element_find_methods_;
 
 	BrowserFactory factory_;
-	std::wstring current_browser_id_;
+	std::string current_browser_id_;
 
 	ElementFinder element_finder_;
 
@@ -152,12 +152,12 @@ private:
 	int implicit_wait_timeout_;
 	int async_script_timeout_;
 
-	std::wstring session_id_;
+	std::string session_id_;
 	int port_;
 	bool ignore_protected_mode_settings_;
 
 	Command current_command_;
-	std::wstring serialized_response_;
+	std::string serialized_response_;
 	CommandHandlerMap command_handlers_;
 	bool is_waiting_;
 	bool is_valid_;

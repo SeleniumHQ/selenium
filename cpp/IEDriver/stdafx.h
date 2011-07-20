@@ -20,7 +20,6 @@
 #include <atlwin.h>
 #include <comdef.h>
 #include <comutil.h>
-#include "string_utilities.h"
 
 // A macro to disallow the copy constructor and operator= functions
 // This should be used in the private: declarations for a class

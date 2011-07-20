@@ -23,22 +23,22 @@ namespace webdriver {
 class GetElementValueOfCssPropertyCommandHandler : public IECommandHandler {
 public:
 	GetElementValueOfCssPropertyCommandHandler(void) {
-		this->colour_names_hex_code_map_[L"aqua"] = L"#00ffff";
-		this->colour_names_hex_code_map_[L"black"] = L"#000000";
-		this->colour_names_hex_code_map_[L"blue"] = L"#0000ff";
-		this->colour_names_hex_code_map_[L"fuchsia"] = L"#ff00ff";
-		this->colour_names_hex_code_map_[L"gray"] = L"#808080";
-		this->colour_names_hex_code_map_[L"green"] = L"#008000";
-		this->colour_names_hex_code_map_[L"lime"] = L"#00ff00";
-		this->colour_names_hex_code_map_[L"maroon"] = L"#800000";
-		this->colour_names_hex_code_map_[L"navy"] = L"#000080";
-		this->colour_names_hex_code_map_[L"olive"] = L"#808000";
-		this->colour_names_hex_code_map_[L"purple"] = L"#800080";
-		this->colour_names_hex_code_map_[L"red"] = L"#ff0000";
-		this->colour_names_hex_code_map_[L"silver"] = L"#c0c0c0";
-		this->colour_names_hex_code_map_[L"teal"] = L"#008080";
-		this->colour_names_hex_code_map_[L"white"] = L"#ffffff";
-		this->colour_names_hex_code_map_[L"yellow"] = L"#ffff00";
+		this->colour_names_hex_code_map_["aqua"] = "#00ffff";
+		this->colour_names_hex_code_map_["black"] = "#000000";
+		this->colour_names_hex_code_map_["blue"] = "#0000ff";
+		this->colour_names_hex_code_map_["fuchsia"] = "#ff00ff";
+		this->colour_names_hex_code_map_["gray"] = "#808080";
+		this->colour_names_hex_code_map_["green"] = "#008000";
+		this->colour_names_hex_code_map_["lime"] = "#00ff00";
+		this->colour_names_hex_code_map_["maroon"] = "#800000";
+		this->colour_names_hex_code_map_["navy"] = "#000080";
+		this->colour_names_hex_code_map_["olive"] = "#808000";
+		this->colour_names_hex_code_map_["purple"] = "#800080";
+		this->colour_names_hex_code_map_["red"] = "#ff0000";
+		this->colour_names_hex_code_map_["silver"] = "#c0c0c0";
+		this->colour_names_hex_code_map_["teal"] = "#008080";
+		this->colour_names_hex_code_map_["white"] = "#ffffff";
+		this->colour_names_hex_code_map_["yellow"] = "#ffff00";
 	}
 
 	virtual ~GetElementValueOfCssPropertyCommandHandler(void) {
@@ -55,8 +55,8 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter in URL: propertyName");
 			return;
 		} else {
-			std::wstring element_id = CA2W(id_parameter_iterator->second.c_str(), CP_UTF8);
-			std::wstring name = CA2W(property_name_parameter_iterator->second.c_str(), CP_UTF8);
+			std::string element_id = id_parameter_iterator->second;
+			std::string name = property_name_parameter_iterator->second;
 
 			BrowserHandle browser_wrapper;
 			int status_code = executor.GetCurrentBrowser(&browser_wrapper);
@@ -82,17 +82,12 @@ protected:
 				script_wrapper.AddArgument(name);
 				status_code = script_wrapper.Execute();
 
-				CComVariant style_value_variant;
 				if (status_code == SUCCESS) {
-					HRESULT hr = ::VariantCopy(&style_value_variant, &script_wrapper.result());
-				}
-
-				if (status_code == SUCCESS) {
-					std::wstring raw_value = this->ConvertVariantToWString(&style_value_variant);
+					std::string raw_value = "";
+					script_wrapper.ConvertResultToString(&raw_value);
 					std::transform(raw_value.begin(), raw_value.end(), raw_value.begin(), tolower);
-					std::wstring style_value = this->MangleColour(name, raw_value);
-					std::string style_value_str = CW2A(style_value.c_str(), CP_UTF8);
-					response->SetSuccessResponse(style_value_str);
+					std::string style_value = this->MangleColour(name, raw_value);
+					response->SetSuccessResponse(style_value);
 					return;
 				} else {
 					response->SetErrorResponse(status_code, "Unable to get element style value");
@@ -106,12 +101,12 @@ protected:
 	}
 
 private:
-	std::wstring MangleColour(const std::wstring& property_name, const std::wstring& to_mangle) {
-		if (property_name.find(L"color") == std::wstring::npos) {
+	std::string MangleColour(const std::string& property_name, const std::string& to_mangle) {
+		if (property_name.find("color") == std::string::npos) {
 			return to_mangle;
 		}
 
-		std::map<std::wstring, std::wstring>::const_iterator it = this->colour_names_hex_code_map_.find(to_mangle);
+		std::map<std::string, std::string>::const_iterator it = this->colour_names_hex_code_map_.find(to_mangle);
 		if (it != this->colour_names_hex_code_map_.end()) {
 			return it->second;
 		}
@@ -119,7 +114,7 @@ private:
 		return to_mangle;
 	}
 
-	std::map<std::wstring, std::wstring> colour_names_hex_code_map_;
+	std::map<std::string, std::string> colour_names_hex_code_map_;
 };
 
 } // namespace webdriver

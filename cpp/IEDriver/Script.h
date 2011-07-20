@@ -29,6 +29,7 @@ class IECommandExecutor;
 
 class Script {
 public:
+	Script(IHTMLDocument2* document, std::string script_source, unsigned long argument_count);
 	Script(IHTMLDocument2* document, std::wstring script_source, unsigned long argument_count);
 	~Script(void);
 
@@ -38,6 +39,7 @@ public:
 	VARIANT result() { return this->result_; }
 	void set_result(VARIANT value) { HRESULT hr = ::VariantCopy(&this->result_, &value); }
 
+	void AddArgument(const std::string& argument);
 	void AddArgument(const std::wstring& argument);
 	void AddArgument(const int argument);
 	void AddArgument(const double argument);
@@ -59,6 +61,7 @@ public:
 
 	int Execute(void);
 	int ConvertResultToJsonValue(const IECommandExecutor& executor, Json::Value* value);
+	bool ConvertResultToString(std::string* value);
 
 private:
 	int GetArrayLength(long* length);
@@ -67,6 +70,7 @@ private:
 	int GetPropertyValue(const IECommandExecutor& executor, const std::wstring& property_name, Json::Value* property_value);
 	std::wstring GetResultObjectTypeName(void);
 	bool CreateAnonymousFunction(VARIANT* result);
+	void Initialize(IHTMLDocument2* document, const std::wstring& script_source, const unsigned long argument_count);
 
 	CComPtr<IHTMLDocument2> script_engine_host_;
 	unsigned long argument_count_;

@@ -35,22 +35,22 @@ protected:
 			response->SetErrorResponse(400, "Missing parameter: name");
 			return;
 		} else {
-			std::wstring found_browser_handle = L"";
+			std::string found_browser_handle = "";
 			std::string desired_name = name_parameter_iterator->second.asString();
 
-			std::vector<std::wstring> handle_list;
+			std::vector<std::string> handle_list;
 			executor.GetManagedBrowserHandles(&handle_list);
 			for (unsigned int i = 0; i < handle_list.size(); ++i) {
 				BrowserHandle browser_wrapper;
 				int get_handle_loop_status_code = executor.GetManagedBrowser(handle_list[i], &browser_wrapper);
 				if (get_handle_loop_status_code == SUCCESS) {
-					std::string browser_name = CW2A(browser_wrapper->GetWindowName().c_str(), CP_UTF8);
+					std::string browser_name = browser_wrapper->GetWindowName();
 					if (browser_name == desired_name) {
 						found_browser_handle = handle_list[i];
 						break;
 					}
 
-					std::string browser_handle = CW2A(handle_list[i].c_str(), CP_UTF8);
+					std::string browser_handle = handle_list[i];
 					if (browser_handle == desired_name) {
 						found_browser_handle = handle_list[i];
 						break;
@@ -58,7 +58,7 @@ protected:
 				}
 			}
 
-			if (found_browser_handle == L"") {
+			if (found_browser_handle == "") {
 				response->SetErrorResponse(ENOSUCHWINDOW, "No window found");
 				return;
 			} else {

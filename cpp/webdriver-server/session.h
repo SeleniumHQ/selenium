@@ -29,17 +29,17 @@ class Session {
 
   virtual void Initialize(void* init_params) = 0;
   virtual void ShutDown(void) = 0;
-  virtual bool ExecuteCommand(const std::wstring& serialized_command,
-                              std::wstring* serialized_response) = 0;
+  virtual bool ExecuteCommand(const std::string& serialized_command,
+                              std::string* serialized_response) = 0;
 
-  std::wstring session_id(void) const { return this->session_id_; }
+  std::string session_id(void) const { return this->session_id_; }
 
  protected:
-  void set_session_id(const std::wstring& id) { this->session_id_ = id; }
+  void set_session_id(const std::string& id) { this->session_id_ = id; }
 
  private:
   // The unique ID of the session.
-  std::wstring session_id_;
+  std::string session_id_;
 
   DISALLOW_COPY_AND_ASSIGN(Session);
 };

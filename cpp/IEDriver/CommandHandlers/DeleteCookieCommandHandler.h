@@ -36,7 +36,7 @@ protected:
 			return;
 		}
 
-		std::wstring cookie_name = CA2W(name_parameter_iterator->second.c_str(), CP_UTF8);
+		std::string cookie_name = name_parameter_iterator->second;
 		BrowserHandle browser_wrapper;
 		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
 		if (status_code != SUCCESS) {
