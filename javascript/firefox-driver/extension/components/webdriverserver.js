@@ -37,7 +37,7 @@ function WebDriverServer() {
   var dispatcher_ = new Dispatcher();
 
   try {
-  this.server_ = Utils.newInstance("@mozilla.org/server/jshttp;1", "nsIHttpServer");
+    this.server_ = Utils.newInstance("@mozilla.org/server/jshttp;1", "nsIHttpServer");
   } catch (e) {
       Logger.dumpn(e);
   }

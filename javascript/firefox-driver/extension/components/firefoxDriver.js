@@ -1045,7 +1045,7 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
   }
 
   respond.send();
-}
+};
 
 FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
   if (!this.enableNativeEvents) {
@@ -1081,7 +1081,7 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
   }
 
   respond.send();
-}
+};
 
 FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
   var doc = respond.session.getDocument();
@@ -1097,7 +1097,7 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
     return;
   }
   
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);;
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
   var events = Utils.getNativeEvents();
   var node = Utils.getNodeForNativeEvents(elementForNode);
@@ -1120,7 +1120,7 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
   }
 
   respond.send();
-}
+};
 
 
 FirefoxDriver.prototype.mouseDoubleClick = function(respond, parameters) {

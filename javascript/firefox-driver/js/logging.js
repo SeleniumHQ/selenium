@@ -105,7 +105,7 @@ Logger._init = function() {
   Logger.log_ = function(message) {
     consoleService.logStringMessage(message);
   };
-}
+};
 
 
 Logger.dumpn = function(text) {
