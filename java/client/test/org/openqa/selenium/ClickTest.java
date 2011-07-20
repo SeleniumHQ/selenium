@@ -130,7 +130,15 @@ public class ClickTest extends AbstractDriverTestCase {
     driver.findElement(By.id("movable")).click();
 
     String log = driver.findElement(By.id("result")).getText();
-    assertEquals("parent matches? true", log);
+
+    // Note: It is not guaranteed that the relatedTarget property of the mouseover
+    // event will be the parent, when using native events. Only check that the mouse
+    // has moved to this element, not that the parent element was the related target.
+    if (TestUtilities.isNativeEventsEnabled(driver)) {
+      assertTrue("Should have moved to this element.", log.startsWith("parent matches?"));
+    } else {
+      assertEquals("parent matches? true", log);
+    }
   }
 
   @Ignore
