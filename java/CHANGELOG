@@ -1,0 +1,14 @@
+v2.1.0
+======
+
+WebDriver:
+  * Round to 0 if something looks like it's off the edge of the screen when
+    calculating distances. Fixes issue 1776.
+  * Deleting the deprecated TimeoutException inner class and replacing with the
+    top-level one
+
+Grid:
+  * Properly form the HTML output for console display.
+  * Track when a session has become orphaned.  I.e., when the client sends no
+    commands after the initial session creation.  This almost always indicates
+    the client is no longer connected and the session is unusable immediately.
