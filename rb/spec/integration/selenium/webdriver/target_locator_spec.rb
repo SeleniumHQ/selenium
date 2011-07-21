@@ -95,7 +95,7 @@ describe "WebDriver::TargetLocator" do
     driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
   end
 
-  compliant_on :browser => :ie do
+  compliant_on :browser => [:ie, :firefox] do
     describe "alerts" do
       it "allows the user to accept an alert" do
         driver.navigate.to url_for("alerts.html")
@@ -136,6 +136,11 @@ describe "WebDriver::TargetLocator" do
         alert.accept
 
         text.should == "cheese"
+      end
+
+      it "raises UnhandledError if no alert is present" do
+        lambda { driver.switch_to.alert.dismiss }.should raise_error(
+          Selenium::WebDriver::Error::UnhandledError, /alert/i)
       end
 
       # it "raises an UnhandledAlertError if an alert has not been dealt with" do

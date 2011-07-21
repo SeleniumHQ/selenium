@@ -117,7 +117,7 @@ webdriver.modals.setValue = function(driver, timeout, value, callback, errback) 
 webdriver.modals.errback = function(respond) {
   return function() {
     respond.status = ErrorCode.UNHANDLED_ERROR;
-    respond.value = 'Unable to dismiss alert. Is an alert present?';
+    respond.value = { message: 'Unable to dismiss alert. Is an alert present?' };
     respond.send();
   }
 };
