@@ -76,6 +76,7 @@ module Selenium
         end
 
         def start_threaded
+          Thread.abort_on_exception = true
           @thread = Thread.new { run }
           sleep 0.5
         end

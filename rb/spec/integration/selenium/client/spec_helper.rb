@@ -9,10 +9,9 @@ require 'ci/reporter/rspec'
 
 class SeleniumClientTestEnvironment
   def initialize
-    Thread.abort_on_exception = true
-    $stdout.sync              = true
-
+    $stdout.sync = true
     @jar = File.expand_path("../../../../../../build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar", __FILE__)
+
     raise Errno::ENOENT, @jar unless File.exist?(@jar)
   end
 
@@ -77,6 +76,7 @@ class SeleniumClientTestEnvironment
   end
 
   def start_example_app
+    Thread.abort_on_exception = true
     @example_app = Thread.new { SampleApp.start("127.0.0.1", 4567) }
 
     poller = Selenium::WebDriver::SocketPoller.new("127.0.0.1", 4567, 60)

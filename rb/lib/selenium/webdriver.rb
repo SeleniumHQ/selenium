@@ -84,5 +84,3 @@ module Selenium
 
   end # WebDriver
 end # Selenium
-
-Thread.abort_on_exception = true
