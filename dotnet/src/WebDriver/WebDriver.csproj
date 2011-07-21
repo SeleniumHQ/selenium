@@ -64,9 +64,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\third_party\csharp\dotnetzip-1.9\Ionic.Zip.Reduced.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\third_party\csharp\json-net-3.5r6\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json.Net35">
+      <HintPath>..\..\..\third_party\csharp\json-net-4.0r2\Newtonsoft.Json.Net35.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
