@@ -233,7 +233,9 @@ ruby_test(name = "unit",
     ":common",
     ":firefox",
     ":ie",
-    ":remote",
+    ":iphone",
+    ":android",
+    ":remote"
   ]
 )
 

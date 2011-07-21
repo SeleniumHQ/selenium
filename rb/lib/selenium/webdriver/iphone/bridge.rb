@@ -5,15 +5,14 @@ module Selenium
 
         DEFAULT_URL = "http://#{Platform.localhost}:3001/hub/"
 
-        def initialize(opts = nil)
-          if opts
-            super
-          else
-            super(
-              :url                  => DEFAULT_URL,
-              :desired_capabilities => capabilities
-            )
-          end
+        def initialize(opts = {})
+          remote_opts = {
+            :url                  => opts.fetch(:url, DEFAULT_URL),
+            :desired_capabilities => opts.fetch(:desired_capabilities, capabilities),
+            :http_client          => opts[:http_client]
+          }
+
+          super remote_opts
         end
 
         def browser
@@ -21,7 +20,10 @@ module Selenium
         end
 
         def driver_extensions
-          []
+          [
+            DriverExtensions::TakesScreenshot,
+            DriverExtensions::HasInputDevices
+          ]
         end
 
         def capabilities
