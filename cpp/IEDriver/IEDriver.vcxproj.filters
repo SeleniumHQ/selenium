@@ -284,4 +284,9 @@
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="IEDriver.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

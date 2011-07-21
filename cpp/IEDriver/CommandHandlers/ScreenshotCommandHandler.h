@@ -286,15 +286,17 @@ private:
 
 	void ScreenshotCommandHandler::InstallWindowsHook() {
 		HINSTANCE instance_handle = _AtlBaseModule.GetModuleInstance();
-		HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(::GetProcAddress(instance_handle, "CallWndProc"));
+		HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(::GetProcAddress(instance_handle, "ScreenshotWndProc"));
 		if (hook_procedure == NULL) {
 			LOG(WARN) << L"GetProcAddress return value was NULL";
 			return;
 		}
 		// Install the Windows hook.
-		next_hook = ::SetWindowsHookEx(WH_CALLWNDPROC, hook_procedure, instance_handle, 0);
-		if (next_hook == 0) {
-			LOG(WARN) << L"SetWindowsHookEx return value was 0";
+		DWORD thread_id = ::GetWindowThreadProcessId(ie_window_handle, NULL);
+		next_hook = ::SetWindowsHookEx(WH_CALLWNDPROC, hook_procedure, instance_handle, thread_id);
+		if (next_hook == NULL) {
+			DWORD error = ::GetLastError();
+			LOG(WARN) << L"SetWindowsHookEx return value was NULL, actual error code was " << error;
 		}
 	}
 
@@ -317,11 +319,11 @@ extern "C" {
 // uninjects itself immediately upon execution.
 LRESULT CALLBACK MinMaxInfoHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
 	// Grab a reference to the original message processor.
-	HANDLE originalMessageProc = ::GetProp(hwnd, L"__original_message_processor__");
+	HANDLE original_message_proc = ::GetProp(hwnd, L"__original_message_processor__");
 	::RemoveProp(hwnd, L"__original_message_processor__");
 
 	// Uninject this method.
-	::SetWindowLongPtr(hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(originalMessageProc));
+	::SetWindowLongPtr(hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(original_message_proc));
 
 	if (WM_GETMINMAXINFO == message) {
 		MINMAXINFO* minMaxInfo = reinterpret_cast<MINMAXINFO*>(lParam);
@@ -336,7 +338,7 @@ LRESULT CALLBACK MinMaxInfoHandler(HWND hwnd, UINT message, WPARAM wParam, LPARA
 	}
 
 	// All other messages should be handled by the original message processor.
-	return ::CallWindowProc(reinterpret_cast<WNDPROC>(originalMessageProc), hwnd, message, wParam, lParam);
+	return ::CallWindowProc(reinterpret_cast<WNDPROC>(original_message_proc), hwnd, message, wParam, lParam);
 }
 
 // Many thanks to sunnyandy for helping out with this approach.  What we're 
@@ -349,15 +351,15 @@ LRESULT CALLBACK MinMaxInfoHandler(HWND hwnd, UINT message, WPARAM wParam, LPARA
 // otherwise allow.
 //
 // See the discussion here: http://www.codeguru.com/forum/showthread.php?p=1889928
-__declspec(dllexport) LRESULT WINAPI CallWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
-	CWPSTRUCT* cwp = reinterpret_cast<CWPSTRUCT*>(lParam);
-	if (WM_GETMINMAXINFO == cwp->message) {
+LRESULT CALLBACK ScreenshotWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
+	CWPSTRUCT* call_window_proc_struct = reinterpret_cast<CWPSTRUCT*>(lParam);
+	if (WM_GETMINMAXINFO == call_window_proc_struct->message) {
 		// Inject our own message processor into the process so we can modify
 		// the WM_GETMINMAXINFO message. It is not possible to modify the 
 		// message from this hook, so the best we can do is inject a function
 		// that can.
-		LONG_PTR proc = ::SetWindowLongPtr(cwp->hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(MinMaxInfoHandler));
-		::SetProp(cwp->hwnd, L"__original_message_processor__", reinterpret_cast<HANDLE>(proc));
+		LONG_PTR proc = ::SetWindowLongPtr(call_window_proc_struct->hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(MinMaxInfoHandler));
+		::SetProp(call_window_proc_struct->hwnd, L"__original_message_processor__", reinterpret_cast<HANDLE>(proc));
 	}
 
 	return ::CallNextHookEx(next_hook, nCode, wParam, lParam);
