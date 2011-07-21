@@ -40,7 +40,7 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
       return arg;
     }
 
-    if (arg instanceof WrapsElement) {
+    while (arg instanceof WrapsElement) {
       arg = ((WrapsElement) arg).getWrappedElement();
     }
 
