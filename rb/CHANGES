@@ -1,6 +1,7 @@
 (trunk)
 =======
 
+* Add ability to listen for WebDriver events
 * Fix Android/iPhone bridges to work similar to others (https://github.com/jnicklas/capybara/issues/425)
 
 2.1.0 (2011-07-18)

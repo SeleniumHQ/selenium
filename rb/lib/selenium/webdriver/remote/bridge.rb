@@ -228,72 +228,6 @@ module Selenium
           execute :deleteAllCookies
         end
 
-        # finding elements
-
-        def findElementByClassName(parent, class_name)
-          find_element_by 'class name', class_name, parent
-        end
-
-        def findElementsByClassName(parent, class_name)
-          find_elements_by 'class name', class_name, parent
-        end
-
-        def findElementByCssSelector(parent, selector)
-          find_element_by 'css selector', selector, parent
-        end
-
-        def findElementsByCssSelector(parent, selector)
-          find_elements_by 'css selector', selector, parent
-        end
-
-        def findElementById(parent, id)
-          find_element_by 'id', id, parent
-        end
-
-        def findElementsById(parent, id)
-          find_elements_by 'id', id, parent
-        end
-
-        def findElementByLinkText(parent, link_text)
-          find_element_by 'link text', link_text, parent
-        end
-
-        def findElementsByLinkText(parent, link_text)
-          find_elements_by 'link text', link_text, parent
-        end
-
-        def findElementByPartialLinkText(parent, link_text)
-          find_element_by 'partial link text', link_text, parent
-        end
-
-        def findElementsByPartialLinkText(parent, link_text)
-          find_elements_by 'partial link text', link_text, parent
-        end
-
-        def findElementByName(parent, name)
-          find_element_by 'name', name, parent
-        end
-
-        def findElementsByName(parent, name)
-          find_elements_by 'name', name, parent
-        end
-
-        def findElementByTagName(parent, tag_name)
-          find_element_by 'tag name', tag_name, parent
-        end
-
-        def findElementsByTagName(parent, tag_name)
-          find_elements_by 'tag name', tag_name, parent
-        end
-
-        def findElementByXpath(parent, xpath)
-          find_element_by 'xpath', xpath, parent
-        end
-
-        def findElementsByXpath(parent, xpath)
-          find_elements_by 'xpath', xpath, parent
-        end
-
         def clickElement(element)
           execute :clickElement, :id => element
         end
@@ -411,8 +345,6 @@ module Selenium
           execute :elementEquals, :id => element.ref, :other => other.ref
         end
 
-        private
-
         def find_element_by(how, what, parent = nil)
           if parent
             id = execute :findChildElement, {:id => parent}, {:using => how, :value => what}
@@ -432,6 +364,8 @@ module Selenium
 
           ids.map { |id| Element.new self, element_id_from(id) }
         end
+
+        private
 
         def assert_javascript_enabled
           unless capabilities.javascript_enabled?

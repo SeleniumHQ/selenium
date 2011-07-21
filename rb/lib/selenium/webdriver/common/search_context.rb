@@ -3,16 +3,16 @@ module Selenium
     module SearchContext
 
       FINDERS = {
-        :class             => 'ClassName',
-        :class_name        => 'ClassName',
-        :css               => 'CssSelector',
-        :id                => 'Id',
-        :link              => 'LinkText',
-        :link_text         => 'LinkText',
-        :name              => 'Name',
-        :partial_link_text => 'PartialLinkText',
-        :tag_name          => 'TagName',
-        :xpath             => 'Xpath',
+        :class             => 'class name',
+        :class_name        => 'class name',
+        :css               => 'css selector',
+        :id                => 'id',
+        :link              => 'link text',
+        :link_text         => 'link text',
+        :name              => 'name',
+        :partial_link_text => 'partial link text',
+        :tag_name          => 'tag name',
+        :xpath             => 'xpath',
       }
 
       #
@@ -38,10 +38,7 @@ module Selenium
           raise ArgumentError, "cannot find element by #{how.inspect}"
         end
 
-        meth = "findElementBy#{by}"
-        what = what.to_s
-
-        bridge.send meth, ref, what
+        bridge.find_element_by by, what.to_s, ref
       end
 
       #
@@ -61,10 +58,7 @@ module Selenium
           raise ArgumentError, "cannot find elements by #{how.inspect}"
         end
 
-        meth = "findElementsBy#{by}"
-        what = what.to_s
-
-        bridge.send meth, ref, what
+        bridge.find_elements_by by, what.to_s, ref
       end
 
       private

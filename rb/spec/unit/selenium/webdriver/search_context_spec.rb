@@ -17,12 +17,12 @@ describe "SearchContext" do
 
   context "finding a single element" do
     it "accepts a hash" do
-      bridge.should_receive(:findElementById).with(nil, "bar").and_return(element)
+      bridge.should_receive(:find_element_by).with('id', "bar", nil).and_return(element)
       search_context.find_element(:id => "bar").should == element
     end
 
     it "accepts two arguments" do
-      bridge.should_receive(:findElementById).with(nil, "bar").and_return(element)
+      bridge.should_receive(:find_element_by).with('id', "bar", nil).and_return(element)
       search_context.find_element(:id, "bar").should == element
     end
 
@@ -43,12 +43,12 @@ describe "SearchContext" do
 
   context "finding multiple elements" do
     it "accepts a hash" do
-      bridge.should_receive(:findElementsById).with(nil, "bar").and_return([])
+      bridge.should_receive(:find_elements_by).with('id', "bar", nil).and_return([])
       search_context.find_elements(:id => "bar").should == []
     end
 
     it "accepts two arguments" do
-      bridge.should_receive(:findElementsById).with(nil, "bar").and_return([])
+      bridge.should_receive(:find_elements_by).with('id', "bar", nil).and_return([])
       search_context.find_elements(:id, "bar").should == []
     end
 

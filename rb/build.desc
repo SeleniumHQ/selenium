@@ -6,6 +6,7 @@ rubygem(
     "//rb:android",
     "//rb:chrome",
     "//rb:common",
+    "//rb:support",
     "//rb:firefox",
     "//rb:ie",
     "//rb:iphone",
@@ -55,6 +56,13 @@ ruby_library(name = "common",
     "lib/selenium-webdriver.rb",
     "CHANGES",
     "README"
+  ]
+)
+
+ruby_library(name = "support",
+  srcs = [
+    "lib/selenium/webdriver/support/**/*.rb",
+    "lib/selenium/webdriver/support.rb"
   ]
 )
 
@@ -235,7 +243,8 @@ ruby_test(name = "unit",
     ":ie",
     ":iphone",
     ":android",
-    ":remote"
+    ":remote",
+    ":support"
   ]
 )
 

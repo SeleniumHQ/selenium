@@ -35,11 +35,12 @@ module Selenium
 
     autoload :Android, 'selenium/webdriver/android'
     autoload :Chrome,  'selenium/webdriver/chrome'
+    autoload :Firefox, 'selenium/webdriver/firefox'
     autoload :IE,      'selenium/webdriver/ie'
     autoload :IPhone,  'selenium/webdriver/iphone'
-    autoload :Remote,  'selenium/webdriver/remote'
-    autoload :Firefox, 'selenium/webdriver/firefox'
     autoload :Opera,   'selenium/webdriver/opera'
+    autoload :Remote,  'selenium/webdriver/remote'
+    autoload :Support, 'selenium/webdriver/support'
 
     # @api private
 
@@ -70,6 +71,11 @@ module Selenium
     #   WebDriver.for :firefox, :profile => "some-profile"
     #   WebDriver.for :firefox, :profile => Profile.new
     #   WebDriver.for :remote,  :url => "http://localhost:4444/wd/hub", :desired_capabilities => caps
+    #
+    # One special argument is not passed on to the bridges, :listener. You can pass a listener for this option
+    # to get notified of WebDriver events. The passed object must respond to #call or implement the methods from AbstractEventListener.
+    #
+    # @see Selenium::WebDriver::Support::AbstractEventListener
     #
 
     def self.for(*args)

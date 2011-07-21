@@ -3,8 +3,6 @@ module Selenium
     class Element
       include SearchContext
 
-      attr_reader :bridge
-
       #
       # Creates a new Element
       #
@@ -254,6 +252,10 @@ module Selenium
       end
 
       private
+
+      def bridge
+        @bridge
+      end
 
       def selectable?
         tn = tag_name.downcase

@@ -21,27 +21,31 @@ module Selenium
         # @see Selenium::WebDriver.for
         #
 
-        def for(browser, *args)
+        def for(browser, opts = {})
+          listener = opts.delete(:listener)
+
           bridge = case browser
                    when :firefox, :ff
-                     Firefox::Bridge.new(*args)
+                     Firefox::Bridge.new(opts)
                    when :remote
-                     Remote::Bridge.new(*args)
+                     Remote::Bridge.new(opts)
                    when :ie, :internet_explorer
-                     IE::Bridge.new(*args)
+                     IE::Bridge.new(opts)
                    when :chrome
-                     Chrome::Bridge.new(*args)
+                     Chrome::Bridge.new(opts)
                    when :android
-                     Android::Bridge.new(*args)
+                     Android::Bridge.new(opts)
                    when :iphone
-                     IPhone::Bridge.new(*args)
+                     IPhone::Bridge.new(opts)
                    when :opera
-                     Opera::Bridge.new(*args)
+                     Opera::Bridge.new(opts)
                    else
                      raise ArgumentError, "unknown driver: #{browser.inspect}"
                    end
 
-           new(bridge)
+          bridge = Support::EventFiringBridge.new(bridge, listener) if listener
+
+          new(bridge)
         end
       end
 
@@ -270,7 +274,7 @@ module Selenium
       def capabilities
         bridge.capabilities
       end
-      
+
       #
       # @api private
       # @see SearchContext
