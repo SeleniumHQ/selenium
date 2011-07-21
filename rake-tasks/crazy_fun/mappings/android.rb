@@ -6,6 +6,15 @@ if Platform.jruby?
   require 'childprocess'
 end
 
+begin
+  require 'psych'
+rescue LoadError
+  # only needed for Ruby 1.9.2
+end
+
+require 'yaml'
+
+
 class AndroidMappings
   def add_all(fun)
     fun.add_mapping("android_r", Android::CheckResourcePreconditions.new)

@@ -2,7 +2,6 @@ $LOAD_PATH.unshift File.expand_path(".")
 
 require 'rake'
 require 'rake-tasks/files'
-require 'yaml'
 require 'net/telnet'
 
 include Rake::DSL if defined?(Rake::DSL)
