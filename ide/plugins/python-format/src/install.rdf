@@ -4,7 +4,7 @@
     <Description about="urn:mozilla:install-manifest">
         <em:id>pythonformatters@seleniumhq.org</em:id>
         <em:name>Selenium IDE: Python Formatters</em:name>
-        <em:version>1.1.0</em:version>
+        <em:version>1.1.1-SNAPSHOT</em:version>
         <em:creator>Adam Goucher</em:creator>
         <em:developer>Samit Badle</em:developer>
         <em:description>Python code formatters for Selenium IDE</em:description>
@@ -23,7 +23,7 @@
         <em:requires>   
           <Description>
             <em:id>{a6fd85ed-e919-4a43-a5af-8da18bda539f}</em:id>
-            <em:minVersion>1.1.0</em:minVersion>
+            <em:minVersion>1.1.1-SNAPSHOT</em:minVersion>
             <em:maxVersion>1.*</em:maxVersion>
           </Description>  
         </em:requires>
