@@ -15,6 +15,10 @@ module Selenium
         def after_change_value_of(element) end
         def before_execute_script(script) end
         def after_execute_script(script) end
+        def before_quit() end
+        def after_quit() end
+        def before_close() end
+        def after_close() end
       end
 
     end
