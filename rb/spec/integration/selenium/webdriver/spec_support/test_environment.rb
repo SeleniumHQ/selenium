@@ -118,7 +118,7 @@ module Selenium
             ENV['SELENIUM_SERVER_JAR'] = remote_server_jar
             instance = WebDriver::Driver.for :opera
           else
-            instance = WebDriver::Driver.for driver
+            instance = WebDriver::Driver.for driver, :listener => WebDriver::Support::AbstractEventListener.new
           end
 
           @create_driver_error_count -= 1 unless @create_driver_error_count == 0

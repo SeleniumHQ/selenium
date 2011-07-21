@@ -4,7 +4,7 @@ require 'rspec'
 require 'ci/reporter/rspec'
 
 require 'selenium-webdriver'
-require 'selenium/webdriver/support'
+require 'selenium/webdriver/spec_support'
 
 include Selenium
 
