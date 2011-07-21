@@ -11,6 +11,8 @@ module Selenium
         def after_navigate_forward() end
         def before_find(by, what) end
         def after_find(by, what) end
+        def before_click(element) end
+        def after_click(element) end
         def before_change_value_of(element) end
         def after_change_value_of(element) end
         def before_execute_script(script) end
