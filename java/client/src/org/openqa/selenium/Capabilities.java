@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import java.util.Map;
 
-import org.openqa.selenium.Platform;
 
 /**
  * Describes a series of key/value pairs that encapsulate aspects of a browser.

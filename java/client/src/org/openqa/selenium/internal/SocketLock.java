@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.internal;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Lock;
 
 import java.io.IOException;
 import java.net.BindException;

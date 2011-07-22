@@ -20,7 +20,6 @@ package org.openqa.selenium.support.ui;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.NotFoundException;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 
 /**

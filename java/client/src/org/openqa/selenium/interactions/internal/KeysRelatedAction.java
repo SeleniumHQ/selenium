@@ -17,12 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.internal;
 
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Mouse;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 
 /**

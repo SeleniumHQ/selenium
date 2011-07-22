@@ -17,12 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.Mouse;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.interactions.internal.KeysRelatedAction;
+import org.openqa.selenium.internal.Locatable;
 
 /**
  * Sending a sequence of keys to an element.

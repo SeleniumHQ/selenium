@@ -19,13 +19,11 @@ package org.openqa.selenium.firefox;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
-import com.google.common.io.Closeables;
 import com.google.common.io.LineReader;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.Cleanly;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;

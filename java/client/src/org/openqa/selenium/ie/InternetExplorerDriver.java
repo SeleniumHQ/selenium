@@ -19,19 +19,12 @@ package org.openqa.selenium.ie;
 
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.win32.StdCallLibrary;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.HttpCommandExecutor;
@@ -39,12 +32,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
   /**

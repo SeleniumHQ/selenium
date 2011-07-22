@@ -27,9 +27,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.javascript.host.MouseEvent;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
-import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 /**

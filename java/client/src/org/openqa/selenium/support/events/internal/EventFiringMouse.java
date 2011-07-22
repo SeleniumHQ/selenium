@@ -4,8 +4,6 @@ package org.openqa.selenium.support.events.internal;
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 

@@ -17,9 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class AddLocationStrategy extends SeleneseCommand<Void> {
   private final ElementFinder elementFinder;

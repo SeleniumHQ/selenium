@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.html5;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.html5.ResultSet;
 
 public interface DatabaseStorage {
 

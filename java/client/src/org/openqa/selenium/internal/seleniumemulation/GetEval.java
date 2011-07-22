@@ -20,7 +20,6 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
 
 /**
  * An implementation of the "getEval" method from Selenium.

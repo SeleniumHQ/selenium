@@ -7,9 +7,6 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.internal.IResultListener;
 
-import com.thoughtworks.selenium.Selenium;
-
-
 public class ScreenshotListener implements IResultListener {
 
     File outputDirectory;

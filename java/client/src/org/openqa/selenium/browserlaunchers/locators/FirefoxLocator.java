@@ -1,6 +1,5 @@
 package org.openqa.selenium.browserlaunchers.locators;
 
-import org.openqa.selenium.browserlaunchers.locators.SingleBrowserLocator;
 
 /**
  * Discovers a valid Firefox installation on local system.

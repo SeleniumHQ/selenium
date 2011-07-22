@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
-
 /**
  * Interface representing basic keyboard operations.
  *

@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.Wait;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
 
 public class WaitForCondition extends SeleneseCommand<Void> {
 

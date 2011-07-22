@@ -20,15 +20,12 @@ package org.openqa.selenium.internal.selenesedriver;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 
-import com.google.common.base.Joiner;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.json.JSONWriter;
 
 import java.io.StringWriter;
-import java.util.List;
 import java.util.Map;
 
 public class ExecuteAsyncScript implements SeleneseFunction<Object> {

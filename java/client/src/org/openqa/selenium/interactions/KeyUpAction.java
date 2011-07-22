@@ -20,10 +20,8 @@ package org.openqa.selenium.interactions;
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Mouse;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.SingleKeyAction;
+import org.openqa.selenium.internal.Locatable;
 
 /**
  * Emulates key release only, without the press.

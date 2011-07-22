@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.support.pagefactory;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.pagefactory.ByChained;
 import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;

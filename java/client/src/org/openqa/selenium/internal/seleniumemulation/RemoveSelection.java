@@ -17,9 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class RemoveSelection extends SeleneseCommand<Void> {
 

@@ -1,7 +1,7 @@
 package org.openqa.selenium.browserlaunchers.locators;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.locators.FirefoxLocator;
+
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
 

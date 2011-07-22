@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.Maps;
-
 import org.json.JSONObject;
 
 import java.util.HashMap;
