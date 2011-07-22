@@ -6,7 +6,7 @@ dotnet_library(name = "dotnet",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll",
-    "third_party/csharp/json-net-3.5r6/Newtonsoft.Json.dll",
+    "third_party/csharp/json-net-4.0r2/Newtonsoft.Json.dll",
     "third_party/csharp/dotnetzip-1.9/Ionic.Zip.Reduced.dll"
   ],
   resources = [
