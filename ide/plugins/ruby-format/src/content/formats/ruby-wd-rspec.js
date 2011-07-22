@@ -256,12 +256,6 @@ this.options = {
 this.configForm =
     '<description>Variable for Selenium instance</description>' +
         '<textbox id="options_receiver" />' +
-        '<description>Selenium RC host</description>' +
-        '<textbox id="options_rcHost" />' +
-        '<description>Selenium RC port</description>' +
-        '<textbox id="options_rcPort" />' +
-        '<description>Environment</description>' +
-        '<textbox id="options_environment" />' +
         '<description>Header</description>' +
         '<textbox id="options_header" multiline="true" flex="1" rows="4"/>' +
         '<description>Footer</description>' +

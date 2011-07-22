@@ -10,7 +10,8 @@
     <html:script type="application/javascript">
         var ide_api = new API();
         ide_api.addPlugin("rubyformatters@seleniumhq.org");
-        ide_api.addPluginProvidedFormatter("rspecwdformatters", "RSpec (WebDriver)", "chrome://ruby-formatters/content/formats/ruby-wd-rspec.js");
+        ide_api.addPluginProvidedFormatter("rspecwdformatters", "Ruby RSpec (WebDriver)", "chrome://ruby-formatters/content/formats/ruby-wd-rspec.js");
+        ide_api.addPluginProvidedFormatter("rubywdformatters", "Ruby Test::Unit (WebDriver)", "chrome://ruby-formatters/content/formats/ruby-wd.js");
         ide_api.addPluginProvidedFormatter("rubyformatter", "Ruby (Test::Unit)", "chrome://ruby-formatters/content/formats/ruby-rc.js");
         ide_api.addPluginProvidedFormatter("rspecformatters", "RSpec", "chrome://ruby-formatters/content/formats/ruby-rc-rspec.js");
     </html:script>
