@@ -66,6 +66,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   private CommandExecutor executor;
   private Capabilities capabilities;
   private SessionId sessionId;
+  private ExecuteMethod executeMethod;
 
   private JsonToWebElementConverter converter;
 
@@ -75,11 +76,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   // For cglib
   protected RemoteWebDriver() {
     converter = new JsonToWebElementConverter(this);
+    executeMethod = new ExecuteMethod(this);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
     this.executor = executor;
     converter = new JsonToWebElementConverter(this);
+    executeMethod = new ExecuteMethod(this);
     startClient();
     startSession(desiredCapabilities);
   }
@@ -404,6 +407,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   protected Response execute(String command) {
     return execute(command, ImmutableMap.<String, Object>of());
+  }
+
+  public ExecuteMethod getExecuteMethod() {
+    return executeMethod;
   }
 
   public Keyboard getKeyboard() {
