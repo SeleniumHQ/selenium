@@ -1,3 +1,10 @@
+Selenium 2.2
+* Ability to get screenshots from Exceptions if they are given
+* Access to Remote StackTrace on error
+
+Selenium 2.1
+* Bug Fixes
+
 Selenium 2
 * Removed toggle() and select()
 

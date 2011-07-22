@@ -20,6 +20,16 @@ class WebDriverException(Exception):
         self.screen = screen
         self.stacktrace = stacktrace
 
+    def __str__(self):
+        exception_msg = "Message: %s " % repr(self.msg)
+        if self.screen is not None:
+            exception_msg = "%s; Screenshot: available via screen " \
+                % exception_msg
+        if self.stacktrace is not None:
+            exception_msg = "%s; Stacktrace: %s " \
+                % (exception_msg, str(self.stacktrace))
+        return exception_msg
+
 class ErrorInResponseException(WebDriverException):
     """An error has occurred on the server side.
 
