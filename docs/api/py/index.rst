@@ -56,4 +56,4 @@ Documentation
 =============
 Coming soon, in the meantime - `"Use the source Luke"`_
 
-.. _"Use the source Luke": http://code.google.com/p/selenium/source/browse/trunk/remote/client/src/py/webdriver.py
+..  _"Use the source Luke": http://code.google.com/p/selenium/source/browse/trunk/py/selenium/webdriver/remote/webdriver.py
