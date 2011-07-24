@@ -20,41 +20,36 @@ import os
 from selenium import webdriver
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 
-def setup_module(module):
-    webserver = SimpleWebServer()
-    webserver.start()
-    FirefoxProfileTest.webserver = webserver
-    FirefoxProfileTest.driver = webdriver.Firefox()
 
-
-class FirefoxProfileTest(unittest.TestCase):
+class TestFirefoxProfile:
     
-    def setUp(self):
-        webserver = SimpleWebServer()
-        webserver.start()
-        self.webserver = webserver
+    def setup_method(self, method):
+        self.driver = webdriver.Firefox() 
+        self.webserver = SimpleWebServer()
+        self.webserver.start()
 
     def test_that_we_can_accept_a_profile(self):
         self.profile1 = webdriver.FirefoxProfile()
         self.profile1.set_preference("startup.homepage_welcome_url", 
-            "%s" % "\"http://localhost:%d/%s.html\"" % (self.webserver.port, "simpleTest"))
+            "%s" % "http://localhost:%d/%s.html" % (self.webserver.port, "simpleTest"))
         self.profile1.update_preferences()
 
         self.profile2 = webdriver.FirefoxProfile(self.profile1.path)
         self.driver = webdriver.Firefox(firefox_profile=self.profile2)
         title = self.driver.title
-        self.assertEquals("Hello WebDriver", title)
+        assert "Hello WebDriver" == title
 
     def test_that_we_delete_the_profile(self):
         path = self.driver.firefox_profile.path
         self.driver.quit()
-        self.assertFalse(os.path.exists(path))
+        assert not os.path.exists(path)
 
-    def tearDown(self):
+    def teardown_method(self, method):
         try:
             self.driver.quit()
         except:
             pass #don't care since we may have killed the browser above
+        self.webserver.stop()
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
@@ -67,7 +62,6 @@ class FirefoxProfileTest(unittest.TestCase):
 
 def teardown_module(module):
     try:
-        FirefoxProfileTest.driver.quit()
+        TestFirefoxProfile.driver.quit()
     except:
         pass #Don't Care since we may have killed the browser above
-    FirefoxProfileTest.webserver.stop()
