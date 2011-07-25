@@ -22,7 +22,6 @@ import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 public class BrowserOptions {
   private static final String OPTIONS_SET = "optionsSet";

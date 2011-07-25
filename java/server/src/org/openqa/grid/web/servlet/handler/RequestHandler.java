@@ -38,7 +38,6 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.TestSessionListener;
-import org.openqa.grid.web.Hub;
 
 /**
  * Base stuff to handle the request coming from a remote. Ideally, there should

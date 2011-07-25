@@ -18,7 +18,6 @@ package org.openqa.jetty.log;
 import java.io.PrintStream;
 
 import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.ByteArrayOutputStream2;
 
 /**
