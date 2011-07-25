@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
@@ -111,6 +112,12 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.switchTo().frame("iframe1");
 
     assertThat(driver.findElement(By.name("id-name1")).getAttribute("value"), equalTo("name"));
+  }
+  
+  public void testShouldBeAbleToSwitchToFrameWithNameContainingDot() {
+    driver.get(pages.framesetPage);
+    driver.switchTo().frame("sixth.iframe1");
+    assertThat(driver.findElement(By.tagName("body")).getText(), containsString("Page number 3"));
   }
 
   @Ignore(value = {SELENESE, OPERA}, reason = "switchTo().frame(WebElement) not supported with Selenium"
