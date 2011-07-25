@@ -105,7 +105,7 @@ public class CaptureNetworkTrafficCommand extends Command {
                     sb.append("<entry ");
 
                     sb.append("statusCode=\"").append(entry.statusCode).append("\" ");
-                    sb.append("method=\"").append(json(entry.method)).append("\" ");
+                    sb.append("method=\"").append(xml(entry.method)).append("\" ");
                     sb.append("url=\"").append(xml(entry.url)).append("\" ");
                     sb.append("bytes=\"").append(entry.bytes).append("\" ");
                     sb.append("start=\"").append(sdf.format(entry.start)).append("\" ");
