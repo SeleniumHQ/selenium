@@ -3,7 +3,6 @@ package org.openqa.selenium;
 import java.util.List;
 
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 @Ignore({IPHONE, SELENESE})
@@ -25,7 +24,6 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
     assertFalse(ps.get(0).equals(ps.get(1)));
   }
 
-  @Ignore(REMOTE)    
   public void testSameElementLookedUpDifferentWaysUsingFindElementShouldHaveSameHashCode() {
     driver.get(pages.simpleTestPage);
     WebElement body = driver.findElement(By.tagName("body"));
@@ -34,7 +32,6 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
     assertEquals(body.hashCode(), xbody.hashCode());
   }
 
-  @Ignore(REMOTE)
   public void testSameElementLookedUpDifferentWaysUsingFindElementsShouldHaveSameHashCode() {
     driver.get(pages.simpleTestPage);
     List<WebElement> body = driver.findElements(By.tagName("body"));

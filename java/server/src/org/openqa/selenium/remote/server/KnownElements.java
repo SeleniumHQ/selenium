@@ -21,18 +21,22 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 
 public class KnownElements {
 
-  private final Map<String, WebElement> elements = new HashMap<String, WebElement>();
+  private final BiMap<String, WebElement> elements = HashBiMap.create();
   private int nextId;
 
   public String add(WebElement element) {
+    if (elements.containsValue(element)) {
+      return elements.inverse().get(element);
+    }
     String id = getNextId();
     elements.put(id, proxyElement(element, id));
     return id;
