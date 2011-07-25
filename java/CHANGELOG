@@ -1,3 +1,26 @@
+v2.2.0
+======
+
+Selenium RC:
+  * Avoiding double quoting the "method" when captured network traffic is
+    returned via XML.
+
+WebDriver:
+  * relatedTarget now set on appropriate events (mouseover, mouseout)
+  * Multiply wrapped WebElements now unwrapped properly when using the remote
+    webdriver
+  * RemoteWebElement will reuse an ID if the element has been looked up before.
+  * Better warnings for emulated Selenium methods "allowNativeXpath" and
+    "useXpathLibrary"
+  * More consistent errors when an xpath expression returns something that is
+    not a WebElement (indicated via the InvalidSelectorException.
+
+Grid:
+  * Adding support for a "host" variable in the config files.
+  * Additional logging
+
+
+
 v2.1.0
 ======
 
@@ -12,3 +35,4 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
+
