@@ -8,7 +8,6 @@ recursive-include py/selenium/webdriver/ie *.py *.dll
 recursive-include py/selenium/webdriver/remote *.py
 include py/selenium/selenium.py
 include py/selenium/__init__.py
-include __init__.py
 include docs/api/py/index.rst
 recursive-include selenium.egg-info *
 
