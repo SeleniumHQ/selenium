@@ -24,8 +24,6 @@ import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 
-import org.openqa.selenium.interactions.Actions;
-
 public class ClickTest extends AbstractDriverTestCase {
   @Override
   protected void setUp() throws Exception {
@@ -123,7 +121,7 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, SELENESE})
+  @Ignore({HTMLUNIT, OPERA, SELENESE})
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
 
