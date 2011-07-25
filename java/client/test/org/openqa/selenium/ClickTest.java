@@ -123,7 +123,7 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(HTMLUNIT)
+  @Ignore({HTMLUNIT, SELENESE})
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
 
