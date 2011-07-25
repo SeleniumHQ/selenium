@@ -64,7 +64,7 @@ public class KnownElements {
       }
     };
 
-    Class[] proxyThese;
+    Class<?>[] proxyThese;
     if (element instanceof Locatable) {
       proxyThese = new Class[]{WebElement.class, ProxiedElement.class, Locatable.class};
     } else {
