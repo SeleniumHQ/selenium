@@ -97,6 +97,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   private HtmlUnitMouse mouse;
   private boolean gotPage;
 
+  public static final String INVALIDXPATHERROR = "The xpath expression '%s' cannot be evaluated";
+  public static final String INVALIDSELECTIONERROR =
+      "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
+  
   public HtmlUnitDriver(BrowserVersion version) {
     this.version = version;
     webClient = createWebClient(version);
@@ -754,14 +758,26 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       throw new IllegalStateException("Unable to locate element by xpath for " + lastPage());
     }
 
-    Object node = ((HtmlPage) lastPage()).getFirstByXPath(selector);
+    Object node;
+    try {
+      node = ((HtmlPage) lastPage()).getFirstByXPath(selector);
+    }
+    catch(Exception ex) {
+      // The xpath expression cannot be evaluated, so the expression is invalid
+      throw new InvalidSelectorException(
+        String.format(INVALIDXPATHERROR, selector),
+        ex);
+    }
     if (node == null) {
       throw new NoSuchElementException("Unable to locate a node using " + selector);
     }
     if (node instanceof HtmlElement) {
       return newHtmlUnitWebElement((HtmlElement) node);
     }
-    throw new NoSuchElementException(String.format("Unable to locate element with xpath %s", selector));
+    // The xpath expression selected something different than a WebElement.
+    // The selector is therefore invalid
+    throw new InvalidSelectorException(
+        String.format(INVALIDSELECTIONERROR, selector, node.getClass()));
   }
 
   public List<WebElement> findElementsByXPath(String selector) {
@@ -769,8 +785,33 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       return new ArrayList<WebElement>();
     }
 
-    List<?> nodes = ((HtmlPage) lastPage()).getByXPath(selector);
-    return convertRawHtmlElementsToWebElements(nodes);
+    List<?> nodes;
+    List<WebElement> result;
+    try {
+      nodes = ((HtmlPage) lastPage()).getByXPath(selector);
+      result = convertRawHtmlElementsToWebElements(nodes);
+    }
+    catch(RuntimeException ex) {
+      // The xpath expression cannot be evaluated, so the expression is invalid
+      throw new InvalidSelectorException(String.format(INVALIDXPATHERROR, selector), ex);
+    }
+    if(nodes.size() != result.size()) {
+      // There exist elements in the nodes list which could not be converted to WebElements.
+      // A valid xpath selector should only select WebElements.
+
+      // Find out the type of the element which is not a WebElement
+      for(Object node : nodes) {
+        if(!(node instanceof HtmlElement)) {
+          // We only want to know the type of one invalid element so that we can give this
+          // information in the exception. We can throw the exception immediately.
+          throw new InvalidSelectorException(
+              String.format(INVALIDSELECTIONERROR, selector, node.getClass()));
+
+        }
+      }
+    }
+
+    return result;
   }
 
   private List<WebElement> convertRawHtmlElementsToWebElements(List<?> nodes) {

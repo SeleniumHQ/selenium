@@ -5,6 +5,7 @@ import org.openqa.selenium.ImeActivationFailedException;
 import org.openqa.selenium.ImeNotAvailableException;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
+import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -43,7 +44,7 @@ public class ErrorCodes {
   public static final int INVALID_ELEMENT_COORDINATES = 29;
   public static final int IME_NOT_AVAILABLE = 30;
   public static final int IME_ENGINE_ACTIVATION_FAILED = 31;
-
+  public static final int INVALID_SELECTOR_ERROR = 32;
   // The following error codes are derived straight from HTTP return codes.
   public static final int METHOD_NOT_ALLOWED = 405;
 
@@ -68,6 +69,8 @@ public class ErrorCodes {
         return NoSuchWindowException.class;
       case NO_SUCH_ELEMENT:
         return NoSuchElementException.class;
+      case INVALID_SELECTOR_ERROR:
+        return InvalidSelectorException.class;
       case NO_SUCH_FRAME:
         return NoSuchFrameException.class;
       case UNKNOWN_COMMAND:
@@ -110,6 +113,8 @@ public class ErrorCodes {
       return UNABLE_TO_SET_COOKIE;
     } else if (thrown instanceof NoSuchWindowException) {
       return NO_SUCH_WINDOW;
+    } else if (thrown instanceof InvalidSelectorException) {
+      return INVALID_SELECTOR_ERROR;
     } else if (thrown instanceof NoSuchElementException) {
       return NO_SUCH_ELEMENT;
     } else if (thrown instanceof NoSuchFrameException) {

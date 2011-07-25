@@ -48,6 +48,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidElementStateException;
+import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
@@ -657,21 +658,53 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public WebElement findElementByXPath(String xpathExpr) {
     assertElementNotStale();
 
-    HtmlElement match = (HtmlElement) element.getFirstByXPath(xpathExpr);
-    if (match == null) {
-      throw new NoSuchElementException("Unable to find element with xpath "
-                                       + xpathExpr);
+    Object node;
+    try {
+      node = element.getFirstByXPath(xpathExpr);
     }
-    return getParent().newHtmlUnitWebElement(match);
+    catch(Exception ex) {
+      // The xpath expression cannot be evaluated, so the expression is invalid
+      throw new InvalidSelectorException(
+          String.format(HtmlUnitDriver.INVALIDXPATHERROR, xpathExpr), ex);
+    }
+
+    if (node == null) {
+      throw new NoSuchElementException("Unable to find an element with xpath " + xpathExpr);
+    }
+    if (node instanceof HtmlElement) {
+      return getParent().newHtmlUnitWebElement((HtmlElement)node);
+    }
+    // The xpath selector selected something different than a WebElement. The selector is therefore
+    // invalid
+    throw new InvalidSelectorException(
+        String.format(HtmlUnitDriver.INVALIDSELECTIONERROR, xpathExpr, node.getClass().toString()));
   }
 
   public List<WebElement> findElementsByXPath(String xpathExpr) {
     assertElementNotStale();
 
     List<WebElement> webElements = new ArrayList<WebElement>();
-    List<?> htmlElements = element.getByXPath(xpathExpr);
+
+    List<?> htmlElements;
+    try {
+      htmlElements = element.getByXPath(xpathExpr);
+    } catch(Exception ex) {
+      // The xpath expression cannot be evaluated, so the expression is invalid
+      throw new InvalidSelectorException(
+          String.format(HtmlUnitDriver.INVALIDXPATHERROR, xpathExpr), ex);
+    }
+
     for (Object e : htmlElements) {
-      webElements.add(getParent().newHtmlUnitWebElement((HtmlElement) e));
+      if(e instanceof HtmlElement) {
+        webElements.add(getParent().newHtmlUnitWebElement((HtmlElement) e));
+      }
+      else {
+        // The xpath selector selected something different than a WebElement. The selector is
+        // therefore invalid
+        throw new InvalidSelectorException(
+            String.format(HtmlUnitDriver.INVALIDSELECTIONERROR, 
+              xpathExpr, e.getClass().toString()));
+      }
     }
     return webElements;
   }
@@ -796,7 +829,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     if (parentElement == null) {
       throw new StaleElementReferenceException("The element seems to be disconnected from the DOM. "
-                                               + " This means that a user cannot interact with it.");
+                                              + " This means that a user cannot interact with it.");
     }
   }
 

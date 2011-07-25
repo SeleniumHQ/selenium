@@ -76,9 +76,17 @@ bot.locators.xpath.single = function(target, root) {
       }
       return node.selectSingleNode(path);
     }
-    var result = bot.locators.xpath.evaluate_(node, path,
-        bot.locators.xpath.XPathResult.FIRST_ORDERED_NODE_TYPE);
-    return result ? result.singleNodeValue : null;
+    try {
+      var result = bot.locators.xpath.evaluate_(node, path,
+          bot.locators.xpath.XPathResult.FIRST_ORDERED_NODE_TYPE);
+      return result ? result.singleNodeValue : null;
+    }
+    catch (ex) {
+      // The error is caused most likely by an invalid xpath expression
+      // TODO: catch the exception more precise
+      throw Error(bot.ErrorCode.INVALID_SELECTOR_ERROR, 
+        'Unable to locate an element with the xpath expression ' + target);
+    }
   }
 
   var node = selectSingleNode(root, target);
@@ -118,14 +126,25 @@ bot.locators.xpath.many = function(target, root) {
       return node.selectNodes(path);
     }
     var results = [];
-    var nodes = bot.locators.xpath.evaluate_(node, path,
-        bot.locators.xpath.XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    var nodes;
+    try{
+      nodes = bot.locators.xpath.evaluate_(node, path,
+              bot.locators.xpath.XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    }
+    catch(ex) {
+      // The error is caused most likely by an invalid xpath expression
+      // TODO: catch the exception more precise
+      throw Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+        'Unable to locate elements with the xpath expression ' + path);
+    }
     if (nodes) {
       var count = nodes.snapshotLength;
       for (var i = 0; i < count; ++i) {
         var item = nodes.snapshotItem(i);
         if (item.nodeType != goog.dom.NodeType.ELEMENT) {
-          throw Error('Returned nodes must be elements: ' + target);
+          // A xpath expression which selects something which is not an element is invalid
+          throw Error(bot.ErrorCode.INVALID_SELECTOR_ERROR, 
+            'Returned nodes must be elements: ' + target);
         }
         results.push(item);
       }

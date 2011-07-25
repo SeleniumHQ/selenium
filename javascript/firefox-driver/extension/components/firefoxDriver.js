@@ -345,7 +345,23 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
   var target = {};
   target[FirefoxDriver.WIRE_TO_ATOMS_STRATEGY_[method] || method] = selector;
 
-  var element = bot.locators.findElement(target, rootNode);
+  var element;
+  try {
+    element = bot.locators.findElement(target, rootNode);
+  }
+  catch(ex) {
+    if(ex.message == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
+      // We send the INVALID_SELECTOR_ERROR immediately because it will occur in
+      // every retry.
+      respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+        'The given selector "' + selector + ' is either invalid or does not result'
+          + 'in a Webelement'));
+      return;
+    } else {
+      // this is not the exception we are interested in, so we propagate it.
+      throw e;
+    }
+  }
   if (element) {
     var id = Utils.addToKnownElements(element, respond.session.getDocument());
     respond.value = {'ELEMENT': id};
@@ -426,7 +442,22 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
   var target = {};
   target[FirefoxDriver.WIRE_TO_ATOMS_STRATEGY_[method] || method] = selector;
 
-  var elements = bot.locators.findElements(target, rootNode);
+  var elements;
+  try {
+    elements = bot.locators.findElements(target, rootNode);
+  } catch (ex) {
+    if(ex.message == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
+      // We send the INVALID_SELECTOR_ERROR immediately because it will occur in
+      // every retry.
+      respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+        'The given selector "' + selector + ' is either invalid or does not result'
+           + 'in a Webelement'));
+      return;
+    } else {
+      // this is not the exception we are interested in, so we propagate it.
+      throw e;
+    }
+  }
 
   var elementIds = [];
   for (var j = 0; j < elements.length; j++) {
@@ -987,6 +1018,8 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
     if (nativeEventsEnabled && events && node) {
       var currentPosition = respond.session.getMousePosition();
+      Logger.dumpn("Moving from (" + currentPosition.x + ", " + currentPosition.y + ") to (" +
+        toX + ", " + toY + ")");
       events.mouseMove(node,
           currentPosition.x + browserOffset.x, currentPosition.y + browserOffset.y,
           toX + browserOffset.x, toY + browserOffset.y);

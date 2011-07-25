@@ -22,6 +22,12 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
 
 public class XPathElementFindingTest extends AbstractDriverTestCase {
 
@@ -97,6 +103,115 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     } catch (NoSuchElementException e) {
       e.printStackTrace();
       fail("Cannot find the element");
+    }
+  }
+
+  @Ignore({ANDROID, CHROME, IE, IPHONE, OPERA, REMOTE, SELENESE})
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
+    driver.get(pages.formPage);
+
+    try {
+      driver.findElement(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (InvalidSelectorException ignored) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically
+      // invalid
+    }
+  }
+
+  @Ignore({ANDROID, CHROME, IE, IPHONE, OPERA, REMOTE, SELENESE})
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
+    driver.get(pages.formPage);
+
+    try {
+      driver.findElements(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (InvalidSelectorException ignored) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically
+      // invalid
+    }
+  }
+
+  @Ignore({ANDROID, CHROME, IE, IPHONE, OPERA, REMOTE, SELENESE})
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
+    driver.get(pages.formPage);
+    WebElement body = driver.findElement(By.tagName("body"));
+    try {
+      body.findElement(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (InvalidSelectorException ignored) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically
+      // invalid
+    }
+  }
+
+  @Ignore({ANDROID, CHROME, IE, IPHONE, OPERA, REMOTE, SELENESE})
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
+    driver.get(pages.formPage);
+    WebElement body = driver.findElement(By.tagName("body"));
+    try {
+      body.findElements(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (InvalidSelectorException ignored) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically
+      // invalid
+    }
+  }
+
+
+  @Ignore({ANDROID, CHROME, IE, IPHONE, OPERA, REMOTE, SELENESE})
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
+    driver.get(pages.formPage);
+
+    try {
+      driver.findElement(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (InvalidSelectorException ignored) {
+      // We expect an exception because the XPath expression
+      // results in a number, not in an element.
+    }
+  }
+
+  @Ignore({ANDROID, CHROME, IE, IPHONE, OPERA, REMOTE, SELENESE})
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
+    driver.get(pages.formPage);
+
+    try {
+      driver.findElements(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (InvalidSelectorException ignored) {
+      // We expect an exception because the XPath expression
+      // results in a number, not in an element.
+    }
+  }
+
+  @Ignore({ANDROID, CHROME, IE, IPHONE, OPERA, REMOTE, SELENESE})
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
+    driver.get(pages.formPage);
+
+    WebElement body = driver.findElement(By.tagName("body"));
+
+    try {
+      body.findElement(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (InvalidSelectorException ignored) {
+      // We expect an exception because the XPath expression
+      // results in a number, not in an element.
+    }
+  }
+
+    @Ignore({ANDROID, CHROME, IE, IPHONE, OPERA, REMOTE, SELENESE})
+    public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
+    driver.get(pages.formPage);
+
+    WebElement body = driver.findElement(By.tagName("body"));
+
+    try {
+      body.findElements(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (InvalidSelectorException ignored) {
+      // We expect an exception because the XPath expression
+      // results in a number, not in an element.
     }
   }
 }

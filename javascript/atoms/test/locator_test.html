@@ -24,6 +24,7 @@ limitations under the License.
     goog.require('goog.events.EventType');
     goog.require('bot');
     goog.require('bot.locators');
+    goog.require('bot.ErrorCode');
   </script>
 
   <script>
@@ -150,6 +151,40 @@ limitations under the License.
       assertNull(bot.locators.findElement({xpath: "//fish"}));
     }
 
+    function testShouldThrowInvalidSelectorErrorWhenXPathIsSyntacticallyInvalidInSingle() {
+      if (!document['evaluate']) {
+        return;  // Skip this until we get xpath working on all browsers
+      }
+
+      try {
+        bot.locators.findElement({xpath: "this][isnot][valid"});
+        fail("Should not have succeeded because the xpath expression is "
+          + "syntactically not correct");
+      }
+      catch(ex) {
+        //We expect an InvalidSelectorException because the xpath expression is
+        //syntactically invalid.
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(), ex.message);
+      }
+    }
+
+    function testShouldThrowInvalidSelectorErrorWhenXPathReturnsAWrongTypeInSingle() {
+      if (!document['evaluate']) {
+        return;  // Skip this until we get xpath working on all browsers
+      }
+
+      try {
+        bot.locators.findElement({xpath: "count(//fish)"});
+        fail("Should not have succeeded because the xpath expression does "
+          + "not select an element.");
+      }
+      catch(ex) {
+        // We expect an exception because the XPath expression
+        // results in a number, not in an element.
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(), ex.message);
+      }
+    }
+
     function testCanFindMoreThanOneElementByName() {
       var allFoos = bot.locators.findElements({name: 'foo'});
 
@@ -186,6 +221,39 @@ limitations under the License.
       var bad = bot.locators.findElements({xpath: '//*[@name = "after"]'});
 
       assertEquals(2, bad.length);
+    }
+
+    function testShouldThrowInvalidSelectorErrorWhenXPathIsSyntacticallyInvalidInMany() {
+      if (!document['evaluate']) {
+        return;  // Skip this until we get xpath working on all browsers
+      }
+      try {
+        bot.locators.findElements({xpath: "this][isnot][valid"});
+        fail("Should not have succeeded because the xpath expression is "
+          + "syntactically not correct.");
+      }
+      catch(ex) {
+        // We expect an InvalidSelectorException because the xpath expression is
+        // syntactically invalid.
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(), ex.message);//,
+      }
+    }
+
+    function testShouldThrowInvalidSelectorErrorWhenXPathReturnsAWrongTypeInMany() {
+      if (!document['evaluate']) {
+        return;  // Skip this until we get xpath working on all browsers
+      }
+
+      try {
+        bot.locators.findElements({xpath: "count(//fish)"});
+        fail("Should not have succeeded because the xpath expression does not "
+          + "select an element.");
+      }
+      catch(ex) {
+        // We expect an exception because the XPath expression
+        // results in a number, not in an element.
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(), ex.message);//,
+      }
     }
 
     function testCanFindElementByLinkText() {
