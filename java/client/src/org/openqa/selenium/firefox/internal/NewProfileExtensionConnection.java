@@ -26,7 +26,9 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 
+import com.google.common.io.Closeables;
 import org.openqa.selenium.internal.Lock;
+import org.openqa.selenium.io.Cleanly;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
@@ -138,7 +140,11 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
       } catch (BindException e) {
         // Port is already bound. Skip it and continue
       } finally {
-        socket.close();
+        try {
+          socket.close();
+        } catch (IOException ignored) {
+          // Nothing sane to do. Ignore this.
+        }
       }
     }
 
