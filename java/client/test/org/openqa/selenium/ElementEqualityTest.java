@@ -8,16 +8,16 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 @Ignore({IPHONE, SELENESE})
 public class ElementEqualityTest extends AbstractDriverTestCase {
-  public void testElementEqualityShouldWork() {
+  public void testSameElementLookedUpDifferentWaysShouldBeEqual() {
     driver.get(pages.simpleTestPage);
     
     WebElement body = driver.findElement(By.tagName("body"));
-    WebElement xbody = driver.findElement(By.xpath("//body"));
+    WebElement xbody = driver.findElements(By.xpath("//body")).get(0);
 
     assertEquals(body, xbody);
   }
 
-  public void testElementInequalityShouldWork() {
+  public void testDifferentElementsShouldNotBeEqual() {
     driver.get(pages.simpleTestPage);
     
     List<WebElement> ps = driver.findElements(By.tagName("p"));
@@ -26,7 +26,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
   }
 
   @Ignore(REMOTE)    
-  public void testFindElementHashCodeShouldMatchEquality() {
+  public void testSameElementLookedUpDifferentWaysUsingFindElementShouldHaveSameHashCode() {
     driver.get(pages.simpleTestPage);
     WebElement body = driver.findElement(By.tagName("body"));
     WebElement xbody = driver.findElement(By.xpath("//body"));
@@ -35,7 +35,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
   }
 
   @Ignore(REMOTE)
-  public void testFindElementsHashCodeShouldMatchEquality() {
+  public void testSameElementLookedUpDifferentWaysUsingFindElementsShouldHaveSameHashCode() {
     driver.get(pages.simpleTestPage);
     List<WebElement> body = driver.findElements(By.tagName("body"));
     List<WebElement> xbody = driver.findElements(By.xpath("//body"));
