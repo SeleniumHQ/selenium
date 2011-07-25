@@ -26,12 +26,14 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaiter.waitFor;
 
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -199,6 +201,21 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     } catch (InvalidCoordinatesException expected) {
       // expected
     }
+  }
 
+  @Ignore(value = {ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE, OPERA},
+      reason = "Behaviour not finalized yet regarding linked images.")
+  public void testMovingIntoAnImageEnclosedInALink() {
+    driver.get(pages.linkedImage);
+
+    WebElement linkElement = driver.findElement(By.id("linkWithEnclosedImage"));
+
+    // Image is 644 x 41 - move towards the end.
+    // Note: The width of the link element itself is correct - 644 pixels. However,
+    // the height is 17 pixels and the rectangle containing it is *below* the image.
+    // For this reason, this action will fail.
+    new Actions(driver).moveToElement(linkElement, 500, 30).click().perform();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "We Arrive Here"));
   }
 }

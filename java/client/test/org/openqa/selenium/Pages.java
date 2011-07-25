@@ -61,6 +61,7 @@ public class Pages {
   public String mapVisibilityPage;
   public String mouseTrackerPage;
   public String dynamicallyModifiedPage;
+  public String linkedImage;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -104,5 +105,6 @@ public class Pages {
     uploadPage = appServer.whereIs("upload.html");
     xhtmlTestPage = appServer.whereIs("xhtmlTest.html");
     dynamicallyModifiedPage = appServer.whereIs("dynamicallyModifiedPage.html");
+    linkedImage = appServer.whereIs("linked_image.html");
   }
 }
