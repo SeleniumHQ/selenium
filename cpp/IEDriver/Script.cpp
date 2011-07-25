@@ -177,8 +177,6 @@ int Script::Execute() {
 
 	if (temp_function.vt != VT_DISPATCH) {
 		// No return value that we care about
-		::VariantClear(&result);
-		result.vt = VT_EMPTY;
 		return SUCCESS;
 	}
 
