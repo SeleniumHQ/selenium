@@ -1192,7 +1192,6 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
   var threadmgr =
       thmgr_cls.getService(Components.interfaces.nsIThreadManager);
   var thread = threadmgr.currentThread;
-  Logger.dumpn("Starting wait for native events.");
 
   do {
 
