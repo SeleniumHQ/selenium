@@ -142,6 +142,7 @@ dotnet_release(name = "release",
     ":support:package",
     ":core:package",
     ":webdriverbackedselenium:package",
+    ":docs"
   ],
   out = "selenium-dotnet.zip"
 )
