@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::ActionBuilder
   
-    &mdash; Documentation by YARD 0.7.1
+    &mdash; Documentation by YARD 0.7.2
   
 </title>
 
@@ -94,22 +94,25 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>The ActionBuilder provides the user a way to set up and perform complex
-user interactions.</p>
-
-<p>This class should not be instantiated directly, but is created by
+    <p>
+The ActionBuilder provides the user a way to set up and perform complex
+user interactions.
+</p>
+<p>
+This class should not be instantiated directly, but is created by
 Selenium::WebDriver::DriverExtensions::HasInputDevices#action, which is
-available on Driver instances that support the user interaction API.</p>
-
-<p>Example:</p>
-
-<pre class="code"><span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='key_down identifier id'>key_down</span><span class='lparen token'>(</span><span class='symbol val'>:shift</span><span class='rparen token'>)</span><span class='dot token'>.</span>
-              <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
-              <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='second_element identifier id'>second_element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
-              <span class='key_up identifier id'>key_up</span><span class='lparen token'>(</span><span class='symbol val'>:shift</span><span class='rparen token'>)</span><span class='dot token'>.</span>
-              <span class='drag_and_drop identifier id'>drag_and_drop</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='third_element identifier id'>third_element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
-              <span class='perform identifier id'>perform</span>
+available on Driver instances that support the user interaction API.
+</p>
+<p>
+Example:
+</p>
+<pre class="code">
+ <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='key_down identifier id'>key_down</span><span class='lparen token'>(</span><span class='symbol val'>:shift</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+               <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+               <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='second_element identifier id'>second_element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+               <span class='key_up identifier id'>key_up</span><span class='lparen token'>(</span><span class='symbol val'>:shift</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+               <span class='drag_and_drop identifier id'>drag_and_drop</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='third_element identifier id'>third_element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+               <span class='perform identifier id'>perform</span>
 </pre>
 
 
@@ -274,8 +277,9 @@ available on Driver instances that support the user interaction API.</p>
   <span class="private note title">Private</span>
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>A new instance of ActionBuilder.</p>
+    <span class="summary_desc"><div class='inline'><p>
+A new instance of ActionBuilder.
+</p>
 </div></span>
   
 </li>
@@ -447,8 +451,9 @@ available on Driver instances that support the user interaction API.</p>
   <strong>This method is part of a private API.</strong> 
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-
-<p>A new instance of ActionBuilder</p>
+<p>
+A new instance of ActionBuilder
+</p>
 
 
   </div>
@@ -950,9 +955,9 @@ available on Driver instances that support the user interaction API.</p>
 </div>
     
     <div id="footer">
-  Generated on Fri Jul 08 01:19:24 2011 by 
+  Generated on Tue Jul 26 13:31:43 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.1 (ruby-1.8.7).
+  0.7.2 (ruby-1.8.7).
 </div>
 
   </body>

@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Platform
   
-    &mdash; Documentation by YARD 0.7.1
+    &mdash; Documentation by YARD 0.7.2
   
 </title>
 
@@ -211,6 +211,27 @@
   <span class="summary_signature">
     
       <a href="#engine-instance_method" title="#engine (instance method)">- (Object) <strong>engine</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#exit_hook-instance_method" title="#exit_hook (instance method)">- (Object) <strong>exit_hook</strong>(&amp;blk) </a>
     
 
     
@@ -820,9 +841,9 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="find_binary-instance_method">
+  <p class="signature " id="exit_hook-instance_method">
   
-    - (<tt>Object</tt>) <strong>find_binary</strong>(*binary_names) 
+    - (<tt>Object</tt>) <strong>exit_hook</strong>(&amp;blk) 
   
 
   
@@ -850,16 +871,65 @@
 123
 124
 125
-126
-127
+126</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 120</span>
+
+<span class='def def kw'>def</span> <span class='exit_hook identifier id'>exit_hook</span><span class='lparen token'>(</span><span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
+  <span class='pid identifier id'>pid</span> <span class='assign token'>=</span> <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='pid identifier id'>pid</span>
+
+  <span class='at_exit identifier id'>at_exit</span> <span class='do do kw'>do</span>
+    <span class='yield yield kw'>yield</span> <span class='if if_mod kw'>if</span> <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='pid identifier id'>pid</span> <span class='eq op'>==</span> <span class='pid identifier id'>pid</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="find_binary-instance_method">
+  
+    - (<tt>Object</tt>) <strong>find_binary</strong>(*binary_names) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
 128
 129
 130
 131
-132</pre>
+132
+133
+134
+135
+136
+137
+138
+139
+140</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 120</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 128</span>
 
 <span class='def def kw'>def</span> <span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='binary_names identifier id'>binary_names</span><span class='rparen token'>)</span>
   <span class='paths identifier id'>paths</span> <span class='assign token'>=</span> <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'PATH'</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='File constant id'>File</span><span class='colon2 op'>::</span><span class='PATH_SEPARATOR constant id'>PATH_SEPARATOR</span><span class='rparen token'>)</span>
@@ -1110,18 +1180,18 @@
       <pre class="lines">
 
 
-134
-135
-136
-137
-138
-139
-140
-141
-142</pre>
+142
+143
+144
+145
+146
+147
+148
+149
+150</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 142</span>
 
 <span class='def def kw'>def</span> <span class='localhost identifier id'>localhost</span>
   <span class='info identifier id'>info</span> <span class='assign token'>=</span> <span class='Socket constant id'>Socket</span><span class='dot token'>.</span><span class='getaddrinfo identifier id'>getaddrinfo</span> <span class='string val'>&quot;localhost&quot;</span><span class='comma token'>,</span> <span class='integer val'>80</span><span class='comma token'>,</span> <span class='Socket constant id'>Socket</span><span class='colon2 op'>::</span><span class='AF_INET constant id'>AF_INET</span><span class='comma token'>,</span> <span class='Socket constant id'>Socket</span><span class='colon2 op'>::</span><span class='SOCK_STREAM constant id'>SOCK_STREAM</span>
@@ -1510,9 +1580,9 @@
 </div>
     
     <div id="footer">
-  Generated on Fri Jul 08 01:19:23 2011 by 
+  Generated on Tue Jul 26 13:31:28 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.1 (ruby-1.8.7).
+  0.7.2 (ruby-1.8.7).
 </div>
 
   </body>

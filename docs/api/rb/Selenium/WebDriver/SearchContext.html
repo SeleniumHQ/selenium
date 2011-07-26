@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::SearchContext
   
-    &mdash; Documentation by YARD 0.7.1
+    &mdash; Documentation by YARD 0.7.2
   
 </title>
 
@@ -90,16 +90,16 @@
           
         </dt>
         <dd><pre class="code"><span class='lbrace token'>{</span>
-  <span class='symbol val'>:class</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ClassName'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:class_name</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ClassName'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:css</span>               <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'CssSelector'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:id</span>                <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'Id'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:link</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'LinkText'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:link_text</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'LinkText'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:name</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'Name'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:partial_link_text</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'PartialLinkText'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:tag_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'TagName'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:xpath</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'Xpath'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:class</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'class name'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:class_name</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'class name'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:css</span>               <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'css selector'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:id</span>                <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'id'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:link</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'link text'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:link_text</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'link text'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:name</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'name'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:partial_link_text</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'partial link text'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:tag_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'tag name'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:xpath</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'xpath'</span><span class='comma token'>,</span>
 <span class='rbrace token'>}</span>
 </pre></dd>
       
@@ -134,8 +134,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Find the first element matching the given arguments.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Find the first element matching the given arguments.
+</p>
 </div></span>
   
 </li>
@@ -157,8 +158,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Find all elements matching the given arguments.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Find all elements matching the given arguments.
+</p>
 </div></span>
   
 </li>
@@ -182,13 +184,16 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Find the first element matching the given arguments.</p>
-
-<p>When using Element#find_element with :xpath, be aware that webdriver
-follows standard conventions: a search prefixed with “//” will search
-the entire document, not just the children of this current node. Use
-“.//” to limit your search to the children of the receiving Element.</p>
+    <p>
+Find the first element matching the given arguments.
+</p>
+<p>
+When using Element#find_element with :xpath, be aware that webdriver
+follows standard conventions: a search prefixed with &quot;//&quot; will
+search the entire document, not just the children of this current node. Use
+&quot;.//&quot; to limit your search to the children of the receiving
+Element.
+</p>
 
 
   </div>
@@ -244,8 +249,9 @@ the entire document, not just the children of this current node. Use
       
       
         &mdash;
-        <div class='inline'>
-<p>if the element doesn’t exist</p>
+        <div class='inline'><p>
+if the element doesn&#8217;t exist
+</p>
 </div>
       
     </li>
@@ -266,10 +272,7 @@ the entire document, not just the children of this current node. Use
 39
 40
 41
-42
-43
-44
-45</pre>
+42</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 34</span>
@@ -281,10 +284,7 @@ the entire document, not just the children of this current node. Use
     <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;cannot find element by #{how.inspect}&quot;</span>
   <span class='end end kw'>end</span>
 
-  <span class='meth identifier id'>meth</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;findElementBy#{by}&quot;</span>
-  <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='what identifier id'>what</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
-
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='send identifier id'>send</span> <span class='meth identifier id'>meth</span><span class='comma token'>,</span> <span class='ref identifier id'>ref</span><span class='comma token'>,</span> <span class='what identifier id'>what</span>
+  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='find_element_by identifier id'>find_element_by</span> <span class='by identifier id'>by</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='comma token'>,</span> <span class='ref identifier id'>ref</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -301,8 +301,9 @@ the entire document, not just the children of this current node. Use
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Find all elements matching the given arguments</p>
+    <p>
+Find all elements matching the given arguments
+</p>
 
 
   </div>
@@ -361,21 +362,18 @@ the entire document, not just the children of this current node. Use
       <pre class="lines">
 
 
+54
+55
+56
 57
 58
 59
 60
 61
-62
-63
-64
-65
-66
-67
-68</pre>
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 54</span>
 
 <span class='def def kw'>def</span> <span class='find_elements identifier id'>find_elements</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
   <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='extract_args identifier id'>extract_args</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
@@ -384,10 +382,7 @@ the entire document, not just the children of this current node. Use
     <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;cannot find elements by #{how.inspect}&quot;</span>
   <span class='end end kw'>end</span>
 
-  <span class='meth identifier id'>meth</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;findElementsBy#{by}&quot;</span>
-  <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='what identifier id'>what</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
-
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='send identifier id'>send</span> <span class='meth identifier id'>meth</span><span class='comma token'>,</span> <span class='ref identifier id'>ref</span><span class='comma token'>,</span> <span class='what identifier id'>what</span>
+  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='find_elements_by identifier id'>find_elements_by</span> <span class='by identifier id'>by</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='comma token'>,</span> <span class='ref identifier id'>ref</span>
 <span class='end end kw'>end</span>
 </pre>
     </td>
@@ -400,9 +395,9 @@ the entire document, not just the children of this current node. Use
 </div>
     
     <div id="footer">
-  Generated on Fri Jul 08 01:19:24 2011 by 
+  Generated on Tue Jul 26 13:31:25 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.1 (ruby-1.8.7).
+  0.7.2 (ruby-1.8.7).
 </div>
 
   </body>

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::Rake::ServerTask
   
-    &mdash; Documentation by YARD 0.7.1
+    &mdash; Documentation by YARD 0.7.2
   
 </title>
 
@@ -94,23 +94,27 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>Defines rake tasks for starting, stopping and restarting the Selenium
-server.</p>
-
-<p>Usage:</p>
-
-<pre class="code"><span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Rake constant id'>Rake</span><span class='colon2 op'>::</span><span class='ServerTask constant id'>ServerTask</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='t identifier id'>t</span><span class='bitor op'>|</span>
-  <span class='t identifier id'>t</span><span class='dot token'>.</span><span class='jar identifier id'>jar</span> <span class='assign token'>=</span> <span class='string val'>&quot;/path/to/selenium-server-standalone.jar&quot;</span>
-  <span class='t identifier id'>t</span><span class='dot token'>.</span><span class='port identifier id'>port</span> <span class='assign token'>=</span> <span class='integer val'>4444</span>
-  <span class='t identifier id'>t</span><span class='dot token'>.</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='dstring node'>%w[-some options]</span>
-<span class='end end kw'>end</span>
+    <p>
+Defines rake tasks for starting, stopping and restarting the Selenium
+server.
+</p>
+<p>
+Usage:
+</p>
+<pre class="code">
+  <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Rake constant id'>Rake</span><span class='colon2 op'>::</span><span class='ServerTask constant id'>ServerTask</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='t identifier id'>t</span><span class='bitor op'>|</span>
+    <span class='t identifier id'>t</span><span class='dot token'>.</span><span class='jar identifier id'>jar</span> <span class='assign token'>=</span> <span class='string val'>&quot;/path/to/selenium-server-standalone.jar&quot;</span>
+    <span class='t identifier id'>t</span><span class='dot token'>.</span><span class='port identifier id'>port</span> <span class='assign token'>=</span> <span class='integer val'>4444</span>
+    <span class='t identifier id'>t</span><span class='dot token'>.</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='dstring node'>%w[-some options]</span>
+  <span class='end end kw'>end</span>
 </pre>
-
-<p>Tasks defined:</p>
-
-<p>rake selenium:server:start rake selenium:server:stop rake
-selenium:server:restart</p>
+<p>
+Tasks defined:
+</p>
+<p>
+rake selenium:server:start rake selenium:server:stop rake
+selenium:server:restart
+</p>
 
 
   </div>
@@ -143,8 +147,9 @@ selenium:server:restart</p>
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Whether we should detach from the server process.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Whether we should detach from the server process.
+</p>
 </div></span>
   
 </li>
@@ -169,8 +174,9 @@ selenium:server:restart</p>
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Path to the selenium server jar.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Path to the selenium server jar.
+</p>
 </div></span>
   
 </li>
@@ -195,8 +201,9 @@ selenium:server:restart</p>
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Configure logging.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Configure logging.
+</p>
 </div></span>
   
 </li>
@@ -221,8 +228,9 @@ selenium:server:restart</p>
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Add additional options passed to the server jar.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Add additional options passed to the server jar.
+</p>
 </div></span>
   
 </li>
@@ -247,8 +255,9 @@ selenium:server:restart</p>
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Port to use for the server.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Port to use for the server.
+</p>
 </div></span>
   
 </li>
@@ -273,8 +282,9 @@ selenium:server:restart</p>
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Timeout in seconds for the server to start/stop.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Timeout in seconds for the server to start/stop.
+</p>
 </div></span>
   
 </li>
@@ -311,8 +321,9 @@ selenium:server:restart</p>
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>A new instance of ServerTask.</p>
+    <span class="summary_desc"><div class='inline'><p>
+A new instance of ServerTask.
+</p>
 </div></span>
   
 </li>
@@ -333,8 +344,9 @@ selenium:server:restart</p>
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>A new instance of ServerTask</p>
+    <p>
+A new instance of ServerTask
+</p>
 
 
   </div>
@@ -366,8 +378,9 @@ selenium:server:restart</p>
       
       
         &mdash;
-        <div class='inline'>
-<p>the object that the method was called on</p>
+        <div class='inline'><p>
+the object that the method was called on
+</p>
 </div>
       
     </li>
@@ -463,8 +476,9 @@ selenium:server:restart</p>
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Whether we should detach from the server process. Default: true</p>
+    <p>
+Whether we should detach from the server process. Default: true
+</p>
 
 
   </div>
@@ -505,8 +519,9 @@ selenium:server:restart</p>
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Path to the selenium server jar</p>
+    <p>
+Path to the selenium server jar
+</p>
 
 
   </div>
@@ -547,11 +562,13 @@ selenium:server:restart</p>
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Configure logging. Pass a log file path or a boolean. Default: true</p>
-
-<p>true  - log to stdout/stderr false - no logging String - log to the
-specified file</p>
+    <p>
+Configure logging. Pass a log file path or a boolean. Default: true
+</p>
+<p>
+true - log to stdout/stderr false - no logging String - log to the
+specified file
+</p>
 
 
   </div>
@@ -592,8 +609,9 @@ specified file</p>
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Add additional options passed to the server jar.</p>
+    <p>
+Add additional options passed to the server jar.
+</p>
 
 
   </div>
@@ -634,8 +652,9 @@ specified file</p>
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Port to use for the server. Default: 4444</p>
+    <p>
+Port to use for the server. Default: 4444
+</p>
 
 
   </div>
@@ -676,8 +695,9 @@ specified file</p>
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Timeout in seconds for the server to start/stop. Default: 30</p>
+    <p>
+Timeout in seconds for the server to start/stop. Default: 30
+</p>
 
 
   </div>
@@ -712,9 +732,9 @@ specified file</p>
 </div>
     
     <div id="footer">
-  Generated on Fri Jul 08 01:19:15 2011 by 
+  Generated on Tue Jul 26 13:31:44 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.1 (ruby-1.8.7).
+  0.7.2 (ruby-1.8.7).
 </div>
 
   </body>

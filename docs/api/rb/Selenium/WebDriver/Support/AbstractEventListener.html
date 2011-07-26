@@ -1,0 +1,956 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Class: Selenium::WebDriver::Support::AbstractEventListener
+  
+    &mdash; Documentation by YARD 0.7.2
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../../..';
+  if (relpath != '') relpath += '/';
+</script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (A)</a> &raquo; 
+    <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Support.html" title="Selenium::WebDriver::Support (module)">Support</a></span></span>
+     &raquo; 
+    <span class="title">AbstractEventListener</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a id="class_list_link" href="#">Class List</a>
+  
+    <a id="method_list_link" href="#">Method List</a>
+  
+    <a id="file_list_link" href="#">File List</a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Class: Selenium::WebDriver::Support::AbstractEventListener
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::Support::AbstractEventListener</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">rb/lib/selenium/webdriver/support/abstract_event_listener.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#after_change_value_of-instance_method" title="#after_change_value_of (instance method)">- (Object) <strong>after_change_value_of</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#after_click-instance_method" title="#after_click (instance method)">- (Object) <strong>after_click</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#after_close-instance_method" title="#after_close (instance method)">- (Object) <strong>after_close</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#after_execute_script-instance_method" title="#after_execute_script (instance method)">- (Object) <strong>after_execute_script</strong>(script) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#after_find-instance_method" title="#after_find (instance method)">- (Object) <strong>after_find</strong>(by, what) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#after_navigate_back-instance_method" title="#after_navigate_back (instance method)">- (Object) <strong>after_navigate_back</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#after_navigate_forward-instance_method" title="#after_navigate_forward (instance method)">- (Object) <strong>after_navigate_forward</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#after_navigate_to-instance_method" title="#after_navigate_to (instance method)">- (Object) <strong>after_navigate_to</strong>(url) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#after_quit-instance_method" title="#after_quit (instance method)">- (Object) <strong>after_quit</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#before_change_value_of-instance_method" title="#before_change_value_of (instance method)">- (Object) <strong>before_change_value_of</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#before_click-instance_method" title="#before_click (instance method)">- (Object) <strong>before_click</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#before_close-instance_method" title="#before_close (instance method)">- (Object) <strong>before_close</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#before_execute_script-instance_method" title="#before_execute_script (instance method)">- (Object) <strong>before_execute_script</strong>(script) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#before_find-instance_method" title="#before_find (instance method)">- (Object) <strong>before_find</strong>(by, what) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#before_navigate_back-instance_method" title="#before_navigate_back (instance method)">- (Object) <strong>before_navigate_back</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#before_navigate_forward-instance_method" title="#before_navigate_forward (instance method)">- (Object) <strong>before_navigate_forward</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#before_navigate_to-instance_method" title="#before_navigate_to (instance method)">- (Object) <strong>before_navigate_to</strong>(url) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#before_quit-instance_method" title="#before_quit (instance method)">- (Object) <strong>before_quit</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="after_change_value_of-instance_method">
+  
+    - (<tt>Object</tt>) <strong>after_change_value_of</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+17</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 17</span>
+
+<span class='def def kw'>def</span> <span class='after_change_value_of identifier id'>after_change_value_of</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="after_click-instance_method">
+  
+    - (<tt>Object</tt>) <strong>after_click</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+15</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 15</span>
+
+<span class='def def kw'>def</span> <span class='after_click identifier id'>after_click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="after_close-instance_method">
+  
+    - (<tt>Object</tt>) <strong>after_close</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+23</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 23</span>
+
+<span class='def def kw'>def</span> <span class='after_close identifier id'>after_close</span><span class='lparen token'>(</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="after_execute_script-instance_method">
+  
+    - (<tt>Object</tt>) <strong>after_execute_script</strong>(script) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+19</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 19</span>
+
+<span class='def def kw'>def</span> <span class='after_execute_script identifier id'>after_execute_script</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="after_find-instance_method">
+  
+    - (<tt>Object</tt>) <strong>after_find</strong>(by, what) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+13</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 13</span>
+
+<span class='def def kw'>def</span> <span class='after_find identifier id'>after_find</span><span class='lparen token'>(</span><span class='by identifier id'>by</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="after_navigate_back-instance_method">
+  
+    - (<tt>Object</tt>) <strong>after_navigate_back</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+9</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 9</span>
+
+<span class='def def kw'>def</span> <span class='after_navigate_back identifier id'>after_navigate_back</span><span class='lparen token'>(</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="after_navigate_forward-instance_method">
+  
+    - (<tt>Object</tt>) <strong>after_navigate_forward</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='after_navigate_forward identifier id'>after_navigate_forward</span><span class='lparen token'>(</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="after_navigate_to-instance_method">
+  
+    - (<tt>Object</tt>) <strong>after_navigate_to</strong>(url) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+7</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 7</span>
+
+<span class='def def kw'>def</span> <span class='after_navigate_to identifier id'>after_navigate_to</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="after_quit-instance_method">
+  
+    - (<tt>Object</tt>) <strong>after_quit</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+21</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 21</span>
+
+<span class='def def kw'>def</span> <span class='after_quit identifier id'>after_quit</span><span class='lparen token'>(</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="before_change_value_of-instance_method">
+  
+    - (<tt>Object</tt>) <strong>before_change_value_of</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+16</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 16</span>
+
+<span class='def def kw'>def</span> <span class='before_change_value_of identifier id'>before_change_value_of</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="before_click-instance_method">
+  
+    - (<tt>Object</tt>) <strong>before_click</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+14</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 14</span>
+
+<span class='def def kw'>def</span> <span class='before_click identifier id'>before_click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="before_close-instance_method">
+  
+    - (<tt>Object</tt>) <strong>before_close</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+22</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 22</span>
+
+<span class='def def kw'>def</span> <span class='before_close identifier id'>before_close</span><span class='lparen token'>(</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="before_execute_script-instance_method">
+  
+    - (<tt>Object</tt>) <strong>before_execute_script</strong>(script) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+18</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 18</span>
+
+<span class='def def kw'>def</span> <span class='before_execute_script identifier id'>before_execute_script</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="before_find-instance_method">
+  
+    - (<tt>Object</tt>) <strong>before_find</strong>(by, what) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+12</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 12</span>
+
+<span class='def def kw'>def</span> <span class='before_find identifier id'>before_find</span><span class='lparen token'>(</span><span class='by identifier id'>by</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="before_navigate_back-instance_method">
+  
+    - (<tt>Object</tt>) <strong>before_navigate_back</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+8</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 8</span>
+
+<span class='def def kw'>def</span> <span class='before_navigate_back identifier id'>before_navigate_back</span><span class='lparen token'>(</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="before_navigate_forward-instance_method">
+  
+    - (<tt>Object</tt>) <strong>before_navigate_forward</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+10</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 10</span>
+
+<span class='def def kw'>def</span> <span class='before_navigate_forward identifier id'>before_navigate_forward</span><span class='lparen token'>(</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="before_navigate_to-instance_method">
+  
+    - (<tt>Object</tt>) <strong>before_navigate_to</strong>(url) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+6</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 6</span>
+
+<span class='def def kw'>def</span> <span class='before_navigate_to identifier id'>before_navigate_to</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="before_quit-instance_method">
+  
+    - (<tt>Object</tt>) <strong>before_quit</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+20</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/abstract_event_listener.rb', line 20</span>
+
+<span class='def def kw'>def</span> <span class='before_quit identifier id'>before_quit</span><span class='lparen token'>(</span><span class='rparen token'>)</span> <span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Tue Jul 26 13:31:50 2011 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.7.2 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>
