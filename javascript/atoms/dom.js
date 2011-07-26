@@ -558,6 +558,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       return bot.dom.isElement(n) && positiveSize(n);
     });
   }
+
   if (!positiveSize(elem)) {
     return false;
   }

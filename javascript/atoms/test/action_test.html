@@ -377,10 +377,6 @@
       assertFalse(bot.action.isSelected(r3));
     }
 
-    function testClearingANonClearableElementShouldNoOp() {
-      bot.action.clear(document.body);
-    }
-
     function testClearingAnEmptyTextInputElementShouldNoOp() {
       goog.dom.$('textField').value = '';
       doNotExpectChangeEvent(goog.dom.$('textField'));
