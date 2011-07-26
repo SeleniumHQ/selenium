@@ -22,6 +22,8 @@
 goog.provide('bot');
 
 
+goog.require('goog.userAgent');
+
 /**
  * Frameworks using the atoms keep track of which window or frame is currently
  * being used for command execution. Note that "window" may not always be
@@ -68,8 +70,14 @@ bot.getDocument = function() {
   return bot.window_.document;
 };
 
-
+/**
+ * @return {boolean} Whether atoms are executing in a Firefox extension.
+ */
 bot.isFirefoxExtension = function() {
+  if (!goog.userAgent.GECKO) {
+    return false;
+  }
+
   // Make the Closure compiler happy.
   var Components = goog.global.Components;
   if (!Components) {
