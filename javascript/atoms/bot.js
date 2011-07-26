@@ -16,6 +16,7 @@
 /**
  * @fileoverview Overall configuration of the browser automation atoms.
  *
+ *
  */
 
 
@@ -78,18 +79,15 @@ bot.isFirefoxExtension = function() {
     return false;
   }
 
-  // Make the Closure compiler happy.
   var Components = goog.global.Components;
-  if (!Components) {
-    return false;
-  }
-
   try {
-    // Instantiate something the way that an extension could
-    Components.classes['@mozilla.org/uuid-generator;1'].
-        getService(Components.interfaces.nsIUUIDGenerator);
+    // Instantiate something the way that an extension could. Use bracket
+    // lookups so compiler doesn't complain about undefined properties.
+    Components['classes']['@mozilla.org/uuid-generator;1']['getService'](
+        Components['interfaces']['nsIUUIDGenerator']);
     return true;
   } catch (e) {
     return false;
   }
 };
+

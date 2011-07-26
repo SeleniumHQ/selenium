@@ -400,17 +400,3 @@ bot.events.fire = function(target, type, opt_args) {
 
   return bot.events.dispatchEvent_(target, type, event);
 };
-
-bot.events.areSynthesisedEventsTrusted = function() {
-  return !goog.userAgent.IE &&
-      (goog.userAgent.GECKO &&
-       bot.isFirefoxExtension() && bot.userAgent.isVersion(4));
-};
-
-bot.events.synthesisedEventsCanOpenJavascriptWindows = function() {
-  return goog.userAgent.GECKO && bot.isFirefoxExtension();
-};
-
-bot.events.synthesisedEventsCanCauseHashChanges = function() {
-  return bot.events.synthesisedEventsCanOpenJavascriptWindows();
-};

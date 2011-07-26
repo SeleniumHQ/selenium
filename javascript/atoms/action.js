@@ -413,7 +413,31 @@ bot.action.blocksOnMouseDown_ = function(element) {
   }
   
   return false;
-}
+};
+
+/**
+ * @return {boolean} Whether synthesized events are trusted to update INPUTs.
+ * @private
+ */
+bot.action.areSynthesisedEventsTrusted_ = function() {
+  return !goog.userAgent.IE &&
+      (goog.userAgent.GECKO &&
+       bot.isFirefoxExtension() && bot.userAgent.isVersion(4));
+};
+
+
+/**
+ *
+ * @private
+ */
+bot.action.synthesisedEventsCanOpenJavascriptWindows_ = function() {
+  return goog.userAgent.GECKO && bot.isFirefoxExtension();
+};
+
+
+bot.action.synthesisedEventsCanCauseHashChanges_ = function() {
+  return bot.action.synthesisedEventsCanOpenJavascriptWindows_();
+};
 
 
 /**
@@ -504,15 +528,15 @@ bot.action.click = function(element) {
   var performDefault = 
       bot.events.fire(element, goog.events.EventType.CLICK, coords);
 
-  if (!bot.events.areSynthesisedEventsTrusted()) {
+  if (!bot.action.areSynthesisedEventsTrusted_()) {
     if (performDefault) {
       var anchor = /**@type {Element}*/ (goog.dom.getAncestor(element,
           function(e) {
             return bot.dom.isElement(e, goog.dom.TagName.A);
           }, true));
       if (anchor && anchor.href &&
-          !(anchor.target && bot.events.synthesisedEventsCanOpenJavascriptWindows()) &&
-          !(bot.action.isOnlyHashChange_(anchor) && bot.events.synthesisedEventsCanCauseHashChanges())) {
+          !(anchor.target && bot.action.synthesisedEventsCanOpenJavascriptWindows_()) &&
+          !(bot.action.isOnlyHashChange_(anchor) && bot.action.synthesisedEventsCanCauseHashChanges_())) {
         bot.action.followHref_(anchor);
       }
     }
