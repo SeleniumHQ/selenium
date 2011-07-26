@@ -18,19 +18,44 @@ class NUnitTestRunner
   end
 end
 
+# Monkey patch NuGetPack.execute to pass correct command line options.
+# This patch can be removed when Albacore issue is fixed.
+class NuGetPack
+  def execute
+    fail_with_message 'nuspec must be specified.' if @nuspec.nil?
+
+    params = []
+    params << "pack"
+    params << "#{nuspec}"
+    params << "-BasePath #{base_folder}" unless @base_folder.nil?
+    params << "-OutputDirectory #{output}" unless @output.nil?
+
+    merged_params = params.join(' ')
+
+    @logger.debug "Build NuGet pack Command Line: #{merged_params}"
+    result = run_command "NuGet", merged_params
+
+    failure_message = 'NuGet Failed. See Build Log For Detail'
+    fail_with_message failure_message if !result
+  end
+end
+
 class VisualStudioMappings
   def add_all(fun)
     fun.add_mapping("visualc_library", CrazyFunVisualC::VisualCLibrary.new)
 
     fun.add_mapping("dotnet_library", CrazyFunDotNet::DotNetLibrary.new)
     fun.add_mapping("dotnet_library", CrazyFunDotNet::CreateShortTaskName.new)
+    fun.add_mapping("dotnet_library", CrazyFunDotNet::CreateNuSpec.new)
+    fun.add_mapping("dotnet_library", CrazyFunDotNet::PackNuGetPackage.new)
+    fun.add_mapping("dotnet_library", CrazyFunDotNet::PublishNuGetPackage.new)
 
     fun.add_mapping("dotnet_docs", CrazyFunDotNet::GenerateDotNetDocs.new)
     fun.add_mapping("dotnet_docs", CrazyFunDotNet::MoveDotNetHelpFile.new)
 
     fun.add_mapping("dotnet_test", CrazyFunDotNet::DotNetLibrary.new)
     fun.add_mapping("dotnet_test", CrazyFunDotNet::RunDotNetTests.new)
-    
+
     fun.add_mapping("dotnet_release", CrazyFunDotNet::DotNetRelease.new)
   end
 end
@@ -288,8 +313,119 @@ module CrazyFunDotNet
       file task_name do
         puts "Generating help file: at #{help_file_path_desc}"
         mv File.join(web_documentation_path, args[:helpfile]), File.dirname(args[:out])
-		File.rename(File.join(web_documentation_path, "Index.html"), File.join(web_documentation_path, "index.html"))
-		File.rename(File.join(web_documentation_path, "styles", "Presentation.css"), File.join(web_documentation_path, "styles", "presentation.css"))
+        File.rename(File.join(web_documentation_path, "Index.html"), File.join(web_documentation_path, "index.html"))
+        File.rename(File.join(web_documentation_path, "styles", "Presentation.css"), File.join(web_documentation_path, "styles", "presentation.css"))
+      end
+    end
+  end
+
+  class CreateNuSpec < Tasks
+    def handle(fun, dir, args)
+      output_dir = "build/dotnet"
+      spec_file = "#{output_dir}/nuget/#{File.basename(args[:out], File.extname(args[:out]))}.nuspec"
+      task_name = task_name(dir, args[:name])
+      desc "Creates and optionally publishes the NuGet package for #{args[:out]}"
+      target = nuspec "#{task_name}:package" do |nuspec_task|
+        mkdir_p "#{output_dir}/nuget"
+        puts "Creating .nuspec for: #{task_name}"
+        nuspec_task.output_file = spec_file
+        nuspec_task.id = args[:packageid]
+        nuspec_task.version = version
+        nuspec_task.authors = "Selenium Committers"
+        nuspec_task.description = args[:description]
+        nuspec_task.owners = "Software Freedom Conservatory"
+        nuspec_task.title = args[:title] unless args[:title].nil?
+        nuspec_task.summary = args[:summary] unless args[:summary].nil?
+        nuspec_task.projectUrl = "http://code.google.com/p/selenium/"
+        nuspec_task.licenseUrl = "http://www.apache.org/licenses/LICENSE-2.0"
+        nuspec_task.iconUrl = "http://seleniumhq.org/images/big-logo.png"
+        nuspec_task.requireLicenseAcceptance = "false"
+        nuspec_task.tags = args[:tags] unless args[:tags].nil?
+
+        nuspec_task.file File.basename(args[:out]), "lib"
+        nuspec_task.file File.basename(args[:doc]), "lib"
+
+        packagedeps = resolve_package_dependencies(dir, args[:packagedeps], args[:refs])
+        packagedeps.each do |dep|
+          package_id = dep.keys[0]
+          package_version = dep.fetch(package_id)
+          nuspec_task.dependency package_id, package_version
+        end
+
+        unless args[:assemblies].nil?
+          args[:assemblies].each do |assembly|
+            assembly_id = assembly.keys[0]
+            framework_version = assembly.fetch(assembly_id)
+            nuspec_task.framework_assembly assembly_id, framework_version
+          end
+        end
+      end
+
+      # Overwrite the out attribute with the package id so that dependent
+      # tasks can access it. This is okay because the actual task contains
+      # its own output information.
+      target.out = args[:packageid]
+      add_dependencies(target, dir, ["#{task_name}"])
+    end
+
+    def resolve_package_dependencies(dir, packagedeps, references)
+      deps = []
+      # Walk the references list, and if we find a reference to a project
+      # that is built by the build process, add it as a dependent package.
+      unless references.nil?
+        references.each do |reference|
+          if reference.is_a? Symbol
+            reference_task_name = task_name(dir, reference) + ":package"
+            if Rake::Task.task_defined? reference_task_name
+              deps << {Rake::Task[reference_task_name].out, version}
+            end
+          end
+        end
+      end
+      unless packagedeps.nil?
+        packagedeps.each do |packagedep|
+          deps << packagedep
+        end
+      end
+      return deps
+    end
+  end
+
+  class PackNuGetPackage < Tasks
+    def handle(fun, dir, args)
+      output_dir = "build/dotnet"
+      spec_file = "#{output_dir}/nuget/#{File.basename(args[:out], File.extname(args[:out]))}.nuspec"
+      task_name = task_name(dir, args[:name])
+      target = nugetpack "#{task_name}:package" do |nugetpack_task|
+        puts "Packaging: #{task_name}"
+        nugetpack_task.command = "third_party/csharp/nuget/NuGet.exe"
+        nugetpack_task.nuspec = spec_file
+        nugetpack_task.base_folder = output_dir
+        nugetpack_task.output = "#{output_dir}/nuget"
+      end
+    end
+  end
+
+  class PublishNuGetPackage < Tasks
+    def handle(fun, dir, args)
+      output_dir = "build/dotnet"
+      package_file = "#{output_dir}/nuget/#{args[:packageid]}.#{version}.nupkg"
+      task_name = task_name(dir, args[:name])
+      desc "Publishes NuGet package for #{task_name} to NuGet Gallery"
+      target = task "#{task_name}:package" do
+        if ENV["apikey"].nil?
+          puts "No API key specified. NuGet packages will not be published."
+        else
+          # Create an "immediate execution" task so that the build won't
+          # fail if the API key is not specified.
+          t = nugetpush "#{task_name}.publish" do |nugetpush_task|
+            nugetpush_task.command = "third_party/csharp/nuget/NuGet.exe"
+            puts "Publishing NuGet package for: #{task_name}"
+            nugetpush_task.package = package_file
+            nugetpush_task.apikey = ENV["apikey"]
+          end
+          t.execute
+        end
       end
     end
   end
@@ -297,11 +433,11 @@ module CrazyFunDotNet
   class DotNetRelease < Tasks
     def handle(fun, dir, args)
       output_dir = 'build/dotnet'
-      file_name = args[:out].chomp(File.extname(args[:out])) + "-" + args[:version] + File.extname(args[:out])
+      file_name = args[:out].chomp(File.extname(args[:out])) + "-" + version + File.extname(args[:out])
       output_file = File.join(output_dir, file_name)
 
       full_path = output_file.gsub("/", Platform.dir_separator)
-      desc "Preparing: #{full_path}"
+      desc "Prepares release file #{full_path}"
       task_name = task_name(dir, args[:name])
 
       target = file task_name do
@@ -309,7 +445,12 @@ module CrazyFunDotNet
         if File.exists? output_file
           File.delete output_file
         end
-        zip(output_dir, output_file)
+        tmp_dir = File.join(output_dir, "temp")
+        mkdir_p tmp_dir
+        lst = Dir.glob(File.join(output_dir, "*.*"))
+        cp lst, tmp_dir
+        zip(tmp_dir, output_file)
+        rm_rf tmp_dir
       end
       
       add_dependencies(target, dir, args[:deps])
@@ -338,9 +479,6 @@ module CrazyFunVisualC
       else
         file desc_path do
           t = msbuild "#{task_name}.compile" do |msb|
-            # TODO (JimEvans): Change :net35 to :net40. Optionally change
-            # build.desc files to refer to the .vcxproj files for the individual
-            # C++ projects, and resolve the project name here.
             puts "Compiling: #{task_name} as #{desc_path}"
             msb.use :net40
             msb.properties :configuration => :Release, :platform => args[:platform]
