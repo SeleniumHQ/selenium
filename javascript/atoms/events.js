@@ -30,15 +30,84 @@ goog.require('goog.userAgent');
 
 
 /**
- * Enumeration of mouse buttons that can be pressed.
+ * Enumeration of mouse buttons that can be pressed, including NONE, for the
+ * option of pressing no mouse button during the event.
  *
  * @enum {number}
  */
 bot.events.Button = {
-  NONE: null,  // So that we can move a mouse without a button being down
-  LEFT: (goog.userAgent.IE ? 1 : 0),
-  MIDDLE: (goog.userAgent.IE ? 4 : 1),
-  RIGHT: (goog.userAgent.IE ? 2 : 2)
+  LEFT: 0,
+  MIDDLE: 1,
+  RIGHT: 2,
+  NONE: 3
+};
+
+
+/**
+ * Maps mouse events to an array of button argument value for each mouse button.
+ * The array is indexed by the bot.events.Button values. It encodes this table,
+ * where each cell contains the (left/middle/right/none) button values.
+ *               click/    mouseup/   mouseout/  mousemove
+ *               dblclick  mousedown  mouseover
+ * IE            0 0 0 X   1 4 2 X    0 0 0 0    1 4 2 0
+ * WEBKIT        0 1 2 X   0 1 2 X    0 1 2 0    0 1 2 0
+ * GECKO/OPERA   0 1 2 X   0 1 2 X    0 0 0 0    0 0 0 0
+ *
+ * @type {!Object.<string, !Array.<?number>>}
+ * @private
+ * @const
+ */
+bot.events.MOUSE_BUTTON_VALUE_MAP_ = (function() {
+  var buttonValueMap = {};
+  if (goog.userAgent.IE) {
+    buttonValueMap[goog.events.EventType.CLICK] = [0, 0, 0, null];
+    buttonValueMap[goog.events.EventType.MOUSEUP] = [1, 4, 2, null];
+    buttonValueMap[goog.events.EventType.MOUSEOUT] = [0, 0, 0, 0];
+    buttonValueMap[goog.events.EventType.MOUSEMOVE] = [1, 4, 2, 0];
+  } else if (goog.userAgent.WEBKIT) {
+    buttonValueMap[goog.events.EventType.CLICK] = [0, 1, 2, null];
+    buttonValueMap[goog.events.EventType.MOUSEUP] = [0, 1, 2, null];
+    buttonValueMap[goog.events.EventType.MOUSEOUT] = [0, 1, 2, 0];
+    buttonValueMap[goog.events.EventType.MOUSEMOVE] = [0, 1, 2, 0];
+  } else {
+    buttonValueMap[goog.events.EventType.CLICK] = [0, 1, 2, null];
+    buttonValueMap[goog.events.EventType.MOUSEUP] = [0, 1, 2, null];
+    buttonValueMap[goog.events.EventType.MOUSEOUT] = [0, 0, 0, 0];
+    buttonValueMap[goog.events.EventType.MOUSEMOVE] = [0, 0, 0, 0];
+  }
+
+  buttonValueMap[goog.events.EventType.DBLCLICK] =
+      buttonValueMap[goog.events.EventType.CLICK];
+  buttonValueMap[goog.events.EventType.MOUSEDOWN] =
+      buttonValueMap[goog.events.EventType.MOUSEUP];
+  buttonValueMap[goog.events.EventType.MOUSEOVER] =
+      buttonValueMap[goog.events.EventType.MOUSEOUT];
+  return buttonValueMap;
+})();
+
+
+  /**
+ * Given an event type and a mouse button, returns the mouse button value used
+ * for that event on the current browser.
+ *
+ * @private
+ * @param {string} eventType Type of mouse event.
+ * @param {bot.events.Button=} opt_button The mouse button.
+ * @return {number} The mouse button ID value to the current browser.
+*/
+bot.events.mouseButtonValue_ = function(eventType, opt_button) {
+  var defaultButton = ((eventType == goog.events.EventType.MOUSEOVER) ||
+                       (eventType == goog.events.EventType.MOUSEMOVE) ||
+                       (eventType == goog.events.EventType.MOUSEOUT)) ?
+                          bot.events.Button.NONE : bot.events.Button.LEFT;
+
+  var button = goog.isDef(opt_button) ? opt_button : defaultButton;
+  var buttonValue = bot.events.MOUSE_BUTTON_VALUE_MAP_[eventType][button];
+  if (goog.isNull(buttonValue)) {
+    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+        'Event does not permit the specified mouse button.');
+  }
+  return buttonValue;
 };
 
 
@@ -348,42 +417,6 @@ bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEUP] =
 
 
 /**
- * Dispatch the event in a browser-safe way.
- *
- * @param {!Element} target The element on which this event will fire.
- * @param {!goog.events.EventType} type The type of event to fire.
- * @param {!Object} event The initialized event.
- * @return {boolean} Whether the event fired successfully or was cancelled.
- * @private
- */
-bot.events.dispatchEvent_ = function(target, type, event) {
-  // Amusingly, fireEvent is native code on IE 7-, so we can't just use
-  // goog.isFunction
-  if (goog.isFunction(target['fireEvent']) ||
-      goog.isObject(target['fireEvent'])) {
-    // when we go this route, window.event is never set to contain the
-    // event we have just created.  ideally we could just slide it in
-    // as follows in the try-block below, but this normally doesn't
-    // work.  This is why I try to avoid this code path, which is only
-    // required if we need to set attributes on the event (e.g.,
-    // clientX).
-    try {
-      var doc = goog.dom.getOwnerDocument(target);
-      var win = goog.dom.getWindow(doc);
-
-      win.event = event;
-    } catch (e) {
-      // work around for http://jira.openqa.org/browse/SEL-280 -- make
-      // the event available somewhere:
-    }
-    return target.fireEvent('on' + type, event);
-  } else {
-    return target.dispatchEvent((/**@type {Event} */event));
-  }
-};
-
-
-/**
  * Fire a named event on a particular element.
  *
  * @param {!Element} target The element on which to fire the event.
@@ -395,8 +428,30 @@ bot.events.dispatchEvent_ = function(target, type, event) {
  */
 bot.events.fire = function(target, type, opt_args) {
   var init = bot.events.INIT_FUNCTIONS_[type] || bot.events.newHtmlEvent_;
-
   var event = init(target, type, opt_args);
 
-  return bot.events.dispatchEvent_(target, type, event);
+  // Ensure the event's isTrusted property is set to false, so that
+  // bot.events.isSynthetic() can identify synthetic events from native ones.
+  if (!('isTrusted' in event)) {
+    event.isTrusted = false;
+  }
+
+  if (goog.userAgent.IE) {
+    return target.fireEvent('on' + type, event);
+  } else {
+    return target.dispatchEvent(event);
+  }
+};
+
+
+/**
+ * Returns whether the event was synthetically created by the atoms;
+ * if false, was created by the browser in response to a live user action.
+ *
+ * @param {!(Event|goog.events.BrowserEvent)} event An event.
+ * @return {boolean} Whether the event was synthetically created.
+ */
+bot.events.isSynthetic = function(event) {
+  var e = event.getBrowserEvent ? event.getBrowserEvent() : event;
+  return 'isTrusted' in e ? !e.isTrusted : false;
 };
