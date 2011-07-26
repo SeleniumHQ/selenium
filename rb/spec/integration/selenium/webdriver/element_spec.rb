@@ -154,24 +154,22 @@ describe "Element" do
     p1.should_not eql(p2)
   end
 
-  not_compliant_on :driver => [:remote] do
-    it "should return the same #hash for equal elements when found by Driver#find_element" do
-      driver.navigate.to url_for("simpleTest.html")
+  it "should return the same #hash for equal elements when found by Driver#find_element" do
+    driver.navigate.to url_for("simpleTest.html")
 
-      body  = driver.find_element(:tag_name, 'body')
-      xbody = driver.find_element(:xpath, "//body")
+    body  = driver.find_element(:tag_name, 'body')
+    xbody = driver.find_element(:xpath, "//body")
 
-      body.hash.should == xbody.hash
-    end
+    body.hash.should == xbody.hash
+  end
 
-    it "should return the same #hash for equal elements when found by Driver#find_elements" do
-      driver.navigate.to url_for("simpleTest.html")
+  it "should return the same #hash for equal elements when found by Driver#find_elements" do
+    driver.navigate.to url_for("simpleTest.html")
 
-      body  = driver.find_elements(:tag_name, 'body').fetch(0)
-      xbody = driver.find_elements(:xpath, "//body").fetch(0)
+    body  = driver.find_elements(:tag_name, 'body').fetch(0)
+    xbody = driver.find_elements(:xpath, "//body").fetch(0)
 
-      body.hash.should == xbody.hash
-    end
+    body.hash.should == xbody.hash
   end
 
 end

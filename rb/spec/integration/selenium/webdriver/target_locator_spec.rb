@@ -137,21 +137,23 @@ describe "WebDriver::TargetLocator" do
 
         text.should == "cheese"
       end
+    end
 
+    compliant_on :browser => :firefox do
       it "raises UnhandledError if no alert is present" do
         lambda { driver.switch_to.alert.dismiss }.should raise_error(
           Selenium::WebDriver::Error::UnhandledError, /alert/i)
       end
-
-      # it "raises an UnhandledAlertError if an alert has not been dealt with" do
-      #   driver.navigate.to url_for("alerts.html")
-      #   driver.find_element(:id => "alert").click
-      #
-      #   lambda { driver.title }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
-      #
-      #   driver.title.should == "Testing Alerts"
-      # end
     end
+
+    # it "raises an UnhandledAlertError if an alert has not been dealt with" do
+    #   driver.navigate.to url_for("alerts.html")
+    #   driver.find_element(:id => "alert").click
+    #
+    #   lambda { driver.title }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
+    #
+    #   driver.title.should == "Testing Alerts"
+    # end
   end
 end
 
