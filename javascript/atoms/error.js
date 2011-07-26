@@ -25,7 +25,6 @@ goog.require('goog.debug.Error');
 goog.require('goog.object');
 
 
-
 /**
  * Error codes from the WebDriver wire protocol:
  * http://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes
@@ -44,15 +43,16 @@ bot.ErrorCode = {
   INVALID_ELEMENT_STATE: 12,
   UNKNOWN_ERROR: 13,
   ELEMENT_NOT_SELECTABLE: 15,
+  JAVASCRIPT_ERROR: 17,
   XPATH_LOOKUP_ERROR: 19,
   NO_SUCH_WINDOW: 23,
   INVALID_COOKIE_DOMAIN: 24,
   UNABLE_TO_SET_COOKIE: 25,
   MODAL_DIALOG_OPENED: 26,
   MODAL_DIALOG_OPEN: 27,
-  SCRIPT_TIMEOUT: 28,
-  INVALID_SELECTOR_ERROR: 32
+  SCRIPT_TIMEOUT: 28
 };
+
 
 
 /**
@@ -116,8 +116,8 @@ bot.Error.prototype.isAutomationError = true;
 
 
 if (goog.DEBUG) {
-/** @return {string} The string representation of this error. */
-bot.Error.prototype.toString = function() {
-  return '[' + this.name + '] ' + this.message;
-};
+  /** @return {string} The string representation of this error. */
+  bot.Error.prototype.toString = function() {
+    return '[' + this.name + '] ' + this.message;
+  };
 }
