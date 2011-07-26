@@ -64,7 +64,7 @@ goog.addDependency("../../../javascript/selenium-core/lib/scriptaculous/scriptac
 goog.addDependency("../../../javascript/iphone-driver/script.js", ['webdriver.iphone'], ['bot.inject']);
 goog.addDependency("../../../javascript/webdriver-atoms/web_element.js", ['webdriver.element'], ['bot.dom', 'goog.dom', 'goog.dom.TagName', 'goog.math', 'goog.string', 'goog.style']);
 goog.addDependency("../../../javascript/webdriver-atoms/logging.js", ['webdriver.debug.Console'], ['goog.debug.LogManager', 'goog.debug.Logger.Level', 'goog.debug.TextFormatter']);
-goog.addDependency("../../../javascript/webdriver-atoms/interactions.js", ['webdriver.interactions'], ['bot.keys']);
+goog.addDependency("../../../javascript/webdriver-atoms/interactions.js", ['webdriver.interactions'], ['bot.action']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/find_element.js", ['webdriver.inject.locators'], ['bot.inject', 'bot.locators']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/dom.js", ['webdriver.inject.dom'], ['bot.action', 'bot.dom', 'bot.inject', 'webdriver.element']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/action.js", ['webdriver.inject.action'], ['bot.action', 'bot.inject']);
@@ -87,14 +87,14 @@ goog.addDependency("../../../javascript/webdriver-jsapi/src/future.js", ['webdri
 goog.addDependency("../../../javascript/webdriver-jsapi/src/key.js", ['webdriver.Key'], ['goog.array']);
 goog.addDependency("../../../javascript/webdriver-jsapi/src/by.js", ['webdriver.By', 'webdriver.By.Locator', 'webdriver.By.Strategy'], ['goog.object', 'goog.string']);
 goog.addDependency("../../../javascript/webdriver-jsapi/src/localcommandprocessor.js", ['webdriver.LocalCommandProcessor'], ['goog.array', 'goog.debug.Logger', 'goog.dom', 'goog.events', 'goog.json', 'goog.object', 'webdriver.AbstractCommandProcessor', 'webdriver.CommandName', 'webdriver.Response']);
+goog.addDependency("../../../javascript/atoms/keyboard.js", ['bot.Keyboard', 'bot.Keyboard.Key', 'bot.Keyboard.Keys'], ['bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'goog.array', 'goog.dom.selection', 'goog.events.EventType', 'goog.events.KeyCodes', 'goog.structs.Set', 'goog.userAgent']);
 goog.addDependency("../../../javascript/atoms/userAgent.js", ['bot.userAgent'], ['goog.userAgent', 'goog.userAgent.product.isVersion']);
 goog.addDependency("../../../javascript/atoms/error.js", ['bot.Error', 'bot.ErrorCode'], ['goog.debug.Error', 'goog.object']);
 goog.addDependency("../../../javascript/atoms/bot.js", ['bot'], ['goog.userAgent']);
 goog.addDependency("../../../javascript/atoms/dom.js", ['bot.dom'], ['bot', 'bot.locators.xpath', 'goog.array', 'goog.dom', 'goog.dom.NodeIterator', 'goog.dom.NodeType', 'goog.dom.TagName', 'goog.math.Rect', 'goog.math.Size', 'goog.string', 'goog.style']);
 goog.addDependency("../../../javascript/atoms/script.js", ['bot.script'], ['bot.Error', 'bot.ErrorCode', 'goog.events', 'goog.events.EventType']);
 goog.addDependency("../../../javascript/atoms/events.js", ['bot.events'], ['bot', 'bot.dom', 'bot.userAgent', 'goog.dom', 'goog.events.EventType', 'goog.userAgent']);
-goog.addDependency("../../../javascript/atoms/keys.js", ['bot.keys'], ['bot.Error', 'bot.ErrorCode', 'bot.action', 'bot.events', 'goog.dom.selection', 'goog.events.EventType', 'goog.events.KeyCodes', 'goog.userAgent']);
-goog.addDependency("../../../javascript/atoms/action.js", ['bot.action'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'bot.userAgent', 'goog.array', 'goog.dom', 'goog.dom.NodeType', 'goog.dom.TagName', 'goog.events.EventType', 'goog.userAgent', 'goog.userAgent.product.isVersion', 'goog.Uri']);
+goog.addDependency("../../../javascript/atoms/action.js", ['bot.action'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.Keyboard', 'bot.dom', 'bot.events', 'bot.userAgent', 'goog.array', 'goog.dom', 'goog.dom.NodeType', 'goog.dom.TagName', 'goog.events.EventType', 'goog.userAgent', 'goog.userAgent.product.isVersion', 'goog.Uri']);
 goog.addDependency("../../../javascript/atoms/inject.js", ['bot.inject', 'bot.inject.cache'], ['bot', 'bot.Error', 'bot.ErrorCode', 'goog.array', 'goog.dom', 'goog.dom.NodeType', 'goog.events', 'goog.json', 'goog.object']);
 goog.addDependency("../../../javascript/atoms/window.js", ['bot.window'], ['bot', 'bot.Error', 'bot.ErrorCode', 'goog.userAgent']);
 goog.addDependency("../../../javascript/atoms/frame.js", ['bot.frame'], ['bot.locators', 'goog.array', 'goog.dom']);

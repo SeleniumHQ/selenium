@@ -124,8 +124,8 @@ js_fragment(name = "toggle",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "type",
-  module = "bot.keys",
-  function = "bot.keys.type",
+  module = "bot.action",
+  function = "bot.action.type",
   deps = [ "//javascript/atoms:deps" ])
 
 # TODO(simon): Consider pulling in the cookie functions from closure

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>keyboard_test</title>
+<script src="test_bootstrap.js"></script>
+<script type="text/javascript">
+  goog.require('bot.Keyboard');
+  goog.require('bot.Keyboard.Key');
+  goog.require('goog.events');
+  goog.require('goog.testing.AsyncTestCase');
+  goog.require('goog.testing.jsunit');
+  goog.require('goog.userAgent');
+</script>
+<body>
+<div id="target">key target</div>
+<script type="text/javascript">
+  var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+  var browser, target, keyboard;
+
+  function setUpPage() {
+    if (goog.userAgent.GECKO) {
+      browser = 'GECKO';
+    } else if (goog.userAgent.IE) {
+      browser = 'IE';
+    } else if (goog.userAgent.OPERA) {
+      browser = 'OPERA';
+    } else if (goog.userAgent.WEBKIT) {
+      browser = 'WEBKIT';
+    } else {
+      fail('unknown browser');
+    }
+    target = document.getElementById('target');
+    keyboard = new bot.Keyboard(target, false);
+  }
+
+  function assertKeyEvents(key, shift, browser2Codes) {
+    if (shift) {
+      keyboard.pressKey(bot.Keyboard.Keys.SHIFT);
+    }
+
+    function cleanup() {
+      goog.events.removeAll(target);
+      if (shift) {
+        keyboard.releaseKey(bot.Keyboard.Keys.SHIFT);
+      }
+      asyncTestCase.continueTesting();
+    }
+
+    // Get the expected codes for this browser and sanity check them.
+    // An up/down code must be provided, and a a keypress keyCode must
+    // be provided if and only if a keypress charCode is provided.
+    var codes = browser2Codes[browser];
+    var downFired = false, pressFired = false, expectPress = !!codes.press;
+
+    goog.events.listen(target, ['keydown', 'keypress', 'keyup'], function(e) {
+      e = e.getBrowserEvent();
+      try {
+        switch (e.type) {
+          case 'keydown':
+            downFired = true;
+            var downCodes = codes.downUp;
+            assertEquals('wrong down keycode', downCodes.key, e.keyCode);
+            assertEquals('wrong down charcode', downCodes.char, e.charCode);
+            return;
+          case 'keypress':
+            pressFired = true;
+            assertTrue('keydown expected', downFired);
+            assertTrue('keypress not expected', expectPress);
+            var pressCodes = codes.press;
+            assertEquals('wrong press keycode', pressCodes.key, e.keyCode);
+            assertEquals('wrong press charcode', pressCodes.char, e.charCode);
+            return;
+          case 'keyup':
+            assertTrue('keydown expected', downFired);
+            if (expectPress) {
+              assertTrue('keypress expected', pressFired);
+            }
+            var upCodes = codes.downUp;
+            assertEquals('wrong up keycode', upCodes.key, e.keyCode);
+            assertEquals('wrong up charcode', upCodes.char, e.charCode);
+            cleanup();
+            return;
+        }
+      } catch (e) {
+        cleanup();
+        throw e;
+      }
+    });
+
+    asyncTestCase.waitForAsync('waiting for key events');
+    keyboard.pressKey(key);
+    keyboard.releaseKey(key);
+  }
+
+  var U = undefined;
+
+  function testLowerCase() {
+    assertKeyEvents(bot.Keyboard.Keys.G, false, {
+      GECKO:  {downUp: {key: 71, char: 0}, press: {key:   0, char: 103}},
+      IE:     {downUp: {key: 71, char: U}, press: {key: 103, char:   U}},
+      OPERA:  {downUp: {key: 71, char: U}, press: {key: 103, char:   U}},
+      WEBKIT: {downUp: {key: 71, char: 0}, press: {key: 103, char: 103}}
+    });
+  }
+
+  function testUpperCase() {
+    assertKeyEvents(bot.Keyboard.Keys.G, true, {
+      GECKO:  {downUp: {key: 71, char: 0}, press: {key:  0, char: 71}},
+      IE:     {downUp: {key: 71, char: U}, press: {key: 71, char:  U}},
+      OPERA:  {downUp: {key: 71, char: U}, press: {key: 71, char:  U}},
+      WEBKIT: {downUp: {key: 71, char: 0}, press: {key: 71, char: 71}}
+    });
+  }
+
+  function testSpace() {
+    assertKeyEvents(bot.Keyboard.Keys.SPACE, false, {
+      GECKO:  {downUp: {key: 32, char: 0}, press: {key:  0, char: 32}},
+      IE:     {downUp: {key: 32, char: U}, press: {key: 32, char:  U}},
+      OPERA:  {downUp: {key: 32, char: U}, press: {key: 32, char:  U}},
+      WEBKIT: {downUp: {key: 32, char: 0}, press: {key: 32, char: 32}}
+    });
+  }
+
+  function testPunctuationWithoutShift() {
+    assertKeyEvents(bot.Keyboard.Keys.SEMICOLON, false, {
+      GECKO:  {downUp: {key:  59, char: 0}, press: {key:  0, char: 59}},
+      IE:     {downUp: {key: 186, char: U}, press: {key: 59, char:  U}},
+      OPERA:  {downUp: {key:  59, char: U}, press: {key: 59, char:  U}},
+      WEBKIT: {downUp: {key: 186, char: 0}, press: {key: 59, char: 59}}
+    });
+  }
+
+  function testPunctuationWithShift() {
+    assertKeyEvents(bot.Keyboard.Keys.SEMICOLON, true, {
+      GECKO:  {downUp: {key:  59, char: 0}, press: {key:  0, char: 58}},
+      IE:     {downUp: {key: 186, char: U}, press: {key: 58, char:  U}},
+      OPERA:  {downUp: {key:  59, char: U}, press: {key: 58, char:  U}},
+      WEBKIT: {downUp: {key: 186, char: 0}, press: {key: 58, char: 58}}
+    });
+  }
+
+  function testEnter() {
+    assertKeyEvents(bot.Keyboard.Keys.ENTER, false, {
+      GECKO:  {downUp: {key: 13, char: 0}, press: {key: 13, char:  0}},
+      IE:     {downUp: {key: 13, char: U}, press: {key: 13, char:  U}},
+      OPERA:  {downUp: {key: 13, char: U}, press: {key: 13, char:  U}},
+      WEBKIT: {downUp: {key: 13, char: 0}, press: {key: 13, char: 13}}
+    });
+  }
+
+  function testArrow() {
+    assertKeyEvents(bot.Keyboard.Keys.DOWN, false, {
+      GECKO:  {downUp: {key: 40, char: 0}, press: {key: 40, char: 0}},
+      IE:     {downUp: {key: 40, char: U}, press: U},
+      OPERA:  {downUp: {key: 40, char: U}, press: {key: 40, char: U}},
+      WEBKIT: {downUp: {key: 40, char: 0}, press: U}
+    });
+  }
+
+  function testEsc() {
+    assertKeyEvents(bot.Keyboard.Keys.ESC, false, {
+      GECKO:  {downUp: {key: 27, char: 0}, press: {key: 27, char: 0}},
+      IE:     {downUp: {key: 27, char: U}, press: {key: 27, char: U}},
+      OPERA:  {downUp: {key: 27, char: U}, press: {key: 27, char: U}},
+      WEBKIT: {downUp: {key: 27, char: 0}, press: U}
+    });
+  }
+
+  function testControl() {
+    assertKeyEvents(bot.Keyboard.Keys.CONTROL, false, {
+      GECKO:  {downUp: {key: 17, char: 0}, press: U},
+      IE:     {downUp: {key: 17, char: U}, press: U},
+      OPERA:  {downUp: {key: 17, char: U}, press: U},
+      WEBKIT: {downUp: {key: 17, char: 0}, press: U}
+    });
+  }
+
+  function testUnknownCharacter() {
+    var unknownChar = '\u7231';
+    var unknownKey = bot.Keyboard.Key.fromChar(unknownChar).key;
+    var chCode = unknownKey.character.charCodeAt(0);
+    assertKeyEvents(unknownKey, false, {
+      GECKO:  {downUp: {key: 0, char: 0}, press: {key:      0, char: chCode}},
+      IE:     {downUp: {key: 0, char: U}, press: {key: chCode, char:      U}},
+      OPERA:  {downUp: {key: 0, char: U}, press: {key: chCode, char:      U}},
+      WEBKIT: {downUp: {key: 0, char: 0}, press: {key: chCode, char: chCode}}
+    });
+  }
+</script>
+</body>
+</html>

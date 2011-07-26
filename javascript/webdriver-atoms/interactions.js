@@ -19,7 +19,7 @@
 
 goog.provide('webdriver.interactions');
 
-goog.require('bot.keys');
+goog.require('bot.action');
 
 
 /**
@@ -29,5 +29,5 @@ goog.require('bot.keys');
  * @param {string} keys The text to simulate typing.
  */
 webdriver.interactions.sendKeys = function(element, keys) {
-  bot.keys.type(element, keys);
+  bot.action.type(element, keys);
 };

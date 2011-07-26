@@ -313,6 +313,44 @@ bot.dom.isEnabled = function(el) {
 
 
 /**
+ * TODO(user): Add support for contentEditable and designMode elements.
+ *
+ * @param {!Element} element The element to check.
+ * @return {boolean} Whether the element accepts user-typed text.
+ */
+bot.dom.isTextual = function(element) {
+  if (bot.dom.isElement(element, goog.dom.TagName.TEXTAREA)) {
+    return true;
+  }
+
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
+    var type = element.type.toLowerCase();
+    return type == 'text' || type == 'password' ||
+           type == 'email' || type == 'search';
+  }
+
+  return false;
+};
+
+
+/**
+ * TODO(user): Merge isTextual into this function and move to bot.dom.
+ * For Puppet, requires adding support to getVisibleText for grabbing
+ * text from all textual elements.
+ *
+ * Whether the element may contain text the user can edit.
+ *
+ * @param {!Element} element The element to check.
+ * @return {boolean} Whether the element accepts user-typed text.
+ */
+bot.dom.isEditable = function(element) {
+  return bot.dom.isTextual(element) &&
+      !bot.dom.getProperty(element, 'readOnly');
+};
+
+
+
+/**
  * Returns the parent element of the given node, or null. This is required
  * because the parent node may not be another element.
  *

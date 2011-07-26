@@ -4,8 +4,9 @@
   <title>keys_test</title>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
+    goog.require('bot.Keyboard.Keys');
+    goog.require('bot.action');
     goog.require('bot.events');
-    goog.require('bot.keys');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
     goog.require('goog.events.KeyCodes');
@@ -13,15 +14,15 @@
     goog.require('goog.userAgent');
   </script>
   <script type="text/javascript">
-    var ALT = goog.events.KeyCodes.ALT;
-    var BACKSPACE = goog.events.KeyCodes.BACKSPACE;
-    var CTRL = goog.events.KeyCodes.CTRL;
-    var DELETE = goog.events.KeyCodes.DELETE;
-    var ENTER = goog.events.KeyCodes.ENTER;
-    var LEFT = goog.events.KeyCodes.LEFT;
-    var META = goog.events.KeyCodes.META;
-    var RIGHT = goog.events.KeyCodes.RIGHT;
-    var SHIFT = goog.events.KeyCodes.SHIFT;
+    var ALT = bot.Keyboard.Keys.ALT;
+    var BACKSPACE = bot.Keyboard.Keys.BACKSPACE;
+    var CTRL = bot.Keyboard.Keys.CONTROL;
+    var DELETE = bot.Keyboard.Keys.DELETE;
+    var ENTER = bot.Keyboard.Keys.ENTER;
+    var LEFT = bot.Keyboard.Keys.LEFT;
+    var META = bot.Keyboard.Keys.META;
+    var RIGHT = bot.Keyboard.Keys.RIGHT;
+    var SHIFT = bot.Keyboard.Keys.SHIFT;
 
     /**
      * Sets the value of the given count box to its current value plus one.
@@ -38,7 +39,7 @@
      * have the correct values afterwards.  textbox_count should display the
      * number of times textbox's oninput (non IE) or onpropertychange (IE) event
      * fired.
-     * @param {string|goog.events.KeyCodes|Array.<string, goog.events.KeyCodes>}
+     * @param {string|bot.Keyboard.Keys|Array.<string, goog.events.KeyCodes>}
      *   input Value to type into textbox.
      * @param {string=} opt_finalValue the final value that should appear in
      *   the input.  Defaults to input.
@@ -63,7 +64,7 @@
         var inputBox = document.getElementById(inputIds[i]);
         inputBox.value = initValue;
         countBox.value = '0';
-        bot.keys.type.apply(null, [inputBox].concat(input));
+        bot.action.type.apply(null, [inputBox].concat(input));
 
         assertEquals(finalValue, inputBox.value);
         // On IE the onpropertychange event is not fired reliably when type is
@@ -108,21 +109,21 @@
     }
 
     function testNumPad() {
-      runTypingTest([goog.events.KeyCodes.NUM_ZERO,
-                     goog.events.KeyCodes.NUM_ONE,
-                     goog.events.KeyCodes.NUM_TWO,
-                     goog.events.KeyCodes.NUM_THREE,
-                     goog.events.KeyCodes.NUM_FOUR,
-                     goog.events.KeyCodes.NUM_FIVE,
-                     goog.events.KeyCodes.NUM_SIX,
-                     goog.events.KeyCodes.NUM_SEVEN,
-                     goog.events.KeyCodes.NUM_EIGHT,
-                     goog.events.KeyCodes.NUM_NINE,
-                     goog.events.KeyCodes.NUM_MULTIPLY,
-                     goog.events.KeyCodes.NUM_PLUS,
-                     goog.events.KeyCodes.NUM_MINUS,
-                     goog.events.KeyCodes.NUM_PERIOD,
-                     goog.events.KeyCodes.NUM_DIVISION],
+      runTypingTest([bot.Keyboard.Keys.NUM_ZERO,
+                     bot.Keyboard.Keys.NUM_ONE,
+                     bot.Keyboard.Keys.NUM_TWO,
+                     bot.Keyboard.Keys.NUM_THREE,
+                     bot.Keyboard.Keys.NUM_FOUR,
+                     bot.Keyboard.Keys.NUM_FIVE,
+                     bot.Keyboard.Keys.NUM_SIX,
+                     bot.Keyboard.Keys.NUM_SEVEN,
+                     bot.Keyboard.Keys.NUM_EIGHT,
+                     bot.Keyboard.Keys.NUM_NINE,
+                     bot.Keyboard.Keys.NUM_MULTIPLY,
+                     bot.Keyboard.Keys.NUM_PLUS,
+                     bot.Keyboard.Keys.NUM_MINUS,
+                     bot.Keyboard.Keys.NUM_PERIOD,
+                     bot.Keyboard.Keys.NUM_DIVISION],
                     '0123456789*+-./');
     }
 
@@ -156,7 +157,7 @@
 
 
     /**
-     * Calls bot.keys.type('textbox', input), and returns a listing of
+     * Calls bot.action.type('textbox', input), and returns a listing of
      * what the modifier key state was for all the keypress events created.
      *
      * @return {{alt: Array.<boolean>, ctrl: Array.<boolean>,
@@ -189,7 +190,7 @@
        */
       function setupAllToggleListeners(listenerKeys) {
         var history = {alt: [], ctrl: [], meta: [], shift: []};
-        for (key in history) {
+        for (var key in history) {
           listenerKeys.push(setupSingleToggleListener(history, key));
         }
         return history;
@@ -199,7 +200,7 @@
       var history = setupAllToggleListeners(listenerKeys);
       try {
         var textBox = document.getElementById('textbox');
-        bot.keys.type.apply(null, [textBox].concat(input))
+        bot.action.type.apply(null, [textBox].concat(input))
       } finally {
         for (key in listenerKeys) {
           goog.events.unlistenByKey(key);

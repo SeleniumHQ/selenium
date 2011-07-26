@@ -26,6 +26,7 @@ goog.provide('bot.action');
 goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.Keyboard');
 goog.require('bot.dom');
 goog.require('bot.events');
 goog.require('bot.userAgent');
@@ -37,6 +38,34 @@ goog.require('goog.events.EventType');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product.isVersion');
 goog.require('goog.Uri');
+
+
+/**
+ * Returns whether an element is in an interactable state: whether it is shown
+ * to the user, ignoring its opacity, and whether it is enabled. If throws is
+ * set to true, throws an exception if false instead of returning false.
+ *
+ * @param {!Element} element The element to check.
+ * @param {boolean=} opt_throws Whether to throw an exception if false.
+ * @return {boolean} Whether the element is interactable.
+ * @see bot.dom.isShown.
+ * @see bot.dom.isEnabled
+ * @private
+ */
+bot.action.isInteractable_ = function(element, opt_throws) {
+  var shown = bot.dom.isShown(element, /*ignoreOpacity=*/true);
+  var interactable = shown && bot.dom.isEnabled(element);
+  if (opt_throws && !shown) {
+    throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
+        'Element is not currently visible and may not be manipulated');
+  } else if (opt_throws && !interactable) {  // when not enabled
+    throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
+        'Element is not currently enabled and may not be manipulated');
+  }
+  return interactable;
+};
+
+
 
 /**
  * Determines if an element is shown on the page and may be manipulated by the
@@ -362,6 +391,62 @@ bot.action.clear = function(element) {
   // TODO(user): Fail out if clearing a file input
   // TODO(user): Support multiselect (option & optgroup & select)
 };
+
+
+/**
+ * Types keys on an element.
+ *
+ * Callers can pass in either strings or members of bot.Keyboard.Key. If a
+ * modifier key is provided, it is pressed but not released, until it is either
+ * is listed again or the function ends.
+ *
+ * Example:
+ *   bot.action.type(element, 'ab', bot.Keyboard.Key.LEFT,
+ *                 bot.Keyboard.Key.DELETE, bot.Keyboard.Key.SHIFT, 'cd');
+ *
+ * @param {!Element} element The element receiving the event.
+ * @param {...(string|!bot.Keyboard.Key)} var_args Values to type on the
+ *    element, either strings or members of bot.Keyboard.Key.
+ */
+bot.action.type = function(element, var_args) {
+  bot.action.isInteractable_(element, true);
+  bot.action.focusOnElement(element);
+  var keyboard = new bot.Keyboard(element);
+
+  var values = goog.array.slice(arguments, 1);
+  goog.array.forEach(values, function(value) {
+    if (goog.isString(value)) {
+      goog.array.forEach(value.split(''), function(ch) {
+        var keyShiftPair = bot.Keyboard.Key.fromChar(ch);
+        if (keyShiftPair.shift) {
+          keyboard.pressKey(bot.Keyboard.Keys.SHIFT);
+        }
+        keyboard.pressKey(keyShiftPair.key);
+        keyboard.releaseKey(keyShiftPair.key);
+        if (keyShiftPair.shift) {
+          keyboard.releaseKey(bot.Keyboard.Keys.SHIFT);
+        }
+      });
+    } else if (goog.array.contains(bot.Keyboard.MODIFIERS, value)) {
+      if (keyboard.isPressed(value)) {
+        keyboard.releaseKey(value);
+      } else {
+        keyboard.pressKey(value);
+      }
+    } else {
+      keyboard.pressKey(value);
+      keyboard.releaseKey(value);
+    }
+  });
+
+  // Release all the modifier keys.
+  goog.array.forEach(bot.Keyboard.MODIFIERS, function(key) {
+    if (keyboard.isPressed(key)) {
+      keyboard.releaseKey(key);
+    }
+  });
+};
+
 
 
 /**
