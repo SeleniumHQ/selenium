@@ -183,3 +183,56 @@ webdriver.chrome.getFirstClientRect = function(elem) {
       clientRect.right - clientRect.left, clientRect.bottom - clientRect.top);
 };
 
+
+/**
+ * Returns whether the element or any of its descendants would receive a click
+ * at the given location. Useful for debugging test clicking issues.
+ *
+ * @param {!Element} elem The element to use.
+ * @param {!goog.math.Coordinate} coord, The coordinate to use.
+ * @return {{clickable:boolean, message:string=}} Object containing a boolean
+ *     "clickable" property, as to whether it can be clicked, and an optional
+ *     "message" string property, which contains any warning/error message.
+ */
+webdriver.chrome.isElementClickable = function(elem, coord) {
+  function makeResult(clickable, opt_msg) {
+    var dict = {'clickable': clickable};
+    if (opt_msg)
+      dict['message'] = opt_msg;
+    return dict;
+  }
+
+  var elemAtPoint = elem.ownerDocument.elementFromPoint(coord.x, coord.y);
+  if (elemAtPoint == elem)
+    return makeResult(true);
+
+  var coord = '(' + coord.x + ', ' + coord.y + ')';
+  if (elemAtPoint == null) {
+    return makeResult(
+        false, 'Element is not clickable at point ' + coord);
+  }
+  var elemAtPointHTML = elemAtPoint.outerHTML;
+  if (elemAtPoint.hasChildNodes()) {
+    var inner = elemAtPoint.innerHTML;
+    var closingTag = '</' + elemAtPoint.tagName + '>';
+    var innerStart = elemAtPointHTML.length - inner.length - closingTag.length;
+    elemAtPointHTML = elemAtPointHTML.substring(0, innerStart) + '...' +
+        elemAtPointHTML.substring(innerStart + inner.length);
+  }
+  var parentElemIter = elemAtPoint.parentNode;
+  while (parentElemIter) {
+    if (parentElemIter == elem) {
+      return makeResult(
+          true,
+          'Element\'s descendant would receive the click. Consider ' +
+              'clicking the descendant instead. Descendant: ' +
+                  elemAtPointHTML);
+    }
+    parentElemIter = parentElemIter.parentNode;
+  }
+  return makeResult(
+      false,
+      'Element is not clickable at point ' + coord + '. Unrelated element ' +
+          'would receive the click: ' + elemAtPointHTML);
+};
+
