@@ -103,7 +103,7 @@ module CrazyFunDotNet
             resource_file = resource.keys[0]
             resource_identifier = resource.fetch(resource_file)
             resource_task_name = task_name(dir, resource_file)
-            if Rake::Task.task_defined?(resource_task_name)
+            if Rake::Task.task_defined? resource_task_name
               resource_file = Rake::Task[resource_task_name].out
             end
             embedded_resources << "#{resource_file},#{resource_identifier}"
@@ -210,7 +210,7 @@ module CrazyFunDotNet
   class CreateShortTaskName < Tasks
     def handle(fun, dir, args)
       name = task_name(dir, args[:name])
-      if (name.end_with? "#{args[:name]}:#{args[:name]}")
+      if name.end_with? "#{args[:name]}:#{args[:name]}"
         name = name.sub(/:.*$/, "")
         task name => task_name(dir, args[:name])
       end
@@ -418,13 +418,12 @@ module CrazyFunDotNet
         else
           # Create an "immediate execution" task so that the build won't
           # fail if the API key is not specified.
-          t = nugetpush "#{task_name}.publish" do |nugetpush_task|
+          nugetpush! "#{task_name}.publish" do |nugetpush_task|
             nugetpush_task.command = "third_party/csharp/nuget/NuGet.exe"
             puts "Publishing NuGet package for: #{task_name}"
             nugetpush_task.package = package_file
             nugetpush_task.apikey = ENV["apikey"]
           end
-          t.execute
         end
       end
     end
@@ -478,7 +477,7 @@ module CrazyFunVisualC
          target_task.out = full_path
       else
         file desc_path do
-          t = msbuild "#{task_name}.compile" do |msb|
+          msbuild! "#{task_name}.compile" do |msb|
             puts "Compiling: #{task_name} as #{desc_path}"
             msb.use :net40
             msb.properties :configuration => :Release, :platform => args[:platform]
@@ -487,7 +486,6 @@ module CrazyFunVisualC
             msb.parameters "/nologo"
             msb.verbosity = "quiet"
           end
-          t.execute
         end
 
         task task_name => desc_path
