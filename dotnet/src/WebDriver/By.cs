@@ -33,13 +33,57 @@ namespace OpenQA.Selenium
     /// </remarks>
     public class By
     {
-        private FindElementDelegate findElementMethod;
-        private FindElementsDelegate findElementsMethod;
         private string description = "OpenQA.Selenium.By";
+        private Func<ISearchContext, IWebElement> findElementMethod;
+        private Func<ISearchContext, ReadOnlyCollection<IWebElement>> findElementsMethod;
 
-        private delegate IWebElement FindElementDelegate(ISearchContext context);
-        
-        private delegate ReadOnlyCollection<IWebElement> FindElementsDelegate(ISearchContext context);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="By"/> class.
+        /// </summary>
+        protected By()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="By"/> class using the given functions to find elements.
+        /// </summary>
+        /// <param name="findElementMethod">A function that takes an object implementing <see cref="ISearchContext"/>
+        /// and returns the found <see cref="IWebElement"/>.</param>
+        /// <param name="findElementsMethod">A function that takes an object implementing <see cref="ISearchContext"/> 
+        /// and returns a <see cref="ReadOnlyCollection{T}"/> of the found<see cref="IWebElement">IWebElements</see>.
+        /// <see cref="IWebElement">IWebElements</see>/>.</param>
+        protected By(Func<ISearchContext, IWebElement> findElementMethod, Func<ISearchContext, ReadOnlyCollection<IWebElement>> findElementsMethod)
+        {
+            this.findElementMethod = findElementMethod;
+            this.findElementsMethod = findElementsMethod;
+        }
+
+        /// <summary>
+        /// Gets or sets the value of the description for this <see cref="By"/> class instance.
+        /// </summary>
+        protected string Description
+        {
+            get { return this.description; }
+            set { this.description = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the method used to find a single element matching specified criteria.
+        /// </summary>
+        protected Func<ISearchContext, IWebElement> FindElementMethod
+        {
+            get { return this.findElementMethod; }
+            set { this.findElementMethod = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the method used to find all elements matching specified criteria.
+        /// </summary>
+        protected Func<ISearchContext, ReadOnlyCollection<IWebElement>> FindElementsMethod
+        {
+            get { return this.findElementsMethod; }
+            set { this.findElementsMethod = value; }
+        }
 
         /// <summary>
         /// Gets a mechanism to find elements by their ID.
