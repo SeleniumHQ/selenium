@@ -18,43 +18,43 @@ module Selenium
         end
 
         def get(url)
-          dispatch(:navigate_to, url) {
+          dispatch(:navigate_to, url, driver) {
             @delegate.get(url)
           }
         end
 
         def goForward
-          dispatch(:navigate_forward) {
+          dispatch(:navigate_forward, driver) {
             @delegate.goForward
           }
         end
 
         def goBack
-          dispatch(:navigate_back) {
+          dispatch(:navigate_back, driver) {
             @delegate.goBack
           }
         end
 
         def clickElement(ref)
-          dispatch(:click, create_element(ref)) {
+          dispatch(:click, create_element(ref), driver) {
             @delegate.clickElement(ref)
           }
         end
 
         def clearElement(ref)
-          dispatch(:change_value_of, create_element(ref)) {
+          dispatch(:change_value_of, create_element(ref), driver) {
             @delegate.clearElement(ref)
           }
         end
 
         def sendKeysToElement(ref, keys)
-          dispatch(:change_value_of, create_element(ref)) {
+          dispatch(:change_value_of, create_element(ref), driver) {
             @delegate.sendKeysToElement(ref, keys)
           }
         end
 
         def find_element_by(how, what, parent = nil)
-          e = dispatch(:find, how, what) {
+          e = dispatch(:find, how, what, driver) {
             @delegate.find_element_by how, what, parent
           }
 
@@ -62,7 +62,7 @@ module Selenium
         end
 
         def find_elements_by(how, what, parent = nil)
-          es = dispatch(:find, how, what) {
+          es = dispatch(:find, how, what, driver) {
             @delegate.find_elements_by(how, what, parent)
           }
 
@@ -70,17 +70,17 @@ module Selenium
         end
 
         def executeScript(script, *args)
-          dispatch(:execute_script, script) {
+          dispatch(:execute_script, script, driver) {
             @delegate.executeScript(script, *args)
           }
         end
 
         def quit
-          dispatch(:quit) { @delegate.quit }
+          dispatch(:quit, driver) { @delegate.quit }
         end
 
         def close
-          dispatch(:close) { @delegate.close }
+          dispatch(:close, driver) { @delegate.close }
         end
 
         private
@@ -88,6 +88,10 @@ module Selenium
         def create_element(ref)
           # hmm. we're not passing self here to not fire events for potential calls made by the listener
           Element.new @delegate, ref
+        end
+
+        def driver
+          @driver ||= Driver.new(self)
         end
 
         def dispatch(name, *args, &blk)

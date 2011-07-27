@@ -3,24 +3,24 @@ module Selenium
     module Support
 
       class AbstractEventListener
-        def before_navigate_to(url) end
-        def after_navigate_to(url) end
-        def before_navigate_back() end
-        def after_navigate_back() end
-        def before_navigate_forward() end
-        def after_navigate_forward() end
-        def before_find(by, what) end
-        def after_find(by, what) end
-        def before_click(element) end
-        def after_click(element) end
-        def before_change_value_of(element) end
-        def after_change_value_of(element) end
-        def before_execute_script(script) end
-        def after_execute_script(script) end
-        def before_quit() end
-        def after_quit() end
-        def before_close() end
-        def after_close() end
+        def before_navigate_to(url, driver) end
+        def after_navigate_to(url, driver) end
+        def before_navigate_back(driver) end
+        def after_navigate_back(driver) end
+        def before_navigate_forward(driver) end
+        def after_navigate_forward(driver) end
+        def before_find(by, what, driver) end
+        def after_find(by, what, driver) end
+        def before_click(element, driver) end
+        def after_click(element, driver) end
+        def before_change_value_of(element, driver) end
+        def after_change_value_of(element, driver) end
+        def before_execute_script(script, driver) end
+        def after_execute_script(script, driver) end
+        def before_quit(driver) end
+        def after_quit(driver) end
+        def before_close(driver) end
+        def after_close(driver) end
       end
 
     end
