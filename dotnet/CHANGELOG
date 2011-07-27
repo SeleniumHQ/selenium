@@ -1,0 +1,6 @@
+v2.2.0
+======
+  * Adding first pass at .NET implementation of proxy management.
+  * Modifying .NET build process to sign assemblies. Building the .NET bindings
+    through the IDE or through the command line will now produce signed assemblies.
+  * Updating .NET bindings JSON.NET from 3.5 to 4.0.
