@@ -377,7 +377,7 @@ module CrazyFunDotNet
           if reference.is_a? Symbol
             reference_task_name = task_name(dir, reference) + ":package"
             if Rake::Task.task_defined? reference_task_name
-              deps << {Rake::Task[reference_task_name].out, version}
+              deps << {Rake::Task[reference_task_name].out => version}
             end
           end
         end
