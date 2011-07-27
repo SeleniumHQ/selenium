@@ -14,7 +14,7 @@ module Selenium
       end
 
       def inspect
-        '#<%s:0x%x id=%s tag_name=%s>' % [self.class, hash*2, @id.inspect, tag_name.inspect]
+        '#<%s:0x%x id=%s>' % [self.class, hash*2, @id.inspect]
       end
 
       def ==(other)
