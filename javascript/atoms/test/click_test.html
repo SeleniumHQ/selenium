@@ -22,6 +22,7 @@
     var divConsole;
 
     var findElement = bot.locators.findElement;
+    var findElements = bot.locators.findElements;
     var log = goog.debug.Logger.getLogger('click_test');
 
     function resetClicker() {
@@ -304,7 +305,7 @@
     }
 
 
-    function testClickDoesNotFollowLinkWhenEventDefaltPreventedWithInlineHandler() {
+    function testClickDoesNotFollowLinkWhenEventDefaultPreventedWithInlineHandler() {
       var clickTarget = findElement({id: 'clickTargetWithInlineHandler'});
 
       var previousLocation = window.location.href;
@@ -314,6 +315,30 @@
       assertEquals(previousLocation, window.location.href);
     }
 
+
+    function testClickDoesNotTickCheckboxWhenEventDefaultPreventedWithInlineHandler() {
+      var clickTarget = findElement({name: 'preventedTick'});
+
+      bot.action.click(clickTarget);
+      assertFalse(bot.action.isSelected(clickTarget));
+    }
+
+    function testClickShouldEmitChangeEventsWhenSelectingElements() {
+      var called = false
+      log.addHandler(function() { called = true });
+
+      var clickTarget = findElement({name: 'preventedTick'});
+      var allOptions  = findElements({xpath: "//select[@name='options']//option"});
+
+      var foo = allOptions[0];
+      var bar = allOptions[1];
+
+      bot.action.click(foo);
+      assertFalse(called);
+
+      bot.action.click(bar);
+      assertTrue(called);
+    }
 
     function testClickDoesNotFollowLinkWhenNoHrefIsGiven() {
       var clickTarget = findElement({id: 'clickTargetWithNoHref'});
@@ -425,6 +450,7 @@
     <input type="radio" name="rad" value="fizzy beverage" onchange="log.info('fizz')">Salty, fizzy water
     <input type="radio" name="rad" value="peas" checked onchange="log.info('peas')">Peas (yummy)
 
+    <input type="checkbox" name="preventedTick" onclick="return false;">
   </form>
 
 

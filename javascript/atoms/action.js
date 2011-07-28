@@ -689,15 +689,17 @@ bot.action.click = function(element, opt_coords) {
   var performDefault =
       bot.events.fire(element, goog.events.EventType.CLICK, coords);
 
+  if (!performDefault) {
+    return;
+  }
+
   if (!bot.action.areSynthesisedEventsTrusted_()) {
-    if (performDefault) {
-      if (targetLink && targetLink.href &&
-          !(targetLink.target &&
-              bot.action.synthesisedEventsCanOpenJavascriptWindows_()) &&
-          !(bot.action.isOnlyHashChange_(targetLink) &&
-              bot.action.synthesisedEventsCanCauseHashChanges_())) {
-        bot.action.followHref_(targetLink);
-      }
+    if (targetLink && targetLink.href &&
+        !(targetLink.target &&
+            bot.action.synthesisedEventsCanOpenJavascriptWindows_()) &&
+        !(bot.action.isOnlyHashChange_(targetLink) &&
+            bot.action.synthesisedEventsCanCauseHashChanges_())) {
+      bot.action.followHref_(targetLink);
     }
   }
 
