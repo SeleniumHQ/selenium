@@ -101,7 +101,15 @@ class FirefoxProfile(object):
     #Public Methods
     def set_preference(self, key, value):
         """ sets the preference that we want in the profile."""
-        self.default_preferences[key] = str(value)
+        clean_value = ''
+        if value is True:
+            clean_value = 'true'
+        elif value is False:
+            clean_value = 'false'
+        else:
+            clean_value = repr(value)
+
+        self.default_preferences[key] = clean_value 
 
     def add_extension(self, extension=WEBDRIVER_EXT):
         self._install_extension(extension)
