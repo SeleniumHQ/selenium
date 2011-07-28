@@ -69,7 +69,7 @@ class FirefoxProfile(object):
         "security.warn_viewing_mixed": "false",
         "security.warn_viewing_mixed.show_once": "false",
         "signon.rememberSignons": "false",
-        "toolkit.networkmanager.disable": "true",    
+        "toolkit.networkmanager.disable": "true",
         "javascript.options.showInConsole": "true",
         "browser.dom.window.dump.enabled": "true",
         "webdriver_accept_untrusted_certs": "true",
@@ -80,7 +80,7 @@ class FirefoxProfile(object):
     def __init__(self,profile_directory=None):
         """ Initialises a new instance of a Firefox Profile
             args:
-                profile_directory: Directory of profile that you want to use. 
+                profile_directory: Directory of profile that you want to use.
                                 This defaults to None and will create a new
                                 directory when object is created.
         """
@@ -99,7 +99,7 @@ class FirefoxProfile(object):
         self.userPrefs = os.path.join(self.profile_dir, "user.js")
 
     #Public Methods
-    def set_preference(self, key, value): 
+    def set_preference(self, key, value):
         """ sets the preference that we want in the profile."""
         self.default_preferences[key] = str(value)
 
@@ -108,7 +108,7 @@ class FirefoxProfile(object):
 
     def update_preferences(self):
         self._write_user_prefs(self.default_preferences)
-    
+
     #Properties
 
     @property
@@ -168,7 +168,7 @@ class FirefoxProfile(object):
 
     def _write_user_prefs(self, user_prefs):
         """ writes the current user prefs dictionary to disk """
-        f = open(self.userPrefs, "w") 
+        f = open(self.userPrefs, "w")
         for pref in user_prefs.keys():
             f.write('user_pref("%s", %s);\n' % (pref, user_prefs[pref]))
 
@@ -188,13 +188,12 @@ class FirefoxProfile(object):
 
     def _install_extension(self, extension):
         tempdir = tempfile.mkdtemp()
-        ext_dir = "" 
+        ext_dir = ""
 
         if extension == WEBDRIVER_EXT:
             extension = os.path.join(os.path.dirname(__file__), WEBDRIVER_EXT)
             ext_dir = os.path.join(self.extensionsDir, EXTENSION_NAME)
-            
-        
+
         xpi = zipfile.ZipFile(extension)
 
         #Get directories ready

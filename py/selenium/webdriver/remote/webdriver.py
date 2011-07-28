@@ -27,7 +27,7 @@ class WebDriver(object):
     """Controls a browser by sending commands to a remote server.
     This server is expected to be running the WebDriver wire protocol as defined
     here: http://code.google.com/p/selenium/wiki/JsonWireProtocol
-    
+
     Attributes:
       command_executor - The command.CommandExecutor object used to execute
           commands.
@@ -43,7 +43,7 @@ class WebDriver(object):
         Args:
           command_executor - Either a command.CommandExecutor object or a string
               that specifies the URL of a remote server to send commands to.
-          desired_capabilities - Dictionary holding predefined values for starting 
+          desired_capabilities - Dictionary holding predefined values for starting
               a browser
           browser_profile:
               A selenium.webdriver.firefox.firefox_profile.FirefoxProfile
@@ -59,7 +59,7 @@ class WebDriver(object):
         self.error_handler = ErrorHandler()
         self.start_client()
         self.start_session(desired_capabilities, browser_profile)
-    
+
     @property
     def name(self):
         """Returns the name of the underlying browser for this instance.
@@ -72,12 +72,12 @@ class WebDriver(object):
             raise KeyError('browserName not specified in session capabilities')
 
     def start_client(self):
-        """Called before starting a new session. This method may be overridden 
+        """Called before starting a new session. This method may be overridden
         to define custom startup behavior."""
         pass
 
     def stop_client(self):
-        """Called after executing a quit command. This method may be overridden 
+        """Called after executing a quit command. This method may be overridden
         to define custom shutdown behavior."""
         pass
 
@@ -112,7 +112,7 @@ class WebDriver(object):
             return list(self._wrap_value(item) for item in value)
         else:
             return value
-            
+
     def create_web_element(self, element_id):
         """Creates a web element with the specified element_id."""
         return WebElement(self, element_id)
@@ -152,7 +152,7 @@ class WebDriver(object):
     def get(self, url):
         """Loads a web page in the current browser session."""
         self.execute(Command.GET, {'url': url})
-    
+
     @property
     def title(self):
         """Returns the title of the current page.
@@ -161,7 +161,7 @@ class WebDriver(object):
         """
         resp = self.execute(Command.GET_TITLE)
         return resp['value'] if resp['value'] is not None else ""
-    
+
     def find_element_by_id(self, id_):
         """Finds an element by id.
         Args:
@@ -170,7 +170,7 @@ class WebDriver(object):
             driver.find_element_by_id('foo')
         """
         return self.find_element(by=By.ID, value=id_)
-    
+
     def find_elements_by_id(self, id_):
         """Finds multiple elements by id.
         Args:
@@ -179,7 +179,7 @@ class WebDriver(object):
             driver.find_element_by_id('foo')
         """
         return self.find_elements(by=By.ID, value=id_)
-    
+
     def find_element_by_xpath(self, xpath):
         """Finds an element by xpath.
         Args:
@@ -188,7 +188,7 @@ class WebDriver(object):
             driver.find_element_by_xpath('//div/td[1]')
         """
         return self.find_element(by=By.XPATH, value=xpath)
-    
+
     def find_elements_by_xpath(self, xpath):
         """Finds multiple elements by xpath.
         Args:
@@ -197,7 +197,7 @@ class WebDriver(object):
             driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
         """
         return self.find_elements(by=By.XPATH, value=xpath)
-    
+
     def find_element_by_link_text(self, link_text):
         """Finds an element by link text.
         Args:
@@ -206,7 +206,7 @@ class WebDriver(object):
             driver.find_element_by_link_text('Sign In')
         """
         return self.find_element(by=By.LINK_TEXT, value=link_text)
-    
+
     def find_elements_by_link_text(self, text):
         """Finds elements by link text.
         Args:
@@ -215,7 +215,7 @@ class WebDriver(object):
             driver.find_elements_by_link_text('Sign In')
         """
         return self.find_elements(by=By.LINK_TEXT, value=text)
-    
+
     def find_element_by_partial_link_text(self, link_text):
         """Finds an element by a partial match of its link text.
         Args:
@@ -224,7 +224,7 @@ class WebDriver(object):
             driver.find_element_by_partial_link_text('Sign')
         """
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
-    
+
     def find_elements_by_partial_link_text(self, link_text):
         """Finds elements by a partial match of their link text.
         Args:
@@ -233,7 +233,7 @@ class WebDriver(object):
             driver.find_element_by_partial_link_text('Sign')
         """
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
-    
+
     def find_element_by_name(self, name):
         """Finds an element by name.
         Args:
@@ -242,7 +242,7 @@ class WebDriver(object):
             driver.find_element_by_name('foo')
         """
         return self.find_element(by=By.NAME, value=name)
-    
+
     def find_elements_by_name(self, name):
         """Finds elements by name.
         Args:
@@ -251,7 +251,7 @@ class WebDriver(object):
             driver.find_elements_by_name('foo')
         """
         return self.find_elements(by=By.NAME, value=name)
-    
+
     def find_element_by_tag_name(self, name):
         """Finds an element by tag name.
         Args:
@@ -260,7 +260,7 @@ class WebDriver(object):
             driver.find_element_by_tag_name('foo')
         """
         return self.find_element(by=By.TAG_NAME, value=name)
-    
+
     def find_elements_by_tag_name(self, name):
         """Finds elements by tag name.
         Args:
@@ -269,7 +269,7 @@ class WebDriver(object):
             driver.find_elements_by_tag_name('foo')
         """
         return self.find_elements(by=By.TAG_NAME, value=name)
-    
+
     def find_element_by_class_name(self, name):
         """Finds an element by class name.
         Args:
@@ -278,7 +278,7 @@ class WebDriver(object):
             driver.find_element_by_class_name('foo')
         """
         return self.find_element(by=By.CLASS_NAME, value=name)
-    
+
     def find_elements_by_class_name(self, name):
         """Finds elements by class name.
         Args:
@@ -287,7 +287,7 @@ class WebDriver(object):
             driver.find_elements_by_class_name('foo')
         """
         return self.find_elements(by=By.CLASS_NAME, value=name)
-    
+
     def find_element_by_css_selector(self, css_selector):
         """Finds an element by css selector.
         Args:
@@ -296,7 +296,7 @@ class WebDriver(object):
             driver.find_element_by_css_selector('#foo')
         """
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
-    
+
     def find_elements_by_css_selector(self, css_selector):
         """Finds elements by css selector.
         Args:
@@ -305,7 +305,7 @@ class WebDriver(object):
             driver.find_element_by_css_selector('#foo')
         """
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
-    
+
     def execute_script(self, script, *args):
         """Synchronously Executes JavaScript in the current window/frame.
         Args:
@@ -321,7 +321,7 @@ class WebDriver(object):
         converted_args = list(args)
         return self.execute(Command.EXECUTE_SCRIPT,
             {'script': script, 'args':converted_args})['value']
-    
+
     def execute_async_script(self, script, *args):
         """Asynchronously Executes JavaScript in the current window/frame.
         Args:
@@ -337,7 +337,7 @@ class WebDriver(object):
         converted_args = list(args)
         return self.execute(Command.EXECUTE_ASYNC_SCRIPT,
             {'script': script, 'args':converted_args})['value']
-    
+
     @property
     def current_url(self):
         """Gets the URL of the current page.
@@ -360,7 +360,7 @@ class WebDriver(object):
             driver.close()
         """
         self.execute(Command.CLOSE)
-    
+
     def quit(self):
         """Quits the driver and closes every associated window.
         Usage:
@@ -378,7 +378,7 @@ class WebDriver(object):
             driver.current_window_handle
         """
         return self.execute(Command.GET_CURRENT_WINDOW_HANDLE)['value']
-    
+
     @property
     def window_handles(self):
         """Returns the handles of all windows within the current session.
@@ -394,7 +394,7 @@ class WebDriver(object):
             driver.switch_to_active_element()
         """
         return self.execute(Command.GET_ACTIVE_ELEMENT)['value']
-    
+
     def switch_to_window(self, window_name):
         """Switches focus to the specified window.
         Args:
@@ -403,63 +403,63 @@ class WebDriver(object):
             driver.switch_to_window('main')
         """
         self.execute(Command.SWITCH_TO_WINDOW, {'name': window_name})
-    
+
     def switch_to_frame(self, index_or_name):
         """Switches focus to the specified frame, by index or name.
         Args:
-            index_or_name: The name of the window to switch to, or 
+            index_or_name: The name of the window to switch to, or
             an integer representing the index to switch to.
         Usage:
             driver.switch_to_frame('frame_name')
             driver.switch_to_frame(1)
         """
         self.execute(Command.SWITCH_TO_FRAME, {'id': index_or_name})
-    
+
     def switch_to_default_content(self):
         """Switch focus to the default frame.
         Usage:
             driver.switch_to_default_content()
         """
         self.execute(Command.SWITCH_TO_FRAME, {'id': None})
-    
+
     def switch_to_alert(self):
         """Switches focus to an alert on the page.
         Usage:
             driver.switch_to_alert()
         """
-        return Alert(self) 
-    
-    #Navigation 
+        return Alert(self)
+
+    #Navigation
     def back(self):
         """Goes one step backward in the browser history.
         Usage:
             driver.back()
         """
         self.execute(Command.GO_BACK)
-    
+
     def forward(self):
         """Goes one step forward in the browser history.
         Usage:
             driver.forward()
         """
         self.execute(Command.GO_FORWARD)
-    
+
     def refresh(self):
         """Refreshes the current page.
         Usage:
             driver.refresh()
         """
         self.execute(Command.REFRESH)
-    
+
     # Options
     def get_cookies(self):
-        """Returns a set of dictionaries, corresponding to cookies visible in the 
+        """Returns a set of dictionaries, corresponding to cookies visible in the
         current session.
         Usage:
             driver.get_cookies()
         """
         return self.execute(Command.GET_ALL_COOKIES)['value']
-    
+
     def get_cookie(self, name):
         """Get a single cookie by name. Returns the cookie if found, None if not.
         Usage:
@@ -470,21 +470,21 @@ class WebDriver(object):
             if cookie['name'] == name:
                 return cookie
         return None
-    
+
     def delete_cookie(self, name):
         """Deletes a single cookie with the given name.
         Usage:
             driver.delete_cookie('my_cookie')
         """
         self.execute(Command.DELETE_COOKIE, {'name': name})
-    
+
     def delete_all_cookies(self):
         """Delete all cookies in the scope of the session.
         Usage:
             driver.delete_all_cookies()
         """
         self.execute(Command.DELETE_ALL_COOKIES)
-    
+
     def add_cookie(self, cookie_dict):
         """Adds a cookie to your current session.
         Args:
@@ -494,10 +494,10 @@ class WebDriver(object):
             driver.add_cookie({'foo': 'bar',})
         """
         self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
-    
+
     # Timeouts
     def implicitly_wait(self, time_to_wait):
-        """Sets a sticky timeout to implicitly wait for an element to be found, 
+        """Sets a sticky timeout to implicitly wait for an element to be found,
         or a command to complete. This method only needs to be called one time per session.
         Args:
             time_to_wait: Amount of time to wait
@@ -505,7 +505,7 @@ class WebDriver(object):
             driver.implicitly_wait(30)
         """
         self.execute(Command.IMPLICIT_WAIT, {'ms': float(time_to_wait) * 1000})
-    
+
     def set_script_timeout(self, time_to_wait):
         """Set the amount of time that the script should wait before throwing an
            error.
@@ -515,7 +515,7 @@ class WebDriver(object):
             driver.set_script_timeout(30)
         """
         self.execute(Command.SET_SCRIPT_TIMEOUT, {'ms': float(time_to_wait) * 1000})
-    
+
     def find_element(self, by=By.ID, value=None):
         """'Private' method used by the find_element_by_* methods.
         Usage:
@@ -523,7 +523,7 @@ class WebDriver(object):
         """
         return self.execute(Command.FIND_ELEMENT,
                              {'using': by, 'value': value})['value']
-    
+
     def find_elements(self, by=By.ID, value=None):
         """'Private' method used by the find_elements_by_* methods.
         Usage:
@@ -535,9 +535,9 @@ class WebDriver(object):
     def desired_capabilities(self):
         """ returns the drivers current desired capabilities being used"""
         return self.capabilities
-    
+
     def get_screenshot_as_file(self, filename):
-        """Gets the screenshot of the current window. Returns False if there is 
+        """Gets the screenshot of the current window. Returns False if there is
         any IOError, else returns True. Use full paths in your filename.
         Args:
             filename: The full path you wish to save your screenshot to.
@@ -552,12 +552,11 @@ class WebDriver(object):
             return False
         del png
         return True
-    
+
     def get_screenshot_as_base64(self):
-        """Gets the screenshot of the current window as a base64 encoded string which 
+        """Gets the screenshot of the current window as a base64 encoded string which
         is useful in embedded images in HTML.
         Usage:
             driver.get_screenshot_as_base64()
         """
         return self.execute(Command.SCREENSHOT)['value']
-    

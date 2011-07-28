@@ -31,7 +31,7 @@ class WebDriver(RemoteWebDriver):
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
-        
+
         # Create IE Driver instance of the unmanaged code
         self.iedriver = CDLL(os.path.join(os.path.dirname(__file__), "IEDriver.dll"))
         self.ptr = self.iedriver.StartServer(self.port)
@@ -43,9 +43,10 @@ class WebDriver(RemoteWebDriver):
                 raise RuntimeError("Unable to connect to IE")
             time.sleep(1)
 
-        RemoteWebDriver.__init__(self,
-			    command_executor='http://localhost:%d' % self.port,
-			    desired_capabilities=DesiredCapabilities.INTERNETEXPLORER) 
+        RemoteWebDriver.__init__(
+            self,
+            command_executor='http://localhost:%d' % self.port,
+            desired_capabilities=DesiredCapabilities.INTERNETEXPLORER)
 
     def quit(self):
         RemoteWebDriver.quit(self)
