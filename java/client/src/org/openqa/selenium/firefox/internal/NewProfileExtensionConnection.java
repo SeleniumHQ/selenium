@@ -137,7 +137,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
       try {
         socket.bind(address);
         return newport;
-      } catch (BindException e) {
+      } catch (IOException e) {
         // Port is already bound. Skip it and continue
       } finally {
         try {
