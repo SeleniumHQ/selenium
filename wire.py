@@ -607,9 +607,6 @@ element's subtree. ||
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/value').
-      Get('Query for the value of an element, as determined by its `value` attribute.').
-      SetReturnType('{string|null}',
-                    'The element\'s value, or `null` if it does not have a `value` attribute.').
       Post('''Send a sequence of key strokes to an element.
 
 Any UTF-8 character may be specified, however, if the server does not support \
@@ -746,20 +743,7 @@ at the end of the sequence.
       ElementResource('/session/:sessionId/element/:id/selected').
       Get('Determine if an `OPTION` element, or an `INPUT` element of type `checkbox` or '
           '`radiobutton` is currently selected.').
-      SetReturnType('{boolean}', 'Whether the element is selected.').
-      Post('Select an `OPTION` element, or an `INPUT` element of type `checkbox` or `radiobutton`.').
-      RequiresVisibility().
-      RequiresEnabledState().
-      AddError('ElementIsNotSelectable', 'If the referenced element cannot be selected.'))
-
-  resources.append(
-      ElementResource('/session/:sessionId/element/:id/toggle').
-      Post('Toggle whether an `OPTION` element, or an `INPUT` element of type `checkbox` or '
-           '`radiobutton` is currently selected.').
-      RequiresVisibility().
-      RequiresEnabledState().
-      AddError('ElementIsNotSelectable', 'If the referenced element cannot be selected.').
-      SetReturnType('{boolean}', 'Whether the element is selected after toggling its state.'))
+      SetReturnType('{boolean}', 'Whether the element is selected.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/enabled').
@@ -816,28 +800,6 @@ location for correctly generating native events.''').
           '`background-color` instead of `backgroundColor`).').
       SetReturnType('{string}', 'The value of the specified CSS property.'))
 
-  resources.append(
-      ElementResource('/session/:sessionId/element/:id/hover').
-      Post('Move the mouse over an element.').
-      RequiresVisibility().
-      RequiresEnabledState())
-
-  resources.append(
-      ElementResource('/session/:sessionId/element/:id/drag').
-      Post('Drag and drop an element. The distance to drag an element should be specified relative '
-           'to the upper-left corner of the page.').
-      RequiresVisibility().
-      RequiresEnabledState().
-      AddJsonParameter('x', '{number}',
-                       'The number of pixels to drag the element in the horizontal direction. '
-                       'A positive value indicates the element should be dragged to the right, '
-                       'while a negative value indicates that it should be dragged to the left.').
-      AddJsonParameter('y', '{number}',
-                       'The number of pixels to drag the element in the vertical direction. '
-                       'A positive value indicates the element should be dragged down towards the '
-                       'bottom of the screen, while a negative value indicates that it should be '
-                       'dragged towards the top of the screen.'))
-                 
   resources.append(
       SessionResource('/session/:sessionId/orientation').
       Get('Get the current browser orientation. The server should return a '
