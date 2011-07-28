@@ -47,4 +47,18 @@ public class ResultSetRows {
   public int size() {
     return rows.size();
   }
+
+  @Override
+  public String toString() {
+    StringBuilder strBuilder = new StringBuilder();
+    strBuilder.append("[");
+    for(int i = 0; i < rows.size(); i++) {
+      strBuilder.append(rows.get(i).toString());
+      if(i < rows.size() - 1) {
+        strBuilder.append(", ");
+      }
+    }
+    strBuilder.append("]");
+    return strBuilder.toString();
+  }
 }

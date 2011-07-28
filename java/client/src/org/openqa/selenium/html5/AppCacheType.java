@@ -35,4 +35,18 @@ public enum AppCacheType {
   public int value() {
     return value;
   }
+
+  /**
+   * Gets the AppCacheType for the given int value.
+   * @param value The input value
+   * @return {@link AppCacheType} The corresponding appcache type
+   */
+  public static AppCacheType getEnum(int value) {
+    for(AppCacheType cacheType: AppCacheType.values()) {
+      if(value == cacheType.value()) {
+        return cacheType;
+      }
+    }
+    return null;
+  }
 }

@@ -37,4 +37,9 @@ public interface ApplicationCache {
    * @return {@link AppCacheStatus}
    */
   AppCacheStatus getStatus();
+
+  /**
+   * Deletes the application cache from the browser.
+   */
+  void clear();
 }

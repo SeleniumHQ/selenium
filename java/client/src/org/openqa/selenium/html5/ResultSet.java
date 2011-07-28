@@ -65,4 +65,10 @@ public class ResultSet {
   public ResultSetRows rows() {
     return rows;
   }
+
+  @Override
+  public String toString() {
+    return "[insertId: " + insertId + ", rowsAffected: " + rowsAffected + ", "
+        + " rows: " + rows.toString() + "]";
+  }
 }

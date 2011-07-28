@@ -37,4 +37,18 @@ public enum AppCacheStatus {
   public int value() {
     return value;
   }
+
+  /**
+   * Gets the AppCacheStatus for the given int value.
+   * @param value The input value
+   * @return {@link AppCacheStatus} The corresponding appcache status
+   */
+  public static AppCacheStatus getEnum(int value) {
+    for(AppCacheStatus status: AppCacheStatus.values()) {
+      if(value == status.value()) {
+        return status;
+      }
+    }
+    return null;
+  }
 }
