@@ -28,4 +28,17 @@ public class TestUtilities {
     return ((HasCapabilities) driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS);
   }
 
+  public static String getUserAgent(WebDriver driver) {
+    return (String) ((JavascriptExecutor) driver).executeScript(
+        "return navigator.userAgent;");
+  }
+
+  public static boolean isFirefox30(WebDriver driver) {
+    return getUserAgent(driver).contains("Firefox/3.0.");
+  }
+
+  public static boolean isFirefox35(WebDriver driver) {
+    return getUserAgent(driver).contains("Firefox/3.5.");
+  }
+
 }

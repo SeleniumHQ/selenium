@@ -25,6 +25,8 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestUtilities.isFirefox30;
+import static org.openqa.selenium.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 
@@ -34,6 +36,12 @@ public class SvgElementTest extends AbstractDriverTestCase {
   public void testShouldClickOnGraphVisualElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));
+
+    if (isFirefox30(driver) && isNativeEventsEnabled(driver)) {
+      System.out.println("Not testing SVG elements with Firefox 3.0 and native events as" +
+          " this functionality is not working.");
+      return;
+    }
 
     List<WebElement> groupElements = svg.findElements(By.tagName("svg:g"));
     assertEquals(5, groupElements.size());
@@ -66,6 +74,12 @@ public class SvgElementTest extends AbstractDriverTestCase {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));
     List<WebElement> textElements = svg.findElements(By.tagName("svg:text"));
+
+    if (isFirefox30(driver) && isNativeEventsEnabled(driver)) {
+      System.out.println("Not testing SVG elements with Firefox 3.0 and native events as" +
+          " this functionality is not working.");
+      return;
+    }
 
     WebElement appleElement = findAppleElement(textElements);
     assertNotNull(appleElement);
