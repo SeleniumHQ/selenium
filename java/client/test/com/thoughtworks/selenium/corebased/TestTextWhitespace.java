@@ -20,5 +20,6 @@ public class TestTextWhitespace extends InternalSelenseTestBase {
 		verifyTrue(selenium.getText("preformatted").matches("^preformatted[\\s\\S]*newline$"));
 		verifyNotEquals("preformatted newline", selenium.getText("preformatted"));
 		verifyTrue(selenium.getText("mixedMarkup").matches("^visible[\\s\\S]*newlines and markup and non-visible newlines and markup[\\s\\S]*With[\\s\\S]*a paragraph[\\s\\S]*and[\\s\\S]*pre[\\s\\S]*formatted[\\s\\S]*text$"));
+		verifyEquals(selenium.getText("empty"), "");
 	}
 }

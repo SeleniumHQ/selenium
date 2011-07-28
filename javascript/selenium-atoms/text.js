@@ -144,7 +144,7 @@ core.text.normalizeSpaces_ = function(text) {
 core.text.getText = function(locator) {
   var element = core.locators.findElement(locator);
 
-  var text;
+  var text = '';
   var isRecentFirefox =
       (goog.userAgent.GECKO && goog.userAgent.VERSION >= '1.8');
   
