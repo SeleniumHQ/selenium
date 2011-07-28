@@ -233,7 +233,6 @@ class FirefoxProfile(object):
         from rdflib import Graph
         rdf = Graph()
         installrdf = rdf.parse(file=file(installrdfpath))
-        id_ = ""
         for i in installrdf.all_nodes():
             if re.search(".*@.*\..*", i):
                 return i.decode()
