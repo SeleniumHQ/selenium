@@ -26,7 +26,10 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestUtilities.isFirefox30;
+import static org.openqa.selenium.TestUtilities.isFirefox35;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
@@ -177,6 +180,9 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     Action contextClick = getBuilder(driver).moveToElement(toClick).click().build();
 
     contextClick.perform();
+
+    waitFor(elementValueToEqual(toClick, "Clicked"));
+
     assertEquals("Value should change to Clicked.", "Clicked",
         toClick.getAttribute("value"));
   }
@@ -203,10 +209,19 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(value = {ANDROID, CHROME, IE, FIREFOX, HTMLUNIT, IPHONE, CHROME, REMOTE, SELENESE},
+  @Ignore(value = {ANDROID, CHROME, IE, HTMLUNIT, IPHONE, CHROME, REMOTE, SELENESE},
       reason = "Behaviour not finalized yet regarding linked images.")
   public void testMovingIntoAnImageEnclosedInALink() {
     driver.get(pages.linkedImage);
+
+    if (isFirefox30(driver) || isFirefox35(driver)) {
+      System.out.println("Not performing testMovingIntoAnImageEnclosedInALink - no way to " +
+          "compensate for accessibility-provided offsets on Firefox 3.0 or 3.5");
+      return;
+    }
+    // Note: For some reason, the Accessibilyt API in Firefox will not be available before we
+    // click on something. As a work-around, click on a different element just to get going.
+    driver.findElement(By.id("linkToAnchorOnThisPage")).click();
 
     WebElement linkElement = driver.findElement(By.id("linkWithEnclosedImage"));
 

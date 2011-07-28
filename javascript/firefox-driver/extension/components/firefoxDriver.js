@@ -917,8 +917,8 @@ function getElementFromLocation(mouseLocation, doc) {
   var locationY = Math.round(mouseLocation.y);
 
   if (mouseLocation.initialized) {
-    Logger.dumpn("Getting element from coordinates " + locationX + "," + locationY);
     elementForNode = doc.elementFromPoint(locationX, locationY);
+    Logger.dumpn("Element from (" + locationX + "," + locationY + ") :" + elementForNode);
   } else {
     Logger.dumpn("Mouse coordinates were not set - using body");
     elementForNode = doc.getElementsByTagName("body")[0];
@@ -982,11 +982,44 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   
   var mouseMoveTo = function(coordinates, nativeEventsEnabled, jsTimer) {
     var elementForNode = null;
+    var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
     if (coordinates.auxiliary) {
       var element = webdriver.firefox.utils.unwrap(coordinates.auxiliary);
 
       var loc = Utils.getLocationOnceScrolledIntoView(element);
+      var accessibleLocation = Utils.getLocationViaAccessibilityInterface(element);
+
+      // Don't use accessibility information for Firefox 3.5 and below.
+      if ((bot.userAgent.isVersion('3.6')) && accessibleLocation) {
+        var browserToolbarAddedPixelsX = browserOffset.x;
+        var browserToolbarAddedPixelsY = browserOffset.y;
+        // For Firefox 3.6, use the mosInnerScreenX, as we cannot get the browser-specific offset
+        // by calling getBoundingClientRect on the browser object.
+        if (! bot.userAgent.isFirefox4()) {
+          browserToolbarAddedPixelsX = element.ownerDocument.defaultView.mozInnerScreenX;
+          browserToolbarAddedPixelsY = element.ownerDocument.defaultView.mozInnerScreenY;
+          Logger.dumpn("Adjusted browser-specific offset: (" + browserToolbarAddedPixelsX + ", " +
+            browserToolbarAddedPixelsY + ")");
+        }
+
+        // Adjust according to browser-specific offset.
+        accessibleLocation.x = accessibleLocation.x - browserToolbarAddedPixelsX;
+        accessibleLocation.y = accessibleLocation.y - browserToolbarAddedPixelsY;
+
+        var useAccessibleLocation = !Utils.locationsEqual(loc, accessibleLocation) &&
+            (!isNaN(accessibleLocation.x));
+
+        Logger.dumpn("Location provided by Accessibility API: (" + accessibleLocation.x + ", " +
+            accessibleLocation.y + ") h: " + accessibleLocation.height + " w: " +
+            accessibleLocation.width + " was used? " + useAccessibleLocation);
+
+        if (useAccessibleLocation) {
+          // Location obtained via the Accessibility API differs from the location we got via
+          // getBoundingClientRect. Prefer the one provided by the accessibility API.
+          loc = accessibleLocation;
+        }
+      }
 
       toX = loc.x + coordinates.x;
       toY = loc.y + coordinates.y;
@@ -999,8 +1032,6 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
       toX = mousePosition.x + coordinates.x;
       toY = mousePosition.y + coordinates.y;
     }
-
-    var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
     var events = Utils.getNativeEvents();
     var node = Utils.getNodeForNativeEvents(elementForNode);

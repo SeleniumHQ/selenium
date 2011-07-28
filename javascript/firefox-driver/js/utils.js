@@ -878,6 +878,38 @@ Utils.findElementsByXPath = function (xpath, contextNode, doc) {
   return indices;
 };
 
+Utils.locationsEqual = function(location1, location2) {
+  var locationProperties = ['x', 'y', 'width', 'height'];
+
+  for (var i in locationProperties) {
+    var p = locationProperties[i];
+    if (location1[p] !== location2[p]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+Utils.getLocationViaAccessibilityInterface = function(element) {
+  var retrieval = Utils.newInstance(
+    "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
+  var accessible = retrieval.getAccessibleFor(element);
+
+  if (! accessible) {
+    return;
+  }
+
+  var x = {}, y = {}, width = {}, height = {};
+  accessible.getBounds(x, y, width, height);
+
+  return {
+    x : x.value,
+    y : y.value,
+    width: width.value,
+    height: height.value
+  };
+};
 
 Utils.getLocation = function(element) {
   try {
@@ -909,19 +941,10 @@ Utils.getLocation = function(element) {
 
     // Firefox 3.0, but lacking client rect
     Logger.dumpn("Falling back to firefox3 mechanism");
-    var retrieval = Utils.newInstance(
-      "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
-    var accessible = retrieval.getAccessibleFor(element);
-
-    var x = {}, y = {}, width = {}, height = {};
-    accessible.getBounds(x, y, width, height);
-
-    return {
-      x : clientRect.left + 3,
-      y : clientRect.top,
-      width: width.value,
-      height: height.value
-    };
+    var accessibleLocation = Utils.getLocationViaAccessibilityInterface(element);
+    accessibleLocation.x = clientRect.left + 3;
+    accessibleLocation.y = clientRect.top;
+    return accessibleLocation;
   } catch(e) {
     Logger.dumpn(e);
     // Element doesn't have an accessibility node
