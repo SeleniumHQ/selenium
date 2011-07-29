@@ -51,7 +51,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, SELENESE})
-  public void testShouldAllowUsersToAcceptAnAlertManually() throws InterruptedException {
+  public void testShouldAllowUsersToAcceptAnAlertManually() {
     if (!isCapableOfHandlingAlerts(driver)) {
       return;
     }
