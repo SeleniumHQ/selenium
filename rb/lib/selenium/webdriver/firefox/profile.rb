@@ -2,6 +2,7 @@ module Selenium
   module WebDriver
     module Firefox
       class Profile
+        include ProfileHelper
 
         WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi")
         WEBDRIVER_PREFS          = {
@@ -55,7 +56,6 @@ module Selenium
             @secure_ssl        = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_certs]) != "true"
             @untrusted_issuer  = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_issuer]) == "true"
             @load_no_focus_lib = model_prefs.delete(WEBDRIVER_PREFS[:load_no_focus_lib]) == "true" # not stored in profile atm, so will always be false.
-
             @additional_prefs  = model_prefs
           end
 
@@ -74,29 +74,6 @@ module Selenium
           profile_dir
         end
 
-        def as_json(opts = nil)
-          {'zip' => Zipper.zip(layout_on_disk)}
-        end
-
-        def to_json(*args)
-          as_json.to_json(*args)
-        end
-
-        def self.from_json(json)
-          data = JSON.parse(json).fetch('zip')
-
-          # can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
-          # can't use Dir.mktmpdir(&blk) because of http://jira.codehaus.org/browse/JRUBY-4082
-          tmp_dir = Dir.mktmpdir
-          begin
-            zip_path = File.join(tmp_dir, "webdriver-profile-duplicate-#{json.hash}")
-            File.open(zip_path, "wb") { |zip_file| zip_file << Base64.decode64(data) }
-
-            new Zipper.unzip(zip_path)
-          ensure
-            FileUtils.rm_rf tmp_dir
-          end
-        end
 
         #
         # Set a preference for this particular profile.
@@ -213,15 +190,6 @@ module Selenium
           end
         end
 
-        def verify_model(model)
-          return unless model
-
-          raise Errno::ENOENT, model unless File.exist?(model)
-          raise Errno::ENOTDIR, model unless File.directory?(model)
-
-          model
-        end
-
         def read_model_prefs
           return {} unless @model
 
@@ -240,17 +208,6 @@ module Selenium
 
         def extension_name_for(path)
           File.basename(path, File.extname(path))
-        end
-
-        def create_tmp_copy(directory)
-          tmp_directory = Dir.mktmpdir("webdriver-rb-profilecopy")
-
-          # TODO: must be a better way..
-          FileUtils.rm_rf tmp_directory
-          FileUtils.mkdir_p File.dirname(tmp_directory), :mode => 0700
-          FileUtils.cp_r directory, tmp_directory
-
-          tmp_directory
         end
 
         def update_user_prefs_in(directory)

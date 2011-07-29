@@ -10,6 +10,7 @@ module Selenium
           switches      = opts.delete(:switches)
           native_events = opts.delete(:native_events)
           verbose       = opts.delete(:verbose)
+          profile       = opts.delete(:profile)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -28,6 +29,7 @@ module Selenium
           caps.merge! 'chrome.binary'       => Chrome.path if Chrome.path
           caps.merge! 'chrome.nativeEvents' => true if native_events
           caps.merge! 'chrome.verbose'      => true if verbose
+          caps.merge! 'chrome.profile'      => profile.as_json['zip'] if profile
 
           @service = Service.default_service
           @service.start

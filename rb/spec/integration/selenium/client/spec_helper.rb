@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'selenium/client'
-require 'base64'
 require 'tmpdir'
 require File.expand_path('../sample-app/sample_app', __FILE__)
 
