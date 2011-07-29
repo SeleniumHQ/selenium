@@ -27,7 +27,6 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_ALERTS;
 
 import java.lang.reflect.Method;
 
-@Ignore(value = CHROME, reason = "Not implemented yet")
 public class AlertsTest extends AbstractDriverTestCase {
 
   private String alertPage;
