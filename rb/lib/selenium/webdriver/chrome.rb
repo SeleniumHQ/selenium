@@ -18,7 +18,7 @@ module Selenium
       end
 
       def self.path
-        @path
+        @path ||= nil
       end
 
     end
