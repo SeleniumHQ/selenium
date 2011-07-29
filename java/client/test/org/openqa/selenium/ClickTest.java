@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
@@ -121,7 +122,7 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, OPERA, SELENESE})
+  @Ignore({CHROME, HTMLUNIT, OPERA, SELENESE})
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
 
