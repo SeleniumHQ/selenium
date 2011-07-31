@@ -20,7 +20,7 @@ package org.openqa.selenium;
 
 public class DevMode {
   public static boolean isInDevMode() {
-    return isInDevMode("/webdriver.xpi");
+    return isInDevMode("/org/openqa/selenium/firefox/webdriver.xpi");
   }
 
   public static boolean isInDevMode(String nameOfRequiredResource) {
