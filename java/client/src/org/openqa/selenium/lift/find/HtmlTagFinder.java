@@ -29,26 +29,26 @@ import java.util.Collection;
  * Base {@link Finder} for all types of HTML tags. Subclasses should be created
  * for each specific tag, specifying the tag name (e.g. "a" in the case or an anchor
  * tag), and a description.
- *  
+ *
  * @author rchatley (Robert Chatley)
  */
 public abstract class HtmlTagFinder extends BaseFinder<WebElement, WebDriver> {
-	
-	protected Collection<WebElement> extractFrom(WebDriver context) {
-		return context.findElements(By.xpath("//" + tagName()));
-	}
-	
-	protected void describeTargetTo(Description description) {
-		description.appendText(tagDescription());
-	}
-	
-	@Override // more specific return type
-	public HtmlTagFinder with(Matcher<WebElement> matcher) {
-		super.with(matcher);
-		return this;
-	}
-	
-	protected abstract String tagName();
 
-	protected abstract String tagDescription();
+  protected Collection<WebElement> extractFrom(WebDriver context) {
+    return context.findElements(By.xpath("//" + tagName()));
+  }
+
+  protected void describeTargetTo(Description description) {
+    description.appendText(tagDescription());
+  }
+
+  @Override // more specific return type
+  public HtmlTagFinder with(Matcher<WebElement> matcher) {
+    super.with(matcher);
+    return this;
+  }
+
+  protected abstract String tagName();
+
+  protected abstract String tagDescription();
 }

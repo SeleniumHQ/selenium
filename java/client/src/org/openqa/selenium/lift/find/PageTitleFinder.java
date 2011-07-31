@@ -21,40 +21,42 @@ limitations under the License.
 package org.openqa.selenium.lift.find;
 
 import org.hamcrest.Factory;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.match.TextMatcher.text;
 
 /**
  * A {@link Finder} for HTML title tags.
- * @author rchatley (Robert Chatley)
  *
+ * @author rchatley (Robert Chatley)
  */
 public class PageTitleFinder extends HtmlTagFinder {
-	
-	private PageTitleFinder() {};
 
-	@Override
-	protected String tagName() {
-		return "title";
-	}
+  private PageTitleFinder() {
+  }
 
-	@Override
-	protected String tagDescription() {
-		return "page title";
-	}
+  @Override
+  protected String tagName() {
+    return "title";
+  }
 
-	@Factory
-	public static HtmlTagFinder title() {
-		return new PageTitleFinder();
-	}
-	
-	@Factory
-	public static HtmlTagFinder title(String title) {
-		return new PageTitleFinder().with(text(equalTo(title)));
-	}
-	
-	@Factory
-	public static HtmlTagFinder titles() {
-		return new PageTitleFinder();
-	}
+  @Override
+  protected String tagDescription() {
+    return "page title";
+  }
+
+  @Factory
+  public static HtmlTagFinder title() {
+    return new PageTitleFinder();
+  }
+
+  @Factory
+  public static HtmlTagFinder title(String title) {
+    return new PageTitleFinder().with(text(equalTo(title)));
+  }
+
+  @Factory
+  public static HtmlTagFinder titles() {
+    return new PageTitleFinder();
+  }
 }

@@ -20,7 +20,6 @@ package org.openqa.selenium.lift;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
@@ -32,16 +31,15 @@ import org.openqa.selenium.support.ui.SystemClock;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
-
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
+
 /**
  * Gives the context for a test, holds page state, and interacts with the {@link WebDriver}.
- * 
- * @author rchatley (Robert Chatley)
  *
+ * @author rchatley (Robert Chatley)
  */
 public class WebDriverTestContext implements TestContext {
 
@@ -58,7 +56,7 @@ public class WebDriverTestContext implements TestContext {
     this.clock = clock;
     this.sleeper = sleeper;
   }
-  
+
   public void quit() {
     driver.quit();
   }
@@ -74,18 +72,18 @@ public class WebDriverTestContext implements TestContext {
   public void assertPresenceOf(Matcher<Integer> cardinalityConstraint, Finder<WebElement, WebDriver> finder) {
     Collection<WebElement> foundElements = finder.findFrom(driver);
     if (!cardinalityConstraint.matches(foundElements.size())) {
-       Description description = new StringDescription();
-              description.appendText("\nExpected: ")
-                         .appendDescriptionOf(cardinalityConstraint)
-                         .appendText(" ")
-                         .appendDescriptionOf(finder)
-                         .appendText("\n     got: ")
-                         .appendValue(foundElements.size())
-                         .appendText(" ")
-                         .appendDescriptionOf(finder)
-                         .appendText("\n");
-              
-              failWith(description.toString());
+      Description description = new StringDescription();
+      description.appendText("\nExpected: ")
+          .appendDescriptionOf(cardinalityConstraint)
+          .appendText(" ")
+          .appendDescriptionOf(finder)
+          .appendText("\n     got: ")
+          .appendValue(foundElements.size())
+          .appendText(" ")
+          .appendDescriptionOf(finder)
+          .appendText("\n");
+
+      failWith(description.toString());
     }
   }
 
@@ -97,19 +95,19 @@ public class WebDriverTestContext implements TestContext {
   public void clickOn(Finder<WebElement, WebDriver> finder) {
     WebElement element = findOneElementTo("click on", finder);
     element.click();
-  }  
-  
+  }
+
   public void clickOnFirst(Finder<WebElement, WebDriver> finder) {
     WebElement element = findFirstElementTo("click on", finder);
     element.click();
-  }  
-  
+  }
+
   private WebElement findFirstElementTo(String action, Finder<WebElement, WebDriver> finder) {
     Collection<WebElement> foundElements = finder.findFrom(driver);
     if (foundElements.isEmpty()) {
       failWith("could not find element to " + action);
-    } 
-    
+    }
+
     return foundElements.iterator().next();
   }
 
@@ -119,8 +117,8 @@ public class WebDriverTestContext implements TestContext {
       failWith("could not find element to " + action);
     } else if (foundElements.size() > 1) {
       failWith("did not know what to " + action + " - ambiguous");
-    } 
-    
+    }
+
     return foundElements.iterator().next();
   }
 
@@ -156,11 +154,11 @@ public class WebDriverTestContext implements TestContext {
   }
 
   private static long millisToSeconds(final long timeoutMillis) {
-    return ceiling(((double)timeoutMillis) / 1000);
+    return ceiling(((double) timeoutMillis) / 1000);
   }
-  
+
   private static long ceiling(final double value) {
-    final long asLong = (long)value;
+    final long asLong = (long) value;
     final int additional = value - asLong > 0 ? 1 : 0;
     return asLong + additional;
   }

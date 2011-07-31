@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jmock.Expectations;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -31,6 +28,9 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -56,7 +56,7 @@ public class ByChainedTest extends MockTestBase {
 
     ByChained by = new ByChained();
     assertThat(by.findElements(driver),
-               equalTo((List<WebElement>) new ArrayList<WebElement>()));
+        equalTo((List<WebElement>) new ArrayList<WebElement>()));
   }
 
   @Test
@@ -69,7 +69,8 @@ public class ByChainedTest extends MockTestBase {
     elems12.add(elem2);
 
     checking(new Expectations() {{
-      one(driver).findElementsByName("cheese"); will(returnValue(elems12));
+      one(driver).findElementsByName("cheese");
+      will(returnValue(elems12));
     }});
 
     ByChained by = new ByChained(By.name("cheese"));
@@ -86,7 +87,8 @@ public class ByChainedTest extends MockTestBase {
     elems12.add(elem2);
 
     checking(new Expectations() {{
-      one(driver).findElementsByName("cheese"); will(returnValue(elems12));
+      one(driver).findElementsByName("cheese");
+      will(returnValue(elems12));
     }});
 
     ByChained by = new ByChained(By.name("cheese"));
@@ -96,12 +98,13 @@ public class ByChainedTest extends MockTestBase {
   @Test
   public void findElementOneByEmpty() {
     final AllDriver driver = mock(AllDriver.class);
-	final WebElement elem1 = mock(WebElement.class, "webElement1");
+    final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
     final List<WebElement> elems = new ArrayList<WebElement>();
 
     checking(new Expectations() {{
-      one(driver).findElementsByName("cheese"); will(returnValue(elems));
+      one(driver).findElementsByName("cheese");
+      will(returnValue(elems));
     }});
 
     ByChained by = new ByChained(By.name("cheese"));
@@ -121,7 +124,8 @@ public class ByChainedTest extends MockTestBase {
     final List<WebElement> elems = new ArrayList<WebElement>();
 
     checking(new Expectations() {{
-      one(driver).findElementsByName("cheese"); will(returnValue(elems));
+      one(driver).findElementsByName("cheese");
+      will(returnValue(elems));
     }});
 
     ByChained by = new ByChained(By.name("cheese"));
@@ -149,9 +153,12 @@ public class ByChainedTest extends MockTestBase {
     elems345.addAll(elems5);
 
     checking(new Expectations() {{
-      one(driver).findElementsByName("cheese"); will(returnValue(elems12));
-      one(elem1).findElements(By.name("photo")); will(returnValue(elems34));
-      one(elem2).findElements(By.name("photo")); will(returnValue(elems5));
+      one(driver).findElementsByName("cheese");
+      will(returnValue(elems12));
+      one(elem1).findElements(By.name("photo"));
+      will(returnValue(elems34));
+      one(elem2).findElements(By.name("photo"));
+      will(returnValue(elems5));
     }});
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
@@ -181,7 +188,8 @@ public class ByChainedTest extends MockTestBase {
     elems345.addAll(elems5);
 
     checking(new Expectations() {{
-      one(driver).findElementsByName("cheese"); will(returnValue(elems));
+      one(driver).findElementsByName("cheese");
+      will(returnValue(elems));
     }});
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
@@ -216,7 +224,8 @@ public class ByChainedTest extends MockTestBase {
     elems345.addAll(elems5);
 
     checking(new Expectations() {{
-      one(driver).findElementsByName("cheese"); will(returnValue(elems));
+      one(driver).findElementsByName("cheese");
+      will(returnValue(elems));
     }});
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
@@ -246,9 +255,12 @@ public class ByChainedTest extends MockTestBase {
     elems345.addAll(elems5);
 
     checking(new Expectations() {{
-      one(driver).findElementsByName("cheese"); will(returnValue(elems12));
-      one(elem1).findElements(By.name("photo")); will(returnValue(elems));
-      one(elem2).findElements(By.name("photo")); will(returnValue(elems5));
+      one(driver).findElementsByName("cheese");
+      will(returnValue(elems12));
+      one(elem1).findElements(By.name("photo"));
+      will(returnValue(elems));
+      one(elem2).findElements(By.name("photo"));
+      will(returnValue(elems5));
     }});
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
@@ -278,9 +290,12 @@ public class ByChainedTest extends MockTestBase {
     elems345.addAll(elems5);
 
     checking(new Expectations() {{
-      one(driver).findElementsByName("cheese"); will(returnValue(elems12));
-      one(elem1).findElements(By.name("photo")); will(returnValue(elems));
-      one(elem2).findElements(By.name("photo")); will(returnValue(elems5));
+      one(driver).findElementsByName("cheese");
+      will(returnValue(elems12));
+      one(elem1).findElements(By.name("photo"));
+      will(returnValue(elems));
+      one(elem2).findElements(By.name("photo"));
+      will(returnValue(elems5));
     }});
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
@@ -290,7 +305,7 @@ public class ByChainedTest extends MockTestBase {
   @Test
   public void testEquals() {
     assertThat(new ByChained(By.id("cheese"), By.name("photo")),
-               equalTo(new ByChained(By.id("cheese"), By.name("photo"))));
+        equalTo(new ByChained(By.id("cheese"), By.name("photo"))));
   }
 
   private interface AllDriver extends FindsById, FindsByLinkText, FindsByName, FindsByXPath, SearchContext {

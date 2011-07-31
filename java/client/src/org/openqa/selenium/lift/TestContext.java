@@ -24,8 +24,8 @@ import org.openqa.selenium.lift.find.Finder;
 
 /**
  * Interface for objects that provide a context (maintaining any state) for web tests.
- * @author rchatley (Robert Chatley)
  *
+ * @author rchatley (Robert Chatley)
  */
 public interface TestContext {
 
@@ -34,7 +34,7 @@ public interface TestContext {
   void assertPresenceOf(Finder<WebElement, WebDriver> finder);
 
   void assertPresenceOf(Matcher<Integer> cardinalityConstraint,
-      Finder<WebElement, WebDriver> finder);
+                        Finder<WebElement, WebDriver> finder);
 
   void type(String input, Finder<WebElement, WebDriver> finder);
 

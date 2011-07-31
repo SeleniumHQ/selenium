@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import java.lang.reflect.Field;
-
 import org.junit.Test;
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import java.lang.reflect.Field;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -55,32 +55,32 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
   public void decoratesWebElement() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
-                                  getClass().getDeclaredField("element1")),
-               is(notNullValue()));
+        getClass().getDeclaredField("element1")),
+        is(notNullValue()));
     assertThat(decorator.decorate(getClass().getClassLoader(),
-                                  getClass().getDeclaredField("element1")),
-               is(notNullValue()));
+        getClass().getDeclaredField("element1")),
+        is(notNullValue()));
   }
 
   @Test
   public void doesNotDecorateNonWebElement() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
-                                  getClass().getDeclaredField("num")),
-               is(nullValue()));
+        getClass().getDeclaredField("num")),
+        is(nullValue()));
   }
 
   @Test
   public void doesNotDecorateNullLocator() throws Exception {
     FieldDecorator decorator = createDecoratorWithNullLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
-                                  getClass().getDeclaredField("element1")),
-               is(nullValue()));
+        getClass().getDeclaredField("element1")),
+        is(nullValue()));
     assertThat(decorator.decorate(getClass().getClassLoader(),
-                                  getClass().getDeclaredField("element1")),
-               is(nullValue()));
+        getClass().getDeclaredField("element1")),
+        is(nullValue()));
     assertThat(decorator.decorate(getClass().getClassLoader(),
-                                  getClass().getDeclaredField("num")),
-               is(nullValue()));
+        getClass().getDeclaredField("num")),
+        is(nullValue()));
   }
 }

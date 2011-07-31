@@ -52,7 +52,7 @@ public class SeleneseTestBase {
     /** Calls this.setUp(null)
 	 * @see #setUp(String)
 	 */
-    public void setUp() throws Exception {
+    public void setUp() {
         this.setUp(null);
     }
     
@@ -64,7 +64,7 @@ public class SeleneseTestBase {
      * @throws Exception
      * 
      */
-    public void setUp(String url) throws Exception {
+    public void setUp(String url) {
         setUp(url, runtimeBrowserString());
     }
 
@@ -94,9 +94,8 @@ public class SeleneseTestBase {
      * @see #setUp(String, String, int)
      * @param url the baseUrl for your tests
      * @param browserString the browser to use, e.g. *firefox
-     * @throws Exception
      */
-    public void setUp(String url, String browserString) throws Exception {
+    public void setUp(String url, String browserString) {
         setUp(url, browserString, getDefaultPort());
     }
     

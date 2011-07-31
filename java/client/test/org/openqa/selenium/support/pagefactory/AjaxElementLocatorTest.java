@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import java.lang.reflect.Field;
-
 import org.jmock.Expectations;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -29,6 +27,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.FakeClock;
+
+import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -46,15 +46,17 @@ public class AjaxElementLocatorTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
     final WebElement element = mock(WebElement.class);
-    
+
     checking(new Expectations() {{
-      exactly(1).of(driver).findElement(by); will(throwException(new NoSuchElementException("bar")));
-      exactly(1).of(driver).findElement(by); will(returnValue(element));
+      exactly(1).of(driver).findElement(by);
+      will(throwException(new NoSuchElementException("bar")));
+      exactly(1).of(driver).findElement(by);
+      will(returnValue(element));
     }});
-    
+
     ElementLocator locator = newLocator(driver, f);
     WebElement returnedElement = locator.findElement();
-    
+
     assertEquals(element, returnedElement);
   }
 
@@ -63,13 +65,14 @@ public class AjaxElementLocatorTest extends MockTestBase {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
-    
+
     checking(new Expectations() {{
-      exactly(3).of(driver).findElement(by); will(throwException(new NoSuchElementException("bar")));
+      exactly(3).of(driver).findElement(by);
+      will(throwException(new NoSuchElementException("bar")));
     }});
-    
+
     ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 2);
-    
+
     try {
       locator.findElement();
       fail("Should not have located the element");
@@ -83,13 +86,14 @@ public class AjaxElementLocatorTest extends MockTestBase {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
-    
+
     checking(new Expectations() {{
-      exactly(2).of(driver).findElement(by); will(throwException(new NoSuchElementException("bar")));
+      exactly(2).of(driver).findElement(by);
+      will(throwException(new NoSuchElementException("bar")));
     }});
-    
+
     ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 0);
-    
+
     try {
       locator.findElement();
       fail("Should not have located the element");
@@ -97,8 +101,8 @@ public class AjaxElementLocatorTest extends MockTestBase {
       // This is expected
     }
   }
-  
-  private class MonkeyedAjaxElementLocator extends AjaxElementLocator {    
+
+  private class MonkeyedAjaxElementLocator extends AjaxElementLocator {
     public MonkeyedAjaxElementLocator(Clock clock, WebDriver driver, Field field, int timeOutInSeconds) {
       super(clock, driver, field, timeOutInSeconds);
     }
@@ -109,7 +113,7 @@ public class AjaxElementLocatorTest extends MockTestBase {
       return 0;
     }
   }
-  
+
   private static class Page {
     @SuppressWarnings("unused")
     private WebElement first;

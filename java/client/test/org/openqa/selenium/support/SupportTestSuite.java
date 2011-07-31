@@ -19,7 +19,6 @@ package org.openqa.selenium.support;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.firefox.FirefoxDriver;
 

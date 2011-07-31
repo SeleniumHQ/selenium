@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import java.lang.reflect.Field;
-import java.util.NoSuchElementException;
-
 import org.jmock.Expectations;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -30,6 +27,9 @@ import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
+
+import java.lang.reflect.Field;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -45,14 +45,15 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
     final WebElement element = mock(WebElement.class);
-    
+
     checking(new Expectations() {{
-      exactly(1).of(driver).findElement(by); will(returnValue(element));
+      exactly(1).of(driver).findElement(by);
+      will(returnValue(element));
     }});
-    
+
     ElementLocator locator = newLocator(driver, f);
     WebElement returnedElement = locator.findElement();
-    
+
     assertEquals(element, returnedElement);
   }
 
@@ -62,11 +63,12 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("cached");
     final WebElement element = mock(WebElement.class);
-    
+
     checking(new Expectations() {{
-      exactly(1).of(driver).findElement(by); will(returnValue(element));
+      exactly(1).of(driver).findElement(by);
+      will(returnValue(element));
     }});
-    
+
     ElementLocator locator = newLocator(driver, f);
     locator.findElement();
     locator.findElement();
@@ -78,11 +80,12 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
     final WebElement element = mock(WebElement.class);
-    
+
     checking(new Expectations() {{
-      exactly(2).of(driver).findElement(by); will(returnValue(element));
+      exactly(2).of(driver).findElement(by);
+      will(returnValue(element));
     }});
-    
+
     ElementLocator locator = newLocator(driver, f);
     locator.findElement();
     locator.findElement();
@@ -94,11 +97,12 @@ public class DefaultElementLocatorTest extends MockTestBase {
     final WebDriver driver = mock(WebDriver.class);
     final By by = By.id("foo");
     final WebElement element = mock(WebElement.class);
-    
+
     checking(new Expectations() {{
-      exactly(1).of(driver).findElement(by); will(returnValue(element));
+      exactly(1).of(driver).findElement(by);
+      will(returnValue(element));
     }});
-    
+
     ElementLocator locator = newLocator(driver, f);
     locator.findElement();
   }
@@ -108,13 +112,14 @@ public class DefaultElementLocatorTest extends MockTestBase {
     Field f = Page.class.getDeclaredField("byId");
     final WebDriver driver = mock(WebDriver.class);
     final By by = By.id("foo");
-    
+
     checking(new Expectations() {{
-      exactly(1).of(driver).findElement(by); will(throwException(new NoSuchElementException("Foo")));
+      exactly(1).of(driver).findElement(by);
+      will(throwException(new NoSuchElementException("Foo")));
     }});
-    
+
     ElementLocator locator = newLocator(driver, f);
-    
+
     try {
       locator.findElement();
       fail("Should have allowed the exception to bubble up");
@@ -122,15 +127,15 @@ public class DefaultElementLocatorTest extends MockTestBase {
       // This is expected
     }
   }
-  
+
   private static class Page {
     @SuppressWarnings("unused")
     private WebElement first;
-    
+
     @SuppressWarnings("unused")
     @CacheLookup
     private WebElement cached;
-    
+
     @SuppressWarnings("unused")
     @FindBy(how = How.ID, using = "foo")
     private WebElement byId;

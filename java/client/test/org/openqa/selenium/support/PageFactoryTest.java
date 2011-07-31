@@ -17,13 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.support;
 
-import java.lang.reflect.Field;
-
 import org.junit.Test;
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.FieldDecorator;
+
+import java.lang.reflect.Field;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

@@ -18,15 +18,15 @@ limitations under the License.
 // Generated source.
 package org.openqa.selenium.lift;
 
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.lift.find.Finder;
-import org.openqa.selenium.lift.find.BaseFinder;
 import org.hamcrest.Description;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.lift.find.BaseFinder;
+import org.openqa.selenium.lift.find.Finder;
 
-import java.util.Iterator;
-import java.util.Collections;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 
 
 public class Finders {
@@ -34,11 +34,11 @@ public class Finders {
   public static org.openqa.selenium.lift.find.HtmlTagFinder div() {
     return org.openqa.selenium.lift.find.DivFinder.div();
   }
-  
+
   public static org.openqa.selenium.lift.find.HtmlTagFinder div(String id) {
-	    return org.openqa.selenium.lift.find.DivFinder.div(id);
-	  }
-	 
+    return org.openqa.selenium.lift.find.DivFinder.div(id);
+  }
+
   public static org.openqa.selenium.lift.find.HtmlTagFinder link() {
     return org.openqa.selenium.lift.find.LinkFinder.link();
   }
@@ -58,9 +58,9 @@ public class Finders {
   public static org.openqa.selenium.lift.find.HtmlTagFinder title() {
     return org.openqa.selenium.lift.find.PageTitleFinder.title();
   }
-  
+
   public static org.openqa.selenium.lift.find.HtmlTagFinder title(String title) {
-	return org.openqa.selenium.lift.find.PageTitleFinder.title(title);
+    return org.openqa.selenium.lift.find.PageTitleFinder.title(title);
   }
 
   public static org.openqa.selenium.lift.find.HtmlTagFinder images() {
@@ -88,31 +88,31 @@ public class Finders {
   }
 
   public static org.openqa.selenium.lift.find.HtmlTagFinder imageButton() {
-	return org.openqa.selenium.lift.find.InputFinder.imageButton();
+    return org.openqa.selenium.lift.find.InputFinder.imageButton();
   }
-  
+
   public static org.openqa.selenium.lift.find.HtmlTagFinder imageButton(String label) {
-	return org.openqa.selenium.lift.find.InputFinder.imageButton(label);
+    return org.openqa.selenium.lift.find.InputFinder.imageButton(label);
   }
-  
+
   public static org.openqa.selenium.lift.find.HtmlTagFinder radioButton() {
     return org.openqa.selenium.lift.find.InputFinder.radioButton();
   }
-  
+
   public static org.openqa.selenium.lift.find.HtmlTagFinder radioButton(String id) {
     return org.openqa.selenium.lift.find.InputFinder.radioButton(id);
   }
-  
+
   public static org.openqa.selenium.lift.find.HtmlTagFinder textbox() {
-	return org.openqa.selenium.lift.find.InputFinder.textbox();
+    return org.openqa.selenium.lift.find.InputFinder.textbox();
   }
-  
+
   public static org.openqa.selenium.lift.find.HtmlTagFinder button() {
     return org.openqa.selenium.lift.find.InputFinder.submitButton();
   }
-  
+
   public static org.openqa.selenium.lift.find.HtmlTagFinder button(String label) {
-	 return org.openqa.selenium.lift.find.InputFinder.submitButton(label);
+    return org.openqa.selenium.lift.find.InputFinder.submitButton(label);
   }
 
   /**

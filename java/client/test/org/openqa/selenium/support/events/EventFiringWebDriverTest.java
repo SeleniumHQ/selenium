@@ -37,36 +37,54 @@ import static org.junit.Assert.fail;
  */
 public class EventFiringWebDriverTest extends MockTestBase {
 
-    @Test
-    public void navigationEvents() {
-        final WebDriver mockedDriver = mock(WebDriver.class);
-        final Navigation mockedNavigation = mock(Navigation.class);
-        final StringBuilder log = new StringBuilder();
+  @Test
+  public void navigationEvents() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final Navigation mockedNavigation = mock(Navigation.class);
+    final StringBuilder log = new StringBuilder();
 
-        checking(new Expectations() {{
-            one(mockedDriver).get("http://www.get.com");
-            exactly(3).of(mockedDriver).navigate(); will(returnValue(mockedNavigation));
-            one(mockedNavigation).to("http://www.navigate-to.com");
-            one(mockedNavigation).back();
-            one(mockedNavigation).forward();
-        }});
+    checking(new Expectations() {{
+      one(mockedDriver).get("http://www.get.com");
+      exactly(3).of(mockedDriver).navigate();
+      will(returnValue(mockedNavigation));
+      one(mockedNavigation).to("http://www.navigate-to.com");
+      one(mockedNavigation).back();
+      one(mockedNavigation).forward();
+    }});
 
-        EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-            public void beforeNavigateTo(String url, WebDriver driver) { log.append("beforeNavigateTo ").append(url).append("\n"); }
-            public void afterNavigateTo(String url, WebDriver driver) { log.append("afterNavigateTo ").append(url).append("\n"); }
-            public void beforeNavigateBack(WebDriver driver) { log.append("beforeNavigateBack\n"); }
-            public void afterNavigateBack(WebDriver driver) { log.append("afterNavigateBack\n"); }
-            public void beforeNavigateForward(WebDriver driver) { log.append("beforeNavigateForward\n"); }
-            public void afterNavigateForward(WebDriver driver) { log.append("afterNavigateForward\n"); }
-        });
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+      public void beforeNavigateTo(String url, WebDriver driver) {
+        log.append("beforeNavigateTo ").append(url).append("\n");
+      }
 
-        testedDriver.get("http://www.get.com");
-        testedDriver.navigate().to("http://www.navigate-to.com");
-        testedDriver.navigate().back();
-        testedDriver.navigate().forward();
+      public void afterNavigateTo(String url, WebDriver driver) {
+        log.append("afterNavigateTo ").append(url).append("\n");
+      }
 
-        assertEquals(
-            "beforeNavigateTo http://www.get.com\n" +
+      public void beforeNavigateBack(WebDriver driver) {
+        log.append("beforeNavigateBack\n");
+      }
+
+      public void afterNavigateBack(WebDriver driver) {
+        log.append("afterNavigateBack\n");
+      }
+
+      public void beforeNavigateForward(WebDriver driver) {
+        log.append("beforeNavigateForward\n");
+      }
+
+      public void afterNavigateForward(WebDriver driver) {
+        log.append("afterNavigateForward\n");
+      }
+    });
+
+    testedDriver.get("http://www.get.com");
+    testedDriver.navigate().to("http://www.navigate-to.com");
+    testedDriver.navigate().back();
+    testedDriver.navigate().forward();
+
+    assertEquals(
+        "beforeNavigateTo http://www.get.com\n" +
             "afterNavigateTo http://www.get.com\n" +
             "beforeNavigateTo http://www.navigate-to.com\n" +
             "afterNavigateTo http://www.navigate-to.com\n" +
@@ -74,91 +92,109 @@ public class EventFiringWebDriverTest extends MockTestBase {
             "afterNavigateBack\n" +
             "beforeNavigateForward\n" +
             "afterNavigateForward\n",
-            log.toString()
-        );
-    }
+        log.toString()
+    );
+  }
 
-    @Test
-    public void clickEvent() {
-        final WebDriver mockedDriver = mock(WebDriver.class);
-        final WebElement mockedElement = mock(WebElement.class);
-        final StringBuilder log = new StringBuilder();
+  @Test
+  public void clickEvent() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebElement mockedElement = mock(WebElement.class);
+    final StringBuilder log = new StringBuilder();
 
-        checking(new Expectations() {{
-            one(mockedDriver).findElement(By.name("foo")); will(returnValue(mockedElement));
-            one(mockedElement).click();
-        }});
+    checking(new Expectations() {{
+      one(mockedDriver).findElement(By.name("foo"));
+      will(returnValue(mockedElement));
+      one(mockedElement).click();
+    }});
 
-        EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-            public void beforeClickOn(WebElement element, WebDriver driver) { log.append("beforeClickOn\n"); }
-            public void afterClickOn(WebElement element, WebDriver driver) { log.append("afterClickOn\n"); }
-        });
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+      public void beforeClickOn(WebElement element, WebDriver driver) {
+        log.append("beforeClickOn\n");
+      }
 
-        testedDriver.findElement(By.name("foo")).click();
+      public void afterClickOn(WebElement element, WebDriver driver) {
+        log.append("afterClickOn\n");
+      }
+    });
 
-        assertEquals(
-            "beforeClickOn\n" +
+    testedDriver.findElement(By.name("foo")).click();
+
+    assertEquals(
+        "beforeClickOn\n" +
             "afterClickOn\n",
-            log.toString()
-        );
-    }
+        log.toString()
+    );
+  }
 
-    @Test
-    public void changeValueEvent() {
-        final WebDriver mockedDriver = mock(WebDriver.class);
-        final WebElement mockedElement = mock(WebElement.class);
-        final StringBuilder log = new StringBuilder();
+  @Test
+  public void changeValueEvent() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebElement mockedElement = mock(WebElement.class);
+    final StringBuilder log = new StringBuilder();
 
-        checking(new Expectations() {{
-            exactly(3).of(mockedDriver).findElement(By.name("foo")); will(returnValue(mockedElement));
-            one(mockedElement).clear();
-            one(mockedElement).sendKeys("some text");
-            one(mockedElement).click();
-        }});
+    checking(new Expectations() {{
+      exactly(3).of(mockedDriver).findElement(By.name("foo"));
+      will(returnValue(mockedElement));
+      one(mockedElement).clear();
+      one(mockedElement).sendKeys("some text");
+      one(mockedElement).click();
+    }});
 
-        EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-            public void beforeChangeValueOf(WebElement element, WebDriver driver) { log.append("beforeChangeValueOf\n"); }
-            public void afterChangeValueOf(WebElement element, WebDriver driver) { log.append("afterChangeValueOf\n"); }
-        });
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+      public void beforeChangeValueOf(WebElement element, WebDriver driver) {
+        log.append("beforeChangeValueOf\n");
+      }
 
-        testedDriver.findElement(By.name("foo")).clear();
-        testedDriver.findElement(By.name("foo")).sendKeys("some text");
-        testedDriver.findElement(By.name("foo")).click();
+      public void afterChangeValueOf(WebElement element, WebDriver driver) {
+        log.append("afterChangeValueOf\n");
+      }
+    });
 
-        assertEquals(
-            "beforeChangeValueOf\n" +
+    testedDriver.findElement(By.name("foo")).clear();
+    testedDriver.findElement(By.name("foo")).sendKeys("some text");
+    testedDriver.findElement(By.name("foo")).click();
+
+    assertEquals(
+        "beforeChangeValueOf\n" +
             "afterChangeValueOf\n" +
             "beforeChangeValueOf\n" +
             "afterChangeValueOf\n",
-            log.toString()
-        );
-    }
+        log.toString()
+    );
+  }
 
-    @Test
-    public void findByEvent() {
-        final WebDriver mockedDriver = mock(WebDriver.class);
-        final WebElement mockedElement = mock(WebElement.class);
-        final StringBuilder log = new StringBuilder();
+  @Test
+  public void findByEvent() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebElement mockedElement = mock(WebElement.class);
+    final StringBuilder log = new StringBuilder();
 
-        checking(new Expectations() {{
-            one(mockedDriver).findElement(By.id("foo")); will(returnValue(mockedElement));
-            one(mockedElement).findElement(By.linkText("bar"));
-            one(mockedElement).findElements(By.name("xyz"));
-            one(mockedDriver).findElements(By.xpath("//link[@type = 'text/css']"));
-        }});
+    checking(new Expectations() {{
+      one(mockedDriver).findElement(By.id("foo"));
+      will(returnValue(mockedElement));
+      one(mockedElement).findElement(By.linkText("bar"));
+      one(mockedElement).findElements(By.name("xyz"));
+      one(mockedDriver).findElements(By.xpath("//link[@type = 'text/css']"));
+    }});
 
-        EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-            public void beforeFindBy(By by, WebElement element, WebDriver driver) { log.append("beforeFindBy from ").append(element == null ? "WebDriver" : "WebElement").append(" ").append(by).append("\n"); }
-            public void afterFindBy(By by, WebElement element, WebDriver driver) { log.append("afterFindBy from ").append(element == null ? "WebDriver" : "WebElement").append(" ").append(by).append("\n"); }
-        });
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+      public void beforeFindBy(By by, WebElement element, WebDriver driver) {
+        log.append("beforeFindBy from ").append(element == null ? "WebDriver" : "WebElement").append(" ").append(by).append("\n");
+      }
 
-        WebElement element = testedDriver.findElement(By.id("foo"));
-        element.findElement(By.linkText("bar"));
-        element.findElements(By.name("xyz"));
-        testedDriver.findElements(By.xpath("//link[@type = 'text/css']"));
+      public void afterFindBy(By by, WebElement element, WebDriver driver) {
+        log.append("afterFindBy from ").append(element == null ? "WebDriver" : "WebElement").append(" ").append(by).append("\n");
+      }
+    });
 
-        assertEquals(
-            "beforeFindBy from WebDriver By.id: foo\n" +
+    WebElement element = testedDriver.findElement(By.id("foo"));
+    element.findElement(By.linkText("bar"));
+    element.findElements(By.name("xyz"));
+    testedDriver.findElements(By.xpath("//link[@type = 'text/css']"));
+
+    assertEquals(
+        "beforeFindBy from WebDriver By.id: foo\n" +
             "afterFindBy from WebDriver By.id: foo\n" +
             "beforeFindBy from WebElement By.linkText: bar\n" +
             "afterFindBy from WebElement By.linkText: bar\n" +
@@ -166,9 +202,9 @@ public class EventFiringWebDriverTest extends MockTestBase {
             "afterFindBy from WebElement By.name: xyz\n" +
             "beforeFindBy from WebDriver By.xpath: //link[@type = 'text/css']\n" +
             "afterFindBy from WebDriver By.xpath: //link[@type = 'text/css']\n",
-            log.toString()
-        );
-    }
+        log.toString()
+    );
+  }
 
   @Test
   public void shouldCallListenersWhenAnExceptionIsThrown() {
@@ -178,8 +214,9 @@ public class EventFiringWebDriverTest extends MockTestBase {
     final NoSuchElementException exception = new NoSuchElementException("argh");
 
     checking(new Expectations() {{
-        one(mockedDriver).findElement(By.id("foo")); will(throwException(exception));
-      }});
+      one(mockedDriver).findElement(By.id("foo"));
+      will(throwException(exception));
+    }});
 
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
@@ -204,13 +241,16 @@ public class EventFiringWebDriverTest extends MockTestBase {
     final WebElement stubbedElement = mock(WebElement.class);
 
     checking(new Expectations() {{
-        one(mockedDriver).findElement(By.id("foo")); will(returnValue(stubbedElement));
-        allowing(stubbedElement);
-        one(mockedDriver).executeScript("foo", stubbedElement); will(returnValue("foo"));
-      }});
+      one(mockedDriver).findElement(By.id("foo"));
+      will(returnValue(stubbedElement));
+      allowing(stubbedElement);
+      one(mockedDriver).executeScript("foo", stubbedElement);
+      will(returnValue("foo"));
+    }});
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
-    testedDriver.register(new AbstractWebDriverEventListener() {} );
+    testedDriver.register(new AbstractWebDriverEventListener() {
+    });
 
     WebElement element = testedDriver.findElement(By.id("foo"));
     try {
@@ -240,7 +280,8 @@ public class EventFiringWebDriverTest extends MockTestBase {
         // Do nothing
       }
 
-      public void fishy() {}
+      public void fishy() {
+      }
 
     }
 
@@ -257,7 +298,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
         assertEquals(stub, unwrapped);
       }
     }
-    
+
     driver.register(new MyListener());
 
     driver.get("http://example.org");
@@ -271,7 +312,9 @@ public class EventFiringWebDriverTest extends MockTestBase {
   }
 
 
-  private static interface ExececutingDriver extends WebDriver, JavascriptExecutor {}
+  private static interface ExececutingDriver extends WebDriver, JavascriptExecutor {
+  }
 
-  private static class ChildDriver extends StubDriver {}
+  private static class ChildDriver extends StubDriver {
+  }
 }

@@ -17,82 +17,82 @@ limitations under the License.
 
 package org.openqa.selenium.lift.find;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Base class for {@link Finder}s. These allow the creation of a specification
  * to be applied to objects of type T, to identify and return a Collection of
  * any contained objects of type S.
- *  
+ *
  * @author rchatley (Robert Chatley)
  */
-public abstract class BaseFinder<S,T> implements Finder<S, T> {
+public abstract class BaseFinder<S, T> implements Finder<S, T> {
 
-	protected List<Matcher<S>> matchers = new ArrayList<Matcher<S>>();
-	
-	public Collection<S> findFrom(T context) {
-		
-		Collection<S> found = extractFrom(context);		
-		
-		if (matchers.isEmpty()) {
-			return found;
-		} else {
-			return allMatching(matchers, found);
-		}
-	}
-	
-	public Finder<S, T> with(Matcher<S> matcher) {
-		this.matchers.add(matcher);
-		return this;
-	}
-	
-	public void describeTo(Description description) {
-		describeTargetTo(description);
-		for (Matcher<?> matcher : matchers) {
-			if (matcher != null) {
-				description.appendText(" with ");
-				matcher.describeTo(description);
-			}
-		}
-	}
-	
-	protected abstract Collection<S> extractFrom(T context);
-	
-	protected abstract void describeTargetTo(Description description);
+  protected List<Matcher<S>> matchers = new ArrayList<Matcher<S>>();
 
-	protected Collection<S> allMatching(List<Matcher<S>> matchers, Collection<S> items) {
-		Collection<S> temp = new ArrayList<S>();
-		for (S item : items) {
-			if (allOf(matchers).matches(item)) {
-				temp.add(item);
-			}
-		}
-		return temp;
-	}
+  public Collection<S> findFrom(T context) {
 
-	private Matcher<S> allOf(final List<Matcher<S>> matcherList) {
-		return new TypeSafeMatcher<S>() {
-			@Override
-			public boolean matchesSafely(S item) {
-				for (Matcher<S> matcher : matcherList) {
-					if (!matcher.matches(item)) {
-						return false;
-					}
-				}
-				return true;
-			}
+    Collection<S> found = extractFrom(context);
 
-			public void describeTo(Description description) {
-				for (Matcher<S> matcher : matcherList) {
-					matcher.describeTo(description);
-				}
-			}
-		};
-	}
+    if (matchers.isEmpty()) {
+      return found;
+    } else {
+      return allMatching(matchers, found);
+    }
+  }
+
+  public Finder<S, T> with(Matcher<S> matcher) {
+    this.matchers.add(matcher);
+    return this;
+  }
+
+  public void describeTo(Description description) {
+    describeTargetTo(description);
+    for (Matcher<?> matcher : matchers) {
+      if (matcher != null) {
+        description.appendText(" with ");
+        matcher.describeTo(description);
+      }
+    }
+  }
+
+  protected abstract Collection<S> extractFrom(T context);
+
+  protected abstract void describeTargetTo(Description description);
+
+  protected Collection<S> allMatching(List<Matcher<S>> matchers, Collection<S> items) {
+    Collection<S> temp = new ArrayList<S>();
+    for (S item : items) {
+      if (allOf(matchers).matches(item)) {
+        temp.add(item);
+      }
+    }
+    return temp;
+  }
+
+  private Matcher<S> allOf(final List<Matcher<S>> matcherList) {
+    return new TypeSafeMatcher<S>() {
+      @Override
+      public boolean matchesSafely(S item) {
+        for (Matcher<S> matcher : matcherList) {
+          if (!matcher.matches(item)) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      public void describeTo(Description description) {
+        for (Matcher<S> matcher : matcherList) {
+          matcher.describeTo(description);
+        }
+      }
+    };
+  }
 }

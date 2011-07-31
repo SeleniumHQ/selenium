@@ -60,8 +60,10 @@ public class WebDriverWaitTest extends MockTestBase {
 
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
     checking(new Expectations() {{
-      one(condition).apply(mockDriver); will(throwException(new NoSuchElementException("foo")));
-      one(condition).apply(mockDriver); will(returnValue(element));
+      one(condition).apply(mockDriver);
+      will(throwException(new NoSuchElementException("foo")));
+      one(condition).apply(mockDriver);
+      will(returnValue(element));
     }});
 
     TickingClock clock = new TickingClock(500);
@@ -75,8 +77,10 @@ public class WebDriverWaitTest extends MockTestBase {
 
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
     checking(new Expectations() {{
-      one(condition).apply(mockDriver); will(throwException(new NoSuchFrameException("foo")));
-      one(condition).apply(mockDriver); will(returnValue(true));
+      one(condition).apply(mockDriver);
+      will(throwException(new NoSuchFrameException("foo")));
+      one(condition).apply(mockDriver);
+      will(returnValue(true));
     }});
 
     TickingClock clock = new TickingClock(500);
@@ -90,8 +94,10 @@ public class WebDriverWaitTest extends MockTestBase {
 
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
     checking(new Expectations() {{
-      one(condition).apply(mockDriver); will(throwException(new NoSuchWindowException("foo")));
-      one(condition).apply(mockDriver); will(returnValue(true));
+      one(condition).apply(mockDriver);
+      will(throwException(new NoSuchWindowException("foo")));
+      one(condition).apply(mockDriver);
+      will(returnValue(true));
     }});
 
     TickingClock clock = new TickingClock(500);

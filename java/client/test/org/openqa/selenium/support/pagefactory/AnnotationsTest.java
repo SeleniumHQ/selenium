@@ -34,50 +34,50 @@ import static org.junit.Assert.fail;
 public class AnnotationsTest extends MockTestBase {
   public WebElement default_field;
 
-  @FindBy(how = How.NAME, using="cheese")
+  @FindBy(how = How.NAME, using = "cheese")
   public WebElement longFindBy_field;
 
   @FindBy(name = "cheese")
   public WebElement shortFindBy_field;
 
   @FindBys({@FindBy(how = How.NAME, using = "cheese"),
-            @FindBy(id = "fruit")})
+      @FindBy(id = "fruit")})
   public WebElement findBys_field;
 
-  @FindBy(how = How.NAME, using="cheese")
+  @FindBy(how = How.NAME, using = "cheese")
   @FindBys({@FindBy(how = How.NAME, using = "cheese"),
-            @FindBy(id = "fruit")})
+      @FindBy(id = "fruit")})
   public WebElement findByAndFindBys_field;
 
   @FindBy(id = "cheese", name = "fruit")
   public WebElement findByMultipleHows_field;
 
   @FindBys({@FindBy(id = "cheese", name = "fruit"),
-            @FindBy(id = "crackers")})
+      @FindBy(id = "crackers")})
   public WebElement findBysMultipleHows_field;
 
   @Test
   public void testDefault() throws Exception {
     assertThat(new Annotations(getClass().getField("default_field")).buildBy(),
-               equalTo((By) new ByIdOrName("default_field")));
+        equalTo((By) new ByIdOrName("default_field")));
   }
 
   @Test
   public void longFindBy() throws Exception {
     assertThat(new Annotations(getClass().getField("longFindBy_field")).buildBy(),
-               equalTo(By.name("cheese")));
+        equalTo(By.name("cheese")));
   }
 
   @Test
   public void shortFindBy() throws Exception {
     assertThat(new Annotations(getClass().getField("shortFindBy_field")).buildBy(),
-               equalTo(By.name("cheese")));
+        equalTo(By.name("cheese")));
   }
 
   @Test
   public void findBys() throws Exception {
     assertThat(new Annotations(getClass().getField("findBys_field")).buildBy(),
-               is(equalTo((By) new ByChained(By.name("cheese"), By.id("fruit")))));
+        is(equalTo((By) new ByChained(By.name("cheese"), By.id("fruit")))));
   }
 
   @Test
@@ -85,7 +85,7 @@ public class AnnotationsTest extends MockTestBase {
     try {
       new Annotations(getClass().getField("findByAndFindBys_field")).buildBy();
       fail("Expected field annotated with both @FindBy and @FindBys "
-           + "to throw exception");
+          + "to throw exception");
     } catch (IllegalArgumentException e) {
       // Expected exception
     }

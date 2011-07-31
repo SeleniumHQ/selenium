@@ -17,35 +17,35 @@ limitations under the License.
 
 package org.openqa.selenium.lift.find;
 
+import org.hamcrest.Factory;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.match.AttributeMatcher.attribute;
 
-import org.hamcrest.Factory;
-
 /**
  * {@link Finder} for HTML div tags.
- * @author rchatley (Robert Chatley)
  *
+ * @author rchatley (Robert Chatley)
  */
 public class DivFinder extends HtmlTagFinder {
 
-	@Override
-	protected String tagDescription() {
-		return "div";
-	}
+  @Override
+  protected String tagDescription() {
+    return "div";
+  }
 
-	@Override
-	protected String tagName() {
-		return "div";
-	}
+  @Override
+  protected String tagName() {
+    return "div";
+  }
 
-	@Factory
-	public static HtmlTagFinder div() {
-		return new DivFinder();
-	}
+  @Factory
+  public static HtmlTagFinder div() {
+    return new DivFinder();
+  }
 
-	public static HtmlTagFinder div(String id) {
-		return div().with(attribute("id", equalTo(id)));
-	}
-	
+  public static HtmlTagFinder div(String id) {
+    return div().with(attribute("id", equalTo(id)));
+  }
+
 }

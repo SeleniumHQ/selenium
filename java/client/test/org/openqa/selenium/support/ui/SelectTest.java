@@ -17,16 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.jmock.Expectations;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,7 +40,8 @@ public class SelectTest extends MockTestBase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      exactly(1).of(element).getTagName(); will(returnValue("a"));
+      exactly(1).of(element).getTagName();
+      will(returnValue("a"));
     }});
 
     try {
@@ -55,8 +56,10 @@ public class SelectTest extends MockTestBase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      exactly(1).of(element).getAttribute("multiple"); will(returnValue(value));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      exactly(1).of(element).getAttribute("multiple");
+      will(returnValue(value));
     }});
 
     return new Select(element);
@@ -87,9 +90,12 @@ public class SelectTest extends MockTestBase {
     final List<WebElement> options = Collections.emptyList();
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      exactly(1).of(element).findElements(By.tagName("option"));
+      will(returnValue(options));
     }});
 
     Select select = new Select(element);
@@ -106,11 +112,16 @@ public class SelectTest extends MockTestBase {
     final List<WebElement> options = Arrays.asList(optionBad, optionGood);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
-      exactly(1).of(optionBad).isSelected(); will(returnValue(false));
-      exactly(1).of(optionGood).isSelected(); will(returnValue(true));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      exactly(1).of(element).findElements(By.tagName("option"));
+      will(returnValue(options));
+      exactly(1).of(optionBad).isSelected();
+      will(returnValue(false));
+      exactly(1).of(optionGood).isSelected();
+      will(returnValue(true));
     }});
 
     Select select = new Select(element);
@@ -128,11 +139,16 @@ public class SelectTest extends MockTestBase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
-      exactly(1).of(firstOption).isSelected(); will(returnValue(true));
-      never(secondOption).isSelected(); will(returnValue(true));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      exactly(1).of(element).findElements(By.tagName("option"));
+      will(returnValue(options));
+      exactly(1).of(firstOption).isSelected();
+      will(returnValue(true));
+      never(secondOption).isSelected();
+      will(returnValue(true));
     }});
 
     Select select = new Select(element);
@@ -148,10 +164,14 @@ public class SelectTest extends MockTestBase {
     final List<WebElement> options = Arrays.asList(firstOption);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
-      exactly(1).of(firstOption).isSelected(); will(returnValue(false));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      exactly(1).of(element).findElements(By.tagName("option"));
+      will(returnValue(options));
+      exactly(1).of(firstOption).isSelected();
+      will(returnValue(false));
     }});
 
     Select select = new Select(element);
@@ -171,10 +191,14 @@ public class SelectTest extends MockTestBase {
     final List<WebElement> options = Arrays.asList(firstOption);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.xpath(".//option[. = \"fish\"]")); will(returnValue(options));
-      exactly(1).of(firstOption).isSelected(); will(returnValue(false));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      exactly(1).of(element).findElements(By.xpath(".//option[. = \"fish\"]"));
+      will(returnValue(options));
+      exactly(1).of(firstOption).isSelected();
+      will(returnValue(false));
       exactly(1).of(firstOption).click();
     }});
 
@@ -190,14 +214,21 @@ public class SelectTest extends MockTestBase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
-      exactly(1).of(firstOption).getAttribute("index"); will(returnValue("0"));
-      allowing(firstOption).isSelected(); will(returnValue(true));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      exactly(1).of(element).findElements(By.tagName("option"));
+      will(returnValue(options));
+      exactly(1).of(firstOption).getAttribute("index");
+      will(returnValue("0"));
+      allowing(firstOption).isSelected();
+      will(returnValue(true));
       never(firstOption).click();
-      exactly(1).of(secondOption).getAttribute("index"); will(returnValue("1"));
-      allowing(secondOption).isSelected(); will(returnValue(false));
+      exactly(1).of(secondOption).getAttribute("index");
+      will(returnValue("1"));
+      allowing(secondOption).isSelected();
+      will(returnValue(false));
       exactly(1).of(secondOption).click();
     }});
 
@@ -212,10 +243,14 @@ public class SelectTest extends MockTestBase {
     final List<WebElement> options = Arrays.asList(firstOption);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.xpath(".//option[@value = \"b\"]")); will(returnValue(options));
-      exactly(1).of(firstOption).isSelected(); will(returnValue(false));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      exactly(1).of(element).findElements(By.xpath(".//option[@value = \"b\"]"));
+      will(returnValue(options));
+      exactly(1).of(firstOption).isSelected();
+      will(returnValue(false));
       exactly(1).of(firstOption).click();
     }});
 
@@ -231,13 +266,19 @@ public class SelectTest extends MockTestBase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
-      exactly(1).of(firstOption).isSelected(); will(returnValue(true));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      exactly(1).of(element).findElements(By.tagName("option"));
+      will(returnValue(options));
+      exactly(1).of(firstOption).isSelected();
+      will(returnValue(true));
       exactly(1).of(firstOption).click();
-      exactly(1).of(secondOption).isSelected(); will(returnValue(false));
+      exactly(1).of(secondOption).isSelected();
+      will(returnValue(false));
       never(secondOption).click();
     }});
 
@@ -264,12 +305,17 @@ public class SelectTest extends MockTestBase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.xpath(".//option[. = \"b\"]")); will(returnValue(options));
-      exactly(1).of(firstOption).isSelected(); will(returnValue(true));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      exactly(1).of(element).findElements(By.xpath(".//option[. = \"b\"]"));
+      will(returnValue(options));
+      exactly(1).of(firstOption).isSelected();
+      will(returnValue(true));
       exactly(1).of(firstOption).click();
-      exactly(1).of(secondOption).isSelected(); will(returnValue(false));
+      exactly(1).of(secondOption).isSelected();
+      will(returnValue(false));
       never(secondOption).click();
     }});
 
@@ -285,13 +331,19 @@ public class SelectTest extends MockTestBase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
-      exactly(1).of(firstOption).getAttribute("index"); will(returnValue("2"));
-      exactly(1).of(firstOption).isSelected(); will(returnValue(true));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      exactly(1).of(element).findElements(By.tagName("option"));
+      will(returnValue(options));
+      exactly(1).of(firstOption).getAttribute("index");
+      will(returnValue("2"));
+      exactly(1).of(firstOption).isSelected();
+      will(returnValue(true));
       exactly(1).of(firstOption).click();
-      exactly(1).of(secondOption).getAttribute("index"); will(returnValue("1"));
+      exactly(1).of(secondOption).getAttribute("index");
+      will(returnValue("1"));
       never(secondOption).click();
     }});
 
@@ -307,12 +359,17 @@ public class SelectTest extends MockTestBase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.xpath(".//option[@value = \"b\"]")); will(returnValue(options));
-      exactly(1).of(firstOption).isSelected(); will(returnValue(true));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+      exactly(1).of(element).findElements(By.xpath(".//option[@value = \"b\"]"));
+      will(returnValue(options));
+      exactly(1).of(firstOption).isSelected();
+      will(returnValue(true));
       exactly(1).of(firstOption).click();
-      exactly(1).of(secondOption).isSelected(); will(returnValue(false));
+      exactly(1).of(secondOption).isSelected();
+      will(returnValue(false));
       never(secondOption).click();
     }});
 
@@ -325,10 +382,12 @@ public class SelectTest extends MockTestBase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
     }});
-    
+
     Select select = new Select(element);
     String result = select.escapeQuotes("foo");
 
@@ -340,8 +399,10 @@ public class SelectTest extends MockTestBase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
     }});
 
     Select select = new Select(element);
@@ -355,8 +416,10 @@ public class SelectTest extends MockTestBase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
     }});
 
     Select select = new Select(element);
@@ -370,8 +433,10 @@ public class SelectTest extends MockTestBase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
     }});
 
     Select select = new Select(element);
@@ -379,7 +444,7 @@ public class SelectTest extends MockTestBase {
 
     assertEquals("concat(\"f\", '\"', \"o'o\")", result);
   }
-  
+
   /**
    * Tests that escapeQuotes returns concatenated strings when the given
    * string contains a tick and and ends with a quote.
@@ -389,8 +454,10 @@ public class SelectTest extends MockTestBase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
     }});
 
     Select select = new Select(element);
@@ -407,12 +474,18 @@ public class SelectTest extends MockTestBase {
     final By xpath2 = By.xpath(".//option[contains(., \"foo\")]");
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("false"));
-      one(element).findElements(xpath1); will(returnValue(Collections.EMPTY_LIST));
-      one(element).findElements(xpath2); will(returnValue(Collections.singletonList(firstOption)));
-      one(firstOption).getText(); will(returnValue("foo bar"));
-      one(firstOption).isSelected(); will(returnValue(false));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("false"));
+      one(element).findElements(xpath1);
+      will(returnValue(Collections.EMPTY_LIST));
+      one(element).findElements(xpath2);
+      will(returnValue(Collections.singletonList(firstOption)));
+      one(firstOption).getText();
+      will(returnValue("foo bar"));
+      one(firstOption).isSelected();
+      will(returnValue(false));
       one(firstOption).click();
     }});
 
@@ -428,17 +501,25 @@ public class SelectTest extends MockTestBase {
     final WebElement element4 = mock(WebElement.class, "true2");
 
     checking(new Expectations() {{
-      allowing(element1).getTagName(); will(returnValue("select"));
-      allowing(element1).getAttribute("multiple"); will(returnValue("false"));
+      allowing(element1).getTagName();
+      will(returnValue("select"));
+      allowing(element1).getAttribute("multiple");
+      will(returnValue("false"));
 
-      allowing(element2).getTagName(); will(returnValue("select"));
-      allowing(element2).getAttribute("multiple"); will(returnValue(null));
+      allowing(element2).getTagName();
+      will(returnValue("select"));
+      allowing(element2).getAttribute("multiple");
+      will(returnValue(null));
 
-      allowing(element3).getTagName(); will(returnValue("select"));
-      allowing(element3).getAttribute("multiple"); will(returnValue("true"));
+      allowing(element3).getTagName();
+      will(returnValue("select"));
+      allowing(element3).getAttribute("multiple");
+      will(returnValue("true"));
 
-      allowing(element4).getTagName(); will(returnValue("select"));
-      allowing(element4).getAttribute("multiple"); will(returnValue("multiple"));
+      allowing(element4).getTagName();
+      will(returnValue("select"));
+      allowing(element4).getAttribute("multiple");
+      will(returnValue("multiple"));
     }});
 
     Select select1 = new Select(element1);
@@ -459,9 +540,12 @@ public class SelectTest extends MockTestBase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getTagName(); will(returnValue("select"));
-      allowing(element).getAttribute("multiple"); will(returnValue("false"));
-      allowing(element).findElements(with(Expectations.<By>anything())); will(returnValue(Collections.<Object>emptyList()));
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("false"));
+      allowing(element).findElements(with(Expectations.<By>anything()));
+      will(returnValue(Collections.<Object>emptyList()));
     }});
 
     Select select = new Select(element);
@@ -469,16 +553,19 @@ public class SelectTest extends MockTestBase {
     try {
       select.selectByIndex(12);
       fail("Was not meant to pass");
-    } catch (NoSuchElementException ignored) {}
+    } catch (NoSuchElementException ignored) {
+    }
 
     try {
       select.selectByValue("not there");
       fail("Was not meant to pass");
-    } catch (NoSuchElementException ignored) {}
+    } catch (NoSuchElementException ignored) {
+    }
 
     try {
       select.selectByVisibleText("also not there");
       fail("Was not meant to pass");
-    } catch (NoSuchElementException ignored) {}
+    } catch (NoSuchElementException ignored) {
+    }
   }
 }

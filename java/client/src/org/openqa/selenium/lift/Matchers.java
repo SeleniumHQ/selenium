@@ -36,13 +36,13 @@ public class Matchers {
   public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> text(org.hamcrest.Matcher<java.lang.String> textMatcher) {
     return org.openqa.selenium.lift.match.TextMatcher.text(textMatcher);
   }
-  
-  public static  org.hamcrest.Matcher<org.openqa.selenium.WebElement> selection() {
-	return org.openqa.selenium.lift.match.SelectionMatcher.selection();
+
+  public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> selection() {
+    return org.openqa.selenium.lift.match.SelectionMatcher.selection();
   }
-  
-  public static  org.hamcrest.Matcher<org.openqa.selenium.WebElement> value(Object value) {
-	return org.openqa.selenium.lift.match.ValueMatcher.value(value);
+
+  public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> value(Object value) {
+    return org.openqa.selenium.lift.match.ValueMatcher.value(value);
   }
 
 }

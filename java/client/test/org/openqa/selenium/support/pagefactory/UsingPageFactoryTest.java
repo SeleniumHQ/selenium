@@ -43,7 +43,7 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
 
     assertEquals("form", tagName.toLowerCase());
   }
-  
+
   public static class Page {
     @FindBy(name = "someForm")
     WebElement formElement;
