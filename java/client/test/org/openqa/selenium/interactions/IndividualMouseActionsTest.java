@@ -18,7 +18,9 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.internal.Locatable;
@@ -28,11 +30,12 @@ import org.openqa.selenium.interactions.internal.Coordinates;
  * Unit test for all simple keyboard actions.
  *
  */
-public class IndividualMouseActionsTest extends MockObjectTestCase {
+public class IndividualMouseActionsTest extends MockTestBase {
   private Mouse dummyMouse;
   private Locatable locatableElement;
   private Coordinates dummyCoordinates;
 
+  @Before
   public void setUp() {
     dummyMouse = mock(Mouse.class);
     dummyCoordinates = mock(Coordinates.class);
@@ -45,7 +48,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     };
   }
 
-  public void testMouseClickAndHoldAction() {
+  @Test
+  public void mouseClickAndHoldAction() {
     checking(new Expectations() {{
       one(dummyMouse).mouseMove(dummyCoordinates);
       one(dummyMouse).mouseDown(dummyCoordinates);
@@ -55,7 +59,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     action.perform();
   }
 
-  public void testMouseClickAndHoldActionOnCurrentLocation() {
+  @Test
+  public void mouseClickAndHoldActionOnCurrentLocation() {
     checking(new Expectations() {{
       one(dummyMouse).mouseDown(null);
     }});
@@ -64,8 +69,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     action.perform();
   }
 
-
-  public void testMouseReleaseAction() {
+  @Test
+  public void mouseReleaseAction() {
     checking(new Expectations() {{
       one(dummyMouse).mouseMove(dummyCoordinates);
       one(dummyMouse).mouseUp(dummyCoordinates);
@@ -75,7 +80,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     action.perform();
   }
 
-  public void testMouseReleaseActionOnCurrentLocation() {
+  @Test
+  public void mouseReleaseActionOnCurrentLocation() {
     checking(new Expectations() {{
       one(dummyMouse).mouseUp(null);
     }});
@@ -84,8 +90,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     action.perform();
   }
 
-
-  public void testMouseClickAction() {
+  @Test
+  public void mouseClickAction() {
     checking(new Expectations() {{
       one(dummyMouse).mouseMove(dummyCoordinates);
       one(dummyMouse).click(dummyCoordinates);
@@ -95,7 +101,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     action.perform();
   }
 
-  public void testMouseClickActionOnCurrentLocation() {
+  @Test
+  public void mouseClickActionOnCurrentLocation() {
     checking(new Expectations() {{
       one(dummyMouse).click(null);
     }});
@@ -104,7 +111,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     action.perform();
   }
 
-  public void testMouseDoubleClickAction() {
+  @Test
+  public void mouseDoubleClickAction() {
     checking(new Expectations() {{
       one(dummyMouse).mouseMove(dummyCoordinates);
       one(dummyMouse).doubleClick(dummyCoordinates);
@@ -114,7 +122,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     action.perform();
   }
 
-  public void testMouseDoubleClickActionOnCurrentLocation() {
+  @Test
+  public void mouseDoubleClickActionOnCurrentLocation() {
     checking(new Expectations() {{
       one(dummyMouse).doubleClick(null);
     }});
@@ -123,8 +132,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     action.perform();
   }
 
-
-  public void testMouseMoveAction() {
+  @Test
+  public void mouseMoveAction() {
     checking(new Expectations() {{
       one(dummyMouse).mouseMove(dummyCoordinates);
     }});
@@ -133,7 +142,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     action.perform();
   }
 
-  public void testMouseMoveActionToCoordinatesInElement() {
+  @Test
+  public void mouseMoveActionToCoordinatesInElement() {
     checking(new Expectations() {{
       one(dummyMouse).mouseMove(dummyCoordinates, 20, 20);
     }});
@@ -142,7 +152,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     action.perform();
   }
 
-  public void testMouseContextClickAction() {
+  @Test
+  public void mouseContextClickAction() {
     checking(new Expectations() {{
       one(dummyMouse).mouseMove(dummyCoordinates);      
       one(dummyMouse).contextClick(dummyCoordinates);
@@ -152,7 +163,8 @@ public class IndividualMouseActionsTest extends MockObjectTestCase {
     action.perform();
   }
 
-  public void testMouseContextClickActionOnCurrentLocation() {
+  @Test
+  public void mouseContextClickActionOnCurrentLocation() {
     checking(new Expectations() {{
       one(dummyMouse).contextClick(null);
     }});

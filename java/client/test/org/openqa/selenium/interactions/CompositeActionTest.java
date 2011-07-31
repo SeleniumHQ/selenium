@@ -18,14 +18,18 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Test;
+import org.openqa.selenium.MockTestBase;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the CompositeAction class
  *
  */
-public class CompositeActionTest extends MockObjectTestCase {
-  public void testAddingActions() {
+public class CompositeActionTest extends MockTestBase {
+  @Test
+  public void addingActions() {
     CompositeAction sequence = new CompositeAction();
     final Action dummyAction1 = mock(Action.class);
     final Action dummyAction2 = mock(Action.class, "dummy2");
@@ -38,7 +42,8 @@ public class CompositeActionTest extends MockObjectTestCase {
     assertEquals(3, sequence.getNumberOfActions());
   }
 
-  public void testInvokingActions() {
+  @Test
+  public void invokingActions() {
     CompositeAction sequence = new CompositeAction();
     final Action dummyAction1 = mock(Action.class);
     final Action dummyAction2 = mock(Action.class, "dummy2");

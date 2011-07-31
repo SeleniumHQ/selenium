@@ -55,6 +55,7 @@ java_library(name = "mock",
 
 java_library(name = "tests",
   srcs = [
+    "SmallTests.java",
     "*Test.java",
     "browserlaunchers/**/*Test.java",
     "html5/*Test.java",
@@ -66,6 +67,7 @@ java_library(name = "tests",
   ],
   deps = [
     ":base",
+    ":mock",
     "//java/client/src/org/openqa/selenium/remote:common",
     "//java/client/src/org/openqa/selenium/interactions",
     "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
@@ -75,6 +77,14 @@ java_library(name = "tests",
     "//third_party/java/easymock",
     "//third_party/java/jmock",
     "//third_party/java/junit",
+  ])
+
+java_test(name = "SmallTests",
+  srcs = [
+    "SmallTests.java"
+  ],
+  deps = [
+    ":tests",
   ])
 
 java_test(name = "single",

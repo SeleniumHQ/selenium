@@ -1,5 +1,6 @@
 package org.openqa.selenium;
 
+import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
@@ -26,7 +27,7 @@ public abstract class MockTestBase {
     return context.mock(typeToMock, name);
   }
 
-  public void checking(org.jmock.internal.ExpectationBuilder expectations) {
+  public void checking(Expectations expectations) {
     context.checking(expectations);
   }
 

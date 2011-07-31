@@ -18,13 +18,14 @@ limitations under the License.
 package org.openqa.selenium.v1;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Test;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
 
-public class FastWebDriverBackedSeleniumTest extends MockObjectTestCase {
-
-  public void testOpenPrefixARelativeURLWithTheBaseURL() {
+public class FastWebDriverBackedSeleniumTest extends MockTestBase {
+  @Test
+  public void openPrefixARelativeURLWithTheBaseURL() {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver;
 
@@ -37,7 +38,8 @@ public class FastWebDriverBackedSeleniumTest extends MockObjectTestCase {
     selenium.open("a/relative/path");
   }
 
-  public void testOpenPrefixARelativeURLWithTheBaseURLEvenWhenItStartsWithASlash() {
+  @Test
+  public void openPrefixARelativeURLWithTheBaseURLEvenWhenItStartsWithASlash() {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver;
 
@@ -50,7 +52,8 @@ public class FastWebDriverBackedSeleniumTest extends MockObjectTestCase {
     selenium.open("/relative/path/starting_with_a_slash");
   }
 
-  public void testOpenDoesNotPrefixAURLIncludingHttpProtocol() {
+  @Test
+  public void openDoesNotPrefixAURLIncludingHttpProtocol() {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver;
 
@@ -63,7 +66,8 @@ public class FastWebDriverBackedSeleniumTest extends MockObjectTestCase {
     selenium.open("http://a.url/with/protocol.info");
   }
 
-  public void testOpenDoesNotPrefixAURLIncludingHttpsProtocol() {
+  @Test
+  public void openDoesNotPrefixAURLIncludingHttpsProtocol() {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver;
 

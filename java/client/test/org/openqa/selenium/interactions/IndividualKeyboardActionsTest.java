@@ -18,22 +18,27 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.Coordinates;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Unit test for all simple keyboard actions.
  *
  */
-public class IndividualKeyboardActionsTest extends MockObjectTestCase {
+public class IndividualKeyboardActionsTest extends MockTestBase {
   private Keyboard dummyKeyboard;
   private Mouse dummyMouse;
   private Coordinates dummyCoordinates;
   private Locatable locatableElement;
     final String keysToSend = "hello";
 
+  @Before
   public void setUp() {
     dummyKeyboard = mock(Keyboard.class);
     dummyMouse = mock(Mouse.class);
@@ -47,7 +52,8 @@ public class IndividualKeyboardActionsTest extends MockObjectTestCase {
     };
   }
 
-  public void testKeyDownActionWithoutProvidedElement() {
+  @Test
+  public void keyDownActionWithoutProvidedElement() {
     final Keys keyToPress = Keys.SHIFT;
 
     checking(new Expectations() {{
@@ -58,7 +64,8 @@ public class IndividualKeyboardActionsTest extends MockObjectTestCase {
     keyDown.perform();
   }
 
-  public void testKeyDownActionOnAnElement() {
+  @Test
+  public void keyDownActionOnAnElement() {
     final Keys keyToPress = Keys.SHIFT;
 
     checking(new Expectations() {{
@@ -72,8 +79,8 @@ public class IndividualKeyboardActionsTest extends MockObjectTestCase {
     keyDown.perform();
   }
 
-
-  public void testKeyUpActionWithoutProvidedElement() {
+  @Test
+  public void keyUpActionWithoutProvidedElement() {
     final Keys keyToRelease = Keys.CONTROL;
 
     checking(new Expectations() {{
@@ -84,7 +91,8 @@ public class IndividualKeyboardActionsTest extends MockObjectTestCase {
     keyUp.perform();
   }
 
-  public void testKeyUpOnAnAnElement() {
+  @Test
+  public void keyUpOnAnAnElement() {
     final Keys keyToRelease = Keys.SHIFT;
 
     checking(new Expectations() {{
@@ -97,8 +105,8 @@ public class IndividualKeyboardActionsTest extends MockObjectTestCase {
     upAction.perform();
   }
 
-
-  public void testSendKeysActionWithoutProvidedElement() {
+  @Test
+  public void sendKeysActionWithoutProvidedElement() {
     checking(new Expectations() {{
       one(dummyKeyboard).sendKeys(keysToSend);
     }});
@@ -107,7 +115,8 @@ public class IndividualKeyboardActionsTest extends MockObjectTestCase {
     sendKeys.perform();
   }
 
-  public void testSendKeysActionOnAnElement() {
+  @Test
+  public void sendKeysActionOnAnElement() {
     checking(new Expectations() {{
       one(dummyMouse).click(dummyCoordinates);
       one(dummyKeyboard).sendKeys(keysToSend);
@@ -118,7 +127,8 @@ public class IndividualKeyboardActionsTest extends MockObjectTestCase {
     sendKeys.perform();
   }
 
-  public void testKeyDownActionFailsOnNonModifier() {
+  @Test
+  public void keyDownActionFailsOnNonModifier() {
     final Keys keyToPress = Keys.BACK_SPACE;
 
     try {

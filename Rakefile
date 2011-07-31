@@ -180,7 +180,8 @@ end
 
 task :test_java => [
   "//java/client/test/org/openqa/selenium/atoms:test:run",
-  "//java/client/test/org/openqa/selenium/support:test:run",
+  "//java/client/test/org/openqa/selenium:SmallTests:run",
+  :test_support,
   :test_java_webdriver,
   :test_selenium,
   "test_grid"

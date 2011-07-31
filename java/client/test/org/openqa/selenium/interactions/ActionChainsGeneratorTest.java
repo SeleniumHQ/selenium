@@ -18,26 +18,30 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
-import org.openqa.selenium.HasInputDevices;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Tests the builder for user actions.
  */
-public class ActionChainsGeneratorTest extends MockObjectTestCase {
+public class ActionChainsGeneratorTest extends MockTestBase {
   private WebElement dummyLocatableElement;
   private Mouse dummyMouse;
   private Keyboard dummyKeyboard;
   private WebDriver driver;
   private Coordinates dummyCoordinates;
 
+  @Before
   public void setUp() {
     dummyMouse = mock(Mouse.class);
     dummyKeyboard = mock(Keyboard.class);
@@ -63,7 +67,8 @@ public class ActionChainsGeneratorTest extends MockObjectTestCase {
     };
   }
 
-  public void testCreatingAllKeyboardActions() {
+  @Test
+  public void creatingAllKeyboardActions() {
 
     checking(new Expectations() {{      
       one(dummyKeyboard).pressKey(Keys.SHIFT);
@@ -81,7 +86,8 @@ public class ActionChainsGeneratorTest extends MockObjectTestCase {
     assertEquals("Expected 3 keyboard actions", 3, returnedAction.getNumberOfActions());
   }
 
-  public void testProvidingAnElementToKeyboardActions() {
+  @Test
+  public void providingAnElementToKeyboardActions() {
     checking(new Expectations() {{
       one(dummyMouse).click(dummyCoordinates);
       one(dummyKeyboard).pressKey(Keys.SHIFT);
@@ -97,7 +103,8 @@ public class ActionChainsGeneratorTest extends MockObjectTestCase {
     assertEquals("Expected 1 keyboard action", 1, returnedAction.getNumberOfActions());
   }
 
-  public void testSupplyingIndividualElementsToKeyboardActions() {
+  @Test
+  public void supplyingIndividualElementsToKeyboardActions() {
     final Coordinates dummyCoordinates2 = mock(Coordinates.class, "dummy2");
     final Coordinates dummyCoordinates3 = mock(Coordinates.class, "dummy3");
 
@@ -136,8 +143,8 @@ public class ActionChainsGeneratorTest extends MockObjectTestCase {
     assertEquals("Expected 3 keyboard actions", 3, returnedAction.getNumberOfActions());
   }
 
-
-  public void testCreatingAllMouseActions() {
+  @Test
+  public void creatingAllMouseActions() {
     checking(new Expectations() {{
       one(dummyMouse).mouseMove(dummyCoordinates);
       one(dummyMouse).mouseDown(dummyCoordinates);
