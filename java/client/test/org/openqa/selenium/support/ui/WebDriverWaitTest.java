@@ -18,7 +18,9 @@ limitations under the License.
 package org.openqa.selenium.support.ui;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -26,11 +28,20 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class WebDriverWaitTest extends MockObjectTestCase {
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
-  private WebDriver mockDriver = mock(WebDriver.class);
+public class WebDriverWaitTest extends MockTestBase {
 
-  public void testShouldThrowAnExceptionIfTheTimerRunsOut() {
+  private WebDriver mockDriver;
+
+  @Before
+  public void createMocks() {
+    mockDriver = mock(WebDriver.class);
+  }
+
+  @Test
+  public void shouldThrowAnExceptionIfTheTimerRunsOut() {
     TickingClock clock = new TickingClock(200);
     WebDriverWait wait = new WebDriverWait(mockDriver, clock, clock, 1, 200);
 
@@ -43,7 +54,8 @@ public class WebDriverWaitTest extends MockObjectTestCase {
   }
 
   @SuppressWarnings("unchecked")
-  public void testShouldSilentlyCaptureNoSuchElementExceptions() {
+  @Test
+  public void shouldSilentlyCaptureNoSuchElementExceptions() {
     final WebElement element = mock(WebElement.class);
 
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
@@ -58,7 +70,8 @@ public class WebDriverWaitTest extends MockObjectTestCase {
   }
 
   @SuppressWarnings("unchecked")
-  public void testShouldSilentlyCaptureNoSuchFrameExceptions() {
+  @Test
+  public void shouldSilentlyCaptureNoSuchFrameExceptions() {
 
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
     checking(new Expectations() {{
@@ -72,7 +85,8 @@ public class WebDriverWaitTest extends MockObjectTestCase {
   }
 
   @SuppressWarnings("unchecked")
-  public void testShouldSilentlyCaptureNoSuchWindowExceptions() {
+  @Test
+  public void shouldSilentlyCaptureNoSuchWindowExceptions() {
 
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
     checking(new Expectations() {{

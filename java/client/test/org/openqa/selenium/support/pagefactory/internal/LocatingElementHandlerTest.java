@@ -20,8 +20,9 @@ package org.openqa.selenium.support.pagefactory.internal;
 import java.lang.reflect.Proxy;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -30,8 +31,9 @@ import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 
-public class LocatingElementHandlerTest extends MockObjectTestCase {
-    public void testShouldAlwaysLocateTheElementPerCall() throws NoSuchFieldException {
+public class LocatingElementHandlerTest extends MockTestBase {
+    @Test
+    public void shouldAlwaysLocateTheElementPerCall() throws NoSuchFieldException {
         final ElementLocator locator = mock(ElementLocator.class);
         final WebElement element = mock(WebElement.class);
 
@@ -48,7 +50,8 @@ public class LocatingElementHandlerTest extends MockObjectTestCase {
         proxy.submit();
     }
 
-    public void testShouldUseAnnotationsToLookUpByAlternativeMechanisms() {
+    @Test
+    public void shouldUseAnnotationsToLookUpByAlternativeMechanisms() {
         final WebDriver driver = mock(WebDriver.class);
         final WebElement element = mock(WebElement.class);
 
@@ -64,7 +67,8 @@ public class LocatingElementHandlerTest extends MockObjectTestCase {
         page.doQuery("cheese");
     }
 
-    public void testShouldNotRepeatedlyLookUpElementsMarkedAsNeverChanging() throws Exception {
+    @Test
+    public void shouldNotRepeatedlyLookUpElementsMarkedAsNeverChanging() throws Exception {
       final ElementLocator locator = mock(ElementLocator.class);
       final WebElement element = mock(WebElement.class);
 
@@ -81,7 +85,8 @@ public class LocatingElementHandlerTest extends MockObjectTestCase {
       proxy.sendKeys("Cheese");
     }
 
-  public void testFindByAnnotationShouldBeInherited() {
+  @Test
+  public void findByAnnotationShouldBeInherited() {
     ChildPage page = new ChildPage();
 
     final WebDriver driver = mock(WebDriver.class);

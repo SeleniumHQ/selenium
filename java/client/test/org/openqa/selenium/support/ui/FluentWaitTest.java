@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -24,20 +27,33 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
 
 import java.util.concurrent.TimeUnit;
 
-public class FluentWaitTest extends MockObjectTestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
+public class FluentWaitTest extends MockTestBase {
 
   private static final Object ARBITRARY_VALUE = new Object();
 
-  private WebDriver mockDriver = mock(WebDriver.class);
-  private ExpectedCondition<Object> mockCondition = mock(GenericCondition.class);
-  private Clock mockClock = mock(Clock.class);
-  private Sleeper mockSleeper = mock(Sleeper.class);
+  private WebDriver mockDriver;
+  private ExpectedCondition<Object> mockCondition;
+  private Clock mockClock;
+  private Sleeper mockSleeper;
 
-  public void testShouldWaitUntilReturnValueOfConditionIsNotNull() throws InterruptedException {
+  @Before
+  public void createMocks() {
+    mockDriver = mock(WebDriver.class);
+    mockCondition = mock(GenericCondition.class);
+    mockClock = mock(Clock.class);
+    mockSleeper = mock(Sleeper.class);
+  }
+
+  @Test
+  public void shouldWaitUntilReturnValueOfConditionIsNotNull() throws InterruptedException {
     checking(new Expectations() {{
       one(mockClock).laterBy(0L); will(returnValue(2L));
 
@@ -56,7 +72,8 @@ public class FluentWaitTest extends MockObjectTestCase {
     assertEquals(ARBITRARY_VALUE, wait.until(mockCondition));
   }
 
-  public void testShouldWaitUntilABooleanResultIsTrue() throws InterruptedException {
+  @Test
+  public void shouldWaitUntilABooleanResultIsTrue() throws InterruptedException {
     checking(new Expectations() {{
       one(mockClock).laterBy(0L); will(returnValue(2L));
 
@@ -79,7 +96,8 @@ public class FluentWaitTest extends MockObjectTestCase {
     assertEquals(true, wait.until(mockCondition));
   }
 
-  public void testChecksTimeoutAfterConditionSoZeroTimeoutWaitsCanSucceed() {
+  @Test
+  public void checksTimeoutAfterConditionSoZeroTimeoutWaitsCanSucceed() {
     checking(new Expectations() {{
       one(mockClock).laterBy(0L); will(returnValue(2L));
 
@@ -97,7 +115,8 @@ public class FluentWaitTest extends MockObjectTestCase {
     }
   }
 
-  public void testCanIgnoreMultipleExceptions() throws InterruptedException {
+  @Test
+  public void canIgnoreMultipleExceptions() throws InterruptedException {
     checking(new Expectations() {{
       one(mockClock).laterBy(0L); will(returnValue(2L));
 
@@ -120,7 +139,8 @@ public class FluentWaitTest extends MockObjectTestCase {
     assertEquals(ARBITRARY_VALUE, wait.until(mockCondition));
   }
 
-  public void testPropagatesUnIgnoredExceptions() {
+  @Test
+  public void propagatesUnIgnoredExceptions() {
     final NoSuchWindowException exception = new NoSuchWindowException("");
 
     checking(new Expectations() {{
@@ -141,7 +161,8 @@ public class FluentWaitTest extends MockObjectTestCase {
     }
   }
 
-  public void testTimeoutMessageIncludesLastIgnoredException() throws InterruptedException {
+  @Test
+  public void timeoutMessageIncludesLastIgnoredException() throws InterruptedException {
     final NoSuchWindowException exception = new NoSuchWindowException("");
 
     checking(new Expectations() {{

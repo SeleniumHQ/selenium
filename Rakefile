@@ -138,7 +138,8 @@ task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test:run" ]
 task :test_remote => [ "//java/server/test/org/openqa/selenium/remote/server:test:run" ]
 task :test_support => [
   "//java/client/test/org/openqa/selenium/lift:test:run",
-  "//java/client/test/org/openqa/selenium/support:test:run"
+  "//java/client/test/org/openqa/selenium/support:SmallTests:run",
+  "//java/client/test/org/openqa/selenium/support:LargeTests:run"
 ]
 task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]

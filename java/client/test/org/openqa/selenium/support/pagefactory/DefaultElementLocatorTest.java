@@ -21,8 +21,9 @@ import java.lang.reflect.Field;
 import java.util.NoSuchElementException;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
@@ -30,12 +31,16 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-public class DefaultElementLocatorTest extends MockObjectTestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+public class DefaultElementLocatorTest extends MockTestBase {
   protected ElementLocator newLocator(WebDriver driver, Field field) {
     return new DefaultElementLocator(driver, field);
   }
-  
-  public void testShouldDelegateToDriverInstanceToFindElement() throws Exception {
+
+  @Test
+  public void shouldDelegateToDriverInstanceToFindElement() throws Exception {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
@@ -50,8 +55,9 @@ public class DefaultElementLocatorTest extends MockObjectTestCase {
     
     assertEquals(element, returnedElement);
   }
-  
-  public void testCachedElementsShouldBeCached() throws Exception {
+
+  @Test
+  public void cachedElementsShouldBeCached() throws Exception {
     Field f = Page.class.getDeclaredField("cached");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("cached");
@@ -65,8 +71,9 @@ public class DefaultElementLocatorTest extends MockObjectTestCase {
     locator.findElement();
     locator.findElement();
   }
-  
-  public void testShouldNotCacheNormalElements() throws Exception {
+
+  @Test
+  public void shouldNotCacheNormalElements() throws Exception {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
@@ -80,8 +87,9 @@ public class DefaultElementLocatorTest extends MockObjectTestCase {
     locator.findElement();
     locator.findElement();
   }
-  
-  public void testShouldUseFindByAnnotationsWherePossible() throws Exception {
+
+  @Test
+  public void shouldUseFindByAnnotationsWherePossible() throws Exception {
     Field f = Page.class.getDeclaredField("byId");
     final WebDriver driver = mock(WebDriver.class);
     final By by = By.id("foo");
@@ -94,8 +102,9 @@ public class DefaultElementLocatorTest extends MockObjectTestCase {
     ElementLocator locator = newLocator(driver, f);
     locator.findElement();
   }
-  
-  public void testShouldNotMaskNoSuchElementExceptionIfThrown() throws Exception {
+
+  @Test
+  public void shouldNotMaskNoSuchElementExceptionIfThrown() throws Exception {
     Field f = Page.class.getDeclaredField("byId");
     final WebDriver driver = mock(WebDriver.class);
     final By by = By.id("foo");

@@ -20,7 +20,9 @@ package org.openqa.selenium.lift;
 import org.hamcrest.Matcher;
 import org.jmock.Expectations;
 import org.jmock.Sequence;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
@@ -34,16 +36,25 @@ import static org.hamcrest.Matchers.is;
  *
  */
 @SuppressWarnings("unchecked")
-public class HamcrestWebdriverTestCaseTest extends MockObjectTestCase {
+public class HamcrestWebdriverTestCaseTest extends MockTestBase {
 
 	final String text = "abcde";
 	final String url = "http://www.example.com";
-	Finder<WebElement, WebDriver> something = mock(Finder.class);
-	Matcher<Integer> someNumberOf = mock(Matcher.class);
+	Finder<WebElement, WebDriver> something;
+	Matcher<Integer> someNumberOf;
 
-	HamcrestWebDriverTestCase testcase = createTestCase();
-	
-	public void testDelegatesAllCallsToItsTestContext() {
+	HamcrestWebDriverTestCase testcase;
+
+  @Before
+  public void createMocks() {
+    testcase = createTestCase();
+
+    something = mock(Finder.class);
+	  someNumberOf = mock(Matcher.class);
+  }
+
+  @Test
+	public void delegatesAllCallsToItsTestContext() {
 		
 		final TestContext testContext = mock(TestContext.class);
 		testcase.setContext(testContext);
@@ -64,8 +75,9 @@ public class HamcrestWebdriverTestCaseTest extends MockObjectTestCase {
 		testcase.assertPresenceOf(something);
 		testcase.assertPresenceOf(someNumberOf, something);
 	}
-	
-	public void testProvidesSyntacticSugarMethodNamedInto() throws Exception {
+
+  @Test
+	public void providesSyntacticSugarMethodNamedInto() throws Exception {
 		
 		Finder<WebElement, WebDriver> result = testcase.into(something);
 		assertThat(result, is(something));

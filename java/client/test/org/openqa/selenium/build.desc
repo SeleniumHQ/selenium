@@ -17,6 +17,7 @@ java_library(name = "base",
     "EnvironmentStarter.java",
     "Ignore.java",
     "JavascriptEnabled.java",
+    "JUnit4TestBase.java",
     "Messages.java",
     "NeedsDriver.java",
     "NeedsFreshDriver.java",
@@ -41,6 +42,15 @@ java_library(name = "base",
     "//java/client/test/org/openqa/selenium/environment",
     "//third_party/java/junit",
     "//third_party/java/hamcrest",
+  ])
+
+java_library(name = "mock",
+  srcs = [
+    "MockTestBase.java",
+  ],
+  deps = [
+    "//third_party/java/jmock",
+    "//third_party/java/junit",
   ])
 
 java_library(name = "tests",

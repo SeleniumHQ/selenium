@@ -21,8 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
@@ -33,9 +34,11 @@ import org.openqa.selenium.internal.FindsByXPath;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.fail;
 
-public class ByChainedTest extends MockObjectTestCase {
-  public void testFindElementZeroBy() {
+public class ByChainedTest extends MockTestBase {
+  @Test
+  public void findElementZeroBy() {
     final AllDriver driver = mock(AllDriver.class);
 
     ByChained by = new ByChained();
@@ -47,7 +50,8 @@ public class ByChainedTest extends MockObjectTestCase {
     }
   }
 
-  public void testFindElementsZeroBy() {
+  @Test
+  public void findElementsZeroBy() {
     final AllDriver driver = mock(AllDriver.class);
 
     ByChained by = new ByChained();
@@ -55,7 +59,8 @@ public class ByChainedTest extends MockObjectTestCase {
                equalTo((List<WebElement>) new ArrayList<WebElement>()));
   }
 
-  public void testFindElementOneBy() {
+  @Test
+  public void findElementOneBy() {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
@@ -71,7 +76,8 @@ public class ByChainedTest extends MockObjectTestCase {
     assertThat(by.findElement(driver), equalTo(elem1));
   }
 
-  public void testFindElementsOneBy() {
+  @Test
+  public void findElementsOneBy() {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
@@ -87,7 +93,8 @@ public class ByChainedTest extends MockObjectTestCase {
     assertThat(by.findElements(driver), equalTo(elems12));
   }
 
-  public void testFindElementOneByEmpty() {
+  @Test
+  public void findElementOneByEmpty() {
     final AllDriver driver = mock(AllDriver.class);
 	final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
@@ -106,7 +113,8 @@ public class ByChainedTest extends MockObjectTestCase {
     }
   }
 
-  public void testFindElementsOneByEmpty() {
+  @Test
+  public void findElementsOneByEmpty() {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
@@ -120,7 +128,8 @@ public class ByChainedTest extends MockObjectTestCase {
     assertThat(by.findElements(driver), equalTo(elems));
   }
 
-  public void testFindElementTwoBy() {
+  @Test
+  public void findElementTwoBy() {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(AllElement.class, "webElement1");
     final WebElement elem2 = mock(AllElement.class, "webElement2");
@@ -149,7 +158,8 @@ public class ByChainedTest extends MockObjectTestCase {
     assertThat(by.findElement(driver), equalTo(elem3));
   }
 
-  public void testFindElementTwoByEmptyParent() {
+  @Test
+  public void findElementTwoByEmptyParent() {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(AllElement.class, "webElement2");
@@ -183,7 +193,8 @@ public class ByChainedTest extends MockObjectTestCase {
     }
   }
 
-  public void testFindElementsTwoByEmptyParent() {
+  @Test
+  public void findElementsTwoByEmptyParent() {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(AllElement.class, "webElement2");
@@ -212,7 +223,8 @@ public class ByChainedTest extends MockObjectTestCase {
     assertThat(by.findElements(driver), equalTo(elems));
   }
 
-  public void testFindElementTwoByEmptyChild() {
+  @Test
+  public void findElementTwoByEmptyChild() {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(AllElement.class, "webElement2");
@@ -243,7 +255,8 @@ public class ByChainedTest extends MockObjectTestCase {
     assertThat(by.findElement(driver), equalTo(elem5));
   }
 
-  public void testFindElementsTwoByEmptyChild() {
+  @Test
+  public void findElementsTwoByEmptyChild() {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(AllElement.class, "webElement2");
@@ -274,6 +287,7 @@ public class ByChainedTest extends MockObjectTestCase {
     assertThat(by.findElements(driver), equalTo(elems5));
   }
 
+  @Test
   public void testEquals() {
     assertThat(new ByChained(By.id("cheese"), By.name("photo")),
                equalTo(new ByChained(By.id("cheese"), By.name("photo"))));

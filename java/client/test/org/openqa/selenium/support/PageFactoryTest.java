@@ -19,7 +19,8 @@ package org.openqa.selenium.support;
 
 import java.lang.reflect.Field;
 
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Test;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.FieldDecorator;
@@ -29,12 +30,14 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.fail;
 
-public class PageFactoryTest extends MockObjectTestCase {
+public class PageFactoryTest extends MockTestBase {
 
   private WebDriver driver = null;
 
-  public void testShouldProxyElementsInAnInstantiatedPage() {
+  @Test
+  public void shouldProxyElementsInAnInstantiatedPage() {
     PublicPage page = new PublicPage();
 
     assertThat(page.q, is(nullValue()));
@@ -44,13 +47,15 @@ public class PageFactoryTest extends MockObjectTestCase {
     assertThat(page.q, is(notNullValue()));
   }
 
-  public void testShouldInsertProxiesForPublicWebElements() {
+  @Test
+  public void shouldInsertProxiesForPublicWebElements() {
     PublicPage page = PageFactory.initElements(driver, PublicPage.class);
 
     assertThat(page.q, is(notNullValue()));
   }
 
-  public void testShouldProxyElementsFromParentClassesToo() {
+  @Test
+  public void shouldProxyElementsFromParentClassesToo() {
     ChildPage page = new ChildPage();
 
     PageFactory.initElements(driver, page);
@@ -59,13 +64,15 @@ public class PageFactoryTest extends MockObjectTestCase {
     assertThat(page.submit, is(notNullValue()));
   }
 
-  public void testShouldProxyRenderedWebElementFields() {
+  @Test
+  public void shouldProxyRenderedWebElementFields() {
     PublicPage page = PageFactory.initElements(driver, PublicPage.class);
 
     assertThat(page.rendered, is(notNullValue()));
   }
 
-  public void testShouldProxyPrivateElements() {
+  @Test
+  public void shouldProxyPrivateElements() {
     PrivatePage page = new PrivatePage();
 
     PageFactory.initElements(driver, page);
@@ -73,7 +80,8 @@ public class PageFactoryTest extends MockObjectTestCase {
     assertThat(page.getField(), is(notNullValue()));
   }
 
-  public void testShouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
+  @Test
+  public void shouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
     driver = mock(WebDriver.class);
 
     ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
@@ -81,7 +89,8 @@ public class PageFactoryTest extends MockObjectTestCase {
     assertThat(driver, equalTo(page.driver));
   }
 
-  public void testShouldNotDecorateFieldsWhenTheFieldDecoratorReturnsNull() {
+  @Test
+  public void shouldNotDecorateFieldsWhenTheFieldDecoratorReturnsNull() {
     PublicPage page = new PublicPage();
     // Assign not-null values
     WebElement q = mock(WebElement.class);
@@ -96,7 +105,8 @@ public class PageFactoryTest extends MockObjectTestCase {
     assertThat(page.q, equalTo(q));
   }
 
-  public void testTriesToDecorateNonWebElements() {
+  @Test
+  public void triesToDecorateNonWebElements() {
     NonWebElementsPage page = new NonWebElementsPage();
     // Assign not-null values
 
@@ -109,7 +119,8 @@ public class PageFactoryTest extends MockObjectTestCase {
     assertThat(page.num, equalTo(new Integer(5)));
   }
 
-  public void testShouldComplainWhenMoreThanOneFindByAttributeIsSet() {
+  @Test
+  public void shouldComplainWhenMoreThanOneFindByAttributeIsSet() {
     GrottyPage page = new GrottyPage();
 
     try {
@@ -120,7 +131,8 @@ public class PageFactoryTest extends MockObjectTestCase {
     }
   }
 
-  public void testShouldComplainWhenMoreThanOneFindByShortFormAttributeIsSet() {
+  @Test
+  public void shouldComplainWhenMoreThanOneFindByShortFormAttributeIsSet() {
     GrottyPage2 page = new GrottyPage2();
 
     try {

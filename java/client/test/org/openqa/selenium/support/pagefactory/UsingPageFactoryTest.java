@@ -18,17 +18,21 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
+import org.openqa.selenium.JUnit4TestBase;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class UsingPageFactoryTest extends AbstractDriverTestCase {
+import static org.junit.Assert.assertEquals;
 
+public class UsingPageFactoryTest extends JUnit4TestBase {
+
+  @Test
   @JavascriptEnabled
-  public void testCanExecuteJsUsingDecoratedElements() {
+  public void canExecuteJsUsingDecoratedElements() {
     driver.get(pages.xhtmlTestPage);
 
     Page page = new Page();

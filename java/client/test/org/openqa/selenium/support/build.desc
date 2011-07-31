@@ -1,16 +1,34 @@
 
-java_test(name = "test",
+java_library(name = "tests",
   srcs = [
-    "PageFactoryTest.java",
-    "SupportTestSuite.java",
+    "*.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/support",
     "//java/client/test/org/openqa/selenium:base",
+    "//java/client/test/org/openqa/selenium:mock",
     "//java/client/test/org/openqa/selenium/lift:test",
     "//java/client/test/org/openqa/selenium/support/events:test",
     "//java/client/test/org/openqa/selenium/support/pagefactory:test",
     "//java/client/test/org/openqa/selenium/support/ui:test",
     "//third_party/java/jmock",
+  ])
+
+java_test(name = "SmallTests",
+  srcs = [
+    "SmallTests.java",
+  ],
+  deps = [
+    ":tests",
+    "//third_party/java/junit",
+  ])
+
+java_test(name = "LargeTests",
+  srcs = [
+    "LargeTests.java",
+  ],
+  deps = [
+    ":tests",
+    "//third_party/java/junit",
   ])

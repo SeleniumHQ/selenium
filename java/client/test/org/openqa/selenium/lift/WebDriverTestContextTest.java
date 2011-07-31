@@ -19,7 +19,9 @@ package org.openqa.selenium.lift;
 
 import org.hamcrest.Description;
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
@@ -31,6 +33,7 @@ import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 
 /**
@@ -39,21 +42,32 @@ import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
  * @author rchatley (Robert Chatley)
  *
  */
-public class WebDriverTestContextTest extends MockObjectTestCase {
+public class WebDriverTestContextTest extends MockTestBase {
 
-  WebDriver webdriver = mock(WebDriver.class);
-  TestContext context = new WebDriverTestContext(webdriver);
-  WebElement element = mock(WebElement.class);
-  Finder<WebElement, WebDriver> finder = mockFinder();
+  WebDriver webdriver;
+  TestContext context;
+  WebElement element;
+  Finder<WebElement, WebDriver> finder;
+  TickingClock clock;
   private static final int CLOCK_INCREMENT = 300;
-  TickingClock clock = new TickingClock(CLOCK_INCREMENT);
   final int TIMEOUT = CLOCK_INCREMENT * 3;
-  
-  public void testIsCreatedWithAWebDriverImplementation() throws Exception {
+
+  @Before
+  public void createMocks() {
+    webdriver = mock(WebDriver.class);
+    context = new WebDriverTestContext(webdriver);
+    element = mock(WebElement.class);
+    finder = mockFinder();
+    clock = new TickingClock(CLOCK_INCREMENT);
+  }
+
+  @Test
+  public void isCreatedWithAWebDriverImplementation() throws Exception {
     new WebDriverTestContext(webdriver);
   }
-  
-  public void testCanNavigateToAGivenUrl() throws Exception {
+
+  @Test
+  public void canNavigateToAGivenUrl() throws Exception {
 
     final String url = "http://www.example.com";
     
@@ -63,8 +77,9 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
     
     context.goTo(url);
   }
-  
-  public void testCanAssertPresenceOfWebElements() throws Exception {
+
+  @Test
+  public void canAssertPresenceOfWebElements() throws Exception {
     
     checking(new Expectations() {{ 
       one(finder).findFrom(webdriver); will(returnValue(oneElement()));
@@ -72,8 +87,9 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
     
     context.assertPresenceOf(finder);
   }
-  
-  public void testCanCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() throws Exception {
+
+  @Test
+  public void canCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() throws Exception {
     
     checking(new Expectations() {{ 
       allowing(finder).findFrom(webdriver); will(returnValue(oneElement()));
@@ -88,8 +104,9 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
       assertThat(error.getMessage(), containsString("a value greater than <1>"));
     }
   }
-  
-  public void testCanDirectTextInputToSpecificElements() throws Exception {
+
+  @Test
+  public void canDirectTextInputToSpecificElements() throws Exception {
      
     final String inputText = "test";
     
@@ -100,8 +117,9 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
     
     context.type(inputText, finder);
   }
-  
-  public void testCanTriggerClicksOnSpecificElements() throws Exception {
+
+  @Test
+  public void canTriggerClicksOnSpecificElements() throws Exception {
      
     checking(new Expectations() {{ 
       one(finder).findFrom(webdriver); will(returnValue(oneElement()));
@@ -110,8 +128,9 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
     
     context.clickOn(finder);
   }
-  
-  public void testThrowsAnExceptionIfTheFinderReturnsAmbiguousResults() throws Exception {
+
+  @Test
+  public void throwsAnExceptionIfTheFinderReturnsAmbiguousResults() throws Exception {
      
     checking(new Expectations() {{ 
       one(finder).findFrom(webdriver); will(returnValue(twoElements()));
@@ -125,8 +144,9 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
       assertThat(error.getMessage(), containsString("did not know what to click on"));
     }
   }
-  
-  public void testSupportsWaitingForElementToAppear() throws Exception {
+
+  @Test
+  public void supportsWaitingForElementToAppear() throws Exception {
     context = new WebDriverTestContext(webdriver, clock, clock);
 
     checking(new Expectations() {{ 
@@ -136,8 +156,9 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
     
     context.waitFor(finder, TIMEOUT);
   }
-  
-  public void testSupportsWaitingForElementToAppearWithTimeout() throws Exception {
+
+  @Test
+  public void supportsWaitingForElementToAppearWithTimeout() throws Exception {
     context = new WebDriverTestContext(webdriver, clock, clock);
     
     checking(new Expectations() {{ 
@@ -147,8 +168,9 @@ public class WebDriverTestContextTest extends MockObjectTestCase {
     
     context.waitFor(finder, TIMEOUT);
   }
-  
-  public void testFailsAssertionIfElementNotDisplayedBeforeTimeout() throws Exception {
+
+  @Test
+  public void failsAssertionIfElementNotDisplayedBeforeTimeout() throws Exception {
     context = new WebDriverTestContext(webdriver, clock, clock);
     
     checking(new Expectations() {{ 

@@ -20,8 +20,9 @@ package org.openqa.selenium.support.pagefactory;
 import java.lang.reflect.Field;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -29,14 +30,18 @@ import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.FakeClock;
 
-public class AjaxElementLocatorTest extends MockObjectTestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+public class AjaxElementLocatorTest extends MockTestBase {
   private FakeClock clock = new FakeClock();
 
   protected ElementLocator newLocator(WebDriver driver, Field field) {
     return new MonkeyedAjaxElementLocator(clock, driver, field, 10);
   }
-  
-  public void testShouldContinueAttemptingToFindElement() throws Exception {
+
+  @Test
+  public void shouldContinueAttemptingToFindElement() throws Exception {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
@@ -53,7 +58,8 @@ public class AjaxElementLocatorTest extends MockObjectTestCase {
     assertEquals(element, returnedElement);
   }
 
-  public void testShouldThrowNoSuchElementExceptionIfElementTakesTooLongToAppear() throws Exception {
+  @Test
+  public void shouldThrowNoSuchElementExceptionIfElementTakesTooLongToAppear() throws Exception {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
@@ -72,7 +78,8 @@ public class AjaxElementLocatorTest extends MockObjectTestCase {
     }
   }
 
-  public void testShouldAlwaysDoAtLeastOneAttemptAtFindingTheElement() throws Exception {
+  @Test
+  public void shouldAlwaysDoAtLeastOneAttemptAtFindingTheElement() throws Exception {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");

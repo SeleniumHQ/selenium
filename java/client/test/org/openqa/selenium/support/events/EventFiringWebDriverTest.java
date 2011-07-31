@@ -18,9 +18,10 @@ limitations under the License.
 package org.openqa.selenium.support.events;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit3.MockObjectTestCase;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
@@ -28,12 +29,16 @@ import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 /**
  * @author Michael Tamm
  */
-public class EventFiringWebDriverTest extends MockObjectTestCase {
+public class EventFiringWebDriverTest extends MockTestBase {
 
-    public void testNavigationEvents() {
+    @Test
+    public void navigationEvents() {
         final WebDriver mockedDriver = mock(WebDriver.class);
         final Navigation mockedNavigation = mock(Navigation.class);
         final StringBuilder log = new StringBuilder();
@@ -73,7 +78,8 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
         );
     }
 
-    public void testClickEvent() {
+    @Test
+    public void clickEvent() {
         final WebDriver mockedDriver = mock(WebDriver.class);
         final WebElement mockedElement = mock(WebElement.class);
         final StringBuilder log = new StringBuilder();
@@ -97,7 +103,8 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
         );
     }
 
-    public void testChangeValueEvent() {
+    @Test
+    public void changeValueEvent() {
         final WebDriver mockedDriver = mock(WebDriver.class);
         final WebElement mockedElement = mock(WebElement.class);
         final StringBuilder log = new StringBuilder();
@@ -127,7 +134,8 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
         );
     }
 
-    public void testFindByEvent() {
+    @Test
+    public void findByEvent() {
         final WebDriver mockedDriver = mock(WebDriver.class);
         final WebElement mockedElement = mock(WebElement.class);
         final StringBuilder log = new StringBuilder();
@@ -162,7 +170,8 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
         );
     }
 
-  public void testShouldCallListenersWhenAnExceptionIsThrown() {
+  @Test
+  public void shouldCallListenersWhenAnExceptionIsThrown() {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final StringBuilder log = new StringBuilder();
 
@@ -189,7 +198,8 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
     assertEquals(exception.getMessage(), log.toString());
   }
 
-  public void testShouldUnpackElementArgsWhenCallingScripts() {
+  @Test
+  public void shouldUnpackElementArgsWhenCallingScripts() {
     final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
     final WebElement stubbedElement = mock(WebElement.class);
 
@@ -211,7 +221,8 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
     }
   }
 
-  public void testShouldBeAbleToWrapSubclassesOfSomethingImplementingTheWebDriverInterface() {
+  @Test
+  public void shouldBeAbleToWrapSubclassesOfSomethingImplementingTheWebDriverInterface() {
     try {
       new EventFiringWebDriver(new ChildDriver());
       // We should get this far
@@ -221,7 +232,8 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
     }
   }
 
-  public void testShouldBeAbleToAccessWrappedInstanceFromEventCalls() {
+  @Test
+  public void shouldBeAbleToAccessWrappedInstanceFromEventCalls() {
     class MyStub extends StubDriver {
       @Override
       public void get(String url) {

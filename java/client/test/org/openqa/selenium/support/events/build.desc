@@ -4,5 +4,6 @@ java_library(name = "test",
   deps = [
     "//java/client/src/org/openqa/selenium/support/events",
     "//java/client/test/org/openqa/selenium:base",
+    "//java/client/test/org/openqa/selenium:mock",
     "//third_party/java/jmock",
   ])

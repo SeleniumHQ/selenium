@@ -382,6 +382,7 @@ module CrazyFunJava
           srcs = to_filelist(dir, src).each do |f|
             next if f.to_s =~ /SingleTestSuite\.java$/
             tests.push f if f.to_s =~ /TestSuite\.java$/
+            tests.push f if f.to_s =~ /Tests\.java$/
           end
         end
 

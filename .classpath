@@ -33,9 +33,7 @@
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-websocket-7.2.0.v20101020.jar"/>
 	<classpathentry kind="lib" path="third_party/java/testng/testng-6.0.1-nobsh-noguice.jar" sourcepath="third_party/java/testng/testng-6.0.1-nobsh-noguice-src.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-io-7.2.0.v20101020.jar"/>
-	<classpathentry kind="lib" path="third_party/java/jmock/jmock-2.4.0.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-servlets-7.2.0.v20101020.jar"/>
-	<classpathentry kind="lib" path="third_party/java/jmock/jmock-junit3-2.4.0.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-security-7.2.0.v20101020.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-util-7.2.0.v20101020.jar"/>
 	<classpathentry kind="lib" path="third_party/java/servlet-api/servlet-api-2.5-6.1.9.jar"/>
@@ -53,5 +51,8 @@
 	<classpathentry kind="lib" path="third_party/java/nekohtml/nekohtml-1.9.14.jar"/>
 	<classpathentry kind="lib" path="third_party/java/xml/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/opera-driver/webdriver-opera-v0.5.2.jar"/>
+	<classpathentry kind="lib" path="third_party/java/jmock/jmock-junit4-2.5.1.jar"/>
+	<classpathentry kind="lib" path="third_party/java/jmock/jmock-2.5.1.jar"/>
+	<classpathentry kind="lib" path="third_party/java/jmock/jmock-junit3-2.5.1.jar"/>
 	<classpathentry kind="output" path="out/production/selenium"/>
 </classpath>

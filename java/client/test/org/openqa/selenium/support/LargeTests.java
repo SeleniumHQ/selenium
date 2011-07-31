@@ -14,19 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+package org.openqa.selenium.support;
 
-package org.openqa.selenium.lift;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.openqa.selenium.support.pagefactory.UsingPageFactoryTest;
+import org.openqa.selenium.support.ui.SelectLargeTest;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-
-import org.openqa.selenium.TestSuiteBuilder;
-
-public class LiftTestSuite extends TestCase {
-  public static Test suite() throws Exception {
-    return new TestSuiteBuilder()
-        .withoutEnvironment()
-        .usingNoDriver()
-        .create();
-  }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    SelectLargeTest.class,
+    UsingPageFactoryTest.class
+})
+public class LargeTests {
 }
