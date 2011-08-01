@@ -22,7 +22,7 @@ public class SeleneseTestNgHelper extends SeleneseTestBase {
   @BeforeTest
   @Override
   @Parameters({"selenium.url", "selenium.browser"})
-  public void setUp(@Optional String url, @Optional String browserString) {
+  public void setUp(@Optional String url, @Optional String browserString) throws Exception {
     if (browserString == null) {
       browserString = runtimeBrowserString();
     }
