@@ -2,6 +2,7 @@ require 'net/http'
 require 'uri'
 require 'cgi'
 require 'digest/md5'
+require 'base64'
 require 'fileutils'
 require 'tmpdir'
 
