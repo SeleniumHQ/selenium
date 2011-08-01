@@ -95,34 +95,34 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     secondDriver.quit();
   }
 
-    public void testShouldBeAbleToStartFromAUniqueProfile() {
-      FirefoxProfile profile = new FirefoxProfile();
+  public void testShouldBeAbleToStartFromAUniqueProfile() {
+    FirefoxProfile profile = new FirefoxProfile();
 
-      try {
-        WebDriver secondDriver = newFirefoxDriver(profile);
-        secondDriver.quit();
-      } catch (Exception e) {
-        e.printStackTrace();
-        fail("Expected driver to be created succesfully");
-      }
+    try {
+      WebDriver secondDriver = newFirefoxDriver(profile);
+      secondDriver.quit();
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("Expected driver to be created succesfully");
     }
+  }
 
-    public void testANewProfileShouldAllowSettingAdditionalParameters() {
-      FirefoxProfile profile = new FirefoxProfile();
-      profile.setPreference("browser.startup.homepage", pages.formPage);
+  public void testANewProfileShouldAllowSettingAdditionalParameters() {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference("browser.startup.homepage", pages.formPage);
 
-      try {
-        WebDriver secondDriver = newFirefoxDriver(profile);
-	waitFor(pageTitleToBe(secondDriver, "We Leave From Here"));
-        String title = secondDriver.getTitle();
-        secondDriver.quit();
+    try {
+      WebDriver secondDriver = newFirefoxDriver(profile);
+      waitFor(pageTitleToBe(secondDriver, "We Leave From Here"));
+      String title = secondDriver.getTitle();
+      secondDriver.quit();
 
-        assertThat(title, is("We Leave From Here"));
-      } catch (Exception e) {
-        e.printStackTrace();
-        fail("Expected driver to be created succesfully");
-      }
+      assertThat(title, is("We Leave From Here"));
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("Expected driver to be created succesfully");
     }
+  }
 
   @Ignore
   public void testShouldBeAbleToStartANamedProfile() {
@@ -143,7 +143,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     // We will have an infinite hang if this driver does not start properly
     new FirefoxDriver(binary, null).quit();
   }
-  
+
   private static boolean platformHasNativeEvents() {
     return FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
   }
@@ -155,7 +155,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       fail("Interrupted");
     }
   }
-  
+
   @NeedsFreshDriver
   @NoDriverAfterTest
   public void testFocusRemainsInOriginalWindowWhenOpeningNewWindow() {
@@ -166,11 +166,11 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     // native events (keyboard events in this case).
 
     driver.get(pages.xhtmlTestPage);
-    
+
     driver.findElement(By.name("windowOne")).click();
-    
+
     sleepBecauseWindowsTakeTimeToOpen();
-    
+
     driver.get(pages.javascriptPage);
 
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
@@ -187,15 +187,15 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
     // Scenario: Open a new window, switch to it, make sure it gets native events.
     // Then switch back to the original window, make sure it gets native events.
-    
+
     driver.get(pages.xhtmlTestPage);
-    
+
     String originalWinHandle = driver.getWindowHandle();
-    
+
     driver.findElement(By.name("windowOne")).click();
-    
+
     sleepBecauseWindowsTakeTimeToOpen();
-    
+
     Set<String> allWindowHandles = driver.getWindowHandles();
 
     // There should be two windows. We should also see each of the window titles at least once.
@@ -203,16 +203,16 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
     allWindowHandles.remove(originalWinHandle);
     String newWinHandle = (String) allWindowHandles.toArray()[0];
-    
+
     // Key events in new window.
     driver.switchTo().window(newWinHandle);
     sleepBecauseWindowsTakeTimeToOpen();
     driver.get(pages.javascriptPage);
-    
+
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("ABC DEF");
     assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
-    
+
     // Key events in original window.
     driver.switchTo().window(originalWinHandle);
     sleepBecauseWindowsTakeTimeToOpen();
@@ -222,7 +222,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     keyReporter2.sendKeys("QWERTY");
     assertThat(keyReporter2.getAttribute("value"), is("QWERTY"));
   }
-  
+
   @NeedsFreshDriver
   @NoDriverAfterTest
   public void testClosingWindowAndSwitchingToOriginalSwitchesFocus() {
@@ -231,14 +231,14 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
     // Scenario: Open a new window, switch to it, close it, switch back to the
     // original window - make sure it gets native events.
-    
+
     driver.get(pages.xhtmlTestPage);
     String originalWinHandle = driver.getWindowHandle();
-    
+
     driver.findElement(By.name("windowOne")).click();
-    
+
     sleepBecauseWindowsTakeTimeToOpen();
-    
+
     Set<String> allWindowHandles = driver.getWindowHandles();
     // There should be two windows. We should also see each of the window titles at least once.
     assertEquals(2, allWindowHandles.size());
@@ -250,7 +250,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     sleepBecauseWindowsTakeTimeToOpen();
     // Close new window.
     driver.close();
-    
+
     // Switch back to old window.
     driver.switchTo().window(originalWinHandle);
     sleepBecauseWindowsTakeTimeToOpen();
@@ -261,7 +261,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     keyReporter.sendKeys("ABC DEF");
     assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
   }
-  
+
   public void testCanBlockInvalidSslCertificates() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setAcceptUntrustedCertificates(false);
@@ -398,7 +398,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     if (nativeEventsEnabled && Platform.getCurrent().is(Platform.LINUX)) {
       return;
     }
-    
+
     int numThreads = 10;
     final int numRoundsPerThread = 50;
     WebDriver[] drivers = new WebDriver[numThreads];
@@ -517,5 +517,5 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     return new FirefoxDriver(profile);
   }
 
-  private static class CustomFirefoxProfile extends FirefoxProfile {} 
+  private static class CustomFirefoxProfile extends FirefoxProfile {}
 }
