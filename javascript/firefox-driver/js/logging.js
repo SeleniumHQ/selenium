@@ -110,7 +110,7 @@ webdriver.debug.addFileLogger_ = function(logger, opt_path) {
   // Make sure that file exists
   var file = Components.classes['@mozilla.org/file/local;1']
       .createInstance(Components.interfaces['nsILocalFile']);
-  file.initWithPath(logToFile);
+  file.initWithPath(opt_path);
   file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0666);
   var fileName = file.path;
 
