@@ -1,3 +1,13 @@
+2.3.0 (2011-08-01)
+==================
+
+* Add Selenium::WebDriver::Chrome::Profile
+* Better detection of clickable areas in Firefox.
+* Merge of Google-contributed code into the underlying Atoms.
+* IE click issue fixed (#1650)
+* No longer raise in Element#inspect if the element is obsolete.
+
+
 2.2.0 (2011-07-26)
 ==================
 
