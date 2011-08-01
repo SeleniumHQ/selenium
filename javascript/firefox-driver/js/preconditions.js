@@ -89,20 +89,20 @@ webdriver.preconditions.enabled = function(doc, parameters) {
  */
 webdriver.preconditions.noAlertPresent = function(driver) {
   if (driver.modalOpen) {
-    return new WebDriverError(ErrorCode.MODAL_DIALOG_OPEN,
+    return new WebDriverError(ErrorCode.MODAL_DIALOG_OPENED,
         'A modal dialog, such as an alert, is open.');
   }
 };
 
 
 /**
- * Guard to ensure that no modal dialog is open.
+ * Guard to ensure that a modal dialog is open.
  *
  * @param {!Object} driver A WebDriver instance.
  */
 webdriver.preconditions.alertPresent = function(driver) {
   if (!driver.modalOpen) {
-    return new WebDriverError(ErrorCode.NO_SUCH_WINDOW,
+    return new WebDriverError(ErrorCode.NO_MODAL_DIALOG_OPEN,
         'A modal dialog, such as an alert, is not open.');
   }
 };

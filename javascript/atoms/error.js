@@ -49,9 +49,10 @@ bot.ErrorCode = {
   INVALID_COOKIE_DOMAIN: 24,
   UNABLE_TO_SET_COOKIE: 25,
   MODAL_DIALOG_OPENED: 26,
-  MODAL_DIALOG_OPEN: 27,
+  NO_MODAL_DIALOG_OPEN: 27,
   SCRIPT_TIMEOUT: 28,
-  INVALID_SELECTOR_ERROR: 32
+  INVALID_SELECTOR_ERROR: 32,
+  NO_ALERT_PRESENT: 33
 };
 
 
@@ -102,7 +103,7 @@ bot.Error.NAMES_ = goog.object.transpose({
   'InvalidCookieDomainError': bot.ErrorCode.INVALID_COOKIE_DOMAIN,
   'UnableToSetCookieError': bot.ErrorCode.UNABLE_TO_SET_COOKIE,
   'ModalDialogOpenedError': bot.ErrorCode.MODAL_DIALOG_OPENED,
-  'ModalDialogOpenError': bot.ErrorCode.MODAL_DIALOG_OPEN,
+  'NoModalDialogOpenError': bot.ErrorCode.NO_MODAL_DIALOG_OPEN,
   'ScriptTimeoutError': bot.ErrorCode.SCRIPT_TIMEOUT
 });
 

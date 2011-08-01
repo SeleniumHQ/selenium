@@ -135,6 +135,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET, post("/session/:sessionId/url"))
 
         // The Alert API is still experimental and should not be used.
+        .put(GET_ALERT, get("/session/:sessionId/alert"))
         .put(DISMISS_ALERT, post("/session/:sessionId/dismiss_alert"))
         .put(ACCEPT_ALERT, post("/session/:sessionId/accept_alert"))
         .put(GET_ALERT_TEXT, get("/session/:sessionId/alert_text"))

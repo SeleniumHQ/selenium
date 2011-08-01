@@ -64,6 +64,7 @@
 #include "CommandHandlers/SetAsyncScriptTimeoutCommandHandler.h"
 #include "CommandHandlers/SetImplicitWaitTimeoutCommandHandler.h"
 #include "CommandHandlers/SubmitElementCommandHandler.h"
+#include "CommandHandlers/SwitchToAlertCommandHandler.h"
 #include "CommandHandlers/SwitchToFrameCommandHandler.h"
 #include "CommandHandlers/SwitchToWindowCommandHandler.h"
 
@@ -461,6 +462,7 @@ void IECommandExecutor::PopulateCommandHandlers() {
 	this->command_handlers_[DeleteAllCookies] = CommandHandlerHandle(new DeleteAllCookiesCommandHandler);
 	this->command_handlers_[Screenshot] = CommandHandlerHandle(new ScreenshotCommandHandler);
 
+	this->command_handlers_[SwitchToAlert] = CommandHandlerHandle(new SwitchToAlertCommandHandler);
 	this->command_handlers_[AcceptAlert] = CommandHandlerHandle(new AcceptAlertCommandHandler);
 	this->command_handlers_[DismissAlert] = CommandHandlerHandle(new DismissAlertCommandHandler);
 	this->command_handlers_[GetAlertText] = CommandHandlerHandle(new GetAlertTextCommandHandler);

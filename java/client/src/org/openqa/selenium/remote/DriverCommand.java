@@ -87,6 +87,7 @@ public interface DriverCommand {
 
   String SCREENSHOT = "screenshot";
 
+  String GET_ALERT = "getAlert";
   String ACCEPT_ALERT = "acceptAlert";
   String DISMISS_ALERT = "dismissAlert";
   String GET_ALERT_TEXT = "getAlertText";

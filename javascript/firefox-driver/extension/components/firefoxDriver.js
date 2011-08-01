@@ -32,6 +32,18 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
   var atoms = {};
   Components.utils.import('resource://fxdriver/modules/atoms.js', atoms);
+  
+  // This really shouldn't be here, but the firefoxdriver isn't compiled with closure, so the atoms
+  // aren't exported into global scope
+  FirefoxDriver.prototype.dismissAlert.preconditions =
+      [ function() { atoms.webdriver.preconditions.alertPresent(this) } ];
+  FirefoxDriver.prototype.acceptAlert.preconditions =
+      [ function() { atoms.webdriver.preconditions.alertPresent(this) } ];
+  FirefoxDriver.prototype.getAlertText.preconditions =
+      [ function() { atoms.webdriver.preconditions.alertPresent(this) } ];
+  FirefoxDriver.prototype.setAlertValue.preconditions =
+      [ function() { atoms.webdriver.preconditions.alertPresent(this) } ];
+
 
   var utils = {};
   Components.utils.import('resource://fxdriver/modules/utils.js', utils);
@@ -807,33 +819,38 @@ FirefoxDriver.prototype.screenshot = function(respond) {
 };
 
 
+FirefoxDriver.prototype.getAlert = function(respond) {
+  webdriver.modals.isModalPresent(
+      function(present) {
+        if (!present) {
+          respond.status = ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.value = { message: 'No alert is present' };
+        }
+        respond.send();
+      }, this.alertTimeout);
+};
+
+
 FirefoxDriver.prototype.dismissAlert = function(respond) {
-  webdriver.modals.dismissAlert(this, this.alertTimeout,
-      webdriver.modals.success(respond),
-      webdriver.modals.errback(respond));
+  webdriver.modals.dismissAlert(this);
+  respond.send();
 };
 
 FirefoxDriver.prototype.acceptAlert = function(respond) {
-  webdriver.modals.acceptAlert(this, this.alertTimeout,
-      webdriver.modals.success(respond),
-      webdriver.modals.errback(respond));
+  webdriver.modals.acceptAlert(this);
+  respond.send();
 };
+
 
 FirefoxDriver.prototype.getAlertText = function(respond) {
-  var success = function(text) {
-    respond.value = text;
-    respond.send();
-  };
-  respond.value = webdriver.modals.getText(this, this.alertTimeout,
-      success,
-      webdriver.modals.errback(respond));
+  respond.value = webdriver.modals.getText(this);
+  respond.send();
 };
 
+
 FirefoxDriver.prototype.setAlertValue = function(respond, parameters) {
-  respond.value = webdriver.modals.setValue(this, this.alertTimeout,
-      parameters['text'],
-      webdriver.modals.success(respond),
-      webdriver.modals.errback(respond));
+  webdriver.modals.setValue(this, parameters['text']);
+  respond.send();
 };
 
 

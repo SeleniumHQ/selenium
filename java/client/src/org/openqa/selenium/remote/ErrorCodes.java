@@ -6,6 +6,7 @@ import org.openqa.selenium.ImeNotAvailableException;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -40,6 +41,7 @@ public class ErrorCodes {
   public static final int NO_SUCH_WINDOW = 23;
   public static final int INVALID_COOKIE_DOMAIN = 24;
   public static final int UNABLE_TO_SET_COOKIE = 25;
+  public static final int NO_ALERT_PRESENT = 27;
   public static final int ASYNC_SCRIPT_TIMEOUT = 28;
   public static final int INVALID_ELEMENT_COORDINATES = 29;
   public static final int IME_NOT_AVAILABLE = 30;
@@ -93,6 +95,8 @@ public class ErrorCodes {
         return ImeNotAvailableException.class;
       case IME_ENGINE_ACTIVATION_FAILED:
         return ImeActivationFailedException.class;
+      case NO_ALERT_PRESENT:
+        return NoAlertPresentException.class;
       default:
         return WebDriverException.class;
     }
@@ -135,6 +139,8 @@ public class ErrorCodes {
       return IME_NOT_AVAILABLE;
     } else if (thrown instanceof ImeActivationFailedException) {
       return IME_ENGINE_ACTIVATION_FAILED;
+    } else if (thrown instanceof NoAlertPresentException) {
+      return NO_ALERT_PRESENT;
     } else {
       return UNHANDLED_ERROR;
     }

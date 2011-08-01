@@ -21,6 +21,7 @@
 
 goog.provide('webdriver.modals');
 
+goog.require('ErrorCode');
 goog.require('Logger');
 goog.require('Timer');
 goog.require('webdriver.firefox.utils');
@@ -30,8 +31,54 @@ var CI = Components.interfaces;
 var CC = Components.classes;
 
 
-webdriver.modals.actualFind_ = function(windowMediator) {
-  var window = windowMediator.getMostRecentWindow('');
+webdriver.modals.isModalPresent = function(callback, timeout) {
+  var timer = new Timer();
+  timer.runWhenTrue(
+    function() { return webdriver.modals.find_() },
+    function() { callback(true) },
+    timeout,
+    function() { callback(false) });
+};
+
+
+webdriver.modals.acceptAlert = function(driver) {
+  var modal = webdriver.modals.find_();
+  var button = webdriver.modals.findButton_(modal, "accept");
+  button.click();
+  webdriver.modals.clearFlag_(driver);
+};
+
+
+webdriver.modals.dismissAlert = function(driver) {
+  var modal = webdriver.modals.find_();
+  var button = webdriver.modals.findButton_(modal, "cancel");
+
+  if (!button) {
+    Logger.dumpn('No cancel button Falling back to the accept button');
+    button = webdriver.modals.findButton_(modal, "accept");
+  }
+
+  button.click();
+  webdriver.modals.clearFlag_(driver);
+};
+
+
+webdriver.modals.getText = function(driver) {
+  return driver.modalOpen
+};
+
+webdriver.modals.setValue = function(driver, value) {
+  var modal = webdriver.modals.find_();
+  var textbox = modal.document.getElementById('loginTextbox');
+  if (textbox.clientWidth == 0 || textbox.clientHeight == 0) {
+    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE, 'Alert did not have a text box');
+  }
+  textbox.value = value;
+};
+
+
+webdriver.modals.find_ = function() {
+  var window = webdriver.firefox.utils.windowMediator().getMostRecentWindow('');
   window = webdriver.firefox.utils.unwrap(window);
 
   // Get the WebBrowserChrome and check if it's a modal window
@@ -49,24 +96,10 @@ webdriver.modals.actualFind_ = function(windowMediator) {
 };
 
 
-// This function is largely derived from the equivalent function in mozmill
-webdriver.modals.findModal_ = function(callback, errback, timeout) {
-  var wm = webdriver.firefox.utils.windowMediator();
-
-  var timer = new Timer();
-  timer.runWhenTrue(function() { return webdriver.modals.actualFind_(wm) }, callback, timeout, errback);
-};
-
-
 webdriver.modals.findButton_ = function(modal, value) {
   var doc = modal.document;
   var dialog = doc.getElementsByTagName("dialog")[0];
   return dialog.getButton(value);
-};
-
-
-webdriver.modals.clearFlag_ = function(driver) {
-  driver.modalOpen = false;
 };
 
 
@@ -75,56 +108,10 @@ webdriver.modals.setFlag = function(driver, flagValue) {
 };
 
 
-webdriver.modals.acceptAlert = function(driver, timeout, callback, errback) {
-  webdriver.modals.findModal_(function(modal) {
-    var button = webdriver.modals.findButton_(modal, "accept");
-    button.click();
-    webdriver.modals.clearFlag_(driver);
-    callback();
-  }, errback, timeout);
+webdriver.modals.clearFlag_ = function(driver) {
+  webdriver.modals.setFlag(driver, false);
 };
 
-
-webdriver.modals.dismissAlert = function(driver, timeout, callback, errback) {
-  webdriver.modals.findModal_(function(modal) {
-    var button = webdriver.modals.findButton_(modal, "cancel");
-
-    if (!button) {
-      Logger.dumpn('No cancel button Falling back to the accept button');
-      button = webdriver.modals.findButton_(modal, "accept");
-    }
-
-    button.click();
-    webdriver.modals.clearFlag_(driver);
-    callback();
-  }, errback, timeout);
-};
-
-
-// API kept consistent
-webdriver.modals.getText = function(driver, timeout, callback, unused) {
-  return callback(driver.modalOpen);
-};
-
-webdriver.modals.setValue = function(driver, timeout, value, callback, errback) {
-  webdriver.modals.findModal_(function(modal) {
-    var textbox = modal.document.getElementById('loginTextbox');
-    textbox.value = value;
-    callback();
-  }, errback, timeout);
-};
-
-webdriver.modals.errback = function(respond) {
-  return function() {
-    respond.status = ErrorCode.UNHANDLED_ERROR;
-    respond.value = { message: 'Unable to dismiss alert. Is an alert present?' };
-    respond.send();
-  }
-};
-
-webdriver.modals.success = function(respond) {
-  return goog.bind(respond.send, respond);
-};
 
 webdriver.modals.findAssociatedDriver_ = function(window) {
   var ww = CC["@mozilla.org/embedcomp/window-watcher;1"].getService(CI["nsIWindowWatcher"]);
@@ -153,11 +140,17 @@ webdriver.modals.findAssociatedDriver_ = function(window) {
 };
 
 webdriver.modals.signalOpenModal = function(parent, text) {
+  Logger.dumpn("signalOpenModal");
   // Try to grab the top level window
   var driver = webdriver.modals.findAssociatedDriver_(parent);
-
+  Logger.dump(driver);
+  if (driver) {
+    Logger.dump(driver.response_);
+  }
   if (driver && driver.response_) {
     webdriver.modals.setFlag(driver, text);
+    Logger.dumpn("Setting flag to");
+    Logger.dump(text);
 
     var res = driver.response_;
     res.value = {

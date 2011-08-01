@@ -58,7 +58,7 @@ protected:
 			}
 
 			if (text_box_handle == NULL) {
-				response->SetErrorResponse(EUNHANDLEDERROR, "Could not find text box");
+				response->SetErrorResponse(EELEMENTNOTDISPLAYED, "Modal dialog did not have a text box - maybe it was an alert");
 			} else {
 				std::wstring text = CA2W(text_parameter_iterator->second.asCString(), CP_UTF8);
 				::SendMessage(text_box_handle, WM_SETTEXT, NULL, reinterpret_cast<LPARAM>(text.c_str()));

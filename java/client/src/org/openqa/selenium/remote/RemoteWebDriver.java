@@ -602,6 +602,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public Alert alert() {
+      Response response = execute(DriverCommand.GET_ALERT);
       return new RemoteAlert();
     }
   }

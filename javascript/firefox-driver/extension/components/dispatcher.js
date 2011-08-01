@@ -153,6 +153,8 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.GET, Dispatcher.executeAs('getCurrentUrl')).
       on(Request.Method.POST, Dispatcher.executeAs('get'));
 
+  this.bind_('/session/:sessionId/alert').
+    on(Request.Method.GET, Dispatcher.executeAs('getAlert'));
   this.bind_('/session/:sessionId/accept_alert').
     on(Request.Method.POST, Dispatcher.executeAs('acceptAlert'));
   this.bind_('/session/:sessionId/dismiss_alert').

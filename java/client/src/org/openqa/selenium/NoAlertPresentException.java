@@ -20,5 +20,16 @@ package org.openqa.selenium;
 /**
  * Indicates that a user has tried to access an alert when one is not present.
  */
-public class NoAlertPresentException extends WebDriverException {
+public class NoAlertPresentException extends NotFoundException {
+  public NoAlertPresentException(String message) {
+    super(message);
+  }
+  
+  public NoAlertPresentException(Throwable cause) {
+    super(cause);
+  }
+  
+  public NoAlertPresentException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

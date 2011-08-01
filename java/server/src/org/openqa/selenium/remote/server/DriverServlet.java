@@ -137,6 +137,8 @@ public class DriverServlet extends HttpServlet {
     getMapper.bind("/session/:sessionId/window_handles", GetAllWindowHandles.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
 
+    getMapper.bind("/session/:sessionId/alert", SwitchToAlert.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/dismiss_alert", DismissAlert.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/accept_alert", AcceptAlert.class)

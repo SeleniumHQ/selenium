@@ -495,6 +495,7 @@ void Server::PopulateCommandRepository() {
   this->commands_["/session/:sessionid/orientation"]["GET"] = GetOrientation;
   this->commands_["/session/:sessionid/orientation"]["POST"] = SetOrientation;
 
+  this->commands_["/session/:sessionid/alert"]["GET"] = SwitchToAlert;
   this->commands_["/session/:sessionid/accept_alert"]["POST"] = AcceptAlert;
   this->commands_["/session/:sessionid/dismiss_alert"]["POST"] = DismissAlert;
   this->commands_["/session/:sessionid/alert_text"]["GET"] = GetAlertText;
