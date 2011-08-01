@@ -124,6 +124,23 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
+  public void testShouldBeAbleToStartFromProfileWithLogFileSet() {
+    FirefoxProfile profile = new FirefoxProfile();
+    File destDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "logging-profile");
+    File logFile = new File(destDir, "firefox.log");
+
+    profile.setPreference("webdriver.log.file", logFile.getAbsolutePath());
+
+    try {
+      WebDriver secondDriver = newFirefoxDriver(profile);
+      assertTrue("log file should exist", logFile.exists());
+      secondDriver.quit();
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("Expected driver to be created succesfully");
+    }
+  }
+
   @Ignore
   public void testShouldBeAbleToStartANamedProfile() {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
