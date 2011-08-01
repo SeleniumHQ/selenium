@@ -1,3 +1,8 @@
+2.3.1 (2011-08-01)
+==================
+
+* Fix bug where Firefox would hang if Firefox::Profile#log_file= was set.
+
 2.3.0 (2011-08-01)
 ==================
 
