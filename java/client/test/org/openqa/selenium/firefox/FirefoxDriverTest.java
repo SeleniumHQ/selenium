@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.io.File;
 
 import com.google.common.base.Throwables;
 import org.junit.Assert;
@@ -43,6 +44,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import static java.lang.Thread.sleep;
