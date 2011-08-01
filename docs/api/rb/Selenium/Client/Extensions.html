@@ -338,7 +338,8 @@ Wait for something to not be visible (the wait happens in the browser).
 
   
     <span class="summary_desc"><div class='inline'><p>
-Wait for some text to be present (the wait is happening browser side).
+wait_for_text will search for the given argument within the innerHTML of
+the current DOM.
 </p>
 </div></span>
   
@@ -398,10 +399,9 @@ Wait for something to be visible (the wait happens in the browser).
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/extensions.rb', line 111</span>
 
-<span class='def def kw'>def</span> <span class='active_javascript_framework identifier id'>active_javascript_framework</span><span class='lparen token'>(</span><span class='options identifier id'>options</span><span class='rparen token'>)</span>
-  <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:javascript_framework</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='default_javascript_framework identifier id'>default_javascript_framework</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id active_javascript_framework'>active_javascript_framework</span><span class='lparen'>(</span><span class='id options'>options</span><span class='rparen'>)</span>
+  <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:javascript_framework</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id default_javascript_framework'>default_javascript_framework</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -421,7 +421,8 @@ These for all Ajax request to finish (Only works if you are using
 prototype, the wait happens in the browser)
 </p>
 <p>
-See http://davidvollbracht.com/2008/6/4/30-days-of-tech-day-3-waitforajax
+See <a
+href="http://davidvollbracht.com/2008/6/4/30-days-of-tech-day-3-waitforajax">davidvollbracht.com/2008/6/4/30-days-of-tech-day-3-waitforajax</a>
 for more background.
 </p>
 
@@ -445,12 +446,11 @@ for more background.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/extensions.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_ajax identifier id'>wait_for_ajax</span><span class='lparen token'>(</span><span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='builder identifier id'>builder</span> <span class='assign token'>=</span> <span class='JavascriptExpressionBuilder constant id'>JavascriptExpressionBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='active_javascript_framework identifier id'>active_javascript_framework</span><span class='lparen token'>(</span><span class='options identifier id'>options</span><span class='rparen token'>)</span>
-  <span class='wait_for_condition identifier id'>wait_for_condition</span> <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='no_pending_ajax_requests identifier id'>no_pending_ajax_requests</span><span class='dot token'>.</span><span class='script identifier id'>script</span><span class='comma token'>,</span> 
-                     <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_ajax'>wait_for_ajax</span><span class='lparen'>(</span><span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='id builder'>builder</span> <span class='op'>=</span> <span class='const'>JavascriptExpressionBuilder</span><span class='period'>.</span><span class='id new'>new</span> <span class='id active_javascript_framework'>active_javascript_framework</span><span class='lparen'>(</span><span class='id options'>options</span><span class='rparen'>)</span>
+ <span class='id wait_for_condition'>wait_for_condition</span> <span class='id builder'>builder</span><span class='period'>.</span><span class='id no_pending_ajax_requests'>no_pending_ajax_requests</span><span class='period'>.</span><span class='id script'>script</span><span class='comma'>,</span> 
+                    <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -470,7 +470,8 @@ Wait for all Prototype effects to be processed (the wait happens in the
 browser).
 </p>
 <p>
-Credits to http://github.com/brynary/webrat/tree/master
+Credits to <a
+href="http://github.com/brynary/webrat/tree/master">github.com/brynary/webrat/tree/master</a>
 </p>
 
 
@@ -493,12 +494,11 @@ Credits to http://github.com/brynary/webrat/tree/master
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/extensions.rb', line 20</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_effects identifier id'>wait_for_effects</span><span class='lparen token'>(</span><span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='builder identifier id'>builder</span> <span class='assign token'>=</span> <span class='JavascriptExpressionBuilder constant id'>JavascriptExpressionBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='active_javascript_framework identifier id'>active_javascript_framework</span><span class='lparen token'>(</span><span class='options identifier id'>options</span><span class='rparen token'>)</span>
-  <span class='wait_for_condition identifier id'>wait_for_condition</span> <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='no_pending_effects identifier id'>no_pending_effects</span><span class='dot token'>.</span><span class='script identifier id'>script</span><span class='comma token'>,</span>
-                     <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_effects'>wait_for_effects</span><span class='lparen'>(</span><span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+   <span class='id builder'>builder</span> <span class='op'>=</span> <span class='const'>JavascriptExpressionBuilder</span><span class='period'>.</span><span class='id new'>new</span> <span class='id active_javascript_framework'>active_javascript_framework</span><span class='lparen'>(</span><span class='id options'>options</span><span class='rparen'>)</span>
+  <span class='id wait_for_condition'>wait_for_condition</span> <span class='id builder'>builder</span><span class='period'>.</span><span class='id no_pending_effects'>no_pending_effects</span><span class='period'>.</span><span class='id script'>script</span><span class='comma'>,</span>
+                     <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -537,12 +537,11 @@ Wait for an element to be present (the wait happens in the browser).
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/extensions.rb', line 27</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_element identifier id'>wait_for_element</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='builder identifier id'>builder</span> <span class='assign token'>=</span> <span class='JavascriptExpressionBuilder constant id'>JavascriptExpressionBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span> 
-  <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='append identifier id'>append</span><span class='lparen token'>(</span><span class='string val'>&quot;element != null;&quot;</span><span class='rparen token'>)</span>
-  <span class='wait_for_condition identifier id'>wait_for_condition</span> <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_element'>wait_for_element</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='comma'>,</span> <span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id builder'>builder</span> <span class='op'>=</span> <span class='const'>JavascriptExpressionBuilder</span><span class='period'>.</span><span class='id new'>new</span> 
+  <span class='id builder'>builder</span><span class='period'>.</span><span class='id find_element'>find_element</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span><span class='period'>.</span><span class='id append'>append</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>element != null;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id wait_for_condition'>wait_for_condition</span> <span class='id builder'>builder</span><span class='period'>.</span><span class='id script'>script</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -581,12 +580,11 @@ Wait for a field to get a specific value (the wait happens in the browser).
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/extensions.rb', line 86</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_field_value identifier id'>wait_for_field_value</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span> <span class='expected_value identifier id'>expected_value</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='builder identifier id'>builder</span> <span class='assign token'>=</span> <span class='JavascriptExpressionBuilder constant id'>JavascriptExpressionBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span> 
-  <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='element_value_is identifier id'>element_value_is</span><span class='lparen token'>(</span><span class='expected_value identifier id'>expected_value</span><span class='rparen token'>)</span>
-  <span class='wait_for_condition identifier id'>wait_for_condition</span> <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_field_value'>wait_for_field_value</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='comma'>,</span> <span class='id expected_value'>expected_value</span><span class='comma'>,</span> <span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id builder'>builder</span> <span class='op'>=</span> <span class='const'>JavascriptExpressionBuilder</span><span class='period'>.</span><span class='id new'>new</span> 
+  <span class='id builder'>builder</span><span class='period'>.</span><span class='id find_element'>find_element</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span><span class='period'>.</span><span class='id element_value_is'>element_value_is</span><span class='lparen'>(</span><span class='id expected_value'>expected_value</span><span class='rparen'>)</span>
+  <span class='id wait_for_condition'>wait_for_condition</span> <span class='id builder'>builder</span><span class='period'>.</span><span class='id script'>script</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -625,12 +623,11 @@ Wait for an element to NOT be present (the wait happens in the browser).
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/extensions.rb', line 34</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_no_element identifier id'>wait_for_no_element</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='builder identifier id'>builder</span> <span class='assign token'>=</span> <span class='JavascriptExpressionBuilder constant id'>JavascriptExpressionBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span> 
-  <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='append identifier id'>append</span><span class='lparen token'>(</span><span class='string val'>&quot;element == null;&quot;</span><span class='rparen token'>)</span>
-  <span class='wait_for_condition identifier id'>wait_for_condition</span> <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_no_element'>wait_for_no_element</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='comma'>,</span> <span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id builder'>builder</span> <span class='op'>=</span> <span class='const'>JavascriptExpressionBuilder</span><span class='period'>.</span><span class='id new'>new</span> 
+  <span class='id builder'>builder</span><span class='period'>.</span><span class='id find_element'>find_element</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span><span class='period'>.</span><span class='id append'>append</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>element == null;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id wait_for_condition'>wait_for_condition</span> <span class='id builder'>builder</span><span class='period'>.</span><span class='id script'>script</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -670,12 +667,11 @@ browser).
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/extensions.rb', line 93</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_no_field_value identifier id'>wait_for_no_field_value</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span> <span class='expected_value identifier id'>expected_value</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='builder identifier id'>builder</span> <span class='assign token'>=</span> <span class='JavascriptExpressionBuilder constant id'>JavascriptExpressionBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span> 
-  <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='element_value_is_not identifier id'>element_value_is_not</span><span class='lparen token'>(</span><span class='expected_value identifier id'>expected_value</span><span class='rparen token'>)</span>
-  <span class='wait_for_condition identifier id'>wait_for_condition</span> <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_no_field_value'>wait_for_no_field_value</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='comma'>,</span> <span class='id expected_value'>expected_value</span><span class='comma'>,</span> <span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id builder'>builder</span> <span class='op'>=</span> <span class='const'>JavascriptExpressionBuilder</span><span class='period'>.</span><span class='id new'>new</span> 
+  <span class='id builder'>builder</span><span class='period'>.</span><span class='id find_element'>find_element</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span><span class='period'>.</span><span class='id element_value_is_not'>element_value_is_not</span><span class='lparen'>(</span><span class='id expected_value'>expected_value</span><span class='rparen'>)</span>
+  <span class='id wait_for_condition'>wait_for_condition</span> <span class='id builder'>builder</span><span class='period'>.</span><span class='id script'>script</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -717,12 +713,11 @@ See wait_for_text for usage details.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/extensions.rb', line 79</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_no_text identifier id'>wait_for_no_text</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='builder identifier id'>builder</span> <span class='assign token'>=</span> <span class='JavascriptExpressionBuilder constant id'>JavascriptExpressionBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span> 
-  <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='find_text identifier id'>find_text</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='append identifier id'>append</span><span class='lparen token'>(</span><span class='string val'>&quot;text_match == false;&quot;</span><span class='rparen token'>)</span>
-  <span class='wait_for_condition identifier id'>wait_for_condition</span> <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_no_text'>wait_for_no_text</span><span class='lparen'>(</span><span class='id pattern'>pattern</span><span class='comma'>,</span> <span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id builder'>builder</span> <span class='op'>=</span> <span class='const'>JavascriptExpressionBuilder</span><span class='period'>.</span><span class='id new'>new</span> 
+<span class='id builder'>builder</span><span class='period'>.</span><span class='id find_text'>find_text</span><span class='lparen'>(</span><span class='id pattern'>pattern</span><span class='comma'>,</span> <span class='id options'>options</span><span class='rparen'>)</span><span class='period'>.</span><span class='id append'>append</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>text_match == false;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id wait_for_condition'>wait_for_condition</span> <span class='id builder'>builder</span><span class='period'>.</span><span class='id script'>script</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -760,11 +755,10 @@ Wait for something to not be visible (the wait happens in the browser).
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/extensions.rb', line 106</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_not_visible identifier id'>wait_for_not_visible</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='builder identifier id'>builder</span> <span class='assign token'>=</span> <span class='JavascriptExpressionBuilder constant id'>JavascriptExpressionBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span> 
-  <span class='wait_for_condition identifier id'>wait_for_condition</span> <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='not_visible identifier id'>not_visible</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_not_visible'>wait_for_not_visible</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='comma'>,</span> <span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id builder'>builder</span> <span class='op'>=</span> <span class='const'>JavascriptExpressionBuilder</span><span class='period'>.</span><span class='id new'>new</span> 
+  <span class='id wait_for_condition'>wait_for_condition</span> <span class='id builder'>builder</span><span class='period'>.</span><span class='id not_visible'>not_visible</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span><span class='period'>.</span><span class='id script'>script</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -780,9 +774,6 @@ Wait for something to not be visible (the wait happens in the browser).
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Wait for some text to be present (the wait is happening browser side).
-</p>
-<p>
 wait_for_text will search for the given argument within the innerHTML of
 the current DOM. Note that this method treats a single string as a special
 case.
@@ -792,13 +783,15 @@ case.
 wait_for_text accepts an optional hash of parameters:
 </p>
 <ul>
-<li><tt>:element</tt> - a selenium locator for an element limiting the search
+<li><p>
+<tt>:element</tt> - a selenium locator for an element limiting  the search
 scope.
-
+</p>
 </li>
-<li><tt>:timeout_in_seconds</tt> - duration in seconds after which we time out
+<li><p>
+<tt>:timeout_in_seconds</tt> - duration in seconds after  which we time out
 if text cannot be found.
-
+</p>
 </li>
 </ul>
 <h4>Regular Expressions</h4>
@@ -808,27 +801,26 @@ the pattern specification.
 </p>
 <h4>Examples</h4>
 <p>
-The following are equivalent, and will match &quot;some text&quot; anywhere
-within the document:
+The following are equivalent, and will match &#8220;some text&#8221;
+anywhere within the document:
 </p>
 <pre class="code">
-  <span class='wait_for_text identifier id'>wait_for_text</span> <span class='string val'>&quot;some text&quot;</span>
-  <span class='wait_for_text identifier id'>wait_for_text</span> <span class='regexp val'>/some text/</span>
+  <span class='id wait_for_text'>wait_for_text</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some text</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id wait_for_text'>wait_for_text</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>some text</span><span class='regexp_end'>/</span></span>
 </pre>
 <p>
-This will match &quot;some text&quot; anywhere within the specified
+This will match &#8220;some text&#8221; anywhere within the specified
 element:
 </p>
 <pre class="code">
-  <span class='wait_for_text identifier id'>wait_for_text</span> <span class='regexp val'>/some text/</span><span class='comma token'>,</span> <span class='symbol val'>:element</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;container&quot;</span>
+  <span class='id wait_for_text'>wait_for_text</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>some text</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>container</span><span class='tstring_end'>&quot;</span></span>
 </pre>
 <p>
-This will match &quot;some text&quot; only if it exactly matches the
-complete innerHTML of the specified element:
+This will match &#8220;some text&#8221; only if it exactly matches the
+complete innerHTML of the specified element: 
 </p>
 <pre class="code">
-  <span class='wait_for_text identifier id'>wait_for_text</span> <span class='string val'>&quot;some text&quot;</span><span class='comma token'>,</span> <span class='symbol val'>:element</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;container&quot;</span>
-</pre>
+  <span class='id wait_for_text'>wait_for_text</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some text</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>container</span><span class='tstring_end'>&quot;</span></span></pre>
 
 
   </div>
@@ -850,12 +842,11 @@ complete innerHTML of the specified element:
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/extensions.rb', line 70</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_text identifier id'>wait_for_text</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='builder identifier id'>builder</span> <span class='assign token'>=</span> <span class='JavascriptExpressionBuilder constant id'>JavascriptExpressionBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span> 
-  <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='find_text identifier id'>find_text</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='append identifier id'>append</span><span class='lparen token'>(</span><span class='string val'>&quot;text_match == true;&quot;</span><span class='rparen token'>)</span>
-  <span class='wait_for_condition identifier id'>wait_for_condition</span> <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_text'>wait_for_text</span><span class='lparen'>(</span><span class='id pattern'>pattern</span><span class='comma'>,</span> <span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id builder'>builder</span> <span class='op'>=</span> <span class='const'>JavascriptExpressionBuilder</span><span class='period'>.</span><span class='id new'>new</span> 
+<span class='id builder'>builder</span><span class='period'>.</span><span class='id find_text'>find_text</span><span class='lparen'>(</span><span class='id pattern'>pattern</span><span class='comma'>,</span> <span class='id options'>options</span><span class='rparen'>)</span><span class='period'>.</span><span class='id append'>append</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>text_match == true;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id wait_for_condition'>wait_for_condition</span> <span class='id builder'>builder</span><span class='period'>.</span><span class='id script'>script</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -893,11 +884,10 @@ Wait for something to be visible (the wait happens in the browser).
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/extensions.rb', line 100</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_visible identifier id'>wait_for_visible</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='builder identifier id'>builder</span> <span class='assign token'>=</span> <span class='JavascriptExpressionBuilder constant id'>JavascriptExpressionBuilder</span><span class='dot token'>.</span><span class='new identifier id'>new</span> 
-  <span class='wait_for_condition identifier id'>wait_for_condition</span> <span class='builder identifier id'>builder</span><span class='dot token'>.</span><span class='visible identifier id'>visible</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_visible'>wait_for_visible</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='comma'>,</span> <span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id builder'>builder</span> <span class='op'>=</span> <span class='const'>JavascriptExpressionBuilder</span><span class='period'>.</span><span class='id new'>new</span> 
+  <span class='id wait_for_condition'>wait_for_condition</span> <span class='id builder'>builder</span><span class='period'>.</span><span class='id visible'>visible</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span><span class='period'>.</span><span class='id script'>script</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -908,9 +898,9 @@ Wait for something to be visible (the wait happens in the browser).
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:49 2011 by 
+  Generated on Mon Aug  1 20:19:42 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

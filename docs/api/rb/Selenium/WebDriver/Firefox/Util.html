@@ -194,19 +194,18 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/util.rb', line 9</span>
 
-<span class='def def kw'>def</span> <span class='app_data_path identifier id'>app_data_path</span>
-  <span class='case case kw'>case</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:windows</span>
-    <span class='dstring node'>&quot;#{ENV['APPDATA']}\\Mozilla\\Firefox&quot;</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:macosx</span>
-    <span class='dstring node'>&quot;#{Platform.home}/Library/Application Support/Firefox&quot;</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:unix</span><span class='comma token'>,</span> <span class='symbol val'>:linux</span>
-    <span class='dstring node'>&quot;#{Platform.home}/.mozilla/firefox&quot;</span>
-  <span class='else else kw'>else</span>
-    <span class='raise identifier id'>raise</span> <span class='dstring node'>&quot;Unknown os: #{Platform.os}&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id app_data_path'>app_data_path</span>
+  <span class='kw'>case</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id os'>os</span>
+  <span class='kw'>when</span> <span class='symbol'>:windows</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>APPDATA</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>\\Mozilla\\Firefox</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>when</span> <span class='symbol'>:macosx</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id home'>home</span><span class='rbrace'>}</span><span class='tstring_content'>/Library/Application Support/Firefox</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>when</span> <span class='symbol'>:unix</span><span class='comma'>,</span> <span class='symbol'>:linux</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id home'>home</span><span class='rbrace'>}</span><span class='tstring_content'>/.mozilla/firefox</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>else</span>
+    <span class='id raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Unknown os: </span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id os'>os</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -257,10 +256,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/util.rb', line 22</span>
 
-<span class='def def kw'>def</span> <span class='stringified? fid id'>stringified?</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
-  <span class='str identifier id'>str</span> <span class='match op'>=~</span> <span class='regexp val'>/^&quot;.*&quot;$/</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id stringified?'>stringified?</span><span class='lparen'>(</span><span class='id str'>str</span><span class='rparen'>)</span>
+  <span class='id str'>str</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^&quot;.*&quot;$</span><span class='regexp_end'>/</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -271,9 +269,9 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:34 2011 by 
+  Generated on Mon Aug  1 20:19:43 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

@@ -85,8 +85,15 @@
         <dt id="EXTENSIONS-constant" class="">EXTENSIONS =
           
         </dt>
-        <dd><pre class="code"><span class='dstring node'>%w[.zip .xpi]</span>
-</pre></dd>
+        <dd><pre class="code">zip/zip'
+require 'tempfile'
+require 'find'
+
+module Selenium
+  module WebDriver
+    module Zipper
+
+EXTENSIONS = %w[.zip .xpi]</pre></dd>
       
     </dl>
   
@@ -187,23 +194,22 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/zipper.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='unzip identifier id'>unzip</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-  <span class='destination identifier id'>destination</span> <span class='assign token'>=</span> <span class='Dir constant id'>Dir</span><span class='dot token'>.</span><span class='mktmpdir identifier id'>mktmpdir</span><span class='lparen token'>(</span><span class='string val'>&quot;unzip&quot;</span><span class='rparen token'>)</span>
-  <span class='FileReaper constant id'>FileReaper</span> <span class='lshft op'>&lt;&lt;</span> <span class='destination identifier id'>destination</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id unzip'>unzip</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+  <span class='id destination'>destination</span> <span class='op'>=</span> <span class='const'>Dir</span><span class='period'>.</span><span class='id mktmpdir'>mktmpdir</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unzip</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='const'>FileReaper</span> <span class='op'>&lt;&lt;</span> <span class='id destination'>destination</span>
 
-  <span class='Zip constant id'>Zip</span><span class='colon2 op'>::</span><span class='ZipFile constant id'>ZipFile</span><span class='dot token'>.</span><span class='open identifier id'>open</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='zip identifier id'>zip</span><span class='bitor op'>|</span>
-    <span class='zip identifier id'>zip</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='entry identifier id'>entry</span><span class='bitor op'>|</span>
-      <span class='to identifier id'>to</span>      <span class='assign token'>=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='destination identifier id'>destination</span><span class='comma token'>,</span> <span class='entry identifier id'>entry</span><span class='dot token'>.</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
-      <span class='dirname identifier id'>dirname</span> <span class='assign token'>=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='dirname identifier id'>dirname</span><span class='lparen token'>(</span><span class='to identifier id'>to</span><span class='rparen token'>)</span>
+  <span class='const'>Zip</span><span class='op'>::</span><span class='const'>ZipFile</span><span class='period'>.</span><span class='id open'>open</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id zip'>zip</span><span class='op'>|</span>
+    <span class='id zip'>zip</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id entry'>entry</span><span class='op'>|</span>
+      <span class='id to'>to</span>      <span class='op'>=</span> <span class='const'>File</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='id destination'>destination</span><span class='comma'>,</span> <span class='id entry'>entry</span><span class='period'>.</span><span class='id name'>name</span><span class='rparen'>)</span>
+      <span class='id dirname'>dirname</span> <span class='op'>=</span> <span class='const'>File</span><span class='period'>.</span><span class='id dirname'>dirname</span><span class='lparen'>(</span><span class='id to'>to</span><span class='rparen'>)</span>
 
-      <span class='FileUtils constant id'>FileUtils</span><span class='dot token'>.</span><span class='mkdir_p identifier id'>mkdir_p</span> <span class='dirname identifier id'>dirname</span> <span class='unless unless_mod kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='exist? fid id'>exist?</span> <span class='dirname identifier id'>dirname</span>
-      <span class='zip identifier id'>zip</span><span class='dot token'>.</span><span class='extract identifier id'>extract</span><span class='lparen token'>(</span><span class='entry identifier id'>entry</span><span class='comma token'>,</span> <span class='to identifier id'>to</span><span class='rparen token'>)</span>
-    <span class='end end kw'>end</span>
-  <span class='end end kw'>end</span>
+      <span class='const'>FileUtils</span><span class='period'>.</span><span class='id mkdir_p'>mkdir_p</span> <span class='id dirname'>dirname</span> <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id exist?'>exist?</span> <span class='id dirname'>dirname</span>
+      <span class='id zip'>zip</span><span class='period'>.</span><span class='id extract'>extract</span><span class='lparen'>(</span><span class='id entry'>entry</span><span class='comma'>,</span> <span class='id to'>to</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
 
-  <span class='destination identifier id'>destination</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id destination'>destination</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -247,28 +253,27 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/zipper.rb', line 28</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='zip identifier id'>zip</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-  <span class='comment val'># can't use Tempfile here since it doesn't support File::BINARY mode on 1.8</span>
-  <span class='comment val'># can't use Dir.mktmpdir(&amp;blk) because of http://jira.codehaus.org/browse/JRUBY-4082</span>
-  <span class='tmp_dir identifier id'>tmp_dir</span> <span class='assign token'>=</span> <span class='Dir constant id'>Dir</span><span class='dot token'>.</span><span class='mktmpdir identifier id'>mktmpdir</span>
-  <span class='begin begin kw'>begin</span>
-    <span class='zip_path identifier id'>zip_path</span> <span class='assign token'>=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='tmp_dir identifier id'>tmp_dir</span><span class='comma token'>,</span> <span class='string val'>&quot;webdriver-zip&quot;</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id zip'>zip</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+  <span class='comment'># can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
+</span>  <span class='comment'># can't use Dir.mktmpdir(&amp;blk) because of http://jira.codehaus.org/browse/JRUBY-4082
+</span>  <span class='id tmp_dir'>tmp_dir</span> <span class='op'>=</span> <span class='const'>Dir</span><span class='period'>.</span><span class='id mktmpdir'>mktmpdir</span>
+  <span class='kw'>begin</span>
+    <span class='id zip_path'>zip_path</span> <span class='op'>=</span> <span class='const'>File</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='id tmp_dir'>tmp_dir</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>webdriver-zip</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 
-    <span class='Zip constant id'>Zip</span><span class='colon2 op'>::</span><span class='ZipFile constant id'>ZipFile</span><span class='dot token'>.</span><span class='open identifier id'>open</span><span class='lparen token'>(</span><span class='zip_path identifier id'>zip_path</span><span class='comma token'>,</span> <span class='Zip constant id'>Zip</span><span class='colon2 op'>::</span><span class='ZipFile constant id'>ZipFile</span><span class='colon2 op'>::</span><span class='CREATE constant id'>CREATE</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='zip identifier id'>zip</span><span class='bitor op'>|</span>
-      <span class='colon3 op'>::</span><span class='Find constant id'>Find</span><span class='dot token'>.</span><span class='find identifier id'>find</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='file identifier id'>file</span><span class='bitor op'>|</span>
-        <span class='next next kw'>next</span> <span class='if if_mod kw'>if</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='directory? fid id'>directory?</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span>
-        <span class='entry identifier id'>entry</span> <span class='assign token'>=</span> <span class='file identifier id'>file</span><span class='dot token'>.</span><span class='sub identifier id'>sub</span><span class='lparen token'>(</span><span class='dstring node'>&quot;#{path}/&quot;</span><span class='comma token'>,</span> <span class='string val'>''</span><span class='rparen token'>)</span>
+    <span class='const'>Zip</span><span class='op'>::</span><span class='const'>ZipFile</span><span class='period'>.</span><span class='id open'>open</span><span class='lparen'>(</span><span class='id zip_path'>zip_path</span><span class='comma'>,</span> <span class='const'>Zip</span><span class='op'>::</span><span class='const'>ZipFile</span><span class='op'>::</span><span class='const'>CREATE</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id zip'>zip</span><span class='op'>|</span>
+      <span class='op'>::</span><span class='const'>Find</span><span class='period'>.</span><span class='id find'>find</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id file'>file</span><span class='op'>|</span>
+        <span class='kw'>next</span> <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id directory?'>directory?</span><span class='lparen'>(</span><span class='id file'>file</span><span class='rparen'>)</span>
+        <span class='id entry'>entry</span> <span class='op'>=</span> <span class='id file'>file</span><span class='period'>.</span><span class='id sub'>sub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id path'>path</span><span class='rbrace'>}</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
 
-        <span class='zip identifier id'>zip</span><span class='dot token'>.</span><span class='add identifier id'>add</span> <span class='entry identifier id'>entry</span><span class='comma token'>,</span> <span class='file identifier id'>file</span>
-      <span class='end end kw'>end</span>
-    <span class='rbrace token'>}</span>
+        <span class='id zip'>zip</span><span class='period'>.</span><span class='id add'>add</span> <span class='id entry'>entry</span><span class='comma'>,</span> <span class='id file'>file</span>
+      <span class='kw'>end</span>
+    <span class='rbrace'>}</span>
 
-    <span class='File constant id'>File</span><span class='dot token'>.</span><span class='open identifier id'>open</span><span class='lparen token'>(</span><span class='zip_path identifier id'>zip_path</span><span class='comma token'>,</span> <span class='string val'>&quot;rb&quot;</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='io identifier id'>io</span><span class='bitor op'>|</span> <span class='Base64 constant id'>Base64</span><span class='dot token'>.</span><span class='encode64 identifier id'>encode64</span> <span class='io identifier id'>io</span><span class='dot token'>.</span><span class='read identifier id'>read</span> <span class='rbrace token'>}</span>
-  <span class='ensure ensure kw'>ensure</span>
-    <span class='FileUtils constant id'>FileUtils</span><span class='dot token'>.</span><span class='rm_rf identifier id'>rm_rf</span> <span class='tmp_dir identifier id'>tmp_dir</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+    <span class='const'>File</span><span class='period'>.</span><span class='id open'>open</span><span class='lparen'>(</span><span class='id zip_path'>zip_path</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>rb</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id io'>io</span><span class='op'>|</span> <span class='const'>Base64</span><span class='period'>.</span><span class='id strict_encode64'>strict_encode64</span> <span class='id io'>io</span><span class='period'>.</span><span class='id read'>read</span> <span class='rbrace'>}</span>
+  <span class='kw'>ensure</span>
+    <span class='const'>FileUtils</span><span class='period'>.</span><span class='id rm_rf'>rm_rf</span> <span class='id tmp_dir'>tmp_dir</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -279,9 +284,9 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:52 2011 by 
+  Generated on Mon Aug  1 20:19:44 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

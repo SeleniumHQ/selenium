@@ -147,7 +147,7 @@ Work in progress&#8230;
   
     <span class="summary_desc"><div class='inline'><p>
 Retrieves the message of a JavaScript alert generated during the previous
-action, or fail if there were no alerts.
+action,  or fail if there were no alerts.
 </p>
 </div></span>
   
@@ -634,7 +634,7 @@ Set the execution delay in milliseconds, i.e.
 
   
     <span class="summary_desc"><div class='inline'><p>
-Gets the (whitespace-trimmed) value of an input field (or anything else
+Gets the (whitespace-trimmed) value of an input field  (or anything else
 with a value parameter).
 </p>
 </div></span>
@@ -659,7 +659,7 @@ with a value parameter).
 
   
     <span class="summary_desc"><div class='inline'><p>
-Simulates the user clicking the &quot;back&quot; button on their browser.
+Simulates the user clicking the &#8220;back&#8221; button on their browser.
 </p>
 </div></span>
   
@@ -1004,7 +1004,7 @@ Flexible wait semantics.
   
     <span class="summary_desc"><div class='inline'><p>
 Runs the specified JavaScript snippet repeatedly until it evaluates to
-&quot;true&quot;.
+&#8220;true&#8221;.
 </p>
 </div></span>
   
@@ -1092,12 +1092,11 @@ Waits for a popup window to appear and load up.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 480</span>
 
-<span class='def def kw'>def</span> <span class='actual_timeout_in_milliseconds identifier id'>actual_timeout_in_milliseconds</span><span class='lparen token'>(</span><span class='timeout_in_seconds identifier id'>timeout_in_seconds</span><span class='rparen token'>)</span>
-  <span class='actual_timeout identifier id'>actual_timeout</span> <span class='assign token'>=</span> <span class='lparen token'>(</span><span class='timeout_in_seconds identifier id'>timeout_in_seconds</span> <span class='orop op'>||</span> 
-                    <span class='default_timeout_in_seconds identifier id'>default_timeout_in_seconds</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span>
-  <span class='actual_timeout identifier id'>actual_timeout</span> <span class='mult op'>*</span> <span class='integer val'>1000</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id actual_timeout_in_milliseconds'>actual_timeout_in_milliseconds</span><span class='lparen'>(</span><span class='id timeout_in_seconds'>timeout_in_seconds</span><span class='rparen'>)</span>
+  <span class='id actual_timeout'>actual_timeout</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id timeout_in_seconds'>timeout_in_seconds</span> <span class='op'>||</span> 
+                    <span class='id default_timeout_in_seconds'>default_timeout_in_seconds</span><span class='rparen'>)</span><span class='period'>.</span><span class='id to_i'>to_i</span>
+  <span class='id actual_timeout'>actual_timeout</span> <span class='op'>*</span> <span class='int'>1000</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1114,7 +1113,7 @@ Waits for a popup window to appear and load up.
   <div class="discussion">
     <p>
 Retrieves the message of a JavaScript alert generated during the previous
-action, or fail if there were no alerts.
+action,  or fail if there were no alerts.
 </p>
 <p>
 Getting an alert has the same effect as manually clicking OK. If an alert
@@ -1148,10 +1147,9 @@ generated and Selenium will hang until someone manually clicks OK.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 220</span>
 
-<span class='def def kw'>def</span> <span class='alert identifier id'>alert</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getAlert&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id alert'>alert</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getAlert</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1201,10 +1199,9 @@ Whether an alert occurred
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 202</span>
 
-<span class='def def kw'>def</span> <span class='alert? fid id'>alert?</span>
-  <span class='boolean_command identifier id'>boolean_command</span> <span class='string val'>&quot;isAlertPresent&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id alert?'>alert?</span>
+  <span class='id boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isAlertPresent</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1241,10 +1238,9 @@ Returns the IDs of all windows that the browser knows about.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 408</span>
 
-<span class='def def kw'>def</span> <span class='all_window_ids identifier id'>all_window_ids</span>
-  <span class='string_array_command identifier id'>string_array_command</span> <span class='string val'>&quot;getAllWindowIds&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id all_window_ids'>all_window_ids</span>
+  <span class='id string_array_command'>string_array_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getAllWindowIds</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1281,10 +1277,9 @@ Returns the names of all windows that the browser knows about.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 414</span>
 
-<span class='def def kw'>def</span> <span class='all_window_names identifier id'>all_window_names</span>
-  <span class='string_array_command identifier id'>string_array_command</span> <span class='string val'>&quot;getAllWindowNames&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id all_window_names'>all_window_names</span>
+  <span class='id string_array_command'>string_array_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getAllWindowNames</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1321,10 +1316,9 @@ Returns the titles of all windows that the browser knows about.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 420</span>
 
-<span class='def def kw'>def</span> <span class='all_window_titles identifier id'>all_window_titles</span>
-  <span class='string_array_command identifier id'>string_array_command</span> <span class='string val'>&quot;getAllWindowTitles&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id all_window_titles'>all_window_titles</span>
+  <span class='id string_array_command'>string_array_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getAllWindowTitles</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1361,10 +1355,9 @@ Gets the entire text of the page.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 115</span>
 
-<span class='def def kw'>def</span> <span class='body_text identifier id'>body_text</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getBodyText&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id body_text'>body_text</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getBodyText</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1390,10 +1383,10 @@ The network traffic is returned in the format it was requested. Valid
 values are: :json, :xml, or :plain.
 </p>
 <p>
-Warning: For browser_network_traffic to work you need to start your browser
-session with the option &quot;captureNetworkTraffic=true&quot;, which will
-force ALL traffic to go to the Remote Control proxy even for more efficient
-browser modes like `*firefox` and `*safari`.
+Warning: For browser_network_traffic to work you need to start your 
+browser session with the option &#8220;captureNetworkTraffic=true&#8221;,
+which  will force ALL traffic to go to the Remote Control proxy even for
+more efficient browser modes like `*firefox` and `*safari`.
 </p>
 
 
@@ -1417,13 +1410,12 @@ browser modes like `*firefox` and `*safari`.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 436</span>
 
-<span class='def def kw'>def</span> <span class='browser_network_traffic identifier id'>browser_network_traffic</span><span class='lparen token'>(</span><span class='format identifier id'>format</span> <span class='assign token'>=</span> <span class='symbol val'>:plain</span><span class='rparen token'>)</span>
-  <span class='raise identifier id'>raise</span> <span class='string val'>&quot;format must be :plain, :json, or :xml&quot;</span>   \
-      <span class='unless unless_mod kw'>unless</span> <span class='lbrack token'>[</span><span class='symbol val'>:plain</span><span class='comma token'>,</span> <span class='symbol val'>:json</span><span class='comma token'>,</span> <span class='symbol val'>:xml</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span><span class='format identifier id'>format</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id browser_network_traffic'>browser_network_traffic</span><span class='lparen'>(</span><span class='id format'>format</span> <span class='op'>=</span> <span class='symbol'>:plain</span><span class='rparen'>)</span>
+  <span class='id raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>format must be :plain, :json, or :xml</span><span class='tstring_end'>&quot;</span></span>   \
+      <span class='kw'>unless</span> <span class='lbracket'>[</span><span class='symbol'>:plain</span><span class='comma'>,</span> <span class='symbol'>:json</span><span class='comma'>,</span> <span class='symbol'>:xml</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id include?'>include?</span><span class='lparen'>(</span><span class='id format'>format</span><span class='rparen'>)</span>
         
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;captureNetworkTraffic&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='format identifier id'>format</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>captureNetworkTraffic</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id format'>format</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1446,10 +1438,9 @@ browser (e.g. to resolve XPath locators).
 `library_name&#8217; can be:
 </p>
 <pre class="code">
-    <span class='mult op'>*</span> <span class='symbol val'>:ajaxslt</span>          <span class='colon op'>:</span> <span class='Google constant id'>Google</span><span class='string val'>'s library
-    * :javascript-xpath : Cybozu Labs'</span> <span class='faster identifier id'>faster</span> <span class='library identifier id'>library</span>
-    <span class='mult op'>*</span> <span class='symbol val'>:default</span>          <span class='colon op'>:</span> <span class='Selenium constant id'>Selenium</span> <span class='default identifier id'>default</span> <span class='library identifier id'>library</span><span class='dot token'>.</span>
-</pre>
+    * :ajaxslt          : Google's library
+    * :javascript-xpath : Cybozu Labs' faster library
+    * :default          : Selenium default library.</pre>
 
 
   </div>
@@ -1471,12 +1462,11 @@ browser (e.g. to resolve XPath locators).
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 450</span>
 
-<span class='def def kw'>def</span> <span class='browser_xpath_library= identifier id'>browser_xpath_library=</span><span class='lparen token'>(</span><span class='library_name identifier id'>library_name</span><span class='rparen token'>)</span>
-  <span class='raise identifier id'>raise</span> <span class='string val'>&quot;library name must be :ajaxslt, :javascript-xpath, or :default&quot;</span>   \
-      <span class='unless unless_mod kw'>unless</span> <span class='lbrack token'>[</span><span class='symbol val'>:ajaxslt</span><span class='comma token'>,</span> <span class='symbol val'>:'javascript-xpath'</span><span class='comma token'>,</span> <span class='symbol val'>:default</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span><span class='library_name identifier id'>library_name</span><span class='rparen token'>)</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;useXpathLibrary&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='library_name identifier id'>library_name</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id browser_xpath_library='>browser_xpath_library=</span><span class='lparen'>(</span><span class='id library_name'>library_name</span><span class='rparen'>)</span>
+  <span class='id raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>library name must be :ajaxslt, :javascript-xpath, or :default</span><span class='tstring_end'>&quot;</span></span>   \
+      <span class='kw'>unless</span> <span class='lbracket'>[</span><span class='symbol'>:ajaxslt</span><span class='comma'>,</span> <span class='symbol'>:javascript-xpath</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='symbol'>:default</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id include?'>include?</span><span class='lparen'>(</span><span class='id library_name'>library_name</span><span class='rparen'>)</span>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>useXpathLibrary</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id library_name'>library_name</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1492,13 +1482,14 @@ browser (e.g. to resolve XPath locators).
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Returns whether a toggle-button (checkbox/radio) is checked. Fails if the
+Returns whether a toggle-button (checkbox/radio) is checked.  Fails if the
 specified element doesn&#8217;t exist or isn&#8217;t a toggle-button.
 </p>
 <ul>
-<li>&#8216;locator&#8217; is an element locator pointing to a checkbox or radio
+<li><p>
+&#8216;locator&#8217; is an element locator pointing to a checkbox or radio
 button
-
+</p>
 </li>
 </ul>
 
@@ -1533,10 +1524,9 @@ button
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 197</span>
 
-<span class='def def kw'>def</span> <span class='checked? fid id'>checked?</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
-  <span class='boolean_command identifier id'>boolean_command</span> <span class='string val'>&quot;isChecked&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id checked?'>checked?</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span>
+  <span class='id boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isChecked</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1555,103 +1545,127 @@ button
 Clicks on a link, button, checkbox or radio button.
 </p>
 <p>
-&#8216;locator&#8217; is an element locator
+&#8216;locator&#8217; is an element locator      
 </p>
 <p>
 Using &#8216;options&#8217; you can automatically wait for an event to
-happen after the click. e.g.
+happen after the  click. e.g.
 </p>
 <ul>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :page # will wait for a new
-page to load
-
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :page                          
+# will wait for a new page to load
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :popup, :window =&gt; &#8216;a
-window id&#8217; # will wait for a new popup window to appear. Also selects
-the popup window for you provide `:select =&gt; true`
-
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :popup, :window => &#8216;a
+window id&#8217;                           # will wait for a new popup
+window to appear. Also selects the popup window for you provide `:select =>
+true`
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :ajax # will wait for all ajax
-requests to be completed using semantics of default javascript framework
-
-</li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :ajax, :javascript_framework
-=&gt; :jquery # will wait for all ajax requests to be completed overriding
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :ajax                          
+# will wait for all ajax requests to be completed using semantics of
 default javascript framework
-
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :effects # will wait for all
-javascript effects to be rendered using semantics of default javascript
-framework
-
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :ajax, :javascript_framework =>
+:jquery                    # will wait for all ajax requests to be
+completed overriding default javascript framework
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :effects,
-:javascript_framework =&gt; :prototype # will wait for all javascript
-effects to be rendered overriding default javascript framework
-
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :effects                       
+# will wait for all javascript effects to be rendered using semantics of
+default javascript framework
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :element, :element =&gt;
-&#8216;new_element_id&#8217; # will wait for an element to be
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :effects, :javascript_framework
+=> :prototype              # will wait for all javascript effects to be
+rendered overriding default javascript framework
+</p>
+</li>
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :element, :element =>
+&#8216;new_element_id&#8217;                     # will wait for an element
+to be present/appear
+</p>
+</li>
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :no_element, :element =>
+&#8216;new_element_id&#8217;                  # will wait for an element to
+be not be present/disappear
+</p>
+</li>
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :text, :text => &#8216;some
+text&#8217;                                # will wait for some text to be
 present/appear
-
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :no_element, :element =&gt;
-&#8216;new_element_id&#8217; # will wait for an element to be not be
-present/disappear
-
-</li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :text, :text =&gt; &#8216;some
-text&#8217; # will wait for some text to be present/appear
-
-</li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :text, :text =&gt; /A Regexp/
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :text, :text => /A Regexp/     
 # will wait for some text to be present/appear
-
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :text, :element =&gt;
-&#8216;a_locator&#8217;, :text =&gt; &#8216;some text&#8217; # will wait
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :text, :element =>
+&#8216;a_locator&#8217;, :text => &#8216;some text&#8217;       # will wait
 for the content of &#8216;a_locator&#8217; to be &#8216;some text&#8217;
-
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :no_text, :text =&gt;
-&#8216;some text&#8217; # will wait for the text to be not be
-present/disappear
-
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :no_text, :text => &#8216;some
+text&#8217;                             # will wait for the text to be not
+be present/disappear
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :no_text, :text =&gt; /A
-Regexp/ # will wait for the text to be not be present/disappear
-
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :no_text, :text => /A Regexp/  
+# will wait for the text to be not be present/disappear
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :no_text, :element =&gt;
-&#8216;a_locator&#8217;, :text =&gt; &#8216;some text&#8217; # will wait
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :no_text, :element =>
+&#8216;a_locator&#8217;, :text => &#8216;some text&#8217;    # will wait
 for the content of &#8216;a_locator&#8217; to not be &#8216;some
 text&#8217;
-
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :value, :element =&gt;
-&#8216;a_locator&#8217;, :value =&gt; &#8216;some value&#8217; # will wait
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :value, :element =>
+&#8216;a_locator&#8217;, :value => &#8216;some value&#8217;    # will wait
 for the field value of &#8216;a_locator&#8217; to be &#8216;some
 value&#8217;
-
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :no_value, :element =&gt;
-&#8216;a_locator&#8217;, :value =&gt; &#8216;some value&#8217; # will wait
-for the field value of &#8216;a_locator&#8217; to not be &#8216;some
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :no_value, :element =>
+&#8216;a_locator&#8217;, :value => &#8216;some value&#8217; # will wait for
+the field value of &#8216;a_locator&#8217; to not be &#8216;some
 value&#8217;
-
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :visible, :element =&gt;
-&#8216;a_locator&#8217; # will wait for element to be visible
-
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :visible, :element =>
+&#8216;a_locator&#8217;                          # will wait for element to
+be visible
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :not_visible, :element =&gt;
-&#8216;a_locator&#8217; # will wait for element to not be visible
-
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :not_visible, :element =>
+&#8216;a_locator&#8217;                      # will wait for element to not
+be visible
+</p>
 </li>
-<li>click &quot;a_locator&quot;, :wait_for =&gt; :condition, :javascript =&gt;
-&#8216;some expression&#8217; # will wait for the javascript expression to
-be true
-
+<li><p>
+click &#8220;a_locator&#8221;, :wait_for => :condition, :javascript =>
+&#8216;some expression&#8217;               # will wait for the javascript
+expression to be true
+</p>
 </li>
 </ul>
 <p>
@@ -1678,11 +1692,10 @@ key). Otherwise the default driver timeout is used.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 148</span>
 
-<span class='def def kw'>def</span> <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;click&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-  <span class='wait_for identifier id'>wait_for</span> <span class='options identifier id'>options</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id click'>click</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='comma'>,</span> <span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>click</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
+  <span class='id wait_for'>wait_for</span> <span class='id options'>options</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1704,7 +1717,7 @@ the previous action.
 <p>
 By default, the confirm function will return true, having the same effect
 as manually clicking OK. This can be changed by prior execution of the
-chooseCancelOnNextConfirmation command.
+chooseCancelOnNextConfirmation command. 
 </p>
 <p>
 If an confirmation is generated but you do not consume it with
@@ -1738,10 +1751,9 @@ WILL be generated and Selenium will hang until you manually click OK.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 246</span>
 
-<span class='def def kw'>def</span> <span class='confirmation identifier id'>confirmation</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getConfirmation&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id confirmation'>confirmation</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getConfirmation</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1792,10 +1804,9 @@ called)
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 225</span>
 
-<span class='def def kw'>def</span> <span class='confirmation? fid id'>confirmation?</span>
-  <span class='boolean_command identifier id'>boolean_command</span> <span class='string val'>&quot;isConfirmationPresent&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id confirmation?'>confirmation?</span>
+  <span class='id boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isConfirmationPresent</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1836,10 +1847,9 @@ if the cookie is not present.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 362</span>
 
-<span class='def def kw'>def</span> <span class='cookie identifier id'>cookie</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getCookieByName&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id cookie'>cookie</span><span class='lparen'>(</span><span class='id name'>name</span><span class='rparen'>)</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getCookieByName</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id name'>name</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1893,10 +1903,9 @@ otherwise.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 369</span>
 
-<span class='def def kw'>def</span> <span class='cookie? fid id'>cookie?</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
-  <span class='boolean_command identifier id'>boolean_command</span> <span class='string val'>&quot;isCookiePresent&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id cookie?'>cookie?</span><span class='lparen'>(</span><span class='id name'>name</span><span class='rparen'>)</span>
+  <span class='id boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isCookiePresent</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id name'>name</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1933,10 +1942,9 @@ Return all cookies for the current page under test.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 355</span>
 
-<span class='def def kw'>def</span> <span class='cookies identifier id'>cookies</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getCookie&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id cookies'>cookies</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getCookie</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1957,13 +1965,13 @@ page under test, unless you specified a path for this cookie explicitly.
 </p>
 <p>
 &#8216;nameValuePair&#8217; is name and value of the cookie in a format
-&quot;name=value&quot; &#8216;optionsString&#8217; is options for the
+&#8220;name=value&#8221; &#8216;optionsString&#8217; is options for the
 cookie. Currently supported options include &#8216;path&#8217;,
 &#8216;max_age&#8217; and &#8216;domain&#8217;. the optionsString&#8217;s
-format is &quot;path=/path/, max_age=60, domain=.foo.com&quot;. The order
-of options are irrelevant, the unit of the value of &#8216;max_age&#8217;
-is second. Note that specifying a domain that isn&#8217;t a subset of the
-current domain will usually fail.
+format is &#8220;path=/path/, max_age=60, domain=.foo.com&#8221;. The order
+of options are irrelevant, the unit      of the value of
+&#8216;max_age&#8217; is second.  Note that specifying a domain that
+isn&#8217;t a subset of the current domain will      usually fail.
 </p>
 
 
@@ -1987,13 +1995,12 @@ current domain will usually fail.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 379</span>
 
-<span class='def def kw'>def</span> <span class='create_cookie identifier id'>create_cookie</span><span class='lparen token'>(</span><span class='name_value_pair identifier id'>name_value_pair</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='assign token'>=</span><span class='string val'>&quot;&quot;</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='options identifier id'>options</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Hash constant id'>Hash</span>
-    <span class='options identifier id'>options</span> <span class='assign token'>=</span> <span class='options identifier id'>options</span><span class='dot token'>.</span><span class='keys identifier id'>keys</span><span class='dot token'>.</span><span class='collect identifier id'>collect</span> <span class='lbrace token'>{</span><span class='bitor op'>|</span><span class='key identifier id'>key</span><span class='bitor op'>|</span> <span class='dstring node'>&quot;#{key}=#{options[key]}&quot;</span> <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='sort identifier id'>sort</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='string val'>&quot;, &quot;</span><span class='rparen token'>)</span>
-  <span class='end end kw'>end</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;createCookie&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='name_value_pair identifier id'>name_value_pair</span><span class='comma token'>,</span><span class='options identifier id'>options</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id create_cookie'>create_cookie</span><span class='lparen'>(</span><span class='id name_value_pair'>name_value_pair</span><span class='comma'>,</span> <span class='id options'>options</span><span class='op'>=</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id options'>options</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='const'>Hash</span>
+  <span class='id options'>options</span> <span class='op'>=</span> <span class='id options'>options</span><span class='period'>.</span><span class='id keys'>keys</span><span class='period'>.</span><span class='id collect'>collect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id key'>key</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id key'>key</span><span class='rbrace'>}</span><span class='tstring_content'>=</span><span class='embexpr_beg'>#{</span><span class='id options'>options</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id sort'>sort</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>createCookie</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id name_value_pair'>name_value_pair</span><span class='comma'>,</span><span class='id options'>options</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2009,28 +2016,28 @@ current domain will usually fail.
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Delete a named cookie with specified path and domain. Be careful; to delete
-a cookie, you need to delete it using the exact same path and domain that
-were used to create the cookie. If the path is wrong, or the domain is
-wrong, the cookie simply won&#8217;t be deleted. Also note that specifying
+Delete a named cookie with specified path and domain.  Be careful; to
+delete a cookie, you need to delete it using the exact same path and domain
+that were used to create the cookie. If the path is wrong, or the domain is
+wrong, the cookie simply won&#8217;t be deleted.  Also note that specifying
 a domain that isn&#8217;t a subset of the current domain will usually fail.
 </p>
 <p>
 Since there&#8217;s no way to discover at runtime the original path and
 domain of a given cookie, we&#8217;ve added an option called
 &#8216;recurse&#8217; to try all sub-domains of the current domain with all
-paths that are a subset of the current path. Beware; this option can be
-slow. In big-O notation, it operates in O(n*m) time, where n is the number
+paths that are a subset of the current path.  Beware; this option can be
+slow.  In big-O notation, it operates in O(n*m) time, where n is the number
 of dots in the domain name and m is the number of slashes in the path.
 </p>
 <p>
 &#8216;name&#8217; is the name of the cookie to be deleted
 &#8216;optionsString&#8217; is options for the cookie. Currently supported
-options include &#8216;path&#8217;, &#8216;domain&#8217; and
+options include &#8216;path&#8217;, &#8216;domain&#8217;      and
 &#8216;recurse.&#8217; The optionsString&#8217;s format is
-&quot;path=/path/, domain=.foo.com, recurse=true&quot;. The order of
+&#8220;path=/path/, domain=.foo.com, recurse=true&#8221;.      The order of
 options are irrelevant. Note that specifying a domain that isn&#8217;t a
-subset of the current domain will usually fail.
+subset of      the current domain will usually fail.
 </p>
 
 
@@ -2055,14 +2062,13 @@ subset of the current domain will usually fail.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 399</span>
 
-<span class='def def kw'>def</span> <span class='delete_cookie identifier id'>delete_cookie</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='assign token'>=</span><span class='string val'>&quot;&quot;</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='options identifier id'>options</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Hash constant id'>Hash</span>
-    <span class='ordered_keys identifier id'>ordered_keys</span> <span class='assign token'>=</span> <span class='options identifier id'>options</span><span class='dot token'>.</span><span class='keys identifier id'>keys</span><span class='dot token'>.</span><span class='sort identifier id'>sort</span> <span class='lbrace token'>{</span><span class='bitor op'>|</span><span class='a identifier id'>a</span><span class='comma token'>,</span><span class='b identifier id'>b</span><span class='bitor op'>|</span> <span class='a identifier id'>a</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span> <span class='cmp op'>&lt;=&gt;</span> <span class='b identifier id'>b</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span> <span class='rbrace token'>}</span>
-    <span class='options identifier id'>options</span> <span class='assign token'>=</span> <span class='ordered_keys identifier id'>ordered_keys</span><span class='dot token'>.</span><span class='collect identifier id'>collect</span> <span class='lbrace token'>{</span><span class='bitor op'>|</span><span class='key identifier id'>key</span><span class='bitor op'>|</span> <span class='dstring node'>&quot;#{key}=#{options[key]}&quot;</span> <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='string val'>&quot;, &quot;</span><span class='rparen token'>)</span>
-  <span class='end end kw'>end</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;deleteCookie&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='comma token'>,</span><span class='options identifier id'>options</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id delete_cookie'>delete_cookie</span><span class='lparen'>(</span><span class='id name'>name</span><span class='comma'>,</span> <span class='id options'>options</span><span class='op'>=</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id options'>options</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='const'>Hash</span>
+  <span class='id ordered_keys'>ordered_keys</span> <span class='op'>=</span> <span class='id options'>options</span><span class='period'>.</span><span class='id keys'>keys</span><span class='period'>.</span><span class='id sort'>sort</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id a'>a</span><span class='comma'>,</span><span class='id b'>b</span><span class='op'>|</span> <span class='id a'>a</span><span class='period'>.</span><span class='id to_s'>to_s</span> <span class='op'>&lt;=&gt;</span> <span class='id b'>b</span><span class='period'>.</span><span class='id to_s'>to_s</span> <span class='rbrace'>}</span>
+  <span class='id options'>options</span> <span class='op'>=</span> <span class='id ordered_keys'>ordered_keys</span><span class='period'>.</span><span class='id collect'>collect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id key'>key</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id key'>key</span><span class='rbrace'>}</span><span class='tstring_content'>=</span><span class='embexpr_beg'>#{</span><span class='id options'>options</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>deleteCookie</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id name'>name</span><span class='comma'>,</span><span class='id options'>options</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2081,8 +2087,9 @@ subset of the current domain will usually fail.
 Verifies that the specified element is somewhere on the page.
 </p>
 <ul>
-<li>&#8216;locator&#8217; is an element locator
-
+<li><p>
+&#8216;locator&#8217; is an element locator
+</p>
 </li>
 </ul>
 
@@ -2117,10 +2124,9 @@ Verifies that the specified element is somewhere on the page.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 163</span>
 
-<span class='def def kw'>def</span> <span class='element? fid id'>element?</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
-  <span class='boolean_command identifier id'>boolean_command</span> <span class='string val'>&quot;isElementPresent&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id element?'>element?</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span>
+  <span class='id boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isElementPresent</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2136,8 +2142,8 @@ Verifies that the specified element is somewhere on the page.
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Get execution delay in milliseconds, i.e. a pause delay following each
-selenium operation. By default, there is no such delay (value is 0).
+Get execution delay in milliseconds, i.e. a pause delay following  each
+selenium operation. By default, there is no such delay  (value is 0).
 </p>
 
 
@@ -2158,10 +2164,9 @@ selenium operation. By default, there is no such delay (value is 0).
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 468</span>
 
-<span class='def def kw'>def</span> <span class='execution_delay identifier id'>execution_delay</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getSpeed&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id execution_delay'>execution_delay</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getSpeed</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2202,10 +2207,9 @@ Setting an execution can be useful to troubleshoot or capture videos
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 476</span>
 
-<span class='def def kw'>def</span> <span class='execution_delay= identifier id'>execution_delay=</span><span class='lparen token'>(</span><span class='delay_in_milliseconds identifier id'>delay_in_milliseconds</span><span class='rparen token'>)</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;setSpeed&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='delay_in_milliseconds identifier id'>delay_in_milliseconds</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id execution_delay='>execution_delay=</span><span class='lparen'>(</span><span class='id delay_in_milliseconds'>delay_in_milliseconds</span><span class='rparen'>)</span>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>setSpeed</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id delay_in_milliseconds'>delay_in_milliseconds</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2221,14 +2225,15 @@ Setting an execution can be useful to troubleshoot or capture videos
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Gets the (whitespace-trimmed) value of an input field (or anything else
+Gets the (whitespace-trimmed) value of an input field  (or anything else
 with a value parameter). For checkbox/radio elements, the value will be
-&quot;on&quot; or &quot;off&quot; depending on whether the element is
+&#8220;on&#8221; or &#8220;off&#8221;  depending on whether the element is
 checked or not.
 </p>
 <ul>
-<li>&#8216;locator&#8217; is an element locator
-
+<li><p>
+&#8216;locator&#8217; is an element locator
+</p>
 </li>
 </ul>
 
@@ -2250,10 +2255,9 @@ checked or not.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 184</span>
 
-<span class='def def kw'>def</span> <span class='field identifier id'>field</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getValue&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id field'>field</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getValue</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2269,94 +2273,115 @@ checked or not.
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Simulates the user clicking the &quot;back&quot; button on their browser.
+Simulates the user clicking the &#8220;back&#8221; button on their browser.
 Using &#8216;options&#8217; you can automatically wait for an event to
-happen after the click. e.g.
+happen after the  click. e.g.
 </p>
 <ul>
-<li>go_back :wait_for =&gt; :page # will wait for a new page to load
-
+<li><p>
+go_back :wait_for => :page                                                 
+# will wait for a new page to load
+</p>
 </li>
-<li>go_back :wait_for =&gt; :popup, :window =&gt; &#8216;a window id&#8217; #
-will wait for a new popup window to appear. Also selects the popup window
-for you provide `:select =&gt; true`
-
+<li><p>
+go_back :wait_for => :popup, :window => &#8216;a window id&#8217;          
+# will wait for a new popup window to appear. Also selects the popup window
+for you provide `:select => true`
+</p>
 </li>
-<li>go_back :wait_for =&gt; :ajax # will wait for all ajax requests to be
-completed using semantics of default javascript framework
-
+<li><p>
+go_back :wait_for => :ajax                                                 
+# will wait for all ajax requests to be completed using semantics of
+default javascript framework
+</p>
 </li>
-<li>go_back :wait_for =&gt; :ajax, :javascript_framework =&gt; :jquery # will
-wait for all ajax requests to be completed overriding default javascript
-framework
-
-</li>
-<li>go_back :wait_for =&gt; :effects # will wait for all javascript effects to
-be rendered using semantics of default javascript framework
-
-</li>
-<li>go_back :wait_for =&gt; :effects, :javascript_framework =&gt; :prototype #
-will wait for all javascript effects to be rendered overriding default
+<li><p>
+go_back :wait_for => :ajax, :javascript_framework => :jquery               
+# will wait for all ajax requests to be completed overriding default
 javascript framework
-
+</p>
 </li>
-<li>go_back :wait_for =&gt; :element, :element =&gt;
-&#8216;new_element_id&#8217; # will wait for an element to be
-present/appear
-
+<li><p>
+go_back :wait_for => :effects                                              
+# will wait for all javascript effects to be rendered using semantics of
+default javascript framework
+</p>
 </li>
-<li>go_back :wait_for =&gt; :no_element, :element =&gt;
-&#8216;new_element_id&#8217; # will wait for an element to be not be
-present/disappear
-
+<li><p>
+go_back :wait_for => :effects, :javascript_framework => :prototype         
+# will wait for all javascript effects to be rendered overriding default
+javascript framework
+</p>
 </li>
-<li>go_back :wait_for =&gt; :text, :text =&gt; &#8216;some text&#8217; # will
-wait for some text to be present/appear
-
+<li><p>
+go_back :wait_for => :element, :element => &#8216;new_element_id&#8217;    
+# will wait for an element to be present/appear
+</p>
 </li>
-<li>go_back &quot;a_locator&quot;, :wait_for =&gt; :text, :text =&gt; /A
-Regexp/ # will wait for some text to be present/appear
-
+<li><p>
+go_back :wait_for => :no_element, :element => &#8216;new_element_id&#8217; 
+# will wait for an element to be not be present/disappear
+</p>
 </li>
-<li>go_back :wait_for =&gt; :text, :element =&gt; &#8216;a_locator&#8217;,
-:text =&gt; &#8216;some text&#8217; # will wait for the content of
+<li><p>
+go_back :wait_for => :text, :text => &#8216;some text&#8217;               
+# will wait for some text to be present/appear
+</p>
+</li>
+<li><p>
+go_back &#8220;a_locator&#8221;, :wait_for => :text, :text => /A Regexp/   
+# will wait for some text to be present/appear
+</p>
+</li>
+<li><p>
+go_back :wait_for => :text, :element => &#8216;a_locator&#8217;, :text =>
+&#8216;some text&#8217;       # will wait for the content of
 &#8216;a_locator&#8217; to be &#8216;some text&#8217;
-
+</p>
 </li>
-<li>go_back :wait_for =&gt; :no_text, :text =&gt; &#8216;some text&#8217; #
-will wait for the text to be not be present/disappear
-
+<li><p>
+go_back :wait_for => :no_text, :text => &#8216;some text&#8217;            
+# will wait for the text to be not be present/disappear
+</p>
 </li>
-<li>go_back &quot;a_locator&quot;, :wait_for =&gt; :no_text, :text =&gt; /A
-Regexp/ # will wait for the text to be not be present/disappear
-
+<li><p>
+go_back &#8220;a_locator&#8221;, :wait_for => :no_text, :text => /A Regexp/
+# will wait for the text to be not be present/disappear
+</p>
 </li>
-<li>go_back :wait_for =&gt; :no_text, :element =&gt; &#8216;a_locator&#8217;,
-:text =&gt; &#8216;some text&#8217; # will wait for the content of
+<li><p>
+go_back :wait_for => :no_text, :element => &#8216;a_locator&#8217;, :text
+=> &#8216;some text&#8217;    # will wait for the content of
 &#8216;a_locator&#8217; to not be &#8216;some text&#8217;
-
+</p>
 </li>
-<li>go_back :wait_for =&gt; :condition, :javascript =&gt; &#8216;some
-expression&#8217; # will wait for the javascript expression to be true
-
+<li><p>
+go_back :wait_for => :condition, :javascript => &#8216;some
+expression&#8217;               # will wait for the javascript expression
+to be true
+</p>
 </li>
-<li>go_back :wait_for =&gt; :value, :element =&gt; &#8216;a_locator&#8217;,
-:value =&gt; &#8216;some value&#8217; # will wait for the field value of
+<li><p>
+go_back :wait_for => :value, :element => &#8216;a_locator&#8217;, :value =>
+&#8216;some value&#8217;    # will wait for the field value of
 &#8216;a_locator&#8217; to be &#8216;some value&#8217;
-
+</p>
 </li>
-<li>go_back :wait_for =&gt; :visible, :element =&gt; &#8216;a_locator&#8217; #
-will wait for element to be visible
-
+<li><p>
+go_back :wait_for => :visible, :element => &#8216;a_locator&#8217;         
+# will wait for element to be visible
+</p>
 </li>
-<li>go_back :wait_for =&gt; :not_visible, :element =&gt;
-&#8216;a_locator&#8217; # will wait for element to not be visible
-
+<li><p>
+go_back :wait_for => :not_visible, :element => &#8216;a_locator&#8217;     
+# will wait for element to not be visible
+</p>
 </li>
-<li>go_back :wait_for =&gt; :no_value, :element =&gt; &#8216;a_locator&#8217;,
-:value =&gt; &#8216;some value&#8217; # will wait for the field value of
+<li><p>
+go_back :wait_for => :no_value, :element => &#8216;a_locator&#8217;, :value
+=> &#8216;some value&#8217; # will wait for the field value of
 &#8216;a_locator&#8217; to not be &#8216;some value&#8217;
-
+</p>
 </li>
 </ul>
 <p>
@@ -2383,11 +2408,10 @@ key). Otherwise the default driver timeout is used.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 349</span>
 
-<span class='def def kw'>def</span> <span class='go_back identifier id'>go_back</span><span class='lparen token'>(</span><span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;goBack&quot;</span>
-  <span class='wait_for identifier id'>wait_for</span> <span class='options identifier id'>options</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id go_back'>go_back</span><span class='lparen'>(</span><span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>goBack</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id wait_for'>wait_for</span> <span class='id options'>options</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2426,11 +2450,10 @@ by Selenium core. Useful when recording videos
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 460</span>
 
-<span class='def def kw'>def</span> <span class='highlight_located_element= identifier id'>highlight_located_element=</span><span class='lparen token'>(</span><span class='enabled identifier id'>enabled</span><span class='rparen token'>)</span>
-  <span class='boolean identifier id'>boolean</span> <span class='assign token'>=</span> <span class='lparen token'>(</span><span class='true true kw'>true</span> <span class='eq op'>==</span> <span class='enabled identifier id'>enabled</span><span class='rparen token'>)</span>
-  <span class='js_eval identifier id'>js_eval</span> <span class='dstring node'>&quot;selenium.browserbot.shouldHighlightLocatedElement = #{boolean}&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id highlight_located_element='>highlight_located_element=</span><span class='lparen'>(</span><span class='id enabled'>enabled</span><span class='rparen'>)</span>
+  <span class='id boolean'>boolean</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='kw'>true</span> <span class='op'>==</span> <span class='id enabled'>enabled</span><span class='rparen'>)</span>
+  <span class='id js_eval'>js_eval</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>selenium.browserbot.shouldHighlightLocatedElement = </span><span class='embexpr_beg'>#{</span><span class='id boolean'>boolean</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2450,21 +2473,21 @@ Returns the result of evaluating the specified JavaScript snippet whithin
 the browser.
 </p>
 <pre class="code">
- <span class='The constant id'>The</span> <span class='snippet identifier id'>snippet</span> <span class='may identifier id'>may</span> <span class='have identifier id'>have</span> <span class='multiple identifier id'>multiple</span> <span class='lines identifier id'>lines</span><span class='comma token'>,</span> <span class='but identifier id'>but</span> <span class='only identifier id'>only</span> <span class='the identifier id'>the</span> <span class='result identifier id'>result</span> <span class='of identifier id'>of</span> <span class='the identifier id'>the</span> <span class='last identifier id'>last</span> <span class='line identifier id'>line</span> <span class='will identifier id'>will</span> <span class='be identifier id'>be</span> <span class='returned identifier id'>returned</span><span class='dot token'>.</span>
+ The snippet may have multiple lines, but only the result of the last line will be returned.
 </pre>
 <p>
 Note that, by default, the snippet will run in the context of the
-&quot;selenium&quot; object itself, so <tt>this</tt> will refer to the
-Selenium object. Use <tt>window</tt> to refer to the window of your
-application, e.g.
-<tt>window.document.getElementById(&#8216;foo&#8217;)</tt> If you need to
-use a locator to refer to a single element in your application page, you
-can use <tt>this.browserbot.findElement(&quot;id=foo&quot;)</tt> where
-&quot;id=foo&quot; is your locator.
+&#8220;selenium&#8221; object itself, so <tt>this</tt> will refer to the
+Selenium object.  Use <tt>window</tt> to refer to the window of your
+application, e.g. <tt>window.document.getElementById('foo')</tt> If you
+need to use a locator to refer to a single element in your application
+page, you can use <tt>this.browserbot.findElement(&quot;id=foo&quot;)</tt>
+where &#8220;id=foo&#8221; is your locator.
 </p>
 <ul>
-<li>&#8216;script&#8217; is the JavaScript snippet to run
-
+<li><p>
+&#8216;script&#8217; is the JavaScript snippet to run
+</p>
 </li>
 </ul>
 
@@ -2486,10 +2509,9 @@ can use <tt>this.browserbot.findElement(&quot;id=foo&quot;)</tt> where
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 283</span>
 
-<span class='def def kw'>def</span> <span class='js_eval identifier id'>js_eval</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='rparen token'>)</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getEval&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='script identifier id'>script</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id js_eval'>js_eval</span><span class='lparen'>(</span><span class='id script'>script</span><span class='rparen'>)</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getEval</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id script'>script</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2526,10 +2548,9 @@ Returns the absolute URL of the current page.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 30</span>
 
-<span class='def def kw'>def</span> <span class='location identifier id'>location</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getLocation&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id location'>location</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getLocation</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2580,10 +2601,9 @@ generated and Selenium will hang until someone manually clicks OK.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 268</span>
 
-<span class='def def kw'>def</span> <span class='prompt identifier id'>prompt</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getPrompt&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id prompt'>prompt</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getPrompt</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2633,10 +2653,9 @@ Whether a prompt occurred
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 251</span>
 
-<span class='def def kw'>def</span> <span class='prompt? fid id'>prompt?</span>
-  <span class='boolean_command identifier id'>boolean_command</span> <span class='string val'>&quot;isPromptPresent&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id prompt?'>prompt?</span>
+  <span class='id boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isPromptPresent</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2661,8 +2680,8 @@ The default timeout is 30 seconds. &#8216;timeout&#8217; is a timeout in
 seconds, after which the action will return with an error
 </p>
 <p>
-Actions that require waiting include &quot;open&quot; and the
-&quot;waitFor*&quot; actions.
+Actions that require waiting include &#8220;open&#8221; and the
+&#8220;waitFor*&#8221; actions.
 </p>
 
 
@@ -2683,10 +2702,9 @@ Actions that require waiting include &quot;open&quot; and the
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 294</span>
 
-<span class='def def kw'>def</span> <span class='remote_control_timeout_in_seconds= identifier id'>remote_control_timeout_in_seconds=</span><span class='lparen token'>(</span><span class='timeout_in_seconds identifier id'>timeout_in_seconds</span><span class='rparen token'>)</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;setTimeout&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='actual_timeout_in_milliseconds identifier id'>actual_timeout_in_milliseconds</span><span class='lparen token'>(</span><span class='timeout_in_seconds identifier id'>timeout_in_seconds</span><span class='rparen token'>)</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id remote_control_timeout_in_seconds='>remote_control_timeout_in_seconds=</span><span class='lparen'>(</span><span class='id timeout_in_seconds'>timeout_in_seconds</span><span class='rparen'>)</span>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>setTimeout</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id actual_timeout_in_milliseconds'>actual_timeout_in_milliseconds</span><span class='lparen'>(</span><span class='id timeout_in_seconds'>timeout_in_seconds</span><span class='rparen'>)</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2706,8 +2724,10 @@ Returns the text from a cell of a table. The cellAddress syntax
 tableLocator.row.column, where row and column start at 0.
 </p>
 <ul>
-<li>&#8216;tableCellAddress&#8217; is a cell address, e.g. &quot;foo.1.4&quot;
-
+<li><p>
+&#8216;tableCellAddress&#8217; is a cell address, e.g.
+&#8220;foo.1.4&#8220;
+</p>
 </li>
 </ul>
 
@@ -2729,10 +2749,9 @@ tableLocator.row.column, where row and column start at 0.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 302</span>
 
-<span class='def def kw'>def</span> <span class='table_cell_text identifier id'>table_cell_text</span><span class='lparen token'>(</span><span class='tableCellAddress identifier id'>tableCellAddress</span><span class='rparen token'>)</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getTable&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='tableCellAddress identifier id'>tableCellAddress</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id table_cell_text'>table_cell_text</span><span class='lparen'>(</span><span class='id tableCellAddress'>tableCellAddress</span><span class='rparen'>)</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getTable</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id tableCellAddress'>tableCellAddress</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2761,8 +2780,9 @@ innerText (IE-like browsers) of the element, which is the rendered text
 shown to the user.
 </p>
 <ul>
-<li>&#8216;locator&#8217; is an Selenium element locator
-
+<li><p>
+&#8216;locator&#8217; is an Selenium element locator
+</p>
 </li>
 </ul>
 
@@ -2784,10 +2804,9 @@ shown to the user.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 19</span>
 
-<span class='def def kw'>def</span> <span class='text identifier id'>text</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getText&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id text'>text</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getText</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2807,8 +2826,9 @@ Verifies that the specified text pattern appears somewhere on the rendered
 page shown to the user.
 </p>
 <ul>
-<li>&#8216;pattern&#8217; is a pattern to match with the text of the page
-
+<li><p>
+&#8216;pattern&#8217; is a pattern to match with the text of the page
+</p>
 </li>
 </ul>
 
@@ -2843,10 +2863,9 @@ page shown to the user.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 156</span>
 
-<span class='def def kw'>def</span> <span class='text? fid id'>text?</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='rparen token'>)</span>
-  <span class='boolean_command identifier id'>boolean_command</span> <span class='string val'>&quot;isTextPresent&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='pattern identifier id'>pattern</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id text?'>text?</span><span class='lparen'>(</span><span class='id pattern'>pattern</span><span class='rparen'>)</span>
+  <span class='id boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isTextPresent</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id pattern'>pattern</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2883,10 +2902,9 @@ Return the title of the current HTML page.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 25</span>
 
-<span class='def def kw'>def</span> <span class='title identifier id'>title</span>
-  <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getTitle&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id title'>title</span>
+  <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getTitle</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2923,10 +2941,9 @@ Alias for <tt>field</tt>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 189</span>
 
-<span class='def def kw'>def</span> <span class='value identifier id'>value</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
-  <span class='field identifier id'>field</span> <span class='locator identifier id'>locator</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id value'>value</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span>
+ <span class='id field'>field</span> <span class='id locator'>locator</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -2943,9 +2960,9 @@ Alias for <tt>field</tt>
   <div class="discussion">
     <p>
 Determines if the specified element is visible. An element can be rendered
-invisible by setting the CSS &quot;visibility&quot; property to
-&quot;hidden&quot;, or the &quot;display&quot; property to
-&quot;none&quot;, either for the element itself or one if its ancestors.
+invisible by setting the CSS &#8220;visibility&#8221; property to
+&#8220;hidden&#8221;, or the &#8220;display&#8221; property to
+&#8220;none&#8221;, either for the element itself or one if its ancestors. 
 This method will fail if the element is not present.
 </p>
 <p>
@@ -2983,10 +3000,9 @@ This method will fail if the element is not present.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 174</span>
 
-<span class='def def kw'>def</span> <span class='visible? fid id'>visible?</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
-   <span class='boolean_command identifier id'>boolean_command</span> <span class='string val'>&quot;isVisible&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id visible?'>visible?</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span>
+   <span class='id boolean_command'>boolean_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>isVisible</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id locator'>locator</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -3006,88 +3022,109 @@ Flexible wait semantics. ait is happening browser side. Useful for testing
 AJAX application.
 </p>
 <ul>
-<li>wait :wait_for =&gt; :page # will wait for a new page to load
-
+<li><p>
+wait :wait_for => :page                                                    
+# will wait for a new page to load
+</p>
 </li>
-<li>wait :wait_for =&gt; :popup, :window =&gt; &#8216;a window id&#8217; # will
-wait for a new popup window to appear. Also selects the popup window for
-you provide `:select =&gt; true`
-
+<li><p>
+wait :wait_for => :popup, :window => &#8216;a window id&#8217;             
+# will wait for a new popup window to appear. Also selects the popup window
+for you provide `:select => true`
+</p>
 </li>
-<li>wait :wait_for =&gt; :ajax # will wait for all ajax requests to be
-completed using semantics of default javascript framework
-
+<li><p>
+wait :wait_for => :ajax                                                    
+# will wait for all ajax requests to be completed using semantics of
+default javascript framework
+</p>
 </li>
-<li>wait :wait_for =&gt; :ajax, :javascript_framework =&gt; :jquery # will wait
-for all ajax requests to be completed overriding default javascript
-framework
-
-</li>
-<li>wait :wait_for =&gt; :effects # will wait for all javascript effects to be
-rendered using semantics of default javascript framework
-
-</li>
-<li>wait :wait_for =&gt; :effects, :javascript_framework =&gt; :prototype #
-will wait for all javascript effects to be rendered overriding default
+<li><p>
+wait :wait_for => :ajax, :javascript_framework => :jquery                  
+# will wait for all ajax requests to be completed overriding default
 javascript framework
-
+</p>
 </li>
-<li>wait :wait_for =&gt; :element, :element =&gt; &#8216;new_element_id&#8217;
+<li><p>
+wait :wait_for => :effects                                                 
+# will wait for all javascript effects to be rendered using semantics of
+default javascript framework
+</p>
+</li>
+<li><p>
+wait :wait_for => :effects, :javascript_framework => :prototype            
+# will wait for all javascript effects to be rendered overriding default
+javascript framework
+</p>
+</li>
+<li><p>
+wait :wait_for => :element, :element => &#8216;new_element_id&#8217;       
 # will wait for an element to be present/appear
-
+</p>
 </li>
-<li>wait :wait_for =&gt; :no_element, :element =&gt;
-&#8216;new_element_id&#8217; # will wait for an element to be not be
-present/disappear
-
+<li><p>
+wait :wait_for => :no_element, :element => &#8216;new_element_id&#8217;    
+# will wait for an element to be not be present/disappear
+</p>
 </li>
-<li>wait :wait_for =&gt; :text, :text =&gt; &#8216;some text&#8217; # will wait
-for some text to be present/appear
-
+<li><p>
+wait :wait_for => :text, :text => &#8216;some text&#8217;                  
+# will wait for some text to be present/appear
+</p>
 </li>
-<li>wait :wait_for =&gt; :text, :text =&gt; /A Regexp/ # will wait for some
-text to be present/appear
-
+<li><p>
+wait :wait_for => :text, :text => /A Regexp/                               
+# will wait for some text to be present/appear
+</p>
 </li>
-<li>wait :wait_for =&gt; :text, :element =&gt; &#8216;a_locator&#8217;, :text
-=&gt; &#8216;some text&#8217; # will wait for the content of
+<li><p>
+wait :wait_for => :text, :element => &#8216;a_locator&#8217;, :text =>
+&#8216;some text&#8217;       # will wait for the content of
 &#8216;a_locator&#8217; to be &#8216;some text&#8217;
-
+</p>
 </li>
-<li>wait :wait_for =&gt; :no_text, :text =&gt; &#8216;some text&#8217; # will
-wait for the text to be not be present/disappear
-
+<li><p>
+wait :wait_for => :no_text, :text => &#8216;some text&#8217;               
+# will wait for the text to be not be present/disappear
+</p>
 </li>
-<li>wait :wait_for =&gt; :no_text, :text =&gt; /A Regexp/ # will wait for the
-text to be not be present/disappear
-
+<li><p>
+wait :wait_for => :no_text, :text => /A Regexp/                            
+# will wait for the text to be not be present/disappear
+</p>
 </li>
-<li>wait :wait_for =&gt; :no_text, :element =&gt; &#8216;a_locator&#8217;,
-:text =&gt; &#8216;some text&#8217; # will wait for the content of
+<li><p>
+wait :wait_for => :no_text, :element => &#8216;a_locator&#8217;, :text =>
+&#8216;some text&#8217;    # will wait for the content of
 &#8216;a_locator&#8217; to not be &#8216;some text&#8217;
-
+</p>
 </li>
-<li>wait :wait_for =&gt; :value, :element =&gt; &#8216;a_locator&#8217;, :value
-=&gt; &#8216;some value&#8217; # will wait for the field value of
+<li><p>
+wait :wait_for => :value, :element => &#8216;a_locator&#8217;, :value =>
+&#8216;some value&#8217;    # will wait for the field value of
 &#8216;a_locator&#8217; to be &#8216;some value&#8217;
-
+</p>
 </li>
-<li>wait :wait_for =&gt; :no_value, :element =&gt; &#8216;a_locator&#8217;,
-:value =&gt; &#8216;some value&#8217; # will wait for the field value of
+<li><p>
+wait :wait_for => :no_value, :element => &#8216;a_locator&#8217;, :value =>
+&#8216;some value&#8217; # will wait for the field value of
 &#8216;a_locator&#8217; to not be &#8216;some value&#8217;
-
+</p>
 </li>
-<li>wait :wait_for =&gt; :visible, :element =&gt; &#8216;a_locator&#8217; #
-will wait for element to be visible
-
+<li><p>
+wait :wait_for => :visible, :element => &#8216;a_locator&#8217;            
+# will wait for element to be visible
+</p>
 </li>
-<li>wait :wait_for =&gt; :not_visible, :element =&gt; &#8216;a_locator&#8217; #
-will wait for element to not be visible
-
+<li><p>
+wait :wait_for => :not_visible, :element => &#8216;a_locator&#8217;        
+# will wait for element to not be visible
+</p>
 </li>
-<li>wait :wait_for =&gt; :condition, :javascript =&gt; &#8216;some
-expression&#8217; # will wait for the javascript expression to be true
-
+<li><p>
+wait :wait_for => :condition, :javascript => &#8216;some expression&#8217; 
+# will wait for the javascript expression to be true
+</p>
 </li>
 </ul>
 <p>
@@ -3140,37 +3177,36 @@ key). Otherwise the default driver timeout is used.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 83</span>
 
-<span class='def def kw'>def</span> <span class='wait_for identifier id'>wait_for</span><span class='lparen token'>(</span><span class='options identifier id'>options</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:page</span>
-    <span class='wait_for_page identifier id'>wait_for_page</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:ajax</span>
-      <span class='wait_for_ajax identifier id'>wait_for_ajax</span> <span class='options identifier id'>options</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:element</span>
-      <span class='wait_for_element identifier id'>wait_for_element</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:element</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:no_element</span>
-      <span class='wait_for_no_element identifier id'>wait_for_no_element</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:element</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:text</span>
-      <span class='wait_for_text identifier id'>wait_for_text</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:text</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:no_text</span>
-    <span class='wait_for_no_text identifier id'>wait_for_no_text</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:text</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:effects</span>
-      <span class='wait_for_effects identifier id'>wait_for_effects</span> <span class='options identifier id'>options</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:popup</span>
-      <span class='wait_for_popup identifier id'>wait_for_popup</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:window</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-      <span class='select_window identifier id'>select_window</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:window</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:select</span><span class='rbrack token'>]</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:value</span>
-      <span class='wait_for_field_value identifier id'>wait_for_field_value</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:element</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:value</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:no_value</span>
-      <span class='wait_for_no_field_value identifier id'>wait_for_no_field_value</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:element</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:value</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:visible</span>
-      <span class='wait_for_visible identifier id'>wait_for_visible</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:element</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:not_visible</span>
-      <span class='wait_for_not_visible identifier id'>wait_for_not_visible</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:element</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:wait_for</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='symbol val'>:condition</span>
-      <span class='wait_for_condition identifier id'>wait_for_condition</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:javascript</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for'>wait_for</span><span class='lparen'>(</span><span class='id options'>options</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:page</span>
+    <span class='id wait_for_page'>wait_for_page</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+ <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:ajax</span>
+     <span class='id wait_for_ajax'>wait_for_ajax</span> <span class='id options'>options</span>
+ <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:element</span>
+     <span class='id wait_for_element'>wait_for_element</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span>
+ <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:no_element</span>
+     <span class='id wait_for_no_element'>wait_for_no_element</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span>
+ <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:text</span>
+     <span class='id wait_for_text'>wait_for_text</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:text</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span>
+ <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:no_text</span>
+    <span class='id wait_for_no_text'>wait_for_no_text</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:text</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span>
+ <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:effects</span>
+     <span class='id wait_for_effects'>wait_for_effects</span> <span class='id options'>options</span>
+  <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:popup</span>
+      <span class='id wait_for_popup'>wait_for_popup</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:window</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+      <span class='id select_window'>select_window</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:window</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:select</span><span class='rbracket'>]</span>
+  <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:value</span>
+      <span class='id wait_for_field_value'>wait_for_field_value</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span>
+  <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:no_value</span>
+      <span class='id wait_for_no_field_value'>wait_for_no_field_value</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span>
+  <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:visible</span>
+      <span class='id wait_for_visible'>wait_for_visible</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span>
+  <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:not_visible</span>
+      <span class='id wait_for_not_visible'>wait_for_not_visible</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span>
+ <span class='kw'>elsif</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:wait_for</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:condition</span>
+     <span class='id wait_for_condition'>wait_for_condition</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:javascript</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -3187,23 +3223,25 @@ key). Otherwise the default driver timeout is used.
   <div class="discussion">
     <p>
 Runs the specified JavaScript snippet repeatedly until it evaluates to
-&quot;true&quot;. The snippet may have multiple lines, but only the result
-of the last line will be considered.
+&#8220;true&#8221;. The snippet may have multiple lines, but only the
+result of the last line will be considered.
 </p>
 <p>
 Note that, by default, the snippet will be run in the runner&#8217;s test
-window, not in the window of your application. To get the window of your
+window, not in the window of your application.  To get the window of your
 application, you can use the JavaScript snippet
 <tt>selenium.browserbot.getCurrentWindow()</tt>, and then run your
 JavaScript in there
 </p>
 <ul>
-<li>&#8216;script&#8217; is the JavaScript snippet to run
-
+<li><p>
+&#8216;script&#8217; is the JavaScript snippet to run
+</p>
 </li>
-<li>&#8216;timeout_in_seconds&#8217; is a timeout in seconds, after which this
+<li><p>
+&#8216;timeout_in_seconds&#8217; is a timeout in seconds, after which this
 command will return with an error
-
+</p>
 </li>
 </ul>
 
@@ -3226,11 +3264,10 @@ command will return with an error
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 318</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_condition identifier id'>wait_for_condition</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='timeout_in_seconds identifier id'>timeout_in_seconds</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;waitForCondition&quot;</span><span class='comma token'>,</span> 
-      <span class='lbrack token'>[</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='actual_timeout_in_milliseconds identifier id'>actual_timeout_in_milliseconds</span><span class='lparen token'>(</span><span class='timeout_in_seconds identifier id'>timeout_in_seconds</span><span class='rparen token'>)</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_condition'>wait_for_condition</span><span class='lparen'>(</span><span class='id script'>script</span><span class='comma'>,</span> <span class='id timeout_in_seconds'>timeout_in_seconds</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>waitForCondition</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> 
+      <span class='lbracket'>[</span><span class='id script'>script</span><span class='comma'>,</span> <span class='id actual_timeout_in_milliseconds'>actual_timeout_in_milliseconds</span><span class='lparen'>(</span><span class='id timeout_in_seconds'>timeout_in_seconds</span><span class='rparen'>)</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -3253,16 +3290,17 @@ command will return with an error
 Waits for a new page to load.
 </p>
 <p>
-Selenium constantly keeps track of new pages loading, and sets a
-&quot;newPageLoaded&quot; flag when it first notices a page load. Running
-any other Selenium command after turns the flag to false. Hence, if you
-want to wait for a page to load, you must wait immediately after a Selenium
-command that caused a page-load.
+Selenium constantly keeps track of new pages loading, and sets a 
+&#8220;newPageLoaded&#8221; flag when it first notices a page load. Running
+any other Selenium command after turns the flag to false. Hence,  if you
+want to wait for a page to load, you must wait immediately  after a
+Selenium command that caused a page-load.
 </p>
 <ul>
-<li>&#8216;timeout_in_seconds&#8217; is a timeout in seconds, after which this
+<li><p>
+&#8216;timeout_in_seconds&#8217; is a timeout in seconds, after which this 
 command will return with an error
-
+</p>
 </li>
 </ul>
 
@@ -3285,11 +3323,10 @@ command will return with an error
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 44</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_page identifier id'>wait_for_page</span><span class='lparen token'>(</span><span class='timeout_in_seconds identifier id'>timeout_in_seconds</span><span class='assign token'>=</span><span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;waitForPageToLoad&quot;</span><span class='comma token'>,</span> 
-      <span class='lbrack token'>[</span><span class='actual_timeout_in_milliseconds identifier id'>actual_timeout_in_milliseconds</span><span class='lparen token'>(</span><span class='timeout_in_seconds identifier id'>timeout_in_seconds</span><span class='rparen token'>)</span><span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_page'>wait_for_page</span><span class='lparen'>(</span><span class='id timeout_in_seconds'>timeout_in_seconds</span><span class='op'>=</span><span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>waitForPageToLoad</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> 
+      <span class='lbracket'>[</span><span class='id actual_timeout_in_milliseconds'>actual_timeout_in_milliseconds</span><span class='lparen'>(</span><span class='id timeout_in_seconds'>timeout_in_seconds</span><span class='rparen'>)</span><span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -3308,9 +3345,9 @@ command will return with an error
 Waits for a popup window to appear and load up.
 </p>
 <p>
-window_id is the JavaScript window &quot;name&quot; of the window that will
-appear (not the text of the title bar) timeout_in_seconds is a timeout in
-seconds, after which the action will return with an error
+window_id is the JavaScript window &#8220;name&#8221; of the window that
+will appear (not the text of the title bar) timeout_in_seconds is a timeout
+in seconds, after which the action will return with an error
 </p>
 
 
@@ -3332,11 +3369,10 @@ seconds, after which the action will return with an error
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/idiomatic.rb', line 54</span>
 
-<span class='def def kw'>def</span> <span class='wait_for_popup identifier id'>wait_for_popup</span><span class='lparen token'>(</span><span class='window_id identifier id'>window_id</span><span class='comma token'>,</span> <span class='timeout_in_seconds identifier id'>timeout_in_seconds</span><span class='assign token'>=</span><span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;waitForPopUp&quot;</span><span class='comma token'>,</span> 
-      <span class='lbrack token'>[</span><span class='window_id identifier id'>window_id</span><span class='comma token'>,</span> <span class='actual_timeout_in_milliseconds identifier id'>actual_timeout_in_milliseconds</span><span class='lparen token'>(</span><span class='timeout_in_seconds identifier id'>timeout_in_seconds</span><span class='rparen token'>)</span> <span class='comma token'>,</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait_for_popup'>wait_for_popup</span><span class='lparen'>(</span><span class='id window_id'>window_id</span><span class='comma'>,</span> <span class='id timeout_in_seconds'>timeout_in_seconds</span><span class='op'>=</span><span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>waitForPopUp</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> 
+      <span class='lbracket'>[</span><span class='id window_id'>window_id</span><span class='comma'>,</span> <span class='id actual_timeout_in_milliseconds'>actual_timeout_in_milliseconds</span><span class='lparen'>(</span><span class='id timeout_in_seconds'>timeout_in_seconds</span><span class='rparen'>)</span> <span class='comma'>,</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -3347,9 +3383,9 @@ seconds, after which the action will return with an error
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:30 2011 by 
+  Generated on Mon Aug  1 20:19:42 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

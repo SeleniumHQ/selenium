@@ -124,8 +124,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='string val'>&quot;x_ignore_nofocus.so&quot;</span>
-</pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>x_ignore_nofocus.so</span><span class='tstring_end'>&quot;</span></span></pre></dd>
       
         <dt id="NO_FOCUS_LIBRARIES-constant" class="">NO_FOCUS_LIBRARIES =
           <div class="docstring">
@@ -142,11 +141,10 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='lbrack token'>[</span>
-  <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/selenium/webdriver/firefox/native/linux/amd64/#{NO_FOCUS_LIBRARY_NAME}&quot;</span><span class='comma token'>,</span> <span class='dstring node'>&quot;amd64/#{NO_FOCUS_LIBRARY_NAME}&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-  <span class='lbrack token'>[</span><span class='dstring node'>&quot;#{WebDriver.root}/selenium/webdriver/firefox/native/linux/x86/#{NO_FOCUS_LIBRARY_NAME}&quot;</span><span class='comma token'>,</span> <span class='dstring node'>&quot;x86/#{NO_FOCUS_LIBRARY_NAME}&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-<span class='rbrack token'>]</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbracket'>[</span>
+  <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id root'>root</span><span class='rbrace'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/native/linux/amd64/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>amd64/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id root'>root</span><span class='rbrace'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/native/linux/x86/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>x86/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+<span class='rbracket'>]</span></pre></dd>
       
         <dt id="WAIT_TIMEOUT-constant" class="">WAIT_TIMEOUT =
           <div class="docstring">
@@ -163,8 +161,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='integer val'>90</span>
-</pre></dd>
+        <dd><pre class="code"><span class='int'>90</span></pre></dd>
       
         <dt id="QUIT_TIMEOUT-constant" class="">QUIT_TIMEOUT =
           <div class="docstring">
@@ -181,8 +178,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='integer val'>5</span>
-</pre></dd>
+        <dd><pre class="code"><span class='int'>5</span></pre></dd>
       
     </dl>
   
@@ -371,27 +367,26 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 101</span>
 
-<span class='def def kw'>def</span> <span class='path identifier id'>path</span>
-  <span class='@path ivar id'>@path</span> <span class='opasgn op'>||=</span> <span class='case case kw'>case</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
-            <span class='when when kw'>when</span> <span class='symbol val'>:macosx</span>
-              <span class='macosx_path identifier id'>macosx_path</span>
-            <span class='when when kw'>when</span> <span class='symbol val'>:windows</span>
-              <span class='windows_path identifier id'>windows_path</span>
-            <span class='when when kw'>when</span> <span class='symbol val'>:linux</span><span class='comma token'>,</span> <span class='symbol val'>:unix</span>
-              <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='string val'>&quot;firefox3&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;firefox2&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;firefox&quot;</span><span class='rparen token'>)</span> <span class='orop op'>||</span> <span class='string val'>&quot;/usr/bin/firefox&quot;</span>
-            <span class='else else kw'>else</span>
-              <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown platform: #{Platform.os}&quot;</span>
-            <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='id path'>path</span>
+  <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='kw'>case</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id os'>os</span>
+            <span class='kw'>when</span> <span class='symbol'>:macosx</span>
+              <span class='id macosx_path'>macosx_path</span>
+            <span class='kw'>when</span> <span class='symbol'>:windows</span>
+              <span class='id windows_path'>windows_path</span>
+            <span class='kw'>when</span> <span class='symbol'>:linux</span><span class='comma'>,</span> <span class='symbol'>:unix</span>
+              <span class='const'>Platform</span><span class='period'>.</span><span class='id find_binary'>find_binary</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>firefox3</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>firefox2</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>firefox</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/usr/bin/firefox</span><span class='tstring_end'>&quot;</span></span>
+            <span class='kw'>else</span>
+              <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown platform: </span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id os'>os</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+            <span class='kw'>end</span>
 
-  <span class='@path ivar id'>@path</span> <span class='assign token'>=</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='cygwin_path identifier id'>cygwin_path</span><span class='lparen token'>(</span><span class='@path ivar id'>@path</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='cygwin? fid id'>cygwin?</span>
+  <span class='ivar'>@path</span> <span class='op'>=</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id cygwin_path'>cygwin_path</span><span class='lparen'>(</span><span class='ivar'>@path</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id cygwin?'>cygwin?</span>
 
-  <span class='unless unless kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='file? fid id'>file?</span><span class='lparen token'>(</span><span class='@path ivar id'>@path</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rparen token'>)</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;Could not find Firefox binary (os=#{Platform.os}). Make sure Firefox is installed or set the path manually with #{self}.path=&quot;</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id file?'>file?</span><span class='lparen'>(</span><span class='ivar'>@path</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='rparen'>)</span>
+    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Could not find Firefox binary (os=</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id os'>os</span><span class='rbrace'>}</span><span class='tstring_content'>). Make sure Firefox is installed or set the path manually with </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='rbrace'>}</span><span class='tstring_content'>.path=</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='@path ivar id'>@path</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@path</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -437,11 +432,10 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 96</span>
 
-<span class='def def kw'>def</span> <span class='path= identifier id'>path=</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-  <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='assert_executable identifier id'>assert_executable</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-  <span class='@path ivar id'>@path</span> <span class='assign token'>=</span> <span class='path identifier id'>path</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id path='>path=</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+  <span class='const'>Platform</span><span class='period'>.</span><span class='id assert_executable'>assert_executable</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+  <span class='ivar'>@path</span> <span class='op'>=</span> <span class='id path'>path</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -489,14 +483,13 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 34</span>
 
-<span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
-  <span class='return return kw'>return</span> <span class='unless unless_mod kw'>unless</span> <span class='@process ivar id'>@process</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='poll_for_exit identifier id'>poll_for_exit</span> <span class='QUIT_TIMEOUT constant id'>QUIT_TIMEOUT</span>
-<span class='rescue rescue kw'>rescue</span> <span class='ChildProcess constant id'>ChildProcess</span><span class='colon2 op'>::</span><span class='TimeoutError constant id'>TimeoutError</span>
-  <span class='comment val'># ok, force quit</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='stop identifier id'>stop</span> <span class='QUIT_TIMEOUT constant id'>QUIT_TIMEOUT</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id quit'>quit</span>
+  <span class='kw'>return</span> <span class='kw'>unless</span> <span class='ivar'>@process</span>
+  <span class='ivar'>@process</span><span class='period'>.</span><span class='id poll_for_exit'>poll_for_exit</span> <span class='const'>QUIT_TIMEOUT</span>
+<span class='kw'>rescue</span> <span class='const'>ChildProcess</span><span class='op'>::</span><span class='const'>TimeoutError</span>
+  <span class='comment'># ok, force quit
+</span>  <span class='ivar'>@process</span><span class='period'>.</span><span class='id stop'>stop</span> <span class='const'>QUIT_TIMEOUT</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -547,23 +540,22 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 17</span>
 
-<span class='def def kw'>def</span> <span class='start_with identifier id'>start_with</span><span class='lparen token'>(</span><span class='profile identifier id'>profile</span><span class='comma token'>,</span> <span class='profile_path identifier id'>profile_path</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='profile_path identifier id'>profile_path</span> <span class='assign token'>=</span> <span class='profile_path identifier id'>profile_path</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='string val'>&quot;/&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;\\&quot;</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='windows? fid id'>windows?</span>
+<span class='kw'>def</span> <span class='id start_with'>start_with</span><span class='lparen'>(</span><span class='id profile'>profile</span><span class='comma'>,</span> <span class='id profile_path'>profile_path</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id profile_path'>profile_path</span> <span class='op'>=</span> <span class='id profile_path'>profile_path</span><span class='period'>.</span><span class='id gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\\</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id windows?'>windows?</span>
 
-  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'XRE_CONSOLE_LOG'</span><span class='rbrack token'>]</span>           <span class='assign token'>=</span> <span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='log_file identifier id'>log_file</span> <span class='if if_mod kw'>if</span> <span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='log_file identifier id'>log_file</span>
-  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'XRE_PROFILE_PATH'</span><span class='rbrack token'>]</span>          <span class='assign token'>=</span> <span class='profile_path identifier id'>profile_path</span>
-  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'MOZ_NO_REMOTE'</span><span class='rbrack token'>]</span>             <span class='assign token'>=</span> <span class='string val'>'1'</span> <span class='comment val'># able to launch multiple instances</span>
-  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'MOZ_CRASHREPORTER_DISABLE'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>'1'</span> <span class='comment val'># disable breakpad</span>
-  <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'NO_EM_RESTART'</span><span class='rbrack token'>]</span>             <span class='assign token'>=</span> <span class='string val'>'1'</span> <span class='comment val'># prevent the binary from detaching from the console</span>
+  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>XRE_CONSOLE_LOG</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>           <span class='op'>=</span> <span class='id profile'>profile</span><span class='period'>.</span><span class='id log_file'>log_file</span> <span class='kw'>if</span> <span class='id profile'>profile</span><span class='period'>.</span><span class='id log_file'>log_file</span>
+  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>XRE_PROFILE_PATH</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>          <span class='op'>=</span> <span class='id profile_path'>profile_path</span>
+  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>MOZ_NO_REMOTE</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>             <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>1</span><span class='tstring_end'>'</span></span> <span class='comment'># able to launch multiple instances
+</span>  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>MOZ_CRASHREPORTER_DISABLE</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>1</span><span class='tstring_end'>'</span></span> <span class='comment'># disable breakpad
+</span>  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>NO_EM_RESTART</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>             <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>1</span><span class='tstring_end'>'</span></span> <span class='comment'># prevent the binary from detaching from the console
+</span>
+  <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id linux?'>linux?</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id profile'>profile</span><span class='period'>.</span><span class='id native_events?'>native_events?</span> <span class='op'>||</span> <span class='id profile'>profile</span><span class='period'>.</span><span class='id load_no_focus_lib?'>load_no_focus_lib?</span><span class='rparen'>)</span>
+    <span class='id modify_link_library_path'>modify_link_library_path</span> <span class='id profile_path'>profile_path</span>
+  <span class='kw'>end</span>
 
-  <span class='if if kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='linux? fid id'>linux?</span> <span class='andop op'>&amp;&amp;</span> <span class='lparen token'>(</span><span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='native_events? fid id'>native_events?</span> <span class='orop op'>||</span> <span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='load_no_focus_lib? fid id'>load_no_focus_lib?</span><span class='rparen token'>)</span>
-    <span class='modify_link_library_path identifier id'>modify_link_library_path</span> <span class='profile_path identifier id'>profile_path</span>
-  <span class='end end kw'>end</span>
-
-  <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='cope_with_mac_strangeness identifier id'>cope_with_mac_strangeness</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='mac? fid id'>mac?</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id execute'>execute</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id cope_with_mac_strangeness'>cope_with_mac_strangeness</span><span class='lparen'>(</span><span class='id args'>args</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id mac?'>mac?</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -601,10 +593,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 42</span>
 
-<span class='def def kw'>def</span> <span class='wait identifier id'>wait</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='poll_for_exit identifier id'>poll_for_exit</span><span class='lparen token'>(</span><span class='WAIT_TIMEOUT constant id'>WAIT_TIMEOUT</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wait'>wait</span>
+  <span class='ivar'>@process</span><span class='period'>.</span><span class='id poll_for_exit'>poll_for_exit</span><span class='lparen'>(</span><span class='const'>WAIT_TIMEOUT</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@process</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -615,9 +606,9 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:31 2011 by 
+  Generated on Mon Aug  1 20:19:45 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

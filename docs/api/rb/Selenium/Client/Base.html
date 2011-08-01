@@ -395,7 +395,7 @@ Returns the value of attribute port.
 
   
     <span class="summary_desc"><div class='inline'><p>
-:port =&gt; 4444,.
+Create a new client driver.
 </p>
 </div></span>
   
@@ -484,7 +484,7 @@ Returns the value of attribute port.
 
   
     <span class="summary_desc"><div class='inline'><p>
-Starts a new browser session (launching a new browser matching
+Starts a new browser session (launching a new browser matching 
 configuration provided at driver creation time).
 </p>
 </div></span>
@@ -594,10 +594,9 @@ Returns the value of attribute browser_string
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='browser_string identifier id'>browser_string</span>
-  <span class='@browser_string ivar id'>@browser_string</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id browser_string'>browser_string</span>
+  <span class='ivar'>@browser_string</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -637,10 +636,9 @@ Returns the value of attribute browser_url
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='browser_url identifier id'>browser_url</span>
-  <span class='@browser_url ivar id'>@browser_url</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id browser_url'>browser_url</span>
+  <span class='ivar'>@browser_url</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -680,10 +678,9 @@ Returns the value of attribute default_javascript_framework
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='default_javascript_framework identifier id'>default_javascript_framework</span>
-  <span class='@default_javascript_framework ivar id'>@default_javascript_framework</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id default_javascript_framework'>default_javascript_framework</span>
+  <span class='ivar'>@default_javascript_framework</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -723,10 +720,9 @@ Returns the value of attribute default_timeout_in_seconds
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='default_timeout_in_seconds identifier id'>default_timeout_in_seconds</span>
-  <span class='@default_timeout_in_seconds ivar id'>@default_timeout_in_seconds</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id default_timeout_in_seconds'>default_timeout_in_seconds</span>
+  <span class='ivar'>@default_timeout_in_seconds</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -766,10 +762,9 @@ Returns the value of attribute highlight_located_element_by_default
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='highlight_located_element_by_default identifier id'>highlight_located_element_by_default</span>
-  <span class='@highlight_located_element_by_default ivar id'>@highlight_located_element_by_default</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id highlight_located_element_by_default'>highlight_located_element_by_default</span>
+  <span class='ivar'>@highlight_located_element_by_default</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -809,10 +804,9 @@ Returns the value of attribute host
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='host identifier id'>host</span>
-  <span class='@host ivar id'>@host</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id host'>host</span>
+  <span class='ivar'>@host</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -852,10 +846,9 @@ Returns the value of attribute port
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='port identifier id'>port</span>
-  <span class='@port ivar id'>@port</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id port'>port</span>
+  <span class='ivar'>@port</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -909,10 +902,9 @@ Returns the value of attribute port
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 106</span>
 
-<span class='def def kw'>def</span> <span class='chrome_backend? fid id'>chrome_backend?</span>
-  <span class='lbrack token'>[</span><span class='string val'>&quot;*chrome&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;*firefox&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;*firefox2&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;*firefox3&quot;</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span><span class='@browser_string ivar id'>@browser_string</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id chrome_backend?'>chrome_backend?</span>
+  <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*chrome</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*firefox</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*firefox2</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*firefox3</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id include?'>include?</span><span class='lparen'>(</span><span class='ivar'>@browser_string</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -939,11 +931,10 @@ Returns the value of attribute port
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 93</span>
 
-<span class='def def kw'>def</span> <span class='close_current_browser_session identifier id'>close_current_browser_session</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span> <span class='string val'>&quot;testComplete&quot;</span> <span class='if if_mod kw'>if</span> <span class='@session_id ivar id'>@session_id</span>
-  <span class='@session_id ivar id'>@session_id</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id close_current_browser_session'>close_current_browser_session</span>
+  <span class='id remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>testComplete</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@session_id</span>
+  <span class='ivar'>@session_id</span> <span class='op'>=</span> <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -959,12 +950,48 @@ Returns the value of attribute port
 </p><div class="docstring">
   <div class="discussion">
     <p>
-:port =&gt; 4444,
+Create a new client driver
+</p>
+<p>
+Example:
+</p>
+<p>
+Selenium::Client::Driver.new \
 </p>
 <pre class="code">
-    <span class='symbol val'>:browser</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;*firefox&quot;</span><span class='comma token'>,</span>
-    <span class='symbol val'>:highlight_located_element</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span>
+    :host =&gt; &quot;localhost&quot;,
+    :port =&gt; 4444,
+    :browser =&gt; &quot;*firefox&quot;,
+    :timeout_in_seconds =&gt; 10,
+    :url =&gt; &quot;http://localhost:3000&quot;,
 </pre>
+<p>
+You can also set the default javascript framework used for :wait_for AJAX
+and effects semantics (:prototype is the default value):
+</p>
+<p>
+Selenium::Client::Driver.new \
+</p>
+<pre class="code">
+    :host =&gt; &quot;localhost&quot;,
+    :port =&gt; 4444,
+    :browser =&gt; &quot;*firefox&quot;,
+    :timeout_in_seconds =&gt; 10,
+    :url =&gt; &quot;http://localhost:3000&quot;,
+    :javascript_framework =&gt; :jquery
+</pre>
+<p>
+You can also enables automatic highlighting of located elements by passing
+the highlight_located_element option, e.g.
+</p>
+<p>
+Selenium::Client::Driver.new \
+</p>
+<pre class="code">
+    :host =&gt; &quot;localhost&quot;,
+    :port =&gt; 4444,
+    :browser =&gt; &quot;*firefox&quot;,
+    :highlight_located_element =&gt; true</pre>
 
 
   </div>
@@ -1004,30 +1031,29 @@ Returns the value of attribute port
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 48</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='args identifier id'>args</span><span class='lbrack token'>[</span><span class='integer val'>0</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Hash constant id'>Hash</span><span class='rparen token'>)</span>
-    <span class='options identifier id'>options</span> <span class='assign token'>=</span> <span class='args identifier id'>args</span><span class='lbrack token'>[</span><span class='integer val'>0</span><span class='rbrack token'>]</span>
-    <span class='@host ivar id'>@host</span> <span class='assign token'>=</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:host</span><span class='rbrack token'>]</span>
-    <span class='@port ivar id'>@port</span> <span class='assign token'>=</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:port</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span>
-    <span class='@browser_string ivar id'>@browser_string</span> <span class='assign token'>=</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:browser</span><span class='rbrack token'>]</span>
-    <span class='@browser_url ivar id'>@browser_url</span> <span class='assign token'>=</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:url</span><span class='rbrack token'>]</span>
-    <span class='@default_timeout_in_seconds ivar id'>@default_timeout_in_seconds</span> <span class='assign token'>=</span> <span class='lparen token'>(</span><span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:timeout_in_seconds</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='integer val'>300</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span>
-    <span class='@default_javascript_framework ivar id'>@default_javascript_framework</span> <span class='assign token'>=</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:javascript_framework</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='symbol val'>:prototype</span>
-    <span class='@highlight_located_element_by_default ivar id'>@highlight_located_element_by_default</span> <span class='assign token'>=</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:highlight_located_element</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='false false kw'>false</span>
-  <span class='else else kw'>else</span>
-    <span class='@host ivar id'>@host</span> <span class='assign token'>=</span> <span class='args identifier id'>args</span><span class='lbrack token'>[</span><span class='integer val'>0</span><span class='rbrack token'>]</span>
-    <span class='@port ivar id'>@port</span> <span class='assign token'>=</span> <span class='args identifier id'>args</span><span class='lbrack token'>[</span><span class='integer val'>1</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span>
-    <span class='@browser_string ivar id'>@browser_string</span> <span class='assign token'>=</span> <span class='args identifier id'>args</span><span class='lbrack token'>[</span><span class='integer val'>2</span><span class='rbrack token'>]</span>
-    <span class='@browser_url ivar id'>@browser_url</span> <span class='assign token'>=</span> <span class='args identifier id'>args</span><span class='lbrack token'>[</span><span class='integer val'>3</span><span class='rbrack token'>]</span>
-    <span class='@default_timeout_in_seconds ivar id'>@default_timeout_in_seconds</span> <span class='assign token'>=</span> <span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='lbrack token'>[</span><span class='integer val'>4</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='integer val'>300</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span>
-    <span class='@default_javascript_framework ivar id'>@default_javascript_framework</span> <span class='assign token'>=</span> <span class='symbol val'>:prototype</span>
-    <span class='@highlight_located_element_by_default ivar id'>@highlight_located_element_by_default</span> <span class='assign token'>=</span> <span class='false false kw'>false</span>
-  <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id args'>args</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
+    <span class='id options'>options</span> <span class='op'>=</span> <span class='id args'>args</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span>
+    <span class='ivar'>@host</span> <span class='op'>=</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:host</span><span class='rbracket'>]</span>
+    <span class='ivar'>@port</span> <span class='op'>=</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id to_i'>to_i</span>
+    <span class='ivar'>@browser_string</span> <span class='op'>=</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:browser</span><span class='rbracket'>]</span>
+    <span class='ivar'>@browser_url</span> <span class='op'>=</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span>
+    <span class='ivar'>@default_timeout_in_seconds</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:timeout_in_seconds</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='int'>300</span><span class='rparen'>)</span><span class='period'>.</span><span class='id to_i'>to_i</span>
+    <span class='ivar'>@default_javascript_framework</span> <span class='op'>=</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:javascript_framework</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='symbol'>:prototype</span>
+    <span class='ivar'>@highlight_located_element_by_default</span> <span class='op'>=</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:highlight_located_element</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>false</span>
+  <span class='kw'>else</span>
+    <span class='ivar'>@host</span> <span class='op'>=</span> <span class='id args'>args</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span>
+    <span class='ivar'>@port</span> <span class='op'>=</span> <span class='id args'>args</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id to_i'>to_i</span>
+    <span class='ivar'>@browser_string</span> <span class='op'>=</span> <span class='id args'>args</span><span class='lbracket'>[</span><span class='int'>2</span><span class='rbracket'>]</span>
+    <span class='ivar'>@browser_url</span> <span class='op'>=</span> <span class='id args'>args</span><span class='lbracket'>[</span><span class='int'>3</span><span class='rbracket'>]</span>
+    <span class='ivar'>@default_timeout_in_seconds</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id args'>args</span><span class='lbracket'>[</span><span class='int'>4</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='int'>300</span><span class='rparen'>)</span><span class='period'>.</span><span class='id to_i'>to_i</span>
+    <span class='ivar'>@default_javascript_framework</span> <span class='op'>=</span> <span class='symbol'>:prototype</span>
+    <span class='ivar'>@highlight_located_element_by_default</span> <span class='op'>=</span> <span class='kw'>false</span>
+  <span class='kw'>end</span>
 
-  <span class='@extension_js ivar id'>@extension_js</span> <span class='assign token'>=</span> <span class='string val'>&quot;&quot;</span>
-  <span class='@session_id ivar id'>@session_id</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@extension_js</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='ivar'>@session_id</span> <span class='op'>=</span> <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1057,10 +1083,9 @@ Returns the value of attribute port
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 110</span>
 
-<span class='def def kw'>def</span> <span class='javascript_extension= identifier id'>javascript_extension=</span><span class='lparen token'>(</span><span class='new_javascript_extension identifier id'>new_javascript_extension</span><span class='rparen token'>)</span>
-  <span class='@extension_js ivar id'>@extension_js</span> <span class='assign token'>=</span> <span class='new_javascript_extension identifier id'>new_javascript_extension</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id javascript_extension='>javascript_extension=</span><span class='lparen'>(</span><span class='id new_javascript_extension'>new_javascript_extension</span><span class='rparen'>)</span>
+  <span class='ivar'>@extension_js</span> <span class='op'>=</span> <span class='id new_javascript_extension'>new_javascript_extension</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1107,10 +1132,9 @@ Returns the value of attribute port
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 72</span>
 
-<span class='def def kw'>def</span> <span class='session_started? fid id'>session_started?</span>
-  <span class='not not kw'>not</span> <span class='@session_id ivar id'>@session_id</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id session_started?'>session_started?</span>
+  <span class='kw'>not</span> <span class='ivar'>@session_id</span><span class='period'>.</span><span class='id nil?'>nil?</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1136,10 +1160,9 @@ Returns the value of attribute port
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 98</span>
 
-<span class='def def kw'>def</span> <span class='start identifier id'>start</span>
-  <span class='start_new_browser_session identifier id'>start_new_browser_session</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id start'>start</span>
+  <span class='id start_new_browser_session'>start_new_browser_session</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1155,15 +1178,14 @@ Returns the value of attribute port
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Starts a new browser session (launching a new browser matching
+Starts a new browser session (launching a new browser matching 
 configuration provided at driver creation time).
 </p>
 <p>
 Browser session specific option can also be provided. e.g.
 </p>
 <pre class="code">
-   <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='start_new_browser_session identifier id'>start_new_browser_session</span><span class='lparen token'>(</span><span class='symbol val'>:captureNetworkTraffic</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='rparen token'>)</span>
-</pre>
+   <span class='id driver'>driver</span><span class='period'>.</span><span class='id start_new_browser_session'>start_new_browser_session</span><span class='lparen'>(</span><span class='symbol'>:captureNetworkTraffic</span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rparen'>)</span></pre>
 
 
   </div>
@@ -1189,16 +1211,15 @@ Browser session specific option can also be provided. e.g.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 83</span>
 
-<span class='def def kw'>def</span> <span class='start_new_browser_session identifier id'>start_new_browser_session</span><span class='lparen token'>(</span><span class='options identifier id'>options</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='options_as_string identifier id'>options_as_string</span> <span class='assign token'>=</span> <span class='options identifier id'>options</span><span class='dot token'>.</span><span class='collect identifier id'>collect</span> <span class='lbrace token'>{</span><span class='bitor op'>|</span><span class='key identifier id'>key</span><span class='comma token'>,</span><span class='value identifier id'>value</span><span class='bitor op'>|</span> <span class='dstring node'>&quot;#{key.to_s}=#{value.to_s}&quot;</span><span class='rbrace token'>}</span><span class='dot token'>.</span><span class='sort identifier id'>sort</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='string val'>&quot;;&quot;</span><span class='rparen token'>)</span>
-  <span class='result identifier id'>result</span> <span class='assign token'>=</span> <span class='string_command identifier id'>string_command</span> <span class='string val'>&quot;getNewBrowserSession&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='@browser_string ivar id'>@browser_string</span><span class='comma token'>,</span> <span class='@browser_url ivar id'>@browser_url</span><span class='comma token'>,</span> <span class='@extension_js ivar id'>@extension_js</span><span class='comma token'>,</span> <span class='options_as_string identifier id'>options_as_string</span><span class='rbrack token'>]</span>
-  <span class='@session_id ivar id'>@session_id</span> <span class='assign token'>=</span> <span class='result identifier id'>result</span>
-  <span class='comment val'># Consistent timeout on the remote control and driver side.</span>
-  <span class='comment val'># Intuitive and this is what you want 90% of the time</span>
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='remote_control_timeout_in_seconds identifier id'>remote_control_timeout_in_seconds</span> <span class='assign token'>=</span> <span class='@default_timeout_in_seconds ivar id'>@default_timeout_in_seconds</span>         
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='highlight_located_element identifier id'>highlight_located_element</span> <span class='assign token'>=</span> <span class='true true kw'>true</span> <span class='if if_mod kw'>if</span> <span class='highlight_located_element_by_default identifier id'>highlight_located_element_by_default</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id start_new_browser_session'>start_new_browser_session</span><span class='lparen'>(</span><span class='id options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id options_as_string'>options_as_string</span> <span class='op'>=</span> <span class='id options'>options</span><span class='period'>.</span><span class='id collect'>collect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id key'>key</span><span class='comma'>,</span><span class='id value'>value</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id key'>key</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='rbrace'>}</span><span class='tstring_content'>=</span><span class='embexpr_beg'>#{</span><span class='id value'>value</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='period'>.</span><span class='id sort'>sort</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id result'>result</span> <span class='op'>=</span> <span class='id string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getNewBrowserSession</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='ivar'>@browser_string</span><span class='comma'>,</span> <span class='ivar'>@browser_url</span><span class='comma'>,</span> <span class='ivar'>@extension_js</span><span class='comma'>,</span> <span class='id options_as_string'>options_as_string</span><span class='rbracket'>]</span>
+  <span class='ivar'>@session_id</span> <span class='op'>=</span> <span class='id result'>result</span>
+  <span class='comment'># Consistent timeout on the remote control and driver side.
+</span>  <span class='comment'># Intuitive and this is what you want 90% of the time
+</span>  <span class='kw'>self</span><span class='period'>.</span><span class='id remote_control_timeout_in_seconds'>remote_control_timeout_in_seconds</span> <span class='op'>=</span> <span class='ivar'>@default_timeout_in_seconds</span>         
+  <span class='kw'>self</span><span class='period'>.</span><span class='id highlight_located_element'>highlight_located_element</span> <span class='op'>=</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id highlight_located_element_by_default'>highlight_located_element_by_default</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1224,10 +1245,9 @@ Browser session specific option can also be provided. e.g.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 102</span>
 
-<span class='def def kw'>def</span> <span class='stop identifier id'>stop</span>
-  <span class='close_current_browser_session identifier id'>close_current_browser_session</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id stop'>stop</span>
+ <span class='id close_current_browser_session'>close_current_browser_session</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1238,9 +1258,9 @@ Browser session specific option can also be provided. e.g.
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:33 2011 by 
+  Generated on Mon Aug  1 20:19:42 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

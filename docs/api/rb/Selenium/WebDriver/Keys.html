@@ -102,73 +102,72 @@
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='lbrace token'>{</span>
-<span class='comment val'># \x works on both 1.8.6/1.9</span>
-  <span class='symbol val'>:null</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x80&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:cancel</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x81&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:help</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x82&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:backspace</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x83&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:tab</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x84&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:clear</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x85&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:return</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x86&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:enter</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x87&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:shift</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x88&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:left_shift</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x88&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:control</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x89&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:left_control</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x89&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:alt</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x8A&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:left_alt</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x8A&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:pause</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x8B&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:escape</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x8C&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:space</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x8D&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:page_up</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x8E&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:page_down</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x8F&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:end</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x90&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:home</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x91&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:left</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x92&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:arrow_left</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x92&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:up</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x93&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:arrow_up</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x93&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:right</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x94&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:arrow_right</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x94&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:down</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x95&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:arrow_down</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x95&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:insert</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x96&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:delete</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x97&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:semicolon</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x98&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:equals</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x99&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:numpad0</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x9A&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:numpad1</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x9B&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:numpad2</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x9C&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:numpad3</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x9D&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:numpad4</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x9E&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:numpad5</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\x9F&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:numpad6</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xA0&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:numpad7</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xA1&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:numpad8</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xA2&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:numpad9</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xA3&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:multiply</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xA4&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:add</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xA5&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:separator</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xA6&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:subtract</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xA7&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:decimal</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xA8&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:divide</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xA9&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f1</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xB1&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f2</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xB2&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f3</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xB3&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f4</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xB4&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f5</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xB5&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f6</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xB6&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f7</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xB7&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f8</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xB8&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f9</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xB9&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f10</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xBA&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f11</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xBB&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:f12</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xBC&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:meta</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xBD&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:command</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;\xEE\x80\xBD&quot;</span> <span class='comment val'># alias</span>
-<span class='rbrace token'>}</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+<span class='comment'># \x works on both 1.8.6/1.9
+</span>  <span class='symbol'>:null</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x80</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:cancel</span>       <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x81</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:help</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x82</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:backspace</span>    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x83</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:tab</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x84</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:clear</span>        <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x85</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:return</span>       <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x86</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:enter</span>        <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x87</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:shift</span>        <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x88</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:left_shift</span>   <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x88</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:control</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x89</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:left_control</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x89</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:alt</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x8A</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:left_alt</span>     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x8A</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:pause</span>        <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x8B</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:escape</span>       <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x8C</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:space</span>        <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x8D</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:page_up</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x8E</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:page_down</span>    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x8F</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:end</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x90</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:home</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x91</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:left</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x92</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:arrow_left</span>   <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x92</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:up</span>           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x93</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:arrow_up</span>     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x93</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:right</span>        <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x94</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:arrow_right</span>  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x94</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:down</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x95</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:arrow_down</span>   <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x95</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:insert</span>       <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x96</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:delete</span>       <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x97</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:semicolon</span>    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x98</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:equals</span>       <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x99</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:numpad0</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x9A</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:numpad1</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x9B</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:numpad2</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x9C</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:numpad3</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x9D</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:numpad4</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x9E</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:numpad5</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\x9F</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:numpad6</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xA0</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:numpad7</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xA1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:numpad8</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xA2</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:numpad9</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xA3</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:multiply</span>     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xA4</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:add</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xA5</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:separator</span>    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xA6</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:subtract</span>     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xA7</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:decimal</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xA8</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:divide</span>       <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xA9</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f1</span>           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xB1</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f2</span>           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xB2</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f3</span>           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xB3</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f4</span>           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xB4</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f5</span>           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xB5</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f6</span>           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xB6</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f7</span>           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xB7</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f8</span>           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xB8</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f9</span>           <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xB9</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f10</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xBA</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f11</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xBB</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:f12</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xBC</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:meta</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xBD</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:command</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\xEE\x80\xBD</span><span class='tstring_end'>&quot;</span></span> <span class='comment'># alias
+</span><span class='rbrace'>}</span></pre></dd>
       
     </dl>
   
@@ -235,10 +234,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keys.rb', line 79</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='lbrack token'>[</span><span class='rbrack token'>]</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
-  <span class='KEYS constant id'>KEYS</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='raise identifier id'>raise</span><span class='lparen token'>(</span><span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;no such key #{key.inspect}&quot;</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='op'>[]</span><span class='lparen'>(</span><span class='id key'>key</span><span class='rparen'>)</span>
+  <span class='const'>KEYS</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id raise'>raise</span><span class='lparen'>(</span><span class='const'>Error</span><span class='op'>::</span><span class='const'>UnsupportedOperationError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>no such key </span><span class='embexpr_beg'>#{</span><span class='id key'>key</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -249,9 +247,9 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:45 2011 by 
+  Generated on Mon Aug  1 20:19:43 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

@@ -89,19 +89,18 @@
         <dt id="FINDERS-constant" class="">FINDERS =
           
         </dt>
-        <dd><pre class="code"><span class='lbrace token'>{</span>
-  <span class='symbol val'>:class</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'class name'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:class_name</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'class name'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:css</span>               <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'css selector'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:id</span>                <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'id'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:link</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'link text'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:link_text</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'link text'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:name</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'name'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:partial_link_text</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'partial link text'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:tag_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'tag name'</span><span class='comma token'>,</span>
-  <span class='symbol val'>:xpath</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'xpath'</span><span class='comma token'>,</span>
-<span class='rbrace token'>}</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='symbol'>:class</span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>class name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:class_name</span>        <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>class name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:css</span>               <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>css selector</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:id</span>                <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>id</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:link</span>              <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>link text</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:link_text</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>link text</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:name</span>              <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:partial_link_text</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>partial link text</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:tag_name</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>tag name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:xpath</span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>xpath</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+<span class='rbrace'>}</span></pre></dd>
       
     </dl>
   
@@ -189,9 +188,9 @@ Find the first element matching the given arguments.
 </p>
 <p>
 When using Element#find_element with :xpath, be aware that webdriver
-follows standard conventions: a search prefixed with &quot;//&quot; will
+follows standard conventions: a search prefixed with &#8220;//&#8221; will
 search the entire document, not just the children of this current node. Use
-&quot;.//&quot; to limit your search to the children of the receiving
+&#8220;.//&#8221; to limit your search to the children of the receiving
 Element.
 </p>
 
@@ -277,16 +276,15 @@ if the element doesn&#8217;t exist
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 34</span>
 
-<span class='def def kw'>def</span> <span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='extract_args identifier id'>extract_args</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id find_element'>find_element</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span> <span class='op'>=</span> <span class='id extract_args'>extract_args</span><span class='lparen'>(</span><span class='id args'>args</span><span class='rparen'>)</span>
 
-  <span class='unless unless kw'>unless</span> <span class='by identifier id'>by</span> <span class='assign token'>=</span> <span class='FINDERS constant id'>FINDERS</span><span class='lbrack token'>[</span><span class='how identifier id'>how</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span><span class='rbrack token'>]</span>
-    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;cannot find element by #{how.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>unless</span> <span class='id by'>by</span> <span class='op'>=</span> <span class='const'>FINDERS</span><span class='lbracket'>[</span><span class='id how'>how</span><span class='period'>.</span><span class='id to_sym'>to_sym</span><span class='rbracket'>]</span>
+    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot find element by </span><span class='embexpr_beg'>#{</span><span class='id how'>how</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='find_element_by identifier id'>find_element_by</span> <span class='by identifier id'>by</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='comma token'>,</span> <span class='ref identifier id'>ref</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id find_element_by'>find_element_by</span> <span class='id by'>by</span><span class='comma'>,</span> <span class='id what'>what</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='comma'>,</span> <span class='id ref'>ref</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -375,16 +373,15 @@ Find all elements matching the given arguments
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/search_context.rb', line 54</span>
 
-<span class='def def kw'>def</span> <span class='find_elements identifier id'>find_elements</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='extract_args identifier id'>extract_args</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id find_elements'>find_elements</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span> <span class='op'>=</span> <span class='id extract_args'>extract_args</span><span class='lparen'>(</span><span class='id args'>args</span><span class='rparen'>)</span>
 
-  <span class='unless unless kw'>unless</span> <span class='by identifier id'>by</span> <span class='assign token'>=</span> <span class='FINDERS constant id'>FINDERS</span><span class='lbrack token'>[</span><span class='how identifier id'>how</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span><span class='rbrack token'>]</span>
-    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;cannot find elements by #{how.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>unless</span> <span class='id by'>by</span> <span class='op'>=</span> <span class='const'>FINDERS</span><span class='lbracket'>[</span><span class='id how'>how</span><span class='period'>.</span><span class='id to_sym'>to_sym</span><span class='rbracket'>]</span>
+    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot find elements by </span><span class='embexpr_beg'>#{</span><span class='id how'>how</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='find_elements_by identifier id'>find_elements_by</span> <span class='by identifier id'>by</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='comma token'>,</span> <span class='ref identifier id'>ref</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id find_elements_by'>find_elements_by</span> <span class='id by'>by</span><span class='comma'>,</span> <span class='id what'>what</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='comma'>,</span> <span class='id ref'>ref</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -395,9 +392,9 @@ Find all elements matching the given arguments
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:25 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

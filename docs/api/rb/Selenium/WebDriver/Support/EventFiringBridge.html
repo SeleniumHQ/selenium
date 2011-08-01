@@ -421,16 +421,15 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 10</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='delegate identifier id'>delegate</span><span class='comma token'>,</span> <span class='listener identifier id'>listener</span><span class='rparen token'>)</span>
-  <span class='@delegate ivar id'>@delegate</span> <span class='assign token'>=</span> <span class='delegate identifier id'>delegate</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id delegate'>delegate</span><span class='comma'>,</span> <span class='id listener'>listener</span><span class='rparen'>)</span>
+  <span class='ivar'>@delegate</span> <span class='op'>=</span> <span class='id delegate'>delegate</span>
 
-  <span class='if if kw'>if</span> <span class='listener identifier id'>listener</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span> <span class='colon op'>:</span><span class='call identifier id'>call</span>
-    <span class='@listener ivar id'>@listener</span> <span class='assign token'>=</span> <span class='BlockEventListener constant id'>BlockEventListener</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='listener identifier id'>listener</span><span class='rparen token'>)</span>
-  <span class='else else kw'>else</span>
-    <span class='@listener ivar id'>@listener</span> <span class='assign token'>=</span> <span class='listener identifier id'>listener</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>if</span> <span class='id listener'>listener</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span> <span class='symbol'>:call</span>
+    <span class='ivar'>@listener</span> <span class='op'>=</span> <span class='const'>BlockEventListener</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='id listener'>listener</span><span class='rparen'>)</span>
+  <span class='kw'>else</span>
+    <span class='ivar'>@listener</span> <span class='op'>=</span> <span class='id listener'>listener</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -469,17 +468,16 @@ A new instance of EventFiringBridge
       <pre class="lines">
 
 
-101
-102
-103</pre>
+105
+106
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 101</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 105</span>
 
-<span class='def def kw'>def</span> <span class='method_missing identifier id'>method_missing</span><span class='lparen token'>(</span><span class='meth identifier id'>meth</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='comma token'>,</span> <span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
-  <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='__send__ identifier id'>__send__</span><span class='lparen token'>(</span><span class='meth identifier id'>meth</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='comma token'>,</span> <span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id method_missing'>method_missing</span><span class='lparen'>(</span><span class='id meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+  <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id __send__'>__send__</span><span class='lparen'>(</span><span class='id meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -526,12 +524,11 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 44</span>
 
-<span class='def def kw'>def</span> <span class='clearElement identifier id'>clearElement</span><span class='lparen token'>(</span><span class='ref identifier id'>ref</span><span class='rparen token'>)</span>
-  <span class='dispatch identifier id'>dispatch</span><span class='lparen token'>(</span><span class='symbol val'>:change_value_of</span><span class='comma token'>,</span> <span class='create_element identifier id'>create_element</span><span class='lparen token'>(</span><span class='ref identifier id'>ref</span><span class='rparen token'>)</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span>
-    <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='clearElement identifier id'>clearElement</span><span class='lparen token'>(</span><span class='ref identifier id'>ref</span><span class='rparen token'>)</span>
-  <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id clearElement'>clearElement</span><span class='lparen'>(</span><span class='id ref'>ref</span><span class='rparen'>)</span>
+  <span class='id dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:change_value_of</span><span class='comma'>,</span> <span class='id create_element'>create_element</span><span class='lparen'>(</span><span class='id ref'>ref</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span>
+    <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id clearElement'>clearElement</span><span class='lparen'>(</span><span class='id ref'>ref</span><span class='rparen'>)</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -571,12 +568,11 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 38</span>
 
-<span class='def def kw'>def</span> <span class='clickElement identifier id'>clickElement</span><span class='lparen token'>(</span><span class='ref identifier id'>ref</span><span class='rparen token'>)</span>
-  <span class='dispatch identifier id'>dispatch</span><span class='lparen token'>(</span><span class='symbol val'>:click</span><span class='comma token'>,</span> <span class='create_element identifier id'>create_element</span><span class='lparen token'>(</span><span class='ref identifier id'>ref</span><span class='rparen token'>)</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span>
-    <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='clickElement identifier id'>clickElement</span><span class='lparen token'>(</span><span class='ref identifier id'>ref</span><span class='rparen token'>)</span>
-  <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id clickElement'>clickElement</span><span class='lparen'>(</span><span class='id ref'>ref</span><span class='rparen'>)</span>
+  <span class='id dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:click</span><span class='comma'>,</span> <span class='id create_element'>create_element</span><span class='lparen'>(</span><span class='id ref'>ref</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span>
+    <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id clickElement'>clickElement</span><span class='lparen'>(</span><span class='id ref'>ref</span><span class='rparen'>)</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -614,10 +610,9 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 82</span>
 
-<span class='def def kw'>def</span> <span class='close identifier id'>close</span>
-  <span class='dispatch identifier id'>dispatch</span><span class='lparen token'>(</span><span class='symbol val'>:close</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='close identifier id'>close</span> <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id close'>close</span>
+  <span class='id dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:close</span><span class='comma'>,</span> <span class='id driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id close'>close</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -657,12 +652,11 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 72</span>
 
-<span class='def def kw'>def</span> <span class='executeScript identifier id'>executeScript</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='dispatch identifier id'>dispatch</span><span class='lparen token'>(</span><span class='symbol val'>:execute_script</span><span class='comma token'>,</span> <span class='script identifier id'>script</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span>
-    <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='executeScript identifier id'>executeScript</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id executeScript'>executeScript</span><span class='lparen'>(</span><span class='id script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:execute_script</span><span class='comma'>,</span> <span class='id script'>script</span><span class='comma'>,</span> <span class='id driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span>
+    <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id executeScript'>executeScript</span><span class='lparen'>(</span><span class='id script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -704,14 +698,13 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 56</span>
 
-<span class='def def kw'>def</span> <span class='find_element_by identifier id'>find_element_by</span><span class='lparen token'>(</span><span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='e identifier id'>e</span> <span class='assign token'>=</span> <span class='dispatch identifier id'>dispatch</span><span class='lparen token'>(</span><span class='symbol val'>:find</span><span class='comma token'>,</span> <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span>
-    <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='find_element_by identifier id'>find_element_by</span> <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
-  <span class='rbrace token'>}</span>
+<span class='kw'>def</span> <span class='id find_element_by'>find_element_by</span><span class='lparen'>(</span><span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span><span class='comma'>,</span> <span class='id parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id e'>e</span> <span class='op'>=</span> <span class='id dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:find</span><span class='comma'>,</span> <span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span><span class='comma'>,</span> <span class='id driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span>
+    <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id find_element_by'>find_element_by</span> <span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span><span class='comma'>,</span> <span class='id parent'>parent</span>
+  <span class='rbrace'>}</span>
 
-  <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='const'>Element</span><span class='period'>.</span><span class='id new'>new</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id e'>e</span><span class='period'>.</span><span class='id ref'>ref</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -753,14 +746,13 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 64</span>
 
-<span class='def def kw'>def</span> <span class='find_elements_by identifier id'>find_elements_by</span><span class='lparen token'>(</span><span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='es identifier id'>es</span> <span class='assign token'>=</span> <span class='dispatch identifier id'>dispatch</span><span class='lparen token'>(</span><span class='symbol val'>:find</span><span class='comma token'>,</span> <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span>
-    <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='find_elements_by identifier id'>find_elements_by</span><span class='lparen token'>(</span><span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='rparen token'>)</span>
-  <span class='rbrace token'>}</span>
+<span class='kw'>def</span> <span class='id find_elements_by'>find_elements_by</span><span class='lparen'>(</span><span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span><span class='comma'>,</span> <span class='id parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id es'>es</span> <span class='op'>=</span> <span class='id dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:find</span><span class='comma'>,</span> <span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span><span class='comma'>,</span> <span class='id driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span>
+    <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id find_elements_by'>find_elements_by</span><span class='lparen'>(</span><span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span><span class='comma'>,</span> <span class='id parent'>parent</span><span class='rparen'>)</span>
+  <span class='rbrace'>}</span>
 
-  <span class='es identifier id'>es</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span> <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id es'>es</span><span class='period'>.</span><span class='id map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id e'>e</span><span class='op'>|</span> <span class='const'>Element</span><span class='period'>.</span><span class='id new'>new</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id e'>e</span><span class='period'>.</span><span class='id ref'>ref</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -800,12 +792,11 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 20</span>
 
-<span class='def def kw'>def</span> <span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
-  <span class='dispatch identifier id'>dispatch</span><span class='lparen token'>(</span><span class='symbol val'>:navigate_to</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span>
-    <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
-  <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id get'>get</span><span class='lparen'>(</span><span class='id url'>url</span><span class='rparen'>)</span>
+  <span class='id dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:navigate_to</span><span class='comma'>,</span> <span class='id url'>url</span><span class='comma'>,</span> <span class='id driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span>
+    <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id get'>get</span><span class='lparen'>(</span><span class='id url'>url</span><span class='rparen'>)</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -845,12 +836,11 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 32</span>
 
-<span class='def def kw'>def</span> <span class='goBack identifier id'>goBack</span>
-  <span class='dispatch identifier id'>dispatch</span><span class='lparen token'>(</span><span class='symbol val'>:navigate_back</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span>
-    <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='goBack identifier id'>goBack</span>
-  <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id goBack'>goBack</span>
+  <span class='id dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:navigate_back</span><span class='comma'>,</span> <span class='id driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span>
+    <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id goBack'>goBack</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -890,12 +880,11 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 26</span>
 
-<span class='def def kw'>def</span> <span class='goForward identifier id'>goForward</span>
-  <span class='dispatch identifier id'>dispatch</span><span class='lparen token'>(</span><span class='symbol val'>:navigate_forward</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span>
-    <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='goForward identifier id'>goForward</span>
-  <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id goForward'>goForward</span>
+  <span class='id dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:navigate_forward</span><span class='comma'>,</span> <span class='id driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span>
+    <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id goForward'>goForward</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -933,10 +922,9 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 78</span>
 
-<span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
-  <span class='dispatch identifier id'>dispatch</span><span class='lparen token'>(</span><span class='symbol val'>:quit</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='quit identifier id'>quit</span> <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id quit'>quit</span>
+  <span class='id dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:quit</span><span class='comma'>,</span> <span class='id driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id quit'>quit</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -976,12 +964,11 @@ A new instance of EventFiringBridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 50</span>
 
-<span class='def def kw'>def</span> <span class='sendKeysToElement identifier id'>sendKeysToElement</span><span class='lparen token'>(</span><span class='ref identifier id'>ref</span><span class='comma token'>,</span> <span class='keys identifier id'>keys</span><span class='rparen token'>)</span>
-  <span class='dispatch identifier id'>dispatch</span><span class='lparen token'>(</span><span class='symbol val'>:change_value_of</span><span class='comma token'>,</span> <span class='create_element identifier id'>create_element</span><span class='lparen token'>(</span><span class='ref identifier id'>ref</span><span class='rparen token'>)</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span>
-    <span class='@delegate ivar id'>@delegate</span><span class='dot token'>.</span><span class='sendKeysToElement identifier id'>sendKeysToElement</span><span class='lparen token'>(</span><span class='ref identifier id'>ref</span><span class='comma token'>,</span> <span class='keys identifier id'>keys</span><span class='rparen token'>)</span>
-  <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id sendKeysToElement'>sendKeysToElement</span><span class='lparen'>(</span><span class='id ref'>ref</span><span class='comma'>,</span> <span class='id keys'>keys</span><span class='rparen'>)</span>
+  <span class='id dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:change_value_of</span><span class='comma'>,</span> <span class='id create_element'>create_element</span><span class='lparen'>(</span><span class='id ref'>ref</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span>
+    <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id sendKeysToElement'>sendKeysToElement</span><span class='lparen'>(</span><span class='id ref'>ref</span><span class='comma'>,</span> <span class='id keys'>keys</span><span class='rparen'>)</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -992,9 +979,9 @@ A new instance of EventFiringBridge
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:46 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

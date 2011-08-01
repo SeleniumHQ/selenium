@@ -516,11 +516,10 @@ A new instance of JavascriptExpressionBuilder
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 7</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='javascript_framework_name identifier id'>javascript_framework_name</span><span class='assign token'>=</span><span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='@framework ivar id'>@framework</span> <span class='assign token'>=</span> <span class='javascript_framework_for identifier id'>javascript_framework_for</span><span class='lparen token'>(</span><span class='javascript_framework_name identifier id'>javascript_framework_name</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='javascript_framework_name identifier id'>javascript_framework_name</span>       
-  <span class='@script ivar id'>@script</span> <span class='assign token'>=</span> <span class='string val'>&quot;&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id javascript_framework_name'>javascript_framework_name</span><span class='op'>=</span><span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@framework</span> <span class='op'>=</span> <span class='id javascript_framework_for'>javascript_framework_for</span><span class='lparen'>(</span><span class='id javascript_framework_name'>javascript_framework_name</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id javascript_framework_name'>javascript_framework_name</span>       
+  <span class='ivar'>@script</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -565,10 +564,9 @@ Returns the value of attribute script
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 5</span>
 
-<span class='def def kw'>def</span> <span class='script identifier id'>script</span>
-  <span class='@script ivar id'>@script</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id script'>script</span>
+  <span class='ivar'>@script</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -602,11 +600,10 @@ Returns the value of attribute script
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='append identifier id'>append</span><span class='lparen token'>(</span><span class='text identifier id'>text</span><span class='rparen token'>)</span>
-  <span class='@script ivar id'>@script</span> <span class='lshft op'>&lt;&lt;</span> <span class='text identifier id'>text</span>
-  <span class='self self kw'>self</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id append'>append</span><span class='lparen'>(</span><span class='id text'>text</span><span class='rparen'>)</span>
+  <span class='ivar'>@script</span> <span class='op'>&lt;&lt;</span> <span class='id text'>text</span>
+  <span class='kw'>self</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -625,17 +622,16 @@ Returns the value of attribute script
       <pre class="lines">
 
 
+45
 46
-47
-48</pre>
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 45</span>
 
-<span class='def def kw'>def</span> <span class='element_value_is identifier id'>element_value_is</span><span class='lparen token'>(</span><span class='expected_value identifier id'>expected_value</span><span class='rparen token'>)</span>
-  <span class='append identifier id'>append</span> <span class='dstring node'>&quot;(element != null &amp;&amp; element.value == '#{quote_escaped(expected_value)}')&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id element_value_is'>element_value_is</span><span class='lparen'>(</span><span class='id expected_value'>expected_value</span><span class='rparen'>)</span>
+  <span class='id append'>append</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>(element != null &amp;&amp; element.value == '</span><span class='embexpr_beg'>#{</span><span class='id quote_escaped'>quote_escaped</span><span class='lparen'>(</span><span class='id expected_value'>expected_value</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'>')</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -654,17 +650,16 @@ Returns the value of attribute script
       <pre class="lines">
 
 
+49
 50
-51
-52</pre>
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 49</span>
 
-<span class='def def kw'>def</span> <span class='element_value_is_not identifier id'>element_value_is_not</span><span class='lparen token'>(</span><span class='expected_value identifier id'>expected_value</span><span class='rparen token'>)</span>
-  <span class='append identifier id'>append</span> <span class='dstring node'>&quot;(element == null || element.value != '#{quote_escaped(expected_value)}')&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id element_value_is_not'>element_value_is_not</span><span class='lparen'>(</span><span class='id expected_value'>expected_value</span><span class='rparen'>)</span>
+  <span class='id append'>append</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>(element == null || element.value != '</span><span class='embexpr_beg'>#{</span><span class='id quote_escaped'>quote_escaped</span><span class='lparen'>(</span><span class='id expected_value'>expected_value</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'>')</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -685,15 +680,30 @@ Returns the value of attribute script
 
 33
 34
-35</pre>
+35
+36
+37
+38
+39
+40
+41
+42
+43</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 33</span>
 
-<span class='def def kw'>def</span> <span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
-  <span class='append identifier id'>append</span>  <span class='string val'>&quot;var element;\n\ntry {\nelement = selenium.browserbot.findElement('\#{quote_escaped(locator)}');\n} catch(e) {\nelement = null;\n}\n&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id find_element'>find_element</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span>
+  <span class='id append'>append</span>  <span class='heredoc_beg'>&lt;&lt;-EOS</span><span class='tstring_content'>    var element;
+
+    try {
+</span><span class='embexpr_beg'>      element = selenium.browserbot.findElement('#{</span><span class='id quote_escaped'>quote_escaped</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span><span class='rbrace'>}</span>
+<span class='tstring_content'>');
+    } catch(e) {
+      element = null;
+    }
+</span><span class='heredoc_end'>  EOS
+</span><span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -712,6 +722,7 @@ Returns the value of attribute script
       <pre class="lines">
 
 
+53
 54
 55
 56
@@ -719,22 +730,20 @@ Returns the value of attribute script
 58
 59
 60
-61
-62</pre>
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 53</span>
 
-<span class='def def kw'>def</span> <span class='find_text identifier id'>find_text</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:element</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span>
-    <span class='find_text_in_document identifier id'>find_text_in_document</span> <span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
-  <span class='else else kw'>else</span>
-    <span class='find_text_in_element identifier id'>find_text_in_element</span> <span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span>
-  <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='id find_text'>find_text</span><span class='lparen'>(</span><span class='id pattern'>pattern</span><span class='comma'>,</span> <span class='id options'>options</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id nil?'>nil?</span>
+    <span class='id find_text_in_document'>find_text_in_document</span> <span class='id pattern'>pattern</span><span class='comma'>,</span> <span class='id options'>options</span>
+  <span class='kw'>else</span>
+    <span class='id find_text_in_element'>find_text_in_element</span> <span class='id pattern'>pattern</span><span class='comma'>,</span> <span class='id options'>options</span>
+  <span class='kw'>end</span>
 
-  <span class='self self kw'>self</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>self</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -753,6 +762,7 @@ Returns the value of attribute script
       <pre class="lines">
 
 
+63
 64
 65
 66
@@ -762,22 +772,26 @@ Returns the value of attribute script
 70
 71
 72
-73</pre>
+73
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 63</span>
 
-<span class='def def kw'>def</span> <span class='find_text_in_document identifier id'>find_text_in_document</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='rparen token'>)</span>
-  <span class='js_regexp identifier id'>js_regexp</span> <span class='assign token'>=</span> <span class='case case kw'>case</span> <span class='pattern identifier id'>pattern</span>
-  <span class='when when kw'>when</span> <span class='Regexp constant id'>Regexp</span>
-    <span class='pattern identifier id'>pattern</span><span class='dot token'>.</span><span class='inspect identifier id'>inspect</span>
-  <span class='else else kw'>else</span>
-    <span class='dregexp node'>/#{pattern}/</span><span class='dot token'>.</span><span class='inspect identifier id'>inspect</span>
-  <span class='end end kw'>end</span>
-  <span class='append identifier id'>append</span> <span class='string val'>&quot;var text_match;\ntext_match = (null != selenium.browserbot.getCurrentWindow().document.body.innerHTML.match(\#{js_regexp}));\n&quot;</span>
-  
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id find_text_in_document'>find_text_in_document</span><span class='lparen'>(</span><span class='id pattern'>pattern</span><span class='comma'>,</span> <span class='id options'>options</span><span class='rparen'>)</span>
+  <span class='id js_regexp'>js_regexp</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id pattern'>pattern</span>
+  <span class='kw'>when</span> <span class='const'>Regexp</span>
+    <span class='id pattern'>pattern</span><span class='period'>.</span><span class='id inspect'>inspect</span>
+  <span class='kw'>else</span>
+    <span class='tstring'><span class='regexp_beg'>/</span><span class='embexpr_beg'>#{</span><span class='id pattern'>pattern</span><span class='rbrace'>}</span><span class='regexp_end'>/</span></span><span class='period'>.</span><span class='id inspect'>inspect</span>
+  <span class='kw'>end</span>
+  <span class='id append'>append</span> <span class='heredoc_beg'>&lt;&lt;-EOS</span><span class='tstring_content'>    var text_match;
+</span><span class='embexpr_beg'>    text_match = (null != selenium.browserbot.getCurrentWindow().document.body.innerHTML.match(#{</span><span class='id js_regexp'>js_regexp</span><span class='rbrace'>}</span>
+<span class='tstring_content'>));
+</span><span class='heredoc_end'>  EOS
+</span>  
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -796,23 +810,28 @@ Returns the value of attribute script
       <pre class="lines">
 
 
+77
+78
 79
 80
 81
 82
 83
-84</pre>
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 77</span>
 
-<span class='def def kw'>def</span> <span class='find_text_in_element identifier id'>find_text_in_element</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='rparen token'>)</span>
-  <span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='options identifier id'>options</span><span class='lbrack token'>[</span><span class='symbol val'>:element</span><span class='rbrack token'>]</span><span class='rparen token'>)</span>
-  <span class='append identifier id'>append</span> <span class='string val'>&quot;var text_match;\ntext_match = (element != null &amp;&amp; \#{text_match(pattern)});\n&quot;</span>
-  
-  <span class='self self kw'>self</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id find_text_in_element'>find_text_in_element</span><span class='lparen'>(</span><span class='id pattern'>pattern</span><span class='comma'>,</span> <span class='id options'>options</span><span class='rparen'>)</span>
+  <span class='id find_element'>find_element</span><span class='lparen'>(</span><span class='id options'>options</span><span class='lbracket'>[</span><span class='symbol'>:element</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='id append'>append</span> <span class='heredoc_beg'>&lt;&lt;-EOS</span><span class='tstring_content'>    var text_match;
+</span><span class='embexpr_beg'>    text_match = (element != null &amp;&amp; #{</span><span class='id text_match'>text_match</span><span class='lparen'>(</span><span class='id pattern'>pattern</span><span class='rparen'>)</span><span class='rbrace'>}</span>
+<span class='tstring_content'>);
+</span><span class='heredoc_end'>  EOS
+</span>  
+  <span class='kw'>self</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -831,31 +850,30 @@ Returns the value of attribute script
       <pre class="lines">
 
 
+96
+97
+98
 99
 100
 101
 102
 103
 104
-105
-106
-107
-108</pre>
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 96</span>
 
-<span class='def def kw'>def</span> <span class='javascript_framework_for identifier id'>javascript_framework_for</span><span class='lparen token'>(</span><span class='framework_name identifier id'>framework_name</span><span class='rparen token'>)</span>
-  <span class='case case kw'>case</span> <span class='framework_name identifier id'>framework_name</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:prototype</span>
-    <span class='JavascriptFrameworks constant id'>JavascriptFrameworks</span><span class='colon2 op'>::</span><span class='Prototype constant id'>Prototype</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:jquery</span>
-    <span class='JavascriptFrameworks constant id'>JavascriptFrameworks</span><span class='colon2 op'>::</span><span class='JQuery constant id'>JQuery</span>
-  <span class='else else kw'>else</span>
-    <span class='raise identifier id'>raise</span> <span class='dstring node'>&quot;Unsupported Javascript Framework: #{framework_name}&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id javascript_framework_for'>javascript_framework_for</span><span class='lparen'>(</span><span class='id framework_name'>framework_name</span><span class='rparen'>)</span>
+  <span class='kw'>case</span> <span class='id framework_name'>framework_name</span><span class='period'>.</span><span class='id to_sym'>to_sym</span>
+  <span class='kw'>when</span> <span class='symbol'>:prototype</span>
+    <span class='const'>JavascriptFrameworks</span><span class='op'>::</span><span class='const'>Prototype</span>
+  <span class='kw'>when</span> <span class='symbol'>:jquery</span>
+    <span class='const'>JavascriptFrameworks</span><span class='op'>::</span><span class='const'>JQuery</span>
+  <span class='kw'>else</span>
+    <span class='id raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Unsupported Javascript Framework: </span><span class='embexpr_beg'>#{</span><span class='id framework_name'>framework_name</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -881,10 +899,9 @@ Returns the value of attribute script
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 17</span>
 
-<span class='def def kw'>def</span> <span class='no_pending_ajax_requests identifier id'>no_pending_ajax_requests</span>
-  <span class='append identifier id'>append</span> <span class='window_script identifier id'>window_script</span><span class='lparen token'>(</span><span class='dstring node'>&quot;#{@framework.ajax_request_tracker} == 0&quot;</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id no_pending_ajax_requests'>no_pending_ajax_requests</span>
+  <span class='id append'>append</span> <span class='id window_script'>window_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='ivar'>@framework</span><span class='period'>.</span><span class='id ajax_request_tracker'>ajax_request_tracker</span><span class='rbrace'>}</span><span class='tstring_content'> == 0</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -910,10 +927,9 @@ Returns the value of attribute script
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 21</span>
 
-<span class='def def kw'>def</span> <span class='no_pending_effects identifier id'>no_pending_effects</span>
-  <span class='append identifier id'>append</span> <span class='window_script identifier id'>window_script</span><span class='lparen token'>(</span><span class='string val'>&quot;Effect.Queue.size() == 0&quot;</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id no_pending_effects'>no_pending_effects</span>
+  <span class='id append'>append</span> <span class='id window_script'>window_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Effect.Queue.size() == 0</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -939,10 +955,9 @@ Returns the value of attribute script
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 29</span>
 
-<span class='def def kw'>def</span> <span class='not_visible identifier id'>not_visible</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
-  <span class='append identifier id'>append</span> <span class='dstring node'>&quot;!selenium.isVisible('#{quote_escaped(locator)}')&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id not_visible'>not_visible</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span>
+  <span class='id append'>append</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>!selenium.isVisible('</span><span class='embexpr_beg'>#{</span><span class='id quote_escaped'>quote_escaped</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'>')</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -961,17 +976,16 @@ Returns the value of attribute script
       <pre class="lines">
 
 
-114
-115
-116</pre>
+111
+112
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 114</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 111</span>
 
-<span class='def def kw'>def</span> <span class='quote_escaped identifier id'>quote_escaped</span><span class='lparen token'>(</span><span class='a_string identifier id'>a_string</span><span class='rparen token'>)</span>
-  <span class='a_string identifier id'>a_string</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='regexp val'>/\\/</span><span class='comma token'>,</span> <span class='string val'>&quot;\\\\\\&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='regexp val'>/'/</span><span class='comma token'>,</span> <span class='string val'>%q&lt;\\\'&gt;</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id quote_escaped'>quote_escaped</span><span class='lparen'>(</span><span class='id a_string'>a_string</span><span class='rparen'>)</span>
+  <span class='id a_string'>a_string</span><span class='period'>.</span><span class='id gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\\</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\\\\\\</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>'</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>%q&lt;</span><span class='tstring_content'>\\\'</span><span class='tstring_end'>&gt;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -990,27 +1004,26 @@ Returns the value of attribute script
       <pre class="lines">
 
 
+87
+88
+89
 90
 91
 92
 93
-94
-95
-96
-97</pre>
+94</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 90</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 87</span>
 
-<span class='def def kw'>def</span> <span class='text_match identifier id'>text_match</span><span class='lparen token'>(</span><span class='pattern identifier id'>pattern</span><span class='rparen token'>)</span>
-  <span class='case case kw'>case</span> <span class='pattern identifier id'>pattern</span>
-  <span class='when when kw'>when</span> <span class='Regexp constant id'>Regexp</span>
-    <span class='dstring node'>&quot;null != element.innerHTML.match(#{pattern.inspect})&quot;</span>
-  <span class='else else kw'>else</span>
-    <span class='dstring node'>&quot;element.innerHTML == '#{quote_escaped(pattern)}'&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id text_match'>text_match</span><span class='lparen'>(</span><span class='id pattern'>pattern</span><span class='rparen'>)</span>
+  <span class='kw'>case</span> <span class='id pattern'>pattern</span>
+  <span class='kw'>when</span> <span class='const'>Regexp</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>null != element.innerHTML.match(</span><span class='embexpr_beg'>#{</span><span class='id pattern'>pattern</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>else</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>element.innerHTML == '</span><span class='embexpr_beg'>#{</span><span class='id quote_escaped'>quote_escaped</span><span class='lparen'>(</span><span class='id pattern'>pattern</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'>'</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1036,10 +1049,9 @@ Returns the value of attribute script
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 25</span>
 
-<span class='def def kw'>def</span> <span class='visible identifier id'>visible</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='rparen token'>)</span>
-  <span class='append identifier id'>append</span> <span class='dstring node'>&quot;selenium.isVisible('#{quote_escaped(locator)}')&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id visible'>visible</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span>
+  <span class='id append'>append</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>selenium.isVisible('</span><span class='embexpr_beg'>#{</span><span class='id quote_escaped'>quote_escaped</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'>')</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1058,17 +1070,16 @@ Returns the value of attribute script
       <pre class="lines">
 
 
-110
-111
-112</pre>
+107
+108
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 107</span>
 
-<span class='def def kw'>def</span> <span class='window_script identifier id'>window_script</span><span class='lparen token'>(</span><span class='expression identifier id'>expression</span><span class='rparen token'>)</span>
-  <span class='dstring node'>&quot;selenium.browserbot.getCurrentWindow().#{expression};&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id window_script'>window_script</span><span class='lparen'>(</span><span class='id expression'>expression</span><span class='rparen'>)</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>selenium.browserbot.getCurrentWindow().</span><span class='embexpr_beg'>#{</span><span class='id expression'>expression</span><span class='rbrace'>}</span><span class='tstring_content'>;</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1079,9 +1090,9 @@ Returns the value of attribute script
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:52 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

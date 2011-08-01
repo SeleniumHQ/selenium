@@ -126,8 +126,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='localhost identifier id'>localhost</span>
-</pre></dd>
+        <dd><pre class="code"><span class='const'>Platform</span><span class='period'>.</span><span class='id localhost'>localhost</span></pre></dd>
       
         <dt id="DEFAULT_PORT-constant" class="">DEFAULT_PORT =
           <div class="docstring">
@@ -144,8 +143,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='integer val'>5555</span>
-</pre></dd>
+        <dd><pre class="code"><span class='int'>5555</span></pre></dd>
       
         <dt id="DEFAULT_TIMEOUT-constant" class="">DEFAULT_TIMEOUT =
           <div class="docstring">
@@ -162,8 +160,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='integer val'>30</span>
-</pre></dd>
+        <dd><pre class="code"><span class='int'>30</span></pre></dd>
       
     </dl>
   
@@ -375,33 +372,32 @@ A new instance of Bridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 15</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='timeout identifier id'>timeout</span>     <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:timeout</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='DEFAULT_TIMEOUT constant id'>DEFAULT_TIMEOUT</span> <span class='rbrace token'>}</span>
-  <span class='port identifier id'>port</span>        <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:port</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='DEFAULT_PORT constant id'>DEFAULT_PORT</span> <span class='rbrace token'>}</span>
-  <span class='http_client identifier id'>http_client</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:http_client</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id timeout'>timeout</span>     <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:timeout</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>DEFAULT_TIMEOUT</span> <span class='rbrace'>}</span>
+  <span class='id port'>port</span>        <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>DEFAULT_PORT</span> <span class='rbrace'>}</span>
+  <span class='id http_client'>http_client</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:http_client</span><span class='rparen'>)</span>
 
-  <span class='unless unless kw'>unless</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
-    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown option#{'s' if opts.size != 1}: #{opts.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>unless</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id empty?'>empty?</span>
+    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown option</span><span class='embexpr_beg'>#{</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>s</span><span class='tstring_end'>'</span></span> <span class='kw'>if</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id size'>size</span> <span class='op'>!=</span> <span class='int'>1</span><span class='rbrace'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id opts'>opts</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='@server ivar id'>@server</span> <span class='assign token'>=</span> <span class='Server constant id'>Server</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
-  <span class='@port ivar id'>@port</span>   <span class='assign token'>=</span> <span class='@server ivar id'>@server</span><span class='dot token'>.</span><span class='start identifier id'>start</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='port identifier id'>port</span><span class='rparen token'>)</span>
+  <span class='ivar'>@server</span> <span class='op'>=</span> <span class='const'>Server</span><span class='period'>.</span><span class='id new'>new</span>
+  <span class='ivar'>@port</span>   <span class='op'>=</span> <span class='ivar'>@server</span><span class='period'>.</span><span class='id start'>start</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id port'>port</span><span class='rparen'>)</span>
 
-  <span class='host identifier id'>host</span> <span class='assign token'>=</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='localhost identifier id'>localhost</span>
-  <span class='unless unless kw'>unless</span> <span class='SocketPoller constant id'>SocketPoller</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='host identifier id'>host</span><span class='comma token'>,</span> <span class='@port ivar id'>@port</span><span class='comma token'>,</span> <span class='timeout identifier id'>timeout</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='connected? fid id'>connected?</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unable to connect to IE server within #{timeout} seconds&quot;</span>
-  <span class='end end kw'>end</span>
+  <span class='id host'>host</span> <span class='op'>=</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id localhost'>localhost</span>
+  <span class='kw'>unless</span> <span class='const'>SocketPoller</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='id host'>host</span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='comma'>,</span> <span class='id timeout'>timeout</span><span class='rparen'>)</span><span class='period'>.</span><span class='id connected?'>connected?</span>
+    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to connect to IE server within </span><span class='embexpr_beg'>#{</span><span class='id timeout'>timeout</span><span class='rbrace'>}</span><span class='tstring_content'> seconds</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='remote_opts identifier id'>remote_opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
-    <span class='symbol val'>:url</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='dstring node'>&quot;http://#{host}:#{@port}&quot;</span><span class='comma token'>,</span>
-    <span class='symbol val'>:desired_capabilities</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:internet_explorer</span>
-  <span class='rbrace token'>}</span>
+  <span class='id remote_opts'>remote_opts</span> <span class='op'>=</span> <span class='lbrace'>{</span>
+    <span class='symbol'>:url</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='id host'>host</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='symbol'>:desired_capabilities</span> <span class='op'>=&gt;</span> <span class='symbol'>:internet_explorer</span>
+  <span class='rbrace'>}</span>
 
-  <span class='remote_opts identifier id'>remote_opts</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span><span class='lparen token'>(</span><span class='symbol val'>:http_client</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='http_client identifier id'>http_client</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='http_client identifier id'>http_client</span>
+  <span class='id remote_opts'>remote_opts</span><span class='period'>.</span><span class='id merge!'>merge!</span><span class='lparen'>(</span><span class='symbol'>:http_client</span> <span class='op'>=&gt;</span> <span class='id http_client'>http_client</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id http_client'>http_client</span>
 
-  <span class='super super kw'>super</span><span class='lparen token'>(</span><span class='remote_opts identifier id'>remote_opts</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>super</span><span class='lparen'>(</span><span class='id remote_opts'>remote_opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -446,10 +442,9 @@ A new instance of Bridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 42</span>
 
-<span class='def def kw'>def</span> <span class='browser identifier id'>browser</span>
-  <span class='symbol val'>:internet_explorer</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id browser'>browser</span>
+  <span class='symbol'>:internet_explorer</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -487,10 +482,9 @@ A new instance of Bridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 46</span>
 
-<span class='def def kw'>def</span> <span class='driver_extensions identifier id'>driver_extensions</span>
-  <span class='lbrack token'>[</span><span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='TakesScreenshot constant id'>TakesScreenshot</span><span class='comma token'>,</span> <span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='HasInputDevices constant id'>HasInputDevices</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id driver_extensions'>driver_extensions</span>
+  <span class='lbracket'>[</span><span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span><span class='comma'>,</span> <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasInputDevices</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -531,13 +525,12 @@ A new instance of Bridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 50</span>
 
-<span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
-  <span class='super super kw'>super</span>
-  <span class='@server ivar id'>@server</span><span class='dot token'>.</span><span class='stop identifier id'>stop</span>
+<span class='kw'>def</span> <span class='id quit'>quit</span>
+  <span class='kw'>super</span>
+  <span class='ivar'>@server</span><span class='period'>.</span><span class='id stop'>stop</span>
 
-  <span class='nil nil kw'>nil</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -548,9 +541,9 @@ A new instance of Bridge
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:33 2011 by 
+  Generated on Mon Aug  1 20:19:42 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

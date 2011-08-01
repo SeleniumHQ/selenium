@@ -285,19 +285,18 @@ A new instance of Server
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 13</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='jar identifier id'>jar</span><span class='comma token'>,</span> <span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='raise identifier id'>raise</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ENOENT constant id'>ENOENT</span><span class='comma token'>,</span> <span class='jar identifier id'>jar</span> <span class='unless unless_mod kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='exist? fid id'>exist?</span><span class='lparen token'>(</span><span class='jar identifier id'>jar</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id jar'>jar</span><span class='comma'>,</span> <span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id raise'>raise</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ENOENT</span><span class='comma'>,</span> <span class='id jar'>jar</span> <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id exist?'>exist?</span><span class='lparen'>(</span><span class='id jar'>jar</span><span class='rparen'>)</span>
 
-  <span class='@jar ivar id'>@jar</span>        <span class='assign token'>=</span> <span class='jar identifier id'>jar</span>
-  <span class='@host ivar id'>@host</span>       <span class='assign token'>=</span> <span class='string val'>&quot;127.0.0.1&quot;</span>
-  <span class='@port ivar id'>@port</span>       <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='symbol val'>:port</span><span class='comma token'>,</span> <span class='integer val'>4444</span><span class='rparen token'>)</span>
-  <span class='@timeout ivar id'>@timeout</span>    <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='symbol val'>:timeout</span><span class='comma token'>,</span> <span class='integer val'>30</span><span class='rparen token'>)</span>
-  <span class='@background ivar id'>@background</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='symbol val'>:background</span><span class='comma token'>,</span> <span class='false false kw'>false</span><span class='rparen token'>)</span>
-  <span class='@log ivar id'>@log</span>        <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:log</span><span class='rbrack token'>]</span>
+  <span class='ivar'>@jar</span>        <span class='op'>=</span> <span class='id jar'>jar</span>
+  <span class='ivar'>@host</span>       <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>127.0.0.1</span><span class='tstring_end'>&quot;</span></span>
+  <span class='ivar'>@port</span>       <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='comma'>,</span> <span class='int'>4444</span><span class='rparen'>)</span>
+  <span class='ivar'>@timeout</span>    <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:timeout</span><span class='comma'>,</span> <span class='int'>30</span><span class='rparen'>)</span>
+  <span class='ivar'>@background</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:background</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
+  <span class='ivar'>@log</span>        <span class='op'>=</span> <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:log</span><span class='rbracket'>]</span>
 
-  <span class='@additional_args ivar id'>@additional_args</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@additional_args</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -334,14 +333,13 @@ A new instance of Server
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 55</span>
 
-<span class='def def kw'>def</span> <span class='lshft op'>&lt;&lt;</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Array constant id'>Array</span><span class='rparen token'>)</span>
-    <span class='@additional_args ivar id'>@additional_args</span> <span class='opasgn op'>+=</span> <span class='arg identifier id'>arg</span>
-  <span class='else else kw'>else</span>
-    <span class='@additional_args ivar id'>@additional_args</span> <span class='lshft op'>&lt;&lt;</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='op'>&lt;&lt;</span><span class='lparen'>(</span><span class='id arg'>arg</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id arg'>arg</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
+    <span class='ivar'>@additional_args</span> <span class='op'>+=</span> <span class='id arg'>arg</span>
+  <span class='kw'>else</span>
+    <span class='ivar'>@additional_args</span> <span class='op'>&lt;&lt;</span> <span class='id arg'>arg</span><span class='period'>.</span><span class='id to_s'>to_s</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -376,19 +374,18 @@ A new instance of Server
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 26</span>
 
-<span class='def def kw'>def</span> <span class='start identifier id'>start</span>
-  <span class='process identifier id'>process</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
-  <span class='poll_for_service identifier id'>poll_for_service</span>
+<span class='kw'>def</span> <span class='id start'>start</span>
+  <span class='id process'>process</span><span class='period'>.</span><span class='id start'>start</span>
+  <span class='id poll_for_service'>poll_for_service</span>
 
-  <span class='unless unless kw'>unless</span> <span class='@background ivar id'>@background</span>
-    <span class='begin begin kw'>begin</span>
-      <span class='sleep identifier id'>sleep</span> <span class='integer val'>1</span> <span class='while while_mod kw'>while</span> <span class='process identifier id'>process</span><span class='dot token'>.</span><span class='alive? fid id'>alive?</span>
-    <span class='rescue rescue kw'>rescue</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ECHILD constant id'>ECHILD</span>
-      <span class='comment val'># no longer alive</span>
-    <span class='end end kw'>end</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>unless</span> <span class='ivar'>@background</span>
+    <span class='kw'>begin</span>
+      <span class='id sleep'>sleep</span> <span class='int'>1</span> <span class='kw'>while</span> <span class='id process'>process</span><span class='period'>.</span><span class='id alive?'>alive?</span>
+    <span class='kw'>rescue</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ECHILD</span>
+      <span class='comment'># no longer alive
+</span>    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -422,18 +419,17 @@ A new instance of Server
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 39</span>
 
-<span class='def def kw'>def</span> <span class='stop identifier id'>stop</span>
-  <span class='begin begin kw'>begin</span>
-    <span class='Net constant id'>Net</span><span class='colon2 op'>::</span><span class='HTTP constant id'>HTTP</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='@host ivar id'>@host</span><span class='comma token'>,</span> <span class='string val'>&quot;/selenium-server/driver/?cmd=shutDownSeleniumServer&quot;</span><span class='comma token'>,</span> <span class='@port ivar id'>@port</span><span class='rparen token'>)</span>
-  <span class='rescue rescue kw'>rescue</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ECONNREFUSED constant id'>ECONNREFUSED</span>
-  <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='id stop'>stop</span>
+  <span class='kw'>begin</span>
+    <span class='const'>Net</span><span class='op'>::</span><span class='const'>HTTP</span><span class='period'>.</span><span class='id get'>get</span><span class='lparen'>(</span><span class='ivar'>@host</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/selenium-server/driver/?cmd=shutDownSeleniumServer</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='rparen'>)</span>
+  <span class='kw'>rescue</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ECONNREFUSED</span>
+  <span class='kw'>end</span>
 
-  <span class='stop_process identifier id'>stop_process</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
-  <span class='poll_for_shutdown identifier id'>poll_for_shutdown</span>
+  <span class='id stop_process'>stop_process</span> <span class='kw'>if</span> <span class='ivar'>@process</span>
+  <span class='id poll_for_shutdown'>poll_for_shutdown</span>
 
-  <span class='@log_file ivar id'>@log_file</span><span class='dot token'>.</span><span class='close identifier id'>close</span> <span class='if if_mod kw'>if</span> <span class='@log_file ivar id'>@log_file</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@log_file</span><span class='period'>.</span><span class='id close'>close</span> <span class='kw'>if</span> <span class='ivar'>@log_file</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -459,10 +455,9 @@ A new instance of Server
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 51</span>
 
-<span class='def def kw'>def</span> <span class='webdriver_url identifier id'>webdriver_url</span>
-  <span class='dstring node'>&quot;http://#{@host}:#{@port}/wd/hub&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id webdriver_url'>webdriver_url</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_content'>/wd/hub</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -473,9 +468,9 @@ A new instance of Server
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:43 2011 by 
+  Generated on Mon Aug  1 20:19:41 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

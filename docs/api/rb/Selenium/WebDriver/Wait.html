@@ -100,14 +100,12 @@
         <dt id="DEFAULT_TIMEOUT-constant" class="">DEFAULT_TIMEOUT =
           
         </dt>
-        <dd><pre class="code"><span class='integer val'>5</span>
-</pre></dd>
+        <dd><pre class="code"><span class='int'>5</span></pre></dd>
       
         <dt id="DEFAULT_INTERVAL-constant" class="">DEFAULT_INTERVAL =
           
         </dt>
-        <dd><pre class="code"><span class='integer val'>0</span><span class='integer val'>.5</span>
-</pre></dd>
+        <dd><pre class="code"><span class='float'>0.5</span></pre></dd>
       
     </dl>
   
@@ -287,12 +285,11 @@ Exception mesage if timed out.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/wait.rb', line 16</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='@timeout ivar id'>@timeout</span>  <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='symbol val'>:timeout</span><span class='comma token'>,</span> <span class='DEFAULT_TIMEOUT constant id'>DEFAULT_TIMEOUT</span><span class='rparen token'>)</span>
-  <span class='@interval ivar id'>@interval</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='symbol val'>:interval</span><span class='comma token'>,</span> <span class='DEFAULT_INTERVAL constant id'>DEFAULT_INTERVAL</span><span class='rparen token'>)</span>
-  <span class='@message ivar id'>@message</span>  <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:message</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='ivar'>@timeout</span>  <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:timeout</span><span class='comma'>,</span> <span class='const'>DEFAULT_TIMEOUT</span><span class='rparen'>)</span>
+  <span class='ivar'>@interval</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:interval</span><span class='comma'>,</span> <span class='const'>DEFAULT_INTERVAL</span><span class='rparen'>)</span>
+  <span class='ivar'>@message</span>  <span class='op'>=</span> <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:message</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -391,33 +388,32 @@ the result of the block
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/wait.rb', line 30</span>
 
-<span class='def def kw'>def</span> <span class='until until kw'>until</span><span class='lparen token'>(</span><span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
-  <span class='end_time identifier id'>end_time</span> <span class='assign token'>=</span> <span class='Time constant id'>Time</span><span class='dot token'>.</span><span class='now identifier id'>now</span> <span class='plus op'>+</span> <span class='@timeout ivar id'>@timeout</span>
-  <span class='last_error identifier id'>last_error</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
+<span class='kw'>def</span> <span class='kw'>until</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+  <span class='id end_time'>end_time</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id now'>now</span> <span class='op'>+</span> <span class='ivar'>@timeout</span>
+  <span class='id last_error'>last_error</span> <span class='op'>=</span> <span class='kw'>nil</span>
 
-  <span class='until until kw'>until</span> <span class='Time constant id'>Time</span><span class='dot token'>.</span><span class='now identifier id'>now</span> <span class='gt op'>&gt;</span> <span class='end_time identifier id'>end_time</span>
-    <span class='begin begin kw'>begin</span>
-      <span class='result identifier id'>result</span> <span class='assign token'>=</span> <span class='yield yield kw'>yield</span>
-      <span class='return return kw'>return</span> <span class='result identifier id'>result</span> <span class='if if_mod kw'>if</span> <span class='result identifier id'>result</span>
-    <span class='rescue rescue kw'>rescue</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='NoSuchElementError constant id'>NoSuchElementError</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='last_error identifier id'>last_error</span>
-      <span class='comment val'># swallowed</span>
-    <span class='end end kw'>end</span>
+  <span class='kw'>until</span> <span class='const'>Time</span><span class='period'>.</span><span class='id now'>now</span> <span class='op'>&gt;</span> <span class='id end_time'>end_time</span>
+    <span class='kw'>begin</span>
+      <span class='id result'>result</span> <span class='op'>=</span> <span class='kw'>yield</span>
+      <span class='kw'>return</span> <span class='id result'>result</span> <span class='kw'>if</span> <span class='id result'>result</span>
+    <span class='kw'>rescue</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>NoSuchElementError</span> <span class='op'>=&gt;</span> <span class='id last_error'>last_error</span>
+      <span class='comment'># swallowed
+</span>    <span class='kw'>end</span>
 
-    <span class='sleep identifier id'>sleep</span> <span class='@interval ivar id'>@interval</span>
-  <span class='end end kw'>end</span>
+    <span class='id sleep'>sleep</span> <span class='ivar'>@interval</span>
+  <span class='kw'>end</span>
 
 
-  <span class='if if kw'>if</span> <span class='@message ivar id'>@message</span>
-    <span class='msg identifier id'>msg</span> <span class='assign token'>=</span> <span class='@message ivar id'>@message</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
-  <span class='else else kw'>else</span>
-    <span class='msg identifier id'>msg</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;timed out after #{@timeout} seconds&quot;</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>if</span> <span class='ivar'>@message</span>
+    <span class='id msg'>msg</span> <span class='op'>=</span> <span class='ivar'>@message</span><span class='period'>.</span><span class='id dup'>dup</span>
+  <span class='kw'>else</span>
+    <span class='id msg'>msg</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>timed out after </span><span class='embexpr_beg'>#{</span><span class='ivar'>@timeout</span><span class='rbrace'>}</span><span class='tstring_content'> seconds</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='msg identifier id'>msg</span> <span class='lshft op'>&lt;&lt;</span> <span class='dstring node'>&quot; (#{last_error.message})}&quot;</span> <span class='if if_mod kw'>if</span> <span class='last_error identifier id'>last_error</span>
+  <span class='id msg'>msg</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> (</span><span class='embexpr_beg'>#{</span><span class='id last_error'>last_error</span><span class='period'>.</span><span class='id message'>message</span><span class='rbrace'>}</span><span class='tstring_content'>)}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id last_error'>last_error</span>
 
-  <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='TimeOutError constant id'>TimeOutError</span><span class='comma token'>,</span> <span class='msg identifier id'>msg</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>TimeOutError</span><span class='comma'>,</span> <span class='id msg'>msg</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -428,9 +424,9 @@ the result of the block
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:50 2011 by 
+  Generated on Mon Aug  1 20:19:43 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

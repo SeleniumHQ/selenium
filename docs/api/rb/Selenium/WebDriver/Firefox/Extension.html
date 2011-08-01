@@ -210,15 +210,14 @@ A new instance of Extension
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/extension.rb', line 7</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-  <span class='unless unless kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='exist? fid id'>exist?</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;could not find extension at #{path.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id exist?'>exist?</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>could not find extension at </span><span class='embexpr_beg'>#{</span><span class='id path'>path</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='@path ivar id'>@path</span>             <span class='assign token'>=</span> <span class='path identifier id'>path</span>
-  <span class='@should_reap_root ivar id'>@should_reap_root</span> <span class='assign token'>=</span> <span class='false false kw'>false</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@path</span>             <span class='op'>=</span> <span class='id path'>path</span>
+  <span class='ivar'>@should_reap_root</span> <span class='op'>=</span> <span class='kw'>false</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -270,17 +269,16 @@ A new instance of Extension
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/extension.rb', line 16</span>
 
-<span class='def def kw'>def</span> <span class='write_to identifier id'>write_to</span><span class='lparen token'>(</span><span class='extensions_dir identifier id'>extensions_dir</span><span class='rparen token'>)</span>
-  <span class='root_dir identifier id'>root_dir</span> <span class='assign token'>=</span> <span class='create_root identifier id'>create_root</span>
-  <span class='ext_path identifier id'>ext_path</span> <span class='assign token'>=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span> <span class='extensions_dir identifier id'>extensions_dir</span><span class='comma token'>,</span> <span class='read_id_from_install_rdf identifier id'>read_id_from_install_rdf</span><span class='lparen token'>(</span><span class='root_dir identifier id'>root_dir</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id write_to'>write_to</span><span class='lparen'>(</span><span class='id extensions_dir'>extensions_dir</span><span class='rparen'>)</span>
+  <span class='id root_dir'>root_dir</span> <span class='op'>=</span> <span class='id create_root'>create_root</span>
+  <span class='id ext_path'>ext_path</span> <span class='op'>=</span> <span class='const'>File</span><span class='period'>.</span><span class='id join'>join</span> <span class='id extensions_dir'>extensions_dir</span><span class='comma'>,</span> <span class='id read_id_from_install_rdf'>read_id_from_install_rdf</span><span class='lparen'>(</span><span class='id root_dir'>root_dir</span><span class='rparen'>)</span>
 
-  <span class='FileUtils constant id'>FileUtils</span><span class='dot token'>.</span><span class='rm_rf identifier id'>rm_rf</span> <span class='ext_path identifier id'>ext_path</span>
-  <span class='FileUtils constant id'>FileUtils</span><span class='dot token'>.</span><span class='mkdir_p identifier id'>mkdir_p</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='dirname identifier id'>dirname</span><span class='lparen token'>(</span><span class='ext_path identifier id'>ext_path</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='symbol val'>:mode</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='integer val'>0700</span>
-  <span class='FileUtils constant id'>FileUtils</span><span class='dot token'>.</span><span class='cp_r identifier id'>cp_r</span> <span class='root_dir identifier id'>root_dir</span><span class='comma token'>,</span> <span class='ext_path identifier id'>ext_path</span>
+  <span class='const'>FileUtils</span><span class='period'>.</span><span class='id rm_rf'>rm_rf</span> <span class='id ext_path'>ext_path</span>
+  <span class='const'>FileUtils</span><span class='period'>.</span><span class='id mkdir_p'>mkdir_p</span> <span class='const'>File</span><span class='period'>.</span><span class='id dirname'>dirname</span><span class='lparen'>(</span><span class='id ext_path'>ext_path</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='symbol'>:mode</span> <span class='op'>=&gt;</span> <span class='int'>0700</span>
+  <span class='const'>FileUtils</span><span class='period'>.</span><span class='id cp_r'>cp_r</span> <span class='id root_dir'>root_dir</span><span class='comma'>,</span> <span class='id ext_path'>ext_path</span>
 
-  <span class='FileReaper constant id'>FileReaper</span><span class='dot token'>.</span><span class='reap identifier id'>reap</span><span class='lparen token'>(</span><span class='root_dir identifier id'>root_dir</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='@should_reap_root ivar id'>@should_reap_root</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='const'>FileReaper</span><span class='period'>.</span><span class='id reap'>reap</span><span class='lparen'>(</span><span class='id root_dir'>root_dir</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@should_reap_root</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -291,9 +289,9 @@ A new instance of Extension
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:26 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

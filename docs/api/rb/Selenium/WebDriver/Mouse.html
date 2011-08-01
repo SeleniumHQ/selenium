@@ -334,10 +334,9 @@ A new instance of Mouse
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/mouse.rb', line 7</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id bridge'>bridge</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id bridge'>bridge</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -383,11 +382,10 @@ A new instance of Mouse
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/mouse.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='move_if_needed identifier id'>move_if_needed</span> <span class='element identifier id'>element</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='click identifier id'>click</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id click'>click</span><span class='lparen'>(</span><span class='id element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id move_if_needed'>move_if_needed</span> <span class='id element'>element</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id click'>click</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -426,11 +424,10 @@ A new instance of Mouse
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/mouse.rb', line 21</span>
 
-<span class='def def kw'>def</span> <span class='context_click identifier id'>context_click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='move_if_needed identifier id'>move_if_needed</span> <span class='element identifier id'>element</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='contextClick identifier id'>contextClick</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id context_click'>context_click</span><span class='lparen'>(</span><span class='id element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id move_if_needed'>move_if_needed</span> <span class='id element'>element</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id contextClick'>contextClick</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -469,11 +466,10 @@ A new instance of Mouse
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/mouse.rb', line 16</span>
 
-<span class='def def kw'>def</span> <span class='double_click identifier id'>double_click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='move_if_needed identifier id'>move_if_needed</span> <span class='element identifier id'>element</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='doubleClick identifier id'>doubleClick</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id double_click'>double_click</span><span class='lparen'>(</span><span class='id element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id move_if_needed'>move_if_needed</span> <span class='id element'>element</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id doubleClick'>doubleClick</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -512,11 +508,10 @@ A new instance of Mouse
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/mouse.rb', line 26</span>
 
-<span class='def def kw'>def</span> <span class='down identifier id'>down</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='move_if_needed identifier id'>move_if_needed</span> <span class='element identifier id'>element</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='mouseDown identifier id'>mouseDown</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id down'>down</span><span class='lparen'>(</span><span class='id element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id move_if_needed'>move_if_needed</span> <span class='id element'>element</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id mouseDown'>mouseDown</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -554,10 +549,9 @@ A new instance of Mouse
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/mouse.rb', line 53</span>
 
-<span class='def def kw'>def</span> <span class='move_by identifier id'>move_by</span><span class='lparen token'>(</span><span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='mouseMoveTo identifier id'>mouseMoveTo</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id move_by'>move_by</span><span class='lparen'>(</span><span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id mouseMoveTo'>mouseMoveTo</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -583,9 +577,8 @@ Move the mouse.
 Examples:
 </p>
 <pre class="code">
-  <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='mouse identifier id'>mouse</span><span class='dot token'>.</span><span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
-  <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='mouse identifier id'>mouse</span><span class='dot token'>.</span><span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='integer val'>5</span><span class='comma token'>,</span> <span class='integer val'>5</span><span class='rparen token'>)</span>
-</pre>
+  <span class='id driver'>driver</span><span class='period'>.</span><span class='id mouse'>mouse</span><span class='period'>.</span><span class='id move_to'>move_to</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
+  <span class='id driver'>driver</span><span class='period'>.</span><span class='id mouse'>mouse</span><span class='period'>.</span><span class='id move_to'>move_to</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='int'>5</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span></pre>
 
 
   </div>
@@ -609,14 +602,13 @@ Examples:
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/mouse.rb', line 45</span>
 
-<span class='def def kw'>def</span> <span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='unless unless kw'>unless</span> <span class='element identifier id'>element</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Element constant id'>Element</span>
-    <span class='raise identifier id'>raise</span> <span class='TypeError constant id'>TypeError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;expected #{Element}, got #{element.inspect}:#{element.class}&quot;</span>
-  <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='id move_to'>move_to</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id right_by'>right_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id down_by'>down_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span> <span class='id element'>element</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='const'>Element</span>
+    <span class='id raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='const'>Element</span><span class='rbrace'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id element'>element</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id element'>element</span><span class='period'>.</span><span class='id class'>class</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='mouseMoveTo identifier id'>mouseMoveTo</span> <span class='element identifier id'>element</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id mouseMoveTo'>mouseMoveTo</span> <span class='id element'>element</span><span class='period'>.</span><span class='id ref'>ref</span><span class='comma'>,</span> <span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -655,11 +647,10 @@ Examples:
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/mouse.rb', line 31</span>
 
-<span class='def def kw'>def</span> <span class='up identifier id'>up</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='move_if_needed identifier id'>move_if_needed</span> <span class='element identifier id'>element</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='mouseUp identifier id'>mouseUp</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id up'>up</span><span class='lparen'>(</span><span class='id element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id move_if_needed'>move_if_needed</span> <span class='id element'>element</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id mouseUp'>mouseUp</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -670,9 +661,9 @@ Examples:
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:48 2011 by 
+  Generated on Mon Aug  1 20:19:43 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

@@ -567,14 +567,13 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 112</span>
 
-<span class='def def kw'>def</span> <span class='assert_executable identifier id'>assert_executable</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-  <span class='assert_file identifier id'>assert_file</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id assert_executable'>assert_executable</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+  <span class='id assert_file'>assert_file</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
 
-  <span class='unless unless kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='executable? fid id'>executable?</span> <span class='path identifier id'>path</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;not executable: #{path.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id executable?'>executable?</span> <span class='id path'>path</span>
+    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>not executable: </span><span class='embexpr_beg'>#{</span><span class='id path'>path</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -614,12 +613,11 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 106</span>
 
-<span class='def def kw'>def</span> <span class='assert_file identifier id'>assert_file</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-  <span class='unless unless kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='file? fid id'>file?</span> <span class='path identifier id'>path</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;not a file: #{path.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id assert_file'>assert_file</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id file?'>file?</span> <span class='id path'>path</span>
+    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>not a file: </span><span class='embexpr_beg'>#{</span><span class='id path'>path</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -667,20 +665,19 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 45</span>
 
-<span class='def def kw'>def</span> <span class='bitsize identifier id'>bitsize</span>
-  <span class='@bitsize ivar id'>@bitsize</span> <span class='opasgn op'>||=</span> <span class='lparen token'>(</span>
-    <span class='if if kw'>if</span> <span class='defined? defined kw'>defined?</span><span class='lparen token'>(</span><span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='BITSIZE constant id'>BITSIZE</span><span class='rparen token'>)</span>
-      <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='BITSIZE constant id'>BITSIZE</span>
-    <span class='elsif elsif kw'>elsif</span> <span class='defined? defined kw'>defined?</span><span class='lparen token'>(</span><span class='FFI constant id'>FFI</span><span class='rparen token'>)</span>
-      <span class='FFI constant id'>FFI</span><span class='dot token'>.</span><span class='type_size identifier id'>type_size</span><span class='lparen token'>(</span><span class='symbol val'>:pointer</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>4</span> <span class='question op'>?</span> <span class='integer val'>32</span> <span class='colon op'>:</span> <span class='integer val'>64</span>
-    <span class='elsif elsif kw'>elsif</span> <span class='jruby? fid id'>jruby?</span>
-      <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='ENV_JAVA constant id'>ENV_JAVA</span><span class='lbrack token'>[</span><span class='string val'>'sun.arch.data.model'</span><span class='rbrack token'>]</span><span class='rparen token'>)</span>
-    <span class='else else kw'>else</span>
-      <span class='float val'>1</span><span class='dot token'>.</span><span class='size identifier id'>size</span> <span class='eq op'>==</span> <span class='integer val'>4</span> <span class='question op'>?</span> <span class='integer val'>32</span> <span class='colon op'>:</span> <span class='integer val'>64</span>
-    <span class='end end kw'>end</span>
-  <span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id bitsize'>bitsize</span>
+  <span class='ivar'>@bitsize</span> <span class='op'>||=</span> <span class='lparen'>(</span>
+    <span class='kw'>if</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='const'>FFI</span><span class='op'>::</span><span class='const'>BITSIZE</span><span class='rparen'>)</span>
+      <span class='const'>FFI</span><span class='op'>::</span><span class='const'>BITSIZE</span>
+    <span class='kw'>elsif</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='const'>FFI</span><span class='rparen'>)</span>
+      <span class='const'>FFI</span><span class='period'>.</span><span class='id type_size'>type_size</span><span class='lparen'>(</span><span class='symbol'>:pointer</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='int'>4</span> <span class='op'>?</span> <span class='int'>32</span> <span class='op'>:</span> <span class='int'>64</span>
+    <span class='kw'>elsif</span> <span class='id jruby?'>jruby?</span>
+      <span class='const'>Integer</span><span class='lparen'>(</span><span class='const'>ENV_JAVA</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>sun.arch.data.model</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
+    <span class='kw'>else</span>
+      <span class='int'>1</span><span class='period'>.</span><span class='id size'>size</span> <span class='op'>==</span> <span class='int'>4</span> <span class='op'>?</span> <span class='int'>32</span> <span class='op'>:</span> <span class='int'>64</span>
+    <span class='kw'>end</span>
+  <span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -731,10 +728,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 87</span>
 
-<span class='def def kw'>def</span> <span class='cygwin? fid id'>cygwin?</span>
-  <span class='notop op'>!</span><span class='notop op'>!</span><span class='lparen token'>(</span><span class='RUBY_PLATFORM constant id'>RUBY_PLATFORM</span> <span class='match op'>=~</span> <span class='regexp val'>/cygwin/</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id cygwin?'>cygwin?</span>
+  <span class='op'>!</span><span class='op'>!</span><span class='lparen'>(</span><span class='const'>RUBY_PLATFORM</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>cygwin</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -775,13 +771,12 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 95</span>
 
-<span class='def def kw'>def</span> <span class='cygwin_path identifier id'>cygwin_path</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='comma token'>,</span> <span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='flags identifier id'>flags</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
-  <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='k identifier id'>k</span><span class='comma token'>,</span><span class='v identifier id'>v</span><span class='bitor op'>|</span> <span class='flags identifier id'>flags</span> <span class='lshft op'>&lt;&lt;</span> <span class='dstring node'>&quot;--#{k}&quot;</span> <span class='if if_mod kw'>if</span> <span class='v identifier id'>v</span> <span class='rbrace token'>}</span>
+<span class='kw'>def</span> <span class='id cygwin_path'>cygwin_path</span><span class='lparen'>(</span><span class='id path'>path</span><span class='comma'>,</span> <span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id flags'>flags</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id opts'>opts</span><span class='period'>.</span><span class='id each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id k'>k</span><span class='comma'>,</span><span class='id v'>v</span><span class='op'>|</span> <span class='id flags'>flags</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>--</span><span class='embexpr_beg'>#{</span><span class='id k'>k</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id v'>v</span> <span class='rbrace'>}</span>
 
-  <span class='dxstring node'>`cygpath #{flags.join ' '} &quot;#{path}&quot;`</span><span class='dot token'>.</span><span class='strip identifier id'>strip</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='backtick'>`</span><span class='tstring_content'>cygpath </span><span class='embexpr_beg'>#{</span><span class='id flags'>flags</span><span class='period'>.</span><span class='id join'>join</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'> </span><span class='tstring_end'>'</span></span><span class='rbrace'>}</span><span class='tstring_content'> &quot;</span><span class='embexpr_beg'>#{</span><span class='id path'>path</span><span class='rbrace'>}</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>`</span></span><span class='period'>.</span><span class='id strip'>strip</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -825,16 +820,15 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 17</span>
 
-<span class='def def kw'>def</span> <span class='engine identifier id'>engine</span>
-  <span class='@engine ivar id'>@engine</span> <span class='opasgn op'>||=</span> <span class='lparen token'>(</span>
-    <span class='if if kw'>if</span> <span class='defined? defined kw'>defined?</span> <span class='RUBY_ENGINE constant id'>RUBY_ENGINE</span>
-      <span class='RUBY_ENGINE constant id'>RUBY_ENGINE</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span>
-    <span class='else else kw'>else</span>
-      <span class='symbol val'>:ruby</span>
-    <span class='end end kw'>end</span>
-  <span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id engine'>engine</span>
+  <span class='ivar'>@engine</span> <span class='op'>||=</span> <span class='lparen'>(</span>
+    <span class='kw'>if</span> <span class='kw'>defined?</span> <span class='const'>RUBY_ENGINE</span>
+      <span class='const'>RUBY_ENGINE</span><span class='period'>.</span><span class='id to_sym'>to_sym</span>
+    <span class='kw'>else</span>
+      <span class='symbol'>:ruby</span>
+    <span class='kw'>end</span>
+  <span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -876,14 +870,13 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 120</span>
 
-<span class='def def kw'>def</span> <span class='exit_hook identifier id'>exit_hook</span><span class='lparen token'>(</span><span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
-  <span class='pid identifier id'>pid</span> <span class='assign token'>=</span> <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='pid identifier id'>pid</span>
+<span class='kw'>def</span> <span class='id exit_hook'>exit_hook</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+  <span class='id pid'>pid</span> <span class='op'>=</span> <span class='const'>Process</span><span class='period'>.</span><span class='id pid'>pid</span>
 
-  <span class='at_exit identifier id'>at_exit</span> <span class='do do kw'>do</span>
-    <span class='yield yield kw'>yield</span> <span class='if if_mod kw'>if</span> <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='pid identifier id'>pid</span> <span class='eq op'>==</span> <span class='pid identifier id'>pid</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id at_exit'>at_exit</span> <span class='kw'>do</span>
+    <span class='kw'>yield</span> <span class='kw'>if</span> <span class='const'>Process</span><span class='period'>.</span><span class='id pid'>pid</span> <span class='op'>==</span> <span class='id pid'>pid</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -931,20 +924,19 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 128</span>
 
-<span class='def def kw'>def</span> <span class='find_binary identifier id'>find_binary</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='binary_names identifier id'>binary_names</span><span class='rparen token'>)</span>
-  <span class='paths identifier id'>paths</span> <span class='assign token'>=</span> <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'PATH'</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='File constant id'>File</span><span class='colon2 op'>::</span><span class='PATH_SEPARATOR constant id'>PATH_SEPARATOR</span><span class='rparen token'>)</span>
-  <span class='binary_names identifier id'>binary_names</span><span class='dot token'>.</span><span class='map! fid id'>map!</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='n identifier id'>n</span><span class='bitor op'>|</span> <span class='dstring node'>&quot;#{n}.exe&quot;</span> <span class='rbrace token'>}</span> <span class='if if_mod kw'>if</span> <span class='windows? fid id'>windows?</span>
+<span class='kw'>def</span> <span class='id find_binary'>find_binary</span><span class='lparen'>(</span><span class='op'>*</span><span class='id binary_names'>binary_names</span><span class='rparen'>)</span>
+  <span class='id paths'>paths</span> <span class='op'>=</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>PATH</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='const'>File</span><span class='op'>::</span><span class='const'>PATH_SEPARATOR</span><span class='rparen'>)</span>
+  <span class='id binary_names'>binary_names</span><span class='period'>.</span><span class='id map!'>map!</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id n'>n</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id n'>n</span><span class='rbrace'>}</span><span class='tstring_content'>.exe</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span> <span class='kw'>if</span> <span class='id windows?'>windows?</span>
 
-  <span class='binary_names identifier id'>binary_names</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='binary_name identifier id'>binary_name</span><span class='bitor op'>|</span>
-    <span class='paths identifier id'>paths</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='path identifier id'>path</span><span class='bitor op'>|</span>
-      <span class='exe identifier id'>exe</span> <span class='assign token'>=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='comma token'>,</span> <span class='binary_name identifier id'>binary_name</span><span class='rparen token'>)</span>
-      <span class='return return kw'>return</span> <span class='exe identifier id'>exe</span> <span class='if if_mod kw'>if</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='executable? fid id'>executable?</span><span class='lparen token'>(</span><span class='exe identifier id'>exe</span><span class='rparen token'>)</span>
-    <span class='end end kw'>end</span>
-  <span class='end end kw'>end</span>
+  <span class='id binary_names'>binary_names</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id binary_name'>binary_name</span><span class='op'>|</span>
+    <span class='id paths'>paths</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id path'>path</span><span class='op'>|</span>
+      <span class='id exe'>exe</span> <span class='op'>=</span> <span class='const'>File</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='id path'>path</span><span class='comma'>,</span> <span class='id binary_name'>binary_name</span><span class='rparen'>)</span>
+      <span class='kw'>return</span> <span class='id exe'>exe</span> <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id executable?'>executable?</span><span class='lparen'>(</span><span class='id exe'>exe</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
 
-  <span class='nil nil kw'>nil</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -983,11 +975,10 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='home identifier id'>home</span>
-  <span class='comment val'># jruby has an issue with ENV['HOME'] on Windows</span>
-  <span class='@home ivar id'>@home</span> <span class='opasgn op'>||=</span> <span class='jruby? fid id'>jruby?</span> <span class='integer val'>? </span><span class='ENV_JAVA constant id'>ENV_JAVA</span><span class='lbrack token'>[</span><span class='string val'>'user.home'</span><span class='rbrack token'>]</span> <span class='colon op'>:</span> <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'HOME'</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id home'>home</span>
+  <span class='comment'># jruby has an issue with ENV['HOME'] on Windows
+</span>  <span class='ivar'>@home</span> <span class='op'>||=</span> <span class='id jruby?'>jruby?</span> <span class='op'>?</span> <span class='const'>ENV_JAVA</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>user.home</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>:</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>HOME</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1038,10 +1029,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 63</span>
 
-<span class='def def kw'>def</span> <span class='ironruby? fid id'>ironruby?</span>
-  <span class='engine identifier id'>engine</span> <span class='eq op'>==</span> <span class='symbol val'>:ironruby</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id ironruby?'>ironruby?</span>
+  <span class='id engine'>engine</span> <span class='op'>==</span> <span class='symbol'>:ironruby</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1092,10 +1082,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 59</span>
 
-<span class='def def kw'>def</span> <span class='jruby? fid id'>jruby?</span>
-  <span class='engine identifier id'>engine</span> <span class='eq op'>==</span> <span class='symbol val'>:jruby</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id jruby?'>jruby?</span>
+  <span class='id engine'>engine</span> <span class='op'>==</span> <span class='symbol'>:jruby</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1146,10 +1135,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 83</span>
 
-<span class='def def kw'>def</span> <span class='linux? fid id'>linux?</span>
-  <span class='os identifier id'>os</span> <span class='eq op'>==</span> <span class='symbol val'>:linux</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id linux?'>linux?</span>
+  <span class='id os'>os</span> <span class='op'>==</span> <span class='symbol'>:linux</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1193,16 +1181,15 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 142</span>
 
-<span class='def def kw'>def</span> <span class='localhost identifier id'>localhost</span>
-  <span class='info identifier id'>info</span> <span class='assign token'>=</span> <span class='Socket constant id'>Socket</span><span class='dot token'>.</span><span class='getaddrinfo identifier id'>getaddrinfo</span> <span class='string val'>&quot;localhost&quot;</span><span class='comma token'>,</span> <span class='integer val'>80</span><span class='comma token'>,</span> <span class='Socket constant id'>Socket</span><span class='colon2 op'>::</span><span class='AF_INET constant id'>AF_INET</span><span class='comma token'>,</span> <span class='Socket constant id'>Socket</span><span class='colon2 op'>::</span><span class='SOCK_STREAM constant id'>SOCK_STREAM</span>
+<span class='kw'>def</span> <span class='id localhost'>localhost</span>
+  <span class='id info'>info</span> <span class='op'>=</span> <span class='const'>Socket</span><span class='period'>.</span><span class='id getaddrinfo'>getaddrinfo</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>localhost</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='int'>80</span><span class='comma'>,</span> <span class='const'>Socket</span><span class='op'>::</span><span class='const'>AF_INET</span><span class='comma'>,</span> <span class='const'>Socket</span><span class='op'>::</span><span class='const'>SOCK_STREAM</span>
 
-  <span class='if if kw'>if</span> <span class='info identifier id'>info</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to translate 'localhost' for TCP + IPv4&quot;</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>if</span> <span class='id info'>info</span><span class='period'>.</span><span class='id empty?'>empty?</span>
+    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to translate 'localhost' for TCP + IPv4</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='info identifier id'>info</span><span class='lbrack token'>[</span><span class='integer val'>0</span><span class='rbrack token'>]</span><span class='lbrack token'>[</span><span class='integer val'>3</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id info'>info</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='int'>3</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1253,10 +1240,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 79</span>
 
-<span class='def def kw'>def</span> <span class='mac? fid id'>mac?</span>
-  <span class='os identifier id'>os</span> <span class='eq op'>==</span> <span class='symbol val'>:macosx</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id mac?'>mac?</span>
+  <span class='id os'>os</span> <span class='op'>==</span> <span class='symbol'>:macosx</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1294,10 +1280,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 102</span>
 
-<span class='def def kw'>def</span> <span class='make_writable identifier id'>make_writable</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span>
-  <span class='File constant id'>File</span><span class='dot token'>.</span><span class='chmod identifier id'>chmod</span> <span class='integer val'>0766</span><span class='comma token'>,</span> <span class='file identifier id'>file</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id make_writable'>make_writable</span><span class='lparen'>(</span><span class='id file'>file</span><span class='rparen'>)</span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id chmod'>chmod</span> <span class='int'>0766</span><span class='comma'>,</span> <span class='id file'>file</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1349,24 +1334,23 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 27</span>
 
-<span class='def def kw'>def</span> <span class='os identifier id'>os</span>
-  <span class='@os ivar id'>@os</span> <span class='opasgn op'>||=</span> <span class='lparen token'>(</span>
-    <span class='host_os identifier id'>host_os</span> <span class='assign token'>=</span> <span class='RbConfig constant id'>RbConfig</span><span class='colon2 op'>::</span><span class='CONFIG constant id'>CONFIG</span><span class='lbrack token'>[</span><span class='string val'>'host_os'</span><span class='rbrack token'>]</span>
-    <span class='case case kw'>case</span> <span class='host_os identifier id'>host_os</span>
-    <span class='when when kw'>when</span> <span class='regexp val'>/mswin|msys|mingw|cygwin|bccwin|wince|emc/</span>
-      <span class='symbol val'>:windows</span>
-    <span class='when when kw'>when</span> <span class='regexp val'>/darwin|mac os/</span>
-      <span class='symbol val'>:macosx</span>
-    <span class='when when kw'>when</span> <span class='regexp val'>/linux/</span>
-      <span class='symbol val'>:linux</span>
-    <span class='when when kw'>when</span> <span class='regexp val'>/solaris|bsd/</span>
-      <span class='symbol val'>:unix</span>
-    <span class='else else kw'>else</span>
-      <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown os: #{host_os.inspect}&quot;</span>
-    <span class='end end kw'>end</span>
-  <span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id os'>os</span>
+  <span class='ivar'>@os</span> <span class='op'>||=</span> <span class='lparen'>(</span>
+    <span class='id host_os'>host_os</span> <span class='op'>=</span> <span class='const'>RbConfig</span><span class='op'>::</span><span class='const'>CONFIG</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>host_os</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+    <span class='kw'>case</span> <span class='id host_os'>host_os</span>
+    <span class='kw'>when</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>mswin|msys|mingw|cygwin|bccwin|wince|emc</span><span class='regexp_end'>/</span></span>
+      <span class='symbol'>:windows</span>
+    <span class='kw'>when</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>darwin|mac os</span><span class='regexp_end'>/</span></span>
+      <span class='symbol'>:macosx</span>
+    <span class='kw'>when</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>linux</span><span class='regexp_end'>/</span></span>
+      <span class='symbol'>:linux</span>
+    <span class='kw'>when</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>solaris|bsd</span><span class='regexp_end'>/</span></span>
+      <span class='symbol'>:unix</span>
+    <span class='kw'>else</span>
+      <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown os: </span><span class='embexpr_beg'>#{</span><span class='id host_os'>host_os</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
+  <span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1417,10 +1401,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 67</span>
 
-<span class='def def kw'>def</span> <span class='ruby187? fid id'>ruby187?</span>
-  <span class='notop op'>!</span><span class='notop op'>!</span><span class='lparen token'>(</span><span class='RUBY_VERSION constant id'>RUBY_VERSION</span> <span class='match op'>=~</span> <span class='regexp val'>/^1\.8\.7/</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id ruby187?'>ruby187?</span>
+  <span class='op'>!</span><span class='op'>!</span><span class='lparen'>(</span><span class='const'>RUBY_VERSION</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^1\.8\.7</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1471,10 +1454,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 71</span>
 
-<span class='def def kw'>def</span> <span class='ruby19? fid id'>ruby19?</span>
-  <span class='notop op'>!</span><span class='notop op'>!</span><span class='lparen token'>(</span><span class='RUBY_VERSION constant id'>RUBY_VERSION</span> <span class='match op'>=~</span> <span class='regexp val'>/^1\.9/</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id ruby19?'>ruby19?</span>
+  <span class='op'>!</span><span class='op'>!</span><span class='lparen'>(</span><span class='const'>RUBY_VERSION</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^1\.9</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1525,10 +1507,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 75</span>
 
-<span class='def def kw'>def</span> <span class='windows? fid id'>windows?</span>
-  <span class='os identifier id'>os</span> <span class='eq op'>==</span> <span class='symbol val'>:windows</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id windows?'>windows?</span>
+  <span class='id os'>os</span> <span class='op'>==</span> <span class='symbol'>:windows</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1566,10 +1547,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 91</span>
 
-<span class='def def kw'>def</span> <span class='wrap_in_quotes_if_necessary identifier id'>wrap_in_quotes_if_necessary</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
-  <span class='windows? fid id'>windows?</span> <span class='andop op'>&amp;&amp;</span> <span class='notop op'>!</span><span class='cygwin? fid id'>cygwin?</span> <span class='integer val'>? </span><span class='mod op'>%</span><span class='lbrace token'>{</span><span class='dstring node'>&quot;#{str}&quot;</span><span class='rbrace token'>}</span> <span class='colon op'>:</span> <span class='str identifier id'>str</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id wrap_in_quotes_if_necessary'>wrap_in_quotes_if_necessary</span><span class='lparen'>(</span><span class='id str'>str</span><span class='rparen'>)</span>
+  <span class='id windows?'>windows?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id cygwin?'>cygwin?</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>%{</span><span class='tstring_content'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id str'>str</span><span class='rbrace'>}</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>}</span></span> <span class='op'>:</span> <span class='id str'>str</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1580,9 +1560,9 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:28 2011 by 
+  Generated on Mon Aug  1 20:19:45 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

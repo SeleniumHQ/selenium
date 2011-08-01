@@ -245,10 +245,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/file_reaper.rb', line 19</span>
 
-<span class='def def kw'>def</span> <span class='lshft op'>&lt;&lt;</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span>
-  <span class='tmp_files identifier id'>tmp_files</span> <span class='lshft op'>&lt;&lt;</span> <span class='file identifier id'>file</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='op'>&lt;&lt;</span><span class='lparen'>(</span><span class='id file'>file</span><span class='rparen'>)</span>
+  <span class='id tmp_files'>tmp_files</span> <span class='op'>&lt;&lt;</span> <span class='id file'>file</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -280,16 +279,15 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/file_reaper.rb', line 23</span>
 
-<span class='def def kw'>def</span> <span class='reap identifier id'>reap</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span>
-  <span class='return return kw'>return</span> <span class='unless unless_mod kw'>unless</span> <span class='reap? fid id'>reap?</span>
+<span class='kw'>def</span> <span class='id reap'>reap</span><span class='lparen'>(</span><span class='id file'>file</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id reap?'>reap?</span>
 
-  <span class='unless unless kw'>unless</span> <span class='tmp_files identifier id'>tmp_files</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;file not added for reaping: #{file.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>unless</span> <span class='id tmp_files'>tmp_files</span><span class='period'>.</span><span class='id include?'>include?</span><span class='lparen'>(</span><span class='id file'>file</span><span class='rparen'>)</span>
+    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>file not added for reaping: </span><span class='embexpr_beg'>#{</span><span class='id file'>file</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='FileUtils constant id'>FileUtils</span><span class='dot token'>.</span><span class='rm_rf identifier id'>rm_rf</span> <span class='tmp_files identifier id'>tmp_files</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='const'>FileUtils</span><span class='period'>.</span><span class='id rm_rf'>rm_rf</span> <span class='id tmp_files'>tmp_files</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='id file'>file</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -315,10 +313,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/file_reaper.rb', line 33</span>
 
-<span class='def def kw'>def</span> <span class='reap! fid id'>reap!</span>
-  <span class='tmp_files identifier id'>tmp_files</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='file identifier id'>file</span><span class='bitor op'>|</span> <span class='FileUtils constant id'>FileUtils</span><span class='dot token'>.</span><span class='rm_rf identifier id'>rm_rf</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span> <span class='if if_mod kw'>if</span> <span class='reap? fid id'>reap?</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id reap!'>reap!</span>
+  <span class='id tmp_files'>tmp_files</span><span class='period'>.</span><span class='id each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id file'>file</span><span class='op'>|</span> <span class='const'>FileUtils</span><span class='period'>.</span><span class='id rm_rf'>rm_rf</span><span class='lparen'>(</span><span class='id file'>file</span><span class='rparen'>)</span> <span class='rbrace'>}</span> <span class='kw'>if</span> <span class='id reap?'>reap?</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -344,10 +341,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/file_reaper.rb', line 6</span>
 
-<span class='def def kw'>def</span> <span class='reap= identifier id'>reap=</span><span class='lparen token'>(</span><span class='bool identifier id'>bool</span><span class='rparen token'>)</span>
-  <span class='@reap ivar id'>@reap</span> <span class='assign token'>=</span> <span class='bool identifier id'>bool</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id reap='>reap=</span><span class='lparen'>(</span><span class='id bool'>bool</span><span class='rparen'>)</span>
+  <span class='ivar'>@reap</span> <span class='op'>=</span> <span class='id bool'>bool</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -395,11 +391,10 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/file_reaper.rb', line 10</span>
 
-<span class='def def kw'>def</span> <span class='reap? fid id'>reap?</span>
-  <span class='@reap ivar id'>@reap</span> <span class='assign token'>=</span> <span class='true true kw'>true</span> <span class='unless unless_mod kw'>unless</span> <span class='defined? defined kw'>defined?</span><span class='lparen token'>(</span><span class='@reap ivar id'>@reap</span><span class='rparen token'>)</span>
-  <span class='notop op'>!</span><span class='notop op'>!</span><span class='@reap ivar id'>@reap</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id reap?'>reap?</span>
+  <span class='ivar'>@reap</span> <span class='op'>=</span> <span class='kw'>true</span> <span class='kw'>unless</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='ivar'>@reap</span><span class='rparen'>)</span>
+  <span class='op'>!</span><span class='op'>!</span><span class='ivar'>@reap</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -425,10 +420,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/file_reaper.rb', line 15</span>
 
-<span class='def def kw'>def</span> <span class='tmp_files identifier id'>tmp_files</span>
-  <span class='@tmp_files ivar id'>@tmp_files</span> <span class='opasgn op'>||=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id tmp_files'>tmp_files</span>
+  <span class='ivar'>@tmp_files</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -439,9 +433,9 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:42 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

@@ -102,8 +102,7 @@
         <dt id="DEFAULT_URL-constant" class="">DEFAULT_URL =
           
         </dt>
-        <dd><pre class="code"><span class='dstring node'>&quot;http://#{Platform.localhost}:3001/hub/&quot;</span>
-</pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id localhost'>localhost</span><span class='rbrace'>}</span><span class='tstring_content'>:3001/hub/</span><span class='tstring_end'>&quot;</span></span></pre></dd>
       
     </dl>
   
@@ -294,16 +293,15 @@ A new instance of Bridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/iphone/bridge.rb', line 8</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='remote_opts identifier id'>remote_opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
-    <span class='symbol val'>:url</span>                  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='symbol val'>:url</span><span class='comma token'>,</span> <span class='DEFAULT_URL constant id'>DEFAULT_URL</span><span class='rparen token'>)</span><span class='comma token'>,</span>
-    <span class='symbol val'>:desired_capabilities</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='symbol val'>:desired_capabilities</span><span class='comma token'>,</span> <span class='capabilities identifier id'>capabilities</span><span class='rparen token'>)</span><span class='comma token'>,</span>
-    <span class='symbol val'>:http_client</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:http_client</span><span class='rbrack token'>]</span>
-  <span class='rbrace token'>}</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id remote_opts'>remote_opts</span> <span class='op'>=</span> <span class='lbrace'>{</span>
+    <span class='symbol'>:url</span>                  <span class='op'>=&gt;</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:url</span><span class='comma'>,</span> <span class='const'>DEFAULT_URL</span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='symbol'>:desired_capabilities</span> <span class='op'>=&gt;</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:desired_capabilities</span><span class='comma'>,</span> <span class='id capabilities'>capabilities</span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='symbol'>:http_client</span>          <span class='op'>=&gt;</span> <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:http_client</span><span class='rbracket'>]</span>
+  <span class='rbrace'>}</span>
 
-  <span class='super super kw'>super</span> <span class='remote_opts identifier id'>remote_opts</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>super</span> <span class='id remote_opts'>remote_opts</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -336,10 +334,9 @@ A new instance of Bridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/iphone/bridge.rb', line 18</span>
 
-<span class='def def kw'>def</span> <span class='browser identifier id'>browser</span>
-  <span class='symbol val'>:iphone</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id browser'>browser</span>
+  <span class='symbol'>:iphone</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -365,10 +362,9 @@ A new instance of Bridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/iphone/bridge.rb', line 29</span>
 
-<span class='def def kw'>def</span> <span class='capabilities identifier id'>capabilities</span>
-  <span class='@capabilities ivar id'>@capabilities</span> <span class='opasgn op'>||=</span> <span class='Remote constant id'>Remote</span><span class='colon2 op'>::</span><span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='iphone identifier id'>iphone</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id capabilities'>capabilities</span>
+  <span class='ivar'>@capabilities</span> <span class='op'>||=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id iphone'>iphone</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -397,13 +393,12 @@ A new instance of Bridge
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/iphone/bridge.rb', line 22</span>
 
-<span class='def def kw'>def</span> <span class='driver_extensions identifier id'>driver_extensions</span>
-  <span class='lbrack token'>[</span>
-    <span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='TakesScreenshot constant id'>TakesScreenshot</span><span class='comma token'>,</span>
-    <span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='HasInputDevices constant id'>HasInputDevices</span>
-  <span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id driver_extensions'>driver_extensions</span>
+  <span class='lbracket'>[</span>
+    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span><span class='comma'>,</span>
+    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasInputDevices</span>
+  <span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -414,9 +409,9 @@ A new instance of Bridge
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:43 2011 by 
+  Generated on Mon Aug  1 20:19:45 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

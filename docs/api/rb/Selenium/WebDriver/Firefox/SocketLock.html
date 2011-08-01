@@ -206,11 +206,10 @@ A new instance of SocketLock
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/socket_lock.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='port identifier id'>port</span><span class='comma token'>,</span> <span class='timeout identifier id'>timeout</span><span class='rparen token'>)</span>
-  <span class='@port ivar id'>@port</span>    <span class='assign token'>=</span> <span class='port identifier id'>port</span>
-  <span class='@timeout ivar id'>@timeout</span> <span class='assign token'>=</span> <span class='timeout identifier id'>timeout</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id port'>port</span><span class='comma'>,</span> <span class='id timeout'>timeout</span><span class='rparen'>)</span>
+  <span class='ivar'>@port</span>    <span class='op'>=</span> <span class='id port'>port</span>
+  <span class='ivar'>@timeout</span> <span class='op'>=</span> <span class='id timeout'>timeout</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -261,16 +260,15 @@ A new instance of SocketLock
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/socket_lock.rb', line 16</span>
 
-<span class='def def kw'>def</span> <span class='locked identifier id'>locked</span><span class='lparen token'>(</span><span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
-  <span class='lock identifier id'>lock</span>
+<span class='kw'>def</span> <span class='id locked'>locked</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+  <span class='id lock'>lock</span>
 
-  <span class='begin begin kw'>begin</span>
-    <span class='yield yield kw'>yield</span>
-  <span class='ensure ensure kw'>ensure</span>
-    <span class='release identifier id'>release</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>begin</span>
+    <span class='kw'>yield</span>
+  <span class='kw'>ensure</span>
+    <span class='id release'>release</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -281,9 +279,9 @@ A new instance of SocketLock
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:43 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

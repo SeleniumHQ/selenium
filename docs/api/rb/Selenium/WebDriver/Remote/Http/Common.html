@@ -131,8 +131,7 @@ same as chromium/gecko
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='integer val'>20</span>
-</pre></dd>
+        <dd><pre class="code"><span class='int'>20</span></pre></dd>
       
         <dt id="CONTENT_TYPE-constant" class="">CONTENT_TYPE =
           <div class="docstring">
@@ -149,8 +148,7 @@ same as chromium/gecko
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='string val'>&quot;application/json&quot;</span>
-</pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>application/json</span><span class='tstring_end'>&quot;</span></span></pre></dd>
       
         <dt id="DEFAULT_HEADERS-constant" class="">DEFAULT_HEADERS =
           <div class="docstring">
@@ -167,8 +165,7 @@ same as chromium/gecko
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='lbrace token'>{</span> <span class='string val'>&quot;Accept&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='CONTENT_TYPE constant id'>CONTENT_TYPE</span> <span class='rbrace token'>}</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Accept</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='const'>CONTENT_TYPE</span> <span class='rbrace'>}</span></pre></dd>
       
     </dl>
   
@@ -305,10 +302,9 @@ A new instance of Common
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 13</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span>
-  <span class='@timeout ivar id'>@timeout</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span>
+  <span class='ivar'>@timeout</span> <span class='op'>=</span> <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -357,10 +353,9 @@ Returns the value of attribute timeout
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 10</span>
 
-<span class='def def kw'>def</span> <span class='timeout identifier id'>timeout</span>
-  <span class='@timeout ivar id'>@timeout</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id timeout'>timeout</span>
+  <span class='ivar'>@timeout</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -421,26 +416,25 @@ Returns the value of attribute timeout
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/http/common.rb', line 17</span>
 
-<span class='def def kw'>def</span> <span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='comma token'>,</span> <span class='command_hash identifier id'>command_hash</span><span class='rparen token'>)</span>
-  <span class='url identifier id'>url</span>      <span class='assign token'>=</span> <span class='server_url identifier id'>server_url</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='url identifier id'>url</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='URI constant id'>URI</span><span class='rparen token'>)</span>
-  <span class='headers identifier id'>headers</span>  <span class='assign token'>=</span> <span class='DEFAULT_HEADERS constant id'>DEFAULT_HEADERS</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
+<span class='kw'>def</span> <span class='id call'>call</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id url'>url</span><span class='comma'>,</span> <span class='id command_hash'>command_hash</span><span class='rparen'>)</span>
+  <span class='id url'>url</span>      <span class='op'>=</span> <span class='id server_url'>server_url</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id url'>url</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id url'>url</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>URI</span><span class='rparen'>)</span>
+  <span class='id headers'>headers</span>  <span class='op'>=</span> <span class='const'>DEFAULT_HEADERS</span><span class='period'>.</span><span class='id dup'>dup</span>
 
-  <span class='if if kw'>if</span> <span class='command_hash identifier id'>command_hash</span>
-    <span class='payload identifier id'>payload</span>                   <span class='assign token'>=</span> <span class='command_hash identifier id'>command_hash</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span>
-    <span class='headers identifier id'>headers</span><span class='lbrack token'>[</span><span class='string val'>&quot;Content-Type&quot;</span><span class='rbrack token'>]</span>   <span class='assign token'>=</span> <span class='dstring node'>&quot;#{CONTENT_TYPE}; charset=utf-8&quot;</span>
-    <span class='headers identifier id'>headers</span><span class='lbrack token'>[</span><span class='string val'>&quot;Content-Length&quot;</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='payload identifier id'>payload</span><span class='dot token'>.</span><span class='bytesize identifier id'>bytesize</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span> <span class='if if_mod kw'>if</span> <span class='lbrack token'>[</span><span class='symbol val'>:post</span><span class='comma token'>,</span> <span class='symbol val'>:put</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='rparen token'>)</span>
+  <span class='kw'>if</span> <span class='id command_hash'>command_hash</span>
+    <span class='id payload'>payload</span>                   <span class='op'>=</span> <span class='id command_hash'>command_hash</span><span class='period'>.</span><span class='id to_json'>to_json</span>
+    <span class='id headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Content-Type</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>   <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>CONTENT_TYPE</span><span class='rbrace'>}</span><span class='tstring_content'>; charset=utf-8</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Content-Length</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id payload'>payload</span><span class='period'>.</span><span class='id bytesize'>bytesize</span><span class='period'>.</span><span class='id to_s'>to_s</span> <span class='kw'>if</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='symbol'>:put</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id include?'>include?</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='rparen'>)</span>
 
-    <span class='if if kw'>if</span> <span class='$DEBUG gvar id'>$DEBUG</span>
-      <span class='puts identifier id'>puts</span> <span class='dstring node'>&quot;   &gt;&gt;&gt; #{payload}&quot;</span>
-      <span class='puts identifier id'>puts</span> <span class='dstring node'>&quot;     &gt; #{headers.inspect}&quot;</span>
-    <span class='end end kw'>end</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='verb identifier id'>verb</span> <span class='eq op'>==</span> <span class='symbol val'>:post</span>
-    <span class='headers identifier id'>headers</span><span class='lbrack token'>[</span><span class='string val'>&quot;Content-Length&quot;</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='string val'>&quot;0&quot;</span>
-  <span class='end end kw'>end</span>
+    <span class='kw'>if</span> <span class='gvar'>$DEBUG</span>
+      <span class='id puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>   &gt;&gt;&gt; </span><span class='embexpr_beg'>#{</span><span class='id payload'>payload</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+      <span class='id puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>     &gt; </span><span class='embexpr_beg'>#{</span><span class='id headers'>headers</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
+  <span class='kw'>elsif</span> <span class='id verb'>verb</span> <span class='op'>==</span> <span class='symbol'>:post</span>
+    <span class='id headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Content-Length</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>0</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='request identifier id'>request</span> <span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='comma token'>,</span> <span class='headers identifier id'>headers</span><span class='comma token'>,</span> <span class='payload identifier id'>payload</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id request'>request</span> <span class='id verb'>verb</span><span class='comma'>,</span> <span class='id url'>url</span><span class='comma'>,</span> <span class='id headers'>headers</span><span class='comma'>,</span> <span class='id payload'>payload</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -451,9 +445,9 @@ Returns the value of attribute timeout
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:52 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

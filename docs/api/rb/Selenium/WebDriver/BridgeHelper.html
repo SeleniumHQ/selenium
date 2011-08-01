@@ -213,10 +213,9 @@ Shared across bridges
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/bridge_helper.rb', line 27</span>
 
-<span class='def def kw'>def</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
-  <span class='id identifier id'>id</span><span class='lbrack token'>[</span><span class='string val'>'ELEMENT'</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id element_id_from'>element_id_from</span><span class='lparen'>(</span><span class='id id'>id</span><span class='rparen'>)</span>
+  <span class='id id'>id</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>ELEMENT</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -284,40 +283,39 @@ Shared across bridges
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/bridge_helper.rb', line 31</span>
 
-<span class='def def kw'>def</span> <span class='parse_cookie_string identifier id'>parse_cookie_string</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
-  <span class='result identifier id'>result</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
-    <span class='string val'>'name'</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>''</span><span class='comma token'>,</span>
-    <span class='string val'>'value'</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>''</span><span class='comma token'>,</span>
-    <span class='string val'>'domain'</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>''</span><span class='comma token'>,</span>
-    <span class='string val'>'path'</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>''</span><span class='comma token'>,</span>
-    <span class='string val'>'expires'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>''</span><span class='comma token'>,</span>
-    <span class='string val'>'secure'</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='false false kw'>false</span>
-  <span class='rbrace token'>}</span>
+<span class='kw'>def</span> <span class='id parse_cookie_string'>parse_cookie_string</span><span class='lparen'>(</span><span class='id str'>str</span><span class='rparen'>)</span>
+  <span class='id result'>result</span> <span class='op'>=</span> <span class='lbrace'>{</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>name</span><span class='tstring_end'>'</span></span>    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>value</span><span class='tstring_end'>'</span></span>   <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>domain</span><span class='tstring_end'>'</span></span>  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>path</span><span class='tstring_end'>'</span></span>    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>expires</span><span class='tstring_end'>'</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>secure</span><span class='tstring_end'>'</span></span>  <span class='op'>=&gt;</span> <span class='kw'>false</span>
+  <span class='rbrace'>}</span>
 
-  <span class='str identifier id'>str</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='string val'>&quot;;&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='attribute identifier id'>attribute</span><span class='bitor op'>|</span>
-    <span class='if if kw'>if</span> <span class='attribute identifier id'>attribute</span><span class='dot token'>.</span><span class='include? fid id'>include?</span> <span class='string val'>&quot;=&quot;</span>
-      <span class='key identifier id'>key</span><span class='comma token'>,</span> <span class='value identifier id'>value</span> <span class='assign token'>=</span> <span class='attribute identifier id'>attribute</span><span class='dot token'>.</span><span class='strip identifier id'>strip</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='string val'>&quot;=&quot;</span><span class='comma token'>,</span> <span class='integer val'>2</span><span class='rparen token'>)</span>
-      <span class='if if kw'>if</span> <span class='result identifier id'>result</span><span class='lbrack token'>[</span><span class='string val'>'name'</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
-        <span class='result identifier id'>result</span><span class='lbrack token'>[</span><span class='string val'>'name'</span><span class='rbrack token'>]</span>  <span class='assign token'>=</span> <span class='key identifier id'>key</span>
-        <span class='result identifier id'>result</span><span class='lbrack token'>[</span><span class='string val'>'value'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
-      <span class='elsif elsif kw'>elsif</span> <span class='key identifier id'>key</span> <span class='eq op'>==</span> <span class='string val'>'domain'</span> <span class='andop op'>&amp;&amp;</span> <span class='value identifier id'>value</span><span class='dot token'>.</span><span class='strip identifier id'>strip</span> <span class='match op'>=~</span> <span class='regexp val'>/^\.(.+)/</span>
-        <span class='result identifier id'>result</span><span class='lbrack token'>[</span><span class='string val'>'domain'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='$1 nth_ref id'>$1</span>
-      <span class='elsif elsif kw'>elsif</span> <span class='key identifier id'>key</span> <span class='andop op'>&amp;&amp;</span> <span class='value identifier id'>value</span>
-        <span class='result identifier id'>result</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
-      <span class='end end kw'>end</span>
-    <span class='elsif elsif kw'>elsif</span> <span class='attribute identifier id'>attribute</span> <span class='eq op'>==</span> <span class='string val'>&quot;secure&quot;</span>
-      <span class='result identifier id'>result</span><span class='lbrack token'>[</span><span class='string val'>'secure'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='true true kw'>true</span>
-    <span class='end end kw'>end</span>
+  <span class='id str'>str</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id attribute'>attribute</span><span class='op'>|</span>
+    <span class='kw'>if</span> <span class='id attribute'>attribute</span><span class='period'>.</span><span class='id include?'>include?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>=</span><span class='tstring_end'>&quot;</span></span>
+      <span class='id key'>key</span><span class='comma'>,</span> <span class='id value'>value</span> <span class='op'>=</span> <span class='id attribute'>attribute</span><span class='period'>.</span><span class='id strip'>strip</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>=</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='int'>2</span><span class='rparen'>)</span>
+      <span class='kw'>if</span> <span class='id result'>result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>name</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id empty?'>empty?</span>
+        <span class='id result'>result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>name</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>  <span class='op'>=</span> <span class='id key'>key</span>
+        <span class='id result'>result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>value</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id value'>value</span>
+      <span class='kw'>elsif</span> <span class='id key'>key</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>domain</span><span class='tstring_end'>'</span></span> <span class='op'>&amp;&amp;</span> <span class='id value'>value</span><span class='period'>.</span><span class='id strip'>strip</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\.(.+)</span><span class='regexp_end'>/</span></span>
+        <span class='id result'>result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>domain</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='backref'>$1</span>
+      <span class='kw'>elsif</span> <span class='id key'>key</span> <span class='op'>&amp;&amp;</span> <span class='id value'>value</span>
+        <span class='id result'>result</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id value'>value</span>
+      <span class='kw'>end</span>
+    <span class='kw'>elsif</span> <span class='id attribute'>attribute</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>secure</span><span class='tstring_end'>&quot;</span></span>
+      <span class='id result'>result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>secure</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>true</span>
+    <span class='kw'>end</span>
 
-    <span class='unless unless kw'>unless</span> <span class='lbrack token'>[</span><span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='string val'>&quot;&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;0&quot;</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span><span class='result identifier id'>result</span><span class='lbrack token'>[</span><span class='string val'>'expires'</span><span class='rbrack token'>]</span><span class='rparen token'>)</span>
-      <span class='comment val'># firefox stores expiry as number of seconds</span>
-      <span class='result identifier id'>result</span><span class='lbrack token'>[</span><span class='string val'>'expires'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='Time constant id'>Time</span><span class='dot token'>.</span><span class='at identifier id'>at</span><span class='lparen token'>(</span><span class='result identifier id'>result</span><span class='lbrack token'>[</span><span class='string val'>'expires'</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span><span class='rparen token'>)</span>
-    <span class='end end kw'>end</span>
-  <span class='end end kw'>end</span>
+    <span class='kw'>unless</span> <span class='lbracket'>[</span><span class='kw'>nil</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>0</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id include?'>include?</span><span class='lparen'>(</span><span class='id result'>result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>expires</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
+      <span class='comment'># firefox stores expiry as number of seconds
+</span>      <span class='id result'>result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>expires</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id at'>at</span><span class='lparen'>(</span><span class='id result'>result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>expires</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id to_i'>to_i</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
 
-  <span class='result identifier id'>result</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id result'>result</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -366,21 +364,20 @@ Shared across bridges
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/bridge_helper.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='unwrap_script_result identifier id'>unwrap_script_result</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span>
-  <span class='case case kw'>case</span> <span class='arg identifier id'>arg</span>
-  <span class='when when kw'>when</span> <span class='Array constant id'>Array</span>
-    <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='unwrap_script_result identifier id'>unwrap_script_result</span><span class='lparen token'>(</span><span class='e identifier id'>e</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
-  <span class='when when kw'>when</span> <span class='Hash constant id'>Hash</span>
-    <span class='if if kw'>if</span> <span class='id identifier id'>id</span> <span class='assign token'>=</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span>
-      <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='id identifier id'>id</span>
-    <span class='else else kw'>else</span>
-      <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='k identifier id'>k</span><span class='comma token'>,</span> <span class='v identifier id'>v</span><span class='bitor op'>|</span> <span class='arg identifier id'>arg</span><span class='lbrack token'>[</span><span class='k identifier id'>k</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='unwrap_script_result identifier id'>unwrap_script_result</span><span class='lparen token'>(</span><span class='v identifier id'>v</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
-    <span class='end end kw'>end</span>
-  <span class='else else kw'>else</span>
-    <span class='arg identifier id'>arg</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id unwrap_script_result'>unwrap_script_result</span><span class='lparen'>(</span><span class='id arg'>arg</span><span class='rparen'>)</span>
+  <span class='kw'>case</span> <span class='id arg'>arg</span>
+  <span class='kw'>when</span> <span class='const'>Array</span>
+    <span class='id arg'>arg</span><span class='period'>.</span><span class='id map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id e'>e</span><span class='op'>|</span> <span class='id unwrap_script_result'>unwrap_script_result</span><span class='lparen'>(</span><span class='id e'>e</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+  <span class='kw'>when</span> <span class='const'>Hash</span>
+    <span class='kw'>if</span> <span class='id id'>id</span> <span class='op'>=</span> <span class='id element_id_from'>element_id_from</span><span class='lparen'>(</span><span class='id arg'>arg</span><span class='rparen'>)</span>
+      <span class='const'>Element</span><span class='period'>.</span><span class='id new'>new</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id id'>id</span>
+    <span class='kw'>else</span>
+      <span class='id arg'>arg</span><span class='period'>.</span><span class='id each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id k'>k</span><span class='comma'>,</span> <span class='id v'>v</span><span class='op'>|</span> <span class='id arg'>arg</span><span class='lbracket'>[</span><span class='id k'>k</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id unwrap_script_result'>unwrap_script_result</span><span class='lparen'>(</span><span class='id v'>v</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+    <span class='kw'>end</span>
+  <span class='kw'>else</span>
+    <span class='id arg'>arg</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -391,9 +388,9 @@ Shared across bridges
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:26 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

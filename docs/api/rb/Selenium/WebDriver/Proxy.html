@@ -100,14 +100,13 @@
         <dt id="TYPES-constant" class="">TYPES =
           
         </dt>
-        <dd><pre class="code"><span class='lbrace token'>{</span>
-  <span class='symbol val'>:direct</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;DIRECT&quot;</span><span class='comma token'>,</span>     <span class='comment val'># Direct connection, no proxy (default on Windows).</span>
-  <span class='symbol val'>:manual</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;MANUAL&quot;</span><span class='comma token'>,</span>     <span class='comment val'># Manual proxy settings (e.g., for httpProxy).</span>
-  <span class='symbol val'>:pac</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;PAC&quot;</span><span class='comma token'>,</span>        <span class='comment val'># Proxy autoconfiguration from URL.</span>
-  <span class='symbol val'>:auto_detect</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;AUTODETECT&quot;</span><span class='comma token'>,</span> <span class='comment val'># Proxy autodetection (presumably with WPAD).</span>
-  <span class='symbol val'>:system</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;SYSTEM&quot;</span>      <span class='comment val'># Use system settings (default on Linux).</span>
-<span class='rbrace token'>}</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='symbol'>:direct</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>DIRECT</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>     <span class='comment'># Direct connection, no proxy (default on Windows).
+</span>  <span class='symbol'>:manual</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>MANUAL</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>     <span class='comment'># Manual proxy settings (e.g., for httpProxy).
+</span>  <span class='symbol'>:pac</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>PAC</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>        <span class='comment'># Proxy autoconfiguration from URL.
+</span>  <span class='symbol'>:auto_detect</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>AUTODETECT</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='comment'># Proxy autodetection (presumably with WPAD).
+</span>  <span class='symbol'>:system</span>      <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>SYSTEM</span><span class='tstring_end'>&quot;</span></span>      <span class='comment'># Use system settings (default on Linux).
+</span><span class='rbrace'>}</span></pre></dd>
       
     </dl>
   
@@ -153,7 +152,7 @@ Returns the value of attribute auto_detect.
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+    
     
   
   
@@ -467,22 +466,21 @@ A new instance of Proxy
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 20</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id opts'>opts</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id dup'>dup</span>
 
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='type identifier id'>type</span>        <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:type</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='symbol val'>:type</span>
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='ftp identifier id'>ftp</span>         <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:ftp</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='symbol val'>:ftp</span>
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='http identifier id'>http</span>        <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:http</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='symbol val'>:http</span>
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='no_proxy identifier id'>no_proxy</span>    <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:no_proxy</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='symbol val'>:no_proxy</span>
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='ssl identifier id'>ssl</span>         <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:ssl</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='symbol val'>:ssl</span>
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='pac identifier id'>pac</span>         <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:pac</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='symbol val'>:pac</span>
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='auto_detect identifier id'>auto_detect</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:auto_detect</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='symbol val'>:auto_detect</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id type'>type</span>        <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:type</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='symbol'>:type</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id ftp'>ftp</span>         <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:ftp</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='symbol'>:ftp</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id http'>http</span>        <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:http</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='symbol'>:http</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id no_proxy'>no_proxy</span>    <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:no_proxy</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='symbol'>:no_proxy</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id ssl'>ssl</span>         <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:ssl</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='symbol'>:ssl</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id pac'>pac</span>         <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:pac</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='symbol'>:pac</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id auto_detect'>auto_detect</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:auto_detect</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='symbol'>:auto_detect</span>
 
-  <span class='unless unless kw'>unless</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
-    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown option#{'s' if opts.size != 1}: #{opts.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>unless</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id empty?'>empty?</span>
+    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown option</span><span class='embexpr_beg'>#{</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>s</span><span class='tstring_end'>'</span></span> <span class='kw'>if</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id size'>size</span> <span class='op'>!=</span> <span class='int'>1</span><span class='rbrace'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id opts'>opts</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -527,22 +525,21 @@ Returns the value of attribute auto_detect
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='auto_detect identifier id'>auto_detect</span>
-  <span class='@auto_detect ivar id'>@auto_detect</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id auto_detect'>auto_detect</span>
+  <span class='ivar'>@auto_detect</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
 </div>
     
       
-      <span id=""></span>
+      <span id="ftp=-instance_method"></span>
       <span id="ftp-instance_method"></span>
       <div class="method_details ">
   <p class="signature " id="ftp-instance_method">
   
-    - (<tt>Object</tt>) <strong>ftp</strong>  <span class="extras">(readonly)</span>
+    - (<tt>Object</tt>) <strong>ftp</strong> 
   
 
   
@@ -570,10 +567,9 @@ Returns the value of attribute ftp
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='ftp identifier id'>ftp</span>
-  <span class='@ftp ivar id'>@ftp</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id ftp'>ftp</span>
+  <span class='ivar'>@ftp</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -613,10 +609,9 @@ Returns the value of attribute http
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='http identifier id'>http</span>
-  <span class='@http ivar id'>@http</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id http'>http</span>
+  <span class='ivar'>@http</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -656,10 +651,9 @@ Returns the value of attribute no_proxy
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='no_proxy identifier id'>no_proxy</span>
-  <span class='@no_proxy ivar id'>@no_proxy</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id no_proxy'>no_proxy</span>
+  <span class='ivar'>@no_proxy</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -699,10 +693,9 @@ Returns the value of attribute pac
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='pac identifier id'>pac</span>
-  <span class='@pac ivar id'>@pac</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id pac'>pac</span>
+  <span class='ivar'>@pac</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -742,10 +735,9 @@ Returns the value of attribute ssl
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='ssl identifier id'>ssl</span>
-  <span class='@ssl ivar id'>@ssl</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id ssl'>ssl</span>
+  <span class='ivar'>@ssl</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -785,10 +777,9 @@ Returns the value of attribute type
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='type identifier id'>type</span>
-  <span class='@type ivar id'>@type</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id type'>type</span>
+  <span class='ivar'>@type</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -831,20 +822,19 @@ Returns the value of attribute type
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 99</span>
 
-<span class='def def kw'>def</span> <span class='json_create identifier id'>json_create</span><span class='lparen token'>(</span><span class='data identifier id'>data</span><span class='rparen token'>)</span>
-  <span class='proxy identifier id'>proxy</span> <span class='assign token'>=</span> <span class='new identifier id'>new</span>
+<span class='kw'>def</span> <span class='id json_create'>json_create</span><span class='lparen'>(</span><span class='id data'>data</span><span class='rparen'>)</span>
+  <span class='id proxy'>proxy</span> <span class='op'>=</span> <span class='id new'>new</span>
 
-  <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='type identifier id'>type</span>        <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'proxyType'</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='downcase identifier id'>downcase</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span> <span class='if if_mod kw'>if</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='string val'>'proxyType'</span>
-  <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='ftp identifier id'>ftp</span>         <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'ftpProxy'</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='string val'>'ftpProxy'</span>
-  <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='http identifier id'>http</span>        <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'httpProxy'</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='string val'>'httpProxy'</span>
-  <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='no_proxy identifier id'>no_proxy</span>    <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'noProxy'</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='string val'>'noProxy'</span>
-  <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='pac identifier id'>pac</span>         <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'proxyAutoconfigUrl'</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='string val'>'proxyAutoconfigUrl'</span>
-  <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='ssl identifier id'>ssl</span>         <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'sslProxy'</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='string val'>'sslProxy'</span>
-  <span class='proxy identifier id'>proxy</span><span class='dot token'>.</span><span class='auto_detect identifier id'>auto_detect</span> <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'autodetect'</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span> <span class='string val'>'autodetect'</span>
+  <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id type'>type</span>        <span class='op'>=</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>proxyType</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id downcase'>downcase</span><span class='period'>.</span><span class='id to_sym'>to_sym</span> <span class='kw'>if</span> <span class='id data'>data</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>proxyType</span><span class='tstring_end'>'</span></span>
+  <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id ftp'>ftp</span>         <span class='op'>=</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>ftpProxy</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id data'>data</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>ftpProxy</span><span class='tstring_end'>'</span></span>
+  <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id http'>http</span>        <span class='op'>=</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>httpProxy</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id data'>data</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>httpProxy</span><span class='tstring_end'>'</span></span>
+  <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id no_proxy'>no_proxy</span>    <span class='op'>=</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>noProxy</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id data'>data</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>noProxy</span><span class='tstring_end'>'</span></span>
+  <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id pac'>pac</span>         <span class='op'>=</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>proxyAutoconfigUrl</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id data'>data</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>proxyAutoconfigUrl</span><span class='tstring_end'>'</span></span>
+  <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id ssl'>ssl</span>         <span class='op'>=</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>sslProxy</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id data'>data</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>sslProxy</span><span class='tstring_end'>'</span></span>
+  <span class='id proxy'>proxy</span><span class='period'>.</span><span class='id auto_detect'>auto_detect</span> <span class='op'>=</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>autodetect</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id data'>data</span><span class='period'>.</span><span class='id has_key?'>has_key?</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>autodetect</span><span class='tstring_end'>'</span></span>
 
-  <span class='proxy identifier id'>proxy</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id proxy'>proxy</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -880,10 +870,9 @@ Returns the value of attribute type
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 36</span>
 
-<span class='def def kw'>def</span> <span class='eq op'>==</span><span class='lparen token'>(</span><span class='other identifier id'>other</span><span class='rparen token'>)</span>
-  <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='as_json identifier id'>as_json</span> <span class='eq op'>==</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='as_json identifier id'>as_json</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id other'>other</span><span class='rparen'>)</span>
+  <span class='id other'>other</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id class'>class</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id as_json'>as_json</span> <span class='op'>==</span> <span class='id other'>other</span><span class='period'>.</span><span class='id as_json'>as_json</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -920,21 +909,20 @@ Returns the value of attribute type
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 83</span>
 
-<span class='def def kw'>def</span> <span class='as_json identifier id'>as_json</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='json_result identifier id'>json_result</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
-    <span class='string val'>&quot;proxyType&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='TYPES constant id'>TYPES</span><span class='lbrack token'>[</span><span class='type identifier id'>type</span><span class='rbrack token'>]</span>
-  <span class='rbrace token'>}</span>
+<span class='kw'>def</span> <span class='id as_json'>as_json</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id json_result'>json_result</span> <span class='op'>=</span> <span class='lbrace'>{</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>proxyType</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='const'>TYPES</span><span class='lbracket'>[</span><span class='id type'>type</span><span class='rbracket'>]</span>
+  <span class='rbrace'>}</span>
 
-  <span class='json_result identifier id'>json_result</span><span class='lbrack token'>[</span><span class='string val'>&quot;ftpProxy&quot;</span><span class='rbrack token'>]</span>           <span class='assign token'>=</span> <span class='ftp identifier id'>ftp</span> <span class='if if_mod kw'>if</span> <span class='ftp identifier id'>ftp</span>
-  <span class='json_result identifier id'>json_result</span><span class='lbrack token'>[</span><span class='string val'>&quot;httpProxy&quot;</span><span class='rbrack token'>]</span>          <span class='assign token'>=</span> <span class='http identifier id'>http</span> <span class='if if_mod kw'>if</span> <span class='http identifier id'>http</span>
-  <span class='json_result identifier id'>json_result</span><span class='lbrack token'>[</span><span class='string val'>&quot;noProxy&quot;</span><span class='rbrack token'>]</span>            <span class='assign token'>=</span> <span class='no_proxy identifier id'>no_proxy</span> <span class='if if_mod kw'>if</span> <span class='no_proxy identifier id'>no_proxy</span>
-  <span class='json_result identifier id'>json_result</span><span class='lbrack token'>[</span><span class='string val'>&quot;proxyAutoconfigUrl&quot;</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='pac identifier id'>pac</span> <span class='if if_mod kw'>if</span> <span class='pac identifier id'>pac</span>
-  <span class='json_result identifier id'>json_result</span><span class='lbrack token'>[</span><span class='string val'>&quot;sslProxy&quot;</span><span class='rbrack token'>]</span>           <span class='assign token'>=</span> <span class='ssl identifier id'>ssl</span> <span class='if if_mod kw'>if</span> <span class='ssl identifier id'>ssl</span>
-  <span class='json_result identifier id'>json_result</span><span class='lbrack token'>[</span><span class='string val'>&quot;autodetect&quot;</span><span class='rbrack token'>]</span>         <span class='assign token'>=</span> <span class='auto_detect identifier id'>auto_detect</span> <span class='if if_mod kw'>if</span> <span class='auto_detect identifier id'>auto_detect</span>
+  <span class='id json_result'>json_result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ftpProxy</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>           <span class='op'>=</span> <span class='id ftp'>ftp</span> <span class='kw'>if</span> <span class='id ftp'>ftp</span>
+  <span class='id json_result'>json_result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>httpProxy</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>          <span class='op'>=</span> <span class='id http'>http</span> <span class='kw'>if</span> <span class='id http'>http</span>
+  <span class='id json_result'>json_result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>noProxy</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>            <span class='op'>=</span> <span class='id no_proxy'>no_proxy</span> <span class='kw'>if</span> <span class='id no_proxy'>no_proxy</span>
+  <span class='id json_result'>json_result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>proxyAutoconfigUrl</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id pac'>pac</span> <span class='kw'>if</span> <span class='id pac'>pac</span>
+  <span class='id json_result'>json_result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sslProxy</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>           <span class='op'>=</span> <span class='id ssl'>ssl</span> <span class='kw'>if</span> <span class='id ssl'>ssl</span>
+  <span class='id json_result'>json_result</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>autodetect</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>         <span class='op'>=</span> <span class='id auto_detect'>auto_detect</span> <span class='kw'>if</span> <span class='id auto_detect'>auto_detect</span>
 
-  <span class='json_result identifier id'>json_result</span> <span class='if if_mod kw'>if</span> <span class='json_result identifier id'>json_result</span><span class='dot token'>.</span><span class='length identifier id'>length</span> <span class='gt op'>&gt;</span> <span class='integer val'>1</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id json_result'>json_result</span> <span class='kw'>if</span> <span class='id json_result'>json_result</span><span class='period'>.</span><span class='id length'>length</span> <span class='op'>&gt;</span> <span class='int'>1</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -945,9 +933,9 @@ Returns the value of attribute type
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:48 2011 by 
+  Generated on Mon Aug  1 20:19:44 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

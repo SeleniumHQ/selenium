@@ -124,8 +124,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='lbrack token'>[</span><span class='symbol val'>:control</span><span class='comma token'>,</span> <span class='symbol val'>:shift</span><span class='comma token'>,</span> <span class='symbol val'>:alt</span><span class='comma token'>,</span> <span class='symbol val'>:command</span><span class='comma token'>,</span> <span class='symbol val'>:meta</span><span class='rbrack token'>]</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='symbol'>:control</span><span class='comma'>,</span> <span class='symbol'>:shift</span><span class='comma'>,</span> <span class='symbol'>:alt</span><span class='comma'>,</span> <span class='symbol'>:command</span><span class='comma'>,</span> <span class='symbol'>:meta</span><span class='rbracket'>]</span></pre></dd>
       
     </dl>
   
@@ -278,10 +277,9 @@ A new instance of Keyboard
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 7</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id bridge'>bridge</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id bridge'>bridge</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -337,11 +335,10 @@ Release a modifier key
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 21</span>
 
-<span class='def def kw'>def</span> <span class='press identifier id'>press</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
-  <span class='assert_modifier identifier id'>assert_modifier</span> <span class='key identifier id'>key</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='sendModifierKeyToActiveElement identifier id'>sendModifierKeyToActiveElement</span> <span class='Keys constant id'>Keys</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='true true kw'>true</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id press'>press</span><span class='lparen'>(</span><span class='id key'>key</span><span class='rparen'>)</span>
+  <span class='id assert_modifier'>assert_modifier</span> <span class='id key'>key</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id sendModifierKeyToActiveElement'>sendModifierKeyToActiveElement</span> <span class='const'>Keys</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='kw'>true</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -390,11 +387,10 @@ Release a modifier key
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 32</span>
 
-<span class='def def kw'>def</span> <span class='release identifier id'>release</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
-  <span class='assert_modifier identifier id'>assert_modifier</span> <span class='key identifier id'>key</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='sendModifierKeyToActiveElement identifier id'>sendModifierKeyToActiveElement</span> <span class='Keys constant id'>Keys</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='false false kw'>false</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id release'>release</span><span class='lparen'>(</span><span class='id key'>key</span><span class='rparen'>)</span>
+  <span class='id assert_modifier'>assert_modifier</span> <span class='id key'>key</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id sendModifierKeyToActiveElement'>sendModifierKeyToActiveElement</span> <span class='const'>Keys</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='kw'>false</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -432,10 +428,9 @@ Release a modifier key
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/keyboard.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='keys identifier id'>keys</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='getActiveElement identifier id'>getActiveElement</span><span class='dot token'>.</span><span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='keys identifier id'>keys</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id keys'>keys</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id getActiveElement'>getActiveElement</span><span class='period'>.</span><span class='id send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id keys'>keys</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -446,9 +441,9 @@ Release a modifier key
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:25 2011 by 
+  Generated on Mon Aug  1 20:19:45 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

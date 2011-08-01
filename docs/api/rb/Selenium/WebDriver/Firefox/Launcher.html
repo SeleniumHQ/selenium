@@ -124,8 +124,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='integer val'>45</span>
-</pre></dd>
+        <dd><pre class="code"><span class='int'>45</span></pre></dd>
       
         <dt id="STABLE_CONNECTION_TIMEOUT-constant" class="">STABLE_CONNECTION_TIMEOUT =
           <div class="docstring">
@@ -142,8 +141,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='integer val'>60</span>
-</pre></dd>
+        <dd><pre class="code"><span class='int'>60</span></pre></dd>
       
     </dl>
   
@@ -483,22 +481,21 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='binary identifier id'>binary</span><span class='comma token'>,</span> <span class='port identifier id'>port</span><span class='comma token'>,</span> <span class='profile identifier id'>profile</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='@binary ivar id'>@binary</span> <span class='assign token'>=</span> <span class='binary identifier id'>binary</span>
-  <span class='@port ivar id'>@port</span>   <span class='assign token'>=</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='port identifier id'>port</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id binary'>binary</span><span class='comma'>,</span> <span class='id port'>port</span><span class='comma'>,</span> <span class='id profile'>profile</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@binary</span> <span class='op'>=</span> <span class='id binary'>binary</span>
+  <span class='ivar'>@port</span>   <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id port'>port</span><span class='rparen'>)</span>
 
-  <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;invalid port: #{@port}&quot;</span> <span class='if if_mod kw'>if</span> <span class='@port ivar id'>@port</span> <span class='lt op'>&lt;</span> <span class='integer val'>1</span>
+  <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid port: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@port</span> <span class='op'>&lt;</span> <span class='int'>1</span>
 
-  <span class='if if kw'>if</span> <span class='profile identifier id'>profile</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Profile constant id'>Profile</span>
-    <span class='@profile ivar id'>@profile</span> <span class='assign token'>=</span> <span class='profile identifier id'>profile</span>
-  <span class='else else kw'>else</span>
-    <span class='@profile_name ivar id'>@profile_name</span> <span class='assign token'>=</span> <span class='profile identifier id'>profile</span>
-    <span class='@profile ivar id'>@profile</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>if</span> <span class='id profile'>profile</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='const'>Profile</span>
+    <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='id profile'>profile</span>
+  <span class='kw'>else</span>
+    <span class='ivar'>@profile_name</span> <span class='op'>=</span> <span class='id profile'>profile</span>
+    <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='kw'>nil</span>
+  <span class='kw'>end</span>
 
-  <span class='@host ivar id'>@host</span> <span class='assign token'>=</span> <span class='string val'>&quot;127.0.0.1&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@host</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>127.0.0.1</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -556,10 +553,9 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 93</span>
 
-<span class='def def kw'>def</span> <span class='assert_profile identifier id'>assert_profile</span>
-  <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='string val'>&quot;must create_profile first&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='@profile ivar id'>@profile</span> <span class='andop op'>&amp;&amp;</span> <span class='@profile_dir ivar id'>@profile_dir</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id assert_profile'>assert_profile</span>
+  <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>must create_profile first</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='ivar'>@profile</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@profile_dir</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -602,15 +598,14 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 72</span>
 
-<span class='def def kw'>def</span> <span class='connect_until_stable identifier id'>connect_until_stable</span>
-  <span class='poller identifier id'>poller</span> <span class='assign token'>=</span> <span class='SocketPoller constant id'>SocketPoller</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@host ivar id'>@host</span><span class='comma token'>,</span> <span class='@port ivar id'>@port</span><span class='comma token'>,</span> <span class='STABLE_CONNECTION_TIMEOUT constant id'>STABLE_CONNECTION_TIMEOUT</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id connect_until_stable'>connect_until_stable</span>
+  <span class='id poller'>poller</span> <span class='op'>=</span> <span class='const'>SocketPoller</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='ivar'>@host</span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='comma'>,</span> <span class='const'>STABLE_CONNECTION_TIMEOUT</span><span class='rparen'>)</span>
 
-  <span class='unless unless kw'>unless</span> <span class='poller identifier id'>poller</span><span class='dot token'>.</span><span class='connected? fid id'>connected?</span>
-    <span class='@binary ivar id'>@binary</span><span class='dot token'>.</span><span class='quit identifier id'>quit</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds (#{@host}:#{@port})&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>unless</span> <span class='id poller'>poller</span><span class='period'>.</span><span class='id connected?'>connected?</span>
+    <span class='ivar'>@binary</span><span class='period'>.</span><span class='id quit'>quit</span>
+    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to obtain stable firefox connection in </span><span class='embexpr_beg'>#{</span><span class='const'>STABLE_CONNECTION_TIMEOUT</span><span class='rbrace'>}</span><span class='tstring_content'> seconds (</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -652,14 +647,13 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 52</span>
 
-<span class='def def kw'>def</span> <span class='create_profile identifier id'>create_profile</span>
-  <span class='fetch_profile identifier id'>fetch_profile</span> <span class='unless unless_mod kw'>unless</span> <span class='@profile ivar id'>@profile</span>
+<span class='kw'>def</span> <span class='id create_profile'>create_profile</span>
+  <span class='id fetch_profile'>fetch_profile</span> <span class='kw'>unless</span> <span class='ivar'>@profile</span>
 
-  <span class='@profile ivar id'>@profile</span><span class='dot token'>.</span><span class='add_webdriver_extension identifier id'>add_webdriver_extension</span>
-  <span class='@profile ivar id'>@profile</span><span class='dot token'>.</span><span class='port identifier id'>port</span> <span class='assign token'>=</span> <span class='@port ivar id'>@port</span>
-  <span class='@profile_dir ivar id'>@profile_dir</span> <span class='assign token'>=</span> <span class='@profile ivar id'>@profile</span><span class='dot token'>.</span><span class='layout_on_disk identifier id'>layout_on_disk</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@profile</span><span class='period'>.</span><span class='id add_webdriver_extension'>add_webdriver_extension</span>
+  <span class='ivar'>@profile</span><span class='period'>.</span><span class='id port'>port</span> <span class='op'>=</span> <span class='ivar'>@port</span>
+  <span class='ivar'>@profile_dir</span> <span class='op'>=</span> <span class='ivar'>@profile</span><span class='period'>.</span><span class='id layout_on_disk'>layout_on_disk</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -705,18 +699,17 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 81</span>
 
-<span class='def def kw'>def</span> <span class='fetch_profile identifier id'>fetch_profile</span>
-  <span class='if if kw'>if</span> <span class='@profile_name ivar id'>@profile_name</span>
-    <span class='@profile ivar id'>@profile</span> <span class='assign token'>=</span> <span class='Profile constant id'>Profile</span><span class='dot token'>.</span><span class='from_name identifier id'>from_name</span> <span class='@profile_name ivar id'>@profile_name</span>
+<span class='kw'>def</span> <span class='id fetch_profile'>fetch_profile</span>
+  <span class='kw'>if</span> <span class='ivar'>@profile_name</span>
+    <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'>Profile</span><span class='period'>.</span><span class='id from_name'>from_name</span> <span class='ivar'>@profile_name</span>
 
-    <span class='unless unless kw'>unless</span> <span class='@profile ivar id'>@profile</span>
-      <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unable to find profile named: #{@profile_name.inspect}&quot;</span>
-    <span class='end end kw'>end</span>
-  <span class='else else kw'>else</span>
-    <span class='@profile ivar id'>@profile</span> <span class='assign token'>=</span> <span class='Profile constant id'>Profile</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+    <span class='kw'>unless</span> <span class='ivar'>@profile</span>
+      <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to find profile named: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@profile_name</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
+  <span class='kw'>else</span>
+    <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'>Profile</span><span class='period'>.</span><span class='id new'>new</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -754,10 +747,9 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 48</span>
 
-<span class='def def kw'>def</span> <span class='find_free_port identifier id'>find_free_port</span>
-  <span class='@port ivar id'>@port</span> <span class='assign token'>=</span> <span class='PortProber constant id'>PortProber</span><span class='dot token'>.</span><span class='above identifier id'>above</span> <span class='@port ivar id'>@port</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id find_free_port'>find_free_port</span>
+  <span class='ivar'>@port</span> <span class='op'>=</span> <span class='const'>PortProber</span><span class='period'>.</span><span class='id above'>above</span> <span class='ivar'>@port</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -803,18 +795,17 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 31</span>
 
-<span class='def def kw'>def</span> <span class='launch identifier id'>launch</span>
-  <span class='socket_lock identifier id'>socket_lock</span><span class='dot token'>.</span><span class='locked identifier id'>locked</span> <span class='do do kw'>do</span>
-    <span class='find_free_port identifier id'>find_free_port</span>
-    <span class='create_profile identifier id'>create_profile</span>
-    <span class='start_silent_and_wait identifier id'>start_silent_and_wait</span>
-    <span class='start identifier id'>start</span>
-    <span class='connect_until_stable identifier id'>connect_until_stable</span>
-  <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='id launch'>launch</span>
+  <span class='id socket_lock'>socket_lock</span><span class='period'>.</span><span class='id locked'>locked</span> <span class='kw'>do</span>
+    <span class='id find_free_port'>find_free_port</span>
+    <span class='id create_profile'>create_profile</span>
+    <span class='id start_silent_and_wait'>start_silent_and_wait</span>
+    <span class='id start'>start</span>
+    <span class='id connect_until_stable'>connect_until_stable</span>
+  <span class='kw'>end</span>
 
-  <span class='self self kw'>self</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>self</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -853,11 +844,10 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 43</span>
 
-<span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
-  <span class='@binary ivar id'>@binary</span><span class='dot token'>.</span><span class='quit identifier id'>quit</span>
-  <span class='FileReaper constant id'>FileReaper</span><span class='dot token'>.</span><span class='reap identifier id'>reap</span><span class='lparen token'>(</span><span class='@profile_dir ivar id'>@profile_dir</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='@profile_dir ivar id'>@profile_dir</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id quit'>quit</span>
+  <span class='ivar'>@binary</span><span class='period'>.</span><span class='id quit'>quit</span>
+  <span class='const'>FileReaper</span><span class='period'>.</span><span class='id reap'>reap</span><span class='lparen'>(</span><span class='ivar'>@profile_dir</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@profile_dir</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -895,10 +885,9 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 97</span>
 
-<span class='def def kw'>def</span> <span class='socket_lock identifier id'>socket_lock</span>
-  <span class='@socket_lock ivar id'>@socket_lock</span> <span class='opasgn op'>||=</span> <span class='SocketLock constant id'>SocketLock</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@port ivar id'>@port</span> <span class='minus op'>-</span> <span class='integer val'>1</span><span class='comma token'>,</span> <span class='SOCKET_LOCK_TIMEOUT constant id'>SOCKET_LOCK_TIMEOUT</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id socket_lock'>socket_lock</span>
+  <span class='ivar'>@socket_lock</span> <span class='op'>||=</span> <span class='const'>SocketLock</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='ivar'>@port</span> <span class='op'>-</span> <span class='int'>1</span><span class='comma'>,</span> <span class='const'>SOCKET_LOCK_TIMEOUT</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -937,11 +926,10 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 60</span>
 
-<span class='def def kw'>def</span> <span class='start identifier id'>start</span>
-  <span class='assert_profile identifier id'>assert_profile</span>
-  <span class='@binary ivar id'>@binary</span><span class='dot token'>.</span><span class='start_with identifier id'>start_with</span> <span class='@profile ivar id'>@profile</span><span class='comma token'>,</span> <span class='@profile_dir ivar id'>@profile_dir</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id start'>start</span>
+  <span class='id assert_profile'>assert_profile</span>
+  <span class='ivar'>@binary</span><span class='period'>.</span><span class='id start_with'>start_with</span> <span class='ivar'>@profile</span><span class='comma'>,</span> <span class='ivar'>@profile_dir</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -982,13 +970,12 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 65</span>
 
-<span class='def def kw'>def</span> <span class='start_silent_and_wait identifier id'>start_silent_and_wait</span>
-  <span class='assert_profile identifier id'>assert_profile</span>
+<span class='kw'>def</span> <span class='id start_silent_and_wait'>start_silent_and_wait</span>
+  <span class='id assert_profile'>assert_profile</span>
 
-  <span class='@binary ivar id'>@binary</span><span class='dot token'>.</span><span class='start_with identifier id'>start_with</span> <span class='@profile ivar id'>@profile</span><span class='comma token'>,</span> <span class='@profile_dir ivar id'>@profile_dir</span><span class='comma token'>,</span> <span class='string val'>&quot;-silent&quot;</span>
-  <span class='@binary ivar id'>@binary</span><span class='dot token'>.</span><span class='wait identifier id'>wait</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@binary</span><span class='period'>.</span><span class='id start_with'>start_with</span> <span class='ivar'>@profile</span><span class='comma'>,</span> <span class='ivar'>@profile_dir</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>-silent</span><span class='tstring_end'>&quot;</span></span>
+  <span class='ivar'>@binary</span><span class='period'>.</span><span class='id wait'>wait</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1026,10 +1013,9 @@ A new instance of Launcher
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 27</span>
 
-<span class='def def kw'>def</span> <span class='url identifier id'>url</span>
-  <span class='dstring node'>&quot;http://#{@host}:#{@port}/hub&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id url'>url</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_content'>/hub</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1040,9 +1026,9 @@ A new instance of Launcher
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:50 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

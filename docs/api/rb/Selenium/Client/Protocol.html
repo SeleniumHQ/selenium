@@ -325,10 +325,9 @@ Returns the value of attribute session_id
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 8</span>
 
-<span class='def def kw'>def</span> <span class='session_id identifier id'>session_id</span>
-  <span class='@session_id ivar id'>@session_id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id session_id'>session_id</span>
+  <span class='ivar'>@session_id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -361,10 +360,9 @@ Returns the value of attribute session_id
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 59</span>
 
-<span class='def def kw'>def</span> <span class='boolean_array_command identifier id'>boolean_array_command</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='string_array_command identifier id'>string_array_command</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='collect identifier id'>collect</span> <span class='lbrace token'>{</span><span class='bitor op'>|</span><span class='value identifier id'>value</span><span class='bitor op'>|</span> <span class='parse_boolean_value identifier id'>parse_boolean_value</span><span class='lparen token'>(</span><span class='value identifier id'>value</span><span class='rparen token'>)</span><span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id boolean_array_command'>boolean_array_command</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id string_array_command'>string_array_command</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rparen'>)</span><span class='period'>.</span><span class='id collect'>collect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id value'>value</span><span class='op'>|</span> <span class='id parse_boolean_value'>parse_boolean_value</span><span class='lparen'>(</span><span class='id value'>value</span><span class='rparen'>)</span><span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -390,10 +388,9 @@ Returns the value of attribute session_id
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 55</span>
 
-<span class='def def kw'>def</span> <span class='boolean_command identifier id'>boolean_command</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='assign token'>=</span><span class='lbrack token'>[</span><span class='rbrack token'>]</span><span class='rparen token'>)</span>
-  <span class='parse_boolean_value identifier id'>parse_boolean_value</span> <span class='string_command identifier id'>string_command</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id boolean_command'>boolean_command</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='op'>=</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='id parse_boolean_value'>parse_boolean_value</span> <span class='id string_command'>string_command</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -419,10 +416,9 @@ Returns the value of attribute session_id
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 51</span>
 
-<span class='def def kw'>def</span> <span class='number_array_command identifier id'>number_array_command</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='string_array_command identifier id'>string_array_command</span> <span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id number_array_command'>number_array_command</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id string_array_command'>string_array_command</span> <span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -448,10 +444,9 @@ Returns the value of attribute session_id
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 47</span>
 
-<span class='def def kw'>def</span> <span class='number_command identifier id'>number_command</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='string_command identifier id'>string_command</span> <span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id number_command'>number_command</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id string_command'>string_command</span> <span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -481,14 +476,13 @@ Returns the value of attribute session_id
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 10</span>
 
-<span class='def def kw'>def</span> <span class='remote_control_command identifier id'>remote_control_command</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='assign token'>=</span><span class='lbrack token'>[</span><span class='rbrack token'>]</span><span class='rparen token'>)</span>
-  <span class='timeout identifier id'>timeout</span><span class='lparen token'>(</span><span class='@default_timeout_in_seconds ivar id'>@default_timeout_in_seconds</span><span class='rparen token'>)</span> <span class='do do kw'>do</span>
-    <span class='status identifier id'>status</span><span class='comma token'>,</span> <span class='response identifier id'>response</span> <span class='assign token'>=</span> <span class='http_post identifier id'>http_post</span><span class='lparen token'>(</span><span class='http_request_for identifier id'>http_request_for</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-    <span class='raise identifier id'>raise</span> <span class='CommandError constant id'>CommandError</span><span class='comma token'>,</span> <span class='response identifier id'>response</span> <span class='unless unless_mod kw'>unless</span> <span class='status identifier id'>status</span> <span class='eq op'>==</span> <span class='string val'>&quot;OK&quot;</span>
-    <span class='response identifier id'>response</span><span class='lbrack token'>[</span><span class='float val'>3</span><span class='dot2 op'>..</span><span class='integer val'>-1</span><span class='rbrack token'>]</span> <span class='comment val'># strip &quot;OK,&quot; from response</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id remote_control_command'>remote_control_command</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='op'>=</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='id timeout'>timeout</span><span class='lparen'>(</span><span class='ivar'>@default_timeout_in_seconds</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='id status'>status</span><span class='comma'>,</span> <span class='id response'>response</span> <span class='op'>=</span> <span class='id http_post'>http_post</span><span class='lparen'>(</span><span class='id http_request_for'>http_request_for</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rparen'>)</span><span class='rparen'>)</span>
+    <span class='id raise'>raise</span> <span class='const'>CommandError</span><span class='comma'>,</span> <span class='id response'>response</span> <span class='kw'>unless</span> <span class='id status'>status</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>OK</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id response'>response</span><span class='lbracket'>[</span><span class='int'>3</span><span class='op'>..</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='comment'># strip &quot;OK,&quot; from response
+</span>  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -535,31 +529,30 @@ Returns the value of attribute session_id
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 22</span>
 
-<span class='def def kw'>def</span> <span class='string_array_command identifier id'>string_array_command</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='assign token'>=</span><span class='lbrack token'>[</span><span class='rbrack token'>]</span><span class='rparen token'>)</span>
-  <span class='csv identifier id'>csv</span> <span class='assign token'>=</span> <span class='string_command identifier id'>string_command</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='token identifier id'>token</span> <span class='assign token'>=</span> <span class='string val'>&quot;&quot;</span>
-  <span class='tokens identifier id'>tokens</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
-  <span class='escape identifier id'>escape</span> <span class='assign token'>=</span> <span class='false false kw'>false</span>
-  <span class='csv identifier id'>csv</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='regexp val'>//</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='letter identifier id'>letter</span><span class='bitor op'>|</span>
-    <span class='if if kw'>if</span> <span class='escape identifier id'>escape</span>
-      <span class='token identifier id'>token</span> <span class='opasgn op'>+=</span> <span class='letter identifier id'>letter</span>
-      <span class='escape identifier id'>escape</span> <span class='assign token'>=</span> <span class='false false kw'>false</span>
-      <span class='next next kw'>next</span>
-    <span class='end end kw'>end</span>
-    <span class='case case kw'>case</span> <span class='letter identifier id'>letter</span>
-      <span class='when when kw'>when</span> <span class='string val'>'\\'</span>
-        <span class='escape identifier id'>escape</span> <span class='assign token'>=</span> <span class='true true kw'>true</span>
-      <span class='when when kw'>when</span> <span class='string val'>','</span>
-        <span class='tokens identifier id'>tokens</span> <span class='lshft op'>&lt;&lt;</span> <span class='token identifier id'>token</span>
-        <span class='token identifier id'>token</span> <span class='assign token'>=</span> <span class='string val'>&quot;&quot;</span>
-      <span class='else else kw'>else</span>
-        <span class='token identifier id'>token</span> <span class='opasgn op'>+=</span> <span class='letter identifier id'>letter</span>
-    <span class='end end kw'>end</span>
-  <span class='end end kw'>end</span>
-  <span class='tokens identifier id'>tokens</span> <span class='lshft op'>&lt;&lt;</span> <span class='token identifier id'>token</span>
-  <span class='return return kw'>return</span> <span class='tokens identifier id'>tokens</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id string_array_command'>string_array_command</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='op'>=</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='id csv'>csv</span> <span class='op'>=</span> <span class='id string_command'>string_command</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id token'>token</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id tokens'>tokens</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id escape'>escape</span> <span class='op'>=</span> <span class='kw'>false</span>
+  <span class='id csv'>csv</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id letter'>letter</span><span class='op'>|</span>
+    <span class='kw'>if</span> <span class='id escape'>escape</span>
+      <span class='id token'>token</span> <span class='op'>+=</span> <span class='id letter'>letter</span>
+      <span class='id escape'>escape</span> <span class='op'>=</span> <span class='kw'>false</span>
+      <span class='kw'>next</span>
+    <span class='kw'>end</span>
+    <span class='kw'>case</span> <span class='id letter'>letter</span>
+      <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>\\</span><span class='tstring_end'>'</span></span>
+        <span class='id escape'>escape</span> <span class='op'>=</span> <span class='kw'>true</span>
+      <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>,</span><span class='tstring_end'>'</span></span>
+        <span class='id tokens'>tokens</span> <span class='op'>&lt;&lt;</span> <span class='id token'>token</span>
+        <span class='id token'>token</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+      <span class='kw'>else</span>
+        <span class='id token'>token</span> <span class='op'>+=</span> <span class='id letter'>letter</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+  <span class='id tokens'>tokens</span> <span class='op'>&lt;&lt;</span> <span class='id token'>token</span>
+  <span class='kw'>return</span> <span class='id tokens'>tokens</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -585,10 +578,9 @@ Returns the value of attribute session_id
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/protocol.rb', line 18</span>
 
-<span class='def def kw'>def</span> <span class='string_command identifier id'>string_command</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='assign token'>=</span><span class='lbrack token'>[</span><span class='rbrack token'>]</span><span class='rparen token'>)</span>
-  <span class='remote_control_command identifier id'>remote_control_command</span><span class='lparen token'>(</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id string_command'>string_command</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='op'>=</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='id remote_control_command'>remote_control_command</span><span class='lparen'>(</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -599,9 +591,9 @@ Returns the value of attribute session_id
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:53 2011 by 
+  Generated on Mon Aug  1 20:19:42 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

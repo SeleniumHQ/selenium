@@ -124,8 +124,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='integer val'>20</span>
-</pre></dd>
+        <dd><pre class="code"><span class='int'>20</span></pre></dd>
       
         <dt id="STOP_TIMEOUT-constant" class="">STOP_TIMEOUT =
           <div class="docstring">
@@ -142,8 +141,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='integer val'>5</span>
-</pre></dd>
+        <dd><pre class="code"><span class='int'>5</span></pre></dd>
       
         <dt id="MISSING_TEXT-constant" class="">MISSING_TEXT =
           <div class="docstring">
@@ -160,8 +158,7 @@
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='string val'>&quot;Unable to find the chromedriver executable. Please download the server from http://code.google.com/p/chromium/downloads/list and place it somewhere on your PATH. More info at http://code.google.com/p/selenium/wiki/ChromeDriver.&quot;</span>
-</pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Unable to find the chromedriver executable. Please download the server from http://code.google.com/p/chromium/downloads/list and place it somewhere on your PATH. More info at http://code.google.com/p/selenium/wiki/ChromeDriver.</span><span class='tstring_end'>&quot;</span></span></pre></dd>
       
     </dl>
   
@@ -397,16 +394,15 @@ A new instance of Service
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 31</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='executable_path identifier id'>executable_path</span><span class='comma token'>,</span> <span class='port identifier id'>port</span><span class='rparen token'>)</span>
-  <span class='@uri ivar id'>@uri</span>           <span class='assign token'>=</span> <span class='URI constant id'>URI</span><span class='dot token'>.</span><span class='parse identifier id'>parse</span> <span class='dstring node'>&quot;http://#{Platform.localhost}:#{port}&quot;</span>
-  <span class='server_command identifier id'>server_command</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='executable_path identifier id'>executable_path</span><span class='comma token'>,</span> <span class='dstring node'>&quot;--port=#{port}&quot;</span><span class='rbrack token'>]</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id executable_path'>executable_path</span><span class='comma'>,</span> <span class='id port'>port</span><span class='rparen'>)</span>
+  <span class='ivar'>@uri</span>           <span class='op'>=</span> <span class='const'>URI</span><span class='period'>.</span><span class='id parse'>parse</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id localhost'>localhost</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id port'>port</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id server_command'>server_command</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id executable_path'>executable_path</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>--port=</span><span class='embexpr_beg'>#{</span><span class='id port'>port</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
 
-  <span class='@process ivar id'>@process</span>       <span class='assign token'>=</span> <span class='ChildProcess constant id'>ChildProcess</span><span class='dot token'>.</span><span class='build identifier id'>build</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='server_command identifier id'>server_command</span><span class='rparen token'>)</span>
-  <span class='@socket_poller ivar id'>@socket_poller</span> <span class='assign token'>=</span> <span class='SocketPoller constant id'>SocketPoller</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='localhost identifier id'>localhost</span><span class='comma token'>,</span> <span class='port identifier id'>port</span><span class='comma token'>,</span> <span class='START_TIMEOUT constant id'>START_TIMEOUT</span>
+  <span class='ivar'>@process</span>       <span class='op'>=</span> <span class='const'>ChildProcess</span><span class='period'>.</span><span class='id build'>build</span><span class='lparen'>(</span><span class='op'>*</span><span class='id server_command'>server_command</span><span class='rparen'>)</span>
+  <span class='ivar'>@socket_poller</span> <span class='op'>=</span> <span class='const'>SocketPoller</span><span class='period'>.</span><span class='id new'>new</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id localhost'>localhost</span><span class='comma'>,</span> <span class='id port'>port</span><span class='comma'>,</span> <span class='const'>START_TIMEOUT</span>
 
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='io identifier id'>io</span><span class='dot token'>.</span><span class='inherit! fid id'>inherit!</span> <span class='if if_mod kw'>if</span> <span class='$DEBUG gvar id'>$DEBUG</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@process</span><span class='period'>.</span><span class='id io'>io</span><span class='period'>.</span><span class='id inherit!'>inherit!</span> <span class='kw'>if</span> <span class='gvar'>$DEBUG</span> <span class='op'>==</span> <span class='kw'>true</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -455,10 +451,9 @@ Returns the value of attribute uri
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 14</span>
 
-<span class='def def kw'>def</span> <span class='uri identifier id'>uri</span>
-  <span class='@uri ivar id'>@uri</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id uri'>uri</span>
+  <span class='ivar'>@uri</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -503,10 +498,9 @@ Returns the value of attribute uri
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 27</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='default_service identifier id'>default_service</span>
-  <span class='new identifier id'>new</span> <span class='executable_path identifier id'>executable_path</span><span class='comma token'>,</span> <span class='PortProber constant id'>PortProber</span><span class='dot token'>.</span><span class='random identifier id'>random</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id default_service'>default_service</span>
+  <span class='id new'>new</span> <span class='id executable_path'>executable_path</span><span class='comma'>,</span> <span class='const'>PortProber</span><span class='period'>.</span><span class='id random'>random</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -546,12 +540,11 @@ Returns the value of attribute uri
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 16</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='executable_path identifier id'>executable_path</span>
-  <span class='@executable_path ivar id'>@executable_path</span> <span class='opasgn op'>||=</span> <span class='lparen token'>(</span>
-    <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='find_binary identifier id'>find_binary</span> <span class='string val'>&quot;chromedriver&quot;</span> <span class='or or kw'>or</span> <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='MISSING_TEXT constant id'>MISSING_TEXT</span>
-  <span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id executable_path'>executable_path</span>
+  <span class='ivar'>@executable_path</span> <span class='op'>||=</span> <span class='lparen'>(</span>
+    <span class='const'>Platform</span><span class='period'>.</span><span class='id find_binary'>find_binary</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>chromedriver</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>or</span> <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='const'>MISSING_TEXT</span>
+  <span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -590,11 +583,10 @@ Returns the value of attribute uri
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 22</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='executable_path identifier id'>executable_path</span><span class='assign token'>=</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-  <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='assert_executable identifier id'>assert_executable</span> <span class='path identifier id'>path</span>
-  <span class='@executable_path ivar id'>@executable_path</span> <span class='assign token'>=</span> <span class='path identifier id'>path</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id executable_path='>executable_path=</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+  <span class='const'>Platform</span><span class='period'>.</span><span class='id assert_executable'>assert_executable</span> <span class='id path'>path</span>
+  <span class='ivar'>@executable_path</span> <span class='op'>=</span> <span class='id path'>path</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -644,16 +636,15 @@ Returns the value of attribute uri
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 41</span>
 
-<span class='def def kw'>def</span> <span class='start identifier id'>start</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
+<span class='kw'>def</span> <span class='id start'>start</span>
+  <span class='ivar'>@process</span><span class='period'>.</span><span class='id start'>start</span>
 
-  <span class='unless unless kw'>unless</span> <span class='@socket_poller ivar id'>@socket_poller</span><span class='dot token'>.</span><span class='connected? fid id'>connected?</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unable to connect to chromedriver #{@uri}&quot;</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>unless</span> <span class='ivar'>@socket_poller</span><span class='period'>.</span><span class='id connected?'>connected?</span>
+    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to connect to chromedriver </span><span class='embexpr_beg'>#{</span><span class='ivar'>@uri</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='exit_hook identifier id'>exit_hook</span> <span class='lbrace token'>{</span> <span class='stop identifier id'>stop</span> <span class='rbrace token'>}</span> <span class='comment val'># make sure we don't leave the server running</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='const'>Platform</span><span class='period'>.</span><span class='id exit_hook'>exit_hook</span> <span class='lbrace'>{</span> <span class='id stop'>stop</span> <span class='rbrace'>}</span> <span class='comment'># make sure we don't leave the server running
+</span><span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -697,16 +688,15 @@ Returns the value of attribute uri
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 51</span>
 
-<span class='def def kw'>def</span> <span class='stop identifier id'>stop</span>
-  <span class='return return kw'>return</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span> <span class='orop op'>||</span> <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='exited? fid id'>exited?</span>
+<span class='kw'>def</span> <span class='id stop'>stop</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='ivar'>@process</span><span class='period'>.</span><span class='id nil?'>nil?</span> <span class='op'>||</span> <span class='ivar'>@process</span><span class='period'>.</span><span class='id exited?'>exited?</span>
 
-  <span class='Net constant id'>Net</span><span class='colon2 op'>::</span><span class='HTTP constant id'>HTTP</span><span class='dot token'>.</span><span class='get identifier id'>get</span> <span class='uri identifier id'>uri</span><span class='dot token'>.</span><span class='host identifier id'>host</span><span class='comma token'>,</span> <span class='string val'>'/shutdown'</span><span class='comma token'>,</span> <span class='uri identifier id'>uri</span><span class='dot token'>.</span><span class='port identifier id'>port</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='poll_for_exit identifier id'>poll_for_exit</span> <span class='STOP_TIMEOUT constant id'>STOP_TIMEOUT</span>
-<span class='rescue rescue kw'>rescue</span> <span class='ChildProcess constant id'>ChildProcess</span><span class='colon2 op'>::</span><span class='TimeoutError constant id'>TimeoutError</span>
-  <span class='comment val'># ok, force quit</span>
-  <span class='@process ivar id'>@process</span><span class='dot token'>.</span><span class='stop identifier id'>stop</span> <span class='STOP_TIMEOUT constant id'>STOP_TIMEOUT</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='const'>Net</span><span class='op'>::</span><span class='const'>HTTP</span><span class='period'>.</span><span class='id get'>get</span> <span class='id uri'>uri</span><span class='period'>.</span><span class='id host'>host</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>/shutdown</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='id uri'>uri</span><span class='period'>.</span><span class='id port'>port</span>
+  <span class='ivar'>@process</span><span class='period'>.</span><span class='id poll_for_exit'>poll_for_exit</span> <span class='const'>STOP_TIMEOUT</span>
+<span class='kw'>rescue</span> <span class='const'>ChildProcess</span><span class='op'>::</span><span class='const'>TimeoutError</span>
+  <span class='comment'># ok, force quit
+</span>  <span class='ivar'>@process</span><span class='period'>.</span><span class='id stop'>stop</span> <span class='const'>STOP_TIMEOUT</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -717,9 +707,9 @@ Returns the value of attribute uri
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:34 2011 by 
+  Generated on Mon Aug  1 20:19:45 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

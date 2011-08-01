@@ -115,10 +115,13 @@
   
   
   
-  <span class="private note title">Private</span>
+  
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Save a PNG screenshot to the given path.
+</p>
+</div></span>
   
 </li>
 
@@ -136,10 +139,13 @@
   
   
   
-  <span class="private note title">Private</span>
+  
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Return a PNG screenshot in the given format as a string.
+</p>
+</div></span>
   
 </li>
 
@@ -162,9 +168,8 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong> 
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
+    <p>
+Save a PNG screenshot to the given path
 </p>
 
 
@@ -178,17 +183,16 @@
       <pre class="lines">
 
 
-11
-12
-13</pre>
+17
+18
+19</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/takes_screenshot.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/takes_screenshot.rb', line 17</span>
 
-<span class='def def kw'>def</span> <span class='save_screenshot identifier id'>save_screenshot</span><span class='lparen token'>(</span><span class='png_path identifier id'>png_path</span><span class='rparen token'>)</span>
-  <span class='File constant id'>File</span><span class='dot token'>.</span><span class='open identifier id'>open</span><span class='lparen token'>(</span><span class='png_path identifier id'>png_path</span><span class='comma token'>,</span> <span class='string val'>'wb'</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='f identifier id'>f</span><span class='bitor op'>|</span> <span class='f identifier id'>f</span> <span class='lshft op'>&lt;&lt;</span> <span class='screenshot_as identifier id'>screenshot_as</span><span class='lparen token'>(</span><span class='symbol val'>:png</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id save_screenshot'>save_screenshot</span><span class='lparen'>(</span><span class='id png_path'>png_path</span><span class='rparen'>)</span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id open'>open</span><span class='lparen'>(</span><span class='id png_path'>png_path</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>wb</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id f'>f</span><span class='op'>|</span> <span class='id f'>f</span> <span class='op'>&lt;&lt;</span> <span class='id screenshot_as'>screenshot_as</span><span class='lparen'>(</span><span class='symbol'>:png</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -203,47 +207,79 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong> 
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
+    <p>
+Return a PNG screenshot in the given format as a string
 </p>
 
 
   </div>
 </div>
 <div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>format</span>
+      
+      
+        <span class='type'>(<tt>:base64</tt>, <tt>:png</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'></span>
+      
+      
+      
+        
+        <div class='inline'><p>
+String screenshot
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24</pre>
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/takes_screenshot.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/takes_screenshot.rb', line 29</span>
 
-<span class='def def kw'>def</span> <span class='screenshot_as identifier id'>screenshot_as</span><span class='lparen token'>(</span><span class='format identifier id'>format</span><span class='rparen token'>)</span>
-  <span class='case case kw'>case</span> <span class='format identifier id'>format</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:base64</span>
-    <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getScreenshot identifier id'>getScreenshot</span>
-  <span class='when when kw'>when</span> <span class='symbol val'>:png</span>
-    <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getScreenshot identifier id'>getScreenshot</span><span class='dot token'>.</span><span class='unpack identifier id'>unpack</span><span class='lparen token'>(</span><span class='string val'>&quot;m&quot;</span><span class='rparen token'>)</span><span class='lbrack token'>[</span><span class='integer val'>0</span><span class='rbrack token'>]</span>
-  <span class='else else kw'>else</span>
-    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unsupported format: #{format.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id screenshot_as'>screenshot_as</span><span class='lparen'>(</span><span class='id format'>format</span><span class='rparen'>)</span>
+  <span class='kw'>case</span> <span class='id format'>format</span>
+  <span class='kw'>when</span> <span class='symbol'>:base64</span>
+    <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id getScreenshot'>getScreenshot</span>
+  <span class='kw'>when</span> <span class='symbol'>:png</span>
+    <span class='id bridge'>bridge</span><span class='period'>.</span><span class='id getScreenshot'>getScreenshot</span><span class='period'>.</span><span class='id unpack'>unpack</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>m</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span>
+  <span class='kw'>else</span>
+    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>UnsupportedOperationError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unsupported format: </span><span class='embexpr_beg'>#{</span><span class='id format'>format</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -254,9 +290,9 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:28 2011 by 
+  Generated on Mon Aug  1 20:19:47 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

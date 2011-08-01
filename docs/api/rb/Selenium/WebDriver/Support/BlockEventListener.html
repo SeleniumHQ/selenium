@@ -189,10 +189,9 @@ A new instance of BlockEventListener
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/block_event_listener.rb', line 6</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='callback identifier id'>callback</span><span class='rparen token'>)</span>
-  <span class='@callback ivar id'>@callback</span> <span class='assign token'>=</span> <span class='callback identifier id'>callback</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id callback'>callback</span><span class='rparen'>)</span>
+  <span class='ivar'>@callback</span> <span class='op'>=</span> <span class='id callback'>callback</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -226,10 +225,9 @@ A new instance of BlockEventListener
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/block_event_listener.rb', line 10</span>
 
-<span class='def def kw'>def</span> <span class='method_missing identifier id'>method_missing</span><span class='lparen token'>(</span><span class='meth identifier id'>meth</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='comma token'>,</span> <span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
-  <span class='@callback ivar id'>@callback</span><span class='dot token'>.</span><span class='call identifier id'>call</span> <span class='meth identifier id'>meth</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id method_missing'>method_missing</span><span class='lparen'>(</span><span class='id meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+  <span class='ivar'>@callback</span><span class='period'>.</span><span class='id call'>call</span> <span class='id meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -241,9 +239,9 @@ A new instance of BlockEventListener
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:28 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

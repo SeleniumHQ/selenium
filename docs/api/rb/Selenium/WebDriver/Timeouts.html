@@ -217,10 +217,9 @@ A new instance of Timeouts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 5</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id bridge'>bridge</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id bridge'>bridge</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -264,10 +263,9 @@ Set the amount of time the driver should wait when searching for elements.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 13</span>
 
-<span class='def def kw'>def</span> <span class='implicit_wait= identifier id'>implicit_wait=</span><span class='lparen token'>(</span><span class='seconds identifier id'>seconds</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setImplicitWaitTimeout identifier id'>setImplicitWaitTimeout</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='seconds identifier id'>seconds</span> <span class='mult op'>*</span> <span class='integer val'>1000</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id implicit_wait='>implicit_wait=</span><span class='lparen'>(</span><span class='id seconds'>seconds</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id setImplicitWaitTimeout'>setImplicitWaitTimeout</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id seconds'>seconds</span> <span class='op'>*</span> <span class='int'>1000</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -306,10 +304,9 @@ script will be allowed to run indefinitely.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 23</span>
 
-<span class='def def kw'>def</span> <span class='script_timeout= identifier id'>script_timeout=</span><span class='lparen token'>(</span><span class='seconds identifier id'>seconds</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setScriptTimeout identifier id'>setScriptTimeout</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='seconds identifier id'>seconds</span> <span class='mult op'>*</span> <span class='integer val'>1000</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id script_timeout='>script_timeout=</span><span class='lparen'>(</span><span class='id seconds'>seconds</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id setScriptTimeout'>setScriptTimeout</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id seconds'>seconds</span> <span class='op'>*</span> <span class='int'>1000</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -320,9 +317,9 @@ script will be allowed to run indefinitely.
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:41 2011 by 
+  Generated on Mon Aug  1 20:19:45 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

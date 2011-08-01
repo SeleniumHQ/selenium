@@ -128,19 +128,18 @@ the server is being asked to create.
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='lbrace token'>{</span>
-  <span class='symbol val'>:browser_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:version</span>               <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;&quot;</span><span class='comma token'>,</span>
-  <span class='symbol val'>:platform</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:any</span><span class='comma token'>,</span>
-  <span class='symbol val'>:javascript_enabled</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='false false kw'>false</span><span class='comma token'>,</span>
-  <span class='symbol val'>:css_selectors_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='false false kw'>false</span><span class='comma token'>,</span>
-  <span class='symbol val'>:takes_screenshot</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='false false kw'>false</span><span class='comma token'>,</span>
-  <span class='symbol val'>:native_events</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='false false kw'>false</span><span class='comma token'>,</span>
-  <span class='symbol val'>:rotatable</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='false false kw'>false</span><span class='comma token'>,</span>
-  <span class='symbol val'>:firefox_profile</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span>
-  <span class='symbol val'>:proxy</span>                 <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='nil nil kw'>nil</span>
-<span class='rbrace token'>}</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='symbol'>:browser_name</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:version</span>               <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:platform</span>              <span class='op'>=&gt;</span> <span class='symbol'>:any</span><span class='comma'>,</span>
+  <span class='symbol'>:javascript_enabled</span>    <span class='op'>=&gt;</span> <span class='kw'>false</span><span class='comma'>,</span>
+  <span class='symbol'>:css_selectors_enabled</span> <span class='op'>=&gt;</span> <span class='kw'>false</span><span class='comma'>,</span>
+  <span class='symbol'>:takes_screenshot</span>      <span class='op'>=&gt;</span> <span class='kw'>false</span><span class='comma'>,</span>
+  <span class='symbol'>:native_events</span>         <span class='op'>=&gt;</span> <span class='kw'>false</span><span class='comma'>,</span>
+  <span class='symbol'>:rotatable</span>             <span class='op'>=&gt;</span> <span class='kw'>false</span><span class='comma'>,</span>
+  <span class='symbol'>:firefox_profile</span>       <span class='op'>=&gt;</span> <span class='kw'>nil</span><span class='comma'>,</span>
+  <span class='symbol'>:proxy</span>                 <span class='op'>=&gt;</span> <span class='kw'>nil</span>
+<span class='rbrace'>}</span></pre></dd>
       
     </dl>
   
@@ -343,6 +342,8 @@ the server is being asked to create.
     
 
     
+      (also: #eql?)
+    
   </span>
   
   
@@ -406,27 +407,6 @@ Allows setting arbitrary capabilities.
   <span class="summary_signature">
     
       <a href="#as_json-instance_method" title="#as_json (instance method)">- (Object) <strong>as_json</strong>(opts = nil) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  <span class="private note title">Private</span>
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#capabilities-instance_method" title="#capabilities (instance method)">- (Object) <strong>capabilities</strong> </a>
     
 
     
@@ -732,11 +712,10 @@ a customizable set of options
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 144</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='@capabilities ivar id'>@capabilities</span> <span class='assign token'>=</span> <span class='DEFAULTS constant id'>DEFAULTS</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span>
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='proxy identifier id'>proxy</span>    <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:proxy</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='ivar'>@capabilities</span> <span class='op'>=</span> <span class='const'>DEFAULTS</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id proxy'>proxy</span>    <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:proxy</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -786,15 +765,14 @@ a customizable set of options
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 44</span>
 
-<span class='def def kw'>def</span> <span class='android identifier id'>android</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
-    <span class='symbol val'>:browser_name</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;android&quot;</span><span class='comma token'>,</span>
-    <span class='symbol val'>:platform</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:android</span><span class='comma token'>,</span>
-    <span class='symbol val'>:rotatable</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
-    <span class='symbol val'>:takes_screenshot</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span>
-  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id android'>android</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
+    <span class='symbol'>:browser_name</span>     <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>android</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='symbol'>:platform</span>         <span class='op'>=&gt;</span> <span class='symbol'>:android</span><span class='comma'>,</span>
+    <span class='symbol'>:rotatable</span>        <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='comma'>,</span>
+    <span class='symbol'>:takes_screenshot</span> <span class='op'>=&gt;</span> <span class='kw'>true</span>
+  <span class='rbrace'>}</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -836,14 +814,13 @@ a customizable set of options
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 53</span>
 
-<span class='def def kw'>def</span> <span class='chrome identifier id'>chrome</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
-    <span class='symbol val'>:browser_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;chrome&quot;</span><span class='comma token'>,</span>
-    <span class='symbol val'>:javascript_enabled</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
-    <span class='symbol val'>:css_selectors_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span>
-  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id chrome'>chrome</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
+    <span class='symbol'>:browser_name</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>chrome</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='symbol'>:javascript_enabled</span>    <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='comma'>,</span>
+    <span class='symbol'>:css_selectors_enabled</span> <span class='op'>=&gt;</span> <span class='kw'>true</span>
+  <span class='rbrace'>}</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -886,15 +863,14 @@ a customizable set of options
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 61</span>
 
-<span class='def def kw'>def</span> <span class='firefox identifier id'>firefox</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
-    <span class='symbol val'>:browser_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;firefox&quot;</span><span class='comma token'>,</span>
-    <span class='symbol val'>:javascript_enabled</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
-    <span class='symbol val'>:takes_screenshot</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
-    <span class='symbol val'>:css_selectors_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span>
-  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id firefox'>firefox</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
+    <span class='symbol'>:browser_name</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>firefox</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='symbol'>:javascript_enabled</span>    <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='comma'>,</span>
+    <span class='symbol'>:takes_screenshot</span>      <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='comma'>,</span>
+    <span class='symbol'>:css_selectors_enabled</span> <span class='op'>=&gt;</span> <span class='kw'>true</span>
+  <span class='rbrace'>}</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -934,12 +910,11 @@ a customizable set of options
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 70</span>
 
-<span class='def def kw'>def</span> <span class='htmlunit identifier id'>htmlunit</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
-    <span class='symbol val'>:browser_name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;htmlunit&quot;</span>
-  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id htmlunit'>htmlunit</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
+    <span class='symbol'>:browser_name</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>htmlunit</span><span class='tstring_end'>&quot;</span></span>
+  <span class='rbrace'>}</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -986,15 +961,14 @@ a customizable set of options
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 76</span>
 
-<span class='def def kw'>def</span> <span class='internet_explorer identifier id'>internet_explorer</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
-    <span class='symbol val'>:browser_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;internet explorer&quot;</span><span class='comma token'>,</span>
-    <span class='symbol val'>:platform</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:windows</span><span class='comma token'>,</span>
-    <span class='symbol val'>:takes_screenshot</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
-    <span class='symbol val'>:css_selectors_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span>
-  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id internet_explorer'>internet_explorer</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
+    <span class='symbol'>:browser_name</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>internet explorer</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='symbol'>:platform</span>              <span class='op'>=&gt;</span> <span class='symbol'>:windows</span><span class='comma'>,</span>
+    <span class='symbol'>:takes_screenshot</span>      <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='comma'>,</span>
+    <span class='symbol'>:css_selectors_enabled</span> <span class='op'>=&gt;</span> <span class='kw'>true</span>
+  <span class='rbrace'>}</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1036,14 +1010,13 @@ a customizable set of options
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 86</span>
 
-<span class='def def kw'>def</span> <span class='iphone identifier id'>iphone</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
-    <span class='symbol val'>:browser_name</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;iphone&quot;</span><span class='comma token'>,</span>
-    <span class='symbol val'>:platform</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:mac</span><span class='comma token'>,</span>
-    <span class='symbol val'>:javascript_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span>
-  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id iphone'>iphone</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
+    <span class='symbol'>:browser_name</span>       <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>iphone</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='symbol'>:platform</span>           <span class='op'>=&gt;</span> <span class='symbol'>:mac</span><span class='comma'>,</span>
+    <span class='symbol'>:javascript_enabled</span> <span class='op'>=&gt;</span> <span class='kw'>true</span>
+  <span class='rbrace'>}</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1097,26 +1070,25 @@ a customizable set of options
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 107</span>
 
-<span class='def def kw'>def</span> <span class='json_create identifier id'>json_create</span><span class='lparen token'>(</span><span class='data identifier id'>data</span><span class='rparen token'>)</span>
-  <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
+<span class='kw'>def</span> <span class='id json_create'>json_create</span><span class='lparen'>(</span><span class='id data'>data</span><span class='rparen'>)</span>
+  <span class='id data'>data</span> <span class='op'>=</span> <span class='id data'>data</span><span class='period'>.</span><span class='id dup'>dup</span>
 
-  <span class='caps identifier id'>caps</span> <span class='assign token'>=</span> <span class='new identifier id'>new</span>
-  <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='browser_name identifier id'>browser_name</span>          <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='string val'>&quot;browserName&quot;</span><span class='rparen token'>)</span>
-  <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='version identifier id'>version</span>               <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='string val'>&quot;version&quot;</span><span class='rparen token'>)</span>
-  <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='platform identifier id'>platform</span>              <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='string val'>&quot;platform&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='downcase identifier id'>downcase</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span>
-  <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='javascript_enabled identifier id'>javascript_enabled</span>    <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='string val'>&quot;javascriptEnabled&quot;</span><span class='rparen token'>)</span>
-  <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='css_selectors_enabled identifier id'>css_selectors_enabled</span> <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='string val'>&quot;cssSelectorsEnabled&quot;</span><span class='rparen token'>)</span>
-  <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='takes_screenshot identifier id'>takes_screenshot</span>      <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='string val'>&quot;takesScreenshot&quot;</span><span class='rparen token'>)</span>
-  <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='native_events identifier id'>native_events</span>         <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='string val'>&quot;nativeEvents&quot;</span><span class='rparen token'>)</span>
-  <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='rotatable identifier id'>rotatable</span>             <span class='assign token'>=</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='string val'>&quot;rotatable&quot;</span><span class='rparen token'>)</span>
-  <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='proxy identifier id'>proxy</span>                 <span class='assign token'>=</span> <span class='Proxy constant id'>Proxy</span><span class='dot token'>.</span><span class='json_create identifier id'>json_create</span><span class='lparen token'>(</span><span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'proxy'</span><span class='rbrack token'>]</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='has_key? fid id'>has_key?</span><span class='lparen token'>(</span><span class='string val'>'proxy'</span><span class='rparen token'>)</span>
+  <span class='id caps'>caps</span> <span class='op'>=</span> <span class='id new'>new</span>
+  <span class='id caps'>caps</span><span class='period'>.</span><span class='id browser_name'>browser_name</span>          <span class='op'>=</span> <span class='id data'>data</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>browserName</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id caps'>caps</span><span class='period'>.</span><span class='id version'>version</span>               <span class='op'>=</span> <span class='id data'>data</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>version</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id caps'>caps</span><span class='period'>.</span><span class='id platform'>platform</span>              <span class='op'>=</span> <span class='id data'>data</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>platform</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id downcase'>downcase</span><span class='period'>.</span><span class='id to_sym'>to_sym</span>
+  <span class='id caps'>caps</span><span class='period'>.</span><span class='id javascript_enabled'>javascript_enabled</span>    <span class='op'>=</span> <span class='id data'>data</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>javascriptEnabled</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id caps'>caps</span><span class='period'>.</span><span class='id css_selectors_enabled'>css_selectors_enabled</span> <span class='op'>=</span> <span class='id data'>data</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cssSelectorsEnabled</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id caps'>caps</span><span class='period'>.</span><span class='id takes_screenshot'>takes_screenshot</span>      <span class='op'>=</span> <span class='id data'>data</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>takesScreenshot</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id caps'>caps</span><span class='period'>.</span><span class='id native_events'>native_events</span>         <span class='op'>=</span> <span class='id data'>data</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>nativeEvents</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id caps'>caps</span><span class='period'>.</span><span class='id rotatable'>rotatable</span>             <span class='op'>=</span> <span class='id data'>data</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>rotatable</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id caps'>caps</span><span class='period'>.</span><span class='id proxy'>proxy</span>                 <span class='op'>=</span> <span class='const'>Proxy</span><span class='period'>.</span><span class='id json_create'>json_create</span><span class='lparen'>(</span><span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>proxy</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id data'>data</span><span class='period'>.</span><span class='id has_key?'>has_key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>proxy</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
 
-  <span class='comment val'># any remaining pairs will be added as is, with no conversion</span>
-  <span class='caps identifier id'>caps</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span><span class='lparen token'>(</span><span class='data identifier id'>data</span><span class='rparen token'>)</span>
+  <span class='comment'># any remaining pairs will be added as is, with no conversion
+</span>  <span class='id caps'>caps</span><span class='period'>.</span><span class='id merge!'>merge!</span><span class='lparen'>(</span><span class='id data'>data</span><span class='rparen'>)</span>
 
-  <span class='caps identifier id'>caps</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id caps'>caps</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1159,15 +1131,14 @@ a customizable set of options
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 94</span>
 
-<span class='def def kw'>def</span> <span class='opera identifier id'>opera</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
-    <span class='symbol val'>:browser_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;opera&quot;</span><span class='comma token'>,</span>
-    <span class='symbol val'>:javascript_enabled</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
-    <span class='symbol val'>:takes_screenshot</span>      <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
-    <span class='symbol val'>:css_selectors_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
-  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id opera'>opera</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
+    <span class='symbol'>:browser_name</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>opera</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='symbol'>:javascript_enabled</span>    <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='comma'>,</span>
+    <span class='symbol'>:takes_screenshot</span>      <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='comma'>,</span>
+    <span class='symbol'>:css_selectors_enabled</span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='comma'>,</span>
+  <span class='rbrace'>}</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1185,6 +1156,10 @@ a customizable set of options
     - (<tt>Object</tt>) <strong>==</strong>(other) 
   
 
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='eql?-instance_method'>eql?</span></span>
+    </span>
   
 </p><div class="docstring">
   <div class="discussion">
@@ -1212,11 +1187,10 @@ a customizable set of options
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 212</span>
 
-<span class='def def kw'>def</span> <span class='eq op'>==</span><span class='lparen token'>(</span><span class='other identifier id'>other</span><span class='rparen token'>)</span>
-  <span class='return return kw'>return</span> <span class='false false kw'>false</span> <span class='unless unless_mod kw'>unless</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span>
-  <span class='as_json identifier id'>as_json</span> <span class='eq op'>==</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='as_json identifier id'>as_json</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id other'>other</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id other'>other</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='kw'>self</span><span class='period'>.</span><span class='id class'>class</span>
+  <span class='id as_json'>as_json</span> <span class='op'>==</span> <span class='id other'>other</span><span class='period'>.</span><span class='id as_json'>as_json</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1254,10 +1228,9 @@ a customizable set of options
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 157</span>
 
-<span class='def def kw'>def</span> <span class='aref op'>[]</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
-  <span class='@capabilities ivar id'>@capabilities</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id key'>key</span><span class='rparen'>)</span>
+  <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1298,10 +1271,9 @@ Allows setting arbitrary capabilities.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 153</span>
 
-<span class='def def kw'>def</span> <span class='aset op'>[]=</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='comma token'>,</span> <span class='value identifier id'>value</span><span class='rparen token'>)</span>
-  <span class='@capabilities ivar id'>@capabilities</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id key'>key</span><span class='comma'>,</span> <span class='id value'>value</span><span class='rparen'>)</span>
+  <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id value'>value</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1358,70 +1330,28 @@ Allows setting arbitrary capabilities.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 185</span>
 
-<span class='def def kw'>def</span> <span class='as_json identifier id'>as_json</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='hash identifier id'>hash</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span>
+<span class='kw'>def</span> <span class='id as_json'>as_json</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id hash'>hash</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 
-  <span class='@capabilities ivar id'>@capabilities</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='key identifier id'>key</span><span class='comma token'>,</span> <span class='value identifier id'>value</span><span class='bitor op'>|</span>
-    <span class='case case kw'>case</span> <span class='key identifier id'>key</span>
-    <span class='when when kw'>when</span> <span class='symbol val'>:platform</span>
-      <span class='hash identifier id'>hash</span><span class='lbrack token'>[</span><span class='string val'>'platform'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='dot token'>.</span><span class='upcase identifier id'>upcase</span>
-    <span class='when when kw'>when</span> <span class='symbol val'>:firefox_profile</span>
-      <span class='hash identifier id'>hash</span><span class='lbrack token'>[</span><span class='string val'>'firefox_profile'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span><span class='dot token'>.</span><span class='as_json identifier id'>as_json</span><span class='lbrack token'>[</span><span class='string val'>'zip'</span><span class='rbrack token'>]</span> <span class='if if_mod kw'>if</span> <span class='value identifier id'>value</span>
-    <span class='when when kw'>when</span> <span class='symbol val'>:proxy</span>
-      <span class='hash identifier id'>hash</span><span class='lbrack token'>[</span><span class='string val'>'proxy'</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span><span class='dot token'>.</span><span class='as_json identifier id'>as_json</span> <span class='if if_mod kw'>if</span> <span class='value identifier id'>value</span>
-    <span class='when when kw'>when</span> <span class='String constant id'>String</span>
-      <span class='hash identifier id'>hash</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
-    <span class='when when kw'>when</span> <span class='Symbol constant id'>Symbol</span>
-      <span class='hash identifier id'>hash</span><span class='lbrack token'>[</span><span class='camel_case identifier id'>camel_case</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='rparen token'>)</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
-    <span class='else else kw'>else</span>
-      <span class='raise identifier id'>raise</span> <span class='TypeError constant id'>TypeError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;expected String or Symbol, got #{key.inspect}:#{key.class} / #{value.inspect}&quot;</span>
-    <span class='end end kw'>end</span>
-  <span class='end end kw'>end</span>
+  <span class='ivar'>@capabilities</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id key'>key</span><span class='comma'>,</span> <span class='id value'>value</span><span class='op'>|</span>
+    <span class='kw'>case</span> <span class='id key'>key</span>
+    <span class='kw'>when</span> <span class='symbol'>:platform</span>
+      <span class='id hash'>hash</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>platform</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id value'>value</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='period'>.</span><span class='id upcase'>upcase</span>
+    <span class='kw'>when</span> <span class='symbol'>:firefox_profile</span>
+      <span class='id hash'>hash</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>firefox_profile</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id value'>value</span><span class='period'>.</span><span class='id as_json'>as_json</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>zip</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id value'>value</span>
+    <span class='kw'>when</span> <span class='symbol'>:proxy</span>
+      <span class='id hash'>hash</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>proxy</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id value'>value</span><span class='period'>.</span><span class='id as_json'>as_json</span> <span class='kw'>if</span> <span class='id value'>value</span>
+    <span class='kw'>when</span> <span class='const'>String</span>
+      <span class='id hash'>hash</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id value'>value</span>
+    <span class='kw'>when</span> <span class='const'>Symbol</span>
+      <span class='id hash'>hash</span><span class='lbracket'>[</span><span class='id camel_case'>camel_case</span><span class='lparen'>(</span><span class='id key'>key</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='rparen'>)</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id value'>value</span>
+    <span class='kw'>else</span>
+      <span class='id raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected String or Symbol, got </span><span class='embexpr_beg'>#{</span><span class='id key'>key</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id key'>key</span><span class='period'>.</span><span class='id class'>class</span><span class='rbrace'>}</span><span class='tstring_content'> / </span><span class='embexpr_beg'>#{</span><span class='id value'>value</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
 
-  <span class='hash identifier id'>hash</span>
-<span class='end end kw'>end</span>
-</pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="capabilities-instance_method">
-  
-    - (<tt>Object</tt>) <strong>capabilities</strong> 
-  
-
-  
-</p><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong> 
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-220
-221
-222</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 220</span>
-
-<span class='def def kw'>def</span> <span class='capabilities identifier id'>capabilities</span>
-  <span class='@capabilities ivar id'>@capabilities</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id hash'>hash</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1465,16 +1395,15 @@ Allows setting arbitrary capabilities.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 161</span>
 
-<span class='def def kw'>def</span> <span class='merge! fid id'>merge!</span><span class='lparen token'>(</span><span class='other identifier id'>other</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:capabilities</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='capabilities identifier id'>capabilities</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Hash constant id'>Hash</span><span class='rparen token'>)</span>
-    <span class='@capabilities ivar id'>@capabilities</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='capabilities identifier id'>capabilities</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Hash constant id'>Hash</span>
-    <span class='@capabilities ivar id'>@capabilities</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span> <span class='other identifier id'>other</span>
-  <span class='else else kw'>else</span>
-    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='string val'>&quot;argument should be a Hash or implement #capabilities&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id merge!'>merge!</span><span class='lparen'>(</span><span class='id other'>other</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id other'>other</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:capabilities</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id other'>other</span><span class='period'>.</span><span class='id capabilities'>capabilities</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
+    <span class='ivar'>@capabilities</span><span class='period'>.</span><span class='id merge!'>merge!</span> <span class='id other'>other</span><span class='period'>.</span><span class='id capabilities'>capabilities</span>
+  <span class='kw'>elsif</span> <span class='id other'>other</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='const'>Hash</span>
+    <span class='ivar'>@capabilities</span><span class='period'>.</span><span class='id merge!'>merge!</span> <span class='id other'>other</span>
+  <span class='kw'>else</span>
+    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>argument should be a Hash or implement #capabilities</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1519,17 +1448,16 @@ Allows setting arbitrary capabilities.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 171</span>
 
-<span class='def def kw'>def</span> <span class='proxy= identifier id'>proxy=</span><span class='lparen token'>(</span><span class='proxy identifier id'>proxy</span><span class='rparen token'>)</span>
-  <span class='case case kw'>case</span> <span class='proxy identifier id'>proxy</span>
-  <span class='when when kw'>when</span> <span class='Hash constant id'>Hash</span>
-    <span class='@capabilities ivar id'>@capabilities</span><span class='lbrack token'>[</span><span class='symbol val'>:proxy</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='Proxy constant id'>Proxy</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='proxy identifier id'>proxy</span><span class='rparen token'>)</span>
-  <span class='when when kw'>when</span> <span class='Proxy constant id'>Proxy</span><span class='comma token'>,</span> <span class='nil nil kw'>nil</span>
-    <span class='@capabilities ivar id'>@capabilities</span><span class='lbrack token'>[</span><span class='symbol val'>:proxy</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='proxy identifier id'>proxy</span>
-  <span class='else else kw'>else</span>
-    <span class='raise identifier id'>raise</span> <span class='TypeError constant id'>TypeError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;expected Hash or #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}&quot;</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id proxy='>proxy=</span><span class='lparen'>(</span><span class='id proxy'>proxy</span><span class='rparen'>)</span>
+  <span class='kw'>case</span> <span class='id proxy'>proxy</span>
+  <span class='kw'>when</span> <span class='const'>Hash</span>
+    <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='symbol'>:proxy</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Proxy</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='id proxy'>proxy</span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='const'>Proxy</span><span class='comma'>,</span> <span class='kw'>nil</span>
+    <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='symbol'>:proxy</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id proxy'>proxy</span>
+  <span class='kw'>else</span>
+    <span class='id raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected Hash or </span><span class='embexpr_beg'>#{</span><span class='const'>Proxy</span><span class='period'>.</span><span class='id name'>name</span><span class='rbrace'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id proxy'>proxy</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id proxy'>proxy</span><span class='period'>.</span><span class='id class'>class</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1567,10 +1495,9 @@ Allows setting arbitrary capabilities.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 208</span>
 
-<span class='def def kw'>def</span> <span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='as_json identifier id'>as_json</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='id as_json'>as_json</span><span class='period'>.</span><span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1581,9 +1508,9 @@ Allows setting arbitrary capabilities.
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:47 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

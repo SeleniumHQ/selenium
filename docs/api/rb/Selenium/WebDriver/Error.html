@@ -97,38 +97,37 @@
         <dt id="Errors-constant" class="">Errors =
           
         </dt>
-        <dd><pre class="code"><span class='lbrack token'>[</span>
-  <span class='IndexOutOfBoundsError constant id'>IndexOutOfBoundsError</span><span class='comma token'>,</span>
-  <span class='NoCollectionError constant id'>NoCollectionError</span><span class='comma token'>,</span>
-  <span class='NoStringError constant id'>NoStringError</span><span class='comma token'>,</span>
-  <span class='NoStringLengthError constant id'>NoStringLengthError</span><span class='comma token'>,</span>
-  <span class='NoStringWrapperError constant id'>NoStringWrapperError</span><span class='comma token'>,</span>
-  <span class='NoSuchDriverError constant id'>NoSuchDriverError</span><span class='comma token'>,</span>
-  <span class='NoSuchElementError constant id'>NoSuchElementError</span><span class='comma token'>,</span>
-  <span class='NoSuchFrameError constant id'>NoSuchFrameError</span><span class='comma token'>,</span>
-  <span class='UnknownCommandError constant id'>UnknownCommandError</span><span class='comma token'>,</span>
-  <span class='ObsoleteElementError constant id'>ObsoleteElementError</span><span class='comma token'>,</span>
-  <span class='ElementNotDisplayedError constant id'>ElementNotDisplayedError</span><span class='comma token'>,</span>
-  <span class='InvalidElementStateError constant id'>InvalidElementStateError</span><span class='comma token'>,</span>
-  <span class='UnhandledError constant id'>UnhandledError</span><span class='comma token'>,</span>
-  <span class='ExpectedError constant id'>ExpectedError</span><span class='comma token'>,</span>
-  <span class='ElementNotSelectableError constant id'>ElementNotSelectableError</span><span class='comma token'>,</span>
-  <span class='NoSuchDocumentError constant id'>NoSuchDocumentError</span><span class='comma token'>,</span>
-  <span class='UnexpectedJavascriptError constant id'>UnexpectedJavascriptError</span><span class='comma token'>,</span>
-  <span class='NoScriptResultError constant id'>NoScriptResultError</span><span class='comma token'>,</span>
-  <span class='XPathLookupError constant id'>XPathLookupError</span><span class='comma token'>,</span>
-  <span class='NoSuchCollectionError constant id'>NoSuchCollectionError</span><span class='comma token'>,</span>
-  <span class='TimeOutError constant id'>TimeOutError</span><span class='comma token'>,</span>
-  <span class='NullPointerError constant id'>NullPointerError</span><span class='comma token'>,</span>
-  <span class='NoSuchWindowError constant id'>NoSuchWindowError</span><span class='comma token'>,</span>
-  <span class='InvalidCookieDomainError constant id'>InvalidCookieDomainError</span><span class='comma token'>,</span>
-  <span class='UnableToSetCookieError constant id'>UnableToSetCookieError</span><span class='comma token'>,</span>
-  <span class='nil nil kw'>nil</span><span class='comma token'>,</span>                            <span class='comment val'># not used</span>
-  <span class='nil nil kw'>nil</span><span class='comma token'>,</span>                            <span class='comment val'># not used</span>
-  <span class='TimeOutError constant id'>TimeOutError</span><span class='comma token'>,</span>                   <span class='comment val'># repeated.</span>
-  <span class='InvalidElementCoordinatesError constant id'>InvalidElementCoordinatesError</span>
-<span class='rbrack token'>]</span>
-</pre></dd>
+        <dd><pre class="code"><span class='lbracket'>[</span>
+  <span class='const'>IndexOutOfBoundsError</span><span class='comma'>,</span>
+  <span class='const'>NoCollectionError</span><span class='comma'>,</span>
+  <span class='const'>NoStringError</span><span class='comma'>,</span>
+  <span class='const'>NoStringLengthError</span><span class='comma'>,</span>
+  <span class='const'>NoStringWrapperError</span><span class='comma'>,</span>
+  <span class='const'>NoSuchDriverError</span><span class='comma'>,</span>
+  <span class='const'>NoSuchElementError</span><span class='comma'>,</span>
+  <span class='const'>NoSuchFrameError</span><span class='comma'>,</span>
+  <span class='const'>UnknownCommandError</span><span class='comma'>,</span>
+  <span class='const'>ObsoleteElementError</span><span class='comma'>,</span>
+  <span class='const'>ElementNotDisplayedError</span><span class='comma'>,</span>
+  <span class='const'>InvalidElementStateError</span><span class='comma'>,</span>
+  <span class='const'>UnhandledError</span><span class='comma'>,</span>
+  <span class='const'>ExpectedError</span><span class='comma'>,</span>
+  <span class='const'>ElementNotSelectableError</span><span class='comma'>,</span>
+  <span class='const'>NoSuchDocumentError</span><span class='comma'>,</span>
+  <span class='const'>UnexpectedJavascriptError</span><span class='comma'>,</span>
+  <span class='const'>NoScriptResultError</span><span class='comma'>,</span>
+  <span class='const'>XPathLookupError</span><span class='comma'>,</span>
+  <span class='const'>NoSuchCollectionError</span><span class='comma'>,</span>
+  <span class='const'>TimeOutError</span><span class='comma'>,</span>
+  <span class='const'>NullPointerError</span><span class='comma'>,</span>
+  <span class='const'>NoSuchWindowError</span><span class='comma'>,</span>
+  <span class='const'>InvalidCookieDomainError</span><span class='comma'>,</span>
+  <span class='const'>UnableToSetCookieError</span><span class='comma'>,</span>
+  <span class='kw'>nil</span><span class='comma'>,</span>                            <span class='comment'># not used
+</span>  <span class='kw'>nil</span><span class='comma'>,</span>                            <span class='comment'># not used
+</span>  <span class='const'>TimeOutError</span><span class='comma'>,</span>                   <span class='comment'># repeated.
+</span>  <span class='const'>InvalidElementCoordinatesError</span>
+<span class='rbracket'>]</span></pre></dd>
       
     </dl>
   
@@ -197,12 +196,11 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/error.rb', line 70</span>
 
-<span class='def def kw'>def</span> <span class='for_code identifier id'>for_code</span><span class='lparen token'>(</span><span class='code identifier id'>code</span><span class='rparen token'>)</span>
-  <span class='return return kw'>return</span> <span class='if if_mod kw'>if</span> <span class='code identifier id'>code</span> <span class='eq op'>==</span> <span class='integer val'>0</span>
+<span class='kw'>def</span> <span class='id for_code'>for_code</span><span class='lparen'>(</span><span class='id code'>code</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id code'>code</span> <span class='op'>==</span> <span class='int'>0</span>
 
-  <span class='Errors constant id'>Errors</span><span class='lbrack token'>[</span><span class='code identifier id'>code</span> <span class='minus op'>-</span> <span class='integer val'>1</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='WebDriverError constant id'>WebDriverError</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='const'>Errors</span><span class='lbracket'>[</span><span class='id code'>code</span> <span class='op'>-</span> <span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'>WebDriverError</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -213,9 +211,9 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:25 2011 by 
+  Generated on Mon Aug  1 20:19:43 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

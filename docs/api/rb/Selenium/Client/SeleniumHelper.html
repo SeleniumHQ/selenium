@@ -229,12 +229,11 @@ Delegates to @selenium on method missing
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/selenium_helper.rb', line 26</span>
 
-<span class='def def kw'>def</span> <span class='method_missing identifier id'>method_missing</span><span class='lparen token'>(</span><span class='method_name identifier id'>method_name</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='return return kw'>return</span> <span class='super super kw'>super</span> <span class='unless unless_mod kw'>unless</span> <span class='@selenium ivar id'>@selenium</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='method_name identifier id'>method_name</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id method_missing'>method_missing</span><span class='lparen'>(</span><span class='id method_name'>method_name</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>super</span> <span class='kw'>unless</span> <span class='ivar'>@selenium</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='id method_name'>method_name</span><span class='rparen'>)</span>
   
-  <span class='@selenium ivar id'>@selenium</span><span class='dot token'>.</span><span class='send identifier id'>send</span><span class='lparen token'>(</span><span class='method_name identifier id'>method_name</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@selenium</span><span class='period'>.</span><span class='id send'>send</span><span class='lparen'>(</span><span class='id method_name'>method_name</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -278,10 +277,9 @@ Overrides default open method to actually delegates to @selenium
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/selenium_helper.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='open identifier id'>open</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
-  <span class='@selenium ivar id'>@selenium</span><span class='dot token'>.</span><span class='open identifier id'>open</span> <span class='url identifier id'>url</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id open'>open</span><span class='lparen'>(</span><span class='id url'>url</span><span class='rparen'>)</span>
+  <span class='ivar'>@selenium</span><span class='period'>.</span><span class='id open'>open</span> <span class='id url'>url</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -318,10 +316,9 @@ Overrides default select method to actually delegates to @selenium
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/selenium_helper.rb', line 21</span>
 
-<span class='def def kw'>def</span> <span class='select identifier id'>select</span><span class='lparen token'>(</span><span class='input_locator identifier id'>input_locator</span><span class='comma token'>,</span> <span class='option_locator identifier id'>option_locator</span><span class='rparen token'>)</span>
-  <span class='@selenium ivar id'>@selenium</span><span class='dot token'>.</span><span class='select identifier id'>select</span> <span class='input_locator identifier id'>input_locator</span><span class='comma token'>,</span> <span class='option_locator identifier id'>option_locator</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id select'>select</span><span class='lparen'>(</span><span class='id input_locator'>input_locator</span><span class='comma'>,</span> <span class='id option_locator'>option_locator</span><span class='rparen'>)</span>
+  <span class='ivar'>@selenium</span><span class='period'>.</span><span class='id select'>select</span> <span class='id input_locator'>input_locator</span><span class='comma'>,</span> <span class='id option_locator'>option_locator</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -358,10 +355,9 @@ Overrides default type method to actually delegates to @selenium
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/selenium_helper.rb', line 16</span>
 
-<span class='def def kw'>def</span> <span class='type identifier id'>type</span><span class='lparen token'>(</span><span class='locator identifier id'>locator</span><span class='comma token'>,</span> <span class='value identifier id'>value</span><span class='rparen token'>)</span>
-  <span class='@selenium ivar id'>@selenium</span><span class='dot token'>.</span><span class='type identifier id'>type</span> <span class='locator identifier id'>locator</span><span class='comma token'>,</span> <span class='value identifier id'>value</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id type'>type</span><span class='lparen'>(</span><span class='id locator'>locator</span><span class='comma'>,</span> <span class='id value'>value</span><span class='rparen'>)</span>
+  <span class='ivar'>@selenium</span><span class='period'>.</span><span class='id type'>type</span> <span class='id locator'>locator</span><span class='comma'>,</span> <span class='id value'>value</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -372,9 +368,9 @@ Overrides default type method to actually delegates to @selenium
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:28 2011 by 
+  Generated on Mon Aug  1 20:19:43 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

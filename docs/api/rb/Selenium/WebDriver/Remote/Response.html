@@ -309,13 +309,12 @@ A new instance of Response
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 11</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='code identifier id'>code</span><span class='comma token'>,</span> <span class='payload identifier id'>payload</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='@code ivar id'>@code</span>    <span class='assign token'>=</span> <span class='code identifier id'>code</span>
-  <span class='@payload ivar id'>@payload</span> <span class='assign token'>=</span> <span class='payload identifier id'>payload</span> <span class='orop op'>||</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id code'>code</span><span class='comma'>,</span> <span class='id payload'>payload</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@code</span>    <span class='op'>=</span> <span class='id code'>code</span>
+  <span class='ivar'>@payload</span> <span class='op'>=</span> <span class='id payload'>payload</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 
-  <span class='assert_ok identifier id'>assert_ok</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id assert_ok'>assert_ok</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -364,10 +363,9 @@ Returns the value of attribute code
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 8</span>
 
-<span class='def def kw'>def</span> <span class='code identifier id'>code</span>
-  <span class='@code ivar id'>@code</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id code'>code</span>
+  <span class='ivar'>@code</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -411,10 +409,9 @@ Returns the value of attribute payload
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 8</span>
 
-<span class='def def kw'>def</span> <span class='payload identifier id'>payload</span>
-  <span class='@payload ivar id'>@payload</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id payload'>payload</span>
+  <span class='ivar'>@payload</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -459,10 +456,9 @@ Returns the value of attribute payload
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 37</span>
 
-<span class='def def kw'>def</span> <span class='aref op'>[]</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
-  <span class='@payload ivar id'>@payload</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id key'>key</span><span class='rparen'>)</span>
+  <span class='ivar'>@payload</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -506,16 +502,15 @@ Returns the value of attribute payload
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 18</span>
 
-<span class='def def kw'>def</span> <span class='error identifier id'>error</span>
-  <span class='klass identifier id'>klass</span> <span class='assign token'>=</span> <span class='Error constant id'>Error</span><span class='dot token'>.</span><span class='for_code identifier id'>for_code</span><span class='lparen token'>(</span><span class='@payload ivar id'>@payload</span><span class='lbrack token'>[</span><span class='string val'>'status'</span><span class='rbrack token'>]</span><span class='rparen token'>)</span> <span class='orop op'>||</span> <span class='return return kw'>return</span>
+<span class='kw'>def</span> <span class='id error'>error</span>
+  <span class='id klass'>klass</span> <span class='op'>=</span> <span class='const'>Error</span><span class='period'>.</span><span class='id for_code'>for_code</span><span class='lparen'>(</span><span class='ivar'>@payload</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>status</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='kw'>return</span>
 
-  <span class='ex identifier id'>ex</span> <span class='assign token'>=</span> <span class='klass identifier id'>klass</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='error_message identifier id'>error_message</span><span class='rparen token'>)</span>
-  <span class='ex identifier id'>ex</span><span class='dot token'>.</span><span class='set_backtrace identifier id'>set_backtrace</span><span class='lparen token'>(</span><span class='caller identifier id'>caller</span><span class='rparen token'>)</span>
-  <span class='add_backtrace identifier id'>add_backtrace</span> <span class='ex identifier id'>ex</span>
+  <span class='id ex'>ex</span> <span class='op'>=</span> <span class='id klass'>klass</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='id error_message'>error_message</span><span class='rparen'>)</span>
+  <span class='id ex'>ex</span><span class='period'>.</span><span class='id set_backtrace'>set_backtrace</span><span class='lparen'>(</span><span class='id caller'>caller</span><span class='rparen'>)</span>
+  <span class='id add_backtrace'>add_backtrace</span> <span class='id ex'>ex</span>
 
-  <span class='ex identifier id'>ex</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id ex'>ex</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -558,15 +553,14 @@ Returns the value of attribute payload
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/response.rb', line 28</span>
 
-<span class='def def kw'>def</span> <span class='error_message identifier id'>error_message</span>
-  <span class='val identifier id'>val</span> <span class='assign token'>=</span> <span class='@payload ivar id'>@payload</span><span class='lbrack token'>[</span><span class='string val'>'value'</span><span class='rbrack token'>]</span>
-  <span class='msg identifier id'>msg</span> <span class='assign token'>=</span> <span class='val identifier id'>val</span><span class='lbrack token'>[</span><span class='string val'>'message'</span><span class='rbrack token'>]</span> <span class='or or kw'>or</span> <span class='return return kw'>return</span> <span class='string val'>&quot;&quot;</span>
+<span class='kw'>def</span> <span class='id error_message'>error_message</span>
+  <span class='id val'>val</span> <span class='op'>=</span> <span class='ivar'>@payload</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>value</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+  <span class='id msg'>msg</span> <span class='op'>=</span> <span class='id val'>val</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>message</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='kw'>or</span> <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
 
-  <span class='msg identifier id'>msg</span> <span class='lshft op'>&lt;&lt;</span> <span class='dstring node'>&quot; (#{ val['class'] })&quot;</span> <span class='if if_mod kw'>if</span> <span class='val identifier id'>val</span><span class='lbrack token'>[</span><span class='string val'>'class'</span><span class='rbrack token'>]</span>
+  <span class='id msg'>msg</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> (</span><span class='embexpr_beg'>#{</span> <span class='id val'>val</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>class</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id val'>val</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>class</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
 
-  <span class='msg identifier id'>msg</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id msg'>msg</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -577,9 +571,9 @@ Returns the value of attribute payload
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:42 2011 by 
+  Generated on Mon Aug  1 20:19:45 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

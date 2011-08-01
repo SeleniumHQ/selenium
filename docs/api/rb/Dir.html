@@ -118,7 +118,7 @@
   
   
   
-  <span class="private note title">Private</span>
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -142,19 +142,7 @@
   
 
   
-</p><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong> 
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
+</p><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -202,45 +190,44 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/core_ext/dir.rb', line 3</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='mktmpdir identifier id'>mktmpdir</span><span class='lparen token'>(</span><span class='prefix_suffix identifier id'>prefix_suffix</span><span class='assign token'>=</span><span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='tmpdir identifier id'>tmpdir</span><span class='assign token'>=</span><span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='case case kw'>case</span> <span class='prefix_suffix identifier id'>prefix_suffix</span>
-  <span class='when when kw'>when</span> <span class='nil nil kw'>nil</span>
-    <span class='prefix identifier id'>prefix</span> <span class='assign token'>=</span> <span class='string val'>&quot;d&quot;</span>
-    <span class='suffix identifier id'>suffix</span> <span class='assign token'>=</span> <span class='string val'>&quot;&quot;</span>
-  <span class='when when kw'>when</span> <span class='String constant id'>String</span>
-    <span class='prefix identifier id'>prefix</span> <span class='assign token'>=</span> <span class='prefix_suffix identifier id'>prefix_suffix</span>
-    <span class='suffix identifier id'>suffix</span> <span class='assign token'>=</span> <span class='string val'>&quot;&quot;</span>
-  <span class='when when kw'>when</span> <span class='Array constant id'>Array</span>
-    <span class='prefix identifier id'>prefix</span> <span class='assign token'>=</span> <span class='prefix_suffix identifier id'>prefix_suffix</span><span class='lbrack token'>[</span><span class='integer val'>0</span><span class='rbrack token'>]</span>
-    <span class='suffix identifier id'>suffix</span> <span class='assign token'>=</span> <span class='prefix_suffix identifier id'>prefix_suffix</span><span class='lbrack token'>[</span><span class='integer val'>1</span><span class='rbrack token'>]</span>
-  <span class='else else kw'>else</span>
-    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unexpected prefix_suffix: #{prefix_suffix.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
-  <span class='tmpdir identifier id'>tmpdir</span> <span class='opasgn op'>||=</span> <span class='Dir constant id'>Dir</span><span class='dot token'>.</span><span class='tmpdir identifier id'>tmpdir</span>
-  <span class='t identifier id'>t</span> <span class='assign token'>=</span> <span class='Time constant id'>Time</span><span class='dot token'>.</span><span class='now identifier id'>now</span><span class='dot token'>.</span><span class='strftime identifier id'>strftime</span><span class='lparen token'>(</span><span class='string val'>&quot;%Y%m%d&quot;</span><span class='rparen token'>)</span>
-  <span class='n identifier id'>n</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
-  <span class='begin begin kw'>begin</span>
-    <span class='path identifier id'>path</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;#{tmpdir}/#{prefix}#{t}-#{$$}-#{rand(0x100000000).to_s(36)}&quot;</span>
-    <span class='path identifier id'>path</span> <span class='lshft op'>&lt;&lt;</span> <span class='dstring node'>&quot;-#{n}&quot;</span> <span class='if if_mod kw'>if</span> <span class='n identifier id'>n</span>
-    <span class='path identifier id'>path</span> <span class='lshft op'>&lt;&lt;</span> <span class='suffix identifier id'>suffix</span>
-    <span class='Dir constant id'>Dir</span><span class='dot token'>.</span><span class='mkdir identifier id'>mkdir</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='comma token'>,</span> <span class='integer val'>0700</span><span class='rparen token'>)</span>
-  <span class='rescue rescue kw'>rescue</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='EEXIST constant id'>EEXIST</span>
-    <span class='n identifier id'>n</span> <span class='opasgn op'>||=</span> <span class='integer val'>0</span>
-    <span class='n identifier id'>n</span> <span class='opasgn op'>+=</span> <span class='integer val'>1</span>
-    <span class='retry retry kw'>retry</span>
-  <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id mktmpdir'>mktmpdir</span><span class='lparen'>(</span><span class='id prefix_suffix'>prefix_suffix</span><span class='op'>=</span><span class='kw'>nil</span><span class='comma'>,</span> <span class='id tmpdir'>tmpdir</span><span class='op'>=</span><span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='kw'>case</span> <span class='id prefix_suffix'>prefix_suffix</span>
+  <span class='kw'>when</span> <span class='kw'>nil</span>
+    <span class='id prefix'>prefix</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>d</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id suffix'>suffix</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>when</span> <span class='const'>String</span>
+    <span class='id prefix'>prefix</span> <span class='op'>=</span> <span class='id prefix_suffix'>prefix_suffix</span>
+    <span class='id suffix'>suffix</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>when</span> <span class='const'>Array</span>
+    <span class='id prefix'>prefix</span> <span class='op'>=</span> <span class='id prefix_suffix'>prefix_suffix</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span>
+    <span class='id suffix'>suffix</span> <span class='op'>=</span> <span class='id prefix_suffix'>prefix_suffix</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span>
+  <span class='kw'>else</span>
+    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unexpected prefix_suffix: </span><span class='embexpr_beg'>#{</span><span class='id prefix_suffix'>prefix_suffix</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+  <span class='id tmpdir'>tmpdir</span> <span class='op'>||=</span> <span class='const'>Dir</span><span class='period'>.</span><span class='id tmpdir'>tmpdir</span>
+  <span class='id t'>t</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id now'>now</span><span class='period'>.</span><span class='id strftime'>strftime</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>%Y%m%d</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id n'>n</span> <span class='op'>=</span> <span class='kw'>nil</span>
+  <span class='kw'>begin</span>
+    <span class='id path'>path</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id tmpdir'>tmpdir</span><span class='rbrace'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='id prefix'>prefix</span><span class='rbrace'>}</span><span class='embexpr_beg'>#{</span><span class='id t'>t</span><span class='rbrace'>}</span><span class='tstring_content'>-</span><span class='embexpr_beg'>#{</span><span class='gvar'>$$</span><span class='rbrace'>}</span><span class='tstring_content'>-</span><span class='embexpr_beg'>#{</span><span class='id rand'>rand</span><span class='lparen'>(</span><span class='int'>0x100000000</span><span class='rparen'>)</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='lparen'>(</span><span class='int'>36</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id path'>path</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>-</span><span class='embexpr_beg'>#{</span><span class='id n'>n</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id n'>n</span>
+    <span class='id path'>path</span> <span class='op'>&lt;&lt;</span> <span class='id suffix'>suffix</span>
+    <span class='const'>Dir</span><span class='period'>.</span><span class='id mkdir'>mkdir</span><span class='lparen'>(</span><span class='id path'>path</span><span class='comma'>,</span> <span class='int'>0700</span><span class='rparen'>)</span>
+  <span class='kw'>rescue</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>EEXIST</span>
+    <span class='id n'>n</span> <span class='op'>||=</span> <span class='int'>0</span>
+    <span class='id n'>n</span> <span class='op'>+=</span> <span class='int'>1</span>
+    <span class='kw'>retry</span>
+  <span class='kw'>end</span>
 
-  <span class='if if kw'>if</span> <span class='block_given? fid id'>block_given?</span>
-    <span class='begin begin kw'>begin</span>
-      <span class='yield yield kw'>yield</span> <span class='path identifier id'>path</span>
-    <span class='ensure ensure kw'>ensure</span>
-      <span class='FileUtils constant id'>FileUtils</span><span class='dot token'>.</span><span class='remove_entry_secure identifier id'>remove_entry_secure</span> <span class='path identifier id'>path</span>
-    <span class='end end kw'>end</span>
-  <span class='else else kw'>else</span>
-    <span class='path identifier id'>path</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span> <span class='unless unless_mod kw'>unless</span> <span class='respond_to? fid id'>respond_to?</span> <span class='symbol val'>:mktmpdir</span>
-</pre>
+  <span class='kw'>if</span> <span class='id block_given?'>block_given?</span>
+    <span class='kw'>begin</span>
+      <span class='kw'>yield</span> <span class='id path'>path</span>
+    <span class='kw'>ensure</span>
+      <span class='const'>FileUtils</span><span class='period'>.</span><span class='id remove_entry_secure'>remove_entry_secure</span> <span class='id path'>path</span>
+    <span class='kw'>end</span>
+  <span class='kw'>else</span>
+    <span class='id path'>path</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -251,9 +238,9 @@
 </div>
     
     <div id="footer">
-  Generated on Tue Jul 26 13:31:49 2011 by 
+  Generated on Mon Aug  1 20:19:46 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>
