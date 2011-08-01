@@ -88,7 +88,7 @@ public class SeleneseTestCase extends TestCase {
      * @param port the port of Selenium RC
      * @throws Exception 
      */
-    public void setUp(String url, String browserString, int port){
+    public void setUp(String url, String browserString, int port) throws Exception {
       stb.setUp(url, browserString, port);
       selenium = stb.selenium;
     }
