@@ -97,4 +97,5 @@ java_test(name = "single",
     "//java/client/test/org/openqa/selenium/v1:selenium-backed-webdriver-test",
     "//java/client/test/org/openqa/selenium/firefox:test",
     "//java/client/test/org/openqa/selenium/htmlunit:test",
+    "//java/server/test/org/openqa/selenium/remote/server:test",
   ])
