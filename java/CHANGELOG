@@ -1,3 +1,14 @@
+v2.3.0
+======
+
+WebDriver:
+  * Better detection of clickable areas in Firefox.
+  * Alert handling works in Chrome.
+  * Merge of Google-contributed code into the underlying Atoms.
+  * FIXED: Internet Explorer crashes when an element has empty text and getText called.
+  * FIXED: IBM JDK throws different exception when unable to bind to a socket.
+
+
 v2.2.0
 ======
 
@@ -35,4 +46,3 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
-
