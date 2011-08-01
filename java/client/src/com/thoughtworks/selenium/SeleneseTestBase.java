@@ -50,9 +50,9 @@ public class SeleneseTestBase {
     }
 
     /** Calls this.setUp(null)
-	 * @see #setUp(String)
-	 */
-    public void setUp() {
+     * @see #setUp(String)
+     */
+    public void setUp() throws Exception {
         this.setUp(null);
     }
     
@@ -64,7 +64,7 @@ public class SeleneseTestBase {
      * @throws Exception
      * 
      */
-    public void setUp(String url) {
+    public void setUp(String url) throws Exception {
         setUp(url, runtimeBrowserString());
     }
 
@@ -95,7 +95,7 @@ public class SeleneseTestBase {
      * @param url the baseUrl for your tests
      * @param browserString the browser to use, e.g. *firefox
      */
-    public void setUp(String url, String browserString) {
+    public void setUp(String url, String browserString) throws Exception {
         setUp(url, browserString, getDefaultPort());
     }
     
@@ -124,7 +124,7 @@ public class SeleneseTestBase {
      * @param port the port that you want to run your tests on
      * @throws Exception
      */
-    public void setUp(String url, String browserString, int port) {
+    public void setUp(String url, String browserString, int port) throws Exception {
         if (url == null) {
             url = "http://localhost:" + port;
         }
