@@ -23,6 +23,15 @@ Usage:
   python trunk/wire.py > wiki/JsonWireProtocol.wiki
 """
 
+class ErrorCode(object):
+  def __init__(self, code, summary, detail):
+    self.code = code
+    self.summary = summary
+    self.detail = detail
+
+  def ToWikiTableString(self):
+    return "|| %d || `%s` || %s ||" % (self.code, self.summary, self.detail)
+
 
 class Resource(object):
   def __init__(self, path):
@@ -197,6 +206,40 @@ class Method(object):
         
 
 def main():
+  error_codes = [
+      ErrorCode(0, 'Success', 'The command executed successfully.'),
+      ErrorCode(7, 'NoSuchElement', 'An element could not be located on the \
+page using the given search parameters.'),
+      ErrorCode(8, 'NoSuchFrame', 'A request to switch to a frame could not be \
+satisfied because the frame could not be found.'),
+      ErrorCode(9, 'UnknownCommand', 'The requested resource could not be \
+found, or a request was received using an HTTP method that is not supported \
+by the mapped resource.'),
+      ErrorCode(10, 'StaleElementReference', 'An element command failed \
+because the referenced element is no longer attached to the DOM.'),
+      ErrorCode(11, 'ElementNotVisible', 'An element command could not \
+be completed because the element is not visible on the page.'),
+      ErrorCode(12, 'InvalidElementState', 'An element command could not be \
+completed because the element is in an invalid state (e.g. attempting to \
+click a disabled element).'),
+      ErrorCode(13, 'UnknownError', 'An unknown server-side error occurred \
+while processing the command.'),
+      ErrorCode(15, 'ElementIsNotSelectable', 'An attempt was made to select \
+an element that cannot be selected.'),
+      ErrorCode(17, 'JavaScriptError', 'An error occurred while executing user \
+supplied !JavaScript.'),
+      ErrorCode(19, 'XPathLookupError', 'An error occurred while searching for \
+an element by XPath.'),
+      ErrorCode(23, 'NoSuchWindow', 'A request to switch to a different window \
+could not be satisfied because the window could not be found.'),
+      ErrorCode(24, 'InvalidCookieDomain', 'An illegal attempt was made to set \
+a cookie under a different domain than the current page.'),
+      ErrorCode(25, 'UnableToSetCookie', 'A request to set a cookie\'s value \
+could not be satisfied.'),
+      ErrorCode(28, 'Timeout', 'A command did not complete before its timeout \
+expired.')
+  ]
+
   resources = []
  
   resources.append(Resource('/status').
@@ -1093,36 +1136,7 @@ The wire protocol will inherit its status codes from those used by the \
 InternetExplorerDriver:
 
 || *Code* || *Summary* || *Detail* ||
-|| 0 || `Success` || The command executed successfully. ||
-|| 7 || `NoSuchElement` || An element could not be located on the page using \
-the given search parameters. ||
-|| 8 || `NoSuchFrame` || A request to switch to a frame could not be \
-satisfied because the frame could not be found. ||
-|| 9 || `UnknownCommand` || The requested resource could not be found, or a \
-request was received using an HTTP method that is not supported by the mapped \
-resource. ||
-|| 10 || `StaleElementReference` || An element command failed because the \
-referenced element is no longer attached to the DOM. ||
-|| 11 || `ElementNotVisible` || An element command could not be completed \
-because the element is not visible on the page. ||
-|| 12 || `InvalidElementState` || An element command could not be completed \
-because the element is in an invalid state (e.g. attempting to click a \
-disabled element). ||
-|| 13 || `UnknownError` || An unknown server-side error occurred while \
-processing the command. ||
-|| 15 || `ElementIsNotSelectable` || An attempt was made to select an element \
-that cannot be selected. ||
-|| 17 || `JavaScriptError` || An error occurred while executing user supplied \
-!JavaScript. ||
-|| 19 || `XPathLookupError` || An error occurred while searching for an \
-element by XPath. ||
-|| 23 || `NoSuchWindow` || A request to switch to a different window could \
-not be satisfied because the window could not be found. ||
-|| 24 || `InvalidCookieDomain` || An illegal attempt was made to set a cookie \
-under a different domain than the current page. ||
-|| 25 || `UnableToSetCookie` || A request to set a cookie's value could not \
-be satisfied. ||
-|| 28 || `Timeout` || A command did not complete before its timeout expired. ||
+%s
 
 The client should interpret a 404 Not Found response from the server as an \
 "Unknown command" response. All other 4xx and 5xx responses from the server \
@@ -1259,7 +1273,8 @@ segment is active to the first resource. All other requests should be routed to\
 
 == Command Detail ==
 
-%s''' % (''.join(r.ToWikiTableString() for r in resources),
+%s''' % ('\n'.join(e.ToWikiTableString() for e in error_codes),
+         ''.join(r.ToWikiTableString() for r in resources),
          '\n----\n\n'.join(r.ToWikiString() for r in resources))
 
 
