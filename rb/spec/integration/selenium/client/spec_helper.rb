@@ -31,7 +31,7 @@ class SeleniumClientTestEnvironment
   end
 
   def in_separate_driver
-    @driver.stop
+    @driver.stop if @driver
     begin
       @driver = new_driver_with_session
       yield
