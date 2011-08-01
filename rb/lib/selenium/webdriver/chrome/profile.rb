@@ -13,14 +13,11 @@ module Selenium
           @model = verify_model(model)
         end
 
-        def layout_on_disk
-          dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir("webdriver-chrome-profile")
-          FileReaper << dir
-
-          write_prefs_to dir
-
-          dir
-        end
+        #
+        # Set a preference in the profile.
+        #
+        # See http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref_names.cc&exact_package=chromium
+        #
 
         def []=(key, value)
           parts = key.split(".")
@@ -32,6 +29,17 @@ module Selenium
           parts.inject(prefs) { |pr, k| pr.fetch(k) }
         end
 
+        def layout_on_disk
+          dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir("webdriver-chrome-profile")
+          FileReaper << dir
+
+          write_prefs_to dir
+
+          dir
+        end
+
+        private
+
         def write_prefs_to(dir)
           prefs_file = prefs_file_for(dir)
 
@@ -42,8 +50,6 @@ module Selenium
         def prefs
           @prefs ||= read_model_prefs
         end
-
-        private
 
         def read_model_prefs
           return {} unless @model
