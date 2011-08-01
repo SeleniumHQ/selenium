@@ -37,8 +37,8 @@ public class SingleTestSuite extends TestCase {
   private static final String HTML_UNIT_JS = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
   private static final String IE = "org.openqa.selenium.ie.InternetExplorerDriver";
   private static final String IPHONE = "org.openqa.selenium.iphone.IPhoneDriver";
-  private static final String CHROME = "com.opera.core.systems.OperaDriver";
 
+  private static final String OPERA = "com.opera.core.systems.OperaDriver";
 
   private static final String REMOTE = "org.openqa.selenium.remote.server.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
   private static final String REMOTE_IE = "org.openqa.selenium.remote.server.RemoteWebDriverIeTestSuite$RemoteIeWebDriverForTest";
