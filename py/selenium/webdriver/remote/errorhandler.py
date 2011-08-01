@@ -110,5 +110,5 @@ class ErrorHandler(object):
             raise exception_class(response, message)
         raise exception_class(message, screen, stacktrace)
 
-    def _value_or_default(obj, key, default):
+    def _value_or_default(self, obj, key, default):
       return obj[key] if obj.has_key(key) else default
