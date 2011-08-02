@@ -8,3 +8,8 @@ js_fragment(name = "getOuterHtml",
   module = "goog.dom",
   function = "goog.dom.getOuterHtml",
   deps = ["//third_party/closure"])
+
+js_fragment(name = "selectText",
+  module = "watir",
+  function = "watir.selectText",
+  deps = ["//third_party/closure"])
