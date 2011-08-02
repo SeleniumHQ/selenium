@@ -244,7 +244,7 @@ describe "Driver" do
         lambda {
           # Script is expected to be async and explicitly callback, so this should timeout.
           driver.execute_async_script "return 1 + 2;"
-        }.should raise_error(Selenium::WebDriver::Error::TimeOutError)
+        }.should raise_error(Selenium::WebDriver::Error::ScriptTimeOutError)
       end
     end
   end

@@ -29,41 +29,47 @@ module Selenium
       class InvalidCookieDomainError < WebDriverError; end       # 24
       class UnableToSetCookieError < WebDriverError; end         # 25
                                                                  # 26
-                                                                 # 27
-      # TimeOutError                                             # 28
+      class NoModalDialogOpenError < WebDriverError; end         # 27
+      class ScriptTimeOutError < WebDriverError; end             # 28
       class InvalidElementCoordinatesError < WebDriverError; end # 29
+                                                                 # 30
+                                                                 # 31
+      class InvalidSelectorError < WebDriverError; end           # 32
       class UnsupportedOperationError < WebDriverError; end
 
       Errors = [
-        IndexOutOfBoundsError,
-        NoCollectionError,
-        NoStringError,
-        NoStringLengthError,
-        NoStringWrapperError,
-        NoSuchDriverError,
-        NoSuchElementError,
-        NoSuchFrameError,
-        UnknownCommandError,
-        ObsoleteElementError,
-        ElementNotDisplayedError,
-        InvalidElementStateError,
-        UnhandledError,
-        ExpectedError,
-        ElementNotSelectableError,
-        NoSuchDocumentError,
-        UnexpectedJavascriptError,
-        NoScriptResultError,
-        XPathLookupError,
-        NoSuchCollectionError,
-        TimeOutError,
-        NullPointerError,
-        NoSuchWindowError,
-        InvalidCookieDomainError,
-        UnableToSetCookieError,
-        nil,                            # not used
-        nil,                            # not used
-        TimeOutError,                   # repeated.
-        InvalidElementCoordinatesError
+        IndexOutOfBoundsError,          # 1
+        NoCollectionError,              # 2
+        NoStringError,                  # 3
+        NoStringLengthError,            # 4
+        NoStringWrapperError,           # 5
+        NoSuchDriverError,              # 6
+        NoSuchElementError,             # 7
+        NoSuchFrameError,               # 8
+        UnknownCommandError,            # 9
+        ObsoleteElementError,           # 10
+        ElementNotDisplayedError,       # 11
+        InvalidElementStateError,       # 12
+        UnhandledError,                 # 13
+        ExpectedError,                  # 14
+        ElementNotSelectableError,      # 15
+        NoSuchDocumentError,            # 16
+        UnexpectedJavascriptError,      # 17
+        NoScriptResultError,            # 18
+        XPathLookupError,               # 19
+        NoSuchCollectionError,          # 20
+        TimeOutError,                   # 21
+        NullPointerError,               # 22
+        NoSuchWindowError,              # 23
+        InvalidCookieDomainError,       # 24
+        UnableToSetCookieError,         # 25
+        nil,                            # 26
+        NoModalDialogOpenError,         # 27
+        ScriptTimeOutError,             # 28
+        InvalidElementCoordinatesError, # 29
+        nil,                            # 30
+        nil,                            # 31
+        InvalidSelectorError            # 32
       ]
 
       class << self

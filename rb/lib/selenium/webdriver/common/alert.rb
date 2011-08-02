@@ -2,8 +2,11 @@ module Selenium
   module WebDriver
     class Alert
 
+      attr_reader :text
+
       def initialize(bridge)
         @bridge = bridge
+        @text   = bridge.getAlertText
       end
 
       def accept
@@ -16,10 +19,6 @@ module Selenium
 
       def send_keys(keys)
         @bridge.setAlertValue keys
-      end
-
-      def text
-        @bridge.getAlertText
       end
 
     end # Alert

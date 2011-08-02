@@ -141,8 +141,8 @@ describe "WebDriver::TargetLocator" do
 
     compliant_on :browser => :firefox do
       it "raises UnhandledError if no alert is present" do
-        lambda { driver.switch_to.alert.dismiss }.should raise_error(
-          Selenium::WebDriver::Error::UnhandledError, /alert/i)
+        lambda { driver.switch_to.alert }.should raise_error(
+          Selenium::WebDriver::Error::NoModalDialogOpenError, /alert/i)
       end
     end
 
