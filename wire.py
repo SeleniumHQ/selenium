@@ -245,6 +245,16 @@ class JavaErrorCodeGatherer(AbstractErrorCodeGatherer):
   def extract_from_match(self, match):
     return match.group(1), int(match.group(2))
 
+class JavascriptErrorCodeGatherer(AbstractErrorCodeGatherer):
+  def __init__(self, path_to_error_codes, name):
+    super(JavascriptErrorCodeGatherer, self).__init__( \
+      name,
+      path_to_error_codes, \
+      re.compile("^\s*([A-Z_]+): (\d+)"))
+
+  def extract_from_match(self, match):
+    return match.group(1), int(match.group(2))
+
 class ErrorCodeChecker(object):
   def __init__(self):
     self.gatherers = []
@@ -258,21 +268,22 @@ class ErrorCodeChecker(object):
     log("Checking error codes are consistent across languages and \
 browsers")
     for gatherer in self.gatherers:
-      self.compare(str(gatherer), gatherer.get_error_codes(), json_error_codes)
+      self.compare(gatherer, json_error_codes)
     if not self.warnings:
       log("Error codes are consistent")
     for warning in self.warnings:
       log(warning)
 
-  def compare(self, gatherer_string, gathered_error_codes, raw_json_error_codes):
-    log("Checking " + gatherer_string)
+  def compare(self, gatherer, raw_json_error_codes):
+    log("Checking %s (%s)" % (gatherer, gatherer.path_to_error_codes))
+    gathered_error_codes = gatherer.get_error_codes()
     json_error_codes = map(lambda code: code.code, raw_json_error_codes)
     for json_error_code in json_error_codes:
       if not gathered_error_codes.has_key(json_error_code):
-        self.warnings.append("JSON code missing from %s: %d" % (gatherer_string, json_error_code))
+        self.warnings.append("JSON code missing from %s: %d" % (gatherer, json_error_code))
     for gathered_code,_ in gathered_error_codes.items():
       if not gathered_code in json_error_codes:
-        self.warnings.append("%s code missing from JSON: %d" % (gatherer_string, gathered_code))
+        self.warnings.append("%s code missing from JSON: %d" % (gatherer, gathered_code))
       
 
 def main():
@@ -312,6 +323,8 @@ expired.')
   
   ErrorCodeChecker() \
   .using(JavaErrorCodeGatherer('java/client/src/org/openqa/selenium/remote/ErrorCodes.java')) \
+  .using(JavascriptErrorCodeGatherer('javascript/atoms/error.js', 'Javascript atoms')) \
+  .using(JavascriptErrorCodeGatherer('javascript/firefox-driver/js/errorcode.js', 'Javascript firefox driver')) \
   .check_error_codes_are_consistent(error_codes)
 
   resources = []
