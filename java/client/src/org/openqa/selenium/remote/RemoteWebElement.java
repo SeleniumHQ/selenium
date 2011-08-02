@@ -30,11 +30,11 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   protected String id;
   protected RemoteWebDriver parent;
-  protected RemoteWebDriver.RemoteMouse mouse;
+  protected RemoteMouse mouse;
 
   public void setParent(RemoteWebDriver parent) {
     this.parent = parent;
-    mouse = (RemoteWebDriver.RemoteMouse) parent.getMouse();
+    mouse = (RemoteMouse) parent.getMouse();
   }
 
   public String getId() {

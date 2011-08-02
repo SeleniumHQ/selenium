@@ -71,18 +71,20 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   private JsonToWebElementConverter converter;
 
   private final RemoteKeyboard keyboard = new RemoteKeyboard();
-  private final RemoteMouse mouse = new RemoteMouse();
+  private final RemoteMouse mouse;
 
   // For cglib
   protected RemoteWebDriver() {
     converter = new JsonToWebElementConverter(this);
     executeMethod = new ExecuteMethod(this);
+    mouse = new RemoteMouse(executeMethod);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
     this.executor = executor;
     converter = new JsonToWebElementConverter(this);
     executeMethod = new ExecuteMethod(this);
+    mouse = new RemoteMouse(executeMethod);
     startClient();
     startSession(desiredCapabilities);
   }
@@ -641,69 +643,5 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
           ImmutableMap.of("value", keyToRelease, "isdown", false));
 
     }
-  }
-
-  public class RemoteMouse implements Mouse {
-    private Map<String, Object> paramsFromCoordinates(Coordinates where) {
-      Map<String, Object> params = Maps.newHashMap();
-
-      if (where != null) {
-        String id = (String) where.getAuxiliry();
-        params.put("element", id);
-      }
-
-      return params;
-    }
-
-    private void moveIfNeeded(Coordinates where) {
-      if (where != null) {
-        mouseMove(where);
-      }
-    }
-
-    public void click(Coordinates where) {
-      moveIfNeeded(where);
-
-      execute(DriverCommand.CLICK, ImmutableMap.of("button", 0));
-    }
-
-    public void contextClick(Coordinates where) {
-      moveIfNeeded(where);
-
-      execute(DriverCommand.CLICK, ImmutableMap.of("button", 2));
-    }
-
-    public void doubleClick(Coordinates where) {
-      moveIfNeeded(where);
-
-      execute(DriverCommand.DOUBLE_CLICK);
-    }
-
-    public void mouseDown(Coordinates where) {
-      moveIfNeeded(where);
-
-      execute(DriverCommand.MOUSE_DOWN);
-    }
-
-    public void mouseUp(Coordinates where) {
-      moveIfNeeded(where);
-
-      execute(DriverCommand.MOUSE_UP);
-    }
-
-    public void mouseMove(Coordinates where) {
-      Map<String, Object> moveParams = paramsFromCoordinates(where);
-
-      execute(DriverCommand.MOVE_TO, moveParams);
-    }
-
-    public void mouseMove(Coordinates where, long xOffset, long yOffset) {
-      Map<String, Object> moveParams = paramsFromCoordinates(where);
-      moveParams.put("xoffset", xOffset);
-      moveParams.put("yoffset", yOffset);
-
-      execute(DriverCommand.MOVE_TO, moveParams);
-    }
-
   }
 }
