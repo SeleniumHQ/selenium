@@ -275,6 +275,16 @@ class PythonErrorCodeGatherer(AbstractErrorCodeGatherer):
   def extract_from_match(self, match):
     return match.group(1), int(match.group(2))
 
+class CErrorCodeGatherer(AbstractErrorCodeGatherer):
+  def __init__(self, path_to_error_codes):
+    super(CErrorCodeGatherer, self).__init__( \
+      'C',
+      path_to_error_codes, \
+      re.compile('^#define ([A-Z]+)\s+(\d+)$'))
+
+  def extract_from_match(self, match):
+    return match.group(1), int(match.group(2))
+
 class ErrorCodeChecker(object):
   def __init__(self):
     self.gatherers = []
@@ -355,6 +365,7 @@ expired.')
   .using(JavascriptErrorCodeGatherer('javascript/firefox-driver/js/errorcode.js', 'Javascript firefox driver')) \
   .using(RubyErrorCodeGatherer('rb/lib/selenium/webdriver/common/error.rb')) \
   .using(PythonErrorCodeGatherer('py/selenium/webdriver/remote/errorhandler.py')) \
+  .using(CErrorCodeGatherer('cpp/webdriver-interactions/errorcodes.h')) \
   .check_error_codes_are_consistent(error_codes)
 
   resources = []
