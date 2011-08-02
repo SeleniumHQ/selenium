@@ -20,7 +20,7 @@ package org.openqa.selenium.interactions;
 import org.openqa.selenium.WebDriverException;
 
 /**
- * Indicates that the coordinates provided to an interactions operation is
+ * Indicates that the coordinates provided to an interactions operation are
  * invalid. This, most likely, means that a move operation was provided
  * with invalid coordinates or that an action that depends on mouse
  * position (like click) was not preceeded by a move operation. 
