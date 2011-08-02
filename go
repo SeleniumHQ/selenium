@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -jar third_party/jruby/jruby-complete.jar -S rake $*
+java -d32 -jar third_party/jruby/jruby-complete.jar -X-C -S rake $*
