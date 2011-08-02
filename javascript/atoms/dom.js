@@ -16,7 +16,7 @@
 /**
  * @fileoverview DOM manipulation and querying routines.
  *
- * @author simonstewart@google.com (Simon Stewart)
+ *
  */
 
 goog.provide('bot.dom');
@@ -315,7 +315,7 @@ bot.dom.isEnabled = function(el) {
 
 
 /**
- * TODO(gdennis): Add support for contentEditable and designMode elements.
+ * TODO(user): Add support for contentEditable and designMode elements.
  *
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element accepts user-typed text.
@@ -336,7 +336,7 @@ bot.dom.isTextual = function(element) {
 
 
 /**
- * TODO(gdennis): Merge isTextual into this function and move to bot.dom.
+ * TODO(user): Merge isTextual into this function and move to bot.dom.
  * For Puppet, requires adding support to getVisibleText for grabbing
  * text from all textual elements.
  *
@@ -476,16 +476,16 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     }
     var mapDoc = goog.dom.getOwnerDocument(elem);
     var mapImage;
-    // TODO(gdennis): Avoid brute-force search once a cross-browser xpath
+    // TODO(user): Avoid brute-force search once a cross-browser xpath
     // locator is available.
     if (mapDoc['evaluate']) {
       // The "//*" XPath syntax can confuse the closure compiler, so we use
       // the "/descendant::*" syntax instead.
-      // TODO(jleyba): Try to find a reproducible case for the compiler bug.
-      // TODO(jleyba): Restrict to applet, img, input:image, and object nodes.
+      // TODO(user): Try to find a reproducible case for the compiler bug.
+      // TODO(user): Restrict to applet, img, input:image, and object nodes.
       var imageXpath = '/descendant::*[@usemap = "#' + elem.name + '"]';
 
-      // TODO(gdennis): Break dependency of bot.locators on bot.dom,
+      // TODO(user): Break dependency of bot.locators on bot.dom,
       // so bot.locators.findElement can be called here instead.
       mapImage = bot.locators.xpath.single(imageXpath, mapDoc);
     } else {
@@ -578,7 +578,7 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     return (/** @type {string|undefined} */ goog.array.peek(lines)) || '';
   }
 
-  // TODO (gdennis): Add cases here for <title> and textual form elements.
+  // TODO(user): Add cases here for <title> and textual form elements.
   if (bot.dom.isElement(elem, goog.dom.TagName.BR)) {
     lines.push('');
   } else {
