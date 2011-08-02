@@ -1,7 +1,11 @@
-
 js_fragment(name = "fireEvent",
   module = "bot.events",
   function = "bot.events.fire",
+  deps = ["//javascript/atoms:deps"])
+  
+js_fragment(name = "getParentElement",
+  module = "bot.dom",
+  function = "bot.dom.getParentElement",
   deps = ["//javascript/atoms:deps"])
 
 js_fragment(name = "getOuterHtml",
@@ -13,3 +17,4 @@ js_fragment(name = "selectText",
   module = "watir",
   function = "watir.selectText",
   deps = ["//third_party/closure"])
+  
