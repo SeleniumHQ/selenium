@@ -143,15 +143,8 @@ webdriver.modals.signalOpenModal = function(parent, text) {
   Logger.dumpn("signalOpenModal");
   // Try to grab the top level window
   var driver = webdriver.modals.findAssociatedDriver_(parent);
-  Logger.dump(driver);
-  if (driver) {
-    Logger.dump(driver.response_);
-  }
   if (driver && driver.response_) {
     webdriver.modals.setFlag(driver, text);
-    Logger.dumpn("Setting flag to");
-    Logger.dump(text);
-
     var res = driver.response_;
     res.value = {
       text: text

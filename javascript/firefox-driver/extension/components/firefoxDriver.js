@@ -843,8 +843,17 @@ FirefoxDriver.prototype.acceptAlert = function(respond) {
 
 
 FirefoxDriver.prototype.getAlertText = function(respond) {
-  respond.value = webdriver.modals.getText(this);
-  respond.send();
+  var driver = this;
+  webdriver.modals.isModalPresent(
+    function(present) {
+      if (present) {
+        respond.value = webdriver.modals.getText(driver)
+      } else {
+        respond.status = ErrorCode.NO_MODAL_DIALOG_OPEN;
+        respond.value = { message: 'No alert is present' };
+      }
+      respond.send();
+    }, this.alertTimeout);
 };
 
 
