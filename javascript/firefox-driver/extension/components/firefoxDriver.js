@@ -983,12 +983,12 @@ getBrowserSpecificOffset_ = function(inBrowser) {
     }
 
   return {x: browserSpecificXOffset, y: browserSpecificYOffset};
-}
+};
 
 //TODO: figure out why this.getBrowserSpecificOffset_ cannot be used in mouseMove
 FirefoxDriver.prototype.getBrowserSpecificOffset_ = function(inBrowser) {
   return getBrowserSpecificOffset_(inBrowser);
-}
+};
 
 FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   var doc = respond.session.getDocument();
