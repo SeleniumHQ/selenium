@@ -117,22 +117,15 @@ public class VisibilityTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({HTMLUNIT, IE, SELENESE})
-  public void testShouldNotAllowAnElementWithZeroHeightToBeCountedAsDisplayed() {
+  public void testZeroSizedDivIsShownIfDescendantHasSize() {
     driver.get(pages.javascriptPage);
 
-    WebElement zeroHeight = driver.findElement(By.id("zeroheight"));
+    WebElement element = driver.findElement(By.id("zero"));
+    Dimension size = element.getSize();
 
-    assertFalse(zeroHeight.isDisplayed());
-  }
-
-  @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE, SELENESE})
-  public void testShouldNotAllowAnElementWithZeroWidthToBeCountedAsDisplayed() {
-    driver.get(pages.javascriptPage);
-
-    WebElement zeroWidth = driver.findElement(By.id("zerowidth"));
-
-    assertFalse(zeroWidth.isDisplayed());
+    assertEquals("Should have 0 width", 0, size.width);
+    assertEquals("Should have 0 height", 0, size.height);
+    assertTrue(element.isDisplayed());
   }
 
   private Callable<Boolean> elementNotToDisplayed(final WebElement element) {

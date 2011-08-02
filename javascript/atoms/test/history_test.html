@@ -33,7 +33,7 @@
   // which limits the history properties we can reliably check.
   // TODO (user): Use popups on all browsers once these bugs are fixed.
   if (goog.userAgent.product.SAFARI ||
-      (goog.userAgent.GECKO && goog.userAgent.LINUX) ||
+      (goog.userAgent.GECKO && (goog.userAgent.LINUX || goog.userAgent.MAC)) ||
       (goog.userAgent.IE && goog.userAgent.isVersion(8))) {
     // A bug in prior versions of WebKit (persisting into Safari 5) causes the
     // initial page of an iframe to not enter the browser history, so we

@@ -110,7 +110,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("nbspandspaces"));
     String text = element.getText();
 
-    assertThat(text, equalTo("This line has a non-breaking space and spaces"));
+    assertThat(text, equalTo("This line has a   non-breaking space and spaces"));
   }
 
   @Ignore(IPHONE)

@@ -229,10 +229,6 @@
     </ul>
 </div>
 
-<p id="zeroheight" style="height:0px;">This is a foo</p>
-
-<p id="zerowidth" style="width:0;">This is a bar</p>
-
 <a href="#" id="close" onclick="window.close();">Close window</a>
 
 <div id="delete" onclick="var d = document.getElementById('deleted'); this.removeChild(d);">
@@ -270,6 +266,12 @@
     <span id="movable" onmouseover="var p = document.getElementById('parent'); displayMessage('parent matches? ' + (p == event.relatedTarget));">
         Click on me to show the related target
     </span>
+</div>
+
+<div id="zero" style="width:0;height:0">
+  <div>
+    <img src="map.png">
+  </div>
 </div>
 
 </body>

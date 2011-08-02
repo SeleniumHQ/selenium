@@ -84,7 +84,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   protected final HtmlUnitDriver parent;
   protected final HtmlElement element;
-  private static final char nbspChar = (char) 160;
+  private static final String nbspChar = "" + (char) 160;
   private static final String[] blockLevelsTagNames =
       {"p", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "div", "noscript",
        "blockquote", "form", "hr", "table", "fieldset", "address", "ul", "ol", "pre", "br"};
@@ -539,7 +539,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
       if (child instanceof DomText) {
         if (child.isDisplayed()) {
           String textToAdd = ((DomText) child).getData();
-          textToAdd = textToAdd.replace(nbspChar, ' ');
           textSoFar.append(textToAdd);
         }
         continue;
@@ -577,7 +576,9 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   private String collapseWhitespace(StringBuffer textSoFar) {
     String textToAdd = textSoFar.toString();
-    return textToAdd.replaceAll("\\p{javaWhitespace}+", " ").replaceAll("\r", "");
+    return textToAdd.replaceAll("\\p{javaWhitespace}+", " ")
+        .replaceAll("\r", "")
+        .replaceAll(nbspChar, " ");
   }
 
   private void getPreformattedText(DomNode node, StringBuffer toReturn) {

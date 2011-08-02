@@ -22,10 +22,8 @@ limitations under the License.
   <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.locators');
-    goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
   </script>
-  <script src="text_util.js"></script>
 
   <script type="text/javascript">
 
@@ -74,9 +72,9 @@ limitations under the License.
       return bot.dom.getVisibleText(e);
     }
 
-    function testGetVisibleTextShouldCollapseNonBreakingSpaces() {
+    function testGetVisibleTextShouldNotCollapseNonBreakingSpaces() {
       var text = getVisibleTextByElementId("nbspandspaces");
-      assertEquals("This line has a non-breaking space and spaces", text);
+      assertEquals("This line has a   non-breaking space and spaces", text);
     }
 
     function testGetVisibleTextInlineElementsShouldNotAffectReturnedText() {
@@ -220,99 +218,6 @@ limitations under the License.
       var table = getVisibleTextByElementId('wrappingtd');
       assertEquals('beforeSpace afterSpace', table);
     }
-
-    // http://code.google.com/p/selenium/issues/detail?id=415
-    function testRemovesZeroWidthSpaces() {
-      assertTextIs(
-          goog.dom.createDom('div', null,
-              'There is a zero-width space between "a" and "b": a\u200bb'),
-          'There is a zero-width space between "a" and "b": ab');
-    }
-
-    // http://code.google.com/p/selenium/issues/detail?id=1566
-    function testDoesNotCollapsedNonBreakingSpaces() {
-      var expectedFailures = new goog.testing.ExpectedFailures();
-      expectedFailures.expectFailureFor(true,
-          "Should &nbsp; really be collapsed with everything else?");
-      expectedFailures.run(function() {
-        assertTextIs(
-            goog.dom.createDom('div', null,
-                'Three spaces between "a" and "b": a\xa0\xa0\xa0b'),
-            'Three spaces between "a" and "b": a   b');
-      });
-    }
-
-    function testPreservesWhitespaceOfPreformattedBlocks() {
-      assertTextIs(
-          goog.dom.createDom('p', null,
-              'This section has a ',
-              goog.dom.createDom('pre', null,
-                  'preformatted\n    text block\n',
-                  '  within it\n    '),
-              '.'),
-          'This section has a',
-          'preformatted',
-          '    text block',
-          '  within it',
-          '.');
-    }
-
-    function testAppliesBasicCssTextTransformations() {
-      assertTextIs(
-          goog.dom.createDom('div', null,
-              line('capitalize', 'aaa bbb ccc'),
-              line('lowercase', 'AAA BBB CCC'),
-              line('uppercase', 'aaa bbb ccc')),
-          'capitalize: Aaa Bbb Ccc',
-          'lowercase: aaa bbb ccc',
-          'uppercase: AAA BBB CCC');
-
-      function line(style, text) {
-        return goog.dom.createDom('div', null,
-            style + ': ', transformed(style, text));
-      }
-
-      function transformed(style, text) {
-        return goog.dom.createDom('span', {
-          'style': 'text-transform:' + style
-        }, text);
-      }
-    }
-
-    function testCorrectlyHandlesAdjacentTextNodes() {
-      assertTextIs(
-          goog.dom.createDom('div', null,
-              ' text node one ',
-              ' text node two'),
-          'text node one text node two');
-    }
-
-    function testIgnoresTextInsideScriptTags() {
-      // Script tab needs to be created in the containing DIV's
-      // innerHTML string for this to work in IE. Yay, IE!
-      assertTextIs(goog.dom.createDom('div', {
-        'innerHTML': [
-            'pre-script<script type="text/javascript"',
-            '>// a hah!<',
-            '/script>-post-script'
-        ].join('')
-      }), 'pre-script-post-script');
-    }
-
-    function testDoesNotAddRedundantNewlinesForNestedBlockElements() {
-      var div = goog.partial(goog.dom.createDom, 'DIV', null);
-      assertTextIs(
-          div(div(div(div(div(div('Line 1'), div('Line 2'), div('Line 3')))))),
-          'Line 1',
-          'Line 2',
-          'Line 3');
-    }
-
-    function testNodesWithJustWhitespace() {
-      var div = goog.partial(goog.dom.createDom, 'DIV', null);
-      var span = goog.partial(goog.dom.createDom, 'SPAN', null);
-      assertTextIs(div('a', span(' '), 'b'), 'a b');
-    }
   </script>
 
   <style type="text/css">
@@ -324,7 +229,6 @@ limitations under the License.
 
 </head>
 <body>
-  <div id="scripttag">pre-script<script type="text/javascript">// a hah!</script>-post-script</div>
   <p id="oneline">A single line of text</p>
 
   <div id="multiline">

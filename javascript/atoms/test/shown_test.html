@@ -79,33 +79,12 @@
       assertFalse(isShown(hidden));
     }
 
-
-    function testElementWithZeroHeightIsNotConsideredDisplayed() {
-      // IE6 doesn't render the element correctly for the test to work.
-      if (goog.userAgent.IE && goog.userAgent.product.isVersion(6)) {
-        return;
-      }
-      var zeroHeight = findElement({id: 'zeroheight'});
-      assertFalse(isShown(zeroHeight));
-    }
-
-
-    function testElementWithZeroWidthIsNotConsideredDisplayed() {
-      // IE6 doesn't render the element correctly for the test to work.
-      if (goog.userAgent.IE && goog.userAgent.product.isVersion(6)) {
-        return;
-      }
-
-      var zeroWidth = findElement({id: 'zerowidth'});
-      assertFalse(isShown(zeroWidth));
-    }
-
     function testElementWithOnlyWhitespaceReturnsConsistentResults() {
-      var span = findElement({id: 'onlyWhitespace'})
+      var span = findElement({id: 'onlyWhitespace'});
       // make sure we report the same result every time;
-      assertTrue(isShown(span))
-      assertTrue(isShown(span))
-    };
+      assertTrue(isShown(span));
+      assertTrue(isShown(span));
+    }
 
     function testCorrectlyDeterminesVisibilityViaDisplayStyle() {
       var span = findElement({id: 'visibleSpan'});
@@ -219,6 +198,54 @@
       assertTrue(isShown(iframeTitle));
       bot.setWindow(originalWindow);
     }
+
+    function testZeroSizedAbsolutePositionedBlockElemetnsAreShownIfDescendantHasSize() {
+      var div = goog.partial(goog.dom.createDom, 'div');
+
+      function position(element, left, top, opt_zIndex) {
+        element.style.position = 'absolute';
+        element.style.left = left;
+        element.style.top = top;
+        if (opt_zIndex)
+          element.style.zIndex = opt_zIndex;
+        return element;
+      }
+
+      function size(element, width, height) {
+        element.style.width = width;
+        element.style.height = height;
+        return element;
+      }
+
+      var root = position(div(), 0, 0, 1),
+          child = position(div(), 0, 0, 100),
+          grandChild = position(div(), 0, 0),
+          greatGrandChild = size(position(div(), 0, 0), '250px', '250px');
+
+      grandChild.appendChild(greatGrandChild);
+      child.appendChild(grandChild);
+      root.appendChild(child);
+      document.body.appendChild(root);
+
+      var seenSize = bot.dom.getElementSize_(root);
+      assertEquals('Should have 0 width', 0, seenSize.width);
+      assertEquals('Should have 0 height', 0, seenSize.height);
+      assertTrue('Should still be considered shown', isShown(root));
+    }
+
+     function testZeroSizedDivIsShownIfDescendantHasSize() {
+      var element = goog.dom.createDom('div', {style:'width:0;height:0'},
+          goog.dom.createDom('div', null,
+              goog.dom.createDom('img', {
+                src: 'testdata/map.png'
+              })));
+      document.body.appendChild(element);
+      var size = bot.dom.getElementSize_(element);
+      assertEquals('Should have 0 width', 0, size.width);
+      assertEquals('Should have 0 height', 0, size.height);
+      assertTrue(isShown(element));
+    }
+
 
     /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
     function testInvisibleSelectsOptionsAreNotShown() {

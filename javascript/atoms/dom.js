@@ -16,6 +16,7 @@
 /**
  * @fileoverview DOM manipulation and querying routines.
  *
+ * @author simonstewart@google.com (Simon Stewart)
  */
 
 goog.provide('bot.dom');
@@ -27,6 +28,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.NodeIterator');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
 goog.require('goog.math.Size');
 goog.require('goog.string');
@@ -80,14 +82,14 @@ bot.dom.FOCUSABLE_FORM_FIELDS_ = [
 /**
  * Returns whether a node is a focusable element.  An element may receive focus
  * if it is a form field or has a positive tabindex.
- * @param {Element} element The node to test.
+ * @param {!Element} element The node to test.
  * @return {boolean} Whether the node is focusable.
  */
 bot.dom.isFocusable = function(element) {
   return goog.array.some(bot.dom.FOCUSABLE_FORM_FIELDS_, function(tagName) {
     return element.tagName.toUpperCase() == tagName;
   }) || (bot.dom.getAttribute(element, 'tabindex') != null &&
-         bot.dom.getProperty(element, 'tabIndex') >= 0);
+         Number(bot.dom.getProperty(element, 'tabIndex')) >= 0);
 };
 
 
@@ -142,7 +144,7 @@ bot.dom.getProperty = function(element, propertyName) {
   var value = element[key];
   if (!goog.isDef(value) &&
       goog.array.contains(bot.dom.BOOLEAN_PROPERTIES_, key)) {
-      return false;
+    return false;
   }
   return value;
 };
@@ -296,7 +298,7 @@ bot.dom.isEnabled = function(el) {
     return true;
   }
 
-  if (bot.dom.getAttribute(el, 'disabled')) {
+  if (bot.dom.getProperty(el, 'disabled')) {
     return false;
   }
 
@@ -313,7 +315,7 @@ bot.dom.isEnabled = function(el) {
 
 
 /**
- * TODO(user): Add support for contentEditable and designMode elements.
+ * TODO(gdennis): Add support for contentEditable and designMode elements.
  *
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element accepts user-typed text.
@@ -334,7 +336,7 @@ bot.dom.isTextual = function(element) {
 
 
 /**
- * TODO(user): Merge isTextual into this function and move to bot.dom.
+ * TODO(gdennis): Merge isTextual into this function and move to bot.dom.
  * For Puppet, requires adding support to getVisibleText for grabbing
  * text from all textual elements.
  *
@@ -347,7 +349,6 @@ bot.dom.isEditable = function(element) {
   return bot.dom.isTextual(element) &&
       !bot.dom.getProperty(element, 'readOnly');
 };
-
 
 
 /**
@@ -398,7 +399,7 @@ bot.dom.getInlineStyle = function(elem, styleName) {
  * @return {?string} The value of the style property, or null.
  */
 bot.dom.getEffectiveStyle = function(elem, styleName) {
-  styleName = goog.style.toCamelCase(styleName);
+  styleName = goog.string.toCamelCase(styleName);
   return goog.style.getComputedStyle(elem, styleName) ||
       bot.dom.getCascadedStyle_(elem, styleName);
 };
@@ -475,16 +476,16 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     }
     var mapDoc = goog.dom.getOwnerDocument(elem);
     var mapImage;
-    // TODO(user): Avoid brute-force search once a cross-browser xpath
+    // TODO(gdennis): Avoid brute-force search once a cross-browser xpath
     // locator is available.
     if (mapDoc['evaluate']) {
       // The "//*" XPath syntax can confuse the closure compiler, so we use
       // the "/descendant::*" syntax instead.
-      // TODO(user): Try to find a reproducible case for the compiler bug.
-      // TODO(user): Restrict to applet, img, input:image, and object nodes.
+      // TODO(jleyba): Try to find a reproducible case for the compiler bug.
+      // TODO(jleyba): Restrict to applet, img, input:image, and object nodes.
       var imageXpath = '/descendant::*[@usemap = "#' + elem.name + '"]';
 
-      // TODO(user): Break dependency of bot.locators on bot.dom,
+      // TODO(gdennis): Break dependency of bot.locators on bot.dom,
       // so bot.locators.findElement can be called here instead.
       mapImage = bot.locators.xpath.single(imageXpath, mapDoc);
     } else {
@@ -537,28 +538,16 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   // Any element without positive size dimensions is not shown.
   function positiveSize(e) {
     var size = bot.dom.getElementSize_(e);
-
     if (size.height > 0 && size.width > 0) {
       return true;
     }
-    // Elements with only whitespace text content, e.g. "<div>&nbsp;</div>",
-    // report zero size even though they take up space and can be interacted
-    // with, so workaround this explicitly.
-    if (e.innerText || e.textContent) {
-      var text = e.innerText || e.textContent;
-      if (bot.dom.JUST_HTML_WHITESPACE_REGEXP_.test(text)) {
-        return true;
-      }
-    }
-    // A bug in WebKit causes it to report zero size for elements with nested
-    // block-level elements: https://bugs.webkit.org/show_bug.cgi?id=28810
-    // We compensate for that bug by assuming an element has a positive size if
-    // any of its children have positive size.
-    return goog.userAgent.WEBKIT && goog.array.some(e.childNodes, function(n) {
-      return bot.dom.isElement(n) && positiveSize(n);
+    // Zero-sized elements should still be considered to have positive size
+    // if they have a child element or text node with positive size.
+    return goog.array.some(e.childNodes, function(n) {
+      return n.nodeType == goog.dom.NodeType.TEXT ||
+             (bot.dom.isElement(n) && positiveSize(n));
     });
   }
-
   if (!positiveSize(elem)) {
     return false;
   }
@@ -585,17 +574,23 @@ bot.dom.getVisibleText = function(elem) {
  * @private
  */
 bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
+  function currLine() {
+    return (/** @type {string|undefined} */ goog.array.peek(lines)) || '';
+  }
+
   // TODO (gdennis): Add cases here for <title> and textual form elements.
   if (bot.dom.isElement(elem, goog.dom.TagName.BR)) {
     lines.push('');
   } else {
     // TODO: properly handle display:run-in
+    var isTD = bot.dom.isElement(elem, goog.dom.TagName.TD);
     var display = bot.dom.getEffectiveStyle(elem, 'display');
-    var blockElem = !goog.array.contains(bot.dom.INLINE_DISPLAY_BOXES_,
-        display);
+    // On some browsers, table cells incorrectly show up with block styles.
+    var isBlock = !isTD &&
+        !goog.array.contains(bot.dom.INLINE_DISPLAY_BOXES_, display);
 
     // Add a newline before block elems when there is text on the current line.
-    if (blockElem && bot.dom.hasText_(goog.array.peek(lines))) {
+    if (isBlock && !goog.string.isEmpty(currLine())) {
       lines.push('');
     }
 
@@ -608,9 +603,10 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     // All text nodes that are children of this element need to know the
     // effective "white-space" and "text-transform" styles to properly
     // compute their contribution to visible text. Compute these values once.
+    var whitespace = null, textTransform = null;
     if (shown) {
-      var whitespace = bot.dom.getEffectiveStyle(elem, 'white-space');
-      var textTransform = bot.dom.getEffectiveStyle(elem, 'text-transform');
+      whitespace = bot.dom.getEffectiveStyle(elem, 'white-space');
+      textTransform = bot.dom.getEffectiveStyle(elem, 'text-transform');
     }
 
     goog.array.forEach(elem.childNodes, function(node) {
@@ -624,17 +620,18 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
       }
     });
 
-    var line = goog.array.peek(lines);
+    var line = currLine();
 
     // Here we differ from standard innerText implementations (if there were
     // such a thing). Usually, table cells are separated by a tab, but we
     // normalize tabs into single spaces.
-    if (display == 'table-cell' && line && !goog.string.endsWith(line, ' ')) {
+    if ((isTD || display == 'table-cell') && line &&
+        !goog.string.endsWith(line, ' ')) {
       lines[lines.length - 1] += ' ';
     }
 
     // Add a newline after block elems when there is text on the current line.
-    if (blockElem && bot.dom.hasText_(line)) {
+    if (isBlock && !goog.string.isEmpty(line)) {
       lines.push('');
     }
   }
@@ -642,20 +639,8 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
 
 
 /**
- * Tests if there is non-whitespace text on a line.
- * @param {string} line The line to test.
- * @return {boolean} Whether the line has non-whitespace text.
- * @private
- */
-bot.dom.hasText_ = function(line) {
-  return line && !bot.dom.JUST_HTML_WHITESPACE_REGEXP_.test(line);
-};
-
-
-/**
- * Elements with one of these effective "display" styles are treated as
- * inline display boxes and have their visible text appended to the
- * current line.
+ * Elements with one of these effective "display" styles are treated as inline
+ * display boxes and have their visible text appended to the current line.
  * @type {!Array.<string>}
  * @private
  * @const
@@ -672,64 +657,33 @@ bot.dom.INLINE_DISPLAY_BOXES_ = [
 
 
 /**
- * @const
- * @type {string}
- * @private
- */
-bot.dom.HTML_WHITESPACE_ = '[\\s\\xa0' + String.fromCharCode(160) + ']+';
-
-
-/**
- * @const
- * @type {!RegExp}
- * @private
- */
-bot.dom.HTML_WHITESPACE_REGEXP_ = new RegExp(
-    bot.dom.HTML_WHITESPACE_, 'g');
-
-
-/**
- * @const
- * @type {!RegExp}
- * @private
- */
-bot.dom.JUST_HTML_WHITESPACE_REGEXP_ = new RegExp(
-    '^' + bot.dom.HTML_WHITESPACE_ + '$');
-
-
-/**
  * @param {!Text} textNode Text node.
  * @param {!Array.<string>} lines Accumulated visible lines of text.
- * @param {string} whitespace The text node's parent element's effective
- *     "white-space" style.
- * @param {string} textTransform The text node's parent element's effective
- *     "text-transform" style.
+ * @param {?string} whitespace Parent element's "white-space" style.
+ * @param {?string} textTransform Parent element's "text-transform" style.
  * @private
  */
 bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
     whitespace, textTransform) {
-  var text = goog.string.canonicalizeNewlines(textNode.nodeValue);
+  // First, replace all zero-width spaces. Do this before regularizing spaces
+  // as the zero-width space is, by definition, a space.
+  var text = textNode.nodeValue.replace(/\u200b/g, '');
 
-  // Replace all zero-width spaces. Do this before regularizing spaces as the
-  // zero-width space is, by definition, a space.
-  text = text.replace(/\u200b/g, '');
-
+  // Canonicalize the new lines, and then collapse new lines
+  // for the whitespace styles that collapse. See:
+  // https://developer.mozilla.org/en/CSS/white-space
+  text = goog.string.canonicalizeNewlines(text);
   if (whitespace == 'normal' || whitespace == 'nowrap') {
-    // TODO(jleyba): Do we really want to collapse all white-space?
-    // http://code.google.com/p/selenium/issues/detail?id=1566
-    // Or should &nbsp; characters be preserved as the author explicitly
-    // inserted them into the page (and would be preserved for the user)?
-    // If we decide not to collapse &nbsp; along with everythong else,
-    // uncomment this next line and delete the one after:
-    // text = goog.string.normalizeSpaces(text.replace(/\n/g, ' '));
-    text = text.replace(bot.dom.HTML_WHITESPACE_REGEXP_, ' ');
-  } else if (whitespace == 'pre-line') {
-    text = goog.string.normalizeSpaces(text);
+    text = text.replace(/\n/g, ' ');
   }
 
-  // Once we've normalized all other whitespace, canonicalize
-  // &nbsp and tabs as single spaces.
-  text = text.replace(/\xa0|\t/g, ' ');
+  // For pre and pre-wrap whitespace styles, normalize all spaces.
+  // Otherwise, collapse everything but nbsp, then convert nbsp to space.
+  if (whitespace == 'pre' || whitespace == 'pre-wrap') {
+    text = text.replace(/\f\t\v\u2028\u2029\xa0/, ' ');
+  } else {
+    text = text.replace(/[\ \f\t\v\u2028\u2029]+/g, ' ').replace(/\xa0/g, ' ');
+  }
 
   if (textTransform == 'capitalize') {
     text = text.replace(/(^|\s)(\S)/g, function() {
@@ -806,6 +760,7 @@ bot.dom.getOpacityNonIE_ = function(elem) {
   return elemOpacity;
 };
 
+
 /**
  * Scrolls the scrollable element so that the region is fully visible.
  * If the region is too large, it will be aligned to the top-left of the
@@ -822,6 +777,7 @@ bot.dom.scrollRegionIntoView_ = function(region, scrollable) {
   scrollable.scrollTop += Math.min(
       region.top, Math.max(region.top - region.height, 0));
 };
+
 
 /**
  * Scrolls the region of an element into the container's view. If the
@@ -842,19 +798,20 @@ bot.dom.scrollElementRegionIntoContainerView_ = function(elem, elemRegion,
   var elemPos = goog.style.getPageOffset(elem);
   var containerPos = goog.style.getPageOffset(container);
   var containerBorder = goog.style.getBorderBox(container);
-  
+
   // Relative pos. of the element's border box to the container's content box.
   var relX = elemPos.x + elemRegion.left - containerPos.x -
              containerBorder.left;
   var relY = elemPos.y + elemRegion.top - containerPos.y - containerBorder.top;
-  
+
   // How much the element can move in the container.
   var spaceX = container.clientWidth - elemRegion.width;
   var spaceY = container.clientHeight - elemRegion.height;
-  
+
   bot.dom.scrollRegionIntoView_(new goog.math.Rect(relX, relY, spaceX, spaceY),
                                 container);
 };
+
 
 /**
  * Scrolls the element into the client's view. If the element or region is
@@ -872,14 +829,12 @@ bot.dom.scrollElementRegionIntoClientView_ = function(elem, elemRegion) {
   var doc = goog.dom.getOwnerDocument(elem);
 
   // Scroll the containers.
-  var container = elem.parentNode;
-  while (container &&
-         container != doc.body &&
-         container != doc.documentElement) {
+  for (var container = bot.dom.getParentElement(elem);
+       container && container != doc.body && container != doc.documentElement;
+       container = bot.dom.getParentElement(elem)) {
     bot.dom.scrollElementRegionIntoContainerView_(elem, elemRegion, container);
-    container = container.parentNode;
   }
-  
+
   // Scroll the actual window.
   var elemPageOffset = goog.style.getPageOffset(elem);
 
@@ -891,8 +846,9 @@ bot.dom.scrollElementRegionIntoClientView_ = function(elem, elemRegion) {
       viewportSize.width - elemRegion.width,
       viewportSize.height - elemRegion.height);
 
-  bot.dom.scrollRegionIntoView_(region, doc.body);
+  bot.dom.scrollRegionIntoView_(region, doc.body || doc.documentElement);
 };
+
 
 /**
  * Scrolls the element into the client's view and returns its position
