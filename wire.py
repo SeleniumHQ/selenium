@@ -258,7 +258,7 @@ class JavascriptErrorCodeGatherer(AbstractErrorCodeGatherer):
 class ErrorCodeChecker(object):
   def __init__(self):
     self.gatherers = []
-    self.warnings = []
+    self.inconsistencies = {}
 
   def using(self, gatherer):
     self.gatherers.append(gatherer)
@@ -269,10 +269,18 @@ class ErrorCodeChecker(object):
 browsers")
     for gatherer in self.gatherers:
       self.compare(gatherer, json_error_codes)
-    if not self.warnings:
+    if not self.inconsistencies:
       log("Error codes are consistent")
-    for warning in self.warnings:
-      log(warning)
+    for code,(present,missing) in self.inconsistencies.items():
+      log("Error code %d was present in %s but not %s" % (code, present, missing))
+
+  def add_inconsistency(self, code, present_in, missing_from):
+    if self.inconsistencies.has_key(code):
+      already_present, already_missing = self.inconsistencies[code]
+      already_present.add(present_in)
+      already_missing.add(missing_from)
+    else:
+      self.inconsistencies[code] = (set([present_in]), set([missing_from]))
 
   def compare(self, gatherer, raw_json_error_codes):
     log("Checking %s (%s)" % (gatherer, gatherer.path_to_error_codes))
@@ -280,10 +288,10 @@ browsers")
     json_error_codes = map(lambda code: code.code, raw_json_error_codes)
     for json_error_code in json_error_codes:
       if not gathered_error_codes.has_key(json_error_code):
-        self.warnings.append("JSON code missing from %s: %d" % (gatherer, json_error_code))
+        self.add_inconsistency(json_error_code, "JSON", str(gatherer))
     for gathered_code,_ in gathered_error_codes.items():
       if not gathered_code in json_error_codes:
-        self.warnings.append("%s code missing from JSON: %d" % (gatherer, gathered_code))
+        self.add_inconsistency(json_error_code, str(gatherer), "JSON")
       
 
 def main():
