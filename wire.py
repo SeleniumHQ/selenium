@@ -331,7 +331,7 @@ browsers')
         self.add_inconsistency(json_error_code, 'JSON', str(gatherer))
     for gathered_code,_ in gathered_error_codes.items():
       if not gathered_code in json_error_codes:
-        self.add_inconsistency(json_error_code, str(gatherer), 'JSON')
+        self.add_inconsistency(gathered_code, str(gatherer), 'JSON')
       
 
 def main():
