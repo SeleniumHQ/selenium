@@ -255,6 +255,16 @@ class JavascriptErrorCodeGatherer(AbstractErrorCodeGatherer):
   def extract_from_match(self, match):
     return match.group(1), int(match.group(2))
 
+class RubyErrorCodeGatherer(AbstractErrorCodeGatherer):
+  def __init__(self, path_to_error_codes):
+    super(RubyErrorCodeGatherer, self).__init__( \
+      "Ruby",
+      path_to_error_codes, \
+      re.compile("^\s*(([A-Z][a-z]*)+),?\s*# (\d+)$"))
+
+  def extract_from_match(self, match):
+    return match.group(1), int(match.group(len(match.groups())))
+
 class ErrorCodeChecker(object):
   def __init__(self):
     self.gatherers = []
@@ -333,6 +343,7 @@ expired.')
   .using(JavaErrorCodeGatherer('java/client/src/org/openqa/selenium/remote/ErrorCodes.java')) \
   .using(JavascriptErrorCodeGatherer('javascript/atoms/error.js', 'Javascript atoms')) \
   .using(JavascriptErrorCodeGatherer('javascript/firefox-driver/js/errorcode.js', 'Javascript firefox driver')) \
+  .using(RubyErrorCodeGatherer('rb/lib/selenium/webdriver/common/error.rb')) \
   .check_error_codes_are_consistent(error_codes)
 
   resources = []
