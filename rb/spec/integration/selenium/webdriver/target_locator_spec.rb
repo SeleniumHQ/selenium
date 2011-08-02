@@ -95,17 +95,17 @@ describe "WebDriver::TargetLocator" do
     driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
   end
 
-  compliant_on :browser => [:ie, :firefox] do
-    describe "alerts" do
-      it "allows the user to accept an alert" do
-        driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "alert").click
+  describe "alerts" do
+    it "allows the user to accept an alert" do
+      driver.navigate.to url_for("alerts.html")
+      driver.find_element(:id => "alert").click
 
-        driver.switch_to.alert.accept
+      driver.switch_to.alert.accept
 
-        driver.title.should == "Testing Alerts"
-      end
+      driver.title.should == "Testing Alerts"
+    end
 
+    not_compliant_on :browser => :chrome, :platform => :macosx do # http://code.google.com/p/chromium/issues/detail?id=90519
       it "allows the user to dismiss an alert" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
@@ -114,32 +114,32 @@ describe "WebDriver::TargetLocator" do
 
         driver.title.should == "Testing Alerts"
       end
-
-      it "allows the user to set the value of a prompt" do
-        driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "prompt").click
-
-        alert = driver.switch_to.alert
-        alert.send_keys "cheese"
-        alert.accept
-
-        text = driver.find_element(:id => "text").text
-        text.should == "cheese"
-      end
-
-      it "allows the user to get the text of an alert" do
-        driver.navigate.to url_for("alerts.html")
-        driver.find_element(:id => "alert").click
-
-        alert = driver.switch_to.alert
-        text = alert.text
-        alert.accept
-
-        text.should == "cheese"
-      end
     end
 
-    compliant_on :browser => :firefox do
+    it "allows the user to set the value of a prompt" do
+      driver.navigate.to url_for("alerts.html")
+      driver.find_element(:id => "prompt").click
+
+      alert = driver.switch_to.alert
+      alert.send_keys "cheese"
+      alert.accept
+
+      text = driver.find_element(:id => "text").text
+      text.should == "cheese"
+    end
+
+    it "allows the user to get the text of an alert" do
+      driver.navigate.to url_for("alerts.html")
+      driver.find_element(:id => "alert").click
+
+      alert = driver.switch_to.alert
+      text = alert.text
+      alert.accept
+
+      text.should == "cheese"
+    end
+
+    not_compliant_on :browser => [:chrome, :ie] do
       it "raises UnhandledError if no alert is present" do
         lambda { driver.switch_to.alert }.should raise_error(
           Selenium::WebDriver::Error::NoModalDialogOpenError, /alert/i)
