@@ -73,7 +73,7 @@ module Selenium
 
           sock.close
           true
-        rescue *NOT_CONNECTED_ERRORS => e
+        rescue *NOT_CONNECTED_ERRORS
           $stderr.puts [@host, @port].inspect if $DEBUG
           false
         end

@@ -3,11 +3,9 @@ require 'rake'
 
 module Selenium
   module Rake
-    include ::Rake::DSL if defined?(::Rake::DSL)
 
     class MissingJarFileError < StandardError
     end
-
 
     #
     # Defines rake tasks for starting, stopping and restarting the Selenium server.
@@ -28,6 +26,7 @@ module Selenium
     #
 
     class ServerTask
+      include ::Rake::DSL if defined?(::Rake::DSL)
 
       #
       # Path to the selenium server jar

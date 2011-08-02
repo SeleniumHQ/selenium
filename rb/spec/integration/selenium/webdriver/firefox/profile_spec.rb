@@ -8,14 +8,10 @@ module Selenium
         let(:profile) { Profile.new }
 
         def read_generated_prefs(from = nil)
-          io = StringIO.new
-
-          File.stub(:open).and_yield(io)
           prof = from || profile()
+          dir = prof.layout_on_disk
 
-          prof.layout_on_disk
-
-          io.string
+          File.read(File.join(dir, 'user.js'))
         end
 
         it "should set additional preferences" do
