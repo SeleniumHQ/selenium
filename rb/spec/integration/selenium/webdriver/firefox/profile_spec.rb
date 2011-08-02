@@ -115,17 +115,15 @@ module Selenium
           string.should include('user_pref("network.proxy.type", 4)')
         end
 
-        not_compliant_on :platform => :macosx do
-          it "should be able to use the same profile more than once" do
-            profile['browser.startup.homepage'] = url_for("formPage.html")
+        it "should be able to use the same profile more than once" do
+          profile['browser.startup.homepage'] = url_for("formPage.html")
 
-            begin
-              driver_one = WebDriver.for(:firefox, :profile => profile)
-              driver_two = WebDriver.for(:firefox, :profile => profile)
-            ensure
-              driver_one.quit if driver_one
-              driver_two.quit if driver_two
-            end
+          begin
+            driver_one = WebDriver.for(:firefox, :profile => profile)
+            driver_two = WebDriver.for(:firefox, :profile => profile)
+          ensure
+            driver_one.quit if driver_one
+            driver_two.quit if driver_two
           end
         end
 
