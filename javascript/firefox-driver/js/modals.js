@@ -70,10 +70,14 @@ webdriver.modals.getText = function(driver) {
 webdriver.modals.setValue = function(driver, value) {
   var modal = webdriver.modals.find_();
   var textbox = modal.document.getElementById('loginTextbox');
-  if (textbox.clientWidth == 0 || textbox.clientHeight == 0) {
+  try {
+    var trueIfTextboxExists = textbox.selectionStart > -1;
+    if (trueIfTextboxExists) {
+      textbox.value = value;
+    }
+  } catch (e) {
     throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE, 'Alert did not have a text box');
   }
-  textbox.value = value;
 };
 
 
