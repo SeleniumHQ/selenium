@@ -23,15 +23,8 @@ Usage:
   python trunk/wire.py > wiki/JsonWireProtocol.wiki
 """
 
-class ErrorCode(object):
-  def __init__(self, code, summary, detail):
-    self.code = code
-    self.summary = summary
-    self.detail = detail
-
-  def ToWikiTableString(self):
-    return "|| %d || `%s` || %s ||" % (self.code, self.summary, self.detail)
-
+import re
+import sys
 
 class Resource(object):
   def __init__(self, path):
@@ -205,6 +198,83 @@ class Method(object):
         self.summary[:self.summary.find('.') + 1].replace('\n', '').strip())
         
 
+class ErrorCode(object):
+  def __init__(self, code, summary, detail):
+    self.code = code
+    self.summary = summary
+    self.detail = detail
+
+  def ToWikiTableString(self):
+    return "|| %d || `%s` || %s ||" % (self.code, self.summary, self.detail)
+
+def log(string):
+  sys.stderr.write(str(string) + "\n")
+
+class AbstractErrorCodeGatherer(object):
+  def __init__(self, name, path_to_error_codes, regex):
+    self.name = name
+    self.path_to_error_codes = path_to_error_codes
+    self.regex = regex
+
+  def __str__(self):
+    return self.name
+
+  def get_error_codes(self):
+    error_codes = {}
+    error_codes_file = open(self.path_to_error_codes, 'r')
+    try:
+      for line in error_codes_file:
+        match = self.regex.match(line)
+        if match is not None:
+          name, code = self.extract_from_match(match)
+          error_codes[code] = name
+    finally:
+      error_codes_file.close()
+    return error_codes
+
+  def extract_from_match(self, match):
+    raise NotImplementedError
+
+class JavaErrorCodeGatherer(AbstractErrorCodeGatherer):
+  def __init__(self, path_to_error_codes):
+    super(JavaErrorCodeGatherer, self).__init__( \
+      "Java",
+      path_to_error_codes, \
+      re.compile("^\s*public static final int ([A-Z_]+) = (\d+);$"))
+
+  def extract_from_match(self, match):
+    return match.group(1), int(match.group(2))
+
+class ErrorCodeChecker(object):
+  def __init__(self):
+    self.gatherers = []
+    self.warnings = []
+
+  def using(self, gatherer):
+    self.gatherers.append(gatherer)
+    return self
+
+  def check_error_codes_are_consistent(self, json_error_codes):
+    log("Checking error codes are consistent across languages and \
+browsers")
+    for gatherer in self.gatherers:
+      self.compare(str(gatherer), gatherer.get_error_codes(), json_error_codes)
+    if not self.warnings:
+      log("Error codes are consistent")
+    for warning in self.warnings:
+      log(warning)
+
+  def compare(self, gatherer_string, gathered_error_codes, raw_json_error_codes):
+    log("Checking " + gatherer_string)
+    json_error_codes = map(lambda code: code.code, raw_json_error_codes)
+    for json_error_code in json_error_codes:
+      if not gathered_error_codes.has_key(json_error_code):
+        self.warnings.append("JSON code missing from %s: %d" % (gatherer_string, json_error_code))
+    for gathered_code,_ in gathered_error_codes.items():
+      if not gathered_code in json_error_codes:
+        self.warnings.append("%s code missing from JSON: %d" % (gatherer_string, gathered_code))
+      
+
 def main():
   error_codes = [
       ErrorCode(0, 'Success', 'The command executed successfully.'),
@@ -239,6 +309,10 @@ could not be satisfied.'),
       ErrorCode(28, 'Timeout', 'A command did not complete before its timeout \
 expired.')
   ]
+  
+  ErrorCodeChecker() \
+  .using(JavaErrorCodeGatherer('java/client/src/org/openqa/selenium/remote/ErrorCodes.java')) \
+  .check_error_codes_are_consistent(error_codes)
 
   resources = []
  
