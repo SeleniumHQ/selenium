@@ -205,10 +205,10 @@ class ErrorCode(object):
     self.detail = detail
 
   def ToWikiTableString(self):
-    return "|| %d || `%s` || %s ||" % (self.code, self.summary, self.detail)
+    return '|| %d || `%s` || %s ||' % (self.code, self.summary, self.detail)
 
 def log(string):
-  sys.stderr.write(str(string) + "\n")
+  sys.stderr.write(str(string) + '\n')
 
 class AbstractErrorCodeGatherer(object):
   def __init__(self, name, path_to_error_codes, regex):
@@ -238,9 +238,9 @@ class AbstractErrorCodeGatherer(object):
 class JavaErrorCodeGatherer(AbstractErrorCodeGatherer):
   def __init__(self, path_to_error_codes):
     super(JavaErrorCodeGatherer, self).__init__( \
-      "Java",
+      'Java',
       path_to_error_codes, \
-      re.compile("^\s*public static final int ([A-Z_]+) = (\d+);$"))
+      re.compile('^\s*public static final int ([A-Z_]+) = (\d+);$'))
 
   def extract_from_match(self, match):
     return match.group(1), int(match.group(2))
@@ -250,7 +250,7 @@ class JavascriptErrorCodeGatherer(AbstractErrorCodeGatherer):
     super(JavascriptErrorCodeGatherer, self).__init__( \
       name,
       path_to_error_codes, \
-      re.compile("^\s*([A-Z_]+): (\d+)"))
+      re.compile('^\s*([A-Z_]+): (\d+)'))
 
   def extract_from_match(self, match):
     return match.group(1), int(match.group(2))
@@ -258,9 +258,9 @@ class JavascriptErrorCodeGatherer(AbstractErrorCodeGatherer):
 class RubyErrorCodeGatherer(AbstractErrorCodeGatherer):
   def __init__(self, path_to_error_codes):
     super(RubyErrorCodeGatherer, self).__init__( \
-      "Ruby",
+      'Ruby',
       path_to_error_codes, \
-      re.compile("^\s*(([A-Z][a-z]*)+),?\s*# (\d+)$"))
+      re.compile('^\s*(([A-Z][a-z]*)+),?\s*# (\d+)$'))
 
   def extract_from_match(self, match):
     return match.group(1), int(match.group(len(match.groups())))
@@ -268,9 +268,9 @@ class RubyErrorCodeGatherer(AbstractErrorCodeGatherer):
 class PythonErrorCodeGatherer(AbstractErrorCodeGatherer):
   def __init__(self, path_to_error_codes):
     super(PythonErrorCodeGatherer, self).__init__( \
-      "Python",
+      'Python',
       path_to_error_codes, \
-      re.compile("^\s*([A-Z_]+) = (\d+)$"))
+      re.compile('^\s*([A-Z_]+) = (\d+)$'))
 
   def extract_from_match(self, match):
     return match.group(1), int(match.group(2))
@@ -285,14 +285,14 @@ class ErrorCodeChecker(object):
     return self
 
   def check_error_codes_are_consistent(self, json_error_codes):
-    log("Checking error codes are consistent across languages and \
-browsers")
+    log('Checking error codes are consistent across languages and \
+browsers')
     for gatherer in self.gatherers:
       self.compare(gatherer, json_error_codes)
     if not self.inconsistencies:
-      log("Error codes are consistent")
+      log('Error codes are consistent')
     for code,(present,missing) in self.inconsistencies.items():
-      log("Error code %d was present in %s but not %s" % (code, present, missing))
+      log('Error code %d was present in %s but not %s' % (code, present, missing))
 
   def add_inconsistency(self, code, present_in, missing_from):
     if self.inconsistencies.has_key(code):
@@ -303,15 +303,15 @@ browsers")
       self.inconsistencies[code] = (set([present_in]), set([missing_from]))
 
   def compare(self, gatherer, raw_json_error_codes):
-    log("Checking %s (%s)" % (gatherer, gatherer.path_to_error_codes))
+    log('Checking %s (%s)' % (gatherer, gatherer.path_to_error_codes))
     gathered_error_codes = gatherer.get_error_codes()
     json_error_codes = map(lambda code: code.code, raw_json_error_codes)
     for json_error_code in json_error_codes:
       if not gathered_error_codes.has_key(json_error_code):
-        self.add_inconsistency(json_error_code, "JSON", str(gatherer))
+        self.add_inconsistency(json_error_code, 'JSON', str(gatherer))
     for gathered_code,_ in gathered_error_codes.items():
       if not gathered_code in json_error_codes:
-        self.add_inconsistency(json_error_code, str(gatherer), "JSON")
+        self.add_inconsistency(json_error_code, str(gatherer), 'JSON')
       
 
 def main():
