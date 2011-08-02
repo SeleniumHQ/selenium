@@ -285,6 +285,16 @@ class CErrorCodeGatherer(AbstractErrorCodeGatherer):
   def extract_from_match(self, match):
     return match.group(1), int(match.group(2))
 
+class CSharpErrorCodeGatherer(AbstractErrorCodeGatherer):
+  def __init__(self, path_to_error_codes):
+    super(CSharpErrorCodeGatherer, self).__init__( \
+      'C#',
+      path_to_error_codes, \
+      re.compile('^\s*(([A-Z][a-z]*)+) = (\d+)'))
+
+  def extract_from_match(self, match):
+    return match.group(1), int(match.group(len(match.groups())))
+
 class ErrorCodeChecker(object):
   def __init__(self):
     self.gatherers = []
@@ -366,6 +376,7 @@ expired.')
   .using(RubyErrorCodeGatherer('rb/lib/selenium/webdriver/common/error.rb')) \
   .using(PythonErrorCodeGatherer('py/selenium/webdriver/remote/errorhandler.py')) \
   .using(CErrorCodeGatherer('cpp/webdriver-interactions/errorcodes.h')) \
+  .using(CSharpErrorCodeGatherer('dotnet/src/WebDriver/WebDriverResult.cs')) \
   .check_error_codes_are_consistent(error_codes)
 
   resources = []
