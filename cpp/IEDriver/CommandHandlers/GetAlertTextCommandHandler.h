@@ -49,16 +49,17 @@ protected:
 				}
 			}
 
+      std::string alert_text_value;
 			if (label_handle == NULL) {
-				response->SetErrorResponse(EUNHANDLEDERROR, "Could not find text");
+				alert_text_value = "";
 			} else {
 				int text_length = ::GetWindowTextLength(label_handle);
 				std::vector<wchar_t> text_buffer(text_length + 1);
 				::GetWindowText(label_handle, &text_buffer[0], text_length + 1);
 				std::wstring alert_text = &text_buffer[0];
-				std::string alert_text_value = CW2A(alert_text.c_str(), CP_UTF8);
-				response->SetSuccessResponse(alert_text_value);
+				alert_text_value = CW2A(alert_text.c_str(), CP_UTF8);
 			}
+      response->SetSuccessResponse(alert_text_value);
 		}
 	}
 

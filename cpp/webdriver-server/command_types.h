@@ -70,7 +70,6 @@ enum CommandType {
   GetOrientation,
   SetOrientation,
 
-  SwitchToAlert,
   AcceptAlert,
   DismissAlert,
   GetAlertText,
