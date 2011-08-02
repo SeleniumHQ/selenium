@@ -337,6 +337,18 @@ browsers')
 def main():
   error_codes = [
       ErrorCode(0, 'Success', 'The command executed successfully.'),
+#      ErrorCode(1, 'IndexOutOfBounds', 'This is probably an unused \
+#implementation detail of an old version of the IEDriver.'),
+#      ErrorCode(2, 'NoCollection', 'This is probably an unused \
+#implementation detail of an old version of the IEDriver.'),
+#      ErrorCode(3, 'NoString', 'This is probably an unused \
+#implementation detail of an old version of the IEDriver.'),
+#      ErrorCode(4, 'NoStringLength', 'This is probably an unused \
+#implementation detail of an old version of the IEDriver.'),
+#      ErrorCode(5, 'NoStringWrapper', 'This is probably an unused \
+#implementation detail of an old version of the IEDriver.'),
+#      ErrorCode(6, 'NoSuchDriver', 'This is probably an unused \
+#implementation detail of an old version of the IEDriver.'),
       ErrorCode(7, 'NoSuchElement', 'An element could not be located on the \
 page using the given search parameters.'),
       ErrorCode(8, 'NoSuchFrame', 'A request to switch to a frame could not be \
@@ -353,20 +365,41 @@ completed because the element is in an invalid state (e.g. attempting to \
 click a disabled element).'),
       ErrorCode(13, 'UnknownError', 'An unknown server-side error occurred \
 while processing the command.'),
+#      ErrorCode(14, 'ExpectedError', 'This is probably an unused \
+#implementation detail of an old version of the IEDriver.'),
       ErrorCode(15, 'ElementIsNotSelectable', 'An attempt was made to select \
 an element that cannot be selected.'),
+#      ErrorCode(16, 'NoSuchDocument', 'This is probably an unused \
+#implementation detail of an old version of the IEDriver.'),
       ErrorCode(17, 'JavaScriptError', 'An error occurred while executing user \
 supplied !JavaScript.'),
+#      ErrorCode(18, 'NoScriptResult', 'This is probably an unused \
+#implementation detail of an old version of the IEDriver.'),
       ErrorCode(19, 'XPathLookupError', 'An error occurred while searching for \
 an element by XPath.'),
+#      ErrorCode(20, 'NoSuchCollection', 'This is probably an unused \
+#implementation detail of an old version of the IEDriver.'),
+      ErrorCode(21, 'Timeout', 'An operation did not complete before its \
+timeout expired.'),
+#      ErrorCode(22, 'NullPointer', 'This is probably an unused \
+#implementation detail of an old version of the IEDriver.'),
       ErrorCode(23, 'NoSuchWindow', 'A request to switch to a different window \
 could not be satisfied because the window could not be found.'),
       ErrorCode(24, 'InvalidCookieDomain', 'An illegal attempt was made to set \
 a cookie under a different domain than the current page.'),
       ErrorCode(25, 'UnableToSetCookie', 'A request to set a cookie\'s value \
 could not be satisfied.'),
-      ErrorCode(28, 'Timeout', 'A command did not complete before its timeout \
-expired.')
+      ErrorCode(27, 'NoModalDialogOpenError', 'An attempt was made to operate \
+on a modal dialog when one was not open.'),
+      ErrorCode(28, 'ScriptTimeout', 'A script did not complete before its \
+timeout expired.'),
+      ErrorCode(29, 'InvalidElementCoordinates', 'The coordinates provided to \
+an interactions operation are invalid.'),
+      ErrorCode(30, 'IMENotAvailable', 'IME was not available.'),
+      ErrorCode(31, 'IMEEngineActivationFailed', 'An IME engine could not be \
+started.'),
+      ErrorCode(32, 'InvalidSelector', 'Argument was an invalid selector \
+(e.g. XPath/CSS).')
   ]
   
   ErrorCodeChecker() \

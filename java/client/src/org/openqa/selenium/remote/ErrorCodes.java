@@ -37,6 +37,7 @@ public class ErrorCodes {
   public static final int INVALID_ELEMENT_STATE = 12;
   public static final int UNHANDLED_ERROR = 13;
   public static final int ELEMENT_NOT_SELECTABLE = 15;
+  public static final int JAVASCRIPT_ERROR = 17;
   public static final int XPATH_LOOKUP_ERROR = 19;
   public static final int NO_SUCH_WINDOW = 23;
   public static final int INVALID_COOKIE_DOMAIN = 24;
