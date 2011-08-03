@@ -371,7 +371,7 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
       return;
     } else {
       // this is not the exception we are interested in, so we propagate it.
-      throw e;
+      throw ex;
     }
   }
   if (element) {
