@@ -1,5 +1,3 @@
-
-// Copyright 2010 WebDriver committers
 // Copyright 2010 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,26 +17,26 @@
  * The bot.action namespace is required since these atoms would otherwise form a
  * circular dependency between bot.dom and bot.events.
  *
+ * @author jleyba@google.com (Jason Leyba)
  */
 
 goog.provide('bot.action');
-
 
 goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.Keyboard');
+goog.require('bot.Mouse');
 goog.require('bot.dom');
 goog.require('bot.events');
-goog.require('bot.userAgent');
-goog.require('goog.Uri');
+goog.require('bot.locators');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.events.EventType');
+goog.require('goog.math.Coordinate');
 goog.require('goog.userAgent');
-goog.require('goog.userAgent.product.isVersion');
 
 
 /**
@@ -186,7 +184,7 @@ bot.action.selectOptionElement_ = function(element, selected) {
  *     what a user would consider "selected".
  */
 bot.action.setSelected = function(element, selected) {
-  // TODO(user): Fire more than just change events: mousemove, keydown, etc?
+  // TODO(gdennis): Fire more than just change events: mousemove, keydown, etc?
   bot.action.isInteractable_(element, true);
 
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
@@ -223,20 +221,19 @@ bot.action.toggle = function(element) {
 /**
  * Focuses on the given element if it is not already the active element. If
  * a focus change is required, the active element will be blurred before
- * focusing on the given element. This function will be a no-op if
  * focusing on the given element.
  * @param {!Element} element The element to focus on.
  * @param {Element=} opt_activeElement The currently active element. If
  *     provided, and different from {@code element}, the active element will
  *     be blurred before focusing on the element.
- * @see bot.dom.isFocusable
  */
+
 bot.action.focusOnElement = function(element, opt_activeElement) {
   bot.action.isInteractable_(element, true);
   var activeElement = opt_activeElement || bot.dom.getActiveElement(element);
 
   if (element != activeElement) {
-    // NOTE(user): This check is for browsers that do not support the
+    // NOTE(jleyba): This check is for browsers that do not support the
     // document.activeElement property, like Safari 3. Interestingly,
     // Safari 3 implicitly blurs the activeElement when we call focus()
     // below, so the blur event still fires on the activeElement.
@@ -258,7 +255,7 @@ bot.action.focusOnElement = function(element, opt_activeElement) {
       }
     }
     // In IE, blur and focus events fire asynchronously.
-    // TODO(user): Does this mean we've entered callback territory?
+    // TODO(jleyba): Does this mean we've entered callback territory?
     if (goog.isFunction(element.focus) ||
         goog.userAgent.IE && goog.isObject(element.focus)) {
       element.focus();
@@ -278,7 +275,7 @@ bot.action.clear = function(element) {
   bot.action.isInteractable_(element, true);
   if (!bot.dom.isEditable(element)) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
-        'Element is readonly and may not be cleared.');
+        'Element cannot contain user-editable text');
   }
 
   bot.action.focusOnElement(element);
@@ -297,7 +294,7 @@ bot.action.clear = function(element) {
  * is listed again or the function ends.
  *
  * Example:
- *   bot.action.type(element, 'ab', bot.Keyboard.Key.LEFT,
+ *   bot.keys.type(element, 'ab', bot.Keyboard.Key.LEFT,
  *                 bot.Keyboard.Key.DELETE, bot.Keyboard.Key.SHIFT, 'cd');
  *
  * @param {!Element} element The element receiving the event.
@@ -341,22 +338,6 @@ bot.action.type = function(element, var_args) {
       keyboard.releaseKey(key);
     }
   });
-};
-
-
-/**
- * @param {!Element} element The element to check.
- * @return {boolean} Whether the element blocks js execution when mouse down
- *     fires on an option.
- * @private
- */
-bot.action.blocksOnMouseDown_ = function(element) {
-  var isFirefox3 = goog.userAgent.GECKO && !bot.userAgent.isVersion(4);
-
-  if (goog.userAgent.WEBKIT || isFirefox3) {
-    var tagName = element.tagName.toLowerCase();
-    return ('option' == tagName || 'select' == tagName);
-  }
 };
 
 
@@ -440,105 +421,6 @@ bot.action.submitForm_ = function(form) {
 
 
 /**
- * @param {Node} element The element to check.
- * @return {boolean} Whether the element is a submit element in form.
- * @private
- */
-bot.action.isFormSubmitElement_ = function(element) {
-  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
-    var type = element.type.toLowerCase();
-    if (type == 'submit' || type == 'image') {
-      return true;
-    }
-  }
-
-  if (bot.dom.isElement(element, goog.dom.TagName.BUTTON)) {
-    var buttonType = element.type.toLowerCase();
-    if (buttonType == 'submit') {
-      return true;
-    }
-  }
-  return false;
-};
-
-
-/**
- * @param {!Element} element The element to check.
- * @return {boolean} Whether the element blocks js execution when mouse down
- *     fires on an option.
- * @private
- */
-bot.action.blocksOnMouseDown_ = function(element) {
-  var isFirefox3 = goog.userAgent.GECKO && !bot.userAgent.isVersion(4);
-
-  if (goog.userAgent.WEBKIT || isFirefox3) {
-    var tagName = element.tagName.toLowerCase();
-    return ('option' == tagName || 'select' == tagName);
-  }
-
-  return false;
-};
-
-
-/**
- * @return {boolean} Whether synthesized events are trusted to update INPUTs.
- * @private
- */
-bot.action.areSynthesisedEventsTrusted_ = function() {
-  return !goog.userAgent.IE &&
-      (goog.userAgent.GECKO &&
-       bot.isFirefoxExtension() && bot.userAgent.isVersion(4));
-};
-
-
-/**
- * @return {boolean} Whether synthesized events can cause new windows to open.
- * @private
- */
-bot.action.synthesisedEventsCanOpenJavascriptWindows_ = function() {
-  return goog.userAgent.GECKO && bot.isFirefoxExtension();
-};
-
-
-/**
- * @return {boolean} Whether a synthesized event is expected to cause hash
- *     changes in the current URL.
- * @private
- */
-bot.action.synthesisedEventsCanCauseHashChanges_ = function() {
-  return bot.action.synthesisedEventsCanOpenJavascriptWindows_();
-};
-
-
-/**
- *
- *
- * @param {!Element} anchorElement The element to consider.
- * @return {!string} The URL that the document owning the link element is on.
- * @private
- */
-bot.action.getSourceUrlOfLink_ = function(anchorElement) {
-  var owner = goog.dom.getWindow(goog.dom.getOwnerDocument(anchorElement));
-  return owner.location.href;
-};
-
-
-/**
- * @param {!Element} anchorElement The element to consider.
- * @return {!boolean} Whether navigating between the two URLs is only a change
- *     in hash, indicating that a new HTTP request should not be made for the
- *     navigation.
- * @private
- */
-bot.action.isOnlyHashChange_ = function(anchorElement) {
-  var sourceUrl = bot.action.getSourceUrlOfLink_(anchorElement);
-  var destinationUrl =
-      goog.Uri.resolve(sourceUrl, anchorElement.href).toString();
-  return sourceUrl.split('#')[0] === destinationUrl.split('#')[0];
-};
-
-
-/**
  * Simulates a click sequence on the given {@code element}. A click sequence
  * is defined as the following events:
  * <ol>
@@ -562,6 +444,48 @@ bot.action.isOnlyHashChange_ = function(anchorElement) {
  *   target.
  */
 bot.action.click = function(element, opt_coords) {
+  bot.action.click_(element, bot.Mouse.Button.LEFT, opt_coords);
+};
+
+
+/**
+ * Simulates a right click sequence on the given {@code element}. A click
+ * sequence is defined as the following events:
+ * <ol>
+ * <li>mouseover</li>
+ * <li>mousemove</li>
+ * <li>mousedown</li>
+ * <li>blur[1]</li>
+ * <li>focus[1]</li>
+ * <li>mouseup</li>
+ * <li>contextmenu</li>
+ * </ol>
+ *
+ * <p/>[1] The "blur" and "focus" events are only generated if the {@code
+ * element} does not already have focus. The blur event will be fired on the
+ * currently focused element, and the focus event on the click target.
+ *
+ * <p/>Throws an exception if the element is not shown or is disabled.
+ *
+ * @param {!Element} element The element to click.
+ * @param {goog.math.Coordinate=} opt_coords Mouse position related to the
+ *   target.
+ */
+bot.action.rightClick = function(element, opt_coords) {
+  bot.action.click_(element, bot.Mouse.Button.RIGHT, opt_coords);
+};
+
+
+/**
+ * A helper function for left and right click.
+ *
+ * @param {!Element} element The element to click.
+ * @param {!bot.Mouse.Button} button Mouse button.
+ * @param {goog.math.Coordinate=} opt_coords Mouse position related to the
+ *   target.
+ * @private
+ */
+bot.action.click_ = function(element, button, opt_coords) {
   if (!bot.dom.isShown(element, true)) {
     throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and may not be manipulated');
@@ -574,7 +498,7 @@ bot.action.click = function(element, opt_coords) {
   goog.style.scrollIntoContainerView(element,
       goog.userAgent.WEBKIT ? doc.body : doc.documentElement);
 
-  // NOTE(user): Ideally, we would check that any provided coordinates fall
+  // NOTE(gdennis): Ideally, we would check that any provided coordinates fall
   // within the bounds of the element, but this has proven difficult, because:
   // (1) Browsers sometimes lie about the true size of elements, e.g. when text
   // overflows the bounding box of an element, browsers report the size of the
@@ -587,221 +511,13 @@ bot.action.click = function(element, opt_coords) {
     opt_coords = new goog.math.Coordinate(size.width / 2, size.height / 2);
   }
 
-  // TODO(user): Should we also handle clicking on an image map as well?
-  // It's easy to link to the map, but non trivial to find out which area to
-  // trigger.
+  var mouse = new bot.Mouse(bot.action.isInteractable_);
+  mouse.move(element, opt_coords);
 
-  var parent = bot.dom.getParentElement(element);
-
-  // Use string properties for indices so that the compiler does not
-  // obfuscate them.
-  var coords = {
-    'x': size.width / 2,
-    'y': size.height / 2,
-    'button': undefined,
-    'bubble': undefined,
-    'alt': undefined,
-    'control': undefined,
-    'shift': undefined,
-    'meta': undefined,
-    'related': parent
-  };
-
-  var originalState = bot.action.isSelectable(element) &&
-      bot.action.isSelected(element);
-
-  // Abort the click sequence if any of the event listeners hide
-  // the element. Open question: the remaining click events should be fired
-  // somewhere, but where?
-  bot.events.fire(
-      element, goog.events.EventType.MOUSEOVER, {'related': parent});
-  if (!bot.action.isInteractable_(element)) {
-    return;
-  }
-
-  bot.events.fire(element, goog.events.EventType.MOUSEMOVE, coords);
-  if (!bot.action.isInteractable_(element)) {
-    return;
-  }
-
-  // Hilariously, if this is an option on a webkit-based browser, this mouse
-  //down will cause  the select to open and block the remaining execution.
-  var performFocus = true;
-  if (bot.action.blocksOnMouseDown_(element)) {
-    // TODO(simon): we should be doing better than this.
-  } else {
-    performFocus = bot.events.fire(
-        element, goog.events.EventType.MOUSEDOWN, coords);
-  }
-  if (!bot.action.isInteractable_(element)) {
-    return;
-  }
-
-  if (performFocus) {
+  var performFocus = mouse.pressButton(button);
+  if (performFocus && bot.action.isInteractable_(element)) {
     bot.action.focusOnElement(element, activeElement);
-    if (!bot.action.isInteractable_(element)) {
-      return;
-    }
   }
 
-  bot.events.fire(element, goog.events.EventType.MOUSEUP, coords);
-  if (!bot.action.isInteractable_(element)) {
-    return;
-  }
-
-  // bot.events.fire(element, 'click') can trigger all onclick events, but may
-  // not follow links (FORM.action or A.href).
-  //     TAG      IE   GECKO  WebKit Opera
-  // A(href)      No    No     Yes    Yes
-  // FORM(action) No    Yes    Yes    Yes
-  var targetLink = null;
-  var targetButton = null;
-  var explicitFollow = (goog.userAgent.IE || goog.userAgent.GECKO) &&
-      !bot.action.areSynthesisedEventsTrusted_();
-  if (explicitFollow) {
-    for (var e = element; e; e = e.parentNode) {
-      if (bot.dom.isElement(e, goog.dom.TagName.A)) {
-        targetLink = /**@type {!Element}*/ (e);
-        break;
-      } else if (bot.action.isFormSubmitElement_(e)) {
-        targetButton = e;
-        break;
-      }
-    }
-  }
-
-  // NOTE(wmyaoyao): Clicking on a form submit button is a little broken:
-  // (1) When clicking a form submit button in IE, firing a click event or
-  // calling Form.submit() will not by itself submit the form, so we call
-  // Element.click() explicitly, but as a result, the coordinates of the click
-  // event are not provided. Also, when clicking on an <input type=image>, the
-  // coordinates click that are submitted with the form are always (0, 0).
-  // (2) When clicking a form submit button in GECKO, while the coordinates of
-  // the click event are correct, those submitted with the form are always (0,0)
-  // .
-  // TODO(user): See if either of these can be resolved, perhaps by adding
-  // hidden form elements with the coordinates before the form is submitted.
-  if (goog.userAgent.IE && targetButton) {
-    targetButton.click();
-    return;
-  }
-
-  var performDefault =
-      bot.events.fire(element, goog.events.EventType.CLICK, coords);
-
-  if (!performDefault) {
-    return;
-  }
-
-  if (!bot.action.areSynthesisedEventsTrusted_()) {
-    if (targetLink && targetLink.href &&
-        !(targetLink.target &&
-            bot.action.synthesisedEventsCanOpenJavascriptWindows_()) &&
-        !(bot.action.isOnlyHashChange_(targetLink) &&
-            bot.action.synthesisedEventsCanCauseHashChanges_())) {
-      bot.action.followHref_(targetLink);
-    }
-  }
-
-  if (bot.dom.isShown(element, /*ignoreOpacity=*/true) &&
-      bot.action.isSelectable(element) &&
-      bot.dom.isEnabled(element)) {
-    // If this is a radio button, a second click should not disable it.
-    if (element.tagName.toLowerCase() == 'input' && element.type &&
-        element.type.toLowerCase() == 'radio' &&
-        bot.action.isSelected(element)) {
-      return;
-    }
-
-    var select = (/** @type {!Element} */
-        goog.dom.getAncestor(element, bot.action.isSelectElement_));
-    if (!select || select.multiple || !originalState) {
-      bot.action.setSelected(element, !originalState);
-    }
-  }
+  mouse.releaseButton();
 };
-
-
-/**
- * Explicitly follows the href of an anchor.
- *
- * @param {!Element} anchorElement An anchor element.
- * @private
- */
-bot.action.followHref_ = function(anchorElement) {
-  var targetHref = anchorElement.href;
-  var owner = goog.dom.getWindow(goog.dom.getOwnerDocument(anchorElement));
-
-  // IE7 and earlier incorrect resolve a relative href against the top window
-  // location instead of the window to which the href is assigned. As a result,
-  // we have to resolve the relative URL ourselves. We do not use Closure's
-  // goog.Uri to resolve, because it incorrectly fails to support empty but
-  // undefined query and fragment components and re-encodes the given url.
-  if (goog.userAgent.IE && !goog.userAgent.isVersion(8)) {
-    targetHref = bot.action.resolveUrl_(owner.location, targetHref);
-  }
-
-  if (anchorElement.target) {
-    owner.open(targetHref, anchorElement.target);
-  } else {
-    owner.location.href = targetHref;
-  }
-};
-
-
-/**
- * Regular expression for splitting up a URL into components.
- * @type {!RegExp}
- * @private
- */
-bot.action.URL_REGEXP_ = new RegExp(
-    '^' +
-    '([^:/?#.]+:)?' +   // protocol
-    '(?://([^/]*))?' +  // host
-    '([^?#]+)?' +       // pathname
-    '(\\?[^#]*)?' +     // search
-    '(#.*)?' +          // hash
-    '$');
-
-
-/**
- * Resolves a potentially relative URL against a base location.
- * @param {!Location} base Base location against which to resolve.
- * @param {string} rel Url to resolve against the location.
- * @return {string} Resolution of url against base location.
- * @private
- */
-bot.action.resolveUrl_ = function(base, rel) {
-  var m = rel.match(bot.action.URL_REGEXP_);
-  if (!m) {
-    return '';
-  }
-  var target = {
-    protocol: m[1] || '',
-    host: m[2] || '',
-    pathname: m[3] || '',
-    search: m[4] || '',
-    hash: m[5] || ''
-  };
-
-  if (!target.protocol) {
-    target.protocol = base.protocol;
-    if (!target.host) {
-      target.host = base.host;
-      if (!target.pathname) {
-        target.pathname = base.pathname;
-        target.search = target.search || base.search;
-      } else if (target.pathname.charAt(0) != '/') {
-        var lastSlashIndex = base.pathname.lastIndexOf('/');
-        if (lastSlashIndex != -1) {
-          var directory = base.pathname.substr(0, lastSlashIndex + 1);
-          target.pathname = directory + target.pathname;
-        }
-      }
-    }
-  }
-
-  return target.protocol + '//' + target.host + target.pathname +
-      target.search + target.hash;
-};
-

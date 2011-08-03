@@ -34,7 +34,7 @@ function SyntheticMouse() {
       [CI.nsISupports, CI.wdIMouse]);
 
   // Declare the state we'll be using
-  this.buttonDown = bot.events.Button.NONE;
+  this.buttonDown = bot.Mouse.Button.NONE;
   this.lastElement = null;
 }
 
@@ -72,19 +72,24 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   // TODO(simon): find the current "body" element iff element == null
   var element = target ? 
       webdriver.firefox.utils.unwrap(target) : this.lastElement;
-  
+
+   if (goog.isFunction(element.scrollIntoView)) {
+    element.scrollIntoView();
+  }
+
   if (this.lastElement && element && this.lastElement != element) {
     var currLoc = Utils.getElementLocation(this.lastElement);
     var targetLoc = Utils.getElementLocation(element);
     xOffset += targetLoc['x'] - currLoc['x'];
     yOffset += targetLoc['y'] - currLoc['y'];
   }
+
   this.lastElement = element;
-  
-  if (goog.isFunction(element.scrollIntoView)) {
-    element.scrollIntoView();
-  }
-  
+  this.lastElement = element;
+  var pos = Utils.getElementLocation(element);
+  var owner = goog.dom.getOwnerDocument(element);
+  bot.setWindow(goog.dom.getWindow(owner));
+
   // Which element shall we pretend to be leaving?
   var parent = bot.dom.getParentElement(element);
 
@@ -99,8 +104,8 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
 
   var button = this.buttonDown;
   var botCoords = {
-    'x': 0,
-    'y': 0,
+    'clientX': pos.x,
+    'clientY': pos.y,
     'button': button,
     'related': parent
   };
@@ -108,20 +113,21 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   var intermediateSteps = 3;
   var xInc = Math.floor(xOffset / intermediateSteps);
   var yInc = Math.floor(yOffset / intermediateSteps);
-  var currX = 0;
-  var currY = 0;
+  var currX = pos.x;
+  var currY = pos.y;
 
   var proceed = fireAndCheck(parent, goog.events.EventType.MOUSEOUT, {'related': element}) &&
       fireAndCheck(element, goog.events.EventType.MOUSEOVER, botCoords);
     for (var i = 0; i < intermediateSteps && proceed; i++) {
-      botCoords['x'] = xInc;  currX += xInc;
-      botCoords['y'] = yInc;  currY += yInc;
+      botCoords['clientX'] = xInc + currX;  currX += xInc;
+      botCoords['clientY'] = yInc + currY;  currY += yInc;
       proceed = fireAndCheck(element, goog.events.EventType.MOUSEMOVE, botCoords);
   }
-  
-  botCoords['x'] = xOffset - currX;
-  botCoords['y'] = yOffset - currY;
-  
+
+
+  botCoords['clientX'] = (pos.x + xOffset);
+  botCoords['clientY'] = (pos.y + yOffset);
+
   proceed = fireAndCheck(element, goog.events.EventType.MOUSEMOVE, botCoords);
 
   if (!proceed || !bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
@@ -149,7 +155,6 @@ SyntheticMouse.prototype.click = function(target) {
   // select, then click on the select first.
   var tagName = element.tagName.toLowerCase();
   if ("option" == tagName) {
-    Logger.dumpn("Looks like an option element");
     var parent = element;
     while (parent.parentNode != null && parent.tagName.toLowerCase() != "select") {
       parent = parent.parentNode;
@@ -182,9 +187,9 @@ SyntheticMouse.prototype.doubleClick = function(target) {
   // TODO(simon): This implementation isn't good enough.
   var size = goog.style.getSize(element);
   var botCoords = {
-    x: Math.floor(size.width / 2),
-    y: Math.floor(size.height / 2),
-    button: bot.events.Button.LEFT
+    clientX: Math.floor(size.width / 2),
+    clientY: Math.floor(size.height / 2),
+    button: bot.Mouse.Button.LEFT
   };
   bot.events.fire(element, goog.events.EventType.DBLCLICK, botCoords);
 
@@ -194,15 +199,16 @@ SyntheticMouse.prototype.doubleClick = function(target) {
 
 SyntheticMouse.prototype.down = function(coordinates) {
   var element = this.getElement_(coordinates);
-  
+
+  var pos = goog.style.getClientPosition(element);
+
   // TODO(simon): This implementation isn't good enough. Again
   // Defaults to left mouse button, which is right.
-  Logger.dumpn("Mouse down.");
-  this.buttonDown = bot.events.Button.LEFT;
+  this.buttonDown = bot.Mouse.Button.LEFT;
   var botCoords = {
-    'x': coordinates['x'],
-    'y': coordinates['y'],
-    'button': bot.events.Button.LEFT
+    'clientX': coordinates['x'] + pos.x,
+    'clientY': coordinates['y'] + pos.y,
+    'button': bot.Mouse.Button.LEFT
   }
   bot.events.fire(element, goog.events.EventType.MOUSEDOWN, botCoords);
 
@@ -212,19 +218,21 @@ SyntheticMouse.prototype.down = function(coordinates) {
 
 SyntheticMouse.prototype.up = function(coordinates) {
   var element = this.getElement_(coordinates);
-  
+
+  var pos = goog.style.getClientPosition(element);
+
   // TODO(simon): This implementation isn't good enough. Again
   // Defaults to left mouse button, which is the correct one.
   var button = this.buttonDown;
   var botCoords = {
-    'x': coordinates['x'],
-    'y': coordinates['y'],
+    'clientX': coordinates['x'] + pos.x,
+    'clientY': coordinates['y'] + pos.y,
     'button': button
   };
   bot.events.fire(element, goog.events.EventType.MOUSEMOVE, botCoords);
   bot.events.fire(element, goog.events.EventType.MOUSEUP, botCoords);
   
-  this.buttonDown = bot.events.Button.NONE;
+  this.buttonDown = bot.Mouse.Button.NONE;
 
   return this.newResponse(ErrorCode.SUCCESS, "ok");
 };

@@ -3,8 +3,9 @@
     <title>select_test</title>
     <script type="text/javascript" src="../../webdriver-bootstrap.js"></script>
     <script type="text/javascript">
-        goog.require('goog.testing.jsunit');
+        goog.require('bot.locators');
         goog.require('core.select');
+        goog.require('goog.testing.jsunit');
     </script>
 
     <script type="text/javascript">
@@ -17,6 +18,7 @@
         }
 
         function testCanGetSelectedLabel() {
+          bot.locators.findElement({id: 'o2'}).selected = true;
           var label = core.select.getSelectedText("theSelect");
           assertEquals("Second Option", label);
 
