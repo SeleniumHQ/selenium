@@ -207,7 +207,6 @@ public class FirefoxProfileTest extends TestCase {
 
     List<String> prefLines = new ArrayList<String>();
     for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-      System.out.println("line = " + line);
       prefLines.add(line);
     }
 
