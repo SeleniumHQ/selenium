@@ -53,5 +53,6 @@
 	<classpathentry kind="lib" path="third_party/java/opera-driver/webdriver-opera-v0.5.2.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jmock/jmock-junit4-2.5.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jmock/jmock-2.5.1.jar"/>
+	<classpathentry kind="lib" path="third_party/java/google-protobuffers/protobuf-java-2.3.0.jar"/>
 	<classpathentry kind="output" path="out/production/selenium"/>
 </classpath>
