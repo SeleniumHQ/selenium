@@ -114,7 +114,7 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
   }
 
   @Test
-  @JavascriptEnabled          
+  @JavascriptEnabled
   @Ignore({ANDROID, CHROME, IE, IPHONE, SELENESE})
   public void testShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting() {
     driver.get(pages.dynamicPage);
