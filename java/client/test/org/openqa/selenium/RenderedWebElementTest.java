@@ -87,7 +87,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({CHROME, IPHONE, SELENESE, HTMLUNIT, OPERA})
+  @Ignore({CHROME, IPHONE, SELENESE, OPERA})
   public void testShouldAllowUsersToHoverOverElements() {
     if (!hasInputDevices()) {
       return;
@@ -164,7 +164,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT}, reason = "Not implemented in HtmlUnit yet.")
+  @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
   public void testMovingMouseByRelativeOffset() {
     if (!hasInputDevices() || !supportsNativeEvents()) {
       System.out.println(
@@ -188,7 +188,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT}, reason = "Not implemented in HtmlUnit yet.")
+  @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
   public void testMovingMouseToRelativeElementOffset() {
     if (!hasInputDevices() || !supportsNativeEvents()) {
       System.out.println(
@@ -210,7 +210,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @NeedsFreshDriver
-  @Ignore(value = {HTMLUNIT}, reason = "Not implemented in HtmlUnit yet.")
+  @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
   public void testMoveRelativeToBody() {
     if (!hasInputDevices() || !supportsNativeEvents()) {
       System.out.println(

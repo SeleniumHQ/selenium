@@ -435,6 +435,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertEquals("", body.getText());
   }
 
+  @JavascriptEnabled
   @Ignore
   public void testShouldBeAbleToReturnAnArrayOfWebElements() {
     driver.get(pages.formPage);

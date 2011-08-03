@@ -212,7 +212,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(element.getAttribute("rows"), is("5"));
   }
 
-  @Ignore({FIREFOX, HTMLUNIT})
+  @Ignore(FIREFOX)
   public void testCanReturnATextApproximationOfTheStyleAttribute() {
     driver.get(pages.javascriptPage);
 

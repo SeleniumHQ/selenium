@@ -20,14 +20,13 @@ package org.openqa.selenium;
 import java.util.concurrent.Callable;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_ALERTS;
 
 import static org.openqa.selenium.TestWaiter.waitFor;
 
-@Ignore({ANDROID, HTMLUNIT, IPHONE, SELENESE})
+@Ignore({ANDROID, IPHONE, SELENESE})
 public class AlertsTest extends AbstractDriverTestCase {
 
   @Override

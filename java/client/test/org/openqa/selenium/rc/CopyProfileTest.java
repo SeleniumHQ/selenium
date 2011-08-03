@@ -16,19 +16,12 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.Ignore.Driver.OPERA;
-import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
 // TODO(reorg): This test is never run. It must be.
-
-@Ignore(value = {HTMLUNIT, IE, IPHONE, CHROME, SELENESE, OPERA},
-    reason = "Firefox specific test, but needs to be in remote")
+//Firefox specific test, but needs to be in remote
+@Ignore
 public class CopyProfileTest extends TestCase {
   private SeleniumServerInstance selenium;
   private TestEnvironment env;

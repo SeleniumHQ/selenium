@@ -30,9 +30,12 @@ import static org.openqa.selenium.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 
+@Ignore(
+    value = {HTMLUNIT, IE, CHROME, REMOTE, SELENESE},
+    reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
 public class SvgElementTest extends AbstractDriverTestCase {
 
-  @Ignore({HTMLUNIT, IE, CHROME, REMOTE, SELENESE, OPERA})
+  @Ignore(OPERA)
   public void testShouldClickOnGraphVisualElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));
@@ -69,7 +72,6 @@ public class SvgElementTest extends AbstractDriverTestCase {
     return null;
   }
 
-  @Ignore({HTMLUNIT, IE, CHROME, REMOTE, SELENESE})
   public void testShouldClickOnGraphTextElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));

@@ -50,7 +50,7 @@ public class I18nTest extends AbstractDriverTestCase {
    */
   private static final String tokyo = "東京";
 
-  @Ignore({HTMLUNIT, IE, FIREFOX, IPHONE})
+  @Ignore({IE, FIREFOX, IPHONE})
   public void testCn() {
     driver.get(pages.chinesePage);
     driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();

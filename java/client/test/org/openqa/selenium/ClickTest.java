@@ -122,7 +122,7 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({CHROME, HTMLUNIT, OPERA, SELENESE})
+  @Ignore(value = {CHROME, HTMLUNIT, OPERA, SELENESE}, reason = "Not implemented")
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
 

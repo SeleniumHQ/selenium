@@ -439,7 +439,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
+  @Ignore(value = {SELENESE, ANDROID},
           reason = "untested user agents")
   public void testFunctionKeys() {
     driver.get(pages.javascriptPage);
@@ -602,7 +602,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, SELENESE, CHROME, OPERA})
+  @Ignore(value = {IE, SELENESE, CHROME, OPERA})
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 

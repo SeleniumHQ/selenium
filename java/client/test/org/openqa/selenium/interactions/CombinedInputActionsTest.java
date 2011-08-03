@@ -28,8 +28,8 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
 
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -47,7 +47,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
   //TODO: Check if this could work in any browser without native events. 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
+  @Ignore
   public void testClickingOnFormElements() {
     driver.get(pages.formSelectionPage);
 
@@ -115,7 +115,9 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
   
-  @Ignore({OPERA, HTMLUNIT, SELENESE})
+  @Ignore(
+      value = {OPERA, HTMLUNIT, SELENESE},
+      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(appServer.whereIs("clicks.html"));
 

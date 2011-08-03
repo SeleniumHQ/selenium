@@ -86,7 +86,9 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
+  @Ignore(
+      value = {HTMLUNIT, ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA},
+      reason = "Advanced mouse actions only implemented in rendered browsers")
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
   public void testDraggingElementWithMouseFiresEvents() {

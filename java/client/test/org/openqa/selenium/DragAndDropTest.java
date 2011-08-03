@@ -33,12 +33,12 @@ import java.util.regex.Pattern;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 
-@Ignore({IPHONE, ANDROID})
+@Ignore(
+    value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE},
+    reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
 public class DragAndDropTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, CHROME, SELENESE, OPERA},
-      reason = "Opera: last assert fails in desktop because <5px mousemove")
   public void testDragAndDrop() throws Exception {
     if (Platform.getCurrent().is(LINUX) && isNativeEventsEnabled()) {
       System.out.println("Skipping test: fails with native events on linux");
@@ -59,7 +59,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, CHROME, SELENESE, FIREFOX, OPERA}, reason = "Currently broken in Firefox," +
+  @Ignore(value = FIREFOX, reason = "Currently broken in Firefox," +
       " fix tracked in issue 1771.")
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
@@ -70,7 +70,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, CHROME, OPERA, SELENESE})
   public void testElementInDiv() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
@@ -80,7 +79,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE, CHROME, OPERA, SELENESE})
+  @Ignore(IE)
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
@@ -104,7 +103,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, CHROME, OPERA, SELENESE, FIREFOX}, reason = "See issue 1771.")
+  @Ignore(value = {IE, FIREFOX}, reason = "See issue 1771.")
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
@@ -133,7 +132,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, CHROME, IE, OPERA, SELENESE})
+  @Ignore(IE)
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
 

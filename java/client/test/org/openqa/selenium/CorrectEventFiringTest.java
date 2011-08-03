@@ -102,7 +102,9 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, HTMLUNIT})
+  @Ignore(
+      value = {SELENESE, HTMLUNIT},
+      reason = "HtmlUnit: See issue 2187")
   public void testShouldNotThrowIfEventHandlerThrows() {
     driver.get(pages.javascriptPage);
 
@@ -350,7 +352,9 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     return waitFor(elementToExist(driver, elementId)).getText();
   }
 
-  @Ignore({CHROME, HTMLUNIT, SELENESE, ANDROID})
+  @Ignore(
+      value = {CHROME, HTMLUNIT, SELENESE, ANDROID},
+      reason = "Not implemented")
   public void testShouldReportTheXAndYCoordinatesWhenClicking() {
     driver.get(pages.javascriptPage);
 
