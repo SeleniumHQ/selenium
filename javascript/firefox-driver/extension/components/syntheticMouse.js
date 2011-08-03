@@ -135,7 +135,10 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
 
 
 SyntheticMouse.prototype.click = function(target) {
-  var element = target ? webdriver.firefox.utils.unwrap(target) : this.lastElement;
+
+  // No need to unwrap the target. All information is provided by the wrapped
+  // version, and unwrapping does not work for all firefox versions.
+  var element = target ? target : this.lastElement;
 
   var error = this.isElementShown(element);
   if (error) {
@@ -158,15 +161,8 @@ SyntheticMouse.prototype.click = function(target) {
   }
 
   Logger.dumpn("About to do a bot.action.click on " + element);
-  try {
-    bot.action.click(target);
-  } catch (notShown) {
-    // TODO(simon): This is the lamest bit of code I've written today. Stop being lame.
-    // I suspect that we're not consistently storing the reference to the
-    // element correctly, as this path is only reached if "this.lastElement" needs 
-    // unwrapping on versions of firefox prior to 4.
-    bot.action.click(element);
-  }
+  bot.action.click(element);
+
   return this.newResponse(ErrorCode.SUCCESS, "ok");
 };
 
