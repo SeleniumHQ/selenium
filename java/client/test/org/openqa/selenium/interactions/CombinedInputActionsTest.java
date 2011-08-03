@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
-import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.Keys;
