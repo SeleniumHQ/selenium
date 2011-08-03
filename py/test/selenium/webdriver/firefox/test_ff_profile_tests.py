@@ -44,6 +44,13 @@ class TestFirefoxProfile:
         self.driver.quit()
         assert not os.path.exists(path)
 
+    def test_profiles_do_not_share_preferences(self):
+        self.profile1 = webdriver.FirefoxProfile()
+        self.profile1.accept_untrusted_certs = False
+        self.profile2 = webdriver.FirefoxProfile()
+        # Default is true. Should remain so.
+        assert self.profile2.default_preferences["webdriver_accept_untrusted_certs"] == 'true'
+
     def teardown_method(self, method):
         try:
             self.driver.quit()

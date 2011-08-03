@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+import copy
 import tempfile
 import os
 import logging
@@ -29,7 +29,7 @@ EXTENSION_NAME = "fxdriver@googlecode.com"
 class FirefoxProfile(object):
 
     ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
-    default_preferences = {
+    DEFAULT_PREFERENCES = {
         "app.update.auto": "false",
         "app.update.enabled": "false",
         "browser.startup.page" : "0",
@@ -84,6 +84,7 @@ class FirefoxProfile(object):
                                 This defaults to None and will create a new
                                 directory when object is created.
         """
+        self.default_preferences = copy.deepcopy(FirefoxProfile.DEFAULT_PREFERENCES)
         self.profile_dir = profile_directory
         if self.profile_dir is None:
             self.profile_dir = self._create_tempfolder()
