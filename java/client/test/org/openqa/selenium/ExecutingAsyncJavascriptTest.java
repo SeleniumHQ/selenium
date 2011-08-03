@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -15,8 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Ignore(value = {IE, CHROME, OPERA},
-    reason = "IE: Every test appears to be failing. Chrome, Opera: not implemented yet")
+@Ignore(value = {IE, OPERA},
+    reason = "IE: Every test appears to be failing. Opera: not implemented yet")
 public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 
   private JavascriptExecutor executor;
@@ -194,9 +193,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(value = {ANDROID, CHROME},
-      reason = "Android: Emulator is too slow and latency causes test to fall out of sync with app;"
-          + "Chrome: Click is not working")
+  @Ignore(value = {ANDROID},
+      reason = "Android: Emulator is too slow and latency causes test to fall out of sync with app;")
   @JavascriptEnabled @Test
   public void shouldBeAbleToExecuteAsynchronousScripts() {
     driver.get(pages.ajaxyPage);

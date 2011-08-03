@@ -178,7 +178,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, IPHONE, SELENESE})
+  @Ignore(value = {IPHONE, SELENESE})
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
     //Intentionally not looking up the select tag.  See selenium r7937 for details.
@@ -353,7 +353,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @Ignore(
-      value = {CHROME, HTMLUNIT, SELENESE, ANDROID},
+      value = {HTMLUNIT, SELENESE, ANDROID},
       reason = "Not implemented")
   public void testShouldReportTheXAndYCoordinatesWhenClicking() {
     driver.get(pages.javascriptPage);

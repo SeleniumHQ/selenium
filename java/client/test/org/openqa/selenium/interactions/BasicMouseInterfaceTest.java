@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -78,7 +77,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
+  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE, OPERA})
   public void testDraggingElementWithMouseMovesItToAnotherList() {
     performDragAndDropWithMouse();
     WebElement dragInto = driver.findElement(By.id("sortable1"));
@@ -87,7 +86,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA},
+      value = {HTMLUNIT, ANDROID, IE, REMOTE, IPHONE, SELENESE, OPERA},
       reason = "Advanced mouse actions only implemented in rendered browsers")
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
@@ -109,7 +108,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
+  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE, OPERA})
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
 
@@ -145,7 +144,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
+  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, SELENESE, OPERA})
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 
@@ -159,7 +158,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
+  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, SELENESE, OPERA})
   public void testContextClick() {
     driver.get(pages.javascriptPage);
 
@@ -173,7 +172,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
+  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE, OPERA})
   public void testMoveAndClick() {
     driver.get(pages.javascriptPage);
 
@@ -190,7 +189,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, CHROME, SELENESE, OPERA})
+  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, SELENESE, OPERA})
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
 
@@ -211,7 +210,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(value = {ANDROID, CHROME, IE, HTMLUNIT, IPHONE, CHROME, REMOTE, SELENESE},
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE},
       reason = "Behaviour not finalized yet regarding linked images.")
   public void testMovingIntoAnImageEnclosedInALink() {
     driver.get(pages.linkedImage);

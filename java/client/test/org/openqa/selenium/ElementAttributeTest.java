@@ -40,7 +40,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(attribute, is(nullValue()));
   }
 
-  @Ignore({CHROME, OPERA})
+  @Ignore(OPERA)
   public void testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag() {
       driver.get(pages.simpleTestPage);
       WebElement img = driver.findElement(By.id("validImgTag"));
@@ -48,7 +48,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
       assertThat(attribute, equalTo(appServer.whereIs("icon.gif")));
     }
 
-  @Ignore({CHROME, OPERA})
+  @Ignore(OPERA)
   public void testShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag() {
       driver.get(pages.simpleTestPage);
       WebElement img = driver.findElement(By.id("validAnchorTag"));

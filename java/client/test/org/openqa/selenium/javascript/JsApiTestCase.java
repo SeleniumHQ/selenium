@@ -1,6 +1,5 @@
 package org.openqa.selenium.javascript;
 
-import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -17,7 +16,7 @@ import org.openqa.selenium.JavascriptExecutor;
  *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
-@Ignore(value = { HTMLUNIT, IE, IPHONE, CHROME, REMOTE, OPERA })
+@Ignore(value = { HTMLUNIT, IE, IPHONE, REMOTE, OPERA })
 public class JsApiTestCase extends AbstractDriverTestCase {
 
   private static final long TWO_MINUTES = 2 * 60 * 1000;

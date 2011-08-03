@@ -34,7 +34,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 
 @Ignore(
-    value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE},
+    value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SELENESE},
     reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
 public class DragAndDropTest extends AbstractDriverTestCase {
 
@@ -79,7 +79,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
+  @Ignore({CHROME, IE})
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));

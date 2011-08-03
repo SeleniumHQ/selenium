@@ -47,7 +47,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     assertThat(option.isSelected(), is(true));
   }
 
-  @Ignore({CHROME, OPERA, SELENESE})
+  @Ignore({OPERA, SELENESE})
   public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
@@ -62,7 +62,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     assertThat(two.isSelected(), is(true));
   }
 
-  @Ignore({CHROME, SELENESE})
+  @Ignore(SELENESE)
   public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 

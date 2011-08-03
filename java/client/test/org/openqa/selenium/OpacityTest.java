@@ -18,7 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
@@ -33,7 +32,7 @@ public class OpacityTest extends AbstractDriverTestCase {
    *   http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
   @JavascriptEnabled
-  @Ignore({CHROME, IE, SELENESE, OPERA})
+  @Ignore({IE, SELENESE, OPERA})
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
 
@@ -49,7 +48,7 @@ public class OpacityTest extends AbstractDriverTestCase {
    *   http://code.google.com/p/selenium/issues/detail?id=1941</a>
    */
   @JavascriptEnabled
-  @Ignore({CHROME, HTMLUNIT, IE, SELENESE, OPERA})
+  @Ignore({HTMLUNIT, IE, SELENESE, OPERA})
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);
 

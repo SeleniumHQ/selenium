@@ -187,7 +187,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(value, is("Some text"));
   }
 
-  @Ignore(value = {IE, HTMLUNIT, CHROME, SELENESE, IPHONE},
+  @Ignore(value = {IE, HTMLUNIT, SELENESE, IPHONE},
           reason = "Not implemented going to the end of the line first;\n"
                    + "  iPhone: sendKeys not implemented correctly")
   public void testSendingKeyboardEventsShouldAppendTextinTextAreas() {
