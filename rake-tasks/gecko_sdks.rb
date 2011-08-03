@@ -36,7 +36,7 @@ class GeckoSDKs
         mv File.join(destination, "xulrunner-sdk"), path
       rescue StandardError, Timeout::Error => ex
         # ignore errors - dependant targets will fall back to prebuilts
-        $stderr.puts "Failed to download the Gecko 2 SDK - manually delete #{path} to retry."
+        $stderr.puts "Failed to download the Gecko 2 SDK - manually delete #{path} to retry. (#{ex.inspect})"
 
         next
       ensure

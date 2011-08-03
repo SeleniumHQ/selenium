@@ -2,6 +2,8 @@ require "net/http"
 require "uri"
 
 class Downloader
+  class Error < StandardError; end
+
   CL_RESET = Platform.windows? ? '' : "\r\e[0K"
 
   def self.fetch(source_url, destination_path = nil)
@@ -25,7 +27,7 @@ class Downloader
   end
 
   def download!
-    Net::HTTP.get_response(@url) do |response|
+    response = Net::HTTP.get_response(@url) do |response|
       total = response.content_length
       progress = 0
       segment_count = 0
@@ -43,6 +45,10 @@ class Downloader
       end
     end
 
+    unless response.kind_of? Net::HTTPSuccess
+      raise Error, "#{response.code} for #{@url}"
+    end
+
     complete_progress
   end
 
@@ -55,6 +61,6 @@ class Downloader
   end
 
   def complete_progress
-    print CL_RESET
+    puts CL_RESET
   end
 end
