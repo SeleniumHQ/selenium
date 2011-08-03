@@ -383,10 +383,10 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
 
     WebElement killIframe = driver.findElement(By.id("killIframe"));
     killIframe.click();
-
+    driver.switchTo().defaultContent();
+    
     assertFrameNotPresent(driver, "iframe1");
 
-    driver.switchTo().defaultContent();
     WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
     addIFrame.click();
 
