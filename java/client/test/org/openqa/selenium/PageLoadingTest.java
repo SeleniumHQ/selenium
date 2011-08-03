@@ -142,7 +142,6 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
     driver.get(url);
 
-    // This should work
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
 
