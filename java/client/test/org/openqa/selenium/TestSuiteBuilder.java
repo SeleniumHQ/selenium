@@ -242,8 +242,12 @@ public class TestSuiteBuilder {
 
   private boolean isIgnored(AnnotatedElement annotatedElement) {
     Ignore ignore = annotatedElement.getAnnotation(Ignore.class);
-    if (ignore == null || ignore.value().length == 0) {
+    if (ignore == null) {
       return false;
+    }
+    
+    if (ignore.value().length == 0) {
+      return true;
     }
 
     for (Ignore.Driver value : ignore.value()) {
