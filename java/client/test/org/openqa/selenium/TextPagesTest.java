@@ -58,7 +58,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(value = {IE, IPHONE, SELENESE, OPERA}, reason =
+  @Ignore(value = {CHROME, IE, IPHONE, SELENESE, OPERA}, reason =
       "Opera: creates DOM for displaying text pages")
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);

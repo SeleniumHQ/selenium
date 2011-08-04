@@ -49,4 +49,9 @@ public class CookieTest extends TestCase {
     Cookie cookie = new Cookie("name", "value", "", "/", new Date(), true);
     assertTrue(cookie.isSecure());
   }
+  
+  public void testSecureDefaultsToFalse() {
+    Cookie cookie = new Cookie("name", "value");
+    assertFalse(cookie.isSecure());
+  }
 }

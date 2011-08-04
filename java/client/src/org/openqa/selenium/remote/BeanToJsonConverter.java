@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
@@ -181,7 +182,7 @@ public class BeanToJsonConverter {
     if (toConvert instanceof Date) {
       return TimeUnit.MILLISECONDS.toSeconds(((Date) toConvert).getTime());
     }
-
+    
     Method toJson = getToJsonMethod(toConvert);
     if (toJson != null) {
       try {
@@ -196,7 +197,7 @@ public class BeanToJsonConverter {
     }
 
     try {
-      return mapObject(toConvert, maxDepth - 1);
+      return mapObject(toConvert, maxDepth - 1, toConvert instanceof Cookie);
     } catch(Exception e) {
       throw new WebDriverException(e);
     }
@@ -214,7 +215,7 @@ public class BeanToJsonConverter {
     return null;
   }
 
-  private Object mapObject(Object toConvert, int maxDepth) throws Exception {
+  private Object mapObject(Object toConvert, int maxDepth, boolean skipNulls) throws Exception {
     if (maxDepth == 0)
         return null;
 
@@ -238,7 +239,10 @@ public class BeanToJsonConverter {
       readMethod.setAccessible(true);
 
       Object result = readMethod.invoke(toConvert);
-      mapped.put(pd.getName(), convertObject(result, maxDepth - 1));
+      result = convertObject(result, maxDepth - 1);
+      if (!skipNulls || result != JSONObject.NULL) {
+        mapped.put(pd.getName(), result);
+      }
     }
     return mapped;
   }

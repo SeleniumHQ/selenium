@@ -43,6 +43,7 @@ import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 
 public class BeanToJsonConverterTest extends TestCase {
@@ -293,7 +294,7 @@ public class BeanToJsonConverterTest extends TestCase {
 
   public void testShouldBeAbleToConvertACookie() throws JSONException {
     Date expiry = new Date();
-    Cookie cookie = new Cookie("name", "value", "domain", "/path", expiry);
+    Cookie cookie = new Cookie("name", "value", "domain", "/path", expiry, true);
 
     String jsonStr = new BeanToJsonConverter().convert(cookie);
     JSONObject json = new JSONObject(jsonStr);
@@ -302,8 +303,16 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("value", json.getString("value"));
     assertEquals("domain", json.getString("domain"));
     assertEquals("/path", json.getString("path"));
-    assertFalse(json.getBoolean("secure"));
+    assertTrue(json.getBoolean("secure"));
     assertEquals(TimeUnit.MILLISECONDS.toSeconds(expiry.getTime()), json.getLong("expiry"));
+  }
+  
+  public void testUnsetCookieFieldsAreUndefined() {
+    Cookie cookie = new Cookie("name", "value");
+    String jsonStr = new BeanToJsonConverter().convert(cookie);
+//    assertThat(jsonStr, not(containsString("path")));
+    assertThat(jsonStr, not(containsString("domain")));
+    assertThat(jsonStr, not(containsString("expiry")));
   }
 
   public void testProperlyConvertsNulls() {
