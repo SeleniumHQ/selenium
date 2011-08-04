@@ -31,6 +31,7 @@ import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -69,7 +70,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, SELENESE, OPERA})
   public void testSelectingMultipleItems() {
     driver.get(pages.selectableItemsPage);
 
