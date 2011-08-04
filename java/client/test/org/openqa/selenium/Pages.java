@@ -62,6 +62,7 @@ public class Pages {
   public String mouseTrackerPage;
   public String dynamicallyModifiedPage;
   public String linkedImage;
+  public String selectPage;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -106,5 +107,6 @@ public class Pages {
     xhtmlTestPage = appServer.whereIs("xhtmlTest.html");
     dynamicallyModifiedPage = appServer.whereIs("dynamicallyModifiedPage.html");
     linkedImage = appServer.whereIs("linked_image.html");
+    selectPage = appServer.whereIs("selectPage.html");
   }
 }

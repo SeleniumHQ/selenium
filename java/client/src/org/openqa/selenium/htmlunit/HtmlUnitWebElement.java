@@ -321,8 +321,11 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
 
     if ("multiple".equals(lowerName) && element instanceof HtmlSelect) {
-      return ((HtmlSelect) element).getMultipleAttribute() == null ?
-          "false" : "true";    	
+      String multipleAttribute  = ((HtmlSelect) element).getMultipleAttribute();
+      if ("".equals(multipleAttribute)) {
+        return Boolean.toString(element.hasAttribute("multiple"));
+      }
+      return "true";
     }
     
     for (String booleanAttribute: booleanAttributes) {
