@@ -29,6 +29,11 @@ import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -262,6 +267,48 @@ public class EventFiringWebDriverTest extends MockTestBase {
   }
 
   @Test
+  public void testShouldUnpackListOfElementArgsWhenCallingScripts() {
+    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
+    final List<Object> aList = mock(List.class);
+
+    checking(new Expectations() {{
+      one(aList).size();
+      one(mockedDriver).executeScript("foo", new Object[] {new ArrayList<Object>()});
+      }});
+
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
+    testedDriver.register(new AbstractWebDriverEventListener() {} );
+
+    try {
+      testedDriver.executeScript("foo", aList);
+    } catch (RuntimeException e) {
+      // This is the error we're trying to fix
+      throw e;
+    }
+  }
+
+  @Test
+  public void testShouldUnpackMapOfElementArgsWhenCallingScripts() {
+    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
+    final Map<Object, Object> aMap = mock(Map.class);
+
+    checking(new Expectations() {{
+        one(aMap).keySet();
+        one(mockedDriver).executeScript("foo", new Object[] {new HashMap<Object,Object>()});
+      }});
+
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
+    testedDriver.register(new AbstractWebDriverEventListener() {} );
+
+    try {
+      testedDriver.executeScript("foo", aMap);
+    } catch (RuntimeException e) {
+      // This is the error we're trying to fix
+      throw e;
+    }
+  }
+
+  @Test
   public void shouldBeAbleToWrapSubclassesOfSomethingImplementingTheWebDriverInterface() {
     try {
       new EventFiringWebDriver(new ChildDriver());
@@ -312,9 +359,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
   }
 
 
-  private static interface ExececutingDriver extends WebDriver, JavascriptExecutor {
-  }
+  private static interface ExececutingDriver extends WebDriver, JavascriptExecutor {}
 
-  private static class ChildDriver extends StubDriver {
-  }
+  private static class ChildDriver extends StubDriver {}
 }
