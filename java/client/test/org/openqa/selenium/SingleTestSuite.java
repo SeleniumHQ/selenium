@@ -53,13 +53,14 @@ public class SingleTestSuite extends TestCase {
         put(HTML_UNIT_JS, Ignore.Driver.HTMLUNIT);
         put(IE, Ignore.Driver.IE);
         put(IPHONE, Ignore.Driver.IPHONE);
+        put(OPERA, Ignore.Driver.OPERA);
         put(REMOTE, Ignore.Driver.REMOTE);
         put(REMOTE_IE, Ignore.Driver.IE);
         put(SELENIUM, Ignore.Driver.SELENESE);
       }};
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = OPERA;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -72,10 +73,14 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("AlertsTest")
+        //.onlyRun("FrameSwitchingTest")
+        //.onlyRun("SvgElementTest")
+        .onlyRun("BasicMouseInterfaceTest")
+        .onlyRun("BasicKeyboardInterfaceTest")
+        .onlyRun("BasicKeyboardInterfaceTest")
 //        .method("testShouldBeAbleToFindAnElementByCssSelector")
         .exclude(ALL)
-        .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
+//        .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
         .outputTestNames()
         .leaveRunning()
         ;  // Yeah, this look strange :)

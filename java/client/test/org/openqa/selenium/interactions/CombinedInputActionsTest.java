@@ -33,7 +33,6 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
@@ -43,7 +42,7 @@ import static org.openqa.selenium.WaitingConditions.elementToExist;
  */
 public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
-  //TODO: Check if this could work in any browser without native events. 
+  //TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
   @Ignore
   public void testClickingOnFormElements() {
@@ -70,7 +69,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, SELENESE, OPERA})
+  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, SELENESE})
   public void testSelectingMultipleItems() {
     driver.get(pages.selectableItemsPage);
 
@@ -112,9 +111,9 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
-  
+
   @Ignore(
-      value = {OPERA, HTMLUNIT, SELENESE},
+      value = {HTMLUNIT, SELENESE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(appServer.whereIs("clicks.html"));

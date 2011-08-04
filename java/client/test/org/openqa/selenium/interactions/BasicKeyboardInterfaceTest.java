@@ -25,7 +25,7 @@ import static org.openqa.selenium.Ignore.Driver.*;
 
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
- * 
+ *
  */
 @Ignore(IE)
 public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
@@ -34,7 +34,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE, OPERA})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
   public void testBasicKeyboardInput() {
     driver.get(pages.javascriptPage);
 
@@ -49,7 +49,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE, OPERA})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
   public void testSendingKeyDownOnly() {
     driver.get(pages.javascriptPage);
 
@@ -66,7 +66,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE, OPERA})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
   public void testSendingKeyUp() {
     driver.get(pages.javascriptPage);
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
@@ -90,7 +90,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE, OPERA})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
 
@@ -116,7 +116,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE, OPERA})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
   public void testSendingKeysToActiveElement() {
     driver.get(pages.bodyTypingPage);
 
@@ -130,7 +130,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
     assertThat(formLoggingElement.getText(), is(""));
   }
 
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE, OPERA})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
 

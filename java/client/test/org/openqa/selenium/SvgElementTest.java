@@ -31,11 +31,10 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 
 @Ignore(
-    value = {HTMLUNIT, IE, CHROME, REMOTE, SELENESE},
+    value = {HTMLUNIT, IE, CHROME, REMOTE, SELENESE, OPERA},
     reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
 public class SvgElementTest extends AbstractDriverTestCase {
 
-  @Ignore(OPERA)
   public void testShouldClickOnGraphVisualElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));
