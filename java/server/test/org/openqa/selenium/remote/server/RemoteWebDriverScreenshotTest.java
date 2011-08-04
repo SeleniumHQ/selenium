@@ -37,7 +37,6 @@ public class RemoteWebDriverScreenshotTest extends AbstractDriverTestCase {
       driver.findElement(By.id("doesnayexist"));
       fail();
     } catch (NoSuchElementException e) {
-      assertTrue(e.getCause() instanceof ScreenshotException);
       assertTrue(((ScreenshotException) e.getCause()).getBase64EncodedScreenshot().length() > 0);
     }
   }
