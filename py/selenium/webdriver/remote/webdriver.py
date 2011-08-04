@@ -43,8 +43,8 @@ class WebDriver(object):
         Args:
           command_executor - Either a command.CommandExecutor object or a string
               that specifies the URL of a remote server to send commands to.
-          desired_capabilities - Dictionary holding predefined values for starting
-              a browser
+          desired_capabilities - Dictionary holding predefined values for
+              starting a browser
           browser_profile:
               A selenium.webdriver.firefox.firefox_profile.FirefoxProfile
               object.  Only used if Firefox is requested.
@@ -454,7 +454,7 @@ class WebDriver(object):
     # Options
     def get_cookies(self):
         """Returns a set of dictionaries, corresponding to cookies visible in the
-        current session.
+           current session.
         Usage:
             driver.get_cookies()
         """
@@ -498,7 +498,7 @@ class WebDriver(object):
     # Timeouts
     def implicitly_wait(self, time_to_wait):
         """Sets a sticky timeout to implicitly wait for an element to be found,
-        or a command to complete. This method only needs to be called one time per session.
+           or a command to complete. This method only needs to be called one time per session.
         Args:
             time_to_wait: Amount of time to wait
         Usage:
@@ -538,7 +538,7 @@ class WebDriver(object):
 
     def get_screenshot_as_file(self, filename):
         """Gets the screenshot of the current window. Returns False if there is
-        any IOError, else returns True. Use full paths in your filename.
+           any IOError, else returns True. Use full paths in your filename.
         Args:
             filename: The full path you wish to save your screenshot to.
         Usage:
@@ -554,8 +554,8 @@ class WebDriver(object):
         return True
 
     def get_screenshot_as_base64(self):
-        """Gets the screenshot of the current window as a base64 encoded string which
-        is useful in embedded images in HTML.
+        """Gets the screenshot of the current window as a base64 encoded string
+           which is useful in embedded images in HTML.
         Usage:
             driver.get_screenshot_as_base64()
         """

@@ -110,7 +110,7 @@ class FirefoxProfile(object):
         else:
             clean_value = repr(value)
 
-        self.default_preferences[key] = clean_value 
+        self.default_preferences[key] = clean_value
 
     def add_extension(self, extension=WEBDRIVER_EXT):
         self._install_extension(extension)
