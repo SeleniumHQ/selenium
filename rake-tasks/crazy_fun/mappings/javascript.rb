@@ -466,7 +466,7 @@ module Javascript
       end
     end
 
-    def generate_java(dir, name, task_name, output, js_files)
+    def generate_java(dir, name, task_name, output, js_files, package)
       file output => js_files do
         task_name =~ /([a-z]+)-driver/
         implementation = $1.capitalize
@@ -480,7 +480,7 @@ module Javascript
         File.open(output, "w") do |out|
           out << COPYRIGHT
           out << "\n"
-          out << "package com.opera.core.systems.internal;\n"
+          out << "package #{package};\n"
           out << "\n"
           out << "import java.util.EnumSet;\n"
           out << "import java.util.HashMap;\n"
@@ -541,7 +541,7 @@ module Javascript
       js = js_name(dir, args[:name])
       output = js.sub(/\.js$/, '.java')
       task_name = task_name(dir, args[:name])
-      generate_java(dir, args[:name], task_name, output, args[:deps])
+      generate_java(dir, args[:name], task_name, output, args[:deps], args[:package])
       task task_name => [output]
     end
   end

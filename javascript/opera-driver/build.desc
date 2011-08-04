@@ -1,6 +1,7 @@
-# Used for https://github.com/operasoftware/operadriver/tree/master/src/com/opera/core/systems/internal/OperaAtoms.java
+# Used for https://github.com/operasoftware/operadriver/tree/master/src/com/opera/core/systems/OperaAtoms.java
 
 js_fragment_java(name = "atoms",
+  package = "com.opera.core.systems",
   deps = [
     "//javascript/webdriver-atoms:clear",
     "//javascript/webdriver-atoms:execute_script",
