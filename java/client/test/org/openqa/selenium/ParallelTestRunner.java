@@ -30,7 +30,7 @@ public class ParallelTestRunner {
 
     private static class WorkerThread extends Thread {
         private final Worker _worker;
-        private Throwable _throwable;
+        private volatile Throwable _throwable;
 
         private WorkerThread(String name, Worker worker) {
             super(name);

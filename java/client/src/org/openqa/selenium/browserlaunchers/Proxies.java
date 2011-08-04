@@ -74,7 +74,7 @@ public class Proxies {
       out.close();
       return pacFile;
     } catch (IOException e) {
-      throw new SeleniumException("Unable to configure proxy. Selenium will not work.");
+      throw new SeleniumException("Unable to configure proxy. Selenium will not work.", e);
     }
   }
 

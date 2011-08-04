@@ -1,14 +1,12 @@
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,6 +14,8 @@ import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
+
+import static org.openqa.grid.common.RegistrationRequest.APP;
 
 // TODO freynaud copy paste from PriorityTestLoad ....
 
@@ -30,7 +30,7 @@ public class DefaultToFIFOPriorityTest {
 
   private static Map<String, Object> ff = new HashMap<String, Object>();
   private static RemoteProxy p1;
-  private static List<MockedRequestHandler> requests = new ArrayList<MockedRequestHandler>();
+  private static List<MockedRequestHandler> requests = Collections.synchronizedList(new ArrayList<MockedRequestHandler>());
   private static TestSession session = null;
 
   /**

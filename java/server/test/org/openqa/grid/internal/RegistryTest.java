@@ -1,11 +1,9 @@
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -15,6 +13,9 @@ import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+
+import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
 public class RegistryTest {
 
@@ -132,29 +133,23 @@ public class RegistryTest {
     }
   }
 
-  private int invoc = 0;
-
-  private synchronized void increment() {
-    invoc++;
-  }
-
   @Test(timeout = 1000)
   public void registerAtTheSameTime() throws InterruptedException {
     final Registry registry = new Registry();
+    final CountDownLatch latch = new CountDownLatch( TOTAL_THREADS );
+
     try {
       for (int i = 0; i < TOTAL_THREADS; i++) {
         new Thread(new Runnable() {
 
           public void run() {
             registry.add(new RemoteProxy(req, registry));
-            increment();
+            latch.countDown();
           }
         }).start();
       }
-      while (invoc != TOTAL_THREADS) {
-        Thread.sleep(250);
-      }
-      Assert.assertEquals(invoc, TOTAL_THREADS);
+
+      latch.await();
       Assert.assertEquals(registry.getAllProxies().size(), 1);
     } finally {
       registry.stop();
@@ -187,15 +182,10 @@ public class RegistryTest {
     }
   }
 
-  private int invoc2 = 0;
-
-  private synchronized void increment2() {
-    invoc2++;
-  }
-
   @Test(timeout = 2000)
   public void registerAtTheSameTimeWithListener() throws InterruptedException {
     final Registry registry = new Registry();
+    final CountDownLatch cdn = new CountDownLatch( TOTAL_THREADS );
 
     try {
       for (int i = 0; i < TOTAL_THREADS; i++) {
@@ -203,14 +193,11 @@ public class RegistryTest {
 
           public void run() {
             registry.add(new MyRemoteProxy(req, registry));
-            increment2();
+            cdn.countDown();
           }
         }).start();
       }
-      while (invoc2 != TOTAL_THREADS) {
-        Thread.sleep(250);
-      }
-      Assert.assertEquals(invoc2, TOTAL_THREADS);
+      cdn.await();
       Assert.assertEquals(registry.getAllProxies().size(), 1);
     } finally {
       registry.stop();
