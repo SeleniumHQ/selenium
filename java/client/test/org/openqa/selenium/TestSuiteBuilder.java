@@ -92,7 +92,32 @@ public class TestSuiteBuilder {
     return this;
   }
 
+  /**
+   * If the onlyRun list and the testMethodNames list are empty, the class name
+   * and the method name defined in the system properties are added to the lists
+   * if they exist.
+   */
+  private void applySystemProperties() {
+    // Add the test case rules defined in the system properties only if there 
+    // were no other test cases specified in the test suite specification.
+    if (onlyRun.size() == 0) {
+      String onlyRunProperty = System.getProperty("only_run", "");
+      if (!onlyRunProperty.equals("")) {
+        onlyRun(onlyRunProperty);
+      }
+    }
+
+    if (testMethodNames.size() == 0) {
+      String methodProperty = System.getProperty("method", "");
+      if (!methodProperty.equals("")) {
+        method(methodProperty);
+      }
+    }
+  }
+
   public Test create() throws Exception {
+    applySystemProperties();
+
     if (withDriver) {
       assertThat("No driver class set", driverClass, is(notNullValue()));
     }

@@ -457,6 +457,14 @@ module CrazyFunJava
                 end
               end
 
+	      if only_run_class
+		ant.sysproperty :key => 'only_run', :value => only_run_class
+	      end
+
+	      if only_run_method
+		ant.sysproperty :key => 'method', :value => only_run_method
+	      end
+
               if (debug?)
                 ant.jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=#{suspend?},address=5005")
               end
@@ -489,6 +497,15 @@ module CrazyFunJava
     def halt_on_failure?
       [nil, 'true'].include? ENV['haltonfailure']
     end
+
+    def only_run_class
+      return ENV['onlyrun']
+    end
+
+    def only_run_method
+      return ENV['method']
+    end
+
   end
 
   class ClassPath
