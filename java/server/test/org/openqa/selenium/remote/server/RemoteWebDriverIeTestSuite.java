@@ -34,7 +34,7 @@ import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 public class RemoteWebDriverIeTestSuite extends TestCase {
   public static Test suite() throws Exception {
-    if (!(Platform.getCurrent().is(Platform.WINDOWS))) {      
+    if (!(Platform.getCurrent().is(Platform.WINDOWS))) {
       TestSuite toReturn = new TestSuite();
       toReturn.addTestSuite(EmptyTest.class);
       return toReturn;
