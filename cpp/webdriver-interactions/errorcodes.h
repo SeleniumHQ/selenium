@@ -22,7 +22,7 @@
 #define ENOSCRIPTRESULT      18
 #define EUNKNOWNSCRIPTRESULT 19
 #define ENOSUCHCOLLECTION    20
-#define ETIMEOUT             21 
+#define ETIMEOUT             21
 #define ENULLPOINTER         22
 #define ENOSUCHWINDOW        23
 #define EINVALIDCOOKIEDOMAIN 24
