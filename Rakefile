@@ -135,7 +135,11 @@ task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test:run", "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test:run" ]
-task :test_remote => [ "//java/server/test/org/openqa/selenium/remote/server:test:run" ]
+task :test_remote => [
+  '//java/client/test/org/openqa/selenium/remote:common-tests:run',
+  '//java/client/test/org/openqa/selenium/remote:client-tests:run',
+  '//java/server/test/org/openqa/selenium/remote/server:test:run'
+]
 task :test_support => [
   "//java/client/test/org/openqa/selenium/lift:test:run",
   "//java/client/test/org/openqa/selenium/support:SmallTests:run",
