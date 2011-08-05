@@ -331,11 +331,7 @@ public class ErrorHandlerTest extends TestCase {
       String message = "Frames differ at index [" + i + "]; expected:<"
           + expected[i] + "> but was:<" + actual[i] + ">";
 
-      // This took too long to track down
-      if (!(expected[i].getFileName() == null &&
-            actual[i].getFileName().equals("<unknown file>"))) {
-        assertEquals(message, expected[i].getFileName(), actual[i].getFileName());
-      }
+      assertEquals(message, expected[i].getFileName(), actual[i].getFileName());
       assertEquals(message, expected[i].getClassName(), actual[i].getClassName());
       assertEquals(message, expected[i].getMethodName(), actual[i].getMethodName());
       assertEquals(message, expected[i].getLineNumber(), actual[i].getLineNumber());

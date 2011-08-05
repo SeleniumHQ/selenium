@@ -29,7 +29,7 @@ public class ErrorHandler {
   private static final String FILE_NAME = "fileName";
   private static final String UNKNOWN_CLASS = "<anonymous class>";
   private static final String UNKNOWN_METHOD = "<anonymous method>";
-  private static final String UNKNOWN_FILE = "<unknown file>";
+  private static final String UNKNOWN_FILE = null;
 
   private final ErrorCodes errorCodes = new ErrorCodes();
 
@@ -219,14 +219,18 @@ public class ErrorHandler {
       // complete stack trace info. At least some of this information should
       // be included...
       String className = frameInfo.containsKey(CLASS_NAME)
-          ? String.valueOf(frameInfo.get(CLASS_NAME)) : UNKNOWN_CLASS;
+          ? toStringOrNull(frameInfo.get(CLASS_NAME)) : UNKNOWN_CLASS;
       String methodName = frameInfo.containsKey(METHOD_NAME)
-          ? String.valueOf(frameInfo.get(METHOD_NAME)) : UNKNOWN_METHOD;
+          ? toStringOrNull(frameInfo.get(METHOD_NAME)) : UNKNOWN_METHOD;
       String fileName = frameInfo.containsKey(FILE_NAME)
-          ? String.valueOf(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
+          ? toStringOrNull(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
 
       return new StackTraceElement(className, methodName, fileName,
           lineNumber.intValue());
+    }
+    
+    private static String toStringOrNull(Object o) {
+      return o == null ? null : o.toString();
     }
   }
 }
