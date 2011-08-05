@@ -76,13 +76,13 @@ class ErrorHandler(object):
         elif status == ErrorCode.ELEMENT_NOT_VISIBLE:
             exception_class = ElementNotVisibleException
         elif status == ErrorCode.INVALID_ELEMENT_STATE:
-            exception_class = WebDriverException 
+            exception_class = WebDriverException
         elif status == ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
             exception_class = ElementNotSelectableException
         elif status == ErrorCode.INVALID_COOKIE_DOMAIN:
-            exception_class = WebDriverException 
+            exception_class = WebDriverException
         elif status == ErrorCode.UNABLE_TO_SET_COOKIE:
-            exception_class = WebDriverException 
+            exception_class = WebDriverException
         elif status == ErrorCode.TIMEOUT:
             exception_class = TimeoutException
         elif status == ErrorCode.SCRIPT_TIMEOUT:
