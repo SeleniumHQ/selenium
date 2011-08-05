@@ -61,6 +61,11 @@ namespace OpenQA.Selenium.Support.PageObjects
                 foreach (var attribute in attributes)
                 {
                     var castedAttribute = (FindsByAttribute)attribute;
+                    if (castedAttribute.Using == null)
+                    {
+                        castedAttribute.Using = member.Name;
+                    }
+
                     var generator = new ProxyGenerator();
 
                     var cacheAttributeType = typeof(CacheLookupAttribute);

@@ -70,6 +70,25 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         [Test]
+        public void FindsElementByNameIfUsingIsAbsent()
+        {
+            ExpectOneLookup();
+
+            var page = new PageWithNameWithoutUsing();
+            AssertFindsElement(page, () => page.someForm);
+        }
+
+        [Test]
+        public void FindsElementByIdIfUsingIsAbsent()
+        {
+            Expect.Once.On(mockElement).GetProperty("TagName").Will(Return.Value("form"));
+            Expect.Once.On(mockDriver).Method("FindElement").With(By.Id("someForm")).Will(Return.Value(mockElement));
+
+            var page = new PageWithIdWithoutUsing();
+            AssertFindsElement(page, () => page.someForm);
+        }
+
+        [Test]
         public void FindsParentAndChildElement()
         {
             ExpectOneLookup();
@@ -188,6 +207,18 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             [FindsBy(How = How.Name, Using = "someForm")]
             public IWebElement formElement;
+        }
+
+        internal class PageWithNameWithoutUsing
+        {
+            [FindsBy(How = How.Name)]
+            public IWebElement someForm;
+        }
+
+        internal class PageWithIdWithoutUsing
+        {
+            [FindsBy(How = How.Id)]
+            public IWebElement someForm;
         }
 
         private class PrivatePage
