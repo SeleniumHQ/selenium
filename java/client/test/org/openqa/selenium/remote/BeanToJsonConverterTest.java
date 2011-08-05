@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import junit.framework.TestCase;
 
 import java.awt.Point;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -222,7 +223,10 @@ public class BeanToJsonConverterTest extends TestCase {
   private void verifyStackTraceInJson(String json, StackTraceElement[] stackTrace) {
     int posOfLastStackTraceElement = 0;
     for (StackTraceElement e : stackTrace) {
-      assertTrue("Filename not found", json.contains("\"fileName\":\"" + e.getFileName() + "\""));
+      if (e.getFileName() != null) {
+        //Native methods may have null filenames
+        assertTrue("Filename not found", json.contains("\"fileName\":\"" + e.getFileName() + "\""));
+      }
       assertTrue("Line number not found",
           json.contains("\"lineNumber\":" + e.getLineNumber() + ""));
       assertTrue("class not found.",
@@ -232,7 +236,7 @@ public class BeanToJsonConverterTest extends TestCase {
       assertTrue("method name not found.",
           json.contains("\"methodName\":\"" + e.getMethodName() + "\""));
 
-      int posOfCurrStackTraceElement = json.indexOf(e.getFileName());
+      int posOfCurrStackTraceElement = json.indexOf(e.getMethodName());
       assertTrue("Mismatch in order of stack trace elements.",
           posOfCurrStackTraceElement > posOfLastStackTraceElement);
     }
