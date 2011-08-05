@@ -31,6 +31,11 @@ import org.openqa.selenium.remote.ScreenshotException;
 @Ignore(HTMLUNIT)
 public class RemoteWebDriverScreenshotTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToGrabASnapshotOnException() {
+    if (!(driver instanceof RemoteWebDriver)) {
+      System.out.println("Skipping test: driver is not a remote webdriver");
+      return;
+    }
+    
     driver.get(pages.simpleTestPage);
 
     try {
