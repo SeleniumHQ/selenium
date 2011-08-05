@@ -9,5 +9,6 @@ recursive-include py/selenium/webdriver/remote *.py
 include py/selenium/selenium.py
 include py/selenium/__init__.py
 include docs/api/py/index.rst
+include py/CHANGES
 recursive-include selenium.egg-info *
 
