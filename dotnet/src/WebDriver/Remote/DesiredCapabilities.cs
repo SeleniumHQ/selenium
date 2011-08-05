@@ -114,14 +114,7 @@ namespace OpenQA.Selenium.Remote
         {
             get 
             {
-                Platform browserPlatform = new Platform(PlatformType.Any);
-                object capabilityValue = this.GetCapability(CapabilityType.BrowserName);
-                if (capabilityValue != null)
-                {
-                    browserPlatform = capabilityValue as Platform;
-                }
-
-                return browserPlatform;
+                return this.GetCapability(CapabilityType.Platform) as Platform ?? new Platform(PlatformType.Any);
             }
             
             set

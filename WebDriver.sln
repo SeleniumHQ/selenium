@@ -66,6 +66,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver", "dotnet\src\Web
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-server", "cpp\webdriver-server\webdriver-server.vcxproj", "{35A23A16-EF17-4CC3-8854-785025A304F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Remote.UnitTests", "dotnet\test\WebDriver.Remote.UnitTests\WebDriver.Remote.UnitTests.csproj", "{D9387770-DA92-4898-801F-F61255739D38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -390,6 +392,20 @@ Global
 		{35A23A16-EF17-4CC3-8854-785025A304F3}.Release|Win32.Build.0 = Release|Win32
 		{35A23A16-EF17-4CC3-8854-785025A304F3}.Release|x64.ActiveCfg = Release|x64
 		{35A23A16-EF17-4CC3-8854-785025A304F3}.Release|x64.Build.0 = Release|x64
+		{D9387770-DA92-4898-801F-F61255739D38}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Release|.NET.ActiveCfg = Release|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Release|Win32.ActiveCfg = Release|Any CPU
+		{D9387770-DA92-4898-801F-F61255739D38}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
