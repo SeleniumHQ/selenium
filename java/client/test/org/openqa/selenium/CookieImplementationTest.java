@@ -321,7 +321,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertCookieIsPresentWithName(cookieName);
   }
 
-  @Ignore(value = {CHROME, OPERA}, reason = "Chrome: Setting cookies with expiry fails")
+  @Ignore(OPERA)
   public void testCookieEqualityAfterSetAndGet() {
     if (!checkIsOnValidHostnameForCookieTests()) {
       return;
@@ -353,8 +353,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertEquals(addedCookie, retrievedCookie);
   }
 
-  @Ignore(value = {ANDROID, CHROME, IE, OPERA}, reason =
-      "Chrome: Setting cookies with expiry date fails; " + 
+  @Ignore(value = {ANDROID, IE, OPERA}, reason =
       "Selenium, which use JavaScript to retrieve cookies, cannot return expiry info; " +
       "Other suppressed browsers have not been tested.")
   public void testRetainsCookieExpiry() {
@@ -376,7 +375,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
   }
 
-  @Ignore(value = {ANDROID, CHROME}, reason = "Chrome: Setting expiry time fails. Others: Untested")
+  @Ignore(ANDROID)
   public void testSettingACookieThatExpiredInThePast() {
     if (!checkIsOnValidHostnameForCookieTests()) {
       return;
