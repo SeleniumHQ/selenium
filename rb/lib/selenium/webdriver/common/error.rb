@@ -28,8 +28,8 @@ module Selenium
       class NoSuchWindowError < WebDriverError; end              # 23
       class InvalidCookieDomainError < WebDriverError; end       # 24
       class UnableToSetCookieError < WebDriverError; end         # 25
-                                                                 # 26
-      class NoAlertDialogOpenError < WebDriverError; end         # 27
+      class UnexpectedAlertError < WebDriverError; end           # 26
+      class NoAlertOpenError < WebDriverError; end               # 27
       class ScriptTimeOutError < WebDriverError; end             # 28
       class InvalidElementCoordinatesError < WebDriverError; end # 29
                                                                  # 30
