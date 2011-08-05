@@ -171,6 +171,11 @@ namespace OpenQA.Selenium
         /// <summary>
         /// The coordinates of the element are invalid.
         /// </summary>
-        InvalidElementCoordinates = 29
+        InvalidElementCoordinates = 29,
+
+        /// <summary>
+        /// The selector used (CSS/XPath) was invalid.
+        /// </summary>
+        InvalidSelector = 32
     }
 }
