@@ -29,7 +29,7 @@ module Selenium
       class InvalidCookieDomainError < WebDriverError; end       # 24
       class UnableToSetCookieError < WebDriverError; end         # 25
                                                                  # 26
-      class NoModalDialogOpenError < WebDriverError; end         # 27
+      class NoAlertDialogOpenError < WebDriverError; end         # 27
       class ScriptTimeOutError < WebDriverError; end             # 28
       class InvalidElementCoordinatesError < WebDriverError; end # 29
                                                                  # 30
@@ -63,8 +63,8 @@ module Selenium
         NoSuchWindowError,              # 23
         InvalidCookieDomainError,       # 24
         UnableToSetCookieError,         # 25
-        nil,                            # 26
-        NoModalDialogOpenError,         # 27
+        UnexpectedAlertError,           # 26
+        NoAlertOpenError,               # 27
         ScriptTimeOutError,             # 28
         InvalidElementCoordinatesError, # 29
         nil,                            # 30

@@ -43,6 +43,7 @@ public class ErrorCodes {
   public static final int NO_SUCH_WINDOW = 23;
   public static final int INVALID_COOKIE_DOMAIN = 24;
   public static final int UNABLE_TO_SET_COOKIE = 25;
+  public static final int UNEXPECTED_ALERT_PRESENT = 26;
   public static final int NO_ALERT_PRESENT = 27;
   public static final int ASYNC_SCRIPT_TIMEOUT = 28;
   public static final int INVALID_ELEMENT_COORDINATES = 29;
