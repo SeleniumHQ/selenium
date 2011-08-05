@@ -18,9 +18,11 @@
 from selenium.webdriver.common import utils
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.command import Command
 from ctypes import *
 import time
 import os
+import base64
 
 DEFAULT_TIMEOUT = 30
 DEFAULT_PORT = 0
@@ -53,3 +55,19 @@ class WebDriver(RemoteWebDriver):
         self.iedriver.StopServer(self.ptr)
         del self.iedriver
         del self.ptr
+
+    def save_screenshot(self, filename):
+        """
+        Gets the screenshot of the current window. Returns False if there is
+        any IOError, else returns True. Use full paths in your filename.
+        """
+        png = self._execute(Command.SCREENSHOT)['value']
+        try:
+            f = open(filename, 'wb')
+            f.write(base64.decodestring(png))
+            f.close()
+        except IOError:
+            return False
+        finally:
+            del png
+        return True
