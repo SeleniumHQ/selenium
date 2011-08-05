@@ -41,10 +41,11 @@ class ErrorCode(object):
     ELEMENT_IS_NOT_SELECTABLE = 15
     JAVASCRIPT_ERROR = 17
     XPATH_LOOKUP_ERROR = 19
+    TIMEOUT = 21
     NO_SUCH_WINDOW = 23
     INVALID_COOKIE_DOMAIN = 24
     UNABLE_TO_SET_COOKIE = 25
-    TIMEOUT = 28
+    SCRIPT_TIMEOUT = 28
     INVALID_ELEMENT_COORDINATES = 29
     INVALID_SELECTOR = 32
 
@@ -83,6 +84,8 @@ class ErrorHandler(object):
         elif status == ErrorCode.UNABLE_TO_SET_COOKIE:
             exception_class = WebDriverException 
         elif status == ErrorCode.TIMEOUT:
+            exception_class = TimeoutException
+        elif status == ErrorCode.SCRIPT_TIMEOUT:
             exception_class = TimeoutException
         elif status == ErrorCode.UNKNOWN_ERROR:
             exception_class = WebDriverException

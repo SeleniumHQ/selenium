@@ -389,6 +389,8 @@ could not be satisfied because the window could not be found.'),
 a cookie under a different domain than the current page.'),
       ErrorCode(25, 'UnableToSetCookie', 'A request to set a cookie\'s value \
 could not be satisfied.'),
+      ErrorCode(26, 'UnexpectedAlertOpen', 'An alert was open, blocking this \
+operation'),
       ErrorCode(27, 'NoModalDialogOpenError', 'An attempt was made to operate \
 on a modal dialog when one was not open.'),
       ErrorCode(28, 'ScriptTimeout', 'A script did not complete before its \

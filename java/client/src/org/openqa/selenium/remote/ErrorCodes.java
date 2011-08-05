@@ -39,6 +39,7 @@ public class ErrorCodes {
   public static final int ELEMENT_NOT_SELECTABLE = 15;
   public static final int JAVASCRIPT_ERROR = 17;
   public static final int XPATH_LOOKUP_ERROR = 19;
+  public static final int TIMEOUT = 21;
   public static final int NO_SUCH_WINDOW = 23;
   public static final int INVALID_COOKIE_DOMAIN = 24;
   public static final int UNABLE_TO_SET_COOKIE = 25;
