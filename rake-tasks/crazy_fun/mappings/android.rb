@@ -66,7 +66,8 @@ def get_binary(name)
   path = Platform.path_for(File.join($sdk_path, "platforms", $platform, "tools", name))
   if (not File.exist? path)
     path = Platform.path_for(File.join($sdk_path, "platform-tools", name))
-    raise StandardError, "Unable to find the binary: " + name if (not File.exist? path)
+    # Don't throw because some don't have the SDK installed.
+    # raise StandardError, "Unable to find the binary: " + name if (not File.exist? path)
   end
   path
 end
