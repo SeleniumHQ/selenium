@@ -76,7 +76,6 @@ module Android
   $properties = $sys_properties.read_properties()
   $sdk_path = $properties["androidsdkpath"]
   $platform =  $properties["androidplatform"]
-  $dx = get_binary("dx")
   $adb = Platform.path_for(File.join($sdk_path, "platform-tools", "adb"))
   $aapt = get_binary("aapt")
   $builder = Platform.path_for(File.join($sdk_path, "tools", "apkbuilder"))
