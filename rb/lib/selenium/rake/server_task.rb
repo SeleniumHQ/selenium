@@ -12,6 +12,8 @@ module Selenium
     #
     # Usage:
     #
+    #   require 'selenium/rake/server_task'
+    #
     #   Selenium::Rake::ServerTask.new do |t|
     #     t.jar = "/path/to/selenium-server-standalone.jar"
     #     t.port = 4444
@@ -20,9 +22,9 @@ module Selenium
     #
     # Tasks defined:
     #
-    # rake selenium:server:start
-    # rake selenium:server:stop
-    # rake selenium:server:restart
+    #   rake selenium:server:start
+    #   rake selenium:server:stop
+    #   rake selenium:server:restart
     #
 
     class ServerTask
