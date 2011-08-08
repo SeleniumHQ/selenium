@@ -116,31 +116,5 @@ namespace OpenQA.Selenium
             Assert.AreEqual(0, size.Height, "Should have 0 height");
             Assert.IsTrue(element.Displayed);
         }
-
-        [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE, "IE reports zero width and height elements as displayed")]
-        public void ShouldNotAllowAnElementWithZeroHeightToBeCountedAsDisplayed()
-        {
-            driver.Url = javascriptPage;
-
-            IWebElement zeroHeight = driver.FindElement(By.Id("zeroheight"));
-
-            Assert.IsFalse(zeroHeight.Displayed);
-        }
-
-        [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE, "IE reports zero width and height elements as displayed")]
-        public void ShouldNotAllowAnElementWithZeroWidthToBeCountedAsDisplayed()
-        {
-            driver.Url = javascriptPage;
-
-            IWebElement zeroWidth = driver.FindElement(By.Id("zerowidth"));
-
-            Assert.IsFalse(zeroWidth.Displayed);
-        }
     }
 }
