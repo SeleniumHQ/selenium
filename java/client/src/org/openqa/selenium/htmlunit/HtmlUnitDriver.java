@@ -893,21 +893,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       return HtmlUnitDriver.this;
     }
 
-    private WebWindow getWindowByNumericFrameId(String currentFrameId, HtmlPage page) {
-      try {
-        final int index = Integer.parseInt(currentFrameId);
-        return page.getFrames().get(index);
-      }
-      catch (final NumberFormatException e) {
-        // nothing - fall through to returning null.
-      }
-      catch (final IndexOutOfBoundsException e) { // frames may have an int as name
-        // nothing - fall through to returning null.
-      }
-
-      return null;
-    }
-
     public WebDriver window(String windowId) {
       try {
         WebWindow window = webClient.getWebWindowByName(windowId);
