@@ -105,7 +105,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({CHROME, IPHONE, SELENESE})
-  public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
+  public void testShouldNotCollapseANonBreakingSpaces() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("nbspandspaces"));
     String text = element.getText();
