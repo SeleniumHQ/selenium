@@ -208,7 +208,6 @@ task :test_py => [
 ]
 
 task :test_dotnet => [
-  "//dotnet/test:unit:run",
   "//dotnet/test:firefox:run"
 ]
 
