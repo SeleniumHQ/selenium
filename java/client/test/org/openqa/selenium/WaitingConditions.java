@@ -85,23 +85,34 @@ public class WaitingConditions {
 
   public static Callable<String> elementTextToContain(
       final WebElement element, final String value) {
-    return new Callable<String>() {
-
-      public String call() throws Exception {
-        String text = element.getText();
-        if (text.contains(value)) {
-          return text;
-        }
-
-        return null;
-      }
-
-      @Override
-      public String toString() {
-        return "element text to contain: " + value;
-      }
-    };
+    return new ElementTextContainsCallable(value, element);
   }
+  
+  private static final class ElementTextContainsCallable implements Callable<String> {
+    private final String value;
+    private final WebElement element;
+    private String actualText;
+
+    private ElementTextContainsCallable(String value, WebElement element) {
+      this.value = value;
+      this.element = element;
+    }
+
+    public String call() throws Exception {
+      actualText = element.getText();
+      if (actualText.contains(value)) {
+        return actualText;
+      }
+
+      return null;
+    }
+
+    @Override
+    public String toString() {
+      return String.format("element text (%s) to contain: %s", actualText, value);
+    }
+  }
+  
 
   public static Callable<String> elementValueToEqual(
       final WebElement element, final String expectedValue) {

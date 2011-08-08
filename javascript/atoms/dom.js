@@ -557,14 +557,32 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
 
 
 /**
+ * Trims leading and trailing whitespace from strings, leaving non-breaking
+ * space characters in place.
+ *
+ * @param {string} str The string to trim.
+ * @return {string} str without any leading or trailing whitespace characters
+ *     except non-breaking spaces.
+ * @private
+ */
+bot.dom.trimExcludingNonBreakingSpaceCharacters_ = function(str) {
+  return str.replace(/^[^\S\xa0]+|[^\S\xa0]+$/g, '');
+};
+
+
+/**
  * @param {!Element} elem The element to consider.
  * @return {string} visible text.
  */
 bot.dom.getVisibleText = function(elem) {
   var lines = [];
   bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
-  lines = goog.array.map(lines, goog.string.trim);
-  return goog.string.trim(lines.join('\n'));
+  lines = goog.array.map(
+      lines,
+      bot.dom.trimExcludingNonBreakingSpaceCharacters_);
+  var joined = lines.join('\n');
+  var trimmed = bot.dom.trimExcludingNonBreakingSpaceCharacters_(joined);
+  return trimmed.replace(/\xa0/g, ' ');
 };
 
 
@@ -680,9 +698,9 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
   // For pre and pre-wrap whitespace styles, normalize all spaces.
   // Otherwise, collapse everything but nbsp, then convert nbsp to space.
   if (whitespace == 'pre' || whitespace == 'pre-wrap') {
-    text = text.replace(/\f\t\v\u2028\u2029\xa0/, ' ');
+    text = text.replace(/\f\t\v\u2028\u2029/, ' ');
   } else {
-    text = text.replace(/[\ \f\t\v\u2028\u2029]+/g, ' ').replace(/\xa0/g, ' ');
+    text = text.replace(/[\ \f\t\v\u2028\u2029]+/g, ' ');
   }
 
   if (textTransform == 'capitalize') {

@@ -107,10 +107,8 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
     Action releaseShift = getBuilder(driver).keyUp(keysEventInput, Keys.SHIFT).build();
     releaseShift.perform();
 
-    WebElement keyLoggingElement = driver.findElement(By.id("result"));
-    assertTrue("Shift key not held, events: " + keyLoggingElement.getText(),
-        keyLoggingElement.getText()
-            .equals("focus keydown keydown keypress keyup keydown keypress keyup keyup"));
+    assertThatFormEventsFiredAreExactly("Shift key not held",
+        "focus keydown keydown keypress keyup keydown keypress keyup keyup");
 
     assertThat(keysEventInput.getAttribute("value"), is("AB"));
   }
@@ -123,11 +121,8 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
     Action someKeys = getBuilder(driver).sendKeys("ab").build();
     someKeys.perform();
 
-    WebElement bodyLoggingElement = driver.findElement(By.id("body_result"));
-    assertThat(bodyLoggingElement.getText(), is("keypress keypress"));
-
-    WebElement formLoggingElement = driver.findElement(By.id("result"));
-    assertThat(formLoggingElement.getText(), is(""));
+    assertThatBodyEventsFiredAreExactly("keypress keypress");
+    assertThatFormEventsFiredAreExactly("");
   }
 
   @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
@@ -143,5 +138,17 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
     sendLowercase.perform();
 
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
+  }
+
+  private void assertThatFormEventsFiredAreExactly(String message, String expected) {
+    assertThat(message, driver.findElement(By.id("result")).getText().trim(), is(expected));
+  }
+
+  private void assertThatFormEventsFiredAreExactly(String expected) {
+    assertThatFormEventsFiredAreExactly("", expected);
+  }
+
+  private void assertThatBodyEventsFiredAreExactly(String expected) {
+    assertThat(driver.findElement(By.id("body_result")).getText().trim(), is(expected));
   }
 }

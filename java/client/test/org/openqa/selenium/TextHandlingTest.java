@@ -113,6 +113,30 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo("This line has a   non-breaking space and spaces"));
   }
 
+  @Ignore({CHROME, IPHONE, SELENESE})
+  public void testShouldNotTrimNonBreakingSpacesAtTheEndOfALineInTheMiddleOfText() {
+    driver.get(pages.simpleTestPage);
+    WebElement element = driver.findElement(By.id("multilinenbsp"));
+    String text = element.getText();
+    assertThat(text, startsWith("These lines  \n"));
+  }
+
+  @Ignore({CHROME, IPHONE, SELENESE})
+  public void testShouldNotTrimNonBreakingSpacesAtTheStartOfALineInTheMiddleOfText() {
+    driver.get(pages.simpleTestPage);
+    WebElement element = driver.findElement(By.id("multilinenbsp"));
+    String text = element.getText();
+    assertThat(text, containsString("\n  have"));
+  }
+
+  @Ignore({CHROME, IPHONE, SELENESE})
+  public void testShouldNotTrimTrailingNonBreakingSpacesInMultilineText() {
+    driver.get(pages.simpleTestPage);
+    WebElement element = driver.findElement(By.id("multilinenbsp"));
+    String text = element.getText();
+    assertThat(text, endsWith("trailing NBSPs  "));
+  }
+
   @Ignore(IPHONE)
   public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
     driver.get(pages.simpleTestPage);

@@ -67,14 +67,29 @@ limitations under the License.
       assertEquals("This line has a non-breaking space", text);
     }
 
-    function getVisibleTextByElementId(id) {
-      var e = bot.locators.findElement({id: id});
-      return bot.dom.getVisibleText(e);
-    }
-
     function testGetVisibleTextShouldNotCollapseNonBreakingSpaces() {
       var text = getVisibleTextByElementId("nbspandspaces");
       assertEquals("This line has a   non-breaking space and spaces", text);
+    }
+
+    function testGetVisibleTextShouldNotTrimTrailingNonBreakingSpaces() {
+      var text = getVisibleTextByElementId("trailingnbsp");
+      assertEquals("This line has trailing non-breaking spaces   ", text);
+    }
+
+    function testGetVisibleTextShouldNotTrimNonBreakingSpacesAtTheEndOfALineInTheMiddleOfText() {
+      var text = getVisibleTextByElementId("multilinetrailingnbsp");
+      assertStartsWith("These lines  \n", text);
+    }
+
+    function testGetVisibleTextShouldNotTrimNonBreakingSpacesAtTheStartOfALineInTheMiddleOfText() {
+      var text = getVisibleTextByElementId("multilinetrailingnbsp");
+      assertContains("\n  have", text);
+    }
+
+    function testGetVisibleTextShouldNotTrimTrailingNonBreakingSpacesInMultilineText() {
+      var text = getVisibleTextByElementId("multilinetrailingnbsp");
+      assertEndsWith("trailing NBSPs  ", text);
     }
 
     function testGetVisibleTextInlineElementsShouldNotAffectReturnedText() {
@@ -195,6 +210,11 @@ limitations under the License.
       assertEquals("Some text", text);
     }
 
+    function getVisibleTextByElementId(id) {
+      var e = bot.locators.findElement({id: id});
+      return bot.dom.getVisibleText(e);
+    }
+
     function assertContains(expectedText, text) {
       assertTrue("Text [" + text + "] does not contain [" + expectedText + "]",
         text.indexOf(expectedText) >= 0);
@@ -260,6 +280,8 @@ limitations under the License.
 
   <p id="script">Some text<script>function shouldIgnoreMe() {}</script> that contains script tags</p>
   <p id="nbspandspaces">This line has a &nbsp; non-breaking space and spaces</p>
+  <p id="trailingnbsp">This line has trailing non-breaking spaces&nbsp;&nbsp;&nbsp;</p>
+  <p id="multilinetrailingnbsp">These lines &nbsp<br />&nbsp have leading and trailing NBSPs&nbsp;&nbsp;</p>
 
   <p id="inline">This <span id="inlinespan">    line has <em>text</em>  </span> within elements that are meant to be displayed
       <!-- not as a block but --> inline</p>
