@@ -13,7 +13,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             driver.FindElement(By.Id("submitButton")).Click();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(TitleToBe("We Arrive Here"));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -29,7 +29,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             driver.FindElement(By.Id("imageButton")).Click();
-            System.Threading.Thread.Sleep(500);
+            WaitFor(TitleToBe("We Arrive Here"));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -38,7 +38,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             driver.FindElement(By.Name("login")).Submit();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(TitleToBe("We Arrive Here"));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -47,7 +47,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             driver.FindElement(By.Id("checky")).Submit();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(TitleToBe("We Arrive Here"));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -56,7 +56,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             driver.FindElement(By.XPath("//form/p")).Submit();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(TitleToBe("We Arrive Here"));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -85,9 +85,8 @@ namespace OpenQA.Selenium
             IWebElement nestedForm = driver.FindElement(By.Id("nested_form"));
             IWebElement input = nestedForm.FindElement(By.Name("x"));
             input.SendKeys("\n");
-            
-            // We are losing the race to get notified of a navigation in IE.
-            System.Threading.Thread.Sleep(500);
+
+            WaitFor(TitleToBe("We Arrive Here"));
             Assert.AreEqual("We Arrive Here", driver.Title);
             Assert.IsTrue(driver.Url.EndsWith("?x=name"));
         }
@@ -99,9 +98,8 @@ namespace OpenQA.Selenium
             IWebElement nestedForm = driver.FindElement(By.Id("nested_form"));
             IWebElement input = nestedForm.FindElement(By.Name("x"));
             input.SendKeys(Keys.Enter);
- 
-            // We are losing the race to get notified of a navigation in IE.
-            System.Threading.Thread.Sleep(500);
+
+            WaitFor(TitleToBe("We Arrive Here"));
             Assert.AreEqual("We Arrive Here", driver.Title);
             Assert.IsTrue(driver.Url.EndsWith("?x=name"));
         }
@@ -234,6 +232,14 @@ namespace OpenQA.Selenium
             value = element.GetAttribute("value");
 
             Assert.AreEqual(value.Length, 0);
+        }
+
+        private Func<bool> TitleToBe(string desiredTitle)
+        {
+            return () =>
+            {
+                return driver.Title == desiredTitle;
+            };
         }
     }
 }

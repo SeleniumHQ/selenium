@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -26,6 +27,29 @@ namespace OpenQA.Selenium
             string attribute = img.GetAttribute("src");
             Assert.IsNull(attribute);
         }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Opera)]
+        public void ShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement img = driver.FindElement(By.Id("validImgTag"));
+            string attribute = img.GetAttribute("src");
+            Assert.AreEqual(EnvironmentManager.Instance.UrlBuilder.WhereIs("icon.gif"), attribute);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Opera)]
+        public void ShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement img = driver.FindElement(By.Id("validAnchorTag"));
+            string attribute = img.GetAttribute("href");
+            Assert.AreEqual(EnvironmentManager.Instance.UrlBuilder.WhereIs("icon.gif"), attribute);
+        }
+
 
         [Test]
         public void ShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty()
@@ -85,14 +109,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldIndicateWhenATextAreaIsDisabled()
-        {
-            driver.Url = formsPage;
-            IWebElement textArea = driver.FindElement(By.XPath("//textarea[@id='notWorkingArea']"));
-            Assert.IsFalse(textArea.Enabled);
-        }
-
-        [Test]
         public void ShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings()
         {
             driver.Url = formsPage;
@@ -124,6 +140,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldIndicateWhenATextAreaIsDisabled()
+        {
+            driver.Url = formsPage;
+            IWebElement textArea = driver.FindElement(By.XPath("//textarea[@id='notWorkingArea']"));
+            Assert.IsFalse(textArea.Enabled);
+        }
+
+        [Test]
         public void ShouldIndicateWhenASelectIsDisabled()
         {
             driver.Url = formsPage;
@@ -136,7 +160,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnTheValueOfCheckedForACheckboxEvenIfItLacksThatAttribute()
+        public void ShouldReturnTheValueOfCheckedForACheckboxOnlyIfItIsChecked()
         {
             driver.Url = formsPage;
             IWebElement checkbox = driver.FindElement(By.XPath("//input[@id='checky']"));
@@ -146,7 +170,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnTheValueOfSelectedForRadioButtonsEvenIfTheyLackThatAttribute()
+        public void ShouldOnlyReturnTheValueOfSelectedForRadioButtonsIfItIsSet()
         {
             driver.Url = formsPage;
             IWebElement neverSelected = driver.FindElement(By.Id("cheese"));
@@ -164,7 +188,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnTheValueOfSelectedForOptionsInSelectsEvenIfTheyLackThatAttribute()
+        public void ShouldReturnTheValueOfSelectedForOptionsOnlyIfTheyAreSelected()
         {
             driver.Url = formsPage;
             IWebElement selectBox = driver.FindElement(By.XPath("//select[@name='selectomatic']"));
@@ -186,17 +210,6 @@ namespace OpenQA.Selenium
             String className = heading.GetAttribute("class");
 
             Assert.AreEqual("header", className);
-        }
-
-        [Test]
-        public void ShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame()
-        {
-            driver.Url = iframePage;
-            driver.SwitchTo().Frame("iframe1");
-
-            IWebElement wallace = driver.FindElement(By.XPath("//div[@id='wallace']"));
-            String className = wallace.GetAttribute("class");
-            Assert.AreEqual("gromit", className);
         }
 
         [Test]
@@ -278,11 +291,52 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "IE7 Does not support SVG")]
         [IgnoreBrowser(Browser.IPhone, "SVG elements crash the iWebDriver app (issue 1134)")]
-        public void testGetAttributeDoesNotReturnAnObjectForSvgProperties()
+        public void GetAttributeDoesNotReturnAnObjectForSvgProperties()
         {
             driver.Url = svgPage;
             IWebElement svgElement = driver.FindElement(By.Id("rotate"));
             Assert.AreEqual("rotate(30)", svgElement.GetAttribute("transform"));
+        }
+
+        [Test]
+        public void CanRetrieveTheCurrentValueOfATextFormField_textInput()
+        {
+            driver.Url = formsPage;
+            IWebElement element = driver.FindElement(By.Id("working"));
+            Assert.AreEqual(string.Empty, element.GetAttribute("value"));
+            element.SendKeys("hello world");
+            Assert.AreEqual("hello world", element.GetAttribute("value"));
+        }
+
+        [Test]
+        public void CanRetrieveTheCurrentValueOfATextFormField_emailInput()
+        {
+            driver.Url = formsPage;
+            IWebElement element = driver.FindElement(By.Id("email"));
+            Assert.AreEqual(string.Empty, element.GetAttribute("value"));
+            element.SendKeys("hello world");
+            Assert.AreEqual("hello world", element.GetAttribute("value"));
+        }
+
+        [Test]
+        public void CanRetrieveTheCurrentValueOfATextFormField_textArea()
+        {
+            driver.Url = formsPage;
+            IWebElement element = driver.FindElement(By.Id("emptyTextArea"));
+            Assert.AreEqual(string.Empty, element.GetAttribute("value"));
+            element.SendKeys("hello world");
+            Assert.AreEqual("hello world", element.GetAttribute("value"));
+        }
+
+        [Test]
+        public void ShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame()
+        {
+            driver.Url = iframePage;
+            driver.SwitchTo().Frame("iframe1");
+
+            IWebElement wallace = driver.FindElement(By.XPath("//div[@id='wallace']"));
+            String className = wallace.GetAttribute("class");
+            Assert.AreEqual("gromit", className);
         }
     }
 }

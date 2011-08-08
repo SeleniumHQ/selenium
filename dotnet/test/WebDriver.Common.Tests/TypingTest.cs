@@ -443,7 +443,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
-        public void NumberpadAndFunctionKeys()
+        public void NumberpadKeys()
         {
             driver.Url = javascriptPage;
 
@@ -454,10 +454,19 @@ namespace OpenQA.Selenium
                              Keys.Add + Keys.Semicolon + Keys.Equal + Keys.Divide +
                              Keys.NumberPad3 + "abcd");
             Assert.AreEqual(element.GetAttribute("value"), "abcd*-+.,09+;=/3abcd");
+        }
 
-            element.Clear();
-            element.SendKeys("FUNCTION" + Keys.F2 + "-KEYS" + Keys.F2);
-            element.SendKeys("" + Keys.F2 + "-TOO" + Keys.F2);
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
+        public void NumberpadAndFunctionKeys()
+        {
+            driver.Url = javascriptPage;
+
+            IWebElement element = driver.FindElement(By.Id("keyReporter"));
+
+            element.SendKeys("FUNCTION" + Keys.F4 + "-KEYS" + Keys.F4);
+            element.SendKeys("" + Keys.F4 + "-TOO" + Keys.F4);
             Assert.AreEqual(element.GetAttribute("value"), "FUNCTION-KEYS-TOO");
         }
 

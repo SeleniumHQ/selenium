@@ -87,5 +87,32 @@ namespace OpenQA.Selenium
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("redbox"));
             Assert.AreEqual(0, elements.Count);
         }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.IPhone)]
+        public void ShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting()
+        {
+            driver.Url = dynamicPage;
+
+            IWebElement reveal = driver.FindElement(By.Id("reveal"));
+            IWebElement revealed = driver.FindElement(By.Id("revealed"));
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(5000));
+
+            Assert.IsFalse(revealed.Displayed, "revealed should not be visible");
+            reveal.Click();
+
+            try
+            {
+                revealed.SendKeys("hello world");
+                // This is what we want
+            }
+            catch (ElementNotVisibleException)
+            {
+                Assert.Fail("Element should have been visible");
+            }
+        }
     }
 }

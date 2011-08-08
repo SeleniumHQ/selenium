@@ -86,13 +86,13 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace()
+        public void ShouldNotCollapseANonBreakingSpaces()
         {
             driver.Url = (simpleTestPage);
             IWebElement element = driver.FindElement(By.Id("nbspandspaces"));
             string text = element.Text;
 
-            Assert.AreEqual(text, "This line has a non-breaking space and spaces");
+            Assert.AreEqual(text, "This line has a   non-breaking space and spaces");
         }
 
         [Test]
@@ -275,6 +275,14 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("simpleJsonText"));
             Assert.AreEqual("{a=\"b\", c=1, d=true}", element.Text);
             //assertEquals("{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.getText());
+        }
+
+        [Test]
+        public void houldGetTextWhichIsAValidComplexJSONObject()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement element = driver.FindElement(By.Id("complexJsonText"));
+            Assert.AreEqual("{a=\"\\\\b\\\\\\\"\'\\\'\"}", element.Text);
         }
     }
 }

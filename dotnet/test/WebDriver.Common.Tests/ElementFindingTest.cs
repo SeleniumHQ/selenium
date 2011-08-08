@@ -12,17 +12,6 @@ namespace OpenQA.Selenium
     public class ElementFindingTest : DriverTestFixture
     {
         [Test]
-        public void ShouldBeAbleToInjectXPathEngineIfNeeded()
-        {
-            driver.Url = alertsPage;
-            driver.FindElement(By.XPath("//body"));
-            driver.FindElement(By.XPath("//h1"));
-            driver.FindElement(By.XPath("//div"));
-            driver.FindElement(By.XPath("//p"));
-            driver.FindElement(By.XPath("//a"));
-        }
-
-        [Test]
         public void ShouldReturnTitleOfPageIfSet()
         {
             driver.Url = xhtmlTestPage;
@@ -238,22 +227,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldFindElementByLinkTextContainingDoubleQuote()
-        {
-            driver.Url = simpleTestPage;
-            IWebElement element = driver.FindElement(By.LinkText("link with \" (double quote)"));
-            Assert.AreEqual("quote", element.GetAttribute("id"));
-        }
-
-        [Test]
-        public void ShouldFindElementByLinkTextContainingBackslash()
-        {
-            driver.Url = simpleTestPage;
-            IWebElement element = driver.FindElement(By.LinkText("link with \\ (backslash)"));
-            Assert.AreEqual("backslash", element.GetAttribute("id"));
-        }
-
-        [Test]
         public void ShouldFindElementByPartialLinkTextContainingEqualsSign()
         {
             driver.Url = xhtmlTestPage;
@@ -262,7 +235,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void testShouldFindElementsByLinkTextContainingEqualsSign()
+        public void ShouldFindElementsByLinkTextContainingEqualsSign()
         {
             driver.Url = xhtmlTestPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.LinkText("Link=equalssign"));
@@ -271,7 +244,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void testShouldFindElementsByPartialLinkTextContainingEqualsSign()
+        public void ShouldFindElementsByPartialLinkTextContainingEqualsSign()
         {
             driver.Url = xhtmlTestPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.PartialLinkText("Link="));
@@ -479,6 +452,10 @@ namespace OpenQA.Selenium
             driver.FindElements(By.CssSelector("p"));
         }
 
+        /////////////////////////////////////////////////
+        // Tests unique to the .NET bindings
+        /////////////////////////////////////////////////
+
         [Test]
         public void FindingByXPathShouldNotIncludeParentElementIfSameTagType()
         {
@@ -487,6 +464,33 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(2, parent.FindElements(By.TagName("div")).Count);
             Assert.AreEqual(2, parent.FindElements(By.TagName("span")).Count);
+        }
+
+        [Test]
+        public void ShouldBeAbleToInjectXPathEngineIfNeeded()
+        {
+            driver.Url = alertsPage;
+            driver.FindElement(By.XPath("//body"));
+            driver.FindElement(By.XPath("//h1"));
+            driver.FindElement(By.XPath("//div"));
+            driver.FindElement(By.XPath("//p"));
+            driver.FindElement(By.XPath("//a"));
+        }
+
+        [Test]
+        public void ShouldFindElementByLinkTextContainingDoubleQuote()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement element = driver.FindElement(By.LinkText("link with \" (double quote)"));
+            Assert.AreEqual("quote", element.GetAttribute("id"));
+        }
+
+        [Test]
+        public void ShouldFindElementByLinkTextContainingBackslash()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement element = driver.FindElement(By.LinkText("link with \\ (backslash)"));
+            Assert.AreEqual("backslash", element.GetAttribute("id"));
         }
 
         private bool SupportsSelectorApi()

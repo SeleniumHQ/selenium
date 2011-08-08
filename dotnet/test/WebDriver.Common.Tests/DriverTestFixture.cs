@@ -4,7 +4,6 @@ using System;
 
 namespace OpenQA.Selenium
 {
-    
     public abstract class DriverTestFixture
     {
         public string alertsPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("alerts.html");
@@ -60,6 +59,11 @@ namespace OpenQA.Selenium
         public string selectableItemsPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("selectableItems.html");
         public string underscorePage = EnvironmentManager.Instance.UrlBuilder.WhereIs("underscore.html");
         public string clickJackerPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_jacker.html");
+        public string errorsPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("errors.html");
+        public string selectPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("selectPage.html");
+        public string simpleXmlDocument = EnvironmentManager.Instance.UrlBuilder.WhereIs("simple.xml");
+        public string mapVisibilityPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("map_visibility.html");
+        public string mouseTrackerPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("mousePositionTracker.html");
 
         protected IWebDriver driver;
 
@@ -80,7 +84,7 @@ namespace OpenQA.Selenium
         {
             // EnvironmentManager.Instance.CloseCurrentDriver();
         }
-        
+
         /*
          *  Exists because a given test might require a fresh driver
          */
@@ -93,6 +97,56 @@ namespace OpenQA.Selenium
         {
             // The IE driver may throw a timed out exception
             return e.GetType().Name.Contains("TimedOutException");
+        }
+
+        protected bool WaitFor(Func<bool> waitFunction)
+        {
+            return WaitFor<bool>(waitFunction);
+        }
+
+        protected T WaitFor<T>(Func<T> waitFunction)
+        {
+            return this.WaitFor<T>(waitFunction, TimeSpan.FromSeconds(5));
+        }
+
+        protected T WaitFor<T>(Func<T> waitFunction, TimeSpan timeout)
+        {
+            DateTime endTime = DateTime.Now.Add(timeout);
+            T value = default(T);
+            Exception lastException = null;
+            while (DateTime.Now < endTime)
+            {
+                try
+                {
+                    value = waitFunction();
+                    if (typeof(T) == typeof(bool))
+                    {
+                        if ((bool)(object)value)
+                        {
+                            return value;
+                        }
+                    }
+                    else if (value != null)
+                    {
+                        return value;
+                    }
+
+                    System.Threading.Thread.Sleep(100);
+                }
+                catch (Exception e)
+                {
+                    // Swallow for later re-throwing
+                    lastException = e;
+                }
+            }
+
+            if (lastException != null)
+            {
+                throw new WebDriverException("Operation timed out", lastException);
+            }
+
+            Assert.Fail("Condition timed out: " + waitFunction);
+            return default(T);
         }
     }
 }

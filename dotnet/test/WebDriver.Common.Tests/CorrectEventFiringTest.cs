@@ -83,6 +83,15 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        public void ShouldNotThrowIfEventHandlerThrows()
+        {
+            driver.Url = javascriptPage;
+            driver.FindElement(By.Id("throwing-mouseover")).Click();
+        }
+
+        [Test]
+        [Category("Javascript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome, "Webkit bug 22261")]
         public void ShouldFireEventsInTheRightOrder()

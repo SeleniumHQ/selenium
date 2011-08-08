@@ -181,49 +181,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ExecutingLargeJavaScript()
-        {
-            string script = "// stolen from injectableSelenium.js in WebDriver\nvar browserbot = {\n\n    triggerEvent: function(element, eventType, canBubble, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {\n        canBubble = (typeof(canBubble) == undefined) ? true: canBubble;\n        if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) {\n            // IE\n            var evt = this.createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);\n            element.fireEvent('on' + eventType,evt);\n        } else {\n            var evt = document.createEvent('HTMLEvents');\n\n            try {\n                evt.shiftKey = shiftKeyDown;\n       evt.metaKey = metaKeyDown;\n                evt.altKey = altKeyDown;\n             evt.ctrlKey = controlKeyDown;\n            } catch(e) {\n      // Nothing sane to do\n                }\n\n            evt.initEvent(eventType, canBubble, true);\n            return element.dispatchEvent(evt);\n  }\n    },\n\n    getVisibleText: function() {\n        var selection = getSelection();\n        var range = document.createRange();\n        range.selectNodeContents(document.documentElement);\n        selection.addRange(range);\nvar string = selection.toString();\n        selection.removeAllRanges();\n\n    return string;\n    },\n\n    getOuterHTML: function(element) {\n        if(element.outerHTML) {\n            return element.outerHTML;\n        } else if(typeof(XMLSerializer) != undefined) {\n            return new XMLSerializer().serializeToString(element);\n        } else {\n            throw \"can't get outerHTML in this browser\";\n        }\n    }\n\n\n};return browserbot.getOuterHTML.apply(browserbot, arguments);";
-            driver.Url = javascriptPage;
-            IWebElement element = driver.FindElement(By.TagName("body"));
-            object x = ExecuteScript(script, element);
-        }
-
-        private bool CompareLists(ReadOnlyCollection<object> first, ReadOnlyCollection<object> second)
-        {
-            if (first.Count != second.Count)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < first.Count; ++i)
-            {
-                if (first[i] is ReadOnlyCollection<object>)
-                {
-                    if (!(second[i] is ReadOnlyCollection<object>))
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        if (!CompareLists((ReadOnlyCollection<object>)first[i], (ReadOnlyCollection<object>)second[i]))
-                        {
-                            return false;
-                        }
-                    }
-                }
-                else
-                {
-                    if (!first[i].Equals(second[i]))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        [Test]
         [Category("Javascript")]
         public void PassingAndReturningALongShouldReturnAWholeNumber()
         {
@@ -297,20 +254,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        public void ShouldBeAbleToPassMoreThanOneStringAsArguments()
-        {
-            if (!(driver is IJavaScriptExecutor))
-                return;
-
-            driver.Url = javascriptPage;
-            ExecuteScript("displayMessage(arguments[0] + arguments[1] + arguments[2] + arguments[3]);", "Hello,", " ", "world", "!");
-
-            string text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("Hello, world!", text);
-        }
-
-        [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassABooleanAsAnArgument()
         {
 
@@ -328,35 +271,6 @@ namespace OpenQA.Selenium
             ExecuteScript(function, false);
             text = driver.FindElement(By.Id("result")).Text;
             Assert.AreEqual("False", text);
-        }
-
-        [Test]
-        [Category("Javascript")]
-        public void ShouldBeAbleToPassMoreThanOneBooleanAsArguments()
-        {
-
-            string function = "displayMessage((arguments[0] ? 'True' : 'False') + (arguments[1] ? 'True' : 'False'));";
-
-            if (!(driver is IJavaScriptExecutor))
-                return;
-
-            driver.Url = javascriptPage;
-
-            ExecuteScript(function, true, true);
-            string text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("TrueTrue", text);
-
-            ExecuteScript(function, false, true);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("FalseTrue", text);
-
-            ExecuteScript(function, true, false);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("TrueFalse", text);
-
-            ExecuteScript(function, false, false);
-            text = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual("FalseFalse", text);
         }
 
         [Test]
@@ -386,6 +300,245 @@ namespace OpenQA.Selenium
             text = driver.FindElement(By.Id("result")).Text;
             Assert.AreEqual("-2147483647", text);
 
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToPassAWebElementAsArgument()
+        {
+            if (!(driver is IJavaScriptExecutor))
+                return;
+
+            driver.Url = javascriptPage;
+            IWebElement button = driver.FindElement(By.Id("plainButton"));
+            string value = (string)ExecuteScript("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button);
+
+            Assert.AreEqual("plainButton", value);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void PassingArrayAsOnlyArgumentShouldFlattenArray()
+        {
+            if (!(driver is IJavaScriptExecutor))
+            {
+                return;
+            }
+
+            driver.Url = javascriptPage;
+            object[] array = new object[] { "zero", 1, true, 3.14159 };
+            long length = (long)ExecuteScript("return arguments[0].length", array);
+            Assert.AreEqual(array.Length, length);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Remote)]
+        public void ShouldBeAbleToPassAnArrayAsAdditionalArgument()
+        {
+            if (!(driver is IJavaScriptExecutor))
+            {
+                return;
+            }
+
+            driver.Url = javascriptPage;
+            object[] array = new object[] { "zero", 1, true, 3.14159, false };
+            long length = (long)ExecuteScript("return arguments[1].length", "string", array);
+            Assert.AreEqual(array.Length, length);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.Remote)]
+        public void ShouldBeAbleToPassACollectionAsArgument()
+        {
+            if (!(driver is IJavaScriptExecutor))
+            {
+                return;
+            }
+
+            driver.Url = javascriptPage;
+            List<object> collection = new List<object>();
+            collection.Add("Cheddar");
+            collection.Add("Brie");
+            collection.Add(7);
+            long length = (long)ExecuteScript("return arguments[0].length", collection);
+            Assert.AreEqual(collection.Count, length);
+        }
+
+
+        [ExpectedException(typeof(ArgumentException))]
+        public void ShouldThrowAnExceptionIfAnArgumentIsNotValid()
+        {
+            if (!(driver is IJavaScriptExecutor))
+                return;
+
+            driver.Url = javascriptPage;
+            ExecuteScript("return arguments[0];", driver);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToPassInMoreThanOneArgument()
+        {
+            if (!(driver is IJavaScriptExecutor))
+            {
+                return;
+            }
+
+            driver.Url = javascriptPage;
+            string result = (string)ExecuteScript("return arguments[0] + arguments[1];", "one", "two");
+
+            Assert.AreEqual("onetwo", result);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo()
+        {
+            driver.Url = richTextPage;
+
+            driver.SwitchTo().Frame("editFrame");
+            IWebElement body = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return document.body");
+
+            Assert.AreEqual("", body.Text);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void JavascriptStringHandlingShouldWorkAsExpected()
+        {
+            driver.Url = javascriptPage;
+
+            string value = (string)ExecuteScript("return '';");
+            Assert.AreEqual("", value);
+
+            value = (string)ExecuteScript("return undefined;");
+            Assert.IsNull(value);
+
+            value = (string)ExecuteScript("return ' '");
+            Assert.AreEqual(" ", value);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToExecuteABigChunkOfJavascriptCode()
+        {
+            driver.Url = javascriptPage;
+            string[] fileList = System.IO.Directory.GetFiles("..\\..", "jquery-1.2.6.min.js", System.IO.SearchOption.AllDirectories);
+            if (fileList.Length > 0)
+            {
+                string jquery = System.IO.File.ReadAllText(fileList[0]);
+                Assert.IsTrue(jquery.Length > 50000);
+                ExecuteScript(jquery, null);
+            }
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.IPhone)]
+        public void ShouldBeAbleToExecuteScriptAndReturnElementsList()
+        {
+            driver.Url = formsPage;
+            String scriptToExec = "return document.getElementsByName('snack');";
+
+            object resultObject = ((IJavaScriptExecutor)driver).ExecuteScript(scriptToExec);
+
+            ReadOnlyCollection<IWebElement> resultsList = (ReadOnlyCollection<IWebElement>)resultObject;
+
+            Assert.Greater(resultsList.Count, 0);
+        }
+
+        [Test]
+        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
+        [Ignore("Reason for ignore: Failure indicates hang condition, which would break the test suite. Really needs a timeout set.")]
+        public void ShouldThrowExceptionIfExecutingOnNoPage()
+        {
+            bool exceptionCaught = false;
+            try
+            {
+                ((IJavaScriptExecutor)driver).ExecuteScript("return 1;");
+            }
+            catch (WebDriverException)
+            {
+                exceptionCaught = true;
+            }
+
+            if (!exceptionCaught)
+            {
+                Assert.Fail("Expected an exception to be caught");
+            }
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToCreateAPersistentValue()
+        {
+            driver.Url = formsPage;
+
+            ExecuteScript("document.alerts = []");
+            ExecuteScript("document.alerts.push('hello world');");
+            string text = (string)ExecuteScript("return document.alerts.shift()");
+
+            Assert.AreEqual("hello world", text);
+        }
+
+
+        ///////////////////////////////////////////////////////
+        // Tests below here are unique to the .NET bindings.
+        ///////////////////////////////////////////////////////
+
+        [Test]
+        public void ExecutingLargeJavaScript()
+        {
+            string script = "// stolen from injectableSelenium.js in WebDriver\nvar browserbot = {\n\n    triggerEvent: function(element, eventType, canBubble, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {\n        canBubble = (typeof(canBubble) == undefined) ? true: canBubble;\n        if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) {\n            // IE\n            var evt = this.createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);\n            element.fireEvent('on' + eventType,evt);\n        } else {\n            var evt = document.createEvent('HTMLEvents');\n\n            try {\n                evt.shiftKey = shiftKeyDown;\n       evt.metaKey = metaKeyDown;\n                evt.altKey = altKeyDown;\n             evt.ctrlKey = controlKeyDown;\n            } catch(e) {\n      // Nothing sane to do\n                }\n\n            evt.initEvent(eventType, canBubble, true);\n            return element.dispatchEvent(evt);\n  }\n    },\n\n    getVisibleText: function() {\n        var selection = getSelection();\n        var range = document.createRange();\n        range.selectNodeContents(document.documentElement);\n        selection.addRange(range);\nvar string = selection.toString();\n        selection.removeAllRanges();\n\n    return string;\n    },\n\n    getOuterHTML: function(element) {\n        if(element.outerHTML) {\n            return element.outerHTML;\n        } else if(typeof(XMLSerializer) != undefined) {\n            return new XMLSerializer().serializeToString(element);\n        } else {\n            throw \"can't get outerHTML in this browser\";\n        }\n    }\n\n\n};return browserbot.getOuterHTML.apply(browserbot, arguments);";
+            driver.Url = javascriptPage;
+            IWebElement element = driver.FindElement(By.TagName("body"));
+            object x = ExecuteScript(script, element);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToPassMoreThanOneStringAsArguments()
+        {
+            if (!(driver is IJavaScriptExecutor))
+                return;
+
+            driver.Url = javascriptPage;
+            ExecuteScript("displayMessage(arguments[0] + arguments[1] + arguments[2] + arguments[3]);", "Hello,", " ", "world", "!");
+
+            string text = driver.FindElement(By.Id("result")).Text;
+            Assert.AreEqual("Hello, world!", text);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToPassMoreThanOneBooleanAsArguments()
+        {
+
+            string function = "displayMessage((arguments[0] ? 'True' : 'False') + (arguments[1] ? 'True' : 'False'));";
+
+            if (!(driver is IJavaScriptExecutor))
+                return;
+
+            driver.Url = javascriptPage;
+
+            ExecuteScript(function, true, true);
+            string text = driver.FindElement(By.Id("result")).Text;
+            Assert.AreEqual("TrueTrue", text);
+
+            ExecuteScript(function, false, true);
+            text = driver.FindElement(By.Id("result")).Text;
+            Assert.AreEqual("FalseTrue", text);
+
+            ExecuteScript(function, true, false);
+            text = driver.FindElement(By.Id("result")).Text;
+            Assert.AreEqual("TrueFalse", text);
+
+            ExecuteScript(function, false, false);
+            text = driver.FindElement(By.Id("result")).Text;
+            Assert.AreEqual("FalseFalse", text);
         }
 
         [Test]
@@ -485,20 +638,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        public void ShouldBeAbleToPassAWebElementAsArgument()
-        {
-            if (!(driver is IJavaScriptExecutor))
-                return;
-
-            driver.Url = javascriptPage;
-            IWebElement button = driver.FindElement(By.Id("plainButton"));
-            string value = (string)ExecuteScript("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button);
-
-            Assert.AreEqual("plainButton", value);
-        }
-
-        [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassMoreThanOneWebElementAsArguments()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -510,70 +649,6 @@ namespace OpenQA.Selenium
             string value = (string)ExecuteScript("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'] + arguments[1].innerHTML;", button, dynamo);
 
             Assert.AreEqual("plainButtonWhat's for dinner?", value);
-        }
-
-        [Test]
-        [Category("Javascript")]
-        public void PassingArrayAsOnlyArgumentShouldFlattenArray()
-        {
-            if (!(driver is IJavaScriptExecutor))
-            {
-                return;
-            }
-
-            driver.Url = javascriptPage;
-            object[] array = new object[] { "zero", 1, true, 3.14159 };
-            long length = (long)ExecuteScript("return arguments[0].length", array);
-            Assert.AreEqual(array.Length, length);
-        }
-
-        [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.Remote)]
-        public void ShouldBeAbleToPassAnArrayAsAdditionalArgument()
-        {
-            if (!(driver is IJavaScriptExecutor))
-            {
-                return;
-            }
-
-            driver.Url = javascriptPage;
-            object[] array = new object[] { "zero", 1, true, 3.14159, false };
-            long length = (long)ExecuteScript("return arguments[1].length", "string", array);
-            Assert.AreEqual(array.Length, length);
-        }
-
-        [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.Remote)]
-        public void ShouldBeAbleToPassACollectionAsArgument()
-        {
-            if (!(driver is IJavaScriptExecutor))
-            {
-                return;
-            }
-
-            driver.Url = javascriptPage;
-            List<object> collection = new List<object>();
-            collection.Add("Cheddar");
-            collection.Add("Brie");
-            collection.Add(7);
-            long length = (long)ExecuteScript("return arguments[0].length", collection);
-            Assert.AreEqual(collection.Count, length);
-        }
-
-
-        [Test]
-        [Category("Javascript")]
-        [ExpectedException(typeof(ArgumentException))]
-        public void ShouldThrowAnExceptionIfAnArgumentIsNotValid()
-        {
-            if (!(driver is IJavaScriptExecutor))
-                return;
-
-            driver.Url = javascriptPage;
-            ExecuteScript("return arguments[0];", driver);
         }
 
         [Test]
@@ -597,101 +672,43 @@ namespace OpenQA.Selenium
 
         }
 
-        [Test]
-        [Category("Javascript")]
-        public void ShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo()
+        private bool CompareLists(ReadOnlyCollection<object> first, ReadOnlyCollection<object> second)
         {
-            driver.Url = richTextPage;
-
-            driver.SwitchTo().Frame("editFrame");
-            IWebElement body = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return document.body");
-
-            Assert.AreEqual("", body.Text);
-        }
-
-        [Test]
-        [Category("Javascript")]
-        public void JavascriptStringHandlingShouldWorkAsExpected()
-        {
-            driver.Url = javascriptPage;
-
-            string value = (string)ExecuteScript("return '';");
-            Assert.AreEqual("", value);
-
-            value = (string)ExecuteScript("return undefined;");
-            Assert.IsNull(value);
-
-            value = (string)ExecuteScript("return ' '");
-            Assert.AreEqual(" ", value);
-        }
-
-        [Test]
-        [Category("Javascript")]
-        public void ShouldBeAbleToExecuteABigChunkOfJavascriptCode()
-        {
-            driver.Url = javascriptPage;
-            string[] fileList = System.IO.Directory.GetFiles("..\\..", "jquery-1.2.6.min.js", System.IO.SearchOption.AllDirectories);
-            if (fileList.Length > 0)
+            if (first.Count != second.Count)
             {
-                string jquery = System.IO.File.ReadAllText(fileList[0]);
-                Assert.IsTrue(jquery.Length > 50000);
-                ExecuteScript(jquery, null);
-            }
-        }
-
-        [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone)]
-        public void ShouldBeAbleToExecuteScriptAndReturnElementsList()
-        {
-            driver.Url = formsPage;
-            String scriptToExec = "return document.getElementsByName('snack');";
-
-            object resultObject = ((IJavaScriptExecutor)driver).ExecuteScript(scriptToExec);
-
-            ReadOnlyCollection<IWebElement> resultsList = (ReadOnlyCollection<IWebElement>)resultObject;
-
-            Assert.Greater(resultsList.Count, 0);
-        }
-
-        [Test]
-        [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
-        [Ignore("Reason for ignore: Failure indicates hang condition, which would break the test suite. Really needs a timeout set.")]
-        public void ShouldThrowExceptionIfExecutingOnNoPage()
-        {
-            bool exceptionCaught = false;
-            try
-            {
-                ((IJavaScriptExecutor)driver).ExecuteScript("return 1;");
-            }
-            catch (WebDriverException)
-            {
-                exceptionCaught = true;
+                return false;
             }
 
-            if (!exceptionCaught)
+            for (int i = 0; i < first.Count; ++i)
             {
-                Assert.Fail("Expected an exception to be caught");
+                if (first[i] is ReadOnlyCollection<object>)
+                {
+                    if (!(second[i] is ReadOnlyCollection<object>))
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        if (!CompareLists((ReadOnlyCollection<object>)first[i], (ReadOnlyCollection<object>)second[i]))
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    if (!first[i].Equals(second[i]))
+                    {
+                        return false;
+                    }
+                }
             }
-        }
-
-        [Test]
-        [Category("Javascript")]
-        public void ShouldBeAbleToCreateAPersistentValue()
-        {
-            driver.Url = formsPage;
-
-            ExecuteScript("document.alerts = []");
-            ExecuteScript("document.alerts.push('hello world');");
-            string text = (string)ExecuteScript("return document.alerts.shift()");
-
-            Assert.AreEqual("hello world", text);
+            return true;
         }
 
         private object ExecuteScript(String script, params Object[] args)
         {
             return ((IJavaScriptExecutor)driver).ExecuteScript(script, args);
         }
-
     }
 }

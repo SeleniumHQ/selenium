@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
 {
@@ -72,7 +73,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IPhone, "Frame switching is unsupported")]
-        public void JsLoactedElementsCanUpdateFramesIfFoundSomehowElse()
+        public void JsLocatedElementsCanUpdateFramesIfFoundSomehowElse()
         {
             driver.SwitchTo().Frame("source");
 
@@ -85,6 +86,60 @@ namespace OpenQA.Selenium
             driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
 
             Assert.IsTrue(driver.PageSource.Contains("Hello WebDriver"), "Target did not reload");
+        }
+
+        [Category("JavaScript")]
+
+        public void CanClickOnAnElementWithTopSetToANegativeNumber()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("styledPage.html");
+            IWebElement searchBox = driver.FindElement(By.Name("searchBox"));
+            searchBox.SendKeys("Cheese");
+            driver.FindElement(By.Name("btn")).Click();
+
+            string log = driver.FindElement(By.Id("log")).Text;
+            Assert.AreEqual("click", log);
+        }
+
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.Opera)]
+        public void ShouldSetRelatedTargetForMouseOver()
+        {
+            driver.Url = javascriptPage;
+
+            driver.FindElement(By.Id("movable")).Click();
+
+            string log = driver.FindElement(By.Id("result")).Text;
+
+            // Note: It is not guaranteed that the relatedTarget property of the mouseover
+            // event will be the parent, when using native events. Only check that the mouse
+            // has moved to this element, not that the parent element was the related target.
+            if (this.IsNativeEventsEnabled(driver))
+            {
+                Assert.IsTrue(log.StartsWith("parent matches?"), "Should have moved to this element.");
+            }
+            else
+            {
+                Assert.AreEqual("parent matches? true", log);
+            }
+        }
+
+        [Ignore]
+        public void ShouldSetRelatedTargetForMouseOut()
+        {
+            Assert.Fail("Must. Write. Meamingful. Test (but we don't fire mouse outs synthetically");
+        }
+
+        private bool IsNativeEventsEnabled(IWebDriver driver)
+        {
+            IHasCapabilities capabilitiesDriver = driver as IHasCapabilities;
+            if (capabilitiesDriver != null && capabilitiesDriver.Capabilities.HasCapability(CapabilityType.HasNativeEvents) && (bool)capabilitiesDriver.Capabilities.GetCapability(CapabilityType.HasNativeEvents))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

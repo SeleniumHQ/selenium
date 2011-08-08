@@ -10,6 +10,26 @@ namespace OpenQA.Selenium
     public class WebElementTest : DriverTestFixture
     {
         [Test]
+        public void ElementShouldImplementWrapsDriver()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
+            Assert.IsTrue(parent is IWrapsDriver);
+        }
+
+        [Test]
+        public void ElementShouldReturnOriginDriver()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
+            Assert.IsTrue(((IWrapsDriver)parent).WrappedDriver == driver);
+        }
+
+        //////////////////////////////////////////////////////////
+        // Tests below here do not exist in the Java unit tests.
+        //////////////////////////////////////////////////////////
+
+        [Test]
         public void ShouldToggleElementAndCheckIfElementIsSelected()
         {
             driver.Url = simpleTestPage;
@@ -134,22 +154,5 @@ namespace OpenQA.Selenium
             Assert.AreEqual("dynamo", dynamo.GetAttribute("id"));
 
         }
-
-        [Test]
-        public void ElementShouldImplementWrapsDriver()
-        {
-            driver.Url = simpleTestPage;
-            IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
-            Assert.IsTrue(parent is IWrapsDriver);
-        }
-
-        [Test]
-        public void ElementShouldReturnOriginDriver()
-        {
-            driver.Url = simpleTestPage;
-            IWebElement parent = driver.FindElement(By.Id("containsSomeDiv"));
-            Assert.IsTrue(((IWrapsDriver)parent).WrappedDriver == driver);
-        }
-
     }
 }

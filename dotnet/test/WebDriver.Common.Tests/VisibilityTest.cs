@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using System.Drawing;
 
 namespace OpenQA.Selenium
 {
@@ -83,6 +84,18 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [ExpectedException(typeof(ElementNotVisibleException))]
+        public void ShouldNotBeAbleToTypeAnElementThatIsNotDisplayed()
+        {
+            driver.Url = javascriptPage;
+            IWebElement element = driver.FindElement(By.Id("unclickable"));
+            element.SendKeys("You don't see me");
+
+            Assert.AreNotEqual(element.GetAttribute("value"), "You don't see me");
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [ExpectedException(typeof(ElementNotVisibleException))]
         public void ShouldNotBeAbleToSelectAnElementThatIsNotDisplayed()
         {
             driver.Url = javascriptPage;
@@ -92,14 +105,16 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [ExpectedException(typeof(ElementNotVisibleException))]
-        public void ShouldNotBeAbleToTypeAnElementThatIsNotDisplayed()
+        public void ZeroSizedDivIsShownIfDescendantHasSize()
         {
             driver.Url = javascriptPage;
-            IWebElement element = driver.FindElement(By.Id("unclickable"));
-            element.SendKeys("You don't see me");
 
-            Assert.AreNotEqual(element.GetAttribute("value"), "You don't see me");
+            IWebElement element = driver.FindElement(By.Id("zero"));
+            Size size = element.Size;
+
+            Assert.AreEqual(0, size.Width, "Should have 0 width");
+            Assert.AreEqual(0, size.Height, "Should have 0 height");
+            Assert.IsTrue(element.Displayed);
         }
 
         [Test]

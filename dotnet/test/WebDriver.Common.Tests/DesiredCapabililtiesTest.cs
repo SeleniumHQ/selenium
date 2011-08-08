@@ -15,8 +15,9 @@
 using System;
 using NUnit.Framework;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
 
-namespace OpenQA.Selenium.Remote
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class DesiredCapabilitiesTests

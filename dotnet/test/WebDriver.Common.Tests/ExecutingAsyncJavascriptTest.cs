@@ -34,15 +34,22 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
-        public void ShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts()
+        public void ShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined()
         {
             driver.Url = ajaxyPage;
-            Assert.IsNull(executor.ExecuteAsyncScript("arguments[arguments.length - 1](null);"));
-            Assert.IsNull(executor.ExecuteAsyncScript("arguments[arguments.length - 1]();"));
             Assert.AreEqual(123, (long)executor.ExecuteAsyncScript("arguments[arguments.length - 1](123);"));
             Assert.AreEqual("abc", executor.ExecuteAsyncScript("arguments[arguments.length - 1]('abc');").ToString());
             Assert.IsFalse((bool)executor.ExecuteAsyncScript("arguments[arguments.length - 1](false);"));
             Assert.IsTrue((bool)executor.ExecuteAsyncScript("arguments[arguments.length - 1](true);"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
+        public void ShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined()
+        {
+            driver.Url = ajaxyPage;
+            Assert.IsNull(executor.ExecuteAsyncScript("arguments[arguments.length - 1](null);"));
+            Assert.IsNull(executor.ExecuteAsyncScript("arguments[arguments.length - 1]();"));
         }
 
         [Test]
@@ -127,7 +134,7 @@ namespace OpenQA.Selenium
         [Test]
         [ExpectedException(typeof(TimeoutException))]
         [IgnoreBrowser(Browser.Chrome, "Async JavaScript execution not yet implemented on Chrome")]
-        public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout()
+        public void ShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout()
         {
             driver.Url = ajaxyPage;
             executor.ExecuteAsyncScript("window.setTimeout(function() {}, 0);");

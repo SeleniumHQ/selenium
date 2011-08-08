@@ -103,8 +103,7 @@ namespace OpenQA.Selenium.Interactions
             IAction releaseShift = actionProvider.KeyUp(keysEventInput, Keys.Shift).Build();
             releaseShift.Perform();
 
-            IWebElement keyLoggingElement = driver.FindElement(By.Id("result"));
-            Assert.AreEqual("focus keydown keydown keypress keyup keydown keypress keyup keyup", keyLoggingElement.Text, "Shift key not held, events: " + keyLoggingElement.Text);
+            AssertThatFormEventsFiredAreExactly("focus keydown keydown keypress keyup keydown keypress keyup keyup"); 
 
             Assert.AreEqual("AB", keysEventInput.GetAttribute("value"));
         }
@@ -123,11 +122,9 @@ namespace OpenQA.Selenium.Interactions
             IAction someKeys = actionProvider.SendKeys("ab").Build();
             someKeys.Perform();
 
-            IWebElement bodyLoggingElement = driver.FindElement(By.Id("body_result"));
-            Assert.AreEqual("keypress keypress", bodyLoggingElement.Text);
-
+            AssertThatBodyEventsFiredAreExactly("keypress keypress");
             IWebElement formLoggingElement = driver.FindElement(By.Id("result"));
-            Assert.AreEqual("", formLoggingElement.Text);
+            AssertThatFormEventsFiredAreExactly(string.Empty); 
         }
 
         [Test]
@@ -150,6 +147,21 @@ namespace OpenQA.Selenium.Interactions
             sendLowercase.Perform();
 
             Assert.AreEqual("abc def", keyReporter.GetAttribute("value"));
+        }
+
+        private void AssertThatFormEventsFiredAreExactly(string message, string expected)
+        {
+            Assert.AreEqual(expected, driver.FindElement(By.Id("result")).Text.Trim(), message);
+        }
+
+        private void AssertThatFormEventsFiredAreExactly(string expected)
+        {
+            AssertThatFormEventsFiredAreExactly(string.Empty, expected);
+        }
+
+        private void AssertThatBodyEventsFiredAreExactly(string expected)
+        {
+            Assert.AreEqual(expected, driver.FindElement(By.Id("body_result")).Text.Trim());
         }
     }
 }

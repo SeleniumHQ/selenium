@@ -19,10 +19,8 @@ namespace OpenQA.Selenium
             driver.FindElement(By.LinkText("Open new window")).Click();
             Assert.AreEqual("XHTML Test Page", driver.Title);
 
-            //TODO (jimevan): this is an ugly sleep. Remove when implicit waiting is implemented.
-            SleepBecauseWindowsTakeTimeToOpen();
+            WaitFor(WindowCountToBe(2));
 
-            System.Threading.Thread.Sleep(1000);
             driver.SwitchTo().Window("result");
             Assert.AreEqual("We Arrive Here", driver.Title);
 
@@ -61,9 +59,9 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.Name("windowOne")).Click();
-            SleepBecauseWindowsTakeTimeToOpen();
+            WaitFor(WindowCountToBe(2));
             driver.FindElement(By.Name("windowTwo")).Click();
-            SleepBecauseWindowsTakeTimeToOpen();
+            WaitFor(WindowCountToBe(3));
 
             ReadOnlyCollection<string> allWindowHandles = driver.WindowHandles;
 
@@ -166,7 +164,7 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.Name("windowOne")).Click();
 
-            SleepBecauseWindowsTakeTimeToOpen();
+            WaitFor(WindowCountToBe(2));
 
             ReadOnlyCollection<string> allWindowHandles = driver.WindowHandles;
 
@@ -176,7 +174,7 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Window(handle1);
             driver.Close();
 
-            SleepBecauseWindowsTakeTimeToOpen();
+            WaitFor(WindowCountToBe(1));
 
             allWindowHandles = driver.WindowHandles;
             Assert.AreEqual(1, allWindowHandles.Count);
@@ -190,13 +188,17 @@ namespace OpenQA.Selenium
             driver.Close();
         }
 
+        //////////////////////////////////////////////////////////
+        // Tests below here do not exist in the Java unit tests.
+        //////////////////////////////////////////////////////////
+
         [Test]
         public void ShouldGetBrowserHandles()
         {
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.LinkText("Open new window")).Click();
 
-            SleepBecauseWindowsTakeTimeToOpen();
+            WaitFor(WindowCountToBe(2));
 
             string handle1, handle2;
             handle1 = driver.CurrentWindowHandle;
@@ -226,7 +228,7 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.LinkText("Open new window")).Click();
 
-            SleepBecauseWindowsTakeTimeToOpen();
+            WaitFor(WindowCountToBe(2));
 
             string handle1, handle2;
             handle1 = driver.CurrentWindowHandle;
@@ -255,6 +257,14 @@ namespace OpenQA.Selenium
             {
                 Assert.Fail("Interrupted");
             }
+        }
+
+        private Func<bool> WindowCountToBe(int desiredCount)
+        {
+            return () =>
+            {
+                return driver.WindowHandles.Count == desiredCount;
+            };
         }
     }
 }

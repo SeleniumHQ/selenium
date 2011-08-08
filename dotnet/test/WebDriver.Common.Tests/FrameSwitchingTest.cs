@@ -90,6 +90,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldBeAbleToSwitchToFrameWithNameContainingDot()
+        {
+            driver.Url = framesetPage;
+            driver.SwitchTo().Frame("sixth.iframe1");
+            Assert.IsTrue(driver.FindElement(By.TagName("body")).Text.Contains("Page number 3"));
+        }
+
+        [Test]
         public void ShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement()
         {
             driver.Url = framesetPage;

@@ -10,7 +10,7 @@ namespace OpenQA.Selenium
     public class ElementEqualityTest : DriverTestFixture
     {
         [Test]
-        public void ElementEqualityShouldWork()
+        public void SameElementLookedUpDifferentWaysShouldBeEqual()
         {
             driver.Url = (simpleTestPage);
 
@@ -21,7 +21,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ElementInequalityShouldWork()
+        public void DifferentElementsShouldNotBeEqual()
         {
             driver.Url = (simpleTestPage);
 
@@ -31,8 +31,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote, "Remote elements are not guaranteed to have the same id")]
-        public void FindElementHashCodeShouldMatchEquality()
+        public void SameElementLookedUpDifferentWaysUsingFindElementShouldHaveSameHashCode()
         {
             driver.Url = (simpleTestPage);
             IWebElement body = driver.FindElement(By.TagName("body"));
@@ -42,8 +41,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote, "Remote elements are not guaranteed to have the same id")]
-        public void FindElementsHashCodeShouldMatchEquality()
+        public void SameElementLookedUpDifferentWaysUsingFindElementsShouldHaveSameHashCode()
         {
             driver.Url = (simpleTestPage);
             ReadOnlyCollection<IWebElement> body = driver.FindElements(By.TagName("body"));

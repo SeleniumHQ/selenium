@@ -33,7 +33,7 @@ namespace OpenQA.Selenium
         [Test]
         [NeedsFreshDriver(BeforeTest = true)]
         [IgnoreBrowser(Browser.Chrome, "Does not work in chrome")]
-        public void testRefreshShouldBlockUntilPageLoads()
+        public void RefreshShouldBlockUntilPageLoads()
         {
             DateTime start = DateTime.Now;
             driver.Url = sleepingPage + "?time=" + LoadTimeInSeconds.ToString();

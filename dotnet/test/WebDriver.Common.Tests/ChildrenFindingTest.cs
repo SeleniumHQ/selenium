@@ -20,26 +20,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
-        public void FindElementByXPathWhenNoMatch()
-        {
-            driver.Url = nestedPage;
-            IWebElement element = driver.FindElement(By.Name("form2"));
-            element.FindElement(By.XPath("select/x"));
-        }
-
-        [Test]
-        public void FindElementsByXPath()
-        {
-            driver.Url = nestedPage;
-            IWebElement element = driver.FindElement(By.Name("form2"));
-            ReadOnlyCollection<IWebElement> children = element.FindElements(By.XPath("select/option"));
-            Assert.AreEqual(children.Count, 8);
-            Assert.AreEqual(children[0].Text, "One");
-            Assert.AreEqual(children[1].Text, "Two");
-        }
-
-        [Test]
         public void FindingElementsOnElementByXPathShouldFindTopLevelElements()
         {
             driver.Url = simpleTestPage;
@@ -57,6 +37,26 @@ namespace OpenQA.Selenium
             ReadOnlyCollection<IWebElement> children = parent.FindElements(By.XPath("./p"));
             Assert.AreEqual(1, children.Count);
             Assert.AreEqual("A div containing", children[0].Text);
+        }
+
+        [Test]
+        [ExpectedException(typeof(NoSuchElementException))]
+        public void FindElementByXPathWhenNoMatch()
+        {
+            driver.Url = nestedPage;
+            IWebElement element = driver.FindElement(By.Name("form2"));
+            element.FindElement(By.XPath("select/x"));
+        }
+
+        [Test]
+        public void FindElementsByXPath()
+        {
+            driver.Url = nestedPage;
+            IWebElement element = driver.FindElement(By.Name("form2"));
+            ReadOnlyCollection<IWebElement> children = element.FindElements(By.XPath("select/option"));
+            Assert.AreEqual(children.Count, 8);
+            Assert.AreEqual(children[0].Text, "One");
+            Assert.AreEqual(children[1].Text, "Two");
         }
 
         [Test]
