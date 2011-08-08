@@ -60,9 +60,8 @@
     <AssemblyOriginatorKeyFile>..\..\..\WebDriver.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.1, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\third_party\csharp\dotnetzip-1.9\Ionic.Zip.Reduced.dll</HintPath>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\..\..\third_party\csharp\dotnetzip-1.9\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json.Net35">
       <HintPath>..\..\..\third_party\csharp\json-net-4.0r2\Newtonsoft.Json.Net35.dll</HintPath>

@@ -169,7 +169,7 @@ namespace OpenQA.Selenium.Firefox
             string directoryName = string.Format(CultureInfo.InvariantCulture, "webdriver{0}.duplicated", randomNumber);
             string destinationDirectory = Path.Combine(Path.GetTempPath(), directoryName);
             byte[] zipContent = Convert.FromBase64String(base64);
-            using (ZipFile profileZipArchive = ZipFile.Read(zipContent))
+            using (ZipFile profileZipArchive = ZipFile.Read(new MemoryStream(zipContent)))
             {
                 profileZipArchive.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
                 profileZipArchive.ExtractAll(destinationDirectory);

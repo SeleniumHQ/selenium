@@ -7,7 +7,7 @@ dotnet_library(name = "dotnet",
     "System.Drawing.dll",
     "System.Xml.dll",
     "third_party/csharp/json-net-4.0r2/Newtonsoft.Json.Net35.dll",
-    "third_party/csharp/dotnetzip-1.9/Ionic.Zip.Reduced.dll"
+    "third_party/csharp/dotnetzip-1.9/Ionic.Zip.dll"
   ],
   resources = [
     {"//cpp:ie_win32_dll" : "WebDriver.InternetExplorerDriver.x86.dll"},
