@@ -121,24 +121,6 @@ dotnet_test(name = "android",
   project = "WebDriver.Android.Tests.nunit"
 )
 
-dotnet_test(name = "unit",
-  srcs = "WebDriver.UnitTests/**/*.cs",
-  refs = [
-    "System.dll",
-    "System.Core.dll",
-    "System.Data.dll",
-    "System.Drawing.dll",
-    "System.Xml.dll",
-    "//dotnet:dotnet",
-    ":common",
-    "third_party/csharp/nunit-2.5.9/lib/nunit.core.dll",
-    "third_party/csharp/nunit-2.5.9/lib/nunit.core.interfaces.dll",
-    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
-  ],
-  out = "build/dotnet/WebDriver.UnitTests.dll",
-  project = "WebDriver.UnitTests.dll"
-)
-  
 dotnet_test(name = "support",
   srcs = "WebDriver.Support.Tests/**/*.cs",
   refs = [
@@ -203,3 +185,4 @@ dotnet_test(name = "webdriverbackedselenium",
   ],
   project = "Selenium.WebDriverBackedSelenium.Tests.nunit"
 )
+
