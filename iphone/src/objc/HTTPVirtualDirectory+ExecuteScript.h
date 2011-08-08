@@ -31,7 +31,7 @@
 //   http://code.google.com/p/selenium/wiki/JsonWireProtocol
 //
 // Returns the script result; throws an exception if it fails.
--(id) executeAtom:(const char* const)atom
+-(id) executeAtom:(const char* const[])atom
          withArgs:(NSArray*) arguments;
 
 // Executes a JavaScript function in the |UIViewController|. Each script

@@ -117,9 +117,14 @@
 
 @implementation HTTPVirtualDirectory (ExecuteScript)
 
--(id) executeAtom:(const char* const)atom
+-(id) executeAtom:(const char* const[])atom
          withArgs:(NSArray*) args {
-  return [self executeJsFunction:[NSString stringWithUTF8String:atom]
+  std::string compiled("");
+  for (size_t i = 0; atom[i] != NULL; i++) {
+    compiled.append(atom[i]);
+  }
+  
+	return [self executeJsFunction:[NSString stringWithCString:compiled.c_str() encoding:NSUTF8StringEncoding]
                         withArgs:args];
 }
 
@@ -136,8 +141,13 @@
 
 -(id) executeScript:(NSString*)script
            withArgs:(NSArray*)args {
+  std::string compiled("");
+  for (size_t i = 0; webdriver::atoms::EXECUTE_SCRIPT[i] != NULL; i++) {
+    compiled.append(webdriver::atoms::EXECUTE_SCRIPT[i]);
+  }
+	
   NSString* result = [[self viewController] jsEval:@"(%@)(%@,%@,true)",
-      [NSString stringWithUTF8String:webdriver::atoms::EXECUTE_SCRIPT],
+      [NSString stringWithCString:compiled.c_str() encoding:NSUTF8StringEncoding],
       script,
       [args JSONRepresentation]];
   NSLog(@"Got result: %@", result);
@@ -165,8 +175,13 @@
       [SimpleObserver simpleObserverForAction:@"webdriver:executeAsyncScript"
                                     andSender:[self viewController]];
 
+  std::string compiled("");
+  for (size_t i = 0; webdriver::atoms::EXECUTE_ASYNC_SCRIPT[i] != NULL; i++) {
+    compiled.append(webdriver::atoms::EXECUTE_ASYNC_SCRIPT[i]);
+  }
+	
   [[self viewController] jsEval:@"(%@)(function(){%@\n},%@,%@)",
-       [NSString stringWithUTF8String:webdriver::atoms::EXECUTE_ASYNC_SCRIPT],
+       [NSString stringWithCString:compiled.c_str() encoding:NSUTF8StringEncoding],
        script,
        [args JSONRepresentation],
        [NSNumber numberWithDouble:timeout * 1000]];
