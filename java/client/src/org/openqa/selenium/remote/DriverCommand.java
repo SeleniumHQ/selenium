@@ -101,9 +101,10 @@ public interface DriverCommand {
   String SET_LOCATION = "setLocation";
   String GET_APP_CACHE = "getAppCache";
   String GET_APP_CACHE_STATUS = "getStatus";
+  String CLEAR_APP_CACHE = "clearAppCache";
   String IS_BROWSER_ONLINE = "isBrowserOnline";
   String SET_BROWSER_ONLINE = "setBrowserOnline";
-  
+
   String GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem";
   String GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys";
   String SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem";
@@ -117,7 +118,7 @@ public interface DriverCommand {
   String REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem";
   String CLEAR_SESSION_STORAGE = "clearSessionStorage";
   String GET_SESSION_STORAGE_SIZE = "getSessionStorageSize";
-  
+
   String SET_SCREEN_ORIENTATION = "setScreenOrientation";
   String GET_SCREEN_ORIENTATION = "getScreenOrientation";
 

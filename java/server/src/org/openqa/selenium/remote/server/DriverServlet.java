@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.selenium.remote.server.handler.*;
+import org.openqa.selenium.remote.server.handler.html5.ClearAppCache;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
 import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
 import org.openqa.selenium.remote.server.handler.html5.ExecuteSQL;
@@ -250,22 +251,24 @@ public class DriverServlet extends HttpServlet {
 
     postMapper.bind("/session/:sessionId/execute_sql", ExecuteSQL.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
-    
+
     getMapper.bind("/session/:sessionId/location", GetLocationContext.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     postMapper.bind("/session/:sessionId/location", SetLocationContext.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    
+
     getMapper.bind("/session/:sessionId/application_cache", GetAppCache.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/application_cache/status", GetAppCacheStatus.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
-    
+    deleteMapper.bind("/session/:sessionId/application_cache/clear", ClearAppCache.class)
+       .on(ResultType.SUCCESS, new EmptyResult());
+
     postMapper.bind("/session/:sessionId/browser_connection", SetBrowserConnection.class)
     .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/browser_connection", IsBrowserOnline.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
-    
+
     getMapper.bind("/session/:sessionId/local_storage/:key", GetLocalStorageItem.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     deleteMapper.bind("/session/:sessionId/local_storage/:key", RemoveLocalStorageItem.class)
@@ -278,7 +281,7 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/local_storage/size", GetLocalStorageSize.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
-    
+
     getMapper.bind("/session/:sessionId/session_storage/:key", GetSessionStorageItem.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     deleteMapper.bind("/session/:sessionId/session_storage/:key", RemoveSessionStorageItem.class)
@@ -291,7 +294,7 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/session_storage/size", GetSessionStorageSize.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
-    
+
     getMapper.bind("/session/:sessionId/orientation", GetScreenOrientation.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     postMapper.bind("/session/:sessionId/orientation", Rotate.class)
