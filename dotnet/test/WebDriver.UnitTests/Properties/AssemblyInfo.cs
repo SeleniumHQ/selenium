@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Selenium WebDriver Remote Unit tests")]
-[assembly: AssemblyDescription("Selenium WebDriver Remote Unit tests")]
+[assembly: AssemblyDescription("Selenium WebDriver Unit tests")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Selenium Committers")]
 [assembly: AssemblyProduct("Selenium")]

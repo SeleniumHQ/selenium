@@ -8,8 +8,8 @@
     <ProjectGuid>{D9387770-DA92-4898-801F-F61255739D38}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WebDriver.Remote.UnitTests</RootNamespace>
-    <AssemblyName>WebDriver.Remote.UnitTests</AssemblyName>
+    <RootNamespace>OpenQA.Selenium</RootNamespace>
+    <AssemblyName>WebDriver.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

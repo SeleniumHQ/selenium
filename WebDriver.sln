@@ -66,7 +66,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver", "dotnet\src\Web
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-server", "cpp\webdriver-server\webdriver-server.vcxproj", "{35A23A16-EF17-4CC3-8854-785025A304F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Remote.UnitTests", "dotnet\test\WebDriver.Remote.UnitTests\WebDriver.Remote.UnitTests.csproj", "{D9387770-DA92-4898-801F-F61255739D38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.UnitTests", "dotnet\test\WebDriver.UnitTests\WebDriver.UnitTests.csproj", "{D9387770-DA92-4898-801F-F61255739D38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
