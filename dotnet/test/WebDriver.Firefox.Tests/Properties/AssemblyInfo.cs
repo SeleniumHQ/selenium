@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("webdriver-firefox-test")]
+[assembly: AssemblyTitle("WebDriver.Firefox.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("QALAB")]
-[assembly: AssemblyProduct("webdriver-firefox-test")]
-[assembly: AssemblyCopyright("Copyright © QALAB 2010")]
+[assembly: AssemblyCompany("Selenium Committers")]
+[assembly: AssemblyProduct("Selenium WebDriver Tests")]
+[assembly: AssemblyCopyright("Copyright © Software Freedom Conservatory 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

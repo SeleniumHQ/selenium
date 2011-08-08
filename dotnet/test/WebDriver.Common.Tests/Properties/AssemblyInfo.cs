@@ -3,14 +3,14 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly : AssemblyTitle("Test")]
-[assembly : AssemblyDescription("")]
-[assembly : AssemblyConfiguration("")]
-[assembly : AssemblyCompany("Thoughtworks")]
-[assembly : AssemblyProduct("Test")]
-[assembly : AssemblyCopyright("Copyright © Thoughtworks 2006")]
-[assembly : AssemblyTrademark("")]
-[assembly : AssemblyCulture("")]
+[assembly: AssemblyTitle("WebDriver.Common.Tests")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("Selenium Committers")]
+[assembly: AssemblyProduct("Selenium WebDriver Tests")]
+[assembly: AssemblyCopyright("Copyright © Software Freedom Conservatory 2011")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

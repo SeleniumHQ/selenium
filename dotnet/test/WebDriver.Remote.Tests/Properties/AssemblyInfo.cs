@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("webdriver-remote-test")]
+[assembly: AssemblyTitle("WebDriver.Remote.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("QALAB")]
-[assembly: AssemblyProduct("webdriver-remote-test")]
-[assembly: AssemblyCopyright("Copyright © QALAB 2010")]
+[assembly: AssemblyCompany("Selenium Committers")]
+[assembly: AssemblyProduct("Selenium WebDriver Tests")]
+[assembly: AssemblyCopyright("Copyright © Software Freedom Conservatory 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
