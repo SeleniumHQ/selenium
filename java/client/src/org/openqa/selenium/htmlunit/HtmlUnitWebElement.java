@@ -845,7 +845,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   private String getEffectiveStyle(HtmlElement htmlElement, String propertyName) {
     HtmlElement current = htmlElement;
     String value = "inherit";
-    while (current instanceof HtmlElement && "inherit".equals(value)) {
+    while ("inherit".equals(value)) {
       // Hat-tip to the Selenium team
       Object result = parent.executeScript(
           "if (window.getComputedStyle) { " +
