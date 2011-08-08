@@ -858,7 +858,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         }
       }
 
-      // Next, check fora  frame with a matching ID.  For simplicity, assume the ID is unique.
+      // Next, check for a frame with a matching ID.  For simplicity, assume the ID is unique.
       // Users can still switch to frames with non-unique IDs using a WebElement switch:
       //   WebElement frameElement = driver.findElement(By.xpath("//frame[@id=\"foo\"]"));
       //   driver.switchTo().frame(frameElement);
