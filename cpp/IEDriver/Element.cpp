@@ -65,7 +65,7 @@ int Element::IsDisplayed(bool* result) {
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
 	std::wstring script_source(L"(function() { return (");
-	script_source += atoms::IS_DISPLAYED;
+	script_source += atoms::asString(atoms::IS_DISPLAYED);
 	script_source += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
@@ -97,7 +97,7 @@ bool Element::IsEnabled() {
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
 	std::wstring script_source(L"(function() { return (");
-	script_source += atoms::IS_ENABLED;
+	script_source += atoms::asString(atoms::IS_ENABLED);
 	script_source += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
@@ -145,7 +145,7 @@ int Element::GetAttributeValue(const std::string& attribute_name, std::string* a
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
 	std::wstring script_source(L"(function() { return (");
-	script_source += atoms::GET_ATTRIBUTE;
+	script_source += atoms::asString(atoms::GET_ATTRIBUTE);
 	script_source += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;
@@ -218,7 +218,7 @@ bool Element::IsSelected() {
 	// function: "function() {...}"; Wrap it in another function so we can
 	// invoke it with our arguments without polluting the current namespace.
 	std::wstring script_source(L"(function() { return (");
-	script_source += atoms::IS_SELECTED;
+	script_source += atoms::asString(atoms::IS_SELECTED);
 	script_source += L")})();";
 
 	CComPtr<IHTMLDocument2> doc;

@@ -119,7 +119,7 @@ private:
 		// function: "function() {...}"; Wrap it in another function so we can
 		// invoke it with our arguments without polluting the current namespace.
 		std::wstring script_source = L"(function() { return (";
-		script_source += atoms::CLICK;
+		script_source += atoms::asString(atoms::CLICK);
 		script_source += L")})();";
 
 		// If not multi-select, click the parent (<select>) element.

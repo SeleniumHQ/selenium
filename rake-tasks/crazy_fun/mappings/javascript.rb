@@ -336,7 +336,7 @@ module Javascript
 
   class GenerateAtoms < BaseJs
 
-    MAX_LINE_LENGTH = 80
+    MAX_LINE_LENGTH = 78
     MAX_STR_LENGTH_CPP = MAX_LINE_LENGTH - "    L\"\"\n".length
     MAX_STR_LENGTH_JAVA = MAX_LINE_LENGTH - "        \n".length
     COPYRIGHT =
@@ -405,7 +405,7 @@ module Javascript
       to_file << "\n"
 
       if language == :cpp
-        to_file << "const #{atom_type}* const #{atom_upper} =\n"
+        to_file << "const #{atom_type}* const #{atom_upper}[] = {\n"
       elsif language == :java
         to_file << "    #{atom_upper}(\n"
       end
@@ -419,9 +419,15 @@ module Javascript
 
         line = contents[0, diff]
         contents.slice!(0..diff - 1)
-        to_file << line_format % line
-        to_file << " +" if language == :java
-        to_file << "\n"
+
+        if (language == :java)
+          to_file << line_format % line
+          to_file << " +"
+          to_file << "\n"
+        elsif (language == :cpp)
+          to_file << line_format % line
+          to_file << ",\n"
+        end
       end
 
       to_file << line_format % contents if contents.length > 0
@@ -429,7 +435,7 @@ module Javascript
       if language == :java
         to_file << "\n    ),\n"
       elsif language == :cpp
-        to_file << ";\n"
+        to_file << ",\n    NULL\n};\n"
       end
     end
 
@@ -449,6 +455,7 @@ module Javascript
           out << "#define #{define_guard}\n"
           out << "\n"
           out << "#include <stddef.h>  // For wchar_t.\n" unless utf8
+          out << "#include <string>    // For std::(w)string.\n"
           out << "\n" unless utf8
           out << "namespace webdriver {\n"
           out << "namespace atoms {\n"
@@ -458,6 +465,13 @@ module Javascript
           end
 
           out << "\n"
+          out << "static inline std::wstring asString(const wchar_t* const atom[]) {\n"
+	        out << "  std::wstring source = L\"\";\n";
+          out << "  for (int i = 0; atom[i] != NULL; i++) {\n"
+		      out << "    source += atom[i];\n"
+	        out << "  }\n"
+	        out << "  return source;\n"
+          out << "}\n\n";
           out << "}  // namespace atoms\n"
           out << "}  // namespace webdriver\n"
           out << "\n"
