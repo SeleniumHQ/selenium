@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -21,18 +21,21 @@
 namespace webdriver {
 
 class GetCurrentWindowHandleCommandHandler : public IECommandHandler {
-public:
-	GetCurrentWindowHandleCommandHandler(void) {
-	}
+ public:
+  GetCurrentWindowHandleCommandHandler(void) {
+  }
 
-	virtual ~GetCurrentWindowHandleCommandHandler(void) {
-	}
+  virtual ~GetCurrentWindowHandleCommandHandler(void) {
+  }
 
-protected:
-	void ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		std::string current_handle = executor.current_browser_id();
-		response->SetSuccessResponse(current_handle);
-	}
+ protected:
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
+    std::string current_handle = executor.current_browser_id();
+    response->SetSuccessResponse(current_handle);
+  }
 };
 
 } // namespace webdriver

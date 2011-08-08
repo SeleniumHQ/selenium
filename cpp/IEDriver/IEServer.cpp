@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -23,10 +23,10 @@ IEServer::~IEServer(void) {
 }
 
 SessionHandle IEServer::InitializeSession() {
-	SessionHandle session_handle(new IESession());
-	int port = this->port();
-	session_handle->Initialize(&port);
-	return session_handle;
+  SessionHandle session_handle(new IESession());
+  int port = this->port();
+  session_handle->Initialize(&port);
+  return session_handle;
 }
 
 } //namespace webdriver

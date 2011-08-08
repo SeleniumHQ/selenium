@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -26,20 +26,42 @@ namespace webdriver {
 class IESessionWindow;
 
 class ElementFinder {
-public:
-	ElementFinder();
-	virtual ~ElementFinder(void);
-	virtual int FindElement(const IECommandExecutor& executor, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_element);
-	virtual int FindElements(const IECommandExecutor& executor, ElementHandle parent_wrapper, const std::wstring& mechanism, const std::wstring& criteria, Json::Value* found_elements);
+ public:
+  ElementFinder();
+  virtual ~ElementFinder(void);
+  virtual int FindElement(const IECommandExecutor& executor,
+                          ElementHandle parent_wrapper,
+                          const std::wstring& mechanism,
+                          const std::wstring& criteria,
+                          Json::Value* found_element);
+  virtual int FindElements(const IECommandExecutor& executor,
+                           ElementHandle parent_wrapper,
+                           const std::wstring& mechanism,
+                           const std::wstring& criteria,
+                           Json::Value* found_elements);
 
-private:
-	int FindElementByCssSelector(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element);
-	int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements);
-	int FindElementByXPath(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_element);
-	int FindElementsByXPath(const IECommandExecutor& executor, const ElementHandle parent_wrapper, const std::wstring& criteria, Json::Value* found_elements);
-	int InjectXPathEngine(BrowserHandle browser_wrapper);
-	void SanitizeCriteria(const std::wstring& mechanism, std::wstring* criteria);
-	void ReplaceAllSubstrings(const std::wstring& to_replace, const std::wstring& replace_with, std::wstring* str);
+ private:
+  int FindElementByCssSelector(const IECommandExecutor& executor,
+                               const ElementHandle parent_wrapper,
+                               const std::wstring& criteria,
+                               Json::Value* found_element);
+  int FindElementsByCssSelector(const IECommandExecutor& executor,
+                                const ElementHandle parent_wrapper,
+                                const std::wstring& criteria,
+                                Json::Value* found_elements);
+  int FindElementByXPath(const IECommandExecutor& executor,
+                         const ElementHandle parent_wrapper,
+                         const std::wstring& criteria,
+                         Json::Value* found_element);
+  int FindElementsByXPath(const IECommandExecutor& executor,
+                          const ElementHandle parent_wrapper,
+                          const std::wstring& criteria,
+                          Json::Value* found_elements);
+  int InjectXPathEngine(BrowserHandle browser_wrapper);
+  void SanitizeCriteria(const std::wstring& mechanism, std::wstring* criteria);
+  void ReplaceAllSubstrings(const std::wstring& to_replace,
+                            const std::wstring& replace_with,
+                            std::wstring* str);
 };
 
 } // namespace webdriver

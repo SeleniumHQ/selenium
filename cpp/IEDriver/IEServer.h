@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -23,12 +23,12 @@ namespace webdriver
 
 class IEServer : public Server
 {
-public:
-	IEServer(int port);
-	virtual ~IEServer(void);
+ public:
+  IEServer(int port);
+  virtual ~IEServer(void);
 
-protected:
-	virtual SessionHandle InitializeSession(void);
+ protected:
+  virtual SessionHandle InitializeSession(void);
 };
 
 } // namespace webdriver

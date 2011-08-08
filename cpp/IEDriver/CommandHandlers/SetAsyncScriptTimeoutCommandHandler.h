@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -21,26 +21,29 @@
 namespace webdriver {
 
 class SetAsyncScriptTimeoutCommandHandler : public IECommandHandler {
-public:
-	SetAsyncScriptTimeoutCommandHandler(void) {
-	}
+ public:
+  SetAsyncScriptTimeoutCommandHandler(void) {
+  }
 
-	virtual ~SetAsyncScriptTimeoutCommandHandler(void) {
-	}
+  virtual ~SetAsyncScriptTimeoutCommandHandler(void) {
+  }
 
-protected:
-	void SetAsyncScriptTimeoutCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		ParametersMap::const_iterator ms_parameter_iterator = command_parameters.find("ms");
-		if (ms_parameter_iterator == command_parameters.end()) {
-			response->SetErrorResponse(400, "Missing parameter: ms");
-			return;
-		} else {
-			int timeout = ms_parameter_iterator->second.asInt();
-			IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-			mutable_executor.set_async_script_timeout(timeout);
-			response->SetSuccessResponse(Json::Value::null);
-		}
-	}
+ protected:
+  void SetAsyncScriptTimeoutCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
+                                                            const LocatorMap& locator_parameters,
+                                                            const ParametersMap& command_parameters,
+                                                            Response* response) {
+    ParametersMap::const_iterator ms_parameter_iterator = command_parameters.find("ms");
+    if (ms_parameter_iterator == command_parameters.end()) {
+      response->SetErrorResponse(400, "Missing parameter: ms");
+      return;
+    } else {
+      int timeout = ms_parameter_iterator->second.asInt();
+      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+      mutable_executor.set_async_script_timeout(timeout);
+      response->SetSuccessResponse(Json::Value::null);
+    }
+  }
 };
 
 } // namespace webdriver

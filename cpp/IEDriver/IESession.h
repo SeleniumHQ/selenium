@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -22,15 +22,16 @@ namespace webdriver {
 
 class IESession : public Session {
 public:
-	IESession();
-	virtual ~IESession(void);
+  IESession();
+  virtual ~IESession(void);
 
-	void Initialize(void* init_params);
-	void ShutDown(void);
-	bool ExecuteCommand(const std::string& serialized_command, std::string* serialized_response);
+  void Initialize(void* init_params);
+  void ShutDown(void);
+  bool ExecuteCommand(const std::string& serialized_command,
+                      std::string* serialized_response);
 
 private:
-	HWND executor_window_handle_;
+  HWND executor_window_handle_;
 };
 
 } // namespace webdriver

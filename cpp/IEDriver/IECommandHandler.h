@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -31,13 +31,18 @@ namespace webdriver {
 class IECommandExecutor;
 
 class IECommandHandler : public CommandHandler<IECommandExecutor> {
-public:
-	IECommandHandler(void);
-	virtual ~IECommandHandler(void);
+ public:
+  IECommandHandler(void);
+  virtual ~IECommandHandler(void);
 
-protected:
-	virtual void ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response* response);
-	int GetElement(const IECommandExecutor& executor, const std::string& element_id, ElementHandle* element_wrapper);
+ protected:
+  virtual void ExecuteInternal(const IECommandExecutor& executor,
+                               const LocatorMap& locator_parameters,
+                               const ParametersMap& command_parameters,
+                               Response* response);
+  int GetElement(const IECommandExecutor& executor,
+                 const std::string& element_id,
+                 ElementHandle* element_wrapper);
 };
 
 typedef std::tr1::shared_ptr<IECommandHandler> CommandHandlerHandle;

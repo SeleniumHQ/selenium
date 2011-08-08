@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -14,40 +14,40 @@
 #include "WebDriver.h"
 
 webdriver::Server* StartServer(int port) {
-	if (server == NULL) {
-		server = new webdriver::IEServer(port);
-		if (!server->Start()) {
-			delete server;
-			server = NULL;
-		}
-	}
-	return server;
+  if (server == NULL) {
+    server = new webdriver::IEServer(port);
+    if (!server->Start()) {
+      delete server;
+      server = NULL;
+    }
+  }
+  return server;
 }
 
 void StopServer(webdriver::Server* myserver) {
-	if (server) {
-		server->Stop();
-		delete server;
-		server = NULL;
-	}
+  if (server) {
+    server->Stop();
+    delete server;
+    server = NULL;
+  }
 }
 
 int GetServerSessionCount() {
-	int session_count(0);
-	if (server != NULL) {
-		session_count = server->session_count();
-	}
-	return session_count;
+  int session_count(0);
+  if (server != NULL) {
+    session_count = server->session_count();
+  }
+  return session_count;
 }
 
 int GetServerPort() {
-	int server_port(0);
-	if (server != NULL) {
-		server_port = server->port();
-	}
-	return server_port;
+  int server_port(0);
+  if (server != NULL) {
+    server_port = server->port();
+  }
+  return server_port;
 }
 
 bool ServerIsRunning() {
-	return server != NULL;
+  return server != NULL;
 }

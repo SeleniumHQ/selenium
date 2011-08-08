@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -21,36 +21,40 @@
 namespace webdriver {
 
 class DeleteAllCookiesCommandHandler : public IECommandHandler {
-public:
-	DeleteAllCookiesCommandHandler(void) {
-	}
+ public:
+  DeleteAllCookiesCommandHandler(void) {
+  }
 
-	virtual ~DeleteAllCookiesCommandHandler(void) {
-	}
+  virtual ~DeleteAllCookiesCommandHandler(void) {
+  }
 
-protected:
-	void DeleteAllCookiesCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		BrowserHandle browser_wrapper;
-		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-		if (status_code != SUCCESS) {
-			response->SetErrorResponse(status_code, "Unable to get browser");
-			return;
-		}
+ protected:
+  void DeleteAllCookiesCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
+                                                       const LocatorMap& locator_parameters,
+                                                       const ParametersMap& command_parameters,
+                                                       Response* response) {
+    BrowserHandle browser_wrapper;
+    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+    if (status_code != SUCCESS) {
+      response->SetErrorResponse(status_code, "Unable to get browser");
+      return;
+    }
 
-		std::map<std::string, std::string> cookies;
-		browser_wrapper->GetCookies(&cookies);
-		std::map<std::string, std::string>::const_iterator it = cookies.begin();
-		for (; it != cookies.end(); ++it) {
-			std::string cookie_name = it->first;
-			status_code = browser_wrapper->DeleteCookie(cookie_name);
-			if (status_code != SUCCESS) {
-				response->SetErrorResponse(status_code, "Unable to delete cookie with name '" + cookie_name + "'");
-				return;
-			}
-		}
+    std::map<std::string, std::string> cookies;
+    browser_wrapper->GetCookies(&cookies);
+    std::map<std::string, std::string>::const_iterator it = cookies.begin();
+    for (; it != cookies.end(); ++it) {
+      std::string cookie_name = it->first;
+      status_code = browser_wrapper->DeleteCookie(cookie_name);
+      if (status_code != SUCCESS) {
+        response->SetErrorResponse(status_code,
+                                   "Unable to delete cookie with name '" + cookie_name + "'");
+        return;
+      }
+    }
 
-		response->SetSuccessResponse(Json::Value::null);
-	}
+    response->SetSuccessResponse(Json::Value::null);
+  }
 };
 
 } // namespace webdriver

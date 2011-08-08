@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -21,24 +21,27 @@
 namespace webdriver {
 
 class GetAllWindowHandlesCommandHandler : public IECommandHandler {
-public:
-	GetAllWindowHandlesCommandHandler(void) {
-	}
+ public:
+  GetAllWindowHandlesCommandHandler(void) {
+  }
 
-	virtual ~GetAllWindowHandlesCommandHandler(void) {
-	}
+  virtual ~GetAllWindowHandlesCommandHandler(void) {
+  }
 
-protected:
-	void GetAllWindowHandlesCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		Json::Value handles(Json::arrayValue);
-		std::vector<std::string> handle_list;
-		executor.GetManagedBrowserHandles(&handle_list);
-		for (unsigned int i = 0; i < handle_list.size(); ++i) {
-			handles.append(handle_list[i]);
-		}
+ protected:
+  void GetAllWindowHandlesCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
+                                                          const LocatorMap& locator_parameters,
+                                                          const ParametersMap& command_parameters,
+                                                          Response* response) {
+    Json::Value handles(Json::arrayValue);
+    std::vector<std::string> handle_list;
+    executor.GetManagedBrowserHandles(&handle_list);
+    for (unsigned int i = 0; i < handle_list.size(); ++i) {
+      handles.append(handle_list[i]);
+    }
 
-		response->SetSuccessResponse(handles);
-	}
+    response->SetSuccessResponse(handles);
+  }
 };
 
 } // namespace webdriver

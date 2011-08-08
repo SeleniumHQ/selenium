@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -21,54 +21,61 @@
 namespace webdriver {
 
 class DismissAlertCommandHandler : public IECommandHandler {
-public:
-	DismissAlertCommandHandler(void) {
-	}
+ public:
+  DismissAlertCommandHandler(void) {
+  }
 
-	virtual ~DismissAlertCommandHandler(void) {
-	}
+  virtual ~DismissAlertCommandHandler(void) {
+  }
 
-protected:
-	void DismissAlertCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		BrowserHandle browser_wrapper;
-		executor.GetCurrentBrowser(&browser_wrapper);
-		// This sleep is required to give IE time to draw the dialog.
-		::Sleep(100);
-		HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
-		if (alert_handle == NULL) {
-			response->SetErrorResponse(EMODALDIALOGOPEN, "No alert is active");
-		} else {
-			HWND button_handle = NULL;
-			// Alert present, find the Cancel button.
-			// Retry up to 10 times to find the dialog.
-			int max_wait = 10;
-			while ((button_handle == NULL) && --max_wait) {
-				::EnumChildWindows(alert_handle, &DismissAlertCommandHandler::FindCancelButton, reinterpret_cast<LPARAM>(&button_handle));
-				if (button_handle == NULL) {
-					::Sleep(50);
-				}
-			}
+ protected:
+  void DismissAlertCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
+                                                   const LocatorMap& locator_parameters,
+                                                   const ParametersMap& command_parameters,
+                                                   Response* response) {
+    BrowserHandle browser_wrapper;
+    executor.GetCurrentBrowser(&browser_wrapper);
+    // This sleep is required to give IE time to draw the dialog.
+    ::Sleep(100);
+    HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
+    if (alert_handle == NULL) {
+      response->SetErrorResponse(EMODALDIALOGOPEN, "No alert is active");
+    } else {
+      HWND button_handle = NULL;
+      // Alert present, find the Cancel button.
+      // Retry up to 10 times to find the dialog.
+      int max_wait = 10;
+      while ((button_handle == NULL) && --max_wait) {
+        ::EnumChildWindows(alert_handle,
+                           &DismissAlertCommandHandler::FindCancelButton,
+                           reinterpret_cast<LPARAM>(&button_handle));
+        if (button_handle == NULL) {
+          ::Sleep(50);
+        }
+      }
 
-			if (button_handle == NULL) {
-				response->SetErrorResponse(EUNHANDLEDERROR, "Could not find Cancel button");
-			} else {
-				// Now click on the Cancel button of the Alert
-				::SendMessage(alert_handle, WM_COMMAND, IDCANCEL, NULL);
-				response->SetSuccessResponse(Json::Value::null);
-			}
-		}
-	}
+      if (button_handle == NULL) {
+        response->SetErrorResponse(EUNHANDLEDERROR,
+                                   "Could not find Cancel button");
+      } else {
+        // Now click on the Cancel button of the Alert
+        ::SendMessage(alert_handle, WM_COMMAND, IDCANCEL, NULL);
+        response->SetSuccessResponse(Json::Value::null);
+      }
+    }
+  }
 
-private:
-	static BOOL CALLBACK DismissAlertCommandHandler::FindCancelButton(HWND hwnd, LPARAM arg) {
-		HWND* dialog_handle = reinterpret_cast<HWND*>(arg);
-		int control_id = ::GetDlgCtrlID(hwnd);
-		if (control_id == IDCANCEL) {
-			*dialog_handle = hwnd;
-			return FALSE;
-		}
-		return TRUE;
-	}
+ private:
+  static BOOL CALLBACK DismissAlertCommandHandler::FindCancelButton(HWND hwnd,
+                                                                    LPARAM arg) {
+    HWND* dialog_handle = reinterpret_cast<HWND*>(arg);
+    int control_id = ::GetDlgCtrlID(hwnd);
+    if (control_id == IDCANCEL) {
+      *dialog_handle = hwnd;
+      return FALSE;
+    }
+    return TRUE;
+  }
 };
 
 } // namespace webdriver

@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -21,33 +21,36 @@
 namespace webdriver {
 
 class GetSessionCapabilitiesCommandHandler : public IECommandHandler {
-public:
-	GetSessionCapabilitiesCommandHandler(void) {
-	}
+ public:
+  GetSessionCapabilitiesCommandHandler(void) {
+  }
 
-	virtual ~GetSessionCapabilitiesCommandHandler(void) {
-	}
+  virtual ~GetSessionCapabilitiesCommandHandler(void) {
+  }
 
-protected:
-	void GetSessionCapabilitiesCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		// ASSUMPTION: Version string will never be larger than 2 characters
-		// (+1 for the null terminator).
-		int version = executor.browser_version();
-		char buffer[3];
-		_itoa_s(version, buffer, 3, 10);
-		std::string version_string = buffer;
+ protected:
+  void GetSessionCapabilitiesCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
+                                                             const LocatorMap& locator_parameters,
+                                                             const ParametersMap& command_parameters,
+                                                             Response* response) {
+    // ASSUMPTION: Version string will never be larger than 2 characters
+    // (+1 for the null terminator).
+    int version = executor.browser_version();
+    char buffer[3];
+    _itoa_s(version, buffer, 3, 10);
+    std::string version_string = buffer;
 
-		Json::Value capabilities;
-		capabilities["browserName"] = "internet explorer";
-		capabilities["version"] = version_string;
-		capabilities["javascriptEnabled"] = true;
-		capabilities["platform"] = "WINDOWS";
-		capabilities["nativeEvents"] = true;
-		capabilities["cssSelectorsEnabled"] = true;
-		capabilities["takesScreenshot"] = true;
-		capabilities["handlesAlerts"] = true;
-		response->SetSuccessResponse(capabilities);
-	}
+    Json::Value capabilities;
+    capabilities["browserName"] = "internet explorer";
+    capabilities["version"] = version_string;
+    capabilities["javascriptEnabled"] = true;
+    capabilities["platform"] = "WINDOWS";
+    capabilities["nativeEvents"] = true;
+    capabilities["cssSelectorsEnabled"] = true;
+    capabilities["takesScreenshot"] = true;
+    capabilities["handlesAlerts"] = true;
+    response->SetSuccessResponse(capabilities);
+  }
 };
 
 } // namespace webdriver

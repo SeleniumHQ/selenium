@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -21,32 +21,37 @@
 namespace webdriver {
 
 class QuitCommandHandler : public IECommandHandler {
-public:
-	QuitCommandHandler(void) {
-	}
+ public:
+  QuitCommandHandler(void) {
+  }
 
-	virtual ~QuitCommandHandler(void) {
-	}
+  virtual ~QuitCommandHandler(void) {
+  }
 
-protected:
-	void QuitCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		std::vector<std::string> managed_browser_handles;
-		executor.GetManagedBrowserHandles(&managed_browser_handles);
+ protected:
+  void QuitCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
+                                           const LocatorMap& locator_parameters,
+                                           const ParametersMap& command_parameters,
+                                           Response* response) {
+    std::vector<std::string> managed_browser_handles;
+    executor.GetManagedBrowserHandles(&managed_browser_handles);
 
-		std::vector<std::string>::iterator end = managed_browser_handles.end();
-		for (std::vector<std::string>::iterator it = managed_browser_handles.begin(); it != end; ++it) {
-			BrowserHandle browser_wrapper;
-			int status_code = executor.GetManagedBrowser(*it, &browser_wrapper);
-			if (status_code == SUCCESS && !browser_wrapper->is_closing()) {
-				browser_wrapper->Close();
-			}
-		}
+    std::vector<std::string>::iterator end = managed_browser_handles.end();
+    for (std::vector<std::string>::iterator it = managed_browser_handles.begin();
+         it != end;
+         ++it) {
+      BrowserHandle browser_wrapper;
+      int status_code = executor.GetManagedBrowser(*it, &browser_wrapper);
+      if (status_code == SUCCESS && !browser_wrapper->is_closing()) {
+        browser_wrapper->Close();
+      }
+    }
 
-		// Calling quit will always result in an invalid session.
-		IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-		mutable_executor.set_is_valid(false);
-		response->SetSuccessResponse(Json::Value::null);
-	}
+    // Calling quit will always result in an invalid session.
+    IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+    mutable_executor.set_is_valid(false);
+    response->SetSuccessResponse(Json::Value::null);
+  }
 };
 
 } // namespace webdriver

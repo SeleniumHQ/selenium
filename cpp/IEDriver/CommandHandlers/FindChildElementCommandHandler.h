@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -22,70 +22,80 @@
 namespace webdriver {
 
 class FindChildElementCommandHandler : public IECommandHandler {
-public:
-	FindChildElementCommandHandler(void) {
-	}
+ public:
+  FindChildElementCommandHandler(void) {
+  }
 
-	virtual ~FindChildElementCommandHandler(void) {
-	}
+  virtual ~FindChildElementCommandHandler(void) {
+  }
 
-protected:
-	void FindChildElementCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
-		ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
-		ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
-		if (id_parameter_iterator == locator_parameters.end()) {
-			response->SetErrorResponse(400, "Missing parameter in URL: id");
-			return;
-		} else if (using_parameter_iterator == command_parameters.end()) {
-			response->SetErrorResponse(400, "Missing parameter: using");
-			return;
-		} else if (value_parameter_iterator == command_parameters.end()) {
-			response->SetErrorResponse(400, "Missing parameter: value");
-			return;
-		} else {
-			std::string mechanism = using_parameter_iterator->second.asString();
-			std::string value = value_parameter_iterator->second.asString();
-			std::string element_id = id_parameter_iterator->second;
+ protected:
+  void FindChildElementCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
+                                                       const LocatorMap& locator_parameters,
+                                                       const ParametersMap& command_parameters,
+                                                       Response* response) {
+    LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
+    ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
+    ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
+    if (id_parameter_iterator == locator_parameters.end()) {
+      response->SetErrorResponse(400, "Missing parameter in URL: id");
+      return;
+    } else if (using_parameter_iterator == command_parameters.end()) {
+      response->SetErrorResponse(400, "Missing parameter: using");
+      return;
+    } else if (value_parameter_iterator == command_parameters.end()) {
+      response->SetErrorResponse(400, "Missing parameter: value");
+      return;
+    } else {
+      std::string mechanism = using_parameter_iterator->second.asString();
+      std::string value = value_parameter_iterator->second.asString();
+      std::string element_id = id_parameter_iterator->second;
 
-			ElementHandle parent_element_wrapper;
-			int status_code = this->GetElement(executor, element_id, &parent_element_wrapper);
+      ElementHandle parent_element_wrapper;
+      int status_code = this->GetElement(executor,
+                                         element_id,
+                                         &parent_element_wrapper);
 
-			if (status_code == SUCCESS) {
-				Json::Value found_element;
+      if (status_code == SUCCESS) {
+        Json::Value found_element;
 
-				int timeout = executor.implicit_wait_timeout();
-				clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
-				if (timeout > 0 && timeout < 1000) {
-					end += 1 * CLOCKS_PER_SEC;
-				}
+        int timeout = executor.implicit_wait_timeout();
+        clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
+        if (timeout > 0 && timeout < 1000) {
+          end += 1 * CLOCKS_PER_SEC;
+        }
 
-				do {
-					status_code = executor.LocateElement(parent_element_wrapper, mechanism, value, &found_element);
-					if (status_code == SUCCESS) {
-						break;
-					} else if (status_code == EUNHANDLEDERROR) {
-						response->SetErrorResponse(status_code, "Unknown finder mechanism: " + mechanism);
-						break;
-					} else {
-						// Release the thread so that the browser doesn't starve.
-						::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
-					}
-				} while (clock() < end);
+        do {
+          status_code = executor.LocateElement(parent_element_wrapper,
+                                               mechanism,
+                                               value,
+                                               &found_element);
+          if (status_code == SUCCESS) {
+            break;
+          } else if (status_code == EUNHANDLEDERROR) {
+            response->SetErrorResponse(status_code,
+                                       "Unknown finder mechanism: " + mechanism);
+            break;
+          } else {
+            // Release the thread so that the browser doesn't starve.
+            ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
+          }
+        } while (clock() < end);
 
-				if (status_code == SUCCESS) {
-					response->SetSuccessResponse(found_element);
-					return;
-				} else {
-					response->SetErrorResponse(status_code, "Unable to find element with " + mechanism + " == " + value);
-					return;
-				}
-			} else {
-				response->SetErrorResponse(status_code, "Element is no longer valid");
-				return;
-			}
-		}
-	}
+        if (status_code == SUCCESS) {
+          response->SetSuccessResponse(found_element);
+          return;
+        } else {
+          response->SetErrorResponse(status_code,
+                                     "Unable to find element with " + mechanism + " == " + value);
+          return;
+        }
+      } else {
+        response->SetErrorResponse(status_code, "Element is no longer valid");
+        return;
+      }
+    }
+  }
 };
 
 } // namespace webdriver

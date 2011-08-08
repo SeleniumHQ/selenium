@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -25,69 +25,73 @@ using namespace std;
 namespace webdriver {
 
 class DocumentHost {
-public:
-	DocumentHost(HWND hwnd, HWND executor_handle);
-	virtual ~DocumentHost(void);
+ public:
+  DocumentHost(HWND hwnd, HWND executor_handle);
+  virtual ~DocumentHost(void);
 
-	virtual void GetDocument(IHTMLDocument2** doc) = 0;
-	virtual void Close(void) = 0;
-	virtual bool Wait(void) = 0;
-	virtual HWND GetWindowHandle(void) = 0;
-	virtual std::string GetWindowName(void) = 0;
-	virtual std::string GetTitle(void) = 0;
-	virtual HWND GetActiveDialogWindowHandle(void) = 0;
-	virtual HWND GetTopLevelWindowHandle(void) = 0;
+  virtual void GetDocument(IHTMLDocument2** doc) = 0;
+  virtual void Close(void) = 0;
+  virtual bool Wait(void) = 0;
+  virtual HWND GetWindowHandle(void) = 0;
+  virtual std::string GetWindowName(void) = 0;
+  virtual std::string GetTitle(void) = 0;
+  virtual HWND GetActiveDialogWindowHandle(void) = 0;
+  virtual HWND GetTopLevelWindowHandle(void) = 0;
 
-	virtual long GetWidth(void) = 0;
-	virtual long GetHeight(void) = 0;
-	virtual void SetWidth(long width) = 0;
-	virtual void SetHeight(long height) = 0;
+  virtual long GetWidth(void) = 0;
+  virtual long GetHeight(void) = 0;
+  virtual void SetWidth(long width) = 0;
+  virtual void SetHeight(long height) = 0;
 
-	virtual int NavigateToUrl(const std::string& url) = 0;
-	virtual int NavigateBack(void) = 0;
-	virtual int NavigateForward(void) = 0;
-	virtual int Refresh(void) = 0;
+  virtual int NavigateToUrl(const std::string& url) = 0;
+  virtual int NavigateBack(void) = 0;
+  virtual int NavigateForward(void) = 0;
+  virtual int Refresh(void) = 0;
 
-	std::string GetCurrentUrl(void);
-	std::string GetPageSource(void);
+  std::string GetCurrentUrl(void);
+  std::string GetPageSource(void);
 
-	void GetCookies(std::map<std::string, std::string>* cookies);
-	int AddCookie(const std::string& cookie);
-	int DeleteCookie(const std::string& cookie_name);
-	
-	int SetFocusedFrameByIndex(const int frame_index);
-	int SetFocusedFrameByName(const std::string& frame_name);
-	int SetFocusedFrameByElement(IHTMLElement* frame_element);
+  void GetCookies(std::map<std::string, std::string>* cookies);
+  int AddCookie(const std::string& cookie);
+  int DeleteCookie(const std::string& cookie_name);
+  
+  int SetFocusedFrameByIndex(const int frame_index);
+  int SetFocusedFrameByName(const std::string& frame_name);
+  int SetFocusedFrameByElement(IHTMLElement* frame_element);
 
-	bool wait_required(void) const { return this->wait_required_; }
-	void set_wait_required(const bool value) { this->wait_required_ = value; }
+  bool wait_required(void) const { return this->wait_required_; }
+  void set_wait_required(const bool value) { this->wait_required_ = value; }
 
-	bool is_closing(void) const { return this->is_closing_; }
+  bool is_closing(void) const { return this->is_closing_; }
 
-	std::string browser_id(void) const { return this->browser_id_; }
+  std::string browser_id(void) const { return this->browser_id_; }
 
-protected:
-	void PostQuitMessage(void);
+ protected:
+  void PostQuitMessage(void);
 
-	HWND window_handle(void) const { return this->window_handle_; }
-	void set_window_handle(const HWND window_handle) { this->window_handle_ = window_handle; }
+  HWND window_handle(void) const { return this->window_handle_; }
+  void set_window_handle(const HWND window_handle) { 
+    this->window_handle_ = window_handle; 
+  }
 
-	HWND executor_handle(void) const { return this->executor_handle_; }
+  HWND executor_handle(void) const { return this->executor_handle_; }
 
-	void set_is_closing(const bool value) { this->is_closing_ = value; }
+  void set_is_closing(const bool value) { this->is_closing_ = value; }
 
-	IHTMLWindow2* focused_frame_window(void) { return this->focused_frame_window_; }
+  IHTMLWindow2* focused_frame_window(void) { 
+    return this->focused_frame_window_;
+  }
 
-private:
-	bool IsHtmlPage(IHTMLDocument2* doc);
+ private:
+  bool IsHtmlPage(IHTMLDocument2* doc);
 
-	BrowserFactory factory_;
-	CComPtr<IHTMLWindow2> focused_frame_window_;
-	HWND window_handle_;
-	HWND executor_handle_;
-	std::string browser_id_;
-	bool wait_required_;
-	bool is_closing_;
+  BrowserFactory factory_;
+  CComPtr<IHTMLWindow2> focused_frame_window_;
+  HWND window_handle_;
+  HWND executor_handle_;
+  std::string browser_id_;
+  bool wait_required_;
+  bool is_closing_;
 };
 
 typedef std::tr1::shared_ptr<DocumentHost> BrowserHandle;

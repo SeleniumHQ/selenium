@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -22,25 +22,28 @@
 namespace webdriver {
 
 class GetPageSourceCommandHandler : public IECommandHandler {
-public:
-	GetPageSourceCommandHandler(void) {
-	}
+ public:
+  GetPageSourceCommandHandler(void) {
+  }
 
-	virtual ~GetPageSourceCommandHandler(void) {
-	}
+  virtual ~GetPageSourceCommandHandler(void) {
+  }
 
-protected:
-	void GetPageSourceCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		BrowserHandle browser_wrapper;
-		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-		if (status_code != SUCCESS) {
-			response->SetErrorResponse(status_code, "Unable to get browser");
-			return;
-		}
+ protected:
+  void GetPageSourceCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
+                                                    const LocatorMap& locator_parameters,
+                                                    const ParametersMap& command_parameters,
+                                                    Response* response) {
+    BrowserHandle browser_wrapper;
+    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+    if (status_code != SUCCESS) {
+      response->SetErrorResponse(status_code, "Unable to get browser");
+      return;
+    }
 
-		std::string page_source = browser_wrapper->GetPageSource();
-		response->SetSuccessResponse(page_source);
-	}
+    std::string page_source = browser_wrapper->GetPageSource();
+    response->SetSuccessResponse(page_source);
+  }
 };
 
 } // namespace webdriver

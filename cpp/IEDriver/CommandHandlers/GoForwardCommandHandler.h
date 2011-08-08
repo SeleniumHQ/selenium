@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -21,24 +21,27 @@
 namespace webdriver {
 
 class GoForwardCommandHandler : public IECommandHandler {
-public:
-	GoForwardCommandHandler(void) {
-	}
+ public:
+  GoForwardCommandHandler(void) {
+  }
 
-	virtual ~GoForwardCommandHandler(void) {
-	}
+  virtual ~GoForwardCommandHandler(void) {
+  }
 
-protected:
-	void GoForwardCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		BrowserHandle browser_wrapper;
-		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-		if (status_code != SUCCESS) {
-			response->SetErrorResponse(status_code, "Unable to get browser");
-			return;
-		}
-		status_code = browser_wrapper->NavigateForward();
-		response->SetSuccessResponse(Json::Value::null);
-	}
+ protected:
+  void GoForwardCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
+                                                const LocatorMap& locator_parameters,
+                                                const ParametersMap& command_parameters,
+                                                Response* response) {
+    BrowserHandle browser_wrapper;
+    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+    if (status_code != SUCCESS) {
+      response->SetErrorResponse(status_code, "Unable to get browser");
+      return;
+    }
+    status_code = browser_wrapper->NavigateForward();
+    response->SetSuccessResponse(Json::Value::null);
+  }
 };
 
 } // namespace webdriver

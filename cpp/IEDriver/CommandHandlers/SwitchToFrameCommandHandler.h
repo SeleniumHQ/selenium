@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -21,61 +21,66 @@
 namespace webdriver {
 
 class SwitchToFrameCommandHandler : public IECommandHandler {
-public:
-	SwitchToFrameCommandHandler(void) {
-	}
+ public:
+  SwitchToFrameCommandHandler(void) {
+  }
 
-	virtual ~SwitchToFrameCommandHandler(void) {
-	}
+  virtual ~SwitchToFrameCommandHandler(void) {
+  }
 
-protected:
-	void SwitchToFrameCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		Json::Value frame_id = Json::Value::null;
-		ParametersMap::const_iterator it = command_parameters.find("id");
-		// TODO: When issue 1133 is fixed, the else block in the following code
-		// should be uncommented.
-		if (it != command_parameters.end()) {
-			frame_id = it->second;
-		//} else {
-		//	response->SetErrorResponse(400, "Missing parameter: id");
-		//	return;
-		}
-		BrowserHandle browser_wrapper;
-		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-		if (status_code != SUCCESS) {
-			response->SetErrorResponse(status_code, "Unable to get browser");
-			return;
-		}
+ protected:
+  void SwitchToFrameCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
+                                                    const LocatorMap& locator_parameters,
+                                                    const ParametersMap& command_parameters,
+                                                    Response* response) {
+    Json::Value frame_id = Json::Value::null;
+    ParametersMap::const_iterator it = command_parameters.find("id");
+    // TODO: When issue 1133 is fixed, the else block in the following code
+    // should be uncommented.
+    if (it != command_parameters.end()) {
+      frame_id = it->second;
+    //} else {
+    //	response->SetErrorResponse(400, "Missing parameter: id");
+    //	return;
+    }
+    BrowserHandle browser_wrapper;
+    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+    if (status_code != SUCCESS) {
+      response->SetErrorResponse(status_code, "Unable to get browser");
+      return;
+    }
 
-		if (frame_id.isNull()) {
-			status_code = browser_wrapper->SetFocusedFrameByElement(NULL);
-		} else if (frame_id.isObject()) {
-			Json::Value element_id = frame_id.get("ELEMENT", Json::Value::null);
-			if (element_id.isNull()) {
-				status_code = ENOSUCHFRAME;
-			} else {
-				std::string frame_element_id = element_id.asString();
+    if (frame_id.isNull()) {
+      status_code = browser_wrapper->SetFocusedFrameByElement(NULL);
+    } else if (frame_id.isObject()) {
+      Json::Value element_id = frame_id.get("ELEMENT", Json::Value::null);
+      if (element_id.isNull()) {
+        status_code = ENOSUCHFRAME;
+      } else {
+        std::string frame_element_id = element_id.asString();
 
-				ElementHandle frame_element_wrapper;
-				status_code = this->GetElement(executor, frame_element_id, &frame_element_wrapper);
-				if (status_code == SUCCESS) {
-					status_code = browser_wrapper->SetFocusedFrameByElement(frame_element_wrapper->element());
-				}
-			}
-		} else if (frame_id.isString()) {
-			std::string frame_name = frame_id.asString();
-			status_code = browser_wrapper->SetFocusedFrameByName(frame_name);
-		} else if(frame_id.isIntegral()) {
-			int frame_index = frame_id.asInt();
-			status_code = browser_wrapper->SetFocusedFrameByIndex(frame_index);
-		}
+        ElementHandle frame_element_wrapper;
+        status_code = this->GetElement(executor,
+                                       frame_element_id,
+                                       &frame_element_wrapper);
+        if (status_code == SUCCESS) {
+          status_code = browser_wrapper->SetFocusedFrameByElement(frame_element_wrapper->element());
+        }
+      }
+    } else if (frame_id.isString()) {
+      std::string frame_name = frame_id.asString();
+      status_code = browser_wrapper->SetFocusedFrameByName(frame_name);
+    } else if(frame_id.isIntegral()) {
+      int frame_index = frame_id.asInt();
+      status_code = browser_wrapper->SetFocusedFrameByIndex(frame_index);
+    }
 
-		if (status_code != SUCCESS) {
-			response->SetErrorResponse(status_code, "No frame found");
-		} else {
-			response->SetSuccessResponse(Json::Value::null);
-		}
-	}
+    if (status_code != SUCCESS) {
+      response->SetErrorResponse(status_code, "No frame found");
+    } else {
+      response->SetSuccessResponse(Json::Value::null);
+    }
+  }
 };
 
 } // namespace webdriver

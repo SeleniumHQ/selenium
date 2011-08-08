@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -22,25 +22,31 @@
 namespace webdriver {
 
 class MouseButtonUpCommandHandler : public IECommandHandler {
-public:
-	MouseButtonUpCommandHandler(void) {
-	}
+ public:
+  MouseButtonUpCommandHandler(void) {
+  }
 
-	virtual ~MouseButtonUpCommandHandler(void) {
-	}
+  virtual ~MouseButtonUpCommandHandler(void) {
+  }
 
-protected:
-	void MouseButtonUpCommandHandler::ExecuteInternal(const IECommandExecutor& executor, const LocatorMap& locator_parameters, const ParametersMap& command_parameters, Response * response) {
-		BrowserHandle browser_wrapper;
-		int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-		if (status_code != SUCCESS) {
-			response->SetErrorResponse(status_code, "Unable to get current browser");
-		}
+ protected:
+  void MouseButtonUpCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
+                                                    const LocatorMap& locator_parameters,
+                                                    const ParametersMap& command_parameters,
+                                                    Response* response) {
+    BrowserHandle browser_wrapper;
+    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+    if (status_code != SUCCESS) {
+      response->SetErrorResponse(status_code, "Unable to get current browser");
+    }
 
-		HWND browser_window_handle = browser_wrapper->GetWindowHandle();
-		mouseUpAt(browser_window_handle, executor.last_known_mouse_x(), executor.last_known_mouse_y(), MOUSEBUTTON_LEFT);
-		response->SetSuccessResponse(Json::Value::null);
-	}
+    HWND browser_window_handle = browser_wrapper->GetWindowHandle();
+    mouseUpAt(browser_window_handle,
+              executor.last_known_mouse_x(),
+              executor.last_known_mouse_y(),
+              MOUSEBUTTON_LEFT);
+    response->SetSuccessResponse(Json::Value::null);
+  }
 };
 
 } // namespace webdriver

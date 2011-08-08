@@ -1,4 +1,4 @@
-// Copyright 2011 WebDriver committers
+// Copyright 2011 Software Freedom Conservatory
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -55,44 +55,50 @@ using namespace std;
 namespace webdriver {
 
 struct ProcessWindowInfo {
-	DWORD dwProcessId;
-	HWND hwndBrowser;
-	IWebBrowser2* pBrowser;
+  DWORD dwProcessId;
+  HWND hwndBrowser;
+  IWebBrowser2* pBrowser;
 };
 
 class BrowserFactory {
-public:
-	BrowserFactory(void);
-	virtual ~BrowserFactory(void);
+ public:
+  BrowserFactory(void);
+  virtual ~BrowserFactory(void);
 
-	DWORD LaunchBrowserProcess(const int port, const bool ignore_protected_mode_settings);
-	IWebBrowser2* CreateBrowser();
-	void AttachToBrowser(ProcessWindowInfo* procWinInfo);
-	bool GetDocumentFromWindowHandle(HWND window_handle, IHTMLDocument2** document);
-	bool GetRegistryValue(const HKEY root_key, const std::wstring& subkey, const std::wstring& value_name, std::wstring* value);
+  DWORD LaunchBrowserProcess(const int port,
+                             const bool ignore_protected_mode_settings);
+  IWebBrowser2* CreateBrowser();
+  void AttachToBrowser(ProcessWindowInfo* procWinInfo);
+  bool GetDocumentFromWindowHandle(HWND window_handle,
+                                   IHTMLDocument2** document);
+  bool GetRegistryValue(const HKEY root_key,
+                        const std::wstring& subkey,
+                        const std::wstring& value_name,
+                        std::wstring* value);
 
-	int browser_version(void) const { return ie_major_version_; }
+  int browser_version(void) const { return ie_major_version_; }
 
-	static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
-	static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
+  static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
+  static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
 
-private:
-	static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
-	UINT html_getobject_msg_;
-	HINSTANCE oleacc_instance_handle_;
+ private:
+  static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
+  UINT html_getobject_msg_;
+  HINSTANCE oleacc_instance_handle_;
 
-	void SetThreadIntegrityLevel(void);
-	void ResetThreadIntegrityLevel(void);
+  void SetThreadIntegrityLevel(void);
+  void ResetThreadIntegrityLevel(void);
 
-	void GetExecutableLocation(void);
-	void GetIEVersion(void);
-	void GetOSVersion(void);
-	bool ProtectedModeSettingsAreValid(void);
-	int GetZoneProtectedModeSetting(const HKEY key_handle, const std::wstring& zone_subkey_name);
+  void GetExecutableLocation(void);
+  void GetIEVersion(void);
+  void GetOSVersion(void);
+  bool ProtectedModeSettingsAreValid(void);
+  int GetZoneProtectedModeSetting(const HKEY key_handle,
+                                  const std::wstring& zone_subkey_name);
 
-	int ie_major_version_;
-	int windows_major_version_;
-	std::wstring ie_executable_location_;
+  int ie_major_version_;
+  int windows_major_version_;
+  std::wstring ie_executable_location_;
 };
 
 } // namespace webdriver
