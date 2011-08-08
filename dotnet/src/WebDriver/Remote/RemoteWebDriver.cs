@@ -60,7 +60,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IHasInputDevices
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IHasInputDevices, IHasCapabilities
     {
         #region Private members
         private ICommandExecutor executor;
@@ -239,7 +239,7 @@ namespace OpenQA.Selenium.Remote
         }
         #endregion
 
-        #region Public properties
+        #region IHasCapabilities properties
         /// <summary>
         /// Gets the capabilities that the RemoteWebDriver instance is currently using
         /// </summary>
