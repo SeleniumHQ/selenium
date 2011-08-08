@@ -6,6 +6,7 @@ recursive-include py/selenium/webdriver/chrome *.py
 recursive-include py/selenium/webdriver/firefox *.py *.xpi
 recursive-include py/selenium/webdriver/ie *.py *.dll
 recursive-include py/selenium/webdriver/remote *.py
+recursive-include py/selenium/webdriver/support *.py
 include py/selenium/selenium.py
 include py/selenium/__init__.py
 include docs/api/py/index.rst
