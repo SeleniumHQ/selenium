@@ -2,7 +2,7 @@ require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/crazy_fun/mappings/java'
 
 if Platform.jruby?
-  require 'third_party/jruby/childprocess.jar' 
+  require 'third_party/jruby/childprocess.jar'
   require 'childprocess'
 end
 
@@ -54,14 +54,31 @@ module SysProperties
   end
 end
 
+# Searches for a Android SDK binary in $sdk_path/platforms/$platforms/tools/
+# or  $sdk_path/platform-tools/ and returns the pathname of the binary.
+# If not found in either of these directory, it raises an exception.
+#
+# Args:
+# - name: [string] -- The name of the binary
+# Returns:
+# - path: [string] -- The path to the binary
+def get_binary(name)
+  path = Platform.path_for(File.join($sdk_path, "platforms", $platform, "tools", name))
+  if (not File.exist? path)
+    path = Platform.path_for(File.join($sdk_path, "platform-tools", name))
+    raise StandardError, "Unable to find the binary: " + name if (not File.exist? path)
+  end
+  path
+end
+
 module Android
   $sys_properties = SysProperties::AndroidSdk.new
   $properties = $sys_properties.read_properties()
   $sdk_path = $properties["androidsdkpath"]
   $platform =  $properties["androidplatform"]
-  $dx = File.join($sdk_path, "platforms", $platform, "tools", "dx")
+  $dx = get_binary("dx")
   $adb = Platform.path_for(File.join($sdk_path, "platform-tools", "adb"))
-  $aapt = Platform.path_for(File.join($sdk_path, "platforms", $platform, "tools", "aapt"))
+  $aapt = get_binary("aapt")
   $builder = Platform.path_for(File.join($sdk_path, "tools", "apkbuilder"))
   $android = Platform.path_for(File.expand_path(File.join($sdk_path, "tools", "android")))
   $emulator = Platform.path_for(File.expand_path(File.join($sdk_path, "tools", "emulator")))
@@ -184,11 +201,11 @@ module Android
         apk = Rake::Task[args[:binary]].out
         puts apk
 
-        cmd = "#{$adb} kill-server"  
+        cmd = "#{$adb} kill-server"
         puts cmd
         sh cmd
-       
-        if windows? 
+
+        if windows?
           # sh() wouldn't return on JRuby + Windows, work around by using childprocess
           proc = ChildProcess.build(Platform.path_for($adb), "start-server")
           proc.io.inherit!
