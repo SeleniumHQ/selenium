@@ -331,9 +331,15 @@ task :test_ie_py => :webdriver_py do
   win = windows?
   if win != nil then
     if python? then
-      cp 'cpp\\prebuilt\\Win32\\Release\\IEDriver.dll', "py\\selenium\\webdriver\\ie", :verbose => true
-      sh "build\\python\\Scripts\\python setup.py build", :verbose => true
+      win32 = "py\\selenium\\webdriver\\ie\\win32\\"
+      x64 = "py\\selenium\\webdriver\\ie\\x64\\"
+      mkdir_p win32 unless File.exists?(win32)
+      mkdir_p x64 unless File.exists?(x64)
+      cp 'cpp\\prebuilt\\Win32\\Release\\IEDriver.dll', win32, :verbose => true
+      cp 'cpp\\prebuilt\\x64\\Release\\IEDriver.dll', x64, :verbose => true
     
+      sh "build\\python\\Scripts\\python setup.py build", :verbose => true
+      
       if File.exists?('build\\python\\Scripts\\py.test.exe')
           py_test = 'build\\python\\Scripts\\py.test.exe'
       else
@@ -342,7 +348,8 @@ task :test_ie_py => :webdriver_py do
     
       test_dir = Dir.glob('build/lib**/selenium/test/selenium/webdriver/ie').first
       sh py_test, test_dir, :verbose => true
-      rm "py\\selenium\\webdriver\\ie\\IEDriver.dll"
+      rm_rf win32 
+      rm_rf x64
     end
   end
 end
@@ -427,17 +434,22 @@ task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :
         firefox_py_home = "py/selenium/webdriver/firefox/"
         xpi_zip_build = 'build/javascript/firefox-driver/webdriver.xpi'
         
-        ie_driver = 'cpp/prebuilt/Win32/Release/IEDriver.dll' 
-        ie_py_home = "py/selenium/webdriver/ie"
+        ie_driver_32 = 'cpp/prebuilt/Win32/Release/IEDriver.dll' 
+        ie_driver_64 = 'cpp/prebuilt/x64/Release/IEDriver.dll' 
+        ie_py_home = "py/selenium/webdriver/ie/"
         if (windows?) then
             xpi_zip_build = xpi_zip_build.gsub(/\//, "\\")
             firefox_py_home = firefox_py_home .gsub(/\//, "\\")
-            ie_driver = ie_driver.gsub(/\//, "\\")
+            ie_driver_32 = ie_driver_32.gsub(/\//, "\\")
+            ie_driver_64 = ie_driver_64.gsub(/\//, "\\")
             ie_py_home = ie_py_home.gsub(/\//, "\\")
         end
         
+	mkdir_p ie_py_home + "win32" unless File.exists?(ie_py_home + "win32")
+      	mkdir_p ie_py_home + "x64" unless File.exists?(ie_py_home + "x64")
         cp xpi_zip_build , firefox_py_home, :verbose => true
-        cp ie_driver, ie_py_home, :verbose => true
+        cp ie_driver_32, ie_py_home + "win32", :verbose => true
+        cp ie_driver_64, ie_py_home + "x64", :verbose => true
     end
 end
 

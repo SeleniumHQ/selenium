@@ -19,6 +19,7 @@ from selenium.webdriver.common import utils
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.command import Command
+from selenium.common.exceptions import WebDriverException
 from ctypes import *
 import time
 import os
@@ -35,7 +36,13 @@ class WebDriver(RemoteWebDriver):
             self.port = utils.free_port()
 
         # Create IE Driver instance of the unmanaged code
-        self.iedriver = CDLL(os.path.join(os.path.dirname(__file__), "IEDriver.dll"))
+	try:
+            self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"win32", "IEDriver.dll"))
+	except WindowsError:
+            try:
+                self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"x64", "IEDriver.dll"))
+	    except WindowsError:
+                raise WebDriverException("Unable to load the IEDriver.dll component")
         self.ptr = self.iedriver.StartServer(self.port)
 
         seconds = 0
