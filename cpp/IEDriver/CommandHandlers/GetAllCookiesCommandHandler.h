@@ -29,10 +29,10 @@ class GetAllCookiesCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void GetAllCookiesCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                    const LocatorMap& locator_parameters,
-                                                    const ParametersMap& command_parameters,
-                                                    Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     Json::Value response_value(Json::arrayValue);
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);

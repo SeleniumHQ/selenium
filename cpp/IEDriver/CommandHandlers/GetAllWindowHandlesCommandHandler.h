@@ -29,10 +29,10 @@ class GetAllWindowHandlesCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void GetAllWindowHandlesCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                          const LocatorMap& locator_parameters,
-                                                          const ParametersMap& command_parameters,
-                                                          Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     Json::Value handles(Json::arrayValue);
     std::vector<std::string> handle_list;
     executor.GetManagedBrowserHandles(&handle_list);

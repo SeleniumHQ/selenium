@@ -29,10 +29,10 @@ class SwitchToFrameCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void SwitchToFrameCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                    const LocatorMap& locator_parameters,
-                                                    const ParametersMap& command_parameters,
-                                                    Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     Json::Value frame_id = Json::Value::null;
     ParametersMap::const_iterator it = command_parameters.find("id");
     // TODO: When issue 1133 is fixed, the else block in the following code

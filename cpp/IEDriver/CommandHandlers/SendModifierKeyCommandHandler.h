@@ -31,10 +31,10 @@ class SendModifierKeyCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void SendModifierKeyCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                      const LocatorMap& locator_parameters,
-                                                      const ParametersMap& command_parameters,
-                                                      Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
     ParametersMap::const_iterator is_down_parameter_iterator = command_parameters.find("isdown");
     if (value_parameter_iterator == command_parameters.end()) {

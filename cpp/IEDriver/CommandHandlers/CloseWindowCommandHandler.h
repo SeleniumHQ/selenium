@@ -29,10 +29,10 @@ class CloseWindowCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void CloseWindowCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                  const LocatorMap& locator_parameters,
-                                                  const ParametersMap& command_parameters,
-                                                  Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     // The session should end if the user sends a quit command,
     // or if the user sends a close command with exactly 1 window
     // open, per spec. Removing the window from the managed browser

@@ -29,10 +29,10 @@ class NewSessionCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void NewSessionCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                 const LocatorMap& locator_parameters,
-                                                 const ParametersMap& command_parameters,
-                                                 Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
     ParametersMap::const_iterator it = command_parameters.find("desiredCapabilities");
     if (it != command_parameters.end()) {

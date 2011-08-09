@@ -29,10 +29,10 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
   }
 
  protected:
-  virtual void ExecuteScriptCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                            const LocatorMap& locator_parameters,
-                                                            const ParametersMap& command_parameters,
-                                                            Response* response) {
+  virtual void ExecuteInternal(const IECommandExecutor& executor,
+                               const LocatorMap& locator_parameters,
+                               const ParametersMap& command_parameters,
+                               Response* response) {
     ParametersMap::const_iterator script_parameter_iterator = command_parameters.find("script");
     ParametersMap::const_iterator args_parameter_iterator = command_parameters.find("args");
     if (script_parameter_iterator == command_parameters.end()) {
@@ -79,9 +79,9 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
     }
   }
 
-  int ExecuteScriptCommandHandler::PopulateArgumentArray(const IECommandExecutor& executor,
-                                                         Script& script_wrapper,
-                                                         Json::Value json_args) {
+  int PopulateArgumentArray(const IECommandExecutor& executor,
+                            Script& script_wrapper,
+                            Json::Value json_args) {
     int status_code = SUCCESS;
     for (UINT arg_index = 0; arg_index < json_args.size(); ++arg_index) {
       Json::Value arg = json_args[arg_index];
@@ -94,9 +94,9 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
     return status_code;
   }
 
-  int ExecuteScriptCommandHandler::AddArgument(const IECommandExecutor& executor,
-                                               Script& script_wrapper,
-                                               Json::Value arg) {
+  int AddArgument(const IECommandExecutor& executor,
+                  Script& script_wrapper,
+                  Json::Value arg) {
     int status_code = SUCCESS;
     if (arg.isString()) {
       std::string value = arg.asString();
@@ -129,9 +129,9 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
     return status_code;
   }
 
-  int ExecuteScriptCommandHandler::WalkArray(const IECommandExecutor& executor,
-                                             Script& script_wrapper,
-                                             Json::Value array_value) {
+  int WalkArray(const IECommandExecutor& executor,
+                Script& script_wrapper,
+                Json::Value array_value) {
     int status_code = SUCCESS;
     Json::UInt array_size = array_value.size();
     std::wstring array_script = L"(function(){ return function() { return [";
@@ -172,9 +172,9 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
     return status_code;
   }
 
-  int ExecuteScriptCommandHandler::WalkObject(const IECommandExecutor& executor,
-                                              Script& script_wrapper,
-                                              Json::Value object_value) {
+  int WalkObject(const IECommandExecutor& executor,
+                 Script& script_wrapper,
+                 Json::Value object_value) {
     int status_code = SUCCESS;
     Json::Value::iterator it = object_value.begin();
     int counter = 0;

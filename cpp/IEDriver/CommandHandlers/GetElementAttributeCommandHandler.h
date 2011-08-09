@@ -29,10 +29,10 @@ class GetElementAttributeCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void GetElementAttributeCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                          const LocatorMap& locator_parameters,
-                                                          const ParametersMap& command_parameters,
-                                                          Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
     LocatorMap::const_iterator name_parameter_iterator = locator_parameters.find("name");
     if (id_parameter_iterator == locator_parameters.end()) {

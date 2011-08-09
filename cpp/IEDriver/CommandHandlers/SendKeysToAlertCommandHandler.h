@@ -31,10 +31,10 @@ class SendKeysToAlertCommandHandler : public IECommandHandler {
   {
   }
  protected:
-  void SendKeysToAlertCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                      const LocatorMap& locator_parameters,
-                                                      const ParametersMap& command_parameters,
-                                                      Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     ParametersMap::const_iterator text_parameter_iterator = command_parameters.find("text");
     if (text_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter: text");
@@ -77,8 +77,7 @@ class SendKeysToAlertCommandHandler : public IECommandHandler {
   }
 
  private:
-  static BOOL CALLBACK SendKeysToAlertCommandHandler::FindTextBox(HWND hwnd,
-                                                                  LPARAM arg) {
+  static BOOL CALLBACK FindTextBox(HWND hwnd, LPARAM arg) {
     HWND *dialog_handle = reinterpret_cast<HWND*>(arg);
     TCHAR child_window_class[100];
     ::GetClassName(hwnd, child_window_class, 100);

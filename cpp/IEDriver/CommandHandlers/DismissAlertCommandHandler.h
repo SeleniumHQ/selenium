@@ -29,10 +29,10 @@ class DismissAlertCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void DismissAlertCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                   const LocatorMap& locator_parameters,
-                                                   const ParametersMap& command_parameters,
-                                                   Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     BrowserHandle browser_wrapper;
     executor.GetCurrentBrowser(&browser_wrapper);
     // This sleep is required to give IE time to draw the dialog.
@@ -66,8 +66,7 @@ class DismissAlertCommandHandler : public IECommandHandler {
   }
 
  private:
-  static BOOL CALLBACK DismissAlertCommandHandler::FindCancelButton(HWND hwnd,
-                                                                    LPARAM arg) {
+  static BOOL CALLBACK FindCancelButton(HWND hwnd, LPARAM arg) {
     HWND* dialog_handle = reinterpret_cast<HWND*>(arg);
     int control_id = ::GetDlgCtrlID(hwnd);
     if (control_id == IDCANCEL) {

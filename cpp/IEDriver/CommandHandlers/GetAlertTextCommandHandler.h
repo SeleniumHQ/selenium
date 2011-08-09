@@ -29,10 +29,10 @@ class GetAlertTextCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void GetAlertTextCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                   const LocatorMap& locator_parameters,
-                                                   const ParametersMap& command_parameters,
-                                                   Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     BrowserHandle browser_wrapper;
     executor.GetCurrentBrowser(&browser_wrapper);
     // This sleep is required to give IE time to draw the dialog.
@@ -69,8 +69,7 @@ class GetAlertTextCommandHandler : public IECommandHandler {
   }
 
 private:
-  static BOOL CALLBACK GetAlertTextCommandHandler::FindTextLabel(HWND hwnd,
-                                                                 LPARAM arg) {
+  static BOOL CALLBACK FindTextLabel(HWND hwnd, LPARAM arg) {
     HWND *dialog_handle = reinterpret_cast<HWND*>(arg);
     TCHAR child_window_class[100];
     ::GetClassName(hwnd, child_window_class, 100);

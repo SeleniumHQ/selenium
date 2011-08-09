@@ -29,10 +29,10 @@ public:
   }
 
 protected:
-  void ElementEqualsCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                    const LocatorMap& locator_parameters,
-                                                    const ParametersMap& command_parameters,
-                                                    Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
     LocatorMap::const_iterator other_parameter_iterator = locator_parameters.find("other");
     if (id_parameter_iterator == locator_parameters.end()) {

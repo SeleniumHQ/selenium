@@ -29,10 +29,10 @@ class GetSessionCapabilitiesCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void GetSessionCapabilitiesCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                             const LocatorMap& locator_parameters,
-                                                             const ParametersMap& command_parameters,
-                                                             Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     // ASSUMPTION: Version string will never be larger than 2 characters
     // (+1 for the null terminator).
     int version = executor.browser_version();

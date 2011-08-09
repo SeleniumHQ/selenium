@@ -30,10 +30,10 @@ class AddCookieCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void AddCookieCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                const LocatorMap& locator_parameters,
-                                                const ParametersMap& command_parameters,
-                                                Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     ParametersMap::const_iterator cookie_parameter_iterator = command_parameters.find("cookie");
     if (cookie_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter: cookie");
@@ -101,7 +101,7 @@ class AddCookieCommandHandler : public IECommandHandler {
   }
 
  private:
-  std::string AddCookieCommandHandler::GetMonthName(int month_name) {
+  std::string GetMonthName(int month_name) {
     // NOTE: can cookie dates used with put_cookie be localized?
     // If so, this function is not needed and a simple call to 
     // strftime() will suffice.
@@ -135,7 +135,7 @@ class AddCookieCommandHandler : public IECommandHandler {
     return "";
   }
 
-  std::string AddCookieCommandHandler::GetWeekdayName(int weekday_name) {
+  std::string GetWeekdayName(int weekday_name) {
     // NOTE: can cookie dates used with put_cookie be localized?
     // If so, this function is not needed and a simple call to 
     // strftime() will suffice.

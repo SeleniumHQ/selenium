@@ -29,10 +29,10 @@ class SetAsyncScriptTimeoutCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void SetAsyncScriptTimeoutCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                            const LocatorMap& locator_parameters,
-                                                            const ParametersMap& command_parameters,
-                                                            Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     ParametersMap::const_iterator ms_parameter_iterator = command_parameters.find("ms");
     if (ms_parameter_iterator == command_parameters.end()) {
       response->SetErrorResponse(400, "Missing parameter: ms");

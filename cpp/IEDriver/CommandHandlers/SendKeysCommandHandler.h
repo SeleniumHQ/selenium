@@ -47,10 +47,10 @@ class SendKeysCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void SendKeysCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                               const LocatorMap& locator_parameters,
-                                               const ParametersMap& command_parameters,
-                                               Response* response)
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response)
   {
     LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
     ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
@@ -138,7 +138,7 @@ class SendKeysCommandHandler : public IECommandHandler {
     }
   }
  private:
-  static unsigned int WINAPI SendKeysCommandHandler::SetFileValue(void *file_data) {
+  static unsigned int WINAPI SetFileValue(void *file_data) {
     FileNameData* data = reinterpret_cast<FileNameData*>(file_data);
     ::Sleep(100);
     HWND ie_main_window_handle = data->main;
@@ -228,7 +228,7 @@ class SendKeysCommandHandler : public IECommandHandler {
     return false;
   }
 
-  bool SendKeysCommandHandler::WaitUntilElementFocused(IHTMLElement *element) {
+  bool WaitUntilElementFocused(IHTMLElement *element) {
     // Check we have focused the element.
     bool has_focus = false;
     CComPtr<IDispatch> dispatch;
@@ -267,7 +267,7 @@ class SendKeysCommandHandler : public IECommandHandler {
     return has_focus;
   }
 
-  bool SendKeysCommandHandler::SetInsertionPoint(IHTMLElement* element) {
+  bool SetInsertionPoint(IHTMLElement* element) {
     CComPtr<IHTMLTxtRange> range;
     CComQIPtr<IHTMLInputTextElement> input_element(element);
     if (input_element) {

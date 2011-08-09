@@ -82,8 +82,7 @@ class AcceptAlertCommandHandler : public IECommandHandler {
   }
 
  private:
-  static BOOL CALLBACK AcceptAlertCommandHandler::FindOKButton(HWND hwnd,
-                                                               LPARAM arg) {
+  static BOOL CALLBACK FindOKButton(HWND hwnd, LPARAM arg) {
     HWND* dialog_handle = reinterpret_cast<HWND*>(arg);
     int control_id = ::GetDlgCtrlID(hwnd);
     if (control_id == IDOK) {
@@ -93,8 +92,7 @@ class AcceptAlertCommandHandler : public IECommandHandler {
     return TRUE;
   }
 
-  static BOOL CALLBACK AcceptAlertCommandHandler::FindCancelButton(HWND hwnd,
-                                                                   LPARAM arg) {
+  static BOOL CALLBACK FindCancelButton(HWND hwnd, LPARAM arg) {
     HWND* dialog_handle = reinterpret_cast<HWND*>(arg);
     int control_id = ::GetDlgCtrlID(hwnd);
     if (control_id == IDCANCEL) {

@@ -29,10 +29,10 @@ class QuitCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void QuitCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                           const LocatorMap& locator_parameters,
-                                           const ParametersMap& command_parameters,
-                                           Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     std::vector<std::string> managed_browser_handles;
     executor.GetManagedBrowserHandles(&managed_browser_handles);
 

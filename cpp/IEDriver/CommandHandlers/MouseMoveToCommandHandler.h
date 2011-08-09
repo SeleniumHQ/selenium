@@ -30,10 +30,10 @@ class MouseMoveToCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void MouseMoveToCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                  const LocatorMap& locator_parameters,
-                                                  const ParametersMap& command_parameters,
-                                                  Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     ParametersMap::const_iterator element_parameter_iterator = command_parameters.find("element");
     ParametersMap::const_iterator xoffset_parameter_iterator = command_parameters.find("xoffset");
     ParametersMap::const_iterator yoffset_parameter_iterator = command_parameters.find("yoffset");

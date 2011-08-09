@@ -44,10 +44,10 @@ class ScreenshotCommandHandler : public IECommandHandler {
   }
 
  protected:
-  void ScreenshotCommandHandler::ExecuteInternal(const IECommandExecutor& executor,
-                                                 const LocatorMap& locator_parameters,
-                                                 const ParametersMap& command_parameters,
-                                                 Response* response) {
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const LocatorMap& locator_parameters,
+                       const ParametersMap& command_parameters,
+                       Response* response) {
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
     if (status_code != SUCCESS) {
@@ -76,7 +76,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
  private:
   ATL::CImage* image_;
 
-  HRESULT ScreenshotCommandHandler::CaptureBrowser(BrowserHandle browser) {
+  HRESULT CaptureBrowser(BrowserHandle browser) {
     ie_window_handle = browser->GetTopLevelWindowHandle();
     HWND content_window_handle = browser->GetWindowHandle();
 
@@ -160,7 +160,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     return hr;
   }
 
-  HRESULT ScreenshotCommandHandler::GetBase64Data(std::string& data) {
+  HRESULT GetBase64Data(std::string& data) {
     if (this->image_ == NULL) {
       // CImage was not initialized.
       return E_POINTER;
@@ -230,10 +230,10 @@ class ScreenshotCommandHandler : public IECommandHandler {
     return S_OK;
   }
 
-  void ScreenshotCommandHandler::GetBrowserChromeDimensions(HWND top_level_window_handle,
-                                                            HWND content_window_handle,
-                                                            int* width,
-                                                            int* height) {
+  void GetBrowserChromeDimensions(HWND top_level_window_handle,
+                                  HWND content_window_handle,
+                                  int* width,
+                                  int* height) {
     int top_level_window_width = 0;
     int top_level_window_height = 0;
     this->GetWindowDimensions(top_level_window_handle,
@@ -259,9 +259,9 @@ class ScreenshotCommandHandler : public IECommandHandler {
     *height = window_rect.bottom - window_rect.top;
   }
 
-  HRESULT ScreenshotCommandHandler::GetDocumentDimensions(IHTMLDocument2* document,
-                                                          int* width,
-                                                          int* height) {
+  HRESULT GetDocumentDimensions(IHTMLDocument2* document,
+                                int* width,
+                                int* height) {
     CComVariant document_height;
     CComVariant document_width;
 
@@ -312,7 +312,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     return S_OK;
   }
 
-  void ScreenshotCommandHandler::InstallWindowsHook() {
+  void InstallWindowsHook() {
     HINSTANCE instance_handle = _AtlBaseModule.GetModuleInstance();
     HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(::GetProcAddress(instance_handle,
                                                                           "ScreenshotWndProc"));
@@ -332,7 +332,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     }
   }
 
-  void ScreenshotCommandHandler::UninstallWindowsHook() {
+  void UninstallWindowsHook() {
     ::UnhookWindowsHookEx(next_hook);
   }
 };
