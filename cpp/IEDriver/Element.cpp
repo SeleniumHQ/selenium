@@ -261,8 +261,27 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
     return EOBSOLETEELEMENT;
   }
 
+  CComPtr<IHTMLAnchorElement> anchor;
+  hr = element2->QueryInterface(&anchor);
   CComPtr<IHTMLRect> rect;
-  hr = element2->getBoundingClientRect(&rect);
+  if (anchor) {
+    CComPtr<IHTMLRectCollection> rects;
+    hr = element2->getClientRects(&rects);
+    long rect_count;
+    rects->get_length(&rect_count);
+    if (rect_count > 1) {
+      CComVariant index(0);
+      CComVariant rect_variant;
+      hr = rects->item(&index, &rect_variant);
+      if (SUCCEEDED(hr) && rect_variant.pdispVal) {
+        hr = rect_variant.pdispVal->QueryInterface(&rect);
+      }
+    } else {
+      hr = element2->getBoundingClientRect(&rect);
+    }
+  } else {
+    hr = element2->getBoundingClientRect(&rect);
+  }
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Cannot figure out where the element is on screen";
     return EUNHANDLEDERROR;

@@ -88,8 +88,8 @@ namespace OpenQA.Selenium
             Assert.IsTrue(driver.PageSource.Contains("Hello WebDriver"), "Target did not reload");
         }
 
+        [Test]
         [Category("JavaScript")]
-
         public void CanClickOnAnElementWithTopSetToANegativeNumber()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("styledPage.html");
@@ -101,6 +101,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual("click", log);
         }
 
+        [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
@@ -125,6 +126,15 @@ namespace OpenQA.Selenium
             }
         }
 
+        [Test]
+        public void ShouldBeAbleToClickLinkContainingLineBreak()
+        {
+            driver.Url = simpleTestPage;
+            driver.FindElement(By.Id("multilinelink")).Click();
+            Assert.AreEqual("We Arrive Here", driver.Title);
+        }
+
+        [Test]
         [Ignore]
         public void ShouldSetRelatedTargetForMouseOut()
         {
