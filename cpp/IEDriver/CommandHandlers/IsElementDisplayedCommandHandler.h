@@ -30,7 +30,7 @@ class IsElementDisplayedCommandHandler : public IECommandHandler {
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       LocatorMap& locator_parameters,
+                       const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
     LocatorMap::const_iterator id_parameter_iterator = locator_parameters.find("id");
