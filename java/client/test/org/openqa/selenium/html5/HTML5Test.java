@@ -1,24 +1,21 @@
 package org.openqa.selenium.html5;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.TestWaiter.waitFor;
+import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.WaitingConditions;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WaitingConditions;
-import org.openqa.selenium.WebElement;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.TestWaiter.waitFor;
 
-public class HTML5Test extends AbstractDriverTestCase { 
+public class HTML5Test extends AbstractDriverTestCase {
   private static final String INSERT_STATEMENT =
-    "INSERT INTO docs(docname) VALUES (?)";
+      "INSERT INTO docs(docname) VALUES (?)";
   private static final String SELECT_STATEMENT = "SELECT * FROM docs";
   private static final String DELETE_STATEMENT = "DELETE FROM docs";
-  
+
   // Browser Connection
   public void testShouldSetBrowserOffline() {
     if (!(driver instanceof BrowserConnection)) {
@@ -62,14 +59,14 @@ public class HTML5Test extends AbstractDriverTestCase {
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
     local.clear();
     assertEquals("Local Storage isn't empty.", 0, local.size());
-    
+
     local.setItem("FOO", "BAR");
     assertEquals("BAR", local.getItem("FOO"));
-    
+
     local.setItem("FOO1", "BAR1");
     assertEquals("BAR1", local.getItem("FOO1"));
-    assertEquals(2, local.size());		
-    
+    assertEquals(2, local.size());
+
     local.clear();
     assertEquals(0, local.size());
   }
@@ -91,11 +88,11 @@ public class HTML5Test extends AbstractDriverTestCase {
     assertTrue(keySet.contains("FOO1"));
     assertTrue(keySet.contains("FOO2"));
     assertTrue(keySet.contains("FOO3"));
-    
+
     local.clear();
     assertTrue(local.keySet().isEmpty());
   }
-  
+
   public void testClearLocalStorage() {
     if (!(driver instanceof WebStorage)) {
       return;
@@ -105,7 +102,7 @@ public class HTML5Test extends AbstractDriverTestCase {
     local.setItem("FOO2", "BAR2");
     local.setItem("FOO3", "BAR3");
     assertEquals(3, local.size());
-    
+
     local.clear();
     assertEquals(0, local.size());
   }
@@ -133,15 +130,15 @@ public class HTML5Test extends AbstractDriverTestCase {
     }
     driver.get(pages.html5Page);
     SessionStorage session = ((WebStorage) driver).getSessionStorage();
-    assertEquals("Session Storage isn't empty.", 0, session.size());    
-    
+    assertEquals("Session Storage isn't empty.", 0, session.size());
+
     session.setItem("BAR", "FOO");
     assertEquals("FOO", session.getItem("BAR"));
-    
+
     session.setItem("BAR1", "FOO1");
     assertEquals("FOO1", session.getItem("BAR1"));
-    assertEquals(2, session.size());    
-    
+    assertEquals(2, session.size());
+
     session.clear();
     assertEquals(0, session.size());
   }
@@ -157,17 +154,17 @@ public class HTML5Test extends AbstractDriverTestCase {
     session.setItem("FOO1", "BAR1");
     session.setItem("FOO2", "BAR2");
     session.setItem("FOO3", "BAR3");
-    
+
     Set<String> keySet = session.keySet();
     assertTrue(keySet.size() == 3);
     assertTrue(keySet.contains("FOO1"));
     assertTrue(keySet.contains("FOO2"));
     assertTrue(keySet.contains("FOO3"));
-    
+
     session.clear();
     assertTrue(session.keySet().isEmpty());
   }
-  
+
   public void testClearSessionStorage() {
     if (!(driver instanceof WebStorage)) {
       return;
@@ -177,7 +174,7 @@ public class HTML5Test extends AbstractDriverTestCase {
     session.setItem("FOO2", "BAR2");
     session.setItem("FOO3", "BAR3");
     assertEquals(3, session.size());
-    
+
     session.clear();
     assertEquals(0, session.size());
   }
@@ -216,27 +213,27 @@ public class HTML5Test extends AbstractDriverTestCase {
     assertEquals("Resources should be retrieved from browser's cache.",
         AppCacheStatus.IDLE, status1);
   }
-  
+
   public void testBrowserLoadsFromCacheWhenOffline() {
     if (!(driver instanceof ApplicationCache)) {
       return;
     }
     driver.get(pages.html5Page);
     driver.get(pages.formPage);
-    
+
     ((BrowserConnection) driver).setOnline(false);
     driver.get(pages.html5Page);
     assertEquals("HTML5", driver.getTitle());
   }
-  
+
   public void testGetAppCache() {
     if (!(driver instanceof ApplicationCache)) {
       return;
     }
     driver.get(pages.html5Page);
-    
+
     ((BrowserConnection) driver).setOnline(false);
-    
+
     List<AppCacheEntry> caches = ((ApplicationCache) driver).getAppCache();
     for (AppCacheEntry cache : caches) {
       assertEquals("image/jpeg", cache.getMimeType());
@@ -249,39 +246,46 @@ public class HTML5Test extends AbstractDriverTestCase {
             "Resources that were listed in cache's manifest isn't EXPLICIT",
             AppCacheType.EXPLICIT, cache.getType().value());
       }
-    }		
+    }
   }
 
   // Database Storage
   private ResultSet executeQuery(String statement, String... param) {
-    String databaseName = "'HTML5', '1.0'," +
-        " 'Offline document storage', 100*1024";
+    // Note: Current HTML5 API of Webdriver only requires the databaseName.
+    // The version, displayName and initial quota size is assigned default value.
+    // Default value of version is empty string, which is fine since in this case,
+    // there is no expected version â€” any version is fine.
+    // See: http://www.w3.org/TR/webdatabase/#dom-opendatabase
+    // Default value of the initial quota is 5MB.
+    String databaseName = "HTML5";
     return ((DatabaseStorage) driver).executeSQL(databaseName, statement,
         (Object[]) param);
   }
-  
+
   public void testResultSetsReturnNegativeLastInsertedRowId() {
     if (!(driver instanceof DatabaseStorage)) {
       return;
-    }    
+    }
     driver.get(pages.html5Page);
+    waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
 
     ResultSet resultSet = executeQuery(SELECT_STATEMENT);
     assertTrue(resultSet.getLastInsertedRowId() == -1);
   }
-  
+
   public void testResultSetsReturnPositiveLastInsertedRowId() {
     if (!(driver instanceof DatabaseStorage)) {
       return;
     }
     driver.get(pages.html5Page);
+    waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
 
     ResultSet resultSet = executeQuery(INSERT_STATEMENT, "DocFoo");
     assertTrue(resultSet.getLastInsertedRowId() != -1);
 
     ResultSet resultSet1 = executeQuery(SELECT_STATEMENT);
     assertTrue(resultSet1.getLastInsertedRowId() == -1);
-    
+
     ResultSet resultSet2 = executeQuery(DELETE_STATEMENT);
     assertTrue(resultSet2.getLastInsertedRowId() == -1);
   }
@@ -291,7 +295,8 @@ public class HTML5Test extends AbstractDriverTestCase {
       return;
     }
     driver.get(pages.html5Page);
-    
+    waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
+
     ResultSet resultSet = executeQuery(INSERT_STATEMENT, "DocFooBar");
     assertTrue(resultSet.getNumberOfRowsAffected() == 1);
 
@@ -300,27 +305,29 @@ public class HTML5Test extends AbstractDriverTestCase {
 
     ResultSet resultSet2 = executeQuery(
         "UPDATE docs SET docname='DocBar' WHERE docname='DocFooBar'");
-    assertTrue(resultSet2.getNumberOfRowsAffected() == 1);
-    
+    assertTrue("It should only affect one row, but affects " + resultSet2.getNumberOfRowsAffected(),
+        resultSet2.getNumberOfRowsAffected() == 1);
+
     executeQuery(DELETE_STATEMENT);
   }
-  
+
   public void testResultSetRowsContainsInsertedRows() {
     if (!(driver instanceof DatabaseStorage)) {
       return;
     }
     driver.get(pages.html5Page);
+    waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
 
     executeQuery(INSERT_STATEMENT, "DocFoo");
     executeQuery(INSERT_STATEMENT, "DocFooBar");
     ResultSet resultSet = executeQuery(SELECT_STATEMENT);
     assertTrue(resultSet.rows().size() == 2);
-    
+
     Map<String, Object> record = resultSet.rows().item(0);
     assertEquals("DocFoo", record.get("docname"));
     record = resultSet.rows().item(1);
     assertEquals("DocFooBar", record.get("docname"));
-    
+
     executeQuery(DELETE_STATEMENT);
     resultSet = executeQuery(SELECT_STATEMENT);
     assertTrue(resultSet.rows().size() == 0);
