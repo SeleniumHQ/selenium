@@ -144,4 +144,15 @@ public class ClickTest extends AbstractDriverTestCase {
   public void testShouldSetRelatedTargetForMouseOut() {
     fail("Must. Write. Meamingful. Test (but we don't fire mouse outs synthetically");
   }
+
+  @Ignore(HTMLUNIT)
+  public void testClickingLabelShouldSetCheckbox() {
+    driver.get(pages.formPage);
+
+    driver.findElement(By.id("label-for-checkbox-with-label")).click();
+
+    assertTrue(
+        "Should be selected",
+        driver.findElement(By.id("checkbox-with-label")).isSelected());
+  }
 }
