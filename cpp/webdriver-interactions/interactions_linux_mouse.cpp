@@ -233,6 +233,14 @@ WD_RESULT clickAt(WINDOW_HANDLE windowHandle, long x, long y, long button)
   LOG(DEBUG) << "---------- starting clickAt: " << windowHandle <<  "---------";
   GdkDrawable* hwnd = (GdkDrawable*) windowHandle;
 
+  if (button == 2) {
+    // the right mouse button has the value 3 in GDK
+    button = 3;
+  } else {
+    // the left mouse button is default
+    button = 1;
+  }
+
   MouseEventsHandler mousep_handler(hwnd);
 
   struct timespec sleep_time;

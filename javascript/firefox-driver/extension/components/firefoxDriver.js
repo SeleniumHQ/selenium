@@ -1175,7 +1175,8 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
 
 FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
   var doc = respond.session.getDocument();
-  
+  var button = parameters['button'];
+
   Utils.installWindowCloseListener(respond);
   Utils.installClickListener(respond, WebLoadingListener);
   
@@ -1197,7 +1198,7 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
     var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
     events.click(node, currentPosition.x + browserOffset.x,
-        currentPosition.y + browserOffset.y, 1);
+        currentPosition.y + browserOffset.y, button);
 
     var dummyIndicator = {
       wasUnloaded: false

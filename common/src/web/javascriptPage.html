@@ -108,7 +108,7 @@
         </select>
         <input type="checkbox" id="checkbox" value="checkbox thing" onchange="javascript:updateContent(this)"/>
         <input id="clickField" type="text" onclick="document.getElementById('clickField').value='Clicked';" value="Hello"/>
-        <input id="doubleClickField" type="text" ondblclick="document.getElementById('doubleClickField').value='DoubleClicked';" oncontextmenu="document.getElementById('doubleClickField').value='ContextClicked';" value="DoubleHello"/>
+        <input id="doubleClickField" type="text" onclick="document.getElementById('doubleClickField').value='Clicked';" ondblclick="document.getElementById('doubleClickField').value='DoubleClicked';" oncontextmenu="document.getElementById('doubleClickField').value='ContextClicked'; return false;" value="DoubleHello"/>
         <input id="clearMe" value="Something" onchange="displayMessage('Cleared')"/>
     </form>
 </div>

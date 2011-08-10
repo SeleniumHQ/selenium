@@ -24,6 +24,7 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.TestUtilities.isFirefox30;
 import static org.openqa.selenium.TestUtilities.isFirefox35;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -34,6 +35,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.TestUtilities;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -157,8 +160,14 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE})
   public void testContextClick() {
+    
+    if (!TestUtilities.isNativeEventsEnabled(driver) || !Platform.getCurrent().is(LINUX)) {
+      System.out.println("Skipping test: not implemented on Windows and with synthetic mouse");
+      return;
+    }
+    
     driver.get(pages.javascriptPage);
 
     WebElement toContextClick = driver.findElement(By.id("doubleClickField"));
