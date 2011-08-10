@@ -53,7 +53,8 @@ class ClickElementCommandHandler : public IECommandHandler {
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
       if (status_code == SUCCESS) {
-        if (this->ClickOption(browser_wrapper, element_wrapper, response)) {
+        if (IsOptionElement(element_wrapper)) {
+          this->ClickOption(browser_wrapper, element_wrapper, response);
           return;
         } else {
           status_code = element_wrapper->Click();
@@ -73,51 +74,14 @@ class ClickElementCommandHandler : public IECommandHandler {
   }
 
  private:
-  bool ClickOption(BrowserHandle browser_wrapper,
+  bool IsOptionElement(ElementHandle element_wrapper) {
+    CComQIPtr<IHTMLOptionElement> option(element_wrapper->element());
+    return option != NULL;
+  }
+
+  void ClickOption(BrowserHandle browser_wrapper,
                    ElementHandle element_wrapper,
                    Response* response) {
-    CComQIPtr<IHTMLOptionElement> option(element_wrapper->element());
-    if (option == NULL) {
-      return false;
-    }
-
-    // This is a simulated click. There may be issues if there are things like
-    // alert() messages in certain events. A potential way to handle these
-    // problems is to marshal the select element onto a separate thread and
-    // perform the operation there.
-    CComPtr<IHTMLElement> parent_element;
-    HRESULT hr = element_wrapper->element()->get_parentElement(&parent_element);
-    if (FAILED(hr)) {
-      LOGHR(WARN, hr) << "Cannot get parent element";
-      response->SetErrorResponse(ENOSUCHELEMENT, "cannot get parent element");
-      return true;
-    }
-
-    CComPtr<IHTMLSelectElement> select;
-    HRESULT select_hr = parent_element.QueryInterface<IHTMLSelectElement>(&select);
-    while (SUCCEEDED(hr) && FAILED(select_hr)) {
-      hr = parent_element->get_parentElement(&parent_element);
-      select_hr = parent_element.QueryInterface<IHTMLSelectElement>(&select);
-    }
-
-    if (!select) {
-      LOG(WARN) << "Parent element is not a select element";
-      response->SetErrorResponse(ENOSUCHELEMENT,
-                                 "Parent element is not a select element");
-      return true;
-    }
-
-    VARIANT_BOOL multiple;
-    hr = select->get_multiple(&multiple);
-    if (FAILED(hr)) {
-      LOGHR(WARN, hr) << "Cannot determine if parent element supports multiple selection";
-      response->SetErrorResponse(ENOSUCHELEMENT,
-                                 "Cannot determine if parent element supports multiple selection");
-      return true;
-    }
-
-    bool parent_is_multiple = multiple == VARIANT_TRUE;
-
     int status_code = SUCCESS;
     CComPtr<IHTMLDocument2> doc;
     browser_wrapper->GetDocument(&doc);
@@ -129,21 +93,18 @@ class ClickElementCommandHandler : public IECommandHandler {
     script_source += atoms::asString(atoms::CLICK);
     script_source += L")})();";
 
-    // If not multi-select, click the parent (<select>) element.
-    if (!parent_is_multiple) {
-      Script click_parent_script_wrapper(doc, script_source, 1);
-      click_parent_script_wrapper.AddArgument(parent_element);
-      status_code = click_parent_script_wrapper.Execute();
-    }
-
     Script script_wrapper(doc, script_source, 1);
-    script_wrapper.AddArgument(element_wrapper->element());
+    script_wrapper.AddArgument(element_wrapper);
     status_code = script_wrapper.Execute();
+    if (status_code != SUCCESS) {
+      response->SetErrorResponse(status_code,
+                                 "An error occurred executing the click atom");
+      return;
+    }
 
     // Require a short sleep here to let the browser update the DOM.
     ::Sleep(100);
     response->SetSuccessResponse(Json::Value::null);
-    return true;
   }
 };
 
