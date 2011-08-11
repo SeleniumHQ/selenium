@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.server;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.remote.RemoteWebElement;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -27,6 +28,7 @@ import com.google.common.collect.HashBiMap;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Set;
 
 public class KnownElements {
 
@@ -34,8 +36,10 @@ public class KnownElements {
   private int nextId;
 
   public String add(WebElement element) {
-    if (elements.containsValue(element)) {
-      return elements.inverse().get(element);
+    for (String key : elements.keySet()) {
+      if (((WrapsElement) elements.get(key)).getWrappedElement().equals(element)) {
+        return key;
+      }
     }
     String id = getNextId();
     elements.put(id, proxyElement(element, id));
