@@ -1,6 +1,7 @@
 Selenium 2.4
 * Bug Fixes
 * x64 IE Support
+* Added WebDriverWait as a support package
 
 Selenium 2.3
 * Bug Fixes
