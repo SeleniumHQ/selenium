@@ -140,7 +140,7 @@ describe "WebDriver::TargetLocator" do
     end
 
     not_compliant_on :browser => [:chrome, :ie] do
-      it "raises UnhandledError if no alert is present" do
+      it "raises NoAlertOpenError if no alert is present" do
         lambda { driver.switch_to.alert }.should raise_error(
           Selenium::WebDriver::Error::NoAlertOpenError, /alert/i)
       end
