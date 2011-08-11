@@ -1,3 +1,25 @@
+v2.4.0
+======
+
+WebDriver:
+  * Firefox 6 support.
+  * Change in the wire protocol to bring alert checking inline with the
+    semantics of other commands.
+  * Improved text handling: non-breaking spaces are now returned as spaces, even
+    in the middle of an existing body of text.
+  * Minor fixes for detecting whether elements are visible.
+  * Added handling of lists and maps in EventFiringWebDriver.executeScript().
+  * FIXED: 2158: Fixing HtmlUnit select element getAttribute behaviour for
+    "multiple" attribute.
+  * Better handling of cookies in the remote webdriver (particularly Chrome)
+  * FIXED: Thread safety issues.
+  * Added clear app cache to the wire protocol.
+
+
+Selenium:
+  * Firefox 8 support.
+  
+
 v2.3.0
 ======
 
@@ -46,3 +68,7 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
+
+
+
+
