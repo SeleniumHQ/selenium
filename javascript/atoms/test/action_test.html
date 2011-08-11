@@ -501,7 +501,11 @@
       var fired = 0;
 
       goog.events.listenOnce(target, goog.events.EventType.MOUSEOVER,
-              function(e) { fired++; assertEquals(parent, e.relatedTarget) });
+          function(e) { 
+            fired++;
+            assertNotNull(e.relatedTarget);
+            assertFalse(e.relatedTartet == target)
+          })
 
       bot.action.click(target);
 

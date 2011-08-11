@@ -33,14 +33,20 @@ bot.userAgent.isVersion = function(version) {
     // Common case
     return goog.userAgent.product.isVersion(version);
   }
+
+  var Components = goog.global.Components;
+
   // This code path is only hit in a firefox extension
   if (goog.userAgent.GECKO && Components && Components['classes']) {
     var cc = Components['classes'];
     var ci = Components['interfaces'];
-    var appInfo = cc["@mozilla.org/xre/app-info;1"].
-        getService(ci['nsIXULAppInfo']);
-    var versionChecker = cc["@mozilla.org/xpcom/version-comparator;1"].
-        getService(ci['nsIVersionComparator']);
+    var appInfo = cc['@mozilla.org/xre/app-info;1']['getService'](
+        ci['nsIXULAppInfo']);
+
+    // Break out the hoops to keep the linter happy
+    var comparatorService = cc['@mozilla.org/xpcom/version-comparator;1'];
+    var comparator = ci['nsIVersionComparator'];
+    var versionChecker = comparatorService['getService'](comparator);
 
     return versionChecker.compare(appInfo.version, '' + version) >= 0;
   }

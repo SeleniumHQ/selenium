@@ -34,7 +34,7 @@ function SyntheticMouse() {
       [CI.nsISupports, CI.wdIMouse]);
 
   // Declare the state we'll be using
-  this.buttonDown = bot.Mouse.Button.NONE;
+  this.buttonDown = null;
   this.lastElement = null;
 }
 
@@ -209,7 +209,7 @@ SyntheticMouse.prototype.down = function(coordinates) {
     'clientX': coordinates['x'] + pos.x,
     'clientY': coordinates['y'] + pos.y,
     'button': bot.Mouse.Button.LEFT
-  }
+  };
   bot.events.fire(element, goog.events.EventType.MOUSEDOWN, botCoords);
 
   return this.newResponse(ErrorCode.SUCCESS, "ok");
@@ -231,8 +231,8 @@ SyntheticMouse.prototype.up = function(coordinates) {
   };
   bot.events.fire(element, goog.events.EventType.MOUSEMOVE, botCoords);
   bot.events.fire(element, goog.events.EventType.MOUSEUP, botCoords);
-  
-  this.buttonDown = bot.Mouse.Button.NONE;
+
+  this.buttonDown = null;
 
   return this.newResponse(ErrorCode.SUCCESS, "ok");
 };

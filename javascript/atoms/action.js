@@ -1,3 +1,4 @@
+// Copyright 2010 WebDriver committers
 // Copyright 2010 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +18,7 @@
  * The bot.action namespace is required since these atoms would otherwise form a
  * circular dependency between bot.dom and bot.events.
  *
- * @author jleyba@google.com (Jason Leyba)
+ *
  */
 
 goog.provide('bot.action');
@@ -184,7 +185,7 @@ bot.action.selectOptionElement_ = function(element, selected) {
  *     what a user would consider "selected".
  */
 bot.action.setSelected = function(element, selected) {
-  // TODO(gdennis): Fire more than just change events: mousemove, keydown, etc?
+  // TODO(user): Fire more than just change events: mousemove, keydown, etc?
   bot.action.isInteractable_(element, true);
 
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
@@ -255,7 +256,7 @@ bot.action.focusOnElement = function(element, opt_activeElement) {
       }
     }
     // In IE, blur and focus events fire asynchronously.
-    // TODO(jleyba): Does this mean we've entered callback territory?
+    // TODO(user): Does this mean we've entered callback territory?
     if (goog.isFunction(element.focus) ||
         goog.userAgent.IE && goog.isObject(element.focus)) {
       element.focus();
@@ -360,7 +361,7 @@ bot.action.isForm_ = function(node) {
  * @see bot.events.fire
  */
 bot.action.submit = function(element) {
-  // TODO(jleyba): This should find first submittable element in the form and
+  // TODO(user): This should find first submittable element in the form and
   // submit that instead of going directly for the FORM.
   var form = (/** @type {Element} */ goog.dom.getAncestor(element,
       bot.action.isForm_, /*includeNode=*/true));
@@ -488,7 +489,7 @@ bot.action.rightClick = function(element, opt_coords) {
 bot.action.click_ = function(element, button, opt_coords) {
   if (!bot.dom.isShown(element, true)) {
     throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
-        'Element is not currently visible and may not be manipulated');
+    'Element is not currently visible and may not be manipulated');
   }
   var activeElement = bot.dom.getActiveElement(element);
 
@@ -518,6 +519,43 @@ bot.action.click_ = function(element, button, opt_coords) {
   if (performFocus && bot.action.isInteractable_(element)) {
     bot.action.focusOnElement(element, activeElement);
   }
+
+  mouse.releaseButton();
+};
+
+
+/**
+ * Drags the element by (dx, dy).
+ *
+ * @param {!Element} element The element to drag.
+ * @param {number} dx Increment in x coordinate.
+ * @param {number} dy Increment in y coordinate.
+ * @param {goog.math.Coordinate=} opt_coords Drag start position related to the
+ *   element.
+ */
+bot.action.drag = function(element, dx, dy, opt_coords) {
+  bot.action.isInteractable_(element, true);
+
+  var mouse = new bot.Mouse(bot.action.isInteractable_);
+  if (!opt_coords) {
+    var size = goog.style.getSize(element);
+    opt_coords = new goog.math.Coordinate(size.width / 2, size.height / 2);
+  }
+  mouse.move(element, opt_coords);
+
+  mouse.pressButton(bot.Mouse.Button.LEFT);
+
+  // Fire two mousemoves (middle and destination) to trigger a drag action.
+  var initPos = goog.style.getClientPosition(element);
+  var midXY = new goog.math.Coordinate(opt_coords.x + Math.floor(dx / 2),
+                                       opt_coords.y + Math.floor(dy / 2));
+  mouse.move(element, midXY);
+
+  var midPos = goog.style.getClientPosition(element);
+  var finalXY = new goog.math.Coordinate(
+      initPos.x + opt_coords.x + dx - midPos.x,
+      initPos.y + opt_coords.y + dy - midPos.y);
+  mouse.move(element, finalXY);
 
   mouse.releaseButton();
 };

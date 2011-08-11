@@ -29,7 +29,6 @@ goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.events');
 goog.require('bot.userAgent');
-goog.require('goog.Uri');
 goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
@@ -71,7 +70,7 @@ bot.Mouse = function(isInteractable) {
    * @type {boolean}
    * @private
    */
-  this.originalSelectableState_ = false;
+  this.originallySelected_ = false;
 
   /**
    * @type {!goog.math.Coordinate}
@@ -95,13 +94,13 @@ bot.Mouse = function(isInteractable) {
 bot.Mouse.Button = {
   LEFT: 0,
   MIDDLE: 1,
-  RIGHT: 2,
-  NONE: 3
+  RIGHT: 2
 };
 
 
 /**
- * Whether to follow link explicitly after firing an onclick event.
+ * Whether extra handling needs to be considered when clicking on a link or a
+ * submit button.
  *
  * @type {boolean}
  * @private
@@ -111,7 +110,8 @@ bot.Mouse.EXPLICIT_FOLLOW_LINK_ = goog.userAgent.IE ||
     // Normal firefox
     (goog.userAgent.GECKO && !bot.isFirefoxExtension()) ||
     // Firefox extension prior to Firefox 4
-    (goog.userAgent.GECKO && bot.isFirefoxExtension() && !bot.userAgent.isVersion(4));
+    (goog.userAgent.GECKO && bot.isFirefoxExtension() &&
+        !bot.userAgent.isVersion(4));
 
 
 /**
@@ -170,46 +170,21 @@ bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function() {
 })();
 
 
-bot.Mouse.relatedMouseExited_ = function(source) {
-  return bot.dom.getParentElement(source);
-};
-
-
-bot.Mouse.relatedMouseEntered_ = function(source) {
-  return source;
-};
-
 /**
- * Map of event types that require the relatedTarget to be set to functions to
- * generate a valid related target. This list is derived from the information
- * at:
+ * On some browsers, a mouse down event on an OPTION or SELECT element cause
+ * the SELECT to open, blocking further JS execution. This is undesirable, and
+ * so needs to be detected.
  *
- * https://developer.mozilla.org/en/DOM/event.relatedTarget
- *
- * @type {!Object.<!goog.events.EventType, function(!Element) : !Element>}
- * @const
- * @private
- */
-bot.Mouse.REQUIRE_RELATED_ = {};
-bot.Mouse.REQUIRE_RELATED_[goog.events.EventType.MOUSEOUT] =
-    bot.Mouse.relatedMouseEntered_;
-bot.Mouse.REQUIRE_RELATED_[goog.events.EventType.MOUSEOVER] =
-    bot.Mouse.relatedMouseExited_;
-
-
-/**
  * @param {!Element} element The element to check.
- * @return {boolean} Whether the element blocks js execution when mouse down
- *     fires on an option.
+ * @return {boolean} Whether the element blocks js execution.
  * @private
  */
 bot.Mouse.prototype.blocksOnMouseDown_ = function(element) {
   var isFirefox3 = goog.userAgent.GECKO && !bot.userAgent.isVersion(4);
 
-  if (goog.userAgent.WEBKIT || isFirefox3) {
-    var tagName = element.tagName.toLowerCase();
-    return ('option' == tagName || 'select' == tagName);
-  }
+  return (goog.userAgent.WEBKIT || isFirefox3) &&
+  (bot.dom.isElement(element, goog.dom.TagName.OPTION) ||
+   bot.dom.isElement(element, goog.dom.TagName.SELECT));
 };
 
 
@@ -226,7 +201,7 @@ bot.Mouse.prototype.pressButton = function(button) {
   }
   this.buttonPressed_ = button;
   this.elementPressed_ = this.element_;
-  this.originalSelectableState_ =  bot.action.isSelectable(this.element_) &&
+  this.originallySelected_ = bot.action.isSelectable(this.element_) &&
       bot.action.isSelected(this.element_);
 
   var performFocus = true;
@@ -261,7 +236,7 @@ bot.Mouse.prototype.releaseButton = function() {
   }
   this.buttonPressed_ = null;
   this.elementPressed_ = null;
-  this.originalSelectableState_ = false;
+  this.originallySelected_ = false;
 };
 
 
@@ -307,19 +282,16 @@ bot.Mouse.prototype.clickElement_ = function() {
   }
 
   var performDefault = this.fireEvent_(goog.events.EventType.CLICK);
-
   if (!performDefault) {
     return;
   }
 
-  if (performDefault && bot.Mouse.EXPLICIT_FOLLOW_LINK_ && targetLink &&
-      targetLink.href) {
+  if (targetLink && bot.Mouse.isFollowingHref_(targetLink)) {
     bot.Mouse.followHref_(targetLink);
   }
 
-  if (bot.dom.isShown(this.element_, /*ignoreOpacity=*/true) &&
-      bot.action.isSelectable(this.element_) &&
-      bot.dom.isEnabled(this.element_)) {
+  if (this.isInteractable_(this.element_) &&
+      bot.action.isSelectable(this.element_)) {
     // If this is a radio button, a second click should not disable it.
     if (this.element_.tagName.toLowerCase() == 'input' && this.element_.type &&
         this.element_.type.toLowerCase() == 'radio' &&
@@ -328,9 +300,11 @@ bot.Mouse.prototype.clickElement_ = function() {
     }
 
     var select = (/** @type {!Element} */
-        goog.dom.getAncestor(this.element_, bot.action.isSelectElement_));
-    if (!select || select.multiple || !this.originalSelectableState_) {
-      bot.action.setSelected(this.element_, !this.originalSelectableState_);
+        goog.dom.getAncestor(this.element_, function(node) {
+          return bot.dom.isElement(node, goog.dom.TagName.SELECT);
+        }));
+    if (!select || select.multiple || !this.originallySelected_) {
+      bot.action.setSelected(this.element_, !this.originallySelected_);
     }
   }
 };
@@ -349,9 +323,10 @@ bot.Mouse.prototype.move = function(element, coords) {
   this.clientXY_.y = coords.y + pos.y;
 
   if (element != this.element_) {
-    this.fireEvent_(goog.events.EventType.MOUSEOUT);
+    this.fireEvent_(goog.events.EventType.MOUSEOUT, element);
+    var prevElement = this.element_;
     this.element_ = element;
-    this.fireEvent_(goog.events.EventType.MOUSEOVER);
+    this.fireEvent_(goog.events.EventType.MOUSEOVER, prevElement);
   }
 
   this.fireEvent_(goog.events.EventType.MOUSEMOVE);
@@ -361,7 +336,7 @@ bot.Mouse.prototype.move = function(element, coords) {
 /**
  * A helper function to fire mouse events.
  *
- * @param {string} type Event type.
+ * @param {goog.events.EventType} type Event type.
  * @param {Element=} opt_related The related element of this event.
  * @return {boolean} Whether the event fired successfully or was cancelled.
  * @private
@@ -373,8 +348,13 @@ bot.Mouse.prototype.fireEvent_ = function(type, opt_related) {
     return false;
   }
 
-  var relatedFunc = bot.Mouse.REQUIRE_RELATED_[type];
-  var related = relatedFunc ? relatedFunc(this.element_) : null;
+  if (goog.events.EventType.MOUSEOVER == type ||
+      goog.events.EventType.MOUSEOUT == type) {
+    if (!opt_related) {
+      throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
+          "Event type requires related target: " + type);
+    }
+  }
 
   var args = {
     clientX: this.clientXY_.x,
@@ -385,7 +365,7 @@ bot.Mouse.prototype.fireEvent_ = function(type, opt_related) {
     control: false,
     shift: false,
     meta: false,
-    related: related
+    related: opt_related || null
   };
 
   return bot.events.fire(this.element_, type, args);
@@ -441,34 +421,36 @@ bot.Mouse.isFormSubmitElement_ = function(element) {
 
 
 /**
- * Versions of firefox from 4+ will handle links properly when executed used in
+ * Versions of firefox from 4+ will handle links properly when this is used in
  * an extension. Versions of Firefox prior to this may or may not do the right
  * thing depending on whether a target window is opened and whether the click
  * has caused a change in just the hash part of the URL.
  *
  * @param {!Element} element The element to consider.
  * @return {boolean} Whether following an href should be skipped.
+ * @private
  */
-bot.Mouse.willAlreadyFollowHref_ = function(element) {
-  if (!bot.isFirefoxExtension()) {
+bot.Mouse.isFollowingHref_ = function(element) {
+  if (!(element && element.href)) {
     return false;
   }
 
-  if (bot.userAgent.isVersion(4)) {
+  if (goog.userAgent.IE ||
+    (goog.userAgent.GECKO && !bot.isFirefoxExtension())) {
     return true;
+  }
+
+  if (!bot.isFirefoxExtension() || bot.userAgent.isVersion(4)) {
+    return false;
   }
 
   var owner = goog.dom.getWindow(goog.dom.getOwnerDocument(element));
   var sourceUrl = owner.location.href;
-  var destinationUrl =
-      goog.Uri.resolve(sourceUrl, element.href).toString();
-  var isOnlyHashChange = sourceUrl.split('#')[0] === destinationUrl.split('#')[0];
+  var destinationUrl = bot.Mouse.resolveUrl_(owner.location, element.href);
+  var isOnlyHashChange =
+      sourceUrl.split('#')[0] === destinationUrl.split('#')[0];
 
-  if (element.href && !(element.target) && !isOnlyHashChange) {
-    return false;
-  }
-
-  return true;
+  return !(element.target) && !isOnlyHashChange;
 };
 
 
@@ -479,10 +461,6 @@ bot.Mouse.willAlreadyFollowHref_ = function(element) {
  * @private
  */
 bot.Mouse.followHref_ = function(anchorElement) {
-  if (bot.Mouse.willAlreadyFollowHref_(anchorElement)) {
-    return;
-  }
-
   var targetHref = anchorElement.href;
   var owner = goog.dom.getWindow(goog.dom.getOwnerDocument(anchorElement));
 
