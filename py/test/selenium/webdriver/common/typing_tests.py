@@ -283,7 +283,7 @@ class TypingTests(unittest.TestCase):
         element.send_keys("Should Say Cheese")
         self.assertEqual(element.get_attribute("value"), "Should Say Cheese")
 
-    def testShouldThrowWebDriverExceptionWhenIntPassedIn(self):
+    def testShouldTypeAnInteger(self):
         self._loadPage("javascriptPage")
         element = self.driver.find_element(by=By.ID, value="keyReporter")
         element.send_keys(1234)
