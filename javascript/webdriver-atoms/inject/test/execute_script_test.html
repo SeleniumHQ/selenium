@@ -29,14 +29,25 @@ limitations under the License.
   <script type="text/javascript">
     function testExecuteScriptWithWindow() {
       var func = function () {return document.getElementById('bou').value;};
-      var win = webdriver.inject.frame.findFrameByIdOrName("iframe");
+      var win = getValue(webdriver.inject.frame.findFrameByIdOrName("iframe"));
+      assertEquals("there", getValue(webdriver.inject.executeScript(func, [], win)));
+    }
+
+    function testExecuteScriptWithStringFunctionWithWindow() {
+      var func = "return document.getElementById('bou').value";
+      var win = getValue(webdriver.inject.frame.findFrameByIdOrName("iframe"));
       assertEquals("there", getValue(webdriver.inject.executeScript(func, [], win)));
     }
 
     function testExecuteScriptWithUnexistingWindow() {
       var func = function () {return document.getElementById('bou').value;};
-      var win = webdriver.inject.frame.findFrameByIdOrName("bou");
-      assertEquals("here", getValue(webdriver.inject.executeScript(func, [], win)));
+      var win = getValue(webdriver.inject.frame.findFrameByIdOrName("bou"));
+      try {
+        webdriver.inject.executeScript(func, [], win);
+        fail();
+      } catch (e) {
+        // expected
+      }
     }
 
     function testExecuteScriptWithoutWindow() {
