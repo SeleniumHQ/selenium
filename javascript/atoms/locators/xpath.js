@@ -52,7 +52,13 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   if (!doc.implementation.hasFeature('XPath', '3.0')) {
     return null;
   }
-  var resolver = doc.createNSResolver(doc.documentElement);
+  var resolver;
+  // Android 2.2 and earlier do not have this JS API 
+  if (doc.createNSResolver) {
+    resolver = doc.createNSResolver(doc.documentElement);
+  } else {
+    resolver = null;
+  }
   return doc.evaluate(path, node, resolver, resultType, null);
 };
 
