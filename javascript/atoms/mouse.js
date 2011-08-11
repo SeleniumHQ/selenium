@@ -67,12 +67,6 @@ bot.Mouse = function(isInteractable) {
   this.elementPressed_ = null;
 
   /**
-   * @type {boolean}
-   * @private
-   */
-  this.originallySelected_ = false;
-
-  /**
    * @type {!goog.math.Coordinate}
    * @private
    */
@@ -183,8 +177,8 @@ bot.Mouse.prototype.blocksOnMouseDown_ = function(element) {
   var isFirefox3 = goog.userAgent.GECKO && !bot.userAgent.isVersion(4);
 
   return (goog.userAgent.WEBKIT || isFirefox3) &&
-  (bot.dom.isElement(element, goog.dom.TagName.OPTION) ||
-   bot.dom.isElement(element, goog.dom.TagName.SELECT));
+      ((bot.dom.isElement(element, goog.dom.TagName.OPTION) ||
+      bot.dom.isElement(element, goog.dom.TagName.SELECT)));
 };
 
 
@@ -201,8 +195,6 @@ bot.Mouse.prototype.pressButton = function(button) {
   }
   this.buttonPressed_ = button;
   this.elementPressed_ = this.element_;
-  this.originallySelected_ = bot.action.isSelectable(this.element_) &&
-      bot.action.isSelected(this.element_);
 
   var performFocus = true;
   // TODO(simon): This is a nasty way to avoid locking the browser
@@ -236,7 +228,6 @@ bot.Mouse.prototype.releaseButton = function() {
   }
   this.buttonPressed_ = null;
   this.elementPressed_ = null;
-  this.originallySelected_ = false;
 };
 
 
@@ -265,6 +256,9 @@ bot.Mouse.prototype.clickElement_ = function() {
     }
   }
 
+  var selectable = bot.action.isSelectable(this.element_);
+  var originallySelected = selectable && bot.action.isSelected(this.element_);
+
   // NOTE(user): Clicking on a form submit button is a little broken:
   // (1) When clicking a form submit button in IE, firing a click event or
   // calling Form.submit() will not by itself submit the form, so we call
@@ -290,23 +284,31 @@ bot.Mouse.prototype.clickElement_ = function() {
     bot.Mouse.followHref_(targetLink);
   }
 
-  if (this.isInteractable_(this.element_) &&
-      bot.action.isSelectable(this.element_)) {
-    // If this is a radio button, a second click should not disable it.
-    if (this.element_.tagName.toLowerCase() == 'input' && this.element_.type &&
-        this.element_.type.toLowerCase() == 'radio' &&
-        bot.action.isSelected(this.element_)) {
+  if (!selectable || !this.isInteractable_(this.element_)) {
+    return;
+  }
+
+  if (originallySelected) {
+    // If this is a radio button, a click should not disable it.
+    if (bot.dom.isElement(this.element_, goog.dom.TagName.INPUT) &&
+        this.element_.type && this.element_.type.toLowerCase() == 'radio') {
       return;
     }
 
-    var select = (/** @type {!Element} */
-        goog.dom.getAncestor(this.element_, function(node) {
-          return bot.dom.isElement(node, goog.dom.TagName.SELECT);
-        }));
-    if (!select || select.multiple || !this.originallySelected_) {
-      bot.action.setSelected(this.element_, !this.originallySelected_);
+    // If this is an <option> in a single-select, click should not disable it.
+    if (bot.dom.isElement(this.element_, goog.dom.TagName.OPTION)) {
+      // Parent <select> guaranteed to exist for <option> to be interactable.
+      var select = (/** @type {!Element} */
+          goog.dom.getAncestor(this.element_, function(node) {
+            return bot.dom.isElement(node, goog.dom.TagName.SELECT);
+          }));
+      if (!select.multiple) {
+        return;
+      }
     }
   }
+
+  bot.action.setSelected(this.element_, !originallySelected);
 };
 
 
@@ -352,7 +354,7 @@ bot.Mouse.prototype.fireEvent_ = function(type, opt_related) {
       goog.events.EventType.MOUSEOUT == type) {
     if (!opt_related) {
       throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
-          "Event type requires related target: " + type);
+          'Event type requires related target: ' + type);
     }
   }
 
@@ -436,7 +438,7 @@ bot.Mouse.isFollowingHref_ = function(element) {
   }
 
   if (goog.userAgent.IE ||
-    (goog.userAgent.GECKO && !bot.isFirefoxExtension())) {
+      (goog.userAgent.GECKO && !bot.isFirefoxExtension())) {
     return true;
   }
 
