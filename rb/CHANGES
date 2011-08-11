@@ -1,3 +1,10 @@
+2.4.0 (2011-08-11)
+==================
+
+* Firefox 6 support.
+* Raise in switch_to.alert when no alert is present.
+* Improved handling of non-breaking spaces for Element#text.
+
 2.3.2 (2011-08-01)
 ==================
 
