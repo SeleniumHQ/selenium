@@ -10,10 +10,10 @@ module Selenium
 
           driver.keyboard.send_keys "ab"
 
-          text = driver.find_element(:id => "body_result").text
+          text = driver.find_element(:id => "body_result").text.strip
           text.should == "keypress keypress"
 
-          driver.find_element(:id => "result").text.should be_empty
+          driver.find_element(:id => "result").text.strip.should be_empty
         end
 
         it "can send keys with shift pressed" do
@@ -29,7 +29,7 @@ module Selenium
           driver.keyboard.release :shift
 
           event_input.attribute(:value).should == "AB"
-          keylogger.text.should == "focus keydown keydown keypress keyup keydown keypress keyup keyup"
+          keylogger.text.strip.should == "focus keydown keydown keypress keyup keydown keypress keyup keyup"
         end
 
         it "raises an UnsupportedOperationError if the pressed key is not a modifier key" do
