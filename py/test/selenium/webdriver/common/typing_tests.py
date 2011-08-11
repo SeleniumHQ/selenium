@@ -21,6 +21,7 @@ import time
 import shutil
 import unittest
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -281,6 +282,13 @@ class TypingTests(unittest.TestCase):
         element = self.driver.find_element(by=By.ID, value="no-type")
         element.send_keys("Should Say Cheese")
         self.assertEqual(element.get_attribute("value"), "Should Say Cheese")
+
+    def testShouldThrowWebDriverExceptionWhenIntPassedIn(self):
+        self._loadPage("javascriptPage")
+        element = self.driver.find_element(by=By.ID, value="keyReporter")
+        element.send_keys(1234)
+        self.assertEqual(element.get_attribute("value"), "1234")    
+
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
