@@ -89,7 +89,7 @@ class TextHandlingTests(unittest.TestCase):
         element = self.driver.find_element(by=By.ID, value="nbspandspaces")
         text = element.text
 
-        self.assertEqual(text, "This line has a non-breaking space and spaces")
+        self.assertEqual(text, "This line has a   non-breaking space and spaces")
 
     #@Ignore(IPHONE)
     def testHavingInlineElementsShouldNotAffectHowTextIsReturned(self):
