@@ -18,7 +18,7 @@
 from command import Command
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchAttributeException
-
+from selenium.webdriver.common.keys import Keys
 
 
 class WebElement(object):
@@ -132,7 +132,18 @@ class WebElement(object):
 
     def send_keys(self, *value):
         """Simulates typing into the element."""
-        self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value': value})
+        typing = []
+        for val in value:
+            if isinstance(val, Keys):
+                typing.append(val)
+            elif isinstance(val, int):
+                val = str(val)
+                for i in range(len(val)):
+                    typing.append(val[i])
+            else:
+                for i in range(len(val)):
+                    typing.append(val[i]) 
+        self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value': typing})
 
     # RenderedWebElement Items
     def is_displayed(self):
