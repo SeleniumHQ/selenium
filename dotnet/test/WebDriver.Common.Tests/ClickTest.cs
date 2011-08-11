@@ -127,6 +127,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Firefox has not corrected")]
+        [IgnoreBrowser(Browser.Chrome, "Chrome has not corrected")]
         public void ShouldBeAbleToClickLinkContainingLineBreak()
         {
             driver.Url = simpleTestPage;
