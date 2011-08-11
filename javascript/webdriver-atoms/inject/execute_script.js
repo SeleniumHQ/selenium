@@ -33,10 +33,9 @@ goog.require('bot.inject.cache');
  */
 webdriver.inject.executeScript = function(fn, args, opt_window) {
   var win;
-  try {
-    win = bot.inject.cache.getElement(
-        goog.json.parse(opt_window).value.WINDOW);
-  } catch (e) {
+  if (opt_window) {
+    win = bot.inject.cache.getElement(opt_window['WINDOW']);
+  } else {
     win = window;
   }
   return bot.inject.executeScript(fn, args, true, win);
