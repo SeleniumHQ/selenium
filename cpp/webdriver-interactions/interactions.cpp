@@ -673,6 +673,50 @@ LRESULT clickAt(WINDOW_HANDLE handle, long x, long y, long button)
 	return mouseUpAt(handle, x, y, button);
 }
 
+static LRESULT mouseDoubleClickDown(WINDOW_HANDLE directInputTo, long x, long y)
+{
+  if (!directInputTo) { return ENULLPOINTER; }
+
+  if (!isSameThreadAs((HWND) directInputTo)) {
+    BOOL toReturn = PostMessage((HWND) directInputTo, WM_LBUTTONDBLCLK, MK_LBUTTON, MAKELONG(x, y));
+
+    // Wait until we know that the previous message has been processed
+    SendMessage((HWND) directInputTo, WM_USER, 0, 0);
+    return toReturn ? 0 : 1;  // Because 0 means success.
+  } else {
+    return SendMessage((HWND) directInputTo, WM_LBUTTONDBLCLK, MK_LBUTTON, MAKELONG(x, y));
+  }
+}
+
+LRESULT doubleClickAt(WINDOW_HANDLE handle, long x, long y)
+{
+  // A double click consists of the sequence
+  // 1: mouseDown
+  // 2: mouseUp
+  // 3: doubleClick
+  // 4: mouseUp
+  // Which is the equivalent to two clicks with the second mouseDown event
+  // is replaced by a doubleClick event.
+
+  if (!handle) {
+    return ENULLPOINTER;
+  }
+
+  LRESULT  result = clickAt(handle, x, y, 0);
+  if (result != 0) {
+    LOG(WARN) << "Mouse down did not succeed whilst clicking";
+    return result;
+  }
+
+  result = mouseDoubleClickDown(handle, x, y);
+  if (result != 0) {
+    LOG(WARN) << "Mouse down did not succeed whilst double clicking";
+    return result;
+  }
+
+  return mouseUpAt(handle, x, y, 0);
+}
+
 LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 {
 	if (!directInputTo) { return ENULLPOINTER; }
@@ -705,7 +749,8 @@ LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 		return toReturn ? 0 : 1;  // Because 0 means success.
 	} else {
 		return SendMessage((HWND) directInputTo, WM_LBUTTONUP, MK_LBUTTON, MAKELONG(x, y));
-	}}
+	}
+}
 
 LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY, long toX, long toY)
 {

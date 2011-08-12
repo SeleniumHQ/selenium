@@ -146,7 +146,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 

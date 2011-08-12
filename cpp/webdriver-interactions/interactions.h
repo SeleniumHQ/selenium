@@ -57,6 +57,7 @@ EXPORT BOOL_TYPE pending_input_events();
 
 // Mouse interactions
 EXPORT WD_RESULT clickAt(WINDOW_HANDLE directInputTo, long x, long y, long button);
+EXPORT WD_RESULT doubleClickAt(WINDOW_HANDLE directInputTo, long x, long y);
 EXPORT WD_RESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y, long button);
 EXPORT WD_RESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button);
 EXPORT WD_RESULT mouseMoveTo(WINDOW_HANDLE directInputTo, long duration, long fromX, long fromY, long toX, long toY);

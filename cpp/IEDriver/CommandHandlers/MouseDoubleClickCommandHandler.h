@@ -42,16 +42,7 @@ class MouseDoubleClickCommandHandler : public IECommandHandler {
 
     HWND browser_window_handle = browser_wrapper->GetWindowHandle();
 
-    // This will never work. There needs to be a doubleClickAt function added 
-    // to the webdriver-interactions module.
-    clickAt(browser_window_handle,
-            executor.last_known_mouse_x(),
-            executor.last_known_mouse_y(),
-            MOUSEBUTTON_LEFT);
-    clickAt(browser_window_handle,
-            executor.last_known_mouse_x(),
-            executor.last_known_mouse_y(),
-            MOUSEBUTTON_LEFT);
+    doubleClickAt(browser_window_handle, executor.last_known_mouse_x(), executor.last_known_mouse_y());
     response->SetSuccessResponse(Json::Value::null);
   }
 };
