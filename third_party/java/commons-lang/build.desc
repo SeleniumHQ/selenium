@@ -1,4 +1,4 @@
 java_library(name = "commons-lang",
   deps = [
-    "commons-lang-2.4.jar"
+    "commons-lang-2.6.jar"
   ])

@@ -1,4 +1,4 @@
 java_library(name = "nekohtml",
   deps = [
-    "nekohtml-1.9.14.jar"
+    "nekohtml-1.9.15.jar"
   ])

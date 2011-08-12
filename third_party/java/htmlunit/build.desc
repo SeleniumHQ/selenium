@@ -1,7 +1,7 @@
 java_library(name = "htmlunit",
   deps = [
-    "htmlunit-2.8.jar",
-    "htmlunit-core-js-2.8.jar",
+    "htmlunit-2.9.jar",
+    "htmlunit-core-js-2.9.jar",
     "//third_party/java/apache-httpclient",
     "//third_party/java/commons-collections",
     "//third_party/java/commons-io",
