@@ -1,3 +1,13 @@
+v2.4.0
+======
+  * Adding InvalidSelector error code.
+  * Default to field/property name if no Using is specified in PageFactory.
+  * Replaced reference to Ionic.Zip.Reduced.dll with Ionic.Zip.dll to match up NuGet packages.
+
+v2.3.0
+======
+  * Added protected constructors and properties to make it easier to subclass By for custom element finders.
+
 v2.2.0
 ======
   * Adding first pass at .NET implementation of proxy management.
