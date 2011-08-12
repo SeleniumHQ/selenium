@@ -32,6 +32,19 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         [Test]
+        public void LooksUpAgainAfterPageNavigation()
+        {
+            driver.Url = xhtmlTestPage;
+            var page = new RenderedPage();
+
+            PageFactory.InitElements(driver, page);
+
+            driver.Navigate().Refresh();
+
+            Assert.True(page.formElement.Displayed);
+        }
+
+        [Test]
         public void ElementEqualityWorks()
         {
             driver.Url = xhtmlTestPage;
