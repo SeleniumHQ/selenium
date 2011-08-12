@@ -7,17 +7,17 @@
 	<classpathentry kind="src" path="java/server/test"/>
 	<classpathentry kind="lib" path="third_party/java/junit/junit-dep-4.8.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/easymock/easymockclassextension-2.4.jar"/>
-	<classpathentry kind="lib" path="third_party/java/htmlunit/htmlunit-core-js-2.8.jar"/>
+	<classpathentry kind="lib" path="third_party/java/htmlunit/htmlunit-core-js-2.9.jar"/>
 	<classpathentry kind="lib" path="third_party/java/bcprov/bcprov-jdk15-135.jar"/>
-	<classpathentry kind="lib" path="third_party/java/htmlunit/htmlunit-2.8.jar"/>
+	<classpathentry kind="lib" path="third_party/java/htmlunit/htmlunit-2.9.jar"/>
 	<classpathentry kind="lib" path="third_party/java/easymock/easymock-2.4.jar"/>
-	<classpathentry kind="lib" path="third_party/java/apache-httpclient/httpclient-4.0.2.jar"/>
-	<classpathentry kind="lib" path="third_party/java/apache-httpclient/httpcore-4.0.1.jar"/>
-	<classpathentry kind="lib" path="third_party/java/apache-httpclient/httpmime-4.0.1.jar"/>
+	<classpathentry kind="lib" path="third_party/java/apache-httpclient/httpclient-4.1.2.jar"/>
+	<classpathentry kind="lib" path="third_party/java/apache-httpclient/httpcore-4.1.2.jar"/>
+	<classpathentry kind="lib" path="third_party/java/apache-httpclient/httpmime-4.1.2.jar"/>
 	<classpathentry kind="lib" path="third_party/java/cglib/cglib-nodep-2.1_3.jar"/>
 	<classpathentry kind="lib" path="third_party/java/commons-collections/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/commons-io/commons-io-2.0.1.jar"/>
-	<classpathentry kind="lib" path="third_party/java/commons-lang/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="third_party/java/commons-lang/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="third_party/java/commons-codec/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="third_party/java/hamcrest/hamcrest-all-1.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/commons-logging/commons-logging-1.1.1.jar"/>
@@ -48,7 +48,7 @@
 	<classpathentry kind="lib" path="third_party/java/apache-mime4j/apache-mime4j-0.6.jar"/>
 	<classpathentry kind="lib" path="third_party/java/xml/xercesImpl-2.9.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/cssparser/cssparser-0.9.5.jar"/>
-	<classpathentry kind="lib" path="third_party/java/nekohtml/nekohtml-1.9.14.jar"/>
+	<classpathentry kind="lib" path="third_party/java/nekohtml/nekohtml-1.9.15.jar"/>
 	<classpathentry kind="lib" path="third_party/java/xml/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/opera-driver/operadriver-v0.6.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jmock/jmock-junit4-2.5.1.jar"/>
