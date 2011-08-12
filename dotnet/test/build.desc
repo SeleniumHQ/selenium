@@ -91,6 +91,7 @@ dotnet_test(name = "chrome",
     "System.Drawing.dll",
     "System.Xml.dll",
     "//dotnet:dotnet",
+    "//dotnet:firefox",
     ":common",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
   ],

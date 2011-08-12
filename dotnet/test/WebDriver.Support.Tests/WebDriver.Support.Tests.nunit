@@ -1,6 +1,6 @@
 <NUnitProject>
 	<Settings appbase="." />
 	<Config name="Default" binpathtype="Auto">
-		<assembly path="../../../build/cli/Debug/WebDriver.Support.Tests.dll" />
+		<assembly path="../../build/cli/Debug/WebDriver.Support.Tests.dll" />
 	</Config>
 </NUnitProject>

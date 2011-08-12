@@ -78,7 +78,7 @@ namespace OpenQA.Selenium.Support.UI
         public void PassesWebDriverFromConstructorToExpectation()
         {
             var mockDriver = mocks.NewMock<IWebDriver>();
-            Expect.Once.On(mockDriver).Method("GetWindowHandle").Will(Return.Value(SOME_STRING));
+            Expect.Once.On(mockDriver).GetProperty("CurrentWindowHandle").Will(Return.Value(SOME_STRING));
 
             Func<IWebDriver, string> condition = driver => driver.CurrentWindowHandle;
 
