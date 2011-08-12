@@ -26,3 +26,12 @@ java_library(name = "seleniumemulation",
     "//third_party/java/guava-libraries",
   ])
 
+java_library(name="api",
+             srcs = [ "*.java" ],
+             deps = [
+               "//java/client/src/com/thoughtworks/selenium",
+               "//java/client/src/org/openqa/selenium:webdriver-api",
+               "//java/client/src/org/openqa/selenium/interactions",
+               "//java/client/src/org/openqa/selenium/io",
+               "//third_party/java/guava-libraries",
+              ])
