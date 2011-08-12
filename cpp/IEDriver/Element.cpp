@@ -413,12 +413,12 @@ bool Element::IsClickPointInViewPort(const long x,
 
   // Hurrah! Now we know what the visible area of the viewport is
   // Is the element visible in the X axis?
-  if (click_x < 0 || click_x > window_width) {
+  if (click_x < 0 || click_x >= window_width) {
     return false;
   }
 
   // And in the Y?
-  if (click_y < 0 || click_y > window_height) {
+  if (click_y < 0 || click_y >= window_height) {
     return false;
   }
   return true;
