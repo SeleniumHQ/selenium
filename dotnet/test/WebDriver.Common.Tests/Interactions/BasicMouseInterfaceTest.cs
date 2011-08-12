@@ -78,7 +78,11 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Ignore("DoubleClick not yet implemented in common native events code")]
+        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowDoubleClick()
         {
             driver.Url = javascriptPage;
