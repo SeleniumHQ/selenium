@@ -1045,7 +1045,7 @@ location for correctly generating native events.''').
       SetReturnType('{string}', 'The text of the currently displayed alert.').
       AddError('NoAlertPresent', 'If there is no alert displayed.').
       Post('Sends keystrokes to a JavaScript `prompt()` dialog.').
-      AddJsonParameter('keysToSend', '{string}', 'Keystrokes to send to the `prompt()` dialog.').
+      AddJsonParameter('text', '{string}', 'Keystrokes to send to the `prompt()` dialog.').
       AddError('NoAlertPresent', 'If there is no alert displayed.'))
 
   resources.append(
