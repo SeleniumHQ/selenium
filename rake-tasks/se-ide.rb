@@ -121,4 +121,28 @@ namespace :se_ide do
     rmdir "ide/main/src/content/selenium-core/lib"
     rm "ide/main/src/components/SeleniumIDEGenericAutoCompleteSearch.xpt"
   end
+
+  task :assemble_ide_in_bamboo do
+    src = "build/ide/multi"
+    dest = "build/ide"
+    name = "selenium-ide.xpi"
+    
+    cp "ide/install.rdf", src
+    
+    # copy-and-pasted from crazy_fun/mappings/common.rb
+    Dir.chdir(src) {
+      ok = system(%{jar cMf "../#{name}" * 2>&1})
+      ok or raise "could not zip #{src} => #{dest}"
+    }
+  end
+
+  # require 'rake/packagetask'  
+  # Rake::PackageTask.new("selenium-ide", "1.2.0") do |p|
+  #   p.package_dir = "build/ide/multi/"
+  #   p.need_zip = true
+  #   p.package_files.include("build/ide/multi/*")
+  #   if unix?
+  #     p.zip_command = "jar cMf"
+  #   end
+  #  end
 end
