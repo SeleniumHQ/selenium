@@ -14,23 +14,20 @@ function testElementsThatDoNotSupportTheDisabledAttributeAreAlwaysEnabled() {
   assertTrue('Form should be enabled', bot.dom.isEnabled(document.forms[0]));
 }
 
-function testShouldBeEnabledIfDoesNotHaveDisabledAttribute() {
-  assertTrue(bot.dom.isEnabled(goog.dom.$('enabled-button-a')));
-}
-
 function assertDisabled(id) {
   var element = goog.dom.$(id);
-  assertNotNull('no such element: ' + id, element);
-  assertNotUndefined('no such element: ' + id, element);
+  assertNotNullNorUndefined('no such element: ' + id, element);
   assertFalse(id + ' should be disabled', bot.dom.isEnabled(element));
 }
 
 function assertEnabled(id) {
   var element = goog.dom.$(id);
-  assertNotNull('no such element: ' + id, element);
-  assertNotUndefined('no such element: ' + id, element);
-  var enabled = bot.dom.isEnabled(element);
+  assertNotNullNorUndefined('no such element: ' + id, element);
   assertTrue(id + ' should be enabled', bot.dom.isEnabled(element));
+}
+
+function testShouldBeEnabledIfDoesNotHaveDisabledAttribute() {
+  assertEnabled('enabled-button-a');
 }
 
 function testShouldBeDisabledIfItHasTheDisabledAttribute() {
@@ -48,6 +45,14 @@ function testDisabledShouldBeAnInheritedAttribute() {
 
   assertDisabled('disabled-select');
   assertDisabled('inherits-disabled-2');
+}
+
+function testEnabledShouldRespondToDisabledProperty() {
+  var element = goog.dom.$('enabled-button-a');
+  element.disabled = true;
+  assertDisabled('enabled-button-a');
+  element.disabled = false;
+  assertEnabled('enabled-button-a');
 }
     </script>
   </head>

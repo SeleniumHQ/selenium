@@ -23,24 +23,24 @@ goog.require('goog.dom');
 goog.require('goog.testing.TestCase');
 
 
-
 function getTestContainer() {
-  return goog.dom.$('test-container') || createTestContainer();
-
   function createTestContainer() {
     var testContainer = goog.dom.createDom('DIV', {
-      id:'test-container',
+      id: 'test-container',
       style: 'border: 1px dotted silver'
     }, goog.dom.createDom('DIV', {
       style: 'font-weight:bold;' +
-             'text-decoration:underline;' +
-             'font-style:italic;' +
-             'margin: 0.5em'
+          'text-decoration:underline;' +
+          'font-style:italic;' +
+          'margin: 0.5em'
     }, 'Test Container'));
     document.body.appendChild(testContainer);
     return testContainer;
   }
+
+  return goog.dom.getElement('test-container') || createTestContainer();
 }
+
 
 /**
  * Verifies that the visible text for the test DOM structure.
@@ -69,7 +69,7 @@ function assertTextIs(element, var_args) {
   function createTestDom(element) {
     return goog.dom.createDom('div', {'style': 'width: 25em;'},
         goog.dom.createDom('div',
-            {'style':[
+            {'style': [
               'margin: 0 0.5em;',
               'padding: 0;',
               'font-style: italic;',
@@ -77,7 +77,7 @@ function assertTextIs(element, var_args) {
             ].join('')},
             goog.testing.TestCase.currentTestName),
         goog.dom.createDom('div', {
-          'style':'margin-bottom: 0.5em'
+          'style': 'margin-bottom: 0.5em'
         }, element));
   }
 

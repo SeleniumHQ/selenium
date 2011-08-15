@@ -16,6 +16,7 @@
 /**
  * @fileoverview Element locator functions.
  *
+ *
  */
 
 
@@ -61,6 +62,7 @@ bot.locators.STRATEGIES_ = {
   'xpath': bot.locators.xpath
 };
 
+
 /**
  * Add or override an existing strategy for locating elements.
  *
@@ -73,19 +75,18 @@ bot.locators.add = function(name, strategy) {
 
 
 /**
- * Returns one key from the object map that is not present in the Object.prototype, if any exists.
+ * Returns one key from the object map that is not present in the
+ * Object.prototype, if any exists.
  *
  * @param {Object} target The object to pick a key from.
  * @return {string?} The key or null if the object is empty.
  */
 bot.locators.getOnlyKey = function(target) {
-  for (var i in target) {
-    if (Object.prototype[i]) {
-      continue;
+  for (var k in target) {
+    if (target.hasOwnProperty(k)) {
+      return k;
     }
-    return i;
   }
-
   return null;
 };
 

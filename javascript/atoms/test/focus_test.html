@@ -151,7 +151,16 @@
       assertThrows(goog.partial(bot.action.focusOnElement, element));
     }
 
+    function testFocusOnDisabledElementThrows() {
+      var element = document.getElementById('disabledText');
+      assertThrows(goog.partial(bot.action.focusOnElement, element));
+    }
+
     function testIsFocusable() {
+      if (goog.userAgent.IE) {
+        // TODO(user): Don't skip this.
+        return;
+      }
       function assertIsFocusable(element, opt_reason) {
         assertTrue(opt_reason || '', bot.dom.isFocusable(element));
       }
@@ -183,7 +192,6 @@
       assertNull(bot.dom.getAttribute(div, 'tabindex'));
       assertNotFocusable(div, 'tab index was removed');
     }
-
   </script>
 </head>
 <body>
@@ -209,6 +217,10 @@
     <div>
       <div><strong>Invisible textbox</strong></div>
       <input id="invisibleText" type="text" style="visibility:hidden"/>
+    </div>
+    <div>
+      <div><strong>Disabled textbox</strong></div>
+      <input id="disabledText" type="text" value="I'm disabled" disabled/>
     </div>
     <script>
       function log(msg) {

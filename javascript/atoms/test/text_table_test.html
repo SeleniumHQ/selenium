@@ -38,7 +38,8 @@ limitations under the License.
 <script>
   // Aliases for helping with creating tables.
   var table = goog.partial(goog.dom.createDom, goog.dom.TagName.TABLE, null);
-  var caption = goog.partial(goog.dom.createDom, goog.dom.TagName.CAPTION, null);
+  var caption = goog.partial(
+      goog.dom.createDom, goog.dom.TagName.CAPTION, null);
   var tbody = goog.partial(goog.dom.createDom, goog.dom.TagName.TBODY, null);
   var th = goog.partial(goog.dom.createDom, goog.dom.TagName.TH, null);
   var tr = goog.partial(goog.dom.createDom, goog.dom.TagName.TR, null);
@@ -70,6 +71,11 @@ limitations under the License.
     assertTextIs(table(tr(td(), td()), ''));
   }
 
+  function testOneLineTable() {
+    var t = table(tbody(tr(td('a'), td('b'))));
+    var x = bot.dom.getVisibleText(t);
+    assertEquals(x, 'a b');
+  }
 
   function testSimpleTable() {
     assertTextIs(
@@ -180,16 +186,14 @@ limitations under the License.
 
   function testNestedTables_nowWithNewlines() {
     assertTextIs(
-        goog.dom.createDom('table', {
-          'innerHTML': goog.dom.$('nestedTable').innerHTML
-        }),
+        goog.dom.getElement('nestedTable'),
         "Table 1, Row 1, Cell 1 Table 1, Row 1, Cell 2",
         "Table 1, Row 2, Cell 1 Table 1, Row 2, Cell 2",
         "Table 2, Row 1, Cell 1 Table 2, Row 1, Cell 2",
         "Table 1, Row 3, Cell 1 Table 1, Row 3, Cell 2");
   }
 </script>
-<table id="nestedTable" style="display:none">
+<table id="nestedTable">
   <tr>
       <td>
           Table 1, Row 1, Cell 1

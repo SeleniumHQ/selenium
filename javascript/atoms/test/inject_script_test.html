@@ -25,7 +25,7 @@
       },
       /*onFailure=*/function(err) {
         TEST_CASE.continueTesting();
-        callback(err.code || bot.ErrorCode.UNKNOWN_ERROR, {
+        callback(err.code || bot.ErrorCode.UNHANDLED_JS_ERROR, {
           'message': err.message
         });
       });

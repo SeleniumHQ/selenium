@@ -52,6 +52,9 @@ goog.require('goog.userAgent');
  * @see bot.dom.isEnabled
  * @private
  */
+// TODO(user): Consider changing the behavior of actions so that they
+// are no-ops if the element is not shown (ignoring opacity) rather than
+// throwing an error.
 bot.action.isInteractable_ = function(element, opt_throws) {
   var shown = bot.dom.isShown(element, /*ignoreOpacity=*/true);
   var interactable = shown && bot.dom.isEnabled(element);
@@ -489,7 +492,7 @@ bot.action.rightClick = function(element, opt_coords) {
 bot.action.click_ = function(element, button, opt_coords) {
   if (!bot.dom.isShown(element, true)) {
     throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
-    'Element is not currently visible and may not be manipulated');
+        'Element is not currently visible and may not be manipulated');
   }
   var activeElement = bot.dom.getActiveElement(element);
 

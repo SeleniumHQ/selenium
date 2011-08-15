@@ -20,16 +20,18 @@
 
   function setUp() {
     testWindow = window.open('');
-    assertNotNull(testWindow);
-    assertNotUndefined(testWindow);
+    assertNotNullNorUndefined('window.open() failed: ' +
+        'is a pop-up blocker enabled?', testWindow);
     goog.global.onload = function() {
       fail('Unexpected onload call');
     };
   }
 
   function tearDown() {
-    testWindow.close();
-    testWindow = null;
+    if (testWindow) {
+      testWindow.close();
+      testWindow = null;
+    }
   }
 
   function testSynchronizesTimeoutsWithGivenWindow() {

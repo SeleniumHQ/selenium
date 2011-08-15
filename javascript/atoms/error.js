@@ -111,7 +111,7 @@ bot.Error.NAMES_ = goog.object.transpose({
 
 /**
  * Flag used for duck-typing when this code is embedded in a Firefox extension.
- * This is required since an Error thrown in one component and the reported
+ * This is required since an Error thrown in one component and then reported
  * to another will fail instanceof checks in the second component.
  * @type {boolean}
  */

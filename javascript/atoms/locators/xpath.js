@@ -53,7 +53,7 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
     return null;
   }
   var resolver;
-  // Android 2.2 and earlier do not have this JS API 
+  // Android 2.2 and earlier do not have this JS API
   if (doc.createNSResolver) {
     resolver = doc.createNSResolver(doc.documentElement);
   } else {
@@ -61,6 +61,7 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   }
   return doc.evaluate(path, node, resolver, resultType, null);
 };
+
 
 /**
  * Find an element by using an xpath expression
@@ -73,7 +74,7 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
 bot.locators.xpath.single = function(target, root) {
   // Note: This code was copied from Closure (goog.dom.xml.selectSingleNode)
   // since the current implementation refers 'document' which is not defined
-  // in the context of the Firefox extension (XPathResult isn't defined as well).
+  // in the context of the Firefox extension (XPathResult isn't defined as well)
   function selectSingleNode(node, path) {
     var doc = goog.dom.getOwnerDocument(node);
     if (node.selectSingleNode) {
@@ -90,8 +91,8 @@ bot.locators.xpath.single = function(target, root) {
     catch (ex) {
       // The error is caused most likely by an invalid xpath expression
       // TODO: catch the exception more precise
-      throw Error(bot.ErrorCode.INVALID_SELECTOR_ERROR, 
-        'Unable to locate an element with the xpath expression ' + target);
+      throw Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+          'Unable to locate an element with the xpath expression ' + target);
     }
   }
 
@@ -133,24 +134,25 @@ bot.locators.xpath.many = function(target, root) {
     }
     var results = [];
     var nodes;
-    try{
+    try {
       nodes = bot.locators.xpath.evaluate_(node, path,
-              bot.locators.xpath.XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+          bot.locators.xpath.XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
     }
-    catch(ex) {
+    catch (ex) {
       // The error is caused most likely by an invalid xpath expression
       // TODO: catch the exception more precise
       throw Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-        'Unable to locate elements with the xpath expression ' + path);
+          'Unable to locate elements with the xpath expression ' + path);
     }
     if (nodes) {
       var count = nodes.snapshotLength;
       for (var i = 0; i < count; ++i) {
         var item = nodes.snapshotItem(i);
         if (item.nodeType != goog.dom.NodeType.ELEMENT) {
-          // A xpath expression which selects something which is not an element is invalid
-          throw Error(bot.ErrorCode.INVALID_SELECTOR_ERROR, 
-            'Returned nodes must be elements: ' + target);
+          // A xpath expression which selects something which is not an element
+          // is invalid.
+          throw Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+              'Returned nodes must be elements: ' + target);
         }
         results.push(item);
       }

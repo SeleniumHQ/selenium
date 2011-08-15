@@ -25,7 +25,7 @@ function isWindowFocused() {
   var key = goog.events.listen(
       document.body, goog.events.EventType.BLUR, function() {
         windowFocused++;
-  });
+      });
   // Need to fire the event twice, since the first one may actually get
   // processed
   document.body.blur();

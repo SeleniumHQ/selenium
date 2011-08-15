@@ -6,97 +6,107 @@
   <script type="text/javascript">
     goog.require('bot.action');
     goog.require('bot.locators');
+    goog.require('goog.Uri');
     goog.require('goog.dom');
     goog.require('goog.events');
-    goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.events.EventType');
+    goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
-    goog.require('goog.Uri');
+    goog.require('goog.userAgent');
   </script>
 </head>
 <body>
-  <iframe id="iframe" src="testdata/click_iframe.html">
+<iframe id="iframe" src="testdata/click_iframe.html"></iframe>
+<iframe id="other" name="other"></iframe>
 
-  </iframe>
+<script type="text/javascript">
+  var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+  var iframe, iframeWin, otherFrame, otherFrameWin;
 
-  <iframe id="other" name="other" src="testdata/history_page0.html">
-      
-  </iframe>
-  <script type="text/javascript">
-    /**
-    * This test is in a separate file because AsyncTestCase seems to conflict
-    * with the existing tests.
-    */
+  function setUp() {
+    iframe = bot.locators.findElement({id: 'iframe'});
+    iframeWin = goog.dom.getFrameContentWindow(iframe);
+    otherFrame = bot.locators.findElement({id: 'other'});
+    otherFrameWin = goog.dom.getFrameContentWindow(otherFrame);
+    continueAfterLoad(iframe, goog.nullFunction);
+    iframeWin.location = resolveUrl('testdata/click_iframe.html');
+  }
 
-    var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-    var findElement = bot.locators.findElement;
+  function continueAfterLoad(iframe, fn) {
+    asyncTestCase.waitForAsync('Waiting for ' + iframe.id + ' to load');
+    return goog.events.listenOnce(iframe, 'load', function() {
+      asyncTestCase.continueTesting();
+      fn();
+    });
+  }
 
-    function setUp() {
-      var iframe = findElement({id: 'iframe'});
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      iframeWindow.location = goog.Uri.resolve(window.location.href, 'testdata/click_iframe.html');
-    }
+  function resolveUrl(url) {
+    return goog.Uri.resolve(window.location.href, url).toString();
+  }
 
-    function testClickOnAnAbsoluteAnchorInAnIframeExecutesDefaultHandler() {
-      var iframe = findElement({id: 'iframe'});
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
-      var clickTarget = findElement({'id': 'iframeClickTarget'}, iframeDoc);
-      var targetHref = buildAbsoluteUrl('/testdata/click_iframe.html');
+  function getClickTarget(url) {
+    var doc = goog.dom.getFrameContentDocument(iframe);
+    var target = bot.locators.findElement({'id': 'iframeClickTarget'}, doc);
+    target.href = resolveUrl(url);
+    return target;
+  }
 
-      // As the iframe loads asyncronously we need to wait to check our
-      // if the url matches the expected one.
-      goog.events.listen(iframe, 'load', function() {
-        assertContains(targetHref, iframeWindow.document.location.href);
-        asyncTestCase.continueTesting();
-      });
+  function testClickDoesNotEncodeReservedButAllowedCharactersInQuery() {
+    // A bug in the closure goog.Uri module once prevented this from working.
+    var iframe = bot.locators.findElement({id: 'iframe'});
+    var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+    var domHelper = goog.dom.getDomHelper(iframeWindow);
+    var clickTarget = domHelper.getElement('iframeClickTarget');
 
-      clickTarget.href = targetHref;
-      bot.action.click(clickTarget);
+    var targetHref = '?a=?/+';
+    clickTarget.href = targetHref;
+    continueAfterLoad(iframe, function() {
+      assertEquals(targetHref, iframeWin.location.search);
+    });
+    bot.action.click(clickTarget);
+  }
 
-      asyncTestCase.waitForAsync('Waiting for iframe to load');
-    }
+  function testClickOnAnAbsoluteAnchorInAnIframeExecutesDefaultHandler() {
+    var clickTarget = getClickTarget('testdata/click_destination.html');
+    var targetHref = clickTarget.href;
+    continueAfterLoad(iframe, function() {
+      assertEquals(targetHref, iframeWin.location.href);
+    });
+    bot.action.click(clickTarget);
+  }
 
-    function testCanClickALinkThatCausesContentToLoadInAnotherFrame() {
-      var iframe = findElement({id: 'iframe'});
-      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
-      var clickTarget = findElement({'id': 'otherFrame'}, iframeDoc);
-      var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
-      var otherIframe = findElement({id: 'other'});
-      var otherWindow = goog.dom.getFrameContentWindow(otherIframe);
+  function testCanClickALinkThatCausesContentToLoadInAnotherFrame() {
+    var clickTarget = getClickTarget('testdata/click_destination.html');
+    var targetHref = clickTarget.href;
+    clickTarget.target = 'other';
+    continueAfterLoad(otherFrame, function() {
+      assertEquals(targetHref, otherFrameWin.location.href);
+    });
+    bot.action.click(clickTarget);
+  }
 
-      // As the iframe loads asyncronously we need to wait to check our
-      // if the url matches the expected one.
-      goog.events.listen(otherIframe, 'load', function() {
-        assertContains(targetHref, otherWindow.document.location.href);
-        asyncTestCase.continueTesting();
-      });
+  function testClickingOnSelfPageReloadsPage() {
+    var clickTarget = getClickTarget(iframeWin.location.href);
+    var targetHref = clickTarget.href;
+    continueAfterLoad(iframe, function() {
+      assertEquals(targetHref, iframeWin.location.href);
+    });
+    bot.action.click(clickTarget);
+  }
 
-      clickTarget.href = targetHref;
-      bot.action.click(clickTarget);
+  function testClickingOnHashDoesNotReloadThePage() {
+    var clickTarget = getClickTarget('');
+    clickTarget.href = '#';
+    // Fail immediately if the iframe is loaded.
+    var id = continueAfterLoad(iframe, fail);
+    bot.action.click(clickTarget);
 
-      asyncTestCase.waitForAsync('Waiting for the target frame to load');
-    }
-
-    function testClickingAnAnchorTagDoesNotReloadThePage() {
-      var iframe = findElement({id: 'iframe'});
-      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
-      var clickTarget = findElement({'id': 'clickTargetThatGoesNowhere'}, iframeDoc);
-
-      iframeDoc.notReloaded = true;
-      bot.action.click(clickTarget);
-      window.setTimeout(function() {
-        asyncTestCase.continueTesting();
-        assertTrue(goog.dom.getFrameContentDocument(iframe).notReloaded);
-      }, 250);
-      asyncTestCase.waitForAsync('Waiting for iframe to load');
-    }
-
-    function buildAbsoluteUrl(url) {
-      var loc = location.href;
-      return loc.substring(0, loc.lastIndexOf('/')) + url;
-    }
-  </script>
-
+    // After a delay, assume page is not going to load and pass the test.
+    window.setTimeout(function() {
+      asyncTestCase.continueTesting();
+      goog.events.unlistenByKey(id);
+    }, 250);
+  }
+</script>
 </body>
 </html>

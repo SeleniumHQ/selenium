@@ -6,6 +6,7 @@
   <script type="text/javascript">
     goog.require('bot.action');
     goog.require('goog.Uri');
+    goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
     goog.require('goog.testing.AsyncTestCase');
@@ -276,7 +277,7 @@
       assertChangeFired(3);
     }
 
-     function testShouldBeAbleToToggleCheckboxesUsingClicks() {
+    function testShouldBeAbleToToggleCheckboxesUsingClicks() {
       var cb1 = goog.dom.$('check1');
       var state = !!cb1.checked;
 
@@ -349,7 +350,7 @@
       var r2 = goog.dom.$('radio2');
       var r3 = goog.dom.$('radio3');
       var r4 = goog.dom.$('radio4');
-      r4.checked =true;
+      r4.checked = true;
 
       assertFalse('precondition failed', bot.action.isSelected(r1));
       assertFalse('precondition failed', bot.action.isSelected(r2));
@@ -377,64 +378,71 @@
       assertFalse(bot.action.isSelected(r3));
     }
 
-    function testClearingAnEmptyTextInputElementShouldNoOp() {
-      goog.dom.$('textField').value = '';
-      doNotExpectChangeEvent(goog.dom.$('textField'));
-      bot.action.clear(goog.dom.$('textField'));
+
+    function testClearingANonTextualElementThrows() {
+      assertThrows(goog.partial(bot.action.clear, document.body));
     }
 
-    function testClearingATextInputElement() {
-      goog.dom.$('textField').value = 'foobar';
-      expectChangeEvent(goog.dom.$('textField'));
-      bot.action.clear(goog.dom.$('textField'));
-      assertChangeFired();
-      assertEquals('', goog.dom.$('textField').value);
+    function forEachClearableElement(fn) {
+      var ids = ['textField', 'textArea', 'passwordField'];
+      for (var i = 0; i < ids.length; i++) {
+        fn(goog.dom.$(ids[i]));
+      }
     }
 
-    function testClearingAnEmptyPasswordElementShouldNoOp() {
-      goog.dom.$('passwordField').value = '';
-      doNotExpectChangeEvent(goog.dom.$('passwordField'));
-      bot.action.clear(goog.dom.$('passwordField'));
+    function testClearingAnEmptyElementShouldNoOp() {
+      forEachClearableElement(function(e) {
+        e.value = '';
+        e.disabled = false;
+        e.readOnly = false;
+        doNotExpectChangeEvent(e);
+        bot.action.clear(e);
+        assertEquals('', e.value);
+      });
     }
 
-    function testClearingAPasswordInputElement() {
-      goog.dom.$('passwordField').value = 'foobar';
-      expectChangeEvent(goog.dom.$('passwordField'));
-      bot.action.clear(goog.dom.$('passwordField'));
-      assertChangeFired();
-      assertEquals('', goog.dom.$('passwordField').value);
+    function testClearingANonEmptyElement() {
+      forEachClearableElement(function(e) {
+        e.value = 'foobar';
+        e.disabled = false;
+        e.readOnly = false;
+        expectChangeEvent(e);
+        bot.action.clear(e);
+        assertChangeFired();
+        assertEquals('', e.value);
+      });
     }
 
-    function testClearingAnEmptyTextAreaElementShouldNoOp() {
-      goog.dom.$('textArea').value = '';
-      doNotExpectChangeEvent(goog.dom.$('textArea'));
-      bot.action.clear(goog.dom.$('textArea'));
+    function testClearingADisabledElementThrows() {
+      forEachClearableElement(function(e) {
+        e.value = 'foobar';
+        e.disabled = true;
+        e.readOnly = false;
+        doNotExpectChangeEvent(e);
+        assertThrows(goog.partial(bot.action.clear, e));
+        assertEquals('foobar', e.value);
+
+        // Even when element is initially empty.
+        e.value = '';
+        doNotExpectChangeEvent(e);
+        assertThrows(goog.partial(bot.action.clear, e));
+      });
     }
 
-    function testClearingATextAreaInputElement() {
-      goog.dom.$('textArea').value = 'foobar';
-      expectChangeEvent(goog.dom.$('textArea'));
-      bot.action.clear(goog.dom.$('textArea'));
-      assertChangeFired();
-      assertEquals('', goog.dom.$('textArea').value);
-    }
+    function testClearingAReadOnlyElementThrows() {
+      forEachClearableElement(function(e) {
+        e.value = 'foobar';
+        e.disabled = false;
+        e.readOnly = true;
+        doNotExpectChangeEvent(e);
+        assertThrows(goog.partial(bot.action.clear, e));
+        assertEquals('foobar', e.value);
 
-    function assertElementCannotBeCleared(element) {
-      element.value = 'foo';
-      element.readOnly = true;
-      assertThrows(goog.partial(bot.action.clear, element));
-    }
-
-    function testShouldNotBeAbleToClearAReadOnlyTextInput() {
-      assertElementCannotBeCleared(goog.dom.$('readOnlyTextField'));
-    }
-
-    function testShouldNotBeAbleToClearAReadOnlyPasswordInput() {
-      assertElementCannotBeCleared(goog.dom.$('readOnlyPasswordField'));
-    }
-
-    function testShouldNotBeAbleToClearAReadOnlyTextArea() {
-      assertElementCannotBeCleared(goog.dom.$('readOnlyTextArea'));
+        // Even when element is initially empty.
+        e.value = '';
+        doNotExpectChangeEvent(e);
+        assertThrows(goog.partial(bot.action.clear, e));
+      });
     }
 
     function testSubmittingANonFormElementShouldResultInAnError() {
@@ -483,6 +491,25 @@
       assertSubmitFired();
     }
 
+    function testShouldBeAbleToSubmitFromAFormWithAnElementNamedSubmit() {
+      var form = goog.dom.getElement('form_two');
+      var submitButton = goog.dom.getElement('submit');
+      expectSubmitEvent(form);
+
+      goog.global.submitted = function() {
+        asyncTestCase.continueTesting();
+      };
+
+      // Firefox executes submit() in the next event loop, so we must go async.
+      asyncTestCase.waitForAsync('if this times out, the form did not submit');
+      bot.action.submit(goog.dom.getElement('typer2'));
+      assertSubmitFired();
+
+      // Make sure the submit button is returned to normal.
+      assertEquals(submitButton.id, 'submit');
+      assertEquals(submitButton.name, 'submit');
+    }
+
     /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
     function testShouldBeAbleToSelectAnOptionFromAnInvisibleSelectUsingClick() {
       var ss = goog.dom.$('invisiSelect');
@@ -495,17 +522,21 @@
     }
 
     function testClickShouldSetRelatedTargetForMoves() {
+      if (goog.userAgent.IE) {
+        // Does not set the event's relatedTarget
+        return;
+      }
       var parent = goog.dom.$('parent');
       var target = goog.dom.$('clickable');
 
       var fired = 0;
 
       goog.events.listenOnce(target, goog.events.EventType.MOUSEOVER,
-          function(e) { 
+          function(e) {
             fired++;
             assertNotNull(e.relatedTarget);
-            assertFalse(e.relatedTartet == target)
-          })
+            assertFalse(e.relatedTarget == target)
+          });
 
       bot.action.click(target);
 
@@ -517,6 +548,10 @@
   <form id="form_one" action="javascript:submitted()">
     <label for="typer">Type here: </label><input type="text" id="typer"/>
     <input type="submit" id="submit-button" value="Submit!"/>
+  </form>
+  <form id="form_two" action="javascript:submitted()">
+    <label for="typer2">Type here: </label><input type="text" id="typer2"/>
+    <input type="submit" id="submit" name="submit" value="Submit!"/>
   </form>
   <form action="javascript:void(0)">
     <div>
@@ -578,30 +613,12 @@
       <label for="textField">Text field</label>
       <input type="text" id="textField"/>
     </div>
-
-    <div>
-      <label for="readOnlyTextField">Read-Only Text field</label>
-      <input type="text" id="readOnlyTextField" readonly="readonly"/>
-    </div>
-
     <div>
       <label for="textArea">Text area</label>
       <textarea id="textArea"></textarea>
     </div>
-
-    <div>
-      <label for="readOnlyTextArea">Read-Only Text area</label>
-      <textarea id="readOnlyTextArea" readonly="readonly"></textarea>
-    </div>
-
-    <div>
       <label for="passwordField">Password field</label>
       <input type="password" id="passwordField">
-    </div>
-
-    <div>
-      <label for="readOnlyPasswordField">Read-Only Password field</label>
-      <input type="password" id="readOnlyPasswordField" readonly="readonly">
     </div>
 
     <div>
@@ -636,7 +653,7 @@
       <input id="radio2" type="radio" name="radiogroup" value="Radio2"/>
       <label for="radio3">Radio 3</label>
       <input id="radio3" type="radio" name="radiogroup" value="Radio3"/>
-      <label for="radio4">Clear the state of the other buttons</label>
+      <label for="radio3">Radio 4</label>
       <input id="radio4" type="radio" name="radiogroup" value="Radio4"/>
     </div>
 
@@ -644,6 +661,11 @@
       <span id="clickable">I can haz clicks</span>
     </div>
   </form>
+
+  <div id="log">
+
+  </div>
+
   <script>
     asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
   </script>

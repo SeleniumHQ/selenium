@@ -42,22 +42,6 @@ goog.require('goog.userAgent');
  */
 bot.events.MouseArgs;
 
-/**
- * The related target field is only useful for mouseover, mouseout, dragenter
- * and dragexit events. We use this array to see if the relatedTarget field
- * needs to be assigned a value.
- *
- * https://developer.mozilla.org/en/DOM/event.relatedTarget
- * @private
- * @const
- */
-bot.events.RELATED_TARGET_EVENTS_ = [
-  goog.events.EventType.DRAGSTART,
-  'dragexit', /** goog.events.EventType.DRAGEXIT, */
-  goog.events.EventType.MOUSEOVER,
-  goog.events.EventType.MOUSEOUT
-];
-
 
 /**
  * Initialize a new mouse event. The opt_args can be used to pass in extra
@@ -71,7 +55,7 @@ bot.events.RELATED_TARGET_EVENTS_ = [
  * <dt>clientY</dt>
  * <dd>The clientY value relative to the client viewport.</dd>
  * <dt>button</dt>
- * <dd>The mouse button (from {@code bot.Mouse.Button}). Defaults to LEFT</dd>
+ * <dd>The mouse button (from {@code bot.events.button}). Defaults to LEFT</dd>
  * <dt>bubble</dt>
  * <dd>Can the event bubble? Defaults to true</dd>
  * <dt>alt</dt>
@@ -103,23 +87,11 @@ bot.events.newMouseEvent_ = function(element, type, opt_args) {
   var clientY = args['clientY'] || 0;
   var button = args['button'] || 0;
   var canBubble = args['bubble'] || true;
+  var relatedTarget = args['related'] || null;
   var alt = !!args['alt'];
   var control = !!args['control'];
   var shift = !!args['shift'];
   var meta = !!args['meta'];
-
-  // Only useful for mouseover, mouseout, dragenter and dragexit
-  // https://developer.mozilla.org/en/DOM/event.relatedTarget
-  var relatedTarget = null;
-  if (goog.array.contains(bot.events.RELATED_TARGET_EVENTS_, type)) {
-    relatedTarget = args['related'] || null;
-    if (!relatedTarget && type == goog.events.EventType.MOUSEOVER) {
-      relatedTarget = bot.dom.getParentElement(element);
-    }
-    if (!relatedTarget && type == goog.events.EventType.MOUSEOUT) {
-      relatedTarget = element;
-    }
-  }
 
   var event;
   if (goog.userAgent.IE) {
@@ -140,9 +112,9 @@ bot.events.newMouseEvent_ = function(element, type, opt_args) {
     event.button = button;
     if (type == goog.events.EventType.MOUSEOUT) {
       event.fromElement = element;
-      event.toElement = relatedTarget;
+      event.toElement = args['related'] || null;
     } else if (type == goog.events.EventType.MOUSEOVER) {
-      event.fromElement = relatedTarget;
+      event.fromElement = args['related'] || null;
       event.toElement = element;
     } else {
       event.fromElement = null;

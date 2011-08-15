@@ -79,11 +79,32 @@
       assertFalse(isShown(hidden));
     }
 
+
+    function testElementWithZeroHeightIsNotConsideredDisplayed() {
+      // IE6 doesn't render the element correctly for the test to work.
+      if (goog.userAgent.IE && goog.userAgent.product.isVersion(6)) {
+        return;
+      }
+      var zeroHeight = findElement({id: 'zeroheight'});
+      assertFalse(isShown(zeroHeight));
+    }
+
+
+    function testElementWithZeroWidthIsNotConsideredDisplayed() {
+      // IE6 doesn't render the element correctly for the test to work.
+      if (goog.userAgent.IE && goog.userAgent.product.isVersion(6)) {
+        return;
+      }
+
+      var zeroWidth = findElement({id: 'zerowidth'});
+      assertFalse(isShown(zeroWidth));
+    }
+
     function testElementWithOnlyWhitespaceReturnsConsistentResults() {
       var span = findElement({id: 'onlyWhitespace'});
-      // make sure we report the same result every time;
-      assertTrue(isShown(span));
-      assertTrue(isShown(span));
+      // Make sure we report the same result every time. Both will be true in
+      // most browsers, except IE7 and earlier, where they will both be false.
+      assertEquals(isShown(span), isShown(span));
     }
 
     function testCorrectlyDeterminesVisibilityViaDisplayStyle() {
@@ -94,11 +115,11 @@
 
     function testThrowsErrorIfPassedATextNode() {
       var textNode = findElement({id: 'displayed'}).firstChild;
-      var error = assertThrows("Argument to isShown must be of type Element",
+      var err = assertThrows('Argument to isShown must be of type Element',
           function() {
             isShown(textNode);
           });
-      assertEquals("Argument to isShown must be of type Element", error.message);
+      assertEquals('Argument to isShown must be of type Element', err.message);
     }
 
 
@@ -199,6 +220,29 @@
       bot.setWindow(originalWindow);
     }
 
+    function testTwoEmptyDivsAreZeroSizedAndNotShown() {
+      var element = goog.dom.createDom('div', null,
+          goog.dom.createDom('div'));
+      document.body.appendChild(element);
+      var size = bot.dom.getElementSize_(element);
+      // Width will be equivalent of width:100%
+      assertEquals('Should have 0 height', 0, size.height);
+      assertFalse(isShown(element));
+    }
+
+    function testZeroSizedDivIsShownIfDescendantHasSize() {
+      var element = goog.dom.createDom('div', {style:'width:0;height:0'},
+          goog.dom.createDom('div', null,
+              goog.dom.createDom('img', {
+                src: 'testdata/map.png'
+              })));
+      document.body.appendChild(element);
+      var size = bot.dom.getElementSize_(element);
+      assertEquals('Should have 0 width', 0, size.width);
+      assertEquals('Should have 0 height', 0, size.height);
+      assertTrue(isShown(element));
+    }
+
     function testZeroSizedAbsolutePositionedBlockElemetnsAreShownIfDescendantHasSize() {
       var div = goog.partial(goog.dom.createDom, 'div');
 
@@ -227,25 +271,11 @@
       root.appendChild(child);
       document.body.appendChild(root);
 
-      var seenSize = bot.dom.getElementSize_(root);
-      assertEquals('Should have 0 width', 0, seenSize.width);
-      assertEquals('Should have 0 height', 0, seenSize.height);
-      assertTrue('Should still be considered shown', isShown(root));
-    }
-
-     function testZeroSizedDivIsShownIfDescendantHasSize() {
-      var element = goog.dom.createDom('div', {style:'width:0;height:0'},
-          goog.dom.createDom('div', null,
-              goog.dom.createDom('img', {
-                src: 'testdata/map.png'
-              })));
-      document.body.appendChild(element);
-      var size = bot.dom.getElementSize_(element);
+      var size = bot.dom.getElementSize_(root);
       assertEquals('Should have 0 width', 0, size.width);
       assertEquals('Should have 0 height', 0, size.height);
-      assertTrue(isShown(element));
+      assertTrue('Should still be considered shown', isShown(root));
     }
-
 
     /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
     function testInvisibleSelectsOptionsAreNotShown() {
@@ -280,7 +310,8 @@
       var area = goog.dom.$('invisiShownArea');
       assertFalse(bot.dom.isShown(area));
       assertTrue(bot.dom.isShown(area, true));
-    }
+     }
+
   </script>
 
   <style type="text/css">
@@ -348,9 +379,8 @@
         explicitly visible</b> using CSS visibility=visible</p>
 </div>
 
-<p id="zeroheight">This is a foo</p>
-
-<p id="zerowidth">This is a bar</p>
+<img id="zeroheight" src="testdata/map.png">
+<img id="zerowidth" src="testdata/map.png">
 
 <p id="suppressedParagraph" style="display: none">A paragraph suppressed using CSS display=none</p>
 
@@ -361,9 +391,10 @@
   <option id="hiddenOption">
 </select>
 <option id="orphanOption"></option>
+
 <select id="invisiSelect" style="opacity:0; filter:alpha(opacity=0)"><option>Test</option></select>
 
-<img usemap="#shownMap" src="testdata/map.png" width="91" height="31">
+<img usemap="#shownMap" src="testdata/map.png">
 <map id="shownMap" name="shownMap">
   <area id="shownArea" shape="rect" coords="0,0,1,1" href="#">
 </map>
@@ -378,6 +409,7 @@
 <map id="invisiShownMap" name="invisiShownMap">
   <area id="invisiShownArea" shape="rect" coords="0,0,1,1" href="#">
 </map>
+
 <area id="orphanArea" shape="rect" coords="0,0,1,1" href="#"></area>
 
 <a id="containsNestedBlock" href="#"><div style="display:block;">text</div></a>

@@ -21,6 +21,7 @@
  *
  * TODO(user): Add an example
  *
+ *
  */
 
 goog.provide('bot.inject');
@@ -35,7 +36,6 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.events');
 goog.require('goog.json');
 goog.require('goog.object');
-
 
 
 /**
@@ -54,9 +54,10 @@ bot.inject.Response;
  */
 bot.inject.ELEMENT_KEY = 'ELEMENT';
 
+
 /**
  * Key used to identify Window objects in the WebDriver wire protocol.
- * @type {Sstring}
+ * @type {string}
  * @const
  */
 bot.inject.WINDOW_KEY = 'WINDOW';
@@ -107,8 +108,8 @@ bot.inject.wrapValue = function(value) {
       // instanceof check since the instanceof might not always work
       // (e.g. if the value originated from another Firefox component)
       if (goog.object.containsKey(value, 'nodeType') &&
-          (value['nodeType'] == goog.dom.NodeType.ELEMENT
-           || value['nodeType'] == goog.dom.NodeType.DOCUMENT)) {
+          (value['nodeType'] == goog.dom.NodeType.ELEMENT ||
+           value['nodeType'] == goog.dom.NodeType.DOCUMENT)) {
         var ret = {};
         ret[bot.inject.ELEMENT_KEY] =
             bot.inject.cache.addElement((/**@type {!Element}*/value));
@@ -163,7 +164,7 @@ bot.inject.unwrapValue_ = function(value, opt_doc) {
     }
 
     return goog.object.map(value, function(val) {
-        return bot.inject.unwrapValue_(val, opt_doc);
+      return bot.inject.unwrapValue_(val, opt_doc);
     });
   }
   return value;
@@ -269,13 +270,14 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
  *     the WebDriver wire protocol.
  * @param {number} timeout The amount of time, in milliseconds, the script
  *     should be permitted to run; must be non-negative.
- * @param {function(string|bot.inject.Response)} onDone
+ * @param {function(string)|function(!bot.inject.Response)} onDone
  *     The function to call when the given {@code fn} invokes its callback,
  *     or when an exception or timeout occurs. This will always be called.
  * @param {boolean=} opt_stringify Whether the result should be returned as a
  *     serialized JSON string.
  * @param {!Window=} opt_window The window to synchronize the script with;
- *     defaults to the current window
+ *     defaults to the current window.
+ * @return {null} Doesn't return anything, but will call "onDone".
  */
 bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
                                          opt_stringify, opt_window) {
@@ -306,7 +308,7 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
 
   fn = bot.inject.recompileFunction_(fn, win);
 
-  args = bot.inject.unwrapValue_(args, win.document);
+  args = /** @type {Array.<*>} */bot.inject.unwrapValue_(args, win.document);
   args.push(goog.partial(sendResponse, bot.ErrorCode.SUCCESS));
 
   onunloadKey = goog.events.listen(win, goog.events.EventType.UNLOAD,
@@ -397,7 +399,7 @@ bot.inject.cache.ELEMENT_KEY_PREFIX = ':wdc:';
  * if it does not yet exist.
  * @param {Document} opt_doc The document whose cache to retrieve. Defaults to
  *     the current document.
- * @return {Object.<string, Element>} The cache object.
+ * @return {Object.<string, (Element|Window)>} The cache object.
  * @private
  */
 bot.inject.cache.getCache_ = function(opt_doc) {
@@ -443,7 +445,7 @@ bot.inject.cache.addElement = function(el) {
  * @param {string} key The element's key in the cache.
  * @param {Document} opt_doc The document whose cache to retrieve the element
  *     from. Defaults to the current document.
- * @return {Element} The cached element.
+ * @return {Element|Window} The cached element.
  */
 bot.inject.cache.getElement = function(key, opt_doc) {
   key = decodeURIComponent(key);
@@ -460,7 +462,7 @@ bot.inject.cache.getElement = function(key, opt_doc) {
 
   // If this is a Window check if it's closed
   if (goog.object.containsKey(el, 'document')) {
-    if(el.closed) {
+    if (el.closed) {
       delete cache[key];
       throw new bot.Error(bot.ErrorCode.NO_SUCH_WINDOW,
           'Window has been closed.');

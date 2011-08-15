@@ -31,7 +31,7 @@ goog.require('goog.string');
  * @private
  */
 bot.locators.className.canUseQuerySelector_ = function(root) {
-  return root.querySelectorAll && root.querySelector;
+  return !!(root.querySelectorAll && root.querySelector);
 };
 
 

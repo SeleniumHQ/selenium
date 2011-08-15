@@ -53,9 +53,10 @@
 
       function testPropagatesErrorsThrownByScriptWithGenericStatusCodeIfOneIsNotSet() {
         var called = false;
-        bot.script.execute('throw Error("boom");', [], IS_SYNCHRONOUS,
+        bot.script.execute(
+                'throw Error("boom");', [], IS_SYNCHRONOUS,
             expectedFailure, function(e) {
-              assertEquals(bot.ErrorCode.UNKNOWN_ERROR, e.code);
+              assertEquals(bot.ErrorCode.JAVASCRIPT_ERROR, e.code);
               assertEquals('boom', e.message);
               called = true;
             });

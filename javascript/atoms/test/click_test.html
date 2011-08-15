@@ -8,14 +8,15 @@
   <script type="text/javascript">
     goog.require('bot.action');
     goog.require('bot.locators');
+    goog.require('goog.Uri');
     goog.require('goog.debug.DivConsole');
     goog.require('goog.debug.Logger');
     goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
+    goog.require('goog.math.Coordinate');
     goog.require('goog.style');
     goog.require('goog.testing.jsunit');
-    goog.require('goog.Uri');
   </script>
   <script type="text/javascript">
     var clicker;
@@ -60,7 +61,7 @@
     }
 
     function tearDown() {
-       resetClicker();
+      resetClicker();
     }
 
 
@@ -76,19 +77,73 @@
       assertTrue(threw);
     }
 
-
     function testShouldClickInTheMiddleOfAnElement() {
+      var clicker = findElement({id: 'clicker'});
+
+      goog.events.removeAll(clicker);
+      var clickedXY = null;
       goog.events.listen(clicker, goog.events.EventType.MOUSEUP, function(e) {
-        assertEquals(e.clientX, clickLocation.left + (clickLocation.width / 2));
-        assertEquals(e.clientY, clickLocation.top + (clickLocation.height / 2));
+        // We are looking for event.offsetX/Y here, but can't use them due to
+        // browser incompatibilities.
+        clickedXY = {x: e.clientX, y: e.clientY};
       });
 
       bot.action.click(clicker);
+      assertNotNull(clickedXY);
+
+      // Calculate the coordinates that should be clicked according to the
+      // top left corner of the browser's content area
+      var clickSize = goog.style.getSize(clicker);
+      var clickPos = goog.style.getClientPosition(clicker);
+      assertEquals(clickedXY.x, clickPos.x + Math.floor(clickSize.width / 2));
+      assertEquals(clickedXY.y, clickPos.y + Math.floor(clickSize.height / 2));
+    }
+
+    function testShouldClickTheCoordofAnElement() {
+      var clicker = findElement({id: 'clicker'});
+
+      goog.events.removeAll(clicker);
+      var clickedXY = null;
+      goog.events.listen(clicker, goog.events.EventType.CLICK, function(e) {
+        clickedXY = {x: e.clientX, y: e.clientY};
+      });
+
+      var coord = new goog.math.Coordinate(3, 3);
+      bot.action.click(clicker, coord);
+      assertNotNull(clickedXY);
+
+      // Calculate the coordinates that should be clicked according to the
+      // top left corner of the browser's content area
+      var clickPos = goog.style.getClientPosition(clicker);
+      assertEquals(clickedXY.x, clickPos.x + coord.x);
+      assertEquals(clickedXY.y, clickPos.y + coord.y);
     }
 
 
-    // TODO(user): This test demands that firefox has focus
-    // TODO(user): Move this test to click_test_async.html
+    function testShouldRightClickTheCoordOfAnElement() {
+      var clicker = findElement({id: 'rightClickTarget'});
+
+      goog.events.removeAll(clicker);
+      var clickedXY = null;
+      goog.events.listen(clicker, goog.events.EventType.MOUSEDOWN,
+      function(e) {
+        clickedXY = {x: e.clientX, y: e.clientY};
+      });
+
+      var coord = new goog.math.Coordinate(3, 3);
+      bot.action.rightClick(clicker, coord);
+      assertNotNull(clickedXY);
+      assertEquals(clicker.value, 'Right Clicked!');
+
+      // Calculate the coordinates that should be clicked according to the
+      // top left corner of the browser's content area
+      var clickPos = goog.style.getClientPosition(clicker);
+      assertEquals(clickedXY.x, Math.floor(clickPos.x + coord.x));
+      assertEquals(clickedXY.y, Math.floor(clickPos.y + coord.y));
+    }
+
+    // TODO(simonstewart): This test demands that firefox has focus
+    // TODO(simonstewart): Move this test to click_test_async.html
     function xtestShouldFocusOnAnElementBeforeFinishingClickSequence() {
       // This test will fail if the browser is Firefox and it does not have
       // focus (when launching the tests on Mac, this is the case by default).
@@ -107,7 +162,6 @@
       assertTrue(focused);
     }
 
-
     function testShouldGenerateTheCorrectClickSequence() {
       var expectedEvents = [
         goog.events.EventType.MOUSEOVER,
@@ -122,7 +176,6 @@
       bot.action.click(clicker);
       assertArrayEquals(expectedEvents, events);
     }
-
 
     function testClickExecutesDefaultHandler() {
       var clickTarget = findElement({id: 'clickTarget'});
@@ -194,6 +247,32 @@
         }
     }
 
+    function testCancelledMousedownDoesNotFocus() {
+      var expectedEvents = [
+        goog.events.EventType.MOUSEOVER,
+        goog.events.EventType.MOUSEMOVE,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK];
+      var events = [];
+      goog.events.listen(clicker,
+          [goog.events.EventType.MOUSEOVER,
+           goog.events.EventType.MOUSEMOVE,
+           goog.events.EventType.MOUSEDOWN,
+           goog.events.EventType.FOCUS,
+           goog.events.EventType.MOUSEUP,
+           goog.events.EventType.CLICK],
+          function(e) {
+            events.push(e.type);
+          });
+      goog.events.listen(clicker, goog.events.EventType.MOUSEDOWN, function(e) {
+        e.preventDefault();
+      });
+      bot.action.click(clicker);
+      assertArrayEquals(expectedEvents, events);
+    }
+
+
     function testClickOnANestedElementExecutesDefaultHandler() {
       var parent = findElement({id: 'clickTargetWithAChild'});
 
@@ -207,6 +286,17 @@
       assertEquals(targetHref, window.location.hash);
     }
 
+    function testClickCorrectlyResolvesEmptyFragment() {
+      // A bug in the closure goog.Uri module once prevented this from working.
+      var clickTarget = findElement({id: 'clickTarget'});
+      // Make sure no other event listeners are interfering.
+      goog.events.removeAll(clickTarget);
+
+      clickTarget.href = '#';
+      bot.action.click(clickTarget);
+      var windowHref = window.location.href;
+      assertEquals('#', windowHref.charAt(windowHref.length - 1));
+    }
 
     function testClickOnAnAbsoluteUrlInAnIframeExecutesDefaultHandler() {
       var iframe = findElement({id: 'iframe'});
@@ -305,8 +395,22 @@
       assertEquals(previousLocation, window.location.href);
     }
 
+    function testClickDoesNotSubmitFormWhenEventDefaultPrevented() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
 
-    function testClickDoesNotFollowLinkWhenEventDefaultPreventedWithInlineHandler() {
+      var previousLocation = iframeWindow.location.href;
+      goog.events.listen(clickTarget, goog.events.EventType.CLICK, function(e) {
+        e.preventDefault();
+      });
+
+      bot.action.click(clickTarget);
+      assertEquals(previousLocation, iframeWindow.location.href);
+    }
+
+    function testClickDoesNotFollowLinkWhenEventDefaltPreventedWithInlineHandler() {
       var clickTarget = findElement({id: 'clickTargetWithInlineHandler'});
 
       var previousLocation = window.location.href;
@@ -316,6 +420,16 @@
       assertEquals(previousLocation, window.location.href);
     }
 
+    function testClickDoesNotSubmitFormWhenEventDefaultPreventedWithInlineHandler() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'submitFormWithInlineHandler'}, iframeDoc);
+
+      var previousLocation = iframeWindow.location.href;
+      bot.action.click(clickTarget);
+      assertEquals(previousLocation, iframeWindow.location.href);
+    }
 
     function testClickDoesNotTickCheckboxWhenEventDefaultPreventedWithInlineHandler() {
       var clickTarget = findElement({name: 'preventedTick'});
@@ -325,11 +439,14 @@
     }
 
     function testClickShouldEmitChangeEventsWhenSelectingElements() {
-      var called = false
-      log.addHandler(function() { called = true });
+      var called = false;
+      log.addHandler(function() {
+        called = true
+      });
 
       var clickTarget = findElement({name: 'preventedTick'});
-      var allOptions  = findElements({xpath: "//select[@name='options']//option"});
+      var select = findElement({name: 'options'});
+      var allOptions = findElements({tagName: 'option'}, select);
 
       var foo = allOptions[0];
       var bar = allOptions[1];
@@ -374,16 +491,33 @@
       assertEquals(1, bot.dom.getOpacity(clickJacker));
     }
 
-    function testShouldFireChangeEventWhenSelectingItemsViaAClick() {
-      // Clear the state of the page
-      var aOption = findElement({id: 'a'});
-      aOption.selected = true;
-      divConsole.clear();
+    function testClickShouldNotScrollWhenElementInView() {
+      var target = findElement({id: 'targetInView'});
+      var oldPos = goog.style.getClientPosition(target);
+      bot.action.click(target);
+      var newPos = goog.style.getClientPosition(target);
+      assertObjectEquals(oldPos, newPos);
+    }
 
-      var bOption = findElement({id: 'b'});
-      bot.action.click(bOption);
+    function testClickShouldScrollWhenElementNotInView() {
+      var target = findElement({id: 'targetNotInView'});
+      var oldPos = goog.style.getClientPosition(target);
+      bot.action.click(target);
+      var newPos = goog.style.getClientPosition(target);
+      assertNotEquals(oldPos.y, newPos.y);
+      window.scrollTo(0, 0);
+    }
 
+    function testShouldBeAbleToToggleEnabledMultiSelectOption() {
+      var element = findElement({id: 'optionInMulti'});
+      element.selected = 'selected';
+      assertTrue(bot.dom.getProperty(element, 'selected'));
 
+      bot.action.click(element);
+      assertFalse(bot.dom.getProperty(element, 'selected'));
+
+      bot.action.click(element);
+      assertTrue(bot.dom.getProperty(element, 'selected'));
     }
   </script>
 </head>
@@ -401,11 +535,14 @@
     </script>
   </form>
   <img id="noHeight" style="height:0;" src="testdata/map.png"/>
+  <input id="disabled" type="text" value="I'm disabled" disabled/>
   <a id="clickTarget">Click me!</a>
   <a id="clickTargetWithNoHref">Click me!</a>
-  <a id="clickTargetWithAChild">Click <strong>the nested</strong> element</span></a>
-  <a id="clickTargetWithAChildAndNoHref">Click <strong>the nested</strong> element with no href</span></a>
+  <a id="clickTargetWithAChild">Click <strong>the nested</strong> element</a>
+  <a id="clickTargetWithAChildAndNoHref">Click <strong>the nested</strong> element with no href</a>
   <a id="clickTargetWithInlineHandler" onclick="return false;">Click me, I will not follow the link!</a>
+  <input id="rightClickTarget" type="text"
+     oncontextmenu="this.value='Right Clicked!'; return false;"/>
   <div>
     <div id="clickJacker"
          style="position:absolute;float:left;
@@ -433,6 +570,17 @@
   </div>
   <iframe id="iframe" src="testdata/click_iframe.html">
   </iframe>
+  <div id="targetInView" style="position: absolute; top: 10px; left: 10px">target in view</div>
+  <div id="targetNotInView" style="position: absolute; top: 10000px">target not in view</div>
+
+  <form name="example" action="#" method="get">
+    <select name="select" multiple="true">
+      <option value="one">One</option>
+      <option value="two" selected id="optionInMulti">Two</option>
+      <option value="three">Three</option>
+      <option value="four" selected>Four</option>
+    </select>
+  </form>
 
   <form action="#" method="get">
     <select name="options" onchange="log.info('changed')">
@@ -453,7 +601,5 @@
 
     <input type="checkbox" name="preventedTick" onclick="return false;">
   </form>
-
-
 </body>
 </html>

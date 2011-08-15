@@ -23,8 +23,8 @@ limitations under the License.
     goog.require('goog.testing.jsunit');
     goog.require('goog.events.EventType');
     goog.require('bot');
-    goog.require('bot.locators');
     goog.require('bot.ErrorCode');
+    goog.require('bot.locators');
   </script>
 
   <script>
@@ -157,14 +157,14 @@ limitations under the License.
       }
 
       try {
-        bot.locators.findElement({xpath: "this][isnot][valid"});
-        fail("Should not have succeeded because the xpath expression is "
-          + "syntactically not correct");
-      }
-      catch(ex) {
+        bot.locators.findElement({xpath: 'this][isnot][valid'});
+        fail('Should not have succeeded because the xpath expression is '
+                    + 'syntactically not correct');
+      } catch(ex) {
         //We expect an InvalidSelectorException because the xpath expression is
         //syntactically invalid.
-        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(), ex.message);
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(),
+            ex.message);
       }
     }
 
@@ -174,14 +174,14 @@ limitations under the License.
       }
 
       try {
-        bot.locators.findElement({xpath: "count(//fish)"});
-        fail("Should not have succeeded because the xpath expression does "
-          + "not select an element.");
-      }
-      catch(ex) {
+        bot.locators.findElement({xpath: 'count(//fish)'});
+        fail('Should not have succeeded because the xpath expression does '
+                    + 'not select an element.');
+      } catch(ex) {
         // We expect an exception because the XPath expression
         // results in a number, not in an element.
-        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(), ex.message);
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(),
+            ex.message);
       }
     }
 
@@ -227,15 +227,15 @@ limitations under the License.
       if (!document['evaluate']) {
         return;  // Skip this until we get xpath working on all browsers
       }
+
       try {
         bot.locators.findElements({xpath: "this][isnot][valid"});
-        fail("Should not have succeeded because the xpath expression is "
-          + "syntactically not correct.");
-      }
-      catch(ex) {
+        fail('Should not have succeeded because the xpath expression is '
+            + 'syntactically not correct.');
+      } catch(ex) {
         // We expect an InvalidSelectorException because the xpath expression is
         // syntactically invalid.
-        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(), ex.message);//,
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(), ex.message);
       }
     }
 
@@ -247,9 +247,8 @@ limitations under the License.
       try {
         bot.locators.findElements({xpath: "count(//fish)"});
         fail("Should not have succeeded because the xpath expression does not "
-          + "select an element.");
-      }
-      catch(ex) {
+            + "select an element.");
+      } catch(ex) {
         // We expect an exception because the XPath expression
         // results in a number, not in an element.
         assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(), ex.message);//,

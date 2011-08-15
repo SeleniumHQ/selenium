@@ -21,7 +21,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 
 
-
 /**
  * Executes a random snippet of JavaScript that defines the body of a function
  * to invoke.  When executing asynchronous scripts, all timeouts will be
@@ -32,8 +31,8 @@ goog.require('goog.events.EventType');
  * is executing, the script will be aborted and the {@code onFailure} callback
  * will be invoked.
  *
- * @param {(string|function())} script Either a string defining the body of the
- *     function to invoke, or a function object.
+ * @param {string} script A string defining the body of the function
+ *     to invoke.
  * @param {!Array.<*>} args The list of arguments to pass to the script.
  * @param {number} timeout The amount of time, in milliseconds, the script
  *     should be permitted to run. If {@code timeout < 0}, the script will
@@ -48,7 +47,6 @@ goog.require('goog.events.EventType');
  *     to the current window. Asynchronous scripts will have their timeouts
  *     scheduled with this window. Furthermore, asynchronous scripts will
  *     be aborted if this window fires an unload event.
- * @deprecated Use bot.inject.executeAsyncScript.
  */
 bot.script.execute = function(script, args, timeout, onSuccess, onFailure,
                               opt_window) {
@@ -72,7 +70,7 @@ bot.script.execute = function(script, args, timeout, onSuccess, onFailure,
   }
 
   function onUnload() {
-    sendResponse(bot.ErrorCode.UNKNOWN_ERROR,
+    sendResponse(bot.ErrorCode.JAVASCRIPT_ERROR,
                  Error('Detected a page unload event; asynchronous script ' +
                        'execution does not work across apge loads.'));
   }
@@ -95,21 +93,15 @@ bot.script.execute = function(script, args, timeout, onSuccess, onFailure,
 
   var startTime = goog.now();
   try {
-
-    with (win) {
-      // Compile within the "with" block so that "window" refers to the expected
-      // "window" value. 
-      if (goog.isString(script)) {
-        script = new Function(script);
-      }
-      var result = script.apply(win, args);
-    }
+    // Try to use the Function type belonging to the window, where available.
+    var functionType = win['Function'] || Function;
+    var result = new functionType(script).apply(win, args);
     if (isAsync) {
       timeoutId = win.setTimeout(goog.partial(onTimeout, startTime), timeout);
     } else {
       sendResponse(bot.ErrorCode.SUCCESS, result);
     }
   } catch (ex) {
-    sendResponse(ex.code || bot.ErrorCode.UNKNOWN_ERROR, ex);
+    sendResponse(ex.code || bot.ErrorCode.JAVASCRIPT_ERROR, ex);
   }
 };
