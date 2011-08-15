@@ -3,20 +3,14 @@ mozilla_multi_extension(
   xpis = [
     "//ide/main:selenium-ide",
     "//ide/plugins/csharp-format:csharp-format",
-    "//ide/plugins/groovy-format:groovy-format",
     "//ide/plugins/java-format:java-format",
-    "//ide/plugins/perl-format:perl-format",
-    "//ide/plugins/php-format:php-format",
     "//ide/plugins/python-format:python-format",
     "//ide/plugins/ruby-format:ruby-format"
   ],
   resources = [
     { ":ide-multixpi-editor" : "selenium-ide.xpi" },
     { ":ide-csharp-format" : "csharp-format.xpi" },
-    { ":ide-groovy-format" : "groovy-format.xpi" },
     { ":ide-java-format" : "java-format.xpi" },
-    { ":ide-perl-format" : "perl-format.xpi" },
-    { ":ide-php-format" : "php-format.xpi" },
     { ":ide-python-format" : "python-format.xpi" },
     { ":ide-ruby-format" : "ruby-format.xpi" },
   ],
@@ -33,21 +27,9 @@ rake_task(name = "ide-csharp-format",
   task_name = "ide-csharp-format",
   out = "build/ide/plugins/csharp-format/csharp-format.xpi")
   
-rake_task(name = "ide-groovy-format",
-  task_name = "ide-groovy-format",
-  out = "build/ide/plugins/groovy-format/groovy-format.xpi")
-
 rake_task(name = "ide-java-format",
   task_name = "ide-java-format",
   out = "build/ide/plugins/java-format/java-format.xpi")
-
-rake_task(name = "ide-perl-format",
-  task_name = "ide-perl-format",
-  out = "build/ide/plugins/perl-format/perl-format.xpi")
-
-rake_task(name = "ide-php-format",
-  task_name = "ide-php-format",
-  out = "build/ide/plugins/php-format/php-format.xpi")
 
 rake_task(name = "ide-python-format",
   task_name = "ide-python-format",
