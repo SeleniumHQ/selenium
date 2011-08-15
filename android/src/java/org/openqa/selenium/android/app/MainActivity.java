@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Set;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.ScreenOrientation;
@@ -395,5 +396,8 @@ public class MainActivity extends Activity {
     locManager.addTestProvider(LocationManager.GPS_PROVIDER,
         false, false, false, false, true, true, true, 0, 5);
   }
-  
+
+  public Alert getAlert() {
+    return currentView.getAlert();
+  }
 }

@@ -30,7 +30,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import static org.openqa.selenium.TestWaiter.waitFor;
 
-@Ignore({ANDROID, CHROME, HTMLUNIT, IPHONE, SELENESE})
+@Ignore({CHROME, HTMLUNIT, IPHONE, SELENESE})
 public class AlertsTest extends AbstractDriverTestCase {
 
   @Override
@@ -211,19 +211,33 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  public void handlesTwoAlertsFromOneInteraction() {
+  public void testHandlesTwoAlertsFromOneInteraction() {
     driver.findElement(By.id("double-prompt")).click();
-    
+
     Alert alert1 = waitFor(alertToBePresent(driver));
     alert1.sendKeys("brie");
-    
+    alert1.accept();
+
     Alert alert2 = waitFor(alertToBePresent(driver));
     alert2.sendKeys("cheddar");
-    
+    alert2.accept();    
+
     waitFor(elementTextToEqual(driver, By.id("text1"), "brie"));
     waitFor(elementTextToEqual(driver, By.id("text2"), "cheddar"));
   }
-  
+
+  @JavascriptEnabled
+  public void testSendKeysTwiceAppendsSecondTextToFirst() {
+    driver.findElement(By.id("prompt")).click();
+
+    Alert alert = waitFor(alertToBePresent(driver));
+    alert.sendKeys("f");
+    alert.sendKeys("oo");
+    alert.accept();
+
+    waitFor(elementTextToEqual(driver, By.id("text"), "foo"));
+  }
+
   private Callable<Alert> alertToBePresent(final WebDriver driver) {
     return new Callable<Alert>() {
       public Alert call() throws Exception {

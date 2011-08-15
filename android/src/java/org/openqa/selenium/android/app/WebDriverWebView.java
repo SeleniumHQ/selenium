@@ -18,7 +18,11 @@ limitations under the License.
 package org.openqa.selenium.android.app;
 
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.android.ActivityController;
 
 import android.content.Context;
@@ -27,6 +31,8 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -39,6 +45,7 @@ public class WebDriverWebView extends WebView {
   private final JavascriptExecutor javascriptExecutor;
   private final String WINDOW_HANDLE = UUID.randomUUID().toString();
   private final ActivityController controller = ActivityController.getInstance();
+  private final ConcurrentLinkedQueue<Alert> unhandledAlerts = new ConcurrentLinkedQueue<Alert>();
   private static volatile boolean editAreaHasFocus;
   
   public WebDriverWebView(Context context) {
@@ -142,6 +149,13 @@ public class WebDriverWebView extends WebView {
     setNetworkAvailable(true);
   }
   
+  public Alert getAlert() {
+    if (unhandledAlerts.isEmpty()) {
+      throw new NoAlertPresentException();
+    }
+    return unhandledAlerts.peek();
+  }
+  
   /**
    * Subscriber class to be notified when the underlying WebView loads new content or changes
    * title.
@@ -179,5 +193,79 @@ public class WebDriverWebView extends WebView {
       }
     }
     
+    @Override
+    public boolean onJsAlert(WebView view,
+                             String url,
+                             String message,
+                             JsResult result) {
+      unhandledAlerts.add(new AndroidAlert(message, result));
+      return true;
+    }
+    
+    @Override
+    public boolean onJsConfirm(WebView view,
+                               String url,
+                               String message,
+                               JsResult result) {
+      unhandledAlerts.add(new AndroidAlert(message, result));
+      return true;
+    }
+    
+    @Override
+    public boolean onJsPrompt(WebView view,
+                              String url,
+                              String message,
+                              String defaultValue,
+                              JsPromptResult result) {
+      unhandledAlerts.add(new AndroidAlert(message, result, defaultValue));
+      return true;
+    }
+    
+    private class AndroidAlert implements Alert {
+      private final String message;
+      private final JsResult result;
+      private String textToSend = null;
+      private final String defaultValue;
+
+      public AndroidAlert(String message, JsResult result) {
+        this(message, result, null);
+      }
+
+      public AndroidAlert(String message, JsResult result, String defaultValue) {
+        this.message = message;
+        this.result = result;
+        this.defaultValue = defaultValue;
+      }
+
+      public void accept() {
+        unhandledAlerts.remove(this);
+        if (isPrompt()) {
+          JsPromptResult promptResult = (JsPromptResult) result;
+          String result = textToSend == null ? defaultValue : textToSend;
+          promptResult.confirm(result);
+        } else {
+          result.confirm();
+        }
+      }
+      private boolean isPrompt() {
+        return result instanceof JsPromptResult;
+      }
+
+      public void dismiss() {
+        unhandledAlerts.remove(this);
+        result.cancel();
+      }
+
+      public String getText() {
+        return message;
+      }
+
+      public void sendKeys(String keys) {
+        if (!isPrompt()) {
+          throw new ElementNotVisibleException("Alert did not have text field");
+        }
+        textToSend = (textToSend == null ? "" : textToSend) + keys;
+      }
+    }
   }
 }

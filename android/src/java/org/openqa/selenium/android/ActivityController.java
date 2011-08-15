@@ -19,6 +19,7 @@ package org.openqa.selenium.android;
 
 import java.util.Set;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.android.app.MainActivity;
@@ -310,6 +311,12 @@ public class ActivityController {
           throw new RuntimeException("Failed to send keys to activity.", e);
         }
       }
+    }
+  }
+  
+  public Alert getAlert() {
+    synchronized(syncObject) {
+      return activity.getAlert();
     }
   }
   

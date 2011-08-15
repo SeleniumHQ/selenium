@@ -322,7 +322,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     }
 
     public Alert alert() {
-      throw new UnsupportedOperationException("alert()");
+      return controller.getAlert();
     }
   }
 
