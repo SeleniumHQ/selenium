@@ -3,22 +3,27 @@
     <title>Testing Alerts</title>
 
     <script type="text/javascript">
+        function setInnerText(id, value) {
+          document.getElementById(id).innerHTML = '<p>' + value + '</p>';
+        }
+
         function displayPrompt() {
-          var res = prompt("Enter something");
-          document.getElementById('text').innerHTML = "<p>" + res + "</p>";
+          setInnerText('text', prompt('Enter something'));
         }
 
         function displayPromptWithDefault() {
-          var res = prompt("Enter something", "This is a default value");
-          document.getElementById('text').innerHTML = "<p>" + res + "</p>";
+          setInnerText('text', prompt('Enter something', 'This is a default value'));
+        }
+        
+        function displayTwoPrompts() {
+          setInnerText('text1', prompt('First'));
+          setInnerText('text2', prompt('Second'));
         }
     </script>
 </head>
 <body>
 
 <h1>Testing Alerts and Stuff</h1>
-
-<div id="text"></div>
 
 <p>This tests alerts: <a href="#" id="alert" onclick="alert('cheese');">click me</a></p>
 
@@ -27,6 +32,8 @@
 <p>Let's make the <a href="#" id="prompt" onclick="displayPrompt();">prompt happen</a></p>
 
 <p>Let's make the <a href="#" id="prompt-with-default" onclick="displayPromptWithDefault();">prompt with default happen</a></p>
+
+<p>Let's make TWO <a href="#" id="double-prompt" onclick="displayTwoPrompts();">prompts happen</a></p>
 
 <p>This is a test of a confirm:
     <a href="simpleTest.html" id="confirm" onclick="return confirm('Are you sure?');">test confirm</a></p>
@@ -37,5 +44,8 @@
   <iframe src="iframeWithAlert.html" name="iframeWithAlert"></iframe>
 </p>
 
+<div id="text"></div>
+<div id="text1"></div>
+<div id="text2"></div>
 </body>
 </html>

@@ -19,14 +19,18 @@ package org.openqa.selenium;
 
 import java.util.concurrent.Callable;
 
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_ALERTS;
 
 import static org.openqa.selenium.TestWaiter.waitFor;
 
-@Ignore({ANDROID, IPHONE, SELENESE})
+@Ignore({CHROME, HTMLUNIT, IPHONE, SELENESE})
 public class AlertsTest extends AbstractDriverTestCase {
 
   @Override
@@ -45,10 +49,6 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowUsersToAcceptAnAlertManually() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
-
     driver.findElement(By.id("alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -60,10 +60,6 @@ public class AlertsTest extends AbstractDriverTestCase {
   
   @JavascriptEnabled
   public void testShouldAllowUsersToAcceptAnAlertWithNoTextManually() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
-
     driver.findElement(By.id("empty-alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -75,9 +71,6 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowUsersToDismissAnAlertManually() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
     driver.findElement(By.id("alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -89,9 +82,6 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowAUserToAcceptAPrompt() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
     driver.findElement(By.id("prompt")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -103,9 +93,6 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowAUserToDismissAPrompt() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
     driver.findElement(By.id("prompt")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -117,24 +104,17 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
     driver.findElement(By.id("prompt")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
     alert.sendKeys("cheese");
     alert.accept();
 
-    String result = driver.findElement(By.id("text")).getText();
-    assertEquals("cheese", result);
+    waitFor(elementTextToEqual(driver, By.id("text"), "cheese"));
   }
   
   @JavascriptEnabled
   public void testSettingTheValueOfAnAlertThrows() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
     driver.findElement(By.id("alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -149,9 +129,6 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowTheUserToGetTheTextOfAnAlert() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
     driver.findElement(By.id("alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -161,10 +138,8 @@ public class AlertsTest extends AbstractDriverTestCase {
     assertEquals("cheese", value);
   }
 
+  @JavascriptEnabled
   public void testAlertShouldNotAllowAdditionalCommandsIfDimissed() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
     driver.findElement(By.id("alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -175,11 +150,9 @@ public class AlertsTest extends AbstractDriverTestCase {
     } catch (NoAlertPresentException expected) {}
   }
 
+  @Ignore(ANDROID)
   @JavascriptEnabled
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
     driver.switchTo().frame("iframeWithAlert");
 
     driver.findElement(By.id("alertInFrame")).click();
@@ -191,11 +164,8 @@ public class AlertsTest extends AbstractDriverTestCase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore
+  @Ignore({ANDROID, CHROME, FIREFOX, HTMLUNIT, IE})
   public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith() {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
     driver.findElement(By.id("alert")).click();
     try {
       driver.getTitle();
@@ -210,10 +180,8 @@ public class AlertsTest extends AbstractDriverTestCase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
   
+  @JavascriptEnabled
   public void testSwitchingToMissingAlertThrows() throws Exception {
-    if (!isCapableOfHandlingAlerts(driver)) {
-      return;
-    }
     try {
       alertToBePresent(driver).call();
       fail("Expected exception");
@@ -222,20 +190,45 @@ public class AlertsTest extends AbstractDriverTestCase {
     }
   }
   
+  @JavascriptEnabled
+  public void testPromptShouldUseDefaultValueIfNoKeysSent() {
+    driver.findElement(By.id("prompt-with-default")).click();
+
+    Alert alert = waitFor(alertToBePresent(driver));
+    alert.accept();
+
+    waitFor(elementTextToEqual(driver, By.id("text"), "This is a default value"));
+  }
+  
+  @JavascriptEnabled
+  public void testPromptShouldHaveNullValueIfDismissed() {
+    driver.findElement(By.id("prompt-with-default")).click();
+
+    Alert alert = waitFor(alertToBePresent(driver));
+    alert.dismiss();
+
+    waitFor(elementTextToEqual(driver, By.id("text"), "null"));
+  }
+  
+  @JavascriptEnabled
+  public void handlesTwoAlertsFromOneInteraction() {
+    driver.findElement(By.id("double-prompt")).click();
+    
+    Alert alert1 = waitFor(alertToBePresent(driver));
+    alert1.sendKeys("brie");
+    
+    Alert alert2 = waitFor(alertToBePresent(driver));
+    alert2.sendKeys("cheddar");
+    
+    waitFor(elementTextToEqual(driver, By.id("text1"), "brie"));
+    waitFor(elementTextToEqual(driver, By.id("text2"), "cheddar"));
+  }
+  
   private Callable<Alert> alertToBePresent(final WebDriver driver) {
     return new Callable<Alert>() {
       public Alert call() throws Exception {
         return driver.switchTo().alert();
       }
     };
-  }
-
-  public static boolean isCapableOfHandlingAlerts(WebDriver driver) {
-    if (!(driver instanceof HasCapabilities)) {
-      return false;
-    }
-
-    Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
-    return capabilities.is(SUPPORTS_ALERTS);
   }
 }
