@@ -178,7 +178,8 @@ module Android
       apk = output_name(dir, args[:name], "apk")
       file apk do
         if (android_installed?)
-          sh "#{$android} update project -p android/"
+          android_target = $properties["androidtarget"].to_s
+          sh "#{$android} update project -p android/ --target #{android_target}"
           sh "cd android; ant debug; cd ../;"
           apk = File.join('build', 'android', 'android-server.apk')
           sh "cp android/bin/MainActivity-debug.apk #{apk}"
