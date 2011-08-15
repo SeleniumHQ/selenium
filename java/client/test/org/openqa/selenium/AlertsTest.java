@@ -30,7 +30,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import static org.openqa.selenium.TestWaiter.waitFor;
 
-@Ignore({CHROME, HTMLUNIT, IPHONE, SELENESE})
+@Ignore({ANDROID, CHROME, HTMLUNIT, IPHONE, SELENESE})
 public class AlertsTest extends AbstractDriverTestCase {
 
   @Override
