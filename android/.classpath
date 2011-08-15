@@ -6,8 +6,8 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/third_party/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar"/>
-	<classpathentry kind="lib" path="/third_party/java/json/json-20080701.jar"/>
+	<classpathentry kind="lib" path="../third_party/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar"/>
+	<classpathentry kind="lib" path="../third_party/java/json/json-20080701.jar"/>
 	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/base.jar"/>
 	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/internal/codecs.jar"/>
 	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/remote/common.jar"/>
@@ -17,6 +17,6 @@
 	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/remote/remote.jar"/>
 	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/webdriver-api.jar"/>
 	<classpathentry kind="lib" path="../build/java/server/src/org/openqa/selenium/remote/server/server.jar"/>
-	<classpathentry kind="lib" path="/third_party/java/guava-libraries/guava-r09.jar"/>
+	<classpathentry kind="lib" path="../third_party/java/guava-libraries/guava-r09.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
