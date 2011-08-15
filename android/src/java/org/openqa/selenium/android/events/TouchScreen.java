@@ -36,12 +36,18 @@ public class TouchScreen {
       webview.pauseTimers();
     }
     try {
-      List<MotionEvent> eventsQueue = Lists.newLinkedList();      
+
+      float zoom = webview.getScale();
+      List<MotionEvent> eventsQueue = Lists.newLinkedList();
       long downTime = SystemClock.uptimeMillis();
       for (MotionEvent event : events) {
         long eventTime = SystemClock.uptimeMillis();
-        MotionEvent e = MotionEvent.obtain(downTime, eventTime, event.getAction(), event.getX(),
-            event.getY(), event.getMetaState());
+        MotionEvent e = MotionEvent.obtain(downTime,
+            eventTime,
+            event.getAction(),
+            zoom * event.getX(),
+            zoom * event.getY(),
+            event.getMetaState());
         eventsQueue.add(e);
       }
       for (MotionEvent me : eventsQueue) {
