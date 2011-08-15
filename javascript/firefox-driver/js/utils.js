@@ -914,8 +914,16 @@ Utils.getLocationViaAccessibilityInterface = function(element) {
 Utils.getLocation = function(element) {
   try {
     element = element.wrappedJSObject ? element.wrappedJSObject : element;
+    var clientRect = '';
+    
+    if (elementIsLink && element.getClientRects().length > 1) {
+        clientRect = element.getClientRects()[0];
+    } else {
+        clientRect = element.getBoundingClientRect();
+    }
+    
 
-    var clientRect = element.getBoundingClientRect();
+    //element.getBoundingClientRect();
 
     // Firefox 3.5
     if (clientRect['width']) {

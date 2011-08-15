@@ -47,6 +47,12 @@ public class ClickTest extends AbstractDriverTestCase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
+  public void testCanClickOnALinkThatOverflowsAndFollowIt() {
+    driver.findElement(By.id("overflowLink")).click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
   @JavascriptEnabled
   public void testCanClickOnAnAnchorAndNotReloadThePage() {
     ((JavascriptExecutor) driver).executeScript("document.latch = true");
