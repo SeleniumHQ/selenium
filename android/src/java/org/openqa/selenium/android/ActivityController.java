@@ -23,7 +23,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.android.app.MainActivity;
 import org.openqa.selenium.android.app.WebDriverWebView;
-import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import android.view.MotionEvent;
