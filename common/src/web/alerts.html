@@ -7,6 +7,11 @@
           var res = prompt("Enter something");
           document.getElementById('text').innerHTML = "<p>" + res + "</p>";
         }
+
+        function displayPromptWithDefault() {
+          var res = prompt("Enter something", "This is a default value");
+          document.getElementById('text').innerHTML = "<p>" + res + "</p>";
+        }
     </script>
 </head>
 <body>
@@ -20,6 +25,8 @@
 <p>This tests alerts: <a href="#" id="empty-alert" onclick="alert('');">click me</a></p>
 
 <p>Let's make the <a href="#" id="prompt" onclick="displayPrompt();">prompt happen</a></p>
+
+<p>Let's make the <a href="#" id="prompt-with-default" onclick="displayPromptWithDefault();">prompt with default happen</a></p>
 
 <p>This is a test of a confirm:
     <a href="simpleTest.html" id="confirm" onclick="return confirm('Are you sure?');">test confirm</a></p>
