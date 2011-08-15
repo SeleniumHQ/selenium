@@ -26,7 +26,7 @@ dotnet_library(name = "dotnet",
   tags = "Selenium WebDriver browser automation",
   packagedeps = [
     {"Newtonsoft.Json" : "4.0.2"},
-    {"DotNetZip" : "1.9"}
+    {"DotNetZip" : "1.9.1.8"}
   ],
   assemblies = [
     {"System.Drawing" : "net20"}
