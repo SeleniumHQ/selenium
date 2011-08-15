@@ -41,7 +41,7 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
   
   /**
    * The default constructor assumes the remote server is listening at
-   * http://localhost:8080/hub
+   * http://localhost:8080/wd/hub
    */
   public AndroidDriver() {
     this(getDefaultUrl());
