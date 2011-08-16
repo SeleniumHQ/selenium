@@ -24,6 +24,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
 
@@ -129,5 +130,40 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
     ;
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
+  @Ignore(SELENESE)
+  public void testChordControlCutAndPaste() {
+    // FIXME: macs don't have CONRTROL key
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      return;
+    }
+
+    driver.get(pages.javascriptPage);
+
+    WebElement element = driver.findElement(By.id("keyReporter"));
+
+    new Actions(driver)
+        .sendKeys(element, "abc def")
+        .perform()
+    ;
+
+    assertEquals("abc def", element.getAttribute("value"));
+
+    new Actions(driver)
+        .sendKeys(Keys.CONTROL + "a")
+        .sendKeys(Keys.CONTROL + "x")
+        .perform()
+    ;
+
+    assertEquals("", element.getAttribute("value"));
+
+    new Actions(driver)
+        .sendKeys(Keys.CONTROL + "v")
+        .sendKeys(Keys.CONTROL + "v")
+        .perform()
+    ;
+
+    assertEquals("abc defabc def", element.getAttribute("value"));
   }
 }
