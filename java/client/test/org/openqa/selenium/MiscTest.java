@@ -61,4 +61,17 @@ public class MiscTest extends AbstractDriverTestCase {
     String source = driver.getPageSource().toLowerCase();
     assertThat(source.replaceAll("\\s", ""), equalTo("<xml><foo><bar>baz</bar></foo></xml>"));
   }
+  
+
+  @Ignore
+  public void testStimulatesStrangeXpcomFailure()
+      throws Exception {
+    driver.get(pages.documentWrite);
+
+    // If this command succeeds, then all is well.
+    driver.findElement(By.xpath("//body"));
+
+    driver.get(pages.simpleTestPage);
+    driver.findElement(By.id("links"));
+  }
 }
