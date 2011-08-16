@@ -123,8 +123,8 @@ namespace :se_ide do
   end
 
   task :assemble_ide_in_bamboo do
-    src = "build/ide/multi"
-    dest = "build/ide"
+    src = "ide/bamboo/stage"
+    dest = "ide/bamboo"
     name = "selenium-ide.xpi"
     
     cp "ide/install.rdf", src

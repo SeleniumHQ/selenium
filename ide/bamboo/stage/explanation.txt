@@ -1,0 +1,1 @@
+Bamboo needs a place that exists prior to the build starting to put artifacts. This is that place.
