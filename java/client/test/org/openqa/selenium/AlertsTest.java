@@ -226,18 +226,6 @@ public class AlertsTest extends AbstractDriverTestCase {
     waitFor(elementTextToEqual(driver, By.id("text2"), "cheddar"));
   }
 
-  @JavascriptEnabled
-  public void testSendKeysTwiceAppendsSecondTextToFirst() {
-    driver.findElement(By.id("prompt")).click();
-
-    Alert alert = waitFor(alertToBePresent(driver));
-    alert.sendKeys("f");
-    alert.sendKeys("oo");
-    alert.accept();
-
-    waitFor(elementTextToEqual(driver, By.id("text"), "foo"));
-  }
-
   private Callable<Alert> alertToBePresent(final WebDriver driver) {
     return new Callable<Alert>() {
       public Alert call() throws Exception {
