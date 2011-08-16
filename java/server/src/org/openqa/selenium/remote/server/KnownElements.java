@@ -36,10 +36,8 @@ public class KnownElements {
   private int nextId;
 
   public String add(WebElement element) {
-    for (String key : elements.keySet()) {
-      if (((WrapsElement) elements.get(key)).getWrappedElement().equals(element)) {
-        return key;
-      }
+    if (elements.containsValue(element)) {
+      return elements.inverse().get(element);
     }
     String id = getNextId();
     elements.put(id, proxyElement(element, id));
