@@ -1,8 +1,8 @@
 java_library(name = "opera-driver",
   deps = [
     "operadriver-v0.6.jar",
+    "//java/client/src/org/openqa/selenium/remote",
     "//third_party/java/commons-io",
     "//third_party/java/commons-jxpath",
     "//third_party/java/google-protobuffers",
   ])
-
