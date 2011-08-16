@@ -39,6 +39,7 @@ import org.openqa.selenium.remote.CapabilityType;
 public class DragAndDropTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
+  @Ignore(FIREFOX)
   public void testDragAndDrop() throws Exception {
     if (Platform.getCurrent().is(LINUX) && isNativeEventsEnabled()) {
       System.out.println("Skipping test: fails with native events on linux");
@@ -70,6 +71,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(FIREFOX)
   public void testElementInDiv() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
