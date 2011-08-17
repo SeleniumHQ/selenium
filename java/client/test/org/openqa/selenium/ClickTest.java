@@ -19,6 +19,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
@@ -47,6 +48,8 @@ public class ClickTest extends AbstractDriverTestCase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
+  @Ignore(value = {IPHONE, CHROME, OPERA, SELENESE, FIREFOX},
+    reason = "In Firefox, the code to support this breaks other tests.")
   public void testCanClickOnALinkThatOverflowsAndFollowIt() {
     driver.findElement(By.id("overflowLink")).click();
 
