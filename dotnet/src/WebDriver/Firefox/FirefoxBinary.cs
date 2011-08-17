@@ -406,7 +406,7 @@ namespace OpenQA.Selenium.Firefox
         [SecurityPermission(SecurityAction.Demand)]
         private void CopeWithTheStrangenessOfTheMac(Process builder)
         {
-            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.MacOSX))
+            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Mac))
             {
                 // On the Mac, this process sometimes dies. Check for this, put in a decent sleep
                 // and then attempt to restart it. If this doesn't work, then give up

@@ -106,7 +106,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             // Last, add the contents of the specified system property, defaulting to the binary's path.
             // On Snow Leopard, beware of problems the sqlite library    
             string firefoxLibraryPath = Path.GetFullPath(this.binaryLocation);
-            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.MacOSX) && Platform.CurrentPlatform.MinorVersion > 5)
+            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Mac) && Platform.CurrentPlatform.MinorVersion > 5)
             {
                 libraryPath.Append(libraryPath).Append(Path.PathSeparator);
             }
@@ -255,7 +255,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             {
                 libraryPropertyPathName = "PATH";
             }
-            else if (Platform.CurrentPlatform.IsPlatformType(PlatformType.MacOSX))
+            else if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Mac))
             {
                 libraryPropertyPathName = "DYLD_LIBRARY_PATH";
             }
