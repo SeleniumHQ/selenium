@@ -18,6 +18,8 @@
 goog.provide('bot.locators.xpath');
 
 goog.require('bot');
+goog.require('bot.Error');
+goog.require('bot.ErrorCode');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
@@ -29,11 +31,32 @@ goog.require('goog.dom.NodeType');
  * type.
  * @enum {number}
  * @see http://www.w3.org/TR/DOM-Level-3-XPath/xpath.html#XPathResult
+ * @private
  */
-bot.locators.xpath.XPathResult = {
+// TODO(berrada): Move this enum back to bot.locators.xpath namespace.
+// The problem is that we alias bot.locators.xpath in locators.js, while
+// we set the flag --collapse_properties
+// (http://www.corp.google.com/eng/doc/closure/cookbook/jscompiler.html#s19).
+// The compiler should have thrown the error anyways, it's a bug that it fails
+// only when introducing this enum.
+// Solution: remove --collapase_properties from the js_binary rule or
+// use goog.exportSymbol to export the public methods and get rid of the alias.
+bot.locators.XPathResult_ = {
   ORDERED_NODE_SNAPSHOT_TYPE: 7,
   FIRST_ORDERED_NODE_TYPE: 9
 };
+
+
+/**
+ * Default XPath namespace resolver.
+ * @private
+ */
+bot.locators.xpath.DEFAULT_RESOLVER_ = (function() {
+  var namespaces = {svg: 'http://www.w3.org/2000/svg'};
+  return function(prefix) {
+    return namespaces[prefix] || null;
+  };
+})();
 
 
 /**
@@ -41,7 +64,7 @@ bot.locators.xpath.XPathResult = {
  * @param {!(Document|Element)} node The document or element to perform the
  *     search under.
  * @param {string} path The xpath to search for.
- * @param {!bot.locators.xpath.XPathResult} resultType The desired result type.
+ * @param {!bot.locators.XPathResult_} resultType The desired result type.
  * @return {XPathResult} The XPathResult or null if the root's ownerDocument
  *     does not support XPathEvaluators.
  * @private
@@ -52,13 +75,10 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   if (!doc.implementation.hasFeature('XPath', '3.0')) {
     return null;
   }
-  var resolver;
-  // Android 2.2 and earlier do not have this JS API
-  if (doc.createNSResolver) {
-    resolver = doc.createNSResolver(doc.documentElement);
-  } else {
-    resolver = null;
-  }
+  // Android 2.2 and earlier do not support createNSResolver
+  var resolver = doc.createNSResolver ?
+      doc.createNSResolver(doc.documentElement) :
+      bot.locators.xpath.DEFAULT_RESOLVER_;
   return doc.evaluate(path, node, resolver, resultType, null);
 };
 
@@ -74,7 +94,8 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
 bot.locators.xpath.single = function(target, root) {
   // Note: This code was copied from Closure (goog.dom.xml.selectSingleNode)
   // since the current implementation refers 'document' which is not defined
-  // in the context of the Firefox extension (XPathResult isn't defined as well)
+  // in the context of the Firefox extension
+  // (XPathResult isn't defined as well).
   function selectSingleNode(node, path) {
     var doc = goog.dom.getOwnerDocument(node);
     if (node.selectSingleNode) {
@@ -85,13 +106,13 @@ bot.locators.xpath.single = function(target, root) {
     }
     try {
       var result = bot.locators.xpath.evaluate_(node, path,
-          bot.locators.xpath.XPathResult.FIRST_ORDERED_NODE_TYPE);
+          bot.locators.XPathResult_.FIRST_ORDERED_NODE_TYPE);
       return result ? result.singleNodeValue : null;
     }
     catch (ex) {
       // The error is caused most likely by an invalid xpath expression
       // TODO: catch the exception more precise
-      throw Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+      throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
           'Unable to locate an element with the xpath expression ' + target);
     }
   }
@@ -104,7 +125,8 @@ bot.locators.xpath.single = function(target, root) {
 
   // Ensure that we actually return an element
   if (node.nodeType != goog.dom.NodeType.ELEMENT) {
-    throw Error('Returned node is not an element: ' + target);
+    throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+        'Returned node is not an element: ' + target);
   }
 
   return (/**@type {Element}*/node);  // Type verified above.
@@ -132,29 +154,21 @@ bot.locators.xpath.many = function(target, root) {
       }
       return node.selectNodes(path);
     }
-    var results = [];
     var nodes;
     try {
       nodes = bot.locators.xpath.evaluate_(node, path,
-          bot.locators.xpath.XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
-    }
-    catch (ex) {
+          bot.locators.XPathResult_.ORDERED_NODE_SNAPSHOT_TYPE);
+    } catch (ex) {
       // The error is caused most likely by an invalid xpath expression
       // TODO: catch the exception more precise
-      throw Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+      throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
           'Unable to locate elements with the xpath expression ' + path);
     }
+    var results = [];
     if (nodes) {
       var count = nodes.snapshotLength;
       for (var i = 0; i < count; ++i) {
-        var item = nodes.snapshotItem(i);
-        if (item.nodeType != goog.dom.NodeType.ELEMENT) {
-          // A xpath expression which selects something which is not an element
-          // is invalid.
-          throw Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-              'Returned nodes must be elements: ' + target);
-        }
-        results.push(item);
+        results.push(nodes.snapshotItem(i));
       }
     }
     return results;
@@ -165,7 +179,8 @@ bot.locators.xpath.many = function(target, root) {
   // Only return elements
   goog.array.forEach(nodes, function(node) {
     if (node.nodeType != goog.dom.NodeType.ELEMENT) {
-      throw Error('Returned nodes must be elements: ' + target);
+      throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+          'Returned nodes must be elements: ' + target);
     }
   });
 

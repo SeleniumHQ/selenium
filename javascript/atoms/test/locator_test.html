@@ -28,6 +28,11 @@ limitations under the License.
   </script>
 
   <script>
+    var CAN_SELECT_SINGLE_NODE =
+        document.documentElement['selectSingleNode'] || document['evaluate'];
+    var CAN_SELECT_MANY_NODES =
+        document.documentElement['selectNodes'] || document['evaluate'];
+
     function testCanFindById() {
       var e = bot.locators.findElement({id: 'x'});
 
@@ -133,7 +138,7 @@ limitations under the License.
     }
 
     function testCanLocateElementsUsingXPath() {
-      if (!document['evaluate']) {
+      if (!CAN_SELECT_SINGLE_NODE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -144,7 +149,7 @@ limitations under the License.
     }
 
     function testWillReturnNullIfNoMatchUsingXPathIsFound() {
-      if (!document['evaluate']) {
+      if (!CAN_SELECT_SINGLE_NODE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -152,7 +157,7 @@ limitations under the License.
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathIsSyntacticallyInvalidInSingle() {
-      if (!document['evaluate']) {
+      if (!CAN_SELECT_SINGLE_NODE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -163,13 +168,12 @@ limitations under the License.
       } catch(ex) {
         //We expect an InvalidSelectorException because the xpath expression is
         //syntactically invalid.
-        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(),
-            ex.message);
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR, ex.code);
       }
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathReturnsAWrongTypeInSingle() {
-      if (!document['evaluate']) {
+      if (!CAN_SELECT_SINGLE_NODE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -180,8 +184,7 @@ limitations under the License.
       } catch(ex) {
         // We expect an exception because the XPath expression
         // results in a number, not in an element.
-        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(),
-            ex.message);
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR, ex.code);
       }
     }
 
@@ -214,7 +217,7 @@ limitations under the License.
     }
 
     function testCanFindManyElementsViaXPath() {
-      if (!document['evaluate']) {
+      if (!CAN_SELECT_MANY_NODES) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -224,7 +227,7 @@ limitations under the License.
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathIsSyntacticallyInvalidInMany() {
-      if (!document['evaluate']) {
+      if (!CAN_SELECT_MANY_NODES) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -235,12 +238,12 @@ limitations under the License.
       } catch(ex) {
         // We expect an InvalidSelectorException because the xpath expression is
         // syntactically invalid.
-        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(), ex.message);
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR, ex.code);
       }
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathReturnsAWrongTypeInMany() {
-      if (!document['evaluate']) {
+      if (!CAN_SELECT_MANY_NODES) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -251,7 +254,7 @@ limitations under the License.
       } catch(ex) {
         // We expect an exception because the XPath expression
         // results in a number, not in an element.
-        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR.toString(), ex.message);//,
+        assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR, ex.code);
       }
     }
 
