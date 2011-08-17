@@ -201,6 +201,12 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
 
   // We may need a beat for firefox to hand over focus.
   this.jsTimer.setTimeout(function() {
+    // Set the cursor location to the end of the line
+    // TODO(simon): This seems a little arbitrary.
+    if (bot.dom.isElement(element, goog.dom.TagName.TEXTAREA)) {
+      goog.dom.selection.setCursorPosition(element, element.value.length);
+    }
+
     Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
         this.enableNativeEvents, this.jsTimer);
 
