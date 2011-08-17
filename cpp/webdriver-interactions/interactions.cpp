@@ -26,6 +26,8 @@ limitations under the License.
 #include "interactions_common.h"
 #include "logging.h"
 
+#define WD_CLIENT_RIGHT_MOUSE_BUTTON 2
+
 using namespace std;
 
 #pragma data_seg(".LISTENER")
@@ -717,20 +719,43 @@ LRESULT doubleClickAt(WINDOW_HANDLE handle, long x, long y)
   return mouseUpAt(handle, x, y, 0);
 }
 
+static void fillEventData(long button, bool buttonDown, UINT *message, WPARAM *wparam)
+{
+  if(WD_CLIENT_RIGHT_MOUSE_BUTTON == button) {
+    if(buttonDown) {
+      *message = WM_RBUTTONDOWN;
+    } else {
+      *message = WM_RBUTTONUP;
+    }
+    *wparam = MK_RBUTTON;
+  } else {
+    leftMouseButtonPressed = buttonDown;
+    if(buttonDown) {
+      *message = WM_LBUTTONDOWN;
+    } else {
+      *message = WM_LBUTTONUP;
+    }
+    *wparam = MK_LBUTTON;
+  }
+}
+
 LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 {
 	if (!directInputTo) { return ENULLPOINTER; }
 
-	leftMouseButtonPressed = true;
+	UINT message;
+	WPARAM wparam;
+
+	fillEventData(button, true, &message, &wparam);
 
 	if (!isSameThreadAs((HWND) directInputTo)) {
-		BOOL toReturn = PostMessage((HWND) directInputTo, WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(x, y));
+		BOOL toReturn = PostMessage((HWND) directInputTo, message, wparam, MAKELONG(x, y));
 
 		// Wait until we know that the previous message has been processed
 		SendMessage((HWND) directInputTo, WM_USER, 0, 0);
 		return toReturn ? 0 : 1;  // Because 0 means success.
 	} else {
-		return SendMessage((HWND) directInputTo, WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(x, y));
+		return SendMessage((HWND) directInputTo, message, wparam, MAKELONG(x, y));
 	}
 }
 
@@ -738,17 +763,20 @@ LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 {
 	if (!directInputTo) { return ENULLPOINTER; }
 
-	leftMouseButtonPressed = false;
+ 	UINT message;
+ 	WPARAM wparam;
+ 
+ 	fillEventData(button, false, &message, &wparam);
 
 	SendMessage((HWND) directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(x, y));
 	if (!isSameThreadAs((HWND) directInputTo)) {
-		BOOL toReturn = PostMessage((HWND) directInputTo, WM_LBUTTONUP, MK_LBUTTON, MAKELONG(x, y));
+ 		BOOL toReturn = PostMessage((HWND) directInputTo, message, wparam, MAKELONG(x, y));
 
 		// Wait until we know that the previous message has been processed
 		SendMessage((HWND) directInputTo, WM_USER, 0, 0);
 		return toReturn ? 0 : 1;  // Because 0 means success.
 	} else {
-		return SendMessage((HWND) directInputTo, WM_LBUTTONUP, MK_LBUTTON, MAKELONG(x, y));
+ 		return SendMessage((HWND) directInputTo, message, wparam, MAKELONG(x, y));
 	}
 }
 

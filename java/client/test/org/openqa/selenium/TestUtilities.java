@@ -33,6 +33,10 @@ public class TestUtilities {
         "return navigator.userAgent;");
   }
 
+  public static boolean isFirefox(WebDriver driver) {
+    return getUserAgent(driver).contains("Firefox");
+  }
+
   public static boolean isFirefox30(WebDriver driver) {
     return getUserAgent(driver).contains("Firefox/3.0.");
   }

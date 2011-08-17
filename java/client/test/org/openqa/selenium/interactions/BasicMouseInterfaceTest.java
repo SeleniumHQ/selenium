@@ -24,7 +24,7 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.Platform.LINUX;
+import static org.openqa.selenium.TestUtilities.isFirefox;
 import static org.openqa.selenium.TestUtilities.isFirefox30;
 import static org.openqa.selenium.TestUtilities.isFirefox35;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -160,11 +160,13 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, REMOTE, IPHONE, SELENESE})
   public void testContextClick() {
     
-    if (!TestUtilities.isNativeEventsEnabled(driver) || !Platform.getCurrent().is(LINUX)) {
-      System.out.println("Skipping test: not implemented on Windows and with synthetic mouse");
+    if (isFirefox(driver) &&
+      (!TestUtilities.isNativeEventsEnabled(driver)
+       || !Platform.getCurrent().is(Platform.LINUX))) {
+      System.out.println("Skipping test: only implemented on Linux with native events");
       return;
     }
     
