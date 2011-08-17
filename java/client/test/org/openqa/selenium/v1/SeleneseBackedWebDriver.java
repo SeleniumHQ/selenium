@@ -18,15 +18,19 @@ limitations under the License.
 package org.openqa.selenium.v1;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.SeleneseCommandExecutor;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class SeleneseBackedWebDriver extends RemoteWebDriver {
+public class SeleneseBackedWebDriver extends RemoteWebDriver
+                                     implements TakesScreenshot {
   public SeleneseBackedWebDriver() throws Exception {
     super(newCommandExecutor(getSeleniumServerUrl(), describeBrowser()),
         describeBrowser());
@@ -44,5 +48,10 @@ public class SeleneseBackedWebDriver extends RemoteWebDriver {
 
   private static Capabilities describeBrowser() {
     return DesiredCapabilities.firefox();
+  }
+
+  public <X> X getScreenshotAs(OutputType<X> target) {
+    String base64 = (String)execute(DriverCommand.SCREENSHOT).getValue();
+    return target.convertFromBase64Png(base64);
   }
 }

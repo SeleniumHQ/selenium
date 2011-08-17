@@ -41,6 +41,7 @@ public class NewSession implements SeleneseFunction<Map<String, Object>> {
     seenCapabilities.put(CapabilityType.VERSION, capabilities.getVersion());
     seenCapabilities.put(CapabilityType.PLATFORM, Platform.getCurrent().toString());
     seenCapabilities.put(CapabilityType.SUPPORTS_JAVASCRIPT, true);
+    seenCapabilities.put(CapabilityType.TAKES_SCREENSHOT, true);
     return seenCapabilities;
   }
 
