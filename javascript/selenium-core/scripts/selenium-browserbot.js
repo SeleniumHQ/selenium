@@ -1385,10 +1385,13 @@ BrowserBot.prototype.deleteCookie = function(cookieName, domain, path, doc) {
       if (rawCookieNames[rawCookieNumber] == cookieName) {
         _cookieName = cookieName;
         break;
+      } else if (rawCookieNames[rawCookieNumber] == encodeURIComponent(cookieName)) {
+        _cookieName = encodeURIComponent(cookieName);
+        break;
       } else if (rawCookieNames[rawCookieNumber] == encodeURIComponentWithASPHack(cookieName)) {
         _cookieName = encodeURIComponentWithASPHack(cookieName);
         break;
-      }  
+      } 
     }
 
     var cookie = _cookieName + "=deleted; ";
