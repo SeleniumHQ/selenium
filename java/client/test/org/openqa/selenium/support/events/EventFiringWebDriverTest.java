@@ -24,10 +24,12 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StubDriver;
+import org.openqa.selenium.StubElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -351,13 +353,37 @@ public class EventFiringWebDriverTest extends MockTestBase {
     driver.get("http://example.org");
   }
 
+  @Test
+  public void shouldBeAbleToAccessWrappedElementInstanceFromEventCalls() {
+	final StubElement stubElement = new StubElement();
+
+    final WebDriver stubDriver = new StubDriver() {
+      @Override
+      public WebElement findElement(By by) {
+        return stubElement;
+      }
+    };
+
+    EventFiringWebDriver driver = new EventFiringWebDriver(stubDriver);
+
+    class MyListener extends AbstractWebDriverEventListener {
+      @Override
+      public void beforeClickOn(WebElement element, WebDriver driver) {
+        assertEquals(stubElement, ((WrapsElement) element).getWrappedElement());
+      }
+    }
+
+    driver.register(new MyListener());
+
+    driver.findElement(By.name("stub")).click();
+  }
+
   private WebDriver unwrapDriver(WebDriver driver) {
     if (driver instanceof WrapsDriver) {
       return unwrapDriver(((WrapsDriver) driver).getWrappedDriver());
     }
     return driver;
   }
-
 
   private static interface ExececutingDriver extends WebDriver, JavascriptExecutor {}
 

@@ -103,6 +103,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   private Class<?>[] extractInterfaces(Object object) {
     Set<Class<?>> allInterfaces = new HashSet<Class<?>>();
     allInterfaces.add(WrapsDriver.class);
+    if (object instanceof WebElement) {
+        allInterfaces.add(WrapsElement.class);
+    }
     extractInterfaces(allInterfaces, object.getClass());
 
     return allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
@@ -300,6 +303,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
           extractInterfaces(element),
           new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+              if (method.getName().equals("getWrappedElement")) {
+                return element;
+              }
               try {
                 return method.invoke(element, args);
               } catch (InvocationTargetException e) {
