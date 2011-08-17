@@ -18,6 +18,11 @@ module Selenium
           http.should_receive(:server_url=).with URI.parse("http://example.com")
           Bridge.new(:http_client => http, :url => "http://example.com")
         end
+
+        it "uses the default HTTP client when none is specified" do
+          Remote::Http::Default.should_receive(:new).and_return http
+          Bridge.new
+        end
       end
 
     end # IPhone
