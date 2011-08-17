@@ -227,7 +227,11 @@ Utils.getStyleProperty = function(element, propertyName) {
 
 
 Utils.addToKnownElements = function(element, rawDoc) {
+  var owner = new XPCNativeWrapper(element.ownerDocument);
   var doc = webdriver.firefox.utils.unwrapFor4(rawDoc);
+  if (owner != new XPCNativeWrapper(rawDoc)) {
+    doc = webdriver.firefox.utils.unwrap(owner);
+  }
 
   // Right. This is ugly. Sorry. The reasoning goes:
   // * Finding elements normally returns a fairly "raw" object
@@ -264,6 +268,25 @@ Utils.addToKnownElements = function(element, rawDoc) {
 
 Utils.getElementAt = function(index, rawDoc) {
   var doc = webdriver.firefox.utils.unwrapFor4(rawDoc);
+
+  // There's a chance that previous "addToKnownElements" had to use the
+  // unwrapped document in versions of firefox prior to 4. This won't work as
+  // expected and so we need to check for its presence, copy it into the right
+  // place and then remove it. This will break element equality in some cases.
+
+  var unwrapped = webdriver.firefox.utils.unwrap(rawDoc);
+  if (unwrapped.fxdriver_elements) {
+    var existing = doc.fxdriver_elements || {};
+    for (var i in unwrapped.fxdriver_elements) {
+      var existingElement = unwrapped.fxdriver_elements[i];
+      if (bot.dom.isElement(existingElement)) {
+        existing[i] = existingElement;
+      }
+    }
+    delete(unwrapped.fxdriver_elements);
+    doc.fxdriver_elements = existing;
+  }
+
   var e = doc.fxdriver_elements ? doc.fxdriver_elements[index] : undefined;
   if (e) {
     if (!Utils.isAttachedToDom(e)) {

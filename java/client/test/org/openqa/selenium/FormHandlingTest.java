@@ -147,8 +147,8 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
     uploadElement.sendKeys(file.getAbsolutePath());
 
-    File value = new File(uploadElement.getAttribute("value"));
-    assertThat(value.getCanonicalPath(), equalTo(file.getCanonicalPath()));
+    String uploadPath = uploadElement.getAttribute("value");
+    assertTrue(uploadPath.endsWith(file.getName()));
   }
 
   @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},

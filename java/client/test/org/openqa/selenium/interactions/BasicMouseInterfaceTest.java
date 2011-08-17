@@ -160,7 +160,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, IPHONE, REMOTE, SELENESE})
   public void testContextClick() {
     
     if (isFirefox(driver) &&

@@ -27,26 +27,4 @@ public class FirefoxWebElement extends RemoteWebElement implements WebElement {
   public FirefoxWebElement(FirefoxDriver parent) {
     setParent(parent);
   }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof WebElement)) {
-      return false;
-    }
-
-    WebElement other = (WebElement) obj;
-    if (other instanceof WrapsElement) {
-      other = ((WrapsElement) obj).getWrappedElement();
-    }
-
-    if (!(other instanceof FirefoxWebElement)) {
-      return false;
-    }
-    return getId().equals(((FirefoxWebElement)other).getId());
-  }
-
-  @Override
-  public int hashCode() {
-    return getId().hashCode();
-  }
 }

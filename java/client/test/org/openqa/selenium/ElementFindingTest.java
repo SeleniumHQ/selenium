@@ -468,4 +468,29 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
   
   //TODO(danielwh): Add extensive CSS selector tests
+
+  @JavascriptEnabled
+  public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
+    String url = appServer.whereIs("missedJsReference.html");
+    driver.get(url);
+
+    try {
+      driver.switchTo().frame("inner");
+      WebElement first = driver.findElement(By.id("oneline"));
+
+      driver.switchTo().defaultContent();
+      WebElement element = (WebElement) ((JavascriptExecutor) driver).executeScript(
+          "return frames[0].document.getElementById('oneline');");
+
+
+      driver.switchTo().frame("inner");
+
+      WebElement second = driver.findElement(By.id("oneline"));
+
+      assertEquals(first, element);
+      assertEquals(second, element);
+    } finally {
+      driver.switchTo().defaultContent();
+    }
+  }
 }
