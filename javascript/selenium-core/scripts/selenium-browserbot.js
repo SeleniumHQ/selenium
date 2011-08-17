@@ -1352,10 +1352,46 @@ BrowserBot.prototype.getAllCookieNames = function(doc) {
     return cookieNames;
 };
 
+BrowserBot.prototype.getAllRawCookieNames = function(doc) {
+    if (!doc) doc = this.getDocument();
+    var ck = doc.cookie;
+    if (!ck) return [];
+    var cookieNames = [];
+    var ckPairs = ck.split(/;/);
+    for (var i = 0; i < ckPairs.length; i++) {
+        var ckPair = ckPairs[i].trim();
+        var ckNameValue = ckPair.split(/=/);
+        var ckName = ckNameValue[0];
+        cookieNames.push(ckName);
+    }
+    return cookieNames;
+};
+
+function encodeURIComponentWithASPHack(uri) {
+  var regularEncoding = encodeURIComponent(uri);
+  var aggressiveEncoding = regularEncoding.replace(".", "%2E");
+  aggressiveEncoding = aggressiveEncoding.replace("_", "%5F");
+  return aggressiveEncoding;
+}
+
 BrowserBot.prototype.deleteCookie = function(cookieName, domain, path, doc) {
     if (!doc) doc = this.getDocument();
     var expireDateInMilliseconds = (new Date()).getTime() + (-1 * 1000);
-    var cookie = cookieName + "=deleted; ";
+    
+    // we can't really be sure if we're dealing with encoded or unencoded cookie names
+    var _cookieName;
+    var rawCookieNames = this.getAllRawCookieNames(doc);
+    for (rawCookieNumber in rawCookieNames) {
+      if (rawCookieNames[rawCookieNumber] == cookieName) {
+        _cookieName = cookieName;
+        break;
+      } else if (rawCookieNames[rawCookieNumber] == encodeURIComponentWithASPHack(cookieName)) {
+        _cookieName = encodeURIComponentWithASPHack(cookieName);
+        break;
+      }  
+    }
+
+    var cookie = _cookieName + "=deleted; ";
     if (path) {
         cookie += "path=" + path + "; ";
     }
