@@ -439,16 +439,21 @@
     }
 
     function testClickShouldEmitChangeEventsWhenSelectingElements() {
-      var called = false;
-      log.addHandler(function() {
-        called = true
-      });
-
       var select = findElement({name: 'options'});
       var allOptions = findElements({tagName: 'option'}, select);
 
       var foo = allOptions[0];
       var bar = allOptions[1];
+
+      //If you refresh firefox, it preserves the last selected value
+      //Set this manually before running the test, so that refreshing the page
+      //doesn't, the tests still run correctly
+      foo.selected = true;
+
+      var called = false;
+      log.addHandler(function() {
+        called = true
+      });
 
       bot.action.click(foo);
       assertFalse(called);
