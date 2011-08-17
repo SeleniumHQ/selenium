@@ -60,8 +60,8 @@ module CrazyFunJava
       ant = Ant.new(:basedir => ".", :name => "selenium")
 
       ant.taskdef :name      => 'jarjar',
-                  :classname => 'com.tonicsystems.jarjar.JarJarTask',
-                  :classpath => 'third_party/java/jarjar/jarjar-1.0.jar'
+      :classname => 'com.tonicsystems.jarjar.JarJarTask',
+      :classpath => 'third_party/java/jarjar/jarjar-1.0.jar'
       ant.taskdef :resource  => 'testngtasks' do |t|
         t.classpath do |cp|
           cp.pathelement :location => 'third_party/java/testng/testng-6.0.1-nobsh-noguice.jar'
@@ -330,7 +330,7 @@ module CrazyFunJava
 
       file jar do
         CrazyFunJava.ant.jar(:jarfile => jar, :basedir => temp_dir(dir, args[:name]),
-            :excludes => '.svn', :duplicate => 'preserve') do |ant|
+                             :excludes => '.svn', :duplicate => 'preserve') do |ant|
           ant.manifest do |ant|
             if (args[:main])
               ant.attribute(:name => 'Main-Class', :value => args[:main])
@@ -369,7 +369,7 @@ module CrazyFunJava
   class RunTests < BaseJava
 
     def handle(fun, dir, args)
-  #    raise FailedPrecondition, "java_test targets need :srcs defined" if args[:srcs].nil || ar?
+      #    raise FailedPrecondition, "java_test targets need :srcs defined" if args[:srcs].nil || ar?
 
       task_name = task_name(dir, args[:name])
 
@@ -407,9 +407,9 @@ module CrazyFunJava
         if ("org.testng.TestNG" == args[:main])
           CrazyFunJava.ant.testng :outputdir => "build/test_logs", :haltOnFailure => halt_on_failure? do |ant|
             ant.classpath do |ant_cp|
-                cp.all.each do |jar|
-                  ant_cp.pathelement(:location => jar)
-                end
+              cp.all.each do |jar|
+                ant_cp.pathelement(:location => jar)
+              end
             end
 
             sysprops = args[:sysproperties] || []
@@ -457,13 +457,13 @@ module CrazyFunJava
                 end
               end
 
-	      if only_run_class
-		ant.sysproperty :key => 'only_run', :value => only_run_class
-	      end
+              if only_run_class
+                ant.sysproperty :key => 'only_run', :value => only_run_class
+              end
 
-	      if only_run_method
-		ant.sysproperty :key => 'method', :value => only_run_method
-	      end
+              if only_run_method
+                ant.sysproperty :key => 'method', :value => only_run_method
+              end
 
               if (debug?)
                 ant.jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=#{suspend?},address=5005")
