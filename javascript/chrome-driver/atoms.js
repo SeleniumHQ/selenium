@@ -155,11 +155,8 @@ webdriver.chrome.getLocationInView = function(elem, center, opt_region) {
   webdriver.chrome.scrollIntoView_(elem, region, center);
 
   var elemClientPos = goog.style.getClientPosition(elem);
-  var coord = new goog.math.Coordinate(
+  return new goog.math.Coordinate(
       elemClientPos.x + region.left, elemClientPos.y + region.top);
-  coord.x = parseInt(coord.x);
-  coord.y = parseInt(coord.y);
-  return coord;
 };
 
 
@@ -232,7 +229,24 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
   }
   return makeResult(
       false,
-      'Element is not clickable at point ' + coord + '. Unrelated element ' +
+      'Element is not clickable at point ' + coord + '. Other element ' +
           'would receive the click: ' + elemAtPointHTML);
+};
+
+
+/**
+ * Returns the current page zoom ratio for the page with the given element.
+ *
+ * @param {!Element} elem The element to use.
+ * @return {number} Page zoom ratio.
+ */
+webdriver.chrome.getPageZoom = function(elem) {
+  // From http://stackoverflow.com/questions/1713771/
+  //     how-to-detect-page-zoom-level-in-all-modern-browsers
+  var doc = goog.dom.getOwnerDocument(elem);
+  var docElem = doc.documentElement;
+  var width = Math.max(
+      docElem.clientWidth, docElem.offsetWidth, docElem.scrollWidth);
+  return doc.width / width;
 };
 

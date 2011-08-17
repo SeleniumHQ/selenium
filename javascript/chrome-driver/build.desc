@@ -19,6 +19,11 @@ js_fragment(name = "is_element_clickable",
   function = "webdriver.chrome.isElementClickable",
   deps = [ ":deps" ])
 
+js_fragment(name = "get_page_zoom",
+  module = "webdriver.chrome",
+  function = "webdriver.chrome.getPageZoom",
+  deps = [ ":deps" ])
+
 js_test(name = "test",
   srcs = [ "test/*_test.html" ],
   path = "/javascript/chrome-driver/test",
@@ -35,6 +40,7 @@ js_fragment_header(name = "atoms",
   deps = [
     "//javascript/chrome-driver:get_first_client_rect:chrome",
     "//javascript/chrome-driver:get_location_in_view:chrome",
+    "//javascript/chrome-driver:get_page_zoom:chrome",
     "//javascript/chrome-driver:is_element_clickable:chrome",
     "//javascript/webdriver-atoms:clear:chrome",
     "//javascript/webdriver-atoms:execute_script:chrome",
