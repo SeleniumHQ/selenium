@@ -261,6 +261,8 @@ GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-5/linux64'  , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.linux-x86_64.sdk.tar.bz2'
   sdks.add 'third_party/gecko-5/mac'      , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.mac-i386.sdk.tar.bz2'
   sdks.add 'third_party/gecko-5/win32'    , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.win32.sdk.zip'
+  sdks.add 'third_party/gecko-6/linux'    , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0/sdk/xulrunner-6.0.en-US.linux-i686.sdk.tar.bz2'
+  sdks.add 'third_party/gecko-6/linux64'  , 'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0/sdk/xulrunner-6.0.en-US.linux-x86_64.sdk.tar.bz2'
 end
 
 task :'selenium-server_zip' do

@@ -52,6 +52,20 @@ mozilla_lib(name = "webdriver_firefox_ff5_64",
   arch = "amd64",
   geckoversion="5")
 
+mozilla_lib(name = "webdriver_firefox_ff6",
+  srcs = [ "webdriver-interactions/*_linux*.cpp",
+    "webdriver-interactions/interactions_common.*",
+    "webdriver-firefox/*.cpp"],
+  arch = "i386",
+  geckoversion="6")
+
+mozilla_lib(name = "webdriver_firefox_ff6_64",
+  srcs = [ "webdriver-interactions/*_linux*.cpp",
+    "webdriver-interactions/interactions_common.*",
+    "webdriver-firefox/*.cpp"],
+  arch = "amd64",
+  geckoversion="6")
+
 gcc_library(name = "noblur",
   srcs = [ "linux-specific/*.c" ],
   arch = "i386")
