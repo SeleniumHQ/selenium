@@ -1,5 +1,6 @@
 /*
 Copyright 2010 WebDriver committers
+
 Copyright 2010 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
+import com.google.common.collect.Lists;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,10 +32,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.android.app.WebDriverWebView;
+import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 
 import android.graphics.Point;
@@ -41,21 +46,24 @@ import android.view.MotionEvent;
 
 /**
  * Represents an Android HTML element.
- * 
+ *
  * TODO (berrada): Rewrite all function that interact with the page using native events and get rid
  * of JS. Only use JS for reading properties.
  */
 public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText, FindsByXPath,
-    FindsByTagName, SearchContext, WrapsDriver {
+    FindsByTagName, SearchContext, WrapsDriver, Locatable  {
 
-  private final AndroidDriver driver;
-  private final String elementId;
+  private AndroidDriver driver;
+  private String elementId;
   private ActivityController controller;
+  private AndroidCoordinates coordinates;
 
   public AndroidWebElement(AndroidDriver driver, String elementId) {
     this.driver = driver;
     this.elementId = elementId;
     controller = ActivityController.getInstance();
+    coordinates = new AndroidCoordinates(elementId,
+        elementId.equals("0") ? new org.openqa.selenium.Point(0, 0) : getLocation());
   }
 
   public AndroidWebElement(AndroidDriver driver) {
@@ -72,26 +80,30 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     getDomAccessor().scrollIfNeeded(elementId);
     Point center = getDomAccessor().getCenterCoordinate(elementId);
     long downTime = SystemClock.uptimeMillis();
+    List<MotionEvent> events = Lists.newArrayList();
+
     MotionEvent downEvent = MotionEvent.obtain(downTime,
         SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, center.x, center.y, 0);
+    events.add(downEvent);
     MotionEvent upEvent = MotionEvent.obtain(downTime,
         SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, center.x, center.y, 0);
-    
-    controller.sendMotionEvent(downEvent, upEvent);
+    events.add(upEvent);
+
+    controller.sendMotionEvent(events);
     // If the page started loading we should wait
     // until the page is done loading.
     controller.blockIfPageIsLoading(driver);
   }
-  
+
   public JavascriptDomAccessor getDomAccessor() {
     return driver.getDomAccessor();
   }
-  
+
   public void submit() {
     String tagName = getTagName();
     if ("button".equalsIgnoreCase(tagName)
         || "submit".equalsIgnoreCase(getAttribute("type"))
-        || "img".equalsIgnoreCase(tagName)) {   
+        || "img".equalsIgnoreCase(tagName)) {
       this.click();
     } else {
       getDomAccessor().submit(elementId);
@@ -131,13 +143,13 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     for (int i = 0; i < value.length; i++) {
       keys[i + 1] = value[i].toString();
     }
-    
+
     // focus on the element
     this.click();
     controller.waitUntilEditableAreaFocused();
     controller.sendKeys(keys);
   }
-  
+
   public String getTagName() {
     return getDomAccessor().getTagName(elementId).toLowerCase();
   }
@@ -322,5 +334,13 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
 
   public String getCssValue(String propertyName) {
     throw new UnsupportedOperationException("Getting CSS values is not supported yet.");
+  }
+
+  public Coordinates getCoordinates() {
+    return coordinates;
+  }
+
+  public org.openqa.selenium.Point getLocationOnScreenOnceScrolledIntoView() {
+    return getLocation();
   }
 }

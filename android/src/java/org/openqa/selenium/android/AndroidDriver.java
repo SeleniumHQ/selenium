@@ -1,6 +1,6 @@
 /*
-Copyright 2010 WebDriver committers
-Copyright 2010 Google Inc.
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,10 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,6 +26,7 @@ import org.json.JSONObject;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.HasTouchScreen;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -37,6 +36,7 @@ import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -50,43 +50,46 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
-import android.content.Context;
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByName, FindsByXPath, TakesScreenshot,
-    Rotatable, BrowserConnection {
+    Rotatable, BrowserConnection, HasTouchScreen {
 
   public static final String LOG_TAG = AndroidDriver.class.getName();
-  
+
   public static final String ERROR = "_ERROR:";  // Prefixes JS result when returning an error
-  public static final String TYPE = "_TYPE";  // Prefixes JS result to be converted
+  public static final String TYPE = "_TYPE";  // Prefixes Jaresult to be converted
   public static final String WEBELEMENT_TYPE = TYPE + "1:"; // Convert to WebElement
-  
+
   private static Context context;
   private final SimpleTimer timer;
   private final AndroidWebElement element;
   private final JavascriptDomAccessor domAccessor;
-  
+
   private String currentFrame;
   private long implicitWait = 0;
   private long asyncScriptTimeout = 0;
   private ActivityController controller = ActivityController.getInstance();
-  
+  private AndroidTouchScreen touchScreen = new AndroidTouchScreen(AndroidDriver.this);
+
   public AndroidDriver() {
     // By default currentFrame is the root, i.e. window
     currentFrame = "window";
     timer = new SimpleTimer();
     domAccessor = new JavascriptDomAccessor(this);
     element = new AndroidWebElement(this);
-    
+
     controller.newWebView();
   }
 
   public JavascriptDomAccessor getDomAccessor() {
     return domAccessor;
   }
-  
+
   public String getCurrentUrl() {
     return controller.getCurrentUrl();
   }
@@ -199,7 +202,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public TargetLocator switchTo() {
     return new AndroidTargetLocator();
   }
-  
+
   private class AndroidTargetLocator implements TargetLocator {
     public WebElement activeElement() {
       Object element = executeScript(
@@ -223,7 +226,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
     public WebDriver frame(int index) {
       if (isFrameIndexValid(index)) {
-        currentFrame += ".frames[" + index + "]"; 
+        currentFrame += ".frames[" + index + "]";
       } else {
         throw new NoSuchFrameException("Frame not found: " + index);
       }
@@ -270,7 +273,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
       controller.switchToWindow(nameOrHandle);
       return AndroidDriver.this;
     }
-    
+
     private void setCurrentFrame(String frameNameOrId) {
       if (frameNameOrId == null) {
         currentFrame = "window";
@@ -329,7 +332,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public Navigation navigate() {
     return new AndroidNavigation();
   }
-  
+
   public boolean isJavascriptEnabled() {
     return true;
   }
@@ -341,12 +344,12 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   public Object executeAsyncScript(String script, Object... args) {
     return executeJavascript(script, true, args);
   }
-  
+
   private Object executeJavascript(String script, boolean sync, Object... args) {
     String jsFunction = embedScriptInJsFunction(script, sync, args);
     String jsResult = executeJavascriptInWebView(jsFunction);
 
-    // jsResult is updated by the intent receiver when the JS result is ready. 
+    // jsResult is updated by the intent receiver when the JS result is ready.
     Object res = checkResultAndConvert(jsResult);
     return res;
   }
@@ -433,11 +436,11 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   /**
-   * Executes the given Javascript in the WebView and 
+   * Executes the given Javascript in the WebView and
    * wait until it is done executing.
    * If the Javascript executed returns a value, the later is updated in the
    * class variable jsResult when the event is broadcasted.
-   * 
+   *
    * @param args the Javascript to be executed
    */
   private String executeJavascriptInWebView(String script) {
@@ -512,9 +515,9 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   }
 
   private class AndroidOptions implements Options {
-    
+
     public void addCookie(Cookie cookie) {
-       controller.addCookie(cookie.getName(), cookie.getValue(), cookie.getPath());
+        controller.addCookie(cookie.getName(), cookie.getValue(), cookie.getPath());
     }
 
     public void deleteCookieNamed(String name) {
@@ -578,5 +581,9 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
   public void setOnline(boolean online) throws WebDriverException {
     controller.setConnected(online);
+  }
+
+  public TouchScreen getTouch() {
+    return touchScreen;
   }
 }

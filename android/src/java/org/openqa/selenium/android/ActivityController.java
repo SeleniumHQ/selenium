@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import java.util.Set;
+import android.view.MotionEvent;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Cookie;
@@ -26,7 +26,8 @@ import org.openqa.selenium.android.app.MainActivity;
 import org.openqa.selenium.android.app.WebDriverWebView;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import android.view.MotionEvent;
+import java.util.List;
+import java.util.Set;
 
 public class ActivityController {
   // Timeouts in milliseconds
@@ -35,7 +36,7 @@ public class ActivityController {
   private static final long RESPONSE_TIMEOUT = 5000L;
   private static final long FOCUS_TIMEOUT = 1000L;
   private static final long POLLING_INTERVAL = 50L;
-  
+
   private MainActivity activity;
   private static ActivityController instance;
   private static Object syncObject = new Object();
@@ -48,9 +49,11 @@ public class ActivityController {
   private volatile boolean motionEventDone = false;
   private volatile boolean pageStartedLoading = false;
   private volatile boolean sendKeysDone = false;
-  
+
+  private MotionEvent lastMotionEventSent;
+
   private ActivityController() {}
-  
+
   public static ActivityController getInstance() {
     synchronized (syncObject) {
       if (instance == null) {
@@ -59,19 +62,19 @@ public class ActivityController {
       return instance;
     }
   }
-  
+
   public void setActivity(MainActivity ui) {
     synchronized (syncObject) {
-      this.activity = ui;      
+      this.activity = ui;
     }
   }
-  
+
   public void newWebView() {
     synchronized (syncObject) {
       activity.newWebView();
     }
   }
-  
+
   public void waitUntilEditableAreaFocused() {
     synchronized (syncObject) {
       long timeout = System.currentTimeMillis() + FOCUS_TIMEOUT;
@@ -84,7 +87,7 @@ public class ActivityController {
       }
     }
   }
-  
+
   public void notifyPageStartedLoading() {
     synchronized(syncStartedLoading) {
       pageStartedLoading = true;
@@ -92,14 +95,14 @@ public class ActivityController {
       syncStartedLoading.notify();
     }
   }
-  
+
   public void notifyPageDoneLoading() {
     synchronized (syncObject) {
       pageDoneLoading = true;
       syncObject.notify();
     }
   }
-  
+
   public void blockIfPageIsLoading(AndroidDriver driver) {
     synchronized (syncStartedLoading) {
       long timeout = System.currentTimeMillis() + START_LOADING_TIMEOUT;
@@ -122,20 +125,31 @@ public class ActivityController {
       }
     }
   }
-  
+
+  /**
+   * This method is called by {@link WebDriverWebView.onTouchEvent} and notifies
+   * sendMotionEvent, allowing new events to be triggered.
+   */
   public void motionEventDone () {
     synchronized (syncMotionEvent) {
       motionEventDone = true;
-      syncMotionEvent.notify(); 
+      syncMotionEvent.notify();
     }
   }
-    
-  public void sendMotionEvent(MotionEvent down, MotionEvent up) {
+
+  /**
+   * Sends a MotionEvent to the UI thread and blocks until it's fully processed
+   * by the UI. WebDriverWebView.onTouchEvent typically notifies this.
+   */
+  public void sendMotionEvent(List<MotionEvent> eventsToSendToScreen) {
     synchronized(syncMotionEvent) {
+      // We keep track of the last motion event sent, so the WebView.onTouchEvent() listener can
+      // detect when the last Motion Event has been received, allowing new events to be triggered.
+      lastMotionEventSent = getLastEventInSequence(eventsToSendToScreen);
       pageStartedLoading = false;
       pageDoneLoading = false;
       motionEventDone = false;
-      activity.sendMotionToScreen(down, up);
+      activity.sendMotionToScreen(eventsToSendToScreen);
       long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;
       while (!motionEventDone && (System.currentTimeMillis() < timeout)) {
         try {
@@ -146,7 +160,11 @@ public class ActivityController {
       }
     }
   }
-  
+
+  private MotionEvent getLastEventInSequence(List<MotionEvent> eventsToSendToScreen) {
+    return eventsToSendToScreen.get(eventsToSendToScreen.size() - 1);
+  }
+
   private void waitForPageLoadToComplete() {
     long timeout = System.currentTimeMillis() + LOADING_TIMEOUT;
     while (!pageDoneLoading && (System.currentTimeMillis() < timeout)) {
@@ -157,7 +175,7 @@ public class ActivityController {
       }
     }
   }
-  
+
   public void refresh() {
     synchronized(syncObject) {
       pageDoneLoading = false;
@@ -165,7 +183,7 @@ public class ActivityController {
       waitForPageLoadToComplete();
     }
   }
-  
+
   public void navigateBackOrForward(int direction) {
     synchronized(syncObject) {
       pageDoneLoading = false;
@@ -173,27 +191,27 @@ public class ActivityController {
       waitForPageLoadToComplete();
     }
   }
-  
+
   public void get(final String url) {
     synchronized (syncObject) {
       pageDoneLoading = false;
       activity.navigateTo(url);
       waitForPageLoadToComplete();
-    }    
+    }
   }
-  
+
   public String getCurrentUrl() {
     synchronized (syncObject) {
       return activity.getCurrentUrl();
     }
   }
-  
+
   public String getTitle() {
     synchronized (syncObject) {
       return activity.getPageTitle();
     }
   }
-  
+
   public String executeJavascript(final String script) {
     synchronized (syncObject) {
       resultReady = false;
@@ -209,7 +227,7 @@ public class ActivityController {
     }
     return result;
   }
-  
+
   public void updateResult(String updated) {
     synchronized (syncObject) {
       result = updated;
@@ -217,79 +235,79 @@ public class ActivityController {
       syncObject.notify();
     }
   }
-  
+
   public void quit() {
     synchronized(syncObject) {
       activity.flushWebView();
     }
   }
-  
+
   public Set<String> getAllWindowHandles() {
     synchronized(syncObject) {
       return activity.getAllWindowHandles();
     }
   }
-  
+
   public String getWindowHandle() {
     synchronized(syncObject) {
       return activity.getWindowHandle();
     }
   }
-  
+
   public void switchToWindow(final String name) {
     synchronized(syncObject) {
       activity.switchToWindow(name);
     }
   }
-  
+
   public void addCookie(final String name, final String value, final String path) {
     synchronized(syncObject) {
       activity.addCookie(name, value, path);
     }
   }
-  
+
   public void removeCookie(final String name) {
     synchronized(syncObject) {
-      activity.removeCookie(name);  
+      activity.removeCookie(name);
     }
   }
-  
+
   public void removeAllCookies() {
     synchronized(syncObject) {
       activity.removeAllCookies();
     }
   }
-  
+
   public Set<Cookie> getCookies() {
     synchronized(syncObject) {
       return activity.getCookies();
     }
   }
-  
+
   public Cookie getCookie(final String name) {
     synchronized(syncObject) {
       return activity.getCookie(name);
     }
   }
-  
+
   public byte[] takeScreenshot() {
     synchronized(syncObject) {
       return activity.takeScreenshot();
     }
   }
-  
+
   public ScreenOrientation getScreenOrientation() {
     synchronized(syncObject) {
       return activity.getScreenOrientation();
     }
   }
-  
+
   public void rotate(ScreenOrientation orientation) {
     synchronized(syncObject) {
       activity.rotate(orientation);
     }
   }
-  
+
   public void notifySendKeysDone() {
     synchronized (syncSendKeys) {
       pageStartedLoading = false;
@@ -298,7 +316,7 @@ public class ActivityController {
       syncSendKeys.notify();
     }
   }
-  
+
   public void sendKeys(CharSequence[] inputKeys) {
     synchronized(syncSendKeys) {
       sendKeysDone = false;
@@ -313,26 +331,33 @@ public class ActivityController {
       }
     }
   }
-  
+
   public Alert getAlert() {
     synchronized(syncObject) {
       return activity.getAlert();
     }
   }
-  
+
   public void setCapabilities(DesiredCapabilities caps) {
     MainActivity.setDesiredCapabilities(caps);
   }
-  
+
   public boolean isConnected() {
     synchronized (syncObject) {
-      return activity.isConnected();  
+      return activity.isConnected();
     }
   }
-  
+
   public void setConnected(boolean connected) {
     synchronized (syncObject) {
-      activity.setConnected(connected); 
+      activity.setConnected(connected);
     }
   }
+
+  public MotionEvent getLastMotionEventSent() {
+    synchronized (syncObject) {
+      return lastMotionEventSent;
+    }
+  }
+
 }

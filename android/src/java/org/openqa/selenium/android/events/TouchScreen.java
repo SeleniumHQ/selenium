@@ -1,5 +1,6 @@
 /*
 Copyright 2010 WebDriver committers
+
 Copyright 2010 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,11 +18,11 @@ limitations under the License.
 
 package org.openqa.selenium.android.events;
 
+import com.google.common.collect.Lists;
+
 import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.webkit.WebView;
-
-import com.google.common.collect.Lists;
 
 import org.openqa.selenium.android.Platform;
 
@@ -30,26 +31,28 @@ import java.util.List;
 /**
  * Class used to send touch events to the screen directed to the webview.
  */
-public class TouchScreen {  
-  public static void sendMotion(WebView webview, MotionEvent... events) {    
+public class TouchScreen {
+
+  public static void sendMotion(WebView webview, List<MotionEvent> events) {
+
     if (Platform.sdk() <= Platform.DONUT) {
       webview.pauseTimers();
     }
-    try {
 
+    try {
       float zoom = webview.getScale();
       List<MotionEvent> eventsQueue = Lists.newLinkedList();
-      long downTime = SystemClock.uptimeMillis();
+
       for (MotionEvent event : events) {
-        long eventTime = SystemClock.uptimeMillis();
-        MotionEvent e = MotionEvent.obtain(downTime,
-            eventTime,
+        MotionEvent e = MotionEvent.obtain(event.getDownTime(),
+            event.getEventTime(),
             event.getAction(),
             zoom * event.getX(),
             zoom * event.getY(),
             event.getMetaState());
         eventsQueue.add(e);
       }
+
       for (MotionEvent me : eventsQueue) {
         webview.dispatchTouchEvent(me);
       }
@@ -59,4 +62,5 @@ public class TouchScreen {
       }
     }
   }
+
 }

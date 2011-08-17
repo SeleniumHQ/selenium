@@ -1,5 +1,6 @@
 /*
 Copyright 2010 WebDriver committers
+
 Copyright 2010 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +22,7 @@ import com.google.common.io.Closeables;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import org.openqa.selenium.Alert;
@@ -68,7 +70,7 @@ public class MainActivity extends Activity {
   private boolean pageHasStartedLoading = false;
   private SessionCookieManager sessionCookieManager;
   private WebDriverWebView currentView;
-  private WebViewManager viewManager = new WebViewManager();  
+  private WebViewManager viewManager = new WebViewManager();
   private ActivityController controller = ActivityController.getInstance();
   private boolean bound;
   private JettyService jettyService;
@@ -82,11 +84,11 @@ public class MainActivity extends Activity {
   private static final int CMD_RELOAD = 6;
   private static final int CMD_SEND_TOUCH = 7;
   private static final int CMD_NEW_VIEW = 8;
-  
+
   private NetworkStateHandler networkHandler;
-  
+
   private static DesiredCapabilities caps;
-  
+
   private final Handler handler = new Handler() {
     @Override
     public void handleMessage(Message msg) {
@@ -104,8 +106,8 @@ public class MainActivity extends Activity {
       } else if (msg.what == CMD_RELOAD) {
         currentView.reload();
       } else if (msg.what == CMD_SEND_TOUCH) {
-        MotionEvent[] events = (MotionEvent[]) msg.obj;
-        TouchScreen.sendMotion(currentView, events[0], events[1]);
+        List<MotionEvent> events = (List<MotionEvent>) msg.obj;
+        TouchScreen.sendMotion(currentView, events);
       } else if (msg.what == CMD_NEW_VIEW) {
         final WebDriverWebView newView = new WebDriverWebView(MainActivity.this);
         currentView = newView;
@@ -135,30 +137,30 @@ public class MainActivity extends Activity {
   };
 
   public void setCurrentUrl(String url) {
-    currentUrl = url;  
+    currentUrl = url;
   }
-  
+
   public String currentUrl() {
     return currentUrl;
   }
-  
+
   public void setLastUrlLoaded(String url) {
     lastUrlLoaded = url;
   }
-  
+
   public String lastUrlLoaded() {
     return lastUrlLoaded;
   }
-  
+
   public void setPageHasStartedLoading(boolean value) {
     pageHasStartedLoading = value;
-    
+
   }
-  
+
   public WebViewManager viewManager() {
     return viewManager;
   }
-  
+
   public boolean hasPageStartedLoading() {
     return pageHasStartedLoading;
   }
@@ -170,7 +172,7 @@ public class MainActivity extends Activity {
       String debugArg = getIntent().getStringExtra(DEBUG_MODE_ARG);
       Logger.setDebugMode(Boolean.parseBoolean(debugArg));
     }
-    
+
     new Thread(new Runnable() {
       public void run() {
         jettyIntent = new Intent(MainActivity.this, JettyService.class);
@@ -178,27 +180,28 @@ public class MainActivity extends Activity {
         controller.setActivity(MainActivity.this);
       }
     }).start();
-    
+
     displayProgressBar();
-    
+
     // This needs to be initialized after the webview
     sessionCookieManager = new SessionCookieManager(this);
     CookieManager cookieManager = CookieManager.getInstance();
     cookieManager.removeAllCookie();
-    
+
     networkHandler = new NetworkStateHandler(this, currentView);
   }
 
   public void newWebView() {
+    // not in the UI  thread
     Message msg = handler.obtainMessage();
     msg.what = CMD_NEW_VIEW;
     handler.sendMessage(msg);
   }
-  
+
   public void flushWebView() {
     viewManager.removeView(currentView);
   }
-  
+
   private void displayProgressBar() {
     // Request the progress bar to be shown in the title and set it to 0
     requestWindowFeature(Window.FEATURE_PROGRESS);
@@ -216,21 +219,21 @@ public class MainActivity extends Activity {
     this.getWindow().closeAllPanels();
     super.onDestroy();
   }
-  
+
   public void navigateTo(String url) {
     Message msg = handler.obtainMessage(CMD_NAVIGATE_TO);
     msg.obj = url;
     handler.sendMessage(msg);
   }
-  
+
   public String getCurrentUrl() {
     return currentView.getUrl();
   }
-  
+
   public String getPageTitle() {
     return currentView.getTitle();
   }
-  
+
   @Override
   protected void onPause() {
     if (currentView != null) {
@@ -255,67 +258,67 @@ public class MainActivity extends Activity {
     Message msg = handler.obtainMessage(CMD_EXECUTE_SCRIPT);
     msg.obj = script;
     handler.sendMessage(msg);  }
-  
+
   public Set<String> getAllWindowHandles() {
     return  viewManager.getAllHandles();
   }
-  
+
   public String getWindowHandle() {
-    return currentView.getWindowHandle();   
+    return currentView.getWindowHandle();
   }
-  
+
   public void switchToWindow(final String name) {
     Message msg = handler.obtainMessage(CMD_SWITCH_TO_VIEW);
     msg.obj = name;
     handler.sendMessage(msg);  }
-  
+
   public void addCookie(final String name, final String value, final String path) {
     Cookie cookie = new Cookie(name, value, path);
     sessionCookieManager.addCookie(currentView.getUrl(), cookie);
   }
-  
+
   public void removeCookie(final String name) {
     sessionCookieManager.remove(currentView.getUrl(), name);
   }
-  
+
   public void removeAllCookies() {
     sessionCookieManager.removeAllCookies(currentView.getUrl());
   }
-  
+
   public Set<Cookie> getCookies() {
     return sessionCookieManager.getAllCookies(currentView.getUrl());
   }
-  
+
   public Cookie getCookie(final String name) {
     return sessionCookieManager.getCookie(currentView.getUrl(), name);
   }
-  
+
   public void rotate(ScreenOrientation orientation) {
     setRequestedOrientation(getAndroidScreenOrientation(orientation));
   }
-  
+
   public void navigateBackOrForward(int direction) {
     Message msg = handler.obtainMessage(CMD_NAVIGATE_DIRECTION);
     msg.obj = direction;
     handler.sendMessage(msg);  }
-  
+
   public void refresh() {
     Message msg = handler.obtainMessage(CMD_RELOAD);
-    handler.sendMessage(msg); 
-  }
-  
-  public void sendMotionToScreen(MotionEvent down, MotionEvent up) {
-    Message msg = handler.obtainMessage(CMD_SEND_TOUCH);
-    msg.obj = new MotionEvent[]{down, up};
     handler.sendMessage(msg);
   }
-  
+
+  public void sendMotionToScreen(List<MotionEvent> events) {
+    Message msg = handler.obtainMessage(CMD_SEND_TOUCH);
+    msg.obj = events;
+    handler.sendMessage(msg);
+  }
+
   public void sendKeys(CharSequence[] inputKeys) {
     Message msg = handler.obtainMessage(CMD_SEND_KEYS);
     msg.obj = inputKeys;
-    handler.sendMessage(msg);  
+    handler.sendMessage(msg);
   }
-  
+
   private void switchToWebView(WebDriverWebView webview) {
     if (webview == null) {
       throw new NoSuchWindowException("No Such window");
@@ -323,14 +326,14 @@ public class MainActivity extends Activity {
     currentView = webview;
     setContentView(webview);
   }
-  
+
   private int getAndroidScreenOrientation(ScreenOrientation orientation) {
     if (ScreenOrientation.LANDSCAPE.equals(orientation)) {
       return 0;
     }
     return 1;
   }
-  
+
   /**
    * @return the current layout orientation of webview.
    */
@@ -343,7 +346,7 @@ public class MainActivity extends Activity {
       return ScreenOrientation.PORTRAIT;
     }
   }
-  
+
   public byte[] takeScreenshot() {
     Picture pic = currentView.capturePicture();
     // Bitmap of the entire document
@@ -360,7 +363,7 @@ public class MainActivity extends Activity {
       currentView.getScrollY(),
       currentView.getWidth() - currentView.getVerticalScrollbarWidth(),
       currentView.getHeight());
-    
+
     ByteArrayOutputStream stream = new ByteArrayOutputStream();
     if (!cropped.compress(CompressFormat.PNG, 100, stream)) {
       throw new RuntimeException(
@@ -378,19 +381,19 @@ public class MainActivity extends Activity {
     byte[] rawPng = stream.toByteArray();
     return rawPng;
   }
-  
+
   public void setConnected(boolean connected) {
     networkHandler.onNetworkChange(connected);
   }
-  
+
   public boolean isConnected() {
     return networkHandler.isConnected();
   }
-  
+
   public Location getLocation() {
     return null;
   }
-  
+
   public void setLocation(Location loc) {
     LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     locManager.addTestProvider(LocationManager.GPS_PROVIDER,

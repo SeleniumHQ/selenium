@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2007-2011 WebDriver committers
+Copyright 2007-2011 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -228,6 +229,10 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(IME_IS_ACTIVATED, get("/session/:sessionId/ime/activated"))
         .put(IME_DEACTIVATE, post("/session/:sessionId/ime/deactivate"))
         .put(IME_ACTIVATE_ENGINE, post("/session/:sessionId/ime/activate"))
+
+         // Advanced Touch API commands
+         // todo: Refactor with mouse click
+         .put(TOUCH_SINGLE_TAP, post("/session/:sessionId/touch/click"))
 
         .build();
   }

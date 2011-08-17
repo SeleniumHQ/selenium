@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2007-2011 WebDriver committers
+Copyright 2007-2011 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -36,7 +36,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -75,15 +74,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   // For cglib
   protected RemoteWebDriver() {
-    converter = new JsonToWebElementConverter(this);
-    executeMethod = new ExecuteMethod(this);
+    init();
     mouse = new RemoteMouse(executeMethod);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
     this.executor = executor;
-    converter = new JsonToWebElementConverter(this);
-    executeMethod = new ExecuteMethod(this);
+    init();
     mouse = new RemoteMouse(executeMethod);
     startClient();
     startSession(desiredCapabilities);
@@ -95,6 +92,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) {
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities);
+  }
+
+  private void init() {
+    converter = new JsonToWebElementConverter(this);
+    executeMethod = new ExecuteMethod(this);
   }
 
   public SessionId getSessionId() {
@@ -615,7 +617,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public RemoteAlert(String text) {
       this.text = text;
     }
-    
+
     public void dismiss() {
       execute(DriverCommand.DISMISS_ALERT);
     }

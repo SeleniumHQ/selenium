@@ -1,6 +1,6 @@
 /*
-Copyright 2010 WebDriver committers
-Copyright 2010 Google Inc.
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,15 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
+import org.openqa.selenium.HasTouchScreen;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.google.common.collect.ImmutableMap;
@@ -37,8 +40,10 @@ import java.net.URL;
  * A driver for running tests on an Android device or emulator.
  */
 public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, Rotatable,
-    BrowserConnection {
-  
+    BrowserConnection, HasTouchScreen {
+
+  private TouchScreen touch;
+
   /**
    * The default constructor assumes the remote server is listening at
    * http://localhost:8080/wd/hub
@@ -50,9 +55,10 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
   public AndroidDriver(String remoteAddress) throws MalformedURLException {
     this(new URL(remoteAddress));
   }
-  
+
   public AndroidDriver(URL remoteAddress) {
     super(remoteAddress, getAndroidCapabilities(null));
+    touch = new RemoteTouchScreen(getExecuteMethod());
   }
 
   public AndroidDriver(URL url, DesiredCapabilities caps) {
@@ -102,5 +108,9 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
     } catch (MalformedURLException e) {
       throw new WebDriverException("Malformed default remote URL: " + e.getMessage());
     }
+  }
+
+  public TouchScreen getTouch() {
+    return touch;
   }
 }

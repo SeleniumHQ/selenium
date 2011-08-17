@@ -17,7 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.HasInputDevices;
+import org.openqa.selenium.Keyboard;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Mouse;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 
 /**
@@ -26,9 +31,10 @@ import org.openqa.selenium.internal.Locatable;
  * by the method calls.
  */
 public class Actions {
+
   protected Mouse mouse;
   protected Keyboard keyboard;
-  private CompositeAction action;
+  protected CompositeAction action;
 
   public Actions(WebDriver driver) {
     this(((HasInputDevices) driver).getKeyboard(),
@@ -38,6 +44,15 @@ public class Actions {
   public Actions(Keyboard keyboard, Mouse mouse) {
     this.mouse = mouse;
     this.keyboard = keyboard;
+    resetCompositeAction();
+  }
+
+  public Actions(Keyboard keyboard) {
+    this.keyboard = keyboard;
+    resetCompositeAction();
+  }
+
+  private void resetCompositeAction() {
     action = new CompositeAction();
   }
 
@@ -128,7 +143,7 @@ public class Actions {
 
   public Action build() {
     CompositeAction toReturn = action;
-    action = new CompositeAction();
+    resetCompositeAction();
     return toReturn;
   }
 

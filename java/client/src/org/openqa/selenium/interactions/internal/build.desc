@@ -1,0 +1,6 @@
+java_library(name = "touch-api",
+  srcs = ["TouchAction.java",
+            "BaseAction.java",
+            "DisplayAction.java"],
+  deps = ["//java/client/src/org/openqa/selenium:webdriver-api"
+          ])

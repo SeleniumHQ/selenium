@@ -36,12 +36,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasInputDevices;
+import org.openqa.selenium.HasTouchScreen;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -51,6 +53,7 @@ import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
 import org.openqa.selenium.support.events.internal.EventFiringMouse;
+import org.openqa.selenium.support.events.internal.EventFiringTouch;
 
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a {@link
@@ -59,7 +62,7 @@ import org.openqa.selenium.support.events.internal.EventFiringMouse;
  * @author Michael Tamm
  */
 public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot,
-    WrapsDriver, HasInputDevices {
+    WrapsDriver, HasInputDevices, HasTouchScreen {
 
   private final WebDriver driver;
 
@@ -286,6 +289,15 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   public Mouse getMouse() {
     if (driver instanceof HasInputDevices) {
       return new EventFiringMouse(driver, dispatcher);
+    } else {
+      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
+          + " user interactions yet.");
+    }
+  }
+
+  public TouchScreen getTouch() {
+    if (driver instanceof HasTouchScreen) {
+      return new EventFiringTouch(driver, dispatcher);
     } else {
       throw new UnsupportedOperationException("Underlying driver does not implement advanced"
           + " user interactions yet.");

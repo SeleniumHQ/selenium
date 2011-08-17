@@ -52,6 +52,7 @@ import org.openqa.selenium.remote.server.handler.interactions.MouseDown;
 import org.openqa.selenium.remote.server.handler.interactions.MouseMoveToLocation;
 import org.openqa.selenium.remote.server.handler.interactions.MouseUp;
 import org.openqa.selenium.remote.server.handler.interactions.SendModifierKey;
+import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnElement;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
@@ -61,7 +62,6 @@ import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
-
 
 public class DriverServlet extends HttpServlet {
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
@@ -321,6 +321,10 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     postMapper.bind("/session/:sessionId/ime/activate", ImeActivateEngine.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+
+    // Advanced Touch API
+    postMapper.bind("/session/:sessionId/touch/click", SingleTapOnElement.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
   }
 
   protected ResultConfig addNewGetMapping(String path, Class<? extends Handler> implementationClass) {

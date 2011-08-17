@@ -17,14 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
-import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.android.ActivityController;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Message;
@@ -38,6 +30,14 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.android.ActivityController;
+
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public class WebDriverWebView extends WebView {
   private final WebChromeClient chromeClient;
   private final WebViewClient viewClient;
@@ -47,7 +47,7 @@ public class WebDriverWebView extends WebView {
   private final ActivityController controller = ActivityController.getInstance();
   private final ConcurrentLinkedQueue<Alert> unhandledAlerts = new ConcurrentLinkedQueue<Alert>();
   private static volatile boolean editAreaHasFocus;
-  
+
   public WebDriverWebView(Context context) {
     super(context);
     this.context = (MainActivity) context;
@@ -56,18 +56,18 @@ public class WebDriverWebView extends WebView {
     javascriptExecutor = new JavascriptExecutor(this);
     initWebViewSettings();
   }
-  
+
   public String getWindowHandle() {
     return WINDOW_HANDLE;
   }
-  
+
   /**
    * Navigates WebView to a new URL.
    *
    * @param url URL to navigate to.
    */
   public void navigateTo(String url) {
-     if (url == null) {
+    if (url == null) {
       controller.notifyPageDoneLoading();
       return;
     }
@@ -89,32 +89,45 @@ public class WebDriverWebView extends WebView {
 
   @Override
   public boolean onTouchEvent(MotionEvent ev) {
-    controller.motionEventDone();
+    if (isLastEvent(ev)) {
+      controller.motionEventDone();
+    }
     return super.onTouchEvent(ev);
   }
 
+  private boolean isLastEvent(MotionEvent ev) {
+    float zoom = this.getScale();
+    MotionEvent last =  controller.getLastMotionEventSent();
+    if ((ev.getAction() == last.getAction())
+        && (ev.getDownTime() == last.getDownTime())
+        && (ev.getX() == zoom * last.getX())
+        && (ev.getY() == zoom * last.getY())) {
+      return true;
+    }
+    return false;
+  }
+
   @Override
-  protected void onFocusChanged(boolean focused, int direction,
-      Rect previouslyFocusedRect) {
+  protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
     super.onFocusChanged(focused, direction, previouslyFocusedRect);
-    
+
     if (!focused) {  // When a text area is focused, webview's focus is false
       editAreaHasFocus = true;
     }
   }
-  
+
   public static void resetEditableAreaHasFocus() {
     editAreaHasFocus = false;
   }
-  
+
   public static boolean ediatbleAreaHasFocus() {
     return editAreaHasFocus;
   }
-  
+
   public void executeJavascript(String javascript) {
     javascriptExecutor.executeJS(javascript);
   }
-  
+
   private void initWebViewSettings() {
     // Clearing the view
     clearCache(true);
@@ -130,7 +143,7 @@ public class WebDriverWebView extends WebView {
     requestFocus(View.FOCUS_DOWN);
     setFocusable(true);
     setFocusableInTouchMode(true);
-    
+
     // Webview settings
     WebSettings settings = getSettings();
     settings.setJavaScriptCanOpenWindowsAutomatically(true);
@@ -148,25 +161,25 @@ public class WebDriverWebView extends WebView {
     enablePlatformNotifications();
     setNetworkAvailable(true);
   }
-  
+
   public Alert getAlert() {
     if (unhandledAlerts.isEmpty()) {
       throw new NoAlertPresentException();
     }
     return unhandledAlerts.peek();
   }
-  
+
   /**
    * Subscriber class to be notified when the underlying WebView loads new content or changes
    * title.
    */
   final class WebDriverWebChromeClient extends WebChromeClient {
     private final MainActivity context;
-    
+
     public WebDriverWebChromeClient(MainActivity context) {
-      this.context = context;  
+      this.context = context;
     }
-    
+
     @Override
     public void onCloseWindow(WebView window) {
       context.viewManager().removeView((WebDriverWebView) window);
@@ -186,13 +199,13 @@ public class WebDriverWebView extends WebView {
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
-      context.setProgress(newProgress * 100);  
+      context.setProgress(newProgress * 100);
       if (newProgress == 100 && context.lastUrlLoaded() != null
           && context.lastUrlLoaded().equals(view.getUrl())) {
         controller.notifyPageDoneLoading();
       }
     }
-    
+
     @Override
     public boolean onJsAlert(WebView view,
                              String url,
@@ -201,7 +214,7 @@ public class WebDriverWebView extends WebView {
       unhandledAlerts.add(new AndroidAlert(message, result));
       return true;
     }
-    
+
     @Override
     public boolean onJsConfirm(WebView view,
                                String url,
@@ -210,7 +223,7 @@ public class WebDriverWebView extends WebView {
       unhandledAlerts.add(new AndroidAlert(message, result));
       return true;
     }
-    
+
     @Override
     public boolean onJsPrompt(WebView view,
                               String url,
@@ -220,7 +233,7 @@ public class WebDriverWebView extends WebView {
       unhandledAlerts.add(new AndroidAlert(message, result, defaultValue));
       return true;
     }
-    
+
     private class AndroidAlert implements Alert {
       private final String message;
       private final JsResult result;

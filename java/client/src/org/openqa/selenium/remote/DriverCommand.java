@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2007-2011 WebDriver committers
+Copyright 2007-2011 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -138,4 +138,7 @@ public interface DriverCommand {
   String IME_IS_ACTIVATED = "imeIsActivated";
   String IME_DEACTIVATE = "imeDeactivate";
   String IME_ACTIVATE_ENGINE = "imeActivateEngine";
+
+  // These belong to the Advanced Touch API
+  String TOUCH_SINGLE_TAP = "touchSingleTap";
 }
