@@ -1331,7 +1331,7 @@ BrowserBot.prototype.getCookieByName = function(cookieName, doc) {
         var ckNameValue = ckPair.split(/=/);
         var ckName = decodeURIComponent(ckNameValue[0]);
         if (ckName === cookieName) {
-            return decodeURIComponent(ckNameValue[1]);
+            return decodeURIComponent(ckNameValue.slice(1).join("="));
         }
     }
     return null;
