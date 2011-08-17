@@ -21,6 +21,7 @@ import com.thoughtworks.selenium.BrowserConfigurationOptions;
 import com.thoughtworks.selenium.Selenium;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,10 +37,10 @@ public class NewSession implements SeleneseFunction<Map<String, Object>> {
     selenium.allowNativeXpath("true");
 
     Map<String, Object> seenCapabilities = new HashMap<String, Object>();
-    seenCapabilities.put("browserName", capabilities.getBrowserName());
-    seenCapabilities.put("version", capabilities.getVersion());
-    seenCapabilities.put("platform", Platform.getCurrent().toString());
-    seenCapabilities.put("javascriptEnabled", true);
+    seenCapabilities.put(CapabilityType.BROWSER_NAME, capabilities.getBrowserName());
+    seenCapabilities.put(CapabilityType.VERSION, capabilities.getVersion());
+    seenCapabilities.put(CapabilityType.PLATFORM, Platform.getCurrent().toString());
+    seenCapabilities.put(CapabilityType.SUPPORTS_JAVASCRIPT, true);
     return seenCapabilities;
   }
 
