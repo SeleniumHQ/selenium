@@ -849,7 +849,7 @@ bot.dom.scrollElementRegionIntoClientView_ = function(elem, elemRegion) {
   // Scroll the containers.
   for (var container = bot.dom.getParentElement(elem);
        container && container != doc.body && container != doc.documentElement;
-       container = bot.dom.getParentElement(elem)) {
+       container = bot.dom.getParentElement(container)) {
     bot.dom.scrollElementRegionIntoContainerView_(elem, elemRegion, container);
   }
 
