@@ -111,7 +111,7 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
 
   public <X> X getScreenshotAs(OutputType<X> target) {
     // Get the screenshot as base64.
-    String base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
+    String base64 = (String)execute(DriverCommand.SCREENSHOT).getValue();
     // ... and convert it.
     return target.convertFromBase64Png(base64);
   }
