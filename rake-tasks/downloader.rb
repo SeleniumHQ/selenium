@@ -8,7 +8,10 @@ class Downloader
   CL_RESET = Platform.windows? ? '' : "\r\e[0K"
 
   def self.fetch(source_url, destination_path = nil)
-    unless destination_path
+    if destination_path
+      destination_dir = File.dirname destination_path
+      FileUtils.mkdir_p(destination_dir) unless File.exist?(destination_dir)
+    else
       tmpdir = Dir.mktmpdir("crazy-fun-download")
       destination_path = File.join(tmpdir, File.basename(source_url))
     end
