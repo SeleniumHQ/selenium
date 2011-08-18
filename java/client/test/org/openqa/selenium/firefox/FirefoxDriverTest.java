@@ -45,6 +45,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import static java.lang.Thread.sleep;
@@ -412,7 +413,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     // Unfortunately native events on linux mean mucking around with the
     // window's focus. this breaks multiple drivers.
     boolean nativeEventsEnabled =
-        (Boolean) ((RemoteWebDriver) driver).getCapabilities().getCapability("nativeEvents");
+        (Boolean) ((RemoteWebDriver) driver).getCapabilities().getCapability(CapabilityType.HAS_NATIVE_EVENTS);
 
     if (nativeEventsEnabled && Platform.getCurrent().is(Platform.LINUX)) {
       return;

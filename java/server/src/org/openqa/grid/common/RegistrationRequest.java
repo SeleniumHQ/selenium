@@ -33,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
@@ -62,13 +63,13 @@ public class RegistrationRequest {
 	// some special param for capability
 	public static final String APP = "applicationName";
 	public static final String MAX_INSTANCES = "maxInstances";
-	public static final String BROWSER = "browserName";
-	public static final String PLATFORM = "platform";
-	public static final String VERSION = "version";
+	public static final String BROWSER = CapabilityType.BROWSER_NAME;
+	public static final String PLATFORM = CapabilityType.PLATFORM;
+	public static final String VERSION = CapabilityType.VERSION;
 
 	// some special param for config
 	public static final String REGISTER_CYCLE = "registerCycle";
-	public static final String PROXY_CLASS = "proxy";
+	public static final String PROXY_CLASS = CapabilityType.PROXY;
 	public static final String CLEAN_UP_CYCLE = "cleanUpCycle";
 	public static final String TIME_OUT = "timeout";
 
@@ -295,7 +296,7 @@ public class RegistrationRequest {
 			request.setConfiguration(configuration);
 
 			DesiredCapabilities cap = new DesiredCapabilities();
-			// cap.put("platform", "LINUX");
+			// cap.put(CapabilityType.PLATFORM, "LINUX");
 			// TODO freynaud envt or browser ?
 			cap.setCapability(BROWSER, registrationInfo.get("environment"));
 			cap.setCapability("environment",
@@ -510,7 +511,7 @@ public class RegistrationRequest {
 						String name = (String) iterator.next();
 						Object value = cap.get(name);
 						if (role == GridRole.REMOTE_CONTROL
-								&& "browserName".equals(name)) {
+								&& CapabilityType.BROWSER_NAME.equals(name)) {
 							value = Utils
 									.getSelenium1Equivalent((String) value);
 						}

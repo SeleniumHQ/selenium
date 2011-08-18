@@ -3,6 +3,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
@@ -11,7 +12,9 @@ import java.io.IOException;
 public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
 
     public SafariFileBasedLauncher(Capabilities browserOptions,
-                                   RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+                                   RemoteControlConfiguration configuration,
+                                   String sessionId,
+                                   String browserLaunchLocation) {
         super(browserOptions, configuration, sessionId, browserLaunchLocation);
     }
     
@@ -23,7 +26,8 @@ public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
         query = LauncherUtils.getQueryString(url);
         query += "&driverUrl=http://localhost:" + getPort() + "/selenium-server/driver/";
         try {
-            if (browserConfigurationOptions.is("ensureCleanSession")) {
+            if (browserConfigurationOptions.is(
+                    CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION)) {
                 ensureCleanSession();
             }
             fileUrl = createExtractedFiles().toURL() + "?" + query;

@@ -119,7 +119,7 @@ public class JsonToBeanConverterTest extends TestCase {
 
   public void testShouldProperlyFillInACapabilitiesObject() throws Exception {
     DesiredCapabilities capabilities =
-        new DesiredCapabilities("browser", "version", Platform.ANY);
+        new DesiredCapabilities("browser", CapabilityType.VERSION, Platform.ANY);
     capabilities.setJavascriptEnabled(true);
     String text = new BeanToJsonConverter().convert(capabilities);
 

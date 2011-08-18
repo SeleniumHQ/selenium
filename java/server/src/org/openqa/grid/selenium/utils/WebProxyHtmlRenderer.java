@@ -8,6 +8,7 @@ import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.selenium.proxy.WebRemoteProxy;
 import org.openqa.grid.web.utils.BrowserNameUtils;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class WebProxyHtmlRenderer implements HtmlRenderer {
@@ -62,7 +63,7 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
         builder.append("/>");
       } else {
         builder.append(">");
-        builder.append(slot.getCapabilities().get("browserName"));
+        builder.append(slot.getCapabilities().get(CapabilityType.BROWSER_NAME));
         builder.append("</a>");
       }
 

@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class RegistrationRequestTest {
@@ -79,11 +80,11 @@ public class RegistrationRequestTest {
     Assert.assertEquals(1, request.getCapabilities().size());
     DesiredCapabilities caps = request.getCapabilities().get(0);
 
-    // Assert.assertEquals(Platform.LINUX.toString(), caps.get("platform"));
-    Assert.assertEquals("Firefox: 4; MacOS X: 10.6.7", caps.getCapability("browserName"));
+    // Assert.assertEquals(Platform.LINUX.toString(), caps.get(CapabilityType.PLATFORM));
+    Assert.assertEquals("Firefox: 4; MacOS X: 10.6.7", caps.getCapability(CapabilityType.BROWSER_NAME));
 
     // Verify the configuration was set up properly.
-    Assert.assertEquals("org.openqa.grid.selenium.proxy.SeleniumRemoteProxy", request.getConfiguration().get("proxy"));
+    Assert.assertEquals("org.openqa.grid.selenium.proxy.SeleniumRemoteProxy", request.getConfiguration().get(CapabilityType.PROXY));
     Assert.assertEquals("http://localhost:5000/selenium-server/driver", request.getConfiguration().get("url"));
   }
 

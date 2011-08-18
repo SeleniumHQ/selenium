@@ -19,6 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.locators.*;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
@@ -30,7 +31,7 @@ public class FirefoxLauncher implements BrowserLauncher {
       throws InvalidBrowserExecutableException {
     String browserName = "firefox";
     BrowserLocator locator = new CombinedFirefoxLocator();
-    String version = (String) browserOptions.getCapability("version");
+    String version = (String) browserOptions.getCapability(CapabilityType.VERSION);
     if ("2".equals(version)) {
       browserName = "firefox2";
       locator = new Firefox2Locator();
@@ -83,8 +84,8 @@ public class FirefoxLauncher implements BrowserLauncher {
       return;
     }
 
-    // the mode isn't "chrome" or "proxyInjection"; at this point it had better be "proxy"
-    if (!"proxy".equals(mode)) {
+    // the mode isn't "chrome" or "proxyInjection"; at this point it had better be CapabilityType.PROXY
+    if (!CapabilityType.PROXY.equals(mode)) {
       throw new RuntimeException("Unrecognized browser mode: " + mode);
     }
 

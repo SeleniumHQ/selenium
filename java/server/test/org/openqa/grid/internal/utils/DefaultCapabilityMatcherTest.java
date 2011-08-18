@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.CapabilityType;
 
 
 public class DefaultCapabilityMatcherTest {
@@ -79,14 +80,14 @@ public class DefaultCapabilityMatcherTest {
     DefaultCapabilityMatcher matcher = new DefaultCapabilityMatcher();
 
     Map<String, Object> requested = new HashMap<String, Object>();
-    requested.put("browserName", "firefox");
-    requested.put("platform", null);
-    requested.put("version", "");
+    requested.put(CapabilityType.BROWSER_NAME, "firefox");
+    requested.put(CapabilityType.PLATFORM, null);
+    requested.put(CapabilityType.VERSION, "");
 
     Map<String, Object> node = new HashMap<String, Object>();
-    node.put("browserName", "firefox");
-    node.put("platform", Platform.LINUX);
-    node.put("version", "3.6");
+    node.put(CapabilityType.BROWSER_NAME, "firefox");
+    node.put(CapabilityType.PLATFORM, Platform.LINUX);
+    node.put(CapabilityType.VERSION, "3.6");
 
     Assert.assertTrue(matcher.matches(node, requested));
 

@@ -18,6 +18,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class InternetExplorerLauncher implements BrowserLauncher {
@@ -53,8 +54,8 @@ public class InternetExplorerLauncher implements BrowserLauncher {
             return;
         }
         
-        // the mode isn't "chrome" or "proxyInjection"; at this point it had better be "proxy"
-        if (!"proxy".equals(mode)) {
+        // the mode isn't "chrome" or "proxyInjection"; at this point it had better be CapabilityType.PROXY
+        if (!CapabilityType.PROXY.equals(mode)) {
             throw new RuntimeException("Unrecognized browser mode: " + mode);
         }
         

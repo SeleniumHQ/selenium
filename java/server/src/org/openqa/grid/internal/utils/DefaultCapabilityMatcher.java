@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.CapabilityType;
 
 /**
  * Default (naive) implementation of the capability matcher.
@@ -39,9 +40,9 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
   private static List<String> toConsider = new ArrayList<String>();
 
   public DefaultCapabilityMatcher() {
-    toConsider.add("platform");
-    toConsider.add("browserName");
-    toConsider.add("version");
+    toConsider.add(CapabilityType.PLATFORM);
+    toConsider.add(CapabilityType.BROWSER_NAME);
+    toConsider.add(CapabilityType.VERSION);
     toConsider.add("applicationName");
 
   }

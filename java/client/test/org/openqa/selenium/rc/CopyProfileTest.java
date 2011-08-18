@@ -13,6 +13,7 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -74,7 +75,7 @@ public class CopyProfileTest extends TestCase {
 
     RemoteWebDriver driver = new RemoteWebDriver(selenium.getWebDriverUrl(), caps);
 
-    Boolean nativeEventsEnabled = (Boolean) driver.getCapabilities().getCapability("nativeEvents");
+    Boolean nativeEventsEnabled = (Boolean) driver.getCapabilities().getCapability(CapabilityType.HAS_NATIVE_EVENTS);
     driver.quit();
 
     assertTrue("Native events were explicitly enabled and should be on.",

@@ -1,6 +1,7 @@
 package org.openqa.selenium.server;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -362,8 +363,8 @@ public class RemoteControlConfiguration {
     setSafely(capabilities, "userExtensions", userExtensions);
     setSafely(capabilities, "proxyInjectionMode", proxyInjectionModeArg);
     setSafely(capabilities, "singleWindow", singleWindow);
-    setSafely(capabilities, "ensureCleanSession", ensureCleanSession);
-    setSafely(capabilities, "avoidProxy", avoidProxy);
+    setSafely(capabilities, CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, ensureCleanSession);
+    setSafely(capabilities, CapabilityType.ForSeleniumServer.AVOIDING_PROXY, avoidProxy);
     setSafely(capabilities, "browserSideLog", browserSideLogEnabled);
 
     return capabilities;

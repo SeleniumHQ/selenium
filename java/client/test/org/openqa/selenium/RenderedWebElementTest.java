@@ -17,6 +17,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.concurrent.Callable;
 
@@ -246,7 +247,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     if (driver instanceof HasCapabilities) {
       Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
-      Object nativeEvents = capabilities.getCapability("nativeEvents");
+      Object nativeEvents = capabilities.getCapability(CapabilityType.HAS_NATIVE_EVENTS);
       return nativeEvents != null && (Boolean) nativeEvents;
     }
 

@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.HttpCommandExecutor;
@@ -63,9 +64,9 @@ public class RemoteWebDriverTest extends AbstractDriverTestCase {
 
       JSONObject value = response.getJSONObject("value");
       assertHasKeys(value, "os", "build", "java");
-      assertHasKeys(value.getJSONObject("os"), "name", "arch", "version");
-      assertHasKeys(value.getJSONObject("build"), "version", "revision", "time");
-      assertHasKeys(value.getJSONObject("java"), "version");
+      assertHasKeys(value.getJSONObject("os"), "name", "arch", CapabilityType.VERSION);
+      assertHasKeys(value.getJSONObject("build"), CapabilityType.VERSION, "revision", "time");
+      assertHasKeys(value.getJSONObject("java"), CapabilityType.VERSION);
     } finally {
       if (connection != null) {
         connection.disconnect();

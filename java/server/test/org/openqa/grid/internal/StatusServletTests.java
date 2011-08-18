@@ -28,6 +28,7 @@ import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.CapabilityType;
 
 public class StatusServletTests {
 
@@ -64,7 +65,7 @@ public class StatusServletTests {
 
     RegistrationRequest req = new RegistrationRequest();
     Map<String, Object> capability = new HashMap<String, Object>();
-    capability.put("browserName", "custom app");
+    capability.put(CapabilityType.BROWSER_NAME, "custom app");
     req.addDesiredCapabilitiy(capability);
 
     Map<String, Object> config = new HashMap<String, Object>();
@@ -79,7 +80,7 @@ public class StatusServletTests {
     registry.add(customProxy);
 
     Map<String, Object> cap = new HashMap<String, Object>();
-    cap.put("browserName", "app1");
+    cap.put(CapabilityType.BROWSER_NAME, "app1");
 
     MockedRequestHandler newSessionRequest = new MockedRequestHandler(registry);
     newSessionRequest.setRequestType(RequestType.START_SESSION);

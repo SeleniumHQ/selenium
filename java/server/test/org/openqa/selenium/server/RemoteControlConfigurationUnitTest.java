@@ -5,6 +5,7 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 
 import static org.junit.Assert.assertEquals;
@@ -274,8 +275,8 @@ public class RemoteControlConfigurationUnitTest {
     	assertEquals(Boolean.toString(useUserJSInjection), caps.getCapability("userJSInjection"));
     	assertEquals(Boolean.toString(useProxyInjectionMode), caps.getCapability("proxyInjectionMode"));
     	assertEquals(Boolean.toString(useSingleWindow), caps.getCapability("singleWindow"));
-    	assertEquals(Boolean.toString(ensureCleanSession), caps.getCapability("ensureCleanSession"));
-    	assertEquals(Boolean.toString(avoidProxy), caps.getCapability("avoidProxy"));
+    	assertEquals(Boolean.toString(ensureCleanSession), caps.getCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION));
+    	assertEquals(Boolean.toString(avoidProxy), caps.getCapability(CapabilityType.ForSeleniumServer.AVOIDING_PROXY));
     	assertEquals(Boolean.toString(browserSideLogEnabled), caps.getCapability("browserSideLog"));
     }
     

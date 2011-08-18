@@ -3,6 +3,7 @@ package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.CapabilityType;
 
 /**
  * If native events are enabled, make sure they work.
@@ -39,7 +40,7 @@ public class NativeEventsTest extends AbstractDriverTestCase {
     }
 
     assertTrue("Native events were explicitly enabled and should be on.",
-        (Boolean) driver2.getCapabilities().getCapability("nativeEvents"));
+        (Boolean) driver2.getCapabilities().getCapability(CapabilityType.HAS_NATIVE_EVENTS));
   }
 
   public void testNativeEventsAreNotOnByDefaultOnLinux() {

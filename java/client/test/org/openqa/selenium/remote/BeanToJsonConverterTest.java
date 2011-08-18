@@ -210,7 +210,7 @@ public class BeanToJsonConverterTest extends TestCase {
     JSONObject converted = new JSONObject(json);
     JSONObject capsAsMap = converted.getJSONObject("desiredCapabilities");
 
-    assertEquals(json, proxy.getHttpProxy(), capsAsMap.getJSONObject("proxy").get("httpProxy"));
+    assertEquals(json, proxy.getHttpProxy(), capsAsMap.getJSONObject(CapabilityType.PROXY).get("httpProxy"));
   }
 
   public void testShouldCallToJsonMethodIfPresent() {

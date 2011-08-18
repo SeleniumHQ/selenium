@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -102,7 +103,7 @@ public class I18nTest extends AbstractDriverTestCase {
     }
 
     Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
-    if (!(Boolean) capabilities.getCapability("nativeEvents")) {
+    if (!(Boolean) capabilities.getCapability(CapabilityType.HAS_NATIVE_EVENTS)) {
       System.out.println("Native events are disabled, IME will not work.");
       return;
     }
@@ -162,7 +163,7 @@ public class I18nTest extends AbstractDriverTestCase {
     }
 
     Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
-    if (!(Boolean) capabilities.getCapability("nativeEvents")) {
+    if (!(Boolean) capabilities.getCapability(CapabilityType.HAS_NATIVE_EVENTS)) {
       System.out.println("Native events are disabled, IME will not work.");
       return;
     }

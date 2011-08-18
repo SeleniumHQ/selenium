@@ -13,6 +13,7 @@ import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
@@ -67,8 +68,8 @@ public class RegistryTest {
   @BeforeClass
   public static void prepareReqRequest() {
     Map<String, Object> config = new HashMap<String, Object>();
-    app1.put("browserName", "app1");
-    app2.put("browserName", "app2");
+    app1.put(CapabilityType.BROWSER_NAME, "app1");
+    app2.put(CapabilityType.BROWSER_NAME, "app2");
     config.put(REMOTE_URL, "http://machine1:4444");
     config.put(MAX_SESSION, 5);
     req = new RegistrationRequest();

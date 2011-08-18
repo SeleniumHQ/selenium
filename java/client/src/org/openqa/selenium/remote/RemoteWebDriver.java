@@ -112,12 +112,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     DesiredCapabilities returnedCapabilities = new DesiredCapabilities();
     for (Map.Entry<String, Object> entry : rawCapabilities.entrySet()) {
       // Handle the platform later
-      if ("platform".equals(entry.getKey())) {
+      if (CapabilityType.PLATFORM.equals(entry.getKey())) {
         continue;
       }
       returnedCapabilities.setCapability(entry.getKey(), entry.getValue());
     }
-    String platformString = (String) rawCapabilities.get("platform");
+    String platformString = (String) rawCapabilities.get(CapabilityType.PLATFORM);
     Platform platform;
     try {
       if (platformString == null || "".equals(platformString)) {

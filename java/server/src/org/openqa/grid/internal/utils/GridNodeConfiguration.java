@@ -13,6 +13,7 @@ import org.openqa.grid.common.CommandLineOptionHelper;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
@@ -52,7 +53,6 @@ public class GridNodeConfiguration {
    */
   public static final String TIME_OUT = "timeout";
 
-  public static final String PROXY = "proxy";
   public static final String MAX_CONCURRENT = "maxConcurrent";
 
   public static final String SERVLETS = "servlets";

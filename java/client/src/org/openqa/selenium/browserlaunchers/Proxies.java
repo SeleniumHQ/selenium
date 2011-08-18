@@ -38,7 +38,7 @@ import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.PROXYI
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 public class Proxies {
-  public static final String PROXY_CONFIG = "proxy";
+  public static final String PROXY_CONFIG = CapabilityType.PROXY;
 
   public static boolean isProxyRequired(Capabilities capabilities) {
     return capabilities.is("proxyRequired") || capabilities.getCapability(PROXY_CONFIG) != null;
