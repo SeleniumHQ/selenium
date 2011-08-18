@@ -362,7 +362,7 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
     element = bot.locators.findElement(target, rootNode);
   }
   catch(ex) {
-    if(ex.message == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
+    if(ex.code == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
       // We send the INVALID_SELECTOR_ERROR immediately because it will occur in
       // every retry.
       respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
@@ -458,7 +458,7 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
   try {
     elements = bot.locators.findElements(target, rootNode);
   } catch (ex) {
-    if(ex.message == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
+    if(ex.code == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
       // We send the INVALID_SELECTOR_ERROR immediately because it will occur in
       // every retry.
       respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
