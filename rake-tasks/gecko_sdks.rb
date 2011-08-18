@@ -22,7 +22,7 @@ class GeckoSDKs
   def define_rule(path, url, md5 = nil)
     download_task = file(path) do
       mkdir_p path
-      next if offline?# || !platform_matches?(path)
+      next if offline? || !platform_matches?(path)
 
       begin
         if md5
