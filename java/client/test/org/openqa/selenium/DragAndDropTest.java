@@ -17,6 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.CapabilityType;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -25,13 +31,8 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.Platform.LINUX;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.CapabilityType;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 
 @Ignore(
     value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SELENESE},
@@ -39,10 +40,9 @@ import org.openqa.selenium.remote.CapabilityType;
 public class DragAndDropTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
-  @Ignore(FIREFOX)
   public void testDragAndDrop() throws Exception {
-    if (Platform.getCurrent().is(LINUX) && isNativeEventsEnabled()) {
-      System.out.println("Skipping test: fails with native events on linux");
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      System.out.println("Skipping testElementInDiv on Mac: See issue 2281.");
       return;
     }
 
@@ -50,13 +50,13 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     WebElement img = driver.findElement(By.id("test1"));
     Point expectedLocation = img.getLocation();
     drag(img, expectedLocation, 150, 200);
-    assertEquals(expectedLocation, img.getLocation());
+    waitFor(elementLocationToBe(img, expectedLocation));
     drag(img, expectedLocation, -50, -25);
-    assertEquals(expectedLocation, img.getLocation());
+    waitFor(elementLocationToBe(img, expectedLocation));
     drag(img, expectedLocation, 0, 0);
-    assertEquals(expectedLocation, img.getLocation());
+    waitFor(elementLocationToBe(img, expectedLocation));
     drag(img, expectedLocation, 1, -1);
-    assertEquals(expectedLocation, img.getLocation());
+    waitFor(elementLocationToBe(img, expectedLocation));
   }
 
   @JavascriptEnabled
@@ -71,8 +71,11 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(FIREFOX)
   public void testElementInDiv() {
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      System.out.println("Skipping testElementInDiv on Mac: See issue 2281.");
+      return;
+    }
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
     Point expectedLocation = img.getLocation();

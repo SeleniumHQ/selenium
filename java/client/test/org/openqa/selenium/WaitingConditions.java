@@ -154,4 +154,23 @@ public class WaitingConditions {
       }
     };
   }
+
+  public static Callable<Point> elementLocationToBe(
+      final WebElement element, final Point expectedLocation) {
+    return new Callable<Point>() {
+      public Point call() throws Exception {
+        Point currentLocation = element.getLocation();
+        if (currentLocation.equals(expectedLocation)) {
+          return expectedLocation;
+        }
+
+        return null;
+      }
+
+      @Override
+      public String toString() {
+        return "location to be: " + expectedLocation;
+      }
+    };
+  }
 }
