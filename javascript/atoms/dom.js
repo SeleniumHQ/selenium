@@ -313,6 +313,22 @@ bot.dom.isEnabled = function(el) {
   return true;
 };
 
+/**
+ * List of input types that create text fields.
+ * @type {!Array.<String>}
+ * @const
+ * @private
+ * @see http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#attr-input-type
+ */
+bot.dom.TEXTUAL_INPUT_TYPES_ = [
+ 'text',
+ 'search',
+ 'tel',
+ 'url',
+ 'email',
+ 'password',
+ 'number'
+]
 
 /**
  * TODO(user): Add support for contentEditable and designMode elements.
@@ -327,8 +343,7 @@ bot.dom.isTextual = function(element) {
 
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     var type = element.type.toLowerCase();
-    return type == 'text' || type == 'password' ||
-           type == 'email' || type == 'search';
+    return goog.array.contains(bot.dom.TEXTUAL_INPUT_TYPES_, type);
   }
 
   return false;
