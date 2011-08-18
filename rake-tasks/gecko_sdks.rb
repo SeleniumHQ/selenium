@@ -8,26 +8,30 @@ class GeckoSDKs
 
     yield self if block_given?
 
-    @sdks.each do |path, url|
-      define_rule(path, url)
+    @sdks.each do |path, url, md5|
+      define_rule(path, url, md5)
     end
   end
 
-  def add(path, url)
-    @sdks << [path, url]
+  def add(path, url, md5 = nil)
+    @sdks << [path, url, md5]
   end
 
   private
 
-  def define_rule(path, url)
+  def define_rule(path, url, md5 = nil)
     download_task = file(path) do
       mkdir_p path
-      next if offline? || !platform_matches?(path)
+      next if offline?# || !platform_matches?(path)
 
       begin
-        sdk = Downloader.fetch url
-        destination = File.dirname path
+        if md5
+          sdk = CachingDownloader.fetch(url, md5)
+        else
+          sdk = Downloader.fetch(url)
+        end
 
+        destination = File.dirname path
         unpack sdk, destination
 
         # The directory was created - but for the move to replace it,
@@ -40,7 +44,7 @@ class GeckoSDKs
 
         next
       ensure
-        rm_rf sdk if sdk && File.exist?(sdk)
+        rm_rf sdk if !md5 && sdk && File.exist?(sdk)
       end
     end
 
