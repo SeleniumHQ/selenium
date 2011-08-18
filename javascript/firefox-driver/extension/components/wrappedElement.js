@@ -181,9 +181,11 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
+  var alreadyFocused = true;
   var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
   var unwrappedActive = webdriver.firefox.utils.unwrapFor4(currentlyActive);
   if (unwrappedActive != element) {
+    alreadyFocused = false;
     currentlyActive.blur();
     element.focus();
     element.ownerDocument.defaultView.focus();
@@ -201,10 +203,10 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
 
   // We may need a beat for firefox to hand over focus.
   this.jsTimer.setTimeout(function() {
-    // Set the cursor location to the end of the line
+    // Unless the element already had focus, set the cursor location to the end of the line
     // TODO(simon): This seems a little arbitrary.
-    if (bot.dom.isElement(element, goog.dom.TagName.TEXTAREA)) {
-    goog.dom.selection.setCursorPosition(element, element.value.length);
+    if(!alreadyFocused && bot.dom.isEditable(element)) {
+        goog.dom.selection.setCursorPosition(element, element.value.length);
     }
 
     Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
