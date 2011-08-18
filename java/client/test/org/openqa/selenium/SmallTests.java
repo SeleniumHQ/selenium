@@ -28,7 +28,7 @@ import org.openqa.selenium.interactions.IndividualMouseActionsTest;
     CompositeActionTest.class,
     IndividualMouseActionsTest.class,
     IndividualKeyboardActionsTest.class,
-    ActionChainsGeneratorTest.class,
+    ActionChainsGeneratorTest.class
 })
 public class SmallTests {
 }
