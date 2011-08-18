@@ -48,8 +48,8 @@ public class ClickTest extends AbstractDriverTestCase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
-  @Ignore(value = {IPHONE, CHROME, OPERA, SELENESE, FIREFOX},
-    reason = "In Firefox, the code to support this breaks other tests.")
+  @Ignore(value = {IPHONE, CHROME, OPERA, SELENESE},
+    reason = "Not tested on these browsers.")
   public void testCanClickOnALinkThatOverflowsAndFollowIt() {
     driver.findElement(By.id("overflowLink")).click();
 

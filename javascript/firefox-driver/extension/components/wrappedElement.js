@@ -54,7 +54,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
 
   if (!isOption && this.enableNativeEvents && nativeEvents && node && useNativeClick && thmgr_cls) {
     Logger.dumpn("Using native events for click");
-    var loc = Utils.getLocationOnceScrolledIntoView(element);
+    var loc = Utils.getLocationOnceScrolledIntoView(element, element.tagName == "A");
     var x = loc.x + (loc.width ? loc.width / 2 : 0);
     var y = loc.y + (loc.height ? loc.height / 2 : 0);
 

@@ -934,10 +934,15 @@ Utils.getLocationViaAccessibilityInterface = function(element) {
   };
 };
 
-Utils.getLocation = function(element) {
+Utils.getLocation = function(element, opt_onlyFirstRect) {
   try {
     element = element.wrappedJSObject ? element.wrappedJSObject : element;
-    var clientRect = element.getBoundingClientRect();
+    var clientRect = undefined;
+    if (opt_onlyFirstRect && element.getClientRects().length > 1) {
+      clientRect = element.getClientRects()[0];
+    } else {
+      clientRect = element.getBoundingClientRect();
+    }
 
     // Firefox 3.5
     if (clientRect['width']) {
@@ -986,14 +991,14 @@ Utils.getLocation = function(element) {
 };
 
 
-Utils.getLocationOnceScrolledIntoView = function(element) {
+Utils.getLocationOnceScrolledIntoView = function(element, opt_onlyFirstRect) {
   // Some elements may not a scrollIntoView function - for example,
   // elements under an SVG element. Call those only if they exist.
   if (typeof element.scrollIntoView == 'function') {
     element.scrollIntoView(true);
   }
 
-  return Utils.getLocation(element);
+  return Utils.getLocation(element, opt_onlyFirstRect);
 };
 
 
