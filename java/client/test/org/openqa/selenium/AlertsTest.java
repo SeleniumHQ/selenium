@@ -26,11 +26,12 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import static org.openqa.selenium.TestWaiter.waitFor;
 
-@Ignore({CHROME, HTMLUNIT, IPHONE, SELENESE})
+@Ignore({CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
 public class AlertsTest extends AbstractDriverTestCase {
 
   @Override
