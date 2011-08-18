@@ -367,7 +367,7 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
       // every retry.
       respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
         'The given selector "' + selector + ' is either invalid or does not result'
-          + 'in a Webelement'));
+          + ' in a WebElement'));
       return;
     } else {
       // this is not the exception we are interested in, so we propagate it.
