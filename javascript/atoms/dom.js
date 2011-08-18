@@ -907,7 +907,12 @@ bot.dom.getLocationInView = function(elem, opt_elemRegion) {
     elemRegion = new goog.math.Rect(0, 0, elem.offsetWidth, elem.offsetHeight);
   }
   bot.dom.scrollElementRegionIntoClientView_(elem, elemRegion);
-  var elemClientPos = goog.style.getClientPosition(elem);
+
+  // This is needed for elements that are split across multiple lines
+  var rect = elem.getClientRects ? elem.getClientRects()[0] : null;
+  var elemClientPos = rect ?
+      new goog.math.Coordinate(rect.left, rect.top) :
+      goog.style.getClientPosition(elem);
   return new goog.math.Coordinate(elemClientPos.x + elemRegion.left,
                                   elemClientPos.y + elemRegion.top);
 };
