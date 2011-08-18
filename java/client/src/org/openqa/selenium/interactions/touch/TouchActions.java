@@ -28,7 +28,7 @@ import org.openqa.selenium.internal.Locatable;
 
 /**
  * Implements actions for touch enabled devices, reusing the available composite and builder design
- * patterns from Actions
+ * patterns from Actions.
  */
 public class TouchActions extends Actions {
 
@@ -44,8 +44,13 @@ public class TouchActions extends Actions {
     this.touchScreen = touchScreen;
   }
 
-  public TouchActions singleTap(WebElement onElement) {    
+  public TouchActions singleTap(WebElement onElement) {
     action.addAction(new SingleTapAction(touchScreen, (Locatable) onElement));
+    return this;
+  }
+
+  public TouchActions down(int x, int y) {
+    action.addAction(new DownAction(touchScreen, x, y));
     return this;
   }
 }

@@ -231,8 +231,9 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(IME_ACTIVATE_ENGINE, post("/session/:sessionId/ime/activate"))
 
          // Advanced Touch API commands
-         // todo: Refactor with mouse click
-         .put(TOUCH_SINGLE_TAP, post("/session/:sessionId/touch/click"))
+         // TODO(berrada): Refactor single tap with mouse click.
+        .put(TOUCH_SINGLE_TAP, post("/session/:sessionId/touch/click"))
+        .put(TOUCH_DOWN, post("/session/:sessionId/touch/down"))
 
         .build();
   }

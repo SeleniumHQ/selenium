@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2007-2011 WebDriver committers
+Copyright 2007-2011 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ import org.openqa.selenium.remote.server.handler.interactions.MouseDown;
 import org.openqa.selenium.remote.server.handler.interactions.MouseMoveToLocation;
 import org.openqa.selenium.remote.server.handler.interactions.MouseUp;
 import org.openqa.selenium.remote.server.handler.interactions.SendModifierKey;
+import org.openqa.selenium.remote.server.handler.interactions.touch.Down;
 import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnElement;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
@@ -261,9 +262,9 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/application_cache/status", GetAppCacheStatus.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+
     deleteMapper.bind("/session/:sessionId/application_cache/clear", ClearAppCache.class)
        .on(ResultType.SUCCESS, new EmptyResult());
-
     postMapper.bind("/session/:sessionId/browser_connection", SetBrowserConnection.class)
     .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/browser_connection", IsBrowserOnline.class)
@@ -324,6 +325,8 @@ public class DriverServlet extends HttpServlet {
 
     // Advanced Touch API
     postMapper.bind("/session/:sessionId/touch/click", SingleTapOnElement.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/touch/down", Down.class)
         .on(ResultType.SUCCESS, new EmptyResult());
   }
 

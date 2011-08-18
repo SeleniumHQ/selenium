@@ -24,5 +24,18 @@ import org.openqa.selenium.interactions.internal.Coordinates;
  */
 public interface TouchScreen {
 
+  /**
+   * Allows the execution of single tap on the screen, analogous to click using a Mouse.
+   * @param where The location on the screen. Typically a {@link WebElement}
+   */
   void singleTap(Coordinates where);
+
+  /**
+   * Allows the execution of the gesture 'down' on the screen.  It is typically the first of a
+   * sequence of touch gestures.
+   * @param x The x coordinate relative to the viewport
+   * @param y The y coordinate relative to the viewport
+   */
+  void down(int x, int y);
 }
+

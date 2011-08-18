@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class RemoteTouchScreen implements TouchScreen {
@@ -33,6 +34,13 @@ public class RemoteTouchScreen implements TouchScreen {
   public void singleTap(Coordinates where) {
     Map<String, Object> singleTapParams = CoordinatesUtils.paramsFromCoordinates(where);
     executeMethod.execute(DriverCommand.TOUCH_SINGLE_TAP, singleTapParams);
+  }
+
+  public void down(int x, int y) {
+    Map<String, Object> downParams = new HashMap<String, Object>();
+    downParams.put("x", x);
+    downParams.put("y", y);
+    executeMethod.execute(DriverCommand.TOUCH_DOWN, downParams);
   }
 
 }

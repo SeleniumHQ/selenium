@@ -41,4 +41,9 @@ public class EventFiringTouch implements TouchScreen {
   public void singleTap(Coordinates where) {
     touchScreen.singleTap(where);
   }
+
+  public void down(int x, int y) {
+    touchScreen.down(x, y);
+  }
 }
+
