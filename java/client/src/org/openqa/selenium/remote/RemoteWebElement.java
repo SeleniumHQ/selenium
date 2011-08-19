@@ -74,30 +74,8 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return String.valueOf(value);
   }
 
-  public boolean toggle() {
-    return (Boolean) execute(DriverCommand.TOGGLE_ELEMENT, ImmutableMap.of("id", id)).getValue();
-  }
-
   public boolean isSelected() {
     return (Boolean) execute(DriverCommand.IS_ELEMENT_SELECTED, ImmutableMap.of("id", id)).getValue();
-  }
-
-  public void setSelected() {
-    if (!isDisplayed()) {
-      throw new ElementNotVisibleException("You may not select an element that is not displayed");
-    }
-
-    if (!isEnabled()) {
-      throw new InvalidElementStateException("Cannot select a disabled element");
-    }
-
-    if (!isSelectable()) {
-      throw new InvalidElementStateException("You may only set selectable items selected");
-    }
-
-    if (!isSelected()) {
-      click();
-    }
   }
 
   private boolean isSelectable() {

@@ -51,7 +51,6 @@ public interface DriverCommand {
   String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
   String SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT = "sendModifierKeyToActiveElement";
   String SUBMIT_ELEMENT = "submitElement";
-  String TOGGLE_ELEMENT = "toggleElement";
 
   String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
   String GET_WINDOW_HANDLES = "getWindowHandles";
@@ -73,7 +72,6 @@ public interface DriverCommand {
   String GET_ELEMENT_TEXT = "getElementText";
   String GET_ELEMENT_VALUE = "getElementValue";
   String GET_ELEMENT_TAG_NAME = "getElementTagName";
-  String SET_ELEMENT_SELECTED = "setElementSelected";
   String DRAG_ELEMENT = "dragElement";
   String IS_ELEMENT_SELECTED = "isElementSelected";
   String IS_ELEMENT_ENABLED = "isElementEnabled";
