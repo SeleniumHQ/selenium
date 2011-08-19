@@ -15,16 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import httplib
 import base64
-from selenium.webdriver.remote.command import Command 
+import httplib
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities 
 from service import Service
 
 class WebDriver(RemoteWebDriver):
-    """ Controls the ChromeDriver and allows you to drive the browser. 
-        You will need to download the ChromeDriver executable from 
+    """ Controls the ChromeDriver and allows you to drive the browser.
+        You will need to download the ChromeDriver executable from
         http://code.google.com/p/selenium/downloads/list"""
 
     def __init__(self, executable_path="chromedriver", port=0):
@@ -40,8 +40,8 @@ class WebDriver(RemoteWebDriver):
         self.service = Service(executable_path, port=port)
         self.service.start()
 
-        RemoteWebDriver.__init__(self, 
-            command_executor=self.service.service_url, 
+        RemoteWebDriver.__init__(self,
+            command_executor=self.service.service_url,
             desired_capabilities=DesiredCapabilities.CHROME)
 
     def quit(self):

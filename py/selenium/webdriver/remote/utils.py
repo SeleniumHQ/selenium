@@ -32,7 +32,7 @@ LOGGER = logging.getLogger(__name__)
 
 def format_json(json_struct):
     return json.dumps(json_struct, indent=4)
-    
+
 def dump_json(json_struct):
     return json.dumps(json_struct)
 
@@ -58,10 +58,10 @@ def get_root_parent(elem):
             parent = parent.parent
         except AttributeError:
             return parent
-            
+
 def unzip_to_temp_dir(zip_file_name):
     """Unzip zipfile to a temporary directory.
-    
+
     The directory of the unzipped files is returned if success,
     otherwise None is returned. """
     if not zip_file_name or not os.path.exists(zip_file_name):
@@ -79,8 +79,8 @@ def unzip_to_temp_dir(zip_file_name):
     try:
         # Create directories that don't exist
         for zip_name in zf.namelist():
-            # We have no knowledge on the os where the zipped file was 
-            # created, so we restrict to zip files with paths without 
+            # We have no knowledge on the os where the zipped file was
+            # created, so we restrict to zip files with paths without
             # charactor "\" and "/".
             name = (zip_name.replace("\\", os.path.sep).
                     replace("/", os.path.sep))
@@ -91,8 +91,8 @@ def unzip_to_temp_dir(zip_file_name):
 
         # Copy files
         for zip_name in zf.namelist():
-            # We have no knowledge on the os where the zipped file was 
-            # created, so we restrict to zip files with paths without 
+            # We have no knowledge on the os where the zipped file was
+            # created, so we restrict to zip files with paths without
             # charactor "\" and "/".
             name = (zip_name.replace("\\", os.path.sep).
                     replace("/", os.path.sep))
