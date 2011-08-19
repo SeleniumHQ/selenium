@@ -63,6 +63,7 @@ public class Pages {
   public String dynamicallyModifiedPage;
   public String linkedImage;
   public String selectPage;
+  public String touchScrollPage;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -108,5 +109,6 @@ public class Pages {
     dynamicallyModifiedPage = appServer.whereIs("dynamicallyModifiedPage.html");
     linkedImage = appServer.whereIs("linked_image.html");
     selectPage = appServer.whereIs("selectPage.html");
+    touchScrollPage = appServer.whereIs("touchScroll.html");
   }
 }

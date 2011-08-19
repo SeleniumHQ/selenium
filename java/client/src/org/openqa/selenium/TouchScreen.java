@@ -52,4 +52,12 @@ public interface TouchScreen {
    * @param y The y coordinate relative to the viewport
    */
   void move(int x, int y);
+
+  /**
+   * Creates a scroll gesture.
+   * @param where the location where the scroll starts, usually a {@link WebElement}.
+   * @param xOffset The x offset to scroll
+   * @param yOffset The y offset to scroll
+   */
+  void scroll(Coordinates where, int xOffset, int yOffset);
 }

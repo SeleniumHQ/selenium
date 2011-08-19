@@ -63,4 +63,9 @@ public class TouchActions extends Actions {
     action.addAction(new MoveAction(touchScreen, x, y));
     return this;
   }
+
+  public TouchActions scroll(WebElement onElement, int xOffset, int yOffset) {
+    action.addAction(new ScrollAction(touchScreen, (Locatable) onElement, xOffset, yOffset));
+    return this;
+  }
 }

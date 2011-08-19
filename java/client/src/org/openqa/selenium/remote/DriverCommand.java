@@ -144,4 +144,5 @@ public interface DriverCommand {
   String TOUCH_DOWN = "touchDown";
   String TOUCH_UP = "touchUp";
   String TOUCH_MOVE = "touchMove";
+  String TOUCH_SCROLL = "touchScroll";
 }

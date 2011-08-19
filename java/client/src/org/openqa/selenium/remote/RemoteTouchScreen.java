@@ -57,4 +57,10 @@ public class RemoteTouchScreen implements TouchScreen {
     executeMethod.execute(DriverCommand.TOUCH_MOVE, moveParams);
   }
 
+  public void scroll(Coordinates where, int xOffset, int yOffset) {
+    Map<String, Object> scrollParams = CoordinatesUtils.paramsFromCoordinates(where);
+    scrollParams.put("xoffset", xOffset);
+    scrollParams.put("yoffset", yOffset);
+    executeMethod.execute(DriverCommand.TOUCH_SCROLL, scrollParams);
+  }
 }

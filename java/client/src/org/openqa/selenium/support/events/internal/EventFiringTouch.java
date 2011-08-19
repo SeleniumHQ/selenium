@@ -53,4 +53,8 @@ public class EventFiringTouch implements TouchScreen {
   public void move(int x, int y) {
     touchScreen.move(x, y);
   }
+
+  public void scroll(Coordinates where, int xOffset, int yOffset) {
+    touchScreen.scroll(where, xOffset, yOffset);
+  }
 }

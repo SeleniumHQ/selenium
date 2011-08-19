@@ -215,7 +215,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_SCREEN_ORIENTATION, get("/session/:sessionId/orientation"))
         .put(SET_SCREEN_ORIENTATION, post("/session/:sessionId/orientation"))
 
-        // Interactions-related commands.
+         // Interactions-related commands.
         .put(CLICK, post("/session/:sessionId/click"))
         .put(DOUBLE_CLICK, post("/session/:sessionId/doubleclick"))
         .put(MOUSE_DOWN, post("/session/:sessionId/buttondown"))
@@ -223,7 +223,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(MOVE_TO, post("/session/:sessionId/moveto"))
         .put(SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT, post("/session/:sessionId/modifier"))
 
-        // IME related commands.
+         // IME related commands.
         .put(IME_GET_AVAILABLE_ENGINES, get("/session/:sessionId/ime/available_engines"))
         .put(IME_GET_ACTIVE_ENGINE, get("/session/:sessionId/ime/active_engine"))
         .put(IME_IS_ACTIVATED, get("/session/:sessionId/ime/activated"))
@@ -236,7 +236,8 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(TOUCH_DOWN, post("/session/:sessionId/touch/down"))
         .put(TOUCH_UP, post("/session/:sessionId/touch/up"))
         .put(TOUCH_MOVE, post("/session/:sessionId/touch/move"))
-        
+        .put(TOUCH_SCROLL, post("/session/:sessionId/touch/scroll"))
+
         .build();
   }
 
