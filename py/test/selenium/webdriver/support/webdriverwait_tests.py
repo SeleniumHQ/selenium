@@ -50,32 +50,32 @@ class WebDriverWaitTest(unittest.TestCase):
         self._loadPage("dynamic")
         add = self.driver.find_element_by_id("adder")
         add.click();
-        WebDriverWait(self.driver, 3).Until(findBox0)  # All is well if this doesn't throw.
+        WebDriverWait(self.driver, 3).until(findBox0)  # All is well if this doesn't throw.
 
     def testShouldStillFailToFindAnElementWithExplicitWait(self):
         self._loadPage("dynamic")
         try:
-            WebDriverWait(self.driver, 0.5).Until(findBox0)
+            WebDriverWait(self.driver, 0.5).until(findBox0)
             self.fail("Expected TimeoutException to have been thrown")
         except TimeoutException, e:
             pass
         except Exception, e:
             self.fail("Expected TimeoutException but got " + str(e))
 
-    def testShouldExplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany(self):
+    def testShouldExplicitlyWaituntilAtLeastOneElementIsFoundWhenSearchingForMany(self):
         self._loadPage("dynamic")
         add = self.driver.find_element_by_id("adder")
 
         add.click();
         add.click();
 
-        elements = WebDriverWait(self.driver, 2).Until(findAtLeastOneRedBox)
+        elements = WebDriverWait(self.driver, 2).until(findAtLeastOneRedBox)
         self.assertTrue(len(elements) >= 1)
 
     def testShouldFailToFindElementsWhenExplicitWaiting(self):
         self._loadPage("dynamic")
         try:
-            elements = WebDriverWait(self.driver, 0.5).Until(findRedBoxes)
+            elements = WebDriverWait(self.driver, 0.5).until(findRedBoxes)
         except TimeoutException, e:
             pass # we should get a timeout
         except Exception, e:

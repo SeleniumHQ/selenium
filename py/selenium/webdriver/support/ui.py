@@ -30,7 +30,7 @@ class WebDriverWait(object):
         if self._poll == 0:
             self._poll = POLL_FREQUENCY
 
-    def Until(self, method):
+    def until(self, method):
         """Calls the method provided with the driver as an argument until the \
         return value is not Falsy."""
         for _ in xrange(max(1, int(self._timeout/self._poll))):
