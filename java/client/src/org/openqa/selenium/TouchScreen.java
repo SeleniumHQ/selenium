@@ -45,4 +45,11 @@ public interface TouchScreen {
    * @param y The y coordinate relative to the viewport
    */
   void up(int x, int y);
+
+  /**
+   * Allows the execution of the gesture 'move' on the screen.
+   * @param x The x coordinate relative to the viewport
+   * @param y The y coordinate relative to the viewport
+   */
+  void move(int x, int y);
 }

@@ -50,4 +50,11 @@ public class RemoteTouchScreen implements TouchScreen {
     executeMethod.execute(DriverCommand.TOUCH_UP, upParams);
   }
 
+  public void move(int x, int y) {
+    Map<String, Object> moveParams = new HashMap<String, Object>();
+    moveParams.put("x", x);
+    moveParams.put("y", y);
+    executeMethod.execute(DriverCommand.TOUCH_MOVE, moveParams);
+  }
+
 }

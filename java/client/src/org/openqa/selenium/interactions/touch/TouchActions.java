@@ -58,4 +58,9 @@ public class TouchActions extends Actions {
     action.addAction(new UpAction(touchScreen, x, y));
     return this;
   }
+
+  public TouchActions move(int x, int y) {
+    action.addAction(new MoveAction(touchScreen, x, y));
+    return this;
+  }
 }

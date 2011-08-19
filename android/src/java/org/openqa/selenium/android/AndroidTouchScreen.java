@@ -70,6 +70,14 @@ public class AndroidTouchScreen implements TouchScreen {
     sendMotionEvents(event);
   }
 
+  public void move(int x, int y) {
+    List<MotionEvent> event = Lists.newArrayList();
+    long downTime = SystemClock.uptimeMillis();
+    Point coords = new Point(x, y);
+    event.add(getMotionEvent(downTime, downTime, MotionEvent.ACTION_MOVE, coords));
+    sendMotionEvents(event);
+  }
+
   private MotionEvent getMotionEvent(long start, long eventTime, int action, Point coords) {
     return MotionEvent.obtain(start, eventTime, action, coords.x, coords.y, 0);
   }
