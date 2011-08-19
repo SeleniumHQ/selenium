@@ -66,4 +66,10 @@ public interface TouchScreen {
    * @param where The coordinates of the element to double tap
    */
   void doubleTap(Coordinates where);
+
+  /**
+   * Allows the execution of long press gestures.
+   * @param where The coordinate of the element to long press
+   */
+  void longPress(Coordinates where);
 }

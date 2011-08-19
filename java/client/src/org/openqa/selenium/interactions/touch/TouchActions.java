@@ -73,4 +73,9 @@ public class TouchActions extends Actions {
     action.addAction(new DoubleTapAction(touchScreen, (Locatable) onElement));
     return this;
   }
+
+  public TouchActions longPress(WebElement onElement) {
+    action.addAction(new LongPressAction(touchScreen, (Locatable) onElement));
+    return this;
+  }
 }

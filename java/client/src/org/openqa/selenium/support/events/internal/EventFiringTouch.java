@@ -61,4 +61,8 @@ public class EventFiringTouch implements TouchScreen {
   public void doubleTap(Coordinates where) {
     touchScreen.doubleTap(where);
   }
+
+  public void longPress(Coordinates where) {
+    touchScreen.longPress(where);
+  }
 }

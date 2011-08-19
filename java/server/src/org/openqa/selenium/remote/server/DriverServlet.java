@@ -54,6 +54,7 @@ import org.openqa.selenium.remote.server.handler.interactions.MouseUp;
 import org.openqa.selenium.remote.server.handler.interactions.SendModifierKey;
 import org.openqa.selenium.remote.server.handler.interactions.touch.DoubleTapOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Down;
+import org.openqa.selenium.remote.server.handler.interactions.touch.LongPressOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Move;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;
 import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnElement;
@@ -266,7 +267,6 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/application_cache/status", GetAppCacheStatus.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
-
     deleteMapper.bind("/session/:sessionId/application_cache/clear", ClearAppCache.class)
        .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/browser_connection", SetBrowserConnection.class)
@@ -339,6 +339,8 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/touch/scroll", Scroll.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/touch/doubleclick", DoubleTapOnElement.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/touch/longclick", LongPressOnElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
   }
 
