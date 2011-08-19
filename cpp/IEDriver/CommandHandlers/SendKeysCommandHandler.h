@@ -101,7 +101,15 @@ class SendKeysCommandHandler : public IECommandHandler {
         element->scrollIntoView(CComVariant(VARIANT_TRUE));
 
         CComQIPtr<IHTMLInputFileElement> file(element);
-        if (file) {
+        CComQIPtr<IHTMLInputElement> input(element);
+        CComBSTR element_type;
+        if (input) {
+          input->get_type(&element_type);
+          element_type.ToLower();
+        }
+        bool is_file_element = (file != NULL) ||
+                               (input != NULL && element_type == L"file");
+        if (is_file_element) {
           DWORD ie_process_id;
           ::GetWindowThreadProcessId(window_handle, &ie_process_id);
           HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
