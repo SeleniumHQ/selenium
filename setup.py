@@ -103,6 +103,7 @@ setup(
         'selenium.webdriver.firefox': 'py/selenium/webdriver/firefox',
         'selenium.webdriver.ie': 'py/selenium/webdriver/ie',
         'selenium.webdriver.remote': 'py/selenium/webdriver/remote',
+        'selenium.webdriver.support': 'py/selenium/webdriver/support',
     },
     packages=['selenium',
               'selenium.common',
@@ -122,7 +123,8 @@ setup(
               'selenium.webdriver.support',
               'selenium.webdriver.firefox',
               'selenium.webdriver.ie',
-              'selenium.webdriver.remote', ],
+              'selenium.webdriver.remote',
+              'selenium.webdriver.support', ],
     package_data={
         'selenium.webdriver.firefox': ['*.xpi'],
         'selenium.webdriver.ie': ['*.dll'],

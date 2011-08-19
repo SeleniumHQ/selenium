@@ -21,9 +21,11 @@ import tempfile
 import time
 import shutil
 import unittest
+from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import TimeoutException
+from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -47,6 +49,15 @@ def findAtLeastOneRedBox(driver):
     if len(boxes) > 0:
         return boxes
     return False
+
+def setup_module(module):
+    WebDriverWaitTest.webserver = SimpleWebServer()
+    WebDriverWaitTest.webserver.start()
+    WebDriverWaitTest.driver = webdriver.Firefox()
+
+def teardown_module(module):
+    WebDriverWaitTest.driver.quit()
+    WebDriverWaitTest.webserver.stop()
 
 class WebDriverWaitTest(unittest.TestCase):
 
@@ -93,10 +104,10 @@ class WebDriverWaitTest(unittest.TestCase):
         add.click()
         elements = WebDriverWait(self.driver, 1).until(findRedBoxes)
         self.assertEqual(0, len(elements))
-    
+
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
-    
+
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 

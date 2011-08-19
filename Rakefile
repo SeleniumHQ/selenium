@@ -438,6 +438,36 @@ task :test_firefox_py => [:webdriver_py, :firefox, "//javascript/firefox-driver:
   end
 end
 
+task :test_support_py => [:webdriver_py, :firefox, "//javascript/firefox-driver:webdriver"] do
+  if python? then
+    xpi_zip_build = 'build/javascript/firefox-driver/webdriver.xpi'
+    firefox_py_home = "py/selenium/webdriver/firefox/"
+    py_test_path = 'build/python/bin/py.test'
+    py_setup = "build/python/bin/python " + 'setup.py build'
+    if (windows?) then
+      xpi_zip_build = xpi_zip_build.gsub(/\//, "\\")
+      firefox_py_home = firefox_py_home .gsub(/\//, "\\")
+      py_test_path = 'build\\python\\Scripts\\py.test.exe'
+      py_setup = 'build\\python\\Scripts\\python ' + 'setup.py build'
+    end
+  
+    cp xpi_zip_build , firefox_py_home, :verbose => true
+  
+    sh py_setup , :verbose => true
+
+
+    if File.exists?(py_test_path)
+        py_test = py_test_path
+    else
+        py_test = 'py.test'
+    end
+    test_dir = Dir.glob('build/lib**/selenium/test/selenium/webdriver/support/*.py').first
+    sh py_test, test_dir, :verbose => true
+    webdriver_zip = firefox_py_home + 'webdriver.xpi'
+    rm webdriver_zip , :verbose => true
+  end
+end
+
 task :test_remote_py => [:webdriver_py, :remote_client, :'selenium-server-standalone',
                          '//java/server/test/org/openqa/selenium/remote/server/auth:server:uber'] do
   if python? then
