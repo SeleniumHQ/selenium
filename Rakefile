@@ -252,46 +252,46 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 
 
 GeckoSDKs.new do |sdks|
-  sdks.add 'third_party/gecko-1.9.2/linux', 
+  sdks.add 'third_party/gecko-1.9.2/linux',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/3.6.20/sdk/xulrunner-3.6.20.en-US.linux-i686.sdk.tar.bz2'
-           
-  sdks.add 'third_party/gecko-2/linux', 
+
+  sdks.add 'third_party/gecko-2/linux',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2',
            '1ec6039ee99596551845f27d4bc83436'
-           
-  sdks.add 'third_party/gecko-2/linux64', 
+
+  sdks.add 'third_party/gecko-2/linux64',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-x86_64.sdk.tar.bz2',
            '101eb57d3f76f77e9c94d3cb25a8d56c'
-           
-  sdks.add 'third_party/gecko-2/mac', 
+
+  sdks.add 'third_party/gecko-2/mac',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.mac-x86_64.sdk.tar.bz2'
-           
-  sdks.add 'third_party/gecko-2/win32', 
+
+  sdks.add 'third_party/gecko-2/win32',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.win32.sdk.zip',
            '5cfa95a2d46334ce6283a772eff19382'
-           
+
   sdks.add 'third_party/gecko-5/linux',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.linux-i686.sdk.tar.bz2',
            '1c980270364eedea841b471578ebe4d8'
-           
-  sdks.add 'third_party/gecko-5/linux64', 
+
+  sdks.add 'third_party/gecko-5/linux64',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.linux-x86_64.sdk.tar.bz2',
            'fd193614e8dbe8f574e36c9f24eedf7a'
-           
+
   sdks.add 'third_party/gecko-5/mac',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.mac-i386.sdk.tar.bz2'
-           
-  sdks.add 'third_party/gecko-5/win32', 
+
+  sdks.add 'third_party/gecko-5/win32',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.win32.sdk.zip',
            '8894612028e1e28e428d748d50e9bc70'
-           
-  sdks.add 'third_party/gecko-6/linux', 
+
+  sdks.add 'third_party/gecko-6/linux',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0/sdk/xulrunner-6.0.en-US.linux-i686.sdk.tar.bz2'
-           
-  sdks.add 'third_party/gecko-6/linux64', 
+
+  sdks.add 'third_party/gecko-6/linux64',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0/sdk/xulrunner-6.0.en-US.linux-x86_64.sdk.tar.bz2'
-           
-  sdks.add 'third_party/gecko-6/win32', 
+
+  sdks.add 'third_party/gecko-6/win32',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0/sdk/xulrunner-6.0.en-US.win32.sdk.zip'
 end
 
@@ -341,10 +341,10 @@ task :webdriver_py do
   if python? then
     pip_pkg = "pip install simplejson py pytest rdflib"
     virtualenv = "virtualenv --no-site-packages build/python"
-    pip_install = 'build/python/bin/' + pip_pkg 
+    pip_install = 'build/python/bin/' + pip_pkg
     if (windows?) then
        virtualenv = "virtualenv build\\python"
-       pip_install = "build\\python\\Scripts\\" + pip_pkg 
+       pip_install = "build\\python\\Scripts\\" + pip_pkg
     end
 
     sh virtualenv, :verbose => true do |ok, res|
@@ -370,18 +370,18 @@ task :test_ie_py => :webdriver_py do
       mkdir_p x64 unless File.exists?(x64)
       cp 'cpp\\prebuilt\\Win32\\Release\\IEDriver.dll', win32, :verbose => true
       cp 'cpp\\prebuilt\\x64\\Release\\IEDriver.dll', x64, :verbose => true
-    
+
       sh "build\\python\\Scripts\\python setup.py build", :verbose => true
-      
+
       if File.exists?('build\\python\\Scripts\\py.test.exe')
           py_test = 'build\\python\\Scripts\\py.test.exe'
       else
           py_test = 'py.test.exe'
       end
-    
+
       test_dir = Dir.glob('build/lib**/selenium/test/selenium/webdriver/ie').first
       sh py_test, test_dir, :verbose => true
-      rm_rf win32 
+      rm_rf win32
       rm_rf x64
     end
   end
@@ -399,7 +399,7 @@ task :test_chrome_py => [:webdriver_py, :chrome] do
     sh py_setup , :verbose => true
 
     if File.exists?(py_test_path)
-        py_test = py_test_path 
+        py_test = py_test_path
     else
         py_test = 'py.test'
     end
@@ -427,7 +427,7 @@ task :test_firefox_py => [:webdriver_py, :firefox, "//javascript/firefox-driver:
 
 
     if File.exists?(py_test_path)
-        py_test = py_test_path 
+        py_test = py_test_path
     else
         py_test = 'py.test'
     end
@@ -450,9 +450,9 @@ task :test_remote_py => [:webdriver_py, :remote_client, :'selenium-server-standa
     end
 
     sh py_setup , :verbose => true
-    
+
     if File.exists?(py_test_path)
-        py_test = py_test_path 
+        py_test = py_test_path
     else
         py_test = 'py.test'
     end
@@ -466,9 +466,9 @@ task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :
 
         firefox_py_home = "py/selenium/webdriver/firefox/"
         xpi_zip_build = 'build/javascript/firefox-driver/webdriver.xpi'
-        
-        ie_driver_32 = 'cpp/prebuilt/Win32/Release/IEDriver.dll' 
-        ie_driver_64 = 'cpp/prebuilt/x64/Release/IEDriver.dll' 
+
+        ie_driver_32 = 'cpp/prebuilt/Win32/Release/IEDriver.dll'
+        ie_driver_64 = 'cpp/prebuilt/x64/Release/IEDriver.dll'
         ie_py_home = "py/selenium/webdriver/ie/"
         if (windows?) then
             xpi_zip_build = xpi_zip_build.gsub(/\//, "\\")
@@ -477,9 +477,9 @@ task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :
             ie_driver_64 = ie_driver_64.gsub(/\//, "\\")
             ie_py_home = ie_py_home.gsub(/\//, "\\")
         end
-        
-	mkdir_p ie_py_home + "win32" unless File.exists?(ie_py_home + "win32")
-      	mkdir_p ie_py_home + "x64" unless File.exists?(ie_py_home + "x64")
+
+        mkdir_p ie_py_home + "win32" unless File.exists?(ie_py_home + "win32")
+        mkdir_p ie_py_home + "x64" unless File.exists?(ie_py_home + "x64")
         cp xpi_zip_build , firefox_py_home, :verbose => true
         cp ie_driver_32, ie_py_home + "win32", :verbose => true
         cp ie_driver_64, ie_py_home + "x64", :verbose => true
@@ -583,9 +583,9 @@ task :release => [
 
   t.prerequisites.each do |pre|
     zip = Rake::Task[pre].out
-    
+
     next unless zip =~ /\.zip$/
-    
+
     temp =  zip + "rename"
     rm_rf temp
     deep = File.join(temp, "/selenium-#{version}")
