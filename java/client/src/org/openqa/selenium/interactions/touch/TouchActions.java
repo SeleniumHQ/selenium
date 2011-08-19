@@ -68,4 +68,9 @@ public class TouchActions extends Actions {
     action.addAction(new ScrollAction(touchScreen, (Locatable) onElement, xOffset, yOffset));
     return this;
   }
+
+  public TouchActions doubleTap(WebElement onElement) {
+    action.addAction(new DoubleTapAction(touchScreen, (Locatable) onElement));
+    return this;
+  }
 }

@@ -99,6 +99,18 @@ public class AndroidTouchScreen implements TouchScreen {
     sendMotionEvents(motionEvents);
   }
 
+  public void doubleTap(Coordinates where) {
+    scrollElementInView(where);
+    Point toDoubleTap = where.getLocationOnScreen();
+    List<MotionEvent> motionEvents = Lists.newArrayList();
+    long downTime = SystemClock.uptimeMillis();
+    motionEvents.add(getMotionEvent(downTime, downTime, MotionEvent.ACTION_DOWN, toDoubleTap));
+    motionEvents.add(getMotionEvent(downTime, downTime, MotionEvent.ACTION_UP, toDoubleTap));
+    motionEvents.add(getMotionEvent(downTime, downTime, MotionEvent.ACTION_DOWN, toDoubleTap));
+    motionEvents.add(getMotionEvent(downTime, downTime, MotionEvent.ACTION_UP, toDoubleTap));
+    sendMotionEvents(motionEvents);
+  }
+
   private MotionEvent getMotionEvent(long start, long eventTime, int action, Point coords) {
     return MotionEvent.obtain(start, eventTime, action, coords.x, coords.y, 0);
   }

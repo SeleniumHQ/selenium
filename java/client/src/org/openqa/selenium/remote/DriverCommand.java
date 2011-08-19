@@ -137,10 +137,12 @@ public interface DriverCommand {
   String IME_DEACTIVATE = "imeDeactivate";
   String IME_ACTIVATE_ENGINE = "imeActivateEngine";
 
+
   // These belong to the Advanced Touch API
   String TOUCH_SINGLE_TAP = "touchSingleTap";
   String TOUCH_DOWN = "touchDown";
   String TOUCH_UP = "touchUp";
   String TOUCH_MOVE = "touchMove";
   String TOUCH_SCROLL = "touchScroll";
+  String TOUCH_DOUBLE_TAP = "touchDoubleTap";
 }

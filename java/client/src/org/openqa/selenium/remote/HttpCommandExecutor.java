@@ -235,7 +235,8 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(TOUCH_UP, post("/session/:sessionId/touch/up"))
         .put(TOUCH_MOVE, post("/session/:sessionId/touch/move"))
         .put(TOUCH_SCROLL, post("/session/:sessionId/touch/scroll"))
-
+        .put(TOUCH_DOUBLE_TAP, post("/session/:sessionId/touch/doubleclick"))
+        
         .build();
   }
 

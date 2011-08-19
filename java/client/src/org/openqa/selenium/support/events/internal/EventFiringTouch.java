@@ -57,4 +57,8 @@ public class EventFiringTouch implements TouchScreen {
   public void scroll(Coordinates where, int xOffset, int yOffset) {
     touchScreen.scroll(where, xOffset, yOffset);
   }
+
+  public void doubleTap(Coordinates where) {
+    touchScreen.doubleTap(where);
+  }
 }
