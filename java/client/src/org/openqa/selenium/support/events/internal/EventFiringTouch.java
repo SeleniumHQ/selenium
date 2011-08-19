@@ -73,4 +73,8 @@ public class EventFiringTouch implements TouchScreen {
   public void flick(int xSpeed, int ySpeed) {
     touchScreen.flick(xSpeed, ySpeed);
   }
+
+  public void flick(Coordinates where, int xOffset, int yOffset, int speed) {
+    touchScreen.flick(where, xOffset, yOffset, speed);
+  }
 }

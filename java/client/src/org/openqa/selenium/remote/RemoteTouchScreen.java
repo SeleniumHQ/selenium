@@ -87,4 +87,12 @@ public class RemoteTouchScreen implements TouchScreen {
     flickParams.put("yspeed", ySpeed);
     executeMethod.execute(DriverCommand.TOUCH_FLICK, flickParams);
   }
+
+  public void flick(Coordinates where, int xOffset, int yOffset, int speed) {
+    Map<String, Object> flickParams = CoordinatesUtils.paramsFromCoordinates(where);
+    flickParams.put("xoffset", xOffset);
+    flickParams.put("yoffset", yOffset);
+    flickParams.put("speed", speed);
+    executeMethod.execute(DriverCommand.TOUCH_FLICK, flickParams);
+  }
 }

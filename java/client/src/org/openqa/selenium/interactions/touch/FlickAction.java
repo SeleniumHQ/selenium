@@ -27,8 +27,18 @@ import org.openqa.selenium.internal.Locatable;
  */
 public class FlickAction extends TouchAction implements Action {
 
-  private final int xSpeed;
-  private final int ySpeed;
+  private int xOffset;
+  private int yOffset;
+  private int speed;
+  private int xSpeed;
+  private int ySpeed;
+
+  public FlickAction(TouchScreen touchScreen, Locatable locationProvider, int x, int y, int speed) {
+    super(touchScreen, locationProvider);
+    xOffset = x;
+    yOffset = y;
+    this.speed = speed;
+  }
 
   public FlickAction(TouchScreen touchScreen, int xSpeed, int ySpeed) {
     super(touchScreen, null);
@@ -37,7 +47,11 @@ public class FlickAction extends TouchAction implements Action {
   }
 
   public void perform() {
-    touchScreen.flick(xSpeed, ySpeed);
+    if (where != null) {
+      touchScreen.flick(getActionLocation(), xOffset, yOffset, speed);
+    } else {
+      touchScreen.flick(xSpeed, ySpeed);
+    }
   }
 
 }

@@ -87,5 +87,13 @@ public interface TouchScreen {
    * @param ySpeed The vertical speed in pixels/second
    */
   void flick(int xSpeed, int ySpeed);
+
+  /**
+   * Allows the execution of flick gestures starting in a location's element.
+   * @param where The coordinate of the element to flick on
+   * @param xOffset The x offset relative to the viewport
+   * @param yOffset The y offset relative to the viewport
+   */
+  void flick(Coordinates where, int xOffset, int yOffset, int speed);
 }
 

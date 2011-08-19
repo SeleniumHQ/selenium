@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.interactions.touch;
 
-import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.HasTouchScreen;
 import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebElement;
@@ -32,10 +31,18 @@ import java.util.Map;
 
 public class Flick extends WebElementHandler implements JsonParametersAware {
 
+  private static final String ELEMENT = "element";
+  private static final String XOFFSET = "xoffset";
+  private static final String YOFFSET = "yoffset";
+  private static final String SPEED = "speed";
   private static final String XSPEED = "xspeed";
   private static final String YSPEED = "yspeed";
-  int xSpeed;
-  int ySpeed;
+  private String elementId;
+  private int xOffset;
+  private int yOffset;
+  private int speed;
+  private int xSpeed;
+  private int ySpeed;
 
   public Flick(Session session) {
     super(session);
@@ -44,7 +51,13 @@ public class Flick extends WebElementHandler implements JsonParametersAware {
   public ResultType call() throws Exception {
     TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
 
-    touchScreen.flick(xSpeed, ySpeed);
+    if (elementId != null) {
+      WebElement element = getKnownElements().get(elementId);
+      Coordinates elementLocation = ((Locatable) element).getCoordinates();
+      touchScreen.flick(elementLocation, xOffset, yOffset, speed);
+    } else {
+      touchScreen.flick(xSpeed, ySpeed);
+    }
 
     return ResultType.SUCCESS;
   }
@@ -55,8 +68,17 @@ public class Flick extends WebElementHandler implements JsonParametersAware {
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    xSpeed = ((Long) allParameters.get(XSPEED)).intValue();
-    ySpeed = ((Long) allParameters.get(YSPEED)).intValue();
+    if (allParameters.containsKey(ELEMENT) && allParameters.get(ELEMENT) != null) {
+      elementId = (String) allParameters.get(ELEMENT);
+      xOffset = ((Long) allParameters.get(XOFFSET)).intValue();
+      yOffset = ((Long) allParameters.get(YOFFSET)).intValue();
+      speed = ((Long) allParameters.get(SPEED)).intValue();
+    }
+
+    if (allParameters.containsKey(XSPEED) && allParameters.containsKey(YSPEED)) {
+      xSpeed = ((Long) allParameters.get(XSPEED)).intValue();
+      ySpeed = ((Long) allParameters.get(YSPEED)).intValue();
+    }
   }
 
 }

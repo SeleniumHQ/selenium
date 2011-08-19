@@ -88,4 +88,9 @@ public class TouchActions extends Actions {
     action.addAction(new FlickAction(touchScreen, xSpeed, ySpeed));
     return this;
   }
+
+  public TouchActions flick(WebElement onElement, int xOffset, int yOffset, int speed) {
+    action.addAction(new FlickAction(touchScreen, (Locatable) onElement, xOffset, yOffset, speed));
+    return this;
+  }
 }

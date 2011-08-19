@@ -28,12 +28,31 @@ import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.touch.TouchActions;
 
 /**
- * Tests the basic touchScreen operations
+ * Tests the basic flick operations.
  */
 public class TouchFlickTest extends AbstractDriverTestCase {
 
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
+  }
+
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, SELENESE}, reason = "TouchScreen "
+    + "operations not supported")
+  public void testCanFlickHorizontally() {
+    driver.get(pages.touchLongContentPage);
+    WebElement toFlick = driver.findElement(By.id("imagestart"));
+    Action flick = getBuilder(driver).flick(toFlick, -150, 0, 0).build();
+    flick.perform();
+  }
+
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, SELENESE}, reason = "TouchScreen "
+    + "operations not supported")
+  public void testCanFlickVertically() {
+    driver.get(pages.touchLongContentPage);
+    driver.navigate().refresh();
+    WebElement toFlick = driver.findElement(By.id("imagestart"));
+    Action flick = getBuilder(driver).flick(toFlick, 0, -150, 0).build();
+    flick.perform();
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, SELENESE}, reason = "TouchScreen "
@@ -44,6 +63,5 @@ public class TouchFlickTest extends AbstractDriverTestCase {
 
     Action flick = getBuilder(driver).flick(0, 4000).build();
     flick.perform();
-  }
+  }       
 }
-
