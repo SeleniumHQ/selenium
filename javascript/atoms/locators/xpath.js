@@ -35,11 +35,10 @@ goog.require('goog.dom.NodeType');
  */
 // TODO(berrada): Move this enum back to bot.locators.xpath namespace.
 // The problem is that we alias bot.locators.xpath in locators.js, while
-// we set the flag --collapse_properties
-// (http://www.corp.google.com/eng/doc/closure/cookbook/jscompiler.html#s19).
+// we set the flag --collapse_properties to compile in strict mode.
 // The compiler should have thrown the error anyways, it's a bug that it fails
 // only when introducing this enum.
-// Solution: remove --collapase_properties from the js_binary rule or
+// Solution: remove --collapase_properties or
 // use goog.exportSymbol to export the public methods and get rid of the alias.
 bot.locators.XPathResult_ = {
   ORDERED_NODE_SNAPSHOT_TYPE: 7,
