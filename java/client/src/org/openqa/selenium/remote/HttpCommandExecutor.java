@@ -234,7 +234,8 @@ public class HttpCommandExecutor implements CommandExecutor {
          // TODO(berrada): Refactor single tap with mouse click.
         .put(TOUCH_SINGLE_TAP, post("/session/:sessionId/touch/click"))
         .put(TOUCH_DOWN, post("/session/:sessionId/touch/down"))
-
+        .put(TOUCH_UP, post("/session/:sessionId/touch/up"))
+        
         .build();
   }
 

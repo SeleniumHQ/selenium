@@ -37,5 +37,12 @@ public interface TouchScreen {
    * @param y The y coordinate relative to the viewport
    */
   void down(int x, int y);
-}
 
+   /**
+   * Allows the execution of the gesture 'up' on the screen.  It is typically the last of a
+   * sequence of touch gestures.
+   * @param x The x coordinate relative to the viewport
+   * @param y The y coordinate relative to the viewport
+   */
+  void up(int x, int y);
+}

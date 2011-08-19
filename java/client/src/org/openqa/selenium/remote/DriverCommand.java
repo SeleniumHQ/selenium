@@ -142,4 +142,5 @@ public interface DriverCommand {
   // These belong to the Advanced Touch API
   String TOUCH_SINGLE_TAP = "touchSingleTap";
   String TOUCH_DOWN = "touchDown";
+  String TOUCH_UP = "touchUp";
 }

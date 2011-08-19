@@ -54,6 +54,7 @@ import org.openqa.selenium.remote.server.handler.interactions.MouseUp;
 import org.openqa.selenium.remote.server.handler.interactions.SendModifierKey;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Down;
 import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnElement;
+import org.openqa.selenium.remote.server.handler.interactions.touch.Up;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
@@ -327,6 +328,8 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/touch/click", SingleTapOnElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/touch/down", Down.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/touch/up", Up.class)
         .on(ResultType.SUCCESS, new EmptyResult());
   }
 

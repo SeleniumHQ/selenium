@@ -45,5 +45,8 @@ public class EventFiringTouch implements TouchScreen {
   public void down(int x, int y) {
     touchScreen.down(x, y);
   }
-}
 
+  public void up(int x, int y) {
+    touchScreen.up(x, y);
+  }
+}
