@@ -44,11 +44,9 @@ import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.SET_ELEMENT_SELECTED;
 import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
-import static org.openqa.selenium.remote.DriverCommand.TOGGLE_ELEMENT;
 
 import com.google.common.collect.Maps;
 
@@ -196,10 +194,8 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     addCommand(GET_PAGE_SOURCE, new GetPageSource());
     addCommand(SCREENSHOT, new TakeScreenshot());
     addCommand(SEND_KEYS_TO_ELEMENT, new SendKeys());
-    addCommand(SET_ELEMENT_SELECTED, new SetElementSelected());
     addCommand(SWITCH_TO_FRAME, new SwitchToFrame());
     addCommand(SUBMIT_ELEMENT, new SubmitElement());
-    addCommand(TOGGLE_ELEMENT, new ToggleElement());
     addCommand(QUIT, new QuitSelenium());
   }
 

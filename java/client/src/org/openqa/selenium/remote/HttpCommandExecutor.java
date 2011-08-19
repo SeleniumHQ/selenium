@@ -166,8 +166,6 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_ELEMENT_VALUE, get("/session/:sessionId/element/:id/value"))
         .put(GET_ELEMENT_TAG_NAME, get("/session/:sessionId/element/:id/name"))
         .put(IS_ELEMENT_SELECTED, get("/session/:sessionId/element/:id/selected"))
-        .put(SET_ELEMENT_SELECTED, post("/session/:sessionId/element/:id/selected"))
-        .put(TOGGLE_ELEMENT, post("/session/:sessionId/element/:id/toggle"))
         .put(IS_ELEMENT_ENABLED, get("/session/:sessionId/element/:id/enabled"))
         .put(IS_ELEMENT_DISPLAYED, get("/session/:sessionId/element/:id/displayed"))
         .put(HOVER_OVER_ELEMENT, post("/session/:sessionId/element/:id/hover"))
