@@ -105,7 +105,8 @@ bot.Error.NAMES_ = goog.object.transpose({
   'UnableToSetCookieError': bot.ErrorCode.UNABLE_TO_SET_COOKIE,
   'ModalDialogOpenedError': bot.ErrorCode.MODAL_DIALOG_OPENED,
   'NoModalDialogOpenError': bot.ErrorCode.NO_MODAL_DIALOG_OPEN,
-  'ScriptTimeoutError': bot.ErrorCode.SCRIPT_TIMEOUT
+  'ScriptTimeoutError': bot.ErrorCode.SCRIPT_TIMEOUT,
+  'InvalidSelectorError': bot.ErrorCode.INVALID_SELECTOR_ERROR
 });
 
 

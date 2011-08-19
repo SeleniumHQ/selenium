@@ -33,12 +33,12 @@ goog.require('goog.dom.NodeType');
  * @see http://www.w3.org/TR/DOM-Level-3-XPath/xpath.html#XPathResult
  * @private
  */
-// TODO(berrada): Move this enum back to bot.locators.xpath namespace.
+// TODO(user): Move this enum back to bot.locators.xpath namespace.
 // The problem is that we alias bot.locators.xpath in locators.js, while
-// we set the flag --collapse_properties to compile in strict mode.
+// we set the flag --collapse_properties
 // The compiler should have thrown the error anyways, it's a bug that it fails
 // only when introducing this enum.
-// Solution: remove --collapase_properties or
+// Solution: remove --collapase_properties from the js_binary rule or
 // use goog.exportSymbol to export the public methods and get rid of the alias.
 bot.locators.XPathResult_ = {
   ORDERED_NODE_SNAPSHOT_TYPE: 7,
@@ -112,7 +112,8 @@ bot.locators.xpath.single = function(target, root) {
       // The error is caused most likely by an invalid xpath expression
       // TODO: catch the exception more precise
       throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-          'Unable to locate an element with the xpath expression ' + target);
+          'Unable to locate an element with the xpath expression ' + target +
+          ' because of the following error:\n' + ex);
     }
   }
 
@@ -125,7 +126,9 @@ bot.locators.xpath.single = function(target, root) {
   // Ensure that we actually return an element
   if (node.nodeType != goog.dom.NodeType.ELEMENT) {
     throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-        'Returned node is not an element: ' + target);
+        'The result of the xpath expression "' + target +
+        '" is: ' + node +
+        '. It should be an element.');
   }
 
   return (/**@type {Element}*/node);  // Type verified above.
@@ -161,7 +164,8 @@ bot.locators.xpath.many = function(target, root) {
       // The error is caused most likely by an invalid xpath expression
       // TODO: catch the exception more precise
       throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-          'Unable to locate elements with the xpath expression ' + path);
+          'Unable to locate elements with the xpath expression ' + path +
+          ' because of the following error:\n' + ex);
     }
     var results = [];
     if (nodes) {
@@ -179,7 +183,9 @@ bot.locators.xpath.many = function(target, root) {
   goog.array.forEach(nodes, function(node) {
     if (node.nodeType != goog.dom.NodeType.ELEMENT) {
       throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-          'Returned nodes must be elements: ' + target);
+          'The result of the xpath expression "' + target +
+          '" is: ' + node +
+          '. It should be an element.');
     }
   });
 
