@@ -31,7 +31,7 @@ import java.net.Socket;
  */
 public class SocketLock implements Lock {
   public static final int DEFAULT_PORT = 7055;
-  private static final long DELAY_BETWEEN_SOCKET_CHECKS = 100;
+  private static final long DELAY_BETWEEN_SOCKET_CHECKS = 2000;
 
   private static final InetSocketAddress localhost = new InetSocketAddress("localhost", DEFAULT_PORT - 1);
   
@@ -80,7 +80,8 @@ public class SocketLock implements Lock {
       try {
         if (isLockFree(address))
           return;
-        Thread.sleep(DELAY_BETWEEN_SOCKET_CHECKS);
+        // Randomness or retry! Something from my past (Paul H) : http://www.wattystuff.net/amateur/packet/whatispacket.htm (search for random in page)
+        Thread.sleep((long) (DELAY_BETWEEN_SOCKET_CHECKS * Math.random()));
       } catch (InterruptedException e) {
         throw new WebDriverException(e);
       } catch (IOException e) {
