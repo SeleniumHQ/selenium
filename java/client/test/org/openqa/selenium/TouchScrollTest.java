@@ -25,6 +25,7 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 /**
@@ -36,7 +37,7 @@ public class TouchScrollTest extends AbstractDriverTestCase {
     return new TouchActions(driver);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, SELENESE}, reason = "TouchScreen "
+  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE}, reason = "TouchScreen "
       + "operations not supported")
   public void testCanScroll() {
     driver.get(pages.touchScrollPage);
