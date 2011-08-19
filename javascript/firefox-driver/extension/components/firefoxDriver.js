@@ -990,6 +990,40 @@ FirefoxDriver.prototype.getBrowserSpecificOffset_ = function(inBrowser) {
   return getBrowserSpecificOffset_(inBrowser);
 };
 
+calculateViewportScrolling_ = function(moveOffset, viewportDimension, pageCurrentOffset) {
+  // Offset from the border of the viewport (in pixels) we're willing to move
+  // the mouse to. If, after scrolling, the mouse ends up witha 0 X or Y coordinates
+  // clicking may fail - so make sure it's at most in this offset.
+  var MIN_BORDER_OFFSET = 20;
+
+  // Mouse movement will be outside the viewport - we need to scroll
+  if ((moveOffset > viewportDimension) || (moveOffset < 0)) {
+    var scrollOffset = 0;
+    var newMoveOffset = moveOffset;
+    var shouldScroll = true;
+
+    // Positive offset - scroll as much as needed and adjust
+    // the new mouse move offset to be MIN_BORDER_OFFSET above the border.
+    if (moveOffset > 0) {
+      scrollOffset = moveOffset - viewportDimension + MIN_BORDER_OFFSET;
+      newMoveOffset = viewportDimension - MIN_BORDER_OFFSET;
+    } else { // Negative move offset - scroll back.
+      scrollOffset = moveOffset - MIN_BORDER_OFFSET;
+      newMoveOffset = MIN_BORDER_OFFSET;
+      // The page is currently scrolled to the beginning of the page - do not
+      // attempt to scroll further. This is a special-case handling for when
+      // a negative offset is provided and we cannot scroll further.
+      if (pageCurrentOffset == 0) {
+        shouldScroll = false;
+      }
+    }
+
+    return {moveTo: newMoveOffset, scroll: scrollOffset, shouldScroll: shouldScroll};
+  }
+
+  return {moveTo: moveOffset, scroll: 0, shouldScroll: false};
+}
+
 FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   var doc = respond.session.getDocument();
   
@@ -1062,16 +1096,28 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     var events = Utils.getNativeEvents();
     var node = Utils.getNodeForNativeEvents(elementForNode);
 
-    // Make sure destination coordinates are positive - there's no sense in
-    // generating mouse move events to negative offests and the native events
-    // library will indeed refuse to do so.
-    toX = Math.max(toX, 0);
-    toY = Math.max(toY, 0);
+    // If toX or toY are outside the viewport, scroll.
+    var currentWindow = respond.session.getWindow();
+    var xScrolling = calculateViewportScrolling_(toX, currentWindow.innerWidth,
+      currentWindow.pageXOffset);
+    var yScrolling = calculateViewportScrolling_(toY, currentWindow.innerHeight,
+      currentWindow.pageYOffset);
 
-    // TODO(eran): Figure out the size of the window - it's ok to drag past the body's
-    // boundaries, but not the window's boundaries.
-    toX = Math.min(toX, 4096);
-    toY = Math.min(toY, 4096);
+    if (xScrolling.shouldScroll || yScrolling.shouldScroll) {
+      toX = xScrolling.moveTo;
+      toY = yScrolling.moveTo;
+
+      Logger.dumpn("Scroll offset not zero - scrolling by (" + xScrolling.scroll + ", " +
+        yScrolling.scroll + ") new toX, toY: (" + toX + ", " + toY + ")");
+
+      currentWindow.scrollBy(xScrolling.scroll, yScrolling.scroll);
+    } else {
+      // The scrolling calculation code also calculates correct X, Y coordinates
+      // for the mouse. If no scrolling takes place, make sure the destination
+      // coordinates are not negative.
+      toX = Math.max(toX, 0);
+      toY = Math.max(toY, 0);
+    }
 
     if (nativeEventsEnabled && events && node) {
       var currentPosition = respond.session.getMousePosition();

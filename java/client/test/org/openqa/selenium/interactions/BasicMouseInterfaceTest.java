@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -27,6 +28,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestUtilities.isFirefox;
 import static org.openqa.selenium.TestUtilities.isFirefox30;
 import static org.openqa.selenium.TestUtilities.isFirefox35;
+import static org.openqa.selenium.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
@@ -164,7 +166,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   public void testContextClick() {
     
     if (isFirefox(driver) &&
-      (!TestUtilities.isNativeEventsEnabled(driver)
+      (!isNativeEventsEnabled(driver)
        || !Platform.getCurrent().is(Platform.LINUX))) {
       System.out.println("Skipping test: only implemented on Linux with native events");
       return;
@@ -244,4 +246,59 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "We Arrive Here"));
   }
+
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME},
+      reason = "Not implemented yet.")
+  public void testMovingMousePastViewPort() {
+    if (!isNativeEventsEnabled(driver)) {
+      System.out.println("Skipping testMovingMousePastViewPort: Native events are disabled.");
+      return;
+    }
+
+    driver.get(pages.javascriptPage);
+
+    WebElement keyUpArea = driver.findElement(By.id("keyPressArea"));
+    new Actions(driver).moveToElement(keyUpArea).click().perform();
+
+    // Move by 1015 pixels down - we should be hitting the element with id 'parent'
+    new Actions(driver).moveByOffset(10, 1015).perform();
+
+    WebElement resultArea = driver.findElement(By.id("result"));
+    assertTrue("Result area contained: " + resultArea.getText(), resultArea.getText().contains("parent matches"));
+  }
+
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME},
+      reason = "Not implemented yet.")
+  public void testMovingMouseBackAndForthPastViewPort() {
+    if (!isNativeEventsEnabled(driver)) {
+      System.out.println("Skipping testMovingMouseBackAndForthPastViewPort: " +
+          "Native events are disabled.");
+      return;
+    }
+
+    driver.get(pages.veryLargeCanvas);
+
+    WebElement firstTarget = driver.findElement(By.id("r1"));
+    new Actions(driver).moveToElement(firstTarget).click().perform();
+
+    WebElement resultArea = driver.findElement(By.id("result"));
+    String expectedEvents = "First";
+    assertEquals(expectedEvents, resultArea.getText());
+
+    // Move to element with id 'r2', at (2500, 50) to (2580, 100)
+    new Actions(driver).moveByOffset(2540 - 150, 75 - 125).click().perform();
+    expectedEvents += " Second";
+    assertEquals(expectedEvents, resultArea.getText());
+
+    // Move to element with id 'r3' at (60, 1500) to (140, 1550)
+    new Actions(driver).moveByOffset(100 - 2540, 1525 - 75).click().perform();
+    expectedEvents += " Third";
+    assertEquals(expectedEvents, resultArea.getText());
+
+    // Move to element with id 'r4' at (220,180) to (320, 230)
+    new Actions(driver).moveByOffset(270 - 100, 205 - 1525).click().perform();
+    expectedEvents += " Fourth";
+    assertEquals(expectedEvents, resultArea.getText());
+  }
+
 }

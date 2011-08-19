@@ -98,11 +98,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     assertTrue("Top-left corner of the element should have negative offset",
         newLocation.getX() < 0 && newLocation.getY() < 0);
 
-    // TODO(eran): re-enable this test once moveto does not exceed the
-    // coordinates accepted by the browsers. At the moment, even though
-    // the maximal coordinates are limited, mouseUp fails because it cannot get
-    // the element at the given coordinates.
-    //actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
+    actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
     //We don't know where the img is dragged to , but we know it's not too
     //far, otherwise this function will not return for a long long time
   }

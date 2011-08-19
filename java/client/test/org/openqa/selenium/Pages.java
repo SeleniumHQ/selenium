@@ -64,6 +64,7 @@ public class Pages {
   public String linkedImage;
   public String selectPage;
   public String touchScrollPage;
+  public String veryLargeCanvas;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -110,5 +111,6 @@ public class Pages {
     linkedImage = appServer.whereIs("linked_image.html");
     selectPage = appServer.whereIs("selectPage.html");
     touchScrollPage = appServer.whereIs("touchScroll.html");
+    veryLargeCanvas = appServer.whereIs("veryLargeCanvas.html");
   }
 }
