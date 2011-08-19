@@ -54,7 +54,7 @@ public interface TouchScreen {
   void move(int x, int y);
 
   /**
-   * Creates a scroll gesture.
+   * Creates a scroll gesture that starts on a particular screen location.
    * @param where the location where the scroll starts, usually a {@link WebElement}.
    * @param xOffset The x offset to scroll
    * @param yOffset The y offset to scroll
@@ -74,10 +74,18 @@ public interface TouchScreen {
   void longPress(Coordinates where);
 
   /**
-   * Allows the screen to be scrolled by an offset.
+   * Allows the view to be scrolled by an x and y offset.
    * @param xOffset The horizontal offset relative to the viewport
    * @param yOffset The vertical offset relative to the viewport
    */
   void scroll(int xOffset, int yOffset);
+
+  /**
+   * Sends a flick gesture to the current view.
+   *
+   * @param xSpeed The horizontal speed in pixels/second
+   * @param ySpeed The vertical speed in pixels/second
+   */
+  void flick(int xSpeed, int ySpeed);
 }
 

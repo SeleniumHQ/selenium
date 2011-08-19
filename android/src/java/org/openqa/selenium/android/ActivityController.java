@@ -377,7 +377,29 @@ public class ActivityController {
     }
   }
 
+  public void sendFlick(int speedX, int speedY) {
+    synchronized (syncObject) {
+      done = false;
+      activity.sendFlickToScreen(speedX, speedY);
+      long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;
+      while (!done && (System.currentTimeMillis() < timeout)) {
+        try {
+          syncObject.wait(RESPONSE_TIMEOUT);
+        } catch (InterruptedException e) {
+          throw new WebDriverException("Failure while waiting for sendFlick.");
+        }
+      }
+    }
+  }
+
   public void notifyScrollDone() {
+    synchronized (syncObject) {
+      done = true;
+      syncObject.notify();
+    }
+  }
+
+  public void notifyFlickDone() {
     synchronized (syncObject) {
       done = true;
       syncObject.notify();

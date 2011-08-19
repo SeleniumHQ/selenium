@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.android.app;
 
@@ -98,7 +98,8 @@ public class WebDriverWebView extends WebView {
   private boolean isLastEvent(MotionEvent ev) {
     float zoom = this.getScale();
     MotionEvent last =  controller.getLastMotionEventSent();
-    if ((ev.getAction() == last.getAction())
+    if (ev != null && last != null
+        && (ev.getAction() == last.getAction())
         && (ev.getDownTime() == last.getDownTime())
         && (ev.getX() == zoom * last.getX())
         && (ev.getY() == zoom * last.getY())) {

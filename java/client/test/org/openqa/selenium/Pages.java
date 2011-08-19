@@ -63,7 +63,7 @@ public class Pages {
   public String dynamicallyModifiedPage;
   public String linkedImage;
   public String selectPage;
-  public String touchScrollPage;
+  public String touchLongContentPage;
   public String veryLargeCanvas;
 
   public Pages(AppServer appServer) {
@@ -110,7 +110,7 @@ public class Pages {
     dynamicallyModifiedPage = appServer.whereIs("dynamicallyModifiedPage.html");
     linkedImage = appServer.whereIs("linked_image.html");
     selectPage = appServer.whereIs("selectPage.html");
-    touchScrollPage = appServer.whereIs("touchScroll.html");
+    touchLongContentPage = appServer.whereIs("longContentPage.html");
     veryLargeCanvas = appServer.whereIs("veryLargeCanvas.html");
   }
 }

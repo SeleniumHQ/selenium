@@ -83,4 +83,9 @@ public class TouchActions extends Actions {
     action.addAction(new ScrollAction(touchScreen, xOffset, yOffset));
     return this;
   }
+
+  public TouchActions flick(int xSpeed, int ySpeed) {
+    action.addAction(new FlickAction(touchScreen, xSpeed, ySpeed));
+    return this;
+  }
 }

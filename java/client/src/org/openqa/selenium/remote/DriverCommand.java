@@ -146,4 +146,5 @@ public interface DriverCommand {
   String TOUCH_SCROLL = "touchScroll";
   String TOUCH_DOUBLE_TAP = "touchDoubleTap";
   String TOUCH_LONG_PRESS = "touchLongPress";
+  String TOUCH_FLICK = "touchFlick";
 }

@@ -54,7 +54,7 @@ import org.openqa.selenium.remote.server.handler.interactions.MouseUp;
 import org.openqa.selenium.remote.server.handler.interactions.SendModifierKey;
 import org.openqa.selenium.remote.server.handler.interactions.touch.DoubleTapOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Down;
-import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;
+import org.openqa.selenium.remote.server.handler.interactions.touch.Flick;
 import org.openqa.selenium.remote.server.handler.interactions.touch.LongPressOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Move;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;
@@ -342,6 +342,8 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/touch/doubleclick", DoubleTapOnElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/touch/longclick", LongPressOnElement.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/touch/flick", Flick.class)
         .on(ResultType.SUCCESS, new EmptyResult());
   }
 

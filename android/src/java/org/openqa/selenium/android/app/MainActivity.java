@@ -84,6 +84,7 @@ public class MainActivity extends Activity {
   private static final int CMD_RELOAD = 6;
   private static final int CMD_SEND_TOUCH = 7;
   private static final int CMD_NEW_VIEW = 8;
+  private static final int CMD_FLICK = 9;
   private static final int CMD_SCROLL = 10;
 
   private NetworkStateHandler networkHandler;
@@ -114,6 +115,10 @@ public class MainActivity extends Activity {
         currentView = newView;
         viewManager.addView(newView);
         setContentView(newView);
+      } else if (msg.what == CMD_FLICK) {
+        int[] flick = (int[]) msg.obj;
+        currentView.flingScroll(flick[0], flick[1]);
+        controller.notifyFlickDone();
       } else if (msg.what == CMD_SCROLL) {
         Point point = (Point) msg.obj;
         currentView.scrollBy(point.x, point.y);
@@ -411,8 +416,14 @@ public class MainActivity extends Activity {
     handler.sendMessage(msg);
   }
 
+  public void sendFlickToScreen(int speedX, int speedY) {
+    Message msg = handler.obtainMessage(CMD_FLICK);
+    int[] speed = {speedX, speedY};
+    msg.obj = speed;
+    handler.sendMessage(msg);
+  }
+
   public Alert getAlert() {
     return currentView.getAlert();
   }
-
 }
