@@ -65,4 +65,8 @@ public class EventFiringTouch implements TouchScreen {
   public void longPress(Coordinates where) {
     touchScreen.longPress(where);
   }
+
+  public void scroll(int xOffset, int yOffset) {
+    touchScreen.scroll(xOffset, yOffset);
+  }
 }

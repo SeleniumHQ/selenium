@@ -72,4 +72,12 @@ public interface TouchScreen {
    * @param where The coordinate of the element to long press
    */
   void longPress(Coordinates where);
+
+  /**
+   * Allows the screen to be scrolled by an offset.
+   * @param xOffset The horizontal offset relative to the viewport
+   * @param yOffset The vertical offset relative to the viewport
+   */
+  void scroll(int xOffset, int yOffset);
 }
+

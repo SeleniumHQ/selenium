@@ -73,4 +73,12 @@ public class RemoteTouchScreen implements TouchScreen {
     Map<String, Object> longPressParams = CoordinatesUtils.paramsFromCoordinates(where);
     executeMethod.execute(DriverCommand.TOUCH_LONG_PRESS, longPressParams);
   }
+
+  public void scroll(int xOffset, int yOffset) {
+    Map<String, Object> scrollParams = new HashMap<String, Object>();
+    scrollParams.put("xoffset", xOffset);
+    scrollParams.put("yoffset", yOffset);
+    executeMethod.execute(DriverCommand.TOUCH_SCROLL, scrollParams);
+  }
+
 }

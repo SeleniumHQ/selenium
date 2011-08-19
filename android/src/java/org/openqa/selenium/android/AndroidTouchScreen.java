@@ -120,6 +120,10 @@ public class AndroidTouchScreen implements TouchScreen {
     sendMotionEvents(motionEvents);
   }
 
+  public void scroll(int xOffset, int yOffset) {
+    controller.sendScroll(xOffset, yOffset);
+  }
+
   private MotionEvent getMotionEvent(long start, long eventTime, int action, Point coords) {
     return MotionEvent.obtain(start, eventTime, action, coords.x, coords.y, 0);
   }

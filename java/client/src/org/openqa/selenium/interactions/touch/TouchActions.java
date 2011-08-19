@@ -78,4 +78,9 @@ public class TouchActions extends Actions {
     action.addAction(new LongPressAction(touchScreen, (Locatable) onElement));
     return this;
   }
+
+  public TouchActions scroll(int xOffset, int yOffset) {
+    action.addAction(new ScrollAction(touchScreen, xOffset, yOffset));
+    return this;
+  }
 }

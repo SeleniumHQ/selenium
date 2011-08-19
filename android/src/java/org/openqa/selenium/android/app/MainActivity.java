@@ -1,5 +1,4 @@
 /*
-Copyright 2010 WebDriver committers
 
 Copyright 2010 Google Inc.
 
@@ -14,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.android.app;
 
@@ -28,6 +27,7 @@ import java.util.Set;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.android.ActivityController;
 import org.openqa.selenium.android.Logger;
@@ -84,6 +84,7 @@ public class MainActivity extends Activity {
   private static final int CMD_RELOAD = 6;
   private static final int CMD_SEND_TOUCH = 7;
   private static final int CMD_NEW_VIEW = 8;
+  private static final int CMD_SCROLL = 10;
 
   private NetworkStateHandler networkHandler;
 
@@ -113,6 +114,10 @@ public class MainActivity extends Activity {
         currentView = newView;
         viewManager.addView(newView);
         setContentView(newView);
+      } else if (msg.what == CMD_SCROLL) {
+        Point point = (Point) msg.obj;
+        currentView.scrollBy(point.x, point.y);
+        controller.notifyScrollDone();
       }
     }
   };
@@ -359,10 +364,10 @@ public class MainActivity extends Activity {
     cv.drawPicture(pic);
     // Cropping to what's actually displayed on screen
     Bitmap cropped = Bitmap.createBitmap(raw,
-      currentView.getScrollX(),
-      currentView.getScrollY(),
-      currentView.getWidth() - currentView.getVerticalScrollbarWidth(),
-      currentView.getHeight());
+        currentView.getScrollX(),
+        currentView.getScrollY(),
+        currentView.getWidth() - currentView.getVerticalScrollbarWidth(),
+        currentView.getHeight());
 
     ByteArrayOutputStream stream = new ByteArrayOutputStream();
     if (!cropped.compress(CompressFormat.PNG, 100, stream)) {
@@ -400,7 +405,14 @@ public class MainActivity extends Activity {
         false, false, false, false, true, true, true, 0, 5);
   }
 
+  public void sendScrollToScreen(int xOffset, int yOffset) {
+    Message msg = handler.obtainMessage(CMD_SCROLL);
+    msg.obj = new Point(xOffset, yOffset);
+    handler.sendMessage(msg);
+  }
+
   public Alert getAlert() {
     return currentView.getAlert();
   }
+
 }

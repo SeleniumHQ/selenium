@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.android;
 
@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.android.app.MainActivity;
 import org.openqa.selenium.android.app.WebDriverWebView;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -49,6 +50,7 @@ public class ActivityController {
   private volatile boolean motionEventDone = false;
   private volatile boolean pageStartedLoading = false;
   private volatile boolean sendKeysDone = false;
+  private volatile boolean done = false;
 
   private MotionEvent lastMotionEventSent;
 
@@ -322,7 +324,7 @@ public class ActivityController {
       sendKeysDone = false;
       activity.sendKeys(inputKeys);
       long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;
-      while(!sendKeysDone && (System.currentTimeMillis() < timeout)) {
+      while (!sendKeysDone && (System.currentTimeMillis() < timeout)) {
         try {
           syncSendKeys.wait(RESPONSE_TIMEOUT);
         } catch (InterruptedException e) {
@@ -360,4 +362,25 @@ public class ActivityController {
     }
   }
 
+  public void sendScroll(int xOffset, int yOffset) {
+    synchronized (syncObject) {
+      done = false;
+      activity.sendScrollToScreen(xOffset, yOffset);
+      long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;
+      while (!done && (System.currentTimeMillis() < timeout)) {
+        try {
+          syncObject.wait(RESPONSE_TIMEOUT);
+        } catch (InterruptedException e) {
+          throw new WebDriverException("Failure while waiting for sendScroll.");
+        }
+      }
+    }
+  }
+
+  public void notifyScrollDone() {
+    synchronized (syncObject) {
+      done = true;
+      syncObject.notify();
+    }
+  }
 }

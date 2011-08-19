@@ -54,6 +54,7 @@ import org.openqa.selenium.remote.server.handler.interactions.MouseUp;
 import org.openqa.selenium.remote.server.handler.interactions.SendModifierKey;
 import org.openqa.selenium.remote.server.handler.interactions.touch.DoubleTapOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Down;
+import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;
 import org.openqa.selenium.remote.server.handler.interactions.touch.LongPressOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Move;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;

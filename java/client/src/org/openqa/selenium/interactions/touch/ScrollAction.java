@@ -36,6 +36,12 @@ public class ScrollAction extends TouchAction implements Action {
     yOffset = y;
   }
 
+  public ScrollAction(TouchScreen touchScreen, int xOffset, int yOffset) {
+    super(touchScreen, null);
+    this.xOffset = xOffset;
+    this.yOffset = yOffset;
+  }
+
   public void perform() {
     touchScreen.scroll(getActionLocation(), xOffset, yOffset);
   }
