@@ -99,7 +99,6 @@ setup(
         'selenium.webdriver': 'py/selenium/webdriver',
         'selenium.webdriver.chrome': 'py/selenium/webdriver/chrome',
         'selenium.webdriver.common': 'py/selenium/webdriver/common',
-        'selenium.webdriver.support': 'py/selenium/webdriver/support',
         'selenium.webdriver.firefox': 'py/selenium/webdriver/firefox',
         'selenium.webdriver.ie': 'py/selenium/webdriver/ie',
         'selenium.webdriver.remote': 'py/selenium/webdriver/remote',
