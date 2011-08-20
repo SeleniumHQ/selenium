@@ -77,8 +77,7 @@ class CachingDownloader < Downloader
   CACHE_DIR = File.expand_path("~/.crazyfun")
 
   def self.fetch(url, hash)
-    basename = File.basename(url)
-    cached_path = File.join(CACHE_DIR, basename)
+    cached_path = File.join(CACHE_DIR, url.gsub(/[^\w.]/, '_'))
 
     if File.exist?(cached_path)
       cached_hash = Digest::MD5.file(cached_path).hexdigest
