@@ -253,7 +253,8 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 
 GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-1.9.2/linux',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/3.6.20/sdk/xulrunner-3.6.20.en-US.linux-i686.sdk.tar.bz2'
+           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/3.6.20/sdk/xulrunner-3.6.20.en-US.linux-i686.sdk.tar.bz2',
+           '2458be3fe8306ea1a52818535686a3d5'
 
   sdks.add 'third_party/gecko-2/linux',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2',
@@ -286,13 +287,16 @@ GeckoSDKs.new do |sdks|
            '8894612028e1e28e428d748d50e9bc70'
 
   sdks.add 'third_party/gecko-6/linux',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0/sdk/xulrunner-6.0.en-US.linux-i686.sdk.tar.bz2'
+           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0/sdk/xulrunner-6.0.en-US.linux-i686.sdk.tar.bz2',
+           '89a3cb7751697f5e9bf73c3b7c7a8560'
 
   sdks.add 'third_party/gecko-6/linux64',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0/sdk/xulrunner-6.0.en-US.linux-x86_64.sdk.tar.bz2'
+           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0/sdk/xulrunner-6.0.en-US.linux-x86_64.sdk.tar.bz2',
+           '784894ce17de2a87f7e42143bbf70207'
 
   sdks.add 'third_party/gecko-6/win32',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0/sdk/xulrunner-6.0.en-US.win32.sdk.zip'
+           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0/sdk/xulrunner-6.0.en-US.win32.sdk.zip',
+           '66e4cee9e36b1785266e6567727d686e'
 end
 
 task :'selenium-server_zip' do
