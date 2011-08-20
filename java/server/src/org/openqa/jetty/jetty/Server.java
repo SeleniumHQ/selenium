@@ -15,23 +15,21 @@
 
 package org.openqa.jetty.jetty;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
 import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.http.HttpServer;
 import org.openqa.jetty.jetty.servlet.ServletHttpContext;
 import org.openqa.jetty.jetty.servlet.WebApplicationContext;
+import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.LogSupport;
 import org.openqa.jetty.util.Resource;
 import org.openqa.jetty.xml.XmlConfiguration;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.*;
 
 
 /* ------------------------------------------------------------ */
@@ -479,9 +477,9 @@ public class Server extends HttpServer
     * 
     * Thread is hooked first time list of servers is changed.
     */
-  private static class ShutdownHookThread extends Thread {
-    private boolean hooked = false;
-    private ArrayList servers = new ArrayList();
+  private static class ShutdownHookThread extends Thread {  // Memory model reviewed
+    private volatile boolean hooked = false;
+    private final List<Server> servers = Collections.synchronizedList(new ArrayList<Server>());
 
     /**
      * Hooks this thread for shutdown.
@@ -553,9 +551,7 @@ public class Server extends HttpServer
     public void run() {
       setName("Shutdown");
       log.info("Shutdown hook executing");
-      Iterator it = servers.iterator();
-      while (it.hasNext()) {
-        Server svr = (Server) it.next();
+      for (Server svr : servers) {
         if (svr == null) continue;
         try {
           svr.stop();
