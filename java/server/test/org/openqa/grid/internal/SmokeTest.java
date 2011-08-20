@@ -1,12 +1,5 @@
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -14,6 +7,13 @@ import org.junit.Test;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static org.openqa.grid.common.RegistrationRequest.APP;
 
 
 public class SmokeTest {
@@ -25,16 +25,16 @@ public class SmokeTest {
   private static RemoteProxy p1;
   private static RemoteProxy p2;
 
-  private static int MAX = 10;
+  private static final int MAX = 10;
 
-  private static int ran = 0;
+  private static volatile int ran = 0;
 
   /**
    * create a hub with 1 IE and 1 FF
    */
   @BeforeClass
   public static void setup() {
-    registry = new Registry();
+    registry = Registry.newInstance();
     ie.put(APP, "IE");
     ff.put(APP, "FF");
 
@@ -85,13 +85,13 @@ public class SmokeTest {
     }
 
     // while the rest waits.
-    while (registry.getNewSessionRequests().size() != 18) {
+    while (registry.getNewSessionRequestCount() != 18) {
       Thread.sleep(50);
     }
 
     int stopped = 0;
     // nothing left running or waiting to be run
-    while (registry.getActiveSessions().size() != 0 || registry.getNewSessionRequests().size() != 0) {
+    while (registry.getActiveSessions().size() != 0 || registry.getNewSessionRequestCount() != 0) {
       for (TestSession session : sessions) {
         MockedRequestHandler stopSessionRequest = new MockedRequestHandler(registry);
         stopSessionRequest.setSession(session);
@@ -104,7 +104,7 @@ public class SmokeTest {
     // all request got the stop session request
     Assert.assertEquals(2 * MAX, stopped);
     // nothing left waiting
-    Assert.assertEquals(0, registry.getNewSessionRequests().size());
+    Assert.assertEquals(0, registry.getNewSessionRequestCount());
     // nothing active
     Assert.assertEquals(0, registry.getActiveSessions().size());
     // everything was started.

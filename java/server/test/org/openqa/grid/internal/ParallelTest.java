@@ -46,7 +46,7 @@ public class ParallelTest {
 
   @Test
   public void canGetApp2() throws InterruptedException {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     RemoteProxy p1 = new RemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -68,7 +68,7 @@ public class ParallelTest {
    */
   @Test
   public void cannotGet2App2() throws InterruptedException {
-    final Registry registry = new Registry();
+    final Registry registry = Registry.newInstance();
     RemoteProxy p1 = new RemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -96,7 +96,7 @@ public class ParallelTest {
    */
   @Test(timeout = 2000)
   public void canGet5App1() {
-    final Registry registry = new Registry();
+    final Registry registry = Registry.newInstance();
     RemoteProxy p1 = new RemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -122,7 +122,7 @@ public class ParallelTest {
    */
   @Test(timeout = 1000)
   public void cannotGet6App1() throws InterruptedException {
-    final Registry registry = new Registry();
+    final Registry registry = Registry.newInstance();
     RemoteProxy p1 = new RemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -159,7 +159,7 @@ public class ParallelTest {
    */
   @Test(timeout = 1000)
   public void cannotGetApp2() throws InterruptedException {
-    final Registry registry = new Registry();
+    final Registry registry = Registry.newInstance();
     RemoteProxy p1 = new RemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -195,7 +195,7 @@ public class ParallelTest {
 
   @Test(timeout = 10000)
   public void releaseAndReserve() throws InterruptedException {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     RemoteProxy p1 = null;
     RegistrationRequest req = null;
     Map<String, Object> app1 = new HashMap<String, Object>();

@@ -16,7 +16,7 @@ import org.openqa.grid.internal.RemoteProxy;
 
 public class RemoteProxyInheritanceTest {
 
-  private Registry registry = new Registry();
+  private Registry registry = Registry.newInstance();
 
   @Test
   public void defaultToRemoteProxy() {

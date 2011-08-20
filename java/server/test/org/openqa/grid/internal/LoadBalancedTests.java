@@ -24,7 +24,7 @@ public class LoadBalancedTests {
 
   @BeforeClass
   public static void setup() {
-    registry = new Registry();
+    registry = Registry.newInstance();
     // A request that will create a proxy with 5 slots. Each slot can host a
     // firefox.
     Map<String, Object> config = new HashMap<String, Object>();

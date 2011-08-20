@@ -54,7 +54,7 @@ public class RegistrationListenerTest {
 
   @Test(timeout = 5000)
   public void testRegistration() {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     registry.add(new MyRemoteProxy(req, registry));
 
     MockedRequestHandler request = new MockedNewSessionRequestHandler(registry, app1);
@@ -92,7 +92,7 @@ public class RegistrationListenerTest {
    */
   @Test
   public void testBugRegistration() {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     registry.add(new MyBuggyRemoteProxy(req, registry));
     registry.add(new MyBuggyRemoteProxy(req, registry));
 
@@ -116,7 +116,7 @@ public class RegistrationListenerTest {
     }
   }
 
-  Registry registry = new Registry();
+  Registry registry = Registry.newInstance();
 
   /**
    * register a regular proxy for app1 and a slow one.

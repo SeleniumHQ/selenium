@@ -16,11 +16,15 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
+import org.openqa.grid.internal.listeners.Prioritizer;
+import org.openqa.grid.internal.listeners.RegistrationListener;
+import org.openqa.grid.internal.listeners.SelfHealingProxy;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.web.Hub;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
+
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
@@ -29,14 +33,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
-import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.listeners.RegistrationListener;
-import org.openqa.grid.internal.listeners.SelfHealingProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.web.Hub;
-import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 /**
  * Kernel of the grid. Keeps track of what's happening, what's free/used and
@@ -69,11 +65,7 @@ public class Registry {
   private GridHubConfiguration configuration;
 
 
-  public Registry() {
-    this(null, new GridHubConfiguration());
-  }
-
-  public Registry(Hub hub, GridHubConfiguration config) {
+  private Registry(Hub hub, GridHubConfiguration config) {
     this.hub = hub;
 
     this.newSessionWaitTimeout = config.getNewSessionWaitTimeout();
@@ -82,13 +74,21 @@ public class Registry {
 
     this.configuration = config;
 
-    matcherThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+  }
+
+  public static Registry newInstance(){
+    return newInstance( null, new GridHubConfiguration());
+  }
+
+  public static Registry newInstance(Hub hub, GridHubConfiguration config){
+    Registry registry = new Registry(hub, config);
+    registry.matcherThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       public void uncaughtException(Thread t, Throwable e) {
         log.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
       }
     });
 
-    matcherThread.start();
+    registry.matcherThread.start();
 
     // freynaud : TODO
     // Registry is in a valid state when testSessionAvailable.await(); from
@@ -98,6 +98,7 @@ public class Registry {
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
+    return registry;
   }
 
   public GridHubConfiguration getConfiguration() {
@@ -219,7 +220,7 @@ public class Registry {
    * iteration is stopped to account for that change.
    */
 
-  public void assignRequestToProxy() {
+  private void assignRequestToProxy() {
 
     boolean force = false;
     while (!stop) {
@@ -460,8 +461,20 @@ public class Registry {
     return null;
   }
 
+  /*
+    May race.
+   */
+  public int getNewSessionRequestCount(){
+    return getNewSessionRequests().size();
+  }
+
   public List<RequestHandler> getNewSessionRequests() {
-    return newSessionRequests;
+    try {
+      lock.lock();
+      return newSessionRequests;
+   } finally {
+      lock.unlock();
+   }
   }
 
   public Set<TestSession> getActiveSessions() {

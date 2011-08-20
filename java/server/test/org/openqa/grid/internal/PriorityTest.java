@@ -1,12 +1,5 @@
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -15,6 +8,13 @@ import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.openqa.grid.common.RegistrationRequest.APP;
 
 
 public class PriorityTest {
@@ -48,7 +48,7 @@ public class PriorityTest {
    */
   @BeforeClass
   public static void setup() throws InterruptedException {
-    registry = new Registry();
+    registry = Registry.newInstance();
     registry.setPrioritizer(highestNumberHasPriority);
     ff.put(APP, "FF");
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
@@ -103,7 +103,7 @@ public class PriorityTest {
       }).start();
     }
 
-    while (registry.getNewSessionRequests().size() != 5) {
+    while (registry.getNewSessionRequestCount() != 5) {
       Thread.sleep(100);
     }
 

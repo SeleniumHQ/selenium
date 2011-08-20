@@ -55,7 +55,7 @@ public class SessionListenerTest {
 
   @Test
   public void beforeAfterRan() {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     registry.add(new MyRemoteProxy(req, registry));
 
     MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, app1);
@@ -104,7 +104,7 @@ public class SessionListenerTest {
    */
   @Test(timeout = 5000)
   public void buggyBefore() throws InterruptedException {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     registry.add(new MyBuggyBeforeRemoteProxy(req, registry));
 
     MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, app1);
@@ -156,7 +156,7 @@ public class SessionListenerTest {
    */
   @Test(timeout = 1000)
   public void buggyAfter() throws InterruptedException {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     registry.add(new MyBuggyAfterRemoteProxy(req, registry));
 
     MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, app1);
@@ -243,7 +243,7 @@ public class SessionListenerTest {
     req.addDesiredCapabilitiy(cap);
     req.setConfiguration(config);
 
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     registry.add(new SlowAfterSession(req, registry));
 
     MockedNewSessionRequestHandler r = new MockedNewSessionRequestHandler(registry, app1);

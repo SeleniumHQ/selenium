@@ -20,7 +20,7 @@ public class RemoteProxyTest {
 
   private static Map<String, Object> app1Capability = new HashMap<String, Object>();
   private static Map<String, Object> app2Capability = new HashMap<String, Object>();
-  private static Registry registry = new Registry();
+  private static Registry registry = Registry.newInstance();
 
   @BeforeClass
   public static void setup() {
@@ -59,7 +59,7 @@ public class RemoteProxyTest {
 
   @Test
   public void proxyConfigIsInheritedFromRegistry() {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     registry.getConfiguration().getAllParams().put("String", "my string");
     registry.getConfiguration().getAllParams().put("Boolean", true);
     registry.getConfiguration().getAllParams().put("Integer", 42);
@@ -78,7 +78,7 @@ public class RemoteProxyTest {
 
   @Test
   public void proxyConfigOverWritesRegistryConfig() {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     registry.getConfiguration().getAllParams().put("A", "A1");
 
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "A2");

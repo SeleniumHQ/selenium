@@ -1,16 +1,16 @@
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.openqa.grid.common.RegistrationRequest.APP;
 
 public class NewRequestCrashesDuringNewSessionTest {
 
@@ -23,7 +23,7 @@ public class NewRequestCrashesDuringNewSessionTest {
    */
   @BeforeClass
   public static void setup() {
-    registry = new Registry();
+    registry = Registry.newInstance();
     ff.put(APP, "FF");
 
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
@@ -42,7 +42,7 @@ public class NewRequestCrashesDuringNewSessionTest {
     TestSession s = newSessionRequest.getTestSession();
     Assert.assertNotNull(s);
     s.terminate();
-    Assert.assertEquals(0, registry.getNewSessionRequests().size());
+    Assert.assertEquals(0, registry.getNewSessionRequestCount());
   }
 
   /**
@@ -61,7 +61,7 @@ public class NewRequestCrashesDuringNewSessionTest {
       System.out.println(e.getMessage());
     }
 
-    Assert.assertEquals(0, registry.getNewSessionRequests().size());
+    Assert.assertEquals(0, registry.getNewSessionRequestCount());
   }
 
   @AfterClass

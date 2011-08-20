@@ -1,9 +1,5 @@
 package org.openqa.grid.e2e.wd;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
-
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.internal.listeners.Prioritizer;
@@ -19,6 +15,10 @@ import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
 
 /**
  * how to setup a grid that does not use FIFO for the requests.
@@ -101,11 +101,11 @@ public class WebDriverPriorityDemo {
   // adding a request with high priority at the end of the queue
   @Test(dependsOnMethods = "sendMoreRequests", timeOut = 30000)
   public void sendTheImportantOne() throws MalformedURLException, InterruptedException {
-    while (hub.getRegistry().getNewSessionRequests().size() != 5) {
+    while (hub.getRegistry().getNewSessionRequestCount() != 5) {
       Thread.sleep(250);
-      System.out.println(hub.getRegistry().getNewSessionRequests().size());
+      System.out.println(hub.getRegistry().getNewSessionRequestCount());
     }
-    Assert.assertEquals(hub.getRegistry().getNewSessionRequests().size(), 5);
+    Assert.assertEquals(hub.getRegistry().getNewSessionRequestCount(), 5);
     Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
 
     final DesiredCapabilities ff = DesiredCapabilities.firefox();
@@ -145,11 +145,11 @@ public class WebDriverPriorityDemo {
   @Test(dependsOnMethods = "sendMoreRequests2", timeOut = 20000)
   public void validateStateAndPickTheImportantOne() throws InterruptedException {
     try {
-      while (hub.getRegistry().getNewSessionRequests().size() != 11) {
+      while (hub.getRegistry().getNewSessionRequestCount() != 11) {
         Thread.sleep(500);
       }
       // queue = 5 + 1 important + 5.
-      Assert.assertEquals(hub.getRegistry().getNewSessionRequests().size(), 11);
+      Assert.assertEquals(hub.getRegistry().getNewSessionRequestCount(), 11);
 
       // 1 firefox still running
       Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
@@ -158,7 +158,7 @@ public class WebDriverPriorityDemo {
       runningOne.quit();
 
       // validating new expected state
-      while (!(hub.getRegistry().getActiveSessions().size() == 1 && hub.getRegistry().getNewSessionRequests().size() == 10)) {
+      while (!(hub.getRegistry().getActiveSessions().size() == 1 && hub.getRegistry().getNewSessionRequestCount() == 10)) {
         Thread.sleep(250);
         Reporter.log("waiting for correct state.");
       }

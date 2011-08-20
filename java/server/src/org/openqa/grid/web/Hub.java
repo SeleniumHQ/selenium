@@ -90,7 +90,7 @@ public class Hub {
       }
     }
 
-    registry = new Registry(this, config);
+    registry = Registry.newInstance(this, config);
 
     if (config.getHost() != null) {
       host = config.getHost();

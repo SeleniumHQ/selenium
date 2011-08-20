@@ -16,7 +16,7 @@ public class RemoteProxySlowSetup {
 
   @BeforeClass
   public static void setup() {
-    registry = new Registry();
+    registry = Registry.newInstance();
     // create 2 proxy that are equal and have a slow onRegistration
     // p1.equals(p2) = true
     p1 = new SlowRemoteSetup(registry);

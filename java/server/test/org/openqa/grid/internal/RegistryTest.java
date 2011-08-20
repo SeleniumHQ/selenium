@@ -25,7 +25,7 @@ public class RegistryTest {
 
   @Test
   public void addProxy() {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
     RemoteProxy p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/", registry);
     RemoteProxy p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/", registry);
@@ -43,7 +43,7 @@ public class RegistryTest {
 
   @Test
   public void addDuppedProxy() {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
     RemoteProxy p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/", registry);
     RemoteProxy p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/", registry);
@@ -79,7 +79,7 @@ public class RegistryTest {
 
   @Test(expected = GridException.class)
   public void emptyRegistry() throws Throwable {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     System.out.println(registry);
     try {
       MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
@@ -93,7 +93,7 @@ public class RegistryTest {
 
   // @Test(timeout=2000) excepted timeout here.How to specify that in junit ?
   public void emptyRegistryParam() {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     registry.setThrowOnCapabilityNotPresent(false);
     try {
 
@@ -107,7 +107,7 @@ public class RegistryTest {
 
   @Test(expected = CapabilityNotPresentOnTheGridException.class)
   public void CapabilityNotPresentRegistry() throws Throwable {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     try {
       registry.add(new RemoteProxy(req, registry));
       MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
@@ -121,7 +121,7 @@ public class RegistryTest {
 
   // @Test(timeout=2000) excepted timeout here.How to specify that in junit ?
   public void CapabilityNotPresentRegistryParam() {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     registry.setThrowOnCapabilityNotPresent(false);
     try {
       registry.add(new RemoteProxy(req, registry));
@@ -136,7 +136,7 @@ public class RegistryTest {
 
   @Test(timeout = 1000)
   public void registerAtTheSameTime() throws InterruptedException {
-    final Registry registry = new Registry();
+    final Registry registry = Registry.newInstance();
     final CountDownLatch latch = new CountDownLatch( TOTAL_THREADS );
 
     try {
@@ -185,7 +185,7 @@ public class RegistryTest {
 
   @Test(timeout = 2000)
   public void registerAtTheSameTimeWithListener() throws InterruptedException {
-    final Registry registry = new Registry();
+    final Registry registry = Registry.newInstance();
     final CountDownLatch cdn = new CountDownLatch( TOTAL_THREADS );
 
     try {

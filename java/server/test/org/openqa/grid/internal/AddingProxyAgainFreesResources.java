@@ -35,7 +35,7 @@ public class AddingProxyAgainFreesResources {
    */
   @BeforeClass
   public static void setup() throws InterruptedException {
-    registry = new Registry();
+    registry = Registry.newInstance();
     ff.put(APP, "FF");
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);

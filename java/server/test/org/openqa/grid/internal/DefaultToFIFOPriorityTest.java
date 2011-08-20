@@ -40,7 +40,7 @@ public class DefaultToFIFOPriorityTest {
    */
   @BeforeClass
   public static void setup() throws InterruptedException {
-    registry = new Registry();
+    registry = Registry.newInstance();
     registry.setPrioritizer(fifo);
     ff.put(APP, "FF");
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);

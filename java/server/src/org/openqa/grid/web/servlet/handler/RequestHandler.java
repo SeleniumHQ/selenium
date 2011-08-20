@@ -48,17 +48,16 @@ import org.openqa.grid.internal.listeners.TestSessionListener;
  * {@link WebDriverRequestHandler} for the part specific to webdriver protocol
  */
 public abstract class RequestHandler implements Comparable<RequestHandler> {
-  private Registry registry;
+  private final Registry registry;
+  private final HttpServletRequest request;
+  private final HttpServletResponse response;
+  private final long created;
 
-
-  private HttpServletRequest request;
-  private HttpServletResponse response;
   private String body = null;
   private boolean bodyHasBeenRead = false;
   private Map<String, Object> desiredCapabilities = null;
   private RequestType requestType = null;
   private TestSession session = null;
-  private long created;
 
   private boolean showWarning = true;
 

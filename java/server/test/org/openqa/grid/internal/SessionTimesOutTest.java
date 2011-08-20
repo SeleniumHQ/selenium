@@ -56,7 +56,7 @@ public class SessionTimesOutTest {
   @Test(timeout = 2000)
   public void testTimeout() throws InterruptedException {
 
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     RemoteProxy p1 = new MyRemoteProxyTimeout(req, registry);
 
 
@@ -100,7 +100,7 @@ public class SessionTimesOutTest {
 
   @Test(timeout = 5000)
   public void testTimeoutSlow() throws InterruptedException {
-    Registry registry = new Registry();
+    Registry registry = Registry.newInstance();
     RemoteProxy p1 = new MyRemoteProxyTimeoutSlow(req, registry);
 
 
@@ -151,7 +151,7 @@ public class SessionTimesOutTest {
   // a proxy throwing an exception will end up not releasing the resources.
   @Test(timeout = 1000, expected = IllegalAccessError.class)
   public void testTimeoutBug() throws InterruptedException {
-    final Registry registry = new Registry();
+    final Registry registry = Registry.newInstance();
     RemoteProxy p1 = new MyBuggyRemoteProxyTimeout(req, registry);
 
 
@@ -202,7 +202,7 @@ public class SessionTimesOutTest {
     for (Object[] c : configs) {
       int timeout = (Integer) c[0];
       int cycle = (Integer) c[1];
-      Registry registry = new Registry();
+      Registry registry = Registry.newInstance();
 
       RegistrationRequest req = new RegistrationRequest();
       Map<String, Object> app1 = new HashMap<String, Object>();

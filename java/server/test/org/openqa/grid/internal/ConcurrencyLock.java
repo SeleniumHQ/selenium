@@ -37,7 +37,7 @@ public class ConcurrencyLock {
    */
   @BeforeClass
   public static void setup() {
-    registry = new Registry();
+    registry = Registry.newInstance();
     ie.put(APP, "IE");
     ff.put(APP, "FF");
 
