@@ -1101,6 +1101,75 @@ location for correctly generating native events.''').
       SessionResource('/session/:sessionId/doubleclick').
       Post('Double-clicks at the current mouse coordinates (set by moveto).'))
 
+  resources.append(
+      SessionResource('/session/:sessionId/touch/click').
+      Post('Single tap on the touch enabled device.').
+      AddJsonParameter('element', '{string}', 'ID of the element to single tap'
+                       'on.'))
+  resources.append(
+      SessionResource('/session/:sessionId/touch/down').
+      Post('Finger down on the screen.').
+      AddJsonParameter('x', '{number}', 'X coordinate on the screen.').
+      AddJsonParameter('y', '{number}', 'Y coordinate on the screen.'))
+  resources.append(
+      SessionResource('/session/:sessionId/touch/up').
+      Post('Finger up on the screen.').
+      AddJsonParameter('x', '{number}', 'X coordinate on the screen.').
+      AddJsonParameter('y', '{number}', 'Y coordinate on the screen.'))
+  resources.append(
+      SessionResource('session/:sessionId/touch/move').
+      Post('Finger move on the screen.').
+      AddJsonParameter('x', '{number}', 'X coordinate on the screen.').
+      AddJsonParameter('y', '{number}', 'Y coordinate on the screen.'))
+  resources.append(
+      SessionResource('session/:sessionId/touch/scroll').
+      Post('Scroll on the touch screen using finger based motion events. Use'
+           'this command to start scrolling at a particular screen location.').
+      AddJsonParameter('element', '{string}', 'ID of the element where the'
+                       'scroll starts.').
+      AddJsonParameter('xOffset', '{number}', 'The x offset in pixels to scroll'
+                       'by.').
+      AddJsonParameter('yOffset', '{number}', 'The y offset in pixels to scroll'
+                       'by.'))
+  resources.append(
+      SessionResource('session/:sessionId/touch/scroll').
+      Post('Scroll on the touch screen using finger based motion events. Use'
+           'this command if you don\'t care where the scroll starts on the'
+           'screen.').
+      AddJsonParameter('xOffset', '{number}', 'The x offset in pixels to scroll'
+                       'by.').
+      AddJsonParameter('yOffset', '{number}', 'The y offset in pixels to scroll'
+                       'by.'))
+  resources.append(
+      SessionResource('session/:sessionId/touch/doubleclick').
+      Post('Double tap on the touch screen using finger motion events.').
+      AddJsonParameter('element', '{string}', 'ID of the element to double tap'
+                       'on.'))
+  resources.append(
+      SessionResource('session/:sessionId/touch/longclick').
+      Post('Long press on the touch screen using finger motion events.').
+      AddJsonParameter('element', '{string}', 'ID of the element to long press'
+                       'on.'))
+  resources.append(
+      SessionResource('session/:sessionId/touch/flick').
+      Post('Flick on the touch screen using finger motion events. This flick'
+           'command starts at a particulat screen location.').
+      AddJsonParameter('element', '{string}', 'ID of the element where the'
+                       'flick starts.').
+      AddJsonParameter('xOffset', '{number}', 'The x offset in pixels to flick'
+                       'by.').
+      AddJsonParameter('yOffset', '{number}', 'The y offset in pixels to flick'
+                       'by.').
+      AddJsonParameter('speed', '{number}', 'The speed in pixels per seconds.'))
+  resources.append(
+      SessionResource('session/:sessionId/touch/flick').
+      Post('Flick on the touch screen using finger motion events. Use this'
+           'flick command if you don\'t care where the flick starts on the screen.').
+      AddJsonParameter('xSpeed', '{number}', 'The x speed in pixels per'
+                       'seconds.').
+      AddJsonParameter('ySpeed', '{number}', 'The y speed in pixels per'
+                      'seconds'))
+
   print '''#summary A description of the protocol used by WebDriver to \
 communicate with remote instances
 #labels WebDriver
