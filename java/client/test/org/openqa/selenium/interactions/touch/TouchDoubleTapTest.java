@@ -15,10 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium;
+package org.openqa.selenium.interactions.touch;
 
+import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Ignore;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.touch.TouchActions;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -29,23 +33,26 @@ import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 /**
- * Tests the basic long press operations.
+ * Tests the basic double tap operations
  */
-public class TouchLongPressTest extends AbstractDriverTestCase {
+public class TouchDoubleTapTest extends AbstractDriverTestCase {
 
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen operations not supported")
-  public void testCanLongPress() {
+  private void doubleTapOnElement(String elementId) {
+    WebElement toDoubleTap = driver.findElement(By.id(elementId));
+    Action doubleTap = getBuilder(driver).doubleTap(toDoubleTap).build();
+    doubleTap.perform();
+  }
+
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
+                  + "operations not supported")
+  public void testCanDoubleTapOnALinkAndFollowIt() {
     driver.get(pages.clicksPage);
 
-    WebElement toLongPress = driver.findElement(By.id("normal"));
-    Action longPress = getBuilder(driver).longPress(toLongPress).build();
-    longPress.perform();
-
+    doubleTapOnElement("normal");
   }
 
 }

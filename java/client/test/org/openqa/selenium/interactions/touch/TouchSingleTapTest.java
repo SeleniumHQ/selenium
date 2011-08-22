@@ -15,10 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium;
+package org.openqa.selenium.interactions.touch;
 
+import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Ignore;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WaitingConditions;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.touch.TouchActions;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -63,5 +69,4 @@ public class TouchSingleTapTest extends AbstractDriverTestCase {
     
     assertTrue(samePage);
   }
-
 }

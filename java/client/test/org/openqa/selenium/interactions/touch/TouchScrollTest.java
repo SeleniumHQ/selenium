@@ -15,10 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium;
+package org.openqa.selenium.interactions.touch;
 
+import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Ignore;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.touch.TouchActions;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -27,30 +31,24 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaiter.waitFor;
 
 /**
- * Tests the basic double tap operations
+ * Tests the basic scroll operations.
  */
-public class TouchDoubleTapTest extends AbstractDriverTestCase {
+public class TouchScrollTest extends AbstractDriverTestCase {
 
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
 
-  private void doubleTapOnElement(String elementId) {
-    WebElement toDoubleTap = driver.findElement(By.id(elementId));
-    Action doubleTap = getBuilder(driver).doubleTap(toDoubleTap).build();
-    doubleTap.perform();
-  }
+  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE}, reason = "TouchScreen "
+      + "operations not supported")
+  public void testCanScroll() {
+    driver.get(pages.touchScrollPage);
 
-  @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
-                  + "operations not supported")
-  public void testCanDoubleTapOnALinkAndFollowIt() {
-    driver.get(pages.clicksPage);
-
-    doubleTapOnElement("normal");
+    WebElement toScrollDown = driver.findElement(By.id("image_reference"));
+    Action scrollDown = getBuilder(driver).scroll(toScrollDown, 0, -150).build();
+    scrollDown.perform();
   }
 
 }

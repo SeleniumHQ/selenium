@@ -15,10 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium;
+package org.openqa.selenium.interactions.touch;
 
+import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Ignore;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.touch.TouchActions;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -29,22 +33,22 @@ import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 /**
- * Tests the basic scroll operations.
+ * Tests the basic long press operations.
  */
-public class TouchScrollTest extends AbstractDriverTestCase {
+public class TouchLongPressTest extends AbstractDriverTestCase {
 
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE}, reason = "TouchScreen "
-      + "operations not supported")
-  public void testCanScroll() {
-    driver.get(pages.touchScrollPage);
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen operations not supported")
+  public void testCanLongPress() {
+    driver.get(pages.clicksPage);
 
-    WebElement toScrollDown = driver.findElement(By.id("image_reference"));
-    Action scrollDown = getBuilder(driver).scroll(toScrollDown, 0, -150).build();
-    scrollDown.perform();
+    WebElement toLongPress = driver.findElement(By.id("normal"));
+    Action longPress = getBuilder(driver).longPress(toLongPress).build();
+    longPress.perform();
+
   }
 
 }
