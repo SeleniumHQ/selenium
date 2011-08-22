@@ -6,30 +6,8 @@ module Selenium
       class Bridge < Remote::Bridge
 
         def initialize(opts = {})
-          http_client   = opts.delete(:http_client)
-          switches      = opts.delete(:switches)
-          native_events = opts.delete(:native_events)
-          verbose       = opts.delete(:verbose)
-          profile       = opts.delete(:profile)
-
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-          end
-
-          caps = Remote::Capabilities.chrome
-
-          if switches
-            unless switches.kind_of? Array
-              raise ArgumentError, ":switches must be an Array of Strings"
-            end
-
-            caps.merge! 'chrome.switches' => switches.map { |e| e.to_s }
-          end
-
-          caps.merge! 'chrome.binary'       => Chrome.path if Chrome.path
-          caps.merge! 'chrome.nativeEvents' => true if native_events
-          caps.merge! 'chrome.verbose'      => true if verbose
-          caps.merge! 'chrome.profile'      => profile.as_json['zip'] if profile
+          http_client = opts.delete(:http_client)
+          caps        = create_capabilities(opts)
 
           @service = Service.default_service
           @service.start
@@ -63,6 +41,34 @@ module Selenium
           super
         ensure
           @service.stop
+        end
+
+        private
+
+        def create_capabilities(opts)
+          switches      = opts.delete(:switches)
+          native_events = opts.delete(:native_events)
+          verbose       = opts.delete(:verbose)
+          profile       = opts.delete(:profile)
+
+          unless opts.empty?
+            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
+          end
+
+          caps = Remote::Capabilities.chrome
+
+          if switches
+            unless switches.kind_of? Array
+              raise ArgumentError, ":switches must be an Array of Strings"
+            end
+
+            caps.merge! 'chrome.switches' => switches.map { |e| e.to_s }
+          end
+
+          caps.merge! 'chrome.binary'       => Chrome.path if Chrome.path
+          caps.merge! 'chrome.nativeEvents' => true if native_events
+          caps.merge! 'chrome.verbose'      => true if verbose
+          caps.merge! 'chrome.profile'      => profile.as_json['zip'] if profile
         end
 
       end # Bridge
