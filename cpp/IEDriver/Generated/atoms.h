@@ -23,6 +23,7 @@
 namespace webdriver {
 namespace atoms {
 
+
 const wchar_t* const CLICK[] = {
     L"function(){return function(){function g(a){throw a;}var h=void 0,i=nul",
     L"l;function n(a){return function(){return this[a]}}function o(a){return",
@@ -2791,7 +2792,7 @@ const wchar_t* const SUBMIT[] = {
 };
 
 static inline std::wstring asString(const wchar_t* const atom[]) {
-  std::wstring source = L"";
+  std::wstring source;
   for (int i = 0; atom[i] != NULL; i++) {
     source += atom[i];
   }

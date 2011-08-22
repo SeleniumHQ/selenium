@@ -413,12 +413,16 @@ bool Element::IsClickPointInViewPort(const long x,
 
   // Hurrah! Now we know what the visible area of the viewport is
   // Is the element visible in the X axis?
-  if (click_x < 0 || click_x >= window_width) {
+  // N.B. There is an n-pixel sized area next to the client area border
+  // where clicks are interpreted as a click on the window border, not
+  // within the client area. We are assuming n == 2, but that's strictly
+  // a wild guess, not based on any research.
+  if (click_x < 0 || click_x >= window_width - 2) {
     return false;
   }
 
   // And in the Y?
-  if (click_y < 0 || click_y >= window_height) {
+  if (click_y < 0 || click_y >= window_height - 2) {
     return false;
   }
   return true;
