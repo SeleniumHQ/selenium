@@ -84,6 +84,7 @@ class FirefoxBinary(object):
                 # Browser has exited
                 return False
             if count == 30:
+                self.kill()
                 raise WebDriverException("Can't load the profile. Profile Dir : %s" % self.profile.path)
             count += 1
             time.sleep(1)
