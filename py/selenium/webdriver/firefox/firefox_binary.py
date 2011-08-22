@@ -81,7 +81,7 @@ class FirefoxBinary(object):
         while not self.is_connectable():
             if self.process.returncode:
                 # Browser has exited
-                return False
+                return WebDriverException("The browser appears to have exited before we could connect") 
             if count == 30:
                 self.kill()
                 raise WebDriverException("Can't load the profile. Profile Dir : %s" % self.profile.path)
