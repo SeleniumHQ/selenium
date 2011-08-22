@@ -41,14 +41,27 @@ public class TouchScrollTest extends AbstractDriverTestCase {
     return new TouchActions(driver);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE}, reason = "TouchScreen "
-      + "operations not supported")
-  public void testCanScroll() {
+  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
+      reason = "TouchScreen operations not supported")
+  public void testCanScrollWithWebElement() {
+    // Load a page before loading the long page so that we're sure that the
+    // second load happens and that the page isn't already scrolled.
+    driver.get(pages.formPage);
     driver.get(pages.touchScrollPage);
-
     WebElement toScrollDown = driver.findElement(By.id("image_reference"));
     Action scrollDown = getBuilder(driver).scroll(toScrollDown, 0, -150).build();
     scrollDown.perform();
   }
 
+  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
+      reason = "TouchScreen operations not supported")
+  public void testCanScrollWithXAndYOffsetsOnly() {
+    // Load a page before loading the long page so that we're sure that the
+    // second load happens and that the page isn't already scrolled.
+    driver.get(pages.formPage);
+    driver.get(pages.touchScrollPage);
+    WebElement toScrollDown = driver.findElement(By.id("image_reference"));
+    Action scrollDown = getBuilder(driver).scroll(0, -150).build();
+    scrollDown.perform();
+  }
 }

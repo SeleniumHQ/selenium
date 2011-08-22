@@ -73,9 +73,7 @@ public class Flick extends WebElementHandler implements JsonParametersAware {
       xOffset = ((Long) allParameters.get(XOFFSET)).intValue();
       yOffset = ((Long) allParameters.get(YOFFSET)).intValue();
       speed = ((Long) allParameters.get(SPEED)).intValue();
-    }
-
-    if (allParameters.containsKey(XSPEED) && allParameters.containsKey(YSPEED)) {
+    } else if (allParameters.containsKey(XSPEED) && allParameters.containsKey(YSPEED)) {
       xSpeed = ((Long) allParameters.get(XSPEED)).intValue();
       ySpeed = ((Long) allParameters.get(YSPEED)).intValue();
     }

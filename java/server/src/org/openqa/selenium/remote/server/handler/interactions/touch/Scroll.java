@@ -45,11 +45,14 @@ public class Scroll extends WebElementHandler implements JsonParametersAware {
 
   public ResultType call() throws Exception {
     TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
-    WebElement element = getKnownElements().get(elementId);
-    Coordinates elementLocation = ((Locatable) element).getCoordinates();
 
-    touchScreen.scroll(elementLocation, xOffset, yOffset);
-
+    if (elementId != null) {
+      WebElement element = getKnownElements().get(elementId);
+      Coordinates elementLocation = ((Locatable) element).getCoordinates();
+      touchScreen.scroll(elementLocation, xOffset, yOffset);
+    } else {
+      touchScreen.scroll(xOffset, yOffset);
+    }
     return ResultType.SUCCESS;
   }
 
@@ -59,7 +62,9 @@ public class Scroll extends WebElementHandler implements JsonParametersAware {
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    elementId = (String) allParameters.get(ELEMENT);
+    if (allParameters.containsKey(ELEMENT)) {
+      elementId = (String) allParameters.get(ELEMENT);
+    }
     xOffset = ((Long) allParameters.get(XOFFSET)).intValue();
     yOffset = ((Long) allParameters.get(YOFFSET)).intValue();
   }
