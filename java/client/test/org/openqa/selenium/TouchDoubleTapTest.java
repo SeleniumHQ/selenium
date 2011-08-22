@@ -38,19 +38,19 @@ public class TouchDoubleTapTest extends AbstractDriverTestCase {
     return new TouchActions(driver);
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
-                  + "operations not supported")
   private void doubleTapOnElement(String elementId) {
     WebElement toDoubleTap = driver.findElement(By.id(elementId));
     Action doubleTap = getBuilder(driver).doubleTap(toDoubleTap).build();
     doubleTap.perform();
   }
 
+  @JavascriptEnabled
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
+                  + "operations not supported")
   public void testCanDoubleTapOnALinkAndFollowIt() {
     driver.get(pages.clicksPage);
 
-    doubleTapOnElement("normal");    
+    doubleTapOnElement("normal");
   }
 
 }

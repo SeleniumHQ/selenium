@@ -22,6 +22,7 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import org.openqa.selenium.interactions.Action;
@@ -36,7 +37,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     return new TouchActions(driver);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, SELENESE}, reason = "TouchScreen "
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
     + "operations not supported")
   public void testCanFlickHorizontally() {
     driver.get(pages.touchLongContentPage);
@@ -45,7 +46,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     flick.perform();
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, SELENESE}, reason = "TouchScreen "
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
     + "operations not supported")
   public void testCanFlickVertically() {
     driver.get(pages.touchLongContentPage);
@@ -55,7 +56,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     flick.perform();
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, SELENESE}, reason = "TouchScreen "
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
                     + "operations not supported")
   public void testCanFlickFast() {
     driver.get(pages.touchLongContentPage);
@@ -63,5 +64,5 @@ public class TouchFlickTest extends AbstractDriverTestCase {
 
     Action flick = getBuilder(driver).flick(0, 4000).build();
     flick.perform();
-  }       
+  }
 }
