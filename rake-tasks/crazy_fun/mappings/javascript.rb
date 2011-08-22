@@ -51,6 +51,21 @@ class JavascriptMappings
     fun.add_mapping("js_fragment_header", Javascript::ConcatenateHeaders.new)
     fun.add_mapping("js_fragment_header", Javascript::CopyHeader.new)
 
+    # Compiles a list of |js_fragments| into a C++ source and header file.
+    # Arguments:
+    #   name - A unique name for the build target.
+    #   deps - A list of js_fragment_dependencies that should be compiled.
+    #   extension - A string to use as the C++ source file's extension.
+    #   utf8 - Whether to use char or wchar_t for the generated header. Defaults
+    #          to wchar_t.
+    fun.add_mapping("js_fragment_cpp", Javascript::CheckFragmentHeaderPreconditions.new)
+    fun.add_mapping("js_fragment_cpp", Javascript::CreateTask.new)
+    fun.add_mapping("js_fragment_cpp", Javascript::CreateTaskShortName.new)
+    fun.add_mapping("js_fragment_cpp", Javascript::AddDependencies.new)
+    fun.add_mapping("js_fragment_cpp", Javascript::ConcatenateCpp.new)
+    fun.add_mapping("js_fragment_cpp", Javascript::CopyHeader.new)
+    fun.add_mapping("js_fragment_cpp", Javascript::CopySource.new)
+
     # Compiles a list of |js_fragments| into a Java source file.
     fun.add_mapping("js_fragment_java", Javascript::CreateTask.new)
     fun.add_mapping("js_fragment_java", Javascript::CreateTaskShortName.new)
@@ -355,6 +370,19 @@ module Javascript
           " * limitations under the License.\n" +
           " */\n"
 
+    def get_atom_name_from_file(dir, atom_file)
+      name = File.basename(atom_file).sub(/\.js$/, '')
+
+      # If this is a browser optimized atom, drop the browser identifier
+      # from the name: foo_ie.js => foo.js, bar_android.js => bar.js
+      name.sub!(/_(android|chrome|ie|ios)$/, '')
+
+      # Convert camelCase and snake_case to BIG_SNAKE_CASE
+      name.gsub!(/(.)([A-Z][a-z]+)/, '\1_\2')
+      name.gsub!(/([a-z0-9])([A-Z])/, '\1_\2')
+      return name.upcase
+    end
+
     def write_atom_string_literal(to_file, dir, atom, language, utf8 = true)
       # Check that the |atom| task actually generates a JavaScript file.
       if (File.exists?(atom))
@@ -368,16 +396,7 @@ module Javascript
 
       puts "Generating header for #{atom_file}"
 
-      uc = File.basename(atom_file).sub(/\.js$/, '')
-
-      # If this is a browser optimized atom, drop the browser identifier
-      # from the name: foo_ie.js => foo.js, bar_android.js => bar.js
-      uc.sub!(/_(android|chrome|ie|ios)$/, '')
-
-      # Convert camelCase and snake_case to BIG_SNAKE_CASE
-      uc.gsub!(/(.)([A-Z][a-z]+)/, '\1_\2')
-      uc.gsub!(/([a-z0-9])([A-Z])/, '\1_\2')
-      atom_upper = uc.upcase
+      atom_name = get_atom_name_from_file(dir, atom_file)
 
       # Each fragment file should be small (<= 20KB), so just read it all in.
       contents = IO.read(atom_file).strip
@@ -405,9 +424,9 @@ module Javascript
       to_file << "\n"
 
       if language == :cpp
-        to_file << "const #{atom_type}* const #{atom_upper}[] = {\n"
+        to_file << "const #{atom_type}* const #{atom_name}[] = {\n"
       elsif language == :java
-        to_file << "    #{atom_upper}(\n"
+        to_file << "    #{atom_name}(\n"
       end
 
       # Make the header file play nicely in a terminal: limit lines to 80
@@ -439,10 +458,43 @@ module Javascript
       end
     end
 
-    def generate_header(dir, name, task_name, output, js_files, utf8)
+    def generate_cpp_source(dir, name, task_name, output, js_files, utf8)
+      file output => js_files do
+        puts "Preparing: #{task_name} as #{output}"
+
+        output_dir = File.dirname(output)
+        mkdir_p output_dir unless File.exists?(output_dir)
+
+        File.open(output, 'w') do |out|
+          out << COPYRIGHT
+          out << "\n"
+          out << "/* AUTO GENERATED - DO NOT EDIT BY HAND */\n"
+          out << "\n"
+          out << "#include <stddef.h>  // For NULL.\n"
+          out << "\n"
+          out << "#include \"atoms.h\"\n"
+          out << "\n"
+          out << "namespace webdriver {\n"
+          out << "namespace atoms {\n"
+
+          js_files.each do |js_file|
+            write_atom_string_literal(out, dir, js_file, :cpp, utf8)
+          end
+
+          out << "\n"
+          out << "}  // namespace atoms\n"
+          out << "}  // namespace webdriver\n"
+          out << "\n"
+        end
+      end
+    end
+
+    def generate_header(dir, name, task_name, output, js_files, just_declare, utf8)
       file output => js_files do
         puts "Preparing: #{task_name} as #{output}"
         define_guard = "WEBDRIVER_#{name.upcase}_H_"
+        char_type = utf8 ? "char" : "wchar_t"
+        string_type = utf8 ? "std::string" : "std::wstring"
 
         output_dir = File.dirname(output)
         mkdir_p output_dir unless File.exists?(output_dir)
@@ -456,21 +508,28 @@ module Javascript
           out << "\n"
           out << "#include <stddef.h>  // For wchar_t.\n" unless utf8
           out << "#include <string>    // For std::(w)string.\n"
-          out << "\n" unless utf8
+          out << "\n"
           out << "namespace webdriver {\n"
           out << "namespace atoms {\n"
+          out << "\n"
 
           js_files.each do |js_file|
-            write_atom_string_literal(out, dir, js_file, :cpp, utf8)
+            if just_declare
+              atom_filename = Rake::Task[task_name(dir, js_file)].out
+              atom_name = get_atom_name_from_file(dir, atom_filename)
+              out << "extern const #{char_type}* const #{atom_name}[];\n"
+            else
+              write_atom_string_literal(out, dir, js_file, :cpp, utf8)
+            end
           end
 
           out << "\n"
-          out << "static inline std::wstring asString(const wchar_t* const atom[]) {\n"
-	        out << "  std::wstring source = L\"\";\n";
+          out << "static inline #{string_type} asString(const #{char_type}* const atom[]) {\n"
+          out << "  #{string_type} source;\n";
           out << "  for (int i = 0; atom[i] != NULL; i++) {\n"
-		      out << "    source += atom[i];\n"
-	        out << "  }\n"
-	        out << "  return source;\n"
+          out << "    source += atom[i];\n"
+          out << "  }\n"
+          out << "  return source;\n"
           out << "}\n\n";
           out << "}  // namespace atoms\n"
           out << "}  // namespace webdriver\n"
@@ -545,8 +604,21 @@ module Javascript
       js = js_name(dir, args[:name])
       output = js.sub(/\.js$/, '.h')
       task_name = task_name(dir, args[:name])
-      generate_header(dir, args[:name], task_name, output, args[:deps], args[:utf8])
+      generate_header(dir, args[:name], task_name, output, args[:deps], false, args[:utf8])
       task task_name => [output]
+    end
+  end
+
+  class ConcatenateCpp < GenerateAtoms
+    def handle(fun, dir, args)
+      js = js_name(dir, args[:name])
+      h_output = js.sub(/\.js$/, '.h')
+      cc_output = js.sub(/\.js$/, '.' + args[:extension])
+      task_name = task_name(dir, args[:name])
+      generate_header(dir, args[:name], task_name, h_output, args[:deps], true, args[:utf8])
+      generate_cpp_source(dir, args[:name], task_name, cc_output, args[:deps], args[:utf8])
+      task task_name => [h_output]
+      task task_name => [cc_output]
     end
   end
 
@@ -574,12 +646,26 @@ module Javascript
     end
   end
 
+  class CopySource < BaseJs
+    def handle(fun, dir, args)
+      return unless args[:out]
+
+      js = js_name(dir, args[:name])
+      output = js.sub(/\.js$/, '.cc')
+      task_name = task_name(dir, args[:name])
+      task task_name do
+        puts "Writing: #{args[:out]}"
+        cp output, args[:out]
+      end
+    end
+  end
+
   class CreateHeader < GenerateAtoms
     def handle(fun, dir, args)
       js = js_name(dir, args[:name])
       out = js.sub(/\.js$/, '.h')
       task_name = task_name(dir, args[:name]) + ":header"
-      generate_header(dir, args[:name], task_name, out, [js], false)
+      generate_header(dir, args[:name], task_name, out, [js], false, false)
       task task_name => [out]
     end
   end

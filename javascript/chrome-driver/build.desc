@@ -36,7 +36,7 @@ js_test(name = "test",
     "//java/client/test/org/openqa/selenium/javascript",
   ])
 
-js_fragment_header(name = "atoms",
+js_fragment_cpp(name = "atoms",
   deps = [
     "//javascript/chrome-driver:get_first_client_rect:chrome",
     "//javascript/chrome-driver:get_location_in_view:chrome",
@@ -75,4 +75,5 @@ js_fragment_header(name = "atoms",
     "//javascript/webdriver-atoms:submit:chrome",
     "//javascript/webdriver-atoms:toggle:chrome",
   ],
+  extension = "cc",
   utf8 = "true")
