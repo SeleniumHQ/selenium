@@ -76,6 +76,12 @@ js_fragment(name = "set_selected",
   function = "webdriver.inject.action.setSelected",
   deps = [":deps"])
 
+js_fragment(name = "clear",
+  module = "webdriver.inject.action",
+  function = "webdriver.inject.action.clear",
+  deps = [":deps"])
+
+
 js_fragment(name = "is_displayed",
   module = "webdriver.inject.dom",
   function = "webdriver.inject.dom.isDisplayed",
@@ -110,9 +116,3 @@ js_fragment(name = "active_element",
   module = "webdriver.inject.frame",
   function = "webdriver.inject.frame.activeElement",
   deps = [":deps"])
-
-js_fragment(name = "execute_script",
-  module = "webdriver.inject",
-  function = "webdriver.inject.executeScript",
-  deps = [":deps"])
-

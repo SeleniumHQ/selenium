@@ -21,6 +21,7 @@ goog.provide('webdriver.inject.action');
 
 goog.require('bot.action');
 goog.require('bot.inject');
+goog.require('goog.dom.selection');
 
 /**
  * Toggles the selected state of the given element.
@@ -31,7 +32,8 @@ goog.require('bot.inject');
  */
 webdriver.inject.action.toggle = function(element) {
   return bot.inject.executeScript(bot.action.toggle, [element], true);
-}
+};
+
 
 /**
  * Sets the selected state of the given INPUT element.
@@ -40,7 +42,8 @@ webdriver.inject.action.toggle = function(element) {
  */
 webdriver.inject.action.setSelected = function(element, selected) {
   bot.inject.executeScript(bot.action.setSelected, [element, selected], true);
-}
+};
+
 
 /**
  * Submits the form containing the given element.
@@ -49,4 +52,10 @@ webdriver.inject.action.setSelected = function(element, selected) {
  */
 webdriver.inject.action.submit = function(element) {
   bot.inject.executeScript(bot.action.submit, [element], true);
-}
+};
+
+
+webdriver.inject.action.clear = function(element) {
+  bot.inject.executeScript(bot.action.clear, [element], true);
+};
+

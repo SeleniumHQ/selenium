@@ -32,7 +32,8 @@ goog.require('webdriver.element');
  */
 webdriver.inject.dom.getText = function(element) {
   return bot.inject.executeScript(bot.dom.getVisibleText,[element], true)
-}
+};
+
 
 /**
  * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
@@ -42,7 +43,8 @@ webdriver.inject.dom.getText = function(element) {
  */
 webdriver.inject.dom.isSelected = function(element) {
   return bot.inject.executeScript(bot.action.isSelected, [element], true);
-}
+};
+
 
 /**
  * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
@@ -51,7 +53,8 @@ webdriver.inject.dom.isSelected = function(element) {
  */
 webdriver.inject.dom.getTopLeftCoordinates = function(element) {
   return bot.inject.executeScript(bot.dom.getLocationInView, [element], true);
-}
+};
+
 
 /**
  * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
@@ -61,7 +64,8 @@ webdriver.inject.dom.getTopLeftCoordinates = function(element) {
 webdriver.inject.dom.getAttributeValue = function(element, attribute) {
   return bot.inject.executeScript(webdriver.element.getAttribute, [element, attribute],
                                   true);
-}
+};
+
 
 /**
  * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
@@ -70,7 +74,8 @@ webdriver.inject.dom.getAttributeValue = function(element, attribute) {
  */
 webdriver.inject.dom.getSize = function(element) {
   return bot.inject.executeScript(bot.dom.getElementSize_, [element], true);
-}
+};
+
 
 /**
  * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
@@ -80,7 +85,8 @@ webdriver.inject.dom.getSize = function(element) {
 webdriver.inject.dom.getValueOfCssProperty = function(element, property) {
   return bot.inject.executeScript(bot.dom.getCascadedStyle_,
                                   [element, property], true)
-}
+};
+
 
 /**
  * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
@@ -89,7 +95,8 @@ webdriver.inject.dom.getValueOfCssProperty = function(element, property) {
  */
 webdriver.inject.dom.isEnabled = function(element) {
   return bot.inject.executeScript(bot.dom.isEnabled, [element], true);
-}
+};
+
 
 /**
  * @param {bot.inject.ELEMENT_KEY:string} element The element to check.
@@ -98,5 +105,6 @@ webdriver.inject.dom.isEnabled = function(element) {
  *     protocol.
  */
 webdriver.inject.dom.isDisplayed = function(element) {
-  return bot.inject.executeScript(bot.action.isShown_, [element], true)
-}
+  return bot.inject.executeScript(bot.dom.isShown, [element, /*ignoreOpacity=*/true], true)
+};
+

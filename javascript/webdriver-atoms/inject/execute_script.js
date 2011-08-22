@@ -32,11 +32,22 @@ goog.require('bot.inject.cache');
  * object to be read from the cache.
  */
 webdriver.inject.executeScript = function(fn, args, opt_window) {
+  return bot.inject.executeScript(fn, args, true, webdriver.inject.getWindow_(opt_window));
+};
+
+
+webdriver.inject.executeAsyncScript = function(fn, args, timeout, onDone, opt_window) {
+  return bot.inject.executeScript(fn, args, timeout, onDone, true,
+          webdriver.inject.getWindow_(opt_window));
+};
+
+
+webdriver.inject.getWindow_ = function(a_window) {
   var win;
-  if (opt_window) {
-    win = bot.inject.cache.getElement(opt_window['WINDOW']);
-  } else {
-    win = window;
-  }
-  return bot.inject.executeScript(fn, args, true, win);
+    if (a_window) {
+      win = bot.inject.cache.getElement(a_window['WINDOW']);
+    } else {
+      win = window;
+    }
+    return win;
 }
