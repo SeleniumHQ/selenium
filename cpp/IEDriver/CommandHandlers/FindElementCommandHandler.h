@@ -60,25 +60,27 @@ class FindElementCommandHandler : public IECommandHandler {
                                              value,
                                              &found_element);
         if (status_code == SUCCESS) {
-          break;
-        } else if (status_code == EUNHANDLEDERROR) {
-          response->SetErrorResponse(status_code,
-                                     "Unknown finder mechanism: " + mechanism);
-          break;
-        } else {
-          // Release the thread so that the browser doesn't starve.
-          ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
+          response->SetSuccessResponse(found_element);
+          return;
         }
+        if(status_code == EINVALIDSELECTOR) {
+          response->SetErrorResponse(status_code,
+            "The xpath expression '" + value + "' cannot be evaluated or does not" +
+            "result in a WebElement");
+          return;
+        }
+        if (status_code == EUNHANDLEDERROR) {
+          response->SetErrorResponse(status_code, 
+            "Unknown finder mechanism: " + mechanism);
+          return;
+        }
+        // Release the thread so that the browser doesn't starve.
+        ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
       } while (clock() < end);
-      
-      if (status_code == SUCCESS) {
-        response->SetSuccessResponse(found_element);
-        return;
-      } else {
-        response->SetErrorResponse(status_code,
-                                   "Unable to find element with " + mechanism + " == " + value);
-        return;
-      }
+
+      response->SetErrorResponse(status_code, 
+        "Unable to find element with " + mechanism + " == " + value);
+      return;
     }
   }
 };

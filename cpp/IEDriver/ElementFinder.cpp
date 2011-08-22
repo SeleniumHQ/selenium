@@ -291,11 +291,19 @@ int ElementFinder::FindElementByXPath(const IECommandExecutor& executor,
   result = script_wrapper.Execute();
 
   if (result == SUCCESS) {
-    if (!script_wrapper.ResultIsElement()) {
+    if(script_wrapper.ResultIsEmpty()){
       result = ENOSUCHELEMENT;
+    } else if (!script_wrapper.ResultIsElement()) {
+      // The xpath expression did not result in the selection of an element,
+      // so the expression was invalid. 
+      result = EINVALIDSELECTOR;
     } else {
       result = script_wrapper.ConvertResultToJsonValue(executor, found_element);
     }
+  } else if (result == EUNEXPECTEDJSERROR) {
+    // The given xpath expression caused an error. We change the error code so that it is
+    // consistent with the error  codes of the other browsers.
+    result = EINVALIDSELECTOR;
   }
 
   return result;
@@ -340,6 +348,12 @@ int ElementFinder::FindElementsByXPath(const IECommandExecutor& executor,
   }
 
   result = script_wrapper.Execute();
+  if (result != SUCCESS) {
+    // The given xpath expression caused an error. We change the error code so that it is 
+    // consistent with the error codes of the other browsers.
+    return EINVALIDSELECTOR;
+  }
+
   CComVariant snapshot = script_wrapper.result();
 
   std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].snapshotLength;}})();";
