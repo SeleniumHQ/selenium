@@ -50,6 +50,7 @@ module Selenium
           native_events = opts.delete(:native_events)
           verbose       = opts.delete(:verbose)
           profile       = opts.delete(:profile)
+          detach        = opts.delete(:detach)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -69,6 +70,7 @@ module Selenium
           caps.merge! 'chrome.nativeEvents' => true if native_events
           caps.merge! 'chrome.verbose'      => true if verbose
           caps.merge! 'chrome.profile'      => profile.as_json['zip'] if profile
+          caps.merge! 'chrome.detach'       => true unless detach == false
         end
 
       end # Bridge
