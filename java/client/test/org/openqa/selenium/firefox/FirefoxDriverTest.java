@@ -336,6 +336,11 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
+  public void testCanAccessUrlProtectedByBasicAuth() {
+    driver.get(appServer.whereIsWithCredentials("basicAuth", "test", "test"));
+    assertEquals("authorized", driver.findElement(By.tagName("h1")).getText());
+  }
+
   private Callable<Boolean> unhandledAlertExceptionToBeThrown(final WebDriver driver) {
     return new Callable<Boolean>() {
 

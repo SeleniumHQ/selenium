@@ -71,6 +71,7 @@ public class FirefoxProfile {
           .put("extensions.update.notifyUser", false)
           .put("network.manage-offline-status", false)
           .put("network.http.max-connections-per-server", 10)
+          .put("network.http.phishy-userpass-length", 255)
           .put("prompts.tab_modal.enabled", false)
           .put("security.fileuri.origin_policy", 3)
           .put("security.fileuri.strict_origin_policy", false)

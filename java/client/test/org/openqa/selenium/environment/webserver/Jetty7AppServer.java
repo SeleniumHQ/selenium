@@ -94,6 +94,7 @@ public class Jetty7AppServer implements AppServer {
     addServlet("Unusual encoding", "/encoding", EncodingServlet.class);
     addServlet("Sleeper", "/sleep", SleepingServlet.class);
     addServlet("Kill switch", "/quitquitquit", KillSwitchServlet.class);
+    addServlet("Basic Authentication", "/basicAuth", BasicAuth.class);
     addFilter(MultiPartFilter.class, "/upload", 0 /* DEFAULT dispatches */);
 
     listenOn(findFreePort());
@@ -121,24 +122,30 @@ public class Jetty7AppServer implements AppServer {
   }
 
   public String whereIs(String relativeUrl) {
-    if (!relativeUrl.startsWith("/")) {
-      relativeUrl = DEFAULT_CONTEXT_PATH + "/" + relativeUrl;
-    }
+    relativeUrl = getCommonPath(relativeUrl);
     return "http://" + getHostName() + ":" + port + relativeUrl;
   }
 
   public String whereElseIs(String relativeUrl) {
-    if (!relativeUrl.startsWith("/")) {
-      relativeUrl = DEFAULT_CONTEXT_PATH + "/" + relativeUrl;
-    }
+    relativeUrl = getCommonPath(relativeUrl);
     return "http://" + getAlternateHostName() + ":" + port + relativeUrl;
   }
 
   public String whereIsSecure(String relativeUrl) {
+    relativeUrl = getCommonPath(relativeUrl);
+    return "https://" + getHostName() + ":" + securePort + relativeUrl;
+  }
+
+  public String whereIsWithCredentials(String relativeUrl, String user, String pass) {
+    relativeUrl = getCommonPath(relativeUrl);
+    return "http://" + user + ":" + pass + "@" + getHostName() + ":" + port + relativeUrl;
+  }
+
+  private String getCommonPath(String relativeUrl) {
     if (!relativeUrl.startsWith("/")) {
       relativeUrl = DEFAULT_CONTEXT_PATH + "/" + relativeUrl;
     }
-    return "https://" + getHostName() + ":" + securePort + relativeUrl;
+    return relativeUrl;
   }
 
   public void start() {

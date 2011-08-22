@@ -32,6 +32,8 @@ public interface AppServer {
 
   String whereIsSecure(String relativeUrl);
 
+  String whereIsWithCredentials(String relativeUrl, String user, String password);
+
   void start();
 
   void stop();

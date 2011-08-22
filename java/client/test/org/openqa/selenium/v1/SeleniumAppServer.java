@@ -48,6 +48,10 @@ public class SeleniumAppServer implements AppServer {
     throw new UnsupportedOperationException("whereIsSecure");
   }
 
+  public String whereIsWithCredentials(String relativeUrl, String user, String password) {
+    throw new UnsupportedOperationException("whereIsWithCredentials");
+  }
+
   public void start() {
     // does nothing
   }

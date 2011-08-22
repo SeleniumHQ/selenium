@@ -448,6 +448,7 @@ namespace OpenQA.Selenium.Firefox
             AddDefaultPreference(prefs, "extensions.update.notifyUser", "false");
             AddDefaultPreference(prefs, "network.manage-offline-status", "false");
             AddDefaultPreference(prefs, "network.http.max-connections-per-server", "10");
+            AddDefaultPreference(prefs, "network.http.phishy-userpass-length", "255");
             AddDefaultPreference(prefs, "prompts.tab_modal.enabled", "false");
             AddDefaultPreference(prefs, "security.fileuri.origin_policy", "3");
             AddDefaultPreference(prefs, "security.fileuri.strict_origin_policy", "false");
