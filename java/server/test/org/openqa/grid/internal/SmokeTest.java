@@ -50,7 +50,7 @@ public class SmokeTest {
   }
 
 
-  @Test(timeout = 1000)
+  @Test(timeout = 10000)
   public void method() throws InterruptedException {
 
     final List<TestSession> sessions = new CopyOnWriteArrayList<TestSession>();
@@ -105,8 +105,13 @@ public class SmokeTest {
     Assert.assertEquals(2 * MAX, stopped);
     // nothing left waiting
     Assert.assertEquals(0, registry.getNewSessionRequestCount());
-    // nothing active
+    
+    // nothing active. Waiting in case a stopSessionRequest.process() isn't finish. It's async.
+    while(registry.getActiveSessions().size()!=0){
+    	 Thread.sleep(10);
+    }
     Assert.assertEquals(0, registry.getActiveSessions().size());
+    
     // everything was started.
     Assert.assertEquals(2 * MAX, ran);
 
