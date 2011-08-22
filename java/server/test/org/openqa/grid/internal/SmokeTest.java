@@ -90,8 +90,8 @@ public class SmokeTest {
     }
 
     int stopped = 0;
-    // nothing left running or waiting to be run
-    while (registry.getActiveSessions().size() != 0 || registry.getNewSessionRequestCount() != 0) {
+    // all the tests ran via the registry.
+    while (stopped < 2* MAX) {
       for (TestSession session : sessions) {
         MockedRequestHandler stopSessionRequest = new MockedRequestHandler(registry);
         stopSessionRequest.setSession(session);
