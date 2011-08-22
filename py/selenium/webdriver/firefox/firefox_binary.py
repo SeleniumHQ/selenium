@@ -79,7 +79,6 @@ class FirefoxBinary(object):
         """Blocks until the extension is connectable in the firefox."""
         count = 0
         while not self.is_connectable():
-            #LOGGER.debug("Waiting for browser to launch...")
             if self.process.returncode:
                 # Browser has exited
                 return False
