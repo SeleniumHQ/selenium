@@ -8,7 +8,7 @@ module Selenium
       def initialize(host, port, timeout = 0, interval = 0.25)
         @host     = host
         @port     = Integer(port)
-        @timeout  = Integer(timeout)
+        @timeout  = Float(timeout)
         @interval = interval
       end
 
