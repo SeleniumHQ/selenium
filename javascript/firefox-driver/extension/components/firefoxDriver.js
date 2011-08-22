@@ -366,8 +366,8 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
       // We send the INVALID_SELECTOR_ERROR immediately because it will occur in
       // every retry.
       respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-        'The given selector "' + selector + ' is either invalid or does not result'
-          + ' in a WebElement'));
+        'The given selector "' + selector + ' is either invalid or does not result' +
+        ' in a WebElement. The following error occurred:\n' + ex));
       return;
     } else {
       // this is not the exception we are interested in, so we propagate it.
@@ -462,8 +462,8 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
       // We send the INVALID_SELECTOR_ERROR immediately because it will occur in
       // every retry.
       respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-        'The given selector "' + selector + ' is either invalid or does not result'
-           + 'in a Webelement'));
+        'The given selector "' + selector + ' is either invalid or does not result' +
+        'in a Webelement. The following error occurred:\n' + ex));
       return;
     } else {
       // this is not the exception we are interested in, so we propagate it.
