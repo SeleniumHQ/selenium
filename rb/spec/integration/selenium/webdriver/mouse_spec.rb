@@ -3,7 +3,7 @@ require File.expand_path("../spec_helper", __FILE__)
 module Selenium
   module WebDriver
     describe Mouse do
-      compliant_on :browser => :ie do
+      compliant_on :browser => [:ie, :chrome] do
         it "clicks an element" do
           driver.navigate.to url_for("formPage.html")
           driver.mouse.click driver.find_element(:id, "imageButton")
@@ -27,13 +27,13 @@ module Selenium
         end
       end
 
-      compliant_on :browser => nil do
+      compliant_on :browser => :chrome do
         it "double clicks an element" do
           driver.navigate.to url_for("javascriptPage.html")
           element = driver.find_element(:id, 'doubleClickField')
 
           driver.mouse.double_click element
-          element.value.should == 'DoubleClicked'
+          element.attribute(:value).should == 'DoubleClicked'
         end
 
         it "context clicks an element" do
@@ -41,7 +41,7 @@ module Selenium
           element = driver.find_element(:id, 'doubleClickField')
 
           driver.mouse.context_click element
-          element.value.should == 'ContextClicked'
+          element.attribute(:value).should == 'ContextClicked'
         end
       end
 

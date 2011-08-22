@@ -111,7 +111,7 @@ describe "Element" do
     size.height.should > 0
   end
 
-  compliant_on :driver => [:ie] do # Firefox w/native events: issue 1771
+  compliant_on :driver => [:ie, :chrome] do # Firefox w/native events: issue 1771
     it "should drag and drop" do
       driver.navigate.to url_for("dragAndDropTest.html")
 
