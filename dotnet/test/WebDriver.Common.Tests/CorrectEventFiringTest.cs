@@ -331,7 +331,7 @@ namespace OpenQA.Selenium
 
             uploadElement.SendKeys(inputFile.FullName);
             // Shift focus to something else because send key doesn't make the focus leave
-            driver.FindElement(By.TagName("body")).Click();
+            driver.FindElement(By.Id("id-name1")).Click();
 
             inputFile.Delete();
             Assert.AreEqual("changed", result.Text);
