@@ -138,6 +138,9 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A handle to the dialog.</returns>
         public IAlert Alert()
         {
+            // N.B. We only execute the GetAlertText command to be able to throw
+            // a NoAlertPresentException if there is no alert found.
+            this.driver.InternalExecute(DriverCommand.GetAlertText, null);
             return new RemoteAlert(this.driver);
         }
         #endregion
