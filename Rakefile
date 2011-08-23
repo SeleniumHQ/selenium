@@ -35,7 +35,7 @@ require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/gecko_sdks'
 
 def version
-  "2.4.0"
+  "2.5.0"
 end
 ide_version = "1.0.12"
 
@@ -343,7 +343,7 @@ end
 # Installs the webdriver python bindings using virtualenv for testing.
 task :webdriver_py do
   if python? then
-    pip_pkg = "pip install simplejson py pytest rdflib"
+    pip_pkg = "pip install simplejson pytest==2.0.3 rdflib"
     virtualenv = "virtualenv --no-site-packages build/python"
     pip_install = 'build/python/bin/' + pip_pkg
     if (windows?) then
