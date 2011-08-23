@@ -66,21 +66,10 @@ js_fragment(name = "is_enabled",
   function = "webdriver.inject.dom.isEnabled",
   deps = [":deps"])
 
-js_fragment(name = "toggle",
-  module = "webdriver.inject.action",
-  function = "webdriver.inject.action.toggle",
-  deps = [":deps"])
-
-js_fragment(name = "set_selected",
-  module = "webdriver.inject.action",
-  function = "webdriver.inject.action.setSelected",
-  deps = [":deps"])
-
 js_fragment(name = "clear",
   module = "webdriver.inject.action",
   function = "webdriver.inject.action.clear",
   deps = [":deps"])
-
 
 js_fragment(name = "is_displayed",
   module = "webdriver.inject.dom",

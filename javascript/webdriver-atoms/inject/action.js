@@ -23,27 +23,6 @@ goog.require('bot.action');
 goog.require('bot.inject');
 goog.require('goog.dom.selection');
 
-/**
- * Toggles the selected state of the given element.
- *
- * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
- * @return {string} A boolean describing whether the element is selected
- *     in a JSON string as defined by the wire protocol.
- */
-webdriver.inject.action.toggle = function(element) {
-  return bot.inject.executeScript(bot.action.toggle, [element], true);
-};
-
-
-/**
- * Sets the selected state of the given INPUT element.
- *
- * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
- */
-webdriver.inject.action.setSelected = function(element, selected) {
-  bot.inject.executeScript(bot.action.setSelected, [element, selected], true);
-};
-
 
 /**
  * Submits the form containing the given element.
