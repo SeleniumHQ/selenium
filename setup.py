@@ -69,7 +69,7 @@ else:
 setup(
     cmdclass={'install': install},
     name='selenium',
-    version="2.5.0",
+    version="2.6.0dev",
     description='Python bindings for Selenium',
     long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
