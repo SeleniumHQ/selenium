@@ -49,6 +49,19 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore
+  public void testShouldDismissAlertOnException() {
+    driver.findElement(By.id("alert")).click();
+
+    try {
+      driver.getTitle();
+      fail("Expected exception");
+    } catch (NoAlertPresentException expected) {
+    }
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
+
+  @JavascriptEnabled
   public void testShouldAllowUsersToAcceptAnAlertManually() {
     driver.findElement(By.id("alert")).click();
 
