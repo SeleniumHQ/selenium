@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import static org.openqa.selenium.remote.server.rest.ResultType.SUCCESS;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -24,7 +26,6 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultType;
-import static org.openqa.selenium.remote.server.rest.ResultType.SUCCESS;
 
 import java.util.Map;
 

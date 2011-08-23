@@ -17,8 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Cookie {
   private final String name;

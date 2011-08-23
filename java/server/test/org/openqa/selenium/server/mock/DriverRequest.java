@@ -1,8 +1,8 @@
 package org.openqa.selenium.server.mock;
 
-import junit.framework.Assert;
-
 import org.openqa.selenium.server.RemoteCommand;
+
+import junit.framework.Assert;
 
 
 public class DriverRequest extends AsyncHttpRequest {

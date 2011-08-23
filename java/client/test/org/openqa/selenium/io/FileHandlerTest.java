@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.io;
 
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,8 +30,6 @@ import java.io.Writer;
 import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import org.junit.Test;
 
 public class FileHandlerTest extends TestCase {
 

@@ -17,8 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import org.jmock.Expectations;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.fail;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
@@ -29,12 +31,11 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 
+import org.jmock.Expectations;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.fail;
 
 public class ByChainedTest extends MockTestBase {
   @Test

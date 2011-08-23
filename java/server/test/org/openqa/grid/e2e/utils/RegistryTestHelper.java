@@ -1,9 +1,10 @@
 package org.openqa.grid.e2e.utils;
 
-import java.util.concurrent.Callable;
+import org.openqa.selenium.TestWaiter;
 
 import org.openqa.grid.internal.Registry;
-import org.openqa.selenium.TestWaiter;
+
+import java.util.concurrent.Callable;
 
 public class RegistryTestHelper {
 

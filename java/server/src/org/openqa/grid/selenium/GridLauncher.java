@@ -15,7 +15,7 @@ limitations under the License.
  */
 package org.openqa.grid.selenium;
 
-import java.util.logging.Logger;
+import org.openqa.selenium.server.SeleniumServer;
 
 import org.openqa.grid.common.GridDocHelper;
 import org.openqa.grid.common.GridRole;
@@ -24,7 +24,8 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.server.SeleniumServer;
+
+import java.util.logging.Logger;
 
 public class GridLauncher {
 

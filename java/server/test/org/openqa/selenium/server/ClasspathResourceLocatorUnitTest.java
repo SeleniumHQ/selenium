@@ -1,11 +1,10 @@
 package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
-
-import java.io.IOException;
-
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.util.Resource;
+
+import java.io.IOException;
 
 public class ClasspathResourceLocatorUnitTest extends TestCase {
     public void testShouldGetResourceFromClasspath() throws Exception {

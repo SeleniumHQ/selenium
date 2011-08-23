@@ -17,11 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.lift.find;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 
 import java.util.Collection;
 

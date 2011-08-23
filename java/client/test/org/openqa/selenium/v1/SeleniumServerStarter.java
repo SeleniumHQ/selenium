@@ -1,20 +1,21 @@
 package org.openqa.selenium.v1;
 
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.net.PortProber.freeLocalPort;
+import static org.openqa.selenium.net.PortProber.pollPort;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import org.openqa.selenium.Build;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.os.CommandLine;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 
 import java.io.File;
 import java.io.IOException;
-
-import org.openqa.selenium.Build;
-import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.net.NetworkUtils;
-
-import static java.util.concurrent.TimeUnit.*;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.net.PortProber.freeLocalPort;
-import static org.openqa.selenium.net.PortProber.pollPort;
 
 @SuppressWarnings({"UnusedDeclaration"})
 public class SeleniumServerStarter extends TestSetup {

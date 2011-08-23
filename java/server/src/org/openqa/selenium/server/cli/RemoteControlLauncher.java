@@ -1,7 +1,7 @@
 package org.openqa.selenium.server.cli;
 
-import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.InjectionHelper;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
 

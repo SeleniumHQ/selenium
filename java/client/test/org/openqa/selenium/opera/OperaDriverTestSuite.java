@@ -2,12 +2,11 @@ package org.openqa.selenium.opera;
 
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 
-import com.opera.core.systems.OperaDriver;
+import org.openqa.selenium.TestSuiteBuilder;
 
+import com.opera.core.systems.OperaDriver;
 import junit.framework.Test;
 import junit.framework.TestCase;
-
-import org.openqa.selenium.TestSuiteBuilder;
 
 public class OperaDriverTestSuite extends TestCase {
   

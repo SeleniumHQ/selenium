@@ -1,8 +1,9 @@
 package org.openqa.selenium.server.log;
 
+import org.openqa.selenium.server.RemoteControlConfiguration;
+
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
 import java.io.IOException;

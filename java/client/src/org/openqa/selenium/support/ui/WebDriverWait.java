@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.WebDriver;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * A specialization of {@link FluentWait} that uses WebDriver instances.

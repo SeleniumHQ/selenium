@@ -19,6 +19,7 @@ package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.BrowserConfigurationOptions;
 import com.thoughtworks.selenium.Selenium;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;

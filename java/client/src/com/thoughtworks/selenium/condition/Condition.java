@@ -16,8 +16,8 @@
  */
 package com.thoughtworks.selenium.condition;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Simple predicate class, which also knows how to wait for the condition to be true.

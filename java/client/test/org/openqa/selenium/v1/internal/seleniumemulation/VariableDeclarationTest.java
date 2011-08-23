@@ -17,8 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.v1.internal.seleniumemulation;
 
-import junit.framework.TestCase;
 import org.openqa.selenium.internal.seleniumemulation.VariableDeclaration;
+
+import junit.framework.TestCase;
 
 public class VariableDeclarationTest extends TestCase {
 

@@ -16,6 +16,13 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
+import org.openqa.grid.internal.GridException;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.internal.listeners.Prioritizer;
+import org.openqa.grid.internal.listeners.TestSessionListener;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,13 +38,6 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.openqa.grid.internal.GridException;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.listeners.TestSessionListener;
 
 /**
  * Base stuff to handle the request coming from a remote. Ideally, there should

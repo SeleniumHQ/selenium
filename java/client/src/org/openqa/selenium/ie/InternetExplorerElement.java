@@ -18,14 +18,14 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import java.util.List;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.Response;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.List;
 
 public class InternetExplorerElement extends RemoteWebElement implements WebElement {
   public InternetExplorerElement(InternetExplorerDriver parent) {

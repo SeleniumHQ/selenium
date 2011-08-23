@@ -17,7 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import junit.framework.TestCase;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.rest.Handler;
@@ -25,11 +27,9 @@ import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
 
-import java.util.logging.Logger;
+import junit.framework.TestCase;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import java.util.logging.Logger;
 
 public class UrlMapperTest extends TestCase {
   private final static Logger log = Logger.getLogger(UrlMapperTest.class.getName());

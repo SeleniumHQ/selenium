@@ -1,6 +1,6 @@
 package org.openqa.selenium.server;
 
-import java.awt.*;
+import java.awt.Robot;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;

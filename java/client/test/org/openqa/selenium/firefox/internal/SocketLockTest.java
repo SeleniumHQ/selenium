@@ -17,17 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Lock;
+import org.openqa.selenium.internal.SocketLock;
+import org.openqa.selenium.net.PortProber;
+
 import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Lock;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.internal.SocketLock;
 
 /**
  * Tests for the {@link SocketLock} to make sure I'm not batshit crazy.

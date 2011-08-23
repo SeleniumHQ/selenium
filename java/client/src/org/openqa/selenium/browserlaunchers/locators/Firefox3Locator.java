@@ -1,11 +1,10 @@
 package org.openqa.selenium.browserlaunchers.locators;
 
-import org.openqa.selenium.Platform;
-
-import org.openqa.selenium.os.WindowsUtils;
-import org.openqa.selenium.os.CommandLine;
-
 import com.google.common.collect.ImmutableList;
+
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.WindowsUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;

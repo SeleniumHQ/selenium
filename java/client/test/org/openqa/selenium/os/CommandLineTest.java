@@ -17,11 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.os;
 
+import junit.framework.TestCase;
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
-import junit.framework.TestCase;
-
-import org.junit.Test;
 
 public class CommandLineTest extends TestCase {
 

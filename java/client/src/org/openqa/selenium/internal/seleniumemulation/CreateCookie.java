@@ -17,15 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import com.thoughtworks.selenium.SeleniumException;
+
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriver;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.thoughtworks.selenium.SeleniumException;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.WebDriver;
 
 public class CreateCookie extends SeleneseCommand<Void> {
   private final Pattern NAME_VALUE_PAIR_PATTERN = Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");

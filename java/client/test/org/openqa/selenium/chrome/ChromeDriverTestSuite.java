@@ -19,14 +19,14 @@ package org.openqa.selenium.chrome;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 
+import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class ChromeDriverTestSuite extends TestCase {
   private static ChromeDriverService chromeDriverService;

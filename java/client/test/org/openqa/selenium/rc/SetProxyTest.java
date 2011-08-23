@@ -3,10 +3,8 @@ package org.openqa.selenium.rc;
 import static org.openqa.selenium.Ignore.Driver.ALL;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.net.PortProber.pollPort;
-import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
-
-import junit.framework.TestCase;
+import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION;
 
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.NoDriverAfterTest;
@@ -21,6 +19,8 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
+
+import junit.framework.TestCase;
 
 // This test only makes sense for IE, but needs a lot of supporting code.
 @Ignore(value = ALL, reason = "Needs to be run manually")

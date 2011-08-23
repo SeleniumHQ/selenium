@@ -16,9 +16,10 @@ limitations under the License.
 */
 package org.openqa.selenium.lift;
 
+import org.openqa.selenium.lift.find.XPathFinderTest;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.lift.find.XPathFinderTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

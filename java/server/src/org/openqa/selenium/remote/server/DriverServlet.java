@@ -17,15 +17,65 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import java.io.IOException;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.openqa.selenium.remote.server.handler.*;
+import org.openqa.selenium.remote.server.handler.AcceptAlert;
+import org.openqa.selenium.remote.server.handler.AddConfig;
+import org.openqa.selenium.remote.server.handler.AddCookie;
+import org.openqa.selenium.remote.server.handler.CaptureScreenshot;
+import org.openqa.selenium.remote.server.handler.ChangeUrl;
+import org.openqa.selenium.remote.server.handler.ClearElement;
+import org.openqa.selenium.remote.server.handler.ClickElement;
+import org.openqa.selenium.remote.server.handler.CloseWindow;
+import org.openqa.selenium.remote.server.handler.DeleteCookie;
+import org.openqa.selenium.remote.server.handler.DeleteNamedCookie;
+import org.openqa.selenium.remote.server.handler.DeleteSession;
+import org.openqa.selenium.remote.server.handler.DescribeElement;
+import org.openqa.selenium.remote.server.handler.DismissAlert;
+import org.openqa.selenium.remote.server.handler.ElementEquality;
+import org.openqa.selenium.remote.server.handler.ExecuteAsyncScript;
+import org.openqa.selenium.remote.server.handler.ExecuteScript;
+import org.openqa.selenium.remote.server.handler.FindActiveElement;
+import org.openqa.selenium.remote.server.handler.FindChildElement;
+import org.openqa.selenium.remote.server.handler.FindChildElements;
+import org.openqa.selenium.remote.server.handler.FindElement;
+import org.openqa.selenium.remote.server.handler.FindElements;
+import org.openqa.selenium.remote.server.handler.GetAlertText;
+import org.openqa.selenium.remote.server.handler.GetAllCookies;
+import org.openqa.selenium.remote.server.handler.GetAllWindowHandles;
+import org.openqa.selenium.remote.server.handler.GetCssProperty;
+import org.openqa.selenium.remote.server.handler.GetCurrentUrl;
+import org.openqa.selenium.remote.server.handler.GetCurrentWindowHandle;
+import org.openqa.selenium.remote.server.handler.GetElementAttribute;
+import org.openqa.selenium.remote.server.handler.GetElementDisplayed;
+import org.openqa.selenium.remote.server.handler.GetElementEnabled;
+import org.openqa.selenium.remote.server.handler.GetElementLocation;
+import org.openqa.selenium.remote.server.handler.GetElementLocationInView;
+import org.openqa.selenium.remote.server.handler.GetElementSelected;
+import org.openqa.selenium.remote.server.handler.GetElementSize;
+import org.openqa.selenium.remote.server.handler.GetElementText;
+import org.openqa.selenium.remote.server.handler.GetElementValue;
+import org.openqa.selenium.remote.server.handler.GetPageSource;
+import org.openqa.selenium.remote.server.handler.GetScreenOrientation;
+import org.openqa.selenium.remote.server.handler.GetSessionCapabilities;
+import org.openqa.selenium.remote.server.handler.GetTagName;
+import org.openqa.selenium.remote.server.handler.GetTitle;
+import org.openqa.selenium.remote.server.handler.GoBack;
+import org.openqa.selenium.remote.server.handler.GoForward;
+import org.openqa.selenium.remote.server.handler.ImeActivateEngine;
+import org.openqa.selenium.remote.server.handler.ImeDeactivate;
+import org.openqa.selenium.remote.server.handler.ImeGetActiveEngine;
+import org.openqa.selenium.remote.server.handler.ImeGetAvailableEngines;
+import org.openqa.selenium.remote.server.handler.ImeIsActivated;
+import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
+import org.openqa.selenium.remote.server.handler.NewSession;
+import org.openqa.selenium.remote.server.handler.RefreshPage;
+import org.openqa.selenium.remote.server.handler.Rotate;
+import org.openqa.selenium.remote.server.handler.SendKeys;
+import org.openqa.selenium.remote.server.handler.SetAlertText;
+import org.openqa.selenium.remote.server.handler.SetScriptTimeout;
+import org.openqa.selenium.remote.server.handler.Status;
+import org.openqa.selenium.remote.server.handler.SubmitElement;
+import org.openqa.selenium.remote.server.handler.SwitchToFrame;
+import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.html5.ClearAppCache;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
 import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
@@ -69,6 +119,14 @@ import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
+
+import java.io.IOException;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class DriverServlet extends HttpServlet {
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";

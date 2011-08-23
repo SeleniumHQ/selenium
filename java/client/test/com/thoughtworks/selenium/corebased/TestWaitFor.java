@@ -1,10 +1,11 @@
 package com.thoughtworks.selenium.corebased;
 
-import java.util.regex.Pattern;
-
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+
 import org.junit.After;
 import org.junit.Test;
+
+import java.util.regex.Pattern;
 
 public class TestWaitFor extends InternalSelenseTestBase {
 	@Test public void testWaitFor() throws Exception {

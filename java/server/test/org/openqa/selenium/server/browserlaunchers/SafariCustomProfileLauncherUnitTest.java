@@ -1,16 +1,17 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.classextension.EasyMock.createStrictMock;
-import static org.easymock.classextension.EasyMock.expectLastCall;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
 
-import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SslCertificateGenerator;
+
+import org.junit.Test;
 
 
 public class SafariCustomProfileLauncherUnitTest {

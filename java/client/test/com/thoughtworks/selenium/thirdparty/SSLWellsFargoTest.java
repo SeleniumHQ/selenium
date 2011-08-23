@@ -1,6 +1,7 @@
 package com.thoughtworks.selenium.thirdparty;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+
 import org.testng.annotations.Test;
 
 public class SSLWellsFargoTest extends InternalSelenseTestBase {

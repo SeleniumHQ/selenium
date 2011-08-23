@@ -19,6 +19,8 @@ limitations under the License.
 
 package org.openqa.selenium.io;
 
+import org.openqa.selenium.WebDriverException;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,8 +32,6 @@ import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
-
-import org.openqa.selenium.WebDriverException;
 
 /**
  * Utility methods for common filesystem activities

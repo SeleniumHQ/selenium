@@ -1,12 +1,12 @@
 package org.openqa.selenium.server;
 
 
-import junit.framework.TestCase;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
+
+import junit.framework.TestCase;
 
 public class BrowserConfigurationOptionsTest extends TestCase {
 

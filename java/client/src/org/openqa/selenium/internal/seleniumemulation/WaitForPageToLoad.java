@@ -18,7 +18,9 @@ limitations under the License.
 package org.openqa.selenium.internal.seleniumemulation;
 
 import com.google.common.base.Throwables;
+
 import com.thoughtworks.selenium.Wait;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;

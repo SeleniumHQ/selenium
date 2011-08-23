@@ -17,10 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
-import java.util.logging.Logger;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Charsets;
+import com.google.common.collect.Maps;
+import com.google.common.io.Resources;
+
+import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -29,11 +31,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
-import com.google.common.collect.Maps;
-import com.google.common.io.Resources;
-import com.thoughtworks.selenium.SeleniumException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class ElementFinder {
   private final static Logger log = Logger.getLogger(ElementFinder.class.getName());

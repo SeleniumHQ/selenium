@@ -17,15 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultDriverFactory implements DriverFactory {
   private Map<Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =

@@ -53,6 +53,7 @@ import com.thoughtworks.selenium.corebased.TestVisibility;
 import com.thoughtworks.selenium.corebased.TestWait;
 import com.thoughtworks.selenium.corebased.TestWaitForNot;
 import com.thoughtworks.selenium.corebased.TestXPathLocators;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

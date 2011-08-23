@@ -20,6 +20,7 @@ package org.openqa.selenium.v1;
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.SeleniumLogLevels;
+
 import org.testng.annotations.Test;
 
 /**

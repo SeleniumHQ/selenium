@@ -1,22 +1,23 @@
 package org.openqa.grid.e2e.wd;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * start 2 proxy of 5 FF each, and run 10 tests. Validate all the resources are

@@ -15,6 +15,14 @@ limitations under the License.
  */
 package org.openqa.grid.web.servlet;
 
+import com.google.common.io.ByteStreams;
+
+import org.openqa.grid.common.GridDocHelper;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,14 +35,6 @@ import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.openqa.grid.common.GridDocHelper;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.web.servlet.handler.RequestHandler;
-
-import com.google.common.io.ByteStreams;
 
 /**
  * Front end to monitor what is currently happening on the proxies. The display

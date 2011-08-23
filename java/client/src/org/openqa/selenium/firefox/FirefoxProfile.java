@@ -17,9 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import static org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
+import static org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
+import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import org.apache.commons.io.FileUtils;
+
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.WebDriverException;
@@ -30,16 +37,12 @@ import org.openqa.selenium.io.Cleanly;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
-import static org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
-import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
 
 public class FirefoxProfile {
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";

@@ -17,19 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.internal;
 
-import java.util.List;
-import java.util.Map;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.html5.ResultSet;
 import org.openqa.selenium.html5.ResultSetRows;
 import org.openqa.selenium.remote.server.KnownElements;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Converts an object to be sent as JSON according to the wire protocol.

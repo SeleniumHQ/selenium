@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import junit.framework.TestCase;
+import static org.openqa.selenium.Ignore.Driver.IE;
 
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.WebDriver;
 
-import static org.openqa.selenium.Ignore.Driver.IE;
+import junit.framework.TestCase;
 
 public class InternetExplorerDriverTest extends TestCase {
 

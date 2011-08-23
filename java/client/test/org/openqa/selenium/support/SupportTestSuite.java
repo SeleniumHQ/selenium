@@ -17,12 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.support;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import junit.framework.Test;
+import junit.framework.TestCase;
 
 public class SupportTestSuite extends TestCase {
   public static Test suite() throws Exception {

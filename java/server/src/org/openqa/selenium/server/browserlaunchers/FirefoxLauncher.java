@@ -18,7 +18,11 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.browserlaunchers.locators.*;
+import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
+import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
+import org.openqa.selenium.browserlaunchers.locators.CombinedFirefoxLocator;
+import org.openqa.selenium.browserlaunchers.locators.Firefox2Locator;
+import org.openqa.selenium.browserlaunchers.locators.Firefox3Locator;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;

@@ -18,6 +18,9 @@ limitations under the License.
 package org.openqa.selenium.html5;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.TestWaiter.waitFor;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.Ignore;
@@ -26,9 +29,6 @@ import org.openqa.selenium.WaitingConditions;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.TestWaiter.waitFor;
 
 public class HTML5Test extends AbstractDriverTestCase {
   private static final String INSERT_STATEMENT =

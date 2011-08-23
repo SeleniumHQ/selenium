@@ -1,10 +1,11 @@
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 
 @Ignore(value = ANDROID, reason = "Android: Race condition when click returns, "
     + "the UI did not finish scrolling..")

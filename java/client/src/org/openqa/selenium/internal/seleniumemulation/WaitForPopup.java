@@ -19,6 +19,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.Wait;
+
 import org.openqa.selenium.WebDriver;
 
 public class WaitForPopup extends SeleneseCommand<Void> {

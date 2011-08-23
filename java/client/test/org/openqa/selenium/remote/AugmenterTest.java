@@ -17,20 +17,35 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_BROWSER_CONNECTION;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StubDriver;
+import org.openqa.selenium.StubElement;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
 import org.junit.Test;
-import org.openqa.selenium.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.Assert.*;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_BROWSER_CONNECTION;
-import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
 public class AugmenterTest {
   @Test

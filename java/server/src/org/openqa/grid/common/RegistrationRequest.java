@@ -16,6 +16,19 @@ limitations under the License.
 
 package org.openqa.grid.common;
 
+import com.google.common.collect.Maps;
+
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.cli.RemoteControlLauncher;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.grid.common.exception.GridConfigurationException;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,18 +40,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
-
-import com.google.common.collect.Maps;
 
 /**
  * helper to register to the grid. Using JSON to exchange the object between the

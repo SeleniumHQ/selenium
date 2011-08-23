@@ -17,11 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.WebDriverException;
-
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

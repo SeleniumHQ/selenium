@@ -17,8 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import org.openqa.selenium.WebDriver;
 import com.google.common.base.Function;
+
+import org.openqa.selenium.WebDriver;
 
 /**
  * Models a condition that might reasonably be expected to eventually evaluate

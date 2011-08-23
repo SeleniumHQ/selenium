@@ -1,9 +1,9 @@
 package org.openqa.selenium;
 
-import java.util.List;
-
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
+import java.util.List;
 
 @Ignore({IPHONE, SELENESE})
 public class ElementEqualityTest extends AbstractDriverTestCase {

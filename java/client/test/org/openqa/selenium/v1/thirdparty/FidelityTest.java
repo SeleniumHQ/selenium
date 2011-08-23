@@ -2,6 +2,7 @@ package org.openqa.selenium.v1.thirdparty;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 import com.thoughtworks.selenium.Wait;
+
 import org.testng.annotations.Test;
 
 public class FidelityTest extends InternalSelenseTestBase {

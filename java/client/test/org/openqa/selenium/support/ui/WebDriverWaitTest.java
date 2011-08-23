@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -28,8 +28,9 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import org.jmock.Expectations;
+import org.junit.Before;
+import org.junit.Test;
 
 public class WebDriverWaitTest extends MockTestBase {
 

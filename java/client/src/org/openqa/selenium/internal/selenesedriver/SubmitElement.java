@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.Selenium;
+
 import org.openqa.selenium.WebDriverException;
 
 import java.util.Map;

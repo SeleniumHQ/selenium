@@ -17,14 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.lift;
 
-import junit.framework.TestCase;
-import org.hamcrest.Matcher;
+import static org.openqa.selenium.lift.match.NumericalMatchers.exactly;
+import static org.openqa.selenium.lift.match.SelectionMatcher.selection;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 
-import static org.openqa.selenium.lift.match.NumericalMatchers.exactly;
-import static org.openqa.selenium.lift.match.SelectionMatcher.selection;
+import junit.framework.TestCase;
+import org.hamcrest.Matcher;
 
 /**
  * Base class for tests using the LiFT style API to driver WebDriver.

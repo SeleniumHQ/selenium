@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.io.LineReader;
+
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.Cleanly;
 

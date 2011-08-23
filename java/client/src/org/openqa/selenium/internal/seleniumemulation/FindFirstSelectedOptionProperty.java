@@ -19,10 +19,10 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import com.thoughtworks.selenium.SeleniumException;
 
-import java.util.List;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 public class FindFirstSelectedOptionProperty extends SeleneseCommand<String> {
 

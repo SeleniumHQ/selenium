@@ -4,12 +4,17 @@
  */
 package org.openqa.selenium.server.htmlrunner;
 
-import java.io.*;
-import java.text.*;
+import org.openqa.jetty.http.HttpException;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
+import org.openqa.jetty.http.handler.ResourceHandler;
+import org.openqa.jetty.util.StringUtil;
 
-import org.openqa.jetty.http.*;
-import org.openqa.jetty.http.handler.*;
-import org.openqa.jetty.util.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.text.MessageFormat;
 
 /** Generates a test suite table designed to run a single Selenium test; to use it, point TestRunner.html to /singleTest/http://my.com/single/test.html
  * 

@@ -17,20 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.support;
 
-import org.junit.Test;
-import org.openqa.selenium.MockTestBase;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.pagefactory.FieldDecorator;
-
-import java.lang.reflect.Field;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.fail;
+
+import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.pagefactory.FieldDecorator;
+
+import org.junit.Test;
+
+import java.lang.reflect.Field;
 
 public class PageFactoryTest extends MockTestBase {
 

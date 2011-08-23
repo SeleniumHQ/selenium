@@ -1,11 +1,10 @@
 package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
-
-import java.io.File;
-
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.util.Resource;
+
+import java.io.File;
 
 public class FsResourceLocatorUnitTest extends TestCase {
 	private File tempFile;

@@ -16,13 +16,13 @@ limitations under the License.
 */
 package org.openqa.selenium.net;
 
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
+
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
 
 public class NetworkUtils {
 

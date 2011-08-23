@@ -2,16 +2,17 @@
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+
+import static org.junit.Assert.fail;
+
+import org.openqa.selenium.internal.InProject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.openqa.selenium.internal.InProject;
-
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.Platform.WINDOWS;
 
 public class Build {
   private List<String> targets = new ArrayList<String>();

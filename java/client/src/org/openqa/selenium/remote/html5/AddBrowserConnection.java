@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.html5;
 
-import java.lang.reflect.Method;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.remote.AugmenterProvider;
@@ -25,7 +25,7 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.InterfaceImplementation;
 
-import com.google.common.collect.ImmutableMap;
+import java.lang.reflect.Method;
 
 public class AddBrowserConnection implements AugmenterProvider {
 

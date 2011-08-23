@@ -17,12 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import junit.framework.TestCase;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
+
+import junit.framework.TestCase;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,9 +35,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 
 public class FirefoxProfileTest extends TestCase {
 

@@ -16,14 +16,14 @@
  */
 package org.openqa.selenium.server;
 
-import junit.framework.TestCase;
-
-import java.io.File;
-
-import org.openqa.jetty.http.HttpRequest;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.HTMLTestResults;
+
+import junit.framework.TestCase;
+import org.openqa.jetty.http.HttpRequest;
+
+import java.io.File;
 
 public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResultsListener {
 

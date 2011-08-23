@@ -1,11 +1,12 @@
 package org.openqa.grid.internal;
 
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import org.openqa.grid.common.RegistrationRequest;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class RemoteProxyFactory {
 

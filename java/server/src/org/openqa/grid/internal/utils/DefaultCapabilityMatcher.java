@@ -16,13 +16,13 @@ limitations under the License.
 
 package org.openqa.grid.internal.utils;
 
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.CapabilityType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.CapabilityType;
 
 /**
  * Default (naive) implementation of the capability matcher.

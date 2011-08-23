@@ -19,11 +19,12 @@ package org.openqa.grid.web.servlet;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 
+import java.io.IOException;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * Provided for compatibility with Selenium Grid 1.0 clients.  Responds to heartbeat requests and indicates

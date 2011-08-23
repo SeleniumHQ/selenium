@@ -1,8 +1,8 @@
 package org.openqa.grid.internal.listeners;
 
-import java.util.List;
-
 import org.openqa.grid.common.exception.RemoteException;
+
+import java.util.List;
 
 /**
  * Defines of how the proxy tries to mitigate system errors like network

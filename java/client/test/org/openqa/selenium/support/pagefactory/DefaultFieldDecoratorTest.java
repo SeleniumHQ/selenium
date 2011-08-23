@@ -17,8 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import org.jmock.Expectations;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.MockTestBase;
@@ -36,12 +39,10 @@ import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import java.lang.reflect.Field;
+import org.jmock.Expectations;
+import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
+import java.lang.reflect.Field;
 
 /**
  */

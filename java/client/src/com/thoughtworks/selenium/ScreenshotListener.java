@@ -1,11 +1,11 @@
 package com.thoughtworks.selenium;
 
-import java.io.File;
-
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.internal.IResultListener;
+
+import java.io.File;
 
 public class ScreenshotListener implements IResultListener {
 

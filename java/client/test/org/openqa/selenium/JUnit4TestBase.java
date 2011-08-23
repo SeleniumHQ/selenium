@@ -1,17 +1,19 @@
 package org.openqa.selenium;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.environment.InProcessTestEnvironment;
-import org.openqa.selenium.environment.TestEnvironment;
-import org.openqa.selenium.environment.webserver.AppServer;
+import static org.openqa.selenium.DevMode.isInDevMode;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.openqa.selenium.DevMode.isInDevMode;
+
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.environment.InProcessTestEnvironment;
+import org.openqa.selenium.environment.TestEnvironment;
+import org.openqa.selenium.environment.webserver.AppServer;
+
+import org.junit.AfterClass;
+import org.junit.Before;
 
 public abstract class JUnit4TestBase {
   protected TestEnvironment environment;

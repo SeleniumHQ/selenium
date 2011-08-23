@@ -17,12 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.CapabilityType;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -33,6 +27,12 @@ import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
+
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.CapabilityType;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Ignore(
     value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SELENESE},

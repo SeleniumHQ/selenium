@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.io.ByteStreams;
+
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -24,7 +26,6 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.google.common.io.ByteStreams;
 import org.json.JSONException;
 import org.json.JSONObject;
 

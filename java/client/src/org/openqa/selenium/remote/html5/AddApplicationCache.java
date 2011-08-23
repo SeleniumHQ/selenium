@@ -17,9 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.html5;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Lists;
 
 import org.openqa.selenium.html5.AppCacheEntry;
 import org.openqa.selenium.html5.AppCacheStatus;
@@ -30,7 +28,9 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.InterfaceImplementation;
 
-import com.google.common.collect.Lists;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 
 public class AddApplicationCache implements AugmenterProvider {
 

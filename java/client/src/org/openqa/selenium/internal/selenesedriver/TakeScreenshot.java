@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
-import java.util.Map;
-
 import com.thoughtworks.selenium.Selenium;
+
+import java.util.Map;
 
 public class TakeScreenshot implements SeleneseFunction<String> {
 

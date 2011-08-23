@@ -1,11 +1,11 @@
 package org.openqa.selenium.v1;
 
-import java.awt.event.KeyEvent;
-
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.awt.event.KeyEvent;
 
 public class TestNativeKeys extends InternalSelenseTestBase {
     @Test(dataProvider = "system-properties") public void testKeyPressNative() {

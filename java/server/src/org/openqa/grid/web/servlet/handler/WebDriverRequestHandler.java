@@ -15,6 +15,13 @@ limitations under the License.
  */
 package org.openqa.grid.web.servlet.handler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.grid.internal.GridException;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.TestSession;
+import org.openqa.jetty.jetty.servlet.ServletHttpResponse;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,13 +30,6 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.grid.internal.GridException;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.jetty.jetty.servlet.ServletHttpResponse;
 
 public class WebDriverRequestHandler extends RequestHandler {
 

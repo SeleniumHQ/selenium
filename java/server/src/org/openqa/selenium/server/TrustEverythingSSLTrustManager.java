@@ -1,5 +1,7 @@
 package org.openqa.selenium.server;
 
+import java.security.GeneralSecurityException;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -7,7 +9,6 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.security.GeneralSecurityException;
 
 /**
  * Provides a mechanism to trust all SSL certificates

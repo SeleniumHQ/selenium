@@ -1,7 +1,7 @@
 package org.openqa.selenium;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.openqa.selenium.browserlaunchers.LauncherUtilsUnitTest;
+import org.openqa.selenium.browserlaunchers.MacProxyManagerUnitTest;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManagerUnitTest;
 import org.openqa.selenium.os.WindowsUtilsUnitTest;
 import org.openqa.selenium.rc.BrowserResponseSequencerUnitTest;
@@ -23,10 +23,11 @@ import org.openqa.selenium.server.StaticContentHandlerUnitTest;
 import org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncherUnitTest;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactoryUnitTest;
 import org.openqa.selenium.server.browserlaunchers.FirefoxChromeLauncherUnitTest;
-import org.openqa.selenium.browserlaunchers.LauncherUtilsUnitTest;
-import org.openqa.selenium.browserlaunchers.MacProxyManagerUnitTest;
 import org.openqa.selenium.server.browserlaunchers.MakeProxyPacUnitTest;
 import org.openqa.selenium.server.mock.MockPIFrameUnitTest;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
  
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

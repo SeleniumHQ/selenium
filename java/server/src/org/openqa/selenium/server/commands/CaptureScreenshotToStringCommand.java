@@ -1,10 +1,12 @@
 package org.openqa.selenium.server.commands;
 
-import org.apache.commons.codec.binary.Base64;
 import org.openqa.selenium.server.RobotRetriever;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
+import org.apache.commons.codec.binary.Base64;
+
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,6 +14,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 /**
  * Captures a full screen shot of the current screen using the java.awt.Robot class.

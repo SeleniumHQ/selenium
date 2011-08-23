@@ -1,9 +1,9 @@
 package org.openqa.selenium.io;
 
-import junit.framework.TestCase;
-
-import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
+
+import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;

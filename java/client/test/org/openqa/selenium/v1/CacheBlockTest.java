@@ -1,9 +1,10 @@
 package org.openqa.selenium.v1;
 
-import com.thoughtworks.selenium.InternalSelenseTestBase;
-import org.testng.annotations.Test;
-
 import static org.testng.Assert.assertNotNull;
+
+import com.thoughtworks.selenium.InternalSelenseTestBase;
+
+import org.testng.annotations.Test;
 
 public class CacheBlockTest extends InternalSelenseTestBase {
 

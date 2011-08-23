@@ -1,15 +1,9 @@
 package org.openqa.grid.internal;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.CapabilityType;
 
 import junit.framework.Assert;
-
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -27,8 +21,14 @@ import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestType;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.CapabilityType;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StatusServletTests {
 

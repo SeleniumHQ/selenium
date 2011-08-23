@@ -1,18 +1,19 @@
 package org.openqa.selenium;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
+import static org.openqa.selenium.DevMode.isInDevMode;
+import static org.openqa.selenium.net.PortProber.pollPort;
 
 import com.google.common.collect.Maps;
+
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
-import static org.openqa.selenium.DevMode.isInDevMode;
-import static org.openqa.selenium.net.PortProber.pollPort;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
 
 public class SeleniumServerInstance {
   private SeleniumServer seleniumServer;

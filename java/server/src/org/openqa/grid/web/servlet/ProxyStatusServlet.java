@@ -1,5 +1,11 @@
 package org.openqa.grid.web.servlet;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.grid.internal.GridException;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,12 +17,6 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.grid.internal.GridException;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
 
 public class ProxyStatusServlet extends RegistryBasedServlet {
 

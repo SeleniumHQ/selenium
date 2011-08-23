@@ -1,8 +1,8 @@
 package org.openqa.selenium;
 
-import junit.framework.TestCase;
-
 import org.openqa.selenium.Proxy.ProxyType;
+
+import junit.framework.TestCase;
 
 public class ProxyTest extends TestCase {
   public void testUnspecified() {

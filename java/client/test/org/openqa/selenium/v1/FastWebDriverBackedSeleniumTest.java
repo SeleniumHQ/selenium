@@ -17,11 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
-import org.jmock.Expectations;
-import org.junit.Test;
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
+
+import org.jmock.Expectations;
+import org.junit.Test;
 
 public class FastWebDriverBackedSeleniumTest extends MockTestBase {
   @Test

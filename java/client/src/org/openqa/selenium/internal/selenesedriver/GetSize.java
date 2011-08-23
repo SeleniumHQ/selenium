@@ -19,10 +19,12 @@ package org.openqa.selenium.internal.selenesedriver;
 
 import static com.google.common.base.Joiner.on;
 
+import com.google.common.collect.ImmutableMap;
+
+import com.thoughtworks.selenium.Selenium;
+
 import org.openqa.selenium.WebDriverException;
 
-import com.google.common.collect.ImmutableMap;
-import com.thoughtworks.selenium.Selenium;
 import org.json.JSONException;
 import org.json.JSONObject;
 

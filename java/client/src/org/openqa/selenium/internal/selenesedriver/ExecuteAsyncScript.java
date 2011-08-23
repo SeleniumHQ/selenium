@@ -17,11 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
+
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumException;
 import org.json.JSONException;
 import org.json.JSONWriter;
 

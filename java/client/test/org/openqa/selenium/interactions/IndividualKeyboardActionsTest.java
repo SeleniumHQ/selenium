@@ -17,15 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.openqa.selenium.Keyboard;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.Mouse;
+import org.openqa.selenium.StubRenderedWebElement;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
+
 import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.*;
-import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.interactions.internal.Coordinates;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Unit test for all simple keyboard actions.

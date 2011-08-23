@@ -1,8 +1,8 @@
 package org.openqa.grid.e2e.misc;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -16,12 +16,13 @@ import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 public class Grid1HeartbeatTests {
   private Hub hub;

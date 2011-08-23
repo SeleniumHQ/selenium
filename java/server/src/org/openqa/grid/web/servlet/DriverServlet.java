@@ -15,13 +15,9 @@ limitations under the License.
  */
 package org.openqa.grid.web.servlet;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import com.google.common.io.ByteStreams;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.openqa.selenium.remote.ErrorCodes;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,9 +25,14 @@ import org.json.JSONObject;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.WebDriverRequestHandler;
-import org.openqa.selenium.remote.ErrorCodes;
 
-import com.google.common.io.ByteStreams;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * entry point for all communication request sent by the clients to the remotes

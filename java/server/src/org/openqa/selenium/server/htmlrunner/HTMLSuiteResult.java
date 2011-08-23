@@ -4,13 +4,18 @@
  */
 package org.openqa.selenium.server.htmlrunner;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.text.*;
-import javax.swing.text.html.*;
-import javax.swing.text.html.HTML.*;
-import javax.swing.text.html.HTMLEditorKit.*;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTML.Tag;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.HTMLEditorKit.Parser;
+import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 
 public class HTMLSuiteResult {
 

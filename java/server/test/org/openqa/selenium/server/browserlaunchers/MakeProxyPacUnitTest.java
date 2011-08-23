@@ -1,15 +1,15 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.browserlaunchers.Proxies;
+
 import junit.framework.TestCase;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.browserlaunchers.Proxies;
 
 public class MakeProxyPacUnitTest extends TestCase {
     public MakeProxyPacUnitTest(String name) {

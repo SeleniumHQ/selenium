@@ -3,8 +3,8 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Cache browser installation corresponding to a spefic browser string and launcher location.

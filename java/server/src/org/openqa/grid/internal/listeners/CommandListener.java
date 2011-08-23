@@ -16,10 +16,10 @@ limitations under the License.
 
 package org.openqa.grid.internal.listeners;
 
+import org.openqa.grid.internal.TestSession;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.openqa.grid.internal.TestSession;
 
 /**
  * wrapped around each request received and forwarded by the hub.

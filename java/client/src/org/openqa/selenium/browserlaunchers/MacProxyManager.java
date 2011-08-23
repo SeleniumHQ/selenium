@@ -16,6 +16,8 @@
  */
 package org.openqa.selenium.browserlaunchers;
 
+import org.openqa.selenium.os.CommandLine;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,9 +27,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
-
-import org.openqa.selenium.os.CommandLine;
-//import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
 
 /**
  * Class to manage the proxy server on OS X.  It uses the 'networksetup' tool to do

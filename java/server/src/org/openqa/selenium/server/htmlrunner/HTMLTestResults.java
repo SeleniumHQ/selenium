@@ -16,10 +16,14 @@
  */
 package org.openqa.selenium.server.htmlrunner;
 
-import java.io.*;
-import java.net.*;
-import java.text.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.URLDecoder;
+import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A data model class for the results of the Selenium HTMLRunner (aka TestRunner, FITRunner)

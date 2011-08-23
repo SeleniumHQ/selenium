@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.List;
-
 import org.openqa.selenium.internal.WrapsDriver;
+
+import java.util.List;
 
 public class StubElement implements WebElement, WrapsDriver {
   public void click() {

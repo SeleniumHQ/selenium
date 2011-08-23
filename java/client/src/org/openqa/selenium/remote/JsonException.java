@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.remote;
 
-import org.json.JSONException;
 import org.openqa.selenium.WebDriverException;
+
+import org.json.JSONException;
 
 public class JsonException extends WebDriverException {
   public JsonException(JSONException e) {

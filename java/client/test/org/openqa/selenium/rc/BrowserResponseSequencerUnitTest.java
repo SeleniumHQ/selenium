@@ -1,5 +1,7 @@
 package org.openqa.selenium.rc;
 
+import org.openqa.selenium.server.BrowserResponseSequencer;
+
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -7,8 +9,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-
-import org.openqa.selenium.server.BrowserResponseSequencer;
 
 public class BrowserResponseSequencerUnitTest extends TestCase {
 

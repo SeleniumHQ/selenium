@@ -1,5 +1,10 @@
 package com.thoughtworks.selenium;
 
+import org.openqa.selenium.server.TrustEverythingSSLTrustManager;
+
+import junit.framework.TestCase;
+import org.apache.commons.io.IOUtils;
+
 import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -7,11 +12,6 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import javax.net.ssl.HttpsURLConnection;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.io.IOUtils;
-import org.openqa.selenium.server.TrustEverythingSSLTrustManager;
 
 public class SeleniumServerProxyTest extends TestCase {
     public void testProxiesSeleniumStaticResourcesWithUpstreamProxy()

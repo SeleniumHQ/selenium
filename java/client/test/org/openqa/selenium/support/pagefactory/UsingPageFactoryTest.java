@@ -18,7 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
 import org.openqa.selenium.JUnit4TestBase;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.JavascriptExecutor;
@@ -26,7 +27,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 public class UsingPageFactoryTest extends JUnit4TestBase {
 

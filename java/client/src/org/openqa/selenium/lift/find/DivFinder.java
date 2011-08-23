@@ -17,10 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.lift.find;
 
-import org.hamcrest.Factory;
+import static org.openqa.selenium.lift.match.AttributeMatcher.attribute;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.openqa.selenium.lift.match.AttributeMatcher.attribute;
+
+import org.hamcrest.Factory;
 
 /**
  * {@link Finder} for HTML div tags.

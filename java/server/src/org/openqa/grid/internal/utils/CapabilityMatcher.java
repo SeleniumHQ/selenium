@@ -16,9 +16,9 @@ limitations under the License.
 
 package org.openqa.grid.internal.utils;
 
-import java.util.Map;
-
 import org.openqa.grid.internal.RemoteProxy;
+
+import java.util.Map;
 
 /**
  * Used to find out if a capabilities requested by the client matches something

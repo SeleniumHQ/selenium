@@ -1,8 +1,7 @@
 package org.openqa.selenium.rc;
 
-import junit.framework.TestCase;
-
-import java.net.MalformedURLException;
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.Pages;
@@ -17,8 +16,9 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import static org.openqa.selenium.Platform.MAC;
-import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
+import junit.framework.TestCase;
+
+import java.net.MalformedURLException;
 
 // TODO(reorg): This test is never run. It must be.
 //Firefox specific test, but needs to be in remote

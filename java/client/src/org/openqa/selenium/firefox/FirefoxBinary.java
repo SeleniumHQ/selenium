@@ -17,6 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.internal.Executable;
+import org.openqa.selenium.firefox.internal.Streams;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.os.ProcessUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,15 +38,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.os.ProcessUtils;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.internal.Executable;
-import org.openqa.selenium.firefox.internal.Streams;
-import org.openqa.selenium.io.FileHandler;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class FirefoxBinary {
   private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";

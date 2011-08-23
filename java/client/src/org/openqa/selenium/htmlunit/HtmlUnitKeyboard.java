@@ -17,7 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import java.io.IOException;
+import org.openqa.selenium.Keyboard;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
@@ -25,10 +28,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.gargoylesoftware.htmlunit.javascript.host.Event;
 import com.gargoylesoftware.htmlunit.javascript.host.KeyboardEvent;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+
+import java.io.IOException;
 
 /**
  * Implements keyboard operations using the HtmlUnit WebDriver.

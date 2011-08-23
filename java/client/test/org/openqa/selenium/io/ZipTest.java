@@ -1,7 +1,8 @@
 package org.openqa.selenium.io;
 
-import junit.framework.TestCase;
 import org.openqa.selenium.internal.InProject;
+
+import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.FileInputStream;

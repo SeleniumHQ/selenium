@@ -1,12 +1,12 @@
 package org.openqa.selenium.browserlaunchers;
 
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.TemporaryFilesystem;
+
 import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.IOException;
-
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.TemporaryFilesystem;
 
 public class WindowsProxyManagerUnitTest extends TestCase {
   

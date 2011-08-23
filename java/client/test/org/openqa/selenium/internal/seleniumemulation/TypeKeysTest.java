@@ -17,13 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import static org.easymock.EasyMock.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TypeKeysTest {
   private ElementFinder elementFinder;

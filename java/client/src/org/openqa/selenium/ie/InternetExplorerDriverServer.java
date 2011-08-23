@@ -17,14 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.win32.StdCallLibrary;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.PortProber;
+
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.win32.StdCallLibrary;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Parse a Selenium browser string to extract browserStartCommand if there is one.

@@ -17,11 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.jmock.Expectations;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
 import org.openqa.selenium.MockTestBase;
 
-import static org.junit.Assert.assertEquals;
+import org.jmock.Expectations;
+import org.junit.Test;
 
 /**
  * Tests the CompositeAction class

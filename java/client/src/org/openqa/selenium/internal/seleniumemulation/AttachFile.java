@@ -18,7 +18,9 @@ limitations under the License.
 package org.openqa.selenium.internal.seleniumemulation;
 
 import com.google.common.io.Resources;
+
 import com.thoughtworks.selenium.SeleniumException;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.io.TemporaryFilesystem;

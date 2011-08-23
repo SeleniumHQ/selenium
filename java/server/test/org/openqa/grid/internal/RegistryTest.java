@@ -1,9 +1,9 @@
 package org.openqa.grid.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.CountDownLatch;
+import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
+
+import org.openqa.selenium.remote.CapabilityType;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -13,10 +13,11 @@ import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
-import org.openqa.selenium.remote.CapabilityType;
 
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 public class RegistryTest {
 

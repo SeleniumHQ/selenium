@@ -17,9 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -27,12 +29,11 @@ import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
-import java.util.concurrent.TimeUnit;
+import org.jmock.Expectations;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import java.util.concurrent.TimeUnit;
 
 public class FluentWaitTest extends MockTestBase {
 

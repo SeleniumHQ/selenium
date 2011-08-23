@@ -17,12 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -31,6 +25,13 @@ import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
 @Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends AbstractDriverTestCase {

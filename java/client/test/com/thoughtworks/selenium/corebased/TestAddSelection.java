@@ -18,6 +18,7 @@ limitations under the License.
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+
 import org.junit.Test;
 
 public class TestAddSelection extends InternalSelenseTestBase {

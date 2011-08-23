@@ -1,6 +1,7 @@
 package org.openqa.selenium.v1.remotecontrol;
 
 import com.thoughtworks.selenium.DefaultSelenium;
+
 import org.junit.Test;
 
 /**

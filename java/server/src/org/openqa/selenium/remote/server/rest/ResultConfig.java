@@ -18,8 +18,14 @@ limitations under the License.
 package org.openqa.selenium.remote.server.rest;
 
 import com.google.common.collect.Lists;
+
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.*;
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.remote.PropertyMunger;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.SimplePropertyDescriptor;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
@@ -28,17 +34,23 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.PerSessionLogHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class ResultConfig {
 

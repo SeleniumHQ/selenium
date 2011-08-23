@@ -1,11 +1,12 @@
 package org.openqa.selenium.v1.internal.seleniumemulation;
 
-import junit.framework.TestCase;
-
 import com.thoughtworks.selenium.SeleniumException;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
 import org.openqa.selenium.internal.seleniumemulation.Timer;
+
+import junit.framework.TestCase;
 
 public class TimerTest extends TestCase {
 

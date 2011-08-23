@@ -1,15 +1,15 @@
 package org.openqa.grid.common;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.grid.common.exception.GridConfigurationException;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.grid.common.exception.GridConfigurationException;
 
 public class JSONConfigurationUtils {
 

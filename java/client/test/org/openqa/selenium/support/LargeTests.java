@@ -16,10 +16,11 @@ limitations under the License.
 */
 package org.openqa.selenium.support;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.openqa.selenium.support.pagefactory.UsingPageFactoryTest;
 import org.openqa.selenium.support.ui.SelectLargeTest;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

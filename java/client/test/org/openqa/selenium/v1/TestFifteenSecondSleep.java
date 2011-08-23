@@ -1,6 +1,7 @@
 package org.openqa.selenium.v1;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+
 import org.testng.annotations.Test;
 
 public class TestFifteenSecondSleep extends InternalSelenseTestBase

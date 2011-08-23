@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.concurrent.Callable;
-
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -28,8 +25,10 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+
+import java.util.concurrent.Callable;
 
 @Ignore({CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
 public class AlertsTest extends AbstractDriverTestCase {

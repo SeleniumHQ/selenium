@@ -1,6 +1,7 @@
 package org.openqa.selenium.v1.thirdparty;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+
 import org.testng.annotations.Test;
 
 public class BestBuyTest extends InternalSelenseTestBase {

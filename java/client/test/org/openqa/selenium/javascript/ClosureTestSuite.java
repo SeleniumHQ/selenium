@@ -22,14 +22,14 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Throwables;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.EnvironmentStarter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.InProject;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import java.io.File;
 

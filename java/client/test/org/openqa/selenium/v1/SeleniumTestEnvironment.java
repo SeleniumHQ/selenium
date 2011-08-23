@@ -19,9 +19,11 @@ package org.openqa.selenium.v1;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
+
 import com.thoughtworks.selenium.BrowserConfigurationOptions;
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
+
 import org.openqa.selenium.Build;
 import org.openqa.selenium.DevMode;
 import org.openqa.selenium.WebDriver;

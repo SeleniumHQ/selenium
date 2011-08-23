@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

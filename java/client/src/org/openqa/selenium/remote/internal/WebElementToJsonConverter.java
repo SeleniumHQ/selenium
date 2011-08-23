@@ -17,17 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium.remote.internal;
 
-import java.util.Collection;
-import java.util.Map;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Converts {@link WebElement} objects to their JSON representation. Will

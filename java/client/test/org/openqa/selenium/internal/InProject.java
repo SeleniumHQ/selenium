@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.internal;
 
+import org.openqa.selenium.WebDriverException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-
-import org.openqa.selenium.WebDriverException;
 
 public class InProject {
   /**

@@ -17,19 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import junit.framework.TestCase;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNot.not;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNot.not;
+import junit.framework.TestCase;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 

@@ -16,15 +16,16 @@ limitations under the License.
 
 package org.openqa.grid.web.utils;
 
-import java.io.InputStream;
-import java.util.Map;
+import com.google.common.collect.Maps;
 
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.Registry;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.google.common.collect.Maps;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.Registry;
+
+import java.io.InputStream;
+import java.util.Map;
 
 /**
  * Utilities for dealing with browser names.

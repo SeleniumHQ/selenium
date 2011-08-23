@@ -16,6 +16,14 @@
  */
 package org.openqa.selenium.browserlaunchers;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.WindowsRegistryException;
+import org.openqa.selenium.os.WindowsUtils;
+import org.openqa.selenium.remote.CapabilityType;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -25,14 +33,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.os.WindowsRegistryException;
-import org.openqa.selenium.os.WindowsUtils;
-import org.openqa.selenium.remote.CapabilityType;
 
 
 public class WindowsProxyManager {

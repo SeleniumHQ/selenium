@@ -18,11 +18,11 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.fail;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This helper class duplicates the functionality of the Wait class

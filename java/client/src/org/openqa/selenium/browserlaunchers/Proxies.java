@@ -18,24 +18,25 @@ limitations under the License.
 
 package org.openqa.selenium.browserlaunchers;
 
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
+import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
+import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.PROXYING_EVERYTHING;
+
+import com.thoughtworks.selenium.SeleniumException;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.CapabilityType.ForSeleniumServer;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
-
-import com.thoughtworks.selenium.SeleniumException;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer;
-import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
-import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
-import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.PROXYING_EVERYTHING;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 public class Proxies {
   public static final String PROXY_CONFIG = CapabilityType.PROXY;

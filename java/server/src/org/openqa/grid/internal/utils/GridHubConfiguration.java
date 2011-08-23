@@ -1,5 +1,14 @@
 package org.openqa.grid.internal.utils;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.openqa.grid.common.CommandLineOptionHelper;
+import org.openqa.grid.common.JSONConfigurationUtils;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.listeners.Prioritizer;
+import org.yaml.snakeyaml.Yaml;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -12,15 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.openqa.grid.common.CommandLineOptionHelper;
-import org.openqa.grid.common.JSONConfigurationUtils;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.internal.listeners.Prioritizer;
-import org.yaml.snakeyaml.Yaml;
 
 public class GridHubConfiguration {
 

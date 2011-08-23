@@ -1,11 +1,10 @@
 package org.openqa.selenium.server;
 
-import junit.framework.TestCase;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
@@ -16,11 +15,12 @@ import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
+import junit.framework.TestCase;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 public class BrowserSessionFactoryUnitTest extends TestCase {
 

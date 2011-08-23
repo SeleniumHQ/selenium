@@ -16,15 +16,15 @@ limitations under the License.
 
 package org.openqa.grid.selenium.proxy;
 
-import java.util.Map;
-import java.util.logging.Logger;
-
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+
+import java.util.Map;
+import java.util.logging.Logger;
 
 
 public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListener {

@@ -17,9 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.v1.internal.seleniumemulation;
 
-import junit.framework.TestCase;
 import org.openqa.selenium.internal.seleniumemulation.CompoundMutator;
 import org.openqa.selenium.internal.seleniumemulation.ScriptMutator;
+
+import junit.framework.TestCase;
 
 public class CompoundMutatorTest extends TestCase {
   private ScriptMutator mutator;

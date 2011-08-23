@@ -17,12 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
-import org.json.JSONObject;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.rest.Handler;
+
+import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

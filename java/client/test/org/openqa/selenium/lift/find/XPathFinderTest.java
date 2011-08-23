@@ -18,11 +18,12 @@ limitations under the License.
 
 package org.openqa.selenium.lift.find;
 
-import org.jmock.Expectations;
-import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebDriver;
+
+import org.jmock.Expectations;
+import org.junit.Test;
 
 import java.util.Collections;
 

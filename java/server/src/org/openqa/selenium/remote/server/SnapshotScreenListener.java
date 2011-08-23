@@ -17,12 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import org.apache.commons.codec.binary.Base64;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
 
-import java.awt.*;
+import org.apache.commons.codec.binary.Base64;
+
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 

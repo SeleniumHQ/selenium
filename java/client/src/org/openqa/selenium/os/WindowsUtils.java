@@ -16,15 +16,18 @@
  */
 package org.openqa.selenium.os;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
 import org.openqa.selenium.Platform;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +42,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.openqa.selenium.Platform.WINDOWS;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class WindowsUtils {
 

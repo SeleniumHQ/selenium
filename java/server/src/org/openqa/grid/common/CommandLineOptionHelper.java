@@ -1,10 +1,10 @@
 package org.openqa.grid.common;
 
+import org.openqa.grid.common.exception.GridConfigurationException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.openqa.grid.common.exception.GridConfigurationException;
 
 public class CommandLineOptionHelper {
 

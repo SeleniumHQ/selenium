@@ -21,8 +21,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Clock;
-import org.openqa.selenium.support.ui.SystemClock;
 import org.openqa.selenium.support.ui.SlowLoadableComponent;
+import org.openqa.selenium.support.ui.SystemClock;
 
 import java.lang.reflect.Field;
 

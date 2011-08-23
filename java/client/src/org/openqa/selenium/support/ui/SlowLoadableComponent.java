@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import junit.framework.Assert;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
+
+import junit.framework.Assert;
 
 /**
  * A {@link LoadableComponent} which might not have finished loading when

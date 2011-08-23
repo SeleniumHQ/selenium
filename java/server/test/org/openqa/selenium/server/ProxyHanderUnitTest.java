@@ -1,14 +1,17 @@
 package org.openqa.selenium.server;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
 
 import junit.framework.TestCase;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.util.URI;
 
-import static org.easymock.classextension.EasyMock.*;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 
 public class ProxyHanderUnitTest extends TestCase {
 

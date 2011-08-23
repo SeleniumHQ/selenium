@@ -18,18 +18,9 @@ package org.openqa.grid.internal.utils;
 
 import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.InvalidParameterException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.servlet.Servlet;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.server.SeleniumServer;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -47,9 +38,19 @@ import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.server.SeleniumServer;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.InvalidParameterException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.servlet.Servlet;
 
 public class SelfRegisteringRemote {
 

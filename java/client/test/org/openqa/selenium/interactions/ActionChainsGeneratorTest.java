@@ -17,9 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.MockTestBase;
@@ -29,7 +28,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
-import static org.junit.Assert.assertEquals;
+import org.jmock.Expectations;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests the builder for user actions.

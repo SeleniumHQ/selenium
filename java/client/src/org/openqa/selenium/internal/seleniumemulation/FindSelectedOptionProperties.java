@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.List;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 public class FindSelectedOptionProperties extends SeleneseCommand<String[]> {
 

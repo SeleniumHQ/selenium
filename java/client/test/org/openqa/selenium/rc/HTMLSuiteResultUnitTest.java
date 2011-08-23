@@ -4,9 +4,9 @@
  */
 package org.openqa.selenium.rc;
 
-import junit.framework.TestCase;
-
 import org.openqa.selenium.server.htmlrunner.HTMLSuiteResult;
+
+import junit.framework.TestCase;
 
 public class HTMLSuiteResultUnitTest extends TestCase {
 

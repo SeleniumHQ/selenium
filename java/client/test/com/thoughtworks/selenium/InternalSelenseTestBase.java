@@ -2,15 +2,17 @@ package com.thoughtworks.selenium;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.v1.SeleniumTestEnvironment;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.testng.Assert;
 
 import java.io.IOException;

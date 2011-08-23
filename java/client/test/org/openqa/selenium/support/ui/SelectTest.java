@@ -17,22 +17,23 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import org.jmock.Expectations;
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.MockTestBase;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+
+import org.jmock.Expectations;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class SelectTest extends MockTestBase {
   @Test

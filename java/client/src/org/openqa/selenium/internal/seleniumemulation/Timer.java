@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.internal.seleniumemulation;
 
 import com.thoughtworks.selenium.SeleniumException;
+
 import org.openqa.selenium.WebDriver;
 
 public class Timer {

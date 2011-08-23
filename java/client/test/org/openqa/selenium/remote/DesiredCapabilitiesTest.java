@@ -1,13 +1,13 @@
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.StubDriver;
+import org.openqa.selenium.WebDriver;
+
 import junit.framework.TestCase;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.StubDriver;
-import org.openqa.selenium.WebDriver;
 
 public class DesiredCapabilitiesTest extends TestCase {
   public void testAddingTheSameCapabilityToAMapTwiceShouldResultInOneEntry() {

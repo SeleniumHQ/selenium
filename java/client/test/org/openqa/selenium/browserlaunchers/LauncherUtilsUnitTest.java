@@ -3,9 +3,9 @@ package org.openqa.selenium.browserlaunchers;
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
 
-import junit.framework.TestCase;
-
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -17,23 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium.environment.webserver;
 
+import static org.openqa.selenium.net.PortProber.findFreePort;
+
+import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.net.NetworkUtils;
+
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.ssl.SslSocketConnector;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.MultiPartFilter;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.openqa.selenium.internal.InProject;
-import org.openqa.selenium.net.NetworkUtils;
 
 import java.io.File;
 
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
-
-import static org.openqa.selenium.net.PortProber.findFreePort;
 
 public class Jetty7AppServer implements AppServer {
 

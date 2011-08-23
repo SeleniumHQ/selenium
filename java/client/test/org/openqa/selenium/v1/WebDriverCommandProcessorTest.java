@@ -17,11 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
-import junit.framework.TestCase;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverCommandProcessor;
+
+import junit.framework.TestCase;
 
 public class WebDriverCommandProcessorTest extends TestCase {
   public void testDriverNeedNotImplementHasCapabilities() {

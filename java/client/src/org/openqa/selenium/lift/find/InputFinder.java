@@ -17,11 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.lift.find;
 
-import org.hamcrest.Factory;
-
-import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.Matchers.attribute;
 import static org.openqa.selenium.lift.Matchers.value;
+
+import static org.hamcrest.Matchers.equalTo;
+
+import org.hamcrest.Factory;
 
 /**
  * {@link Finder} for HTML input tags.

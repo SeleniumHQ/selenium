@@ -17,11 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetAttributeFromAllWindows extends SeleneseCommand<String[]> {
   @Override

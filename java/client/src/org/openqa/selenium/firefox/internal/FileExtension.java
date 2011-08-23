@@ -17,13 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.TemporaryFilesystem;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,11 +31,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 public class FileExtension implements Extension {
   private static final String EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#";

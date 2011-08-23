@@ -17,13 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
-import java.nio.charset.Charset;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.Renderer;
+
+import java.nio.charset.Charset;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class JsonResult implements Renderer {
 

@@ -1,7 +1,8 @@
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
-import org.junit.Test;;
+
+import org.junit.Test;
 
 public class TestCheckUncheck extends InternalSelenseTestBase {
 	@Test

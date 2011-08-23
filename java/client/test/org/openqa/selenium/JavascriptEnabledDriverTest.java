@@ -18,13 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.hamcrest.Matchers;
-import org.openqa.selenium.internal.Locatable;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.Is.is;
-import static org.junit.matchers.JUnitMatchers.either;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -35,6 +28,15 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.Is.is;
+import static org.junit.matchers.JUnitMatchers.either;
+
+import org.openqa.selenium.internal.Locatable;
+
+import org.hamcrest.Matchers;
 
 /**
  * Test case for browsers that support using Javascript

@@ -17,15 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.internal;
 
-import java.util.List;
-import java.util.Map;
-
-import org.openqa.selenium.remote.server.KnownElements;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import org.openqa.selenium.remote.server.KnownElements;
+
+import java.util.List;
+import java.util.Map;
 
 public class ArgumentConverter implements Function<Object, Object> {
   private final KnownElements knownElements;

@@ -17,12 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import com.google.common.collect.Maps;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.google.common.collect.Maps;
 
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -33,12 +31,14 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import java.io.File;
 import java.net.URL;
 import java.util.Map;
-
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 public class RemoteWebDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {

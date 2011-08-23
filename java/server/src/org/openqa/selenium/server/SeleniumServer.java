@@ -17,15 +17,10 @@
 
 package org.openqa.selenium.server;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.http.HashUserRealm;
-import org.openqa.jetty.http.HttpContext;
-import org.openqa.jetty.http.SecurityConstraint;
-import org.openqa.jetty.http.SocketListener;
-import org.openqa.jetty.http.handler.SecurityHandler;
-import org.openqa.jetty.jetty.Server;
-import org.openqa.jetty.jetty.servlet.ServletHandler;
-import org.openqa.jetty.util.MultiException;
+import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
+
+import static java.lang.String.format;
+
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.net.NetworkUtils;
@@ -39,6 +34,16 @@ import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
 import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
 import org.openqa.selenium.server.log.LoggingManager;
 
+import org.apache.commons.logging.Log;
+import org.openqa.jetty.http.HashUserRealm;
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.http.SecurityConstraint;
+import org.openqa.jetty.http.SocketListener;
+import org.openqa.jetty.http.handler.SecurityHandler;
+import org.openqa.jetty.jetty.Server;
+import org.openqa.jetty.jetty.servlet.ServletHandler;
+import org.openqa.jetty.util.MultiException;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,9 +54,6 @@ import java.net.BindException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
-
-import static java.lang.String.format;
-import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands

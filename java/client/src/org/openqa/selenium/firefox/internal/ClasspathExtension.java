@@ -17,16 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
+import com.google.common.io.Closeables;
+import com.google.common.io.Resources;
+
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.FileHandler;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-
-import com.google.common.io.Closeables;
-import com.google.common.io.Resources;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
 
 public class ClasspathExtension implements Extension {
   private final Class<?> loadResourcesUsing;

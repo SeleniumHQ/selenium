@@ -1,13 +1,13 @@
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
+
 import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 public class ProxyPacTest extends TestCase {
   public void testShouldNotReturnAnythingIfNothingIsConfigured() throws IOException {

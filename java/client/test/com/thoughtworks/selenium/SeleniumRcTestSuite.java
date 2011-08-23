@@ -96,6 +96,7 @@ import com.thoughtworks.selenium.corebased.TestWaitForNot;
 import com.thoughtworks.selenium.corebased.TestWaitInPopupWindow;
 import com.thoughtworks.selenium.corebased.TestXPathLocatorInXHtml;
 import com.thoughtworks.selenium.corebased.TestXPathLocators;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

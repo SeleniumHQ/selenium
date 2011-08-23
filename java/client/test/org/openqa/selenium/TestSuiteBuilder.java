@@ -17,12 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertTrue;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import org.openqa.selenium.internal.InProject;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.openqa.selenium.internal.InProject;
 
 import java.io.File;
 import java.lang.reflect.AnnotatedElement;
@@ -30,11 +37,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertTrue;
 
 public class TestSuiteBuilder {
 

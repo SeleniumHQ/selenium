@@ -3,9 +3,9 @@ package org.openqa.selenium.support.ui;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.base.Objects;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents an immutable duration of time.

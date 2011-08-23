@@ -16,13 +16,12 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-
-import junit.framework.TestCase;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import junit.framework.TestCase;
 
 /**
  * Test the determineBrowserVersion method.

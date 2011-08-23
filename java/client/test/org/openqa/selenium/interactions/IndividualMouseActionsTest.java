@@ -17,14 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.StubRenderedWebElement;
-import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
+
+import org.jmock.Expectations;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Unit test for all simple keyboard actions.

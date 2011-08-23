@@ -18,7 +18,9 @@ limitations under the License.
 package org.openqa.selenium;
 
 import com.google.common.base.Supplier;
+
 import com.thoughtworks.selenium.SeleniumException;
+
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;

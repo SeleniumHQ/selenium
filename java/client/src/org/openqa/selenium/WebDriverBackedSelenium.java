@@ -18,7 +18,9 @@ limitations under the License.
 package org.openqa.selenium;
 
 import com.google.common.base.Supplier;
+
 import com.thoughtworks.selenium.DefaultSelenium;
+
 import org.openqa.selenium.internal.WrapsDriver;
 
 public class WebDriverBackedSelenium extends DefaultSelenium implements WrapsDriver {

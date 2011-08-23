@@ -1,11 +1,12 @@
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.WebDriverException;
+import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
-import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
+
+import org.openqa.selenium.WebDriverException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

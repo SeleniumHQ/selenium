@@ -1,6 +1,14 @@
 // Copyright 2011 Google Inc. All Rights Reserved.
 package org.openqa.selenium.chrome;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
+import static org.openqa.selenium.os.CommandLine.findExecutable;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.net.PortProber;
@@ -13,10 +21,6 @@ import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.locks.ReentrantLock;
-
-import static com.google.common.base.Preconditions.*;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.os.CommandLine.findExecutable;
 
 /**
  * Manages the life and death of a chromedriver server.

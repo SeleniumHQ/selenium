@@ -17,19 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
+import com.google.common.collect.Maps;
+
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.TemporaryFilesystem;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Map;
-
-import com.google.common.collect.Maps;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.TemporaryFilesystem;
 
 public class ProfilesIni {
   private Map<String, File> profiles = Maps.newHashMap();

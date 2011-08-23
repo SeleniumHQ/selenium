@@ -4,15 +4,16 @@ import static org.openqa.grid.common.RegistrationRequest.BROWSER;
 import static org.openqa.grid.common.RegistrationRequest.PLATFORM;
 import static org.openqa.grid.common.RegistrationRequest.VERSION;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.CapabilityType;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.CapabilityType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class DefaultCapabilityMatcherTest {

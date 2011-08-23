@@ -4,6 +4,13 @@
  */
 package org.openqa.selenium.server.htmlrunner;
 
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.http.HttpException;
+import org.openqa.jetty.http.HttpHandler;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
+import org.openqa.jetty.util.StringUtil;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -13,13 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
-
-import org.openqa.jetty.http.HttpContext;
-import org.openqa.jetty.http.HttpException;
-import org.openqa.jetty.http.HttpHandler;
-import org.openqa.jetty.http.HttpRequest;
-import org.openqa.jetty.http.HttpResponse;
-import org.openqa.jetty.util.StringUtil;
 
 /**
  * Handles results of HTMLRunner (aka TestRunner, FITRunner) in automatic mode.

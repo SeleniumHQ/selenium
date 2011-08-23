@@ -17,16 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Maps;
+
 import com.thoughtworks.selenium.SeleniumException;
+
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Windows {
   private final Map<String, String> lastFrame = Maps.newHashMap();

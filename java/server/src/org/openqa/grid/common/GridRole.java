@@ -1,9 +1,9 @@
 package org.openqa.grid.common;
 
+import org.openqa.grid.common.exception.GridConfigurationException;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.openqa.grid.common.exception.GridConfigurationException;
 
 public enum GridRole {
   NOT_GRID, HUB, REMOTE_CONTROL, WEBDRIVER;

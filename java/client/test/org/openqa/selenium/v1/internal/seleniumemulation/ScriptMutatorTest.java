@@ -19,6 +19,7 @@ limitations under the License.
 package org.openqa.selenium.v1.internal.seleniumemulation;
 
 import com.thoughtworks.selenium.Selenium;
+
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.WebDriverBackedSelenium;
 

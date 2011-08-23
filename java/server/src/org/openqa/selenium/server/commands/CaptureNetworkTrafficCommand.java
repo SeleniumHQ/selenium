@@ -3,8 +3,13 @@ package org.openqa.selenium.server.commands;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 
-import java.util.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 
 public class CaptureNetworkTrafficCommand extends Command {
     private static final List<Entry> entries = Collections.synchronizedList(new ArrayList<Entry>());

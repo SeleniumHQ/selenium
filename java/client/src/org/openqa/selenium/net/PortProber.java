@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.net;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.ServerSocket;
@@ -25,8 +27,6 @@ import java.net.UnknownHostException;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 @SuppressWarnings({"UtilityClass"})
 public class PortProber {

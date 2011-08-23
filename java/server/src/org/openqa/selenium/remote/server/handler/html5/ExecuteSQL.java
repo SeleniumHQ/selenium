@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server.handler.html5;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
 import org.openqa.selenium.html5.DatabaseStorage;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;

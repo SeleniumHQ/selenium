@@ -2,8 +2,6 @@ package org.openqa.selenium.server.commands;
 
 import org.openqa.selenium.server.RobotRetriever;
 
-import javax.imageio.ImageIO;
-
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -14,6 +12,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 /**
  * Captures a full screen shot of the current screen using the java.awt.Robot class.

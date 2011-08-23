@@ -16,15 +16,6 @@ limitations under the License.
 */
 package org.openqa.selenium;
 
-import java.net.URI;
-import java.util.Date;
-import java.util.Random;
-import java.util.Set;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
-
 import static org.openqa.selenium.Ignore.Driver.ALL;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
@@ -32,6 +23,15 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
+
+import java.net.URI;
+import java.util.Date;
+import java.util.Random;
+import java.util.Set;
 
 @Ignore(SELENESE)
 public class CookieImplementationTest extends AbstractDriverTestCase {

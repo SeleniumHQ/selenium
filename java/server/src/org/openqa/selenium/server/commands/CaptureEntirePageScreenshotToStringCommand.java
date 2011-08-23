@@ -1,8 +1,9 @@
 package org.openqa.selenium.server.commands;
 
-import org.apache.commons.codec.binary.Base64;
-import org.openqa.selenium.server.IOHelper;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.server.IOHelper;
+
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.File;
 import java.io.IOException;

@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
+
+import junit.extensions.TestSetup;
+import junit.framework.Test;
 
 public class EnvironmentStarter extends TestSetup {
 

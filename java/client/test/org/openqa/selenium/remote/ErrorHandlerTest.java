@@ -17,18 +17,27 @@
 
 package org.openqa.selenium.remote;
 
-import junit.framework.TestCase;
-
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.InvalidCoordinatesException;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.InvalidElementStateException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.XPathLookupException;
+import org.openqa.selenium.interactions.InvalidCoordinatesException;
+
+import junit.framework.TestCase;
+
+import java.util.Map;
 
 /**
  * Unit tests for {@link ErrorHandler}.

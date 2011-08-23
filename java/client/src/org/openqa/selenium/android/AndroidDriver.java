@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.HasTouchScreen;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Rotatable;
@@ -30,8 +32,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import com.google.common.collect.ImmutableMap;
 
 import java.net.MalformedURLException;
 import java.net.URL;

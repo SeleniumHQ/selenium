@@ -1,10 +1,8 @@
 package org.openqa.grid.internal.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,10 +11,12 @@ import org.openqa.grid.common.CommandLineOptionHelper;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class GridNodeConfiguration {
 

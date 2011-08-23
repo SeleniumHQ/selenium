@@ -19,6 +19,7 @@ package com.thoughtworks.selenium;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
+
 import org.openqa.selenium.net.Urls;
 
 import java.io.BufferedWriter;
@@ -27,9 +28,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.ConnectException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Arrays;

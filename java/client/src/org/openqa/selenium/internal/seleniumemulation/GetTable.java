@@ -17,12 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.thoughtworks.selenium.SeleniumException;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GetTable extends SeleneseCommand<String> {
   private static final Pattern TABLE_PARTS = Pattern.compile("(.*)\\.(\\d+)\\.(\\d+)");

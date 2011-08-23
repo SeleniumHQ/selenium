@@ -1,8 +1,8 @@
 package org.openqa.selenium.htmlunit;
 
-import junit.framework.TestCase;
-
 import org.openqa.selenium.Keys;
+
+import junit.framework.TestCase;
 
 public class InputKeysContainerTest extends TestCase {
   public void testConstructionFromSingleCharSequence() {

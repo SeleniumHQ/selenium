@@ -20,15 +20,7 @@ package org.openqa.selenium.server;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.http.HttpConnection;
-import org.openqa.jetty.http.HttpException;
-import org.openqa.jetty.http.HttpFields;
-import org.openqa.jetty.http.HttpRequest;
-import org.openqa.jetty.http.HttpResponse;
-import org.openqa.jetty.http.handler.ResourceHandler;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.jetty.util.StringUtil;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
@@ -47,7 +39,17 @@ import org.openqa.selenium.server.commands.SeleniumCoreCommand;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.log.LoggingManager;
 
-import java.awt.*;
+import org.apache.commons.logging.Log;
+import org.openqa.jetty.http.HttpConnection;
+import org.openqa.jetty.http.HttpException;
+import org.openqa.jetty.http.HttpFields;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
+import org.openqa.jetty.http.handler.ResourceHandler;
+import org.openqa.jetty.log.LogFactory;
+import org.openqa.jetty.util.StringUtil;
+
+import java.awt.Robot;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;

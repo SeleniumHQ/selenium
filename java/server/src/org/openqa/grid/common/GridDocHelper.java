@@ -1,10 +1,10 @@
 package org.openqa.grid.common;
 
+import org.apache.commons.lang.WordUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import org.apache.commons.lang.WordUtils;
 
 public class GridDocHelper {
   private static Properties gridProperties = load("defaults/GridParameters.properties");

@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.IOException;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import java.io.IOException;
 
 
 

@@ -1,5 +1,7 @@
 package org.openqa.grid.internal;
 
+import static org.openqa.grid.common.RegistrationRequest.APP;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -13,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.openqa.grid.common.RegistrationRequest.APP;
 
 
 public class PriorityTest {

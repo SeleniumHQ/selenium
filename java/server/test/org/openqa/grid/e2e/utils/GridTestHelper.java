@@ -1,12 +1,13 @@
 package org.openqa.grid.e2e.utils;
 
-import java.net.URL;
+import org.openqa.selenium.net.PortProber;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
-import org.openqa.selenium.net.PortProber;
+
+import java.net.URL;
 
 public class GridTestHelper {
 

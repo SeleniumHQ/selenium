@@ -17,11 +17,11 @@
 
 package com.thoughtworks.selenium.condition;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
-
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+
+import junit.framework.AssertionFailedError;
+import junit.framework.TestCase;
 
 /**
  * Test for Condition class.

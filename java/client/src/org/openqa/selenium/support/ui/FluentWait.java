@@ -18,15 +18,16 @@ limitations under the License.
 package org.openqa.selenium.support.ui;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
-
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriverException;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriverException;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

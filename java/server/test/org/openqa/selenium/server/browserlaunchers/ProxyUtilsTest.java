@@ -17,10 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class ProxyUtilsTest {
   @Test public void modelExpectedProxyingBehavior() {

@@ -1,10 +1,6 @@
 package org.openqa.grid.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import junit.framework.Assert;
 import org.junit.AfterClass;
@@ -15,7 +11,11 @@ import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // TODO freynaud copy paste from PriorityTestLoad ....
 

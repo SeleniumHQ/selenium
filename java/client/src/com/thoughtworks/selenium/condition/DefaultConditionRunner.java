@@ -20,9 +20,9 @@ package com.thoughtworks.selenium.condition;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**

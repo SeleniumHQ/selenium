@@ -1,5 +1,7 @@
 package cybervillains.ca;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,8 +35,6 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * This is the main entry point into the Cybervillains CA.

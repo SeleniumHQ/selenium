@@ -19,8 +19,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -28,6 +26,8 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
+import org.openqa.selenium.environment.GlobalTestEnvironment;
 
 public class TextPagesTest extends AbstractDriverTestCase {
 

@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.List;
-
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -29,6 +27,8 @@ import static org.openqa.selenium.TestUtilities.isFirefox30;
 import static org.openqa.selenium.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+
+import java.util.List;
 
 @Ignore(
     value = {HTMLUNIT, IE, CHROME, REMOTE, SELENESE, OPERA},

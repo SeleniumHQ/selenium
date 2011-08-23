@@ -17,18 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
-
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DesiredCapabilities implements Serializable, Capabilities {
   private final Map<String, Object> capabilities = new HashMap<String, Object>();

@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import static org.openqa.selenium.OutputType.BASE64;
+
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
-
-import static org.openqa.selenium.OutputType.BASE64;
 
 public class CaptureScreenshot extends ResponseAwareWebDriverHandler {
 

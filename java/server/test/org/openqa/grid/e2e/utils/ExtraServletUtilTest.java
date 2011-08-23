@@ -1,10 +1,10 @@
 package org.openqa.grid.e2e.utils;
 
-import javax.servlet.Servlet;
-
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import javax.servlet.Servlet;
 
 public class ExtraServletUtilTest {
 

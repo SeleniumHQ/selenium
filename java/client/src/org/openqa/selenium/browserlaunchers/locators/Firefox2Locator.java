@@ -1,10 +1,10 @@
 package org.openqa.selenium.browserlaunchers.locators;
 
-import java.io.File;
-
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.WindowsUtils;
+
+import java.io.File;
 
 /**
  * Discovers a valid Firefox 2.x installation on local system.

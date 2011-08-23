@@ -1,9 +1,9 @@
 package org.openqa.grid.internal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
+import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -12,7 +12,10 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 
-import static org.openqa.grid.common.RegistrationRequest.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ParallelTest {
 

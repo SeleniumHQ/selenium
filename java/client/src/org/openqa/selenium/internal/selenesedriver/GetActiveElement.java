@@ -21,6 +21,7 @@ import static org.openqa.selenium.net.Urls.urlEncode;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
+
 import com.thoughtworks.selenium.Selenium;
 
 import java.util.Map;

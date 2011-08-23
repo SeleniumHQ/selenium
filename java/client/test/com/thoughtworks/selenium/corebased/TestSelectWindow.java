@@ -1,10 +1,10 @@
 package com.thoughtworks.selenium.corebased;
 
-import java.util.regex.Pattern;
-
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.junit.Test;
+
+import java.util.regex.Pattern;
 
 public class TestSelectWindow extends InternalSelenseTestBase {
 	@Test public void testSelectWindow() throws Exception {

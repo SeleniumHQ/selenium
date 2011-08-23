@@ -8,17 +8,18 @@
 
 package org.openqa.selenium.iphone;
 
+import com.google.common.annotations.VisibleForTesting;
+
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.remote.internal.CircularOutputStream;
+import org.openqa.selenium.remote.internal.SubProcess;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
-
-import com.google.common.annotations.VisibleForTesting;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.remote.internal.CircularOutputStream;
-import org.openqa.selenium.remote.internal.SubProcess;
 
 /**
  * Handles launching the iWebDriver app on the iPhone Simulator in a

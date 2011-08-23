@@ -4,12 +4,12 @@
  */
 package org.openqa.selenium.os;
 
-import java.lang.reflect.Field;
-import java.util.logging.Logger;
+import static org.openqa.selenium.Platform.WINDOWS;
 
 import org.openqa.selenium.Platform;
 
-import static org.openqa.selenium.Platform.WINDOWS;
+import java.lang.reflect.Field;
+import java.util.logging.Logger;
 
 /** Handy utilities for managing Unix/Linux processes */
 public class UnixUtils {

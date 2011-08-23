@@ -18,10 +18,10 @@ limitations under the License.
 
 package org.openqa.selenium.internal.selenesedriver;
 
-import java.util.Map;
-
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+
+import java.util.Map;
 
 public class Close implements SeleneseFunction<Void> {
   public Void apply(Selenium selenium, Map<String, ?> args) {

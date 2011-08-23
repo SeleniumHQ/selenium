@@ -17,8 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.html5;
 
-import java.lang.reflect.Method;
-import java.util.Map;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -27,7 +26,8 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.InterfaceImplementation;
 
-import com.google.common.collect.ImmutableMap;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 public class AddLocationContext implements AugmenterProvider {
 

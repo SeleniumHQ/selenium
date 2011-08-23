@@ -17,13 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class NativeEventsFirefoxDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {

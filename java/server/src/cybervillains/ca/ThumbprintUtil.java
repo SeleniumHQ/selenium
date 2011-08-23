@@ -1,10 +1,10 @@
 package cybervillains.ca;
 
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
-
 import org.bouncycastle.crypto.digests.SHA1Digest;
 import org.bouncycastle.util.encoders.Base64;
+
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
 
 /**
  * Generates a persistent SHA1 thumbprint for long-term identification of a certificate.

@@ -1,17 +1,18 @@
 package org.openqa.selenium.server;
 
-import java.io.File;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
 
 /**
  * #{@link org.openqa.selenium.server.RemoteControlConfiguration} unit test class.

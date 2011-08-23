@@ -17,12 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.jmock.Expectations;
-import org.junit.Test;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
+
+import org.jmock.Expectations;
+import org.junit.Test;
 
 public class ByTest extends MockTestBase {
 

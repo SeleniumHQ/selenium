@@ -1,21 +1,20 @@
 package org.openqa.selenium.server;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
+
 import junit.framework.TestCase;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.util.Resource;
 
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 
 public class StaticContentHandlerUnitTest extends TestCase {
     private StaticContentHandler handler;

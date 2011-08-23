@@ -18,13 +18,14 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.junit.Test;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import java.io.File;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import org.junit.Test;
+
+import java.io.File;
 
 public class BrowserOptionsTest {
 

@@ -16,15 +16,16 @@ limitations under the License.
 
 package org.openqa.grid.selenium.proxy;
 
-import java.util.Map;
-import java.util.logging.Logger;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.CapabilityType;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.TestSessionListener;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.CapabilityType;
+
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class WebDriverRemoteProxy extends WebRemoteProxy implements TestSessionListener {
   private static final Logger log = Logger.getLogger(WebDriverRemoteProxy.class.getName());

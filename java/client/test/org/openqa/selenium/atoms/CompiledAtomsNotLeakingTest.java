@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;

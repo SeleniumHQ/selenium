@@ -17,24 +17,26 @@ limitations under the License.
 
 package org.openqa.selenium.lift;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import static org.openqa.selenium.lift.Finders.first;
+import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 
-import org.hamcrest.Description;
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.fail;
+
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.lift.Finders.first;
-import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
+import org.hamcrest.Description;
+import org.jmock.Expectations;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Unit test for {@link WebDriverTestContext}.

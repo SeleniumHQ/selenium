@@ -1,9 +1,9 @@
 package org.openqa.grid.internal;
 
+import org.openqa.grid.common.RegistrationRequest;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import org.openqa.grid.common.RegistrationRequest;
 
 public class MyCustomProxy extends RemoteProxy {
 

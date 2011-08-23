@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import org.openqa.selenium.WebDriver;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.openqa.selenium.WebDriver;
 
 public class GetAllWindowTitles extends SeleneseCommand<String[]> {
   @Override

@@ -1,10 +1,10 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import junit.framework.TestCase;
+import org.openqa.selenium.browserlaunchers.AsyncExecute;
 
+import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
 
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.Firefox2Launcher} integration test class.

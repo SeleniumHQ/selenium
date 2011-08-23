@@ -16,14 +16,14 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import org.openqa.grid.internal.listeners.TestSessionListener;
+import org.openqa.grid.internal.utils.CapabilityMatcher;
+
 import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
-
-import org.openqa.grid.internal.listeners.TestSessionListener;
-import org.openqa.grid.internal.utils.CapabilityMatcher;
 
 /**
  * The entity on a proxy that can host a test session. A test slot has only 1

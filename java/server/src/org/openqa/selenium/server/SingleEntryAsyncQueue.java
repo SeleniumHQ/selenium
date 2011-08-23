@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.server;
 
+import static java.lang.System.currentTimeMillis;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
-
-import static java.lang.System.currentTimeMillis;
 
 /**
  * <p>Holds the command to be next run in the browser</p>

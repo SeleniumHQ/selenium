@@ -17,6 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.os;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,11 +33,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-
-import static org.openqa.selenium.Platform.WINDOWS;
 
 public class CommandLine {
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();

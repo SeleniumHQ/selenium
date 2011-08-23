@@ -17,18 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 
-import java.io.File;
-import java.io.IOException;
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import junit.framework.Test;
+import junit.framework.TestCase;
+
+import java.io.File;
+import java.io.IOException;
 
 public class FirefoxDriverTestSuite extends TestCase {
   private static boolean runBuild = true;

@@ -18,8 +18,8 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.Mouse;
-import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.interactions.internal.MouseAction;
+import org.openqa.selenium.internal.Locatable;
 
 /**
  * Double-clicks an element.

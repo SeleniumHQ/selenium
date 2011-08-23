@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import java.lang.reflect.Method;
-
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+
+import java.lang.reflect.Method;
 
 // Deliberately package level visibility
 class AddTakesScreenshot implements AugmenterProvider {

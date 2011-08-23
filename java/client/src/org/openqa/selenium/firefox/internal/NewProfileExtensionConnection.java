@@ -18,28 +18,28 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
+import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
+import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
 
-import org.openqa.selenium.internal.Lock;
-import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.NotConnectedException;
+import org.openqa.selenium.internal.Lock;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
-import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
-import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
 
 public class NewProfileExtensionConnection implements CommandExecutor, ExtensionConnection {
   private final static int BUFFER_SIZE = 4096;

@@ -1,12 +1,12 @@
 package org.openqa.selenium.firefox.internal;
 
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
-
-import com.google.common.collect.ImmutableList;
 
 import java.io.File;
 import java.io.OutputStream;

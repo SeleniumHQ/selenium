@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.io.File;
-
 import static org.openqa.selenium.OutputType.BASE64;
+
+import java.io.File;
 
 public class TakesScreenshotTest extends AbstractDriverTestCase {
   public void testSaveScreenshotAsFile() throws Exception {

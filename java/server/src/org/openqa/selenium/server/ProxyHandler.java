@@ -16,6 +16,11 @@
 
 package org.openqa.selenium.server;
 
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
+import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
+import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
+
 import cybervillains.ca.KeyStoreManager;
 import org.openqa.jetty.http.HttpConnection;
 import org.openqa.jetty.http.HttpContext;
@@ -34,13 +39,7 @@ import org.openqa.jetty.util.IO;
 import org.openqa.jetty.util.InetAddrPort;
 import org.openqa.jetty.util.StringMap;
 import org.openqa.jetty.util.URI;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
-import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
-import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLHandshakeException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -63,6 +62,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLHandshakeException;
 
 /* ------------------------------------------------------------ */
 

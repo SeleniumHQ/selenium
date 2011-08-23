@@ -1,6 +1,10 @@
 package org.openqa.selenium.server.commands;
 
+import org.openqa.selenium.server.ModifiedIO;
+
 import junit.framework.TestCase;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,10 +16,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.openqa.jetty.http.HttpRequest;
-import org.openqa.jetty.http.HttpResponse;
-import org.openqa.selenium.server.ModifiedIO;
 
 public class CaptureNetworkTrafficCommandTest extends TestCase {
     public void testJson() throws ParseException, IOException {

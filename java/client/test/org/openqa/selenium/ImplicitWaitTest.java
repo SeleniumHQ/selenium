@@ -1,11 +1,12 @@
 package org.openqa.selenium;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import org.junit.Test;
 

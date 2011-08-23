@@ -17,12 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import org.openqa.selenium.TestSuiteBuilder;
-
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.net.PortProber.findFreePort;
+
+import org.openqa.selenium.TestSuiteBuilder;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
 
 public class SeleneseWebDriverTestSuite extends TestCase {
 

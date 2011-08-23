@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 

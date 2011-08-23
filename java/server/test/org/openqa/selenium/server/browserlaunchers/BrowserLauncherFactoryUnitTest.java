@@ -1,10 +1,10 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import junit.framework.TestCase;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import junit.framework.TestCase;
 
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory} unit test class

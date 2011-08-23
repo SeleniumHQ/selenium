@@ -20,10 +20,11 @@ limitations under the License.
  */
 package org.openqa.selenium.lift.find;
 
-import org.hamcrest.Factory;
+import static org.openqa.selenium.lift.match.TextMatcher.text;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.openqa.selenium.lift.match.TextMatcher.text;
+
+import org.hamcrest.Factory;
 
 /**
  * A {@link Finder} for HTML title tags.

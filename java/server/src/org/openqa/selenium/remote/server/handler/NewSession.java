@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import com.google.common.collect.Maps;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
