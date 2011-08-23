@@ -33,6 +33,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
+  @Ignore(ANDROID)
   public void testShouldFireKeyPressEvents() {
     driver.get(pages.javascriptPage);
 
