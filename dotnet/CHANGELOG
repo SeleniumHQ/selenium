@@ -1,3 +1,13 @@
+v2.5.0
+======
+  * Bringing .NET SelectElement support class in line with Java Select class
+  * WebDriver.SwitchTo().Alert() now throws an exception when no alert present.
+  * InvalidSelectorException now thrown when XPath selector syntax is incorrect.
+
+v2.4.1
+======
+  * No functional changes, updates to NuGet packaging only.
+
 v2.4.0
 ======
   * Adding InvalidSelector error code.
