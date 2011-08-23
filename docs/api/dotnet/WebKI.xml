@@ -109,15 +109,19 @@
   <HelpKINode Title="By class">
     <HelpKINode Title="about By class" Url="html/T_OpenQA_Selenium_By.htm" />
     <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_By.htm" />
-    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_By__ctor.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_OpenQA_Selenium_By__ctor.htm" />
     <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_By.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_By.htm" />
   </HelpKINode>
-  <HelpKINode Title="By.By constructor" Url="html/M_OpenQA_Selenium_By__ctor.htm" />
+  <HelpKINode Title="By.By constructor" Url="html/Overload_OpenQA_Selenium_By__ctor.htm" />
   <HelpKINode Title="By.ClassName method" Url="html/M_OpenQA_Selenium_By_ClassName.htm" />
   <HelpKINode Title="By.CssSelector method" Url="html/M_OpenQA_Selenium_By_CssSelector.htm" />
+  <HelpKINode Title="By.Description property" Url="html/P_OpenQA_Selenium_By_Description.htm" />
   <HelpKINode Title="By.Equals method" Url="html/M_OpenQA_Selenium_By_Equals.htm" />
   <HelpKINode Title="By.FindElement method" Url="html/M_OpenQA_Selenium_By_FindElement.htm" />
+  <HelpKINode Title="By.FindElementMethod property" Url="html/P_OpenQA_Selenium_By_FindElementMethod.htm" />
   <HelpKINode Title="By.FindElements method" Url="html/M_OpenQA_Selenium_By_FindElements.htm" />
+  <HelpKINode Title="By.FindElementsMethod property" Url="html/P_OpenQA_Selenium_By_FindElementsMethod.htm" />
   <HelpKINode Title="By.GetHashCode method" Url="html/M_OpenQA_Selenium_By_GetHashCode.htm" />
   <HelpKINode Title="By.Id method" Url="html/M_OpenQA_Selenium_By_Id.htm" />
   <HelpKINode Title="By.LinkText method" Url="html/M_OpenQA_Selenium_By_LinkText.htm" />
@@ -353,7 +357,6 @@
   <HelpKINode Title="CurrentWindowHandle property" Url="html/P_OpenQA_Selenium_IWebDriver_CurrentWindowHandle.htm" />
   <HelpKINode Title="CurrentWindowHandle property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_CurrentWindowHandle.htm" />
   <HelpKINode Title="CurrentWindowHandle property" Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_CurrentWindowHandle.htm" />
-  <HelpKINode Title="Darwin enumeration member" Url="html/T_OpenQA_Selenium_PlatformType.htm" />
   <HelpKINode Title="Decimal field" Url="html/F_OpenQA_Selenium_Keys_Decimal.htm" />
   <HelpKINode Title="DefaultContent method" Url="html/M_OpenQA_Selenium_ITargetLocator_DefaultContent.htm" />
   <HelpKINode Title="DefaultEnableNativeEvents field" Url="html/F_OpenQA_Selenium_Firefox_FirefoxDriver_DefaultEnableNativeEvents.htm" />
@@ -546,6 +549,7 @@
   <HelpKINode Title="DeleteCookie method" Url="html/M_Selenium_ISelenium_DeleteCookie.htm" />
   <HelpKINode Title="DeleteCookieNamed method" Url="html/M_OpenQA_Selenium_ICookieJar_DeleteCookieNamed.htm" />
   <HelpKINode Title="DescribeElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="Description property" Url="html/P_OpenQA_Selenium_By_Description.htm" />
   <HelpKINode Title="DeselectAll method" Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_DeselectAll.htm" />
   <HelpKINode Title="DeselectByIndex method" Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_DeselectByIndex.htm" />
   <HelpKINode Title="DeselectByText method" Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_DeselectByText.htm" />
@@ -810,6 +814,7 @@
   <HelpKINode Title="FindElementEventArgs.Element property" Url="html/P_OpenQA_Selenium_Support_Events_FindElementEventArgs_Element.htm" />
   <HelpKINode Title="FindElementEventArgs.FindElementEventArgs constructor" Url="html/Overload_OpenQA_Selenium_Support_Events_FindElementEventArgs__ctor.htm" />
   <HelpKINode Title="FindElementEventArgs.FindMethod property" Url="html/P_OpenQA_Selenium_Support_Events_FindElementEventArgs_FindMethod.htm" />
+  <HelpKINode Title="FindElementMethod property" Url="html/P_OpenQA_Selenium_By_FindElementMethod.htm" />
   <HelpKINode Title="FindElements enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
   <HelpKINode Title="FindElements method" Url="html/M_OpenQA_Selenium_By_FindElements.htm" />
   <HelpKINode Title="FindElements method" Url="html/M_OpenQA_Selenium_ISearchContext_FindElements.htm" />
@@ -847,6 +852,7 @@
   <HelpKINode Title="FindElementsByXPath method" Url="html/M_OpenQA_Selenium_Internal_IFindsByXPath_FindElementsByXPath.htm" />
   <HelpKINode Title="FindElementsByXPath method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementsByXPath.htm" />
   <HelpKINode Title="FindElementsByXPath method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementsByXPath.htm" />
+  <HelpKINode Title="FindElementsMethod property" Url="html/P_OpenQA_Selenium_By_FindElementsMethod.htm" />
   <HelpKINode Title="FindingElement event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindingElement.htm" />
   <HelpKINode Title="FindMethod property" Url="html/P_OpenQA_Selenium_Support_Events_FindElementEventArgs_FindMethod.htm" />
   <HelpKINode Title="FindsByAttribute class" Url="html/AllMembers_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm" />
@@ -1497,6 +1503,17 @@
     <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_InvalidElementStateException.htm" />
   </HelpKINode>
   <HelpKINode Title="InvalidElementStateException.InvalidElementStateException constructor" Url="html/Overload_OpenQA_Selenium_InvalidElementStateException__ctor.htm" />
+  <HelpKINode Title="InvalidSelector enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
+  <HelpKINode Title="InvalidSelectorException class" Url="html/AllMembers_T_OpenQA_Selenium_InvalidSelectorException.htm" />
+  <HelpKINode Title="InvalidSelectorException class" Url="html/T_OpenQA_Selenium_InvalidSelectorException.htm" />
+  <HelpKINode Title="InvalidSelectorException class">
+    <HelpKINode Title="about InvalidSelectorException class" Url="html/T_OpenQA_Selenium_InvalidSelectorException.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_InvalidSelectorException.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_OpenQA_Selenium_InvalidSelectorException__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_InvalidSelectorException.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_InvalidSelectorException.htm" />
+  </HelpKINode>
+  <HelpKINode Title="InvalidSelectorException.InvalidSelectorException constructor" Url="html/Overload_OpenQA_Selenium_InvalidSelectorException__ctor.htm" />
   <HelpKINode Title="IOptions interface" Url="html/AllMembers_T_OpenQA_Selenium_IOptions.htm" />
   <HelpKINode Title="IOptions interface" Url="html/T_OpenQA_Selenium_IOptions.htm" />
   <HelpKINode Title="IOptions interface">
@@ -1938,7 +1955,7 @@
   <HelpKINode Title="LocationOnScreen property" Url="html/P_OpenQA_Selenium_Interactions_Internal_ICoordinates_LocationOnScreen.htm" />
   <HelpKINode Title="LocationOnScreenOnceScrolledIntoView property" Url="html/P_OpenQA_Selenium_ILocatable_LocationOnScreenOnceScrolledIntoView.htm" />
   <HelpKINode Title="LocationOnScreenOnceScrolledIntoView property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_LocationOnScreenOnceScrolledIntoView.htm" />
-  <HelpKINode Title="MacOSX enumeration member" Url="html/T_OpenQA_Selenium_PlatformType.htm" />
+  <HelpKINode Title="Mac enumeration member" Url="html/T_OpenQA_Selenium_PlatformType.htm" />
   <HelpKINode Title="MajorVersion property" Url="html/P_OpenQA_Selenium_Platform_MajorVersion.htm" />
   <HelpKINode Title="Manage method" Url="html/M_OpenQA_Selenium_IWebDriver_Manage.htm" />
   <HelpKINode Title="Manage method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Manage.htm" />
@@ -2200,6 +2217,8 @@
   <HelpKINode Title="OpenQA.Selenium.InvalidCookieDomainException class" Url="html/T_OpenQA_Selenium_InvalidCookieDomainException.htm" />
   <HelpKINode Title="OpenQA.Selenium.InvalidElementStateException class" Url="html/AllMembers_T_OpenQA_Selenium_InvalidElementStateException.htm" />
   <HelpKINode Title="OpenQA.Selenium.InvalidElementStateException class" Url="html/T_OpenQA_Selenium_InvalidElementStateException.htm" />
+  <HelpKINode Title="OpenQA.Selenium.InvalidSelectorException class" Url="html/AllMembers_T_OpenQA_Selenium_InvalidSelectorException.htm" />
+  <HelpKINode Title="OpenQA.Selenium.InvalidSelectorException class" Url="html/T_OpenQA_Selenium_InvalidSelectorException.htm" />
   <HelpKINode Title="OpenQA.Selenium.IOptions interface" Url="html/AllMembers_T_OpenQA_Selenium_IOptions.htm" />
   <HelpKINode Title="OpenQA.Selenium.IOptions interface" Url="html/T_OpenQA_Selenium_IOptions.htm" />
   <HelpKINode Title="OpenQA.Selenium.ISearchContext interface" Url="html/AllMembers_T_OpenQA_Selenium_ISearchContext.htm" />
