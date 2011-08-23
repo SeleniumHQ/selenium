@@ -14,3 +14,6 @@
 # limitations under the License.
 
 from selenium import selenium
+
+
+__version__ = "2.5.0"
