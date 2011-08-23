@@ -19,67 +19,113 @@ package org.openqa.selenium.android.app;
 
 import com.google.common.collect.Sets;
 
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.android.ActivityController;
+import org.openqa.selenium.android.JavascriptResultNotifier;
+
+import java.util.Iterator;
 import java.util.Set;
 
-import org.openqa.selenium.android.ActivityController;
-
-public class WebViewManager {
+public class WebViewManager implements JavascriptResultNotifier {
   private Set<WebDriverWebView> views = Sets.newHashSet();
-  private ActivityController controller = ActivityController.getInstance();
-  
+  private volatile boolean done;
+  private volatile String result;
+  private Object syncObject = new Object();
+
   public WebDriverWebView getView(String nameOrHandle) {
-    WebDriverWebView toReturn = searchForViewByHandle(nameOrHandle);
-    if (toReturn != null) {
-      return toReturn;
+    synchronized (syncObject) {
+      WebDriverWebView toReturn = searchForViewByHandle(nameOrHandle);
+      if (toReturn != null) {
+        return toReturn;
+      }
+      return searchForViewByWindowName(nameOrHandle);
     }
-    return searchForViewByWindowName(nameOrHandle);
   }
   
   public void addView(WebDriverWebView view) {
+    synchronized (syncObject) {
     views.add(view);
+    }
   }
   
   public void removeView(String nameOrHandle) {
-    WebDriverWebView handleSearchResult = searchForViewByHandle(nameOrHandle);
-    if (handleSearchResult != null) {
-      removeView(handleSearchResult);
-    } else {
-      WebDriverWebView windowNameSearchResult = searchForViewByWindowName(nameOrHandle);
-      if (windowNameSearchResult != null) {
-        removeView(windowNameSearchResult);
+    synchronized (syncObject) {
+      WebDriverWebView toRemove = searchForViewByHandle(nameOrHandle);
+      if (toRemove != null) {
+        removeView(toRemove);
+      } else {
+        toRemove = searchForViewByWindowName(nameOrHandle);
+        if (toRemove != null) {
+          removeView(toRemove);
+        }
       }
     }
   }
   
   public boolean removeView(WebDriverWebView view) {
-    return views.remove(view);
+    synchronized (syncObject) {
+      return views.remove(view);
+    }
   }
   
   public Set<String> getAllHandles() {
-    Set<String> handles = Sets.newHashSetWithExpectedSize(views.size());
-    for (WebDriverWebView view : views) {
-      handles.add(view.getWindowHandle());
+    synchronized (syncObject) {
+      Set<String> handles = Sets.newHashSetWithExpectedSize(views.size());
+      for (WebDriverWebView view : views) {
+        handles.add(view.getWindowHandle());
+      }
+      return handles;
     }
-    return handles;
   }
 
   private WebDriverWebView searchForViewByHandle(String handle) {
-    for (WebDriverWebView view : views) {
-      if (view.getWindowHandle().equals(handle)) {
-        return view;
+    synchronized (syncObject) {
+      for (WebDriverWebView view : views) {
+        if (view.getWindowHandle().equals(handle)) {
+          return view;
+        }
       }
+      return null;
     }
-    return null;
   }
-  
+
   private WebDriverWebView searchForViewByWindowName(String windowName) {
-    for (final WebDriverWebView view : views) {
-      String name = 
-        controller.executeJavascript("window.webdriver.resultMethod(window.name);");
-      if (name != null && name.equals(windowName)) {
-        return view;
+    synchronized (syncObject) {
+      for (WebDriverWebView view : views) {
+        done = false;
+        view.executeJavascript("window.webdriver.resultMethod(window.name);", this);
+        long timeout = System.currentTimeMillis() + ActivityController.RESPONSE_TIMEOUT;
+        while (!done && (System.currentTimeMillis() < timeout)) {
+          try {
+            syncObject.wait(ActivityController.RESPONSE_TIMEOUT);
+          } catch (InterruptedException e) {
+            throw new WebDriverException(e);
+          }
+        }
+        if (result != null && result.equals(windowName)) {
+          return view;
+        }
       }
+      return null;
     }
-    return null;
+  }
+
+  public void closeAll() {
+    Iterator<WebDriverWebView> it = views.iterator();
+    WebDriverWebView tmp;
+    while (it.hasNext()) {
+      tmp = it.next();
+      tmp.removeAllViews();
+      tmp.destroy();
+      it.remove();
+    }
+  }
+
+  public void notifyResultReady(String result) {
+    synchronized (syncObject) {
+      this.result = result;
+      done = true;
+      syncObject.notify();
+    }
   }
 }

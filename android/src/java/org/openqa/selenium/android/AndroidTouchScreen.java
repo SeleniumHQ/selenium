@@ -45,7 +45,6 @@ public class AndroidTouchScreen implements TouchScreen {
   }
 
   public void singleTap(Coordinates where) {
-    scrollElementInView(where);
     Point toTap = where.getLocationOnScreen();
     List<MotionEvent> motionEvents = Lists.newArrayList();
     long downTime = SystemClock.uptimeMillis();
@@ -100,7 +99,6 @@ public class AndroidTouchScreen implements TouchScreen {
   }
 
   public void doubleTap(Coordinates where) {
-    scrollElementInView(where);
     Point toDoubleTap = where.getLocationOnScreen();
     List<MotionEvent> motionEvents = Lists.newArrayList();
     long downTime = SystemClock.uptimeMillis();
@@ -168,10 +166,6 @@ public class AndroidTouchScreen implements TouchScreen {
     eventTime += timeBetweenEvents;
     move.add(getMotionEvent(downTime, eventTime, MotionEvent.ACTION_MOVE, destination));
     return move;
-  }
-
-  private void scrollElementInView(Coordinates where) {
-    driver.getDomAccessor().scrollIfNeeded((String)where.getAuxiliry());
   }
 
   private void sendMotionEvents(List<MotionEvent> eventsToSend) {

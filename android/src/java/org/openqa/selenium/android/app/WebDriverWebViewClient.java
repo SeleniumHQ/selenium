@@ -88,10 +88,4 @@ final class WebDriverWebViewClient extends WebViewClient {
       controller.notifyPageDoneLoading();
     }
   }
-
-  @Override
-  public boolean shouldOverrideUrlLoading(WebView view, String url) {
-    view.loadUrl(url);
-    return true;
-  }
 }

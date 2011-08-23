@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.android.app.MainActivity;
@@ -30,11 +31,12 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.util.List;
 import java.util.Set;
 
-public class ActivityController {
+public class ActivityController implements JavascriptResultNotifier {
+
   // Timeouts in milliseconds
   private static final long LOADING_TIMEOUT = 30000L;
   private static final long START_LOADING_TIMEOUT = 700L;
-  private static final long RESPONSE_TIMEOUT = 5000L;
+  public static final long RESPONSE_TIMEOUT = 10000L;
   private static final long FOCUS_TIMEOUT = 1000L;
   private static final long POLLING_INTERVAL = 50L;
 
@@ -50,6 +52,7 @@ public class ActivityController {
   private volatile boolean motionEventDone = false;
   private volatile boolean pageStartedLoading = false;
   private volatile boolean sendKeysDone = false;
+  private volatile boolean shouldThrow = false;
   private volatile boolean done = false;
 
   private MotionEvent lastMotionEventSent;
@@ -71,9 +74,9 @@ public class ActivityController {
     }
   }
 
-  public void newWebView() {
+  public void newWebView(boolean newDriver) {
     synchronized (syncObject) {
-      activity.newWebView();
+      activity.newWebView(newDriver);
     }
   }
 
@@ -91,7 +94,7 @@ public class ActivityController {
   }
 
   public void notifyPageStartedLoading() {
-    synchronized(syncStartedLoading) {
+    synchronized (syncStartedLoading) {
       pageStartedLoading = true;
       pageDoneLoading = false;
       syncStartedLoading.notify();
@@ -129,22 +132,28 @@ public class ActivityController {
   }
 
   /**
-   * This method is called by {@link WebDriverWebView.onTouchEvent} and notifies
-   * sendMotionEvent, allowing new events to be triggered.
+   * This method is called by {@link WebDriverWebView.onTouchEvent} and notifies sendMotionEvent,
+   * allowing new events to be triggered.
    */
-  public void motionEventDone () {
+  public void motionEventDone() {
     synchronized (syncMotionEvent) {
       motionEventDone = true;
       syncMotionEvent.notify();
     }
   }
 
+  public MotionEvent getLastMotionEventSent() {
+    synchronized (syncObject) {
+      return lastMotionEventSent;
+    }
+  }
+
   /**
-   * Sends a MotionEvent to the UI thread and blocks until it's fully processed
-   * by the UI. WebDriverWebView.onTouchEvent typically notifies this.
+   * Sends a MotionEvent to the UI thread and blocks until it's fully processed by the UI.
+   * WebDriverWebView.onTouchEvent typically notifies this.
    */
   public void sendMotionEvent(List<MotionEvent> eventsToSendToScreen) {
-    synchronized(syncMotionEvent) {
+    synchronized (syncMotionEvent) {
       // We keep track of the last motion event sent, so the WebView.onTouchEvent() listener can
       // detect when the last Motion Event has been received, allowing new events to be triggered.
       lastMotionEventSent = getLastEventInSequence(eventsToSendToScreen);
@@ -179,7 +188,7 @@ public class ActivityController {
   }
 
   public void refresh() {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       pageDoneLoading = false;
       activity.refresh();
       waitForPageLoadToComplete();
@@ -187,7 +196,7 @@ public class ActivityController {
   }
 
   public void navigateBackOrForward(int direction) {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       pageDoneLoading = false;
       activity.navigateBackOrForward(direction);
       waitForPageLoadToComplete();
@@ -216,6 +225,7 @@ public class ActivityController {
 
   public String executeJavascript(final String script) {
     synchronized (syncObject) {
+      result = null;
       resultReady = false;
       activity.injectScript(script);
       long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;
@@ -223,14 +233,14 @@ public class ActivityController {
         try {
           syncObject.wait(RESPONSE_TIMEOUT);
         } catch (InterruptedException e) {
-          throw new RuntimeException(e);
+          throw new WebDriverException(e);
         }
       }
+      return result;
     }
-    return result;
   }
 
-  public void updateResult(String updated) {
+  public void notifyResultReady(String updated) {
     synchronized (syncObject) {
       result = updated;
       resultReady = true;
@@ -239,73 +249,94 @@ public class ActivityController {
   }
 
   public void quit() {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       activity.flushWebView();
     }
   }
 
   public Set<String> getAllWindowHandles() {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       return activity.getAllWindowHandles();
     }
   }
 
   public String getWindowHandle() {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       return activity.getWindowHandle();
     }
   }
 
+  public void notifySwitchToWindowDone(boolean success) {
+    synchronized (syncObject) {
+      resultReady = true;
+      shouldThrow = !success;
+      syncObject.notify();
+    }
+  }
+
   public void switchToWindow(final String name) {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
+      shouldThrow = false;
+      resultReady = false;
       activity.switchToWindow(name);
+      long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;
+      while (!resultReady && (System.currentTimeMillis() < timeout)) {
+        try {
+          syncObject.wait(RESPONSE_TIMEOUT);
+          if (shouldThrow) {
+            throw new NoSuchWindowException("Window '" + name + "' does not exist.");
+          }
+        } catch (InterruptedException e) {
+          throw new WebDriverException(e);
+        }
+      }
     }
   }
 
   public void addCookie(final String name, final String value, final String path) {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       activity.addCookie(name, value, path);
     }
   }
 
   public void removeCookie(final String name) {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       activity.removeCookie(name);
     }
   }
 
   public void removeAllCookies() {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       activity.removeAllCookies();
     }
   }
 
   public Set<Cookie> getCookies() {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       return activity.getCookies();
     }
   }
 
   public Cookie getCookie(final String name) {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       return activity.getCookie(name);
     }
   }
 
   public byte[] takeScreenshot() {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       return activity.takeScreenshot();
     }
   }
 
   public ScreenOrientation getScreenOrientation() {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       return activity.getScreenOrientation();
     }
   }
 
   public void rotate(ScreenOrientation orientation) {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       activity.rotate(orientation);
     }
   }
@@ -320,7 +351,7 @@ public class ActivityController {
   }
 
   public void sendKeys(CharSequence[] inputKeys) {
-    synchronized(syncSendKeys) {
+    synchronized (syncSendKeys) {
       sendKeysDone = false;
       activity.sendKeys(inputKeys);
       long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;
@@ -335,7 +366,7 @@ public class ActivityController {
   }
 
   public Alert getAlert() {
-    synchronized(syncObject) {
+    synchronized (syncObject) {
       return activity.getAlert();
     }
   }
@@ -353,12 +384,6 @@ public class ActivityController {
   public void setConnected(boolean connected) {
     synchronized (syncObject) {
       activity.setConnected(connected);
-    }
-  }
-
-  public MotionEvent getLastMotionEventSent() {
-    synchronized (syncObject) {
-      return lastMotionEventSent;
     }
   }
 

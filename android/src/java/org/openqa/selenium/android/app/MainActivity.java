@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.android.ActivityController;
@@ -70,8 +69,9 @@ public class MainActivity extends Activity {
   private boolean pageHasStartedLoading = false;
   private SessionCookieManager sessionCookieManager;
   private WebDriverWebView currentView;
-  private WebViewManager viewManager = new WebViewManager();
-  private ActivityController controller = ActivityController.getInstance();
+  private final WebViewManager viewManager = new WebViewManager();
+  private final ActivityController controller = ActivityController.getInstance();
+
   private boolean bound;
   private JettyService jettyService;
   private Intent jettyIntent;
@@ -84,8 +84,9 @@ public class MainActivity extends Activity {
   private static final int CMD_RELOAD = 6;
   private static final int CMD_SEND_TOUCH = 7;
   private static final int CMD_NEW_VIEW = 8;
-  private static final int CMD_FLICK = 9;
-  private static final int CMD_SCROLL = 10;
+  private static final int CMD_CLOSE_ALL_WINDOWS = 9;
+  private static final int CMD_FLICK = 10;
+  private static final int CMD_SCROLL = 11;
 
   private NetworkStateHandler networkHandler;
 
@@ -115,6 +116,8 @@ public class MainActivity extends Activity {
         currentView = newView;
         viewManager.addView(newView);
         setContentView(newView);
+      } else if (msg.what == CMD_CLOSE_ALL_WINDOWS) {
+        viewManager.closeAll();
       } else if (msg.what == CMD_FLICK) {
         int[] flick = (int[]) msg.obj;
         currentView.flingScroll(flick[0], flick[1]);
@@ -201,8 +204,14 @@ public class MainActivity extends Activity {
     networkHandler = new NetworkStateHandler(this, currentView);
   }
 
-  public void newWebView() {
-    // not in the UI  thread
+  public void newWebView(boolean newDriver) {
+    // If we are requesting a new driver, then close all
+    // existing window before opening a new one.
+    if (newDriver) {
+      Message msg = handler.obtainMessage();
+      msg.what = CMD_CLOSE_ALL_WINDOWS;
+      handler.sendMessage(msg);
+    }
     Message msg = handler.obtainMessage();
     msg.what = CMD_NEW_VIEW;
     handler.sendMessage(msg);
@@ -224,7 +233,9 @@ public class MainActivity extends Activity {
       unbindService(mConnection);
       bound = false;
     }
-    jettyService.stopService(jettyIntent);
+    if (jettyService != null) {
+      jettyService.stopService(jettyIntent);
+    }
     stopService(jettyIntent);
     this.getWindow().closeAllPanels();
     super.onDestroy();
@@ -267,7 +278,8 @@ public class MainActivity extends Activity {
   public void injectScript(final String script) {
     Message msg = handler.obtainMessage(CMD_EXECUTE_SCRIPT);
     msg.obj = script;
-    handler.sendMessage(msg);  }
+    handler.sendMessage(msg);
+  }
 
   public Set<String> getAllWindowHandles() {
     return  viewManager.getAllHandles();
@@ -280,7 +292,8 @@ public class MainActivity extends Activity {
   public void switchToWindow(final String name) {
     Message msg = handler.obtainMessage(CMD_SWITCH_TO_VIEW);
     msg.obj = name;
-    handler.sendMessage(msg);  }
+    handler.sendMessage(msg);
+  }
 
   public void addCookie(final String name, final String value, final String path) {
     Cookie cookie = new Cookie(name, value, path);
@@ -330,11 +343,17 @@ public class MainActivity extends Activity {
   }
 
   private void switchToWebView(WebDriverWebView webview) {
+    boolean success;
     if (webview == null) {
-      throw new NoSuchWindowException("No Such window");
+      success = false;
+    } else {
+      currentView = webview;
+      setContentView(webview);
+      success = true;
     }
-    currentView = webview;
-    setContentView(webview);
+    // We can't throw exception in the UI thread otherwiswe it will crash the app.
+    // So we pass the result along to the caller thread.
+    controller.notifySwitchToWindowDone(success);
   }
 
   private int getAndroidScreenOrientation(ScreenOrientation orientation) {
@@ -348,9 +367,8 @@ public class MainActivity extends Activity {
    * @return the current layout orientation of webview.
    */
   public ScreenOrientation getScreenOrientation() {
-    int width = currentView.getWidth();
-    int height = currentView.getHeight();
-    if (width > height) {
+    int value = getRequestedOrientation();
+    if (value == 0) {
       return ScreenOrientation.LANDSCAPE;
     } else {
       return ScreenOrientation.PORTRAIT;

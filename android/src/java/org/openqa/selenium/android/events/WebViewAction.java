@@ -17,21 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.android.events;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.android.Platform;
+import com.google.common.collect.Lists;
 
 import android.os.SystemClock;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.webkit.WebView;
 
-import com.google.common.collect.Lists;
+import org.openqa.selenium.android.Platform;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Helper class to perform action on the webview.
@@ -49,9 +46,7 @@ public class WebViewAction {
   public static void sendKeys(WebView webview, CharSequence... text) {
     LinkedList<KeyEvent> keyEvents = Lists.newLinkedList();
     KeyCharacterMap characterMap = KeyCharacterMap.load(KeyCharacterMap.BUILT_IN_KEYBOARD);
-    moveCursorToRightMostPosition(text[0].toString(), webview);
-    CharSequence[] inputText = getInputText(text);
-    for (CharSequence sequence : inputText) {
+    for (CharSequence sequence : text) {
       for (int i = 0; i < sequence.length(); i++) {
         char c = sequence.charAt(i);
         int code = AndroidKeys.getKeyEventFromUnicodeKey(c);
@@ -59,8 +54,10 @@ public class WebViewAction {
           keyEvents.addLast(new KeyEvent(KeyEvent.ACTION_DOWN, code));
           keyEvents.addLast(new KeyEvent(KeyEvent.ACTION_UP, code));
         } else {
-          keyEvents.addAll(Arrays.asList(
-              characterMap.getEvents(new char[]{c})));
+          KeyEvent[] arr = characterMap.getEvents(new char[]{c});
+          if (arr != null) {
+            keyEvents.addAll(Arrays.asList(arr));
+          }
         }
       }
     }
@@ -86,19 +83,6 @@ public class WebViewAction {
         webview.resumeTimers();
       }
     }
-  }
-
-  /**
-   * @param text
-   * @return the text to enter in the editable text area.
-   */
-  private static CharSequence[] getInputText(CharSequence... text) {
-    CharSequence[] inputText = new CharSequence[text.length -1];
-    for (int i = 0; i < text.length -1; i++) {
-      inputText[i] = text[i + 1];
-    }
-    
-    return inputText;
   }
 
   /**

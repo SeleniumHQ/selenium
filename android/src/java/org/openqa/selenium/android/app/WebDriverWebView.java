@@ -27,6 +27,8 @@ import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.LayoutAlgorithm;
+import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -34,6 +36,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.android.ActivityController;
+import org.openqa.selenium.android.JavascriptResultNotifier;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -126,7 +129,11 @@ public class WebDriverWebView extends WebView {
   }
 
   public void executeJavascript(String javascript) {
-    javascriptExecutor.executeJS(javascript);
+    javascriptExecutor.executeJs(javascript);
+  }
+
+  public void executeJavascript(String javascript, JavascriptResultNotifier notifier) {
+    javascriptExecutor.executeJs(javascript, notifier);
   }
 
   private void initWebViewSettings() {
@@ -159,6 +166,17 @@ public class WebDriverWebView extends WebView {
     settings.setGeolocationEnabled(true);
     settings.setSaveFormData(true);
     settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+
+    // Same as the browser settings
+    settings.setLoadWithOverviewMode(true);
+    settings.setLayoutAlgorithm(LayoutAlgorithm.NARROW_COLUMNS);
+    settings.setDefaultZoom(ZoomDensity.valueOf("MEDIUM"));
+    settings.setUseWideViewPort(true);
+    settings.setMinimumFontSize(1);
+    settings.setMinimumLogicalFontSize(1);
+    settings.setDefaultFontSize(16);
+    settings.setDefaultFixedFontSize(13);
+    
     enablePlatformNotifications();
     setNetworkAvailable(true);
   }

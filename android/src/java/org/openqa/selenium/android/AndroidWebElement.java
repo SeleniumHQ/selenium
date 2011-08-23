@@ -19,17 +19,19 @@ limitations under the License.
 package org.openqa.selenium.android;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import android.os.SystemClock;
+import android.view.MotionEvent;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Keys;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.InvalidElementStateException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.android.app.WebDriverWebView;
 import org.openqa.selenium.interactions.internal.Coordinates;
@@ -39,46 +41,86 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.internal.WrapsElement;
 
-import android.graphics.Point;
-import android.os.SystemClock;
-import android.view.MotionEvent;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Represents an Android HTML element.
- *
- * TODO (berrada): Rewrite all function that interact with the page using native events and get rid
- * of JS. Only use JS for reading properties.
  */
-public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText, FindsByXPath,
-    FindsByTagName, SearchContext, WrapsDriver, Locatable  {
+public class AndroidWebElement implements WebElement,
+    FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
+    SearchContext, WrapsDriver, Locatable  {
 
-  private AndroidDriver driver;
-  private String elementId;
-  private ActivityController controller;
+  private final AndroidDriver driver;
+  private final String elementId;
+  private final ActivityController controller;
   private AndroidCoordinates coordinates;
+  private final Atoms atoms;
+
+  private static final String LOCATOR_ID = "id";
+  private static final String LOCATOR_LINK_TEXT = "linkText";
+  private static final String LOCATOR_PARTIAL_LINK_TEXT = "partialLinkText";
+  private static final String LOCATOR_NAME = "name";
+  private static final String LOCATOR_TAG_NAME = "tagName";
+  private static final String LOCATOR_XPATH = "xpath";
 
   public AndroidWebElement(AndroidDriver driver, String elementId) {
     this.driver = driver;
     this.elementId = elementId;
     controller = ActivityController.getInstance();
-    coordinates = new AndroidCoordinates(elementId,
-        elementId.equals("0") ? new org.openqa.selenium.Point(0, 0) : getLocation());
+    atoms = Atoms.getInstance();
   }
 
-  public AndroidWebElement(AndroidDriver driver) {
-    this(driver, "0");
-  }
-
-  public String getElementId() {
+  public String getId() {
     return elementId;
   }
 
-  public void click() {
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof WebElement)) {
+      return false;
+    }
+    WebElement e = (WebElement) o;
+    if (e instanceof WrapsElement) {
+      e = ((WrapsElement) o).getWrappedElement();
+    }
+    if (!(e instanceof AndroidWebElement)) {
+      return false;
+    }
+    return elementId.equals(((AndroidWebElement) e).getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return elementId.hashCode();
+  }
+
+  private Point getCenterCoordinates() {
+    if (!isDisplayed()) {
+      throw new ElementNotVisibleException("This WebElement is not visisble and may not be clicked.");
+    }
     WebDriverWebView.resetEditableAreaHasFocus();
-    // Scroll if the element is not visible so it is in the viewport.
-    getDomAccessor().scrollIfNeeded(elementId);
-    Point center = getDomAccessor().getCenterCoordinate(elementId);
+    Point topLeft = getLocation();
+    String sizeJs =
+        "var w = 0; h = 0;" +
+        "if (arguments[0].getClientRects && arguments[0].getClientRects()[0]) {" +
+        "  w = arguments[0].getClientRects()[0].width;" +
+        "  h = arguments[0].getClientRects()[0].height;" +
+        " } else {" +
+        "  w = arguments[0].offsetWidth;" +
+        "  h = arguments[0].offsetHeight;" +
+        "}; return w + ',' + h;";
+    String[] result = ((String) driver.executeScript(sizeJs, this)).split(",");
+    return new Point(topLeft.x + Integer.parseInt(result[0]) / 2,
+        topLeft.y + Integer.parseInt(result[1]) / 2);
+  }
+
+  public void click() {
+    Point center = getCenterCoordinates();
     long downTime = SystemClock.uptimeMillis();
     List<MotionEvent> events = Lists.newArrayList();
 
@@ -87,16 +129,13 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
     events.add(downEvent);
     MotionEvent upEvent = MotionEvent.obtain(downTime,
         SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, center.x, center.y, 0);
+
     events.add(upEvent);
 
     controller.sendMotionEvent(events);
     // If the page started loading we should wait
     // until the page is done loading.
     controller.blockIfPageIsLoading(driver);
-  }
-
-  public JavascriptDomAccessor getDomAccessor() {
-    return driver.getDomAccessor();
   }
 
   public void submit() {
@@ -106,29 +145,13 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
         || "img".equalsIgnoreCase(tagName)) {
       this.click();
     } else {
-      getDomAccessor().submit(elementId);
+      driver.executeAtom(atoms.submitJs, false, this);
       controller.blockIfPageIsLoading(driver);
     }
   }
 
-  public String getValue() {
-    return getDomAccessor().getAttributeValue("value", elementId);
-  }
-
   public void clear() {
-    String value = getValue();
-    if (value == null || value.length() == 0) {
-      return;
-    }
-    CharSequence[] keys = new CharSequence[value.length() + 1];
-    keys[0] = value;
-    for (int i = 1; i < keys.length; i++) {
-      keys[i] = Keys.BACK_SPACE;
-    }
-    // focus on the element
-    this.click();
-    controller.waitUntilEditableAreaFocused();
-    controller.sendKeys(keys);
+    driver.executeAtom(atoms.clearJs, false, this);
   }
 
   public void sendKeys(CharSequence... value) {
@@ -136,46 +159,42 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
       return;
     }
     if (!isEnabled()) {
-      throw new UnsupportedOperationException("Cannot send keys to disabled element.");
+      throw new InvalidElementStateException("Cannot send keys to disabled element.");
     }
-    CharSequence[] keys = new CharSequence[value.length + 1];
-    keys[0] = getValue();
+    CharSequence[] keys = new CharSequence[value.length];
     for (int i = 0; i < value.length; i++) {
-      keys[i + 1] = value[i].toString();
+      keys[i] = value[i].toString();
     }
 
     // focus on the element
     this.click();
     controller.waitUntilEditableAreaFocused();
+    // Move the cursor to the end of the test input.
+    // The trick is to set the value after the cursor
+    driver.executeScript("arguments[0].focus();arguments[0].value=arguments[0].value;",
+        this);
     controller.sendKeys(keys);
   }
 
   public String getTagName() {
-    return getDomAccessor().getTagName(elementId).toLowerCase();
+    return (String) driver.executeScript("return arguments[0].tagName", this);
+
   }
 
   public String getAttribute(String name) {
-    return getDomAccessor().getAttributeValue(name, elementId);
-  }
-
-  public boolean toggle() {
-    return getDomAccessor().toggle(elementId);
+    return (String) driver.executeAtom(atoms.getAttributeJs, false, this, name);
   }
 
   public boolean isSelected() {
-    return getDomAccessor().isSelected(elementId);
-  }
-
-  public void setSelected() {
-    getDomAccessor().setSelected(elementId);
+    return (Boolean) driver.executeAtom(atoms.isSelectedJs, false, this);
   }
 
   public boolean isEnabled() {
-    return !Boolean.valueOf(getAttribute("disabled"));
+    return (Boolean) driver.executeAtom(atoms.isEnabledJs, false, this);
   }
 
   public String getText() {
-    return normalize(getDomAccessor().getText(elementId));
+    return (String) driver.executeAtom(atoms.getTextJs, false, this);
   }
 
   public WebElement findElement(By by) {
@@ -187,51 +206,75 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public WebElement findElementById(String using) {
-    return getDomAccessor().getElementById(using, elementId);
+    return findElement(LOCATOR_ID, using, false);
   }
 
   public List<WebElement> findElementsById(String using) {
-    return getDomAccessor().getElementsById(using, elementId);
+    return findElements(LOCATOR_ID, using, false);
   }
 
   public WebElement findElementByXPath(String using) {
-    return getDomAccessor().getElementByXPath(using, elementId);
+    return findElement(LOCATOR_XPATH, using, true);
   }
 
   public List<WebElement> findElementsByXPath(String using) {
-    return getDomAccessor().getElementsByXpath(using, elementId);
+    return findElements(LOCATOR_XPATH, using, true);
   }
 
   public WebElement findElementByLinkText(String using) {
-    return getDomAccessor().getElementByLinkText(using, elementId);
+    return findElement(LOCATOR_LINK_TEXT, using, false);
   }
 
   public List<WebElement> findElementsByLinkText(String using) {
-    return getDomAccessor().getElementsByLinkText(using, elementId);
+    return findElements(LOCATOR_LINK_TEXT, using, false);
   }
 
   public WebElement findElementByPartialLinkText(String using) {
-    return getDomAccessor().getElementByPartialLinkText(using, elementId);
+    return findElement(LOCATOR_PARTIAL_LINK_TEXT, using, false);
   }
 
   public List<WebElement> findElementsByPartialLinkText(String using) {
-    return getDomAccessor().getElementsByPartialLinkText(using, elementId);
+    return findElements(LOCATOR_PARTIAL_LINK_TEXT, using, false);
   }
 
   public WebElement findElementByTagName(String using) {
-    return getDomAccessor().getElementByTagName(using, elementId);
+    return findElement(LOCATOR_TAG_NAME, using, false);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    return getDomAccessor().getElementsByTagName(using, elementId);
+    return findElements(LOCATOR_TAG_NAME, using, false);
   }
 
   public WebElement findElementByName(String using) {
-    return getDomAccessor().getElementByName(using, elementId);
+    return findElement(LOCATOR_NAME, using, false);
   }
 
   public List<WebElement> findElementsByName(String using) {
-    return getDomAccessor().getElementsByName(using, elementId);
+    return findElements(LOCATOR_NAME, using, false);
+  }
+
+  private List<WebElement> findElements(String strategy, String locator, boolean xpath) {
+    // If the Id is empty, this reffers to the window document context.
+    if (elementId.equals("")) {
+      return (List<WebElement>) driver.executeAtom(atoms.findElementsJs, xpath, strategy, locator);
+    } else {
+      return (List<WebElement>) driver.executeAtom(atoms.findElementsJs, xpath, strategy, locator, this);
+    }
+  }
+
+  private WebElement findElement(String strategy, String locator, boolean xpath) {
+    WebElement el;
+    // If the element Id is empty, this reffers to the window document context.
+    if (elementId.equals("")) {
+      el = (WebElement) driver.executeAtom(atoms.findElementJs, xpath, strategy, locator);
+    } else {
+      el = (WebElement) driver.executeAtom(atoms.findElementJs, xpath, strategy, locator, this);
+    }
+    if (el == null) {
+      throw new NoSuchElementException("Could not find element "
+          + "with " + strategy + ": " + locator);
+    }
+    return el;
   }
 
   /**
@@ -266,33 +309,24 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
    * @return A point, containing the location of the top left-hand corner of the
    *         element
    */
-  public org.openqa.selenium.Point getLocation() {
-    Point result = getDomAccessor().getCoordinate(elementId);
-    if (result == null) {
-      throw new WebDriverException("Element location is null.");
-    }
-    return new org.openqa.selenium.Point(result.x, result.y);
+  public Point getLocation() {
+    Map<String, Long> map = (java.util.Map<String, Long>) driver.executeAtom(
+        atoms.getLocationJs, false, this);
+    return new Point(map.get("x").intValue(), map.get("y").intValue());
   }
 
   /**
    * @return a {@link Point} where x is the width, and y is the height.
    */
   public Dimension getSize() {
-    // TODO(berrada): I don't think this will work ("em", for example). There is an
-    // atom for that.
-    Point result = getDomAccessor().getSize(elementId);
-    return new Dimension(result.x, result.y);
+    Map<String, Long> map = (Map<String, Long>) driver.executeAtom(
+        atoms.getSizeJs, false, this);
+    return new Dimension(map.get("width").intValue(),
+        map.get("height").intValue());
   }
 
   public String getValueOfCssProperty(String property) {
-    String value = getDomAccessor().getValueOfCssProperty(property, true, elementId);
-    if (value == null) {
-      return "";
-    }
-    if (value.startsWith("rgb")) {
-      return rgbToHex(value);
-    }
-    return value;
+    return (String) driver.executeAtom(atoms.getCssPropJs, false, this, property);
   }
 
   public void hover() {
@@ -300,7 +334,7 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public boolean isDisplayed() {
-    return getDomAccessor().isDisplayed(elementId);
+    return (Boolean) driver.executeAtom(atoms.isDisplayedJs, true, this);
   }
 
   /**
@@ -337,6 +371,10 @@ public class AndroidWebElement implements WebElement, FindsById, FindsByLinkText
   }
 
   public Coordinates getCoordinates() {
+    if (coordinates == null) {
+      coordinates = new AndroidCoordinates(elementId,
+          elementId.equals("0") ? new Point(0, 0) : getCenterCoordinates());
+    }
     return coordinates;
   }
 

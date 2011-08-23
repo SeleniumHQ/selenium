@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.android.app;
 
 import org.openqa.selenium.android.ActivityController;
+import org.openqa.selenium.android.JavascriptResultNotifier;
 
 /**
  * Class that wraps synchronization housekeeping of execution of JavaScript code within WebView.
@@ -25,7 +26,7 @@ import org.openqa.selenium.android.ActivityController;
 public class JavascriptExecutor {
   private String javascriptResult;
   private final WebDriverWebView webview;
-  private final ActivityController controller = ActivityController.getInstance();
+  private JavascriptResultNotifier notifier = ActivityController.getInstance();
 
   public JavascriptExecutor(WebDriverWebView webview) {
     this.webview = webview;
@@ -38,10 +39,25 @@ public class JavascriptExecutor {
    *
    * @param jsCode JavaScript code to execute.
    */
-  public void executeJS(String jsCode) {
-    webview.loadUrl("javascript:" + jsCode);
+  public void executeJs(String jsCode) {
+    if (!notifier.equals(ActivityController.getInstance())) {
+      notifier = ActivityController.getInstance();
+    }
+    injectScript(jsCode);
   }
-  
+
+  private void injectScript(String toInject) {
+    if (webview.getUrl() == null) {
+      return;
+    }
+    webview.loadUrl("javascript:" + toInject);
+  }
+
+  public void executeJs(String jsCode, JavascriptResultNotifier notifier) {
+    this.notifier = notifier;
+    injectScript(jsCode);
+  }
+
   /**
    * Callback to report results of JavaScript code execution.
    *
@@ -49,10 +65,6 @@ public class JavascriptExecutor {
    */
   public void resultAvailable(String result) {
     javascriptResult = result;
-    controller.updateResult(result);
-  }
-  
-  public String getResult() {
-     return javascriptResult;
+    notifier.notifyResultReady(result);
   }
 }

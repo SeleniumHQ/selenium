@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
-
 /**
  * Custom module that is added to the WebView's JavaScript engine to enable callbacks to java
  * code. This is required since WebView doesn't expose the underlying DOM.
