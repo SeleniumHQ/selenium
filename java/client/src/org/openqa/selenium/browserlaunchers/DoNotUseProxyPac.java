@@ -146,27 +146,27 @@ public class DoNotUseProxyPac implements Serializable {
 
   public Map asMap() {
     Map<String, Object> toReturn = new HashMap<String, Object>();
-    if (directUrls.size() > 0) {
+    if (!directUrls.isEmpty()) {
       toReturn.put("directUrls", unmodifiableSet(directUrls));
     }
 
-    if (proxiedUrls.size() > 0) {
+    if (!proxiedUrls.isEmpty()) {
       toReturn.put("proxiedUrls", unmodifiableMap(proxiedUrls));
     }
 
-    if (proxiedRegexUrls.size() > 0) {
+    if (!proxiedRegexUrls.isEmpty()) {
       toReturn.put("proxiedRegexUrls", unmodifiableMap(proxiedRegexUrls));
     }
 
-    if (directHosts.size() > 0) {
+    if (!directHosts.isEmpty()) {
       toReturn.put("directHosts", unmodifiableSet(directHosts));
     }
 
-    if (proxiedHosts.size() > 0) {
+    if (!proxiedHosts.isEmpty()) {
       toReturn.put("proxiedHosts", unmodifiableMap(proxiedHosts));
     }
 
-    if (defaultProxy.length() > 0) {
+    if (!defaultProxy.isEmpty()) {
       toReturn.put("defaultProxy", defaultProxy);
     }
 

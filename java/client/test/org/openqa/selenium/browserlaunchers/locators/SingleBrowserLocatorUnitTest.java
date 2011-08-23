@@ -1,7 +1,6 @@
 package org.openqa.selenium.browserlaunchers.locators;
 
 import junit.framework.TestCase;
-import org.openqa.selenium.browserlaunchers.locators.SingleBrowserLocator;
 
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncher} unit test class.

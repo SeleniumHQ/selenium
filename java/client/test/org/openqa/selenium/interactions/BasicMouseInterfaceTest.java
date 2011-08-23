@@ -38,7 +38,6 @@ import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.TestUtilities;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

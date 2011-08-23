@@ -56,7 +56,7 @@ public class HttpCommandProcessorUnitTest extends TestCase {
 				"localhost", 4444, "*chrome", "http://www.google.com");
 		cmdProc.throwIoeOnGetOutputStream = true;
 		try {
-			String response = cmdProc.getCommandResponseAsString("testCommand");
+			cmdProc.getCommandResponseAsString("testCommand");
 			fail();
 		} catch (IOException ioe) {
 			cmdProc.verifyClosedResources(true, false, false);

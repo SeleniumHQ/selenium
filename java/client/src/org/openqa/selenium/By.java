@@ -169,7 +169,7 @@ public abstract class By {
    */
   public WebElement findElement(SearchContext context) {
     List<WebElement> allElements = findElements(context);
-    if (allElements == null || allElements.size() == 0)
+    if (allElements == null || allElements.isEmpty())
       throw new NoSuchElementException("Cannot locate an element using "
           + toString());
     return allElements.get(0);

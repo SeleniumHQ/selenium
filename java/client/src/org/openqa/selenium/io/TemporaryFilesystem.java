@@ -17,12 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.io;
 
-import org.openqa.selenium.WebDriverException;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import org.openqa.selenium.WebDriverException;
 
 /**
  * A wrapper around temporary filesystem behaviour.

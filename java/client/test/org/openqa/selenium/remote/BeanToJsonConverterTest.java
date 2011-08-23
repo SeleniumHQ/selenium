@@ -20,7 +20,6 @@ package org.openqa.selenium.remote;
 import junit.framework.TestCase;
 
 import java.awt.Point;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;

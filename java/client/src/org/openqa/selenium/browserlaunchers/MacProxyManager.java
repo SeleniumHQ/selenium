@@ -487,7 +487,6 @@ public class MacProxyManager {
                 .append(", authenticated=").append(authenticated)
                 .append(", bypass=").append(Arrays.toString(bypass))
                 .append("}");
-                ;
             return sb.toString();
         }
     }

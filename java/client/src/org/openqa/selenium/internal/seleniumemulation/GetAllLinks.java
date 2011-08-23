@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.internal.seleniumemulation;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -29,15 +28,10 @@ public class GetAllLinks extends SeleneseCommand<String[]> {
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String locator, String value) {
     List<WebElement> allLinks = driver.findElements(By.xpath("//a"));
-    Iterator<WebElement> i = allLinks.iterator();
     List<String> links = new ArrayList<String>();
-    while (i.hasNext()) {
-      WebElement link = i.next();
+    for (WebElement link : allLinks) {
       String id = link.getAttribute("id");
-      if (id == null)
-        links.add("");
-      else
-        links.add(id);
+      links.add(id == null ? "" : id);
     }
 
     return links.toArray(new String[links.size()]);

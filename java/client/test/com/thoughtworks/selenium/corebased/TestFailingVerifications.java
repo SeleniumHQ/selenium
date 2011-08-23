@@ -16,9 +16,9 @@ public class TestFailingVerifications extends InternalSelenseTestBase {
 		try { assertTrue(selenium.isElementPresent("notTheSpan")); fail("expected failure"); } catch (Throwable e) {}
 		try { assertFalse(selenium.isElementPresent("theSpan")); fail("expected failure"); } catch (Throwable e) {}
 		try { assertEquals(selenium.getTable("theTable.2.0"), "a"); fail("expected failure"); } catch (Throwable e) {}
-		try { assertEquals(selenium.getSelectedIndex("theSelect"), "2");; fail("expected failure"); } catch (Throwable e) {}
-		try { assertTrue(selenium.getSelectedValue("theSelect").matches("^opt[\\s\\S]*3$"));; fail("expected failure"); } catch (Throwable e) {}
-		try { assertEquals(selenium.getSelectedLabel("theSelect"), "third option");; fail("expected failure"); } catch (Throwable e) {}
+		try { assertEquals(selenium.getSelectedIndex("theSelect"), "2"); fail("expected failure"); } catch (Throwable e) {}
+		try { assertTrue(selenium.getSelectedValue("theSelect").matches("^opt[\\s\\S]*3$")); fail("expected failure"); } catch (Throwable e) {}
+		try { assertEquals(selenium.getSelectedLabel("theSelect"), "third option"); fail("expected failure"); } catch (Throwable e) {}
 		try { assertEquals(join(selenium.getSelectOptions("theSelect"), ','), "first\\,option,second option"); fail("expected failure"); } catch (Throwable e) {}
 		try { assertEquals(selenium.getAttribute("theText@class"), "bar"); fail("expected failure"); } catch (Throwable e) {}
 		try { assertNotEquals("foo", selenium.getAttribute("theText@class")); fail("expected failure"); } catch (Throwable e) {}

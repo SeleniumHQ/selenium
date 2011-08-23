@@ -19,7 +19,6 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 
 public class FirefoxWebElement extends RemoteWebElement implements WebElement {

@@ -44,7 +44,6 @@ public class SessionTimesOutTest {
     }
 
     public void beforeRelease(TestSession session) {
-      return;
     }
   }
 

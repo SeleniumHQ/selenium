@@ -39,10 +39,10 @@ public class FindFirstSelectedOptionProperty extends SeleneseCommand<String> {
 
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String selectLocator, String ignored) {
-SeleniumSelect select = new SeleniumSelect(library, finder, driver, selectLocator);
+    SeleniumSelect select = new SeleniumSelect(library, finder, driver, selectLocator);
     List<WebElement> allOptions = select.getSelectedOptions();
 
-    if (allOptions.size() == 0) {
+    if (allOptions.isEmpty()) {
       throw new SeleniumException("No options are selected: " + selectLocator);
     }
 

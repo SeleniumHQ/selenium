@@ -37,7 +37,7 @@ public class BrowserConfigurationOptions {
      * @return true if any options are set in this instance.
      */
     public boolean hasOptions() {
-      return options.size() > 0;
+        return !options.isEmpty();
     }
     
     /**

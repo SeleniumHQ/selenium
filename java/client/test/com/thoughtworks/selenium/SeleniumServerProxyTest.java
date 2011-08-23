@@ -1,23 +1,21 @@
 package com.thoughtworks.selenium;
 
-import junit.framework.TestCase;
-import org.apache.commons.io.IOUtils;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.server.TrustEverythingSSLTrustManager;
-import org.openqa.selenium.v1.SeleniumTestEnvironment;
-
-import javax.net.ssl.HttpsURLConnection;
 import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import junit.framework.TestCase;
+
+import org.apache.commons.io.IOUtils;
+import org.openqa.selenium.server.TrustEverythingSSLTrustManager;
+
 public class SeleniumServerProxyTest extends TestCase {
     public void testProxiesSeleniumStaticResourcesWithUpstreamProxy()
         throws Exception {
-        SeleniumTestEnvironment server = new SeleniumTestEnvironment("-Dhttp.proxyHost=localhost",
-                "-Dhttp.proxyPort=8888");
 
         URL target = new URL("http://www.google.com/selenium-server/core/Blank.html");
         URLConnection client = target.openConnection(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 4444)));

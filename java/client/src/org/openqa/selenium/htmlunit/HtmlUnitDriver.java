@@ -71,7 +71,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -708,7 +707,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     List<HtmlElement> allElements = ((HtmlPage) lastPage()).getElementsByName(name);
-    if (allElements.size() > 0) {
+    if (!allElements.isEmpty()) {
       return newHtmlUnitWebElement(allElements.get(0));
     }
 
@@ -929,7 +928,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         if (element == null) {
           List<? extends HtmlElement> allBodies =
               ((HtmlPage) page).getDocumentElement().getHtmlElementsByTagName("body");
-          if (allBodies.size() > 0) {
+          if (!allBodies.isEmpty()) {
             return newHtmlUnitWebElement(allBodies.get(0));
           }
         } else {
@@ -1185,13 +1184,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   public List<WebElement> findElementsByPartialLinkText(String using) {
 
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
-    Iterator<HtmlAnchor> allAnchors = anchors.iterator();
     List<WebElement> elements = new ArrayList<WebElement>();
-    while (allAnchors.hasNext()) {
-      HtmlAnchor anchor = allAnchors.next();
-      if (anchor.asText().contains(using)) {
-        elements.add(newHtmlUnitWebElement(anchor));
-      }
+    for (HtmlAnchor anchor : anchors) {
+        if (anchor.asText().contains(using)) {
+          elements.add(newHtmlUnitWebElement(anchor));
+        }
     }
     return elements;
   }

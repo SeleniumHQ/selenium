@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
-import com.thoughtworks.selenium.BrowserConfigurationOptions;
-
 import junit.framework.TestCase;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StubDriver;

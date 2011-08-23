@@ -228,8 +228,8 @@ public class HTMLTestResults {
         public List decodeListOfStrings(List list) {
             List<String> decodedList = new LinkedList<String>();
             
-            for (Iterator i = list.iterator(); i.hasNext();) {
-                decodedList.add(decode((String) i.next()));
+            for (Object o : list) {
+                decodedList.add(decode((String) o));
             }
             
             return decodedList;

@@ -1,7 +1,6 @@
 package org.openqa.selenium.browserlaunchers.locators;
 
 import junit.framework.TestCase;
-import org.openqa.selenium.browserlaunchers.locators.Firefox3Locator;
 
 /**
  * {@link org.openqa.selenium.browserlaunchers.locators.Firefox3Locator} unit test class.

@@ -10,8 +10,7 @@ import junit.framework.TestCase;
 import org.openqa.selenium.TestSuiteBuilder;
 
 public class OperaDriverTestSuite extends TestCase {
-  private static boolean runBuild = true;
-
+  
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")

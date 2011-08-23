@@ -18,7 +18,6 @@ package org.openqa.selenium;
 
 import java.net.URI;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
@@ -337,16 +336,13 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     driver.manage().addCookie(addedCookie);
 
     Set<Cookie> cookies = driver.manage().getCookies();
-    Iterator<Cookie> iter = cookies.iterator();
     Cookie retrievedCookie = null;
-    while (iter.hasNext()) {
-      Cookie temp = iter.next();
-
-      if (addedCookie.equals(temp)) {
-        retrievedCookie = temp;
-        break;
-      }
-    }
+    for (Cookie temp : cookies) {
+        if (addedCookie.equals(temp)) {
+          retrievedCookie = temp;
+          break;
+        }
+	}
 
     assertNotNull(retrievedCookie);
     //Cookie.equals only compares name, domain and path

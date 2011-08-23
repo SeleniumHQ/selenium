@@ -17,7 +17,6 @@
 package org.openqa.selenium.os;
 
 import junit.framework.TestCase;
-import org.openqa.selenium.os.WindowsUtils;
 
 import java.util.Map;
 import java.util.regex.Matcher;

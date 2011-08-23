@@ -20,7 +20,7 @@ public class TestMultiSelect extends InternalSelenseTestBase {
 		verifyEquals(join(selenium.getSelectedLabels("theSelect"), ','), "Third Option,");
 		selenium.removeSelection("theSelect", "");
 		selenium.removeSelection("theSelect", "Third Option");
-		try { assertEquals(selenium.getSelectedLabel("theSelect"), "");; fail("expected failure"); } catch (Throwable e) {}
+		try { assertEquals(selenium.getSelectedLabel("theSelect"), ""); fail("expected failure"); } catch (Throwable e) {}
 		try { assertEquals(join(selenium.getSelectedLabels("theSelect"), ','), ""); fail("expected failure"); } catch (Throwable e) {}
 		verifyEquals(selenium.getValue("theSelect"), "");
 		verifyFalse(selenium.isSomethingSelected("theSelect"));

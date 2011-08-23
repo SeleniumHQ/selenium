@@ -23,7 +23,6 @@ import org.openqa.selenium.net.Urls;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -103,7 +102,6 @@ public class HttpCommandProcessor implements CommandProcessor {
 
     /** Sends the specified command string to the bridge servlet */  
     public String executeCommandOnServlet(String command) {
-        InputStream is = null;
         try {
             return getCommandResponseAsString(command);
         } catch (IOException e) {
@@ -162,7 +160,7 @@ public class HttpCommandProcessor implements CommandProcessor {
                 uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
                 uc.setInstanceFollowRedirects(false);
                 uc.setDoOutput(true);
-                wr = getOutputStreamWriter(uc);;
+                wr = getOutputStreamWriter(uc);
                 wr.write(body);
                 wr.flush();
                 responsecode = getResponseCode(uc);
@@ -313,11 +311,9 @@ public class HttpCommandProcessor implements CommandProcessor {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        if (n instanceof Long) {
+        if (n instanceof Long && n.intValue() == n.longValue()) {
             // SRC-315 we should return Integers if possible
-            if (n.intValue() == n.longValue()) {
-                return new Integer(n.intValue());
-            }
+            return new Integer(n.intValue());
         }
         return n;
     }

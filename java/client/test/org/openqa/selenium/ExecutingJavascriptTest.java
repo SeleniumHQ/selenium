@@ -443,7 +443,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     List<WebElement> items = (List<WebElement>) ((JavascriptExecutor) driver)
         .executeScript("return document.getElementsByName('snack');");
 
-    assertTrue(items.size() > 0);
+    assertFalse(items.isEmpty());
   }
 
   @JavascriptEnabled
@@ -489,7 +489,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     List<WebElement> resultsList = (List<WebElement>) ((JavascriptExecutor) driver)
       .executeScript(scriptToExec);
 
-    assertTrue(resultsList.size() > 0);
+    assertFalse(resultsList.isEmpty());
   }
 
   @JavascriptEnabled

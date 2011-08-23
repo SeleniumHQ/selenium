@@ -22,7 +22,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.junit.Test;
-import org.openqa.selenium.os.CommandLine;
 
 public class CommandLineTest extends TestCase {
 

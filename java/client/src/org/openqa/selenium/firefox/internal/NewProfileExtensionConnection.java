@@ -20,15 +20,12 @@ package org.openqa.selenium.firefox.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 
-import com.google.common.io.Closeables;
 import org.openqa.selenium.internal.Lock;
-import org.openqa.selenium.io.Cleanly;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
