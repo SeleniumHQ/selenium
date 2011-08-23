@@ -69,7 +69,7 @@ else:
 setup(
     cmdclass={'install': install},
     name='selenium',
-    version="2.3.0",
+    version="2.5.0dev",
     description='Python bindings for Selenium',
     long_description=find_longdesc(),
     url='http://code.google.com/p/selenium/',
@@ -126,8 +126,9 @@ setup(
               'selenium.webdriver.support', ],
     package_data={
         'selenium.webdriver.firefox': ['*.xpi'],
-        'selenium.webdriver.ie': ['*.dll'],
     },
+    data_files=[('selenium/webdriver/ie/win32',['py/selenium/webdriver/ie/win32/IEDriver.dll']),
+		    ('selenium/webdriver/ie/x64',['py/selenium/webdriver/ie/x64/IEDriver.dll'])],
     include_package_data=True,
     install_requires=['rdflib==3.1.0'],
     zip_safe=False,
