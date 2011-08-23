@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementSelectionToBe;
 
 //TODO(dawagner): Ignored tests are for issue 1468
 public class ElementSelectingTest extends AbstractDriverTestCase {
@@ -145,9 +147,11 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
   }
   
   private static void assertSelected(WebElement element, boolean isSelected) {
-    assertThat(
-        String.format("Expected element %s to be %s but was %s", describe(element), selectedToString(isSelected), selectedToString(!isSelected)),
-        element.isSelected(), is(isSelected));
+    waitFor(elementSelectionToBe(element, isSelected));
+        assertThat(
+            String.format("Expected element %s to be %s but was %s",
+                describe(element), selectedToString(isSelected), selectedToString(!isSelected)),
+            element.isSelected(), is(isSelected));
   }
 
   private static void assertCannotSelect(WebElement element) {

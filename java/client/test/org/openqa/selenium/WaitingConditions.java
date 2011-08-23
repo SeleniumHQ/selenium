@@ -173,4 +173,18 @@ public class WaitingConditions {
       }
     };
   }
+
+  public static Callable<WebElement> elementSelectionToBe(
+      final WebElement element, final boolean selected) {
+    return new Callable<WebElement>() {
+      public WebElement call() throws Exception {
+        if (element.isSelected() == selected) {
+          return element;
+        }
+
+        return null;
+      }
+    };
+  }
+
 }
