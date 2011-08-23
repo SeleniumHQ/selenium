@@ -981,6 +981,9 @@ namespace OpenQA.Selenium.Remote
                         case WebDriverResult.NoAlertPresent:
                             throw new NoAlertPresentException(errorMessage);
 
+                        case WebDriverResult.InvalidSelector:
+                            throw new InvalidSelectorException(errorMessage);
+
                         default:
                             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", errorMessage, errorResponse.Status));
                     }

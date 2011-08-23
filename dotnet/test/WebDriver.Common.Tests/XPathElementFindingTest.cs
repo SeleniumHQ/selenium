@@ -75,5 +75,116 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.XPath("//a[text()='click me']"));
         }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Chrome, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
+        [ExpectedException(typeof(InvalidSelectorException))]
+        public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement()
+        {
+            driver.Url = formsPage;
+            driver.FindElement(By.XPath("this][isnot][valid"));
+
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Chrome, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
+        [ExpectedException(typeof(InvalidSelectorException))]
+        public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements()
+        {
+            driver.Url = formsPage;
+            driver.FindElements(By.XPath("this][isnot][valid"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Chrome, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
+        [ExpectedException(typeof(InvalidSelectorException))]
+        public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement()
+        {
+            driver.Url = formsPage;
+            IWebElement body = driver.FindElement(By.TagName("body"));
+            body.FindElement(By.XPath("this][isnot][valid"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Chrome, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
+        [ExpectedException(typeof(InvalidSelectorException))]
+        public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements()
+        {
+            driver.Url = formsPage;
+            IWebElement body = driver.FindElement(By.TagName("body"));
+            body.FindElements(By.XPath("this][isnot][valid"));
+        }
+
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Chrome, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
+        [ExpectedException(typeof(InvalidSelectorException))]
+        public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement()
+        {
+            driver.Url = formsPage;
+            driver.FindElement(By.XPath("count(//input)"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Chrome, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
+        [ExpectedException(typeof(InvalidSelectorException))]
+        public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements()
+        {
+            driver.Url = formsPage;
+            driver.FindElements(By.XPath("count(//input)"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Chrome, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
+        [ExpectedException(typeof(InvalidSelectorException))]
+        public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement()
+        {
+            driver.Url = formsPage;
+            IWebElement body = driver.FindElement(By.TagName("body"));
+            body.FindElement(By.XPath("count(//input)"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Chrome, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
+        [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
+        [ExpectedException(typeof(InvalidSelectorException))]
+        public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements()
+        {
+            driver.Url = formsPage;
+            IWebElement body = driver.FindElement(By.TagName("body"));
+            body.FindElements(By.XPath("count(//input)"));
+        }
     }
 }
+
