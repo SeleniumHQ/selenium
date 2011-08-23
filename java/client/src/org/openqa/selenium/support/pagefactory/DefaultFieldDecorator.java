@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.support.pagefactory;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler;
 
@@ -57,7 +58,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
 
     WebElement proxy;
       proxy = (WebElement) Proxy.newProxyInstance(
-          loader, new Class[]{WebElement.class, WrapsElement.class}, handler);
+          loader, new Class[]{WebElement.class, WrapsElement.class, Locatable.class}, handler);
     return proxy;
   }
 

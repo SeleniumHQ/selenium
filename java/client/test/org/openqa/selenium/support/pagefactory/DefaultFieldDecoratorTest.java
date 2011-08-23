@@ -17,10 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
+import org.jmock.Expectations;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 import java.lang.reflect.Field;
 
@@ -82,5 +96,36 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
     assertThat(decorator.decorate(getClass().getClassLoader(),
         getClass().getDeclaredField("num")),
         is(nullValue()));
+  }
+
+  @Test
+  public void testDecoratingProxyImplementsRequiredInterfaces() throws Exception {
+    final AllDriver driver = mock(AllDriver.class);
+    final AllElement element = mock(AllElement.class);
+    final Mouse mouse = mock(Mouse.class);
+    checking(new Expectations(){{
+      exactly(1).of(driver).getKeyboard();
+      exactly(1).of(driver).getMouse(); will(returnValue(mouse));
+      exactly(1).of(driver).findElement(By.id("foo")); will(returnValue(element));
+      exactly(1).of(element).getCoordinates();
+      exactly(1).of(mouse).mouseMove(with(any(Coordinates.class)));
+    }});
+    Page page = new Page();
+    PageFactory.initElements(driver, page);
+    new Actions(driver).moveToElement(page.foo).build().perform();
+  }
+  
+  private static class Page {
+    @FindBy(id = "foo")
+    public WebElement foo;
+  }
+
+  private interface AllDriver extends WebDriver, FindsById, FindsByLinkText, FindsByName,
+      FindsByXPath, HasInputDevices {
+    // Place holder
+  }
+
+  private interface AllElement extends WebElement, WrapsElement, Locatable {
+    // Place holder
   }
 }
