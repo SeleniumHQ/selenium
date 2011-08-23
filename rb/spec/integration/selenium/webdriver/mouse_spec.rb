@@ -25,9 +25,7 @@ module Selenium
           text = droppable.find_element(:tag_name => "p").text
           text.should == "Dropped!"
         end
-      end
 
-      compliant_on :browser => :chrome do
         it "double clicks an element" do
           driver.navigate.to url_for("javascriptPage.html")
           element = driver.find_element(:id, 'doubleClickField')
