@@ -70,7 +70,7 @@ module Selenium
           caps.merge! 'chrome.nativeEvents' => true if native_events
           caps.merge! 'chrome.verbose'      => true if verbose
           caps.merge! 'chrome.profile'      => profile.as_json['zip'] if profile
-          caps.merge! 'chrome.detach'       => true unless detach == false
+          caps.merge! 'chrome.detach'       => detach.nil? || !!detach
         end
 
       end # Bridge
