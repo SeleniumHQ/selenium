@@ -56,21 +56,80 @@
     <copy file="${build.location}/java/client/src/org/openqa/selenium/support/events/events.jar" tofile="libs/events.jar" />
     <copy file="${build.location}/java/server/src/org/openqa/selenium/remote/server/server.jar" tofile="libs/remote-wdserver.jar" />
     <copy file="${build.location}/java/server/src/org/openqa/selenium/server/logging.jar" tofile="libs/remote-logging.jar" />
-	<copy file="${third_party.location}/java/guava-libraries/guava-r09.jar" todir="libs/"  />
+    <copy file="${third_party.location}/java/guava-libraries/guava-r09.jar" todir="libs/"  />
     <copy file="${third_party.location}/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar" todir="libs/" />
     <copy file="${third_party.location}/java/json/json-20080701.jar" todir="libs/" />
     <copy file="${third_party.location}/java/junit/junit-dep-4.8.1.jar" todir="libs/" />
 
-	  <taskdef name="setup"
+    <taskdef name="setup"
         classname="com.android.ant.SetupTask"
         classpathref="android.antlibs" />
+
+    <!-- Building the atoms before the apk
+    compile all gos at once
+    -->
+    <property name="javascript.atoms" value="javascript/atoms"/>
+    <property name="webdriver.atoms.inject" value="javascript/webdriver-atoms/inject"/>
+    <property name="webdriver.atoms" value="javascript/webdriver-atoms"/>
+    <property name="root.dir" value="../"/>
+    <property name="go" value="./go"/>
+    <property name="res.raw" value="res/raw"/>
+
+    <target name="-pre-compile" depends="shouldBuildAtoms" unless="atomsBuild.notRequired">
+        <exec executable="${go}" dir="${root.dir}">
+            <arg value="//${webdriver.atoms.inject}:webdriver-inject"/>
+            <arg value="//${webdriver.atoms.inject}:active_element:android"/>
+            <arg value="//${webdriver.atoms.inject}:clear:android"/>
+            <arg value="//${webdriver.atoms.inject}:default_content:android"/>
+            <arg value="//${webdriver.atoms}:execute_script:android"/>
+            <arg value="//${webdriver.atoms.inject}:find_element:android"/>
+            <arg value="//${webdriver.atoms.inject}:find_elements:android"/>
+            <arg value="//${webdriver.atoms.inject}:frame_by_id_or_name:android"/>
+            <arg value="//${webdriver.atoms.inject}:frame_by_index:android"/>
+            <arg value="//${webdriver.atoms.inject}:get_attribute_value:android"/>
+            <arg value="//${webdriver.atoms.inject}:get_size:android"/>
+            <arg value="//${webdriver.atoms.inject}:get_text:android"/>
+            <arg value="//${webdriver.atoms.inject}:get_top_left_coordinates:android"/>
+            <arg value="//${webdriver.atoms.inject}:get_top_left_coordinates_in_top_window:android"/>
+            <arg value="//${webdriver.atoms.inject}:get_value_of_css_property:android"/>
+            <arg value="//${webdriver.atoms.inject}:is_displayed:android"/>
+            <arg value="//${webdriver.atoms.inject}:is_enabled:android"/>
+            <arg value="//${webdriver.atoms.inject}:is_selected:android"/>
+            <arg value="//${webdriver.atoms.inject}:submit:android"/>
+        </exec>
+       
+        <copy file="${build.location}/${webdriver.atoms.inject}/active_element_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/clear_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/default_content_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms}/execute_script_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/find_element_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/find_elements_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/frame_by_id_or_name_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/frame_by_index_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_attribute_value_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_size_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_text_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_top_left_coordinates_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_top_left_coordinates_in_top_window_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_value_of_css_property_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/is_displayed_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/is_enabled_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/is_selected_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/submit_android.js" todir="${res.raw}"/>
+    </target>
+
+    <target name="shouldBuildAtoms" unless="atomsBuild.notRequired">
+        <uptodate property="atomsBuild.notRequired" targetfile="${build.location}/${webdriver.atoms.inject}/webdriver-inject.js" >
+          <srcfiles dir= "${root.dir}/${javascript.atoms}"/>
+          <srcfiles dir= "${root.dir}/${webdriver.atoms.inject}"/>
+          <srcfiles dir= "${root.dir}/${webdriver.atoms}"/>
+        </uptodate>
+    </target>
 
 <!-- extension targets. Uncomment the ones where you want to do custom work
      in between standard targets -->
 <!--
     <target name="-pre-build">
-    </target>
-    <target name="-pre-compile">
     </target>
 
     [This is typically used for code obfuscation.
