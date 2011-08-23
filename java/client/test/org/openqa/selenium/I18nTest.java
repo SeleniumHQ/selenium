@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
@@ -57,6 +58,7 @@ public class I18nTest extends AbstractDriverTestCase {
     driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
   }
 
+  @Ignore(ANDROID)
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -66,6 +68,7 @@ public class I18nTest extends AbstractDriverTestCase {
     assertEquals(shalom, input.getAttribute("value"));
   }
 
+  @Ignore(ANDROID)
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -88,7 +91,8 @@ public class I18nTest extends AbstractDriverTestCase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, FIREFOX, OPERA}, reason="Not implemented on anything other than"
+  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, FIREFOX, OPERA, ANDROID},
+      reason="Not implemented on anything other than"
       + "Firefox/Linux at the moment.")
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
     if (!Platform.getCurrent().is(Platform.LINUX)) {
@@ -148,7 +152,8 @@ public class I18nTest extends AbstractDriverTestCase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, OPERA}, reason="Not implemented on anything other than"
+  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, OPERA, ANDROID},
+      reason="Not implemented on anything other than"
       + "Firefox/Linux at the moment.")
   public void testShouldBeAbleToInputJapanese() {
     if (!Platform.getCurrent().is(Platform.LINUX)) {

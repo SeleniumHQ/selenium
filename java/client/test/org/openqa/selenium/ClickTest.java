@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -67,8 +68,9 @@ public class ClickTest extends AbstractDriverTestCase {
     assertEquals("Latch was reset", Boolean.TRUE, samePage);
   }
 
-  @Ignore(value = {IPHONE, OPERA}, reason = "iPhone: Frame switching is unsupported"
-      + "Opera: Incorrect runtime retrieved")
+  @Ignore(value = {IPHONE, OPERA, ANDROID}, reason = "iPhone: Frame switching is unsupported"
+      + "Opera: Incorrect runtime retrieved, Android: A bug in emulator JSC egine on 2.2, "
+      + "works on devices.")
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -80,9 +82,9 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, OPERA},
+  @Ignore(value = {IPHONE, SELENESE, OPERA, ANDROID},
       reason = "iPhone: Frame switching is unsupported"
-      + "Opera: Incorrect runtime retrieved")
+      + "Opera: Incorrect runtime retrieved, Android: fails when running with other tests.")
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -97,9 +99,9 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, OPERA},
+  @Ignore(value = {IPHONE, SELENESE, OPERA, ANDROID},
       reason = "iPhone: Frame switching is unsupported"
-      + "Opera: Incorrect runtime retrieved")
+      + "Opera: Incorrect runtime retrieved, Android: Fails when running with other tests.")
   public void testJsLoactedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 
@@ -130,7 +132,7 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, HTMLUNIT, OPERA, SELENESE}, reason = "Not implemented")
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, OPERA, SELENESE}, reason = "Not implemented")
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
 

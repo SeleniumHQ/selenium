@@ -23,6 +23,7 @@ import java.util.concurrent.Callable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -267,6 +268,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertTrue(elements.size() > 1);
   }
 
+  @Ignore(value=ANDROID, reason="Bug in Android's XPath library." )
   public void testShouldBeAbleToFindMultipleElementsById() {
     driver.get(pages.nestedPage);
 
@@ -470,7 +472,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   //TODO(danielwh): Add extensive CSS selector tests
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, ANDROID})
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     String url = appServer.whereIs("missedJsReference.html");
     driver.get(url);

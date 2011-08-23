@@ -52,6 +52,8 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(value = ANDROID, reason = "The page is zoomed in because of the previous state"
+      + "which causes the click to fail.")
   public void testShouldBeAbleToClickImageButtons() {
     driver.get(pages.formPage);
     driver.findElement(By.id("imageButton")).click();
@@ -98,7 +100,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(textarea.getAttribute("value"), equalTo(cheesey));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, IE},
+  @Ignore(value = {SELENESE, IPHONE, IE, ANDROID},
       reason = "IE: New failure for IE.")
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);
@@ -109,7 +111,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
   }
 
-  @Ignore({SELENESE, IPHONE, IE})
+  @Ignore({SELENESE, IPHONE, IE, ANDROID})
   public void testShouldSubmitAFormUsingTheEnterKey() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -187,7 +189,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(value, is("Some text"));
   }
 
-  @Ignore(value = {IPHONE}, reason = "iPhone: sendKeys implemented incorrectly.")
+  @Ignore(value = {IPHONE, ANDROID}, reason = "iPhone: sendKeys implemented incorrectly.")
   public void testSendingKeyboardEventsShouldAppendTextInInputsWithExistingValue() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("inputWithText"));
@@ -197,7 +199,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(value, is("Example text. Some text"));
   }
 
-  @Ignore(value = {IE, HTMLUNIT, SELENESE, IPHONE},
+  @Ignore(value = {IE, HTMLUNIT, SELENESE, IPHONE, ANDROID},
           reason = "Not implemented going to the end of the line first;\n"
                    + "  iPhone: sendKeys not implemented correctly")
   public void testSendingKeyboardEventsShouldAppendTextinTextAreas() {

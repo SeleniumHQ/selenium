@@ -30,7 +30,7 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
-  @Ignore({SELENESE, OPERA})
+  @Ignore({SELENESE, OPERA, ANDROID})
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
 
@@ -55,7 +55,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   // should handle sub-pixel rendering, and every browser seems to be different anyhow:
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
   @JavascriptEnabled
-  @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA})
+  @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID})
   //Reason for Chrome: WebKit bug 28804
   public void testShouldHandleNonIntegerPositionAndSize() {
     driver.get(pages.rectanglesPage);
@@ -74,7 +74,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, IPHONE, OPERA})
+  @Ignore({SELENESE, IPHONE, OPERA, ANDROID})
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);
 

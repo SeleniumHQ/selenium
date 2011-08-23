@@ -215,6 +215,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
+  @Ignore(ANDROID)
   public void testPromptShouldHaveNullValueIfDismissed() {
     driver.findElement(By.id("prompt-with-default")).click();
 

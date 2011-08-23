@@ -260,7 +260,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertEquals(null, mousedownDiv.getAttribute("onclick"));
   }
 
-  @Ignore(value = {IE, IPHONE}, reason = "IE7 Does not support SVG; " +
+  @Ignore(value = {IE, IPHONE, ANDROID}, reason = "IE7 Does not support SVG; " +
       "SVG elements crash the iWebDriver app (issue 1134)")
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     driver.get(pages.svgPage);
@@ -284,6 +284,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertEquals("hello world", element.getAttribute("value"));
   }
 
+  @Ignore(ANDROID)
   public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("emptyTextArea"));

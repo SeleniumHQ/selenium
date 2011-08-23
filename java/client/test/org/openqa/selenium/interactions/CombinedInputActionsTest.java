@@ -42,6 +42,7 @@ import static org.openqa.selenium.WaitingConditions.elementToExist;
 /**
  * Tests combined input actions.
  */
+@Ignore(ANDROID)
 public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
   //TODO: Check if this could work in any browser without native events.

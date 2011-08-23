@@ -2,6 +2,7 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -79,7 +80,7 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     assertTrue(button.isSelected());
   }
 
-  @Ignore({CHROME, SELENESE})
+  @Ignore(value = {CHROME, SELENESE, ANDROID}, reason = "Android: opens a dialog.")
   public void testShouldBeAbleToToggleEnabledMultiSelectOption() {
     driver.get(pages.formPage);
     assertCanToggle(selectedMultipleSelectOption());
@@ -192,7 +193,7 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
   
   private static void assertTogglingSwapsSelectedStateFrom(WebElement element, boolean originalState) {
     element.click();
-    boolean isNowSelected = element.isSelected(); 
+    boolean isNowSelected = element.isSelected();
     assertThat(
         String.format("Expected element %s to have been toggled to %s but was %s",
             describe(element),

@@ -22,6 +22,7 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -44,6 +45,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
+  @Ignore(ANDROID)
   public void testShouldFollowMetaRedirects() throws Exception {
     driver.get(pages.metaRedirectPage);
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
@@ -74,7 +76,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     driver.get("http://localhost:3001");
   }
 
-  @Ignore({IE, IPHONE, SELENESE})
+  @Ignore({IE, IPHONE, SELENESE, ANDROID})
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);
 
@@ -98,7 +100,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, ANDROID})
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
     driver.get(pages.formPage);
 
@@ -123,7 +125,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, ANDROID})
   public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
     driver.get(pages.formPage);
 
@@ -137,8 +139,9 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA})
+  @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID})
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
+    // TODO(user): Set the SSL capability to true.
     String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
     driver.get(url);
 
@@ -159,7 +162,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=208">
    *     Issue 208</a>
    */
-  @Ignore(value = {IE, SELENESE, IPHONE, OPERA}, reason = "Untested user-agents")
+  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID}, reason = "Untested user-agents")
   @JavascriptEnabled
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
       throws Exception {
