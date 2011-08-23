@@ -1,3 +1,13 @@
+2.5.0 (2011-08-23)
+==================
+
+* IE: support for double click and fix for clicks close to edge of window.
+* Fix for clicking links that overflow into multiple lines (#1020).
+* Correct initial cursor position when typing into text fields with Firefox 6.
+* Native events support for Firefox 6 on Windows and Linux.
+* Fix bug in Android::Bridge when no :http_client option was passed.
+* Set chrome.detach to tell chromedriver to leave browser running on exit.
+
 2.4.0 (2011-08-11)
 ==================
 
