@@ -21,7 +21,8 @@ import java.io.IOException;
 public class SeleniumServerStarter extends TestSetup {
 
   private static final NetworkUtils networkUtils = new NetworkUtils();
-  private static final String SELENIUM_JAR = "build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar";
+  private static final String SELENIUM_JAR =
+      "build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar";
   private CommandLine command;
 
   public SeleniumServerStarter(Test test) {

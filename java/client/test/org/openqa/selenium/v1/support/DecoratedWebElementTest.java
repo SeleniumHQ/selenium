@@ -27,7 +27,7 @@ public class DecoratedWebElementTest extends TestCase {
 
     Object seen = new WebElementToJsonConverter().apply(page.element);
     Object expected = new WebElementToJsonConverter().apply(element);
-    
+
     assertEquals(expected, seen);
   }
 

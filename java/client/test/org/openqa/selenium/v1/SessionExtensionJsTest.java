@@ -13,60 +13,61 @@ import org.testng.annotations.Test;
 
 public class SessionExtensionJsTest extends InternalSelenseTestBase {
 
-    private Selenium privateSelenium;
-    private String host, browser;
-    private int port;
-    
-    private static final String TEST_URL = "http://localhost:4444/selenium-server/tests/html/test_click_page1.html";
+  private Selenium privateSelenium;
+  private String host, browser;
+  private int port;
 
-    @BeforeMethod
-    @Parameters({"selenium.host", "selenium.port", "selenium.browser"})
-    public void privateSetUp(@Optional("localhost") String host, @Optional("4444") String port, @Optional String browser) {
-        if (browser == null) browser = runtimeBrowserString();
-        this.host = host;
-        this.port = Integer.parseInt(port);
-        this.browser = browser;
-        privateSelenium = getNewSelenium();
-    }
-    
-    @AfterMethod(alwaysRun=true)
-    public void privateTearDown(){
-        if (privateSelenium != null) privateSelenium.stop();
-    }
+  private static final String TEST_URL =
+      "http://localhost:4444/selenium-server/tests/html/test_click_page1.html";
 
-    @Test(dataProvider = "system-properties")
-    public void expectFailureWhenExtensionNotSet() {
-        try {
-            runCommands(privateSelenium);
-            fail("Expected SeleniumException but none was encountered");
-        }
-        catch (SeleniumException se) {
-            assertTrue(se.getMessage().endsWith("comeGetSome is not defined"));
-        }
-    }
-    
-    @Test(dataProvider = "system-properties")
-    public void loadSimpleExtensionJs() {
-        // everything is peachy when the extension is set
-        privateSelenium.setExtensionJs("var comeGetSome = 'in';");
-        runCommands(privateSelenium);
-        assertEquals("Click Page Target", privateSelenium.getTitle());
-        privateSelenium.stop();
-        
-        // reusing the session ... extension should still be available
-        runCommands(privateSelenium);
-        assertEquals("Click Page Target", privateSelenium.getTitle());
-    }
+  @BeforeMethod
+  @Parameters({"selenium.host", "selenium.port", "selenium.browser"})
+  public void privateSetUp(@Optional("localhost") String host, @Optional("4444") String port,
+      @Optional String browser) {
+    if (browser == null) browser = runtimeBrowserString();
+    this.host = host;
+    this.port = Integer.parseInt(port);
+    this.browser = browser;
+    privateSelenium = getNewSelenium();
+  }
 
-    private Selenium getNewSelenium() {
-        return new DefaultSelenium(host, port, browser, TEST_URL);
-    }
+  @AfterMethod(alwaysRun = true)
+  public void privateTearDown() {
+    if (privateSelenium != null) privateSelenium.stop();
+  }
 
-    private void runCommands(Selenium selenium) {
-        selenium.start();
-        selenium.open(TEST_URL);
-        selenium.click("javascript{ 'l' + comeGetSome + 'k' }");
-        selenium.waitForPageToLoad("5000");
+  @Test(dataProvider = "system-properties")
+  public void expectFailureWhenExtensionNotSet() {
+    try {
+      runCommands(privateSelenium);
+      fail("Expected SeleniumException but none was encountered");
+    } catch (SeleniumException se) {
+      assertTrue(se.getMessage().endsWith("comeGetSome is not defined"));
     }
+  }
+
+  @Test(dataProvider = "system-properties")
+  public void loadSimpleExtensionJs() {
+    // everything is peachy when the extension is set
+    privateSelenium.setExtensionJs("var comeGetSome = 'in';");
+    runCommands(privateSelenium);
+    assertEquals("Click Page Target", privateSelenium.getTitle());
+    privateSelenium.stop();
+
+    // reusing the session ... extension should still be available
+    runCommands(privateSelenium);
+    assertEquals("Click Page Target", privateSelenium.getTitle());
+  }
+
+  private Selenium getNewSelenium() {
+    return new DefaultSelenium(host, port, browser, TEST_URL);
+  }
+
+  private void runCommands(Selenium selenium) {
+    selenium.start();
+    selenium.open(TEST_URL);
+    selenium.click("javascript{ 'l' + comeGetSome + 'k' }");
+    selenium.waitForPageToLoad("5000");
+  }
 
 }

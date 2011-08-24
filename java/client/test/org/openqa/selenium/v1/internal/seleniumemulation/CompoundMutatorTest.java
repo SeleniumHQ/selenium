@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.v1.internal.seleniumemulation;
 
@@ -34,12 +34,12 @@ public class CompoundMutatorTest extends TestCase {
 
   public void testLeavesAPlainScriptIntact() {
     StringBuilder builder = new StringBuilder();
-    
+
     mutator.mutate("return document", builder);
 
     assertTrue(builder.toString().contains("return document"));
   }
-  
+
   public void testEscapesNewLines() {
     StringBuilder builder = new StringBuilder();
 
@@ -47,7 +47,7 @@ public class CompoundMutatorTest extends TestCase {
 
     assertTrue(builder.toString().contains("return\\ndocument"));
   }
-  
+
   public void testEscapesSingleQuotes() {
     StringBuilder builder = new StringBuilder();
 

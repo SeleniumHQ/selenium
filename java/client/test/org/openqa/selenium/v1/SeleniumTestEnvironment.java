@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.v1;
 
@@ -50,7 +50,9 @@ public class SeleniumTestEnvironment implements TestEnvironment {
         new Build().of("//java/server/test/org/openqa/selenium:server-with-tests:uber").go();
       }
 
-      File seleniumJar = InProject.locate("build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar");
+      File seleniumJar =
+          InProject
+              .locate("build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar");
       String[] args = {"-jar", seleniumJar.getAbsolutePath(), "-port", "" + port};
       if (extraArgs != null) {
         String[] allArgs = new String[args.length + extraArgs.length];
@@ -70,7 +72,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
     appServer = new SeleniumAppServer(port);
   }
 
-  public SeleniumTestEnvironment(String... extraArgs){
+  public SeleniumTestEnvironment(String... extraArgs) {
     this(4444, extraArgs);
   }
 
@@ -131,7 +133,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       }
       selenium = new DefaultSelenium("localhost", port, browser, baseUrl);
       if (Boolean.getBoolean("webdriver.debug")) {
-         BrowserConfigurationOptions options = new BrowserConfigurationOptions();
+        BrowserConfigurationOptions options = new BrowserConfigurationOptions();
         options.set("browserSideLog", "true");
         selenium.start(options);
         selenium.setBrowserLogLevel("debug");

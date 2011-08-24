@@ -29,43 +29,45 @@ import org.testng.annotations.Test;
  */
 public class RealDealIntegrationTest extends InternalSelenseTestBase {
 
-    @Test(dataProvider = "system-properties")
-    public void testWithJavaScript() {
-        selenium.setContext("A real test, using the real Selenium on the browser side served by Jetty, driven from Java");
-        selenium.setBrowserLogLevel(SeleniumLogLevels.DEBUG);
-        selenium.open("/selenium-server/tests/html/test_click_page1.html");
-        assertTrue("link 'link' doesn't contain expected text", 
-                selenium.getText("link").indexOf("Click here for next page") != -1);
-        String[] links = selenium.getAllLinks();
-        assertTrue(links.length > 3);
-        assertEquals(links[3], "linkToAnchorOnThisPage");
-        selenium.click("link");
-        selenium.waitForPageToLoad("10000");
-        assertTrue(selenium.getLocation().endsWith("/selenium-server/tests/html/test_click_page2.html"));
-        selenium.click("previousPage");
-        selenium.waitForPageToLoad("10000");
-        assertTrue(selenium.getLocation().endsWith("/selenium-server/tests/html/test_click_page1.html"));
+  @Test(dataProvider = "system-properties")
+  public void testWithJavaScript() {
+    selenium
+        .setContext("A real test, using the real Selenium on the browser side served by Jetty, driven from Java");
+    selenium.setBrowserLogLevel(SeleniumLogLevels.DEBUG);
+    selenium.open("/selenium-server/tests/html/test_click_page1.html");
+    assertTrue("link 'link' doesn't contain expected text",
+        selenium.getText("link").indexOf("Click here for next page") != -1);
+    String[] links = selenium.getAllLinks();
+    assertTrue(links.length > 3);
+    assertEquals(links[3], "linkToAnchorOnThisPage");
+    selenium.click("link");
+    selenium.waitForPageToLoad("10000");
+    assertTrue(selenium.getLocation().endsWith("/selenium-server/tests/html/test_click_page2.html"));
+    selenium.click("previousPage");
+    selenium.waitForPageToLoad("10000");
+    assertTrue(selenium.getLocation().endsWith("/selenium-server/tests/html/test_click_page1.html"));
+  }
+
+  @Test(dataProvider = "system-properties")
+  public void testAgain() {
+    testWithJavaScript();
+  }
+
+  @Test(dataProvider = "system-properties")
+  public void testFailure() {
+    selenium
+        .setContext("A real negative test, using the real Selenium on the browser side served by Jetty, driven from Java");
+    selenium.open("/selenium-server/tests/html/test_click_page1.html");
+    String badElementName = "This element doesn't exist, so Selenium should throw an exception";
+    try {
+      selenium.getText(badElementName);
+      fail("No exception was thrown!");
+    } catch (SeleniumException se) {
+      assertTrue("Exception message isn't as expected: " + se.getMessage(), se.getMessage()
+          .indexOf(badElementName + " not found") != -1);
     }
-    
-    @Test(dataProvider = "system-properties")
-    public void testAgain() {
-        testWithJavaScript();
-    }
-    
-    @Test(dataProvider = "system-properties")
-    public void testFailure() {
-        selenium.setContext("A real negative test, using the real Selenium on the browser side served by Jetty, driven from Java");
-        selenium.open("/selenium-server/tests/html/test_click_page1.html");
-        String badElementName = "This element doesn't exist, so Selenium should throw an exception";
-        try {
-            selenium.getText(badElementName);
-            fail("No exception was thrown!");
-        } catch (SeleniumException se) {
-           assertTrue("Exception message isn't as expected: " + se.getMessage(), se.getMessage().indexOf(badElementName + " not found") != -1);
-        }
-        
-        assertFalse("Negative test", selenium.isTextPresent("Negative test: verify non-existent text"));
-   }
+
+    assertFalse("Negative test", selenium.isTextPresent("Negative test: verify non-existent text"));
+  }
 
 }
-
