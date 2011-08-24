@@ -7,10 +7,10 @@ import org.openqa.selenium.server.log.LoggingManager;
  */
 public class RetrieveLastRemoteControlLogsCommand extends Command {
 
-    public static final String ID = "retrieveLastRemoteControlLogs";
+  public static final String ID = "retrieveLastRemoteControlLogs";
 
-    public String execute() {
-        return "OK," + LoggingManager.shortTermMemoryHandler().formattedRecords();
-    }
+  public String execute() {
+    return "OK," + LoggingManager.shortTermMemoryHandler().formattedRecords();
+  }
 
 }

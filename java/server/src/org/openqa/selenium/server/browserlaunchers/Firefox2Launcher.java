@@ -23,7 +23,8 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class Firefox2Launcher extends FirefoxChromeLauncher {
 
-  public Firefox2Launcher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+  public Firefox2Launcher(Capabilities browserOptions, RemoteControlConfiguration configuration,
+      String sessionId, String browserLaunchLocation) {
     super(browserOptions, configuration,
         sessionId,
         ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(

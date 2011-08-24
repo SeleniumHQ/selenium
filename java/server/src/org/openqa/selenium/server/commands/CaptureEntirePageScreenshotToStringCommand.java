@@ -13,85 +13,86 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Capture a screenshot of the in-browser canvas. The entire web page is rendered not
- * just the current viewport.
- *
+ * Capture a screenshot of the in-browser canvas. The entire web page is rendered not just the
+ * current viewport.
+ * 
  * Only works for Firefox in Chrome mode for now.
- *
+ * 
  * Return a base 64 encoded PNG screenshot of of current page.
  */
 public class CaptureEntirePageScreenshotToStringCommand extends Command {
 
-    public static final String ID = "captureEntirePageScreenshotToString";
-    private static final Logger log = Logger.getLogger(CaptureScreenshotToStringCommand.class.getName());
-    
-    private final String kwargs;
-    private final String sessionId;
+  public static final String ID = "captureEntirePageScreenshotToString";
+  private static final Logger log = Logger.getLogger(CaptureScreenshotToStringCommand.class
+      .getName());
+
+  private final String kwargs;
+  private final String sessionId;
 
 
-    public CaptureEntirePageScreenshotToStringCommand(String kwargs, String sessionId) {
-        this.kwargs = kwargs;
-        this.sessionId = sessionId;
+  public CaptureEntirePageScreenshotToStringCommand(String kwargs, String sessionId) {
+    this.kwargs = kwargs;
+    this.sessionId = sessionId;
+  }
+
+
+  /**
+   * Capture a screenshot of the in-browser canvas. The entire web page is rendered not just the
+   * current viewport.
+   * 
+   * @return a base 64 encoded PNG screenshot of of current page.
+   */
+  public String execute() {
+    final String filePath;
+    final byte[] encodedData;
+    InputStream inputStream = null;
+
+    filePath = screenshotFilePath();
+    log.fine("Capturing page screenshot for session " + sessionId + " under '" + filePath + "'");
+    capturePageScreenshot(filePath);
+
+    try {
+      encodedData = Base64.encodeBase64(IOHelper.readFile(filePath));
+      return "OK," + new String(encodedData);
+    } catch (IOException e) {
+      return "ERROR: " + e;
+    } finally {
+      IOHelper.close(inputStream);
     }
 
-    
-    /**
-     * Capture a screenshot of the in-browser canvas. The entire web page is rendered not
-     * just the current viewport.
-     *
-     * @return a base 64 encoded PNG screenshot of of current page.
-     */
-    public String execute() {
-        final String filePath;
-        final byte[] encodedData;
-        InputStream inputStream = null;
+  }
 
-        filePath = screenshotFilePath();
-        log.fine("Capturing page screenshot for session " + sessionId + " under '" + filePath + "'");
-        capturePageScreenshot(filePath);
+  public String capturePageScreenshot(String filePath) {
+    final SeleniumCoreCommand pageScreenshotCommand;
+    final List<String> args;
 
-        try {
-            encodedData = Base64.encodeBase64(IOHelper.readFile(filePath));
-            return "OK," + new String(encodedData);
-        } catch (IOException e) {
-            return "ERROR: " + e;
-        } finally {
-            IOHelper.close(inputStream);
-        }
+    args = new ArrayList<String>(2);
+    args.add(filePath);
+    args.add(kwargs);
 
+    pageScreenshotCommand = new SeleniumCoreCommand(
+        SeleniumCoreCommand.CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID, args, sessionId);
+    pageScreenshotCommand.execute();
+
+    return null;
+  }
+
+  public String screenshotFilePath() {
+    final File screenshotDir;
+
+    screenshotDir = screenshotDirectory();
+    return screenshotDir + "/page-screenshot-" + sessionId + ".png";
+  }
+
+
+  public File screenshotDirectory() {
+    final File screenshotDir;
+
+    screenshotDir = new File(LauncherUtils.customProfileDir(sessionId), "screenshots");
+    if (!screenshotDir.exists()) {
+      screenshotDir.mkdirs();
     }
-
-    public String capturePageScreenshot(String filePath) {
-        final SeleniumCoreCommand pageScreenshotCommand;
-        final List<String> args;
-
-        args = new ArrayList<String>(2);
-        args.add(filePath);
-        args.add(kwargs);
-
-        pageScreenshotCommand = new SeleniumCoreCommand(
-                SeleniumCoreCommand.CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID, args, sessionId);
-        pageScreenshotCommand.execute();
-
-        return null;
-    }
-
-    public String screenshotFilePath() {
-        final File screenshotDir;
-
-        screenshotDir = screenshotDirectory();
-        return screenshotDir + "/page-screenshot-" + sessionId + ".png";
-    }
-
-
-    public File screenshotDirectory() {
-        final File screenshotDir;
-
-        screenshotDir = new File(LauncherUtils.customProfileDir(sessionId), "screenshots");
-        if (!screenshotDir.exists()) {
-            screenshotDir.mkdirs();
-        }
-        return screenshotDir;
-    }
+    return screenshotDir;
+  }
 
 }

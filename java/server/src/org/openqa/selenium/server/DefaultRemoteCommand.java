@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 /**
  * The default implementation of the RemoteCommand interface
- *
+ * 
  * @author Paul Hammant
  * @version $Revision: 184 $
  */
@@ -43,7 +43,8 @@ public class DefaultRemoteCommand implements RemoteCommand {
     this.piggybackedJavaScript = null;
   }
 
-  public DefaultRemoteCommand(String command, String field, String value, String piggybackedJavaScript) {
+  public DefaultRemoteCommand(String command, String field, String value,
+      String piggybackedJavaScript) {
     this.command = command;
     this.field = field;
     this.value = value;
@@ -55,7 +56,8 @@ public class DefaultRemoteCommand implements RemoteCommand {
   }
 
   public String getCommandURLString() {
-    return "cmd=" + Urls.urlEncode(command) + "&1=" + Urls.urlEncode(field) + "&2=" + Urls.urlEncode(value);
+    return "cmd=" + Urls.urlEncode(command) + "&1=" + Urls.urlEncode(field) + "&2=" +
+        Urls.urlEncode(value);
   }
 
   public String getJSONString() {
@@ -71,7 +73,8 @@ public class DefaultRemoteCommand implements RemoteCommand {
   }
 
   private String escapeJSON(String s) {
-    // TODO use a real JSON library (but it should be Apache licensed and less than 1.4 megs including deps!)
+    // TODO use a real JSON library (but it should be Apache licensed and less than 1.4 megs
+    // including deps!)
     Matcher m = JSON_ESCAPABLES.matcher(s);
     boolean result = m.find();
     if (result) {
@@ -156,10 +159,12 @@ public class DefaultRemoteCommand implements RemoteCommand {
   public static RemoteCommand parse(String inputLine) {
     if (inputLine == null) throw new NullPointerException("inputLine must not be null");
     inputLine = inputLine.trim();
-    // TODO use a real JSON library (but it should be Apache licensed and less than 1.4 megs including deps!)
+    // TODO use a real JSON library (but it should be Apache licensed and less than 1.4 megs
+    // including deps!)
     final String prefix = "json={command:\"";
     if (!inputLine.startsWith(prefix))
-      throw new IllegalArgumentException("invalid command string, missing '" + prefix + "'=" + inputLine);
+      throw new IllegalArgumentException("invalid command string, missing '" + prefix + "'=" +
+          inputLine);
     int index = prefix.length();
     int hackToPassByReference[] = new int[1];
     hackToPassByReference[0] = index;
@@ -167,18 +172,22 @@ public class DefaultRemoteCommand implements RemoteCommand {
     index = hackToPassByReference[0] + 1;
     final String targetDelim = ",target:\"";
     if (!(inputLine.length() > index + targetDelim.length()))
-      throw new IllegalArgumentException("invalid command string, missing '" + targetDelim + "'=" + inputLine);
+      throw new IllegalArgumentException("invalid command string, missing '" + targetDelim + "'=" +
+          inputLine);
     if (!inputLine.substring(index, index + targetDelim.length()).equals(targetDelim))
-      throw new IllegalArgumentException("invalid command string, missing '" + targetDelim + "'=" + inputLine);
+      throw new IllegalArgumentException("invalid command string, missing '" + targetDelim + "'=" +
+          inputLine);
     index += targetDelim.length();
     hackToPassByReference[0] = index;
     String target = parseJSONString(inputLine, hackToPassByReference);
     index = hackToPassByReference[0] + 1;
     final String valueDelim = ",value:\"";
     if (!(inputLine.length() > index + valueDelim.length()))
-      throw new IllegalArgumentException("invalid command string, missing '" + valueDelim + "'=" + inputLine);
+      throw new IllegalArgumentException("invalid command string, missing '" + valueDelim + "'=" +
+          inputLine);
     if (!inputLine.substring(index, index + valueDelim.length()).equals(valueDelim))
-      throw new IllegalArgumentException("invalid command string, missing '" + valueDelim + "'=" + inputLine);
+      throw new IllegalArgumentException("invalid command string, missing '" + valueDelim + "'=" +
+          inputLine);
     index += valueDelim.length();
     hackToPassByReference[0] = index;
     String value = parseJSONString(inputLine, hackToPassByReference);
@@ -188,7 +197,8 @@ public class DefaultRemoteCommand implements RemoteCommand {
       return new DefaultRemoteCommand(command, target, value);
     }
     if (!inputLine.substring(index, index + restDelim.length()).equals(restDelim))
-      throw new IllegalArgumentException("invalid command string, missing '" + restDelim + "'=" + inputLine);
+      throw new IllegalArgumentException("invalid command string, missing '" + restDelim + "'=" +
+          inputLine);
     index += restDelim.length();
     hackToPassByReference[0] = index;
     String rest = parseJSONString(inputLine, hackToPassByReference);
@@ -238,7 +248,8 @@ public class DefaultRemoteCommand implements RemoteCommand {
       }
     }
     if (!finished) {
-      throw new IllegalArgumentException("Invalid JSON string, quote never terminated: " + inputLine);
+      throw new IllegalArgumentException("Invalid JSON string, quote never terminated: " +
+          inputLine);
     }
     hackToPassByReference[0] = index;
     return sb.toString();

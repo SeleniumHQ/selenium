@@ -12,7 +12,8 @@ import java.io.OutputStreamWriter;
 import java.util.Calendar;
 
 /**
- * This test handler is only needed for testing caching. It prints out the current time, but instructs the browser to cache the result.
+ * This test handler is only needed for testing caching. It prints out the current time, but
+ * instructs the browser to cache the result.
  */
 public class CachedContentTestHandler implements HttpHandler {
   private static final long serialVersionUID = -4765843647662493876L;
@@ -23,7 +24,8 @@ public class CachedContentTestHandler implements HttpHandler {
   public CachedContentTestHandler() {
   }
 
-  public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse res) throws HttpException, IOException {
+  public void handle(String pathInContext, String pathParams, HttpRequest httpRequest,
+      HttpResponse res) throws HttpException, IOException {
     if (!"/cachedContentTest".equals(pathInContext)) return;
     res.setField(HttpFields.__ContentType, "text/html");
 

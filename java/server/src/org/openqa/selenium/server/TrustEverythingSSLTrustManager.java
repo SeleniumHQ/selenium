@@ -21,27 +21,27 @@ public class TrustEverythingSSLTrustManager implements X509TrustManager {
   }
 
   public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-    //No need to implement.
+    // No need to implement.
   }
 
   public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-    //No need to implement.
+    // No need to implement.
   }
 
   private static SSLSocketFactory socketFactory = null;
 
   /**
-   * Returns an SSLSocketFactory that will trust all SSL certificates; this is suitable for passing to
-   * HttpsURLConnection, either to its instance method setSSLSocketFactory, or to its static method
-   * setDefaultSSLSocketFactory.
-   *
+   * Returns an SSLSocketFactory that will trust all SSL certificates; this is suitable for passing
+   * to HttpsURLConnection, either to its instance method setSSLSocketFactory, or to its static
+   * method setDefaultSSLSocketFactory.
+   * 
    * @return SSLSocketFactory suitable for passing to HttpsUrlConnection
    * @see HttpsURLConnection#setSSLSocketFactory(SSLSocketFactory)
    * @see HttpsURLConnection#setDefaultSSLSocketFactory(SSLSocketFactory)
    */
   public synchronized static SSLSocketFactory getTrustingSSLSocketFactory() {
     if (socketFactory != null) return socketFactory;
-    TrustManager[] trustManagers = new TrustManager[]{new TrustEverythingSSLTrustManager()};
+    TrustManager[] trustManagers = new TrustManager[] {new TrustEverythingSSLTrustManager()};
     SSLContext sc;
     try {
       sc = SSLContext.getInstance("SSL");
@@ -54,9 +54,9 @@ public class TrustEverythingSSLTrustManager implements X509TrustManager {
   }
 
   /**
-   * Automatically trusts all SSL certificates in the current process; this is dangerous.  You should
+   * Automatically trusts all SSL certificates in the current process; this is dangerous. You should
    * probably prefer to configure individual HttpsURLConnections with trustAllSSLCertificates
-   *
+   * 
    * @see #trustAllSSLCertificates(HttpsURLConnection)
    */
   public static void trustAllSSLCertificatesUniversally() {
@@ -66,7 +66,7 @@ public class TrustEverythingSSLTrustManager implements X509TrustManager {
 
   /**
    * Configures a single HttpsURLConnection to trust all SSL certificates.
-   *
+   * 
    * @param connection an HttpsURLConnection which will be configured to trust all certs
    */
   public static void trustAllSSLCertificates(HttpsURLConnection connection) {

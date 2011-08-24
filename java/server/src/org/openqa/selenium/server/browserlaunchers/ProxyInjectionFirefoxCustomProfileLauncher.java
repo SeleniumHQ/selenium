@@ -10,12 +10,11 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 /**
  * launcher for Firefox under proxy injection mode
  * <p/>
- * In proxy injection mode, the selenium server is a proxy for all traffic from the browser,
- * not just traffic going to selenium-server URLs.  The incoming HTML is modified
- * to include selenium's JavaScript, which then controls the test page from within (as
- * opposed to controlling the test page from a different window, as selenium remote
- * control normally does).
- *
+ * In proxy injection mode, the selenium server is a proxy for all traffic from the browser, not
+ * just traffic going to selenium-server URLs. The incoming HTML is modified to include selenium's
+ * JavaScript, which then controls the test page from within (as opposed to controlling the test
+ * page from a different window, as selenium remote control normally does).
+ * 
  * @author nelsons
  */
 public class ProxyInjectionFirefoxCustomProfileLauncher extends
@@ -24,14 +23,16 @@ public class ProxyInjectionFirefoxCustomProfileLauncher extends
   private static boolean alwaysChangeMaxConnections = true;
 
   public ProxyInjectionFirefoxCustomProfileLauncher(Capabilities browserOptions,
-                                                    RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+      RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
     this(browserOptions, configuration,
         sessionId,
         ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
             "firefoxproxy", browserLaunchLocation, new CombinedFirefoxLocator()));
   }
 
-  public ProxyInjectionFirefoxCustomProfileLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+  public ProxyInjectionFirefoxCustomProfileLauncher(Capabilities browserOptions,
+      RemoteControlConfiguration configuration, String sessionId,
+      BrowserInstallation browserInstallation) {
     super(browserOptions, configuration, sessionId, browserInstallation);
     browserConfigurationOptions = Proxies.setProxyEverything(browserConfigurationOptions, true);
   }

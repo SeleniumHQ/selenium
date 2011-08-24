@@ -23,59 +23,70 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class SafariLauncher implements BrowserLauncher {
 
-    final BrowserLauncher realLauncher;
-    
-    public SafariLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+  final BrowserLauncher realLauncher;
 
-        String mode = (String) browserOptions.getCapability("mode");
-        if (mode == null) mode = "filebased";
-        if ("default".equals(mode)) mode = "filebased";
-        
-        if ("filebased".equals(mode)) {
-            realLauncher = new SafariFileBasedLauncher(browserOptions, configuration, sessionId, browserLaunchLocation);
-            return;
-        }
-        
-        boolean proxyInjectionMode = browserOptions.is("proxyInjectionMode") || "proxyInjection".equals(mode);
-        
-        // You can't just individually configure a browser for PI mode; it's a server-level configuration parameter
-        boolean globalProxyInjectionMode = configuration.getProxyInjectionModeArg();
-        if (proxyInjectionMode && !globalProxyInjectionMode) {
-            if (proxyInjectionMode) {
-                throw new RuntimeException("You requested proxy injection mode, but this server wasn't configured with -proxyInjectionMode on the command line");
-            }
-        }
-        
-        // if user didn't request PI, but the server is configured that way, just switch up to PI
-        proxyInjectionMode = globalProxyInjectionMode;
-        if (proxyInjectionMode) {
-            realLauncher = new ProxyInjectionSafariCustomProfileLauncher(browserOptions, configuration, sessionId, browserLaunchLocation);
-            return;
-        }
-        
-        // the mode isn't "chrome" or "proxyInjection"; at this point it had better be CapabilityType.PROXY
-        if (!CapabilityType.PROXY.equals(mode)) {
-            throw new RuntimeException("Unrecognized browser mode: " + mode);
-        }
-        
-        realLauncher = new SafariCustomProfileLauncher(browserOptions, configuration, sessionId, browserLaunchLocation);
-                
+  public SafariLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration,
+      String sessionId, String browserLaunchLocation) {
+
+    String mode = (String) browserOptions.getCapability("mode");
+    if (mode == null) mode = "filebased";
+    if ("default".equals(mode)) mode = "filebased";
+
+    if ("filebased".equals(mode)) {
+      realLauncher =
+          new SafariFileBasedLauncher(browserOptions, configuration, sessionId,
+              browserLaunchLocation);
+      return;
     }
 
-    public void close() {
-        realLauncher.close();
+    boolean proxyInjectionMode =
+        browserOptions.is("proxyInjectionMode") || "proxyInjection".equals(mode);
+
+    // You can't just individually configure a browser for PI mode; it's a server-level
+    // configuration parameter
+    boolean globalProxyInjectionMode = configuration.getProxyInjectionModeArg();
+    if (proxyInjectionMode && !globalProxyInjectionMode) {
+      if (proxyInjectionMode) {
+        throw new RuntimeException(
+            "You requested proxy injection mode, but this server wasn't configured with -proxyInjectionMode on the command line");
+      }
     }
 
-    public Process getProcess() {
-        return realLauncher.getProcess();
+    // if user didn't request PI, but the server is configured that way, just switch up to PI
+    proxyInjectionMode = globalProxyInjectionMode;
+    if (proxyInjectionMode) {
+      realLauncher =
+          new ProxyInjectionSafariCustomProfileLauncher(browserOptions, configuration, sessionId,
+              browserLaunchLocation);
+      return;
     }
 
-    public void launchHTMLSuite(String suiteUrl, String baseUrl) {
-        realLauncher.launchHTMLSuite(suiteUrl, baseUrl);
+    // the mode isn't "chrome" or "proxyInjection"; at this point it had better be
+    // CapabilityType.PROXY
+    if (!CapabilityType.PROXY.equals(mode)) {
+      throw new RuntimeException("Unrecognized browser mode: " + mode);
     }
 
-    public void launchRemoteSession(String url) {
-        realLauncher.launchRemoteSession(url);
-    }
+    realLauncher =
+        new SafariCustomProfileLauncher(browserOptions, configuration, sessionId,
+            browserLaunchLocation);
+
+  }
+
+  public void close() {
+    realLauncher.close();
+  }
+
+  public Process getProcess() {
+    return realLauncher.getProcess();
+  }
+
+  public void launchHTMLSuite(String suiteUrl, String baseUrl) {
+    realLauncher.launchHTMLSuite(suiteUrl, baseUrl);
+  }
+
+  public void launchRemoteSession(String url) {
+    realLauncher.launchRemoteSession(url);
+  }
 
 }

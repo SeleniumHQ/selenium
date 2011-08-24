@@ -21,10 +21,9 @@ import java.util.logging.Logger;
 /**
  * Manages browser sessions, their creation, and their closure.
  * <p/>
- * Maintains a cache of unused and available browser sessions in case
- * the server is reusing sessions.  Also manages the creation and
- * finalization of all browser sessions.
- *
+ * Maintains a cache of unused and available browser sessions in case the server is reusing
+ * sessions. Also manages the creation and finalization of all browser sessions.
+ * 
  * @author jbevan@google.com (Jennifer Bevan)
  */
 public class BrowserSessionFactory {
@@ -53,14 +52,14 @@ public class BrowserSessionFactory {
 
   /**
    * Constructor for testing purposes.
-   *
-   * @param blf                an injected BrowserLauncherFactory.
-   * @param cleanupInterval    the time between idle available session cleaning sweeps.
+   * 
+   * @param blf an injected BrowserLauncherFactory.
+   * @param cleanupInterval the time between idle available session cleaning sweeps.
    * @param maxIdleSessionTime the max time in ms for an available session to be idle.
-   * @param doCleanup          whether or not the idle session cleanup thread should run.
+   * @param doCleanup whether or not the idle session cleanup thread should run.
    */
   protected BrowserSessionFactory(BrowserLauncherFactory blf,
-                                  long cleanupInterval, long maxIdleSessionTime, boolean doCleanup) {
+      long cleanupInterval, long maxIdleSessionTime, boolean doCleanup) {
     browserLauncherFactory = blf;
     this.maxIdleSessionTime = maxIdleSessionTime;
     this.doCleanup = doCleanup;
@@ -71,18 +70,18 @@ public class BrowserSessionFactory {
   }
 
   /**
-   * Gets a new browser session, using the SeleniumServer static fields
-   * to populate parameters.
-   *
+   * Gets a new browser session, using the SeleniumServer static fields to populate parameters.
+   * 
    * @param browserString
    * @param startURL
-   * @param extensionJs   per-session user extension Javascript
+   * @param extensionJs per-session user extension Javascript
    * @param configuration Remote Control configuration. Cannot be null.
    * @return the BrowserSessionInfo for the new browser session.
    * @throws RemoteCommandException
    */
   public BrowserSessionInfo getNewBrowserSession(String browserString, String startURL,
-                                                 String extensionJs, Capabilities browserConfigurations, RemoteControlConfiguration configuration)
+      String extensionJs, Capabilities browserConfigurations,
+      RemoteControlConfiguration configuration)
       throws RemoteCommandException {
     return getNewBrowserSession(browserString, startURL, extensionJs,
         browserConfigurations,
@@ -92,19 +91,20 @@ public class BrowserSessionFactory {
 
   /**
    * Gets a new browser session
-   *
+   * 
    * @param browserString
    * @param startURL
-   * @param extensionJs   per-session user extension Javascript
+   * @param extensionJs per-session user extension Javascript
    * @param configuration Remote Control configuration. Cannot be null.
-   * @param useCached     if a cached session should be used if one is available
-   * @param ensureClean   if a clean session (e.g. no previous cookies) is required.
+   * @param useCached if a cached session should be used if one is available
+   * @param ensureClean if a clean session (e.g. no previous cookies) is required.
    * @return the BrowserSessionInfo for the new browser session.
    * @throws RemoteCommandException
    */
   protected BrowserSessionInfo getNewBrowserSession(String browserString, String startURL,
-                                                    String extensionJs, Capabilities browserConfigurations,
-                                                    boolean useCached, boolean ensureClean, RemoteControlConfiguration configuration) throws RemoteCommandException {
+      String extensionJs, Capabilities browserConfigurations,
+      boolean useCached, boolean ensureClean, RemoteControlConfiguration configuration)
+      throws RemoteCommandException {
 
     BrowserSessionInfo sessionInfo = null;
     browserString = validateBrowserString(browserString, configuration);
@@ -127,7 +127,7 @@ public class BrowserSessionFactory {
     }
 
     assert null != sessionInfo;
-    if (false/*ensureClean*/) {
+    if (false/* ensureClean */) {
       // need to add this to the launcher API.
       // sessionInfo.launcher.hideCurrentSessionData();
     }
@@ -166,10 +166,9 @@ public class BrowserSessionFactory {
   }
 
   /**
-   * Ends a browser session, using SeleniumServer static fields to populate
-   * parameters.
-   *
-   * @param sessionId     the id of the session to be ended
+   * Ends a browser session, using SeleniumServer static fields to populate parameters.
+   * 
+   * @param sessionId the id of the session to be ended
    * @param configuration Remote Control configuration. Cannot be null.
    */
   public void endBrowserSession(String sessionId, RemoteControlConfiguration configuration) {
@@ -177,25 +176,26 @@ public class BrowserSessionFactory {
   }
 
   /**
-   * Ends a browser session, using SeleniumServer static fields to populate
-   * parameters.
-   *
-   * @param sessionId     the id of the session to be ended
+   * Ends a browser session, using SeleniumServer static fields to populate parameters.
+   * 
+   * @param sessionId the id of the session to be ended
    * @param configuration Remote Control configuration. Cannot be null.
    */
-  public void endBrowserSession(boolean forceClose, String sessionId, RemoteControlConfiguration configuration) {
+  public void endBrowserSession(boolean forceClose, String sessionId,
+      RemoteControlConfiguration configuration) {
     endBrowserSession(forceClose, sessionId, configuration, configuration.isEnsureCleanSession());
   }
 
   /**
    * Ends a browser session.
-   *
-   * @param sessionId     the id of the session to be ended
+   * 
+   * @param sessionId the id of the session to be ended
    * @param configuration Remote Control configuration. Cannot be null.
-   * @param ensureClean   if clean sessions (e.g. no leftover cookies) are required.
+   * @param ensureClean if clean sessions (e.g. no leftover cookies) are required.
    */
-  protected void endBrowserSession(boolean forceClose, String sessionId, RemoteControlConfiguration configuration,
-                                   boolean ensureClean) {
+  protected void endBrowserSession(boolean forceClose, String sessionId,
+      RemoteControlConfiguration configuration,
+      boolean ensureClean) {
     BrowserSessionInfo sessionInfo = lookupInfoBySessionId(sessionId, activeSessions);
     if (null != sessionInfo) {
       activeSessions.remove(sessionInfo);
@@ -243,9 +243,9 @@ public class BrowserSessionFactory {
   }
 
   /**
-   * Shuts down this browser session's launcher and clears out its session
-   * data (if session is not null).
-   *
+   * Shuts down this browser session's launcher and clears out its session data (if session is not
+   * null).
+   * 
    * @param sessionInfo the browser session to end.
    */
   protected void shutdownBrowserAndClearSessionData(BrowserSessionInfo sessionInfo) {
@@ -260,24 +260,27 @@ public class BrowserSessionFactory {
 
   /**
    * Rewrites the given browser string based on server settings.
-   *
+   * 
    * @param inputString the input browser string
    * @return a possibly-modified browser string.
    * @throws IllegalArgumentException if inputString is null.
    */
-  private String validateBrowserString(String inputString, RemoteControlConfiguration configuration) throws IllegalArgumentException {
+  private String validateBrowserString(String inputString, RemoteControlConfiguration configuration)
+      throws IllegalArgumentException {
     String browserString = inputString;
     if (configuration.getForcedBrowserMode() != null) {
       browserString = configuration.getForcedBrowserMode();
       log.info("overriding browser mode w/ forced browser mode setting: " + browserString);
     }
     if (configuration.getProxyInjectionModeArg() && browserString.equals("*iexplore")) {
-      log.warning("running in proxy injection mode, but you used a *iexplore browser string; this is " +
+      log.warning("running in proxy injection mode, but you used a *iexplore browser string; this is "
+          +
           "almost surely inappropriate, so I'm changing it to *piiexplore...");
       browserString = "*piiexplore";
     } else if (configuration.getProxyInjectionModeArg() && (browserString.equals("*firefox")
         || browserString.equals("*firefox2") || browserString.equals("*firefox3"))) {
-      log.warning("running in proxy injection mode, but you used a " + browserString + " browser string; this is " +
+      log.warning("running in proxy injection mode, but you used a " + browserString +
+          " browser string; this is " +
           "almost surely inappropriate, so I'm changing it to *pifirefox...");
       browserString = "*pifirefox";
     }
@@ -290,13 +293,13 @@ public class BrowserSessionFactory {
 
   /**
    * Retrieves an available, unused session from the cache.
-   *
+   * 
    * @param browserString the necessary browser for a suitable session
-   * @param baseUrl       the necessary baseUrl for a suitable session
+   * @param baseUrl the necessary baseUrl for a suitable session
    * @return the session info of the cached session, null if none found.
    */
   protected BrowserSessionInfo grabAvailableSession(String browserString,
-                                                    String baseUrl) {
+      String baseUrl) {
     BrowserSessionInfo sessionInfo = null;
     synchronized (availableSessions) {
       sessionInfo = lookupInfoByBrowserAndUrl(browserString, baseUrl,
@@ -313,19 +316,21 @@ public class BrowserSessionFactory {
 
   /**
    * Isolated dependency
-   *
+   * 
    * @param sessionId
    * @param port
    * @param configuration
    * @return a new FrameGroupCommandQueueSet instance
    */
-  protected FrameGroupCommandQueueSet makeQueueSet(String sessionId, int port, RemoteControlConfiguration configuration) {
-    return FrameGroupCommandQueueSet.makeQueueSet(sessionId, configuration.getPortDriversShouldContact(), configuration);
+  protected FrameGroupCommandQueueSet makeQueueSet(String sessionId, int port,
+      RemoteControlConfiguration configuration) {
+    return FrameGroupCommandQueueSet.makeQueueSet(sessionId,
+        configuration.getPortDriversShouldContact(), configuration);
   }
 
   /**
    * Isolated dependency
-   *
+   * 
    * @param sessionId
    * @return an existing FrameGroupCommandQueueSet instance
    */
@@ -335,18 +340,19 @@ public class BrowserSessionFactory {
 
   /**
    * Creates and tries to open a new session.
-   *
+   * 
    * @param browserString
    * @param startURL
    * @param extensionJs
    * @param configuration Remote Control configuration. Cannot be null.
-   * @param ensureClean   if a clean session is required
+   * @param ensureClean if a clean session is required
    * @return the BrowserSessionInfo of the new session.
-   * @throws RemoteCommandException if the browser failed to launch and
-   *                                request work in the required amount of time.
+   * @throws RemoteCommandException if the browser failed to launch and request work in the required
+   *         amount of time.
    */
   protected BrowserSessionInfo createNewRemoteSession(String browserString, String startURL,
-                                                      String extensionJs, Capabilities browserConfiguration, boolean ensureClean, RemoteControlConfiguration configuration)
+      String extensionJs, Capabilities browserConfiguration, boolean ensureClean,
+      RemoteControlConfiguration configuration)
       throws RemoteCommandException {
 
     final FrameGroupCommandQueueSet queueSet;
@@ -359,7 +365,9 @@ public class BrowserSessionFactory {
     queueSet.setExtensionJs(extensionJs);
 
     try {
-      launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration, browserConfiguration);
+      launcher =
+          browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration,
+              browserConfiguration);
     } catch (InvalidBrowserExecutableException e) {
       throw new RemoteCommandException(e.getMessage(), "");
     }
@@ -368,8 +376,10 @@ public class BrowserSessionFactory {
     SeleniumDriverResourceHandler.setLastSessionId(sessionId);
     log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
-    LoggingManager.perSessionLogHandler().setThreadToSessionMapping(Thread.currentThread().getId(), sessionId);
-    LoggingManager.perSessionLogHandler().copyThreadTempLogsToSessionLogs(sessionId, Thread.currentThread().getId());
+    LoggingManager.perSessionLogHandler().setThreadToSessionMapping(Thread.currentThread().getId(),
+        sessionId);
+    LoggingManager.perSessionLogHandler().copyThreadTempLogsToSessionLogs(sessionId,
+        Thread.currentThread().getId());
 
     try {
       launcher.launchRemoteSession(startURL);
@@ -384,24 +394,24 @@ public class BrowserSessionFactory {
       return sessionInfo;
     } catch (Exception e) {
       /*
-      * At this point the session might not have been added to neither available nor active sessions.
-      * This session is unlikely to be of any practical use so we need to make sure we close the browser
-      * and clear all session data.
-      */
-      log.log(Level.SEVERE, "Failed to start new browser session, shutdown browser and clear all session data", e);
+       * At this point the session might not have been added to neither available nor active
+       * sessions. This session is unlikely to be of any practical use so we need to make sure we
+       * close the browser and clear all session data.
+       */
+      log.log(Level.SEVERE,
+          "Failed to start new browser session, shutdown browser and clear all session data", e);
       shutdownBrowserAndClearSessionData(sessionInfo);
       throw new RemoteCommandException("Error while launching browser", "", e);
     }
   }
 
   /**
-   * Adds a browser session that was not created by this factory to the
-   * set of active sessions.
+   * Adds a browser session that was not created by this factory to the set of active sessions.
    * <p/>
-   * Allows for creation of unmanaged sessions (i.e. no FrameGroupCommandQueueSet)
-   * for task such as running the HTML tests (see HTMLLauncher.java).  All
-   * fields other than session are required to be non-null.
-   *
+   * Allows for creation of unmanaged sessions (i.e. no FrameGroupCommandQueueSet) for task such as
+   * running the HTML tests (see HTMLLauncher.java). All fields other than session are required to
+   * be non-null.
+   * 
    * @param sessionInfo the session info to register.
    */
   protected boolean registerExternalSession(BrowserSessionInfo sessionInfo) {
@@ -414,9 +424,8 @@ public class BrowserSessionFactory {
   }
 
   /**
-   * Removes a previously registered external browser session from the
-   * list of active sessions.
-   *
+   * Removes a previously registered external browser session from the list of active sessions.
+   * 
    * @param sessionInfo the session to remove.
    */
   protected void deregisterExternalSession(BrowserSessionInfo sessionInfo) {
@@ -425,13 +434,13 @@ public class BrowserSessionFactory {
 
   /**
    * Looks up a session in the named set by session id
-   *
+   * 
    * @param sessionId the session id to find
-   * @param set       the Set to inspect
+   * @param set the Set to inspect
    * @return the matching BrowserSessionInfo or null if not found.
    */
   protected BrowserSessionInfo lookupInfoBySessionId(String sessionId,
-                                                     Set<BrowserSessionInfo> set) {
+      Set<BrowserSessionInfo> set) {
     BrowserSessionInfo result = null;
     synchronized (set) {
       for (BrowserSessionInfo info : set) {
@@ -446,14 +455,14 @@ public class BrowserSessionFactory {
 
   /**
    * Looks up a session in the named set by browser string and base URL
-   *
+   * 
    * @param browserString the browser string to match
-   * @param baseUrl       the base URL to match.
-   * @param set           the Set to inspect
+   * @param baseUrl the base URL to match.
+   * @param set the Set to inspect
    * @return the matching BrowserSessionInfo or null if not found.
    */
   protected BrowserSessionInfo lookupInfoByBrowserAndUrl(String browserString,
-                                                         String baseUrl, Set<BrowserSessionInfo> set) {
+      String baseUrl, Set<BrowserSessionInfo> set) {
     BrowserSessionInfo result = null;
     synchronized (set) {
       for (BrowserSessionInfo info : set) {
@@ -505,14 +514,14 @@ public class BrowserSessionFactory {
 
   /**
    * Collection class to hold the objects associated with a browser session.
-   *
+   * 
    * @author jbevan@google.com (Jennifer Bevan)
    */
   public static class BrowserSessionInfo {
 
     public BrowserSessionInfo(String sessionId, String browserString,
-                              String baseUrl, BrowserLauncher launcher,
-                              FrameGroupCommandQueueSet session) {
+        String baseUrl, BrowserLauncher launcher,
+        FrameGroupCommandQueueSet session) {
       this.sessionId = sessionId;
       this.browserString = browserString;
       this.baseUrl = baseUrl;
@@ -529,10 +538,9 @@ public class BrowserSessionFactory {
     public long lastClosedAt;
 
     /**
-     * Browser sessions require the session id, the browser, the base URL,
-     * and the launcher.  They don't actually require the session to be set
-     * up as a FrameGroupCommandQueueSet.
-     *
+     * Browser sessions require the session id, the browser, the base URL, and the launcher. They
+     * don't actually require the session to be set up as a FrameGroupCommandQueueSet.
+     * 
      * @param sessionInfo the sessionInfo to validate.
      * @return true if all fields excepting session are non-null.
      */
@@ -547,7 +555,7 @@ public class BrowserSessionFactory {
 
   /**
    * TimerTask that looks for unused sessions in the availableSessions collection.
-   *
+   * 
    * @author jbevan@google.com (Jennifer Bevan)
    */
   protected class CleanupTask extends TimerTask {

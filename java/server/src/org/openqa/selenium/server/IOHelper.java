@@ -28,7 +28,7 @@ public class IOHelper {
 
   /**
    * Read a file on the file system and return its content as a stream of bytes.
-   *
+   * 
    * @param filePath Path of the file to read. Cannot be null.
    * @return File content. Never null.
    * @throws IOException on error
@@ -51,10 +51,10 @@ public class IOHelper {
 
   /**
    * Copy remaining stream content to another stream.
-   *
-   * @param in  Input stream to copy (remaining) content from. Cannot be null.
+   * 
+   * @param in Input stream to copy (remaining) content from. Cannot be null.
    * @param out Output stream to copy content to. Cannot be null.
-   * @throws IOException              on IO error.
+   * @throws IOException on IO error.
    * @throws java.lang.AssertionError If <code>in</code> or <code>out</code> is null.
    */
   public static void copyStream(InputStream in, OutputStream out) throws IOException {
@@ -64,23 +64,25 @@ public class IOHelper {
 
   /**
    * Copy remaining stream content to another stream.
-   *
-   * @param in             Input stream to copy (remaining) content from. Cannot be null.
-   * @param out            Output stream to copy content to. Cannot be null.
-   * @param copyBufferSize Size of the maximum chunk of data that will be copied in one step. A buffer a this
-   *                       size will be allocated internally so beware of the usual speed vs. memory tradeoff.
-   *                       Must be strictly positive.
-   * @throws IOException              on IO error.
-   * @throws java.lang.AssertionError If <code>copyBufferSize</code> is negative, <code>in</code> is null or <code>out</code> is null.
+   * 
+   * @param in Input stream to copy (remaining) content from. Cannot be null.
+   * @param out Output stream to copy content to. Cannot be null.
+   * @param copyBufferSize Size of the maximum chunk of data that will be copied in one step. A
+   *        buffer a this size will be allocated internally so beware of the usual speed vs. memory
+   *        tradeoff. Must be strictly positive.
+   * @throws IOException on IO error.
+   * @throws java.lang.AssertionError If <code>copyBufferSize</code> is negative, <code>in</code> is
+   *         null or <code>out</code> is null.
    */
-  public static void copyStream(InputStream in, OutputStream out, int copyBufferSize) throws IOException {
+  public static void copyStream(InputStream in, OutputStream out, int copyBufferSize)
+      throws IOException {
     final byte[] buffer;
     int bytesRead;
 
     buffer = new byte[copyBufferSize];
     while (true) {
       bytesRead = in.read(buffer);
-      if (bytesRead < 0) {    /* End of stream */
+      if (bytesRead < 0) { /* End of stream */
         break;
       }
       out.write(buffer, 0, bytesRead);

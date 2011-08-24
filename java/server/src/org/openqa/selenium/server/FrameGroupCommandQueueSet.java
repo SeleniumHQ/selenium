@@ -1,4 +1,5 @@
 package org.openqa.selenium.server;
+
 /*
  * Copyright 2006 BEA, Inc.
  *
@@ -38,26 +39,29 @@ import java.util.logging.Logger;
 
 
 /**
- * <p>Manages sets of CommandQueues corresponding to windows and frames in a single browser session.</p>
- *
+ * <p>
+ * Manages sets of CommandQueues corresponding to windows and frames in a single browser session.
+ * </p>
+ * 
  * @author nelsons
  */
 public class FrameGroupCommandQueueSet {
   private static final Logger log = Logger.getLogger(FrameGroupCommandQueueSet.class.getName());
 
-  static private final Map<String, FrameGroupCommandQueueSet> queueSets = new ConcurrentHashMap<String, FrameGroupCommandQueueSet>();
+  static private final Map<String, FrameGroupCommandQueueSet> queueSets =
+      new ConcurrentHashMap<String, FrameGroupCommandQueueSet>();
   static private Lock dataLock = new ReentrantLock(); //
   static private Condition resultArrivedOnAnyQueue = dataLock.newCondition();
 
   /**
-   * JavaScript expression telling where the frame is within the current window (i.e., "local"
-   * to the current window).
+   * JavaScript expression telling where the frame is within the current window (i.e., "local" to
+   * the current window).
    */
   private String currentLocalFrameAddress;
   /**
    * the name of the user-level window in selenium's record-keeping.
    * <p/>
-   * The initial browser window has a blank name.  When a test calls waitForPopUp, that call's
+   * The initial browser window has a blank name. When a test calls waitForPopUp, that call's
    * argument is the window name as far as selenium is concerned.
    */
   private String currentSeleniumWindowName;
@@ -69,7 +73,8 @@ public class FrameGroupCommandQueueSet {
   private String currentUniqueId = null;
 
   private final Set<File> tempFilesForSession = Collections.synchronizedSet(new HashSet<File>());
-  private Map<String, CommandQueue> uniqueIdToCommandQueue = new ConcurrentHashMap<String, CommandQueue>();
+  private Map<String, CommandQueue> uniqueIdToCommandQueue =
+      new ConcurrentHashMap<String, CommandQueue>();
 
   private Map<String, Boolean> frameAddressToJustLoaded = new ConcurrentHashMap<String, Boolean>();
 
@@ -79,23 +84,23 @@ public class FrameGroupCommandQueueSet {
   /**
    * A unique string denoting a session with a browser.
    * <p/>
-   * In most cases this session begins with the
-   * selenium server configuring and starting a browser process, and ends
-   * with a selenium server killing that process.
+   * In most cases this session begins with the selenium server configuring and starting a browser
+   * process, and ends with a selenium server killing that process.
    */
   private final String sessionId;
   private final boolean proxyInjectionMode;
   /**
-   * Queues which will not be used anymore, but which cannot be immediately
-   * destroyed because their corresponding windows may still be listening.
+   * Queues which will not be used anymore, but which cannot be immediately destroyed because their
+   * corresponding windows may still be listening.
    */
   private Set<CommandQueue> orphanedQueues = new HashSet<CommandQueue>();
 
   public static final String DEFAULT_LOCAL_FRAME_ADDRESS = "top";
   /**
-   * Each user-visible window group has a selenium window name.  The name of the initial browser window is "".
-   * Even if the page reloads, the JavaScript is able to determine that it is this initial window because
-   * window.opener==null.  Any window for whom window.opener!=null is a "pop-up".
+   * Each user-visible window group has a selenium window name. The name of the initial browser
+   * window is "". Even if the page reloads, the JavaScript is able to determine that it is this
+   * initial window because window.opener==null. Any window for whom window.opener!=null is a
+   * "pop-up".
    */
   public static final String DEFAULT_SELENIUM_WINDOW_NAME = "";
   private int portDriversShouldContact;
@@ -107,7 +112,7 @@ public class FrameGroupCommandQueueSet {
   private String extensionJs;
 
   public FrameGroupCommandQueueSet(String sessionId, int portDriversShouldContact,
-                                   RemoteControlConfiguration configuration) {
+      RemoteControlConfiguration configuration) {
 
     this.sessionId = sessionId;
     this.portDriversShouldContact = portDriversShouldContact;
@@ -116,12 +121,10 @@ public class FrameGroupCommandQueueSet {
     proxyInjectionMode = configuration.getProxyInjectionModeArg();
 
     /*
-    * Initialize delay, using the static CommandQueue getSpeed
-    * in order to imitate previous behavior, wherein that static
-    * field would control the speed for all sessions.  The
-    * speed for a frame group's queues will only be changed if
-    * they're changed via this class's setSpeed().
-    */
+     * Initialize delay, using the static CommandQueue getSpeed in order to imitate previous
+     * behavior, wherein that static field would control the speed for all sessions. The speed for a
+     * frame group's queues will only be changed if they're changed via this class's setSpeed().
+     */
     millisecondDelayBetweenOperations =
         new AtomicInteger(CommandQueue.getSpeed());
   }
@@ -213,11 +216,13 @@ public class FrameGroupCommandQueueSet {
    */
   static public FrameGroupCommandQueueSet getQueueSet(String sessionId) {
     if (sessionId == null) {
-      throw new NullPointerException("sessionId should not be null; has this session been started yet?");
+      throw new NullPointerException(
+          "sessionId should not be null; has this session been started yet?");
     }
     FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
     if (queueSet == null) {
-      throw new RuntimeException("sessionId " + sessionId + " doesn't exist; perhaps this session was already stopped?");
+      throw new RuntimeException("sessionId " + sessionId +
+          " doesn't exist; perhaps this session was already stopped?");
     }
     return queueSet;
   }
@@ -225,7 +230,8 @@ public class FrameGroupCommandQueueSet {
   /**
    * Creates a FrameGroupCommandQueueSet for the specifed sessionId
    */
-  static public FrameGroupCommandQueueSet makeQueueSet(String sessionId, int portDriversShouldContact, RemoteControlConfiguration configuration) {
+  static public FrameGroupCommandQueueSet makeQueueSet(String sessionId,
+      int portDriversShouldContact, RemoteControlConfiguration configuration) {
     synchronized (queueSets) {
       FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
       if (queueSet != null) {
@@ -254,7 +260,9 @@ public class FrameGroupCommandQueueSet {
     if (q == null) {
       log.fine("---------allocating new CommandQueue for " + uniqueId);
 
-      q = new CommandQueue(sessionId, uniqueId, millisecondDelayBetweenOperations.get(), configuration);
+      q =
+          new CommandQueue(sessionId, uniqueId, millisecondDelayBetweenOperations.get(),
+              configuration);
       uniqueIdToCommandQueue.put(uniqueId, q);
     } else {
       log.fine("---------retrieving CommandQueue for " + uniqueId);
@@ -263,9 +271,8 @@ public class FrameGroupCommandQueueSet {
   }
 
   /**
-   * Sets this frame group's speed, and updates all command queues
-   * to use this speed.
-   *
+   * Sets this frame group's speed, and updates all command queues to use this speed.
+   * 
    * @param i millisecond delay between queue operations
    */
   protected void setSpeed(int i) {
@@ -277,7 +284,7 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Returns the delay for this frame group's command queues
-   *
+   * 
    * @return millisecond delay between queue operations
    */
   protected int getSpeed() {
@@ -285,15 +292,15 @@ public class FrameGroupCommandQueueSet {
   }
 
   /**
-   * Schedules the specified command to be retrieved by the next call to
-   * handle command result, and returns the result of that command.
-   *
+   * Schedules the specified command to be retrieved by the next call to handle command result, and
+   * returns the result of that command.
+   * 
    * @param command - the remote command verb
-   * @param arg     - the first remote argument (meaning depends on the verb)
-   * @param value   - the second remote argument
-   * @return - the command result, defined by the remote JavaScript.  "getX" style
-   *         commands may return data from the browser; other "doX" style commands may just
-   *         return "OK" or an error message.
+   * @param arg - the first remote argument (meaning depends on the verb)
+   * @param value - the second remote argument
+   * @return - the command result, defined by the remote JavaScript. "getX" style commands may
+   *         return data from the browser; other "doX" style commands may just return "OK" or an
+   *         error message.
    * @throws RemoteCommandException if a waitForLoad failed.
    */
   public String doCommand(String command, String arg, String value)
@@ -339,10 +346,11 @@ public class FrameGroupCommandQueueSet {
           // Wait for the popup window to load, if it throws
           // an exception then we should simply return the
           // command result
-          uniqueId = waitForLoad(waitingForThisWindowName, "top", (int) (timeoutInMilliseconds / 1000l));
+          uniqueId =
+              waitForLoad(waitingForThisWindowName, "top", (int) (timeoutInMilliseconds / 1000l));
 
           // if (!result.equals("OK")) {
-          // 	return result;
+          // return result;
           // }
         } catch (RemoteCommandException ex) {
           return ex.getResult();
@@ -361,7 +369,9 @@ public class FrameGroupCommandQueueSet {
         String currentWindowName = getCommandQueue().getFrameAddress().getWindowName();
         String result;
         try {
-          result = waitForLoad(currentWindowName, waitingForThisFrameName, (int) (timeoutInMilliseconds / 1000l));
+          result =
+              waitForLoad(currentWindowName, waitingForThisFrameName,
+                  (int) (timeoutInMilliseconds / 1000l));
         } catch (RemoteCommandException e) {
           return e.getMessage();
         }
@@ -427,7 +437,7 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Generates a CSV string from the given string array.
-   *
+   * 
    * @param stringArray Array of strings to generate a CSV.
    */
   public String getStringArrayAccessorCSV(String[] stringArray) {
@@ -453,8 +463,8 @@ public class FrameGroupCommandQueueSet {
   }
 
   /**
-   * Get all window attributes from the server.  Since the JS in the browser
-   * cannot possibly know about all windows.
+   * Get all window attributes from the server. Since the JS in the browser cannot possibly know
+   * about all windows.
    */
   private String getAttributeFromAllWindows(String attributeName) {
     // If we're not in PI mode, send the command back to the browser.
@@ -490,7 +500,7 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Get a window title in the given CommandQueue.
-   *
+   * 
    * @param queue CommandQueue to get the title from.
    * @return Returns the title if it is found.
    * @throws WindowClosedException
@@ -537,7 +547,7 @@ public class FrameGroupCommandQueueSet {
   }
 
   private String waitForLoad(String waitingForThisWindowName, String waitingForThisLocalFrame,
-                             int timeoutInSeconds) throws RemoteCommandException {
+      int timeoutInSeconds) throws RemoteCommandException {
 
     for (String matchingFrameAddress = null; timeoutInSeconds >= 0; timeoutInSeconds--) {
       dataLock.lock();
@@ -553,10 +563,9 @@ public class FrameGroupCommandQueueSet {
           log.fine("wait is over: window '" + waitingForThisWindowName
               + "' was seen at last (" + matchingFrameAddress + ")");
           /*
-          * Remove it from the list of matching frame addresses
-          * since it just loaded. Mark whether just loaded
-          * to aid debugging.
-          */
+           * Remove it from the list of matching frame addresses since it just loaded. Mark whether
+           * just loaded to aid debugging.
+           */
           markWhetherJustLoaded(matchingFrameAddress, false);
           return matchingFrameAddress;
         }
@@ -571,10 +580,9 @@ public class FrameGroupCommandQueueSet {
   }
 
   /**
-   * Waits on the condition, making sure to wait at least as
-   * many seconds as specified, unless the condition is signaled
-   * first.
-   *
+   * Waits on the condition, making sure to wait at least as many seconds as specified, unless the
+   * condition is signaled first.
+   * 
    * @param condition
    * @param numSeconds
    */
@@ -612,7 +620,8 @@ public class FrameGroupCommandQueueSet {
     }
   }
 
-  private String findMatchingFrameAddress(Set<String> uniqueIds, String windowName, String localFrame) {
+  private String findMatchingFrameAddress(Set<String> uniqueIds, String windowName,
+      String localFrame) {
     for (String uniqueId : uniqueIds) {
       if (matchesFrameAddress(uniqueId, windowName, localFrame)) {
         return uniqueId;
@@ -623,11 +632,12 @@ public class FrameGroupCommandQueueSet {
 
   /**
    * Does uniqueId point at a window that matches 'windowName'/'localFrame'?
-   *
+   * 
    * @param uniqueId
    * @param windowName
    * @param localFrame
-   * @return True if the frame addressed by uniqueId is addressable by window name 'windowName' and local frame address 'localFrame'.
+   * @return True if the frame addressed by uniqueId is addressable by window name 'windowName' and
+   *         local frame address 'localFrame'.
    */
   private boolean matchesFrameAddress(String uniqueId, String windowName, String localFrame) {
     // it's an odd selenium convention: "null" maps to the initial, main window:
@@ -672,9 +682,11 @@ public class FrameGroupCommandQueueSet {
   }
 
   /**
-   * <p>Accepts a command reply, and retrieves the next command to run.</p>
-   *
-   * @param commandResult        - the reply from the previous command, or null
+   * <p>
+   * Accepts a command reply, and retrieves the next command to run.
+   * </p>
+   * 
+   * @param commandResult - the reply from the previous command, or null
    * @param incomingFrameAddress - frame from which the reply came
    * @param uniqueId
    * @param justLoaded
@@ -706,7 +718,8 @@ public class FrameGroupCommandQueueSet {
   }
 
   /**
-   * <p> Empty queues, and thereby wake up any threads that are hanging around.
+   * <p>
+   * Empty queues, and thereby wake up any threads that are hanging around.
    */
   public void endOfLife() {
     removeTemporaryFiles();
@@ -756,27 +769,27 @@ public class FrameGroupCommandQueueSet {
   public static FrameAddress makeFrameAddress(String seleniumWindowName, String localFrameAddress) {
     if (seleniumWindowName == null) {
       // we are talking to a version of selenium core which isn't telling us the
-      // seleniumWindowName.  Set it to the default, which will be right most of
+      // seleniumWindowName. Set it to the default, which will be right most of
       // the time.
       seleniumWindowName = DEFAULT_SELENIUM_WINDOW_NAME;
     }
     return FrameAddress.make(seleniumWindowName, localFrameAddress);
   }
 
-//    /**
-//     * TODO: someone should call this
-//     */
-//    public void garbageCollectOrphans() {
-//        /**
-//         * The list of orphaned queues was assembled in the browser session 
-//         * preceding the current one.  At this point it is safe to get rid 
-//         * of them; their windows must have long since being destroyed.
-//         */
-//        for (CommandQueue q : orphanedQueues) {
-//            q.endOfLife();
-//        }
-//        orphanedQueues.clear();
-//    }
+  // /**
+  // * TODO: someone should call this
+  // */
+  // public void garbageCollectOrphans() {
+  // /**
+  // * The list of orphaned queues was assembled in the browser session
+  // * preceding the current one. At this point it is safe to get rid
+  // * of them; their windows must have long since being destroyed.
+  // */
+  // for (CommandQueue q : orphanedQueues) {
+  // q.endOfLife();
+  // }
+  // orphanedQueues.clear();
+  // }
 
   public void reset(String baseUrl) {
     log.fine("resetting frame group");
@@ -838,17 +851,21 @@ public class FrameGroupCommandQueueSet {
     tempFilesForSession.add(tf);
   }
 
-  private boolean queueMatchesFrameAddress(CommandQueue queue, String localFrameAddress, String newFrameAddressExpression) {
+  private boolean queueMatchesFrameAddress(CommandQueue queue, String localFrameAddress,
+      String newFrameAddressExpression) {
     boolean result;
     try {
-      result = doBooleanCommand(queue, "getWhetherThisFrameMatchFrameExpression", localFrameAddress, newFrameAddressExpression);
+      result =
+          doBooleanCommand(queue, "getWhetherThisFrameMatchFrameExpression", localFrameAddress,
+              newFrameAddressExpression);
     } catch (WindowClosedException e) {
       return false;
     }
     return result;
   }
 
-  private boolean doBooleanCommand(CommandQueue queue, String command, String arg1, String arg2) throws WindowClosedException {
+  private boolean doBooleanCommand(CommandQueue queue, String command, String arg1, String arg2)
+      throws WindowClosedException {
     String booleanResult = queue.doCommand(command, arg1, arg2);
     boolean result;
     if ("OK,true".equals(booleanResult)) {
@@ -859,7 +876,8 @@ public class FrameGroupCommandQueueSet {
       if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(booleanResult)) {
         throw new WindowClosedException();
       }
-      throw new RuntimeException("unexpected return " + booleanResult + " from boolean command " + command);
+      throw new RuntimeException("unexpected return " + booleanResult + " from boolean command " +
+          command);
     }
     log.fine("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
     return result;
@@ -873,5 +891,3 @@ public class FrameGroupCommandQueueSet {
     return extensionJs;
   }
 }
-
-

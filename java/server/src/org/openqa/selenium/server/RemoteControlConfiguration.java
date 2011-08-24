@@ -21,16 +21,17 @@ public class RemoteControlConfiguration {
   private File profilesLocation;
   private boolean proxyInjectionModeArg;
   /**
-   * The following port is the one which drivers and browsers should use when they contact the selenium server.
-   * Under normal circumstances, this port will be the same as the port which the selenium server listens on.
-   * But if a developer wants to monitor traffic into and out of the selenium server, he can set this port from
-   * the command line to be a different value and then use a tool like tcptrace to link this port with the
-   * server listening port, thereby opening a window into the raw HTTP traffic.
+   * The following port is the one which drivers and browsers should use when they contact the
+   * selenium server. Under normal circumstances, this port will be the same as the port which the
+   * selenium server listens on. But if a developer wants to monitor traffic into and out of the
+   * selenium server, he can set this port from the command line to be a different value and then
+   * use a tool like tcptrace to link this port with the server listening port, thereby opening a
+   * window into the raw HTTP traffic.
    * <p/>
-   * For example, if the selenium server is invoked with  -portDriversShouldContact 4445, then traffic going
-   * into the selenium server will be routed to port 4445, although the selenium server will still be listening
-   * to the default port 4444.  At this point, you would open tcptrace to bridge the gap and be able to watch
-   * all the data coming in and out:
+   * For example, if the selenium server is invoked with -portDriversShouldContact 4445, then
+   * traffic going into the selenium server will be routed to port 4445, although the selenium
+   * server will still be listening to the default port 4444. At this point, you would open tcptrace
+   * to bridge the gap and be able to watch all the data coming in and out:
    */
   private int portDriversShouldContact;
   private boolean htmlSuite;
@@ -53,7 +54,8 @@ public class RemoteControlConfiguration {
   private long timeoutInSeconds;
   private int retryTimeoutInSeconds;
   /**
-   * useful for situations where Selenium is being invoked programatically and the outside container wants to own logging
+   * useful for situations where Selenium is being invoked programatically and the outside container
+   * wants to own logging
    */
   private boolean dontTouchLogging = false;
   private boolean ensureCleanSession;
@@ -363,7 +365,8 @@ public class RemoteControlConfiguration {
     setSafely(capabilities, "userExtensions", userExtensions);
     setSafely(capabilities, "proxyInjectionMode", proxyInjectionModeArg);
     setSafely(capabilities, "singleWindow", singleWindow);
-    setSafely(capabilities, CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, ensureCleanSession);
+    setSafely(capabilities, CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION,
+        ensureCleanSession);
     setSafely(capabilities, CapabilityType.ForSeleniumServer.AVOIDING_PROXY, avoidProxy);
     setSafely(capabilities, "browserSideLog", browserSideLogEnabled);
 

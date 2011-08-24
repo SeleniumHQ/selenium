@@ -13,15 +13,15 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium.server;
 
 public interface SslCertificateGenerator {
   /**
-   * pre-compute the 1-16 SSL relays+certs for the logging hosts. (see
-   * selenium-remoterunner.js sendToRCAndForget for more info)
+   * pre-compute the 1-16 SSL relays+certs for the logging hosts. (see selenium-remoterunner.js
+   * sendToRCAndForget for more info)
    */
   void generateSSLCertsForLoggingHosts();
 }

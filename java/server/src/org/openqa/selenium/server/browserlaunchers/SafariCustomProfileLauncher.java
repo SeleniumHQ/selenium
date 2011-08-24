@@ -63,7 +63,8 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         "safari", browserLaunchLocation, new SafariLocator());
   }
 
-  public SafariCustomProfileLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+  public SafariCustomProfileLauncher(Capabilities browserOptions,
+      RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
     super(sessionId, configuration, browserOptions);
 
     this.browserInstallation = locateSafari(browserLaunchLocation);
@@ -98,19 +99,19 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
   }
 
   protected void launchSafari(String url) throws IOException {
-    cmdarray = new String[]{browserInstallation.launcherFilePath()};
+    cmdarray = new String[] {browserInstallation.launcherFilePath()};
     if (Platform.getCurrent().is(MAC)) {
       final String redirectHtmlFileName;
 
       redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
       log.info("Launching Safari to visit '" + url + "' via '" + redirectHtmlFileName + "'...");
-      cmdarray = new String[]{
+      cmdarray = new String[] {
           browserInstallation.launcherFilePath(),
           redirectHtmlFileName
       };
     } else {
       log.info("Launching Safari ...");
-      cmdarray = new String[]{
+      cmdarray = new String[] {
           browserInstallation.launcherFilePath(),
           "-url",
           url
@@ -201,8 +202,8 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
       fileOutputStream = new FileOutputStream(f);
       out = new PrintStream(fileOutputStream);
       out.println("<script language=\"JavaScript\">\n" +
-                  "    location = \"" + url + "\"\n" +
-                  "</script>\n");
+          "    location = \"" + url + "\"\n" +
+          "</script>\n");
     } catch (FileNotFoundException e) {
       throw new RuntimeException("troublemaking redirection HTML: " + e);
     } finally {

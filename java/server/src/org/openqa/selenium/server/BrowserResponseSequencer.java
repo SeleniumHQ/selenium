@@ -35,7 +35,8 @@ public class BrowserResponseSequencer {
     try {
       while (true) {
         if (num >= expected) return;
-        log.fine("Waiting " + uniqueId + ", expected sequence number " + expected + ", was " + num + ".");
+        log.fine("Waiting " + uniqueId + ", expected sequence number " + expected + ", was " + num +
+            ".");
         boolean timedOut = false;
         try {
           timedOut = !numIncreased.await(5, TimeUnit.SECONDS);
@@ -43,7 +44,8 @@ public class BrowserResponseSequencer {
           log.log(Level.FINE, "interrupted", e);
         }
         if (timedOut) {
-          log.warning(uniqueId + " expected sequence number " + expected + ", was " + num + ".  Continuing anyway");
+          log.warning(uniqueId + " expected sequence number " + expected + ", was " + num +
+              ".  Continuing anyway");
           num++;
           numIncreased.signalAll();
         }

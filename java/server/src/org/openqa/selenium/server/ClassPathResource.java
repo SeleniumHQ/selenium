@@ -32,7 +32,7 @@ import java.net.URL;
 
 /**
  * Represents resource file off of the classpath.
- *
+ * 
  * @author Patrick Lightbody (plightbo at gmail dot com)
  */
 public class ClassPathResource extends Resource {
@@ -73,8 +73,7 @@ public class ClassPathResource extends Resource {
   }
 
   /**
-   * Returns the lastModified time, which is always in the distant future to
-   * prevent caching.
+   * Returns the lastModified time, which is always in the distant future to prevent caching.
    */
   public long lastModified() {
     return System.currentTimeMillis() + 1000l * 3600l * 24l * 365l;

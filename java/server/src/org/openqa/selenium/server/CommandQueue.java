@@ -24,8 +24,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 /**
- * <p>Schedules and coordinates commands to be run.</p>
- *
+ * <p>
+ * Schedules and coordinates commands to be run.
+ * </p>
+ * 
  * @author Paul Hammant
  * @author Jennifer Bevan
  * @version $Revision: 734 $
@@ -39,7 +41,6 @@ public class CommandQueue {
 
   private final AtomicLong defaultTimeout;
   private static AtomicInteger retryTimeout = new AtomicInteger(10);
-  ;
 
   private final BrowserResponseSequencer browserResponseSequencer;
   private final String sessionId;
@@ -54,15 +55,15 @@ public class CommandQueue {
   private AtomicBoolean closed;
   private AtomicInteger queueDelay;
 
-  public CommandQueue(String newSessionId, String newUniqueId, RemoteControlConfiguration configuration) {
+  public CommandQueue(String newSessionId, String newUniqueId,
+      RemoteControlConfiguration configuration) {
     sessionId = newSessionId;
     uniqueId = newUniqueId;
     proxyInjectionMode = configuration.getProxyInjectionModeArg();
     browserResponseSequencer = new BrowserResponseSequencer(newUniqueId);
     resultExpected = new AtomicBoolean(false);
     closed = new AtomicBoolean(false);
-    cachedJsVariableNamesPointingAtThisWindow
-        = new ConcurrentHashMap<String, Boolean>();
+    cachedJsVariableNamesPointingAtThisWindow = new ConcurrentHashMap<String, Boolean>();
     idGenerator.incrementAndGet();
     commandHolder = new CommandHolder(uniqueId, retryTimeout.get());
     defaultTimeout = new AtomicLong(configuration.getTimeoutInSeconds());
@@ -72,21 +73,22 @@ public class CommandQueue {
     queueDelay = new AtomicInteger(millisecondDelayBetweenOperations.get());
   }
 
-  public CommandQueue(String newSessionId, String newUniqueId, int opDelay, RemoteControlConfiguration configuration) {
+  public CommandQueue(String newSessionId, String newUniqueId, int opDelay,
+      RemoteControlConfiguration configuration) {
     this(newSessionId, newUniqueId, configuration);
     setQueueDelay(opDelay);
   }
 
   /**
-   * Sends the specified command (to be retrieved by the next call to
-   * handle command result), and returns the result of that command.
-   *
+   * Sends the specified command (to be retrieved by the next call to handle command result), and
+   * returns the result of that command.
+   * 
    * @param command - the remote command verb
-   * @param field   - the first remote argument (meaning depends on the verb)
-   * @param value   - the second remote argument
-   * @return - the command result, defined by the remote JavaScript.  "getX" style
-   *         commands may return data from the browser; other "doX" style commands may just
-   *         return "OK" or an error message.
+   * @param field - the first remote argument (meaning depends on the verb)
+   * @param value - the second remote argument
+   * @return - the command result, defined by the remote JavaScript. "getX" style commands may
+   *         return data from the browser; other "doX" style commands may just return "OK" or an
+   *         error message.
    */
   public String doCommand(String command, String field, String value) {
 
@@ -148,8 +150,8 @@ public class CommandQueue {
         log.fine("Page load beat the wait command.  Leave the result to be picked up below");
       } else {
         // In proxy injection mode, a single command could cause multiple pages to
-        // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
-        // relationship between commands and results can go out of whack.  To avoid this, we
+        // reload. Each of these reloads causes a result. This means that the usual one-to-one
+        // relationship between commands and results can go out of whack. To avoid this, we
         // discard results for which no thread is waiting:
         log.fine("Apparently a page load result preceded the command; will ignore it...");
         resultHolder.poisonPollers(); // overwrite result
@@ -181,20 +183,22 @@ public class CommandQueue {
     sb.append("{ commandHolder=");
     sb.append("commandHolder/" + uniqueId + "-"
         + idGenerator.get() + " " + (commandHolder.isEmpty()
-        ? "null" : commandHolder.peek()))
+            ? "null" : commandHolder.peek()))
         .append(", ")
         .append(" resultHolder=")
         .append("resultHolder/" + uniqueId + "-"
             + idGenerator.get() + " " + (resultHolder.isEmpty()
-            ? "null" : resultHolder.peek()))
+                ? "null" : resultHolder.peek()))
         .append(" }");
 
     return sb.toString();
   }
 
   /**
-   * <p>Accepts a command reply, and retrieves the next command to run.</p>
-   *
+   * <p>
+   * Accepts a command reply, and retrieves the next command to run.
+   * </p>
+   * 
    * @param commandResult - the reply from the previous command, or null
    * @return - the next command to run
    */
@@ -226,11 +230,11 @@ public class CommandQueue {
             }
           }
         } else if (commandResult.startsWith("OK")) {
-          // there are a couple reasons for this.  If a command
+          // there are a couple reasons for this. If a command
           // timed out, its response could come in after we're done
-          // expecting it.  A previous reason was the idea that there
+          // expecting it. A previous reason was the idea that there
           // was some confusion as to which frame's command queue was
-          // to be used.  Rather than throwing an IllegalStateException
+          // to be used. Rather than throwing an IllegalStateException
           // as was the previous action, just add a warning statement
           // and throw away the unexpected response.
           log.warning(getIdentification("resultHolder", uniqueId)
@@ -287,7 +291,7 @@ public class CommandQueue {
 
   /**
    * Get whether this command queue expects a result instead of just "OK".
-   *
+   * 
    * @return Returns whether this command will expect a command result.
    */
   public boolean isResultExpected() {
@@ -313,7 +317,10 @@ public class CommandQueue {
   public boolean isWindowPointedToByJsVariable(String jsVariableName) {
     Boolean isPointingAtThisWindow = cachedJsVariableNamesPointingAtThisWindow.get(jsVariableName);
     if (isPointingAtThisWindow == null) {
-      isPointingAtThisWindow = false; // disable this -- causes timing problems since it's on same channel as initial load msg: doBooleanCommand("getWhetherThisWindowMatchWindowExpression", "", jsVariableName);
+      isPointingAtThisWindow = false; // disable this -- causes timing problems since it's on same
+                                      // channel as initial load msg:
+                                      // doBooleanCommand("getWhetherThisWindowMatchWindowExpression",
+                                      // "", jsVariableName);
       cachedJsVariableNamesPointingAtThisWindow.put(jsVariableName, isPointingAtThisWindow);
     }
     return isPointingAtThisWindow;

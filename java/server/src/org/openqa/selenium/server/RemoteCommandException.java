@@ -1,9 +1,8 @@
 package org.openqa.selenium.server;
 
 /**
- * Exception to notify calling methods that an exception occurred when
- * executing the method.
- *
+ * Exception to notify calling methods that an exception occurred when executing the method.
+ * 
  * @author Matthew Purland
  */
 public class RemoteCommandException extends Exception {
@@ -23,8 +22,7 @@ public class RemoteCommandException extends Exception {
   }
 
   /**
-   * Get the result of the remote command that caused
-   * the exception.
+   * Get the result of the remote command that caused the exception.
    */
   public String getResult() {
     return result;

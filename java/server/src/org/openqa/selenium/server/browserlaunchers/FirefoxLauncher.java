@@ -31,7 +31,8 @@ public class FirefoxLauncher implements BrowserLauncher {
 
   final BrowserLauncher realLauncher;
 
-  public FirefoxLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation)
+  public FirefoxLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration,
+      String sessionId, String browserLaunchLocation)
       throws InvalidBrowserExecutableException {
     String browserName = "firefox";
     BrowserLocator locator = new CombinedFirefoxLocator();
@@ -70,7 +71,8 @@ public class FirefoxLauncher implements BrowserLauncher {
     boolean proxyInjectionMode =
         browserOptions.is("proxyInjectionMode") || "proxyInjection".equals(mode);
 
-    // You can't just individually configure a browser for PI mode; it's a server-level configuration parameter
+    // You can't just individually configure a browser for PI mode; it's a server-level
+    // configuration parameter
     boolean globalProxyInjectionMode = configuration.getProxyInjectionModeArg();
     if (proxyInjectionMode && !globalProxyInjectionMode) {
       if (proxyInjectionMode) {
@@ -88,7 +90,8 @@ public class FirefoxLauncher implements BrowserLauncher {
       return;
     }
 
-    // the mode isn't "chrome" or "proxyInjection"; at this point it had better be CapabilityType.PROXY
+    // the mode isn't "chrome" or "proxyInjection"; at this point it had better be
+    // CapabilityType.PROXY
     if (!CapabilityType.PROXY.equals(mode)) {
       throw new RuntimeException("Unrecognized browser mode: " + mode);
     }

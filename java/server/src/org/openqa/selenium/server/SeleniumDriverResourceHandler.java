@@ -77,7 +77,7 @@ import java.util.logging.Logger;
  * <p/>
  * Remote Selenium requests are described in detail in the class description for
  * <code>SeleniumServer</code>
- *
+ * 
  * @author Paul Hammant
  * @version $Revision: 674 $
  * @see org.openqa.selenium.server.SeleniumServer
@@ -104,10 +104,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
   /**
    * Handy helper to retrieve the first parameter value matching the name
-   *
-   * @param req  - the Jetty HttpRequest
+   * 
+   * @param req - the Jetty HttpRequest
    * @param name - the HTTP parameter whose value we'll return
-   * @return the value of the first HTTP parameter whose name matches <code>name</code>, or <code>null</code> if there is no such parameter
+   * @return the value of the first HTTP parameter whose name matches <code>name</code>, or
+   *         <code>null</code> if there is no such parameter
    */
   private String getParam(HttpRequest req, String name) {
     List<?> parameterValues = req.getParameterValues(name);
@@ -149,9 +150,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
       } else if ("POST".equalsIgnoreCase(method) || justLoaded || logging) {
         handleBrowserResponse(req, res, sessionId, logging, jsState,
             justLoaded, retrying, closing);
-      } else if (
-          -1 != req.getRequestURL().indexOf("selenium-server/core/scripts/user-extensions.js")
-              || -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")) {
+      } else if (-1 != req.getRequestURL().indexOf(
+          "selenium-server/core/scripts/user-extensions.js")
+          ||
+          -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")) {
         // ignore failure to find these items...
       } else {
         log.fine("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
@@ -173,8 +175,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   }
 
   private void handleBrowserResponse(HttpRequest req, HttpResponse res,
-                                     String sessionId, boolean logging, boolean jsState,
-                                     boolean justLoaded, boolean retrying, boolean closing)
+      String sessionId, boolean logging, boolean jsState,
+      boolean justLoaded, boolean retrying, boolean closing)
       throws IOException {
     String seleniumWindowName = getParam(req, "seleniumWindowName");
     String localFrameAddress = getParam(req, "localFrameAddress");
@@ -221,7 +223,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     req.setHandled(true);
   }
 
-  private void logPostedData(FrameAddress frameAddress, boolean justLoaded, String sessionId, String postedData, String uniqueId) {
+  private void logPostedData(FrameAddress frameAddress, boolean justLoaded, String sessionId,
+      String postedData, String uniqueId) {
     StringBuffer sb = new StringBuffer();
     sb.append(
         "Browser " + sessionId + "/" + frameAddress + " " + uniqueId + " posted " + postedData);
@@ -244,7 +247,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     } else {
       log.fine("res empty");
     }
-    for (int pad = 998 - buf.size(); pad-- > 0; ) {
+    for (int pad = 998 - buf.size(); pad-- > 0;) {
       writer.write(" ");
     }
     writer.write("\015\012");
@@ -256,7 +259,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
   /**
    * extract the posted data from an incoming request, stripping away a piggybacked data
-   *
+   * 
    * @param req
    * @param sessionId
    * @param uniqueId
@@ -265,9 +268,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
    */
   private String readPostedData(HttpRequest req, String sessionId, String uniqueId)
       throws IOException {
-    // if the request was sent as application/x-www-form-urlencoded, we can get the decoded data right away...
-    // we do this because it appears that Safari likes to send the data back as application/x-www-form-urlencoded
-    // even when told to send it back as application/xml. So in short, this function pulls back the data in any
+    // if the request was sent as application/x-www-form-urlencoded, we can get the decoded data
+    // right away...
+    // we do this because it appears that Safari likes to send the data back as
+    // application/x-www-form-urlencoded
+    // even when told to send it back as application/xml. So in short, this function pulls back the
+    // data in any
     // way it can!
     if (req.getParameter("postedData") != null) {
       return req.getParameter("postedData");
@@ -283,11 +289,16 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     String postedData = sb.toString();
 
-    // we check here because, depending on the Selenium Core version you have, specifically the selenium-testrunner.js,
-    // the data could be sent back directly or as URL-encoded for the parameter "postedData" (see above). Because
-    // firefox and other browsers like to send it back as application/xml (opposite of Safari), we need to be prepared
-    // to decode the data ourselves. Also, we check for the string starting with the key because in the rare case
-    // someone has an outdated version selenium-testrunner.js, which, until today (3/25/2007) sent back the data
+    // we check here because, depending on the Selenium Core version you have, specifically the
+    // selenium-testrunner.js,
+    // the data could be sent back directly or as URL-encoded for the parameter "postedData" (see
+    // above). Because
+    // firefox and other browsers like to send it back as application/xml (opposite of Safari), we
+    // need to be prepared
+    // to decode the data ourselves. Also, we check for the string starting with the key because in
+    // the rare case
+    // someone has an outdated version selenium-testrunner.js, which, until today (3/25/2007) sent
+    // back the data
     // *un*-encoded, we'd like to be as flexible as possible.
     if (postedData.startsWith("postedData=")) {
       postedData = postedData.substring(11);
@@ -365,7 +376,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
   /**
    * Try to extract the name of the file whose absence caused the exception
-   *
+   * 
    * @param e - the exception
    * @return the name of the file whose absence caused the exception
    */
@@ -395,7 +406,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     results = doCommand(cmd, values, sessionId, res);
 
     // under some conditions, the results variable will be null
-    // (cf http://forums.openqa.org/thread.jspa?threadID=2955&messageID=8085#8085 for an example of this)
+    // (cf http://forums.openqa.org/thread.jspa?threadID=2955&messageID=8085#8085 for an example of
+    // this)
     if (results != null) {
       try {
         res.getOutputStream().write(results.getBytes("UTF-8"));
@@ -434,7 +446,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } catch (RuntimeException rte) {
           results = "Failed to start new browser session: " + rte.getMessage();
         }
-        // clear out any network traffic captured but never pulled back by the last client (this feature only works with one concurrent browser, similar to PI mode)
+        // clear out any network traffic captured but never pulled back by the last client (this
+        // feature only works with one concurrent browser, similar to PI mode)
         CaptureNetworkTrafficCommand.clear();
 
         break;
@@ -508,7 +521,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
           log.log(Level.SEVERE, "Problem during keyDown: ", e);
           results = "ERROR: Problem during keyDown: " + e.getMessage();
         }
-        // TODO typeKeysNative.  Requires converting String to array of keycodes.
+        // TODO typeKeysNative. Requires converting String to array of keycodes.
         break;
       case isPostSupported:
         results = "OK,true";
@@ -626,8 +639,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
       if (domain == null) {
         setDomain(sessionId, urlDomain);
       } else if (!url.startsWith(domain)) {
-        log.warning("you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
-            + "this may lead to a 'Permission denied' from the browser (unless it is running as *iehta or *chrome,\n"
+        log.warning("you appear to be changing domains from " +
+            domain +
+            " to " +
+            urlDomain +
+            "\n"
+            +
+            "this may lead to a 'Permission denied' from the browser (unless it is running as *iehta or *chrome,\n"
             + "or alternatively the selenium server is running in proxy injection mode)");
       }
     }
@@ -781,7 +799,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   }
 
   protected String getNewBrowserSession(String browserString, String startURL, String extensionJs,
-                                        Capabilities browserConfigurations)
+      Capabilities browserConfigurations)
       throws RemoteCommandException {
     BrowserSessionInfo sessionInfo = browserSessionFactory
         .getNewBrowserSession(browserString, startURL, extensionJs,
@@ -791,12 +809,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   }
 
   /**
-   * Perl and Ruby hang forever when they see "Connection: close" in the HTTP headers.
-   * They see that and they think that Jetty will close the socket connection, but
-   * Jetty doesn't appear to do that reliably when we're creating a process while
-   * handling the HTTP response!  So, removing the "Connection: close" header so that
-   * Perl and Ruby think we're morons and hang up on us in disgust.
-   *
+   * Perl and Ruby hang forever when they see "Connection: close" in the HTTP headers. They see that
+   * and they think that Jetty will close the socket connection, but Jetty doesn't appear to do that
+   * reliably when we're creating a process while handling the HTTP response! So, removing the
+   * "Connection: close" header so that Perl and Ruby think we're morons and hang up on us in
+   * disgust.
+   * 
    * @param res the HTTP response
    */
   private void hackRemoveConnectionCloseHeader(HttpResponse res) {
@@ -831,12 +849,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   }
 
   /**
-   * Registers the given browser session among the active sessions
-   * to handle.
+   * Registers the given browser session among the active sessions to handle.
    * <p/>
-   * Usually externally created browser sessions are managed themselves,
-   * but registering them allows the shutdown procedures to be simpler.
-   *
+   * Usually externally created browser sessions are managed themselves, but registering them allows
+   * the shutdown procedures to be simpler.
+   * 
    * @param sessionInfo the externally created browser session to register.
    */
   public void registerBrowserSession(BrowserSessionInfo sessionInfo) {
@@ -846,10 +863,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   /**
    * De-registers the given browser session from among the active sessions.
    * <p/>
-   * When an externally managed but registered session is closed,
-   * this method should be called to keep the set of active sessions
-   * up to date.
-   *
+   * When an externally managed but registered session is closed, this method should be called to
+   * keep the set of active sessions up to date.
+   * 
    * @param sessionInfo the session to deregister.
    */
   public void deregisterBrowserSession(BrowserSessionInfo sessionInfo) {

@@ -19,8 +19,8 @@ package org.openqa.selenium.server.browserlaunchers;
 
 public class InvalidBrowserExecutableException extends RuntimeException {
 
-	public InvalidBrowserExecutableException(String message) {
-		super(message);
-	}
-	
+  public InvalidBrowserExecutableException(String message) {
+    super(message);
+  }
+
 }

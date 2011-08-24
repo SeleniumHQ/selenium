@@ -26,7 +26,8 @@ public class StaticContentHandler extends ResourceHandler {
     this.proxyInjectionMode = proxyInjectionMode;
   }
 
-  public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse)
+  public void handle(String pathInContext, String pathParams, HttpRequest httpRequest,
+      HttpResponse httpResponse)
       throws IOException {
 
     hackRemoveLastModifiedSince(httpRequest);
@@ -44,13 +45,14 @@ public class StaticContentHandler extends ResourceHandler {
 
   }
 
-  protected void callSuperHandle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+  protected void callSuperHandle(String pathInContext, String pathParams, HttpRequest httpRequest,
+      HttpResponse httpResponse) throws IOException {
     super.handle(pathInContext, pathParams, httpRequest, httpResponse);
   }
 
   /**
-   * DGF Opera just refuses to honor my cache settings.  This will
-   * force jetty to return the document anyway.
+   * DGF Opera just refuses to honor my cache settings. This will force jetty to return the document
+   * anyway.
    */
   private void hackRemoveLastModifiedSince(HttpRequest req) {
     if (null == req.getField(HttpFields.__IfModifiedSince)) {
@@ -111,21 +113,23 @@ public class StaticContentHandler extends ResourceHandler {
   }
 
   public void sendData(HttpRequest request,
-                       HttpResponse response,
-                       String pathInContext,
-                       Resource resource,
-                       boolean writeHeaders) throws IOException {
+      HttpResponse response,
+      String pathInContext,
+      Resource resource,
+      boolean writeHeaders) throws IOException {
     if (!proxyInjectionMode) {
       super.sendData(request, response, pathInContext, resource, writeHeaders);
       return;
     }
-    ResourceCache.ResourceMetaData metaData = (ResourceCache.ResourceMetaData) resource.getAssociate();
+    ResourceCache.ResourceMetaData metaData =
+        (ResourceCache.ResourceMetaData) resource.getAssociate();
     String mimeType = metaData.getMimeType();
     response.setContentType(mimeType);
     if (resource.length() != -1) {
       response.setField(HttpFields.__ContentLength, metaData.getLength());
     }
-    InjectionHelper.injectJavaScript(request, response, resource.getInputStream(), response.getOutputStream(), debugURL);
+    InjectionHelper.injectJavaScript(request, response, resource.getInputStream(),
+        response.getOutputStream(), debugURL);
     request.setHandled(true);
   }
 

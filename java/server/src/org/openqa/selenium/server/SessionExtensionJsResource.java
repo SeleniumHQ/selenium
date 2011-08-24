@@ -11,10 +11,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Represents a sessioned extension Javascript resource. This class provides
- * just enough canned return values for the purpose of being passed into
- * ResourceHandler.sendData(), and is not guaranteed to hold water for anything
- * else!
+ * Represents a sessioned extension Javascript resource. This class provides just enough canned
+ * return values for the purpose of being passed into ResourceHandler.sendData(), and is not
+ * guaranteed to hold water for anything else!
  */
 class SessionExtensionJsResource extends URLResource {
   private String extensionJs;
@@ -36,9 +35,8 @@ class SessionExtensionJsResource extends URLResource {
   }
 
   /**
-   * Returns the lastModified time, which is always in the distant future to
-   * prevent caching. This comes from <code>FutureFileResource</code>
-   * originally.
+   * Returns the lastModified time, which is always in the distant future to prevent caching. This
+   * comes from <code>FutureFileResource</code> originally.
    */
   @Override
   public long lastModified() {

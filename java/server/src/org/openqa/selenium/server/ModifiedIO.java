@@ -24,7 +24,7 @@ public class ModifiedIO {
 
   /**
    * Copy Stream in to Stream for byteCount bytes or until EOF or exception.
-   *
+   * 
    * @return Copied bytes count or -1 if no bytes were read *and* EOF was reached
    */
   public static long copy(InputStream in,

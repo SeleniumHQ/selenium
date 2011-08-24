@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 /**
  * Returns BrowserLaunchers based on simple strings given by the user
- *
+ * 
  * @author danielf
  */
 public class BrowserLauncherFactory {
@@ -58,7 +58,7 @@ public class BrowserLauncherFactory {
     supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
     supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);
     // DGF pisafari isn't working yet
-    //supportedBrowsers.put("pisafari", ProxyInjectionSafariCustomProfileLauncher.class);
+    // supportedBrowsers.put("pisafari", ProxyInjectionSafariCustomProfileLauncher.class);
     supportedBrowsers.put("konqueror", KonquerorLauncher.class);
     supportedBrowsers.put("mock", MockBrowserLauncher.class);
     supportedBrowsers.put("googlechrome", GoogleChromeLauncher.class);
@@ -69,13 +69,14 @@ public class BrowserLauncherFactory {
 
   /**
    * Returns the browser given by the specified browser string
-   *
-   * @param browser        a browser string like "*firefox"
-   * @param sessionId      the sessionId to launch
+   * 
+   * @param browser a browser string like "*firefox"
+   * @param sessionId the sessionId to launch
    * @param browserOptions TODO
    * @return the BrowserLauncher ready to launch
    */
-  public BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration, Capabilities browserOptions) {
+  public BrowserLauncher getBrowserLauncher(String browser, String sessionId,
+      RemoteControlConfiguration configuration, Capabilities browserOptions) {
     if (browser == null) {
       throw new IllegalArgumentException("browser may not be null");
     }
@@ -101,7 +102,7 @@ public class BrowserLauncherFactory {
     }
 
     log.fine("Requested browser string '" + browser
-                 + "' does not match any known browser, treating it as a custom browser...");
+        + "' does not match any known browser, treating it as a custom browser...");
     Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
     if (CustomMatcher.find()) {
       String browserStartCommand = CustomMatcher.group(1);
@@ -140,8 +141,9 @@ public class BrowserLauncherFactory {
     return new RuntimeException(errorMessage.toString());
   }
 
-  private BrowserLauncher createBrowserLauncher(Class<? extends BrowserLauncher> c, String browserStartCommand,
-                                                String sessionId, RemoteControlConfiguration configuration, Capabilities browserOptions) {
+  private BrowserLauncher createBrowserLauncher(Class<? extends BrowserLauncher> c,
+      String browserStartCommand,
+      String sessionId, RemoteControlConfiguration configuration, Capabilities browserOptions) {
     try {
       try {
         final BrowserLauncher browserLauncher;

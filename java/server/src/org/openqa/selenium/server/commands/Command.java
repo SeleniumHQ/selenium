@@ -5,6 +5,6 @@ package org.openqa.selenium.server.commands;
  */
 public abstract class Command {
 
-    public abstract String execute();
+  public abstract String execute();
 
 }

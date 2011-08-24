@@ -8,9 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * We want to take advantage of the handling capabilities of the standard
- * ResourceHandler. This class is a thin wrapper that handles requests for
- * resources based on the per-session extension Javascript.
+ * We want to take advantage of the handling capabilities of the standard ResourceHandler. This
+ * class is a thin wrapper that handles requests for resources based on the per-session extension
+ * Javascript.
  */
 class SessionExtensionJsHandler extends ResourceHandler {
   public static final Pattern PATH_PATTERN =

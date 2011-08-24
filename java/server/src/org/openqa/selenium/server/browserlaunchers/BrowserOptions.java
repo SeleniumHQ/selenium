@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.server.browserlaunchers;
 
@@ -39,7 +39,7 @@ public class BrowserOptions {
   public static Capabilities newBrowserOptions(String browserConfiguration) {
     DesiredCapabilities caps = new DesiredCapabilities();
 
-    //"name=value;name=value"
+    // "name=value;name=value"
     String[] optionsPairList = browserConfiguration.split(";");
     for (int i = 0; i < optionsPairList.length; i++) {
       String[] option = optionsPairList[i].split("=", 2);

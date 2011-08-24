@@ -21,7 +21,8 @@ public class RobotRetriever {
 
   }
 
-  public static synchronized Robot getRobot() throws InterruptedException, ExecutionException, TimeoutException {
+  public static synchronized Robot getRobot() throws InterruptedException, ExecutionException,
+      TimeoutException {
     final FutureTask<Robot> robotRetriever;
     final Thread retrieverThread;
 

@@ -20,47 +20,48 @@ import javax.imageio.ImageIO;
  */
 public class CaptureScreenshotCommand extends Command {
 
-    public static final String ID = "captureScreenshot";
-    private static final Logger log = Logger.getLogger(CaptureScreenshotCommand.class.getName());
+  public static final String ID = "captureScreenshot";
+  private static final Logger log = Logger.getLogger(CaptureScreenshotCommand.class.getName());
 
-    private final File file;
-    
-    public CaptureScreenshotCommand(String fileName) {
-        this(new File(fileName));
-    }
+  private final File file;
 
-    CaptureScreenshotCommand(File file) {
-		this.file = file;
-    }
-    
-    private void createNecessaryDirectories() {
-    	File parentDir = file.getParentFile();
-    	if (parentDir != null && !parentDir.exists()) {
-    		parentDir.mkdirs();
-    	}
-    }
-    
-	public String execute() {
-        try {
-            captureSystemScreenshot();
-            return "OK";
-        } catch (Exception e) {
-            log.log(Level.SEVERE, "Problem capturing screenshot", e);
-            return "ERROR: Problem capturing screenshot: " + e.getMessage();
-        }
-    }
+  public CaptureScreenshotCommand(String fileName) {
+    this(new File(fileName));
+  }
 
-    public void captureSystemScreenshot() throws IOException, InterruptedException, ExecutionException, TimeoutException {
-        final BufferedImage bufferedImage;
-        final Rectangle captureSize;
-        final Robot robot;
+  CaptureScreenshotCommand(File file) {
+    this.file = file;
+  }
 
-        robot = RobotRetriever.getRobot();
-        captureSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-        bufferedImage = robot.createScreenCapture(captureSize);
-        createNecessaryDirectories();
-        ImageIO.write(bufferedImage, "png", this.file);
+  private void createNecessaryDirectories() {
+    File parentDir = file.getParentFile();
+    if (parentDir != null && !parentDir.exists()) {
+      parentDir.mkdirs();
     }
+  }
+
+  public String execute() {
+    try {
+      captureSystemScreenshot();
+      return "OK";
+    } catch (Exception e) {
+      log.log(Level.SEVERE, "Problem capturing screenshot", e);
+      return "ERROR: Problem capturing screenshot: " + e.getMessage();
+    }
+  }
+
+  public void captureSystemScreenshot() throws IOException, InterruptedException,
+      ExecutionException, TimeoutException {
+    final BufferedImage bufferedImage;
+    final Rectangle captureSize;
+    final Robot robot;
+
+    robot = RobotRetriever.getRobot();
+    captureSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+    bufferedImage = robot.createScreenCapture(captureSize);
+    createNecessaryDirectories();
+    ImageIO.write(bufferedImage, "png", this.file);
+  }
 
 
 }

@@ -20,8 +20,10 @@ package org.openqa.selenium.server;
 import java.util.logging.Logger;
 
 /**
- * <p>Holds the command to be next run in the browser</p>
- *
+ * <p>
+ * Holds the command to be next run in the browser
+ * </p>
+ * 
  * @author Jennifer Bevan
  * @version $Revision: 734 $
  */
@@ -42,9 +44,8 @@ public class CommandResultHolder {
   }
 
   /**
-   * Get a result out of the result holder (from the browser), waiting no
-   * longer than the timeout.
-   *
+   * Get a result out of the result holder (from the browser), waiting no longer than the timeout.
+   * 
    * @return the result from the result holder
    */
   public String getResult() {

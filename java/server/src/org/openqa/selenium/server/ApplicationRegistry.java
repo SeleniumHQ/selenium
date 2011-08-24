@@ -18,15 +18,15 @@ public class ApplicationRegistry {
 
   /**
    * Return the singleton instance.
-   *
+   * 
    * @return The singleton instance. Never null.
    */
   public static ApplicationRegistry instance() {
     /*
-    * In theory the is no guard against concurrent code and multiple instances
-    * could be created. In practice this is not a problem, this scenario is
-    * unlikely and all registries would be equivalent.
-    */
+     * In theory the is no guard against concurrent code and multiple instances could be created. In
+     * practice this is not a problem, this scenario is unlikely and all registries would be
+     * equivalent.
+     */
     if (null == instance) {
       instance = new ApplicationRegistry();
     }

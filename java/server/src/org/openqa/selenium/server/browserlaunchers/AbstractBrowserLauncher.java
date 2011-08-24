@@ -8,7 +8,7 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
  * Runs the specified command path to start the browser, and kills the process to quit.
- *
+ * 
  * @author Paul Hammant
  * @version $Revision: 189 $
  */
@@ -18,7 +18,8 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
   private RemoteControlConfiguration configuration;
   protected Capabilities browserConfigurationOptions;
 
-  public AbstractBrowserLauncher(String sessionId, RemoteControlConfiguration configuration, Capabilities browserOptions) {
+  public AbstractBrowserLauncher(String sessionId, RemoteControlConfiguration configuration,
+      Capabilities browserOptions) {
     this.sessionId = sessionId;
     this.configuration = configuration;
     this.browserConfigurationOptions = configuration.copySettingsIntoBrowserOptions(browserOptions);

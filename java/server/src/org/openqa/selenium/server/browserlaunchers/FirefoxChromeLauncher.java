@@ -45,19 +45,22 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
   private boolean changeMaxConnections = false;
 
-  public FirefoxChromeLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserString)
+  public FirefoxChromeLauncher(Capabilities browserOptions,
+      RemoteControlConfiguration configuration, String sessionId, String browserString)
       throws InvalidBrowserExecutableException {
     this(browserOptions, configuration,
         sessionId, ApplicationRegistry.instance()
             .browserInstallationCache().locateBrowserInstallation(
-            "chrome", browserString, new CombinedFirefoxLocator()));
+                "chrome", browserString, new CombinedFirefoxLocator()));
     if (browserInstallation == null) {
       throw new InvalidBrowserExecutableException(
           "The specified path to the browser executable is invalid.");
     }
   }
 
-  public FirefoxChromeLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+  public FirefoxChromeLauncher(Capabilities browserOptions,
+      RemoteControlConfiguration configuration, String sessionId,
+      BrowserInstallation browserInstallation) {
     super(sessionId, configuration, browserOptions);
 
     if (browserInstallation == null) {
@@ -68,9 +71,12 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   }
 
 
-  /* (non-Javadoc)
-  * @see org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncher#launch(java.lang.String)
-  */
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncher#launch(java.lang.String)
+   */
 
   @Override
   protected void launch(String url) {
@@ -87,7 +93,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
           browserInstallation.launcherFilePath(),
           "-profile",
           profilePath
-      );
+          );
       command.setEnvironmentVariable("NO_EM_RESTART", "1");
       process = command.executeAsync();
     } catch (IOException e) {
@@ -97,16 +103,15 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
   private void populateCustomProfileDirectory(String profilePath) throws IOException {
     /*
-    * The first time we launch Firefox with an empty profile directory,
-    * Firefox will launch itself, populate the profile directory, then
-    * kill/relaunch itself, so our process handle goes out of date.
-    * So, the first time we launch Firefox, we'll start it up at an URL
-    * that will immediately shut itself down.
-    */
+     * The first time we launch Firefox with an empty profile directory, Firefox will launch itself,
+     * populate the profile directory, then kill/relaunch itself, so our process handle goes out of
+     * date. So, the first time we launch Firefox, we'll start it up at an URL that will immediately
+     * shut itself down.
+     */
     CommandLine command = prepareCommand(browserInstallation.launcherFilePath(),
         "-profile", profilePath,
         "-silent"
-    );
+        );
     command.setDynamicLibraryPath(browserInstallation.libraryPath());
     log.info("Preparing Firefox profile...");
     command.execute();
@@ -125,9 +130,9 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     // don't set the library path on Snow Leopard
     Platform platform = Platform.getCurrent();
     if (!platform.is(Platform.MAC) || ((platform.is(Platform.MAC))
-                                       && platform.getMajorVersion() <= 10
-                                       && platform.getMinorVersion() <= 5)) {
-        command.setDynamicLibraryPath(browserInstallation.libraryPath());
+        && platform.getMajorVersion() <= 10
+        && platform.getMinorVersion() <= 5)) {
+      command.setDynamicLibraryPath(browserInstallation.libraryPath());
     }
 
     return command;
@@ -157,10 +162,11 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
       if (!firefoxProfileTemplate.exists()) {
         throw new RuntimeException(
             "The profile specified '" + firefoxProfileTemplate.getAbsolutePath()
-            + "' does not exist");
+                + "' does not exist");
       }
     } else {
-      firefoxProfileTemplate = BrowserOptions.getFile(browserConfigurationOptions, "firefoxProfileTemplate");
+      firefoxProfileTemplate =
+          BrowserOptions.getFile(browserConfigurationOptions, "firefoxProfileTemplate");
     }
 
     if (firefoxProfileTemplate != null) {
@@ -264,8 +270,8 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
             log.log(Level.SEVERE, "Perhaps caused by this exception:", fileLockException);
           }
           throw new RuntimeException("Couldn't delete custom Firefox " +
-                                     "profile directory, presumably because task kill failed; " +
-                                     "see error LOGGER!", e);
+              "profile directory, presumably because task kill failed; " +
+              "see error LOGGER!", e);
         }
         throw e;
       }
@@ -297,10 +303,10 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   }
 
   /**
-   * Firefox knows it's running by using a "parent.lock" file in
-   * the profile directory.  Wait for this file to go away (and stay gone)
-   *
-   * @param timeout    max time to wait for the file to go away
+   * Firefox knows it's running by using a "parent.lock" file in the profile directory. Wait for
+   * this file to go away (and stay gone)
+   * 
+   * @param timeout max time to wait for the file to go away
    * @param timeToWait minimum time to wait to make sure the file is gone
    * @throws FileLockRemainedException
    */
@@ -319,18 +325,17 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   }
 
   /**
-   * When initializing the profile, Firefox rapidly starts, stops, restarts and
-   * stops again; we need to wait a bit to make sure the file lock is really gone.
-   *
-   * @param lock       the parent.lock file in the profile directory
-   * @param timeToWait minimum time to wait to see if the file shows back
-   *                   up again. This is not a timeout; we will always wait this amount of time or more.
-   * @return true if the file stayed gone for the entire timeToWait; false if the
-   *         file exists (or came back)
+   * When initializing the profile, Firefox rapidly starts, stops, restarts and stops again; we need
+   * to wait a bit to make sure the file lock is really gone.
+   * 
+   * @param lock the parent.lock file in the profile directory
+   * @param timeToWait minimum time to wait to see if the file shows back up again. This is not a
+   *        timeout; we will always wait this amount of time or more.
+   * @return true if the file stayed gone for the entire timeToWait; false if the file exists (or
+   *         came back)
    */
   private boolean makeSureFileLockRemainsGone(File lock, long timeToWait) {
-    for (long start = System.currentTimeMillis();
-         System.currentTimeMillis() < start + timeToWait;) {
+    for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeToWait;) {
       AsyncExecute.sleepTight(500);
       if (lock.exists()) {
         return false;
@@ -340,9 +345,9 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   }
 
   /**
-   * Wait for one of the Firefox-generated files to come into existence, then wait
-   * for Firefox to exit
-   *
+   * Wait for one of the Firefox-generated files to come into existence, then wait for Firefox to
+   * exit
+   * 
    * @param timeout the maximum amount of time to wait for the profile to be created
    */
   private void waitForFullProfileToBeCreated(long timeout) {
@@ -415,4 +420,3 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   }
 
 }
-

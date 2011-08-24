@@ -4,6 +4,6 @@ import org.openqa.selenium.server.CommandQueue;
 
 public interface CommandQueueAware {
 
-    void setCommandQueue(CommandQueue queue);
-    
+  void setCommandQueue(CommandQueue queue);
+
 }

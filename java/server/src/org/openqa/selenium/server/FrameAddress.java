@@ -6,22 +6,27 @@ import java.util.Map;
 public class FrameAddress {
 
   /**
-   * the name of the window according to selenium.  The main window's name is blank.
+   * the name of the window according to selenium. The main window's name is blank.
    */
   private String windowName;
   private String localFrameAddress;
 
 
   /**
-   * FrameAddress objects are used as hash keys in several instances, and therefore it is
-   * important to prevent the allocation of multiple FrameAddress objects corresponding
-   * to the same address.  Use the hash to help enforce this prohibition.
+   * FrameAddress objects are used as hash keys in several instances, and therefore it is important
+   * to prevent the allocation of multiple FrameAddress objects corresponding to the same address.
+   * Use the hash to help enforce this prohibition.
    */
-  static private Map<String, FrameAddress> stringToFrameAddress = new HashMap<String, FrameAddress>();
+  static private Map<String, FrameAddress> stringToFrameAddress =
+      new HashMap<String, FrameAddress>();
 
   private FrameAddress(String windowName, String localFrameAddress) {
-    this.windowName = (windowName != null) ? windowName : FrameGroupCommandQueueSet.DEFAULT_SELENIUM_WINDOW_NAME;
-    this.localFrameAddress = (localFrameAddress != null) ? localFrameAddress : FrameGroupCommandQueueSet.DEFAULT_LOCAL_FRAME_ADDRESS;
+    this.windowName =
+        (windowName != null) ? windowName : FrameGroupCommandQueueSet.DEFAULT_SELENIUM_WINDOW_NAME;
+    this.localFrameAddress =
+        (localFrameAddress != null)
+            ? localFrameAddress
+            : FrameGroupCommandQueueSet.DEFAULT_LOCAL_FRAME_ADDRESS;
   }
 
   static public FrameAddress make(String windowName, String localFrameAddress) {
@@ -56,7 +61,8 @@ public class FrameAddress {
   public boolean equals(Object obj) {
     if (obj instanceof FrameAddress) {
       FrameAddress other = (FrameAddress) obj;
-      return getWindowName().equals(other.getWindowName()) && getLocalFrameAddress().equals(other.getLocalFrameAddress());
+      return getWindowName().equals(other.getWindowName()) &&
+          getLocalFrameAddress().equals(other.getLocalFrameAddress());
     }
     return false;
   }

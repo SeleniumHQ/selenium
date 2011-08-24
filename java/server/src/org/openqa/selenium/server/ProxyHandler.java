@@ -73,7 +73,7 @@ import javax.net.ssl.SSLHandshakeException;
  * make proxy requests.
  * <p/>
  * The HttpTunnel mechanism is also used to implement the CONNECT method.
- *
+ * 
  * @author Greg Wilkins (gregw)
  * @author giacof@tiscali.it (chained proxy)
  * @version $Id: ProxyHandler.java,v 1.34 2005/10/05 13:32:59 gregwilkins Exp $
@@ -134,8 +134,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   /* ------------------------------------------------------------ */
   /**
-   * Map of allows schemes to proxy Should be a set, but more efficient string map is used
-   * instead.
+   * Map of allows schemes to proxy Should be a set, but more efficient string map is used instead.
    */
   protected StringMap _ProxySchemes = new StringMap();
 
@@ -165,7 +164,8 @@ public class ProxyHandler extends AbstractHttpHandler {
     _allowedConnectPorts.add(8443);
   }
 
-  public ProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL, boolean proxyInjectionMode, boolean forceProxyChain, int port) {
+  public ProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL,
+      boolean proxyInjectionMode, boolean forceProxyChain, int port) {
     super();
     this.trustAllSSLCertificates = trustAllSSLCertificates;
     this.dontInjectRegex = dontInjectRegex;
@@ -187,7 +187,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   /**
    * Get proxy host white list.
-   *
+   * 
    * @return Array of hostnames and IPs that are proxied, or an empty array if all hosts are
    *         proxied.
    */
@@ -204,7 +204,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   /**
    * Set proxy host white list.
-   *
+   * 
    * @param hosts Array of hostnames and IPs that are proxied, or null if all hosts are proxied.
    */
   public void setProxyHostsWhiteList(String[] hosts) {
@@ -224,7 +224,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   /**
    * Get proxy host black list.
-   *
+   * 
    * @return Array of hostnames and IPs that are NOT proxied.
    */
   public String[] getProxyHostsBlackList() {
@@ -240,7 +240,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   /**
    * Set proxy host black list.
-   *
+   * 
    * @param hosts Array of hostnames and IPs that are NOT proxied.
    */
   public void setProxyHostsBlackList(String[] hosts) {
@@ -264,16 +264,17 @@ public class ProxyHandler extends AbstractHttpHandler {
   /* ------------------------------------------------------------ */
 
   /**
-   * Tunnel timeout. IE on win2000 has connections issues with normal timeout handling. This
-   * timeout should be set to a low value that will expire to allow IE to see the end of the
-   * tunnel connection.
+   * Tunnel timeout. IE on win2000 has connections issues with normal timeout handling. This timeout
+   * should be set to a low value that will expire to allow IE to see the end of the tunnel
+   * connection.
    */
   public void setTunnelTimeoutMs(int ms) {
     _tunnelTimeoutMs = ms;
   }
 
   /* ------------------------------------------------------------ */
-  public void handle(String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws HttpException, IOException {
+  public void handle(String pathInContext, String pathParams, HttpRequest request,
+      HttpResponse response) throws HttpException, IOException {
     URI uri = request.getURI();
 
     // Is this a CONNECT request?
@@ -318,7 +319,9 @@ public class ProxyHandler extends AbstractHttpHandler {
           "<body style=\"background-color:#F0F0F0; font-family: sans-serif\">" +
           "<div style=\"margin:auto; margin-top: 3em;width:600px; background-color:#FFF; padding:30px;border: 1px solid #DDD\">" +
           "<h1 style=\"font-size: 18px;border-bottom:thin solid #DDD\">Server not found</h1>" +
-          "<p style=\"border-bottom: 1px solid #DDD; padding-bottom: 20px\">Selenium can't find the server at " + host + "</p>" +
+          "<p style=\"border-bottom: 1px solid #DDD; padding-bottom: 20px\">Selenium can't find the server at " +
+          host +
+          "</p>" +
           "<ul style=\"list-style: square outside none;font-size:13px\">" +
           "<li style=\"margin-bottom:6px;\">Check the address for typing errors such as ww.example.com instead of www.example.com</li>" +
           "<li style=\"margin-bottom:6px;\">If you are unable to load any pages, check your computer's network connection.</li>" +
@@ -342,7 +345,9 @@ public class ProxyHandler extends AbstractHttpHandler {
           "<body style=\"background-color:#F0F0F0; font-family: sans-serif\">" +
           "<div style=\"margin:auto; margin-top: 3em;width:600px; background-color:#FFF; padding:30px;border: 1px solid #DDD\">" +
           "<h1 style=\"font-size: 18px;border-bottom:thin solid #DDD\">Unable to connect</h1>" +
-          "<p style=\"border-bottom: 1px solid #DDD; padding-bottom: 20px\">Selenium can't establish a connection to the server at " + host + "</p>" +
+          "<p style=\"border-bottom: 1px solid #DDD; padding-bottom: 20px\">Selenium can't establish a connection to the server at " +
+          host +
+          "</p>" +
           "<ul style=\"list-style: square outside none;font-size:13px\">" +
           "<li style=\"margin-bottom:6px;\">The site could be temporarily unavailable or too busy. Try again in a few moments.</li>" +
           "<li style=\"margin-bottom:6px;\">If you are unable to load any pages, check your computer's network connection.</li>" +
@@ -376,14 +381,18 @@ public class ProxyHandler extends AbstractHttpHandler {
       return false;
     }
 
-    // we do this complex checking because sometimes some sites/pages (such as ominture ads) embed the referrer URL,
-    // which will include selenium stuff, in to the query parameter, which would fake out a simple String.contains()
+    // we do this complex checking because sometimes some sites/pages (such as ominture ads) embed
+    // the referrer URL,
+    // which will include selenium stuff, in to the query parameter, which would fake out a simple
+    // String.contains()
     // call. This method is more robust and will catch this stuff.
     return seleniumServer == nextSlash;
   }
 
-  protected long proxyPlainTextRequest(URL url, String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws IOException {
-    CaptureNetworkTrafficCommand.Entry entry = new CaptureNetworkTrafficCommand.Entry(request.getMethod(), url.toString());
+  protected long proxyPlainTextRequest(URL url, String pathInContext, String pathParams,
+      HttpRequest request, HttpResponse response) throws IOException {
+    CaptureNetworkTrafficCommand.Entry entry =
+        new CaptureNetworkTrafficCommand.Entry(request.getMethod(), url.toString());
     entry.addRequestHeaders(request);
 
     log.fine("PROXY URL=" + url);
@@ -392,8 +401,10 @@ public class ProxyHandler extends AbstractHttpHandler {
     if (System.getProperty("http.proxyHost") != null &&
         System.getProperty("https.proxyHost") == null &&
         "https".equals(url.getProtocol())) {
-      /* Proxy HTTPS connections even if https.proxyHost isn't set because that's
- what Selenium used to do. */
+      /*
+       * Proxy HTTPS connections even if https.proxyHost isn't set because that's what Selenium used
+       * to do.
+       */
       String proxyHost = System.getProperty("http.proxyHost");
       int proxyPort = Integer.getInteger("http.proxyPort");
       InetSocketAddress proxyAddress = new InetSocketAddress(proxyHost, proxyPort);
@@ -419,7 +430,9 @@ public class ProxyHandler extends AbstractHttpHandler {
 
     // check connection header
     String connectionHdr = request.getField(HttpFields.__Connection);
-    if (connectionHdr != null && (connectionHdr.equalsIgnoreCase(HttpFields.__KeepAlive) || connectionHdr.equalsIgnoreCase(HttpFields.__Close)))
+    if (connectionHdr != null &&
+        (connectionHdr.equalsIgnoreCase(HttpFields.__KeepAlive) || connectionHdr
+            .equalsIgnoreCase(HttpFields.__Close)))
       connectionHdr = null;
 
     // copy headers
@@ -472,7 +485,8 @@ public class ProxyHandler extends AbstractHttpHandler {
 
     // a little bit of cache control
     String cache_control = request.getField(HttpFields.__CacheControl);
-    if (cache_control != null && (cache_control.indexOf("no-cache") >= 0 || cache_control.indexOf("no-store") >= 0))
+    if (cache_control != null &&
+        (cache_control.indexOf("no-cache") >= 0 || cache_control.indexOf("no-store") >= 0))
       connection.setUseCaches(false);
 
     // customize Connection
@@ -505,7 +519,9 @@ public class ProxyHandler extends AbstractHttpHandler {
       try {
         code = http.getResponseCode();
       } catch (SSLHandshakeException e) {
-        throw new RuntimeException("Couldn't establish SSL handshake.  Try using trustAllSSLCertificates.\n" + e.getLocalizedMessage(), e);
+        throw new RuntimeException(
+            "Couldn't establish SSL handshake.  Try using trustAllSSLCertificates.\n" +
+                e.getLocalizedMessage(), e);
       }
       response.setStatus(code);
       response.setReason(http.getResponseMessage());
@@ -519,7 +535,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         proxy_in = connection.getInputStream();
       } catch (Exception e) {
         // TODO(simon): Whhaaattt?
-//                LogSupport.ignore(log, e);
+        // LogSupport.ignore(log, e);
         proxy_in = http.getErrorStream();
       }
     }
@@ -533,7 +549,8 @@ public class ProxyHandler extends AbstractHttpHandler {
     String hdr = connection.getHeaderFieldKey(h);
     String val = connection.getHeaderField(h);
     while (hdr != null || val != null) {
-      if (hdr != null && val != null && !_DontProxyHeaders.containsKey(hdr) && (_chained || !_ProxyAuthHeaders.containsKey(hdr)))
+      if (hdr != null && val != null && !_DontProxyHeaders.containsKey(hdr) &&
+          (_chained || !_ProxyAuthHeaders.containsKey(hdr)))
         response.addField(hdr, val);
       h++;
       hdr = connection.getHeaderFieldKey(h);
@@ -542,7 +559,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     if (!_anonymous)
       response.setField("Via", "1.1 (jetty)");
 
-    response.removeField(HttpFields.__ETag); // possible cksum?  Stop caching...
+    response.removeField(HttpFields.__ETag); // possible cksum? Stop caching...
     response.removeField(HttpFields.__LastModified); // Stop caching...
 
     // Handled
@@ -554,7 +571,9 @@ public class ProxyHandler extends AbstractHttpHandler {
       if (proxyInjectionMode && injectableResponse) {
         // check if we should proxy this path based on the dontProxyRegex that can be user-specified
         if (shouldInject(request.getPath())) {
-          bytesCopied = InjectionHelper.injectJavaScript(request, response, proxy_in, response.getOutputStream(), debugURL);
+          bytesCopied =
+              InjectionHelper.injectJavaScript(request, response, proxy_in,
+                  response.getOutputStream(), debugURL);
         } else {
           bytesCopied = ModifiedIO.copy(proxy_in, response.getOutputStream());
         }
@@ -582,13 +601,15 @@ public class ProxyHandler extends AbstractHttpHandler {
   private void adjustRequestForProxyInjection(HttpRequest request, URLConnection connection) {
     request.setState(HttpMessage.__MSG_EDITABLE);
     if (request.containsField("If-Modified-Since")) {
-      // TODO: still need to disable caching?  I want to prevent 304s during this development phase where
+      // TODO: still need to disable caching? I want to prevent 304s during this development phase
+      // where
       // I'm often changing the injection, and so need HTML caching to be absolutely defeated
       request.removeField("If-Modified-Since");
       request.removeField("If-None-Match");
-      connection.setUseCaches(false);  // maybe I don't need the stuff above?
+      connection.setUseCaches(false); // maybe I don't need the stuff above?
     }
-    request.removeField("Accept-Encoding");  // js injection is hard w/ gzip'd data, so try to prevent it ahead of time
+    request.removeField("Accept-Encoding"); // js injection is hard w/ gzip'd data, so try to
+                                            // prevent it ahead of time
     request.setState(HttpMessage.__MSG_RECEIVED);
   }
 
@@ -621,7 +642,8 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   /* ------------------------------------------------------------ */
-  public void handleConnect(String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws HttpException, IOException {
+  public void handleConnect(String pathInContext, String pathParams, HttpRequest request,
+      HttpResponse response) throws HttpException, IOException {
     URI uri = request.getURI();
 
     try {
@@ -629,7 +651,8 @@ public class ProxyHandler extends AbstractHttpHandler {
       InetAddrPort addrPort;
       // When logging, we'll attempt to send messages to hosts that don't exist
       if (uri.toString().endsWith(".selenium.doesnotexist:443")) {
-        // so we have to do set the host to be localhost (you can't new up an IAP with a non-existent hostname)
+        // so we have to do set the host to be localhost (you can't new up an IAP with a
+        // non-existent hostname)
         addrPort = new InetAddrPort(443);
       } else {
         addrPort = new InetAddrPort(uri.toString());
@@ -656,7 +679,8 @@ public class ProxyHandler extends AbstractHttpHandler {
         }
 
         // Create the tunnel
-        HttpTunnel tunnel = newHttpTunnel(request, response, InetAddress.getByName(null), port, timeoutMs);
+        HttpTunnel tunnel =
+            newHttpTunnel(request, response, InetAddress.getByName(null), port, timeoutMs);
 
         if (tunnel != null) {
           // TODO - need to setup semi-busy loop for IE.
@@ -682,12 +706,14 @@ public class ProxyHandler extends AbstractHttpHandler {
     }
   }
 
-  protected SslRelay getSslRelayOrCreateNew(URI uri, InetAddrPort addrPort, HttpServer server) throws Exception {
+  protected SslRelay getSslRelayOrCreateNew(URI uri, InetAddrPort addrPort, HttpServer server)
+      throws Exception {
     SslRelay listener;
     synchronized (_sslMap) {
       listener = _sslMap.get(uri.toString());
       if (listener == null) {
-        // we do this because the URI above doesn't actually have the host broken up (it returns null on getHost())
+        // we do this because the URI above doesn't actually have the host broken up (it returns
+        // null on getHost())
         String host = new URL("https://" + uri.toString()).getHost();
 
         listener = new SslRelay(addrPort);
@@ -707,7 +733,8 @@ public class ProxyHandler extends AbstractHttpHandler {
             if (server.isStarted()) {
               listener.start();
             } else {
-              throw new RuntimeException("Can't start SslRelay: server is not started (perhaps it was just shut down?)");
+              throw new RuntimeException(
+                  "Can't start SslRelay: server is not started (perhaps it was just shut down?)");
             }
           } catch (Exception e) {
             e.printStackTrace();
@@ -721,11 +748,15 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   protected void wireUpSslWithRemoteService(String host, SslRelay listener) throws IOException {
-    // grab a keystore that has been signed by a CA cert that has already been imported in to the browser
-    // note: this logic assumes the tester is using *custom and has imported the CA cert in to IE/Firefox/etc
+    // grab a keystore that has been signed by a CA cert that has already been imported in to the
+    // browser
+    // note: this logic assumes the tester is using *custom and has imported the CA cert in to
+    // IE/Firefox/etc
     // the CA cert can be found at http://dangerous-certificate-authority.openqa.org
     File keystore = File.createTempFile("selenium-rc-" + host, "keystore");
-    String urlString = "http://dangerous-certificate-authority.openqa.org/genkey.jsp?padding=" + _sslMap.size() + "&domain=" + host;
+    String urlString =
+        "http://dangerous-certificate-authority.openqa.org/genkey.jsp?padding=" + _sslMap.size() +
+            "&domain=" + host;
 
     URL url = new URL(urlString);
     URLConnection conn = url.openConnection();
@@ -741,7 +772,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     is.close();
 
     listener.setKeystore(keystore.getAbsolutePath());
-    //listener.setKeystore("c:\\" + (_sslMap.size() + 1) + ".keystore");
+    // listener.setKeystore("c:\\" + (_sslMap.size() + 1) + ".keystore");
     listener.setNukeDirOrFile(keystore);
   }
 
@@ -754,7 +785,9 @@ public class ProxyHandler extends AbstractHttpHandler {
       ResourceExtractor.extractResourcePath(getClass(), "/sslSupport", root);
 
 
-      KeyStoreManager mgr = new KeyStoreManager(root, "http://127.0.0.1:" + port + "/selenium-server/sslSupport/blank_crl.pem");
+      KeyStoreManager mgr =
+          new KeyStoreManager(root, "http://127.0.0.1:" + port +
+              "/selenium-server/sslSupport/blank_crl.pem");
       mgr.getCertificateByHostname(host);
       mgr.getKeyStore().deleteEntry(KeyStoreManager._caPrivKeyAlias);
       mgr.persist();
@@ -767,7 +800,8 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   /* ------------------------------------------------------------ */
-  protected HttpTunnel newHttpTunnel(HttpRequest request, HttpResponse response, InetAddress iaddr, int port, int timeoutMS) throws IOException {
+  protected HttpTunnel newHttpTunnel(HttpRequest request, HttpResponse response, InetAddress iaddr,
+      int port, int timeoutMS) throws IOException {
     try {
       Socket socket = new Socket(iaddr, port);
       socket.setSoTimeout(timeoutMS);
@@ -786,7 +820,8 @@ public class ProxyHandler extends AbstractHttpHandler {
    * Customize proxy Socket connection for CONNECT. Method to allow derived handlers to customize
    * the tunnel sockets.
    */
-  protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request, Socket socket) {
+  protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request,
+      Socket socket) {
   }
 
   /* ------------------------------------------------------------ */
@@ -794,15 +829,15 @@ public class ProxyHandler extends AbstractHttpHandler {
   /**
    * Customize proxy URL connection. Method to allow derived handlers to customize the connection.
    */
-  protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request, URLConnection connection) {
+  protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request,
+      URLConnection connection) {
   }
 
   /* ------------------------------------------------------------ */
 
   /**
-   * Is URL Proxied. Method to allow derived handlers to select which URIs are proxied and to
-   * where.
-   *
+   * Is URL Proxied. Method to allow derived handlers to select which URIs are proxied and to where.
+   * 
    * @param uri The requested URI, which should include a scheme, host and port.
    * @return The URL to proxy to, or null if the passed URI should not be proxied. The default
    *         implementation returns the passed uri if isForbidden() returns true.
@@ -820,7 +855,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   /**
    * Is URL Forbidden.
-   *
+   * 
    * @return True if the URL is not forbidden. Calls isForbidden(scheme,host,port,true);
    */
   protected boolean isForbidden(URI uri) {
@@ -834,10 +869,10 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   /**
    * Is scheme,host & port Forbidden.
-   *
-   * @param scheme           A scheme that mast be in the proxySchemes StringMap.
-   * @param host             A host that must pass the white and black lists
-   * @param port             A port that must in the allowedConnectPorts Set
+   * 
+   * @param scheme A scheme that mast be in the proxySchemes StringMap.
+   * @param host A host that must pass the white and black lists
+   * @param port A port that must in the allowedConnectPorts Set
    * @param openNonPrivPorts If true ports greater than 1024 are allowed.
    * @return True if the request to the scheme,host and port is not forbidden.
    */
@@ -930,7 +965,8 @@ public class ProxyHandler extends AbstractHttpHandler {
       // get "dirty" and be rewritten, potentially breaking the proxy slightly. Instead,
       // create a brand new URI that includes the protocol, the host, and the port, but leaves
       // intact the path + query string "as is" so that it does not get rewritten.
-      request.setURI(new URI("https://" + _addr.getHost() + ":" + _addr.getPort() + uri.toString()));
+      request
+          .setURI(new URI("https://" + _addr.getHost() + ":" + _addr.getPort() + uri.toString()));
     }
 
     public void stop() throws InterruptedException {

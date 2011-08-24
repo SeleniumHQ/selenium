@@ -37,7 +37,8 @@ import java.util.logging.Logger;
 
 public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher {
 
-  private static final Logger log = Logger.getLogger(InternetExplorerCustomProxyLauncher.class.getName());
+  private static final Logger log = Logger.getLogger(InternetExplorerCustomProxyLauncher.class
+      .getName());
 
   private File customProxyPACDir;
   private String[] cmdarray;
@@ -49,14 +50,16 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
   private static boolean alwaysChangeMaxConnections = false;
   protected boolean changeMaxConnections = alwaysChangeMaxConnections;
 
-  public InternetExplorerCustomProxyLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+  public InternetExplorerCustomProxyLauncher(Capabilities browserOptions,
+      RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
     this(browserOptions, configuration, sessionId,
         ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
             "iexplore", browserLaunchLocation, new InternetExplorerLocator()));
   }
 
   public InternetExplorerCustomProxyLauncher(Capabilities browserOptions,
-                                             RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+      RemoteControlConfiguration configuration, String sessionId,
+      BrowserInstallation browserInstallation) {
     super(sessionId, configuration, browserOptions);
     this.browserInstallation = browserInstallation;
     this.wpm = new WindowsProxyManager(true, sessionId, getPort(), getPort());
@@ -89,15 +92,15 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
       killableProcessWrapper = new File(customProxyPACDir, "killableprocess.exe");
       ResourceExtractor.extractResourcePath(InternetExplorerCustomProxyLauncher.class,
           "/killableprocess/killableprocess.exe", killableProcessWrapper);
-      cmdarray = new String[]{
+      cmdarray = new String[] {
           killableProcessWrapper.getAbsolutePath(),
           browserInstallation.launcherFilePath(),
           "-new",
           url
       };
     } else {
-      // DGF IEs4Linux, perhaps?  It could happen!
-      cmdarray = new String[]{
+      // DGF IEs4Linux, perhaps? It could happen!
+      cmdarray = new String[] {
           browserInstallation.launcherFilePath(),
           url
       };
@@ -133,8 +136,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
           log.log(Level.SEVERE, "Perhaps IE proxy delete error was caused by this exception",
               taskKillException);
           throw new RuntimeException("Couldn't delete custom IE " +
-                                     "proxy directory, presumably because task kill failed; " +
-                                     "see error log!", e);
+              "proxy directory, presumably because task kill failed; " +
+              "see error log!", e);
         }
         throw e;
       }

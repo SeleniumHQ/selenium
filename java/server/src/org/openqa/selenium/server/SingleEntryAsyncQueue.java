@@ -25,12 +25,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 /**
- * <p>Holds the command to be next run in the browser</p>
+ * <p>
+ * Holds the command to be next run in the browser
+ * </p>
  * <p/>
- * This class uses reentrant locks in order to allow the same
- * thread to populate the queue as is waiting for it, which is
- * what currently happens on during browser startup.
- *
+ * This class uses reentrant locks in order to allow the same thread to populate the queue as is
+ * waiting for it, which is what currently happens on during browser startup.
+ * 
  * @author Jennifer Bevan
  * @version $Revision: 734 $
  */
@@ -104,9 +105,9 @@ public class SingleEntryAsyncQueue<T> {
   }
 
   /**
-   * Clears the contents of the holder (if any) and also
-   * feeds 'poison' data a pending listener (if any);
-   *
+   * Clears the contents of the holder (if any) and also feeds 'poison' data a pending listener (if
+   * any);
+   * 
    * @return true if poison was set and sent to any listeners.
    */
   protected boolean poisonPollers() {
@@ -114,7 +115,7 @@ public class SingleEntryAsyncQueue<T> {
       holder.clear();
       return false;
     }
-    // offer poison content.  If something is already there,
+    // offer poison content. If something is already there,
     // then the next listener will already have something to get.
     putContent(poisonData.get());
     return true;

@@ -1,4 +1,5 @@
 package org.openqa.selenium.server;
+
 /*
  * HtmlIdentifier: a module to identify HTML (and in so doing determine whether it should be
  * injected with selenium JavaScript when running in proxy injection mode).
@@ -44,16 +45,20 @@ public class HtmlIdentifier {
   private static final int INJECTION_THRESHOLD = 200;
 
   static {
-    rules.add(new ExtensionRule(new String[]{"html", "htm"}, 10000));
-    rules.add(new ExtensionRule(new String[]{"jsp", "asp", "php", "pl"}, 100));
-    // ebay dll contains HTML snippets which fool InjectionHelper.  -nas
-    rules.add(new ExtensionRule(new String[]{"dll", "js"}, -1000));
-    rules.add(new ExtensionRule(new String[]{"gif", "ico", "jpg", "jpeg", "png", "dwr", "swf"}, -10000));
+    rules.add(new ExtensionRule(new String[] {"html", "htm"}, 10000));
+    rules.add(new ExtensionRule(new String[] {"jsp", "asp", "php", "pl"}, 100));
+    // ebay dll contains HTML snippets which fool InjectionHelper. -nas
+    rules.add(new ExtensionRule(new String[] {"dll", "js"}, -1000));
+    rules.add(new ExtensionRule(new String[] {"gif", "ico", "jpg", "jpeg", "png", "dwr", "swf"},
+        -10000));
     rules.add(new ContentRule("<html", 1000, -100));
-    rules.add(new ContentRule("<head", 500, -100)); // http://drudgereport.com doesn't have <html>, but rather starts with <head>
+    rules.add(new ContentRule("<head", 500, -100)); // http://drudgereport.com doesn't have <html>,
+                                                    // but rather starts with <head>
     rules.add(new ContentRule("<!DOCTYPE html", 1000, -100));
     rules.add(new ContentTypeRule("text/html", 100, -1000));
-    rules.add(new ContentTypeRule("application/java-archive", -20000, 0)); // jars are zips, often containing <html> fragments
+    rules.add(new ContentTypeRule("application/java-archive", -20000, 0)); // jars are zips, often
+                                                                           // containing <html>
+                                                                           // fragments
     rules.add(new Rule("dojo catcher", -100000, 0) {
       public int score(String path, String contentType, String contentPreview) {
 
@@ -82,7 +87,8 @@ public class HtmlIdentifier {
       score += scoreDelta;
     }
     boolean shouldInject = (score > INJECTION_THRESHOLD);
-    log.fine("    total : " + score + ">" + INJECTION_THRESHOLD + "?  (should " + (shouldInject ? "" : "not ") + "inject)");
+    log.fine("    total : " + score + ">" + INJECTION_THRESHOLD + "?  (should " +
+        (shouldInject ? "" : "not ") + "inject)");
     return shouldInject;
   }
 

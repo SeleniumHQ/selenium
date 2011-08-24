@@ -39,21 +39,18 @@ import java.util.logging.Logger;
 /**
  * Future File Resource.
  * <p/>
- * DGF This is as per the standard Jetty FileResource, but its
- * constructor is private, so I've copied-and-pasted it rather than
- * extending it.  It's just like the regular FileResource, but it
- * always claims its lastModified date is in the future, to prevent
- * caching.
+ * DGF This is as per the standard Jetty FileResource, but its constructor is private, so I've
+ * copied-and-pasted it rather than extending it. It's just like the regular FileResource, but it
+ * always claims its lastModified date is in the future, to prevent caching.
  * <p/>
- * Handle resources of implied or explicit file type.
- * This class can check for aliasing in the filesystem (eg case
- * insensitivity).  By default this is turned on if the platform does
- * not have the "/" path separator, or it can be controlled with the
+ * Handle resources of implied or explicit file type. This class can check for aliasing in the
+ * filesystem (eg case insensitivity). By default this is turned on if the platform does not have
+ * the "/" path separator, or it can be controlled with the
  * "org.openqa.jetty.util.FileResource.checkAliases" system parameter.
  * <p/>
- * If alias checking is turned on, then aliased resources are
- * treated as if they do not exist, nor can they be created.
- *
+ * If alias checking is turned on, then aliased resources are treated as if they do not exist, nor
+ * can they be created.
+ * 
  * @author Greg Wilkins (gregw)
  * @version $Revision: 1.31 $
  */
@@ -79,8 +76,9 @@ public class FutureFileResource extends URLResource {
 
   /**
    * setCheckAliases.
-   *
-   * @param checkAliases True of resource aliases are to be checked for (eg case insensitivity or 8.3 short names) and treated as not found.
+   * 
+   * @param checkAliases True of resource aliases are to be checked for (eg case insensitivity or
+   *        8.3 short names) and treated as not found.
    */
   public static void setCheckAliases(boolean checkAliases) {
     __checkAliases = checkAliases;
@@ -90,8 +88,9 @@ public class FutureFileResource extends URLResource {
 
   /**
    * getCheckAliases.
-   *
-   * @return True of resource aliases are to be checked for (eg case insensitivity or 8.3 short names) and treated as not found.
+   * 
+   * @return True of resource aliases are to be checked for (eg case insensitivity or 8.3 short
+   *         names) and treated as not found.
    */
   public static boolean getCheckAliases() {
     return __checkAliases;
@@ -107,7 +106,7 @@ public class FutureFileResource extends URLResource {
       _file = new File(new URI(url.toString()));
     } catch (Exception e) {
       // TODO(simon): Why?
-//            LogSupport.ignore(log,e);
+      // LogSupport.ignore(log,e);
       try {
         // Assume that File.toURL produced unencoded chars. So try
         // encoding them.
@@ -116,9 +115,9 @@ public class FutureFileResource extends URLResource {
         _file = new File(new URI(urls));
       } catch (Exception e2) {
         // TODO(simon): Why?
-//                LogSupport.ignore(log,e2);
+        // LogSupport.ignore(log,e2);
 
-        // Still can't get the file.  Doh! try good old hack!
+        // Still can't get the file. Doh! try good old hack!
         checkConnection();
         Permission perm = _connection.getPermission();
         _file = new File(perm == null ? url.getFile() : perm.getName());
@@ -204,8 +203,7 @@ public class FutureFileResource extends URLResource {
   /* -------------------------------------------------------- */
 
   /**
-   * Returns the lastModified time, which is always in the distant future to
-   * prevent caching.
+   * Returns the lastModified time, which is always in the distant future to prevent caching.
    */
   public long lastModified() {
     return System.currentTimeMillis() + (1000l * 3600l * 24l * 365l * 12l);
@@ -242,8 +240,7 @@ public class FutureFileResource extends URLResource {
   /* ------------------------------------------------------------ */
 
   /**
-   * Returns an File representing the given resource or NULL if this
-   * is not possible.
+   * Returns an File representing the given resource or NULL if this is not possible.
    */
   public File getFile() {
     return _file;
@@ -301,7 +298,7 @@ public class FutureFileResource extends URLResource {
     String[] list = _file.list();
     if (list == null)
       return null;
-    for (int i = list.length; i-- > 0; ) {
+    for (int i = list.length; i-- > 0;) {
       if (new File(_file, list[i]).isDirectory() &&
           !list[i].endsWith("/"))
         list[i] += "/";
@@ -312,9 +309,8 @@ public class FutureFileResource extends URLResource {
   /* ------------------------------------------------------------ */
 
   /**
-   * Encode according to this resource type.
-   * File URIs are encoded.
-   *
+   * Encode according to this resource type. File URIs are encoded.
+   * 
    * @param uri URI to encode.
    * @return The uri unchanged.
    */
