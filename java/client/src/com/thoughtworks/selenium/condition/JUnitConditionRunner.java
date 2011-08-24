@@ -24,41 +24,40 @@ import junit.framework.Assert;
 /**
  * {@inhreritDoc}
  * <p/>
- * This class throws an {@link junit.framework.AssertionFailedError} when
- * the condition is not met.
+ * This class throws an {@link junit.framework.AssertionFailedError} when the condition is not met.
  */
 public class JUnitConditionRunner extends DefaultConditionRunner {
 
-    public JUnitConditionRunner(Monitor monitor, Selenium selenium, int initialDelay,
-                                int interval, int timeout) {
-        super(monitor, selenium, initialDelay, interval, timeout);
-    }
+  public JUnitConditionRunner(Monitor monitor, Selenium selenium, int initialDelay,
+      int interval, int timeout) {
+    super(monitor, selenium, initialDelay, interval, timeout);
+  }
 
-    public JUnitConditionRunner(Monitor monitor, Selenium selenium, int interval,
-                                int timeout) {
-        super(monitor, selenium, interval, timeout);
-    }
+  public JUnitConditionRunner(Monitor monitor, Selenium selenium, int interval,
+      int timeout) {
+    super(monitor, selenium, interval, timeout);
+  }
 
-    public JUnitConditionRunner(Selenium selenium, int initialDelay, int interval, int timeout) {
-        super(selenium, initialDelay, interval, timeout);
-    }
+  public JUnitConditionRunner(Selenium selenium, int initialDelay, int interval, int timeout) {
+    super(selenium, initialDelay, interval, timeout);
+  }
 
-    public JUnitConditionRunner(Selenium selenium, int interval, int timeout) {
-        super(selenium, interval, timeout);
-    }
+  public JUnitConditionRunner(Selenium selenium, int interval, int timeout) {
+    super(selenium, interval, timeout);
+  }
 
-    public JUnitConditionRunner(Selenium selenium) {
-        super(selenium);
-    }
+  public JUnitConditionRunner(Selenium selenium) {
+    super(selenium);
+  }
 
-    public void throwAssertionException(String message) {
-        Assert.fail(message);
-    }
+  public void throwAssertionException(String message) {
+    Assert.fail(message);
+  }
 
-    public void throwAssertionException(String message, Throwable cause) {
-        String causeText = cause.getMessage();
-        Assert.fail(message + (causeText == null ? "" : "; cause: " + causeText));
-    }
+  public void throwAssertionException(String message, Throwable cause) {
+    String causeText = cause.getMessage();
+    Assert.fail(message + (causeText == null ? "" : "; cause: " + causeText));
+  }
 
 
 }

@@ -20,10 +20,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Simple predicate class, which also knows how to wait for the condition to be true.
- * Used by Selenium tests.
+ * Simple predicate class, which also knows how to wait for the condition to be true. Used by
+ * Selenium tests.
  * <p/>
- * <p>Conditions have two basic properties:
+ * <p>
+ * Conditions have two basic properties:
  * <p/>
  * <ul>
  * <li>a message (purely used for displaying purposes)
@@ -33,87 +34,87 @@ import java.lang.reflect.Method;
  */
 public abstract class Condition {
 
-    private final String message;
+  private final String message;
 
-    public abstract boolean isTrue(ConditionRunner.Context runner);
+  public abstract boolean isTrue(ConditionRunner.Context runner);
 
-    /**
-     * Creates an instance of Condition with is canonical name as message
-     */
-    public Condition() {
-        this.message = getClass().getCanonicalName();
+  /**
+   * Creates an instance of Condition with is canonical name as message
+   */
+  public Condition() {
+    this.message = getClass().getCanonicalName();
+  }
+
+  /**
+   * Creates an instance of Condition with the given {@code message} and {@code args}, which are in
+   * the {@link String#format(String, Object...)} modeal.
+   */
+  public Condition(String message, Object[] args) {
+    if (null == message) {
+      throw new NullPointerException("Condition names must not be null");
     }
+    // this.message = String.format(message, args);
+    this.message = simulateStringDotFormatMethod(message, args);
+  }
 
-    /**
-     * Creates an instance of Condition with the given {@code message} and
-     * {@code args}, which are in the {@link String#format(String, Object...)}
-     * modeal.
-     */
-    public Condition(String message, Object[] args) {
-        if (null == message) {
-            throw new NullPointerException("Condition names must not be null");
+  private String simulateStringDotFormatMethod(String message, Object[] args) {
+    int vers = Integer.parseInt(System.getProperty("java.class.version").substring(0, 2));
+    if (vers >= 49) {
+      try {
+        Method format =
+            String.class.getMethod("format", new Class[] {String.class, Object[].class});
+        return (String) format.invoke(null, new Object[] {message, args});
+      } catch (NoSuchMethodException e) {
+      } catch (IllegalAccessException e) {
+      } catch (InvocationTargetException e) {
+        Throwable throwable = e.getCause();
+        if (throwable instanceof RuntimeException) {
+          throw (RuntimeException) throwable;
         }
-        // this.message = String.format(message, args);
-        this.message = simulateStringDotFormatMethod(message, args);
-    }
-
-    private String simulateStringDotFormatMethod(String message, Object[] args) {
-        int vers = Integer.parseInt(System.getProperty("java.class.version").substring(0, 2));
-        if (vers >= 49) {
-            try {
-                Method format = String.class.getMethod("format", new Class[]{String.class, Object[].class});
-                return (String) format.invoke(null, new Object[]{message, args});
-            } catch (NoSuchMethodException e) {
-            } catch (IllegalAccessException e) {
-            } catch (InvocationTargetException e) {
-                Throwable throwable = e.getCause();
-                if (throwable instanceof RuntimeException) {
-                    throw (RuntimeException) throwable;
-                }
-            }
-            throw new RuntimeException("String.format(..) can't be that hard to call");
-        } else {
-            String msg = "";
-            msg = message;
-            for (int i = 0; i < args.length; i++) {
-                msg = msg + " " + args[i];
-            }
-            return msg;
-
-        }
+      }
+      throw new RuntimeException("String.format(..) can't be that hard to call");
+    } else {
+      String msg = "";
+      msg = message;
+      for (int i = 0; i < args.length; i++) {
+        msg = msg + " " + args[i];
+      }
+      return msg;
 
     }
 
-    // drop these for var-args in another year.
-    public Condition(String message) {
-        this(message, new Object[0]);
-    }
+  }
 
-    public Condition(String message, Object arg) {
-        this(message, new Object[]{arg});
-    }
+  // drop these for var-args in another year.
+  public Condition(String message) {
+    this(message, new Object[0]);
+  }
 
-    public Condition(String message, Object arg0, Object arg1) {
-        this(message, new Object[]{arg0, arg1});
-    }
+  public Condition(String message, Object arg) {
+    this(message, new Object[] {arg});
+  }
 
-    public Condition(String message, Object arg0, Object arg1, Object arg2) {
-        this(message, new Object[]{arg0, arg1, arg2});
-    }
+  public Condition(String message, Object arg0, Object arg1) {
+    this(message, new Object[] {arg0, arg1});
+  }
 
-    public Condition(String message, Object arg0, Object arg1, Object arg2, Object arg3) {
-        this(message, new Object[]{arg0, arg1, arg2, arg3});
-    }
+  public Condition(String message, Object arg0, Object arg1, Object arg2) {
+    this(message, new Object[] {arg0, arg1, arg2});
+  }
 
-    public Condition(String message, Object arg0, Object arg1, Object arg2, Object arg3, Object arg4) {
-        this(message, new Object[]{arg0, arg1, arg2, arg3, arg4});
-    }
+  public Condition(String message, Object arg0, Object arg1, Object arg2, Object arg3) {
+    this(message, new Object[] {arg0, arg1, arg2, arg3});
+  }
 
-    public String getMessage() {
-        return toString();
-    }
+  public Condition(String message, Object arg0, Object arg1, Object arg2, Object arg3, Object arg4) {
+    this(message, new Object[] {arg0, arg1, arg2, arg3, arg4});
+  }
 
-    public String toString() {
-        return "Condition \"" + this.message + "\"";
-    }
+  public String getMessage() {
+    return toString();
+  }
+
+  public String toString() {
+    return "Condition \"" + this.message + "\"";
+  }
 }

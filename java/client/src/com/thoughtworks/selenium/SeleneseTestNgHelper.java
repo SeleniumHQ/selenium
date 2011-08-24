@@ -81,32 +81,32 @@ public class SeleneseTestNgHelper extends SeleneseTestBase {
     super.tearDown();
   }
 
-  //@Override static method of super class (which assumes JUnit conventions)
+  // @Override static method of super class (which assumes JUnit conventions)
   public static void assertEquals(Object actual, Object expected) {
     SeleneseTestBase.assertEquals(expected, actual);
   }
 
-  //@Override static method of super class (which assumes JUnit conventions)
+  // @Override static method of super class (which assumes JUnit conventions)
   public static void assertEquals(String actual, String expected) {
     SeleneseTestBase.assertEquals(expected, actual);
   }
 
-  //@Override static method of super class (which assumes JUnit conventions)
+  // @Override static method of super class (which assumes JUnit conventions)
   public static void assertEquals(String actual, String[] expected) {
     SeleneseTestBase.assertEquals(expected, actual);
   }
 
-  //@Override static method of super class (which assumes JUnit conventions)
+  // @Override static method of super class (which assumes JUnit conventions)
   public static void assertEquals(String[] actual, String[] expected) {
     SeleneseTestBase.assertEquals(expected, actual);
   }
 
-  //@Override static method of super class (which assumes JUnit conventions)
+  // @Override static method of super class (which assumes JUnit conventions)
   public static boolean seleniumEquals(Object actual, Object expected) {
     return SeleneseTestBase.seleniumEquals(expected, actual);
   }
 
-  //@Override static method of super class (which assumes JUnit conventions)
+  // @Override static method of super class (which assumes JUnit conventions)
   public static boolean seleniumEquals(String actual, String expected) {
     return SeleneseTestBase.seleniumEquals(expected, actual);
   }

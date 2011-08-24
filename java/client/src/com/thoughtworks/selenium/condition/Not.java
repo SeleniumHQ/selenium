@@ -18,19 +18,19 @@
 package com.thoughtworks.selenium.condition;
 
 /**
- * Simple predicate class, which also knows how to wait for its condition to be true.
- * Used by Selenium tests. A "Not" is the inverse of any other Condition.
+ * Simple predicate class, which also knows how to wait for its condition to be true. Used by
+ * Selenium tests. A "Not" is the inverse of any other Condition.
  */
 public class Not extends Condition {
-    private Condition positiveCondition;
+  private Condition positiveCondition;
 
-    public Not(Condition positiveCondition) {
-        super("NOT of (" + positiveCondition.getMessage() + ")");
-        this.positiveCondition = positiveCondition;
-    }
+  public Not(Condition positiveCondition) {
+    super("NOT of (" + positiveCondition.getMessage() + ")");
+    this.positiveCondition = positiveCondition;
+  }
 
-    public boolean isTrue(ConditionRunner.Context context) {
-        return !positiveCondition.isTrue(context);
-    }
+  public boolean isTrue(ConditionRunner.Context context) {
+    return !positiveCondition.isTrue(context);
+  }
 
 }

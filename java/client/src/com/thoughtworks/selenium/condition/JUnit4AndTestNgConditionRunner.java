@@ -22,42 +22,42 @@ import com.thoughtworks.selenium.Selenium;
 /**
  * {@inhreritDoc}
  * <p/>
- * This class throws an {@link java.lang.AssertionError} when
- * the condition is not met - the same as JUnit4 and TestNG do.
+ * This class throws an {@link java.lang.AssertionError} when the condition is not met - the same as
+ * JUnit4 and TestNG do.
  */
 public class JUnit4AndTestNgConditionRunner extends DefaultConditionRunner {
 
-    public JUnit4AndTestNgConditionRunner(Monitor monitor, Selenium selenium, int initialDelay,
-                                          int interval, int timeout) {
-        super(monitor, selenium, initialDelay, interval, timeout);
-    }
+  public JUnit4AndTestNgConditionRunner(Monitor monitor, Selenium selenium, int initialDelay,
+      int interval, int timeout) {
+    super(monitor, selenium, initialDelay, interval, timeout);
+  }
 
-    public JUnit4AndTestNgConditionRunner(Monitor monitor, Selenium selenium, int interval,
-                                int timeout) {
-        super(monitor, selenium, interval, timeout);
-    }
+  public JUnit4AndTestNgConditionRunner(Monitor monitor, Selenium selenium, int interval,
+      int timeout) {
+    super(monitor, selenium, interval, timeout);
+  }
 
-    public JUnit4AndTestNgConditionRunner(Selenium selenium, int initialDelay, int interval, 
-                                          int timeout) {
-        super(selenium, initialDelay, interval, timeout);
-    }
+  public JUnit4AndTestNgConditionRunner(Selenium selenium, int initialDelay, int interval,
+      int timeout) {
+    super(selenium, initialDelay, interval, timeout);
+  }
 
-    public JUnit4AndTestNgConditionRunner(Selenium selenium, int interval, int timeout) {
-        super(selenium, interval, timeout);
-    }
+  public JUnit4AndTestNgConditionRunner(Selenium selenium, int interval, int timeout) {
+    super(selenium, interval, timeout);
+  }
 
-    public JUnit4AndTestNgConditionRunner(Selenium selenium) {
-        super(selenium);
-    }
+  public JUnit4AndTestNgConditionRunner(Selenium selenium) {
+    super(selenium);
+  }
 
-    public void throwAssertionException(String message) {
-        // same as Junit4's and TestNG's fail(..) methods.
-        throw new AssertionError(message);
-    }
+  public void throwAssertionException(String message) {
+    // same as Junit4's and TestNG's fail(..) methods.
+    throw new AssertionError(message);
+  }
 
-    public void throwAssertionException(String message, Throwable cause) {
-        // same as Junit4's and TestNG's fail(..) methods.
-        throw new AssertionError(message + "; cause: " + cause.getMessage());
-    }
+  public void throwAssertionException(String message, Throwable cause) {
+    // same as Junit4's and TestNG's fail(..) methods.
+    throw new AssertionError(message + "; cause: " + cause.getMessage());
+  }
 
 }

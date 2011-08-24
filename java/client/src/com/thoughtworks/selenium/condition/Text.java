@@ -18,39 +18,38 @@
 package com.thoughtworks.selenium.condition;
 
 /**
- * Checks whether text exists either anywhere on the page, or inside a
- * given locator.
+ * Checks whether text exists either anywhere on the page, or inside a given locator.
  */
 public class Text extends Condition {
-    private final String locator;
-    private final String expectedText;
+  private final String locator;
+  private final String expectedText;
 
-    /**
-     * Look for text anywhere on the page.
-     *
-     * @param expectedText text we're looking for
-     */
-    public Text(String expectedText) {
-        this(expectedText, null);
-    }
+  /**
+   * Look for text anywhere on the page.
+   * 
+   * @param expectedText text we're looking for
+   */
+  public Text(String expectedText) {
+    this(expectedText, null);
+  }
 
-    /**
-     * Look for text inside a given locator.
-     *
-     * @param expectedText text we're looking for
-     * @param locator      Selenium locator
-     */
-    public Text(String expectedText, String locator) {
-        super("Expecting text " + expectedText + (null == locator ? "" : " in " + locator));
-        this.locator = locator;
-        this.expectedText = expectedText;
-    }
+  /**
+   * Look for text inside a given locator.
+   * 
+   * @param expectedText text we're looking for
+   * @param locator Selenium locator
+   */
+  public Text(String expectedText, String locator) {
+    super("Expecting text " + expectedText + (null == locator ? "" : " in " + locator));
+    this.locator = locator;
+    this.expectedText = expectedText;
+  }
 
-    public boolean isTrue(ConditionRunner.Context context) {
-        if (null == locator) {
-            return context.getSelenium().isTextPresent(expectedText);
-        } else {
-            return context.getSelenium().getText(locator).equalsIgnoreCase(expectedText);
-        }
+  public boolean isTrue(ConditionRunner.Context context) {
+    if (null == locator) {
+      return context.getSelenium().isTextPresent(expectedText);
+    } else {
+      return context.getSelenium().getText(locator).equalsIgnoreCase(expectedText);
     }
+  }
 }

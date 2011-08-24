@@ -21,17 +21,17 @@ package com.thoughtworks.selenium.condition;
  * Checks whether a given locator exists on the page.
  */
 public class Presence extends Condition {
-    private final String locator;
+  private final String locator;
 
-    /**
-     * @param locator the element which must be present
-     */
-    public Presence(String locator) {
-        super(locator + " is present");
-        this.locator = locator;
-    }
+  /**
+   * @param locator the element which must be present
+   */
+  public Presence(String locator) {
+    super(locator + " is present");
+    this.locator = locator;
+  }
 
-    public boolean isTrue(ConditionRunner.Context context) {
-        return context.getSelenium().isElementPresent(locator);
-    }
+  public boolean isTrue(ConditionRunner.Context context) {
+    return context.getSelenium().isElementPresent(locator);
+  }
 }
