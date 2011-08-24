@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.net;
 
@@ -58,16 +58,17 @@ public class PortProber {
     };
   }
 
-    /**
-     * Returns a port that is within a probable free range.
-     *
-     * Based on the ports in http://en.wikipedia.org/wiki/Ephemeral_ports, this method stays away from
-     * all well-known ephemeral port ranges, since they can arbitrarily race with the operating
-     * system in allocations. Due to the port-greedy nature of selenium this happens fairly frequently.
-     * Staying within the known safe range increases the probability tests will run green quite significantly.
-     *
-     * @return a random port number
-     */
+  /**
+   * Returns a port that is within a probable free range.
+   * 
+   * Based on the ports in http://en.wikipedia.org/wiki/Ephemeral_ports, this method stays away from
+   * all well-known ephemeral port ranges, since they can arbitrarily race with the operating system
+   * in allocations. Due to the port-greedy nature of selenium this happens fairly frequently.
+   * Staying within the known safe range increases the probability tests will run green quite
+   * significantly.
+   * 
+   * @return a random port number
+   */
   private static int createAcceptablePort() {
     synchronized (random) {
       int seed = random.nextInt();

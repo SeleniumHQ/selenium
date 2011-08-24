@@ -9,7 +9,7 @@ import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Matcher to match a selected element (e.g. a radio button).
- *
+ * 
  * @author rchatley (Robert Chatley)
  */
 public class SelectionMatcher extends TypeSafeMatcher<WebElement> {

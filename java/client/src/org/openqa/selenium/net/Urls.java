@@ -1,4 +1,3 @@
-
 package org.openqa.selenium.net;
 
 import org.openqa.selenium.WebDriverException;
@@ -13,9 +12,8 @@ public class Urls {
   private static Logger log = Logger.getLogger(Urls.class.getName());
 
   /**
-   * Strips the specified URL so it only includes a protocal, hostname and
-   * port
-   *
+   * Strips the specified URL so it only includes a protocal, hostname and port
+   * 
    * @throws java.net.MalformedURLException
    */
   public static String toProtocolHostAndPort(String url) {
@@ -23,8 +21,10 @@ public class Urls {
       URL u = new URL(url);
       String path = u.getPath();
       if (path != null && !"".equals(path) && !path.endsWith("/")) {
-        log.warning("It looks like your baseUrl (" + url
-                 + ") is pointing to a file, not a directory (it doesn't end with a /).  We're going to have to strip off the last part of the pathname.");
+        log.warning("It looks like your baseUrl (" +
+            url
+            +
+            ") is pointing to a file, not a directory (it doesn't end with a /).  We're going to have to strip off the last part of the pathname.");
       }
       return u.getProtocol() + "://" + u.getAuthority();
     } catch (MalformedURLException e) {
@@ -34,7 +34,7 @@ public class Urls {
 
   /**
    * Encodes the text as an URL using UTF-8.
-   *
+   * 
    * @param value the text too encode
    * @return the encoded URI string
    * @see URLEncoder#encode(java.lang.String, java.lang.String)

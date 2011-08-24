@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package org.openqa.selenium.net;
 
 import org.openqa.selenium.Platform;
@@ -46,35 +46,36 @@ public class NetworkUtils {
   }
 
   /**
-   * Used by the mobile emulators that refuse to access localhost or 127.0.0.1
-   * The ip4/ip6 requirements of this method are as-of-yet unspecified, but we return
-   * the string that is associated with the ip4 interface
-   *
+   * Used by the mobile emulators that refuse to access localhost or 127.0.0.1 The ip4/ip6
+   * requirements of this method are as-of-yet unspecified, but we return the string that is
+   * associated with the ip4 interface
+   * 
    * @return
    */
   public String getNonLoopbackAddressOfThisMachine() {
     return getIp4NonLoopbackAddressOfThisMachine().getHostName();
   }
 
-    /**
-     * Returns a non-loopback ip4 hostname of the local host.
-     *
-     * @return A string hostName
-     */
-    public INetAddress getIp4NonLoopbackAddressOfThisMachine() {
-      for (NetworkInterface iface : networkInterfaceProvider.getNetworkInterfaces()) {
-        final INetAddress ip4NonLoopback = iface.getIp4NonLoopBackOnly();
-        if (ip4NonLoopback != null) {
-          return ip4NonLoopback;
-        }
+  /**
+   * Returns a non-loopback ip4 hostname of the local host.
+   * 
+   * @return A string hostName
+   */
+  public INetAddress getIp4NonLoopbackAddressOfThisMachine() {
+    for (NetworkInterface iface : networkInterfaceProvider.getNetworkInterfaces()) {
+      final INetAddress ip4NonLoopback = iface.getIp4NonLoopBackOnly();
+      if (ip4NonLoopback != null) {
+        return ip4NonLoopback;
       }
-      throw new WebDriverException("Could not find a non-loopback ip4 address for this machine");
     }
+    throw new WebDriverException("Could not find a non-loopback ip4 address for this machine");
+  }
 
   /**
    * Returns a single address that is guaranteed to resolve to an ipv4 representation of localhost
-   * This may either be a hostname or an ip address, dependending if we can guarantee what that the hostname will resolve to ip4.
-   *
+   * This may either be a hostname or an ip address, dependending if we can guarantee what that the
+   * hostname will resolve to ip4.
+   * 
    * @return The address part og such an address
    */
   public String obtainLoopbackIp4Address() {
@@ -100,7 +101,8 @@ public class NetworkUtils {
 
     throw new WebDriverException(
         "Unable to resolve local loopback address, please file an issue with the full message of this error:\n"
-        + getNetWorkDiags() + "\n==== End of error message");
+            +
+            getNetWorkDiags() + "\n==== End of error message");
   }
 
 

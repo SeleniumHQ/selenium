@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 public class ProcessUtils {
   /**
    * Waits the specified timeout for the process to die
-   *
+   * 
    * @param p The process to kill.
    * @param timeout How long to wait in milliseconds.
    * @return The exit code of the given process.
@@ -41,7 +41,7 @@ public class ProcessUtils {
 
   /**
    * Forcibly kills a process, using OS tools like "kill" as a last resort
-   *
+   * 
    * @param process The process to kill.
    * @return The exit value of the process.
    */
@@ -101,7 +101,7 @@ public class ProcessUtils {
 
   /**
    * Runs "kill -9" on the specified pid
-   *
+   * 
    * @param pid The PID of the process to kill.
    * @throws IOException If unable to kill the process.
    * @throws InterruptedException If unable to kill the process.
@@ -120,7 +120,7 @@ public class ProcessUtils {
 
   /**
    * Runs "kill -9" on the specified process
-   *
+   * 
    * @param p The process to kill.
    * @throws IOException If unable to kill the process.
    * @throws InterruptedException If unable to kill the process.

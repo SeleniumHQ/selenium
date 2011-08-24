@@ -9,7 +9,7 @@ import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Matches the value of an element, for example an input field.
- *
+ * 
  * @author rchatley (Robert Chatley)
  */
 public class ValueMatcher extends TypeSafeMatcher<WebElement> {

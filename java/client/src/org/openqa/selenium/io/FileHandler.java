@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 // Copyright 2008 Google Inc.  All Rights Reserved.
 
@@ -63,7 +63,8 @@ public class FileHandler {
     }
   }
 
-  private static InputStream locateResource(Class<?> forClassLoader, String name) throws IOException {
+  private static InputStream locateResource(Class<?> forClassLoader, String name)
+      throws IOException {
     String arch = System.getProperty("os.arch").toLowerCase() + "/";
     String[] alternatives = {name, "/" + name, arch + name, "/" + arch + name};
 
@@ -113,7 +114,7 @@ public class FileHandler {
     } else if (CHMOD_SETWRITABLE != null) {
       try {
         Process process = Runtime.getRuntime().exec(
-            new String[]{CHMOD_SETWRITABLE.getAbsolutePath(), "+x", file.getAbsolutePath()});
+            new String[] {CHMOD_SETWRITABLE.getAbsolutePath(), "+x", file.getAbsolutePath()});
         process.waitFor();
         return file.canWrite();
       } catch (InterruptedException e1) {
@@ -176,7 +177,7 @@ public class FileHandler {
     }
   }
 
-  private static void copyFile(File from, File to, Filter onlyCopy) throws IOException{
+  private static void copyFile(File from, File to, Filter onlyCopy) throws IOException {
     if (!onlyCopy.isRequired(from)) {
       return;
     }
@@ -199,8 +200,7 @@ public class FileHandler {
   }
 
   /**
-   * File.setWritable appears in Java 6. If we find the method,
-   * we can use it
+   * File.setWritable appears in Java 6. If we find the method, we can use it
    */
   private static Method findJdk6SetWritableMethod() {
     try {
@@ -261,7 +261,7 @@ public class FileHandler {
     try {
       reader = new BufferedReader(new FileReader(toRead));
       StringBuilder builder = new StringBuilder();
-    
+
       char[] buffer = new char[4096];
       int read;
       while ((read = reader.read(buffer)) != -1) {
@@ -269,7 +269,7 @@ public class FileHandler {
         System.arraycopy(buffer, 0, target, 0, read);
         builder.append(target);
       }
-    
+
       return builder.toString();
     } finally {
       Cleanly.close(reader);

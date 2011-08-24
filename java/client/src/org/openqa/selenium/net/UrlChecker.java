@@ -33,13 +33,14 @@ public class UrlChecker {
   private static final long POLL_INTERVAL_MS = 500;
 
   private static final AtomicInteger THREAD_COUNTER = new AtomicInteger(1);
-  private static final ExecutorService THREAD_POOL = Executors.newCachedThreadPool(new ThreadFactory() {
-    public Thread newThread(Runnable r) {
-      Thread t = new Thread(r, "UrlChecker-" + THREAD_COUNTER.incrementAndGet());
-      t.setDaemon(true);
-      return t;
-    }
-  });
+  private static final ExecutorService THREAD_POOL = Executors
+      .newCachedThreadPool(new ThreadFactory() {
+        public Thread newThread(Runnable r) {
+          Thread t = new Thread(r, "UrlChecker-" + THREAD_COUNTER.incrementAndGet());
+          t.setDaemon(true);
+          return t;
+        }
+      });
 
   private final TimeLimiter timeLimiter;
 

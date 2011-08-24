@@ -34,12 +34,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A {@link CommandExecutor} that communicates with an iPhone Simulator
- * running on localhost in a subprocess. Before executing each command, the
- * {@link IPhoneSimulatorCommandExecutor} will verify that the simulator is
- * still running and throw an {@link IPhoneSimulatorNotRunningException} if it
+ * A {@link CommandExecutor} that communicates with an iPhone Simulator running on localhost in a
+ * subprocess. Before executing each command, the {@link IPhoneSimulatorCommandExecutor} will verify
+ * that the simulator is still running and throw an {@link IPhoneSimulatorNotRunningException} if it
  * is not.
- *
+ * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class IPhoneSimulatorCommandExecutor implements CommandExecutor {
@@ -57,7 +56,8 @@ public class IPhoneSimulatorCommandExecutor implements CommandExecutor {
     this.appUrl = url;
   }
 
-  @VisibleForTesting IPhoneSimulatorBinary getBinary() {
+  @VisibleForTesting
+  IPhoneSimulatorBinary getBinary() {
     return binary;
   }
 

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.lift;
 
@@ -29,7 +29,7 @@ import org.hamcrest.Matcher;
 
 /**
  * Base class for tests using the LiFT style API to driver WebDriver.
- *
+ * 
  * @author rchatley (Robert Chatley)
  */
 public abstract class HamcrestWebDriverTestCase extends TestCase {
@@ -59,7 +59,8 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
     context.assertPresenceOf(finder);
   }
 
-  protected void assertPresenceOf(Matcher<Integer> cardinalityConstraint, Finder<WebElement, WebDriver> finder) {
+  protected void assertPresenceOf(Matcher<Integer> cardinalityConstraint,
+      Finder<WebElement, WebDriver> finder) {
     context.assertPresenceOf(cardinalityConstraint, finder);
   }
 
@@ -73,7 +74,7 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 
   /**
    * Cause the browser to navigate to the given URL
-   *
+   * 
    * @param url
    */
   protected void goTo(String url) {
@@ -82,8 +83,8 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 
   /**
    * Type characters into an element of the page, typically an input field
-   *
-   * @param text        - characters to type
+   * 
+   * @param text - characters to type
    * @param inputFinder - specification for the page element
    */
   protected void type(String text, Finder<WebElement, WebDriver> inputFinder) {
@@ -91,9 +92,9 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   }
 
   /**
-   * Syntactic sugar to use with {@link HamcrestWebDriverTestCase#type(String, Finder<WebElement, WebDriver>)},
-   * e.g. type("cheese", into(textbox()));
-   * The into() method simply returns its argument.
+   * Syntactic sugar to use with {@link HamcrestWebDriverTestCase#type(String, Finder<WebElement,
+   * WebDriver>)}, e.g. type("cheese", into(textbox())); The into() method simply returns its
+   * argument.
    */
   protected Finder<WebElement, WebDriver> into(Finder<WebElement, WebDriver> input) {
     return input;

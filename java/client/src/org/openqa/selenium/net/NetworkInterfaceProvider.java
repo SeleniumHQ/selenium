@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.net;
 
@@ -21,8 +21,8 @@ package org.openqa.selenium.net;
 /**
  * Provides information about the local network interfaces.
  * <p/>
- * Basically an abstraction created to allow stubbing of java.net.NetworkInterface,
- * also soothes some of the jdk1.2 idioms from this interface into jdk1.5 idioms.
+ * Basically an abstraction created to allow stubbing of java.net.NetworkInterface, also soothes
+ * some of the jdk1.2 idioms from this interface into jdk1.5 idioms.
  */
 public interface NetworkInterfaceProvider {
   Iterable<NetworkInterface> getNetworkInterfaces();

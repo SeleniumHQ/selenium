@@ -123,7 +123,7 @@ public class Zip {
     File toWrite = new File(output, name);
 
     if (!FileHandler.createDir(toWrite.getParentFile()))
-       throw new IOException("Cannot create parent director for: " + name);
+      throw new IOException("Cannot create parent director for: " + name);
 
     OutputStream out = new BufferedOutputStream(new FileOutputStream(toWrite), BUF_SIZE);
     try {

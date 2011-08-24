@@ -22,22 +22,23 @@ import java.io.OutputStream;
 import java.util.logging.Logger;
 
 /**
- * Handles launching the iWebDriver app on the iPhone Simulator in a
- * subprocess.
- *
- * <p>Only one instance of the iPhone Simulator may be run at once, so all
- * other instances will be killed before a new one is started.
- *
- * <p>The iPhone Simulator will be run in a headless mode against the SDK
- * specified by the {@code webdriver.iphone.sdk} system property. A temporary
- * directory will be used as the user home so the application need not be
- * pre-installed.
+ * Handles launching the iWebDriver app on the iPhone Simulator in a subprocess.
+ * 
+ * <p>
+ * Only one instance of the iPhone Simulator may be run at once, so all other instances will be
+ * killed before a new one is started.
+ * 
+ * <p>
+ * The iPhone Simulator will be run in a headless mode against the SDK specified by the
+ * {@code webdriver.iphone.sdk} system property. A temporary directory will be used as the user home
+ * so the application need not be pre-installed.
  * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class IPhoneSimulatorBinary extends SubProcess {
-  /* TODO: Figure out how to launch iWebDriver on the simulator in a non-headless mode.
-   * (Without using the private iPhoneSimulatorRemoteClient.framework)
+  /*
+   * TODO: Figure out how to launch iWebDriver on the simulator in a non-headless mode. (Without
+   * using the private iPhoneSimulatorRemoteClient.framework)
    */
 
   private static final Logger LOG = Logger.getLogger(IPhoneSimulatorBinary.class.getName());
@@ -45,9 +46,8 @@ public class IPhoneSimulatorBinary extends SubProcess {
   private static final String IPHONE_LOG_FILE_PROPERTY = "webdriver.iphone.logFile";
 
   /**
-   * System property used to specificy which iPhone SDK to run the
-   * iPhone Simulator against. If not specified, will default to
-   * {@link #DEFAULT_SDK}.
+   * System property used to specificy which iPhone SDK to run the iPhone Simulator against. If not
+   * specified, will default to {@link #DEFAULT_SDK}.
    */
   private static final String IPHONE_SDK_PROPERTY = "webdriver.iphone.sdk";
 
@@ -64,21 +64,19 @@ public class IPhoneSimulatorBinary extends SubProcess {
       TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "iWebDriver");
 
   /**
-   * Utility script used to kill the iWebDriver process when
-   * {@link #shutdown()} is called. This is necessary since
-   * {@link Process#destroy()} sends a {@code SIGKILL} to this binary's
-   * sub process so we cannot trap it and explicitly kill iWebDriver.
+   * Utility script used to kill the iWebDriver process when {@link #shutdown()} is called. This is
+   * necessary since {@link Process#destroy()} sends a {@code SIGKILL} to this binary's sub process
+   * so we cannot trap it and explicitly kill iWebDriver.
    */
   private final ProcessBuilder killScript;
 
   /**
-   * Creates a new IPhoneSimulatorBinary that will run the given application on
-   * the iPhone Simulator. The simulator will be run using the SDK specified by
-   * the {@code webdriver.iphone.sdk} system property.
-   *
-   * @param iWebDriverApp Path to the executable to run on the simulator. This
-   *     file should specify the executable that is an immedidate child of the
-   *     {@code iwebDriver.app} directory.
+   * Creates a new IPhoneSimulatorBinary that will run the given application on the iPhone
+   * Simulator. The simulator will be run using the SDK specified by the
+   * {@code webdriver.iphone.sdk} system property.
+   * 
+   * @param iWebDriverApp Path to the executable to run on the simulator. This file should specify
+   *        the executable that is an immedidate child of the {@code iwebDriver.app} directory.
    * @throws IOException If an I/O error occurs.
    */
   public IPhoneSimulatorBinary(File iWebDriverApp) throws IOException {
@@ -153,13 +151,14 @@ public class IPhoneSimulatorBinary extends SubProcess {
     return scriptFile.getCanonicalFile();
   }
 
-  @VisibleForTesting ProcessBuilder getKillScript() {
+  @VisibleForTesting
+  ProcessBuilder getKillScript() {
     return killScript;
   }
 
   /**
    * Kills iWebDriver and the iPhone Simulator.
-   *
+   * 
    * @see SubProcess#shutdown()
    */
   @Override

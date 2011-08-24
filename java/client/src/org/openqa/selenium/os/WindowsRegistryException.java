@@ -10,7 +10,7 @@ public class WindowsRegistryException extends WebDriverException {
 
   private static String generateMessage() {
     return "Problem while managing the registry, OS Version '" +
-           System.getProperty("os.version") + "', regVersion1 = " + WindowsUtils.regVersion1;
+        System.getProperty("os.version") + "', regVersion1 = " + WindowsUtils.regVersion1;
   }
 
   WindowsRegistryException(String message) {

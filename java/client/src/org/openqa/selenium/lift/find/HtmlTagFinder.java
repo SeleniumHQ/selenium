@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.lift.find;
 
@@ -27,10 +27,9 @@ import org.hamcrest.Matcher;
 import java.util.Collection;
 
 /**
- * Base {@link Finder} for all types of HTML tags. Subclasses should be created
- * for each specific tag, specifying the tag name (e.g. "a" in the case or an anchor
- * tag), and a description.
- *
+ * Base {@link Finder} for all types of HTML tags. Subclasses should be created for each specific
+ * tag, specifying the tag name (e.g. "a" in the case or an anchor tag), and a description.
+ * 
  * @author rchatley (Robert Chatley)
  */
 public abstract class HtmlTagFinder extends BaseFinder<WebElement, WebDriver> {

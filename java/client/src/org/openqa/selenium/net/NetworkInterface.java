@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.net;
 
@@ -50,16 +50,16 @@ public class NetworkInterface {
 
 
   public INetAddress getIp4LoopbackOnly() {
-      // Goes by the wildly unscientific assumption that if there are more than one set of
-      // loopback addresses, firefox will bind to the last one we get.
-      // An alternate theory if this fails is that firefox prefers 127.0.0.1
-      // Most "normal" boxes don't have multiple addresses so we'll just refine this
-      // algorithm until it works.
-      // See NetworkUtilsTest#testOpenSuseBoxIssue1181
+    // Goes by the wildly unscientific assumption that if there are more than one set of
+    // loopback addresses, firefox will bind to the last one we get.
+    // An alternate theory if this fails is that firefox prefers 127.0.0.1
+    // Most "normal" boxes don't have multiple addresses so we'll just refine this
+    // algorithm until it works.
+    // See NetworkUtilsTest#testOpenSuseBoxIssue1181
     INetAddress lastFound = null;
     for (INetAddress inetAddress : inetAddresses) {
       if (inetAddress.isLoopbackAddress() && inetAddress.isIPv4Address()) {
-         lastFound = inetAddress;
+        lastFound = inetAddress;
       }
     }
     return lastFound;

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.lift.find;
 
@@ -26,10 +26,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Base class for {@link Finder}s. These allow the creation of a specification
- * to be applied to objects of type T, to identify and return a Collection of
- * any contained objects of type S.
- *
+ * Base class for {@link Finder}s. These allow the creation of a specification to be applied to
+ * objects of type T, to identify and return a Collection of any contained objects of type S.
+ * 
  * @author rchatley (Robert Chatley)
  */
 public abstract class BaseFinder<S, T> implements Finder<S, T> {

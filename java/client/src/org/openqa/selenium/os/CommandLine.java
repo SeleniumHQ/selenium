@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.os;
 
@@ -66,8 +66,9 @@ public class CommandLine {
 
   /**
    * Adds the specified environment variables.
+   * 
    * @param environment the variables to add
-   *
+   * 
    * @throws IllegalArgumentException if any value given is null (unsupported)
    */
   public void setEnvironmentVariables(Map<String, String> environment) {
@@ -78,9 +79,9 @@ public class CommandLine {
 
   /**
    * Adds the specified environment variable.
-   *
+   * 
    * @param name the name of the environment variable
-   * @param value  the value of the environment variable
+   * @param value the value of the environment variable
    * @throws IllegalArgumentException if the value given is null (unsupported)
    */
   public void setEnvironmentVariable(String name, String value) {
@@ -88,7 +89,8 @@ public class CommandLine {
       throw new IllegalArgumentException("Cannot have a null environment variable name!");
     }
     if (value == null) {
-      throw new IllegalArgumentException("Cannot have a null value for environment variable " + name);
+      throw new IllegalArgumentException("Cannot have a null value for environment variable " +
+          name);
     }
     env.put(name, value);
   }
@@ -106,23 +108,22 @@ public class CommandLine {
   public static String getLibraryPathPropertyName() {
     switch (Platform.getCurrent()) {
       case MAC:
-          return "DYLD_LIBRARY_PATH";
+        return "DYLD_LIBRARY_PATH";
 
       case WINDOWS:
       case VISTA:
       case XP:
-          return "PATH";
+        return "PATH";
 
       default:
-          return "LD_LIBRARY_PATH";
+        return "LD_LIBRARY_PATH";
     }
   }
 
   /**
-   * Find the executable by scanning the file system and the PATH. In the case
-   * of Windows this method allows common executable endings (".com", ".bat" and
-   * ".exe") to be omitted.
-   *
+   * Find the executable by scanning the file system and the PATH. In the case of Windows this
+   * method allows common executable endings (".com", ".bat" and ".exe") to be omitted.
+   * 
    * @param named The name of the executable to find
    * @return The absolute path to the executable, or null if no match is made.
    */
@@ -146,7 +147,7 @@ public class CommandLine {
     String path = env.get(pathName);
     String[] endings = new String[] {""};
     if (Platform.getCurrent().is(WINDOWS)) {
-      endings = new String[] { "", ".exe", ".com", ".bat"};
+      endings = new String[] {"", ".exe", ".com", ".bat"};
     }
 
     for (String segment : path.split(File.pathSeparator)) {
@@ -162,9 +163,9 @@ public class CommandLine {
   }
 
   public void execute() {
-      createProcess();
-      setupDrainer();
-      waitFor();
+    createProcess();
+    setupDrainer();
+    waitFor();
   }
 
   public Process executeAsync() {
@@ -198,8 +199,8 @@ public class CommandLine {
   private void waitFor() {
     try {
       proc.waitFor();
-      if(drainerThread != null) {
-          drainerThread.join();
+      if (drainerThread != null) {
+        drainerThread.join();
       }
 
       exitCode = proc.exitValue();
@@ -261,7 +262,8 @@ public class CommandLine {
 
   public void destroy() {
     if (!executed) {
-      throw new IllegalStateException("Cannot quit a process that's not running: " + commandAndArgs[0]);
+      throw new IllegalStateException("Cannot quit a process that's not running: " +
+          commandAndArgs[0]);
     }
 
     if (proc != null) {

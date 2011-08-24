@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.lift;
 
@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Gives the context for a test, holds page state, and interacts with the {@link WebDriver}.
- *
+ * 
  * @author rchatley (Robert Chatley)
  */
 public class WebDriverTestContext implements TestContext {
@@ -70,7 +70,8 @@ public class WebDriverTestContext implements TestContext {
     assertPresenceOf(atLeast(1), finder);
   }
 
-  public void assertPresenceOf(Matcher<Integer> cardinalityConstraint, Finder<WebElement, WebDriver> finder) {
+  public void assertPresenceOf(Matcher<Integer> cardinalityConstraint,
+      Finder<WebElement, WebDriver> finder) {
     Collection<WebElement> foundElements = finder.findFrom(driver);
     if (!cardinalityConstraint.matches(foundElements.size())) {
       Description description = new StringDescription();
@@ -144,13 +145,14 @@ public class WebDriverTestContext implements TestContext {
     final long sleepTimeout = (timeoutMillis > defaultSleepTimeoutMillis)
         ? defaultSleepTimeoutMillis : timeoutMillis / 2;
 
-    Wait<WebDriver> wait = new WebDriverWait(driver, clock, sleeper, millisToSeconds(timeoutMillis),
-        sleepTimeout) {
-      @Override
-      protected RuntimeException timeoutException(String message, RuntimeException lastException) {
-        throw new AssertionError("Element was not rendered within " + timeoutMillis + "ms");
-      }
-    };
+    Wait<WebDriver> wait =
+        new WebDriverWait(driver, clock, sleeper, millisToSeconds(timeoutMillis),
+            sleepTimeout) {
+          @Override
+          protected RuntimeException timeoutException(String message, RuntimeException lastException) {
+            throw new AssertionError("Element was not rendered within " + timeoutMillis + "ms");
+          }
+        };
     wait.until(elementsDisplayedPredicate);
   }
 

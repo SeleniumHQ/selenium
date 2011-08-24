@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 // Generated source.
 package org.openqa.selenium.lift;
@@ -21,7 +21,8 @@ package org.openqa.selenium.lift;
 
 public class Matchers {
 
-  public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> attribute(java.lang.String attributeName, org.hamcrest.Matcher<java.lang.String> valueMatcher) {
+  public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> attribute(
+      java.lang.String attributeName, org.hamcrest.Matcher<java.lang.String> valueMatcher) {
     return org.openqa.selenium.lift.match.AttributeMatcher.attribute(attributeName, valueMatcher);
   }
 
@@ -33,7 +34,8 @@ public class Matchers {
     return org.openqa.selenium.lift.match.NumericalMatchers.exactly(count);
   }
 
-  public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> text(org.hamcrest.Matcher<java.lang.String> textMatcher) {
+  public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> text(
+      org.hamcrest.Matcher<java.lang.String> textMatcher) {
     return org.openqa.selenium.lift.match.TextMatcher.text(textMatcher);
   }
 

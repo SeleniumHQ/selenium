@@ -47,7 +47,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class WindowsUtils {
 
   public static Boolean regVersion1 = null;
-  
+
   private static Logger log = Logger.getLogger(WindowsUtils.class.getName());
   private static final boolean THIS_IS_WINDOWS = Platform.getCurrent().is(WINDOWS);
   private static String wmic = null;
@@ -96,29 +96,31 @@ public class WindowsUtils {
 
   /**
    * Searches the process list for a process with the specified command line and kills it
-   *
+   * 
    * @param cmdarray the array of command line arguments
-   * @throws Exception if something goes wrong while reading the process list or searching for your command line
+   * @throws Exception if something goes wrong while reading the process list or searching for your
+   *         command line
    */
   public static void kill(String[] cmdarray) throws Exception {
     StringBuffer pattern = new StringBuffer();
     File executable = new File(cmdarray[0]);
-    /* For the first argument, the executable, Windows may modify
-    * the start path in any number of ways.  Ignore a starting quote
-    * if any (\"?), non-greedily look for anything up until the last
-    * backslash (.*?\\\\), then look for the executable's filename,
-    * then finally ignore a final quote (\"?)
-    */
+    /*
+     * For the first argument, the executable, Windows may modify the start path in any number of
+     * ways. Ignore a starting quote if any (\"?), non-greedily look for anything up until the last
+     * backslash (.*?\\\\), then look for the executable's filename, then finally ignore a final
+     * quote (\"?)
+     */
     // TODO We should be careful, in case Windows has ~1-ified the executable name as well
     pattern.append("\"?.*?\\\\");
     pattern.append(executable.getName());
     pattern.append("\"?");
     for (int i = 1; i < cmdarray.length; i++) {
-      /* There may be a space, but maybe not (\\s?), may be a quote or maybe not (\"?),
-      * but then turn on block quotation (as if *everything* had a regex backslash in front of it)
-      * with \Q.  Then look for the next argument (which may have ?s, \s, "s, who knows),
-      * turning off block quotation.  Now ignore a final quote if any (\"?)
-      */
+      /*
+       * There may be a space, but maybe not (\\s?), may be a quote or maybe not (\"?), but then
+       * turn on block quotation (as if *everything* had a regex backslash in front of it) with \Q.
+       * Then look for the next argument (which may have ?s, \s, "s, who knows), turning off block
+       * quotation. Now ignore a final quote if any (\"?)
+       */
       pattern.append("\\s?\"?\\Q");
       String arg = cmdarray[i];
       pattern.append(arg);
@@ -166,14 +168,14 @@ public class WindowsUtils {
 
   /**
    * Returns a map of process IDs to command lines
-   *
+   * 
    * @return a map of process IDs to command lines
    * @throws Exception - if something goes wrong while reading the process list
    */
   public static Map procMap() throws Exception {
     log.info("Reading Windows Process List...");
     String output = executeCommand(findWMIC(), "process", "list", "full", "/format:rawxml.xsl");
-//    exec.setFailonerror(true);
+    // exec.setFailonerror(true);
     log.info("Done, searching for processes to kill...");
     // WMIC drops an ugly zero-length batch file; clean that up
     File TempWmicBatchFile = new File("TempWmicBatchFile.bat");
@@ -211,7 +213,7 @@ public class WindowsUtils {
 
   /**
    * Returns the current process environment variables
-   *
+   * 
    * @return the current process environment variables
    */
   public static synchronized Properties loadEnvironment() {
@@ -226,9 +228,9 @@ public class WindowsUtils {
   }
 
   /**
-   * Retrieve the exact case-sensitive name of the "Path" environment variable,
-   * which may be any one of "PATH", "Path" or "path".
-   *
+   * Retrieve the exact case-sensitive name of the "Path" environment variable, which may be any one
+   * of "PATH", "Path" or "path".
+   * 
    * @return the exact case-sensitive name of the "Path" environment variable
    */
   public static String getExactPathEnvKey() {
@@ -249,19 +251,19 @@ public class WindowsUtils {
   }
 
   /**
-   * Returns the path to the Windows Program Files.  On non-English versions,
-   * this is not necessarily "C:\Program Files".
-   *
+   * Returns the path to the Windows Program Files. On non-English versions, this is not necessarily
+   * "C:\Program Files".
+   * 
    * @return the path to the Windows Program Files
    */
   public static String getProgramFilesPath() {
     return getEnvVarPath("ProgramFiles", "C:\\Program Files");
   }
-  
+
   public static String getProgramFiles86Path() {
     return getEnvVarPath("ProgramFiles(x86)", "C:\\Program Files (x86)");
   }
-  
+
   private static String getEnvVarPath(final String envVar, final String defaultValue) {
     loadEnvironment();
     String pf = getEnvVarIgnoreCase(envVar);
@@ -273,22 +275,21 @@ public class WindowsUtils {
     }
     return new File(defaultValue).getAbsolutePath();
   }
-  
+
   public static ImmutableList<String> getPathsInProgramFiles(final String childPath) {
     return new ImmutableList.Builder<String>()
-      .add(getFullPath(WindowsUtils.getProgramFilesPath(), childPath))
-      .add(getFullPath(WindowsUtils.getProgramFiles86Path(), childPath))
-      .build();
+        .add(getFullPath(WindowsUtils.getProgramFilesPath(), childPath))
+        .add(getFullPath(WindowsUtils.getProgramFiles86Path(), childPath))
+        .build();
   }
-  
+
   private static String getFullPath(String parent, String child) {
     return new File(parent, child).getAbsolutePath();
   }
 
   /**
-   * Returns the path to Local AppData.  For different users, this will be
-   * different.
-   *
+   * Returns the path to Local AppData. For different users, this will be different.
+   * 
    * @return the path to Local AppData
    */
   public static String getLocalAppDataPath() {
@@ -338,8 +339,9 @@ public class WindowsUtils {
 
   /**
    * Finds WMIC.exe
-   *
-   * @return the exact path to wmic.exe, or just the string "wmic" if it couldn't be found (in which case you can pass that to exec to try to run it from the path)
+   * 
+   * @return the exact path to wmic.exe, or just the string "wmic" if it couldn't be found (in which
+   *         case you can pass that to exec to try to run it from the path)
    */
   public static String findWMIC() {
     if (wmic != null) {
@@ -360,7 +362,7 @@ public class WindowsUtils {
 
   /**
    * Finds the WBEM directory in the systemRoot directory
-   *
+   * 
    * @return the WBEM directory, or <code>null</code> if it couldn't be found
    */
   public static File findWBEM() {
@@ -378,8 +380,9 @@ public class WindowsUtils {
 
   /**
    * Finds taskkill.exe
-   *
-   * @return the exact path to taskkill.exe, or just the string "taskkill" if it couldn't be found (in which case you can pass that to exec to try to run it from the path)
+   * 
+   * @return the exact path to taskkill.exe, or just the string "taskkill" if it couldn't be found
+   *         (in which case you can pass that to exec to try to run it from the path)
    */
   public static String findTaskKill() {
     if (taskkill != null) {
@@ -398,8 +401,9 @@ public class WindowsUtils {
 
   /**
    * Finds reg.exe
-   *
-   * @return the exact path to reg.exe, or just the string "reg" if it couldn't be found (in which case you can pass that to exec to try to run it from the path)
+   * 
+   * @return the exact path to reg.exe, or just the string "reg" if it couldn't be found (in which
+   *         case you can pass that to exec to try to run it from the path)
    */
   public static String findReg() {
     if (reg != null) {
@@ -422,9 +426,9 @@ public class WindowsUtils {
     }
     log.severe("OS Version: " + System.getProperty("os.version"));
     throw new WindowsRegistryException("Couldn't find reg.exe!\n" +
-                                       "Please download it from Microsoft and install it in a standard location.\n"
-                                       +
-                                       "See here for details: http://wiki.openqa.org/display/SRC/Windows+Registry+Support");
+        "Please download it from Microsoft and install it in a standard location.\n"
+        +
+        "See here for details: http://wiki.openqa.org/display/SRC/Windows+Registry+Support");
   }
 
   public static boolean isRegExeVersion1() {
@@ -662,7 +666,7 @@ public class WindowsUtils {
 
   /**
    * Returns true if the current OS is MS Windows; false otherwise
-   *
+   * 
    * @return true if the current OS is MS Windows; false otherwise
    */
   public static boolean thisIsWindows() {
