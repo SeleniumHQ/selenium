@@ -39,7 +39,9 @@ public class Grid1HeartbeatTests {
   public void testIsNotRegistered() throws Exception {
     // Send the heartbeat request when we know that there are no nodes
     // registered with the hub.
-    URL heartbeatUrl = new URL(String.format("http://%s:%s/heartbeat?host=localhost&port=5000", hub.getHost(), hub.getPort()));
+    URL heartbeatUrl =
+        new URL(String.format("http://%s:%s/heartbeat?host=localhost&port=5000", hub.getHost(),
+            hub.getPort()));
 
     HttpRequest request = new HttpGet(heartbeatUrl.toString());
 
@@ -47,7 +49,8 @@ public class Grid1HeartbeatTests {
     HttpHost host = new HttpHost(hub.getHost(), hub.getPort());
     HttpResponse response = client.execute(host, request);
 
-    BufferedReader body = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+    BufferedReader body =
+        new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
     Assert.assertEquals(response.getStatusLine().getStatusCode(), 200);
     Assert.assertEquals(body.readLine(), "Hub : Not Registered");
@@ -56,7 +59,8 @@ public class Grid1HeartbeatTests {
   @Test
   public void testIsRegistered() throws Exception {
     // register a selenium 1
-    SelfRegisteringRemote selenium1 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+    SelfRegisteringRemote selenium1 =
+        GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
     selenium1.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 1);
     selenium1.startRemoteServer();
     selenium1.sendRegistrationRequest();
@@ -64,8 +68,11 @@ public class Grid1HeartbeatTests {
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 
     // Check that the node is registered with the hub.
-    URL heartbeatUrl = new URL(String.format("http://%s:%s/heartbeat?host=%s&port=%s", hub.getHost(), hub.getPort(), selenium1.getConfiguration()
-        .get(RegistrationRequest.HOST), selenium1.getConfiguration().get(RegistrationRequest.PORT)));
+    URL heartbeatUrl =
+        new URL(String.format("http://%s:%s/heartbeat?host=%s&port=%s", hub.getHost(),
+            hub.getPort(), selenium1.getConfiguration()
+                .get(RegistrationRequest.HOST),
+            selenium1.getConfiguration().get(RegistrationRequest.PORT)));
 
     HttpRequest request = new HttpGet(heartbeatUrl.toString());
 
@@ -73,7 +80,8 @@ public class Grid1HeartbeatTests {
     HttpHost host = new HttpHost(hub.getHost(), hub.getPort());
     HttpResponse response = client.execute(host, request);
 
-    BufferedReader body = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+    BufferedReader body =
+        new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
     Assert.assertEquals(response.getStatusLine().getStatusCode(), 200);
     Assert.assertEquals(body.readLine(), "Hub : OK");

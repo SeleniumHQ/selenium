@@ -35,7 +35,8 @@ public class TimeoutWebDriver {
 
     hub.start();
 
-    SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+    SelfRegisteringRemote remote =
+        GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
 
     remote.setMaxConcurrent(1);
     remote.setTimeout(5000, 250);

@@ -30,12 +30,13 @@ public class DefaultToFIFOPriorityTest {
 
   private static Map<String, Object> ff = new HashMap<String, Object>();
   private static RemoteProxy p1;
-  private static List<MockedRequestHandler> requests = Collections.synchronizedList(new ArrayList<MockedRequestHandler>());
+  private static List<MockedRequestHandler> requests = Collections
+      .synchronizedList(new ArrayList<MockedRequestHandler>());
   private static TestSession session = null;
 
   /**
    * create a hub with 1 FF
-   *
+   * 
    * @throws InterruptedException
    */
   @BeforeClass

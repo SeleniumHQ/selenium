@@ -91,7 +91,7 @@ public class SmokeTest {
 
     int stopped = 0;
     // all the tests ran via the registry.
-    while (stopped < 2* MAX) {
+    while (stopped < 2 * MAX) {
       for (TestSession session : sessions) {
         MockedRequestHandler stopSessionRequest = new MockedRequestHandler(registry);
         stopSessionRequest.setSession(session);
@@ -105,13 +105,13 @@ public class SmokeTest {
     Assert.assertEquals(2 * MAX, stopped);
     // nothing left waiting
     Assert.assertEquals(0, registry.getNewSessionRequestCount());
-    
+
     // nothing active. Waiting in case a stopSessionRequest.process() isn't finish. It's async.
-    while(registry.getActiveSessions().size()!=0){
-    	 Thread.sleep(10);
+    while (registry.getActiveSessions().size() != 0) {
+      Thread.sleep(10);
     }
     Assert.assertEquals(0, registry.getActiveSessions().size());
-    
+
     // everything was started.
     Assert.assertEquals(2 * MAX, ran);
 

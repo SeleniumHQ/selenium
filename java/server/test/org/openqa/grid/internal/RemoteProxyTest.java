@@ -28,7 +28,9 @@ public class RemoteProxyTest {
     app1Capability.put(APP, "app1");
     app2Capability.put(APP, "app2");
 
-    p1 = RemoteProxyFactory.getNewBasicRemoteProxy(app1Capability, "http://machine1:4444/", registry);
+    p1 =
+        RemoteProxyFactory
+            .getNewBasicRemoteProxy(app1Capability, "http://machine1:4444/", registry);
     List<Map<String, Object>> caps = new ArrayList<Map<String, Object>>();
     caps.add(app1Capability);
     caps.add(app2Capability);

@@ -10,7 +10,7 @@ public class RegistryTestHelper {
 
   /**
    * Wait for the registry to have exactly nodeNumber nodes registered.
-   *
+   * 
    * @param r
    * @param nodeNumber
    */

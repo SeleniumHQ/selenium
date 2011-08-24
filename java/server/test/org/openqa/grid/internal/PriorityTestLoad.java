@@ -18,8 +18,7 @@ import java.util.Map;
 
 
 /**
- * Grid with only 1 node. Sending MAX thread in it to load the queue and keep it
- * ordered.
+ * Grid with only 1 node. Sending MAX thread in it to load the queue and keep it ordered.
  */
 public class PriorityTestLoad {
 
@@ -42,7 +41,7 @@ public class PriorityTestLoad {
 
   /**
    * create a hub with 1 FF
-   *
+   * 
    * @throws InterruptedException
    */
   @BeforeClass
@@ -102,7 +101,8 @@ public class PriorityTestLoad {
       Thread.sleep(20);
     }
     Assert.assertNotNull(requests.get(requests.size() - 1).getTestSession());
-    Assert.assertEquals(requests.get(requests.size() - 1).getDesiredCapabilities().get("_priority"), MAX);
+    Assert.assertEquals(
+        requests.get(requests.size() - 1).getDesiredCapabilities().get("_priority"), MAX);
   }
 
   @AfterClass

@@ -46,16 +46,17 @@ public class NewRequestCrashesDuringNewSessionTest {
   }
 
   /**
-   * check that a crashes during the new session request handling doesn't
-   * result in a corrupted state
-   *
+   * check that a crashes during the new session request handling doesn't result in a corrupted
+   * state
+   * 
    * @throws InterruptedException
    */
   @Test(timeout = 1000)
   public void requestIsremovedFromTheQeueAfterItcrashes() throws InterruptedException {
     // should work
     try {
-      MockedRequestHandler newSessionRequest = new MockedBuggyNewSessionRequestHandler(registry, ff);
+      MockedRequestHandler newSessionRequest =
+          new MockedBuggyNewSessionRequestHandler(registry, ff);
       newSessionRequest.process();
     } catch (RuntimeException e) {
       System.out.println(e.getMessage());
@@ -71,7 +72,8 @@ public class NewRequestCrashesDuringNewSessionTest {
 
   class MockedBuggyNewSessionRequestHandler extends MockedNewSessionRequestHandler {
 
-    public MockedBuggyNewSessionRequestHandler(Registry registry, Map<String, Object> desiredCapabilities) {
+    public MockedBuggyNewSessionRequestHandler(Registry registry,
+        Map<String, Object> desiredCapabilities) {
       super(registry, desiredCapabilities);
     }
 

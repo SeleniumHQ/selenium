@@ -49,7 +49,7 @@ public class SessionTimesOutTest {
 
   /**
    * check that the proxy is freed after it times out.
-   *
+   * 
    * @throws InterruptedException
    */
   @Test(timeout = 2000)
@@ -160,7 +160,8 @@ public class SessionTimesOutTest {
       MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
       newSessionRequest.process();
 
-      final MockedRequestHandler newSessionRequest2 = new MockedNewSessionRequestHandler(registry, app1);
+      final MockedRequestHandler newSessionRequest2 =
+          new MockedNewSessionRequestHandler(registry, app1);
       new Thread(new Runnable() {
         public void run() {
           // the request should never be processed because the
@@ -193,7 +194,7 @@ public class SessionTimesOutTest {
 
   @Test(timeout = 4000)
   public void stupidConfig() throws InterruptedException {
-    Object[][] configs = new Object[][]{
+    Object[][] configs = new Object[][] {
         // correct config, just to check something happens
         {5, 5},
         // and invalid ones

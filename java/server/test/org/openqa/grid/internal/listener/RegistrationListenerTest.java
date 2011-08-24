@@ -69,7 +69,7 @@ public class RegistrationListenerTest {
 
   /**
    * this proxy will throw an exception on registration the first time.
-   *
+   * 
    * @author François Reynaud
    */
   class MyBuggyRemoteProxy extends RemoteProxy implements RegistrationListener {
@@ -119,10 +119,8 @@ public class RegistrationListenerTest {
   Registry registry = Registry.newInstance();
 
   /**
-   * register a regular proxy for app1 and a slow one.
-   * try to reserve 2 * app1
-   * 1 should be reserved directly.
-   * 1 should wait for the slow proxy to finish the registration properly before returning
+   * register a regular proxy for app1 and a slow one. try to reserve 2 * app1 1 should be reserved
+   * directly. 1 should wait for the slow proxy to finish the registration properly before returning
    */
   @Test(timeout = 2000)
   public void registerSomeSlow() {

@@ -43,7 +43,7 @@ public class PriorityTest {
 
   /**
    * create a hub with 1 FF
-   *
+   * 
    * @throws InterruptedException
    */
   @BeforeClass

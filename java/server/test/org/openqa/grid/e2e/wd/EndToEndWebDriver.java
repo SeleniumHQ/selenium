@@ -20,8 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * start 2 proxy of 5 FF each, and run 10 tests. Validate all the resources are
- * used.
+ * start 2 proxy of 5 FF each, and run 10 tests. Validate all the resources are used.
  */
 public class EndToEndWebDriver {
 
@@ -38,7 +37,8 @@ public class EndToEndWebDriver {
     hub.start();
     hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
 
-    SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+    SelfRegisteringRemote remote =
+        GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
     remote.addBrowser(DesiredCapabilities.firefox(), 5);
 
     remote.setMaxConcurrent(5);
@@ -46,7 +46,8 @@ public class EndToEndWebDriver {
     remote.startRemoteServer();
     remote.sendRegistrationRequest();
 
-    SelfRegisteringRemote remote2 = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+    SelfRegisteringRemote remote2 =
+        GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
     remote2.addBrowser(DesiredCapabilities.firefox(), 5);
 
     remote2.setMaxConcurrent(5);

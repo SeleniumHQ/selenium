@@ -24,9 +24,8 @@ public class RegistryStateTest {
   static Map<String, Object> app2 = new HashMap<String, Object>();
 
   /**
-   * create a proxy than can host up to 5 tests at the same time. - of type
-   * app1 ( max 5 tests at the same time ) could be Firefox for instance - of
-   * type app2 ( max 1 test ) could be IE
+   * create a proxy than can host up to 5 tests at the same time. - of type app1 ( max 5 tests at
+   * the same time ) could be Firefox for instance - of type app2 ( max 1 test ) could be IE
    */
   @BeforeClass
   public static void prepareReqRequest() {

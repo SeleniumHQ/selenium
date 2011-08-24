@@ -32,7 +32,9 @@ public class Grid1ConfigurationLoaderTest {
     config.loadFromGridYml("grid_configuration_test2.yml");
 
     Assert.assertEquals("*firefox", config.getGrid1Mapping().get("Firefox 4; MacOS X: 10.6.7"));
-    Assert.assertEquals("*iexplorecustom", config.getGrid1Mapping().get("windows_internet_explorer_8"));
-    Assert.assertEquals("*firefox /opt/firefox/firefox-3.6/firefox-bin", config.getGrid1Mapping().get("linux_firefox_3_6"));
+    Assert.assertEquals("*iexplorecustom",
+        config.getGrid1Mapping().get("windows_internet_explorer_8"));
+    Assert.assertEquals("*firefox /opt/firefox/firefox-3.6/firefox-bin", config.getGrid1Mapping()
+        .get("linux_firefox_3_6"));
   }
 }

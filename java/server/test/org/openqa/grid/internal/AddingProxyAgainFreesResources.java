@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * registering an already existing node assumes the node has been restarted, and
- * all the resources are free again
- *
+ * registering an already existing node assumes the node has been restarted, and all the resources
+ * are free again
+ * 
  * @author freynaud
  */
 public class AddingProxyAgainFreesResources {
@@ -30,7 +30,7 @@ public class AddingProxyAgainFreesResources {
 
   /**
    * create a hub with 1 node accepting 1 FF
-   *
+   * 
    * @throws InterruptedException
    */
   @BeforeClass

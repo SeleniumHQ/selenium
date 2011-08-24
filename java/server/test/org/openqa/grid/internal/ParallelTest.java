@@ -24,9 +24,8 @@ public class ParallelTest {
   static Map<String, Object> app2 = new HashMap<String, Object>();
 
   /**
-   * a proxy than can host up to 5 tests at the same time. - of type app1 (
-   * max 5 tests at the same time ) could be Firefox for instance - of type
-   * app2 ( max 1 test ) could be IE
+   * a proxy than can host up to 5 tests at the same time. - of type app1 ( max 5 tests at the same
+   * time ) could be Firefox for instance - of type app2 ( max 1 test ) could be IE
    */
   @BeforeClass
   public static void prepareReqRequest() {
@@ -66,7 +65,7 @@ public class ParallelTest {
 
   /**
    * cannot reserve 2 app2
-   *
+   * 
    * @throws InterruptedException
    */
   @Test
@@ -79,7 +78,8 @@ public class ParallelTest {
       newSessionRequest.process();
       new Thread(new Runnable() {
         public void run() {
-          MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+          MockedRequestHandler newSessionRequest =
+              new MockedNewSessionRequestHandler(registry, app2);
           started = true;
           newSessionRequest.process();
           processed = true;
@@ -120,7 +120,7 @@ public class ParallelTest {
 
   /**
    * cannot get 6 app1
-   *
+   * 
    * @throws InterruptedException
    */
   @Test(timeout = 1000)
@@ -132,7 +132,8 @@ public class ParallelTest {
       for (int i = 0; i < 6; i++) {
         new Thread(new Runnable() {
           public void run() {
-            MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+            MockedRequestHandler newSessionRequest =
+                new MockedNewSessionRequestHandler(registry, app1);
             newSessionRequest.process();
             inc();
           }
@@ -157,7 +158,7 @@ public class ParallelTest {
 
   /**
    * cannot get app2 if 5 app1 are reserved.
-   *
+   * 
    * @throws InterruptedException
    */
   @Test(timeout = 1000)
@@ -170,7 +171,8 @@ public class ParallelTest {
       for (int i = 0; i < 5; i++) {
         new Thread(new Runnable() {
           public void run() {
-            MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+            MockedRequestHandler newSessionRequest =
+                new MockedNewSessionRequestHandler(registry, app1);
             newSessionRequest.process();
             inc2();
           }
@@ -183,7 +185,8 @@ public class ParallelTest {
 
       new Thread(new Runnable() {
         public void run() {
-          MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+          MockedRequestHandler newSessionRequest =
+              new MockedNewSessionRequestHandler(registry, app2);
           newSessionRequest.process();
           app6Done = true;
         }

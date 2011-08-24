@@ -27,10 +27,14 @@ public class RegistryTest {
   @Test
   public void addProxy() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
-    RemoteProxy p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/", registry);
-    RemoteProxy p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/", registry);
-    RemoteProxy p4 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/", registry);
+    RemoteProxy p1 =
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
+    RemoteProxy p2 =
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/", registry);
+    RemoteProxy p3 =
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/", registry);
+    RemoteProxy p4 =
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/", registry);
     try {
       registry.add(p1);
       registry.add(p2);
@@ -45,10 +49,14 @@ public class RegistryTest {
   @Test
   public void addDuppedProxy() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
-    RemoteProxy p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/", registry);
-    RemoteProxy p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/", registry);
-    RemoteProxy p4 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/", registry);
+    RemoteProxy p1 =
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
+    RemoteProxy p2 =
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/", registry);
+    RemoteProxy p3 =
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/", registry);
+    RemoteProxy p4 =
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/", registry);
 
     try {
       registry.add(p1);
@@ -138,7 +146,7 @@ public class RegistryTest {
   @Test(timeout = 1000)
   public void registerAtTheSameTime() throws InterruptedException {
     final Registry registry = Registry.newInstance();
-    final CountDownLatch latch = new CountDownLatch( TOTAL_THREADS );
+    final CountDownLatch latch = new CountDownLatch(TOTAL_THREADS);
 
     try {
       for (int i = 0; i < TOTAL_THREADS; i++) {
@@ -161,9 +169,9 @@ public class RegistryTest {
   private Random randomGenerator = new Random();
 
   /**
-   * try to simulate a real proxy. The proxy registration takes up to 1 sec to
-   * register, and crashes in 10% of the case.
-   *
+   * try to simulate a real proxy. The proxy registration takes up to 1 sec to register, and crashes
+   * in 10% of the case.
+   * 
    * @author Fran�ois Reynaud
    */
   class MyRemoteProxy extends RemoteProxy implements RegistrationListener {
@@ -187,7 +195,7 @@ public class RegistryTest {
   @Test(timeout = 2000)
   public void registerAtTheSameTimeWithListener() throws InterruptedException {
     final Registry registry = Registry.newInstance();
-    final CountDownLatch cdn = new CountDownLatch( TOTAL_THREADS );
+    final CountDownLatch cdn = new CountDownLatch(TOTAL_THREADS);
 
     try {
       for (int i = 0; i < TOTAL_THREADS; i++) {

@@ -37,7 +37,8 @@ public class SmokeTest {
     hub.start();
 
 
-    SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.REMOTE_CONTROL);
+    SelfRegisteringRemote remote =
+        GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.REMOTE_CONTROL);
     remote.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 1);
 
     remote.startRemoteServer();
@@ -67,7 +68,8 @@ public class SmokeTest {
   @Test(enabled = false)
   public void sel1ie() throws InterruptedException {
     // http://stackoverflow.com/questions/1517623/internet-explorer-8-64bit-and-selenium-not-working
-    Selenium selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*iexplore", "http://www.ebay.co.uk");
+    Selenium selenium =
+        new DefaultSelenium(hub.getHost(), hub.getPort(), "*iexplore", "http://www.ebay.co.uk");
     Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
     selenium.start();
     Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
@@ -82,7 +84,8 @@ public class SmokeTest {
   @Test(enabled = false)
   public void selsafari() {
     // http://discussions.apple.com/thread.jspa?messageID=12564201 ?
-    Selenium selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*safari", "http://www.ebay.co.uk");
+    Selenium selenium =
+        new DefaultSelenium(hub.getHost(), hub.getPort(), "*safari", "http://www.ebay.co.uk");
     Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
     selenium.start();
     Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);

@@ -17,19 +17,21 @@ public class MockedRequestHandler extends WebDriverRequestHandler {
     super(null, null, registry);
   }
 
-  public MockedRequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
+  public MockedRequestHandler(HttpServletRequest request, HttpServletResponse response,
+      Registry registry) {
     super(request, response, registry);
   }
 
   @Override
   public String forwardNewSessionRequest(TestSession session) {
-    //System.out.println("forwarding to " + session.getInternalKey());
+    // System.out.println("forwarding to " + session.getInternalKey());
     return "";
   }
 
   @Override
-  protected void forwardRequest(TestSession session, RequestHandler handler) throws java.io.IOException {
-    //System.out.println("forwarding request to "+session);
+  protected void forwardRequest(TestSession session, RequestHandler handler)
+      throws java.io.IOException {
+    // System.out.println("forwarding request to "+session);
   }
 
   ;

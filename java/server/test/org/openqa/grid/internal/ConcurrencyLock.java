@@ -17,9 +17,9 @@ import java.util.Map;
 /**
  * Check that 1 type of request doesn't block other requests.
  * <p/>
- * For a hub capable of handling 1 FF and 1 IE for instance, if the hub already
- * built a queue of FF requests and a IE request is received it should be
- * processed right away and not blocked by the FF queue.
+ * For a hub capable of handling 1 FF and 1 IE for instance, if the hub already built a queue of FF
+ * requests and a IE request is received it should be processed right away and not blocked by the FF
+ * queue.
  */
 
 public class ConcurrencyLock {

@@ -41,7 +41,8 @@ public class WebDriverPriorityDemo {
     hub.start();
     hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
 
-    SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+    SelfRegisteringRemote remote =
+        GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
     remote.addBrowser(DesiredCapabilities.firefox(), 1);
 
     remote.startRemoteServer();
@@ -53,8 +54,12 @@ public class WebDriverPriorityDemo {
     // go first.
     hub.getRegistry().setPrioritizer(new Prioritizer() {
       public int compareTo(Map<String, Object> a, Map<String, Object> b) {
-        boolean aImportant = a.get("_important") == null ? false : Boolean.parseBoolean(a.get("_important").toString());
-        boolean bImportant = b.get("_important") == null ? false : Boolean.parseBoolean(b.get("_important").toString());
+        boolean aImportant =
+            a.get("_important") == null ? false : Boolean.parseBoolean(a.get("_important")
+                .toString());
+        boolean bImportant =
+            b.get("_important") == null ? false : Boolean.parseBoolean(b.get("_important")
+                .toString());
         if (aImportant == bImportant) {
           return 0;
         }
@@ -159,7 +164,8 @@ public class WebDriverPriorityDemo {
       runningOne.quit();
 
       // validating new expected state
-      while (!(hub.getRegistry().getActiveSessions().size() == 1 && hub.getRegistry().getNewSessionRequestCount() == 10)) {
+      while (!(hub.getRegistry().getActiveSessions().size() == 1 && hub.getRegistry()
+          .getNewSessionRequestCount() == 10)) {
         Thread.sleep(250);
         Reporter.log("waiting for correct state.");
       }

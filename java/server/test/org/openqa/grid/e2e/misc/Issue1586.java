@@ -35,7 +35,8 @@ public class Issue1586 {
     hub.start();
 
     // register a webdriver
-    SelfRegisteringRemote webdriver = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
+    SelfRegisteringRemote webdriver =
+        GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
     webdriver.addBrowser(DesiredCapabilities.firefox(), 1);
     webdriver.startRemoteServer();
     webdriver.sendRegistrationRequest();

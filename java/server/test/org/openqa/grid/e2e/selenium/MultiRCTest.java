@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Register 5 remote for selenium1. Make sure the tests are spread to all the
- * remotes.
+ * Register 5 remote for selenium1. Make sure the tests are spread to all the remotes.
  */
 public class MultiRCTest {
   private Hub hub;
@@ -40,7 +39,8 @@ public class MultiRCTest {
     hub.start();
 
     for (int i = 0; i < 5; i++) {
-      SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.REMOTE_CONTROL);
+      SelfRegisteringRemote remote =
+          GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.REMOTE_CONTROL);
       remote.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 5);
       remote.startRemoteServer();
       remote.sendRegistrationRequest();

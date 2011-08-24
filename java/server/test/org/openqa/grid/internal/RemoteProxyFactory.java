@@ -11,9 +11,9 @@ import java.util.Map;
 public class RemoteProxyFactory {
 
   /**
-   * Create a simple proxy with 1 capability : {"browserName=appName"} and the
-   * configuration {"url=url"}
-   *
+   * Create a simple proxy with 1 capability : {"browserName=appName"} and the configuration
+   * {"url=url"}
+   * 
    * @param appName
    * @param url
    * @param registry
@@ -36,15 +36,16 @@ public class RemoteProxyFactory {
   }
 
   /**
-   * Create a simple proxy with the 1 capability specified as parameter and
-   * the configuration {"url=url"}
-   *
+   * Create a simple proxy with the 1 capability specified as parameter and the configuration
+   * {"url=url"}
+   * 
    * @param cap
    * @param url
    * @param registry
    * @return
    */
-  public static RemoteProxy getNewBasicRemoteProxy(Map<String, Object> cap, String url, Registry registry) {
+  public static RemoteProxy getNewBasicRemoteProxy(Map<String, Object> cap, String url,
+      Registry registry) {
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver");
     req.getCapabilities().clear();
     req.addDesiredCapabilitiy(cap);
@@ -54,15 +55,16 @@ public class RemoteProxyFactory {
   }
 
   /**
-   * Create a simple proxy with the the list of capabilities specified as
-   * parameter and the configuration {"url=url"}
-   *
+   * Create a simple proxy with the the list of capabilities specified as parameter and the
+   * configuration {"url=url"}
+   * 
    * @param caps
    * @param url
    * @param registry
    * @return
    */
-  public static RemoteProxy getNewBasicRemoteProxy(List<Map<String, Object>> caps, String url, Registry registry) {
+  public static RemoteProxy getNewBasicRemoteProxy(List<Map<String, Object>> caps, String url,
+      Registry registry) {
 
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver");
     req.getCapabilities().clear();

@@ -36,14 +36,16 @@ public class Selenium1WebDriverTests {
     hub.start();
 
     // register a selenium 1
-    SelfRegisteringRemote selenium1 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+    SelfRegisteringRemote selenium1 =
+        GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
     selenium1.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 1);
     selenium1.startRemoteServer();
     selenium1.sendRegistrationRequest();
 
 
     // register a webdriver
-    SelfRegisteringRemote webdriver = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
+    SelfRegisteringRemote webdriver =
+        GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
     webdriver.addBrowser(DesiredCapabilities.firefox(), 1);
     webdriver.startRemoteServer();
     webdriver.sendRegistrationRequest();

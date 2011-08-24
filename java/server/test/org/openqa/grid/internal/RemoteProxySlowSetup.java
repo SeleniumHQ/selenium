@@ -51,6 +51,7 @@ public class RemoteProxySlowSetup {
   }
 }
 
+
 class SlowRemoteSetup extends RemoteProxy implements RegistrationListener {
 
   boolean flag = false;

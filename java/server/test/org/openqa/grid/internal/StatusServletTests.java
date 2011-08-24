@@ -52,7 +52,8 @@ public class StatusServletTests {
     hub = new Hub(c);
     registry = hub.getRegistry();
     proxyApi = new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/proxy");
-    testSessionApi = new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/testsession");
+    testSessionApi =
+        new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/testsession");
 
     host = new HttpHost(hub.getHost(), hub.getPort());
 
@@ -129,7 +130,8 @@ public class StatusServletTests {
     JSONObject o = new JSONObject();
     o.put("id", id);
 
-    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST", proxyApi.toExternalForm());
+    BasicHttpEntityEnclosingRequest r =
+        new BasicHttpEntityEnclosingRequest("POST", proxyApi.toExternalForm());
     r.setEntity(new StringEntity(o.toString()));
 
     HttpResponse response = client.execute(host, r);
@@ -150,7 +152,8 @@ public class StatusServletTests {
     o.put("getBoolean", "");
     o.put("getString", "");
 
-    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST", proxyApi.toExternalForm());
+    BasicHttpEntityEnclosingRequest r =
+        new BasicHttpEntityEnclosingRequest("POST", proxyApi.toExternalForm());
     r.setEntity(new StringEntity(o.toString()));
 
     HttpResponse response = client.execute(host, r);
@@ -171,7 +174,8 @@ public class StatusServletTests {
 
     JSONObject o = new JSONObject();
     o.put("session", s);
-    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST", testSessionApi.toExternalForm());
+    BasicHttpEntityEnclosingRequest r =
+        new BasicHttpEntityEnclosingRequest("POST", testSessionApi.toExternalForm());
     r.setEntity(new StringEntity(o.toString()));
 
     HttpResponse response = client.execute(host, r);
@@ -215,7 +219,8 @@ public class StatusServletTests {
 
     JSONObject o = new JSONObject();
     o.put("session", s);
-    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST", testSessionApi.toExternalForm());
+    BasicHttpEntityEnclosingRequest r =
+        new BasicHttpEntityEnclosingRequest("POST", testSessionApi.toExternalForm());
     r.setEntity(new StringEntity(o.toString()));
 
     HttpResponse response = client.execute(host, r);

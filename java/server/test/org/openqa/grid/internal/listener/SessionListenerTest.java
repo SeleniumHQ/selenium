@@ -72,9 +72,8 @@ public class SessionListenerTest {
   }
 
   /**
-   * buggy proxy that will throw an exception the first time beforeSession is
-   * called.
-   *
+   * buggy proxy that will throw an exception the first time beforeSession is called.
+   * 
    * @author Fran�ois Reynaud
    */
   class MyBuggyBeforeRemoteProxy extends RemoteProxy implements TestSessionListener {
@@ -97,9 +96,8 @@ public class SessionListenerTest {
   }
 
   /**
-   * if before throws an exception, the resources are released for other tests
-   * to use.
-   *
+   * if before throws an exception, the resources are released for other tests to use.
+   * 
    * @throws InterruptedException
    */
   @Test(timeout = 5000)
@@ -127,9 +125,8 @@ public class SessionListenerTest {
   }
 
   /**
-   * buggy proxy that will throw an exception the first time beforeSession is
-   * called.
-   *
+   * buggy proxy that will throw an exception the first time beforeSession is called.
+   * 
    * @author Fran�ois Reynaud
    */
   class MyBuggyAfterRemoteProxy extends RemoteProxy implements TestSessionListener {
@@ -149,9 +146,8 @@ public class SessionListenerTest {
   static boolean processed = false;
 
   /**
-   * if after throws an exception, the resources are NOT released got other
-   * tests to use.
-   *
+   * if after throws an exception, the resources are NOT released got other tests to use.
+   * 
    * @throws InterruptedException
    */
   @Test(timeout = 1000)
@@ -224,9 +220,9 @@ public class SessionListenerTest {
   }
 
   /**
-   * using a proxy that times out instantly and spends a long time in the
-   * after method. check aftermethod cannot be excecuted twice for a session.
-   *
+   * using a proxy that times out instantly and spends a long time in the after method. check
+   * aftermethod cannot be excecuted twice for a session.
+   * 
    * @throws InterruptedException
    */
   @Test

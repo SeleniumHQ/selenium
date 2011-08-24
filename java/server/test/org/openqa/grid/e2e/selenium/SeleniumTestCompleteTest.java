@@ -18,8 +18,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * checks that the browser is properly stopped when a selenium1 session times
- * out.
+ * checks that the browser is properly stopped when a selenium1 session times out.
  */
 public class SeleniumTestCompleteTest {
 
@@ -35,7 +34,8 @@ public class SeleniumTestCompleteTest {
 
     // register a selenium 1
 
-    SelfRegisteringRemote selenium1 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+    SelfRegisteringRemote selenium1 =
+        GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
     selenium1.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 1);
     selenium1.setTimeout(5000, 2000);
     selenium1.startRemoteServer();

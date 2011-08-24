@@ -33,8 +33,9 @@ public class GridSerializeExceptionTests {
 
     hub.start();
 
-    SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
-    //remote.addBrowser(DesiredCapabilities.firefox(),1);
+    SelfRegisteringRemote remote =
+        GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+    // remote.addBrowser(DesiredCapabilities.firefox(),1);
 
     remote.startRemoteServer();
     remote.sendRegistrationRequest();

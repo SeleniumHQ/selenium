@@ -22,7 +22,9 @@ public class GridTestHelper {
     req.getConfiguration().put(RegistrationRequest.PORT, PortProber.findFreePort());
 
     // some values have to be computed again after changing internals.
-    String base = "http://" + req.getConfiguration().get(RegistrationRequest.HOST) + ":" + req.getConfiguration().get(RegistrationRequest.PORT);
+    String base =
+        "http://" + req.getConfiguration().get(RegistrationRequest.HOST) + ":" +
+            req.getConfiguration().get(RegistrationRequest.PORT);
     String url = null;
     switch (req.getRole()) {
       case REMOTE_CONTROL:
