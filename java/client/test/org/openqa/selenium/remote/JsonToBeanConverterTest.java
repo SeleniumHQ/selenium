@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote;
 
@@ -223,7 +223,8 @@ public class JsonToBeanConverterTest extends TestCase {
 
   private void assertMapEntry(Map map, String key, Object expected) {
     assertTrue("Missing key: " + key, map.containsKey(key));
-    assertEquals("Wrong value for key: " + key + ": " + map.get(key).getClass().getName(), expected, map.get(key));
+    assertEquals("Wrong value for key: " + key + ": " + map.get(key).getClass().getName(),
+        expected, map.get(key));
   }
 
   public void testShouldConvertAnArrayBackIntoAnArray() throws Exception {
@@ -246,7 +247,11 @@ public class JsonToBeanConverterTest extends TestCase {
   public void testShouldBeAbleToConvertACommand() throws Exception {
     SessionId sessionId = new SessionId("session id");
     Command original = new Command(sessionId, DriverCommand.NEW_SESSION,
-        new HashMap<String, String>(){{put("food", "cheese");}});
+        new HashMap<String, String>() {
+          {
+            put("food", "cheese");
+          }
+        });
     String raw = new BeanToJsonConverter().convert(original);
     Command converted = new JsonToBeanConverter().convert(Command.class, raw);
 

@@ -41,7 +41,7 @@ import java.util.Map;
 
 /**
  * Unit tests for {@link ErrorHandler}.
- *
+ * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class ErrorHandlerTest extends TestCase {
@@ -65,7 +65,7 @@ public class ErrorHandlerTest extends TestCase {
     assertThrowsCorrectExceptionType(
         ErrorCodes.UNKNOWN_COMMAND, UnsupportedCommandException.class);
     assertThrowsCorrectExceptionType(
-        ErrorCodes.METHOD_NOT_ALLOWED,UnsupportedCommandException.class);
+        ErrorCodes.METHOD_NOT_ALLOWED, UnsupportedCommandException.class);
     assertThrowsCorrectExceptionType(
         ErrorCodes.STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class);
     assertThrowsCorrectExceptionType(
@@ -257,7 +257,7 @@ public class ErrorHandlerTest extends TestCase {
                 "methodName", "someMethod",
                 "className", "MyClass",
                 "fileName", "Resource.m")));
-    
+
     try {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data));
       fail("Should have thrown!");
@@ -315,7 +315,7 @@ public class ErrorHandlerTest extends TestCase {
     } catch (WebDriverException expected) {
       assertThat(expected.getMessage(), startsWith("foo bar baz!"));
 
-      assertCauseIsOfType(ScreenshotException.class,  expected);
+      assertCauseIsOfType(ScreenshotException.class, expected);
       ScreenshotException screenshot = (ScreenshotException) expected.getCause();
       assertEquals("screenGrabText", screenshot.getBase64EncodedScreenshot());
       assertDoesNotHaveACause(screenshot);
@@ -334,7 +334,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   private static void assertStackTracesEqual(StackTraceElement[] expected,
-                                             StackTraceElement[] actual) {
+      StackTraceElement[] actual) {
     assertEquals("Stack traces have different sizes", expected.length, actual.length);
     for (int i = 0; i < expected.length; i++) {
       String message = "Frames differ at index [" + i + "]; expected:<"

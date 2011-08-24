@@ -60,8 +60,8 @@ public class SetProxyTest extends TestCase {
     caps.setCapability(PROXY, proxy);
     caps.setCapability(ENSURING_CLEAN_SESSION, true);
 
-//    WebDriver driver = new FirefoxDriverTestSuite.TestFirefoxDriver(caps);
-//    WebDriver driver = new RemoteWebDriver(seleniumServer.getWebDriverUrl(), caps);
+    // WebDriver driver = new FirefoxDriverTestSuite.TestFirefoxDriver(caps);
+    // WebDriver driver = new RemoteWebDriver(seleniumServer.getWebDriverUrl(), caps);
     WebDriver driver = new InternetExplorerDriver(caps);
 
     driver.get(new Pages(env.getAppServer()).xhtmlTestPage);
@@ -73,17 +73,17 @@ public class SetProxyTest extends TestCase {
 
   private String getBlocks() throws Exception {
     String payload = "callCount=1\n"
-                     + "windowName=\n"
-                     + "c0-scriptName=ProxyServer\n"
-                     + "c0-methodName=getBlocks\n"
-                     + "c0-id=0\n"
-                     + "batchId=3\n"
-                     + "page=/\n"
-                     + "httpSessionId=njh9zqjbhyhe\n"
-                     + "scriptSessionId=74C83DBD88D9E47B8464C2B6DA9190D2";
+        + "windowName=\n"
+        + "c0-scriptName=ProxyServer\n"
+        + "c0-methodName=getBlocks\n"
+        + "c0-id=0\n"
+        + "batchId=3\n"
+        + "page=/\n"
+        + "httpSessionId=njh9zqjbhyhe\n"
+        + "scriptSessionId=74C83DBD88D9E47B8464C2B6DA9190D2";
     HttpRequest request = new HttpRequest(HttpRequest.Method.POST,
         "http://localhost:" + proxyInstance.getPort()
-        + "/dwr/call/plaincall/ProxyServer.getBlocks.dwr", payload);
+            + "/dwr/call/plaincall/ProxyServer.getBlocks.dwr", payload);
     return request.getResponse();
   }
 

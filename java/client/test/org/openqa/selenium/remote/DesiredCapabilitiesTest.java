@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DesiredCapabilitiesTest extends TestCase {
   public void testAddingTheSameCapabilityToAMapTwiceShouldResultInOneEntry() {
     Map<org.openqa.selenium.Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
-      new ConcurrentHashMap<Capabilities, Class<? extends WebDriver>>();
+        new ConcurrentHashMap<Capabilities, Class<? extends WebDriver>>();
 
     capabilitiesToDriver.put(DesiredCapabilities.firefox(), StubDriver.class);
     capabilitiesToDriver.put(DesiredCapabilities.firefox(), StubDriver.class);
@@ -36,7 +36,7 @@ public class DesiredCapabilitiesTest extends TestCase {
     DesiredCapabilities origCapabilities = new DesiredCapabilities((Capabilities) null);
 
     origCapabilities.setCapability("Browser", "firefox");
-    assertEquals("firefox", origCapabilities.getCapability("Browser"));    
+    assertEquals("firefox", origCapabilities.getCapability("Browser"));
   }
 
   public void testCopyConstructorDoesNotAliasToArgument() {

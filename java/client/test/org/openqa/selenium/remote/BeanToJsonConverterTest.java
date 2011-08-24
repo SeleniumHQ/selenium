@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote;
 
@@ -91,7 +91,7 @@ public class BeanToJsonConverterTest extends TestCase {
   }
 
   public void testShouldConvertNumbersAsLongs() throws Exception {
-    
+
     String json = new BeanToJsonConverter().convert(new Exception());
     Map map = new JsonToBeanConverter().convert(Map.class, json);
 
@@ -209,12 +209,13 @@ public class BeanToJsonConverterTest extends TestCase {
     JSONObject converted = new JSONObject(json);
     JSONObject capsAsMap = converted.getJSONObject("desiredCapabilities");
 
-    assertEquals(json, proxy.getHttpProxy(), capsAsMap.getJSONObject(CapabilityType.PROXY).get("httpProxy"));
+    assertEquals(json, proxy.getHttpProxy(),
+        capsAsMap.getJSONObject(CapabilityType.PROXY).get("httpProxy"));
   }
 
   public void testShouldCallToJsonMethodIfPresent() {
     String json = new BeanToJsonConverter().convert(new JsonAware("converted"));
-    
+
     assertEquals("converted", json);
   }
 
@@ -223,7 +224,7 @@ public class BeanToJsonConverterTest extends TestCase {
     int posOfLastStackTraceElement = 0;
     for (StackTraceElement e : stackTrace) {
       if (e.getFileName() != null) {
-        //Native methods may have null filenames
+        // Native methods may have null filenames
         assertTrue("Filename not found", json.contains("\"fileName\":\"" + e.getFileName() + "\""));
       }
       assertTrue("Line number not found",
@@ -240,6 +241,7 @@ public class BeanToJsonConverterTest extends TestCase {
           posOfCurrStackTraceElement > posOfLastStackTraceElement);
     }
   }
+
   public void testShouldBeAbleToConvertARuntimeException() {
     RuntimeException clientError = new RuntimeException("foo bar baz!");
     StackTraceElement[] stackTrace = clientError.getStackTrace();
@@ -309,11 +311,11 @@ public class BeanToJsonConverterTest extends TestCase {
     assertTrue(json.getBoolean("secure"));
     assertEquals(TimeUnit.MILLISECONDS.toSeconds(expiry.getTime()), json.getLong("expiry"));
   }
-  
+
   public void testUnsetCookieFieldsAreUndefined() {
     Cookie cookie = new Cookie("name", "value");
     String jsonStr = new BeanToJsonConverter().convert(cookie);
-//    assertThat(jsonStr, not(containsString("path")));
+    // assertThat(jsonStr, not(containsString("path")));
     assertThat(jsonStr, not(containsString("domain")));
     assertThat(jsonStr, not(containsString("expiry")));
   }
@@ -322,7 +324,7 @@ public class BeanToJsonConverterTest extends TestCase {
     Map<String, Object> frameId = Maps.newHashMap();
     frameId.put("id", null);
     String payload = new BeanToJsonConverter().convert(frameId);
-    assertEquals("{\"id\":null}", payload); 
+    assertEquals("{\"id\":null}", payload);
   }
 
   private static class SimpleBean {
@@ -343,7 +345,7 @@ public class BeanToJsonConverterTest extends TestCase {
   private static class BeanWithArray {
 
     public String[] getNames() {
-      return new String[]{"peter", "paul", "mary"};
+      return new String[] {"peter", "paul", "mary"};
     }
   }
 
@@ -388,10 +390,10 @@ public class BeanToJsonConverterTest extends TestCase {
 
     public abstract void eat(String foodStuff);
   }
-  
+
   public class JsonAware {
     private String convertedValue;
-    
+
     public JsonAware(String convertedValue) {
       this.convertedValue = convertedValue;
     }

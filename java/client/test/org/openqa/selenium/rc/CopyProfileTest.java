@@ -39,7 +39,7 @@ public class CopyProfileTest extends TestCase {
   @Override
   protected void tearDown() throws Exception {
     selenium.stop();
-    
+
     super.tearDown();
   }
 
@@ -75,7 +75,8 @@ public class CopyProfileTest extends TestCase {
 
     RemoteWebDriver driver = new RemoteWebDriver(selenium.getWebDriverUrl(), caps);
 
-    Boolean nativeEventsEnabled = (Boolean) driver.getCapabilities().getCapability(CapabilityType.HAS_NATIVE_EVENTS);
+    Boolean nativeEventsEnabled =
+        (Boolean) driver.getCapabilities().getCapability(CapabilityType.HAS_NATIVE_EVENTS);
     driver.quit();
 
     assertTrue("Native events were explicitly enabled and should be on.",

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote;
 
@@ -79,7 +79,7 @@ public class AugmenterTest {
     assertNotSame(driver, returned);
     assertTrue(returned instanceof TakesScreenshot);
   }
-  
+
   @Test
   public void shouldNotAddTheTakesSnapshotInterfaceWhenBooleanValueIsFalse() {
     DesiredCapabilities caps = new DesiredCapabilities();
@@ -105,7 +105,8 @@ public class AugmenterTest {
 
       public InterfaceImplementation getImplementation(Object value) {
         return new InterfaceImplementation() {
-          public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
+          public Object invoke(ExecuteMethod executeMethod, Object self, Method method,
+              Object... args) {
             return "Hello World";
           }
         };
@@ -151,7 +152,8 @@ public class AugmenterTest {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
     StubExecutor executor = new StubExecutor(caps);
-    executor.expect(FIND_ELEMENT, ImmutableMap.of("using", "css selector", "value", "cheese"), new StubElement());
+    executor.expect(FIND_ELEMENT, ImmutableMap.of("using", "css selector", "value", "cheese"),
+        new StubElement());
 
     WebDriver driver = new RemoteWebDriver(executor, caps);
     WebDriver returned = new Augmenter().augment(driver);
