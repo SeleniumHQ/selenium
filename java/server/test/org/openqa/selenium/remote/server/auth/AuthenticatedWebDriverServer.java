@@ -26,7 +26,7 @@ public class AuthenticatedWebDriverServer {
 
     Constraint constraint = new Constraint();
     constraint.setName(Constraint.__BASIC_AUTH);
-    constraint.setRoles(new String[] { "user" });
+    constraint.setRoles(new String[] {"user"});
     constraint.setAuthenticate(true);
 
     ConstraintMapping constraintMapping = new ConstraintMapping();

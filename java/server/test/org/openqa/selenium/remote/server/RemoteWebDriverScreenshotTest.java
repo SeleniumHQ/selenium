@@ -35,7 +35,7 @@ public class RemoteWebDriverScreenshotTest extends AbstractDriverTestCase {
       System.out.println("Skipping test: driver is not a remote webdriver");
       return;
     }
-    
+
     driver.get(pages.simpleTestPage);
 
     try {

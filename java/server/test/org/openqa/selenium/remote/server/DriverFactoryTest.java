@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server;
 
@@ -63,7 +63,7 @@ public class DriverFactoryTest extends TestCase {
     first.setVersion("1.0");
 
     DesiredCapabilities second = new DesiredCapabilities();
-    second.setBrowserName("bar");  // Different name
+    second.setBrowserName("bar"); // Different name
     second.setVersion("1.0");
 
     factory.registerDriver(first, DriverOne.class);
@@ -79,7 +79,7 @@ public class DriverFactoryTest extends TestCase {
     result = factory.getBestMatchFor(example);
     assertEquals(DriverTwo.class, result);
   }
-  
+
   public void testShouldReturnMostRecentlyAddedDriverWhenAllCapabilitiesAreEqual() {
     Capabilities capabilities = DesiredCapabilities.firefox();
 
@@ -120,7 +120,9 @@ public class DriverFactoryTest extends TestCase {
   public static class CapabilitiesDriver extends StubDriver {
     private Capabilities caps;
 
-    public CapabilitiesDriver() {}
+    public CapabilitiesDriver() {
+    }
+
     public CapabilitiesDriver(Capabilities caps) {
       this.caps = caps;
     }

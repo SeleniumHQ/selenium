@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server;
 
@@ -74,7 +74,8 @@ public class ResultConfigTest extends TestCase {
 
   public void testShouldSetNamedParametersOnHandler() throws Exception {
     ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
-    NamedParameterHandler handler = (NamedParameterHandler) config.getHandler("/foo/fishy", dummySessionId);
+    NamedParameterHandler handler =
+        (NamedParameterHandler) config.getHandler("/foo/fishy", dummySessionId);
 
     assertThat(handler.getBar(), is("fishy"));
   }
