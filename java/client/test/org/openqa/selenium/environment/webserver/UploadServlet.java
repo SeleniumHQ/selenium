@@ -11,8 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * A simple file upload servlet that just sends back the file contents to the
- * client.
+ * A simple file upload servlet that just sends back the file contents to the client.
  * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
@@ -20,7 +19,7 @@ public class UploadServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request,
-                        HttpServletResponse response)
+      HttpServletResponse response)
       throws ServletException, IOException {
     response.setContentType("text/html");
     response.setStatus(HttpServletResponse.SC_OK);

@@ -14,21 +14,22 @@ public class BasicAuth extends HttpServlet {
   private final Base64Encoder base64 = new Base64Encoder();
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    if(isAuthorized(req.getHeader("Authorization"))) {
-        resp.setHeader("Content-Type", "text/html");
-        resp.getWriter().write("<h1>authorized</h1>");
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+      IOException {
+    if (isAuthorized(req.getHeader("Authorization"))) {
+      resp.setHeader("Content-Type", "text/html");
+      resp.getWriter().write("<h1>authorized</h1>");
     } else {
-      resp.setHeader("WWW-Authenticate", "Basic realm=\"basic-auth-test\"" );
+      resp.setHeader("WWW-Authenticate", "Basic realm=\"basic-auth-test\"");
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
   }
 
   private boolean isAuthorized(String auth) {
-    if(auth != null) {
+    if (auth != null) {
       final int index = auth.indexOf(' ');
 
-      if(index > 0) {
+      if (index > 0) {
         final String credentials = new String(base64.decode(auth.substring(index)));
         return CREDENTIALS.equals(credentials);
       }

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.environment.webserver;
 
@@ -86,11 +86,11 @@ public class Jetty7AppServer implements AppServer {
 
     addServlet("Redirecter", "/redirect", RedirectServlet.class);
     addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
-        
+
     addServlet(defaultContext, "Manifest", "/manifest/*", ManifestServlet.class);
     addServlet(defaultContext, "Manifest", "*.appcache", ManifestServlet.class);
     addServlet(jsContext, "Manifest", "*.appcache", ManifestServlet.class);
-    
+
     addServlet("Uploader", "/upload", UploadServlet.class);
     addServlet("Unusual encoding", "/encoding", EncodingServlet.class);
     addServlet("Sleeper", "/sleep", SleepingServlet.class);

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.environment.webserver;
 
@@ -34,7 +34,7 @@ public class EncodingServlet extends HttpServlet {
 
     StringBuilder text = new StringBuilder("<html><title>Character encoding (UTF 16)</title>")
         .append("<body><p id='text'>")
-        .append("\u05E9\u05DC\u05D5\u05DD")  // "Shalom"
+        .append("\u05E9\u05DC\u05D5\u05DD") // "Shalom"
         .append("</p></body></html>");
 
     response.getWriter().write(text.toString());

@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.environment.webserver;
 
@@ -39,15 +39,15 @@ public class PageServlet extends HttpServlet {
     response.setContentType("text/html");
 
     int lastIndex = request.getPathInfo().lastIndexOf('/');
-    String
-        pageNumber =
+    String pageNumber =
         (lastIndex == -1 ? "Unknown" : request.getPathInfo().substring(lastIndex + 1));
     String res = String.format("<html><head><title>Page%s</title></head>" +
-                               "<body>Page number <span id=\"pageNumber\">%s</span>" +
-                               "<p><a href=\"../xhtmlTest.html\" target=\"_top\">top</a>" +
-//        		"<script>var s=''; for (var i in window) {s += i + ' -> ' + window[i] + '<p>';} document.write(s);</script>" +
-"</body></html>",
-                               pageNumber, pageNumber);
+        "<body>Page number <span id=\"pageNumber\">%s</span>" +
+        "<p><a href=\"../xhtmlTest.html\" target=\"_top\">top</a>" +
+        // "<script>var s=''; for (var i in window) {s += i + ' -> ' + window[i] + '<p>';} document.write(s);</script>"
+        // +
+        "</body></html>",
+        pageNumber, pageNumber);
 
     response.getOutputStream().println(res);
   }

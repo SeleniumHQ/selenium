@@ -13,13 +13,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.environment.webserver;
 
 import org.eclipse.jetty.util.log.Logger;
 
-public class NullLogger implements Logger  {
+public class NullLogger implements Logger {
   public void disableLogging() {
     System.setProperty("org.eclipse.jetty.util.log.class", NullLogger.class.getName());
   }
@@ -28,22 +28,39 @@ public class NullLogger implements Logger  {
     return false;
   }
 
-  public void setDebugEnabled(boolean b) {}
+  public void setDebugEnabled(boolean b) {
+  }
 
-  public void debug(String s, Object... o) {}
-  public void debug(String s, Throwable throwable) {}
-  public void debug(Throwable throwable) {}
+  public void debug(String s, Object... o) {
+  }
 
-  public void info(String s, Object... o) {}
-  public void info(String s, Throwable throwable) {}
-  public void info(Throwable throwable) {}
+  public void debug(String s, Throwable throwable) {
+  }
 
-  public void warn(String s, Object... o) {}
-  public void warn(String s, Throwable throwable) {}
-  public void warn(Throwable throwable) {}
+  public void debug(Throwable throwable) {
+  }
 
-  public void ignore(Throwable throwable) {}
-  
+  public void info(String s, Object... o) {
+  }
+
+  public void info(String s, Throwable throwable) {
+  }
+
+  public void info(Throwable throwable) {
+  }
+
+  public void warn(String s, Object... o) {
+  }
+
+  public void warn(String s, Throwable throwable) {
+  }
+
+  public void warn(Throwable throwable) {
+  }
+
+  public void ignore(Throwable throwable) {
+  }
+
   public Logger getLogger(String s) {
     return this;
   }
