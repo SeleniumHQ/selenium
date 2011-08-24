@@ -16,7 +16,7 @@ limitations under the License.
 */
 package org.openqa.selenium;
 
-import org.openqa.selenium.interactions.ActionChainsGeneratorTest;
+import org.openqa.selenium.interactions.ActionsTest;
 import org.openqa.selenium.interactions.CompositeActionTest;
 import org.openqa.selenium.interactions.IndividualKeyboardActionsTest;
 import org.openqa.selenium.interactions.IndividualMouseActionsTest;
@@ -29,7 +29,7 @@ import org.junit.runners.Suite;
     CompositeActionTest.class,
     IndividualMouseActionsTest.class,
     IndividualKeyboardActionsTest.class,
-    ActionChainsGeneratorTest.class
+    ActionsTest.class
 })
 public class SmallTests {
 }

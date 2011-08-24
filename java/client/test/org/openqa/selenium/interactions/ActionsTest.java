@@ -33,9 +33,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the builder for user actions.
+ * Tests the builder for advanced user interaction, the Actions class.
  */
-public class ActionChainsGeneratorTest extends MockTestBase {
+public class ActionsTest extends MockTestBase {
+
   private WebElement dummyLocatableElement;
   private Mouse dummyMouse;
   private Keyboard dummyKeyboard;
@@ -70,7 +71,6 @@ public class ActionChainsGeneratorTest extends MockTestBase {
 
   @Test
   public void creatingAllKeyboardActions() {
-
     checking(new Expectations() {{      
       one(dummyKeyboard).pressKey(Keys.SHIFT);
       one(dummyKeyboard).sendKeys("abc");
@@ -172,6 +172,7 @@ public class ActionChainsGeneratorTest extends MockTestBase {
     CompositeAction returnedAction = (CompositeAction) builder.build();
     returnedAction.perform();
 
-    assertEquals("Expected 6 mouse actions.", 6, returnedAction.getNumberOfActions());
+    assertEquals("Expected 6 mouse actions", 6, returnedAction.getNumberOfActions());
   }
+
 }
