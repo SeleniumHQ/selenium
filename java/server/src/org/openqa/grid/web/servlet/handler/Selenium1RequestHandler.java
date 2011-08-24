@@ -32,17 +32,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Handler processing the selenium1 based requests. Each request body has to be
- * read to get the sessionId at least.
+ * Handler processing the selenium1 based requests. Each request body has to be read to get the
+ * sessionId at least.
  */
 public class Selenium1RequestHandler extends RequestHandler {
 
   private static final Logger log = Logger.getLogger(Selenium1RequestHandler.class.getName());
 
-  Selenium1RequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
+  Selenium1RequestHandler(HttpServletRequest request, HttpServletResponse response,
+      Registry registry) {
     super(request, response, registry);
     if (getRequestBody() == null) {
-      throw new InstantiationError("Cannot create a selenium1 request handler from a request without body");
+      throw new InstantiationError(
+          "Cannot create a selenium1 request handler from a request without body");
     }
   }
 
@@ -132,13 +134,19 @@ public class Selenium1RequestHandler extends RequestHandler {
           // because they use an explicit mapping
           // to a browser launcher string.
           if (getRegistry().getConfiguration().getGrid1Mapping().containsKey(parts[1])) {
-            piece = String.format("1=%s", URLEncoder.encode(BrowserNameUtils.lookupGrid1Environment(parts[1], getRegistry()), "UTF-8"));
+            piece =
+                String.format(
+                    "1=%s",
+                    URLEncoder.encode(
+                        BrowserNameUtils.lookupGrid1Environment(parts[1], getRegistry()), "UTF-8"));
           }
 
           // Otherwise, the requested environment includes the browser
           // name before the space.
           else {
-            piece = (String) BrowserNameUtils.parseGrid2Environment(piece).get(RegistrationRequest.BROWSER);
+            piece =
+                (String) BrowserNameUtils.parseGrid2Environment(piece).get(
+                    RegistrationRequest.BROWSER);
           }
         }
         builder.append(piece).append("&");

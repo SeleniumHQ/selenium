@@ -41,7 +41,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListener, SelfHealingProxy, CommandListener {
+public abstract class WebRemoteProxy extends RemoteProxy
+    implements
+      TimeoutListener,
+      SelfHealingProxy,
+      CommandListener {
 
   private long pollingInterval = 10000;
 
@@ -61,11 +65,14 @@ public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListe
 
   public abstract void beforeRelease(TestSession session);
 
-  public void afterCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
-    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executing ...");
+  public void afterCommand(TestSession session, HttpServletRequest request,
+      HttpServletResponse response) {
+    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() +
+        " executing ...");
   }
 
-  public void beforeCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
+  public void beforeCommand(TestSession session, HttpServletRequest request,
+      HttpServletResponse response) {
     session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executed.");
   }
 
@@ -77,9 +84,8 @@ public abstract class WebRemoteProxy extends RemoteProxy implements TimeoutListe
   }
 
   /*
-    * Self Healing part.Polls the remote, and marks it down if it cannot be
-    * reached twice in a row.
-    */
+   * Self Healing part.Polls the remote, and marks it down if it cannot be reached twice in a row.
+   */
   private boolean down = false;
   private boolean poll = true;
   int nbFailedPoll = 0;

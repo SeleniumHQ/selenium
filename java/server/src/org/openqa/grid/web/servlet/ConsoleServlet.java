@@ -37,9 +37,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Front end to monitor what is currently happening on the proxies. The display
- * is defined by HtmlRenderer returned by the RemoteProxy.getHtmlRenderer()
- * method.
+ * Front end to monitor what is currently happening on the proxies. The display is defined by
+ * HtmlRenderer returned by the RemoteProxy.getHtmlRenderer() method.
  */
 public class ConsoleServlet extends RegistryBasedServlet {
 
@@ -57,15 +56,18 @@ public class ConsoleServlet extends RegistryBasedServlet {
     getVersion();
   }
 
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
-  protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  protected void process(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
 
     int refresh = -1;
 
@@ -141,7 +143,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
   /**
    * retracing how the hub config was built to help debugging.
-   *
+   * 
    * @return
    */
   private String getConfigInfo(boolean verbose) {
@@ -172,7 +174,8 @@ public class ConsoleServlet extends RegistryBasedServlet {
         tmp.loadFromGridYml(config.getGrid1Yml());
         builder.append(prettyHtmlPrint(tmp));
       } else {
-        builder.append("No grid1 file specified. To specify one, use -grid1Yml XXX.yml where XXX.yml is a grid1 config file</br>");
+        builder
+            .append("No grid1 file specified. To specify one, use -grid1Yml XXX.yml where XXX.yml is a grid1 config file</br>");
       }
 
       builder.append("<br/><b>updated with grid2 config : </b>");
@@ -181,7 +184,8 @@ public class ConsoleServlet extends RegistryBasedServlet {
         tmp.loadFromJSON(config.getGrid2JSON());
         builder.append(prettyHtmlPrint(tmp));
       } else {
-        builder.append("No hub config file specified. To specify one, use -hubConfig XXX.json where XXX.json is a hub config file</br>");
+        builder
+            .append("No hub config file specified. To specify one, use -hubConfig XXX.json where XXX.json is a hub config file</br>");
       }
 
       builder.append("<br/><b>updated with params :</b></br>");
@@ -203,13 +207,20 @@ public class ConsoleServlet extends RegistryBasedServlet {
     b.append(key("cleanupCycle")).append(config.getCleanupCycle()).append("</br>");
     b.append(key("timeout")).append(config.getTimeout()).append("</br>");
 
-    b.append(key("newSessionWaitTimeout")).append(config.getNewSessionWaitTimeout()).append("</br>");
+    b.append(key("newSessionWaitTimeout")).append(config.getNewSessionWaitTimeout())
+        .append("</br>");
     b.append(key("grid1Mapping")).append(config.getGrid1Mapping()).append("</br>");
-    b.append(key("throwOnCapabilityNotPresent")).append(config.isThrowOnCapabilityNotPresent()).append("</br>");
+    b.append(key("throwOnCapabilityNotPresent")).append(config.isThrowOnCapabilityNotPresent())
+        .append("</br>");
 
     b.append(key("capabilityMatcher"))
-        .append(config.getCapabilityMatcher() == null ? "null" : config.getCapabilityMatcher().getClass().getCanonicalName()).append("</br>");
-    b.append(key("prioritizer")).append(config.getPrioritizer() == null ? "null" : config.getPrioritizer().getClass().getCanonicalName())
+        .append(
+            config.getCapabilityMatcher() == null ? "null" : config.getCapabilityMatcher()
+                .getClass().getCanonicalName()).append("</br>");
+    b.append(key("prioritizer"))
+        .append(
+            config.getPrioritizer() == null ? "null" : config.getPrioritizer().getClass()
+                .getCanonicalName())
         .append("</br>");
     b.append(key("servlets"));
     for (String s : config.getServlets()) {
@@ -230,7 +241,8 @@ public class ConsoleServlet extends RegistryBasedServlet {
   private void getVersion() {
     final Properties p = new Properties();
 
-    InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("VERSION.txt");
+    InputStream stream =
+        Thread.currentThread().getContextClassLoader().getResourceAsStream("VERSION.txt");
     if (stream == null) {
       log.severe("Couldn't determine version number");
       return;

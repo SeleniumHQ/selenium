@@ -24,9 +24,8 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.TestSlot;
 
 /**
- * Default html render that doesn't assume anything about a proxy ( in
- * particular, it doesn't assume it's a selenium1 or 2 proxy.) , and just
- * display very basic info about it for the console.
+ * Default html render that doesn't assume anything about a proxy ( in particular, it doesn't assume
+ * it's a selenium1 or 2 proxy.) , and just display very basic info about it for the console.
  */
 public class DefaultHtmlRenderer implements HtmlRenderer {
 
@@ -50,10 +49,12 @@ public class DefaultHtmlRenderer implements HtmlRenderer {
       builder.append("test session time out after ").append(inSec).append(" sec.");
     }
 
-    builder.append("<br>Supports up to <b>").append(proxy.getMaxNumberOfConcurrentTestSessions()).append("</b> concurrent tests from : </u><br>");
+    builder.append("<br>Supports up to <b>").append(proxy.getMaxNumberOfConcurrentTestSessions())
+        .append("</b> concurrent tests from : </u><br>");
 
     for (TestSlot slot : proxy.getTestSlots()) {
-      builder.append(slot.getCapabilities().containsKey(BROWSER) ? slot.getCapabilities().get(BROWSER) : slot.getCapabilities().get(APP));
+      builder.append(slot.getCapabilities().containsKey(BROWSER) ? slot.getCapabilities().get(
+          BROWSER) : slot.getCapabilities().get(APP));
       TestSession session = slot.getSession();
       builder.append(session == null ? "(free)" : "(busy, session " + session + ")");
       builder.append("<br>");

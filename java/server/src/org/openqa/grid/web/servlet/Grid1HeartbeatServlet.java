@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.grid.web.servlet;
 
@@ -27,8 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Provided for compatibility with Selenium Grid 1.0 clients.  Responds to heartbeat requests and indicates
- * whether or not a node is registered with the hub.
+ * Provided for compatibility with Selenium Grid 1.0 clients. Responds to heartbeat requests and
+ * indicates whether or not a node is registered with the hub.
  */
 public class Grid1HeartbeatServlet extends RegistryBasedServlet {
   private static final long serialVersionUID = 7653463271803124556L;
@@ -41,14 +41,17 @@ public class Grid1HeartbeatServlet extends RegistryBasedServlet {
     super(registry);
   }
 
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     response.setContentType("text/html");
     response.setCharacterEncoding("UTF-8");
     response.setStatus(200);
 
     // Build up the proxy URL based upon the params the Grid 1.0 node will pass as query params.
     Map<String, String[]> queryParams = request.getParameterMap();
-    String nodeUrl = String.format("http://%s:%s/selenium-server/driver", queryParams.get("host")[0], queryParams.get("port")[0]);
+    String nodeUrl =
+        String.format("http://%s:%s/selenium-server/driver", queryParams.get("host")[0],
+            queryParams.get("port")[0]);
 
     // Check each registered node and see if the pinging node is in the list.
     boolean alreadyRegistered = false;

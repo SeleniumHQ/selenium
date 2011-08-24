@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.grid.internal.utils;
 
@@ -20,8 +20,8 @@ import org.openqa.grid.internal.RemoteProxy;
 
 
 /**
- * To be returned by {@link RemoteProxy#getHtmlRender()}
- * Allow to customized how the summary of the RemoteProxy will be shown on the hub console.
+ * To be returned by {@link RemoteProxy#getHtmlRender()} Allow to customized how the summary of the
+ * RemoteProxy will be shown on the hub console.
  */
 public interface HtmlRenderer {
   public String renderSummary();

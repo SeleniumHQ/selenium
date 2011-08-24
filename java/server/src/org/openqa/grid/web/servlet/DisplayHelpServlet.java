@@ -25,15 +25,18 @@ public class DisplayHelpServlet extends HttpServlet {
   }
 
 
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
-  protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  protected void process(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     response.setContentType("text/html");
     response.setCharacterEncoding("UTF-8");
     response.setStatus(200);
@@ -50,7 +53,8 @@ public class DisplayHelpServlet extends HttpServlet {
 
     builder.append("<body>");
     builder.append("You are using grid ").append(coreRevision).append(coreRevision);
-    builder.append("Find help on the official selenium wiki : <a href='http://code.google.com/p/selenium/wiki/Grid2' >more help here</a>");
+    builder
+        .append("Find help on the official selenium wiki : <a href='http://code.google.com/p/selenium/wiki/Grid2' >more help here</a>");
     builder.append("</body>");
     builder.append("</html>");
 
@@ -66,7 +70,8 @@ public class DisplayHelpServlet extends HttpServlet {
   private void getVersion() {
     final Properties p = new Properties();
 
-    InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("VERSION.txt");
+    InputStream stream =
+        Thread.currentThread().getContextClassLoader().getResourceAsStream("VERSION.txt");
     if (stream == null) {
       log.severe("Couldn't determine version number");
       return;

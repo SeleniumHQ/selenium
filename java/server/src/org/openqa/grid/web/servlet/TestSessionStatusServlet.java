@@ -27,15 +27,18 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
     super(registry);
   }
 
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
-  protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  protected void process(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     response.setContentType("text/html");
     response.setCharacterEncoding("UTF-8");
     response.setStatus(200);
@@ -76,7 +79,8 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
       session = request.getParameter("session");
     } else {
       if (!requestJSON.has("session")) {
-        res.put("msg", "you need to specify at least a session or internalKey when call the test slot status service.");
+        res.put("msg",
+            "you need to specify at least a session or internalKey when call the test slot status service.");
         return res;
       }
       session = requestJSON.getString("session");

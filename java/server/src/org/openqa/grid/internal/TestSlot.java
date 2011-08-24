@@ -26,14 +26,13 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 /**
- * The entity on a proxy that can host a test session. A test slot has only 1
- * desired capabilities ( firefox or chrome for instance, but if a remoteproxy
- * needs to support both, the remoteproxy will need 2 TestSlots ) A TestSlot can
- * host 1 TestSession max at a time.
+ * The entity on a proxy that can host a test session. A test slot has only 1 desired capabilities (
+ * firefox or chrome for instance, but if a remoteproxy needs to support both, the remoteproxy will
+ * need 2 TestSlots ) A TestSlot can host 1 TestSession max at a time.
  * <p/>
- * The listener ({@link TestSessionListener} attached to the test session of
- * this test slot is thread safe. If 2 threads are trying to execute the before
- * / after session, only 1 will be executed.The other one will be discarded.
+ * The listener ({@link TestSessionListener} attached to the test session of this test slot is
+ * thread safe. If 2 threads are trying to execute the before / after session, only 1 will be
+ * executed.The other one will be discarded.
  */
 public class TestSlot {
 
@@ -51,7 +50,8 @@ public class TestSlot {
     this.proxy = proxy;
     CapabilityMatcher c = proxy.getCapabilityHelper();
     if (c == null) {
-      throw new InvalidParameterException("the proxy needs to have a valid " + "capabilityMatcher to support have some testslots attached to it");
+      throw new InvalidParameterException("the proxy needs to have a valid "
+          + "capabilityMatcher to support have some testslots attached to it");
     }
     matcher = proxy.getCapabilityHelper();
     this.capabilities = capabilities;
@@ -70,16 +70,15 @@ public class TestSlot {
   }
 
   /**
-   * Try to get a new session for the test slot for the desired capability. To
-   * define if the testslot can host the desired capabilites,
-   * {@link CapabilityMatcher#matches(Map, Map)} is invoked.
+   * Try to get a new session for the test slot for the desired capability. To define if the
+   * testslot can host the desired capabilites, {@link CapabilityMatcher#matches(Map, Map)} is
+   * invoked.
    * <p/>
-   * Use {@link RemoteProxy#setCapabilityHelper(CapabilityMatcher)} on the
-   * proxy histing the test slot to modify the definition of match
-   *
+   * Use {@link RemoteProxy#setCapabilityHelper(CapabilityMatcher)} on the proxy histing the test
+   * slot to modify the definition of match
+   * 
    * @param desiredCapabilities
-   * @return a new session linked to that testSlot if possible, null
-   *         otherwise.
+   * @return a new session linked to that testSlot if possible, null otherwise.
    */
   public TestSession getNewSession(Map<String, Object> desiredCapabilities) {
     try {
@@ -112,7 +111,7 @@ public class TestSlot {
 
   /**
    * get the test session currently executed on this test slot.
-   *
+   * 
    * @return the session. Null if the slot is not used at the moment.
    */
   public TestSession getSession() {
@@ -120,15 +119,14 @@ public class TestSlot {
   }
 
   /**
-   * Starts the release process for the TestSlot. Once the release process has
-   * started, the clients can't access the testslot any more, but the slot
-   * can't be reserved for another test until finishReleaseProcess is called.
+   * Starts the release process for the TestSlot. Once the release process has started, the clients
+   * can't access the testslot any more, but the slot can't be reserved for another test until
+   * finishReleaseProcess is called.
    * <p/>
    * That gives time to run exactly once the cleanup operation needed using @see
    * {@link TestSessionListener#afterSession(TestSession)}
-   *
-   * @return true if that's the first thread trying to release this test slot,
-   *         false otherwise.
+   * 
+   * @return true if that's the first thread trying to release this test slot, false otherwise.
    * @see TestSlot#finishReleaseProcess()
    */
   private boolean startReleaseProcess() {
@@ -161,9 +159,8 @@ public class TestSlot {
   private boolean showWarning = false;
 
   /**
-   * Release the test slot. Free the resource on the slot itself and the
-   * registry. If also invokes the
-   * {@link TestSessionListener#afterSession(TestSession)} if applicable.
+   * Release the test slot. Free the resource on the slot itself and the registry. If also invokes
+   * the {@link TestSessionListener#afterSession(TestSession)} if applicable.
    */
   void _release() {
     if (currentSession == null) {

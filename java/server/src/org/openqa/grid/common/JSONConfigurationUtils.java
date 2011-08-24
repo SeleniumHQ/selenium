@@ -15,7 +15,7 @@ public class JSONConfigurationUtils {
 
   /**
    * load a json file from the resource or file system.
-   *
+   * 
    * @param resource
    * @return
    * @throws IOException
@@ -43,7 +43,8 @@ public class JSONConfigurationUtils {
         b.append(line);
       }
     } catch (IOException e) {
-      throw new GridConfigurationException("Cannot read file " + resource + " , " + e.getMessage(), e);
+      throw new GridConfigurationException("Cannot read file " + resource + " , " + e.getMessage(),
+          e);
     }
 
     String json = b.toString();

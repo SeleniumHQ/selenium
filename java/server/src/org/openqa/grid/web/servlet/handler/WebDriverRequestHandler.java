@@ -35,7 +35,8 @@ public class WebDriverRequestHandler extends RequestHandler {
 
   private static final Logger log = Logger.getLogger(WebDriverRequestHandler.class.getName());
 
-  protected WebDriverRequestHandler(HttpServletRequest request, HttpServletResponse response, Registry registry) {
+  protected WebDriverRequestHandler(HttpServletRequest request, HttpServletResponse response,
+      Registry registry) {
     super(request, response, registry);
   }
 
@@ -65,10 +66,9 @@ public class WebDriverRequestHandler extends RequestHandler {
 
   /**
    * extract the session xxx from http://host:port/a/b/c/session/xxx/...
-   *
+   * 
    * @param path The path to the session
-   * @return the session key provided by the remote., or null if the url
-   *         didn't contain a session id
+   * @return the session key provided by the remote., or null if the url didn't contain a session id
    */
   private String extractSession(String path) {
     int sessionIndex = path.indexOf("/session/");
@@ -101,7 +101,7 @@ public class WebDriverRequestHandler extends RequestHandler {
     try {
       JSONObject map = new JSONObject(json);
       JSONObject dc = map.getJSONObject("desiredCapabilities");
-      for (Iterator iterator = dc.keys(); iterator.hasNext(); ) {
+      for (Iterator iterator = dc.keys(); iterator.hasNext();) {
         String key = (String) iterator.next();
         Object value = dc.get(key);
         if (value == JSONObject.NULL) {
@@ -135,7 +135,8 @@ public class WebDriverRequestHandler extends RequestHandler {
     }
 
     if (getResponse().containsHeader("Location")) {
-      String location = ((ServletHttpResponse) getResponse()).getHttpResponse().getField("Location");
+      String location =
+          ((ServletHttpResponse) getResponse()).getHttpResponse().getField("Location");
       return extractSession(location);
     } else {
       log.warning("Error, header should contain Location");

@@ -27,9 +27,9 @@ public class GridHubConfiguration {
   private static final Logger log = Logger.getLogger(GridHubConfiguration.class.getName());
 
   /**
-   * The hub needs to know its hostname in order to write the proper Location
-   * header for the request being forwarded. Usually this can be guessed
-   * correctly, but in case it cannot it can be passed via this config param.
+   * The hub needs to know its hostname in order to write the proper Location header for the request
+   * being forwarded. Usually this can be guessed correctly, but in case it cannot it can be passed
+   * via this config param.
    */
   private String host = null;
 
@@ -39,28 +39,27 @@ public class GridHubConfiguration {
   private int port;
 
   /**
-   * how often in ms each proxy will detect that a session has timed out. All
-   * new proxy registering will have that value if they don't specifically
-   * mention the parameter.
+   * how often in ms each proxy will detect that a session has timed out. All new proxy registering
+   * will have that value if they don't specifically mention the parameter.
    */
   private int cleanupCycle;
 
   /**
-   * how long can a session be idle before being considered timed out. Working
-   * together with cleanup cycle. Worst case scenario, a session can be idle
-   * for timout + cleanup cycle before the timeout is detected
+   * how long can a session be idle before being considered timed out. Working together with cleanup
+   * cycle. Worst case scenario, a session can be idle for timout + cleanup cycle before the timeout
+   * is detected
    */
   private int timeout;
 
   /**
-   * how long a new session request can stay in the queue without being
-   * assigned before being rejected. -1 = forever.
+   * how long a new session request can stay in the queue without being assigned before being
+   * rejected. -1 = forever.
    */
   private int newSessionWaitTimeout;
 
   /**
-   * list of extra serlvets this hub will display. Allows to present custom
-   * view of the hub for monitoring and management purpose
+   * list of extra serlvets this hub will display. Allows to present custom view of the hub for
+   * monitoring and management purpose
    */
   private List<String> servlets = new ArrayList<String>();
 
@@ -80,15 +79,15 @@ public class GridHubConfiguration {
   private CapabilityMatcher matcher;
 
   /**
-   * true by default.If true, the hub will throw exception as soon as a
-   * request not supported by the grid is received. If set to false, the
-   * request will be queued, hoping that a node will be registered at some
-   * point, supporting that capability.
+   * true by default.If true, the hub will throw exception as soon as a request not supported by the
+   * grid is received. If set to false, the request will be queued, hoping that a node will be
+   * registered at some point, supporting that capability.
    */
   private boolean throwOnCapabilityNotPresent = true;
 
   /**
-   * The filename to use for logging.  Default value is <code>null</code> and indicates logging to STDOUT.
+   * The filename to use for logging. Default value is <code>null</code> and indicates logging to
+   * STDOUT.
    */
   private String logFilename;
 
@@ -107,7 +106,7 @@ public class GridHubConfiguration {
 
   /**
    * builds a grid configuration from the parameters passed command line.
-   *
+   * 
    * @param args
    * @return
    */
@@ -168,7 +167,8 @@ public class GridHubConfiguration {
       newSessionWaitTimeout = Integer.parseInt(helper.getParamValue("-newSessionWaitTimeout"));
     }
     if (helper.isParamPresent("-throwOnCapabilityNotPresent")) {
-      throwOnCapabilityNotPresent = Boolean.parseBoolean(helper.getParamValue("-throwOnCapabilityNotPresent"));
+      throwOnCapabilityNotPresent =
+          Boolean.parseBoolean(helper.getParamValue("-throwOnCapabilityNotPresent"));
     }
     if (helper.isParamPresent("-prioritizer")) {
       setPrioritizer(helper.getParamValue("-prioritizer"));
@@ -267,7 +267,8 @@ public class GridHubConfiguration {
       if (o.has(RegistrationRequest.PORT) && !o.isNull(RegistrationRequest.PORT)) {
         port = o.getInt(RegistrationRequest.PORT);
       }
-      if (o.has(RegistrationRequest.CLEAN_UP_CYCLE) && !o.isNull(RegistrationRequest.CLEAN_UP_CYCLE)) {
+      if (o.has(RegistrationRequest.CLEAN_UP_CYCLE) &&
+          !o.isNull(RegistrationRequest.CLEAN_UP_CYCLE)) {
         cleanupCycle = o.getInt(RegistrationRequest.CLEAN_UP_CYCLE);
       }
       if (o.has(RegistrationRequest.TIME_OUT) && !o.isNull(RegistrationRequest.TIME_OUT)) {
@@ -295,7 +296,7 @@ public class GridHubConfiguration {
       }
 
       // store them all.
-      for (Iterator iterator = o.keys(); iterator.hasNext(); ) {
+      for (Iterator iterator = o.keys(); iterator.hasNext();) {
         String key = (String) iterator.next();
         Object value = o.get(key);
         if (value instanceof JSONArray) {
@@ -311,7 +312,8 @@ public class GridHubConfiguration {
       }
 
     } catch (Throwable e) {
-      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(), e);
+      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
+          e);
     }
   }
 
@@ -386,12 +388,13 @@ public class GridHubConfiguration {
   public void setPrioritizer(String prioritizerClass) {
     try {
       Class<Prioritizer> p = (Class<Prioritizer>) Class.forName(prioritizerClass);
-      Class<?>[] argsClass = new Class[]{};
+      Class<?>[] argsClass = new Class[] {};
       Constructor<?> c = p.getConstructor(argsClass);
-      Object[] args = new Object[]{};
+      Object[] args = new Object[] {};
       prioritizer = (Prioritizer) c.newInstance(args);
     } catch (Throwable e) {
-      throw new GridConfigurationException("Error creating the prioritize from class " + prioritizerClass + " : " + e.getMessage(), e);
+      throw new GridConfigurationException("Error creating the prioritize from class " +
+          prioritizerClass + " : " + e.getMessage(), e);
     }
   }
 
@@ -402,12 +405,13 @@ public class GridHubConfiguration {
   public void setCapabilityMatcher(String matcherClass) {
     try {
       Class<CapabilityMatcher> p = (Class<CapabilityMatcher>) Class.forName(matcherClass);
-      Class<?>[] argsClass = new Class[]{};
+      Class<?>[] argsClass = new Class[] {};
       Constructor<?> c = p.getConstructor(argsClass);
-      Object[] args = new Object[]{};
+      Object[] args = new Object[] {};
       matcher = (CapabilityMatcher) c.newInstance(args);
     } catch (Throwable e) {
-      throw new GridConfigurationException("Error creating the capability matcher from class " + matcherClass + " : " + e.getMessage(), e);
+      throw new GridConfigurationException("Error creating the capability matcher from class " +
+          matcherClass + " : " + e.getMessage(), e);
     }
   }
 
@@ -434,8 +438,11 @@ public class GridHubConfiguration {
     b.append("grid1Mapping: ").append(grid1Mapping).append("\n");
     b.append("throwOnCapabilityNotPresent: ").append(throwOnCapabilityNotPresent).append("\n");
 
-    b.append("capabilityMatcher: ").append(matcher == null ? "null" : matcher.getClass().getCanonicalName()).append("\n");
-    b.append("prioritizer: ").append(prioritizer == null ? "null" : prioritizer.getClass().getCanonicalName()).append("\n");
+    b.append("capabilityMatcher: ")
+        .append(matcher == null ? "null" : matcher.getClass().getCanonicalName()).append("\n");
+    b.append("prioritizer: ")
+        .append(prioritizer == null ? "null" : prioritizer.getClass().getCanonicalName())
+        .append("\n");
     b.append("servlets: ");
     for (String s : servlets) {
       b.append(s.getClass().getCanonicalName()).append(",");

@@ -30,15 +30,18 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     super(registry);
   }
 
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
-  protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  protected void process(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     response.setContentType("text/html");
     response.setCharacterEncoding("UTF-8");
     response.setStatus(200);
@@ -123,7 +126,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
   }
 
   private Object getValueByReflection(RemoteProxy proxy, String method) {
-    Class<?>[] argsClass = new Class[]{};
+    Class<?>[] argsClass = new Class[] {};
     try {
       Method m = proxy.getClass().getDeclaredMethod(method, argsClass);
       return m.invoke(proxy);
@@ -135,7 +138,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
   private List<String> getExtraMethodsRequested(JSONObject request) {
     List<String> res = new ArrayList<String>();
 
-    for (Iterator iterator = request.keys(); iterator.hasNext(); ) {
+    for (Iterator iterator = request.keys(); iterator.hasNext();) {
       String key = (String) iterator.next();
       if (!"id".equals(key)) {
         res.add(key);

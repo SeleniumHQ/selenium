@@ -35,8 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * entry point for all communication request sent by the clients to the remotes
- * managed by the grid.
+ * entry point for all communication request sent by the clients to the remotes managed by the grid.
  */
 public class DriverServlet extends RegistryBasedServlet {
 
@@ -51,21 +50,25 @@ public class DriverServlet extends RegistryBasedServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
   @Override
-  protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
-  protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  protected void process(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     RequestHandler req = null;
     try {
       req = RequestHandler.createHandler(request, response, getRegistry());

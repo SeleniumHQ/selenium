@@ -69,7 +69,7 @@ public class Hub {
 
   /**
    * get the registry backing up the hub state.
-   *
+   * 
    * @return
    */
   public Registry getRegistry() {
@@ -77,7 +77,10 @@ public class Hub {
   }
 
   public Hub(GridHubConfiguration config) {
-    String logFilename = config.getLogFilename() == null ? RemoteControlConfiguration.getDefaultLogOutFile() : config.getLogFilename();
+    String logFilename =
+        config.getLogFilename() == null
+            ? RemoteControlConfiguration.getDefaultLogOutFile()
+            : config.getLogFilename();
     if (logFilename != null) {
       try {
         Handler logFile = new FileHandler(new File(logFilename).getAbsolutePath(), true);

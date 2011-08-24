@@ -27,9 +27,8 @@ import java.util.logging.Logger;
 /**
  * Default (naive) implementation of the capability matcher.
  * <p/>
- * The default capability matcher will look at all the key from the request do
- * not start with _ and will try to find a node that has at least those
- * capabilities.
+ * The default capability matcher will look at all the key from the request do not start with _ and
+ * will try to find a node that has at least those capabilities.
  */
 public class DefaultCapabilityMatcher implements CapabilityMatcher {
 

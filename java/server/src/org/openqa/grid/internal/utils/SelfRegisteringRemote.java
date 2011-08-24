@@ -74,7 +74,8 @@ public class SelfRegisteringRemote {
         url = base + "/wd/hub";
         break;
       default:
-        throw new GridConfigurationException("Cannot launch a node with role " + nodeConfig.getRole());
+        throw new GridConfigurationException("Cannot launch a node with role " +
+            nodeConfig.getRole());
     }
     try {
       return new URL(url);
@@ -110,7 +111,8 @@ public class SelfRegisteringRemote {
             String path = "/" + servletClass.getSimpleName() + "/*";
             String clazz = servletClass.getCanonicalName();
             handler.addServlet(path, clazz);
-            log.info("started extra node servlet visible at : http://xxx:" + nodeConfig.getConfiguration().get(RegistrationRequest.PORT)
+            log.info("started extra node servlet visible at : http://xxx:" +
+                nodeConfig.getConfiguration().get(RegistrationRequest.PORT)
                 + "/extra" + path);
           }
         }
@@ -143,8 +145,8 @@ public class SelfRegisteringRemote {
   }
 
   /**
-   * sends 1 registration request, bypassing the retry logic and the proxy
-   * already registered check. Use only for testing.
+   * sends 1 registration request, bypassing the retry logic and the proxy already registered check.
+   * Use only for testing.
    */
   public void sendRegistrationRequest() {
 
@@ -166,7 +168,8 @@ public class SelfRegisteringRemote {
     if (!register) {
       log.info("no registration sent ( " + AUTO_REGISTER + " = false )");
     } else {
-      final Integer o = (Integer) nodeConfig.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE);
+      final Integer o =
+          (Integer) nodeConfig.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE);
       if (o != null && o.intValue() > 0) {
         new Thread(new Runnable() {
 
@@ -216,14 +219,16 @@ public class SelfRegisteringRemote {
     boolean ok = checkPresenceFirst == true ? !isAlreadyRegistered(nodeConfig) : true;
 
     if (ok) {
-      String tmp = "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
-          + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/register";
+      String tmp =
+          "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
+              + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/register";
 
       try {
         URL registration = new URL(tmp);
         log.info("Registering the node to hub :" + registration);
 
-        BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("POST", registration.toExternalForm());
+        BasicHttpEntityEnclosingRequest r =
+            new BasicHttpEntityEnclosingRequest("POST", registration.toExternalForm());
         String json = nodeConfig.toJSON();
         r.setEntity(new StringEntity(json));
 

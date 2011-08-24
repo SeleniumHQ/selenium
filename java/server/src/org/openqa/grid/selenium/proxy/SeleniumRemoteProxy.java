@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.grid.selenium.proxy;
 
@@ -64,7 +64,8 @@ public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListen
     if (matchFFprofileToo == null) {
       matchFFprofileToo = new DefaultCapabilityMatcher() {
         @Override
-        public boolean matches(Map<String, Object> currentCapability, Map<String, Object> requestedCapability) {
+        public boolean matches(Map<String, Object> currentCapability,
+            Map<String, Object> requestedCapability) {
           String path = (String) requestedCapability.get("profilePath");
           if (path != null && !path.equals(currentCapability.get("profilePath"))) {
             return false;

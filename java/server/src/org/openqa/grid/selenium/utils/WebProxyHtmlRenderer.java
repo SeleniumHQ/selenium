@@ -39,7 +39,8 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
       builder.append("test session time out after ").append(inSec).append(" sec.<br />");
     }
 
-    builder.append("Supports up to <b>").append(proxy.getMaxNumberOfConcurrentTestSessions()).append("</b> concurrent tests from: <br />");
+    builder.append("Supports up to <b>").append(proxy.getMaxNumberOfConcurrentTestSessions())
+        .append("</b> concurrent tests from: <br />");
 
     builder.append("");
     for (TestSlot slot : proxy.getTestSlots()) {
@@ -75,7 +76,8 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
   }
 
   private String getIcon(Map<String, Object> capabilities) {
-    return BrowserNameUtils.getConsoleIconPath(new DesiredCapabilities(capabilities), proxy.getRegistry());
+    return BrowserNameUtils.getConsoleIconPath(new DesiredCapabilities(capabilities),
+        proxy.getRegistry());
   }
 
 }

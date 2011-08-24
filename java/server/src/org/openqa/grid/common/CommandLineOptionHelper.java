@@ -40,7 +40,8 @@ public class CommandLineOptionHelper {
       throw new GridConfigurationException("The parameter " + name + " isn't specified.");
     }
     if (args.length == index) {
-      throw new GridConfigurationException("The parameter " + name + " doesn't have a value specified.");
+      throw new GridConfigurationException("The parameter " + name +
+          " doesn't have a value specified.");
     }
     return args[index + 1];
   }
@@ -57,7 +58,7 @@ public class CommandLineOptionHelper {
 
   /**
    * get all occurences of -name
-   *
+   * 
    * @param name
    * @return
    */

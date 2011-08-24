@@ -50,8 +50,10 @@ public class WebDriverRemoteProxy extends WebRemoteProxy implements TestSessionL
   public void beforeSession(TestSession session) {
     Map<String, Object> cap = session.getRequestedCapabilities();
     if ("firefox".equals(cap.get(CapabilityType.BROWSER_NAME))) {
-      if (session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null && cap.get(FirefoxDriver.BINARY) == null) {
-        session.getRequestedCapabilities().put(FirefoxDriver.BINARY, session.getSlot().getCapabilities().get(FirefoxDriver.BINARY));
+      if (session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null &&
+          cap.get(FirefoxDriver.BINARY) == null) {
+        session.getRequestedCapabilities().put(FirefoxDriver.BINARY,
+            session.getSlot().getCapabilities().get(FirefoxDriver.BINARY));
       }
     }
   }

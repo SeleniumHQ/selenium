@@ -31,9 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * entry point for the registration API the grid provides. The
- * {@link RegistrationRequest} sent to http://hub:port/grid/register will be
- * used to create a RemoteProxy and add it to the grid.
+ * entry point for the registration API the grid provides. The {@link RegistrationRequest} sent to
+ * http://hub:port/grid/register will be used to create a RemoteProxy and add it to the grid.
  */
 public class RegistrationServlet extends RegistryBasedServlet {
   private static final long serialVersionUID = -8670670577712086527L;
@@ -47,15 +46,18 @@ public class RegistrationServlet extends RegistryBasedServlet {
     super(registry);
   }
 
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     process(request, response);
   }
 
-  protected void process(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  protected void process(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
     StringBuilder registrationRequest = new StringBuilder();
     String line;

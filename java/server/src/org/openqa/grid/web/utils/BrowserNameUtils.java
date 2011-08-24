@@ -33,7 +33,8 @@ import java.util.Map;
 public class BrowserNameUtils {
 
   public static String lookupGrid1Environment(String browserString, Registry registry) {
-    String translatedBrowserString = registry.getConfiguration().getGrid1Mapping().get(browserString);
+    String translatedBrowserString =
+        registry.getConfiguration().getGrid1Mapping().get(browserString);
 
     return (translatedBrowserString == null) ? browserString : translatedBrowserString;
   }
@@ -101,15 +102,17 @@ public class BrowserNameUtils {
 
 
   /**
-   * get the icon representing the browser for the grid.
-   * If the icon cannot be located, returns null.
-   *
+   * get the icon representing the browser for the grid. If the icon cannot be located, returns
+   * null.
+   * 
    * @param cap
    * @return
    */
   public static String getConsoleIconPath(DesiredCapabilities cap, Registry registry) {
     String name = consoleIconName(cap, registry);
-    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("images/" + name + ".png");
+    InputStream in =
+        Thread.currentThread().getContextClassLoader()
+            .getResourceAsStream("images/" + name + ".png");
     if (in == null) {
       return null;
     } else {

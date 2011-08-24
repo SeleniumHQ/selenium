@@ -10,7 +10,7 @@ public enum GridRole {
 
   /**
    * finds the requested role from the parameters.
-   *
+   * 
    * @param args
    * @return the role in the grid from the -role param
    */
@@ -21,7 +21,8 @@ public enum GridRole {
     for (int i = 0; i < args.length; i++) {
       if ("-role".equals(args[i])) {
         if (i == args.length) {
-          throw new GridConfigurationException("-role needs to be followed by the role of this component in the grid.");
+          throw new GridConfigurationException(
+              "-role needs to be followed by the role of this component in the grid.");
         } else {
           String role = args[i + 1].toLowerCase();
           if (RCAliases().contains(role)) {
@@ -31,7 +32,8 @@ public enum GridRole {
           } else if ("hub".equals(role)) {
             return HUB;
           } else {
-            throw new GridConfigurationException("The role specified :" + role + " doesn't match a recognized role for grid.");
+            throw new GridConfigurationException("The role specified :" + role +
+                " doesn't match a recognized role for grid.");
           }
         }
       }

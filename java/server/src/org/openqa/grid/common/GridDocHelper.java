@@ -39,7 +39,8 @@ public class GridDocHelper {
 
     System.out.println("Usage :");
     for (Object key : p.keySet()) {
-      System.out.println("-" + key + ":\n\t" + WordUtils.wrap(getParam(p, key.toString()), 80, "\n\t", false));
+      System.out.println("-" + key + ":\n\t" +
+          WordUtils.wrap(getParam(p, key.toString()), 80, "\n\t", false));
     }
   }
 

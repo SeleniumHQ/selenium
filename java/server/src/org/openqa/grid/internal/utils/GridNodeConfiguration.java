@@ -26,9 +26,9 @@ public class GridNodeConfiguration {
   private Map<String, Object> configuration = new HashMap<String, Object>();
 
   /**
-   * The hub needs to know its hostname in order to write the proper Location
-   * header for the request being forwarded. Usually this can be guessed
-   * correctly, but in case it cannot it can be passed via this config param.
+   * The hub needs to know its hostname in order to write the proper Location header for the request
+   * being forwarded. Usually this can be guessed correctly, but in case it cannot it can be passed
+   * via this config param.
    */
   public static final String HOST = "host";
 
@@ -40,16 +40,15 @@ public class GridNodeConfiguration {
   public static final String PORT = "port";
 
   /**
-   * how often in ms each proxy will detect that a session has timed out. All
-   * new proxy registering will have that value if they don't specifically
-   * mention the parameter.
+   * how often in ms each proxy will detect that a session has timed out. All new proxy registering
+   * will have that value if they don't specifically mention the parameter.
    */
   public static final String CYCLE = "cleanupCycle";
 
   /**
-   * how long can a session be idle before being considered timed out. Working
-   * together with cleanup cycle. Worst case scenario, a session can be idle
-   * for timout + cleanup cycle before the timeout is detected
+   * how long can a session be idle before being considered timed out. Working together with cleanup
+   * cycle. Worst case scenario, a session can be idle for timout + cleanup cycle before the timeout
+   * is detected
    */
   public static final String TIME_OUT = "timeout";
 
@@ -132,7 +131,8 @@ public class GridNodeConfiguration {
     DesiredCapabilities res = new DesiredCapabilities();
     for (String capabilityPair : s) {
       if (capabilityPair.split("=").length != 2) {
-        throw new GridConfigurationException("-browser format is key1=value1,key2=value2 " + capabilityPair + " deosn't follow that format.");
+        throw new GridConfigurationException("-browser format is key1=value1,key2=value2 " +
+            capabilityPair + " deosn't follow that format.");
       }
       String key = capabilityPair.split("=")[0];
       String value = capabilityPair.split("=")[1];
@@ -140,7 +140,8 @@ public class GridNodeConfiguration {
     }
 
     if (res.getBrowserName() == null) {
-      throw new GridConfigurationException("You need to specify a browserName using browserName=XXX");
+      throw new GridConfigurationException(
+          "You need to specify a browserName using browserName=XXX");
     }
     return res;
 
@@ -164,7 +165,7 @@ public class GridNodeConfiguration {
 
   /**
    * add config, but overwrite capabilities.
-   *
+   * 
    * @param resource
    */
   private void loadFromJSON(String resource) {
@@ -177,7 +178,7 @@ public class GridNodeConfiguration {
         for (int i = 0; i < a.length(); i++) {
           JSONObject cap = a.getJSONObject(i);
           DesiredCapabilities c = new DesiredCapabilities();
-          for (Iterator iterator = cap.keys(); iterator.hasNext(); ) {
+          for (Iterator iterator = cap.keys(); iterator.hasNext();) {
             String name = (String) iterator.next();
             c.setCapability(name, cap.get(name));
           }
@@ -185,7 +186,7 @@ public class GridNodeConfiguration {
       }
 
       JSONObject o = base.getJSONObject("configuration");
-      for (Iterator iterator = o.keys(); iterator.hasNext(); ) {
+      for (Iterator iterator = o.keys(); iterator.hasNext();) {
         String key = (String) iterator.next();
         Object value = o.get(key);
         if (value instanceof JSONArray) {
@@ -201,7 +202,8 @@ public class GridNodeConfiguration {
       }
 
     } catch (Throwable e) {
-      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(), e);
+      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
+          e);
     }
   }
 

@@ -41,12 +41,11 @@ import java.util.logging.Logger;
 /**
  * Proxy to a remote server executing the tests.
  * <p/>
- * The proxy keeps a state of what is happening on the remote server and knows
- * if a new test can be run on the remote server. There are several reasons why
- * a test could not be run on the specified remote server, for instance: if the
- * RemoteProxy decides the remote server has reached the maximum number of
- * concurrent sessions, or if the client has requested DesiredCapabilities we
- * don't support e.g. asking for Chrome when we only support Firefox.
+ * The proxy keeps a state of what is happening on the remote server and knows if a new test can be
+ * run on the remote server. There are several reasons why a test could not be run on the specified
+ * remote server, for instance: if the RemoteProxy decides the remote server has reached the maximum
+ * number of concurrent sessions, or if the client has requested DesiredCapabilities we don't
+ * support e.g. asking for Chrome when we only support Firefox.
  */
 public class RemoteProxy implements Comparable<RemoteProxy> {
 
@@ -93,19 +92,20 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   /**
    * Create the proxy from the info sent by the remote.
    * <p/>
-   * If maxSession is not specified, default to 1 = max number of tests
-   * running at a given time will be 1.
+   * If maxSession is not specified, default to 1 = max number of tests running at a given time will
+   * be 1.
    * <p/>
-   * For each capability, maxInstances is defaulted to 1 if not specified =
-   * max number of test of each capability running at a time will be 1.
-   * maxInstances for firefox can be > 1. IE won't support it.
-   *
+   * For each capability, maxInstances is defaulted to 1 if not specified = max number of test of
+   * each capability running at a time will be 1. maxInstances for firefox can be > 1. IE won't
+   * support it.
+   * 
    * @param request
    */
   public RemoteProxy(RegistrationRequest request, Registry registry) {
     this.request = request;
     this.registry = registry;
-    this.config = mergeConfig(registry.getConfiguration().getAllParams(), request.getConfiguration());
+    this.config =
+        mergeConfig(registry.getConfiguration().getAllParams(), request.getConfiguration());
     String url = (String) config.get(REMOTE_URL);
     if (url == null) {
       // no URL isn't always a problem.
@@ -156,14 +156,14 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   /**
-   * merge the param from config 1 and 2. If a param is present in both,
-   * config2 value is used.
-   *
+   * merge the param from config 1 and 2. If a param is present in both, config2 value is used.
+   * 
    * @param configuration1
    * @param configuration2
    * @return
    */
-  private Map<String, Object> mergeConfig(Map<String, Object> configuration1, Map<String, Object> configuration2) {
+  private Map<String, Object> mergeConfig(Map<String, Object> configuration1,
+      Map<String, Object> configuration2) {
     Map<String, Object> res = new HashMap<String, Object>();
     res.putAll(configuration1);
     for (String key : configuration2.keySet()) {
@@ -173,10 +173,9 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   /**
-   * get the unique id for the node. Usually the url it listen on is a good
-   * id. If the network keeps changing and the IP of the node is updated, you
-   * need to define nodes with a different id.
-   *
+   * get the unique id for the node. Usually the url it listen on is a good id. If the network keeps
+   * changing and the IP of the node is updated, you need to define nodes with a different id.
+   * 
    * @return
    */
   public String getId() {
@@ -232,7 +231,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
               }
             }
           } catch (Throwable t) {
-            log.warning("Error executing the timeout when cleaning up slot " + slot + t.getMessage());
+            log.warning("Error executing the timeout when cleaning up slot " + slot +
+                t.getMessage());
           }
         }
       }
@@ -244,9 +244,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   /**
-   * return the registration request that created the proxy in the first
-   * place.
-   *
+   * return the registration request that created the proxy in the first place.
+   * 
    * @return
    */
   public RegistrationRequest getOriginalRegistrationRequest() {
@@ -254,8 +253,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   /**
-   * return the max number of tests that can run on this remote at a given
-   * time.
+   * return the max number of tests that can run on this remote at a given time.
    */
   public int getMaxNumberOfConcurrentTestSessions() {
     return maxConcurrentSession;
@@ -269,9 +267,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   /**
-   * return a new test session if the current proxy has the resources and is
-   * ready to run the test.
-   *
+   * return a new test session if the current proxy has the resources and is ready to run the test.
+   * 
    * @param requestedCapability
    * @return a new TestSession if possible, null otherwise
    */
@@ -296,7 +293,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
   /**
    * returns the total number of test slots used on this proxy
-   *
+   * 
    * @return
    */
   public int getTotalUsed() {
@@ -312,13 +309,11 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   /**
    * Return true if the remote control has the capability requested.
    * <p/>
-   * the definition of "has" is defined by
-   * {@link CapabilityMatcher#matches(Map, Map)}
+   * the definition of "has" is defined by {@link CapabilityMatcher#matches(Map, Map)}
    * <p/>
-   * hasCapability = true doesn't mean the test cast start just now, only that
-   * the proxy will be able to run a test requireing that capability at some
-   * point.
-   *
+   * hasCapability = true doesn't mean the test cast start just now, only that the proxy will be
+   * able to run a test requireing that capability at some point.
+   * 
    * @param requestedCapability
    * @return
    */
@@ -332,23 +327,24 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   /**
-   * @return true if the remote does something. busy = true doesn't prevent
-   *         the remote from accepting more tasks.
+   * @return true if the remote does something. busy = true doesn't prevent the remote from
+   *         accepting more tasks.
    */
   protected boolean isBusy() {
     return getTotalUsed() != 0;
   }
 
   /**
-   * Takes a registration request and return the RemoteProxy associated to it.
-   * It can be any class extending RemoteProxy.
-   *
+   * Takes a registration request and return the RemoteProxy associated to it. It can be any class
+   * extending RemoteProxy.
+   * 
    * @param <T>
    * @param request
    * @return a new instance built from the request.
    */
   @SuppressWarnings("unchecked")
-  public static final <T extends RemoteProxy> T getNewInstance(RegistrationRequest request, Registry registry) {
+  public static final <T extends RemoteProxy> T getNewInstance(RegistrationRequest request,
+      Registry registry) {
     try {
       String proxyClass = request.getRemoteProxyClass();
       if (proxyClass == null) {
@@ -357,8 +353,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
       }
       Class<?> clazz = Class.forName(proxyClass);
       log.fine("Using class " + clazz.getName());
-      Object[] args = new Object[]{request, registry};
-      Class<?>[] argsClass = new Class[]{RegistrationRequest.class, Registry.class};
+      Object[] args = new Object[] {request, registry};
+      Class<?>[] argsClass = new Class[] {RegistrationRequest.class, Registry.class};
       Constructor<?> c = clazz.getConstructor(argsClass);
       Object proxy = c.newInstance(args);
       if (proxy instanceof RemoteProxy) {
@@ -418,7 +414,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
   /**
    * im millis
-   *
+   * 
    * @return
    */
   public int getTimeOut() {

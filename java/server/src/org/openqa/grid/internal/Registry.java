@@ -39,8 +39,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Kernel of the grid. Keeps track of what's happening, what's free/used and
- * assigned resources to incoming requests.
+ * Kernel of the grid. Keeps track of what's happening, what's free/used and assigned resources to
+ * incoming requests.
  */
 public class Registry {
 
@@ -80,11 +80,11 @@ public class Registry {
 
   }
 
-  public static Registry newInstance(){
-    return newInstance( null, new GridHubConfiguration());
+  public static Registry newInstance() {
+    return newInstance(null, new GridHubConfiguration());
   }
 
-  public static Registry newInstance(Hub hub, GridHubConfiguration config){
+  public static Registry newInstance(Hub hub, GridHubConfiguration config) {
     Registry registry = new Registry(hub, config);
     registry.matcherThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       public void uncaughtException(Thread t, Throwable e) {
@@ -111,7 +111,7 @@ public class Registry {
 
   /**
    * how long a session can remains in the newSession queue before being quicked out
-   *
+   * 
    * @return
    */
   public int getNewSessionWaitTimeout() {
@@ -123,9 +123,8 @@ public class Registry {
   }
 
   /**
-   * iterates the queue of incoming new session request and assign them to
-   * proxy after they've been sorted by priority, with priority defined by the
-   * prioritizer.
+   * iterates the queue of incoming new session request and assign them to proxy after they've been
+   * sorted by priority, with priority defined by the prioritizer.
    */
   class Matcher extends Thread {
     private boolean cleanState = true;
@@ -141,11 +140,10 @@ public class Registry {
     }
 
     /**
-     * let the matcher know that something has been modified in the
-     * registry, and that the current iteration of incoming new session
-     * request should be stop to take the change into account. The change
-     * could be either a new Proxy added, or a session released
-     *
+     * let the matcher know that something has been modified in the registry, and that the current
+     * iteration of incoming new session request should be stop to take the change into account. The
+     * change could be either a new Proxy added, or a session released
+     * 
      * @param ok
      */
     public void registryHasBeenModified(boolean ok) {
@@ -153,8 +151,8 @@ public class Registry {
     }
 
     /**
-     * @return true if the registry hasn't been modified since the matcher
-     *         started the current iteration.
+     * @return true if the registry hasn't been modified since the matcher started the current
+     *         iteration.
      */
     public boolean isRegistryClean() {
       return cleanState;
@@ -198,7 +196,8 @@ public class Registry {
         if (throwOnCapabilityNotPresent) {
           throw new CapabilityNotPresentOnTheGridException(request.getDesiredCapabilities());
         } else {
-          log.warning("grid doesn't contain " + request.getDesiredCapabilities() + " at the moment.");
+          log.warning("grid doesn't contain " + request.getDesiredCapabilities() +
+              " at the moment.");
         }
 
       }
@@ -219,9 +218,9 @@ public class Registry {
   }
 
   /**
-   * iterates the list of incoming session request to find a potential match
-   * in the list of proxies. If something changes in the registry, the matcher
-   * iteration is stopped to account for that change.
+   * iterates the list of incoming session request to find a potential match in the list of proxies.
+   * If something changes in the registry, the matcher iteration is stopped to account for that
+   * change.
    */
 
   private void assignRequestToProxy() {
@@ -286,9 +285,9 @@ public class Registry {
   }
 
   /**
-   * mark the session as finished for the registry. The resources that were
-   * associated to it are now free to be reserved by other tests
-   *
+   * mark the session as finished for the registry. The resources that were associated to it are now
+   * free to be reserved by other tests
+   * 
    * @param session
    */
   private void release(TestSession session) {
@@ -314,13 +313,13 @@ public class Registry {
         return;
       }
     }
-    log.warning("Tried to release session with internal key " + internalKey + " but couldn't find it.");
+    log.warning("Tried to release session with internal key " + internalKey +
+        " but couldn't find it.");
   }
 
   /**
-   * check if the current proxy pool contains at least one proxy matching the
-   * requested capability
-   *
+   * check if the current proxy pool contains at least one proxy matching the requested capability
+   * 
    * @param requestedCapability
    * @return
    */
@@ -336,9 +335,9 @@ public class Registry {
   private List<RemoteProxy> registeringProxies = new CopyOnWriteArrayList<RemoteProxy>();
 
   /**
-   * Add a proxy to the list of proxy available for the grid to managed and
-   * link the proxy to the registry.
-   *
+   * Add a proxy to the list of proxy available for the grid to managed and link the proxy to the
+   * registry.
+   * 
    * @param proxy
    */
   public void add(RemoteProxy proxy) {
@@ -350,7 +349,8 @@ public class Registry {
       lock.lock();
 
       if (proxies.contains(proxy)) {
-        log.warning(String.format("Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
+        log.warning(String.format(
+            "Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
 
         // Find the original proxy. While the supplied one is logically
         // equivalent, it's a fresh object with
@@ -410,13 +410,13 @@ public class Registry {
   }
 
   /**
-   * If throwOnCapabilityNotPresent is set to true, the hub will reject test
-   * request for a capability that is not on the grid. No exception will be
-   * thrown if the capability is present but busy.
+   * If throwOnCapabilityNotPresent is set to true, the hub will reject test request for a
+   * capability that is not on the grid. No exception will be thrown if the capability is present
+   * but busy.
    * <p/>
-   * If set to false, the test will be queued hoping a new proxy will register
-   * later offering that capability.
-   *
+   * If set to false, the test will be queued hoping a new proxy will register later offering that
+   * capability.
+   * 
    * @param throwOnCapabilityNotPresent
    */
   public void setThrowOnCapabilityNotPresent(boolean throwOnCapabilityNotPresent) {
@@ -446,12 +446,11 @@ public class Registry {
   }
 
   /**
-   * gets the test session associated to this external key. The external key
-   * is the session used by webdriver.
-   *
+   * gets the test session associated to this external key. The external key is the session used by
+   * webdriver.
+   * 
    * @param externalKey
-   * @return null if the hub doesn't have a node associated to the provided
-   *         externalKey
+   * @return null if the hub doesn't have a node associated to the provided externalKey
    */
   public TestSession getSession(String externalKey) {
     if (externalKey == null) {
@@ -466,9 +465,9 @@ public class Registry {
   }
 
   /*
-    May race.
+   * May race.
    */
-  public int getNewSessionRequestCount(){
+  public int getNewSessionRequestCount() {
     return getNewSessionRequests().size();
   }
 
@@ -476,9 +475,9 @@ public class Registry {
     try {
       lock.lock();
       return newSessionRequests;
-   } finally {
+    } finally {
       lock.unlock();
-   }
+    }
   }
 
   public Set<TestSession> getActiveSessions() {
