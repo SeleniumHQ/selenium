@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -35,16 +35,16 @@ public class IsOrdered extends SeleneseCommand<Boolean> {
     WebElement two = finder.findElement(driver, locator2);
 
     String ordered =
-      "    if (arguments[0] === arguments[1]) return false;\n" +
-      "\n" +
-      "    var previousSibling;\n" +
-      "    while ((previousSibling = arguments[1].previousSibling) != null) {\n" +
-      "        if (previousSibling === arguments[0]) {\n" +
-      "            return true;\n" +
-      "        }\n" +
-      "        arguments[1] = previousSibling;\n" +
-      "    }\n" +
-      "    return false;\n";
+        "    if (arguments[0] === arguments[1]) return false;\n" +
+            "\n" +
+            "    var previousSibling;\n" +
+            "    while ((previousSibling = arguments[1].previousSibling) != null) {\n" +
+            "        if (previousSibling === arguments[0]) {\n" +
+            "            return true;\n" +
+            "        }\n" +
+            "        arguments[1] = previousSibling;\n" +
+            "    }\n" +
+            "    return false;\n";
 
     Boolean result = (Boolean) js.executeScript(driver, ordered, one, two);
     return result != null && result.booleanValue();

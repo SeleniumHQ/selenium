@@ -5,7 +5,7 @@ import static org.openqa.selenium.Keys.RETURN;
 
 /**
  * Converts a group of character sequences to a string to be sent by sendKeys.
- *
+ * 
  */
 public class InputKeysContainer {
   private final StringBuilder builder = new StringBuilder();
@@ -25,14 +25,14 @@ public class InputKeysContainer {
     submitKeyFound = (indexOfSubmitKey != -1);
 
     // If inputting keys to an input element, and the string contains one of
-    // ENTER or RETURN, break the string at that point and submit the form    
+    // ENTER or RETURN, break the string at that point and submit the form
     if (trimPastEnterKey && (indexOfSubmitKey != -1)) {
       builder.delete(indexOfSubmitKey, builder.length());
     }
   }
 
   private int indexOfSubmitKey() {
-    CharSequence[] terminators = { "\n", ENTER, RETURN };
+    CharSequence[] terminators = {"\n", ENTER, RETURN};
     for (CharSequence terminator : terminators) {
       String needle = String.valueOf(terminator);
       int index = builder.indexOf(needle);

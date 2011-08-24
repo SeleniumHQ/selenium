@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -34,10 +34,12 @@ public class SeleniumSelect {
   private final WebDriver driver;
   private final WebElement select;
 
-  public SeleniumSelect(JavascriptLibrary library, ElementFinder finder, WebDriver driver, String locator) {
+  public SeleniumSelect(JavascriptLibrary library, ElementFinder finder, WebDriver driver,
+      String locator) {
     this.driver = driver;
 
-    findOption = "return (" + library.getSeleniumScript("findOption.js") + ").apply(null, arguments)";
+    findOption =
+        "return (" + library.getSeleniumScript("findOption.js") + ").apply(null, arguments)";
 
     select = finder.findElement(driver, locator);
     if (!"select".equals(select.getTagName().toLowerCase())) {
@@ -53,7 +55,7 @@ public class SeleniumSelect {
         }
       }
     }
-    
+
     WebElement option = findOption(optionLocator);
     if (!option.isSelected()) {
       option.click();

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions.internal;
 
@@ -27,6 +27,7 @@ public abstract class BaseAction {
 
   /**
    * Common c'tor - a locatable element is provided.
+   * 
    * @param actionLocation provider of coordinates for the action.
    */
   protected BaseAction(Locatable actionLocation) {
@@ -34,8 +35,7 @@ public abstract class BaseAction {
   }
 
   /**
-   * No locatable element provided - action in the context of the previous
-   * action.
+   * No locatable element provided - action in the context of the previous action.
    */
   protected BaseAction() {
     this.where = null;

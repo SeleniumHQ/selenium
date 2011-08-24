@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -27,12 +27,15 @@ public class AddLocationStrategy extends SeleneseCommand<Void> {
   }
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String strategyName, final String functionDefinition) {
-    String strategy = String.format(
-        "return (function(locator, inWindow, inDocument) { %s }).call(null, arguments[0], window, document)",
-        functionDefinition);
+  protected Void handleSeleneseCommand(WebDriver driver, String strategyName,
+      final String functionDefinition) {
+    String strategy =
+        String
+            .format(
+                "return (function(locator, inWindow, inDocument) { %s }).call(null, arguments[0], window, document)",
+                functionDefinition);
 
-    elementFinder.add(strategyName, strategy); 
+    elementFinder.add(strategyName, strategy);
 
     return null;
   }

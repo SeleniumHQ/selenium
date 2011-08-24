@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.ie;
 
@@ -38,7 +38,8 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   /**
    * Setting this capability will make your tests unstable and hard to debug.
    */
-  public final static String INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS = "ignoreProtectedModeSettings";
+  public final static String INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS =
+      "ignoreProtectedModeSettings";
 
   private InternetExplorerDriverServer server;
   private WindowsProxyManager proxyManager;
@@ -72,10 +73,11 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
 
   protected void assertOnWindows() {
     Platform current = Platform.getCurrent();
-      if (!current.is(Platform.WINDOWS)) {
-        throw new WebDriverException(
-          String.format("You appear to be running %s. The IE driver only runs on Windows.", current)); 
-      }
+    if (!current.is(Platform.WINDOWS)) {
+      throw new WebDriverException(
+          String
+              .format("You appear to be running %s. The IE driver only runs on Windows.", current));
+    }
   }
 
   private void setup(Capabilities capabilities, int port) {

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium.internal.seleniumemulation;
@@ -23,10 +23,9 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 /**
- * A class that collects together a group of other mutators and applies
- * them in the order they've been added to any script that needs modification.
- * Any JS to be executed will be wrapped in an "eval" block so that a
- * meaningful return value can be created.
+ * A class that collects together a group of other mutators and applies them in the order they've
+ * been added to any script that needs modification. Any JS to be executed will be wrapped in an
+ * "eval" block so that a meaningful return value can be created.
  */
 public class CompoundMutator implements ScriptMutator {
   // The ordering of mutators matters
@@ -42,17 +41,17 @@ public class CompoundMutator implements ScriptMutator {
     addMutator(new VariableDeclaration(
         "browserVersion.isFirefox",
         "browserVersion.isFirefox = navigator.userAgent.indexOf('Firefox') != -1 || " +
-        "navigator.userAgent.indexOf('Namoroka') != -1 " +
-        "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
+            "navigator.userAgent.indexOf('Namoroka') != -1 " +
+            "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
     addMutator(new VariableDeclaration(
         "browserVersion.isGecko",
         "browserVersion.isGecko = navigator.userAgent.indexOf('Firefox') != -1 || " +
-        "navigator.userAgent.indexOf('Namoroka') != -1 " +
-        "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
+            "navigator.userAgent.indexOf('Namoroka') != -1 " +
+            "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
     addMutator(new VariableDeclaration(
         "browserVersion.firefoxVersion",
         "var r = /.*[Firefox|Namoroka|Shiretoko]\\/([\\d\\.]+).*/.exec(navigator.userAgent);" +
-        "browserVersion.firefoxVersion = r ? r[1] : '';"));
+            "browserVersion.firefoxVersion = r ? r[1] : '';"));
     addMutator(new VariableDeclaration(
         "browserVersion.isIE",
         "browserVersion.isIE = navigator.appName == 'Microsoft Internet Explorer';"));

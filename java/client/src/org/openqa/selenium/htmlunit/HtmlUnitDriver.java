@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.htmlunit;
 
@@ -125,7 +125,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   public static final String INVALIDXPATHERROR = "The xpath expression '%s' cannot be evaluated";
   public static final String INVALIDSELECTIONERROR =
       "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
-  
+
   public HtmlUnitDriver(BrowserVersion version) {
     this.version = version;
     webClient = createWebClient(version);
@@ -176,14 +176,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   }
 
   /**
-   * Note: There are two configuration modes for the HtmlUnitDriver using this
-   * constructor. The first is where the browserName is "firefox",
-   * "internet explorer" and browserVersion denotes the desired version.
-   * The second one is where the browserName is "htmlunit" and the
-   * browserVersion denotes the required browser AND its version. In this
-   * mode the browserVersion could either be "firefox" for Firefox or
-   * "internet explorer-7" for IE 7. The Remote WebDriver uses the second mode
-   * - the first mode is deprecated and should not be used.
+   * Note: There are two configuration modes for the HtmlUnitDriver using this constructor. The
+   * first is where the browserName is "firefox", "internet explorer" and browserVersion denotes the
+   * desired version. The second one is where the browserName is "htmlunit" and the browserVersion
+   * denotes the required browser AND its version. In this mode the browserVersion could either be
+   * "firefox" for Firefox or "internet explorer-7" for IE 7. The Remote WebDriver uses the second
+   * mode - the first mode is deprecated and should not be used.
    */
   public HtmlUnitDriver(Capabilities capabilities) {
     this(determineBrowserVersion(capabilities));
@@ -222,7 +220,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     // This is for backwards compatibility - in case there are users who are trying to
     // configure the HtmlUnitDriver by using the c'tor with capabilities.
-    if (! capabilities.getBrowserName().equals("htmlunit")) {
+    if (!capabilities.getBrowserName().equals("htmlunit")) {
       browserName = capabilities.getBrowserName();
       browserVersion = capabilities.getVersion();
     }
@@ -230,7 +228,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     if ("firefox".equals(browserName)) {
       return BrowserVersion.FIREFOX_3;
     }
-    
+
     if ("internet explorer".equals(browserName)) {
       // Try and convert the version
       try {
@@ -278,7 +276,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   /**
    * Create the underlying webclient, but don't set any fields on it.
-   *
+   * 
    * @param version Which browser to emulate
    * @return a new instance of WebClient.
    */
@@ -289,7 +287,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   /**
    * Child classes can override this method to customise the webclient that the HtmlUnit driver
    * uses.
-   *
+   * 
    * @param client The client to modify
    * @return The modified client
    */
@@ -339,7 +337,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   /**
    * Allows HtmlUnit's about:blank to be loaded in the constructor, and may be useful for other
    * tests?
-   *
+   * 
    * @param fullUrl The URL to visit
    */
   protected void get(URL fullUrl) {
@@ -362,7 +360,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   private void resetKeyboardAndMouseState() {
     keyboard = new HtmlUnitKeyboard(this);
-    mouse = new HtmlUnitMouse(this, keyboard);  
+    mouse = new HtmlUnitMouse(this, keyboard);
   }
 
   protected void pickWindow() {
@@ -390,7 +388,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     if (currentWindow instanceof FrameWindow) {
       page = ((FrameWindow) currentWindow).getTopWindow().getEnclosedPage();
     }
-    
+
     return ((HtmlPage) page).getTitleText();
   }
 
@@ -503,15 +501,14 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   private Object parseArgumentIntoJavsacriptParameter(
       Context context, Scriptable scope, Object arg) {
     if (!(arg instanceof HtmlUnitWebElement ||
-          arg instanceof HtmlElement || // special case the underlying type
-          arg instanceof Number ||
-          arg instanceof String ||
-          arg instanceof Boolean ||
-          arg.getClass().isArray() ||
-          arg instanceof Collection<?>)) {
+        arg instanceof HtmlElement || // special case the underlying type
+        arg instanceof Number ||
+        arg instanceof String ||
+        arg instanceof Boolean ||
+        arg.getClass().isArray() || arg instanceof Collection<?>)) {
       throw new IllegalArgumentException(
           "Argument must be a string, number, boolean or WebElement: " +
-          arg + " (" + arg.getClass() + ")");
+              arg + " (" + arg.getClass() + ")");
     }
 
     if (arg instanceof HtmlUnitWebElement) {
@@ -559,19 +556,19 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       final Number n = (Number) value;
       final String s = n.toString();
       if (s.indexOf(".") == -1 || s.endsWith(".0")) { // how safe it is? enough for the unit tests!
-    	  return n.longValue();
+        return n.longValue();
       }
       return n.doubleValue();
     }
 
     if (value instanceof NativeObject) {
-    	final Map<String, Object> map = new HashMap<String, Object>((NativeObject) value);
-    	for (final Entry<String, Object> e : map.entrySet()) {
-    		e.setValue(parseNativeJavascriptResult(e.getValue()));
-    	}
-    	return map;
+      final Map<String, Object> map = new HashMap<String, Object>((NativeObject) value);
+      for (final Entry<String, Object> e : map.entrySet()) {
+        e.setValue(parseNativeJavascriptResult(e.getValue()));
+      }
+      return map;
     }
-    
+
     if (value instanceof NativeArray) {
       final NativeArray array = (NativeArray) value;
 
@@ -708,7 +705,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   }
 
   public List<WebElement> findElementsByCssSelector(String using) {
-        if (!(lastPage() instanceof HtmlPage)) {
+    if (!(lastPage() instanceof HtmlPage)) {
       throw new NoSuchElementException("Unable to locate element using css: " + lastPage());
     }
 
@@ -786,12 +783,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     Object node;
     try {
       node = ((HtmlPage) lastPage()).getFirstByXPath(selector);
-    }
-    catch(Exception ex) {
+    } catch (Exception ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(
-        String.format(INVALIDXPATHERROR, selector),
-        ex);
+          String.format(INVALIDXPATHERROR, selector),
+          ex);
     }
     if (node == null) {
       throw new NoSuchElementException("Unable to locate a node using " + selector);
@@ -815,18 +811,17 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     try {
       nodes = ((HtmlPage) lastPage()).getByXPath(selector);
       result = convertRawHtmlElementsToWebElements(nodes);
-    }
-    catch(RuntimeException ex) {
+    } catch (RuntimeException ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(String.format(INVALIDXPATHERROR, selector), ex);
     }
-    if(nodes.size() != result.size()) {
+    if (nodes.size() != result.size()) {
       // There exist elements in the nodes list which could not be converted to WebElements.
       // A valid xpath selector should only select WebElements.
 
       // Find out the type of the element which is not a WebElement
-      for(Object node : nodes) {
-        if(!(node instanceof HtmlElement)) {
+      for (Object node : nodes) {
+        if (!(node instanceof HtmlElement)) {
           // We only want to know the type of one invalid element so that we can give this
           // information in the exception. We can throw the exception immediately.
           throw new InvalidSelectorException(
@@ -883,10 +878,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         }
       }
 
-      // Next, check for a frame with a matching ID.  For simplicity, assume the ID is unique.
+      // Next, check for a frame with a matching ID. For simplicity, assume the ID is unique.
       // Users can still switch to frames with non-unique IDs using a WebElement switch:
-      //   WebElement frameElement = driver.findElement(By.xpath("//frame[@id=\"foo\"]"));
-      //   driver.switchTo().frame(frameElement);
+      // WebElement frameElement = driver.findElement(By.xpath("//frame[@id=\"foo\"]"));
+      // driver.switchTo().frame(frameElement);
       try {
         HtmlUnitWebElement element =
             (HtmlUnitWebElement) HtmlUnitDriver.this.findElementById(nameOrId);
@@ -1075,7 +1070,8 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       verifyDomain(cookie, domain);
 
       webClient.getCookieManager().addCookie(
-          new com.gargoylesoftware.htmlunit.util.Cookie(domain, cookie.getName(), cookie.getValue(),
+          new com.gargoylesoftware.htmlunit.util.Cookie(domain, cookie.getName(),
+              cookie.getValue(),
               cookie.getPath(), cookie.getExpiry(), cookie.isSecure()));
     }
 
@@ -1150,21 +1146,21 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       }
 
       return ImmutableSet.copyOf(Collections2.transform(
-        webClient.getCookieManager().getCookies(url),
-        htmlUnitCookieToSeleniumCookieTransformer));
+          webClient.getCookieManager().getCookies(url),
+          htmlUnitCookieToSeleniumCookieTransformer));
     }
-    
+
     private final com.google.common.base.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, org.openqa.selenium.Cookie> htmlUnitCookieToSeleniumCookieTransformer =
         new com.google.common.base.Function<com.gargoylesoftware.htmlunit.util.Cookie, org.openqa.selenium.Cookie>() {
           public org.openqa.selenium.Cookie apply(com.gargoylesoftware.htmlunit.util.Cookie c) {
             return new Cookie.Builder(c.getName(), c.getValue())
-              .domain(c.getDomain())
-              .path(c.getPath())
-              .expiresOn(c.getExpires())
-              .isSecure(c.isSecure())
-              .build();
+                .domain(c.getDomain())
+                .path(c.getPath())
+                .expiresOn(c.getExpires())
+                .isSecure(c.isSecure())
+                .build();
           }
-    };
+        };
 
     private String getDomainForCookie() {
       URL current = getRawUrl();
@@ -1212,9 +1208,9 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
     List<WebElement> elements = new ArrayList<WebElement>();
     for (HtmlAnchor anchor : anchors) {
-        if (anchor.asText().contains(using)) {
-          elements.add(newHtmlUnitWebElement(anchor));
-        }
+      if (anchor.asText().contains(using)) {
+        elements.add(newHtmlUnitWebElement(anchor));
+      }
     }
     return elements;
   }
@@ -1223,7 +1219,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     return implicitlyWaitFor(new Callable<WebElement>() {
 
       public WebElement call() throws Exception {
-          return locator.findElement(context);
+        return locator.findElement(context);
       }
     });
   }

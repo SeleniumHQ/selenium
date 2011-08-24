@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -35,7 +35,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
 
   /**
    * Overrides the default time to wait (in milliseconds) after a page has finished loading.
-   *
+   * 
    * @param timeToWait the time to wait, in milliseconds, after the page has finished loading
    */
   public void setTimeToWait(int timeToWait) {
@@ -57,14 +57,14 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
 
     Object result;
     try {
-       result = ((JavascriptExecutor) driver).executeScript(
-        "return !!document['readyState'];");
+      result = ((JavascriptExecutor) driver).executeScript(
+          "return !!document['readyState'];");
     } catch (WebDriverException e) {
       // Page might still be loading. Give it a chance to get some content.
       hesitate(500);
       try {
         result = ((JavascriptExecutor) driver).executeScript(
-          "return !!document['readyState'];");
+            "return !!document['readyState'];");
       } catch (WebDriverException e2) {
         log.warning("Cannot determine whether page supports ready state. Abandoning wait.");
         return null;
@@ -132,8 +132,9 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
           }
 
           return System.currentTimeMillis() - seenAt > 1000;
-        } catch (NoSuchElementException ignored) {}
-        catch (NullPointerException ignored) {}
+        } catch (NoSuchElementException ignored) {
+        } catch (NullPointerException ignored) {
+        }
 
         return false;
       }

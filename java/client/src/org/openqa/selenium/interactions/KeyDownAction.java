@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions;
 
@@ -25,7 +25,7 @@ import org.openqa.selenium.internal.Locatable;
 
 /**
  * Emulates key press only, without the release.
- *
+ * 
  */
 public class KeyDownAction extends SingleKeyAction implements Action {
   public KeyDownAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider, Keys key) {
@@ -38,7 +38,7 @@ public class KeyDownAction extends SingleKeyAction implements Action {
 
   public void perform() {
     focusOnElement();
-    
+
     keyboard.pressKey(key);
   }
 }

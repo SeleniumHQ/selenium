@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -34,19 +34,19 @@ public class GetElementIndex extends SeleneseCommand<Number> {
     WebElement element = finder.findElement(driver, locator);
 
     String script =
-      "var _isCommentOrEmptyTextNode = function(node) {\n" +
-      "    return node.nodeType == 8 || ((node.nodeType == 3) && !(/[^\\t\\n\\r ]/.test(node.data)));\n" +
-      "};\n" +
-      "    var element = arguments[0];\n" +
-      "    var previousSibling;\n" +
-      "    var index = 0;\n" +
-      "    while ((previousSibling = element.previousSibling) != null) {\n" +
-      "        if (!_isCommentOrEmptyTextNode(previousSibling)) {\n" +
-      "            index++;\n" +
-      "        }\n" +
-      "        element = previousSibling;\n" +
-      "    }\n" +
-      "    return index;";
+        "var _isCommentOrEmptyTextNode = function(node) {\n" +
+        "    return node.nodeType == 8 || ((node.nodeType == 3) && !(/[^\\t\\n\\r ]/.test(node.data)));\n" +
+        "};\n" +
+        "    var element = arguments[0];\n" +
+        "    var previousSibling;\n" +
+        "    var index = 0;\n" +
+        "    while ((previousSibling = element.previousSibling) != null) {\n" +
+        "        if (!_isCommentOrEmptyTextNode(previousSibling)) {\n" +
+        "            index++;\n" +
+        "        }\n" +
+        "        element = previousSibling;\n" +
+        "    }\n" +
+        "    return index;";
 
     return (Long) js.executeScript(driver, script, element);
   }

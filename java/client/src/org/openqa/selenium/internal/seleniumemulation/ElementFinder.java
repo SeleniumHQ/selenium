@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -52,12 +52,15 @@ public class ElementFinder {
     String rawScript = library.getSeleniumScript("findElement.js");
     findElement = "return (" + rawScript + ")(arguments[0]);";
 
-    String linkTextLocator = "return (" + library.getSeleniumScript("linkLocator.js") + ").call(null, arguments[0], document)";
+    String linkTextLocator =
+        "return (" + library.getSeleniumScript("linkLocator.js") +
+            ").call(null, arguments[0], document)";
     add("link", linkTextLocator);
-    
+
     try {
-      URL url = Resources.getResource(getClass().getPackage().getName().replace(".", "/") + "/sizzle.js");
-      sizzle = Resources.toString(url, Charsets.UTF_8) + 
+      URL url =
+          Resources.getResource(getClass().getPackage().getName().replace(".", "/") + "/sizzle.js");
+      sizzle = Resources.toString(url, Charsets.UTF_8) +
           "var results = []; " +
           "try { Sizzle(arguments[0], document, results);} " +
           "catch (ignored) {} " +
@@ -77,7 +80,8 @@ public class ElementFinder {
       // TODO(simon): Recurse into child documents
 
       try {
-        toReturn = (WebElement) ((JavascriptExecutor) driver).executeScript(strategy, actualLocator);
+        toReturn =
+            (WebElement) ((JavascriptExecutor) driver).executeScript(strategy, actualLocator);
 
         if (toReturn == null) {
           throw new SeleniumException("Element " + locator + " not found");
@@ -142,7 +146,9 @@ public class ElementFinder {
   private WebElement xpathWizardry(WebDriver driver, String xpath) {
     try {
       return driver.findElement(By.xpath(xpath));
-    } catch (WebDriverException ignored) {} // Because we have inconsitent return values
+    } catch (WebDriverException ignored) {
+      // Because we have inconsistent return values
+    }
 
     if (xpath.endsWith("/")) {
       return driver.findElement(By.xpath(xpath.substring(0, xpath.length() - 1)));
@@ -159,6 +165,7 @@ public class ElementFinder {
           "selector. Your locator was: " + locator);
       return toReturn;
     }
-    throw new NoSuchElementException("Cannot locate element even after falling back to Sizzle: " + locator);
+    throw new NoSuchElementException("Cannot locate element even after falling back to Sizzle: " +
+        locator);
   }
 }

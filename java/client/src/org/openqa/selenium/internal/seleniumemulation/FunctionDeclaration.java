@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium.internal.seleniumemulation;
@@ -21,8 +21,8 @@ package org.openqa.selenium.internal.seleniumemulation;
 import java.util.regex.Pattern;
 
 /**
- * Models a function declaration. That is, it provides an implementation of a
- * particular Javascript function.
+ * Models a function declaration. That is, it provides an implementation of a particular Javascript
+ * function.
  */
 public class FunctionDeclaration implements ScriptMutator {
   private final Pattern pattern;

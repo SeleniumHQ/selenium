@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -29,7 +29,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CreateCookie extends SeleneseCommand<Void> {
-  private final Pattern NAME_VALUE_PAIR_PATTERN = Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");
+  private final Pattern NAME_VALUE_PAIR_PATTERN = 
+      Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");
   private static final Pattern MAX_AGE_PATTERN = Pattern.compile("max_age=(\\d+)");
   private static final Pattern PATH_PATTERN = Pattern.compile("path=([^\\s,]+)[,]?");
 
@@ -46,7 +47,8 @@ public class CreateCookie extends SeleneseCommand<Void> {
     Date maxAge = null;
 
     if (maxAgeMatcher.find()) {
-      maxAge = new Date(System.currentTimeMillis() + Integer.parseInt(maxAgeMatcher.group(1)) * 1000);
+      maxAge =
+          new Date(System.currentTimeMillis() + Integer.parseInt(maxAgeMatcher.group(1)) * 1000);
     }
 
     String path = null;

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal;
 
@@ -22,6 +22,7 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 public interface FindsByTagName {
-	WebElement findElementByTagName(String using);
-	List<WebElement> findElementsByTagName(String using);
+  WebElement findElementByTagName(String using);
+
+  List<WebElement> findElementsByTagName(String using);
 }

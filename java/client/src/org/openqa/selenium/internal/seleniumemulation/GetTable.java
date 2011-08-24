@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -39,7 +39,8 @@ public class GetTable extends SeleneseCommand<String> {
   protected String handleSeleneseCommand(WebDriver driver, String tableCellAddress, String ignored) {
     Matcher matcher = TABLE_PARTS.matcher(tableCellAddress);
     if (!matcher.matches()) {
-      throw new SeleniumException("Invalid target format. Correct format is tableName.rowNum.columnNum");
+      throw new SeleniumException(
+          "Invalid target format. Correct format is tableName.rowNum.columnNum");
     }
 
     String tableName = matcher.group(1);

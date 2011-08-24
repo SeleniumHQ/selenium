@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.html5;
 
@@ -28,12 +28,12 @@ public class ResultSetRows {
   }
 
   /**
-   * Returns the row at the given index. The Map<ColumnName, Object> represents a
-   * mapping between the column and the value of the cell as returned by the database. 
-   *
+   * Returns the row at the given index. The Map<ColumnName, Object> represents a mapping between
+   * the column and the value of the cell as returned by the database.
+   * 
    * @param index
-   * @return A Map<ColumnName, Object> representing the row at the given index.
-   *     If there is no such row, this returns null
+   * @return A Map<ColumnName, Object> representing the row at the given index. If there is no such
+   *         row, this returns null
    */
   public Map<String, Object> item(int index) {
     return rows.get(index);
@@ -41,7 +41,7 @@ public class ResultSetRows {
 
   /**
    * The number of rows returned by the database.
-   *
+   * 
    * @return An integer representing the number of rows contained in the {@link ResultSetRows}
    */
   public int size() {
@@ -52,9 +52,9 @@ public class ResultSetRows {
   public String toString() {
     StringBuilder strBuilder = new StringBuilder();
     strBuilder.append("[");
-    for(int i = 0; i < rows.size(); i++) {
+    for (int i = 0; i < rows.size(); i++) {
       strBuilder.append(rows.get(i).toString());
-      if(i < rows.size() - 1) {
+      if (i < rows.size() - 1) {
         strBuilder.append(", ");
       }
     }

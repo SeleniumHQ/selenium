@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -41,9 +41,8 @@ public class JavascriptLibrary {
       "/org/openqa/selenium/internal/seleniumemulation/htmlutils.js";
 
   /**
-   * Loads the named Selenium script and returns it wrapped in an anonymous
-   * function.
-   *
+   * Loads the named Selenium script and returns it wrapped in an anonymous function.
+   * 
    * @param name The script to load.
    * @return The loaded script wrapped in an anonymous function.
    */
@@ -55,9 +54,10 @@ public class JavascriptLibrary {
   }
 
   public void callEmbeddedSelenium(WebDriver driver, String functionName,
-                                    WebElement element, Object... values) {
+      WebElement element, Object... values) {
     StringBuilder builder = new StringBuilder(readScript(injectableSelenium));
-    builder.append("return browserbot.").append(functionName).append(".apply(browserbot, arguments);");
+    builder.append("return browserbot.").append(functionName)
+        .append(".apply(browserbot, arguments);");
 
     List<Object> args = new ArrayList<Object>();
     args.add(element);
@@ -66,10 +66,12 @@ public class JavascriptLibrary {
     ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
   }
 
-  public Object callEmbeddedHtmlUtils(WebDriver driver, String functionName, WebElement element, Object... values) {
+  public Object callEmbeddedHtmlUtils(WebDriver driver, String functionName, WebElement element,
+      Object... values) {
     StringBuilder builder = new StringBuilder(readScript(htmlUtils));
 
-    builder.append("return htmlutils.").append(functionName).append(".apply(htmlutils, arguments);");
+    builder.append("return htmlutils.").append(functionName)
+        .append(".apply(htmlutils, arguments);");
 
     List<Object> args = new ArrayList<Object>();
     args.add(element);

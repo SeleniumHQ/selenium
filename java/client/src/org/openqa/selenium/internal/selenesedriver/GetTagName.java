@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.selenesedriver;
 
@@ -31,6 +31,6 @@ public class GetTagName extends ElementFunction<String> {
 
   private static String getTagNameJs =
       "(function tagName() {"
-      + "  return selenium.browserbot.findElement('LOCATOR').tagName;"
-      + "})();";
+          + "  return selenium.browserbot.findElement('LOCATOR').tagName;"
+          + "})();";
 }

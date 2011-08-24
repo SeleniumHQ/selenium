@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -101,20 +101,19 @@ public class Windows {
   }
 
   /**
-   * Selects the only <code>_blank</code> window. A window open with
-   * <code>target='_blank'</code> will have a <code>window.name = null</code>.
+   * Selects the only <code>_blank</code> window. A window open with <code>target='_blank'</code>
+   * will have a <code>window.name = null</code>.
    * <p/>
-   * <p>This method assumes that there will only be one single
-   * <code>_blank</code> window and selects the first one with no name.
-   * Therefore if for any reasons there are multiple windows with
+   * <p>
+   * This method assumes that there will only be one single <code>_blank</code> window and selects
+   * the first one with no name. Therefore if for any reasons there are multiple windows with
    * <code>window.name = null</code> the first found one will be selected.
    * <p/>
-   * <p>If none of the windows have <code>window.name = null</code> the last
-   * selected one will be re-selected and a {@link SeleniumException} will
-   * be thrown.
-   *
-   * @throws NoSuchWindowException if no window with
-   *                               <code>window.name = null</code> is found.
+   * <p>
+   * If none of the windows have <code>window.name = null</code> the last selected one will be
+   * re-selected and a {@link SeleniumException} will be thrown.
+   * 
+   * @throws NoSuchWindowException if no window with <code>window.name = null</code> is found.
    */
   public void selectBlankWindow(WebDriver driver) {
     String current = driver.getWindowHandle();

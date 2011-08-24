@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.selenesedriver;
 
@@ -27,12 +27,13 @@ public class FindElement extends AbstractElementFinder<Map<String, String>> {
 
   private final static String SCRIPT =
       "var by = {}; by['%s'] = '%s'; " +
-      "var e = bot.locators.findElement(by, %s);" +
-      "e = core.firefox.unwrap(e); " +
-      "bot.inject.cache.addElement(e);";
+          "var e = bot.locators.findElement(by, %s);" +
+          "e = core.firefox.unwrap(e); " +
+          "bot.inject.cache.addElement(e);";
 
   @Override
-  protected Map<String, String> executeFind(Selenium selenium, String how, String using, String parentLocator) {
+  protected Map<String, String> executeFind(Selenium selenium, String how, String using,
+      String parentLocator) {
     String locator = String.format(SCRIPT, how, using, parentLocator);
 
     String key = selenium.getEval(locator);

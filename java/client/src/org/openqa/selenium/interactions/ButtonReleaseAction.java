@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions;
 
@@ -23,7 +23,7 @@ import org.openqa.selenium.internal.Locatable;
 
 /**
  * Releases the left mouse button
- *
+ * 
  */
 
 public class ButtonReleaseAction extends MouseAction implements Action {
@@ -32,11 +32,10 @@ public class ButtonReleaseAction extends MouseAction implements Action {
   }
 
   /**
-   * Releases the mouse button currently left held. This action can be called
-   * for an element different than the one ClickAndHoldAction was called for.
-   * However, if this action is performed out of sequence (without holding
-   * down the mouse button, for example) the results will be different
-   * between browsers.
+   * Releases the mouse button currently left held. This action can be called for an element
+   * different than the one ClickAndHoldAction was called for. However, if this action is performed
+   * out of sequence (without holding down the mouse button, for example) the results will be
+   * different between browsers.
    */
   public void perform() {
     moveToLocation();

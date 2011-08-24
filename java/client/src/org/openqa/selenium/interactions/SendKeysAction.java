@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions;
 
@@ -24,7 +24,7 @@ import org.openqa.selenium.internal.Locatable;
 
 /**
  * Sending a sequence of keys to an element.
- *
+ * 
  */
 public class SendKeysAction extends KeysRelatedAction implements Action {
   private final CharSequence[] keysToSend;
@@ -41,7 +41,7 @@ public class SendKeysAction extends KeysRelatedAction implements Action {
 
   public void perform() {
     focusOnElement();
-    
+
     keyboard.sendKeys(keysToSend);
   }
 }

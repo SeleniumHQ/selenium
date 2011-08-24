@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -30,7 +30,8 @@ public class Type extends SeleneseCommand<Void> {
   private final KeyState state;
   private final String type;
 
-  public Type(AlertOverride alertOverride, JavascriptLibrary js, ElementFinder finder, KeyState state) {
+  public Type(AlertOverride alertOverride, JavascriptLibrary js, ElementFinder finder,
+      KeyState state) {
     this.alertOverride = alertOverride;
     this.js = js;
     this.finder = finder;
@@ -43,7 +44,8 @@ public class Type extends SeleneseCommand<Void> {
     alertOverride.replaceAlertMethod(driver);
 
     if (state.controlKeyDown || state.altKeyDown || state.metaKeyDown)
-      throw new SeleniumException("type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
+      throw new SeleniumException(
+          "type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
 
     String valueToUse = state.shiftKeyDown ? value.toUpperCase() : value;
 
@@ -63,10 +65,10 @@ public class Type extends SeleneseCommand<Void> {
       return null;
     }
 
-    if(driver instanceof JavascriptExecutor) {
-        js.executeScript(driver, type, element, valueToUse);
+    if (driver instanceof JavascriptExecutor) {
+      js.executeScript(driver, type, element, valueToUse);
     } else {
-        element.sendKeys(valueToUse);
+      element.sendKeys(valueToUse);
     }
 
     return null;

@@ -31,7 +31,7 @@ public class InternetExplorerElement extends RemoteWebElement implements WebElem
   public InternetExplorerElement(InternetExplorerDriver parent) {
     setParent(parent);
   }
-  
+
   protected WebElement findElement(String using, String value) {
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
         ImmutableMap.of("id", id, "using", using, "value", value));

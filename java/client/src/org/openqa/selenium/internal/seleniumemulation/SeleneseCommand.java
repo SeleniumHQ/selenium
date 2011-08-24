@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -39,8 +39,9 @@ public abstract class SeleneseCommand<T> {
           throw new SeleniumException("Too many arguments! " + args.length);
       }
     } catch (WebDriverException e) {
-      throw new SeleniumException(e.getMessage(), e);          
+      throw new SeleniumException(e.getMessage(), e);
     }
   }
+
   protected abstract T handleSeleneseCommand(WebDriver driver, String locator, String value);
 }

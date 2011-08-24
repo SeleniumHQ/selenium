@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -28,10 +28,11 @@ public class GetAttribute extends SeleneseCommand<String> {
   private final JavascriptLibrary library;
   private final ElementFinder finder;
 
-    public GetAttribute(JavascriptLibrary library, ElementFinder finder) {
+  public GetAttribute(JavascriptLibrary library, ElementFinder finder) {
     this.library = library;
-        this.finder = finder;
-        getAttribute = "return (" + library.getSeleniumScript("getAttribute.js") + ").apply(null, arguments);";
+    this.finder = finder;
+    getAttribute =
+        "return (" + library.getSeleniumScript("getAttribute.js") + ").apply(null, arguments);";
   }
 
   @Override

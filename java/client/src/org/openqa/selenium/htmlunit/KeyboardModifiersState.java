@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.htmlunit;
 
@@ -21,7 +21,7 @@ import org.openqa.selenium.Keys;
 
 /**
  * Holds the state of the modifier keys (Shift, ctrl, alt) for HtmlUnit.
- *
+ * 
  */
 public class KeyboardModifiersState {
   private boolean shiftPressed = false;
@@ -35,7 +35,7 @@ public class KeyboardModifiersState {
   public boolean isCtrlPressed() {
     return ctrlPressed;
   }
-  
+
   public boolean isAltPressed() {
     return altPressed;
   }
@@ -49,21 +49,21 @@ public class KeyboardModifiersState {
   public void storeKeyUp(Keys key) {
     storeIfEqualsShift(key, false);
     storeIfEqualsCtrl(key, false);
-    storeIfEqualsAlt(key, false);    
+    storeIfEqualsAlt(key, false);
   }
 
   private void storeIfEqualsShift(Keys key, boolean keyState) {
     if (key.equals(Keys.SHIFT))
-    shiftPressed = keyState;
+      shiftPressed = keyState;
   }
 
   private void storeIfEqualsCtrl(Keys key, boolean keyState) {
     if (key.equals(Keys.CONTROL))
-    ctrlPressed = keyState;
+      ctrlPressed = keyState;
   }
 
   private void storeIfEqualsAlt(Keys key, boolean keyState) {
     if (key.equals(Keys.ALT))
-    altPressed = keyState;
+      altPressed = keyState;
   }
 }

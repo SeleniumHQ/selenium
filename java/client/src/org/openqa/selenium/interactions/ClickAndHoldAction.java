@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions;
 
@@ -23,7 +23,7 @@ import org.openqa.selenium.internal.Locatable;
 
 /**
  * Presses the left mouse button without releasing it.
- *
+ * 
  */
 public class ClickAndHoldAction extends MouseAction implements Action {
   public ClickAndHoldAction(Mouse mouse, Locatable locationProvider) {
@@ -31,10 +31,9 @@ public class ClickAndHoldAction extends MouseAction implements Action {
   }
 
   /**
-   * Holds down the mouse button on a selected element. If this action is
-   * called out of sequence (i.e. twice in a row, without releasing the
-   * button after the first action) the results will be different between
-   * browsers.
+   * Holds down the mouse button on a selected element. If this action is called out of sequence
+   * (i.e. twice in a row, without releasing the button after the first action) the results will be
+   * different between browsers.
    */
   public void perform() {
     moveToLocation();

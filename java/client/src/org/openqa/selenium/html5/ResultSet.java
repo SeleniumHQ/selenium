@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.html5;
 
@@ -33,21 +33,20 @@ public class ResultSet {
   }
 
   /**
-   * Gets the row ID of the inserted row if the statement inserted a row. If multiple
-   * rows were inserted, this returns the row ID of the last row inserted. If the
-   * statement did not insert a row this returns -1.
-   *
-   * @return An integer representing the index of the last row inserted if any,
-   *         returns -1 otherwise
+   * Gets the row ID of the inserted row if the statement inserted a row. If multiple rows were
+   * inserted, this returns the row ID of the last row inserted. If the statement did not insert a
+   * row this returns -1.
+   * 
+   * @return An integer representing the index of the last row inserted if any, returns -1 otherwise
    */
   public int getLastInsertedRowId() {
     return insertId;
   }
 
   /**
-   * Gets the number of rows that were changed by the SQL statement. If the statement
-   * did not affect any rows then this returns zero.
-   *
+   * Gets the number of rows that were changed by the SQL statement. If the statement did not affect
+   * any rows then this returns zero.
+   * 
    * @return an integer representing the number of rows changed
    */
   public int getNumberOfRowsAffected() {
@@ -55,12 +54,12 @@ public class ResultSet {
   }
 
   /**
-   * Returns the rows returned by the statement executed in the order returned by the
-   * database. If no rows were returned then the returned object will be empty.
-   *
-   * @return A {@link ResultSetRows} containing the database results as returned
-   *     by the database. Returns am empty {@link ResultSetRows} if no results were
-   *     returned (i.e. ResultSetRowList.size() = 0)
+   * Returns the rows returned by the statement executed in the order returned by the database. If
+   * no rows were returned then the returned object will be empty.
+   * 
+   * @return A {@link ResultSetRows} containing the database results as returned by the database.
+   *         Returns am empty {@link ResultSetRows} if no results were returned (i.e.
+   *         ResultSetRowList.size() = 0)
    */
   public ResultSetRows rows() {
     return rows;

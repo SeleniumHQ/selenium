@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium.internal.selenesedriver;
@@ -30,7 +30,7 @@ import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
 
-public abstract  class AbstractElementFinder<T> implements SeleneseFunction<T> {
+public abstract class AbstractElementFinder<T> implements SeleneseFunction<T> {
   private final static Map<String, String> name2strategy =
       ImmutableMap.of(
           "class name", "className",
@@ -42,6 +42,7 @@ public abstract  class AbstractElementFinder<T> implements SeleneseFunction<T> {
   private long implicitlyWait = 0;
 
   protected abstract T executeFind(Selenium selenium, String how, String using, String parentLocator);
+
   protected abstract T onFailure(String how, String using);
 
   protected Map<String, String> newElement(String key) {
@@ -58,9 +59,11 @@ public abstract  class AbstractElementFinder<T> implements SeleneseFunction<T> {
       parentLocator = "selenium.browserbot.getDocument()";
     } else {
       try {
-        parentLocator = "selenium.browserbot.findElement('" + URLDecoder.decode(parentLocator, "UTF-8") + "')";
+        parentLocator =
+            "selenium.browserbot.findElement('" + URLDecoder.decode(parentLocator, "UTF-8") + "')";
       } catch (UnsupportedEncodingException e) {
-        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        e.printStackTrace(); // To change body of catch statement use File | Settings | File
+                             // Templates.
       }
     }
 

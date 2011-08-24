@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.html5;
 
@@ -21,15 +21,15 @@ public interface LocationContext {
 
   /**
    * Gets the physical location of the browser.
-   *
-   * @return A {@link Location} containing the location information. Returns null
-   *     if the location is not available
+   * 
+   * @return A {@link Location} containing the location information. Returns null if the location is
+   *         not available
    */
   Location location();
 
   /**
    * Sets the physical location.
-   *
+   * 
    * @param location A {@link Location} containing the new location information
    */
   void setLocation(Location location);

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.html5;
 
@@ -38,12 +38,13 @@ public enum AppCacheType {
 
   /**
    * Gets the AppCacheType for the given int value.
+   * 
    * @param value The input value
    * @return {@link AppCacheType} The corresponding appcache type
    */
   public static AppCacheType getEnum(int value) {
-    for(AppCacheType cacheType: AppCacheType.values()) {
-      if(value == cacheType.value()) {
+    for (AppCacheType cacheType : AppCacheType.values()) {
+      if (value == cacheType.value()) {
         return cacheType;
       }
     }

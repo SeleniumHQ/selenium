@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions;
 
@@ -22,8 +22,8 @@ import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.internal.Locatable;
 
 /**
- * Move the mouse to a location within the element provided. The coordinates
- * provided specify the offset from the top-left corner of the element.
+ * Move the mouse to a location within the element provided. The coordinates provided specify the
+ * offset from the top-left corner of the element.
  */
 public class MoveToOffsetAction extends MouseAction implements Action {
   private final int xOffset;

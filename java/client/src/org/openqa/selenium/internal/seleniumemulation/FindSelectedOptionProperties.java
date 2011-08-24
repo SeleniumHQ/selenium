@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -28,7 +28,7 @@ public class FindSelectedOptionProperties extends SeleneseCommand<String[]> {
   private final ElementFinder finder;
   private final String property;
 
-  public FindSelectedOptionProperties(JavascriptLibrary library, ElementFinder finder, 
+  public FindSelectedOptionProperties(JavascriptLibrary library, ElementFinder finder,
       String property) {
     this.library = library;
     this.finder = finder;

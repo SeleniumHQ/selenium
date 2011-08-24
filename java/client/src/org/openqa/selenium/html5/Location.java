@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.html5;
 
@@ -43,7 +43,7 @@ public class Location {
   public double getAltitude() {
     return altitude;
   }
-  
+
   public String toString() {
     return String.format("Latitude: %s, Longitude: %s, Altitude: %s",
         latitude, longitude, altitude);

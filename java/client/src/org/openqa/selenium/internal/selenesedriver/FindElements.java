@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.selenesedriver;
 
@@ -31,7 +31,8 @@ public class FindElements extends AbstractElementFinder<List<Map<String, String>
       "selenium.browserbot.findElementsLikeWebDriver('%s', '%s', %s);";
 
   @Override
-  protected List<Map<String, String>> executeFind(Selenium selenium, String how, String using, String parentLocator) {
+  protected List<Map<String, String>> executeFind(Selenium selenium, String how, String using,
+      String parentLocator) {
     String result =
         selenium.getEval(String.format(SCRIPT, how, using, parentLocator));
 

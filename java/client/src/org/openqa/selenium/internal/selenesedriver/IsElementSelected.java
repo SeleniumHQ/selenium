@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.selenesedriver;
 
@@ -34,9 +34,9 @@ public class IsElementSelected extends ElementFunction<Boolean> {
 
   private final String selectedJs =
       "(function isSelected() { "
-      + "  var e = selenium.browserbot.findElement('LOCATOR'); "
-      + "  if ('OPTION' == e.tagName) return e.selected ? 'true' : 'false'; "
-      + "  if (e.type == 'checkbox' || e.type == 'radio') return !!e.checked ? 'true' : 'false'; "
-      + "  return 'false'"
-      + "})()";
+          + "  var e = selenium.browserbot.findElement('LOCATOR'); "
+          + "  if ('OPTION' == e.tagName) return e.selected ? 'true' : 'false'; "
+          + "  if (e.type == 'checkbox' || e.type == 'radio') return !!e.checked ? 'true' : 'false'; "
+          + "  return 'false'"
+          + "})()";
 }

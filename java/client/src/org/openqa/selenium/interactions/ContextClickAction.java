@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions;
 
@@ -23,7 +23,7 @@ import org.openqa.selenium.internal.Locatable;
 
 /**
  * Context-clicks an element
- *
+ * 
  */
 public class ContextClickAction extends MouseAction implements Action {
   public ContextClickAction(Mouse mouse, Locatable where) {
@@ -31,8 +31,8 @@ public class ContextClickAction extends MouseAction implements Action {
   }
 
   /**
-   * Emulates clicking on the mouse button that would bring up contextual
-   * menus (usually right-clicking).
+   * Emulates clicking on the mouse button that would bring up contextual menus (usually
+   * right-clicking).
    */
   public void perform() {
     moveToLocation();

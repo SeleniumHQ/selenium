@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.selenesedriver;
 
@@ -39,7 +39,7 @@ public class SubmitElement extends ElementFunction<Void> {
     // Turns out that on Firefox, the load may not have started. Rest for a very
     // short time to let it being.
     sleep(100);
-    
+
     return null;
   }
 
@@ -53,11 +53,11 @@ public class SubmitElement extends ElementFunction<Void> {
 
   private final String submitJs =
       "(function submit() { "
-      + "var curr = selenium.browserbot.findElement('LOCATOR'); "
-      + "while (curr != null && curr.tagName != 'FORM') {"
-      + "  curr = curr.parentNode || curr.parentElement; "
-      + "} "
-      + "if (curr) { curr.submit(); return 'true'; } "
-      + "return 'false'; "
-      + "})()";
+          + "var curr = selenium.browserbot.findElement('LOCATOR'); "
+          + "while (curr != null && curr.tagName != 'FORM') {"
+          + "  curr = curr.parentNode || curr.parentElement; "
+          + "} "
+          + "if (curr) { curr.submit(); return 'true'; } "
+          + "return 'false'; "
+          + "})()";
 }

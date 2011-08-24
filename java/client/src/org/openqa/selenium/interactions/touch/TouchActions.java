@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions.touch;
 
@@ -36,7 +36,7 @@ public class TouchActions extends Actions {
 
   public TouchActions(WebDriver driver) {
     this(((HasInputDevices) driver).getKeyboard(),
-          ((HasTouchScreen) driver).getTouch());
+        ((HasTouchScreen) driver).getTouch());
   }
 
   public TouchActions(Keyboard keyboard, TouchScreen touchScreen) {

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.htmlunit;
 
@@ -33,7 +33,7 @@ import java.io.IOException;
 
 /**
  * Implements mouse operations using the HtmlUnit WebDriver.
- *
+ * 
  */
 public class HtmlUnitMouse implements Mouse {
   private final HtmlUnitDriver parent;
@@ -83,7 +83,7 @@ public class HtmlUnitMouse implements Mouse {
       // TODO(simon): This isn't good enough.
       System.out.println(e.getMessage());
       // Press on regardless
-    }    
+    }
   }
 
   private void moveOutIfNeeded(HtmlElement element) {
@@ -125,7 +125,7 @@ public class HtmlUnitMouse implements Mouse {
           keyboard.isCtrlPressed(), keyboard.isAltPressed());
       updateActiveElement(element);
     } catch (IOException e) {
-      //TODO(eran.mes): What should we do in case of error?
+      // TODO(eran.mes): What should we do in case of error?
       e.printStackTrace();
     }
   }

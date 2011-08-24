@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.htmlunit;
 
@@ -33,7 +33,7 @@ import java.io.IOException;
 
 /**
  * Implements keyboard operations using the HtmlUnit WebDriver.
- *
+ * 
  */
 public class HtmlUnitKeyboard implements Keyboard {
   private KeyboardModifiersState modifiersState = new KeyboardModifiersState();
@@ -61,7 +61,7 @@ public class HtmlUnitKeyboard implements Keyboard {
 
   public void sendKeys(HtmlElement element, String currentValue, InputKeysContainer keysToSend) {
     keysToSend.setCapitalization(modifiersState.isShiftPressed());
-    
+
     if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
       try {
         element.type(keysToSend.toString());
@@ -91,7 +91,7 @@ public class HtmlUnitKeyboard implements Keyboard {
 
   public void releaseKey(Keys keyToRelease) {
     WebElement toElement = parent.switchTo().activeElement();
-    
+
     HtmlUnitWebElement htmlElement = getElementToSend(toElement);
     modifiersState.storeKeyUp(keyToRelease);
     htmlElement.sendKeyUpEvent(keyToRelease);

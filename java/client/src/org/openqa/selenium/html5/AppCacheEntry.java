@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.html5;
 
@@ -32,9 +32,8 @@ public class AppCacheEntry {
   }
 
   /**
-   * Gets the cache type, which can be any of the resource types listed in
-   * {@link AppCacheType}
-   *
+   * Gets the cache type, which can be any of the resource types listed in {@link AppCacheType}
+   * 
    * @return {@link AppCacheType}
    */
   public AppCacheType getType() {
@@ -43,7 +42,7 @@ public class AppCacheEntry {
 
   /**
    * Gets a String representation of the URL which identifies the cache resource.
-   *
+   * 
    * @return The URL of the cache resource
    */
   public String getUrl() {
@@ -52,7 +51,7 @@ public class AppCacheEntry {
 
   /**
    * Gets String representation of the Mime type the cache resource is labeled with.
-   *
+   * 
    * @return Mime type of the cache resource
    */
   public String getMimeType() {
@@ -61,7 +60,7 @@ public class AppCacheEntry {
 
   /**
    * Gets a human readable String representation of the cache entry.
-   *
+   * 
    * @return A human readable String.
    */
   @Override

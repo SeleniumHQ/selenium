@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -28,7 +28,8 @@ public class WindowMaximize extends SeleneseCommand<Void> {
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
-    js.executeScript(driver,
+    js.executeScript(
+        driver,
         "if (window.screen) { window.moveTo(0, 0); window.resizeTo(window.screen.availWidth, window.screen.availHeight);};");
 
     return null;

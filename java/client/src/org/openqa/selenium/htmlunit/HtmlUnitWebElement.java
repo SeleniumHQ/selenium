@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium.htmlunit;
@@ -85,8 +85,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
   protected final HtmlElement element;
   private static final char nbspChar = 160;
   private static final String[] blockLevelsTagNames =
-      {"p", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "div", "noscript",
-       "blockquote", "form", "hr", "table", "fieldset", "address", "ul", "ol", "pre", "br"};
+  {"p", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "div", "noscript",
+      "blockquote", "form", "hr", "table", "fieldset", "address", "ul", "ol", "pre", "br"};
   private static final String[] booleanAttributes = {"checked", "selected", "multiple"};
 
   private String toString;
@@ -99,28 +99,27 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public void click() {
     try {
       verifyCanInteractWithElement();
+    } catch (InvalidElementStateException e) {
+      // Swallow disabled element case
+      // Clicking disabled elements should still be passed through,
+      // we just don't expect any state change
+
+      // TODO: The javadoc for this method implies we shouldn't throw for
+      // element not visible either
     }
-    catch (InvalidElementStateException e) {
-      //Swallow disabled element case
-      //Clicking disabled elements should still be passed through,
-      //we just don't expect any state change
-      
-      //TODO: The javadoc for this method implies we shouldn't throw for
-      //element not visible either
-    }
-    
+
     // TODO(simon): It appears as if clicking on html options doesn't toggle state
     if (element instanceof HtmlOption) {
       boolean currentlySelected = isSelected();
       ((HtmlOption) element).setSelected(!currentlySelected);
       if (currentlySelected) {
-    	element.removeAttribute("selected");
+        element.removeAttribute("selected");
       } else {
-    	element.setAttribute("selected", "true");
+        element.setAttribute("selected", "true");
       }
       // Now fall through
     }
-    
+
     HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
     mouse.click(getCoordinates());
   }
@@ -230,7 +229,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     if (displayed == null || !displayed.booleanValue()) {
       throw new ElementNotVisibleException("You may only sendKeys to visible elements");
     }
-    
+
     if (!isEnabled()) {
       throw new InvalidElementStateException("You may only sendKeys to enabled elements");
     }
@@ -238,7 +237,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   private void switchFocusToThisIfNeeded() {
     HtmlUnitWebElement oldActiveElement =
-        ((HtmlUnitWebElement)parent.switchTo().activeElement());
+        ((HtmlUnitWebElement) parent.switchTo().activeElement());
 
     boolean jsEnabled = parent.isJavascriptEnabled();
     boolean oldActiveEqualsCurrent = oldActiveElement.equals(this);
@@ -299,7 +298,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     if (element instanceof HtmlInput &&
         ("selected".equals(lowerName) || "checked".equals(lowerName))) {
-      return ((HtmlInput)element).isChecked() ? "true" : null;
+      return ((HtmlInput) element).isChecked() ? "true" : null;
     }
 
     if ("href".equals(lowerName) || "src".equals(lowerName)) {
@@ -320,14 +319,14 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
 
     if ("multiple".equals(lowerName) && element instanceof HtmlSelect) {
-      String multipleAttribute  = ((HtmlSelect) element).getMultipleAttribute();
+      String multipleAttribute = ((HtmlSelect) element).getMultipleAttribute();
       if ("".equals(multipleAttribute)) {
         return Boolean.toString(element.hasAttribute("multiple"));
       }
       return "true";
     }
-    
-    for (String booleanAttribute: booleanAttributes) {
+
+    for (String booleanAttribute : booleanAttributes) {
       if (booleanAttribute.equals(lowerName)) {
         if (value.equals(DomElement.ATTRIBUTE_NOT_DEFINED)) {
           return null;
@@ -387,7 +386,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     if (!isEnabled())
       throw new InvalidElementStateException("You may only toggle enabled elements");
-    
+
 
     try {
       if (element instanceof HtmlCheckBoxInput) {
@@ -406,7 +405,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
       throw new InvalidElementStateException(
           "You may only toggle checkboxes or options in a select which allows multiple selections: "
-          + getTagName());
+              + getTagName());
     } catch (IOException e) {
       throw new WebDriverException("Unexpected exception: " + e);
     }
@@ -518,7 +517,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   }
 
   private void getTextFromNode(DomNode node, StringBuffer toReturn, StringBuffer textSoFar,
-                               boolean isPreformatted) {
+      boolean isPreformatted) {
     if (node instanceof HtmlScript) {
       return;
     }
@@ -558,10 +557,11 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   private boolean isBlockLevel(DomNode node) {
     // From the HTML spec (http://www.w3.org/TR/html401/sgml/dtd.html#block)
-    //     <!ENTITY % block "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT | BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
-    //     <!ENTITY % heading "H1|H2|H3|H4|H5|H6">
-    //     <!ENTITY % list "UL | OL">
-    //     <!ENTITY % preformatted "PRE">
+    // <!ENTITY % block
+    // "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT | BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
+    // <!ENTITY % heading "H1|H2|H3|H4|H5|H6">
+    // <!ENTITY % list "UL | OL">
+    // <!ENTITY % preformatted "PRE">
 
     if (!(node instanceof HtmlElement)) {
       return false;
@@ -663,8 +663,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     Object node;
     try {
       node = element.getFirstByXPath(xpathExpr);
-    }
-    catch(Exception ex) {
+    } catch (Exception ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(
           String.format(HtmlUnitDriver.INVALIDXPATHERROR, xpathExpr), ex);
@@ -674,7 +673,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       throw new NoSuchElementException("Unable to find an element with xpath " + xpathExpr);
     }
     if (node instanceof HtmlElement) {
-      return getParent().newHtmlUnitWebElement((HtmlElement)node);
+      return getParent().newHtmlUnitWebElement((HtmlElement) node);
     }
     // The xpath selector selected something different than a WebElement. The selector is therefore
     // invalid
@@ -690,22 +689,22 @@ public class HtmlUnitWebElement implements WrapsDriver,
     List<?> htmlElements;
     try {
       htmlElements = element.getByXPath(xpathExpr);
-    } catch(Exception ex) {
+    } catch (Exception ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(
           String.format(HtmlUnitDriver.INVALIDXPATHERROR, xpathExpr), ex);
     }
 
     for (Object e : htmlElements) {
-      if(e instanceof HtmlElement) {
+      if (e instanceof HtmlElement) {
         webElements.add(getParent().newHtmlUnitWebElement((HtmlElement) e));
       }
       else {
         // The xpath selector selected something different than a WebElement. The selector is
         // therefore invalid
         throw new InvalidSelectorException(
-            String.format(HtmlUnitDriver.INVALIDSELECTIONERROR, 
-              xpathExpr, e.getClass().toString()));
+            String.format(HtmlUnitDriver.INVALIDSELECTIONERROR,
+                xpathExpr, e.getClass().toString()));
       }
     }
     return webElements;
@@ -820,7 +819,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     if (!currentPage.equals(elementPage)) {
       throw new StaleElementReferenceException(
           "Element appears to be stale. Did you navigate away from the page that contained it? "
-          + " And is the current window focussed the same as the one holding this element?");
+              + " And is the current window focussed the same as the one holding this element?");
     }
 
     // We need to walk the DOM to determine if the element is actually attached
@@ -830,8 +829,9 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
 
     if (parentElement == null) {
-      throw new StaleElementReferenceException("The element seems to be disconnected from the DOM. "
-                                              + " This means that a user cannot interact with it.");
+      throw new StaleElementReferenceException(
+          "The element seems to be disconnected from the DOM. "
+              + " This means that a user cannot interact with it.");
     }
   }
 
@@ -846,19 +846,28 @@ public class HtmlUnitWebElement implements WrapsDriver,
     String value = "inherit";
     while ("inherit".equals(value)) {
       // Hat-tip to the Selenium team
-      Object result = parent.executeScript(
-          "if (window.getComputedStyle) { " +
-          "    return window.getComputedStyle(arguments[0], null).getPropertyValue(arguments[1]); " +
-          "} " +
-          "if (arguments[0].currentStyle) { " +
-          "    return arguments[0].currentStyle[arguments[1]]; " +
-          "} " +
-          "if (window.document.defaultView && window.document.defaultView.getComputedStyle) { " +
-          "    return window.document.defaultView.getComputedStyle(arguments[0], null)[arguments[1]]; "
-          +
-          "} ",
-          current, propertyName
-      );
+      Object result =
+          parent
+              .executeScript(
+                  "if (window.getComputedStyle) { "
+                      +
+                      "    return window.getComputedStyle(arguments[0], null).getPropertyValue(arguments[1]); "
+                      +
+                      "} "
+                      +
+                      "if (arguments[0].currentStyle) { "
+                      +
+                      "    return arguments[0].currentStyle[arguments[1]]; "
+                      +
+                      "} "
+                      +
+                      "if (window.document.defaultView && window.document.defaultView.getComputedStyle) { "
+                      +
+                      "    return window.document.defaultView.getComputedStyle(arguments[0], null)[arguments[1]]; "
+                      +
+                      "} ",
+                  current, propertyName
+              );
 
       if (!(result instanceof Undefined)) {
         value = String.valueOf(result);
@@ -905,7 +914,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
       other = ((WrapsElement) obj).getWrappedElement();
     }
 
-    return other instanceof HtmlUnitWebElement && element.equals(((HtmlUnitWebElement) other).element);
+    return other instanceof HtmlUnitWebElement &&
+        element.equals(((HtmlUnitWebElement) other).element);
   }
 
   @Override
@@ -913,7 +923,9 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return element.hashCode();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.openqa.selenium.internal.WrapsDriver#getContainingDriver()
    */
   public WebDriver getWrappedDriver() {
@@ -940,7 +952,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       }
 
       public Object getAuxiliry() {
-        return getElement(); 
+        return getElement();
       }
     };
   }
