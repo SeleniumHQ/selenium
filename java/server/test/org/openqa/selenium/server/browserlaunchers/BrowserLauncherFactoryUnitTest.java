@@ -11,14 +11,15 @@ import junit.framework.TestCase;
  */
 public class BrowserLauncherFactoryUnitTest extends TestCase {
 
-    public void testAllSupportedBrowsersDefineAppropriateConstructor() {
-        for (Class<? extends BrowserLauncher> c : BrowserLauncherFactory.getSupportedLaunchers().values()) {
-            try {
-                c.getConstructor(Capabilities.class, RemoteControlConfiguration.class, String.class, String.class);
-            } catch (Exception e) {
-                throw new RuntimeException(c.getSimpleName(), e);
-            }
-        }
+  public void testAllSupportedBrowsersDefineAppropriateConstructor() {
+    for (Class<? extends BrowserLauncher> c : BrowserLauncherFactory.getSupportedLaunchers()
+        .values()) {
+      try {
+        c.getConstructor(Capabilities.class, RemoteControlConfiguration.class, String.class,
+            String.class);
+      } catch (Exception e) {
+        throw new RuntimeException(c.getSimpleName(), e);
+      }
     }
+  }
 }
-

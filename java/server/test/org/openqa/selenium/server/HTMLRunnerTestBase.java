@@ -27,47 +27,49 @@ import java.io.File;
 
 public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResultsListener {
 
-    SeleniumServer server;
-    HTMLLauncher launcher;
-    HTMLTestResults results = null;
-    protected boolean multiWindow = true;
-    protected String suiteName = "TestSuite.html";
-    protected String browserURL; 
-    File output;
-    
-    public HTMLRunnerTestBase() {
-        super();
-    }
-    
-    public HTMLRunnerTestBase(String name) {
-        super(name);
-    }
-    
-    public void setUp() throws Exception {
-        output = new File(getName() + "-results.html");
-        System.out.println("Will print results to " + output.getAbsolutePath());
-        HttpRequest.__maxFormContentSize = 400000;
-        
-    }
-    
-    protected void runHTMLSuite(String browser, boolean slowResources) throws Exception {
-        server = new SeleniumServer(slowResources);
-        launcher = new HTMLLauncher(server);
-        server.start();
-        browserURL = "http://localhost:" + server.getPort();
-        String testURL = browserURL + "/selenium-server/tests/" + suiteName;
-        int timeout = 60 * 15; // fifteen minutes
-        String result = launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout, multiWindow);
-        assertTrue("Results file doesn't exist: " + output.getAbsolutePath(), output.exists());
-        assertEquals("Tests didn't pass, check HTML output for details: " + output.getAbsolutePath(), "PASSED", result);
-    }
-    
-    
-    public void tearDown() throws Exception {
-        if (server != null) server.stop();
-    }
+  SeleniumServer server;
+  HTMLLauncher launcher;
+  HTMLTestResults results = null;
+  protected boolean multiWindow = true;
+  protected String suiteName = "TestSuite.html";
+  protected String browserURL;
+  File output;
 
-    public void processResults(HTMLTestResults r) {
-        this.results = r;
-    }
+  public HTMLRunnerTestBase() {
+    super();
+  }
+
+  public HTMLRunnerTestBase(String name) {
+    super(name);
+  }
+
+  public void setUp() throws Exception {
+    output = new File(getName() + "-results.html");
+    System.out.println("Will print results to " + output.getAbsolutePath());
+    HttpRequest.__maxFormContentSize = 400000;
+
+  }
+
+  protected void runHTMLSuite(String browser, boolean slowResources) throws Exception {
+    server = new SeleniumServer(slowResources);
+    launcher = new HTMLLauncher(server);
+    server.start();
+    browserURL = "http://localhost:" + server.getPort();
+    String testURL = browserURL + "/selenium-server/tests/" + suiteName;
+    int timeout = 60 * 15; // fifteen minutes
+    String result =
+        launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout, multiWindow);
+    assertTrue("Results file doesn't exist: " + output.getAbsolutePath(), output.exists());
+    assertEquals("Tests didn't pass, check HTML output for details: " + output.getAbsolutePath(),
+        "PASSED", result);
+  }
+
+
+  public void tearDown() throws Exception {
+    if (server != null) server.stop();
+  }
+
+  public void processResults(HTMLTestResults r) {
+    this.results = r;
+  }
 }

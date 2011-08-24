@@ -7,16 +7,19 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
  */
 public class Firefox2LauncherFunctionalTest extends LauncherFunctionalTestCase {
 
-    public void testLauncherWithDefaultConfiguration() throws Exception {
-        launchBrowser(new Firefox2Launcher(BrowserOptions.newBrowserOptions(), new RemoteControlConfiguration(), "CUSTFFCHROME", null));
-    }
+  public void testLauncherWithDefaultConfiguration() throws Exception {
+    launchBrowser(new Firefox2Launcher(BrowserOptions.newBrowserOptions(),
+        new RemoteControlConfiguration(), "CUSTFFCHROME", null));
+  }
 
-    public void testLaunchTwoBrowsersInARowWithDefaultConfiguration() throws Exception {
-        final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+  public void testLaunchTwoBrowsersInARowWithDefaultConfiguration() throws Exception {
+    final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
 
-        launchBrowser(new Firefox2Launcher(BrowserOptions.newBrowserOptions(), configuration, "CUSTFFCHROME", null));
-        launchBrowser(new Firefox2Launcher(BrowserOptions.newBrowserOptions(), configuration, "CUSTFFCHROME", null));
-    }
+    launchBrowser(new Firefox2Launcher(BrowserOptions.newBrowserOptions(), configuration,
+        "CUSTFFCHROME", null));
+    launchBrowser(new Firefox2Launcher(BrowserOptions.newBrowserOptions(), configuration,
+        "CUSTFFCHROME", null));
+  }
 
 
 }

@@ -51,9 +51,9 @@ public class BrowserConfigurationOptionsTest extends TestCase {
 
     for (String test : tests) {
       options.setCapability("profile", test);
-//      assertEquals(options.serialize(), options.toString());
+      // assertEquals(options.serialize(), options.toString());
     }
-//    fail("Make me pass");
+    // fail("Make me pass");
   }
 
   public void testCanBeConvertedToACapabilitiesObject() {

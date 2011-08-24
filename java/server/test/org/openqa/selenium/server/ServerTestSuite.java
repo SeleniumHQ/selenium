@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.server;
 
@@ -22,7 +22,7 @@ import org.openqa.selenium.TestSuiteBuilder;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
-public class ServerTestSuite  extends TestCase {
+public class ServerTestSuite extends TestCase {
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
         .addSourceDir("java/server/test")

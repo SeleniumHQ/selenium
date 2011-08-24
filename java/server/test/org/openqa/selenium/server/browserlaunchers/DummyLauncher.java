@@ -4,47 +4,47 @@ import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 
 /**
  * A teeny tiny no-op launcher to get a non-null launcher for testing.
- *
+ * 
  * @author jbevan@google.com (Jennifer Bevan)
  */
 public class DummyLauncher implements BrowserLauncher {
 
-    private boolean closed;
+  private boolean closed;
 
-    public DummyLauncher() {
-        closed = true;
-    }
+  public DummyLauncher() {
+    closed = true;
+  }
 
-    /**
-     * noop
-     */
-    public void close() {
-        closed = true;
-    }
+  /**
+   * noop
+   */
+  public void close() {
+    closed = true;
+  }
 
-    /**
-     * noop
-     */
-    public Process getProcess() {
-        return null;
-    }
+  /**
+   * noop
+   */
+  public Process getProcess() {
+    return null;
+  }
 
-    /**
-     * noop
-     */
-    public void launchHTMLSuite(String startURL, String suiteUrl) {
-        closed = false;
-    }
+  /**
+   * noop
+   */
+  public void launchHTMLSuite(String startURL, String suiteUrl) {
+    closed = false;
+  }
 
-    protected boolean isClosed() {
-        return closed;
-    }
+  protected boolean isClosed() {
+    return closed;
+  }
 
-    protected void setOpen() {
-        closed = false;
-    }
+  protected void setOpen() {
+    closed = false;
+  }
 
-    public void launchRemoteSession(String url) {
-       closed = false;
-    }
+  public void launchRemoteSession(String url) {
+    closed = false;
+  }
 }

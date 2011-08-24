@@ -17,57 +17,57 @@ public class CommandResultHolderUnitTest extends TestCase {
 
   private static final String sessionId = "1";
   private static final String testResult = "OK";
-  
+
   private static final int cmdTimeout = 3;
   private CommandResultHolder holder;
-  
+
   @Override
   public void setUp() throws Exception {
     configureLogging();
     holder = new CommandResultHolder(sessionId, cmdTimeout);
     log.info("Start test: " + getName());
   }
-  
+
   private void configureLogging() throws Exception {
-      LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
-      Logger logger = Logger.getLogger("");
-      for (Handler handler : logger.getHandlers()) {
-          if (handler instanceof StdOutHandler) {
-              handler.setFormatter(new TerseFormatter(true));
-              break;
-          }
+    LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
+    Logger logger = Logger.getLogger("");
+    for (Handler handler : logger.getHandlers()) {
+      if (handler instanceof StdOutHandler) {
+        handler.setFormatter(new TerseFormatter(true));
+        break;
       }
+    }
   }
-  
+
   @Override
   public void tearDown() throws Exception {
-      LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
+    LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
   }
 
   public void testGetCommandGeneratesTimeoutStringWhenNoResult() {
-	long now = System.currentTimeMillis();
-	String result = holder.getResult();
-	long after = System.currentTimeMillis();
-	assertNotNull(result);
-	assertEquals(CommandResultHolder.CMD_TIMED_OUT_MSG, result);
-	assertTrue(after - now >= (cmdTimeout*999)); // at least timeout seconds
+    long now = System.currentTimeMillis();
+    String result = holder.getResult();
+    long after = System.currentTimeMillis();
+    assertNotNull(result);
+    assertEquals(CommandResultHolder.CMD_TIMED_OUT_MSG, result);
+    assertTrue(after - now >= (cmdTimeout * 999)); // at least timeout seconds
   }
-	
+
   public void testGetCommandGeneratesNullMsgWhenPoisoned() throws Throwable {
-	TrackableRunnable internalGetter = new TrackableRunnable() {
-		@Override
-		public Object go() throws Throwable {
-			String result = holder.getResult();
-	        log.fine(Thread.currentThread().getName() + " got result: " + result);
-	        return result;
-		}
-	};
-	String name = "launching getter";
+    TrackableRunnable internalGetter = new TrackableRunnable() {
+      @Override
+      public Object go() throws Throwable {
+        String result = holder.getResult();
+        log.fine(Thread.currentThread().getName() + " got result: " + result);
+        return result;
+      }
+    };
+    String name = "launching getter";
     TrackableThread t = new TrackableThread(internalGetter, name);
     t.start();
     holder.poisonPollers();
     assertEquals(CommandResultHolder.CMD_NULL_RESULT_MSG,
-	         t.getResult());
+        t.getResult());
   }
 
   public void testSimpleSingleThreaded() throws Throwable {
@@ -77,13 +77,13 @@ public class CommandResultHolderUnitTest extends TestCase {
   }
 
   private void injectContent(String content, boolean expected) throws Throwable {
-	boolean actual = holder.putResult(content);
-	assertEquals(content + "result got sent", expected, actual);
+    boolean actual = holder.putResult(content);
+    assertEquals(content + "result got sent", expected, actual);
   }
 
   private void expectContent(String expected) throws Throwable {
     String actual = holder.getResult();
     assertEquals(expected + " result retrieved", expected, actual);
   }
-  
+
 }

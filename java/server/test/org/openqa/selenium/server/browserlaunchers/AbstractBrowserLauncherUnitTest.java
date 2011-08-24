@@ -10,25 +10,26 @@ import junit.framework.TestCase;
  */
 public class AbstractBrowserLauncherUnitTest extends TestCase {
 
-    public void testGetConfigurationReturnsConfigurationProvidedInConstructor() {
-        final RemoteControlConfiguration theConfiguration;
-        final Capabilities browserOptions;
+  public void testGetConfigurationReturnsConfigurationProvidedInConstructor() {
+    final RemoteControlConfiguration theConfiguration;
+    final Capabilities browserOptions;
 
-        theConfiguration = new RemoteControlConfiguration();
-        browserOptions = BrowserOptions.newBrowserOptions();
-        AbstractBrowserLauncher launcher = new AbstractBrowserLauncher(null, theConfiguration, browserOptions) {
-            protected void launch(String url) {
-                throw new UnsupportedOperationException("Should never be called");
-            }
+    theConfiguration = new RemoteControlConfiguration();
+    browserOptions = BrowserOptions.newBrowserOptions();
+    AbstractBrowserLauncher launcher =
+        new AbstractBrowserLauncher(null, theConfiguration, browserOptions) {
+          protected void launch(String url) {
+            throw new UnsupportedOperationException("Should never be called");
+          }
 
-            public void close() {
-                throw new UnsupportedOperationException("Should never be called");
-            }
+          public void close() {
+            throw new UnsupportedOperationException("Should never be called");
+          }
 
-            public Process getProcess() {
-                throw new UnsupportedOperationException("Should never be called");
-            }
+          public Process getProcess() {
+            throw new UnsupportedOperationException("Should never be called");
+          }
         };
-        assertEquals(theConfiguration, launcher.getConfiguration());
-    }
+    assertEquals(theConfiguration, launcher.getConfiguration());
+  }
 }
