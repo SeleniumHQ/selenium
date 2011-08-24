@@ -42,7 +42,7 @@ webdriver.inject.dom.getText = function(element) {
  *     the wire protocol.
  */
 webdriver.inject.dom.isSelected = function(element) {
-  return bot.inject.executeScript(bot.action.isSelected, [element], true);
+  return bot.inject.executeScript(bot.dom.isSelected, [element], true);
 };
 
 

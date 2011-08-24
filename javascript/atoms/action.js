@@ -18,7 +18,6 @@
  * The bot.action namespace is required since these atoms would otherwise form a
  * circular dependency between bot.dom and bot.events.
  *
- *
  */
 
 goog.provide('bot.action');
@@ -41,69 +40,36 @@ goog.require('goog.userAgent');
 
 
 /**
- * Returns whether an element is in an interactable state: whether it is shown
- * to the user, ignoring its opacity, and whether it is enabled. If throws is
- * set to true, throws an exception if false instead of returning false.
+ * Throws an exception if an element is not shown to the user, ignoring its
+ * opacity.
+
  *
  * @param {!Element} element The element to check.
- * @param {boolean=} opt_throws Whether to throw an exception if false.
- * @return {boolean} Whether the element is interactable.
  * @see bot.dom.isShown.
- * @see bot.dom.isEnabled
  * @private
  */
-// TODO(user): Consider changing the behavior of actions so that they
-// are no-ops if the element is not shown (ignoring opacity) rather than
-// throwing an error.
-bot.action.isInteractable_ = function(element, opt_throws) {
-  var shown = bot.dom.isShown(element, /*ignoreOpacity=*/true);
-  var interactable = shown && bot.dom.isEnabled(element);
-  if (opt_throws && !shown) {
+bot.dom.checkShown_ = function(element) {
+  if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
+
     throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and may not be manipulated');
-  } else if (opt_throws && !interactable) {  // when not enabled
+  }
+};
+
+
+/**
+ * Throws an exception if an element is not interactable.
+ *
+ * @param {!Element} element The element to check.
+ * @see bot.dom.isInteractable.
+ * @private
+ */
+bot.dom.checkInteractable_ = function(element) {
+  if (!bot.dom.isInteractable(element)) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
-        'Element is not currently enabled and may not be manipulated');
+        'Element is not currently interactable and may not be manipulated');
+
   }
-  return interactable;
-};
-
-
-/**
- * @param {!Element} element The element to check.
- * @return {boolean} Whether the element could be checked or selected.
- */
-bot.action.isSelectable = function(element) {
-  if (bot.dom.isElement(element, goog.dom.TagName.OPTION)) {
-    return true;
-  }
-
-  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
-    var type = element.type.toLowerCase();
-    return type == 'checkbox' || type == 'radio';
-  }
-
-  return false;
-};
-
-
-/**
- * @param {!Element} element The element to check.
- * @return {boolean} Whether the element is checked or selected.
- */
-bot.action.isSelected = function(element) {
-  if (!bot.action.isSelectable(element)) {
-    throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
-        'Element is not selectable');
-  }
-
-  var propertyName = 'selected';
-  var type = element.type && element.type.toLowerCase();
-  if ('checkbox' == type || 'radio' == type) {
-    propertyName = 'checked';
-  }
-
-  return !!bot.dom.getProperty(element, propertyName);
 };
 
 
@@ -134,7 +100,7 @@ bot.action.selectInputElement_ = function(element, selected) {
             'You may not deselect a radio button');
       }
 
-      if (selected == bot.action.isSelected(element)) {
+      if (selected == bot.dom.isSelected(element)) {
         return;  // Already in the desired state.
       }
 
@@ -167,7 +133,7 @@ bot.action.selectOptionElement_ = function(element, selected) {
         'does not support multiple selections.');
   }
 
-  if (selected == bot.action.isSelected(element)) {
+  if (selected == bot.dom.isSelected(element)) {
     return;  // Already in the desired state.
   }
 
@@ -189,7 +155,7 @@ bot.action.selectOptionElement_ = function(element, selected) {
  */
 bot.action.setSelected = function(element, selected) {
   // TODO(user): Fire more than just change events: mousemove, keydown, etc?
-  bot.action.isInteractable_(element, true);
+  bot.dom.checkInteractable_(element);
 
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     bot.action.selectInputElement_(element, selected);
@@ -208,17 +174,17 @@ bot.action.setSelected = function(element, selected) {
  * @param {!Element} element The element to toggle.
  * @return {boolean} The new selected state of the element.
  * @see bot.action.setSelected
- * @see bot.action.isSelected
+ * @see bot.dom.isSelected
  */
 bot.action.toggle = function(element) {
-  bot.action.isInteractable_(element, true);
+  bot.dom.checkShown_(element);
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
       'radio' == element.type) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
         'You may not toggle a radio button');
   }
-  bot.action.setSelected(element, !bot.action.isSelected(element));
-  return bot.action.isSelected(element);
+  bot.action.setSelected(element, !bot.dom.isSelected(element));
+  return bot.dom.isSelected(element);
 };
 
 
@@ -233,11 +199,11 @@ bot.action.toggle = function(element) {
  */
 
 bot.action.focusOnElement = function(element, opt_activeElement) {
-  bot.action.isInteractable_(element, true);
+  bot.dom.checkInteractable_(element);
   var activeElement = opt_activeElement || bot.dom.getActiveElement(element);
 
   if (element != activeElement) {
-    // NOTE(jleyba): This check is for browsers that do not support the
+    // NOTE(user): This check is for browsers that do not support the
     // document.activeElement property, like Safari 3. Interestingly,
     // Safari 3 implicitly blurs the activeElement when we call focus()
     // below, so the blur event still fires on the activeElement.
@@ -276,7 +242,7 @@ bot.action.focusOnElement = function(element, opt_activeElement) {
  * @param {!Element} element The element to clear.
  */
 bot.action.clear = function(element) {
-  bot.action.isInteractable_(element, true);
+  bot.dom.checkInteractable_(element);
   if (!bot.dom.isEditable(element)) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
         'Element cannot contain user-editable text');
@@ -306,7 +272,7 @@ bot.action.clear = function(element) {
  *    element, either strings or members of bot.Keyboard.Key.
  */
 bot.action.type = function(element, var_args) {
-  bot.action.isInteractable_(element, true);
+  bot.dom.checkShown_(element);
   bot.action.focusOnElement(element);
   var keyboard = new bot.Keyboard(element);
 
@@ -444,11 +410,13 @@ bot.action.submitForm_ = function(form) {
  * <p/>Throws an exception if the element is not shown or is disabled.
  *
  * @param {!Element} element The element to click.
- * @param {goog.math.Coordinate=} opt_coords Mouse position related to the
+ * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   target.
  */
 bot.action.click = function(element, opt_coords) {
-  bot.action.click_(element, bot.Mouse.Button.LEFT, opt_coords);
+  var mouse = bot.action.prepareMouseForClick_(element, opt_coords);
+  bot.action.pressAndReleaseButton_(
+      mouse, element, bot.Mouse.Button.LEFT);
 };
 
 
@@ -472,29 +440,72 @@ bot.action.click = function(element, opt_coords) {
  * <p/>Throws an exception if the element is not shown or is disabled.
  *
  * @param {!Element} element The element to click.
- * @param {goog.math.Coordinate=} opt_coords Mouse position related to the
+ * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   target.
  */
 bot.action.rightClick = function(element, opt_coords) {
-  bot.action.click_(element, bot.Mouse.Button.RIGHT, opt_coords);
+  var mouse = bot.action.prepareMouseForClick_(element, opt_coords);
+  bot.action.pressAndReleaseButton_(
+      mouse, element, bot.Mouse.Button.RIGHT);
 };
 
 
 /**
- * A helper function for left and right click.
+ * Simulates a double click sequence on the given {@code element}. A double
+ * click sequence is defined as the following events:
+ * <ol>
+ * <li>mouseover</li>
+ * <li>mousemove</li>
+ * <li>mousedown</li>
+ * <li>blur[1]</li>
+ * <li>focus[1]</li>
+ * <li>mouseup</li>
+ * <li>click</li>
+ * <li>mousedown</li>
+ * <li>mouseup</li>
+ * <li>click</li>
+ * <li>doubleclick</li>
+ * </ol>
+ *
+ * <p/>[1] The "blur" and "focus" events are only generated if the {@code
+ * element} does not already have focus. The blur event will be fired on the
+ * currently focused element, and the focus event on the click target.
+ *
+ * <p/>Throws an exception if the element is not shown or is disabled.
  *
  * @param {!Element} element The element to click.
- * @param {!bot.Mouse.Button} button Mouse button.
- * @param {goog.math.Coordinate=} opt_coords Mouse position related to the
+ * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   target.
+ */
+bot.action.doubleClick = function(element, opt_coords) {
+  var mouse = bot.action.prepareMouseForClick_(element, opt_coords);
+
+  bot.action.pressAndReleaseButton_(
+      mouse, element, bot.Mouse.Button.LEFT);
+  // In the second click of a double click we don't have to focus on the element
+  // again.
+  bot.action.pressAndReleaseButton_(
+      mouse, element, bot.Mouse.Button.LEFT, true);
+};
+
+
+/**
+ * A helper function which prepares the mouse for a click action. It checks if
+ * the the element is shown, scrolls the element into few, sets the
+ * {@code opt_coords} if they are undefined, and moves the mouse to the right
+ * position.
+ *
+ * @param {!Element} element The element to click.
+ * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
+ *   target.
+ * @return {!bot.Mouse} The mouse object used for the click.
  * @private
  */
-bot.action.click_ = function(element, button, opt_coords) {
+bot.action.prepareMouseForClick_ = function(element, opt_coords) {
   if (!bot.dom.isShown(element, true)) {
     throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and may not be manipulated');
   }
-  var activeElement = bot.dom.getActiveElement(element);
 
   // Unlike element.scrollIntoView(), this scrolls the minimal amount
   // necessary, not scrolling at all if the element is already in view.
@@ -502,7 +513,7 @@ bot.action.click_ = function(element, button, opt_coords) {
   goog.style.scrollIntoContainerView(element,
       goog.userAgent.WEBKIT ? doc.body : doc.documentElement);
 
-  // NOTE(gdennis): Ideally, we would check that any provided coordinates fall
+  // NOTE(user): Ideally, we would check that any provided coordinates fall
   // within the bounds of the element, but this has proven difficult, because:
   // (1) Browsers sometimes lie about the true size of elements, e.g. when text
   // overflows the bounding box of an element, browsers report the size of the
@@ -515,11 +526,33 @@ bot.action.click_ = function(element, button, opt_coords) {
     opt_coords = new goog.math.Coordinate(size.width / 2, size.height / 2);
   }
 
-  var mouse = new bot.Mouse(bot.action.isInteractable_);
+  var mouse = new bot.Mouse();
   mouse.move(element, opt_coords);
 
+  return mouse;
+};
+
+
+/**
+ * A helper function which triggers a mousePress and a mouseRelease event.
+ *
+ * @param {!bot.Mouse} mouse The object which is used to trigger the mouse
+ * events.
+ * @param {!Element} element The element to click.
+ * @param {!bot.Mouse.Button} button The mouse button.
+ * @param {boolean=} opt_doNotFocusOnElement Whether to focus on the
+ * {@code element}.
+ * @private
+ */
+bot.action.pressAndReleaseButton_ =
+    function(mouse, element, button, opt_doNotFocusOnElement) {
   var performFocus = mouse.pressButton(button);
-  if (performFocus && bot.action.isInteractable_(element)) {
+
+  // focus on the element
+  if (!opt_doNotFocusOnElement &&
+      performFocus &&
+      bot.dom.isInteractable(element)) {
+    var activeElement = bot.dom.getActiveElement(element);
     bot.action.focusOnElement(element, activeElement);
   }
 
@@ -533,13 +566,13 @@ bot.action.click_ = function(element, button, opt_coords) {
  * @param {!Element} element The element to drag.
  * @param {number} dx Increment in x coordinate.
  * @param {number} dy Increment in y coordinate.
- * @param {goog.math.Coordinate=} opt_coords Drag start position related to the
+ * @param {goog.math.Coordinate=} opt_coords Drag start position relative to the
  *   element.
  */
 bot.action.drag = function(element, dx, dy, opt_coords) {
-  bot.action.isInteractable_(element, true);
+  bot.dom.checkShown_(element);
 
-  var mouse = new bot.Mouse(bot.action.isInteractable_);
+  var mouse = new bot.Mouse();
   if (!opt_coords) {
     var size = goog.style.getSize(element);
     opt_coords = new goog.math.Coordinate(size.width / 2, size.height / 2);
@@ -562,3 +595,4 @@ bot.action.drag = function(element, dx, dy, opt_coords) {
 
   mouse.releaseButton();
 };
+

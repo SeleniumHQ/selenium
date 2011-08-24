@@ -16,7 +16,6 @@
 /**
  * @fileoverview DOM manipulation and querying routines.
  *
- *
  */
 
 goog.provide('bot.dom');
@@ -58,6 +57,63 @@ bot.dom.getActiveElement = function(nodeOrWindow) {
 bot.dom.isElement = function(node, opt_tagName) {
   return !!node && node.nodeType == goog.dom.NodeType.ELEMENT &&
       (!opt_tagName || node.tagName.toUpperCase() == opt_tagName);
+};
+
+
+/**
+ * Returns whether an element is in an interactable state: whether it is shown
+ * to the user, ignoring its opacity, and whether it is enabled.
+ *
+ * @param {!Element} element The element to check.
+ * @return {boolean} Whether the element is interactable.
+ * @see bot.dom.isShown.
+ * @see bot.dom.isEnabled
+ */
+bot.dom.isInteractable = function(element) {
+  return bot.dom.isShown(element, /*ignoreOpacity=*/true) &&
+         bot.dom.isEnabled(element);
+};
+
+
+/**
+ * Returns whether the element can be checked or selected.
+ *
+ * @param {!Element} element The element to check.
+ * @return {boolean} Whether the element could be checked or selected.
+ */
+bot.dom.isSelectable = function(element) {
+  if (bot.dom.isElement(element, goog.dom.TagName.OPTION)) {
+    return true;
+  }
+
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
+    var type = element.type.toLowerCase();
+    return type == 'checkbox' || type == 'radio';
+  }
+
+  return false;
+};
+
+
+/**
+ * Returns whether the element is checked or selected.
+ *
+ * @param {!Element} element The element to check.
+ * @return {boolean} Whether the element is checked or selected.
+ */
+bot.dom.isSelected = function(element) {
+  if (!bot.dom.isSelectable(element)) {
+    throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
+        'Element is not selectable');
+  }
+
+  var propertyName = 'selected';
+  var type = element.type && element.type.toLowerCase();
+  if ('checkbox' == type || 'radio' == type) {
+    propertyName = 'checked';
+  }
+
+  return !!bot.dom.getProperty(element, propertyName);
 };
 
 
@@ -908,7 +964,7 @@ bot.dom.getLocationInView = function(elem, opt_elemRegion) {
   }
   bot.dom.scrollElementRegionIntoClientView_(elem, elemRegion);
 
-  // This is needed for elements that are split across multiple lines
+  // This is needed for elements that are split across multiple lines.
   var rect = elem.getClientRects ? elem.getClientRects()[0] : null;
   var elemClientPos = rect ?
       new goog.math.Coordinate(rect.left, rect.top) :

@@ -17,7 +17,6 @@
  * @fileoverview The file contains an abstraction of a mouse for
  * simulating the mouse actions.
  *
- *
  */
 
 goog.provide('bot.Mouse');
@@ -43,11 +42,9 @@ goog.require('goog.userAgent');
  * A mouse that provides atomic mouse actions. This mouse currently only
  * supports having one button pressed at a time.
  *
- * @param {function(!Element):boolean} isInteractable
- *     Function to check whether an element is in an interactable state.
  * @constructor
  */
-bot.Mouse = function(isInteractable) {
+bot.Mouse = function() {
   /**
    * @type {!Element}
    * @private
@@ -73,10 +70,10 @@ bot.Mouse = function(isInteractable) {
   this.clientXY_ = new goog.math.Coordinate(0, 0);
 
   /**
-   * @type {function(!Element):boolean}
+   * @type {boolean}
    * @private
    */
-  this.isInteractable_ = isInteractable;
+  this.nextClickIsDoubleClick_ = false;
 };
 
 
@@ -197,7 +194,7 @@ bot.Mouse.prototype.pressButton = function(button) {
   this.elementPressed_ = this.element_;
 
   var performFocus = true;
-  // TODO(simon): This is a nasty way to avoid locking the browser
+  // TODO(user): This is a nasty way to avoid locking the browser
   if (!this.blocksOnMouseDown_(this.element_)) {
     performFocus = this.fireEvent_(goog.events.EventType.MOUSEDOWN);
   }
@@ -221,6 +218,7 @@ bot.Mouse.prototype.releaseButton = function() {
   if (this.buttonPressed_ == bot.Mouse.Button.LEFT &&
       this.element_ == this.elementPressed_) {
     this.clickElement_();
+    this.maybeDoubleClickElement_();
 
   // TODO(user): In Linux, this fires after mousedown event.
   } else if (this.buttonPressed_ == bot.Mouse.Button.RIGHT) {
@@ -256,8 +254,8 @@ bot.Mouse.prototype.clickElement_ = function() {
     }
   }
 
-  var selectable = bot.action.isSelectable(this.element_);
-  var originallySelected = selectable && bot.action.isSelected(this.element_);
+  var selectable = bot.dom.isSelectable(this.element_);
+  var originallySelected = selectable && bot.dom.isSelected(this.element_);
 
   // NOTE(user): Clicking on a form submit button is a little broken:
   // (1) When clicking a form submit button in IE, firing a click event or
@@ -284,7 +282,7 @@ bot.Mouse.prototype.clickElement_ = function() {
     bot.Mouse.followHref_(targetLink);
   }
 
-  if (!selectable || !this.isInteractable_(this.element_)) {
+  if (!selectable || !bot.dom.isInteractable(this.element_)) {
     return;
   }
 
@@ -308,7 +306,23 @@ bot.Mouse.prototype.clickElement_ = function() {
     }
   }
 
+  // TODO(user): Should not call stuff in bot.action since we're not
+  // including it in mouse.js
   bot.action.setSelected(this.element_, !originallySelected);
+};
+
+
+/**
+ * A helper function to fire mouse double click events.
+ *
+ * @private
+ */
+bot.Mouse.prototype.maybeDoubleClickElement_ = function() {
+  // Trigger an additional double click event if it is the second click.
+  if (this.nextClickIsDoubleClick_) {
+    this.fireEvent_(goog.events.EventType.DBLCLICK);
+  }
+  this.nextClickIsDoubleClick_ = !this.nextClickIsDoubleClick_;
 };
 
 
@@ -332,6 +346,8 @@ bot.Mouse.prototype.move = function(element, coords) {
   }
 
   this.fireEvent_(goog.events.EventType.MOUSEMOVE);
+
+  this.nextClickIsDoubleClick_ = false;
 };
 
 
@@ -346,7 +362,7 @@ bot.Mouse.prototype.move = function(element, coords) {
 bot.Mouse.prototype.fireEvent_ = function(type, opt_related) {
   // TODO(user): Event if the element is not interactable, the mouse event
   // should still fire on another element (offset parent?).
-  if (!this.isInteractable_(this.element_)) {
+  if (!bot.dom.isInteractable(this.element_)) {
     return false;
   }
 
@@ -539,3 +555,4 @@ bot.Mouse.resolveUrl_ = function(base, rel) {
   return target.protocol + '//' + target.host + target.pathname +
       target.search + target.hash;
 };
+

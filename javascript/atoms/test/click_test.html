@@ -37,6 +37,7 @@
            goog.events.EventType.MOUSEDOWN,
            goog.events.EventType.MOUSEUP,
            goog.events.EventType.CLICK,
+           goog.events.EventType.DBLCLICK,
            goog.events.EventType.BLUR,
            goog.events.EventType.FOCUS],
           function(e) {
@@ -142,8 +143,8 @@
       assertEquals(clickedXY.y, Math.floor(clickPos.y + coord.y));
     }
 
-    // TODO(simonstewart): This test demands that firefox has focus
-    // TODO(simonstewart): Move this test to click_test_async.html
+    // TODO(user): This test demands that firefox has focus
+    // TODO(user): Move this test to click_test_async.html
     function xtestShouldFocusOnAnElementBeforeFinishingClickSequence() {
       // This test will fail if the browser is Firefox and it does not have
       // focus (when launching the tests on Mac, this is the case by default).
@@ -174,6 +175,27 @@
         events.push(e.type);
       });
       bot.action.click(clicker);
+      assertArrayEquals(expectedEvents, events);
+    }
+
+    function testShouldGenerateTheCorrectDoubleClickSequence() {
+      var expectedEvents = [
+        goog.events.EventType.MOUSEOVER,
+        goog.events.EventType.MOUSEMOVE,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK,
+        goog.events.EventType.DBLCLICK];
+      var events = [];
+      // We use the global clicker element. It is reset in the
+      // teardown function.
+      goog.events.listen(clicker, expectedEvents, function(e) {
+        events.push(e.type);
+      });
+      bot.action.doubleClick(clicker);
       assertArrayEquals(expectedEvents, events);
     }
 
@@ -435,25 +457,21 @@
       var clickTarget = findElement({name: 'preventedTick'});
 
       bot.action.click(clickTarget);
-      assertFalse(bot.action.isSelected(clickTarget));
+      assertFalse(bot.dom.isSelected(clickTarget));
     }
 
     function testClickShouldEmitChangeEventsWhenSelectingElements() {
+      var called = false;
+      log.addHandler(function() {
+        called = true
+      });
+
+      var clickTarget = findElement({name: 'preventedTick'});
       var select = findElement({name: 'options'});
       var allOptions = findElements({tagName: 'option'}, select);
 
       var foo = allOptions[0];
       var bar = allOptions[1];
-
-      //If you refresh firefox, it preserves the last selected value
-      //Set this manually before running the test, so that refreshing the page
-      //doesn't, the tests still run correctly
-      foo.selected = true;
-
-      var called = false;
-      log.addHandler(function() {
-        called = true
-      });
 
       bot.action.click(foo);
       assertFalse(called);

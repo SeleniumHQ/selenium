@@ -208,8 +208,8 @@
       oranges.selected = false;
       cherries.selected = false;
 
-      assertFalse(bot.action.isSelected(oranges));
-      assertFalse(bot.action.isSelected(cherries));
+      assertFalse(bot.dom.isSelected(oranges));
+      assertFalse(bot.dom.isSelected(cherries));
 
       expectChangeEvent(ms);
       bot.action.setSelected(oranges, true);
@@ -229,17 +229,17 @@
 
       expectChangeEvent(ms);
 
-      assertTrue(bot.action.isSelected(red));
+      assertTrue(bot.dom.isSelected(red));
       bot.action.setSelected(red, false);
-      assertFalse(bot.action.isSelected(red));
+      assertFalse(bot.dom.isSelected(red));
 
-      assertTrue(bot.action.isSelected(green));
+      assertTrue(bot.dom.isSelected(green));
       bot.action.setSelected(green, false);
-      assertFalse(bot.action.isSelected(green));
+      assertFalse(bot.dom.isSelected(green));
 
-      assertTrue(bot.action.isSelected(blue));
+      assertTrue(bot.dom.isSelected(blue));
       bot.action.setSelected(blue, false);
-      assertFalse(bot.action.isSelected(blue));
+      assertFalse(bot.dom.isSelected(blue));
 
       assertChangeFired(3);
     }
@@ -248,7 +248,7 @@
       var ms = goog.dom.$('multiSelect2');
       var red = ms.options[0];
 
-      var state = bot.action.isSelected(red);
+      var state = bot.dom.isSelected(red);
       expectChangeEvent(ms);
 
       assertEquals(!state, bot.action.toggle(red));
@@ -266,7 +266,7 @@
 
     function testShouldBeAbleToToggleCheckboxes() {
       var cb1 = goog.dom.$('check1');
-      var state = bot.action.isSelected(cb1);
+      var state = bot.dom.isSelected(cb1);
 
       expectChangeEvent(cb1);
 
@@ -298,30 +298,30 @@
       bot.action.setSelected(cb1, false);
       bot.action.setSelected(cb2, false);
       bot.action.setSelected(cb3, false);
-      assertFalse(bot.action.isSelected(cb1));
-      assertFalse(bot.action.isSelected(cb2));
-      assertFalse(bot.action.isSelected(cb3));
+      assertFalse(bot.dom.isSelected(cb1));
+      assertFalse(bot.dom.isSelected(cb2));
+      assertFalse(bot.dom.isSelected(cb3));
 
       expectChangeEvent(cb1);
       bot.action.setSelected(cb1, true);
       assertChangeFired();
-      assertTrue(bot.action.isSelected(cb1));
-      assertFalse(bot.action.isSelected(cb2));
-      assertFalse(bot.action.isSelected(cb3));
+      assertTrue(bot.dom.isSelected(cb1));
+      assertFalse(bot.dom.isSelected(cb2));
+      assertFalse(bot.dom.isSelected(cb3));
 
       expectChangeEvent(cb2);
       bot.action.setSelected(cb2, true);
       assertChangeFired();
-      assertTrue(bot.action.isSelected(cb1));
-      assertTrue(bot.action.isSelected(cb2));
-      assertFalse(bot.action.isSelected(cb3));
+      assertTrue(bot.dom.isSelected(cb1));
+      assertTrue(bot.dom.isSelected(cb2));
+      assertFalse(bot.dom.isSelected(cb3));
 
       expectChangeEvent(cb3);
       bot.action.setSelected(cb3, true);
       assertChangeFired();
-      assertTrue(bot.action.isSelected(cb1));
-      assertTrue(bot.action.isSelected(cb2));
-      assertTrue(bot.action.isSelected(cb3));
+      assertTrue(bot.dom.isSelected(cb1));
+      assertTrue(bot.dom.isSelected(cb2));
+      assertTrue(bot.dom.isSelected(cb3));
     }
 
     function testShouldNotBeAbleToDeselectARadioButton() {
@@ -352,30 +352,30 @@
       var r4 = goog.dom.$('radio4');
       r4.checked = true;
 
-      assertFalse('precondition failed', bot.action.isSelected(r1));
-      assertFalse('precondition failed', bot.action.isSelected(r2));
-      assertFalse('precondition failed', bot.action.isSelected(r3));
+      assertFalse('precondition failed', bot.dom.isSelected(r1));
+      assertFalse('precondition failed', bot.dom.isSelected(r2));
+      assertFalse('precondition failed', bot.dom.isSelected(r3));
 
       expectChangeEvent(r2);
       bot.action.setSelected(r2, true);
       assertChangeFired();
-      assertFalse(bot.action.isSelected(r1));
-      assertTrue(bot.action.isSelected(r2));
-      assertFalse(bot.action.isSelected(r3));
+      assertFalse(bot.dom.isSelected(r1));
+      assertTrue(bot.dom.isSelected(r2));
+      assertFalse(bot.dom.isSelected(r3));
 
       expectChangeEvent(r3);
       bot.action.setSelected(r3, true);
       assertChangeFired();
-      assertFalse(bot.action.isSelected(r1));
-      assertFalse(bot.action.isSelected(r2));
-      assertTrue(bot.action.isSelected(r3));
+      assertFalse(bot.dom.isSelected(r1));
+      assertFalse(bot.dom.isSelected(r2));
+      assertTrue(bot.dom.isSelected(r3));
 
       expectChangeEvent(r1);
       bot.action.setSelected(r1, true);
       assertChangeFired();
-      assertTrue(bot.action.isSelected(r1));
-      assertFalse(bot.action.isSelected(r2));
-      assertFalse(bot.action.isSelected(r3));
+      assertTrue(bot.dom.isSelected(r1));
+      assertFalse(bot.dom.isSelected(r2));
+      assertFalse(bot.dom.isSelected(r3));
     }
 
 
