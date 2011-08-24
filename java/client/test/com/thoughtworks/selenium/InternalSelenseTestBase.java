@@ -35,7 +35,8 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     driver.get(whereIs("/selenium-server"));
 
     try {
-      URL scriptUrl = Resources.getResource(getClass(), "/com/thoughtworks/selenium/testHelpers.js");
+      URL scriptUrl =
+          Resources.getResource(getClass(), "/com/thoughtworks/selenium/testHelpers.js");
       String script = Resources.toString(scriptUrl, Charsets.UTF_8);
 
       ((JavascriptExecutor) driver).executeScript(script);

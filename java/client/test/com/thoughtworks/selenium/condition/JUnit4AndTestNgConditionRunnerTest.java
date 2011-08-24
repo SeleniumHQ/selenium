@@ -20,13 +20,13 @@ import junit.framework.TestCase;
 
 public class JUnit4AndTestNgConditionRunnerTest extends TestCase {
 
-    public void testAssertionErrorIsOfRightType() {
-        JUnit4AndTestNgConditionRunner cr = new JUnit4AndTestNgConditionRunner(null, null, 1, 1);
-        try {
-            cr.throwAssertionException("foo");
-            fail("should have barfed");
-        } catch (AssertionError e) {
-            assertEquals("foo", e.getMessage());
-        }
+  public void testAssertionErrorIsOfRightType() {
+    JUnit4AndTestNgConditionRunner cr = new JUnit4AndTestNgConditionRunner(null, null, 1, 1);
+    try {
+      cr.throwAssertionException("foo");
+      fail("should have barfed");
+    } catch (AssertionError e) {
+      assertEquals("foo", e.getMessage());
     }
+  }
 }

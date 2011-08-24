@@ -5,26 +5,27 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.Test;
 
 public class TestRollup extends InternalSelenseTestBase {
-	@Test public void testRollup() throws Exception {
+  @Test
+  public void testRollup() throws Exception {
     // TODO(simon): re-enable this. It looks like the addScript method is not right
-		selenium.addScript(getRollupScript(), "rollup");
-		selenium.open("../tests/html/test_rollup.html");
-		selenium.rollup("cake", "");
-		selenium.rollup("biscuits", "n=1");
-		verifyFalse(selenium.isChecked("name=one"));
-		verifyTrue(selenium.isChecked("name=dos"));
-		verifyTrue(selenium.isChecked("name=san"));
-		selenium.rollup("biscuits", "n=2");
-		verifyTrue(selenium.isChecked("name=one"));
-		verifyFalse(selenium.isChecked("name=dos"));
-		verifyTrue(selenium.isChecked("name=san"));
-		selenium.rollup("biscuits", "n=3");
-		verifyFalse(selenium.isChecked("name=one"));
-		verifyTrue(selenium.isChecked("name=dos"));
-		verifyFalse(selenium.isChecked("name=san"));
-		selenium.rollup("steamed spinach", "");
-		selenium.removeScript("rollup");
-	}
+    selenium.addScript(getRollupScript(), "rollup");
+    selenium.open("../tests/html/test_rollup.html");
+    selenium.rollup("cake", "");
+    selenium.rollup("biscuits", "n=1");
+    verifyFalse(selenium.isChecked("name=one"));
+    verifyTrue(selenium.isChecked("name=dos"));
+    verifyTrue(selenium.isChecked("name=san"));
+    selenium.rollup("biscuits", "n=2");
+    verifyTrue(selenium.isChecked("name=one"));
+    verifyFalse(selenium.isChecked("name=dos"));
+    verifyTrue(selenium.isChecked("name=san"));
+    selenium.rollup("biscuits", "n=3");
+    verifyFalse(selenium.isChecked("name=one"));
+    verifyTrue(selenium.isChecked("name=dos"));
+    verifyFalse(selenium.isChecked("name=san"));
+    selenium.rollup("steamed spinach", "");
+    selenium.removeScript("rollup");
+  }
 
   private String getRollupScript() {
     return "var rm = new RollupManager();\n"

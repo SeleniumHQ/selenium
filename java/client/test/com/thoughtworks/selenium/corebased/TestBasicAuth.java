@@ -11,10 +11,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class TestBasicAuth extends InternalSelenseTestBase {
-	@Test public void testBasicAuth() throws Exception {
+  @Test
+  public void testBasicAuth() throws Exception {
     selenium.open(getUrl());
-		assertEquals(selenium.getTitle(), "Welcome");
-	}
+    assertEquals(selenium.getTitle(), "Welcome");
+  }
 
   private String getUrl() throws MalformedURLException {
     AppServer appServer = GlobalTestEnvironment.get().getAppServer();

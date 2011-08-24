@@ -5,7 +5,8 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.Test;
 
 public class TestGettingValueOfCheckbox extends InternalSelenseTestBase {
-	@Test public void testGettingValueOfCheckbox() throws Exception {
+  @Test
+  public void testGettingValueOfCheckbox() throws Exception {
     selenium.open("../tests/html/test_submit.html");
 
     String elementLocator = "name=okayToSubmit";
@@ -17,5 +18,5 @@ public class TestGettingValueOfCheckbox extends InternalSelenseTestBase {
     selenium.click(elementLocator);
     assertEquals("off", selenium.getValue(elementLocator));
 
-	}
+  }
 }

@@ -6,13 +6,18 @@ import com.thoughtworks.selenium.SeleniumException;
 import org.junit.Test;
 
 public class TestCursorPosition extends InternalSelenseTestBase {
-	@Test public void testCursorPosition() throws Exception {
-		selenium.open("../tests/html/test_type_page1.html");
-		try { assertEquals(selenium.getCursorPosition("username"), "8"); fail("expected failure"); } catch (Throwable e) {}
-		selenium.windowFocus();
-		verifyEquals(selenium.getValue("username"), "");
-		selenium.type("username", "TestUser");
-		selenium.setCursorPosition("username", "0");
+  @Test
+  public void testCursorPosition() throws Exception {
+    selenium.open("../tests/html/test_type_page1.html");
+    try {
+      assertEquals(selenium.getCursorPosition("username"), "8");
+      fail("expected failure");
+    } catch (Throwable e) {
+    }
+    selenium.windowFocus();
+    verifyEquals(selenium.getValue("username"), "");
+    selenium.type("username", "TestUser");
+    selenium.setCursorPosition("username", "0");
 
     Number position = 0;
     try {
@@ -22,13 +27,17 @@ public class TestCursorPosition extends InternalSelenseTestBase {
         return;
       }
     }
-		verifyEquals(position.toString(), "0");
-		selenium.setCursorPosition("username", "-1");
-		verifyEquals(selenium.getCursorPosition("username"), "8");
-		selenium.refresh();
-		selenium.waitForPageToLoad("30000");
-		try { assertEquals(selenium.getCursorPosition("username"), "8"); fail("expected failure"); } catch (Throwable e) {}
-	}
+    verifyEquals(position.toString(), "0");
+    selenium.setCursorPosition("username", "-1");
+    verifyEquals(selenium.getCursorPosition("username"), "8");
+    selenium.refresh();
+    selenium.waitForPageToLoad("30000");
+    try {
+      assertEquals(selenium.getCursorPosition("username"), "8");
+      fail("expected failure");
+    } catch (Throwable e) {
+    }
+  }
 
   private boolean isWindowInFocus(SeleniumException e) {
     if (e.getMessage().contains("There is no cursor on this page")) {
