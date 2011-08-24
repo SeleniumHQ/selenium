@@ -36,12 +36,12 @@ class WebDriver(RemoteWebDriver):
             self.port = utils.free_port()
 
         # Create IE Driver instance of the unmanaged code
-	try:
+        try:
             self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"win32", "IEDriver.dll"))
-	except WindowsError:
+        except WindowsError:
             try:
                 self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"x64", "IEDriver.dll"))
-	    except WindowsError:
+            except WindowsError:
                 raise WebDriverException("Unable to load the IEDriver.dll component")
         self.ptr = self.iedriver.StartServer(self.port)
 

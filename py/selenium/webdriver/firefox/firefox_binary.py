@@ -30,7 +30,7 @@ class FirefoxBinary(object):
     NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
 
     def __init__(self, firefox_path=None):
-        self._start_cmd = firefox_path 
+        self._start_cmd = firefox_path
         if self._start_cmd is None:
             self._start_cmd = self._get_firefox_start_cmd()
 
@@ -41,8 +41,8 @@ class FirefoxBinary(object):
         self.profile = profile
 
         self._start_from_profile_path(self.profile.path)
-        self._wait_until_connectable() 
-            
+        self._wait_until_connectable()
+ 
     def kill(self):
         """Kill the browser.
 
@@ -81,7 +81,7 @@ class FirefoxBinary(object):
         while not self.is_connectable():
             if self.process.returncode:
                 # Browser has exited
-                return WebDriverException("The browser appears to have exited before we could connect") 
+                return WebDriverException("The browser appears to have exited before we could connect")
             if count == 30:
                 self.kill()
                 raise WebDriverException("Can't load the profile. Profile Dir : %s" % self.profile.path)
@@ -106,7 +106,7 @@ class FirefoxBinary(object):
                 pass
         else:
             return ""
-    
+ 
         return shlex.split(command)[0]
 
     def _get_firefox_start_cmd(self):
