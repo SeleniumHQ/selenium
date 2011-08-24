@@ -71,7 +71,9 @@ public class RegistrationRequestTest {
 
   @Test
   public void seleniumGrid1Request() {
-    RegistrationRequest request = RegistrationRequest.getNewInstance("host=localhost&port=5000&environment=Firefox%3A+4%3B+MacOS+X%3A+10.6.7");
+    RegistrationRequest request =
+        RegistrationRequest
+            .getNewInstance("host=localhost&port=5000&environment=Firefox%3A+4%3B+MacOS+X%3A+10.6.7");
 
     Assert.assertEquals(null, request.getId());
     Assert.assertEquals(null, request.getName());
@@ -82,11 +84,14 @@ public class RegistrationRequestTest {
     DesiredCapabilities caps = request.getCapabilities().get(0);
 
     // Assert.assertEquals(Platform.LINUX.toString(), caps.get(CapabilityType.PLATFORM));
-    Assert.assertEquals("Firefox: 4; MacOS X: 10.6.7", caps.getCapability(CapabilityType.BROWSER_NAME));
+    Assert.assertEquals("Firefox: 4; MacOS X: 10.6.7",
+        caps.getCapability(CapabilityType.BROWSER_NAME));
 
     // Verify the configuration was set up properly.
-    Assert.assertEquals("org.openqa.grid.selenium.proxy.SeleniumRemoteProxy", request.getConfiguration().get(CapabilityType.PROXY));
-    Assert.assertEquals("http://localhost:5000/selenium-server/driver", request.getConfiguration().get("url"));
+    Assert.assertEquals("org.openqa.grid.selenium.proxy.SeleniumRemoteProxy", request
+        .getConfiguration().get(CapabilityType.PROXY));
+    Assert.assertEquals("http://localhost:5000/selenium-server/driver", request.getConfiguration()
+        .get("url"));
   }
 
 
@@ -94,7 +99,8 @@ public class RegistrationRequestTest {
   public void basicCommandLineParam() {
     String hubHost = "-" + RegistrationRequest.HUB_HOST;
     String hubPort = "-" + RegistrationRequest.HUB_PORT;
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC", hubPort, "1234");
+    RegistrationRequest req =
+        RegistrationRequest.build("-role", "rc", hubHost, "ABC", hubPort, "1234");
 
     Assert.assertEquals(GridRole.REMOTE_CONTROL, req.getRole());
     Assert.assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
@@ -128,7 +134,9 @@ public class RegistrationRequestTest {
     RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC");
     Assert.assertEquals(true, req.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
 
-    RegistrationRequest req2 = RegistrationRequest.build("-role", "rc", hubHost, "ABC", "-" + RegistrationRequest.AUTO_REGISTER, "false");
+    RegistrationRequest req2 =
+        RegistrationRequest.build("-role", "rc", hubHost, "ABC", "-" +
+            RegistrationRequest.AUTO_REGISTER, "false");
     Assert.assertEquals(false, req2.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
 
   }
