@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.javascript;
 
@@ -50,7 +50,8 @@ public class ClosureTestSuite {
       urlPath += "/";
     }
 
-    String className = System.getProperty("selenium.browser", "org.openqa.selenium.firefox.FirefoxDriver");
+    String className =
+        System.getProperty("selenium.browser", "org.openqa.selenium.firefox.FirefoxDriver");
     Class<? extends WebDriver> driverClazz = getDriverClass(className);
 
     for (File file : testDir.listFiles(new TestFilenameFilter())) {
@@ -59,7 +60,7 @@ public class ClosureTestSuite {
           .replace(File.separator, "/");
       TestCase test = new JsApiTestCase(urlPath + path);
       suite.addTest(new DriverTestDecorator(test, driverClazz,
-          /*keepDriver=*/true, /*freshDriver=*/false, /*refreshDriver=*/false));
+          /* keepDriver= */true, /* freshDriver= */false, /* refreshDriver= */false));
     }
 
     return new EnvironmentStarter(suite);

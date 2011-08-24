@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox.internal;
 
@@ -49,7 +49,7 @@ public class SocketLockTest extends TestCase {
     lock.lock(TimeUnit.SECONDS.toMillis(1));
     lock.unlock();
   }
-  
+
   @Test
   public void testSerialLockOnSamePort() {
     for (int i = 0; i < 20; i++) {
@@ -58,7 +58,7 @@ public class SocketLockTest extends TestCase {
       lock.unlock();
     }
   }
-  
+
   @Test
   public void testAttemptToReuseLocksFails() {
     Lock lock = new SocketLock(freePort);
@@ -68,7 +68,7 @@ public class SocketLockTest extends TestCase {
       lock.lock(TimeUnit.SECONDS.toMillis(1));
       Assert.fail("Expected a SocketException to be thrown when reused");
     } catch (WebDriverException e) {
-      
+
       // Lock reuse not permitted; expected.
     }
   }

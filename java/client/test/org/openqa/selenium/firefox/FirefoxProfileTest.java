@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox;
 
@@ -41,7 +41,7 @@ public class FirefoxProfileTest extends TestCase {
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
 
   private FirefoxProfile profile;
-  
+
   @Override
   protected void setUp() throws Exception {
     super.setUp();
@@ -80,10 +80,10 @@ public class FirefoxProfileTest extends TestCase {
   public void testManualProxy() throws Exception {
     profile.setProxyPreferences(
         new Proxy()
-        .setHttpProxy("foo:123")
-        .setFtpProxy("bar:234")
-        .setSslProxy("baz:345")
-        .setNoProxy("localhost"));
+            .setHttpProxy("foo:123")
+            .setFtpProxy("bar:234")
+            .setSslProxy("baz:345")
+            .setNoProxy("localhost"));
     List<String> prefLines = readGeneratedProperties(profile);
     String prefs = new ArrayList<String>(prefLines).toString();
     assertThat(prefs, containsString("network.proxy.http\", \"foo\""));
@@ -95,26 +95,26 @@ public class FirefoxProfileTest extends TestCase {
     assertThat(prefs, containsString("network.proxy.no_proxies_on\", \"localhost\""));
     assertThat(prefs, containsString("network.proxy.type\", 1"));
   }
-  
+
   public void testProxyAutoconfigUrl() throws Exception {
     profile.setProxyPreferences(
         new Proxy()
-        .setProxyAutoconfigUrl("http://foo/bar.pac"));
+            .setProxyAutoconfigUrl("http://foo/bar.pac"));
     List<String> prefLines = readGeneratedProperties(profile);
     String prefs = new ArrayList<String>(prefLines).toString();
     assertThat(prefs, containsString("network.proxy.autoconfig_url\", \"http://foo/bar.pac\""));
     assertThat(prefs, containsString("network.proxy.type\", 2"));
   }
-  
+
   public void testProxyAutodetect() throws Exception {
     profile.setProxyPreferences(
         new Proxy()
-        .setAutodetect(true));
+            .setAutodetect(true));
     List<String> prefLines = readGeneratedProperties(profile);
     String prefs = new ArrayList<String>(prefLines).toString();
     assertThat(prefs, containsString("network.proxy.type\", 4"));
   }
-  
+
   public void testShouldSetBooleanPreferences() throws Exception {
     profile.setPreference("cheese", false);
 
@@ -168,7 +168,7 @@ public class FirefoxProfileTest extends TestCase {
 
     File prefs = new File(dir, "user.js");
     assertTrue(prefs.exists());
-    
+
     assertTrue(FileHandler.readAsString(prefs).contains("i.like.cheese"));
   }
 

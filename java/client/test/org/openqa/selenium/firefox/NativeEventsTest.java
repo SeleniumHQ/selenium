@@ -7,7 +7,7 @@ import org.openqa.selenium.remote.CapabilityType;
 
 /**
  * If native events are enabled, make sure they work.
- *
+ * 
  * @author eran.mes@gmail.com (Eran Mes)
  */
 public class NativeEventsTest extends AbstractDriverTestCase {
@@ -18,7 +18,7 @@ public class NativeEventsTest extends AbstractDriverTestCase {
   protected void setUp() throws Exception {
     super.setUp();
     testNativeEvents = FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS ||
-                       Platform.getCurrent().is(Platform.LINUX);
+        Platform.getCurrent().is(Platform.LINUX);
     if (testNativeEvents) {
       FirefoxProfile p = new FirefoxProfile();
       p.setEnableNativeEvents(true);

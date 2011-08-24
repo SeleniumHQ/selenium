@@ -13,10 +13,10 @@ import org.openqa.selenium.JavascriptExecutor;
 
 /**
  * Runs a WebDriverJS test.
- *
+ * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
-@Ignore(value = { HTMLUNIT, IE, IPHONE, REMOTE, OPERA })
+@Ignore(value = {HTMLUNIT, IE, IPHONE, REMOTE, OPERA})
 public class JsApiTestCase extends AbstractDriverTestCase {
 
   private static final long TWO_MINUTES = 2 * 60 * 1000;
@@ -48,10 +48,10 @@ public class JsApiTestCase extends AbstractDriverTestCase {
     } while (true);
 
     Object result = executor.executeScript(Query.NUM_PASSED.script);
-    long numPassed = result == null ? 0: (Long) result;
+    long numPassed = result == null ? 0 : (Long) result;
 
     result = executor.executeScript(Query.NUM_TESTS.script);
-    long numTests = result == null ? 0: (Long) result;
+    long numTests = result == null ? 0 : (Long) result;
 
     result = executor.executeScript(Query.NUM_ERRORS.script);
     long numErrors = result == null ? 0 : (Long) result;

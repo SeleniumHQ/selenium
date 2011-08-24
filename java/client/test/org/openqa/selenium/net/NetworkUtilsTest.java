@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package org.openqa.selenium.net;
 
 import junit.framework.TestCase;
@@ -88,9 +88,10 @@ public class NetworkUtilsTest extends TestCase {
     assertEquals("192.168.1.102", networkUtils.getNonLoopbackAddressOfThisMachine());
   }
 
-  public void testOpenSuseBoxIssue1181(){
-      NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getOpenSuseBoxFromIssue1181());
-      String s = networkUtils.obtainLoopbackIp4Address();
-      assertEquals("localhost.localdomain", s);
+  public void testOpenSuseBoxIssue1181() {
+    NetworkUtils networkUtils =
+        new NetworkUtils(StubNetworkInterfaceProvider.getOpenSuseBoxFromIssue1181());
+    String s = networkUtils.obtainLoopbackIp4Address();
+    assertEquals("localhost.localdomain", s);
   }
 }

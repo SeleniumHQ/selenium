@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.html5;
 
@@ -326,7 +326,8 @@ public class HTML5Test extends AbstractDriverTestCase {
 
     ResultSet resultSet2 = executeQuery(
         "UPDATE docs SET docname='DocBar' WHERE docname='DocFooBar'");
-    assertTrue("It should only affect one row, but affects " + resultSet2.getNumberOfRowsAffected(),
+    assertTrue(
+        "It should only affect one row, but affects " + resultSet2.getNumberOfRowsAffected(),
         resultSet2.getNumberOfRowsAffected() == 1);
 
     executeQuery(DELETE_STATEMENT);

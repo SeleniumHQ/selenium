@@ -9,7 +9,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 
 public class OperaDriverTestSuite extends TestCase {
-  
+
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")

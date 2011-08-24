@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium.internal.seleniumemulation;
@@ -23,7 +23,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class GetAttributeTest {
-  @Test public void shouldExtractElementAndAttributeName() {
+  @Test
+  public void shouldExtractElementAndAttributeName() {
     GetAttribute getAttribute = new GetAttribute(new StubLibrary(), null);
 
     String[] pair = getAttribute.getNameAndAttribute("username@disabled");
@@ -33,9 +34,9 @@ public class GetAttributeTest {
   }
 
   private static class StubLibrary extends JavascriptLibrary {
-      @Override
-      public String getSeleniumScript(String name) {
-        return "";
-      }
+    @Override
+    public String getSeleniumScript(String name) {
+      return "";
     }
+  }
 }

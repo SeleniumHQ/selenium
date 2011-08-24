@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium.lift.find;
@@ -35,9 +35,12 @@ public class XPathFinderTest extends MockTestBase {
     XPathFinder finder = new XPathFinder(xpath);
 
     final WebDriver driver = mock(WebDriver.class);
-    checking(new Expectations() {{
-      one(driver).findElements(By.xpath(xpath)); will(returnValue(Collections.EMPTY_LIST));
-    }});
+    checking(new Expectations() {
+      {
+        one(driver).findElements(By.xpath(xpath));
+        will(returnValue(Collections.EMPTY_LIST));
+      }
+    });
 
 
     finder.extractFrom(driver);

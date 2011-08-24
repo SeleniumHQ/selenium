@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.htmlunit;
 
@@ -26,11 +26,11 @@ import org.openqa.selenium.WebElement;
 
 public class ToStringTest extends AbstractDriverTestCase {
 
-    public void testToString() {
-        driver.get(pages.xhtmlTestPage);
+  public void testToString() {
+    driver.get(pages.xhtmlTestPage);
 
-        WebElement a = driver.findElement(By.id("id1"));
-        assertThat(a.toString(), is("<a id=\"id1\" href=\"#\">"));
-    }
+    WebElement a = driver.findElement(By.id("id1"));
+    assertThat(a.toString(), is("<a id=\"id1\" href=\"#\">"));
+  }
 
 }

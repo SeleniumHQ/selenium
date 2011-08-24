@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions.touch;
 
@@ -51,7 +51,7 @@ public class TouchSingleTapTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
-                  + "operations not supported")
+      + "operations not supported")
   public void testCanSingleTapOnALinkAndFollowIt() {
     driver.get(pages.clicksPage);
     singleTapOnElement("normal");
@@ -59,14 +59,14 @@ public class TouchSingleTapTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
-                  + "operations not supported")
+      + "operations not supported")
   public void testCanSingleTapOnAnAnchorAndNotReloadThePage() {
     driver.get(pages.clicksPage);
     ((JavascriptExecutor) driver).executeScript("document.latch = true");
     singleTapOnElement("anchor");
     Boolean samePage = (Boolean) ((JavascriptExecutor) driver)
         .executeScript("return document.latch");
-    
+
     assertTrue(samePage);
   }
 }

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions;
 
@@ -71,7 +71,7 @@ public class ActionsTest extends MockTestBase {
 
   @Test
   public void creatingAllKeyboardActions() {
-    checking(new Expectations() {{      
+    checking(new Expectations() {{
       one(dummyKeyboard).pressKey(Keys.SHIFT);
       one(dummyKeyboard).sendKeys("abc");
       one(dummyKeyboard).releaseKey(Keys.CONTROL);
@@ -83,7 +83,7 @@ public class ActionsTest extends MockTestBase {
 
     CompositeAction returnedAction = (CompositeAction) builder.build();
     returnedAction.perform();
-    
+
     assertEquals("Expected 3 keyboard actions", 3, returnedAction.getNumberOfActions());
   }
 

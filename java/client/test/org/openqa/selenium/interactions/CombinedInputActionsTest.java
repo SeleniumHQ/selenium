@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions;
 
@@ -45,7 +45,7 @@ import java.util.List;
 @Ignore(ANDROID)
 public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
-  //TODO: Check if this could work in any browser without native events.
+  // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
   @Ignore
   public void testClickingOnFormElements() {
@@ -109,8 +109,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
     new Actions(driver)
         .click(link)
-        .perform()
-    ;
+        .perform();
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
@@ -127,8 +126,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
     new Actions(driver)
         .moveToElement(link, 1, 1)
         .click()
-        .perform()
-    ;
+        .perform();
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
@@ -146,24 +144,21 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
     new Actions(driver)
         .sendKeys(element, "abc def")
-        .perform()
-    ;
+        .perform();
 
     assertEquals("abc def", element.getAttribute("value"));
 
     new Actions(driver)
         .sendKeys(Keys.CONTROL + "a")
         .sendKeys(Keys.CONTROL + "x")
-        .perform()
-    ;
+        .perform();
 
     assertEquals("", element.getAttribute("value"));
 
     new Actions(driver)
         .sendKeys(Keys.CONTROL + "v")
         .sendKeys(Keys.CONTROL + "v")
-        .perform()
-    ;
+        .perform();
 
     assertEquals("abc defabc def", element.getAttribute("value"));
   }

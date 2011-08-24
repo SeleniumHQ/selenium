@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.internal.seleniumemulation;
 
@@ -32,7 +32,8 @@ public class TypeKeysTest {
   private ElementFinder elementFinder;
   private WebElement element;
 
-  @Before public void setUp() {
+  @Before
+  public void setUp() {
     element = createNiceMock(WebElement.class);
 
     elementFinder = new ElementFinder() {
@@ -43,26 +44,28 @@ public class TypeKeysTest {
     };
   }
 
-  @Test public void substitutesArrowKeys() {
+  @Test
+  public void substitutesArrowKeys() {
     String expected = newString(Keys.ARROW_DOWN, Keys.ARROW_LEFT, Keys.ARROW_RIGHT, Keys.ARROW_UP);
     String input = "\\40\\37\\39\\38";
 
     element.sendKeys(expected);
 
     replay(element);
-    new TypeKeys(new AlertOverrideStub(), elementFinder).apply(null, new String[] { "foo", input });
+    new TypeKeys(new AlertOverrideStub(), elementFinder).apply(null, new String[] {"foo", input});
 
     verify(element);
   }
 
-  @Test public void substitutesReturnAndEscapeKeys() {
+  @Test
+  public void substitutesReturnAndEscapeKeys() {
     String expected = newString(Keys.ENTER, Keys.RETURN, Keys.ESCAPE);
     String input = "\\10\\13\\27";
 
     element.sendKeys(expected);
 
     replay(element);
-    new TypeKeys(new AlertOverrideStub(), elementFinder).apply(null, new String[] { "foo", input });
+    new TypeKeys(new AlertOverrideStub(), elementFinder).apply(null, new String[] {"foo", input});
 
     verify(element);
   }

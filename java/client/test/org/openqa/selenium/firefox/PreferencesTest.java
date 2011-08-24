@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox;
 
@@ -38,14 +38,14 @@ public class PreferencesTest extends TestCase {
     Preferences a = new Preferences();
 
     assertFalse("Empty String", canSet(a, "\"\""));
-    assertFalse("Valid stringified string", canSet(a,("\"Julian\"")));
-    assertTrue("Only start is stringified", canSet(a,("\"StartOnly")));
-    assertTrue("Only end is stringified", canSet(a,("EndOnly\"")));
+    assertFalse("Valid stringified string", canSet(a, ("\"Julian\"")));
+    assertTrue("Only start is stringified", canSet(a, ("\"StartOnly")));
+    assertTrue("Only end is stringified", canSet(a, ("EndOnly\"")));
     assertFalse("Using String.format(\"%%s\")",
-               canSet(a,(String.format("\"%s\"", "FormatMe"))));
+        canSet(a, (String.format("\"%s\"", "FormatMe"))));
 
     assertFalse("Stringified string containing extra double-quotes",
-               canSet(a,("\"Julian\" \"TestEngineer\" Harty.\"")));
+        canSet(a, ("\"Julian\" \"TestEngineer\" Harty.\"")));
 
   }
 
@@ -70,7 +70,7 @@ public class PreferencesTest extends TestCase {
 
     Reader lines = new StringReader(
         "user_pref(\"general.useragent.override\", \"" + prefWithComma + "\");\n" +
-        "user_pref(\"print.print_command\", \"" + prefWithQuotes + "\");");
+            "user_pref(\"print.print_command\", \"" + prefWithQuotes + "\");");
     Preferences prefs = new Preferences(lines);
 
     assertEquals(prefWithComma, prefs.getPreference("general.useragent.override"));
@@ -80,7 +80,7 @@ public class PreferencesTest extends TestCase {
   public void testParsePreferences_multiline() throws IOException {
     Reader lines = new StringReader(
         "user_pref(\"extensions.update.notifyUser\", false);\n" +
-        "user_pref(\"dom.max_script_run_time\", 30);");
+            "user_pref(\"dom.max_script_run_time\", 30);");
     Preferences prefs = new Preferences(lines);
 
     assertEquals(false, prefs.getPreference("extensions.update.notifyUser"));

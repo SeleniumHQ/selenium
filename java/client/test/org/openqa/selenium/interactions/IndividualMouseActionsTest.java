@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions;
 
@@ -29,7 +29,7 @@ import org.junit.Test;
 
 /**
  * Unit test for all simple keyboard actions.
- *
+ * 
  */
 public class IndividualMouseActionsTest extends MockTestBase {
   private Mouse dummyMouse;
@@ -156,7 +156,7 @@ public class IndividualMouseActionsTest extends MockTestBase {
   @Test
   public void mouseContextClickAction() {
     checking(new Expectations() {{
-      one(dummyMouse).mouseMove(dummyCoordinates);      
+      one(dummyMouse).mouseMove(dummyCoordinates);
       one(dummyMouse).contextClick(dummyCoordinates);
     }});
 
@@ -173,5 +173,4 @@ public class IndividualMouseActionsTest extends MockTestBase {
     ContextClickAction action = new ContextClickAction(dummyMouse, null);
     action.perform();
   }
-
 }

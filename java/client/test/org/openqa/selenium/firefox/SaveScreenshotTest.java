@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox;
 
@@ -28,22 +28,22 @@ import java.io.IOException;
 
 public class SaveScreenshotTest extends AbstractDriverTestCase {
 
-    /**
-     * Test the deprecated version of screenshot capturing.
-     */
-    @SuppressWarnings("deprecation")
-    public void testDeprecatedSaveScreenshot() throws IOException {
-        File tempFile = File.createTempFile("formPage", ".png");
-        assertThat(tempFile.length(), is(0L));
-        driver.get(pages.formPage);
-        try {
-            ((FirefoxDriver) driver).saveScreenshot(tempFile);
-            assertThat(tempFile.length(), is(greaterThan(0L)));
-        } finally {
-            if (tempFile.exists()) {
-                tempFile.delete();
-            }
-        }
+  /**
+   * Test the deprecated version of screenshot capturing.
+   */
+  @SuppressWarnings("deprecation")
+  public void testDeprecatedSaveScreenshot() throws IOException {
+    File tempFile = File.createTempFile("formPage", ".png");
+    assertThat(tempFile.length(), is(0L));
+    driver.get(pages.formPage);
+    try {
+      ((FirefoxDriver) driver).saveScreenshot(tempFile);
+      assertThat(tempFile.length(), is(greaterThan(0L)));
+    } finally {
+      if (tempFile.exists()) {
+        tempFile.delete();
+      }
     }
+  }
 
 }

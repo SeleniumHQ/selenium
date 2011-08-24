@@ -21,7 +21,7 @@ public class ZipTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
-    File baseForTest = new File(System.getProperty("java.io.tmpdir"),  "tmpTest");
+    File baseForTest = new File(System.getProperty("java.io.tmpdir"), "tmpTest");
     baseForTest.mkdir();
     tmpFs = TemporaryFilesystem.getTmpFsBasedOn(baseForTest.getAbsolutePath());
 

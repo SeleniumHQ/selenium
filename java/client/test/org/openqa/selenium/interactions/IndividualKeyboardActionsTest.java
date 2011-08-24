@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions;
 
@@ -34,14 +34,14 @@ import org.junit.Test;
 
 /**
  * Unit test for all simple keyboard actions.
- *
+ * 
  */
 public class IndividualKeyboardActionsTest extends MockTestBase {
   private Keyboard dummyKeyboard;
   private Mouse dummyMouse;
   private Coordinates dummyCoordinates;
   private Locatable locatableElement;
-    final String keysToSend = "hello";
+  final String keysToSend = "hello";
 
   @Before
   public void setUp() {
@@ -64,7 +64,7 @@ public class IndividualKeyboardActionsTest extends MockTestBase {
     checking(new Expectations() {{
       one(dummyKeyboard).pressKey(keyToPress);
     }});
-   
+
     KeyDownAction keyDown = new KeyDownAction(dummyKeyboard, dummyMouse, keyToPress);
     keyDown.perform();
   }

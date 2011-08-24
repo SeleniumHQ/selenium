@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.interactions;
 
@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Tests operations that involve mouse and keyboard.
- *
+ * 
  */
 public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   private Actions getBuilder(WebDriver driver) {
@@ -121,7 +121,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     long waitEndTime = System.currentTimeMillis() + 15000;
 
     while (!isElementAvailable(driver, By.id("draggable")) &&
-           (System.currentTimeMillis() < waitEndTime)) {
+        (System.currentTimeMillis() < waitEndTime)) {
       Thread.sleep(200);
     }
 
@@ -152,15 +152,15 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({ANDROID, REMOTE, IPHONE, SELENESE})
   public void testDoubleClick() {
-    
-    if(isFirefox(driver) &&
+
+    if (isFirefox(driver) &&
         (!isNativeEventsEnabled(driver) ||
-         !Platform.getCurrent().is(Platform.LINUX))) {
+        !Platform.getCurrent().is(Platform.LINUX))) {
       System.out.println("Skipping double click test: only implemented on Linux" +
-                         " with native events.");
+          " with native events.");
       return;
     }
-    
+
     driver.get(pages.javascriptPage);
 
     WebElement toDoubleClick = driver.findElement(By.id("doubleClickField"));
@@ -178,7 +178,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   @Ignore({ANDROID, HTMLUNIT, IPHONE, REMOTE, SELENESE})
   public void testContextClick() {
 
-    if (! Platform.getCurrent().is(Platform.LINUX)) {
+    if (!Platform.getCurrent().is(Platform.LINUX)) {
       System.out.println("Skipping test: not implemented for Windows");
       return;
     }
@@ -275,7 +275,8 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     new Actions(driver).moveByOffset(10, 1015).perform();
 
     WebElement resultArea = driver.findElement(By.id("result"));
-    assertTrue("Result area contained: " + resultArea.getText(), resultArea.getText().contains("parent matches"));
+    assertTrue("Result area contained: " + resultArea.getText(),
+        resultArea.getText().contains("parent matches"));
   }
 
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME},

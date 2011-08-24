@@ -14,8 +14,8 @@ public class TemporaryFilesystemTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    
-    File baseForTest = new File(System.getProperty("java.io.tmpdir"),  "tmpTest");
+
+    File baseForTest = new File(System.getProperty("java.io.tmpdir"), "tmpTest");
     baseForTest.mkdir();
 
     tmpFs = TemporaryFilesystem.getTmpFsBasedOn(baseForTest.getAbsolutePath());
@@ -36,7 +36,7 @@ public class TemporaryFilesystemTest extends TestCase {
   public void testFilesystemCleanupDeletesDirs() {
     if (!tmpFs.shouldReap()) {
       System.out.println("Reaping of files disabled - " +
-                         "ignoring testFilesystemCleanupDeletesDirs");
+          "ignoring testFilesystemCleanupDeletesDirs");
       return;
     }
     File tmp = tmpFs.createTempDir("TemporaryFilesystem", "fcdd");
@@ -50,7 +50,7 @@ public class TemporaryFilesystemTest extends TestCase {
   public void testFilesystemCleanupDeletesRecursive() throws IOException {
     if (!tmpFs.shouldReap()) {
       System.out.println("Reaping of files disabled - " +
-                         "ignoring testFilesystemCleanupDeletesRecursive");
+          "ignoring testFilesystemCleanupDeletesRecursive");
       return;
     }
     File tmp = tmpFs.createTempDir("TemporaryFilesystem", "fcdr");
@@ -64,7 +64,7 @@ public class TemporaryFilesystemTest extends TestCase {
   public void testSpecificDeleteRequestHonored() throws IOException {
     if (!tmpFs.shouldReap()) {
       System.out.println("Reaping of files disabled - " +
-                         "ignoring testSpecificDeleteRequestHonored");
+          "ignoring testSpecificDeleteRequestHonored");
       return;
     }
     File tmp = tmpFs.createTempDir("TemporaryFilesystem", "sdrh");
@@ -91,10 +91,10 @@ public class TemporaryFilesystemTest extends TestCase {
   public void testShouldReapDefaultsTrue() {
     if (!tmpFs.shouldReap()) {
       System.out.println("Reaping of files disabled - " +
-                         "ignoring testShouldReapDefaultsTrue");
+          "ignoring testShouldReapDefaultsTrue");
       return;
     }
-    
+
     assertTrue(tmpFs.shouldReap());
   }
 
@@ -106,7 +106,7 @@ public class TemporaryFilesystemTest extends TestCase {
     otherTempDir.delete();
     String otherTempDirPath = otherTempDir.getAbsolutePath();
 
-    if (! otherTempDir.mkdirs()) {
+    if (!otherTempDir.mkdirs()) {
       throw new RuntimeException("Error creating other temporary directory: " +
           otherTempDirPath);
     }

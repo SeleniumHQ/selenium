@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.io;
 
@@ -58,7 +58,8 @@ public class FileHandlerTest extends TestCase {
     }
   }
 
-  @Test public void testFileCopyCanFilterBySuffix() throws IOException {
+  @Test
+  public void testFileCopyCanFilterBySuffix() throws IOException {
     File source = TemporaryFilesystem.getDefaultTmpFS().createTempDir("filehandler", "source");
     File textFile = File.createTempFile("example", ".txt", source);
     File xmlFile = File.createTempFile("example", ".xml", source);
@@ -70,18 +71,19 @@ public class FileHandlerTest extends TestCase {
     assertFalse(new File(dest, xmlFile.getName()).exists());
   }
 
-  @Test public void testCanReadFileAsString() throws IOException {
+  @Test
+  public void testCanReadFileAsString() throws IOException {
     String expected = "I like cheese. And peas";
-    
+
     File file = File.createTempFile("read-file", "test");
     Writer writer = new FileWriter(file);
     writer.write(expected);
     writer.close();
-    
+
     String seen = FileHandler.readAsString(file);
     assertEquals(expected, seen);
   }
-  
+
   private File writeTestZip(File file, int files) throws IOException {
     ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
     for (int i = 0; i < files; i++) {

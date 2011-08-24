@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox;
 
@@ -36,13 +36,17 @@ public class FirefoxDriverTestSuite extends TestCase {
 
   public static Test suite() throws Exception {
 
-//    System.setProperty("webdriver.development", "true");
-//  System.setProperty("webdriver.firefox.useExisting", "true");
+    // System.setProperty("webdriver.development", "true");
+    // System.setProperty("webdriver.firefox.useExisting", "true");
 
-//    System.setProperty("webdriver.firefox.bin", "/Applications/Firefox3.app/Contents/MacOS/firefox-bin");
-//    System.setProperty("webdriver.firefox.bin", "/Applications/Firefox3_6.app/Contents/MacOS/firefox-bin");
-//    System.setProperty("webdriver.firefox.bin", "/Applications/Firefox4.app/Contents/MacOS/firefox-bin");
-//    System.setProperty("webdriver.firefox.bin", "/Applications/Firefox5.app/Contents/MacOS/firefox-bin");
+    // System.setProperty("webdriver.firefox.bin",
+    // "/Applications/Firefox3.app/Contents/MacOS/firefox-bin");
+    // System.setProperty("webdriver.firefox.bin",
+    // "/Applications/Firefox3_6.app/Contents/MacOS/firefox-bin");
+    // System.setProperty("webdriver.firefox.bin",
+    // "/Applications/Firefox4.app/Contents/MacOS/firefox-bin");
+    // System.setProperty("webdriver.firefox.bin",
+    // "/Applications/Firefox5.app/Contents/MacOS/firefox-bin");
 
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
@@ -72,7 +76,7 @@ public class FirefoxDriverTestSuite extends TestCase {
         tweaked.setCapability(PROFILE, createTemporaryProfile());
       } else {
         try {
-          FirefoxProfile profile = 
+          FirefoxProfile profile =
               FirefoxProfile.fromJson((String) tweaked.getCapability(PROFILE));
           copyExtensionTo(profile);
           tweaked.setCapability(PROFILE, profile);

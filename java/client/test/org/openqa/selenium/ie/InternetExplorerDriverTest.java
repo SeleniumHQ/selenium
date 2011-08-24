@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.ie;
 
@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 public class InternetExplorerDriverTest extends TestCase {
 
   @Ignore(value = IE, reason = "Not sure why this is failing on my machine")
-  public void testCanRestartTheIeDriverInATightLoop() {  
+  public void testCanRestartTheIeDriverInATightLoop() {
     for (int i = 0; i < 5; i++) {
       WebDriver driver = new InternetExplorerDriver();
       driver.quit();

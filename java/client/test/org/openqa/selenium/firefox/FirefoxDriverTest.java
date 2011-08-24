@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox;
 
@@ -69,8 +69,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     } catch (NoSuchElementException e) {
       // This is expected
     }
-      // Is this works, then we're golden
-      driver.get(pages.xhtmlTestPage);
+    // Is this works, then we're golden
+    driver.get(pages.xhtmlTestPage);
   }
 
   @NeedsFreshDriver
@@ -132,7 +132,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
   public void testShouldBeAbleToStartFromProfileWithLogFileSet() {
     FirefoxProfile profile = new FirefoxProfile();
-    File destDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "logging-profile");
+    File destDir =
+        TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "logging-profile");
     File logFile = new File(destDir, "firefox.log");
 
     profile.setPreference("webdriver.log.file", logFile.getAbsolutePath());
@@ -405,7 +406,9 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
   }
 
-  private static char[] CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\".toCharArray();
+  private static char[] CHARS =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\"
+          .toCharArray();
   private static Random RANDOM = new Random();
 
   private static String randomString() {
@@ -421,7 +424,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     // Unfortunately native events on linux mean mucking around with the
     // window's focus. this breaks multiple drivers.
     boolean nativeEventsEnabled =
-        (Boolean) ((RemoteWebDriver) driver).getCapabilities().getCapability(CapabilityType.HAS_NATIVE_EVENTS);
+        (Boolean) ((RemoteWebDriver) driver).getCapabilities().getCapability(
+            CapabilityType.HAS_NATIVE_EVENTS);
 
     if (nativeEventsEnabled && Platform.getCurrent().is(Platform.LINUX)) {
       return;
@@ -456,7 +460,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
         if (drivers[i] != null) {
           try {
             drivers[i].quit();
-          } catch (RuntimeException ignored) {}
+          } catch (RuntimeException ignored) {
+          }
         }
       }
     }
@@ -506,7 +511,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   // See http://code.google.com/p/selenium/issues/detail?id=1774
   public void testCanStartFirefoxDriverWithSubclassOfFirefoxProfile() {
     new FirefoxDriver(new CustomFirefoxProfile()).quit();
-    new FirefoxDriver(new FirefoxProfile(){}).quit();
+    new FirefoxDriver(new FirefoxProfile() {}).quit();
   }
 
   /**
