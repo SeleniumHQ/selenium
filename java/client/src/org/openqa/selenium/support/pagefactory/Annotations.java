@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support.pagefactory;
 
@@ -179,7 +179,8 @@ public class Annotations {
   private void assertValidFindBy(FindBy findBy) {
     if (findBy.how() != null) {
       if (findBy.using() == null) {
-        throw new IllegalArgumentException("If you set the 'how' property, you must also set 'using'");
+        throw new IllegalArgumentException(
+            "If you set the 'how' property, you must also set 'using'");
       }
     }
 
@@ -190,15 +191,16 @@ public class Annotations {
     if (!"".equals(findBy.id())) finders.add("id: " + findBy.id());
     if (!"".equals(findBy.linkText())) finders.add("link text: " + findBy.linkText());
     if (!"".equals(findBy.name())) finders.add("name: " + findBy.name());
-    if (!"".equals(findBy.partialLinkText())) finders.add("partial link text: " + findBy.partialLinkText());
+    if (!"".equals(findBy.partialLinkText()))
+      finders.add("partial link text: " + findBy.partialLinkText());
     if (!"".equals(findBy.tagName())) finders.add("tag name: " + findBy.tagName());
     if (!"".equals(findBy.xpath())) finders.add("xpath: " + findBy.xpath());
 
     // A zero count is okay: it means to look by name or id.
     if (finders.size() > 1) {
       throw new IllegalArgumentException(
-      				String.format("You must specify at most one location strategy. Number found: %d (%s)",
-      								finders.size(), finders.toString()));
+          String.format("You must specify at most one location strategy. Number found: %d (%s)",
+              finders.size(), finders.toString()));
     }
   }
 }

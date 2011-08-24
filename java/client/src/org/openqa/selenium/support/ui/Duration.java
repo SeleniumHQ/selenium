@@ -48,7 +48,7 @@ public class Duration {
 
   /**
    * Converts this durtation to the given unit of time.
-   *
+   * 
    * @param unit The time unit to convert to.
    * @return The value ofthis duration in the specified unit of time.
    */

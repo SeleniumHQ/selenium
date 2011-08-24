@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support.pagefactory;
 
@@ -24,9 +24,10 @@ import org.openqa.selenium.WebElement;
 import java.lang.reflect.Field;
 
 /**
- * The default element locator, which will lazily locate an element on a page.
- * This class is designed for use with the {@link org.openqa.selenium.support.PageFactory} and understands
- * the annotations {@link org.openqa.selenium.support.FindBy} and {@link org.openqa.selenium.support.CacheLookup}.
+ * The default element locator, which will lazily locate an element on a page. This class is
+ * designed for use with the {@link org.openqa.selenium.support.PageFactory} and understands the
+ * annotations {@link org.openqa.selenium.support.FindBy} and
+ * {@link org.openqa.selenium.support.CacheLookup}.
  */
 public class DefaultElementLocator implements ElementLocator {
   private final WebDriver driver;

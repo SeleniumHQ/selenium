@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support.pagefactory;
 
@@ -27,9 +27,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
 /**
- * Default decorator for use with PageFactory.  Will decorate all of
- * the WebElement fields with a proxy that locates the elements using
- * the passed in ElementLocatorFactory.
+ * Default decorator for use with PageFactory. Will decorate all of the WebElement fields with a
+ * proxy that locates the elements using the passed in ElementLocatorFactory.
  */
 public class DefaultFieldDecorator implements FieldDecorator {
 
@@ -53,12 +52,12 @@ public class DefaultFieldDecorator implements FieldDecorator {
   }
 
   protected WebElement proxyForLocator(ClassLoader loader,
-                                       ElementLocator locator) {
+      ElementLocator locator) {
     InvocationHandler handler = new LocatingElementHandler(locator);
 
     WebElement proxy;
-      proxy = (WebElement) Proxy.newProxyInstance(
-          loader, new Class[]{WebElement.class, WrapsElement.class, Locatable.class}, handler);
+    proxy = (WebElement) Proxy.newProxyInstance(
+        loader, new Class[] {WebElement.class, WrapsElement.class, Locatable.class}, handler);
     return proxy;
   }
 

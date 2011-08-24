@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support.ui;
 
@@ -30,18 +30,15 @@ public class WebDriverWait extends FluentWait<WebDriver> {
 
   /**
    * @param driver The WebDriver instance to pass to the expected conditions
-   * @param timeOutInSeconds The timeout in seconds when an expectation is
-   * called
+   * @param timeOutInSeconds The timeout in seconds when an expectation is called
    */
   public WebDriverWait(WebDriver driver, long timeOutInSeconds) {
-    this(driver, new SystemClock(), Sleeper.SYSTEM_SLEEPER, timeOutInSeconds, DEFAULT_SLEEP_TIMEOUT
-    );
+    this(driver, new SystemClock(), Sleeper.SYSTEM_SLEEPER, timeOutInSeconds, DEFAULT_SLEEP_TIMEOUT);
   }
 
   /**
    * @param driver The WebDriver instance to pass to the expected conditions
-   * @param timeOutInSeconds The timeout in seconds when an expectation is
-   * called
+   * @param timeOutInSeconds The timeout in seconds when an expectation is called
    * @param sleepInMillis The duration in milliseconds to sleep between polls.
    */
   public WebDriverWait(WebDriver driver, long timeOutInSeconds, long sleepInMillis) {
@@ -53,8 +50,7 @@ public class WebDriverWait extends FluentWait<WebDriver> {
    * @param clock The clock to use when measuring the timeout
    * @param sleeper Object used to make the current thread go to sleep.
    * @param timeOutInSeconds The timeout in seconds when an expectation is
-   * @param sleepTimeOut The timeout used whilst sleeping. Defaults to 500ms
-*     called.
+   * @param sleepTimeOut The timeout used whilst sleeping. Defaults to 500ms called.
    */
   protected WebDriverWait(WebDriver driver, Clock clock, Sleeper sleeper, long timeOutInSeconds,
       long sleepTimeOut) {
@@ -64,4 +60,3 @@ public class WebDriverWait extends FluentWait<WebDriver> {
     ignoring(NotFoundException.class);
   }
 }
-                       

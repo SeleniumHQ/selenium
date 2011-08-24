@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support.events;
 
@@ -56,9 +56,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a {@link
- * WebDriverEventListener}, e&#46;g&#46; for logging purposes.
- *
+ * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a
+ * {@link WebDriverEventListener}, e&#46;g&#46; for logging purposes.
+ * 
  * @author Michael Tamm
  */
 public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot,
@@ -66,19 +66,21 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
   private final WebDriver driver;
 
-  private final List<WebDriverEventListener> eventListeners = new ArrayList<WebDriverEventListener>();
-  private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy.newProxyInstance(
-      WebDriverEventListener.class.getClassLoader(),
-      new Class[]{WebDriverEventListener.class},
-      new InvocationHandler() {
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          for (WebDriverEventListener eventListener : eventListeners) {
-            method.invoke(eventListener, args);
+  private final List<WebDriverEventListener> eventListeners =
+      new ArrayList<WebDriverEventListener>();
+  private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy
+      .newProxyInstance(
+          WebDriverEventListener.class.getClassLoader(),
+          new Class[] {WebDriverEventListener.class},
+          new InvocationHandler() {
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+              for (WebDriverEventListener eventListener : eventListeners) {
+                method.invoke(eventListener, args);
+              }
+              return null;
+            }
           }
-          return null;
-        }
-      }
-  );
+      );
 
   public EventFiringWebDriver(final WebDriver driver) {
     Class<?>[] allInterfaces = extractInterfaces(driver);
@@ -100,14 +102,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
             }
           }
         }
-    );
+        );
   }
 
   private Class<?>[] extractInterfaces(Object object) {
     Set<Class<?>> allInterfaces = new HashSet<Class<?>>();
     allInterfaces.add(WrapsDriver.class);
     if (object instanceof WebElement) {
-        allInterfaces.add(WrapsElement.class);
+      allInterfaces.add(WrapsElement.class);
     }
     extractInterfaces(allInterfaces, object.getClass());
 
@@ -326,7 +328,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
               }
             }
           }
-      );
+          );
       this.underlyingElement = element;
     }
 

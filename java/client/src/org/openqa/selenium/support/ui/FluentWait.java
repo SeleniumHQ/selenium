@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support.ui;
 
@@ -33,34 +33,35 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An implementation of the {@link Wait} interface that may have its timeout
- * and polling interval configured on the fly.
- *
- * <p>Each FluentWait instance defines the maximum amount of time to wait for
- * a condition, as well as the frequency with which to check the condition.
- * Furthermore, the user may configure the wait to ignore specific types of
- * exceptions whilst waiting, such as
- * {@link org.openqa.selenium.NoSuchElementException NoSuchElementExceptions}
- * when searching for an element on the page.
- *
- * <p>Sample usage:
- * <code><pre>
+ * An implementation of the {@link Wait} interface that may have its timeout and polling interval
+ * configured on the fly.
+ * 
+ * <p>
+ * Each FluentWait instance defines the maximum amount of time to wait for a condition, as well as
+ * the frequency with which to check the condition. Furthermore, the user may configure the wait to
+ * ignore specific types of exceptions whilst waiting, such as
+ * {@link org.openqa.selenium.NoSuchElementException NoSuchElementExceptions} when searching for an
+ * element on the page.
+ * 
+ * <p>
+ * Sample usage: <code><pre>
  *   // Waiting 30 seconds for an element to be present on the page, checking
  *   // for its presence once every 5 seconds.
  *   Wait&lt;WebDriver&gt; wait = new FluentWait&lt;WebDriver&gt;(driver)
  *       .withTimeout(30, SECONDS)
  *       .pollingEvery(5, SECONDS)
  *       .ignoring(NoSuchElementException.class);
- *
+ * 
  *   WebElement foo = wait.until(new Function&lt;WebDriver, WebElement&gt;() {
  *     public WebElement apply(WebDriver driver) {
  *       return driver.findElement(By.id("foo"));
  *     }
  *   });
  * </pre></code>
- *
- * <p><em>This class makes no thread safety guarantees.</em>
- *
+ * 
+ * <p>
+ * <em>This class makes no thread safety guarantees.</em>
+ * 
  * @param <T> The input type for each condition used with this instance.
  */
 public class FluentWait<T> implements Wait<T> {
@@ -95,9 +96,9 @@ public class FluentWait<T> implements Wait<T> {
   }
 
   /**
-   * Sets how long to wait for the evaluated condition to be true.
-   * The default timeout is {@link #FIVE_HUNDRED_MILLIS}.
-   *
+   * Sets how long to wait for the evaluated condition to be true. The default timeout is
+   * {@link #FIVE_HUNDRED_MILLIS}.
+   * 
    * @param duration The timeout duration.
    * @param unit The unit of time.
    * @return A self reference.
@@ -109,11 +110,11 @@ public class FluentWait<T> implements Wait<T> {
 
   /**
    * Sets how often the condition should be evaluated.
-   *
-   * <p>In reality, the interval may be greater as the cost of actually
-   * evaluating a condition function is not factored in. The default polling
-   * interval is {@link #FIVE_HUNDRED_MILLIS}.
-   *
+   * 
+   * <p>
+   * In reality, the interval may be greater as the cost of actually evaluating a condition function
+   * is not factored in. The default polling interval is {@link #FIVE_HUNDRED_MILLIS}.
+   * 
    * @param duration The timeout duration.
    * @param unit The unit of time.
    * @return A self reference.
@@ -124,10 +125,9 @@ public class FluentWait<T> implements Wait<T> {
   }
 
   /**
-   * Configures this instance to ignore specific types of exceptions while
-   * waiting for a condition. Any exceptions not whitelisted will be allowed
-   * to propagate, terminating the wait.
-   *
+   * Configures this instance to ignore specific types of exceptions while waiting for a condition.
+   * Any exceptions not whitelisted will be allowed to propagate, terminating the wait.
+   * 
    * @param types The types of exceptions to ignore.
    * @return A self reference.
    */
@@ -137,9 +137,9 @@ public class FluentWait<T> implements Wait<T> {
   }
 
   /**
-   * Repeatedly applies this instance's input value to the given predicate
-   * until the timeout expires or the predicate evaluates to true.
-   *
+   * Repeatedly applies this instance's input value to the given predicate until the timeout expires
+   * or the predicate evaluates to true.
+   * 
    * @param isTrue The predicate to wait on.
    */
   public void until(final Predicate<T> isTrue) {
@@ -151,15 +151,16 @@ public class FluentWait<T> implements Wait<T> {
   }
 
   /**
-   * Repeatedly applies this instance's input value to the given function
-   * until one of the following occurs:
+   * Repeatedly applies this instance's input value to the given function until one of the following
+   * occurs:
    * <ol>
-   *   <li>the function returns neither null nor false,</li>
-   *   <li>the function throws an unignored exception,</li>
-   *   <li>the timeout expires,<li>
-   *   <li>the current thread is interrupted</li>
+   * <li>the function returns neither null nor false,</li>
+   * <li>the function throws an unignored exception,</li>
+   * <li>the timeout expires,
+   * <li>
+   * <li>the current thread is interrupted</li>
    * </ol>
-   *
+   * 
    * @param isTrue the parameter to pass to the {@link ExpectedCondition}
    * @param <V> The function's expected return type.
    * @return The functions' return value.
@@ -207,15 +208,13 @@ public class FluentWait<T> implements Wait<T> {
   }
 
   /**
-   * Throws a timeout exception. This method may be overridden to throw an
-   * exception that is idiomatic for a particular test infrastructure, such as
-   * an AssertionError in JUnit4.
-   *
+   * Throws a timeout exception. This method may be overridden to throw an exception that is
+   * idiomatic for a particular test infrastructure, such as an AssertionError in JUnit4.
+   * 
    * @param message The timeout message.
-   * @param lastException The last exception to be thrown and subsequently
-   *     supressed while waiting on a function.
-   * @return Nothing will ever be returned; this return type is only specified
-   *     as a convience.
+   * @param lastException The last exception to be thrown and subsequently supressed while waiting
+   *        on a function.
+   * @return Nothing will ever be returned; this return type is only specified as a convience.
    */
   protected RuntimeException timeoutException(String message, RuntimeException lastException) {
     throw new TimeoutException(message, lastException);

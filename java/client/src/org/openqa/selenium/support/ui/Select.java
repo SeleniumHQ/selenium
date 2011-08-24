@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support.ui;
 
@@ -36,7 +36,7 @@ public class Select {
   /**
    * Constructor. A check is made that the given element is, indeed, a SELECT tag. If it is not,
    * then an UnexpectedTagNameException is thrown.
-   *
+   * 
    * @param element SELECT element to wrap
    * @throws UnexpectedTagNameException when element is not a SELECT
    */
@@ -102,19 +102,22 @@ public class Select {
   /**
    * Select all options that display text matching the argument. That is, when given "Bar" this
    * would select an option like:
-   *
+   * 
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
-   *
+   * 
    * @param text The visible text to match against
    */
   public void selectByVisibleText(String text) {
     // try to find the option via XPATH ...
-    List<WebElement> options = element.findElements(By.xpath(".//option[. = " + escapeQuotes(text) + "]"));
+    List<WebElement> options =
+        element.findElements(By.xpath(".//option[. = " + escapeQuotes(text) + "]"));
 
     boolean matched = false;
     for (WebElement option : options) {
       setSelected(option);
-      if (!isMultiple()) {  return;  }
+      if (!isMultiple()) {
+        return;
+      }
       matched = true;
     }
 
@@ -126,12 +129,16 @@ public class Select {
         candidates = element.findElements(By.tagName("option"));
       } else {
         // get candidates via XPATH ...
-        candidates = element.findElements(By.xpath(".//option[contains(., " + escapeQuotes(subStringWithoutSpace) + ")]"));
+        candidates =
+            element.findElements(By.xpath(".//option[contains(., " +
+                escapeQuotes(subStringWithoutSpace) + ")]"));
       }
       for (WebElement option : candidates) {
         if (text.equals(option.getText())) {
           setSelected(option);
-          if (!isMultiple()) {  return;  }
+          if (!isMultiple()) {
+            return;
+          }
           matched = true;
         }
       }
@@ -154,10 +161,10 @@ public class Select {
     return result;
   }
 
-    /**
+  /**
    * Select the option at the given index. This is done by examing the "index" attribute of an
    * element, and not merely by counting.
-   *
+   * 
    * @param index The option at this index will be selected
    */
   public void selectByIndex(int index) {
@@ -167,7 +174,9 @@ public class Select {
     for (WebElement option : getOptions()) {
       if (match.equals(option.getAttribute("index"))) {
         setSelected(option);
-        if (!isMultiple()) {  return;  }
+        if (!isMultiple()) {
+          return;
+        }
         matched = true;
       }
     }
@@ -179,9 +188,9 @@ public class Select {
   /**
    * Select all options that have a value matching the argument. That is, when given "foo" this
    * would select an option like:
-   *
+   * 
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
-   *
+   * 
    * @param value The value to match against
    */
   public void selectByValue(String value) {
@@ -193,7 +202,9 @@ public class Select {
     boolean matched = false;
     for (WebElement option : options) {
       setSelected(option);
-      if (!isMultiple()) {  return;  }
+      if (!isMultiple()) {
+        return;
+      }
       matched = true;
     }
 
@@ -204,7 +215,7 @@ public class Select {
 
   /**
    * Clear all selected entries. This is only valid when the SELECT supports multiple selections.
-   *
+   * 
    * @throws UnsupportedOperationException If the SELECT does not support multiple selections
    */
   public void deselectAll() {
@@ -223,9 +234,9 @@ public class Select {
   /**
    * Deselect all options that have a value matching the argument. That is, when given "foo" this
    * would deselect an option like:
-   *
+   * 
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
-   *
+   * 
    * @param value The value to match against
    */
   public void deselectByValue(String value) {
@@ -240,10 +251,10 @@ public class Select {
     }
   }
 
-   /**
+  /**
    * Deselect the option at the given index. This is done by examing the "index" attribute of an
    * element, and not merely by counting.
-   *
+   * 
    * @param index The option at this index will be deselected
    */
   public void deselectByIndex(int index) {
@@ -259,9 +270,9 @@ public class Select {
   /**
    * Deselect all options that display text matching the argument. That is, when given "Bar" this
    * would deselect an option like:
-   *
+   * 
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
-   *
+   * 
    * @param text The visible text to match against
    */
   public void deselectByVisibleText(String text) {
@@ -280,7 +291,7 @@ public class Select {
     // Convert strings with both quotes and ticks into: foo'"bar -> concat("foo'", '"', "bar")
     if (toEscape.indexOf("\"") > -1 && toEscape.indexOf("'") > -1) {
       boolean quoteIsLast = false;
-      if (toEscape.indexOf("\"") == toEscape.length() -1) {
+      if (toEscape.indexOf("\"") == toEscape.length() - 1) {
         quoteIsLast = true;
       }
       String[] substrings = toEscape.split("\"");
@@ -288,7 +299,8 @@ public class Select {
       StringBuilder quoted = new StringBuilder("concat(");
       for (int i = 0; i < substrings.length; i++) {
         quoted.append("\"").append(substrings[i]).append("\"");
-        quoted.append(((i == substrings.length -1) ? (quoteIsLast ? ", '\"')" : ")") : ", '\"', "));
+        quoted
+            .append(((i == substrings.length - 1) ? (quoteIsLast ? ", '\"')" : ")") : ", '\"', "));
       }
       return quoted.toString();
     }
@@ -301,10 +313,10 @@ public class Select {
     // Otherwise return the quoted string
     return String.format("\"%s\"", toEscape);
   }
-  
+
   private void setSelected(WebElement option) {
-	if (!option.isSelected()) {
-	  option.click();
-	}
+    if (!option.isSelected()) {
+      option.click();
+    }
   }
 }

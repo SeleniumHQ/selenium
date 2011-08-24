@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support.pagefactory;
 
@@ -26,16 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Mechanism used to locate elements within a document using a series
- * of other lookups.  This class will find all DOM elements that much each
- * of the locators in sequence, eg.
- *
+ * Mechanism used to locate elements within a document using a series of other lookups. This class
+ * will find all DOM elements that much each of the locators in sequence, eg.
+ * 
  * <pre>
  * driver.findElements(new ByChained(by1, by2))
  * </pre>
- *
- * will find all elements that match by2 and appear under an element
- * that matches by1.
+ * 
+ * will find all elements that match by2 and appear under an element that matches by1.
  */
 public class ByChained extends By {
 

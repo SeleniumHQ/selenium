@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support;
 
@@ -23,13 +23,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to mark a field on a Page Object to indicate that lookup
- * should use a series of @FindBy tags in a chain as described in
- * {@link org.openqa.selenium.support.pagefactory.ByChained}
- *
+ * Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
+ * in a chain as described in {@link org.openqa.selenium.support.pagefactory.ByChained}
+ * 
  * Eg:
- *  @FindBy({@FindBy(how = How.ID, using = "foo"),
- *           @FindBy(how = How.CLASS_NAME, using = "bar")})
+ * 
+ * @FindBy({@FindBy(how = How.ID, using = "foo"),
+ * @FindBy(how = How.CLASS_NAME, using = "bar")})
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
