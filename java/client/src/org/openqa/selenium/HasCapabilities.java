@@ -13,15 +13,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium;
 
 /**
- * Used by classes to indicate that they can describe the
- * {@link org.openqa.selenium.Capabilities} they possess. This can be used for
- * run-time detection of features.
+ * Used by classes to indicate that they can describe the {@link org.openqa.selenium.Capabilities}
+ * they possess. This can be used for run-time detection of features.
  */
 public interface HasCapabilities {
   /**

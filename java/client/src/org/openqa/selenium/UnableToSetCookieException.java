@@ -19,7 +19,7 @@ package org.openqa.selenium;
 
 /**
  * Thrown when a driver fails to set a cookie.
- *
+ * 
  * @see org.openqa.selenium.WebDriver.Options#addCookie(Cookie)
  */
 public class UnableToSetCookieException extends WebDriverException {

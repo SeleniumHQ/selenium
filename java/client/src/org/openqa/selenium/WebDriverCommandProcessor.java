@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -130,8 +130,7 @@ import java.util.Map;
 
 
 /**
- * A CommandProcessor which delegates commands down to an underlying webdriver
- * instance.
+ * A CommandProcessor which delegates commands down to an underlying webdriver instance.
  */
 public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver {
   private final Map<String, SeleneseCommand<?>> seleneseMethods = Maps.newHashMap();
@@ -142,10 +141,9 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
   private WebDriver driver;
 
   /**
-   * Create an instance that will later be configured by calling
-   * {@link #start(Object)} with a {@link Capabilities}
-   * instance.
-   *
+   * Create an instance that will later be configured by calling {@link #start(Object)} with a
+   * {@link Capabilities} instance.
+   * 
    * @param baseUrl The URL from which relative URLs should be based on
    */
   public WebDriverCommandProcessor(String baseUrl) {
@@ -154,9 +152,8 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
   }
 
   /**
-   * Create an instance that will later be started by calling
-   * {@link #start()}
-   *
+   * Create an instance that will later be started by calling {@link #start()}
+   * 
    * @param baseUrl The URL from which relative URLs should be based on
    * @param likeThis Typically a {@link org.openqa.selenium.remote.DesiredCapabilities} instance
    */
@@ -190,7 +187,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     return driver;
   }
 
-    public String getRemoteControlServerLocation() {
+  public String getRemoteControlServerLocation() {
     throw new UnsupportedOperationException();
   }
 
@@ -354,14 +351,22 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getExpression", new GetExpression());
     seleneseMethods.put("getHtmlSource", new GetHtmlSource());
     seleneseMethods.put("getLocation", new GetLocation());
-    seleneseMethods.put("getSelectedId", new FindFirstSelectedOptionProperty(javascriptLibrary, elementFinder, "id"));
-    seleneseMethods.put("getSelectedIds", new FindSelectedOptionProperties(javascriptLibrary, elementFinder, "id"));
-    seleneseMethods.put("getSelectedIndex", new FindFirstSelectedOptionProperty(javascriptLibrary, elementFinder, "index"));
-    seleneseMethods.put("getSelectedIndexes", new FindSelectedOptionProperties(javascriptLibrary, elementFinder, "index"));
-    seleneseMethods.put("getSelectedLabel", new FindFirstSelectedOptionProperty(javascriptLibrary, elementFinder, "text"));
-    seleneseMethods.put("getSelectedLabels", new FindSelectedOptionProperties(javascriptLibrary, elementFinder, "text"));
-    seleneseMethods.put("getSelectedValue", new FindFirstSelectedOptionProperty(javascriptLibrary, elementFinder, "value"));
-    seleneseMethods.put("getSelectedValues", new FindSelectedOptionProperties(javascriptLibrary, elementFinder, "value"));
+    seleneseMethods.put("getSelectedId", new FindFirstSelectedOptionProperty(javascriptLibrary,
+        elementFinder, "id"));
+    seleneseMethods.put("getSelectedIds", new FindSelectedOptionProperties(javascriptLibrary,
+        elementFinder, "id"));
+    seleneseMethods.put("getSelectedIndex", new FindFirstSelectedOptionProperty(javascriptLibrary,
+        elementFinder, "index"));
+    seleneseMethods.put("getSelectedIndexes", new FindSelectedOptionProperties(javascriptLibrary,
+        elementFinder, "index"));
+    seleneseMethods.put("getSelectedLabel", new FindFirstSelectedOptionProperty(javascriptLibrary,
+        elementFinder, "text"));
+    seleneseMethods.put("getSelectedLabels", new FindSelectedOptionProperties(javascriptLibrary,
+        elementFinder, "text"));
+    seleneseMethods.put("getSelectedValue", new FindFirstSelectedOptionProperty(javascriptLibrary,
+        elementFinder, "value"));
+    seleneseMethods.put("getSelectedValues", new FindSelectedOptionProperties(javascriptLibrary,
+        elementFinder, "value"));
     seleneseMethods.put("getSelectOptions", new GetSelectOptions(javascriptLibrary, elementFinder));
     seleneseMethods.put("getSpeed", new NoOp("0"));
     seleneseMethods.put("getTable", new GetTable(elementFinder, javascriptLibrary));
@@ -381,17 +386,21 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("isSomethingSelected", new IsSomethingSelected(javascriptLibrary));
     seleneseMethods.put("isTextPresent", new IsTextPresent(javascriptLibrary));
     seleneseMethods.put("isVisible", new IsVisible(elementFinder));
-    seleneseMethods.put("keyDown", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyDown"));
+    seleneseMethods.put("keyDown", new KeyEvent(elementFinder, javascriptLibrary, keyState,
+        "doKeyDown"));
     seleneseMethods.put("keyPress", new TypeKeys(alertOverride, elementFinder));
-    seleneseMethods.put("keyUp", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyUp"));
+    seleneseMethods.put("keyUp",
+        new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyUp"));
     seleneseMethods.put("metaKeyDown", new MetaKeyDown(keyState));
     seleneseMethods.put("metaKeyUp", new MetaKeyUp(keyState));
     seleneseMethods.put("mouseOver", new MouseEvent(elementFinder, javascriptLibrary, "mouseover"));
     seleneseMethods.put("mouseOut", new MouseEvent(elementFinder, javascriptLibrary, "mouseout"));
     seleneseMethods.put("mouseDown", new MouseEvent(elementFinder, javascriptLibrary, "mousedown"));
-    seleneseMethods.put("mouseDownAt", new MouseEventAt(elementFinder, javascriptLibrary, "mousedown"));
+    seleneseMethods.put("mouseDownAt", new MouseEventAt(elementFinder, javascriptLibrary,
+        "mousedown"));
     seleneseMethods.put("mouseMove", new MouseEvent(elementFinder, javascriptLibrary, "mousemove"));
-    seleneseMethods.put("mouseMoveAt", new MouseEventAt(elementFinder, javascriptLibrary, "mousemove"));
+    seleneseMethods.put("mouseMoveAt", new MouseEventAt(elementFinder, javascriptLibrary,
+        "mousemove"));
     seleneseMethods.put("mouseUp", new MouseEvent(elementFinder, javascriptLibrary, "mouseup"));
     seleneseMethods.put("mouseUpAt", new MouseEventAt(elementFinder, javascriptLibrary, "mouseup"));
     seleneseMethods.put("open", new Open(baseUrl));
@@ -400,7 +409,8 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("removeAllSelections", new RemoveAllSelections(elementFinder));
     seleneseMethods.put("removeSelection", new RemoveSelection(javascriptLibrary, elementFinder));
     seleneseMethods.put("runScript", new RunScript(scriptMutator));
-    seleneseMethods.put("select", new SelectOption(alertOverride, javascriptLibrary, elementFinder));
+    seleneseMethods
+        .put("select", new SelectOption(alertOverride, javascriptLibrary, elementFinder));
     seleneseMethods.put("selectFrame", new SelectFrame(windows));
     seleneseMethods.put("selectWindow", new SelectWindow(windows));
     seleneseMethods.put("setBrowserLogLevel", new NoOp(null));
@@ -410,7 +420,8 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("shiftKeyDown", new ShiftKeyDown(keyState));
     seleneseMethods.put("shiftKeyUp", new ShiftKeyUp(keyState));
     seleneseMethods.put("submit", new Submit(elementFinder));
-    seleneseMethods.put("type", new Type(alertOverride, javascriptLibrary, elementFinder, keyState));
+    seleneseMethods
+        .put("type", new Type(alertOverride, javascriptLibrary, elementFinder, keyState));
     seleneseMethods.put("typeKeys", new TypeKeys(alertOverride, elementFinder));
     seleneseMethods.put("uncheck", new Uncheck(alertOverride, elementFinder));
     seleneseMethods.put("useXpathLibrary", new UseXPathLibrary());

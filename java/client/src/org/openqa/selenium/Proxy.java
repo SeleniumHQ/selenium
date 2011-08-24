@@ -6,15 +6,14 @@ import java.util.Map;
 /**
  * Configuration parameters for using proxies in WebDriver.
  * <p/>
- * Generally you should pass an object of this type to a WebDriver constructor,
- * or in some cases to the profile object used in the WebDriver construction.
+ * Generally you should pass an object of this type to a WebDriver constructor, or in some cases to
+ * the profile object used in the WebDriver construction.
  * <p/>
- * For simplicity, setting values here commits the proxy to a certain
- * configuration. That is, it is an error to set an httpProxy manually and
- * then turn on proxy autodetect.
+ * For simplicity, setting values here commits the proxy to a certain configuration. That is, it is
+ * an error to set an httpProxy manually and then turn on proxy autodetect.
  */
 public class Proxy {
-  //TODO: SOCKS.
+  // TODO: SOCKS.
 
   public enum ProxyType {
     // Keep these in sync with the Firefox preferences numbers:
@@ -70,7 +69,7 @@ public class Proxy {
 
   /**
    * Explicitly sets the proxy type, useful for forcing direct connection on Linux.
-   *
+   * 
    * @return
    */
   public Proxy setProxyType(ProxyType proxyType) {

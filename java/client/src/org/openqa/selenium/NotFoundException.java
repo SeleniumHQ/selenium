@@ -13,25 +13,25 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
 public class NotFoundException extends WebDriverException {
 
-    public NotFoundException() {
-    }
+  public NotFoundException() {
+  }
 
-    public NotFoundException(String message) {
-        super(message);
-    }
+  public NotFoundException(String message) {
+    super(message);
+  }
 
-    public NotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public NotFoundException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public NotFoundException(Throwable cause) {
-        super(cause);
-    }
+  public NotFoundException(Throwable cause) {
+    super(cause);
+  }
 
 }

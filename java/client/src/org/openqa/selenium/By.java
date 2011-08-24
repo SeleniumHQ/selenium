@@ -28,11 +28,10 @@ import org.openqa.selenium.internal.FindsByXPath;
 import java.util.List;
 
 /**
- * Mechanism used to locate elements within a document. In order to create your
- * own locating mechanisms, it is possible to subclass this class and override
- * the protected methods as required, though it is expected that that all
- * subclasses rely on the basic finding mechanisms provided through static
- * methods of this class:
+ * Mechanism used to locate elements within a document. In order to create your own locating
+ * mechanisms, it is possible to subclass this class and override the protected methods as required,
+ * though it is expected that that all subclasses rely on the basic finding mechanisms provided
+ * through static methods of this class:
  * 
  * <code>
  * public WebElement findElement(WebDriver driver) {
@@ -45,8 +44,7 @@ import java.util.List;
  */
 public abstract class By {
   /**
-   * @param id
-   *          The value of the "id" attribute to search for
+   * @param id The value of the "id" attribute to search for
    * @return a By which locates elements by the value of the "id" attribute.
    */
   public static By id(final String id) {
@@ -58,8 +56,7 @@ public abstract class By {
   }
 
   /**
-   * @param linkText
-   *          The exact text to match against
+   * @param linkText The exact text to match against
    * @return a By which locates A elements by the exact text it displays
    */
   public static By linkText(final String linkText) {
@@ -71,8 +68,7 @@ public abstract class By {
   }
 
   /**
-   * @param linkText
-   *          The text to match against
+   * @param linkText The text to match against
    * @return a By which locates A elements that contain the given link text
    */
   public static By partialLinkText(final String linkText) {
@@ -84,8 +80,7 @@ public abstract class By {
   }
 
   /**
-   * @param name
-   *          The value of the "name" attribute to search for
+   * @param name The value of the "name" attribute to search for
    * @return a By which locates elements by the value of the "name" attribute.
    */
   public static By name(final String name) {
@@ -97,8 +92,7 @@ public abstract class By {
   }
 
   /**
-   * @param name
-   *          The element's tagName
+   * @param name The element's tagName
    * @return a By which locates elements by their tag name
    */
   public static By tagName(final String name) {
@@ -110,8 +104,7 @@ public abstract class By {
   }
 
   /**
-   * @param xpathExpression
-   *          The xpath to use
+   * @param xpathExpression The xpath to use
    * @return a By which locates elements via XPath
    */
   public static By xpath(final String xpathExpression) {
@@ -123,13 +116,11 @@ public abstract class By {
   }
 
   /**
-   * Finds elements based on the value of the "class" attribute. If an element
-   * has many classes then this will match against each of them. For example if
-   * the value is "one two onone", then the following "className"s will match:
-   * "one" and "two"
+   * Finds elements based on the value of the "class" attribute. If an element has many classes then
+   * this will match against each of them. For example if the value is "one two onone", then the
+   * following "className"s will match: "one" and "two"
    * 
-   * @param className
-   *          The value of the "class" attribute to search for
+   * @param className The value of the "class" attribute to search for
    * @return a By which locates elements by the value of the "class" attribute.
    */
   public static By className(final String className) {
@@ -146,10 +137,9 @@ public abstract class By {
   }
 
   /**
-   * Finds elements via the driver's underlying W3 Selector engine. If the
-   * browser does not implement the Selector API, a best effort is made to
-   * emulate the API. In this case, we strive for at least CSS2 support, but
-   * offer no guarantees.
+   * Finds elements via the driver's underlying W3 Selector engine. If the browser does not
+   * implement the Selector API, a best effort is made to emulate the API. In this case, we strive
+   * for at least CSS2 support, but offer no guarantees.
    */
   public static By cssSelector(final String selector) {
     if (selector == null)
@@ -163,8 +153,7 @@ public abstract class By {
   /**
    * Find a single element. Override this method if necessary.
    * 
-   * @param context
-   *          A context to use to find the element
+   * @param context A context to use to find the element
    * @return The WebElement that matches the selector
    */
   public WebElement findElement(SearchContext context) {
@@ -178,8 +167,7 @@ public abstract class By {
   /**
    * Find many elements.
    * 
-   * @param context
-   *          A context to use to find the element
+   * @param context A context to use to find the element
    * @return A list of WebElements matching the selector
    */
   public abstract List<WebElement> findElements(SearchContext context);
@@ -380,15 +368,12 @@ public abstract class By {
     }
 
     /**
-     * Generates a partial xpath expression that matches an element whose
-     * specified attribute contains the given CSS word. So to match &lt;div
-     * class='foo bar'&gt; you would say "//div[" + containingWord("class",
-     * "foo") + "]".
+     * Generates a partial xpath expression that matches an element whose specified attribute
+     * contains the given CSS word. So to match &lt;div class='foo bar'&gt; you would say "//div[" +
+     * containingWord("class", "foo") + "]".
      * 
-     * @param attribute
-     *          name
-     * @param word
-     *          name
+     * @param attribute name
+     * @param word name
      * @return XPath fragment
      */
     private String containingWord(String attribute, String word) {

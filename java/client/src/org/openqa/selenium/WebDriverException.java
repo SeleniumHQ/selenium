@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -47,19 +47,19 @@ public class WebDriverException extends RuntimeException {
         "" : "For documentation on this error, please visit: " + getSupportUrl() + "\n";
 
     return String.format("%s%s%s\nSystem info: %s\nDriver info: %s",
-                         originalMessageString == null ? "" : originalMessageString + "\n",
-                         supportMessage,
-                         getBuildInformation(),
-                         getSystemInformation(),
-                         getDriverInformation());
+        originalMessageString == null ? "" : originalMessageString + "\n",
+        supportMessage,
+        getBuildInformation(),
+        getSystemInformation(),
+        getDriverInformation());
   }
 
   public String getSystemInformation() {
     return String.format("os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
-                         System.getProperty("os.name"),
-                         System.getProperty("os.arch"),
-                         System.getProperty("os.version"),
-                         System.getProperty("java.version"));
+        System.getProperty("os.name"),
+        System.getProperty("os.arch"),
+        System.getProperty("os.version"),
+        System.getProperty("java.version"));
   }
 
   public String getSupportUrl() {

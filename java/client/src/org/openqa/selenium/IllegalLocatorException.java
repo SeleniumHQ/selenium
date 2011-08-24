@@ -13,14 +13,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
 /**
- * Thrown when a By cannot handle the arguments it is given. The most obvious case where
- * this excpetion would be thrown is when By.className() is used with a compound class
- * name.
+ * Thrown when a By cannot handle the arguments it is given. The most obvious case where this
+ * excpetion would be thrown is when By.className() is used with a compound class name.
  */
 public class IllegalLocatorException extends WebDriverException {
   public IllegalLocatorException(String message) {

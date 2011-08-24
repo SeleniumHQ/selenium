@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -21,7 +21,7 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 
 /**
  * Interface representing basic mouse operations.
- *
+ * 
  */
 public interface Mouse {
   void click(Coordinates where);
@@ -29,13 +29,16 @@ public interface Mouse {
   void doubleClick(Coordinates where);
 
   void mouseDown(Coordinates where);
+
   void mouseUp(Coordinates where);
 
   void mouseMove(Coordinates where);
+
   /* Offset from the current location of the mouse pointer. */
   void mouseMove(Coordinates where, long xOffset, long yOffset);
-  // Right-clicks an element. 
+
+  // Right-clicks an element.
   void contextClick(Coordinates where);
-  
+
   // TODO: Scroll wheel support
 }

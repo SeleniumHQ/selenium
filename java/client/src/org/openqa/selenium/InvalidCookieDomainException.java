@@ -1,9 +1,8 @@
 package org.openqa.selenium;
 
 /**
- * Thrown when attempting to add a cookie under a different domain than the
- * current URL.
- *
+ * Thrown when attempting to add a cookie under a different domain than the current URL.
+ * 
  * @see org.openqa.selenium.WebDriver.Options#addCookie(Cookie)
  */
 public class InvalidCookieDomainException extends WebDriverException {

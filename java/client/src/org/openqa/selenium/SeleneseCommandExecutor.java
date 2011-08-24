@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -102,8 +102,8 @@ public class SeleneseCommandExecutor implements CommandExecutor {
 
   public SeleneseCommandExecutor(URL seleniumServer, URL remoteAddress, Capabilities capabilities) {
     this(new HttpCommandProcessor(
-            seleniumServer.getHost(), seleniumServer.getPort(),
-            startCommand(capabilities), remoteAddress.toString()));
+        seleniumServer.getHost(), seleniumServer.getPort(),
+        startCommand(capabilities), remoteAddress.toString()));
   }
 
   public SeleneseCommandExecutor(CommandProcessor processor) {
@@ -142,14 +142,15 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     Exception toUse = e;
     if (e instanceof SeleniumException) {
       // World of fragility. *sigh*
-       if (e.getMessage().matches("ERROR: (Threw an exception: )?Element .+ not found")) {
+      if (e.getMessage().matches("ERROR: (Threw an exception: )?Element .+ not found")) {
         toUse = new StaleElementReferenceException(e.getMessage(), e);
       }
     }
     response.setStatus(errorCodes.toStatusCode(toUse));
 
     // It's like a lesson in inefficiency
-    Object raw = new JsonToBeanConverter().convert(Map.class, new BeanToJsonConverter().convert(toUse));
+    Object raw =
+        new JsonToBeanConverter().convert(Map.class, new BeanToJsonConverter().convert(toUse));
     response.setValue(raw);
     return response;
   }

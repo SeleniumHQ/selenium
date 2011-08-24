@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -21,18 +21,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Represents the known and supported Platforms that WebDriver runs on.
- * This is pretty close to the Operating System, but differs slightly,
- * because this class is used to extract information such as program
- * locations and line endings.
- *
+ * Represents the known and supported Platforms that WebDriver runs on. This is pretty close to the
+ * Operating System, but differs slightly, because this class is used to extract information such as
+ * program locations and line endings.
+ * 
  */
 // Useful URLs:
 // http://hg.openjdk.java.net/jdk7/modules/jdk/file/a37326fa7f95/src/windows/native/java/lang/java_props_md.c
 public enum Platform {
   /**
-   * Never returned, but can be used to request a browser running on
-   * any version of Windows.
+   * Never returned, but can be used to request a browser running on any version of Windows.
    */
   WINDOWS("") {
     @Override
@@ -41,9 +39,8 @@ public enum Platform {
     }
   },
   /**
-   * For versions of Windows that "feel like" Windows XP. These are
-   * ones that store files in "\Program Files\" and documents under
-   * "\\documents and settings\\username"
+   * For versions of Windows that "feel like" Windows XP. These are ones that store files in
+   * "\Program Files\" and documents under "\\documents and settings\\username"
    */
   XP("xp", "windows", "winnt") {
     @Override
@@ -79,8 +76,7 @@ public enum Platform {
     }
   },
   /**
-   * Never returned, but can be used to request a browser running on
-   * any operating system
+   * Never returned, but can be used to request a browser running on any operating system
    */
   ANY("") {
     @Override
@@ -95,11 +91,11 @@ public enum Platform {
 
   private Platform(String... partOfOsName) {
     this.partOfOsName = partOfOsName;
-    
+
     String version = System.getProperty("os.version", "0.0.0");
     int major = 0;
     int min = 0;
-    
+
     Pattern pattern = Pattern.compile("^(\\d+)\\.(\\d+).*");
     Matcher matcher = pattern.matcher(version);
     if (matcher.matches()) {
@@ -110,23 +106,23 @@ public enum Platform {
         // These things happen
       }
     }
-    
+
     majorVersion = major;
     minorVersion = min;
   }
 
   public String[] getPartOfOsName() {
-	return partOfOsName;
-}
+    return partOfOsName;
+  }
 
-public static Platform getCurrent() {
+  public static Platform getCurrent() {
     return extractFromSysProperty(System.getProperty("os.name"));
   }
 
   public static Platform extractFromSysProperty(String osName) {
     osName = osName.toLowerCase();
     // os.name for android is linux
-    if ("dalvik".equalsIgnoreCase(System.getProperty("java.vm.name"))){
+    if ("dalvik".equalsIgnoreCase(System.getProperty("java.vm.name"))) {
       return Platform.ANDROID;
     }
     Platform mostLikely = UNIX;
@@ -172,7 +168,7 @@ public static Platform getCurrent() {
   public int getMajorVersion() {
     return majorVersion;
   }
-  
+
   public int getMinorVersion() {
     return minorVersion;
   }

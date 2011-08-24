@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Defines the output type for a screenshot. See org.openqa.selenium.Screenshot
- * for usage and examples.
- *
+ * Defines the output type for a screenshot. See org.openqa.selenium.Screenshot for usage and
+ * examples.
+ * 
  * @see TakesScreenshot
  * @param <T> Type for the screenshot output.
  */
@@ -37,12 +37,12 @@ public interface OutputType<T> {
    * Obtain the screenshot as base64 data.
    */
   OutputType<String> BASE64 = new OutputType<String>() {
-  	public String convertFromBase64Png(String base64Png) {
+    public String convertFromBase64Png(String base64Png) {
       return base64Png;
-  	}
+    }
 
-  	public String convertFromPngBytes(byte[] png) {
-  	  return new Base64Encoder().encode(png);
+    public String convertFromPngBytes(byte[] png) {
+      return new Base64Encoder().encode(png);
     }
   };
 
@@ -50,25 +50,25 @@ public interface OutputType<T> {
    * Obtain the screenshot as raw bytes.
    */
   OutputType<byte[]> BYTES = new OutputType<byte[]>() {
-  	public byte[] convertFromBase64Png(String base64Png) {
-		  return new Base64Encoder().decode(base64Png);
-  	}
+    public byte[] convertFromBase64Png(String base64Png) {
+      return new Base64Encoder().decode(base64Png);
+    }
 
-  	public byte[] convertFromPngBytes(byte[] png) {
-  	  return png;
+    public byte[] convertFromPngBytes(byte[] png) {
+      return png;
     }
   };
 
   /**
-   * Obtain the screenshot into a temporary file that will be deleted once the
-   * JVM exits. It is up to users to make a copy of this file.
+   * Obtain the screenshot into a temporary file that will be deleted once the JVM exits. It is up
+   * to users to make a copy of this file.
    */
   OutputType<File> FILE = new OutputType<File>() {
-  	public File convertFromBase64Png(String base64Png) {
+    public File convertFromBase64Png(String base64Png) {
       return save(BYTES.convertFromBase64Png(base64Png));
-  	}
+    }
 
-  	public File convertFromPngBytes(byte[] data) {
+    public File convertFromPngBytes(byte[] data) {
       return save(data);
     }
 
@@ -99,7 +99,7 @@ public interface OutputType<T> {
 
   /**
    * Convert the given base64 png to a requested format.
-   *
+   * 
    * @param base64Png base64 encoded png.
    * @return png encoded into requested format.
    */
@@ -107,7 +107,7 @@ public interface OutputType<T> {
 
   /**
    * Convert the given png to a requested format.
-   *
+   * 
    * @param png an array of bytes forming a png file.
    * @return png encoded into requested format.
    */

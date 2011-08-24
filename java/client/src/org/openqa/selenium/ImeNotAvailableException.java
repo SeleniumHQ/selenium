@@ -19,9 +19,8 @@ limitations under the License.
 package org.openqa.selenium;
 
 /**
- * Indicates that IME support is not available. This exception is thrown for
- * every IME-related method call if IME support is not available on the
- * machine.
+ * Indicates that IME support is not available. This exception is thrown for every IME-related
+ * method call if IME support is not available on the machine.
  */
 public class ImeNotAvailableException extends WebDriverException {
   public ImeNotAvailableException(String message) {

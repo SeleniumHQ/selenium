@@ -13,15 +13,15 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package org.openqa.selenium;
 
 
 /**
- * Indicates a driver that can capture a screenshot and store it in different
- * ways.
+ * Indicates a driver that can capture a screenshot and store it in different ways.
  * <p>
  * Example usage:
+ * 
  * <pre>
  * import static openqa.selenium.OutputType.*;
  * 
@@ -34,7 +34,7 @@ package org.openqa.selenium;
 public interface TakesScreenshot {
   /**
    * Capture the screenshot and store it in the specified location.
-   *
+   * 
    * @param <X> Return type for getScreenshotAs.
    * @param target target type, @see OutputType
    * @return Object in which is stored information about the screenshot.

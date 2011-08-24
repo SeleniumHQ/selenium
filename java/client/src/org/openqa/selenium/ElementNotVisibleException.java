@@ -27,6 +27,6 @@ public class ElementNotVisibleException extends WebDriverException {
   }
 
   public ElementNotVisibleException(String message, Throwable cause) {
-    super(message, cause);  
+    super(message, cause);
   }
 }

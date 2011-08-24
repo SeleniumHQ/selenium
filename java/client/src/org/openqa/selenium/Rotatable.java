@@ -13,15 +13,15 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
 /**
  * Represents rotation of the browser view for orientation-sensitive devices.
  * 
- * When using this with a real device, the device should not be moved so that the
- * built-in sensors do not interfere.
+ * When using this with a real device, the device should not be moved so that the built-in sensors
+ * do not interfere.
  */
 public interface Rotatable {
 
@@ -31,7 +31,7 @@ public interface Rotatable {
    * @param orientation the desired screen orientation
    */
   void rotate(ScreenOrientation orientation);
-  
+
   /**
    * @return the current screen orientation of the browser
    */
