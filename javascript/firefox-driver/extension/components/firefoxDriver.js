@@ -1261,11 +1261,38 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
 
 
 FirefoxDriver.prototype.mouseDoubleClick = function(respond, parameters) {
+
   Utils.installWindowCloseListener(respond);
   Utils.installClickListener(respond, WebLoadingListener);
 
-  var response = this.mouse.doubleClick(null);
-  respond.status = response.status;
-  respond.value = response.message;
-  respond.send();
+  if (!this.enableNativeEvents) {
+    var response = this.mouse.doubleClick(null);
+    respond.status = response.status;
+    respond.value = response.message;
+    respond.send();
+    return;
+  }
+
+  var doc = respond.session.getDocument();
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
+
+  var events = Utils.getNativeEvents();
+  var node = Utils.getNodeForNativeEvents(elementForNode);
+
+  if (this.enableNativeEvents && events && node) {
+    var currentPosition = respond.session.getMousePosition();
+    var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
+
+    events.doubleClick(node, currentPosition.x + browserOffset.x,
+        currentPosition.y + browserOffset.y);
+
+    var dummyIndicator = {
+      wasUnloaded: false
+    };
+
+    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
+
+  } else {
+    throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
+  }
 };

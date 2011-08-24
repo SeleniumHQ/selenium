@@ -142,6 +142,26 @@ NS_IMETHODIMP nsNativeEvents::Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PR
   return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
 }
 
+/* void doubleClick (in nsISupports aNode, in long x, in long y, in long button); */
+NS_IMETHODIMP nsNativeEvents::DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y)
+{
+  AccessibleDocumentWrapper doc(aNode);
+
+  void* windowHandle = doc.getWindowHandle();
+  LOG(DEBUG) << "Have doubleClick window handle: " << windowHandle;
+
+  if (!windowHandle) {
+    LOG(WARN) << "No window handle!";
+    return NS_ERROR_NULL_POINTER;
+  }
+
+  LOG(DEBUG) << "Calling doubleClickAt: " << x << ", " << y;
+  WD_RESULT res = doubleClickAt(windowHandle, x, y);
+
+  LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
+
+  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
+}
 
 /* void mousePress(in nsISupports aNode, in long x, in long y, in long button); */
 NS_IMETHODIMP nsNativeEvents::MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)

@@ -72,7 +72,7 @@ bool is_gdk_keyboard_event(GdkEvent* ev)
 bool is_gdk_mouse_event(GdkEvent* ev)
 {
   return ((ev->type == GDK_BUTTON_PRESS) || (ev->type == GDK_BUTTON_RELEASE) ||
-          (ev->type == GDK_MOTION_NOTIFY));
+          (ev->type == GDK_MOTION_NOTIFY) || (ev->type == GDK_2BUTTON_PRESS));
 }
 
 bool event_earlier_than(GdkEvent* ev, guint32 compare_time)

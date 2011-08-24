@@ -40,4 +40,7 @@ void imeGetActiveEngine(out AString activeEngine);
 
 /* De-activate IME input. */
 void imeDeactivate();
+
+/* Double click the mouse at this point */
+void doubleClick(in nsISupports aNode, in long x, in long y);
 };

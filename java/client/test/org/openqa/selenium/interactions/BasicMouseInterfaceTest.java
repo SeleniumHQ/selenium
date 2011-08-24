@@ -38,9 +38,12 @@ import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.TestWaiter;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Tests operations that involve mouse and keyboard.
@@ -147,8 +150,17 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, REMOTE, IPHONE, SELENESE})
   public void testDoubleClick() {
+    
+    if(isFirefox(driver) &&
+        (!isNativeEventsEnabled(driver) ||
+         !Platform.getCurrent().is(Platform.LINUX))) {
+      System.out.println("Skipping double click test: only implemented on Linux" +
+                         " with native events.");
+      return;
+    }
+    
     driver.get(pages.javascriptPage);
 
     WebElement toDoubleClick = driver.findElement(By.id("doubleClickField"));
@@ -156,8 +168,10 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     Action dblClick = getBuilder(driver).doubleClick(toDoubleClick).build();
 
     dblClick.perform();
+    String testFieldContent = TestWaiter.waitFor(
+        WaitingConditions.elementValueToEqual(toDoubleClick, "DoubleClicked"), 5, TimeUnit.SECONDS);
     assertEquals("Value should change to DoubleClicked.", "DoubleClicked",
-        toDoubleClick.getAttribute("value"));
+        testFieldContent);
   }
 
   @JavascriptEnabled

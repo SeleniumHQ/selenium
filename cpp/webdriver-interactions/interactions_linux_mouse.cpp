@@ -40,7 +40,7 @@ limitations under the License.
 
 using namespace std;
 
-enum MouseEventType { bMousePress, bMouseRelease };
+enum MouseEventType { bMousePress, bMouseRelease, bMouse2ButtonPress };
 // This class handles generation of mouse press / release events.
 class MouseEventsHandler
 {
@@ -51,6 +51,7 @@ public:
   // Creates a series of mouse events (i.e mouse up/down)
   list<GdkEvent*> CreateEventsForMouseMove(long x, long y);
   list<GdkEvent*> CreateEventsForMouseClick(long x, long y, long button);
+  list<GdkEvent*> CreateEventsForMouseDoubleClick(long x, long y);
   list<GdkEvent*> CreateEventsForMouseDown(long x, long y, long button);
   list<GdkEvent*> CreateEventsForMouseUp(long x, long y, long button);
   // Returns the time of the latest event.
@@ -117,6 +118,8 @@ GdkEvent* MouseEventsHandler::CreateMouseButtonEvent(MouseEventType ev_type, lon
     GdkEventType gdk_ev = GDK_BUTTON_PRESS;
     if (ev_type == bMouseRelease) {
       gdk_ev = GDK_BUTTON_RELEASE;
+    } else if (ev_type == bMouse2ButtonPress) {
+      gdk_ev = GDK_2BUTTON_PRESS;
     }
     GdkEvent* p_ev = gdk_event_new(gdk_ev);
     p_ev->button.window = GDK_WINDOW(g_object_ref(win_handle_));
@@ -150,6 +153,18 @@ list<GdkEvent*> MouseEventsHandler::CreateEventsForMouseUp(long x, long y, long 
   return ret_list;
 }
 
+list<GdkEvent*> MouseEventsHandler::CreateEventsForMouseDoubleClick(long x, long y)
+{
+  // double click is only possible with the left mouse button
+  const int leftMouseButton = 1;
+  list<GdkEvent*> ret_list;
+  ret_list.push_back(CreateMouseButtonEvent(bMousePress, x, y, leftMouseButton));
+  ret_list.push_back(CreateMouseButtonEvent(bMouseRelease, x, y, leftMouseButton));
+  ret_list.push_back(CreateMouseButtonEvent(bMousePress, x, y, leftMouseButton));
+  ret_list.push_back(CreateMouseButtonEvent(bMouse2ButtonPress, x, y, leftMouseButton));
+  ret_list.push_back(CreateMouseButtonEvent(bMouseRelease, x, y, leftMouseButton));
+  return ret_list;
+}
 
 list<GdkEvent*> MouseEventsHandler::CreateEventsForMouseClick(long x, long y, long button)
 {
@@ -191,7 +206,7 @@ static void submit_and_free_event(GdkEvent* p_mouse_event, int sleep_time_ms)
 static void print_mouse_event(GdkEvent* p_ev)
 {
   if (!((p_ev->type == GDK_BUTTON_PRESS) || (p_ev->type == GDK_BUTTON_RELEASE)
-        || (p_ev->type == GDK_MOTION_NOTIFY))) {
+        || (p_ev->type == GDK_MOTION_NOTIFY) || p_ev->type == GDK_2BUTTON_PRESS)) {
     LOG(DEBUG) << "Not a mouse event.";
     return;
   }
@@ -207,6 +222,10 @@ static void print_mouse_event(GdkEvent* p_ev)
 
   if (p_ev->type == GDK_MOTION_NOTIFY) {
     ev_type = "motion";
+  };
+
+  if (p_ev->type == GDK_2BUTTON_PRESS) {
+    ev_type = "2press";
   };
   LOG(DEBUG) << "Type: " << ev_type <<  " time: " <<
              p_ev->key.time;
@@ -228,7 +247,6 @@ extern "C"
 WD_RESULT clickAt(WINDOW_HANDLE windowHandle, long x, long y, long button)
 {
   init_logging();
-  const int timePerEvent = 10 /* ms */;
 
   LOG(DEBUG) << "---------- starting clickAt: " << windowHandle <<  "---------";
   GdkDrawable* hwnd = (GdkDrawable*) windowHandle;
@@ -243,13 +261,8 @@ WD_RESULT clickAt(WINDOW_HANDLE windowHandle, long x, long y, long button)
 
   MouseEventsHandler mousep_handler(hwnd);
 
-  struct timespec sleep_time;
-  sleep_time.tv_sec = timePerEvent / 1000;
-  sleep_time.tv_nsec = (timePerEvent % 1000) * 1000000;
-  LOG(DEBUG) << "Sleep time is " << sleep_time.tv_sec << " seconds and " <<
-            sleep_time.tv_nsec << " nanoseconds.";
-
   list<GdkEvent*> events_for_mouse = mousep_handler.CreateEventsForMouseClick(x, y, button);
+  const int timePerEvent = 10 /* ms */;
   submit_and_free_events_list(events_for_mouse, timePerEvent);
 
 
@@ -258,6 +271,27 @@ WD_RESULT clickAt(WINDOW_HANDLE windowHandle, long x, long y, long button)
   }
 
   LOG(DEBUG) << "---------- Ending clickAt ----------";
+  return 0;
+}
+
+WD_RESULT doubleClickAt(WINDOW_HANDLE windowHandle, long x, long y)
+{
+  init_logging();
+
+  LOG(DEBUG) << "---------- starting doubleClickAt: " << windowHandle <<  "---------";
+  GdkDrawable* hwnd = (GdkDrawable*) windowHandle;
+
+  MouseEventsHandler mousep_handler(hwnd);
+
+  const int timePerEvent = 10 /* ms */;
+  list<GdkEvent*> events_for_mouse = mousep_handler.CreateEventsForMouseDoubleClick(x, y);
+  submit_and_free_events_list(events_for_mouse, timePerEvent);
+
+  if (gLatestEventTime < mousep_handler.get_last_event_time()) {
+    gLatestEventTime = mousep_handler.get_last_event_time();
+  }
+
+  LOG(DEBUG) << "---------- Ending doubleClickAt ----------";
   return 0;
 }
 
