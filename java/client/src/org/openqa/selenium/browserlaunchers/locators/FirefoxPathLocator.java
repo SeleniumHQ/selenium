@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.browserlaunchers.locators;
 
@@ -40,8 +40,8 @@ public class FirefoxPathLocator implements BrowserLocator {
       }
 
       if (LauncherUtils.isScriptFile(new File(executable))) {
-       log.warning("Caution: '" + executable + "': file is a script file, not a real executable." +
-           " The browser environment is no longer fully under RC control");
+        log.warning("Caution: '" + executable + "': file is a script file, not a real executable." +
+            " The browser environment is no longer fully under RC control");
       }
 
       String libraryPathPropertyName = CommandLine.getLibraryPathPropertyName();

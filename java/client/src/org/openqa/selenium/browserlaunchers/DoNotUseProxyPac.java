@@ -31,12 +31,12 @@ public class DoNotUseProxyPac implements Serializable {
   private final Set<String> directHosts = new LinkedHashSet<String>();
   private final Map<String, String> proxiedHosts = new HashMap<String, String>();
   // TODO(simon): Is this right? Really?
-  private String defaultProxy = "";  // Does nothing. Emulates old behaviour of Selenium
+  private String defaultProxy = ""; // Does nothing. Emulates old behaviour of Selenium
   private URI deriveFrom;
 
   /**
    * Output the PAC file to the given writer.
-   *
+   * 
    * @param writer Will have config written to it.
    * @throws IOException Should the underlying writer fail.
    */

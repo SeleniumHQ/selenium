@@ -45,7 +45,7 @@ public class WindowsProxyManager {
   // All cookies hidden by Selenium RC will go here.
   protected static final File HIDDEN_COOKIE_DIR = new File(
       System.getenv("USERPROFILE")
-      + File.separator + "CookiesHiddenBySeleniumRC");
+          + File.separator + "CookiesHiddenBySeleniumRC");
 
   protected static String REG_KEY_BASE = "HKEY_CURRENT_USER";
   private static final Pattern HUDSUCKR_LINE = Pattern.compile("^([^=]+)=(.*)$");
@@ -58,7 +58,8 @@ public class WindowsProxyManager {
   private static final Preferences prefs =
       Preferences.userNodeForPackage(WindowsProxyManager.class);
 
-  public WindowsProxyManager(boolean customPACappropriate, String sessionId, int port, int portDriversShouldContact) {
+  public WindowsProxyManager(boolean customPACappropriate, String sessionId, int port,
+      int portDriversShouldContact) {
     this.portDriversShouldContact = portDriversShouldContact;
     this.customPACappropriate = customPACappropriate;
     this.port = port;
@@ -84,7 +85,8 @@ public class WindowsProxyManager {
     handleEvilPopupMgrBackup();
   }
 
-  // IE7 changed the type of the popup mgr key to DWORD (int/boolean) from String (which could be "yes" or "no")
+  // IE7 changed the type of the popup mgr key to DWORD (int/boolean) from String (which could be
+  // "yes" or "no")
 
   protected void handleEvilPopupMgrBackup() {
     if (RegKey.POPUP_MGR.type != null) {
@@ -157,8 +159,9 @@ public class WindowsProxyManager {
     }
     if (!customPACappropriate) {
       String proxyServer = "127.0.0.1:" + portDriversShouldContact;
-      settings = new HudsuckrSettings(oldSettings.connection, true, true, false, false, proxyServer,
-          "(null)", "(null)");
+      settings =
+          new HudsuckrSettings(oldSettings.connection, true, true, false, false, proxyServer,
+              "(null)", "(null)");
     } else {
       File proxyPAC = Proxies.makeProxyPAC(customProxyPACDir, port, options);
 
@@ -168,18 +171,21 @@ public class WindowsProxyManager {
         newURL = newURL.replace("file:/", "file://");
       }
       settings =
-          new HudsuckrSettings(oldSettings.connection, true, false, true, false, "(null)", "(null)",
+          new HudsuckrSettings(oldSettings.connection, true, false, true, false, "(null)",
+              "(null)",
               newURL);
     }
     runHudsuckr(settings.toStringArray());
 
     // Disabling automatic proxy caching
     // http://support.microsoft.com/?kbid=271361
-    // Otherwise, *all* requests will go through our proxy, rather than just */selenium-server/* requests
+    // Otherwise, *all* requests will go through our proxy, rather than just */selenium-server/*
+    // requests
     try {
       WindowsUtils.writeBooleanRegistryValue(RegKey.AUTOPROXY_RESULT_CACHE.key, false);
     } catch (WindowsRegistryException ex) {
-      log.log(Level.FINE,
+      log.log(
+          Level.FINE,
           "Couldn't modify autoproxy result cache; this often fails on Vista, but it's merely a nice-to-have",
           ex);
     }
@@ -189,7 +195,8 @@ public class WindowsProxyManager {
       WindowsUtils.writeStringRegistryValue(RegKey.MIME_EXCLUSION_LIST_FOR_CACHE.key,
           "multipart/mixed multipart/x-mixed-replace multipart/x-byteranges text/html");
     } catch (WindowsRegistryException ex) {
-      log.log(Level.FINE,
+      log.log(
+          Level.FINE,
           "Couldn't disable caching of html; this often fails on Vista, but it's merely a nice-to-have",
           ex);
     }
@@ -221,16 +228,18 @@ public class WindowsProxyManager {
     // Disable prompting & running signed ActiveX controls that haven't already been enabled.
     WindowsUtils.writeIntRegistryValue(RegKey.DOWNLOAD_SIGNED_ACTIVEX.key, 3);
 
-    // Prevent the "Did you notice the Information Bar?" pop-up  when visiting a site that has ActiveX.
+    // Prevent the "Did you notice the Information Bar?" pop-up when visiting a site that has
+    // ActiveX.
     WindowsUtils.writeIntRegistryValue(RegKey.DISPLAY_INFORMATION_BAR_PROMPT.key, 0);
 
-    // Prevent the "This script is running slowly.  Do you want to stop it?" pop-up on pages with slow scripts.
+    // Prevent the "This script is running slowly.  Do you want to stop it?" pop-up on pages with
+    // slow scripts.
     WindowsUtils.writeIntRegistryValue(RegKey.MAX_SCRIPT_STATEMENTS.key, Integer.MAX_VALUE);
 
     // DGF Don't manage proxy settings the IE4 way; use hudsuckr instead
-//        if (WindowsUtils.doesRegistryValueExist(RegKey.PROXY_OVERRIDE.key)) {
-//            WindowsUtils.deleteRegistryValue(RegKey.PROXY_OVERRIDE.key);
-//        }
+    // if (WindowsUtils.doesRegistryValueExist(RegKey.PROXY_OVERRIDE.key)) {
+    // WindowsUtils.deleteRegistryValue(RegKey.PROXY_OVERRIDE.key);
+    // }
 
     if (changeMaxConnections) {
       // need at least 1 xmlHttp connection per frame/window
@@ -251,7 +260,7 @@ public class WindowsProxyManager {
 
   private static void deleteTemporaryInternetFiles() {
     String cachePath = WindowsUtils.readStringRegistryValue(REG_KEY_BASE
-                                                            + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\Cache");
+        + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\Cache");
     File globalCacheDir = new File(cachePath);
     File iexploreCacheDir = new File(globalCacheDir, "Content.IE5");
     if (iexploreCacheDir.exists()) {
@@ -298,8 +307,7 @@ public class WindowsProxyManager {
   }
 
   /**
-   * Hides pre-existing cookies, if any.  If no cookies can be found
-   * then just exit.
+   * Hides pre-existing cookies, if any. If no cookies can be found then just exit.
    */
   private static void hidePreexistingCookies() {
     boolean done = false;
@@ -307,21 +315,21 @@ public class WindowsProxyManager {
     done = hideCookies(cookieDir, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
     if (!done) {
       log.warning("Could not hide pre-existing cookies using either the" +
-               "WinXP directory structure or the Vista directory structure");
+          "WinXP directory structure or the Vista directory structure");
     }
   }
 
   /**
-   * Hides all previously existing user cookies, found in the
-   * WinXP directory structure, by moving them to a different directory.
+   * Hides all previously existing user cookies, found in the WinXP directory structure, by moving
+   * them to a different directory.
    */
   protected static boolean hideCookies(File cookieDir,
-                                       String cookieSuffix, File hiddenCookieDir) {
+      String cookieSuffix, File hiddenCookieDir) {
     boolean result = false;
     FileHandler.delete(hiddenCookieDir);
     if (cookieDir.exists()) {
       log.info("Copying cookies from " + cookieDir.getAbsolutePath() +
-               " to " + hiddenCookieDir.getAbsolutePath());
+          " to " + hiddenCookieDir.getAbsolutePath());
       try {
         FileHandler.copy(cookieDir, hiddenCookieDir, cookieSuffix);
       } catch (IOException e) {
@@ -337,7 +345,7 @@ public class WindowsProxyManager {
 
   private static File getCookieDir() {
     String cookiePath = WindowsUtils.readStringRegistryValue(REG_KEY_BASE
-                                                             + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\Cookies");
+        + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\Cookies");
     File cookieDir = new File(cookiePath);
     return cookieDir;
   }
@@ -348,7 +356,7 @@ public class WindowsProxyManager {
     done = restoreCookies(cookieDir, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
     if (!done) {
       log.warning("Could not restore pre-existing cookies, using either the" +
-               "WinXp directory structure or the Vista directory structure");
+          "WinXp directory structure or the Vista directory structure");
     }
   }
 
@@ -356,16 +364,16 @@ public class WindowsProxyManager {
    * Restores previously hidden user cookies, if any.
    */
   protected static boolean restoreCookies(File cookieDir,
-                                          String cookieSuffix, File hiddenCookieDir) {
+      String cookieSuffix, File hiddenCookieDir) {
     boolean result = false;
     if (cookieDir.exists()) {
       log.info("Deleting cookies created during session from "
-               + cookieDir.getAbsolutePath());
+          + cookieDir.getAbsolutePath());
       deleteFlatDirContents(cookieDir, cookieSuffix);
     }
     if (hiddenCookieDir.exists()) {
       log.info("Copying cookies from " + hiddenCookieDir.getAbsolutePath() +
-               " to " + cookieDir.getAbsolutePath());
+          " to " + cookieDir.getAbsolutePath());
       try {
         FileHandler.copy(hiddenCookieDir, cookieDir);
       } catch (IOException e) {
@@ -380,8 +388,8 @@ public class WindowsProxyManager {
 
   /**
    * Deletes all files contained by the given directory.
-   *
-   * @param dir    the directory to delete the contents of
+   * 
+   * @param dir the directory to delete the contents of
    * @param suffix if not null, only files with this suffix will be deleted.
    */
   protected static void deleteFlatDirContents(File dir, String suffix) {
@@ -419,57 +427,79 @@ public class WindowsProxyManager {
   private enum RegKey {
     POPUP_MGR(REG_KEY_BASE + "\\Software\\Microsoft\\Internet Explorer\\New Windows\\PopupMgr",
         null), // In IE7 it's a DWORD; in IE6 a string "yes"/"no"
-    USERNAME_PASSWORD_DISABLE(REG_KEY_BASE
-                              + "\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE\\iexplore.exe",
+    USERNAME_PASSWORD_DISABLE(
+        REG_KEY_BASE
+            +
+            "\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE\\iexplore.exe",
         boolean.class),
-    MAX_CONNECTIONS_PER_1_0_SVR(REG_KEY_BASE
-                                + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPer1_0Server",
+    MAX_CONNECTIONS_PER_1_0_SVR(
+        REG_KEY_BASE
+            +
+            "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPer1_0Server",
         int.class),
-    MAX_CONNECTIONS_PER_1_1_SVR(REG_KEY_BASE
-                                + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPerServer",
+    MAX_CONNECTIONS_PER_1_1_SVR(
+        REG_KEY_BASE
+            +
+            "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPerServer",
         int.class),
-    AUTOPROXY_RESULT_CACHE(REG_KEY_BASE
-                           + "\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache",
+    AUTOPROXY_RESULT_CACHE(
+        REG_KEY_BASE
+            +
+            "\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache",
         boolean.class),
-    MIME_EXCLUSION_LIST_FOR_CACHE(REG_KEY_BASE
-                                  + "\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MimeExclusionListForCache",
+    MIME_EXCLUSION_LIST_FOR_CACHE(
+        REG_KEY_BASE
+            +
+            "\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MimeExclusionListForCache",
         String.class),
     WARN_ON_FORM_SUBMIT(REG_KEY_BASE
-                        + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1601",
+        + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1601",
         boolean.class),
     DISPLAY_MIXED_CONTENT(REG_KEY_BASE
-                        + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1609",
+        + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1609",
         int.class),
-    WARN_ON_HTTPS_TO_HTTP_REDIRECT(REG_KEY_BASE
-                        + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\WarnOnHTTPSToHTTPRedirect",
+    WARN_ON_HTTPS_TO_HTTP_REDIRECT(
+        REG_KEY_BASE
+            +
+            "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\WarnOnHTTPSToHTTPRedirect",
         int.class),
-    WARN_ON_BAD_CERT_RECEIVING(REG_KEY_BASE
-                        + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\WarnonBadCertRecving",
+    WARN_ON_BAD_CERT_RECEIVING(
+        REG_KEY_BASE
+            +
+            "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\WarnonBadCertRecving",
         int.class),
     DISABLE_SCRIPT_DEBUGGER(REG_KEY_BASE
-                        + "\\Software\\Microsoft\\Internet Explorer\\Main\\Disable Script Debugger",
+        + "\\Software\\Microsoft\\Internet Explorer\\Main\\Disable Script Debugger",
         String.class),
     DISABLE_SCRIPT_DEBUGGER_IE(REG_KEY_BASE
-                        + "\\Software\\Microsoft\\Internet Explorer\\Main\\DisableScriptDebuggerIE",
+        + "\\Software\\Microsoft\\Internet Explorer\\Main\\DisableScriptDebuggerIE",
         String.class),
     ERROR_DIALOG_DISPLAYED_ON_EVERY_ERROR(REG_KEY_BASE
-                        + "\\Software\\Microsoft\\Internet Explorer\\Main\\Error Dlg Displayed On Every Error",
+        + "\\Software\\Microsoft\\Internet Explorer\\Main\\Error Dlg Displayed On Every Error",
         String.class),
     DOWNLOAD_SIGNED_ACTIVEX(REG_KEY_BASE
-                        + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1001",
+        + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1001",
         int.class),
     DISPLAY_INFORMATION_BAR_PROMPT(REG_KEY_BASE
-                        + "\\Software\\Microsoft\\Internet Explorer\\InformationBar\\FirstTime",
+        + "\\Software\\Microsoft\\Internet Explorer\\InformationBar\\FirstTime",
         int.class),
     MAX_SCRIPT_STATEMENTS(REG_KEY_BASE
-                        + "\\Software\\Microsoft\\Internet Explorer\\Styles\\MaxScriptStatements",
+        + "\\Software\\Microsoft\\Internet Explorer\\Styles\\MaxScriptStatements",
         int.class),
 
-    //DGF Don't manage proxy settings the IE4 way; use hudsuckr instead
-    //AUTOCONFIG_URL(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL", String.class),
-    //PROXY_ENABLE(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable", boolean.class),
-    //PROXY_OVERRIDE(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyOverride", String.class),
-    //PROXY_SERVER(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer", String.class),
+    // DGF Don't manage proxy settings the IE4 way; use hudsuckr instead
+    // AUTOCONFIG_URL(REG_KEY_BASE +
+    // "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL",
+    // String.class),
+    // PROXY_ENABLE(REG_KEY_BASE +
+    // "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable",
+    // boolean.class),
+    // PROXY_OVERRIDE(REG_KEY_BASE +
+    // "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyOverride",
+    // String.class),
+    // PROXY_SERVER(REG_KEY_BASE +
+    // "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer",
+    // String.class),
 
     ;
 
@@ -539,7 +569,8 @@ public class WindowsProxyManager {
       return hudsuckr;
     }
     try {
-      FileHandler.copyResource(customProxyPACDir, WindowsProxyManager.class, "hudsuckr/hudsuckr.exe");
+      FileHandler.copyResource(customProxyPACDir, WindowsProxyManager.class,
+          "hudsuckr/hudsuckr.exe");
     } catch (IOException e) {
       throw new RuntimeException("Bug extracting hudsuckr", e);
     }
@@ -554,14 +585,14 @@ public class WindowsProxyManager {
     String path = extractHudsuckr().getAbsolutePath();
     log.fine("Running hudsuckr: " + path);
     try {
-    CommandLine command = new CommandLine(path, args);
-    command.execute();
-    log.fine("Executed successfully");
-    String output = command.getStdOut();
-    if (!command.isSuccessful()) {
-      throw new RuntimeException("exec return code " + command.getExitCode() + ": " + output);
-    }
-    return output;
+      CommandLine command = new CommandLine(path, args);
+      command.execute();
+      log.fine("Executed successfully");
+      String output = command.getStdOut();
+      if (!command.isSuccessful()) {
+        throw new RuntimeException("exec return code " + command.getExitCode() + ": " + output);
+      }
+      return output;
     } catch (RuntimeException e) {
       log.log(Level.WARNING, "Failed to execute hudsuckr successfully: ", e);
     }
@@ -641,8 +672,8 @@ public class WindowsProxyManager {
     final boolean direct, proxy, pac, wpad;
 
     public HudsuckrSettings(String connection, boolean direct,
-                            boolean proxy, boolean pac, boolean wpad, String server,
-                            String bypass, String pacUrl) {
+        boolean proxy, boolean pac, boolean wpad, String server,
+        String bypass, String pacUrl) {
       this.connection = connection;
       this.server = server;
       this.bypass = bypass;

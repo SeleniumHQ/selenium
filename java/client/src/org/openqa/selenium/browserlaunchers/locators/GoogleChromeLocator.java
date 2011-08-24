@@ -24,50 +24,51 @@ import org.openqa.selenium.os.WindowsUtils;
  */
 public class GoogleChromeLocator extends SingleBrowserLocator {
 
-    protected String browserName() {
-        return "Google Chrome";
-    }
+  protected String browserName() {
+    return "Google Chrome";
+  }
 
-    protected String seleniumBrowserName() {
-        return "googlechrome";
-    }
+  protected String seleniumBrowserName() {
+    return "googlechrome";
+  }
 
-    protected String[] standardlauncherFilenames() {
-        return new String[]{"chrome.exe", "google-chrome","Google Chrome"};
-    }
+  protected String[] standardlauncherFilenames() {
+    return new String[] {"chrome.exe", "google-chrome", "Google Chrome"};
+  }
 
-    protected String browserPathOverridePropertyName() {
-        return "googleChromeDefaultPath";
-    }
+  protected String browserPathOverridePropertyName() {
+    return "googleChromeDefaultPath";
+  }
 
-    protected String[] usualLauncherLocations() {
-        return WindowsUtils.thisIsWindows() ? usualWindowsLauncherLocations() :
-            usualUnixLauncherLocations();
-    }
+  protected String[] usualLauncherLocations() {
+    return WindowsUtils.thisIsWindows() ? usualWindowsLauncherLocations() :
+        usualUnixLauncherLocations();
+  }
 
-    /**
-     * Returns usual Google Chrome installation location on Windows.
-     *
-     * WARNING: Executing this method on a non-windows platform will fail because the system root is not set.
-     *
-     * @return Usual Google Chrome installation location on Windows
-     */
-    protected String[] usualWindowsLauncherLocations() {
-        return new String[]{
-                WindowsUtils.getLocalAppDataPath() + "\\Google\\Chrome\\Application"
-        };
-    }
-    
-    /**
-     * Returns usual Google Chrome installation location on Linux.
-     *
-     * @return Usual Google Chrome installation location on Linux
-     */
-    protected String[] usualUnixLauncherLocations() {
-        return new String[]{
-                "/usr/bin",
-                "/Applications/Google Chrome.app/Contents/MacOS",                  
-        };
-    }
+  /**
+   * Returns usual Google Chrome installation location on Windows.
+   * 
+   * WARNING: Executing this method on a non-windows platform will fail because the system root is
+   * not set.
+   * 
+   * @return Usual Google Chrome installation location on Windows
+   */
+  protected String[] usualWindowsLauncherLocations() {
+    return new String[] {
+        WindowsUtils.getLocalAppDataPath() + "\\Google\\Chrome\\Application"
+    };
+  }
+
+  /**
+   * Returns usual Google Chrome installation location on Linux.
+   * 
+   * @return Usual Google Chrome installation location on Linux
+   */
+  protected String[] usualUnixLauncherLocations() {
+    return new String[] {
+        "/usr/bin",
+        "/Applications/Google Chrome.app/Contents/MacOS",
+    };
+  }
 
 }

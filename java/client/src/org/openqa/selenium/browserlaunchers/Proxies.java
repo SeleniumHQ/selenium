@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.browserlaunchers;
 
@@ -47,9 +47,10 @@ public class Proxies {
 
 
   /**
-   * Generate a proxy.pac file, configuring a dynamic proxy. <p/> If
-   * proxySeleniumTrafficOnly is true, then the proxy applies only to URLs
-   * containing "/selenium-server/". Otherwise the proxy applies to all URLs.
+   * Generate a proxy.pac file, configuring a dynamic proxy.
+   * <p/>
+   * If proxySeleniumTrafficOnly is true, then the proxy applies only to URLs containing
+   * "/selenium-server/". Otherwise the proxy applies to all URLs.
    */
   public static File makeProxyPAC(File parentDir, int port, Capabilities capabilities)
       throws FileNotFoundException {
@@ -59,9 +60,11 @@ public class Proxies {
         System.getProperty("http.nonProxyHosts"), capabilities);
   }
 
-  public static File makeProxyPAC(File parentDir, int port, String configuredProxy, String proxyPort, String nonProxyHosts, Capabilities capabilities)
+  public static File makeProxyPAC(File parentDir, int port, String configuredProxy,
+      String proxyPort, String nonProxyHosts, Capabilities capabilities)
       throws FileNotFoundException {
-    DoNotUseProxyPac pac = newProxyPac(port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
+    DoNotUseProxyPac pac =
+        newProxyPac(port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
 
     Proxy proxy = extractProxy(capabilities);
     if (proxy != null && proxy.getHttpProxy() != null) {
@@ -93,7 +96,8 @@ public class Proxies {
     return proxy;
   }
 
-  static DoNotUseProxyPac newProxyPac(int port, String configuredProxy, String proxyPort, String nonProxyHosts, Capabilities capabilities) {
+  static DoNotUseProxyPac newProxyPac(int port, String configuredProxy, String proxyPort,
+      String nonProxyHosts, Capabilities capabilities) {
     DoNotUseProxyPac existingConfig = (DoNotUseProxyPac) capabilities.getCapability(
         ForSeleniumServer.PROXY_PAC);
     DoNotUseProxyPac pac = existingConfig == null ? new DoNotUseProxyPac() : existingConfig;
@@ -144,8 +148,7 @@ public class Proxies {
     // not been asked to proxy everything. Modeling that first before tidying
     // up the logic.
     return !(capabilities.is(ONLY_PROXYING_SELENIUM_TRAFFIC) &&
-             capabilities.is(AVOIDING_PROXY) &&
-             !capabilities.is(PROXYING_EVERYTHING));
+        capabilities.is(AVOIDING_PROXY) && !capabilities.is(PROXYING_EVERYTHING));
   }
 
   public static boolean isOnlyProxyingSelenium(Capabilities capabilities) {
@@ -164,7 +167,8 @@ public class Proxies {
     return toReturn;
   }
 
-  public static Capabilities setOnlyProxySeleniumTraffic(Capabilities source, boolean onlyProxySeleniumTraffic) {
+  public static Capabilities setOnlyProxySeleniumTraffic(Capabilities source,
+      boolean onlyProxySeleniumTraffic) {
     DesiredCapabilities toReturn = newDesiredCapabilities(source);
     toReturn.setCapability(ONLY_PROXYING_SELENIUM_TRAFFIC, onlyProxySeleniumTraffic);
     return toReturn;

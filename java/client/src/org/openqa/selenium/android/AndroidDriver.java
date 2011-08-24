@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.android;
 
@@ -45,8 +45,7 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
   private TouchScreen touch;
 
   /**
-   * The default constructor assumes the remote server is listening at
-   * http://localhost:8080/wd/hub
+   * The default constructor assumes the remote server is listening at http://localhost:8080/wd/hub
    */
   public AndroidDriver() {
     this(getDefaultUrl());

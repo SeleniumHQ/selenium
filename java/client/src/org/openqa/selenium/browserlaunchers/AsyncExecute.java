@@ -25,9 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Spawn a process and return the process handle so you can close it yourself
- * later.
- *
+ * Spawn a process and return the process handle so you can close it yourself later.
+ * 
  * @author dfabulich
  */
 public class AsyncExecute {
@@ -36,7 +35,7 @@ public class AsyncExecute {
 
   /**
    * Sleeps without explicitly throwing an InterruptedException
-   *
+   * 
    * @param timeoutInSeconds Sleep time in seconds.
    * @throws RuntimeException wrapping an InterruptedException if one gets thrown
    */
@@ -46,7 +45,7 @@ public class AsyncExecute {
 
   /**
    * Sleeps without explicitly throwing an InterruptedException
-   *
+   * 
    * @param timeout the amout of time to sleep
    * @throws RuntimeException wrapping an InterruptedException if one gets thrown
    */
@@ -61,7 +60,7 @@ public class AsyncExecute {
 
   /**
    * Forcibly kills a process, using OS tools like "kill" as a last resort
-   *
+   * 
    * @param process The process to kill.
    * @return The exit value of the process.
    */

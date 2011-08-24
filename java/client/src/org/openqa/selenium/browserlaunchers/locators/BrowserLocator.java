@@ -5,8 +5,8 @@ package org.openqa.selenium.browserlaunchers.locators;
  */
 public interface BrowserLocator {
 
-    BrowserInstallation findBrowserLocationOrFail();
+  BrowserInstallation findBrowserLocationOrFail();
 
-    BrowserInstallation retrieveValidInstallationPath(String customLauncherPath);
-        
+  BrowserInstallation retrieveValidInstallationPath(String customLauncherPath);
+
 }

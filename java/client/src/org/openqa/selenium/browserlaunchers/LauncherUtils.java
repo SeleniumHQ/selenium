@@ -46,7 +46,7 @@ public class LauncherUtils {
 
   /**
    * Return the name of the custom profile directory for a specific seleniumm session
-   *
+   * 
    * @param sessionId Current selenium sesssion id. Cannot be null.
    * @return file path of the custom profile directory for this session.
    */
@@ -100,7 +100,8 @@ public class LauncherUtils {
   }
 
   // TODO(simon): Revert back to protected once the abstract browser launcher is in the same package
-  public static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl, boolean multiWindow, int serverPort) {
+  public static String getDefaultHTMLSuiteUrl(String browserURL, String suiteUrl,
+      boolean multiWindow, int serverPort) {
     String url = Urls.toProtocolHostAndPort(browserURL);
     String resultsUrl;
     if (serverPort == 0) {
@@ -109,21 +110,22 @@ public class LauncherUtils {
       resultsUrl = "http://localhost:" + serverPort + "/selenium-server/postResults";
     }
     return url + "/selenium-server/core/TestRunner.html?auto=true"
-           + "&multiWindow=" + multiWindow
-           + "&defaultLogLevel=info"
-           + "&baseUrl=" + Urls.urlEncode(browserURL)
-           + "&resultsUrl=" + resultsUrl
-           + "&test=" + Urls.urlEncode(suiteUrl);
+        + "&multiWindow=" + multiWindow
+        + "&defaultLogLevel=info"
+        + "&baseUrl=" + Urls.urlEncode(browserURL)
+        + "&resultsUrl=" + resultsUrl
+        + "&test=" + Urls.urlEncode(suiteUrl);
   }
 
   // TODO(simon): Reduce visibility once server/browserlaunchers no more
-  public static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow, int serverPort, boolean browserSideLog) {
+  public static String getDefaultRemoteSessionUrl(String startURL, String sessionId,
+      boolean multiWindow, int serverPort, boolean browserSideLog) {
     String url = Urls.toProtocolHostAndPort(startURL);
     url += "/selenium-server/core/RemoteRunner.html?"
-           + "sessionId=" + sessionId
-           + "&multiWindow=" + multiWindow
-           + "&baseUrl=" + Urls.urlEncode(startURL)
-           + "&debugMode=" + browserSideLog;
+        + "sessionId=" + sessionId
+        + "&multiWindow=" + multiWindow
+        + "&baseUrl=" + Urls.urlEncode(startURL)
+        + "&debugMode=" + browserSideLog;
     if (serverPort != 0) {
       url += "&driverUrl=http://localhost:" + serverPort + "/selenium-server/driver/";
     }
@@ -227,12 +229,12 @@ public class LauncherUtils {
   /**
    * Copies all files matching the suffix to the destination directory.
    * <p/>
-   * If no files match, and the destination directory did not already
-   * exist, the destination directory is still created, if possible.
-   *
+   * If no files match, and the destination directory did not already exist, the destination
+   * directory is still created, if possible.
+   * 
    * @param source the source directory
    * @param suffix the suffix for all files to be copied.
-   * @param dest   the destination directory
+   * @param dest the destination directory
    */
   protected static boolean copyDirectory(File source, String suffix, File dest) {
     try {
@@ -260,7 +262,7 @@ public class LauncherUtils {
       File proxyPAC = Proxies.makeProxyPAC(customProfileDir, port, capabilities);
       out.println("user_pref('network.proxy.type', 2);");
       out.println("user_pref('network.proxy.autoconfig_url', '"
-                  + pathToBrowserURL(proxyPAC.getAbsolutePath()) + "');");
+          + pathToBrowserURL(proxyPAC.getAbsolutePath()) + "');");
     }
     out.println("user_pref('toolkit.networkmanager.disable', true);");
     out.println("user_pref('browser.offline', false);");
@@ -287,7 +289,8 @@ public class LauncherUtils {
       out.println("user_pref('browser.startup.homepage', '" + homePage + "');");
       out.println("user_pref('startup.homepage_welcome_url', '');");
 
-      // This handles known RC problems when the startup page is a blank page or when the previous session has been restored
+      // This handles known RC problems when the startup page is a blank page or when the previous
+      // session has been restored
       out.println("user_pref('browser.startup.page', 1);");
     }
 
@@ -334,19 +337,16 @@ public class LauncherUtils {
   static final Pattern JAVA_STYLE_UNC_URL = Pattern.compile("^file:////([^/]+/.*)$");
 
   /**
-   * Generates an URL suitable for use in browsers, unlike Java's URLs, which
-   * choke on UNC paths. <p/>
+   * Generates an URL suitable for use in browsers, unlike Java's URLs, which choke on UNC paths.
    * <p/>
-   * Java's URLs work in IE, but break in Mozilla. Mozilla's team snobbily
-   * demanded that <I>all</I> file paths must have the empty authority
-   * (file:///), even for UNC file paths. On Mozilla \\socrates\build is
-   * therefore represented as file://///socrates/build.
+   * <p/>
+   * Java's URLs work in IE, but break in Mozilla. Mozilla's team snobbily demanded that <I>all</I>
+   * file paths must have the empty authority (file:///), even for UNC file paths. On Mozilla
+   * \\socrates\build is therefore represented as file://///socrates/build.
    * </P>
-   * See Mozilla bug <a
-   * href="https://bugzilla.mozilla.org/show_bug.cgi?id=66194">66194</A>.
-   *
-   * @param path -
-   *             the file path to convert to a browser URL
+   * See Mozilla bug <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=66194">66194</A>.
+   * 
+   * @param path - the file path to convert to a browser URL
    * @return a nice Mozilla-compatible file URL
    */
   private static String pathToBrowserURL(String path) {

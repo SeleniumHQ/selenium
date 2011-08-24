@@ -6,8 +6,8 @@ package org.openqa.selenium.browserlaunchers.locators;
  */
 public abstract class FirefoxLocator extends SingleBrowserLocator {
 
-    protected String browserPathOverridePropertyName() {
-        return "firefoxDefaultPath";
-    }
+  protected String browserPathOverridePropertyName() {
+    return "firefoxDefaultPath";
+  }
 
 }
