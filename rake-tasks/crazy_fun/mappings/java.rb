@@ -465,6 +465,10 @@ module CrazyFunJava
                 ant.sysproperty :key => 'method', :value => only_run_method
               end
 
+              if leave_running?
+                ant.sysproperty :key => 'webdriver.singletestsuite.leaverunning', :value => 'true'
+              end
+
               if (debug?)
                 ant.jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=#{suspend?},address=5005")
               end
@@ -504,6 +508,11 @@ module CrazyFunJava
 
     def only_run_method
       return ENV['method']
+    end
+
+    def leave_running?
+      # we set leaverunning true if the commandline argument is set and it is not 'false'
+      !([nil, 'false'].include? ENV['leaverunning'])
     end
 
   end
