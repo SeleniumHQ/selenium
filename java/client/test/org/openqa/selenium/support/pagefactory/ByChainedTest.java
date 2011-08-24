@@ -309,7 +309,8 @@ public class ByChainedTest extends MockTestBase {
         equalTo(new ByChained(By.id("cheese"), By.name("photo"))));
   }
 
-  private interface AllDriver extends FindsById, FindsByLinkText, FindsByName, FindsByXPath, SearchContext {
+  private interface AllDriver extends
+      FindsById, FindsByLinkText, FindsByName, FindsByXPath, SearchContext {
     // Place holder
   }
 

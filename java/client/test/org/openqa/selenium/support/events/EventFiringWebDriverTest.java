@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support.events;
 
@@ -60,31 +60,32 @@ public class EventFiringWebDriverTest extends MockTestBase {
       one(mockedNavigation).forward();
     }});
 
-    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-      public void beforeNavigateTo(String url, WebDriver driver) {
-        log.append("beforeNavigateTo ").append(url).append("\n");
-      }
+    EventFiringWebDriver testedDriver =
+        new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          public void beforeNavigateTo(String url, WebDriver driver) {
+            log.append("beforeNavigateTo ").append(url).append("\n");
+          }
 
-      public void afterNavigateTo(String url, WebDriver driver) {
-        log.append("afterNavigateTo ").append(url).append("\n");
-      }
+          public void afterNavigateTo(String url, WebDriver driver) {
+            log.append("afterNavigateTo ").append(url).append("\n");
+          }
 
-      public void beforeNavigateBack(WebDriver driver) {
-        log.append("beforeNavigateBack\n");
-      }
+          public void beforeNavigateBack(WebDriver driver) {
+            log.append("beforeNavigateBack\n");
+          }
 
-      public void afterNavigateBack(WebDriver driver) {
-        log.append("afterNavigateBack\n");
-      }
+          public void afterNavigateBack(WebDriver driver) {
+            log.append("afterNavigateBack\n");
+          }
 
-      public void beforeNavigateForward(WebDriver driver) {
-        log.append("beforeNavigateForward\n");
-      }
+          public void beforeNavigateForward(WebDriver driver) {
+            log.append("beforeNavigateForward\n");
+          }
 
-      public void afterNavigateForward(WebDriver driver) {
-        log.append("afterNavigateForward\n");
-      }
-    });
+          public void afterNavigateForward(WebDriver driver) {
+            log.append("afterNavigateForward\n");
+          }
+        });
 
     testedDriver.get("http://www.get.com");
     testedDriver.navigate().to("http://www.navigate-to.com");
@@ -100,8 +101,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
             "afterNavigateBack\n" +
             "beforeNavigateForward\n" +
             "afterNavigateForward\n",
-        log.toString()
-    );
+        log.toString());
   }
 
   @Test
@@ -116,23 +116,23 @@ public class EventFiringWebDriverTest extends MockTestBase {
       one(mockedElement).click();
     }});
 
-    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-      public void beforeClickOn(WebElement element, WebDriver driver) {
-        log.append("beforeClickOn\n");
-      }
+    EventFiringWebDriver testedDriver =
+        new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          public void beforeClickOn(WebElement element, WebDriver driver) {
+            log.append("beforeClickOn\n");
+          }
 
-      public void afterClickOn(WebElement element, WebDriver driver) {
-        log.append("afterClickOn\n");
-      }
-    });
+          public void afterClickOn(WebElement element, WebDriver driver) {
+            log.append("afterClickOn\n");
+          }
+        });
 
     testedDriver.findElement(By.name("foo")).click();
 
     assertEquals(
         "beforeClickOn\n" +
             "afterClickOn\n",
-        log.toString()
-    );
+        log.toString());
   }
 
   @Test
@@ -149,15 +149,16 @@ public class EventFiringWebDriverTest extends MockTestBase {
       one(mockedElement).click();
     }});
 
-    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-      public void beforeChangeValueOf(WebElement element, WebDriver driver) {
-        log.append("beforeChangeValueOf\n");
-      }
+    EventFiringWebDriver testedDriver =
+        new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          public void beforeChangeValueOf(WebElement element, WebDriver driver) {
+            log.append("beforeChangeValueOf\n");
+          }
 
-      public void afterChangeValueOf(WebElement element, WebDriver driver) {
-        log.append("afterChangeValueOf\n");
-      }
-    });
+          public void afterChangeValueOf(WebElement element, WebDriver driver) {
+            log.append("afterChangeValueOf\n");
+          }
+        });
 
     testedDriver.findElement(By.name("foo")).clear();
     testedDriver.findElement(By.name("foo")).sendKeys("some text");
@@ -168,8 +169,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
             "afterChangeValueOf\n" +
             "beforeChangeValueOf\n" +
             "afterChangeValueOf\n",
-        log.toString()
-    );
+        log.toString());
   }
 
   @Test
@@ -186,15 +186,18 @@ public class EventFiringWebDriverTest extends MockTestBase {
       one(mockedDriver).findElements(By.xpath("//link[@type = 'text/css']"));
     }});
 
-    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-      public void beforeFindBy(By by, WebElement element, WebDriver driver) {
-        log.append("beforeFindBy from ").append(element == null ? "WebDriver" : "WebElement").append(" ").append(by).append("\n");
-      }
+    EventFiringWebDriver testedDriver =
+        new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          public void beforeFindBy(By by, WebElement element, WebDriver driver) {
+            log.append("beforeFindBy from ").append(element == null ? "WebDriver" : "WebElement")
+                .append(" ").append(by).append("\n");
+          }
 
-      public void afterFindBy(By by, WebElement element, WebDriver driver) {
-        log.append("afterFindBy from ").append(element == null ? "WebDriver" : "WebElement").append(" ").append(by).append("\n");
-      }
-    });
+          public void afterFindBy(By by, WebElement element, WebDriver driver) {
+            log.append("afterFindBy from ").append(element == null ? "WebDriver" : "WebElement")
+                .append(" ").append(by).append("\n");
+          }
+        });
 
     WebElement element = testedDriver.findElement(By.id("foo"));
     element.findElement(By.linkText("bar"));
@@ -210,8 +213,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
             "afterFindBy from WebElement By.name: xyz\n" +
             "beforeFindBy from WebDriver By.xpath: //link[@type = 'text/css']\n" +
             "afterFindBy from WebDriver By.xpath: //link[@type = 'text/css']\n",
-        log.toString()
-    );
+        log.toString());
   }
 
   @Test
@@ -257,8 +259,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
     }});
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
-    testedDriver.register(new AbstractWebDriverEventListener() {
-    });
+    testedDriver.register(new AbstractWebDriverEventListener() {});
 
     WebElement element = testedDriver.findElement(By.id("foo"));
     try {
@@ -277,10 +278,10 @@ public class EventFiringWebDriverTest extends MockTestBase {
     checking(new Expectations() {{
       one(aList).size();
       one(mockedDriver).executeScript("foo", new Object[] {new ArrayList<Object>()});
-      }});
+    }});
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
-    testedDriver.register(new AbstractWebDriverEventListener() {} );
+    testedDriver.register(new AbstractWebDriverEventListener() {});
 
     try {
       testedDriver.executeScript("foo", aList);
@@ -296,12 +297,12 @@ public class EventFiringWebDriverTest extends MockTestBase {
     final Map<Object, Object> aMap = mock(Map.class);
 
     checking(new Expectations() {{
-        one(aMap).keySet();
-        one(mockedDriver).executeScript("foo", new Object[] {new HashMap<Object,Object>()});
-      }});
+      one(aMap).keySet();
+      one(mockedDriver).executeScript("foo", new Object[] {new HashMap<Object, Object>()});
+    }});
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
-    testedDriver.register(new AbstractWebDriverEventListener() {} );
+    testedDriver.register(new AbstractWebDriverEventListener() {});
 
     try {
       testedDriver.executeScript("foo", aMap);
@@ -356,7 +357,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
   @Test
   public void shouldBeAbleToAccessWrappedElementInstanceFromEventCalls() {
-	final StubElement stubElement = new StubElement();
+    final StubElement stubElement = new StubElement();
 
     final WebDriver stubDriver = new StubDriver() {
       @Override

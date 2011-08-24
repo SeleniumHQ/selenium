@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support.pagefactory;
 
@@ -104,10 +104,12 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
     final AllDriver driver = mock(AllDriver.class);
     final AllElement element = mock(AllElement.class);
     final Mouse mouse = mock(Mouse.class);
-    checking(new Expectations(){{
+    checking(new Expectations() {{
       exactly(1).of(driver).getKeyboard();
-      exactly(1).of(driver).getMouse(); will(returnValue(mouse));
-      exactly(1).of(driver).findElement(By.id("foo")); will(returnValue(element));
+      exactly(1).of(driver).getMouse();
+      will(returnValue(mouse));
+      exactly(1).of(driver).findElement(By.id("foo"));
+      will(returnValue(element));
       exactly(1).of(element).getCoordinates();
       exactly(1).of(mouse).mouseMove(with(any(Coordinates.class)));
     }});
@@ -115,7 +117,7 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
     PageFactory.initElements(driver, page);
     new Actions(driver).moveToElement(page.foo).build().perform();
   }
-  
+
   private static class Page {
     @FindBy(id = "foo")
     public WebElement foo;

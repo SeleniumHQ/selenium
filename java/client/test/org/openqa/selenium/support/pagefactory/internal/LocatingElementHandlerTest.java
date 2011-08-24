@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.support.pagefactory.internal;
 
@@ -46,7 +46,9 @@ public class LocatingElementHandlerTest extends MockTestBase {
     }});
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
-    WebElement proxy = (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{WebElement.class}, handler);
+    WebElement proxy =
+        (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(),
+            new Class[] {WebElement.class}, handler);
 
     proxy.sendKeys("Fishy");
     proxy.submit();
@@ -83,7 +85,9 @@ public class LocatingElementHandlerTest extends MockTestBase {
     }});
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
-    WebElement proxy = (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{WebElement.class}, handler);
+    WebElement proxy =
+        (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(),
+            new Class[] {WebElement.class}, handler);
 
     proxy.isEnabled();
     proxy.sendKeys("Cheese");
