@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.html5;
 
@@ -37,7 +37,7 @@ public class AddLocationContext implements AugmenterProvider {
 
   public InterfaceImplementation getImplementation(Object value) {
     return new InterfaceImplementation() {
-      
+
       public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
         if ("location".equals(method.getName())) {
           Map<Object, Object> map =
@@ -47,7 +47,8 @@ public class AddLocationContext implements AugmenterProvider {
           double altitude = Long.valueOf((Long) map.get("altitude")).doubleValue();
           return new Location(latitude, longitude, altitude);
         } else if ("setLocation".equals(method.getName())) {
-          return executeMethod.execute(DriverCommand.SET_LOCATION, ImmutableMap.of("location", args[0]));
+          return executeMethod.execute(DriverCommand.SET_LOCATION,
+              ImmutableMap.of("location", args[0]));
         }
         return null;
       }

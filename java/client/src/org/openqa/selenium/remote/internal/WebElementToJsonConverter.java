@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.internal;
 
@@ -30,8 +30,8 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Converts {@link WebElement} objects to their JSON representation. Will
- * recursively convert Lists and Maps to catch nested references.
+ * Converts {@link WebElement} objects to their JSON representation. Will recursively convert Lists
+ * and Maps to catch nested references.
  */
 public class WebElementToJsonConverter implements Function<Object, Object> {
   public Object apply(Object arg) {

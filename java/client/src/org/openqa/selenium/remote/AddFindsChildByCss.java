@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium.remote;
@@ -35,7 +35,8 @@ public class AddFindsChildByCss implements AugmenterProvider {
     return new InterfaceImplementation() {
       public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
         Object id = ((RemoteWebElement) self).getId();
-        Map<String, ?> commandArgs = ImmutableMap.of("id", id, "using", "css selector", "value", args[0]);
+        Map<String, ?> commandArgs =
+            ImmutableMap.of("id", id, "using", "css selector", "value", args[0]);
 
         if ("findElementByCssSelector".equals(method.getName())) {
           return executeMethod.execute(DriverCommand.FIND_ELEMENT, commandArgs);

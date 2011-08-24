@@ -27,11 +27,11 @@
 
 
 /*
-* Slightly modified org.apache.http.conn.scheme.PlainSocketFactor
-* by Kristian Rosenvold based on httpclient 4.x source.
-* While we wait for support for SO_REUSEADDR, which seems to be arriving in
-* httpcomopnents 4.1
-*/
+ * Slightly modified org.apache.http.conn.scheme.PlainSocketFactor
+ * by Kristian Rosenvold based on httpclient 4.x source.
+ * While we wait for support for SO_REUSEADDR, which seems to be arriving in
+ * httpcomopnents 4.1
+ */
 
 package org.openqa.selenium.remote;
 
@@ -52,107 +52,106 @@ public class ReusingSocketSocketFactory implements SocketFactory {
   /**
    * The default factory.
    */
-  private static final
-  ReusingSocketSocketFactory DEFAULT_FACTORY = new ReusingSocketSocketFactory();
+  private static final ReusingSocketSocketFactory DEFAULT_FACTORY =
+      new ReusingSocketSocketFactory();
 
   private final HostNameResolver nameResolver;
 
   /**
-   * Gets the default factory. Usually there should be no reason for creating
-   * multiple instances of this class.
-   *
+   * Gets the default factory. Usually there should be no reason for creating multiple instances of
+   * this class.
+   * 
    * @return the default factory
    */
   public static ReusingSocketSocketFactory getSocketFactory() {
-      return DEFAULT_FACTORY;
+    return DEFAULT_FACTORY;
   }
 
   public ReusingSocketSocketFactory(final HostNameResolver nameResolver) {
-      this.nameResolver = nameResolver;
+    this.nameResolver = nameResolver;
   }
 
 
   public ReusingSocketSocketFactory() {
-      this(null);
+    this(null);
   }
 
   public Socket createSocket() {
     final Socket socket = new Socket();
-      try {
-          socket.setReuseAddress(true);  // This is added by kristian
-      } catch (SocketException e) {
-          throw new RuntimeException(e);
-      }
-      return socket;
+    try {
+      socket.setReuseAddress(true); // This is added by kristian
+    } catch (SocketException e) {
+      throw new RuntimeException(e);
+    }
+    return socket;
 
   }
 
   public Socket connectSocket(Socket sock, String host, int port,
-                              InetAddress localAddress, int localPort,
-                              HttpParams params)
+      InetAddress localAddress, int localPort,
+      HttpParams params)
       throws IOException {
 
-      if (host == null) {
-          throw new IllegalArgumentException("Target host may not be null.");
-      }
-      if (params == null) {
-          throw new IllegalArgumentException("Parameters may not be null.");
-      }
+    if (host == null) {
+      throw new IllegalArgumentException("Target host may not be null.");
+    }
+    if (params == null) {
+      throw new IllegalArgumentException("Parameters may not be null.");
+    }
 
-      if (sock == null)
-          sock = createSocket();
+    if (sock == null)
+      sock = createSocket();
 
-      sock.setReuseAddress(true);  // This is the 1 line added by kristian
-      if ((localAddress != null) || (localPort > 0)) {
+    sock.setReuseAddress(true); // This is the 1 line added by kristian
+    if ((localAddress != null) || (localPort > 0)) {
 
-          // we need to bind explicitly
-          if (localPort < 0)
-              localPort = 0; // indicates "any"
+      // we need to bind explicitly
+      if (localPort < 0)
+        localPort = 0; // indicates "any"
 
-          InetSocketAddress isa =
-              new InetSocketAddress(localAddress, localPort);
-          sock.bind(isa);
-      }
+      InetSocketAddress isa =
+          new InetSocketAddress(localAddress, localPort);
+      sock.bind(isa);
+    }
 
-      int timeout = HttpConnectionParams.getConnectionTimeout(params);
+    int timeout = HttpConnectionParams.getConnectionTimeout(params);
 
-      InetSocketAddress remoteAddress;
-      if (this.nameResolver != null) {
-          remoteAddress = new InetSocketAddress(this.nameResolver.resolve(host), port);
-      } else {
-          remoteAddress = new InetSocketAddress(host, port);
-      }
-      try {
-          sock.connect(remoteAddress, timeout);
-      } catch (SocketTimeoutException ex) {
-          throw new ConnectTimeoutException("Connect to " + remoteAddress + " timed out");
-      }
-      return sock;
+    InetSocketAddress remoteAddress;
+    if (this.nameResolver != null) {
+      remoteAddress = new InetSocketAddress(this.nameResolver.resolve(host), port);
+    } else {
+      remoteAddress = new InetSocketAddress(host, port);
+    }
+    try {
+      sock.connect(remoteAddress, timeout);
+    } catch (SocketTimeoutException ex) {
+      throw new ConnectTimeoutException("Connect to " + remoteAddress + " timed out");
+    }
+    return sock;
   }
 
   /**
-   * Checks whether a socket connection is secure.
-   * This factory creates plain socket connections
+   * Checks whether a socket connection is secure. This factory creates plain socket connections
    * which are not considered secure.
-   *
-   * @param sock      the connected socket
-   *
-   * @return  <code>false</code>
-   *
+   * 
+   * @param sock the connected socket
+   * 
+   * @return <code>false</code>
+   * 
    * @throws IllegalArgumentException if the argument is invalid
    */
   public final boolean isSecure(Socket sock)
       throws IllegalArgumentException {
 
-      if (sock == null) {
-          throw new IllegalArgumentException("Socket may not be null.");
-      }
-      // This check is performed last since it calls a method implemented
-      // by the argument object. getClass() is final in java.lang.Object.
-      if (sock.isClosed()) {
-          throw new IllegalArgumentException("Socket is closed.");
-      }
-      return false;
+    if (sock == null) {
+      throw new IllegalArgumentException("Socket may not be null.");
+    }
+    // This check is performed last since it calls a method implemented
+    // by the argument object. getClass() is final in java.lang.Object.
+    if (sock.isClosed()) {
+      throw new IllegalArgumentException("Socket is closed.");
+    }
+    return false;
   }
 
 

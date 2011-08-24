@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote;
 
@@ -54,7 +54,7 @@ import java.util.Set;
  * Enhance the interfaces implemented by an instance of the
  * {@link org.openqa.selenium.remote.RemoteWebDriver} based on the returned
  * {@link org.openqa.selenium.Capabilities} of the driver.
- *
+ * 
  * Note: this class is still experimental. Use at your own risk.
  */
 public class Augmenter {
@@ -75,15 +75,14 @@ public class Augmenter {
   }
 
   /**
-   * Add a mapping between a capability name and the implementation of the
-   * interface that name represents for instances of
-   * {@link org.openqa.selenium.WebDriver}. For example
-   * (@link CapabilityType#TAKES_SCREENSHOT} is represents the interface
+   * Add a mapping between a capability name and the implementation of the interface that name
+   * represents for instances of {@link org.openqa.selenium.WebDriver}. For example (@link
+   * CapabilityType#TAKES_SCREENSHOT} is represents the interface
    * {@link org.openqa.selenium.TakesScreenshot}, which is implemented via the
    * {@link org.openqa.selenium.remote.AddTakesScreenshot} provider.
-   *
+   * 
    * Note: This method is still experimental. Use at your own risk.
-   *
+   * 
    * @param capabilityName The name of the capability to model
    * @param handlerClass The provider of the interface and implementation
    */
@@ -92,15 +91,14 @@ public class Augmenter {
   }
 
   /**
-   * Add a mapping between a capability name and the implementation of the
-   * interface that name represents for instances of
-   * {@link org.openqa.selenium.WebElement}. For example
-   * (@link CapabilityType#TAKES_SCREENSHOT} is represents the interface
-   * {@link org.openqa.selenium.internal.FindsByCssSelector}, which is
-   * implemented via the {@link AddFindsByCss} provider.
-   *
+   * Add a mapping between a capability name and the implementation of the interface that name
+   * represents for instances of {@link org.openqa.selenium.WebElement}. For example (@link
+   * CapabilityType#TAKES_SCREENSHOT} is represents the interface
+   * {@link org.openqa.selenium.internal.FindsByCssSelector}, which is implemented via the
+   * {@link AddFindsByCss} provider.
+   * 
    * Note: This method is still experimental. Use at your own risk.
-   *
+   * 
    * @param capabilityName The name of the capability to model
    * @param handlerClass The provider of the interface and implementation
    */
@@ -110,12 +108,12 @@ public class Augmenter {
 
 
   /**
-   * Enhance the interfaces implemented by this instance of WebDriver iff that
-   * instance is a {@link org.openqa.selenium.remote.RemoteWebDriver}.
-   *
-   * The WebDriver that is returned may well be a dynamic proxy. You cannot
-   * rely on the concrete implementing class to remain constant.
-   *
+   * Enhance the interfaces implemented by this instance of WebDriver iff that instance is a
+   * {@link org.openqa.selenium.remote.RemoteWebDriver}.
+   * 
+   * The WebDriver that is returned may well be a dynamic proxy. You cannot rely on the concrete
+   * implementing class to remain constant.
+   * 
    * @param driver The driver to enhance
    * @return A class implementing the described interfaces.
    */
@@ -163,12 +161,12 @@ public class Augmenter {
   }
 
   /**
-   * Enhance the interfaces implemented by this instance of WebElement iff that
-   * instance is a {@link org.openqa.selenium.remote.RemoteWebElement}.
-   *
-   * The WebElement that is returned may well be a dynamic proxy. You cannot
-   * rely on the concrete implementing class to remain constant.
-   *
+   * Enhance the interfaces implemented by this instance of WebElement iff that instance is a
+   * {@link org.openqa.selenium.remote.RemoteWebElement}.
+   * 
+   * The WebElement that is returned may well be a dynamic proxy. You cannot rely on the concrete
+   * implementing class to remain constant.
+   * 
    * @param element The driver to enhance.
    * @return A class implementing the described interfaces.
    */
@@ -191,7 +189,8 @@ public class Augmenter {
     return remote;
   }
 
-  private CompoundHandler determineAugmentation(WebDriver driver, Map<String, AugmenterProvider> augmentors) {
+  private CompoundHandler determineAugmentation(WebDriver driver,
+      Map<String, AugmenterProvider> augmentors) {
     Map<String, ?> capabilities = ((RemoteWebDriver) driver).getCapabilities().asMap();
 
     CompoundHandler handler = new CompoundHandler((RemoteWebDriver) driver);
@@ -243,7 +242,7 @@ public class Augmenter {
     public void addCapabilityHander(Class<?> fromInterface, InterfaceImplementation handledBy) {
       interfaces.add(fromInterface);
       for (Method method : fromInterface.getDeclaredMethods()) {
-          handlers.put(method, handledBy);
+        handlers.put(method, handledBy);
       }
     }
 
@@ -255,7 +254,8 @@ public class Augmenter {
       return interfaces.size() > 0;
     }
 
-    public Object intercept(Object self, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+    public Object intercept(Object self, Method method, Object[] args, MethodProxy methodProxy)
+        throws Throwable {
       InterfaceImplementation handler = handlers.get(method);
 
       if (handler == null) {

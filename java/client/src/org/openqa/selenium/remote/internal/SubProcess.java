@@ -10,10 +10,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * Basic class for working with subprocesses. Methods are provided for
- * starting and stopping a subprocess. Also provides a mechanism for
- * detecting if a subprocess dies before it is explicitly stopped.
- *
+ * Basic class for working with subprocesses. Methods are provided for starting and stopping a
+ * subprocess. Also provides a mechanism for detecting if a subprocess dies before it is explicitly
+ * stopped.
+ * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 // TODO(simon): Consider moving to oos.os
@@ -28,9 +28,8 @@ public class SubProcess {
   private Future<?> outputWatcher;
 
   /**
-   * Creates a new {@link SubProcess} that will ignore all output from any
-   * spawned process.
-   *
+   * Creates a new {@link SubProcess} that will ignore all output from any spawned process.
+   * 
    * @param processBuilder Used to launch new processes.
    * @see SubProcess(ProcessBuilder, OutputStream)
    */
@@ -39,15 +38,14 @@ public class SubProcess {
   }
 
   /**
-   * Creates a new {@link SubProcess} that will redirect all output to the
-   * specified stream. The output written to stderr is always merged with the
-   * output to stdout.
-   *
+   * Creates a new {@link SubProcess} that will redirect all output to the specified stream. The
+   * output written to stderr is always merged with the output to stdout.
+   * 
    * @param processBuilder Used to launch new processes.
    * @param outputStream The stream to redirect all process output to.
    */
   public SubProcess(ProcessBuilder processBuilder,
-                    OutputStream outputStream) {
+      OutputStream outputStream) {
     this.processBuilder = processBuilder.redirectErrorStream(true);
     this.outputStream = outputStream;
     this.executorService = null;
@@ -55,11 +53,10 @@ public class SubProcess {
   }
 
   /**
-   * Starts a new {@link Process} using this instance's {@link ProcessBuilder}.
-   * If a {@code Process} is already running, this method will be a no-op.
-   *
-   * @throws WebDriverException If an I/O error occurs while starting the new
-   *     process.
+   * Starts a new {@link Process} using this instance's {@link ProcessBuilder}. If a {@code Process}
+   * is already running, this method will be a no-op.
+   * 
+   * @throws WebDriverException If an I/O error occurs while starting the new process.
    */
   public void launch() {
     synchronized (lock) {
@@ -79,8 +76,8 @@ public class SubProcess {
   /**
    * 
    * @return The exit value for the managed subprocess.
-   * @throws IllegalThreadStateException If the managed subprocess was never
-   *     started, or if it was started but has not terminated yet.
+   * @throws IllegalThreadStateException If the managed subprocess was never started, or if it was
+   *         started but has not terminated yet.
    */
   public int exitValue() {
     synchronized (lock) {
@@ -109,9 +106,8 @@ public class SubProcess {
   }
 
   /**
-   * Shutsdown the {@link Process} currently being managed by this instance,
-   * if any.
-   *
+   * Shutsdown the {@link Process} currently being managed by this instance, if any.
+   * 
    * @see Process#destroy()
    */
   public void shutdown() {

@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * Maps exceptions to status codes for sending over the wire.
- *
+ * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class ErrorHandler {
@@ -41,8 +41,8 @@ public class ErrorHandler {
   }
 
   /**
-   * @param includeServerErrors Whether to include server-side details in thrown
-   *     exceptions if the information is available.
+   * @param includeServerErrors Whether to include server-side details in thrown exceptions if the
+   *        information is available.
    */
   public ErrorHandler(boolean includeServerErrors) {
     this.includeServerErrors = includeServerErrors;
@@ -82,7 +82,7 @@ public class ErrorHandler {
       Throwable serverError = rebuildServerError(rawErrorData);
 
       // If serverError is null, then the server did not provide a className (only expected if
-      // the server is a Java process) or a stack trace.  The lack of a className is OK, but
+      // the server is a Java process) or a stack trace. The lack of a className is OK, but
       // not having a stacktrace really hurts our ability to debug problems.
       if (serverError == null) {
         if (includeServerErrors) {
@@ -104,13 +104,13 @@ public class ErrorHandler {
     }
 
     Throwable toThrow = createThrowable(outerErrorType,
-        new Class<?>[] { String.class, Throwable.class },
-        new Object[] { message, cause });
+        new Class<?>[] {String.class, Throwable.class},
+        new Object[] {message, cause});
 
     if (toThrow == null) {
       toThrow = createThrowable(outerErrorType,
-          new Class<?>[] { String.class },
-          new Object[] { message });
+          new Class<?>[] {String.class},
+          new Object[] {message});
     }
 
     if (toThrow == null) {
@@ -161,8 +161,8 @@ public class ErrorHandler {
         if (Throwable.class.isAssignableFrom(clazz)) {
           @SuppressWarnings({"unchecked"})
           Class<? extends Throwable> throwableType = (Class<? extends Throwable>) clazz;
-          toReturn = createThrowable(throwableType, new Class<?>[] { String.class },
-              new Object[] { message });
+          toReturn = createThrowable(throwableType, new Class<?>[] {String.class},
+              new Object[] {message});
         }
       } catch (ClassNotFoundException ignored) {
         // Ok, fall-through
@@ -191,8 +191,7 @@ public class ErrorHandler {
   }
 
   /**
-   * Exception used as a place holder if the server returns an error without a
-   * stack trace.
+   * Exception used as a place holder if the server returns an error without a stack trace.
    */
   public static class UnknownServerException extends WebDriverException {
     private UnknownServerException(String s) {
@@ -201,8 +200,8 @@ public class ErrorHandler {
   }
 
   /**
-   * Function that can rebuild a {@link StackTraceElement} from the frame info
-   * included with a WebDriver JSON response.
+   * Function that can rebuild a {@link StackTraceElement} from the frame info included with a
+   * WebDriver JSON response.
    */
   private static class FrameInfoToStackFrame
       implements Function<Map<String, Object>, StackTraceElement> {
@@ -229,7 +228,7 @@ public class ErrorHandler {
       return new StackTraceElement(className, methodName, fileName,
           lineNumber.intValue());
     }
-    
+
     private static String toStringOrNull(Object o) {
       return o == null ? null : o.toString();
     }

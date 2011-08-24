@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote;
 
@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * Utilities class to parse {@link org.openqa.selenium.interactions.internal.Coordinates}.
  */
-/* package */ class CoordinatesUtils {
+/* package */class CoordinatesUtils {
 
   static Map<String, Object> paramsFromCoordinates(Coordinates where) {
     Map<String, Object> params = Maps.newHashMap();

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 // Copyright 2008 Google Inc.  All Rights Reserved.
 
@@ -48,10 +48,9 @@ public class BeanToJsonConverter {
   private static final int MAX_DEPTH = 5;
 
   /**
-   * Convert an object that may or may not be a JSONArray or JSONObject into
-   * its JSON string representation, handling the case where it is neither in a
-   * graceful way.
-   *
+   * Convert an object that may or may not be a JSONArray or JSONObject into its JSON string
+   * representation, handling the case where it is neither in a graceful way.
+   * 
    * @param object which needs conversion
    * @return the JSON string representation of object
    */
@@ -75,10 +74,10 @@ public class BeanToJsonConverter {
   }
 
   /**
-   * Convert a JSON[Array|Object] into the equivalent Java Collection type
-   * (that is, List|Map) returning other objects untouched. This method is used
-   * for preparing values for use by the HttpCommandExecutor
-   *
+   * Convert a JSON[Array|Object] into the equivalent Java Collection type (that is, List|Map)
+   * returning other objects untouched. This method is used for preparing values for use by the
+   * HttpCommandExecutor
+   * 
    * @param o Object to convert
    * @return a Map, List or the unconverted Object.
    */
@@ -177,13 +176,13 @@ public class BeanToJsonConverter {
     }
 
     if (toConvert instanceof DoNotUseProxyPac) {
-      return convertObject(((DoNotUseProxyPac) toConvert).asMap(), maxDepth -1);
+      return convertObject(((DoNotUseProxyPac) toConvert).asMap(), maxDepth - 1);
     }
 
     if (toConvert instanceof Date) {
       return TimeUnit.MILLISECONDS.toSeconds(((Date) toConvert).getTime());
     }
-    
+
     Method toJson = getToJsonMethod(toConvert);
     if (toJson != null) {
       try {
@@ -199,7 +198,7 @@ public class BeanToJsonConverter {
 
     try {
       return mapObject(toConvert, maxDepth - 1, toConvert instanceof Cookie);
-    } catch(Exception e) {
+    } catch (Exception e) {
       throw new WebDriverException(e);
     }
   }
@@ -212,18 +211,18 @@ public class BeanToJsonConverter {
     } catch (NoSuchMethodException e) {
       // fall through
     }
-    
+
     return null;
   }
 
   private Object mapObject(Object toConvert, int maxDepth, boolean skipNulls) throws Exception {
     if (maxDepth == 0)
-        return null;
+      return null;
 
     // Raw object via reflection? Nope, not needed
     JSONObject mapped = new JSONObject();
-    for (SimplePropertyDescriptor pd :
-        SimplePropertyDescriptor.getPropertyDescriptors(toConvert.getClass())) {
+    for (SimplePropertyDescriptor pd : SimplePropertyDescriptor.getPropertyDescriptors(toConvert
+        .getClass())) {
       if ("class".equals(pd.getName())) {
         mapped.put("class", toConvert.getClass().getName());
         continue;

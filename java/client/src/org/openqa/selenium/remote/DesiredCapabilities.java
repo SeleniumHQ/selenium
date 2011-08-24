@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote;
 
@@ -119,12 +119,11 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   /**
-   * Merges the extra capabilities provided into this DesiredCapabilities
-   * instance. If capabilities with the same name exist in this instance,
-   * they will be overridden by the values from the extraCapabilities
-   * object.
-   *
-   * @param extraCapabilities  Additional capabilities to be added.
+   * Merges the extra capabilities provided into this DesiredCapabilities instance. If capabilities
+   * with the same name exist in this instance, they will be overridden by the values from the
+   * extraCapabilities object.
+   * 
+   * @param extraCapabilities Additional capabilities to be added.
    */
 
   public void merge(

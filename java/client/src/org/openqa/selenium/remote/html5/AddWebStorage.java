@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.html5;
 
@@ -32,7 +32,7 @@ public class AddWebStorage implements AugmenterProvider {
 
   public InterfaceImplementation getImplementation(Object value) {
     return new InterfaceImplementation() {
-      
+
       public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
         // This is only an abstraction
         return null;

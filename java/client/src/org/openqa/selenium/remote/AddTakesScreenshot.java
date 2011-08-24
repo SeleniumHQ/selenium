@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote;
 
@@ -42,7 +42,8 @@ class AddTakesScreenshot implements AugmenterProvider {
           String base64EncodedPng = new String((byte[]) result);
           return outputType.convertFromBase64Png(base64EncodedPng);
         } else {
-          throw new RuntimeException("Unexpected result for " + DriverCommand.SCREENSHOT + " command: " + (result == null ? "null" : result.getClass().getName() + " instance"));
+          throw new RuntimeException("Unexpected result for " + DriverCommand.SCREENSHOT +
+              " command: " + (result == null ? "null" : result.getClass().getName() + " instance"));
         }
       }
     };

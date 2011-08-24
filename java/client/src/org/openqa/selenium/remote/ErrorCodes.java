@@ -20,7 +20,7 @@ import org.openqa.selenium.interactions.InvalidCoordinatesException;
 
 /**
  * Defines common error codes for the wire protocol.
- *
+ * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class ErrorCodes {
@@ -54,13 +54,12 @@ public class ErrorCodes {
   public static final int METHOD_NOT_ALLOWED = 405;
 
   /**
-   * Returns the exception type that corresponds to the given
-   * {@code statusCode}. All unrecognized status codes will be mapped to
-   * {@link WebDriverException WebDriverException.class}.
-   *
+   * Returns the exception type that corresponds to the given {@code statusCode}. All unrecognized
+   * status codes will be mapped to {@link WebDriverException WebDriverException.class}.
+   * 
    * @param statusCode The status code to convert.
-   * @return The exception type that corresponds to the provided status code or
-   *     {@code null} if {@code statusCode == 0}.
+   * @return The exception type that corresponds to the provided status code or {@code null} if
+   *         {@code statusCode == 0}.
    */
   public Class<? extends WebDriverException> getExceptionType(int statusCode) {
     switch (statusCode) {
@@ -107,13 +106,13 @@ public class ErrorCodes {
 
   /**
    * Converts a thrown error into the corresponding status code.
-   *
+   * 
    * @param thrown The thrown error.
    * @return The corresponding status code for the given thrown error.
    */
   public int toStatusCode(Throwable thrown) {
     if (thrown == null) {
-      return SUCCESS; 
+      return SUCCESS;
     } else if (thrown instanceof InvalidCookieDomainException) {
       return INVALID_COOKIE_DOMAIN;
     } else if (thrown instanceof UnableToSetCookieException) {
@@ -150,9 +149,8 @@ public class ErrorCodes {
   }
 
   /**
-   * Tests if the {@code thrown} error can be mapped to one of WebDriver's
-   * well defined error codes.
-   *
+   * Tests if the {@code thrown} error can be mapped to one of WebDriver's well defined error codes.
+   * 
    * @param thrown The error to test.
    * @return Whether the error can be mapped to a status code.
    */

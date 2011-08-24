@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote;
 
@@ -137,10 +137,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   /**
-   * Method called before
-   * {@link #startSession(Capabilities) starting a new session}.  The default
-   * implementation is a no-op, but subtypes should override this method to
-   * define custom behavior.
+   * Method called before {@link #startSession(Capabilities) starting a new session}. The default
+   * implementation is a no-op, but subtypes should override this method to define custom behavior.
    */
   protected void startClient() {
   }
@@ -307,7 +305,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public Object executeScript(String script, Object... args) {
     if (!capabilities.isJavascriptEnabled()) {
-      throw new UnsupportedOperationException("You must be using an underlying instance of WebDriver that supports executing javascript");
+      throw new UnsupportedOperationException(
+          "You must be using an underlying instance of WebDriver that supports executing javascript");
     }
 
     // Escape the quote marks
@@ -358,10 +357,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   /**
-   * Creates a new {@link RemoteWebElement} that is a child of this instance.
-   * Subtypes should override this method to customize the type of
-   * RemoteWebElement returned.
-   *
+   * Creates a new {@link RemoteWebElement} that is a child of this instance. Subtypes should
+   * override this method to customize the type of RemoteWebElement returned.
+   * 
    * @return A new RemoteWebElement that is a child of this instance.
    */
   @Deprecated
@@ -427,7 +425,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   /**
    * Override this to be notified at key points in the execution of a command.
-   *
+   * 
    * @param sessionId the session id.
    * @param commandName the command that is being executed.
    * @param toLog any data that might be interesting.
@@ -607,7 +605,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     public Alert alert() {
       Response response = execute(DriverCommand.GET_ALERT_TEXT);
-      return new RemoteAlert((String)response.getValue());
+      return new RemoteAlert((String) response.getValue());
     }
   }
 
@@ -643,7 +641,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public void pressKey(Keys keyToPress) {
       execute(DriverCommand.SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT,
           ImmutableMap.of("value", keyToPress, "isdown", true));
-      }
+    }
 
     public void releaseKey(Keys keyToRelease) {
       execute(DriverCommand.SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT,

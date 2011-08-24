@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote;
 
@@ -21,28 +21,29 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 public class SimplePropertyDescriptor {
-   private String name;
-   private Method readMethod;
-   private Method writeMethod;
-     
-   public SimplePropertyDescriptor() {}
-     
-   public SimplePropertyDescriptor(String name, Method readMethod, Method writeMethod) {
-     this.name = name;
-     this.readMethod = readMethod;
-     this.writeMethod = writeMethod;
-   }
-  
+  private String name;
+  private Method readMethod;
+  private Method writeMethod;
+
+  public SimplePropertyDescriptor() {
+  }
+
+  public SimplePropertyDescriptor(String name, Method readMethod, Method writeMethod) {
+    this.name = name;
+    this.readMethod = readMethod;
+    this.writeMethod = writeMethod;
+  }
+
   public String getName() {
     return name;
   }
 
   public Method getReadMethod() {
-    return readMethod;  
+    return readMethod;
   }
 
   public Method getWriteMethod() {
-    return writeMethod;  
+    return writeMethod;
   }
 
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<? extends Object> clazz) {

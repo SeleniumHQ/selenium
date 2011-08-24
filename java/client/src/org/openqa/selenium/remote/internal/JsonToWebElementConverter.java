@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.internal;
 
@@ -30,17 +30,16 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Reconstitutes {@link WebElement}s from their JSON representation. Will
- * recursively convert Lists and Maps to catch nested references. All other
- * values pass through the converter unchanged.
+ * Reconstitutes {@link WebElement}s from their JSON representation. Will recursively convert Lists
+ * and Maps to catch nested references. All other values pass through the converter unchanged.
  */
 public class JsonToWebElementConverter implements Function<Object, Object> {
   private final RemoteWebDriver driver;
-  
+
   public JsonToWebElementConverter(RemoteWebDriver driver) {
     this.driver = driver;
   }
-  
+
   public Object apply(Object result) {
     if (result instanceof Collection<?>) {
       Collection<?> results = (Collection<?>) result;
@@ -67,7 +66,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
 
     return result;
   }
-  
+
   protected RemoteWebElement newRemoteWebElement() {
     RemoteWebElement toReturn = new RemoteWebElement();
     toReturn.setParent(driver);

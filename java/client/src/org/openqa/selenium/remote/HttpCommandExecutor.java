@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote;
 
@@ -185,7 +185,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     public abstract HttpUriRequest createMethod(String url);
   }
 
-  private static ClientConnectionManager getClientConnectionManager(HttpParams httpParams){
+  private static ClientConnectionManager getClientConnectionManager(HttpParams httpParams) {
     SchemeRegistry registry = new SchemeRegistry();
     registry.register(new Scheme("http", ReusingSocketSocketFactory.getSocketFactory(), 80));
     registry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
@@ -195,8 +195,8 @@ public class HttpCommandExecutor implements CommandExecutor {
   public HttpCommandExecutor(URL addressOfRemoteServer) {
     try {
       remoteServer = addressOfRemoteServer == null ?
-                     new URL(System.getProperty("webdriver.remote.server")) :
-                     addressOfRemoteServer;
+          new URL(System.getProperty("webdriver.remote.server")) :
+          addressOfRemoteServer;
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);
     }
@@ -206,13 +206,13 @@ public class HttpCommandExecutor implements CommandExecutor {
     params.setParameter(CoreConnectionPNames.SO_LINGER, -1);
     HttpClientParams.setRedirecting(params, false);
 
-    client = new DefaultHttpClient(getClientConnectionManager(params ), params);
-    if(addressOfRemoteServer.getUserInfo() != null){
+    client = new DefaultHttpClient(getClientConnectionManager(params), params);
+    if (addressOfRemoteServer.getUserInfo() != null) {
       // Use HTTP Basic auth
       UsernamePasswordCredentials credentials = new
           UsernamePasswordCredentials(addressOfRemoteServer.getUserInfo());
-      ((DefaultHttpClient)client).getCredentialsProvider().
-        setCredentials(AuthScope.ANY, credentials);
+      ((DefaultHttpClient) client).getCredentialsProvider().
+          setCredentials(AuthScope.ANY, credentials);
     }
 
     // Some machines claim "localhost.localdomain" is the same as "localhost".
@@ -279,7 +279,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(CLOSE, delete("/session/:sessionId/window"))
         .put(DRAG_ELEMENT, post("/session/:sessionId/element/:id/drag"))
         .put(GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-             get("/session/:sessionId/element/:id/css/:propertyName"))
+            get("/session/:sessionId/element/:id/css/:propertyName"))
         .put(IMPLICITLY_WAIT, post("/session/:sessionId/timeouts/implicit_wait"))
         .put(SET_SCRIPT_TIMEOUT, post("/session/:sessionId/timeouts/async_script"))
         .put(EXECUTE_SQL, post("/session/:sessionId/execute_sql"))
@@ -308,7 +308,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_SCREEN_ORIENTATION, get("/session/:sessionId/orientation"))
         .put(SET_SCREEN_ORIENTATION, post("/session/:sessionId/orientation"))
 
-         // Interactions-related commands.
+        // Interactions-related commands.
         .put(CLICK, post("/session/:sessionId/click"))
         .put(DOUBLE_CLICK, post("/session/:sessionId/doubleclick"))
         .put(MOUSE_DOWN, post("/session/:sessionId/buttondown"))
@@ -316,15 +316,15 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(MOVE_TO, post("/session/:sessionId/moveto"))
         .put(SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT, post("/session/:sessionId/modifier"))
 
-         // IME related commands.
+        // IME related commands.
         .put(IME_GET_AVAILABLE_ENGINES, get("/session/:sessionId/ime/available_engines"))
         .put(IME_GET_ACTIVE_ENGINE, get("/session/:sessionId/ime/active_engine"))
         .put(IME_IS_ACTIVATED, get("/session/:sessionId/ime/activated"))
         .put(IME_DEACTIVATE, post("/session/:sessionId/ime/deactivate"))
         .put(IME_ACTIVATE_ENGINE, post("/session/:sessionId/ime/activate"))
 
-         // Advanced Touch API commands
-         // TODO(berrada): Refactor single tap with mouse click.
+        // Advanced Touch API commands
+        // TODO(berrada): Refactor single tap with mouse click.
         .put(TOUCH_SINGLE_TAP, post("/session/:sessionId/touch/click"))
         .put(TOUCH_DOWN, post("/session/:sessionId/touch/down"))
         .put(TOUCH_UP, post("/session/:sessionId/touch/up"))
@@ -333,7 +333,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(TOUCH_DOUBLE_TAP, post("/session/:sessionId/touch/doubleclick"))
         .put(TOUCH_LONG_PRESS, post("/session/:sessionId/touch/longclick"))
         .put(TOUCH_FLICK, post("/session/:sessionId/touch/flick"))
-        
+
         .build();
   }
 
@@ -374,7 +374,8 @@ public class HttpCommandExecutor implements CommandExecutor {
     }
   }
 
-  private HttpResponse fallBackExecute(HttpContext context, HttpUriRequest httpMethod) throws IOException {
+  private HttpResponse fallBackExecute(HttpContext context, HttpUriRequest httpMethod)
+      throws IOException {
     try {
       return client.execute(targetHost, httpMethod, context);
     } catch (BindException e) {
@@ -411,7 +412,7 @@ public class HttpCommandExecutor implements CommandExecutor {
 
       // Make sure that the previous connection is freed.
       HttpEntity httpEntity = response.getEntity();
-      if (httpEntity != null){
+      if (httpEntity != null) {
         httpEntity.consumeContent();
       }
 
@@ -450,7 +451,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     private final byte[] content;
 
     EntityWithEncoding(HttpEntity entity)
-            throws IOException {
+        throws IOException {
       if (entity != null) {
         content = EntityUtils.toByteArray(entity);
         charSet = EntityUtils.getContentCharSet(entity);
@@ -463,7 +464,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     }
 
     public String getContentString()
-            throws UnsupportedEncodingException {
+        throws UnsupportedEncodingException {
       return new String(content, charSet != null ? charSet : "utf-8");
     }
 
@@ -471,14 +472,15 @@ public class HttpCommandExecutor implements CommandExecutor {
       return content;
     }
 
-    public boolean hasEntityContent(){
+    public boolean hasEntityContent() {
       return content != null;
     }
   }
 
 
 
-  private Response createResponse(HttpResponse httpResponse, HttpContext context, EntityWithEncoding entityWithEncoding) throws IOException {
+  private Response createResponse(HttpResponse httpResponse, HttpContext context,
+      EntityWithEncoding entityWithEncoding) throws IOException {
     final Response response;
 
     Header header = httpResponse.getFirstHeader("Content-Type");
@@ -509,7 +511,7 @@ public class HttpCommandExecutor implements CommandExecutor {
 
       HttpHost finalHost = (HttpHost) context.getAttribute(HTTP_TARGET_HOST);
       String uri = finalHost.toURI();
-      String sessionId = getSessionId(uri );
+      String sessionId = getSessionId(uri);
       if (sessionId != null) {
         response.setSessionId(sessionId);
       }
@@ -532,24 +534,24 @@ public class HttpCommandExecutor implements CommandExecutor {
 
 
       if (response.getValue() instanceof String) {
-        //We normalise to \n because Java will translate this to \r\n
-        //if this is suitable on our platform, and if we have \r\n, java will
-        //turn this into \r\r\n, which would be Bad!
+        // We normalise to \n because Java will translate this to \r\n
+        // if this is suitable on our platform, and if we have \r\n, java will
+        // turn this into \r\r\n, which would be Bad!
         response.setValue(((String) response.getValue()).replace("\r\n", "\n"));
       }
     }
     return response;
   }
 
-  public static String getSessionId(String uri){
+  public static String getSessionId(String uri) {
     int sessionIndex = uri.indexOf("/session/");
     if (sessionIndex != -1) {
       sessionIndex += "/session/".length();
       int nextSlash = uri.indexOf("/", sessionIndex);
       if (nextSlash != -1) {
-        return uri.substring( sessionIndex, nextSlash );
+        return uri.substring(sessionIndex, nextSlash);
       } else {
-        return uri.substring( sessionIndex);
+        return uri.substring(sessionIndex);
       }
 
     }

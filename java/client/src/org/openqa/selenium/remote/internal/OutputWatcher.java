@@ -5,9 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Consumes all output from an {@link InputStream} and writes it to an
- * {@link OutputStream}.
- *
+ * Consumes all output from an {@link InputStream} and writes it to an {@link OutputStream}.
+ * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class OutputWatcher implements Runnable {
@@ -24,12 +23,12 @@ public class OutputWatcher implements Runnable {
 
   public void run() {
     int read = 0;
-      int avail = 0;
+    int avail = 0;
     while (read != -1) {
       try {
         avail = Math.max(input.available(), 1);
         read = input.read(buffer, 0, avail);
-        if (read > 0){
+        if (read > 0) {
           output.write(buffer, 0, read);
         }
       } catch (IOException ignored) {

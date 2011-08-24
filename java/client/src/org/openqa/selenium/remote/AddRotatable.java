@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote;
 
@@ -37,7 +37,8 @@ public class AddRotatable implements AugmenterProvider {
           return executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION,
               ImmutableMap.of("orientation", args[0]));
         } else if ("getOrientation".equals(method.getName())) {
-          return ScreenOrientation.valueOf((String) executeMethod.execute(DriverCommand.GET_SCREEN_ORIENTATION, null));
+          return ScreenOrientation.valueOf((String) executeMethod.execute(
+              DriverCommand.GET_SCREEN_ORIENTATION, null));
         }
         return null;
       }
