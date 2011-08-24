@@ -13,14 +13,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.Session;
 
-public abstract class ResponseAwareWebDriverHandler extends WebDriverHandler  {
+public abstract class ResponseAwareWebDriverHandler extends WebDriverHandler {
 
   protected final Response response;
 

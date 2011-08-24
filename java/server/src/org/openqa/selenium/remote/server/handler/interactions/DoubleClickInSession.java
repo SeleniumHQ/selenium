@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.handler.interactions;
 
@@ -34,7 +34,7 @@ public class DoubleClickInSession extends WebDriverHandler {
     mouse.doubleClick(null);
     return ResultType.SUCCESS;
   }
-  
+
   @Override
   public String toString() {
     return String.format("[doubleclick: no args]");

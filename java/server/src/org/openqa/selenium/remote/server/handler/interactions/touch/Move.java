@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.handler.interactions.touch;
 
@@ -51,8 +51,8 @@ public class Move extends WebElementHandler implements JsonParametersAware {
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-     x = ((Long) allParameters.get(X)).intValue();
-     y = ((Long) allParameters.get(Y)).intValue();
+    x = ((Long) allParameters.get(X)).intValue();
+    y = ((Long) allParameters.get(Y)).intValue();
   }
 
 }

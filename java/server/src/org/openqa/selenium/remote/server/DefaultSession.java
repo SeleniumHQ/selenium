@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server;
 
@@ -43,50 +43,52 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * The default session implementation.
- *
+ * 
  * Thread safety notes:
- *
- * There are basically two different thread types rummaging around in this class:
- * Container listener threads which deliver requests, and the "executor" thread that
- * processes each request. This means there is a minefield of thread constraints/guards,
- * some of which are described in docs for each field.
+ * 
+ * There are basically two different thread types rummaging around in this class: Container listener
+ * threads which deliver requests, and the "executor" thread that processes each request. This means
+ * there is a minefield of thread constraints/guards, some of which are described in docs for each
+ * field.
  */
 
 public class DefaultSession implements Session {
   private final SessionId sessionId;
   private final WebDriver driver;
-    /**
-     * The cache of known elements.
-     *
-     * Happens-before the exexutor and is thereafter thread-confined to the executor thread.
-     */
+  /**
+   * The cache of known elements.
+   * 
+   * Happens-before the exexutor and is thereafter thread-confined to the executor thread.
+   */
   private final KnownElements knownElements;
   private final ThreadPoolExecutor executor;
-  private final Capabilities capabilities; // todo: Investigate memory model implications of map elements inside capabilities.
+  private final Capabilities capabilities; // todo: Investigate memory model implications of map
+                                           // elements inside capabilities.
   private volatile String base64EncodedImage;
   private volatile long lastAccess;
   private final BrowserCreator browserCreator;
 
-  //This method is to avoid constructor escape of partially constructed session object
+  // This method is to avoid constructor escape of partially constructed session object
   public static Session createSession(final DriverFactory factory,
-                                      SessionId sessionId, final Capabilities capabilities) throws Exception {
-      return new DefaultSession(factory, sessionId, capabilities);
+      SessionId sessionId, final Capabilities capabilities) throws Exception {
+    return new DefaultSession(factory, sessionId, capabilities);
   }
 
-  private DefaultSession(final DriverFactory factory, SessionId sessionId, final Capabilities capabilities) throws Exception {
+  private DefaultSession(final DriverFactory factory, SessionId sessionId,
+      final Capabilities capabilities) throws Exception {
     this.knownElements = new KnownElements();
     this.sessionId = sessionId;
     browserCreator = new BrowserCreator(factory, capabilities);
     final FutureTask<EventFiringWebDriver> webDriverFutureTask =
         new FutureTask<EventFiringWebDriver>(browserCreator);
     executor = new ThreadPoolExecutor(1, 1,
-                                    600L, TimeUnit.SECONDS,
-                                    new LinkedBlockingQueue<Runnable>());
+        600L, TimeUnit.SECONDS,
+        new LinkedBlockingQueue<Runnable>());
 
     // Ensure that the browser is created on the single thread.
     EventFiringWebDriver initialDriver = execute(webDriverFutureTask);
 
-    if (!browserCreator.isAndroid()){
+    if (!browserCreator.isAndroid()) {
       // Memo to self; this is not a constructor escape of "this" - probably ;)
       initialDriver.register(new SnapshotScreenListener(this));
     }
@@ -96,18 +98,18 @@ public class DefaultSession implements Session {
     updateLastAccessTime();
   }
 
-    /**
+  /**
    * Touches the session.
    */
   public void updateLastAccessTime() {
     lastAccess = System.currentTimeMillis();
   }
 
-  public boolean isTimedOut(int timeout){
-     return (lastAccess + timeout) < System.currentTimeMillis();
+  public boolean isTimedOut(int timeout) {
+    return (lastAccess + timeout) < System.currentTimeMillis();
   }
 
-  public void close(){
+  public void close() {
     executor.shutdown();
   }
 
@@ -157,7 +159,7 @@ public class DefaultSession implements Session {
         actualCapabilities = ((RemoteWebDriver) rawDriver).getCapabilities();
         isAndroid = actualCapabilities.getPlatform().is(Platform.ANDROID);
       }
-      describedCapabilities = getDescription( rawDriver, actualCapabilities);
+      describedCapabilities = getDescription(rawDriver, actualCapabilities);
       return new EventFiringWebDriver(rawDriver);
     }
 
@@ -174,7 +176,7 @@ public class DefaultSession implements Session {
       caps.setJavascriptEnabled(instance instanceof JavascriptExecutor);
       if (instance instanceof TakesScreenshot) {
         caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
-      } 
+      }
       if (instance instanceof DatabaseStorage) {
         caps.setCapability(CapabilityType.SUPPORTS_SQL_DATABASE, true);
       }
@@ -200,7 +202,7 @@ public class DefaultSession implements Session {
     }
   }
 
-    public SessionId getSessionId() {
-        return sessionId;
-    }
+  public SessionId getSessionId() {
+    return sessionId;
+  }
 }

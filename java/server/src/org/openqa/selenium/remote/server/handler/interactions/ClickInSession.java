@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.handler.interactions;
 
@@ -43,7 +43,7 @@ public class ClickInSession extends WebDriverHandler implements JsonParametersAw
     }
     return ResultType.SUCCESS;
   }
-  
+
   @Override
   public String toString() {
     return String.format("[click: %s]", "nothing");
@@ -53,7 +53,7 @@ public class ClickInSession extends WebDriverHandler implements JsonParametersAw
     if (allParameters.containsKey("button")) {
       int button = ((Long) allParameters.get("button")).intValue();
       switch (button) {
-        //TODO: Use proper enum values for this.
+      // TODO: Use proper enum values for this.
         case 0:
           leftMouseButton = true;
           break;

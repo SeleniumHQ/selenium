@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.handler.interactions;
 
@@ -45,7 +45,7 @@ public class MouseMoveToLocation extends WebDriverHandler implements JsonParamet
 
   public ResultType call() throws Exception {
     Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
-    
+
     Coordinates elementLocation = null;
     if (elementProvided) {
       WebElement element = getKnownElements().get(elementId);
@@ -59,7 +59,7 @@ public class MouseMoveToLocation extends WebDriverHandler implements JsonParamet
     }
     return ResultType.SUCCESS;
   }
-  
+
   @Override
   public String toString() {
     return String.format("[mousemove: %s %b]", elementId, offsetsProvided);
@@ -72,7 +72,7 @@ public class MouseMoveToLocation extends WebDriverHandler implements JsonParamet
     } else {
       elementProvided = false;
     }
-    
+
     if (allParameters.containsKey(XOFFSET) && allParameters.containsKey(YOFFSET)) {
       xOffset = ((Long) allParameters.get(XOFFSET)).intValue();
       yOffset = ((Long) allParameters.get(YOFFSET)).intValue();

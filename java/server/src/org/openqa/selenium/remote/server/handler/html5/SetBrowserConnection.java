@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.handler.html5;
 
@@ -40,7 +40,7 @@ public class SetBrowserConnection extends WebDriverHandler implements JsonParame
     ((BrowserConnection) getUnwrappedDriver()).setOnline(online);
     return ResultType.SUCCESS;
   }
-  
+
   @Override
   public String toString() {
     return String.format("[set browser connection : %s]", online);

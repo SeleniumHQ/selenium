@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.handler.html5;
 
@@ -41,13 +41,13 @@ public class ExecuteSQL extends ResponseAwareWebDriverHandler implements JsonPar
   }
 
   public ResultType call() throws Exception {
-	Object value =
-	    ((DatabaseStorage) getUnwrappedDriver()).executeSQL(dbName, query, args.toArray());
-	Object result = new ResultConverter(getKnownElements()).apply(value);
-	response.setValue(result);
-	return ResultType.SUCCESS;
+    Object value =
+        ((DatabaseStorage) getUnwrappedDriver()).executeSQL(dbName, query, args.toArray());
+    Object result = new ResultConverter(getKnownElements()).apply(value);
+    response.setValue(result);
+    return ResultType.SUCCESS;
   }
-  
+
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     dbName = (String) allParameters.get("dbName");
     query = (String) allParameters.get("query");
@@ -55,7 +55,7 @@ public class ExecuteSQL extends ResponseAwareWebDriverHandler implements JsonPar
     args = Lists.newArrayList(Iterables.transform(params,
         new ArgumentConverter(getKnownElements())));
   }
-  
+
   public String toString() {
     return String.format("[execute SQL query: %s, %s, %s]", dbName, query, args);
   }

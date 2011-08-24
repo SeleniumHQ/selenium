@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.rest;
 
@@ -57,11 +57,13 @@ public class ResultConfig {
   private final String[] sections;
   private final HandlerFactory handlerFactory;
   private final DriverSessions sessions;
-  private final Map<ResultType, Set<Result>> resultToRender = new HashMap<ResultType, Set<Result>>();
+  private final Map<ResultType, Set<Result>> resultToRender =
+      new HashMap<ResultType, Set<Result>>();
   private final String url;
   private final Logger log;
 
-  public ResultConfig(String url, Class<? extends Handler> handlerClazz, DriverSessions sessions, Logger log) {
+  public ResultConfig(String url, Class<? extends Handler> handlerClazz, DriverSessions sessions,
+      Logger log) {
     this.url = url;
     this.log = log;
     if (url == null || handlerClazz == null) {
@@ -97,9 +99,9 @@ public class ResultConfig {
     return true;
   }
 
-    interface HandlerFactory {
-      Handler createHandler(SessionId sessionId) throws Exception;
-    }
+  interface HandlerFactory {
+    Handler createHandler(SessionId sessionId) throws Exception;
+  }
 
 
   protected Handler populate(Handler handler, String pathString) {
@@ -124,10 +126,9 @@ public class ResultConfig {
   }
 
   /*
-  Configure this ResultConfig to handle results of type ResultType with a
-  specific renderer. The mimeType is used to distinguish between JSON
-  calls and "ordinary" browser pointed at the remote WD Server, which is
-  not implemented at all yet.
+   * Configure this ResultConfig to handle results of type ResultType with a specific renderer. The
+   * mimeType is used to distinguish between JSON calls and "ordinary" browser pointed at the remote
+   * WD Server, which is not implemented at all yet.
    */
   public ResultConfig on(ResultType success, Renderer renderer, String mimeType) {
     Set<Result> results = resultToRender.get(success);
@@ -145,9 +146,9 @@ public class ResultConfig {
     return this;
   }
 
-  public void handle(String pathInfo, final HttpServletRequest request, final HttpServletResponse response)
-      throws Exception {
-    String sessionId = HttpCommandExecutor.getSessionId( request.getRequestURI());
+  public void handle(String pathInfo, final HttpServletRequest request,
+      final HttpServletResponse response) throws Exception {
+    String sessionId = HttpCommandExecutor.getSessionId(request.getRequestURI());
     SessionId sessId = sessionId != null ? new SessionId(sessionId) : null;
 
     final Handler handler = getHandler(pathInfo, sessId);
@@ -168,7 +169,7 @@ public class ResultConfig {
     } catch (Exception e) {
       result = ResultType.EXCEPTION;
       log.log(Level.WARNING, "Exception thrown", e);
-      
+
       Throwable toUse = getRootExceptionCause(e);
 
       log.warning("Exception: " + toUse.getMessage());
@@ -201,13 +202,13 @@ public class ResultConfig {
 
       ((WebDriverHandler) handler).execute(task);
       task.get();
-      if (handler instanceof DeleteSession){
-          // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
-          final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
-          if(logHandler != null){
-            logHandler.clearThreadTempLogs(Thread.currentThread().getId());
-          }
-          sessions.deleteSession( sessId);
+      if (handler instanceof DeleteSession) {
+        // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
+        final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
+        if (logHandler != null) {
+          logHandler.clearThreadTempLogs(Thread.currentThread().getId());
+        }
+        sessions.deleteSession(sessId);
       }
 
 
@@ -220,7 +221,7 @@ public class ResultConfig {
   private void setJsonParameters(HttpServletRequest request, Handler handler) throws Exception {
     BufferedReader reader = request.getReader();
     StringBuilder builder = new StringBuilder();
-    for (String line = reader.readLine(); line != null; line=reader.readLine())
+    for (String line = reader.readLine(); line != null; line = reader.readLine())
       builder.append(line);
 
     String raw = builder.toString();
@@ -261,8 +262,8 @@ public class ResultConfig {
     // likely to contain informative data about the error.
     // This is a safety measure to make sure this loop is never endless
     List<Throwable> chain = Lists.newArrayListWithExpectedSize(10);
-    for (Throwable current = toReturn; current != null && chain.size() < 10;
-         current = current.getCause()) {
+    for (Throwable current = toReturn; current != null && chain.size() < 10; current =
+        current.getCause()) {
       chain.add(current);
     }
 
@@ -287,33 +288,35 @@ public class ResultConfig {
     return ec.isMappableError(nextCause) ? nextCause : rootCause;
   }
 
-  private HandlerFactory getHandlerFactory(Class<? extends Handler> handlerClazz){
-    final Constructor<? extends Handler> sessionAware = getConstructor( handlerClazz, Session.class);
-    if (sessionAware != null) return new HandlerFactory(){
+  private HandlerFactory getHandlerFactory(Class<? extends Handler> handlerClazz) {
+    final Constructor<? extends Handler> sessionAware = getConstructor(handlerClazz, Session.class);
+    if (sessionAware != null) return new HandlerFactory() {
       public Handler createHandler(SessionId sessionId) throws Exception {
-        return sessionAware.newInstance( sessionId != null ? sessions.get( sessionId) : null);
+        return sessionAware.newInstance(sessionId != null ? sessions.get(sessionId) : null);
       }
     };
 
-    final Constructor<? extends Handler> driverSessions = getConstructor( handlerClazz, DriverSessions.class);
-    if (driverSessions != null) return new HandlerFactory(){
+    final Constructor<? extends Handler> driverSessions =
+        getConstructor(handlerClazz, DriverSessions.class);
+    if (driverSessions != null) return new HandlerFactory() {
       public Handler createHandler(SessionId sessionId) throws Exception {
-        return driverSessions.newInstance( sessions);
+        return driverSessions.newInstance(sessions);
       }
     };
 
 
-    final Constructor<? extends Handler> norags = getConstructor( handlerClazz);
-    if (norags != null) return new HandlerFactory(){
+    final Constructor<? extends Handler> norags = getConstructor(handlerClazz);
+    if (norags != null) return new HandlerFactory() {
       public Handler createHandler(SessionId sessionId) throws Exception {
-        return norags.newInstance( );
+        return norags.newInstance();
       }
     };
 
     throw new IllegalArgumentException("Don't know how to construct " + handlerClazz);
   }
 
-  private static Constructor<? extends Handler> getConstructor(Class<? extends Handler> handlerClazz, Class... types){
+  private static Constructor<? extends Handler> getConstructor(
+      Class<? extends Handler> handlerClazz, Class... types) {
     try {
       return handlerClazz.getConstructor(types);
     } catch (NoSuchMethodException e) {

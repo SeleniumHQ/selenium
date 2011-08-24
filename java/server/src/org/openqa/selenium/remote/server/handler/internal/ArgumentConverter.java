@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.handler.internal;
 
@@ -29,15 +29,15 @@ import java.util.Map;
 
 public class ArgumentConverter implements Function<Object, Object> {
   private final KnownElements knownElements;
-  
+
   public ArgumentConverter(KnownElements knownElements) {
-    this.knownElements = knownElements;  
+    this.knownElements = knownElements;
   }
-  
+
   public Object apply(Object arg) {
     if (arg instanceof Map) {
       @SuppressWarnings("unchecked")
-      Map<String, Object> paramAsMap = (Map<String, Object>)arg;
+      Map<String, Object> paramAsMap = (Map<String, Object>) arg;
       if (paramAsMap.containsKey("ELEMENT")) {
         KnownElements.ProxiedElement element = (KnownElements.ProxiedElement) knownElements
             .get((String) paramAsMap.get("ELEMENT"));

@@ -13,16 +13,16 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
 public interface DriverFactory {
-    void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation);
+  void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation);
 
-    WebDriver newInstance(Capabilities capabilities);
+  WebDriver newInstance(Capabilities capabilities);
 
-    boolean hasMappingFor(Capabilities capabilities);
+  boolean hasMappingFor(Capabilities capabilities);
 }

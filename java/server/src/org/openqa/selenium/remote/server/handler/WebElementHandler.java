@@ -13,18 +13,18 @@ public abstract class WebElementHandler extends ResponseAwareWebDriverHandler {
   public void setId(String elementId) {
     this.elementId = elementId;
   }
-  
+
   protected WebElement getElement() {
-    return getKnownElements().get(elementId);  
+    return getKnownElements().get(elementId);
   }
-  
+
   protected String getElementAsString() {
     try {
       return elementId + " " + String.valueOf(getElement());
     } catch (RuntimeException e) {
       // Be paranoid!
     }
-    
+
     return elementId + " unknown";
   }
 }

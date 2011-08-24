@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 // Copyright 2008 Google Inc.  All Rights Reserved.
 
@@ -39,7 +39,7 @@ public class DeleteNamedCookie extends WebDriverHandler {
 
     return ResultType.SUCCESS;
   }
-  
+
   @Override
   public String toString() {
     return String.format("[delete cookie: %s]", name);

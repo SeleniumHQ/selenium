@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.handler;
 
@@ -47,7 +47,7 @@ public class ExecuteScript extends ResponseAwareWebDriverHandler implements Json
     args = Lists.newArrayList(Iterables.transform(params,
         new ArgumentConverter(getKnownElements())));
   }
-  
+
   public ResultType call() throws Exception {
     Object value;
     if (args.size() > 0) {
@@ -58,7 +58,7 @@ public class ExecuteScript extends ResponseAwareWebDriverHandler implements Json
 
     Object result = new ResultConverter(getKnownElements()).apply(value);
     response.setValue(result);
-    
+
     return ResultType.SUCCESS;
   }
 

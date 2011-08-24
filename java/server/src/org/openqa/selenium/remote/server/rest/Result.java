@@ -13,15 +13,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.rest;
 
 /**
- * A container for the MIME type and renderer of a given result type.
- * Several Result objects can exist for each ResultType. The created Result
- * instances are stored  in ResultConfig and are mapped to a specific
- * ResultType.
+ * A container for the MIME type and renderer of a given result type. Several Result objects can
+ * exist for each ResultType. The created Result instances are stored in ResultConfig and are mapped
+ * to a specific ResultType.
  */
 public class Result {
 

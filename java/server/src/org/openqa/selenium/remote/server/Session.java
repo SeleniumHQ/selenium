@@ -1,5 +1,3 @@
-package org.openqa.selenium.remote.server;
-
 /*
 Copyright 2007-2011 WebDriver committers
 Copyright 2007-2011 Google Inc.
@@ -16,6 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+package org.openqa.selenium.remote.server;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;

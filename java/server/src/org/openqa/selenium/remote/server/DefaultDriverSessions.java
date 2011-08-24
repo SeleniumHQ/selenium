@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server;
 
@@ -57,7 +57,7 @@ public class DefaultDriverSessions implements DriverSessions {
   }
 
   private void registerDefaults(Platform current) {
-    if (current.equals(Platform.ANDROID)){
+    if (current.equals(Platform.ANDROID)) {
       registerDriver(DesiredCapabilities.android(), "org.openqa.selenium.android.AndroidDriver");
       return;
     }
@@ -85,7 +85,7 @@ public class DefaultDriverSessions implements DriverSessions {
   public SessionId newSession(Capabilities desiredCapabilities) throws Exception {
     SessionId sessionId = new SessionId(String.valueOf(sessionKeyFactory.getAndIncrement()));
     Session session = DefaultSession.createSession(factory, sessionId, desiredCapabilities);
-    
+
     sessionIdToDriver.put(sessionId, session);
 
     return sessionId;
@@ -96,17 +96,17 @@ public class DefaultDriverSessions implements DriverSessions {
   }
 
   public void deleteSession(SessionId sessionId) {
-      final Session removedSession = sessionIdToDriver.remove(sessionId);
-      if (removedSession != null){
-          removedSession.close();
-      }
+    final Session removedSession = sessionIdToDriver.remove(sessionId);
+    if (removedSession != null) {
+      removedSession.close();
+    }
   }
 
   public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation) {
     factory.registerDriver(capabilities, implementation);
   }
 
-  public Set<SessionId> getSessions(){
+  public Set<SessionId> getSessions() {
     return Collections.unmodifiableSet(sessionIdToDriver.keySet());
   }
 }

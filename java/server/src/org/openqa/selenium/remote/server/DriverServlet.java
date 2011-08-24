@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server;
 
@@ -154,9 +154,11 @@ public class DriverServlet extends HttpServlet {
 
     setupMappings(driverSessions, logger);
 
-    int sessionTimeOut = Integer.parseInt(System.getProperty("webdriver.server.session.timeout", "1800"));
+    int sessionTimeOut =
+        Integer.parseInt(System.getProperty("webdriver.server.session.timeout", "1800"));
     if (sessionTimeOut > 0) {
-      sessionCleaner = new SessionCleaner((DefaultDriverSessions) attribute, logger, 1000 * sessionTimeOut);
+      sessionCleaner =
+          new SessionCleaner((DefaultDriverSessions) attribute, logger, 1000 * sessionTimeOut);
       sessionCleaner.start();
     }
   }
@@ -178,11 +180,11 @@ public class DriverServlet extends HttpServlet {
     deleteMapper = new UrlMapper(driverSessions, logger);
 
     getMapper.addGlobalHandler(ResultType.EXCEPTION,
-                               new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
+        new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
     postMapper.addGlobalHandler(ResultType.EXCEPTION,
-                                new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
+        new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
     deleteMapper.addGlobalHandler(ResultType.EXCEPTION,
-                                  new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
+        new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
 
     postMapper.bind("/config/drivers", AddConfig.class).on(ResultType.SUCCESS, new EmptyResult());
 
@@ -268,7 +270,7 @@ public class DriverServlet extends HttpServlet {
     getMapper.bind("/session/:sessionId/element/:id/value", GetElementValue.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/element/:id/name", GetTagName.class)
-    .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
 
     postMapper.bind("/session/:sessionId/element/:id/clear", ClearElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
@@ -327,16 +329,16 @@ public class DriverServlet extends HttpServlet {
     getMapper.bind("/session/:sessionId/application_cache/status", GetAppCacheStatus.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     deleteMapper.bind("/session/:sessionId/application_cache/clear", ClearAppCache.class)
-       .on(ResultType.SUCCESS, new EmptyResult());
+        .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/browser_connection", SetBrowserConnection.class)
-    .on(ResultType.SUCCESS, new EmptyResult());
+        .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/browser_connection", IsBrowserOnline.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
 
     getMapper.bind("/session/:sessionId/local_storage/:key", GetLocalStorageItem.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     deleteMapper.bind("/session/:sessionId/local_storage/:key", RemoveLocalStorageItem.class)
-    .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/local_storage", GetLocalStorageKeys.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     postMapper.bind("/session/:sessionId/local_storage", SetLocalStorageItem.class)
@@ -367,7 +369,7 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/moveto", MouseMoveToLocation.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/click", ClickInSession.class)
-            .on(ResultType.SUCCESS, new EmptyResult());
+        .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/doubleclick", DoubleClickInSession.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/buttondown", MouseDown.class)
@@ -413,7 +415,8 @@ public class DriverServlet extends HttpServlet {
     return postMapper.bind(path, implementationClass);
   }
 
-  protected ResultConfig addNewDeleteMapping(String path, Class<? extends Handler> implementationClass) {
+  protected ResultConfig addNewDeleteMapping(String path,
+      Class<? extends Handler> implementationClass) {
     return deleteMapper.bind(path, implementationClass);
   }
 
@@ -437,7 +440,7 @@ public class DriverServlet extends HttpServlet {
   }
 
   protected void handleRequest(UrlMapper mapper, HttpServletRequest request,
-                               HttpServletResponse response)
+      HttpServletResponse response)
       throws ServletException {
     try {
       ResultConfig config = mapper.getConfig(request.getPathInfo());

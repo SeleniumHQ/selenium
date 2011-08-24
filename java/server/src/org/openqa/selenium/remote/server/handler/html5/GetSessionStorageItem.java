@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.handler.html5;
 
@@ -25,7 +25,9 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class GetSessionStorageItem extends ResponseAwareWebDriverHandler implements JsonParametersAware {
+public class GetSessionStorageItem extends ResponseAwareWebDriverHandler
+    implements
+      JsonParametersAware {
   private volatile String key;
 
   public GetSessionStorageItem(Session session) {

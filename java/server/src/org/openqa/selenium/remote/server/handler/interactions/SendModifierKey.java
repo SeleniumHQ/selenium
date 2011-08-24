@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.remote.server.handler.interactions;
 
@@ -53,7 +53,7 @@ public class SendModifierKey extends WebDriverHandler implements JsonParametersA
         keyToSend = modifier;
       }
     }
-    
+
     if (isDown) {
       keyboard.pressKey(keyToSend);
     } else {
@@ -62,7 +62,7 @@ public class SendModifierKey extends WebDriverHandler implements JsonParametersA
 
     return ResultType.SUCCESS;
   }
-  
+
   @Override
   public String toString() {
     return String.format("[send modifier key: %s, %s]", key, isDown);
