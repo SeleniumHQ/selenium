@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -71,41 +71,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     waitFor(elementTextToEqual(dynamo, "Fish and chips!"));
     assertThat(dynamo.getText(), equalTo("Fish and chips!"));
   }
-
-//    public void testShouldAllowTheUserToOkayConfirmAlerts() {
-//		driver.get(alertPage);
-//		driver.findElement(By.id("confirm").click();
-//		driver.switchTo().alert().accept();
-//		assertEquals("Hello WebDriver", driver.getTitle());
-//	}
-//
-//	public void testShouldAllowUserToDismissAlerts() {
-//		driver.get(alertPage);
-//		driver.findElement(By.id("confirm").click();
-//
-//		driver.switchTo().alert().dimiss();
-//		assertEquals("Testing Alerts", driver.getTitle());
-//	}
-//
-//	public void testShouldBeAbleToGetTheTextOfAnAlert() {
-//		driver.get(alertPage);
-//		driver.findElement(By.id("confirm").click();
-//
-//		String alertText = driver.switchTo().alert().getText();
-//		assertEquals("Are you sure?", alertText);
-//	}
-//
-//	public void testShouldThrowAnExceptionIfAnAlertIsBeingDisplayedAndTheUserAttemptsToCarryOnRegardless() {
-//		driver.get(alertPage);
-//		driver.findElement(By.id("confirm").click();
-//
-//		try {
-//			driver.get(simpleTestPage);
-//			fail("Expected the alert not to allow further progress");
-//		} catch (UnhandledAlertException e) {
-//			// This is good
-//		}
-//	}
 
   @JavascriptEnabled
   @Ignore(value = {IE, IPHONE, OPERA, SELENESE, ANDROID},
@@ -230,7 +195,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {IE, FIREFOX, OPERA, REMOTE, SELENESE},
-          reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
+      reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
 
@@ -238,17 +203,17 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     input.sendKeys("test");
     driver.findElement(By.id("clickField")).click(); // move focus
     assertThat(driver.findElement(By.id("result")).getText().trim(),
-               either(is("focus change blur")).or(is("focus blur change")));
+        either(is("focus change blur")).or(is("focus blur change")));
 
     input.sendKeys(Keys.BACK_SPACE, "t");
-    driver.findElement(By.xpath("//body")).click();  // move focus
+    driver.findElement(By.xpath("//body")).click(); // move focus
 
     // I weep.
     assertThat(driver.findElement(By.id("result")).getText().trim(),
-               either(is("focus change blur focus blur"))
-                   .or(is("focus blur change focus blur"))
-                   .or(is("focus blur change focus blur change"))
-                   .or(is("focus change blur focus change blur"))); //What Chrome does
+        either(is("focus change blur focus blur"))
+            .or(is("focus blur change focus blur"))
+            .or(is("focus blur change focus blur change"))
+            .or(is("focus change blur focus change blur"))); // What Chrome does
   }
 
   /**
@@ -290,10 +255,9 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
 
   /*
-   * There's a weird issue with this test, which means that I've added the needs
-   * fresh driver annotation. To see it in action, try running the single test
-   * suite with only these tests running: "ImplicitWaitTest",
-   * "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
+   * There's a weird issue with this test, which means that I've added the needs fresh driver
+   * annotation. To see it in action, try running the single test suite with only these tests
+   * running: "ImplicitWaitTest", "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
   @Ignore({IE, SELENESE, IPHONE, OPERA})
