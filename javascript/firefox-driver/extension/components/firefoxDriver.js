@@ -1220,20 +1220,28 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
 };
 
 FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
-  var doc = respond.session.getDocument();
-  var button = parameters['button'];
 
   Utils.installWindowCloseListener(respond);
   Utils.installClickListener(respond, WebLoadingListener);
-  
+
+  var button = parameters['button'];
+
   if (!this.enableNativeEvents) {
-    var result = this.mouse.click(null);
-    
+    // The right mouse button is defined as '2' in the wire protocol
+    var RIGHT_MOUSE_BUTTON = 2;
+    var result;
+    if(RIGHT_MOUSE_BUTTON == button) {
+      result = this.mouse.contextClick(null);
+    } else {
+      result = this.mouse.click(null);
+    }
+
     respond['status'] = result['status'];
     respond['value'] = result['message'];
     return;
   }
-  
+
+  var doc = respond.session.getDocument();
   var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
   var events = Utils.getNativeEvents();

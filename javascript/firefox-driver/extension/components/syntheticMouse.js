@@ -171,6 +171,22 @@ SyntheticMouse.prototype.click = function(target) {
   return this.newResponse(ErrorCode.SUCCESS, "ok");
 };
 
+SyntheticMouse.prototype.contextClick = function(target) {
+
+  // No need to unwrap the target. All information is provided by the wrapped
+  // version, and unwrapping does not work for all firefox versions.
+  var element = target ? target : this.lastElement;
+
+  var error = this.isElementShown(element);
+  if (error) {
+    return error;
+  }
+
+  Logger.dumpn("About to do a bot.action.rightClick on " + element);
+  bot.action.rightClick(element);
+
+  return this.newResponse(ErrorCode.SUCCESS, "ok");
+};
 
 SyntheticMouse.prototype.doubleClick = function(target) {
   var element = target ? webdriver.firefox.utils.unwrap(target) : this.lastElement;
