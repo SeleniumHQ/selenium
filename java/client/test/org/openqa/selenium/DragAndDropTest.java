@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -99,8 +99,8 @@ public class DragAndDropTest extends AbstractDriverTestCase {
         newLocation.getX() < 0 && newLocation.getY() < 0);
 
     actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
-    //We don't know where the img is dragged to , but we know it's not too
-    //far, otherwise this function will not return for a long long time
+    // We don't know where the img is dragged to , but we know it's not too
+    // far, otherwise this function will not return for a long long time
   }
 
   @JavascriptEnabled
@@ -125,7 +125,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   private void drag(WebElement elem, Point expectedLocation,
-                    int moveRightBy, int moveDownBy) {
+      int moveRightBy, int moveDownBy) {
     new Actions(driver)
         .dragAndDropBy(elem, moveRightBy, moveDownBy)
         .perform();

@@ -25,16 +25,16 @@ public class SeleniumServerInstance {
     config.setPort(serverPort);
     seleniumServer = new SeleniumServer(config);
     seleniumServer.boot();
-    
+
     pollPort(serverPort);
-    
+
     if (isInDevMode()) {
       Map<String, Object> payload = Maps.newHashMap();
       payload.put("capabilities", DesiredCapabilities.firefox());
       payload.put("class", "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver");
 
       HttpRequest request = new HttpRequest(
-          HttpRequest.Method.POST, 
+          HttpRequest.Method.POST,
           String.format("http://localhost:%d/wd/hub/config/drivers", serverPort),
           payload);
       System.out.println(request.getResponse());

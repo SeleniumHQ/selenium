@@ -9,7 +9,7 @@ import java.util.List;
 public class ElementEqualityTest extends AbstractDriverTestCase {
   public void testSameElementLookedUpDifferentWaysShouldBeEqual() {
     driver.get(pages.simpleTestPage);
-    
+
     WebElement body = driver.findElement(By.tagName("body"));
     WebElement xbody = driver.findElements(By.xpath("//body")).get(0);
 
@@ -18,7 +18,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
 
   public void testDifferentElementsShouldNotBeEqual() {
     driver.get(pages.simpleTestPage);
-    
+
     List<WebElement> ps = driver.findElements(By.tagName("p"));
 
     assertFalse(ps.get(0).equals(ps.get(1)));

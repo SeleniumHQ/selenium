@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package org.openqa.selenium;
 
 import org.openqa.selenium.interactions.ActionsTest;
@@ -31,5 +31,4 @@ import org.junit.runners.Suite;
     IndividualKeyboardActionsTest.class,
     ActionsTest.class
 })
-public class SmallTests {
-}
+public class SmallTests {}

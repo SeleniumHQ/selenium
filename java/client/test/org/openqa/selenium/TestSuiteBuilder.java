@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -95,12 +95,11 @@ public class TestSuiteBuilder {
   }
 
   /**
-   * If the onlyRun list and the testMethodNames list are empty, the class name
-   * and the method name defined in the system properties are added to the lists
-   * if they exist.
+   * If the onlyRun list and the testMethodNames list are empty, the class name and the method name
+   * defined in the system properties are added to the lists if they exist.
    */
   private void applySystemProperties() {
-    // Add the test case rules defined in the system properties only if there 
+    // Add the test case rules defined in the system properties only if there
     // were no other test cases specified in the test suite specification.
     if (onlyRun.size() == 0) {
       String onlyRunProperty = System.getProperty("only_run", "");
@@ -192,7 +191,7 @@ public class TestSuiteBuilder {
 
     if (isIgnored(clazz)) {
       System.err.println("Ignoring test class: " + clazz + ": "
-                         + clazz.getAnnotation(Ignore.class).reason());
+          + clazz.getAnnotation(Ignore.class).reason());
       return;
     }
 
@@ -201,7 +200,7 @@ public class TestSuiteBuilder {
     }
 
     boolean include = true;
-    if (patterns.size() >0) {
+    if (patterns.size() > 0) {
       include = false;
       for (String pattern : patterns) {
         include |= clazz.getName().matches(pattern);
@@ -234,7 +233,7 @@ public class TestSuiteBuilder {
 
           if (withDriver) {
             test = new DriverTestDecorator(test, driverClass,
-                                           keepDriver, freshDriver, restartDriver);
+                keepDriver, freshDriver, restartDriver);
           }
         }
         if (outputTestNames) {
@@ -252,9 +251,9 @@ public class TestSuiteBuilder {
 
     if (isIgnored(method)) {
       System.err.println("Ignoring: "
-                         + method.getDeclaringClass() + ""
-                         + method.getName() + ": "
-                         + method.getAnnotation(Ignore.class).reason());
+          + method.getDeclaringClass() + ""
+          + method.getName() + ": "
+          + method.getAnnotation(Ignore.class).reason());
       return false;
     }
 
@@ -264,7 +263,7 @@ public class TestSuiteBuilder {
     }
 
     return method.getName().startsWith("test")
-           || method.getAnnotation(org.junit.Test.class) != null;
+        || method.getAnnotation(org.junit.Test.class) != null;
   }
 
   private boolean isIgnored(AnnotatedElement annotatedElement) {
@@ -272,7 +271,7 @@ public class TestSuiteBuilder {
     if (ignore == null) {
       return false;
     }
-    
+
     if (ignore.value().length == 0) {
       return true;
     }
@@ -322,7 +321,7 @@ public class TestSuiteBuilder {
 
   public TestSuiteBuilder outputTestNames() {
     outputTestNames = true;
-    
+
     return this;
   }
 

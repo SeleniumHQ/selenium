@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -85,15 +85,15 @@ public class I18nTest extends AbstractDriverTestCase {
         .whereIs("encoding");
     driver.get(url);
 
-    String text = driver.findElement(By.tagName("body")) .getText();
+    String text = driver.findElement(By.tagName("body")).getText();
 
     assertEquals(shalom, text);
   }
 
   @NeedsFreshDriver
   @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, FIREFOX, OPERA, ANDROID},
-      reason="Not implemented on anything other than"
-      + "Firefox/Linux at the moment.")
+      reason = "Not implemented on anything other than"
+          + "Firefox/Linux at the moment.")
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
     if (!Platform.getCurrent().is(Platform.LINUX)) {
       System.out.println("Skipping test because IME is supported on Linux only.");
@@ -130,7 +130,7 @@ public class I18nTest extends AbstractDriverTestCase {
     ime.activateEngine(desiredEngine);
 
     int totalWaits = 0;
-    while (! ime.isActivated() && (totalWaits < 10)) {
+    while (!ime.isActivated() && (totalWaits < 10)) {
       Thread.sleep(500);
       totalWaits++;
     }
@@ -153,8 +153,8 @@ public class I18nTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, OPERA, ANDROID},
-      reason="Not implemented on anything other than"
-      + "Firefox/Linux at the moment.")
+      reason = "Not implemented on anything other than"
+          + "Firefox/Linux at the moment.")
   public void testShouldBeAbleToInputJapanese() {
     if (!Platform.getCurrent().is(Platform.LINUX)) {
       System.out.println("Skipping test because IME is supported on Linux only.");

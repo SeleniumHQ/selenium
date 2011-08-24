@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -23,8 +23,9 @@ import org.openqa.selenium.internal.WrapsDriver;
 
 /**
  * Tests for generic WebElement.
+ * 
  * @author eran.mes@gmail.com (Eran Mes)
- *
+ * 
  */
 public class WebElementTest extends AbstractDriverTestCase {
   @Ignore(SELENESE)
@@ -33,7 +34,7 @@ public class WebElementTest extends AbstractDriverTestCase {
     WebElement parent = driver.findElement(By.id("containsSomeDiv"));
     assertTrue(parent instanceof WrapsDriver);
   }
-  
+
   @Ignore(SELENESE)
   public void testElementReturnsOriginDriver() {
     driver.get(pages.simpleTestPage);

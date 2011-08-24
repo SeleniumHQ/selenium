@@ -30,7 +30,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     driver.manage().timeouts().setScriptTimeout(0, TimeUnit.MILLISECONDS);
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   public void shouldNotTimeoutIfCallbackInvokedImmediately() {
     driver.get(pages.ajaxyPage);
     Object result = executor.executeAsyncScript("arguments[arguments.length - 1](123);");
@@ -38,7 +39,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     assertEquals(123, ((Number) result).intValue());
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined() {
     driver.get(pages.ajaxyPage);
     assertEquals(123, ((Number) executor.executeAsyncScript(
@@ -48,7 +50,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     assertTrue((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true);"));
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   @Ignore(value = {SELENESE}, reason = "SeleniumRC cannot return null values.")
   public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined() {
     driver.get(pages.ajaxyPage);
@@ -56,7 +59,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     assertNull(executor.executeAsyncScript("arguments[arguments.length - 1]()"));
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   @Ignore(value = {SELENESE}, reason = "Selenium cannot return arrays")
   public void shouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript() {
     driver.get(pages.ajaxyPage);
@@ -67,7 +71,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     assertTrue(((List) result).isEmpty());
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   @Ignore(value = {SELENESE}, reason = "Selenium cannot return arrays")
   public void shouldBeAbleToReturnAnArrayObjectFromAnAsyncScript() {
     driver.get(pages.ajaxyPage);
@@ -78,7 +83,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     assertTrue(((List) result).isEmpty());
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   @Ignore(value = {ANDROID, SELENESE},
       reason = "Android does not properly handle arrays; Selenium cannot return arrays")
   public void shouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() {
@@ -99,7 +105,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     assertFalse(results.hasNext());
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   @Ignore(value = SELENESE, reason = "Selenium cannot return elements from scripts")
   public void shouldBeAbleToReturnWebElementsFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
@@ -109,7 +116,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     assertEquals("body", ((WebElement) result).getTagName().toLowerCase());
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   @Ignore(value = {ANDROID, SELENESE},
       reason = "Android does not properly handle arrays; Selenium cannot return elements")
   public void shouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() {
@@ -128,7 +136,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     assertEquals(list.get(0), list.get(1));
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   public void shouldTimeoutIfScriptDoesNotInvokeCallback() {
     driver.get(pages.ajaxyPage);
     try {
@@ -140,7 +149,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     }
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout() {
     driver.get(pages.ajaxyPage);
     try {
@@ -151,29 +161,32 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     }
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   public void shouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout() {
     driver.get(pages.ajaxyPage);
     executor.executeAsyncScript(
         "var callback = arguments[arguments.length - 1];" +
-        "window.setTimeout(function() { callback(123); }, 0)");
+            "window.setTimeout(function() { callback(123); }, 0)");
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout() {
     driver.manage().timeouts().setScriptTimeout(500, TimeUnit.MILLISECONDS);
     driver.get(pages.ajaxyPage);
     try {
       executor.executeAsyncScript(
           "var callback = arguments[arguments.length - 1];" +
-          "window.setTimeout(callback, 1500);");
+              "window.setTimeout(callback, 1500);");
       fail("Should have thrown a TimeOutException!");
     } catch (TimeoutException exception) {
       // Do nothing.
     }
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   public void shouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError() {
     driver.get(pages.ajaxyPage);
     driver.manage().timeouts().setScriptTimeout(100, TimeUnit.MILLISECONDS);
@@ -184,7 +197,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     }
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   public void shouldCatchErrorsWhenExecutingInitialScript() {
     driver.get(pages.ajaxyPage);
     try {
@@ -196,7 +210,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 
   @Ignore(value = {ANDROID},
       reason = "Android: Emulator is too slow and latency causes test to fall out of sync with app;")
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   public void shouldBeAbleToExecuteAsynchronousScripts() {
     driver.get(pages.ajaxyPage);
 
@@ -213,7 +228,7 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     driver.manage().timeouts().setScriptTimeout(15, TimeUnit.SECONDS);
     String text = (String) executor.executeAsyncScript(
         "var callback = arguments[arguments.length - 1];"
-        + "window.registerListener(arguments[arguments.length - 1]);");
+            + "window.registerListener(arguments[arguments.length - 1]);");
     assertEquals("bob", text);
     assertEquals("", typer.getAttribute("value"));
 
@@ -221,7 +236,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
         2, getNumDivElements());
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   public void shouldBeAbleToPassMultipleArgumentsToAsyncScripts() {
     driver.get(pages.ajaxyPage);
     Number result = (Number) ((JavascriptExecutor) driver)
@@ -229,7 +245,8 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     assertEquals(3, result.intValue());
   }
 
-  @JavascriptEnabled @Test
+  @JavascriptEnabled
+  @Test
   public void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
     String script =
         "var url = arguments[0];" +
@@ -265,7 +282,7 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
   private long getNumDivElements() {
     // Selenium does not support "findElements" yet, so we have to do this through a script.
     return (Long) ((JavascriptExecutor) driver).executeScript(
-          "return document.getElementsByTagName('div').length;");
+        "return document.getElementsByTagName('div').length;");
   }
 
 }

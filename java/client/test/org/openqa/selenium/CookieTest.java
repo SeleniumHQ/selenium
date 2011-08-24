@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -32,7 +32,7 @@ public class CookieTest extends TestCase {
       new Cookie("hi;hi", "value", null, null, null, false);
       fail();
     } catch (IllegalArgumentException e) {
-      //Expected
+      // Expected
     }
   }
 
@@ -41,7 +41,7 @@ public class CookieTest extends TestCase {
       new Cookie(null, "value", null, null, null, false);
       fail();
     } catch (IllegalArgumentException e) {
-      //expected
+      // expected
     }
   }
 
@@ -49,7 +49,7 @@ public class CookieTest extends TestCase {
     Cookie cookie = new Cookie("name", "value", "", "/", new Date(), true);
     assertTrue(cookie.isSecure());
   }
-  
+
   public void testSecureDefaultsToFalse() {
     Cookie cookie = new Cookie("name", "value");
     assertFalse(cookie.isSecure());

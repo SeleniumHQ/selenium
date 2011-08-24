@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.ALL;
@@ -40,10 +40,10 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
-    //This page is the deepest page we go to in the cookie tests
-    //We go to it to ensure that cookies with /common/... paths are deleted
-    //Do not write test in this class which use pages other than under /common
-    //without ensuring that cookies are deleted on those pages as required
+    // This page is the deepest page we go to in the cookie tests
+    // We go to it to ensure that cookies with /common/... paths are deleted
+    // Do not write test in this class which use pages other than under /common
+    // without ensuring that cookies are deleted on those pages as required
     gotoValidDomainAndClearCookies("/common/animals");
     assertNoCookiesArePresent();
   }
@@ -56,9 +56,10 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     String key = generateUniqueKey();
     String value = "set";
     assertCookieIsNotPresentWithName(key);
-    
-    ((JavascriptExecutor) driver).executeScript("document.cookie = arguments[0] + '=' + arguments[1];", key, value);
-    
+
+    ((JavascriptExecutor) driver).executeScript(
+        "document.cookie = arguments[0] + '=' + arguments[1];", key, value);
+
     Cookie cookie = driver.manage().getCookieNamed(key);
     assertEquals(value, cookie.getValue());
   }
@@ -88,7 +89,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
     assertCookieIsNotPresentWithName(key1);
     assertCookieIsNotPresentWithName(key2);
-    
+
     Set<Cookie> cookies = driver.manage().getCookies();
     int countBefore = cookies.size();
 
@@ -126,15 +127,15 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     }
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
-    
+
     ((JavascriptExecutor) driver).executeScript("document.cookie = arguments[0] + '=set';", key1);
     ((JavascriptExecutor) driver).executeScript("document.cookie = arguments[0] + '=set';", key2);
-    
+
     assertCookieIsPresentWithName(key1);
     assertCookieIsPresentWithName(key2);
-    
+
     driver.manage().deleteCookieNamed(key1);
-    
+
     assertCookieIsNotPresentWithName(key1);
     assertCookieIsPresentWithName(key2);
   }
@@ -148,10 +149,10 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     Cookie cookie2 = new Cookie.Builder(cookieOneName + "x", "earth").build();
     WebDriver.Options options = driver.manage();
     assertCookieIsNotPresentWithName(cookie1.getName());
-    
+
     options.addCookie(cookie1);
     options.addCookie(cookie2);
-    
+
     assertCookieIsPresentWithName(cookie1.getName());
 
     options.deleteCookieNamed(cookieOneName);
@@ -190,7 +191,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     String cookieName = "fish";
     Cookie cookie = new Cookie.Builder(cookieName, "cod").path("/Common/animals").build();
     driver.manage().addCookie(cookie);
-    
+
     goToPage("animals");
     assertNull(driver.manage().getCookieNamed(cookieName));
   }
@@ -222,7 +223,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     driver.manage().addCookie(cookie);
     fail("No way to test that the cookie exists without setting up subdomains on test environment");
   }
-  
+
   @Ignore(ALL)
   public void testsShouldNotGetCookiesRelatedToCurrentDomainWithoutLeadingPeriod() {
     if (!checkIsOnValidHostnameForCookieTests()) {
@@ -260,7 +261,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     if (!checkIsOnValidHostnameForCookieTests()) {
       return;
     }
-    
+
     URI url = new URI(driver.getCurrentUrl());
     String host = url.getHost() + ":" + url.getPort();
 
@@ -307,13 +308,13 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     if (!checkIsOnValidHostnameForCookieTests()) {
       return;
     }
-    
+
     URI uri = new URI(driver.getCurrentUrl());
     String host = String.format("%s:%d", uri.getHost(), uri.getPort());
-    
+
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
-    
+
     Cookie cookie = new Cookie.Builder(cookieName, "value").domain(host).build();
     driver.manage().addCookie(cookie);
 
@@ -330,28 +331,28 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
     Cookie addedCookie =
         new Cookie.Builder("fish", "cod")
-        .path("/common/animals")
-        .expiresOn(someTimeInTheFuture())
-        .build();
+            .path("/common/animals")
+            .expiresOn(someTimeInTheFuture())
+            .build();
     driver.manage().addCookie(addedCookie);
 
     Set<Cookie> cookies = driver.manage().getCookies();
     Cookie retrievedCookie = null;
     for (Cookie temp : cookies) {
-        if (addedCookie.equals(temp)) {
-          retrievedCookie = temp;
-          break;
-        }
-	}
+      if (addedCookie.equals(temp)) {
+        retrievedCookie = temp;
+        break;
+      }
+    }
 
     assertNotNull(retrievedCookie);
-    //Cookie.equals only compares name, domain and path
+    // Cookie.equals only compares name, domain and path
     assertEquals(addedCookie, retrievedCookie);
   }
 
   @Ignore(value = {ANDROID, IE, OPERA}, reason =
       "Selenium, which use JavaScript to retrieve cookies, cannot return expiry info; " +
-      "Other suppressed browsers have not been tested.")
+          "Other suppressed browsers have not been tested.")
   public void testRetainsCookieExpiry() {
     if (!checkIsOnValidHostnameForCookieTests()) {
       return;
@@ -361,9 +362,9 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
     Cookie addedCookie =
         new Cookie.Builder("fish", "cod")
-        .path("/common/animals")
-        .expiresOn(someTimeInTheFuture())
-        .build();
+            .path("/common/animals")
+            .expiresOn(someTimeInTheFuture())
+            .build();
     driver.manage().addCookie(addedCookie);
 
     Cookie retrieved = driver.manage().getCookieNamed("fish");
@@ -387,7 +388,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNull(
         "Cookie expired before it was set, so nothing should be returned: " + cookie, cookie);
   }
-  
+
   public void testCanSetCookieWithoutOptionalFieldsSet() {
     if (!checkIsOnValidHostnameForCookieTests()) {
       return;
@@ -418,10 +419,10 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
     driver.manage().deleteAllCookies();
   }
-  
+
   private boolean isOnAlternativeHostName = false;
   private String hostname;
-  
+
   private boolean checkIsOnValidHostnameForCookieTests() {
     boolean correct = hostname != null && isValidHostnameForCookieTests(hostname);
     if (!correct) {
@@ -429,31 +430,31 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     }
     return correct;
   }
-  
+
   private boolean isValidHostnameForCookieTests(String hostname) {
     return !isIpv4Address(hostname) && !"localhost".equals(hostname);
   }
-  
+
   private static boolean isIpv4Address(String string) {
     return string.matches("\\d{1,3}(?:\\.\\d{1,3}){3}");
   }
-  
+
   private void goToPage(String pageName) {
     driver.get(
         isOnAlternativeHostName ? appServer.whereElseIs(pageName) : appServer.whereIs(pageName));
   }
-  
+
   private void goToOtherPage(String pageName) {
     driver.get(
         isOnAlternativeHostName ? appServer.whereIs(pageName) : appServer.whereElseIs(pageName));
   }
-  
+
   private static final Random random = new Random();
-  
+
   private String generateUniqueKey() {
     return String.format("key_%d", random.nextInt());
   }
-  
+
   private void assertNoCookiesArePresent() {
     Set<Cookie> cookies = driver.manage().getCookies();
     assertTrue("Cookies were not empty, present: " + cookies,
@@ -463,7 +464,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
       assertEquals("Cookies were not empty", "", documentCookie);
     }
   }
-  
+
   private void assertSomeCookiesArePresent() {
     assertFalse("Cookies were empty",
         driver.manage().getCookies().isEmpty());
@@ -472,50 +473,50 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
       assertNotSame("Cookies were empty", "", documentCookie);
     }
   }
-  
+
   private void assertCookieIsNotPresentWithName(final String key) {
     assertNull("Cookie was present with name " + key, driver.manage().getCookieNamed(key));
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
       assertThat("Cookie was present with name " + key,
-        documentCookie,
-        not(containsString(key + "=")));
+          documentCookie,
+          not(containsString(key + "=")));
     }
   }
-  
+
   private void assertCookieIsPresentWithName(final String key) {
     assertNotNull("Cookie was not present with name " + key, driver.manage().getCookieNamed(key));
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
       assertThat("Cookie was not present with name " + key,
-        documentCookie,
-        containsString(key + "="));
+          documentCookie,
+          containsString(key + "="));
     }
   }
-  
+
   private void assertCookieHasValue(final String key, final String value) {
     assertEquals("Cookie had wrong value",
-      value,
-      driver.manage().getCookieNamed(key).getValue());
+        value,
+        driver.manage().getCookieNamed(key).getValue());
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
       assertThat("Cookie was present with name " + key,
-        documentCookie,
-        containsString(key + "=" + value));
+          documentCookie,
+          containsString(key + "=" + value));
     }
   }
-  
+
   private String getDocumentCookieOrNull() {
     if (!(driver instanceof JavascriptExecutor)) {
       return null;
     }
     try {
-      return (String)((JavascriptExecutor)driver).executeScript("return document.cookie");
+      return (String) ((JavascriptExecutor) driver).executeScript("return document.cookie");
     } catch (UnsupportedOperationException e) {
       return null;
     }
   }
-  
+
   private Date someTimeInTheFuture() {
     return new Date(System.currentTimeMillis() + 100000);
   }

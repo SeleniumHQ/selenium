@@ -13,33 +13,33 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package org.openqa.selenium;
 
 import java.io.File;
 
 public class OutputTypeTest extends AbstractDriverTestCase {
-	public static final String TEST_BASE64 = "ABADABAD";
-	public static final byte[] TEST_BYTES = new byte[]{ 0, 16, 3, 0, 16, 3 };
-	
-	public void testBase64() {
+  public static final String TEST_BASE64 = "ABADABAD";
+  public static final byte[] TEST_BYTES = new byte[] {0, 16, 3, 0, 16, 3};
+
+  public void testBase64() {
     assertEquals(TEST_BASE64, OutputType.BASE64.convertFromBase64Png(TEST_BASE64));
   }
-	
-	public void testBytes() {
-		byte[] bytes = OutputType.BYTES
+
+  public void testBytes() {
+    byte[] bytes = OutputType.BYTES
         .convertFromBase64Png(TEST_BASE64);
     assertEquals(TEST_BYTES.length, bytes.length);
     for (int i = 0; i < TEST_BYTES.length; i++) {
       assertEquals("index " + i, TEST_BYTES[i], bytes[i]);
     }
-	}
-	
-	public void testFiles() {
-		File tmpFile = OutputType.FILE
+  }
+
+  public void testFiles() {
+    File tmpFile = OutputType.FILE
         .convertFromBase64Png(TEST_BASE64);
     assertTrue(tmpFile.exists());
     assertEquals(TEST_BYTES.length, tmpFile.length());
     tmpFile.delete();
-	}
+  }
 }

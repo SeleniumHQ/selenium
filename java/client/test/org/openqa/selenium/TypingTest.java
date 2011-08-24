@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -222,8 +222,8 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {FIREFOX, IE, SELENESE, ANDROID},
-          reason = "firefox specific not yet tested in htmlunit. Firefox demands to have the "
-              + "focus on the window already., Android: Uses native key events.")
+      reason = "firefox specific not yet tested in htmlunit. Firefox demands to have the "
+          + "focus on the window already., Android: Uses native key events.")
   public void testShouldFireFocusKeyEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
 
@@ -236,7 +236,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, IE, SELENESE, ANDROID},
-          reason = "firefox-specific. Android uses prev/next.")
+      reason = "firefox-specific. Android uses prev/next.")
   public void testShouldReportKeyCodeOfArrowKeys() {
     driver.get(pages.javascriptPage);
 
@@ -262,12 +262,12 @@ public class TypingTest extends AbstractDriverTestCase {
   private static void checkRecordedKeySequence(WebElement element, int expectedKeyCode) {
     assertThat(element.getText().trim(),
         anyOf(is(String.format("down: %1$d press: %1$d up: %1$d", expectedKeyCode)),
-              is(String.format("down: %1$d up: %1$d", expectedKeyCode))));
+            is(String.format("down: %1$d up: %1$d", expectedKeyCode))));
   }
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
-          reason = "untested user agents")
+      reason = "untested user agents")
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     driver.get(pages.javascriptPage);
 
@@ -309,7 +309,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA},
-          reason = "untested user agent")
+      reason = "untested user agent")
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
 
@@ -338,7 +338,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
-          reason = "untested user agents")
+      reason = "untested user agents")
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
 
@@ -362,7 +362,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
     String allPrintable =
         "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFGHIJKLMNO" +
-        "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+            "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
     element.sendKeys(allPrintable);
 
     assertThat(element.getAttribute("value"), is(allPrintable));
@@ -370,20 +370,20 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
-          reason = "untested user agents")
+      reason = "untested user agents")
   public void testArrowKeysAndPageUpAndDown() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("a" + Keys.LEFT + "b" + Keys.RIGHT +
-                     Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1");
+        Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1");
     assertThat(element.getAttribute("value"), is("ba1"));
   }
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
-          reason = "untested user agents")
+      reason = "untested user agents")
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     // FIXME: macs don't have HOME keys, would PGUP work?
     if (Platform.getCurrent().is(Platform.MAC)) {
@@ -395,14 +395,14 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("abc" + Keys.HOME + "0" + Keys.LEFT + Keys.RIGHT +
-                     Keys.PAGE_UP + Keys.PAGE_DOWN + Keys.END + "1" + Keys.HOME +
-                     "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00");
+        Keys.PAGE_UP + Keys.PAGE_DOWN + Keys.END + "1" + Keys.HOME +
+        "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00");
     assertThat(element.getAttribute("value"), is("0000abc1111"));
   }
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
-          reason = "untested user agents")
+      reason = "untested user agents")
   public void testDeleteAndBackspaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -431,22 +431,22 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
-          reason = "untested user agents")
+      reason = "untested user agents")
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("abcd" + Keys.MULTIPLY + Keys.SUBTRACT + Keys.ADD +
-                     Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
-                     Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
-                     Keys.NUMPAD3 + "abcd");
+        Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
+        Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
+        Keys.NUMPAD3 + "abcd");
     assertThat(element.getAttribute("value"), is("abcd*-+.,09+;=/3abcd"));
   }
 
   @JavascriptEnabled
   @Ignore(value = {SELENESE, ANDROID},
-          reason = "untested user agents")
+      reason = "untested user agents")
   public void testFunctionKeys() {
     driver.get(pages.javascriptPage);
 
@@ -459,7 +459,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA},
-          reason = "untested user agents. Opera: F2 focuses location bar")
+      reason = "untested user agents. Opera: F2 focuses location bar")
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
 
@@ -474,8 +474,8 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE,ANDROID},
-          reason = "untested user agents")
+  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
+      reason = "untested user agents")
   public void testChordControlHomeShiftEndDelete() {
     // FIXME: macs don't have HOME keys, would PGUP work?
     if (Platform.getCurrent().is(Platform.MAC)) {
@@ -521,8 +521,8 @@ public class TypingTest extends AbstractDriverTestCase {
 
     element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME);
     assertThat(element.getAttribute("value"), is("done"));
-    assertThat(  // Note: trailing SHIFT up here
-                 result.getText().trim(), containsString(" up: 16"));
+    assertThat( // Note: trailing SHIFT up here
+        result.getText().trim(), containsString(" up: 16"));
 
     element.sendKeys("" + Keys.DELETE);
     assertThat(element.getAttribute("value"), is(""));
@@ -558,7 +558,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(element.getAttribute("value"), is(paste));
 
     element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +
-                     Keys.SHIFT + Keys.END);
+        Keys.SHIFT + Keys.END);
     element.sendKeys(Keys.CONTROL, "x" + "v");
     assertThat(element.getAttribute("value"), is(paste));
 
@@ -569,7 +569,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(element.getAttribute("value"), is("EFGEFGEFGEFGEFGEFG" + paste));
 
     element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME +
-                     Keys.NULL + Keys.DELETE);
+        Keys.NULL + Keys.DELETE);
     assertThat(element.getAttribute("value"), is(""));
   }
 
@@ -629,7 +629,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, SELENESE, OPERA,ANDROID})
+  @Ignore(value = {HTMLUNIT, IE, SELENESE, OPERA, ANDROID})
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 

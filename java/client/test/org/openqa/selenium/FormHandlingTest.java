@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -201,8 +201,8 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {IE, HTMLUNIT, SELENESE, IPHONE, ANDROID},
-          reason = "Not implemented going to the end of the line first;\n"
-                   + "  iPhone: sendKeys not implemented correctly")
+      reason = "Not implemented going to the end of the line first;\n"
+          + "  iPhone: sendKeys not implemented correctly")
   public void testSendingKeyboardEventsShouldAppendTextinTextAreas() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));

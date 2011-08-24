@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -146,7 +146,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     String text = driver.findElement(By.id("inline")).getText();
 
     assertThat(text,
-               equalTo("This line has text within elements that are meant to be displayed inline"));
+        equalTo("This line has text within elements that are meant to be displayed inline"));
   }
 
   public void testShouldReturnTheEntireTextOfInlineElements() {
@@ -156,14 +156,15 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo("An inline element"));
   }
 
-//    public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
-//        driver.get(simpleTestPage);
-//        String text = driver.findElement(By.id("preformatted")).getText();
-//
-//        assertThat(text, equalTo("This section has a\npreformatted\n   text block\n" +
-//                "  within in\n" +
-//                "        "));
-//    }
+  @Ignore
+  public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
+    driver.get(pages.simpleTestPage);
+    String text = driver.findElement(By.id("preformatted")).getText();
+    
+    assertThat(text, equalTo("This section has a\npreformatted\n   text block\n" +
+        "  within in\n" +
+        "        "));
+  }
 
   @Ignore(value = {SELENESE, IPHONE, CHROME, IE, OPERA}, reason = "iPhone: sendKeys is broken;"
       + " Chrome: not handling a space character properly."
@@ -239,7 +240,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     String text = driver.findElement(By.id("nestedblocks")).getText();
 
     assertThat(text, is("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine
-                        + "and also" + newLine + "Brie"));
+        + "and also" + newLine + "Brie"));
   }
 
   public void testShouldHandleWhitespaceInInlineElements() {
@@ -308,7 +309,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("simpleJsonText"));
     assertEquals("{a=\"b\", c=1, d=true}", element.getText());
-    //assertEquals("{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.getText());
+    // assertEquals("{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.getText());
   }
 
   public void testShouldGetTextWhichIsAValidComplexJSONObject() {

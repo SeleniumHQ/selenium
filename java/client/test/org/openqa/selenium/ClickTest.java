@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium;
@@ -49,7 +49,7 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {IPHONE, CHROME, OPERA, SELENESE},
-    reason = "Not tested on these browsers.")
+      reason = "Not tested on these browsers.")
   public void testCanClickOnALinkThatOverflowsAndFollowIt() {
     driver.findElement(By.id("overflowLink")).click();
 
@@ -84,13 +84,13 @@ public class ClickTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IPHONE, SELENESE, OPERA, ANDROID},
       reason = "iPhone: Frame switching is unsupported"
-      + "Opera: Incorrect runtime retrieved, Android: fails when running with other tests.")
+          + "Opera: Incorrect runtime retrieved, Android: fails when running with other tests.")
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
     WebElement toClick = (WebElement) ((JavascriptExecutor) driver).executeScript(
         "return document.getElementById('otherframe');"
-    );
+        );
     toClick.click();
     driver.switchTo().defaultContent().switchTo().frame("target");
 
@@ -101,7 +101,7 @@ public class ClickTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IPHONE, SELENESE, OPERA, ANDROID},
       reason = "iPhone: Frame switching is unsupported"
-      + "Opera: Incorrect runtime retrieved, Android: Fails when running with other tests.")
+          + "Opera: Incorrect runtime retrieved, Android: Fails when running with other tests.")
   public void testJsLoactedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 
@@ -111,7 +111,7 @@ public class ClickTest extends AbstractDriverTestCase {
     // This _should_ return the same element
     WebElement toClick = (WebElement) ((JavascriptExecutor) driver).executeScript(
         "return document.getElementById('otherframe');"
-    );
+        );
     toClick.click();
     driver.switchTo().defaultContent().switchTo().frame("target");
 

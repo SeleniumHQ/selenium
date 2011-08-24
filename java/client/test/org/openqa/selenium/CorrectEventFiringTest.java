@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -111,7 +111,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
     try {
       driver.findElement(By.id("throwing-mouseover")).click();
-    } catch(WebDriverException e) {
+    } catch (WebDriverException e) {
       fail("Error in event handler should not have propagated: " + e);
     }
   }
@@ -127,7 +127,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     String text = driver.findElement(By.id("result")).getText();
 
     int lastIndex = -1;
-    for (String event : new String[]{"mousedown", "focus", "mouseup", "click"}) {
+    for (String event : new String[] {"mousedown", "focus", "mouseup", "click"}) {
       int index = text.indexOf(event);
 
       assertTrue(event + " did not fire at all", index != -1);
@@ -182,7 +182,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   @Ignore(value = {IPHONE, SELENESE, ANDROID})
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
-    //Intentionally not looking up the select tag.  See selenium r7937 for details.
+    // Intentionally not looking up the select tag. See selenium r7937 for details.
     List<WebElement> allOptions = driver.findElements(By.xpath("//select[@id='selector']//option"));
 
     String initialTextValue = driver.findElement(By.id("result")).getText();
@@ -192,10 +192,10 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
     foo.click();
     assertThat(driver.findElement(By.id("result")).getText(),
-               equalTo(initialTextValue));
+        equalTo(initialTextValue));
     bar.click();
     assertThat(driver.findElement(By.id("result")).getText(),
-               equalTo("bar"));
+        equalTo("bar"));
   }
 
   @JavascriptEnabled
@@ -206,7 +206,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
     checkbox.click();
     assertThat(driver.findElement(By.id("result")).getText(),
-               equalTo("checkbox thing"));
+        equalTo("checkbox thing"));
   }
 
   @JavascriptEnabled
@@ -231,11 +231,11 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     WebElement result = driver.findElement(By.id("result"));
     assertThat(result.getText(), equalTo("Cleared"));
   }
-  
+
   @JavascriptEnabled
   @Ignore(value = {SELENESE, IPHONE, ANDROID},
       reason = "Selenese: Fails when running in firefox.\n"
-               + "  iPhone: sendKeys implementation is incorrect")
+          + "  iPhone: sendKeys implementation is incorrect")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
     if (browserNeedsFocusOnThisOs(driver)) {
       System.out.println("Skipping this test because browser demands focus");
@@ -249,23 +249,23 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     element2.sendKeys("bar");
     assertEventFired("blur");
   }
-  
+
   @JavascriptEnabled
   @Ignore(value = {SELENESE, IPHONE, ANDROID},
       reason = "Selenese: Fails when running in firefox.\n"
-               + "  iPhone: sendKeys implementation is incorrect")
+          + "  iPhone: sendKeys implementation is incorrect")
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
     if (browserNeedsFocusOnThisOs(driver)) {
       System.out.println("Skipping this test because browser demands focus");
       return;
     }
-    
+
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("theworks"));
     element.sendKeys("foo");
     assertEventFired("focus");
   }
-  
+
   @JavascriptEnabled
   @Ignore(value = {IPHONE, SELENESE, ANDROID},
       reason = "iPhone: input elements are blurred when the keyboard is closed")
@@ -274,12 +274,12 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
       System.out.println("Skipping this test because browser demands focus");
       return;
     }
-    
+
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("theworks"));
     element.click();
-    
-    //Wait until focused
+
+    // Wait until focused
     boolean focused = false;
     WebElement result = driver.findElement(By.id("result"));
     for (int i = 0; i < 5; ++i) {
@@ -297,7 +297,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     if (!focused) {
       fail("Clicking on element didn't focus it in time - can't proceed so failing");
     }
-    
+
     element.sendKeys("a");
     assertEventNotFired("blur");
   }
@@ -320,7 +320,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertEventFired("form-onsubmit");
   }
 
-  @JavascriptEnabled 
+  @JavascriptEnabled
   @Ignore({IE, SELENESE, ANDROID})
   public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(pages.javascriptPage);
@@ -330,7 +330,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertEventNotFired("text-onclick");
   }
 
-  @JavascriptEnabled 
+  @JavascriptEnabled
   @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},
       reason = "Does not yet support file uploads")
   public void testUploadingFileShouldFireOnChangeEvent() throws IOException {

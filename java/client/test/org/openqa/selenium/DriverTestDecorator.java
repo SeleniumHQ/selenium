@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -30,7 +30,7 @@ public class DriverTestDecorator extends TestSetup {
   private final boolean restartDriver;
 
   public DriverTestDecorator(Test test, Class<? extends WebDriver> driverClass, boolean keepDriver,
-                             boolean freshDriver, boolean restartDriver) {
+      boolean freshDriver, boolean restartDriver) {
     super(test);
     this.driverClass = driverClass;
     this.keepDriver = keepDriver;

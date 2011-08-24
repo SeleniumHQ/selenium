@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -50,19 +50,19 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
   @Ignore(OPERA)
   public void testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag() {
-      driver.get(pages.simpleTestPage);
-      WebElement img = driver.findElement(By.id("validImgTag"));
-      String attribute = img.getAttribute("src");
-      assertThat(attribute, equalTo(appServer.whereIs("icon.gif")));
-    }
+    driver.get(pages.simpleTestPage);
+    WebElement img = driver.findElement(By.id("validImgTag"));
+    String attribute = img.getAttribute("src");
+    assertThat(attribute, equalTo(appServer.whereIs("icon.gif")));
+  }
 
   @Ignore(OPERA)
   public void testShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag() {
-      driver.get(pages.simpleTestPage);
-      WebElement img = driver.findElement(By.id("validAnchorTag"));
-      String attribute = img.getAttribute("href");
-      assertThat(attribute, equalTo(appServer.whereIs("icon.gif")));
-    }
+    driver.get(pages.simpleTestPage);
+    WebElement img = driver.findElement(By.id("validAnchorTag"));
+    String attribute = img.getAttribute("href");
+    assertThat(attribute, equalTo(appServer.whereIs("icon.gif")));
+  }
 
   public void testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty() {
     driver.get(pages.simpleTestPage);
@@ -75,7 +75,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='working']"));
     assertThat(inputElement.getAttribute("disabled"), equalTo("false"));
     assertThat(inputElement.isEnabled(), equalTo(true));
-    
+
     WebElement pElement = driver.findElement(By.id("peas"));
     assertThat(pElement.getAttribute("disabled"), equalTo("false"));
     assertThat(pElement.isEnabled(), equalTo(true));
@@ -88,7 +88,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     List<WebElement> options = multiSelect.findElements(By.tagName("option"));
     assertThat(options.get(1).getAttribute("index"), equalTo("1"));
   }
-  
+
   public void testShouldIndicateTheElementsThatAreDisabledAreNotEnabled() {
     driver.get(pages.formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='notWorking']"));
@@ -97,7 +97,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     inputElement = driver.findElement(By.xpath("//input[@id='working']"));
     assertThat(inputElement.isEnabled(), is(true));
   }
-  
+
   public void testElementsShouldBeDisabledIfTheyAreDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
@@ -105,7 +105,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
     WebElement disabledTextElement2 = driver.findElement(By.id("disabledTextElement2"));
     assertThat(disabledTextElement2.isEnabled(), is(false));
-    
+
     WebElement disabledSubmitElement = driver.findElement(By.id("disabledSubmitElement"));
     assertThat(disabledSubmitElement.isEnabled(), is(false));
   }
@@ -119,7 +119,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
       disabledTextElement1.sendKeys("foo");
       fail("Should have thrown exception");
     } catch (InvalidElementStateException e) {
-      //Expected
+      // Expected
     }
     assertThat(disabledTextElement1.getText(), is(""));
 
@@ -128,7 +128,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
       disabledTextElement2.sendKeys("bar");
       fail("Should have thrown exception");
     } catch (InvalidElementStateException e) {
-      //Expected
+      // Expected
     }
     assertThat(disabledTextElement2.getText(), is(""));
   }
@@ -213,7 +213,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
     assertFalse(readonly.equals(notReadonly));
   }
-  
+
   public void testShouldGetNumericAtribute() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
@@ -236,7 +236,8 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     try {
       Thread.sleep(1000);
     } catch (InterruptedException e) {
-      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      e.printStackTrace(); // To change body of catch statement use File | Settings | File
+                           // Templates.
     }
 
     WebElement th1 = driver.findElement(By.id("th1"));
@@ -260,9 +261,9 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     String onClickValue = mouseclickDiv.getAttribute("onclick");
     String expectedOnClickValue = "displayMessage('mouse click');";
     assertThat("Javascript code expected", onClickValue, anyOf(
-        equalTo("javascript:" + expectedOnClickValue), //Non-IE
+        equalTo("javascript:" + expectedOnClickValue), // Non-IE
         equalTo("function anonymous()\n{\n" + expectedOnClickValue + "\n}"), // IE
-        equalTo("function onclick()\n{\n" + expectedOnClickValue + "\n}"))); //IE
+        equalTo("function onclick()\n{\n" + expectedOnClickValue + "\n}"))); // IE
 
     WebElement mousedownDiv = driver.findElement(By.id("mousedown"));
     assertEquals(null, mousedownDiv.getAttribute("onclick"));

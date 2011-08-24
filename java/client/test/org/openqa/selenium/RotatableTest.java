@@ -13,12 +13,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
 public class RotatableTest extends AbstractDriverTestCase {
-  
+
   private boolean isRotatable() {
     return (driver instanceof Rotatable) ? true : false;
   }
@@ -31,7 +31,7 @@ public class RotatableTest extends AbstractDriverTestCase {
     rotatable.rotate(ScreenOrientation.LANDSCAPE);
     assertEquals(ScreenOrientation.LANDSCAPE, rotatable.getOrientation());
   }
-  
+
   public void testRotateToPortrait() {
     if (!isRotatable()) {
       return;
@@ -40,7 +40,7 @@ public class RotatableTest extends AbstractDriverTestCase {
     rotatable.rotate(ScreenOrientation.PORTRAIT);
     assertEquals(ScreenOrientation.PORTRAIT, rotatable.getOrientation());
   }
-  
+
   public void testGetOrientationReturnsInitialValue() {
     if (!isRotatable()) {
       return;

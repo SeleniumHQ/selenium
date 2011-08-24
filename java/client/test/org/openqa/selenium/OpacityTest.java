@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -30,7 +30,7 @@ public class OpacityTest extends AbstractDriverTestCase {
 
   /**
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1610">
-   *   http://code.google.com/p/selenium/issues/detail?id=1610</a>
+   *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
   @JavascriptEnabled
   @Ignore({IE, SELENESE, OPERA})
@@ -46,7 +46,7 @@ public class OpacityTest extends AbstractDriverTestCase {
 
   /**
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1941">
-   *   http://code.google.com/p/selenium/issues/detail?id=1941</a>
+   *      http://code.google.com/p/selenium/issues/detail?id=1941</a>
    */
   @JavascriptEnabled
   @Ignore({ANDROID, HTMLUNIT, IE, SELENESE, OPERA})

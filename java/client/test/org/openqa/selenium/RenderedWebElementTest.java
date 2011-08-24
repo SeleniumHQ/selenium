@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
@@ -63,7 +63,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
   @JavascriptEnabled
   @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID})
-  //Reason for Chrome: WebKit bug 28804
+  // Reason for Chrome: WebKit bug 28804
   public void testShouldHandleNonIntegerPositionAndSize() {
     driver.get(pages.rectanglesPage);
 

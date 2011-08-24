@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -162,17 +162,17 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.className("nameBnoise"));
     assertThat(element.getText(), equalTo("An H2 title"));
   }
-  
+
   public void testShouldFindElementByClassWhenItsNameIsSurroundedByWhitespace() {
     driver.get(pages.xhtmlTestPage);
-    
+
     WebElement element = driver.findElement(By.className("spaceAround"));
     assertThat(element.getText(), equalTo("Spaced out"));
   }
 
   public void testShouldFindElementsByClassWhenItsNameIsSurroundedByWhitespace() {
     driver.get(pages.xhtmlTestPage);
-    
+
     List<WebElement> elements = driver.findElements(By.className("spaceAround"));
     assertThat(elements.size(), equalTo(1));
     assertThat(elements.get(0).getText(), equalTo("Spaced out"));
@@ -269,7 +269,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertTrue(elements.size() > 1);
   }
 
-  @Ignore(value=ANDROID, reason="Bug in Android's XPath library." )
+  @Ignore(value = ANDROID, reason = "Bug in Android's XPath library.")
   public void testShouldBeAbleToFindMultipleElementsById() {
     driver.get(pages.nestedPage);
 
@@ -469,8 +469,8 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertEquals(2, parent.findElements(By.tagName("div")).size());
     assertEquals(2, parent.findElements(By.tagName("span")).size());
   }
-  
-  //TODO(danielwh): Add extensive CSS selector tests
+
+  // TODO(danielwh): Add extensive CSS selector tests
 
   @JavascriptEnabled
   @Ignore({SELENESE, ANDROID})

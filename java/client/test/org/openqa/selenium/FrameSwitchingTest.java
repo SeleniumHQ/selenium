@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -35,8 +35,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @Ignore(value = {IPHONE},
-        reason = "iPhone: Frame switching not supported;\n" +
-                 "Others: Implementation not updated to new frame-switching behavior")
+    reason = "iPhone: Frame switching not supported;\n" +
+        "Others: Implementation not updated to new frame-switching behavior")
 public class FrameSwitchingTest extends AbstractDriverTestCase {
   private static final int TIMEOUT = 4000;
 
@@ -45,7 +45,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     try {
       driver.switchTo().defaultContent();
     } catch (Exception e) {
-      //May happen if the driver went away.
+      // May happen if the driver went away.
     } finally {
       super.tearDown();
     }
@@ -59,7 +59,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
 
   public void testShouldAlwaysFocusOnTheTopMostFrameAfterANavigationEvent() {
     driver.get(pages.framesetPage);
-    driver.findElement(By.tagName("frameset"));  // Test passes if this does not throw.
+    driver.findElement(By.tagName("frameset")); // Test passes if this does not throw.
   }
 
   public void testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded() {
@@ -113,7 +113,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
 
     assertThat(driver.findElement(By.name("id-name1")).getAttribute("value"), equalTo("name"));
   }
-  
+
   public void testShouldBeAbleToSwitchToFrameWithNameContainingDot() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("sixth.iframe1");
@@ -130,15 +130,15 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("1"));
   }
 
-//  @Ignore(value = SELENESE, reason = "switchTo().frame(WebElement) not supported with Selenium")
+  // @Ignore(value = SELENESE, reason = "switchTo().frame(WebElement) not supported with Selenium")
   @Ignore(value = OPERA, reason = "Opera: Unsupported")
   public void testShouldBeAbleToSwitchToAnIFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.iframePage);
     WebElement frame = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(frame);
 
-  WebElement element = driver.findElement(By.name("id-name1"));
-  assertThat(element.getAttribute("value"), equalTo("name"));
+    WebElement element = driver.findElement(By.name("id-name1"));
+    assertThat(element.getAttribute("value"), equalTo("name"));
   }
 
   @Ignore(value = {SELENESE, OPERA}, reason = "switchTo().frame(WebElement) not supported with Selenium "
@@ -201,7 +201,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
       driver.switchTo().frame("second");
       fail("Expected NoSuchFrameException");
     } catch (NoSuchFrameException e) {
-      //Expected
+      // Expected
     }
 
   }
@@ -243,14 +243,16 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     checkbox.click();
     checkbox.submit();
 
-    // TODO(simon): this should not be needed, and is only here because IE's submit returns too soon.
+    // TODO(simon): this should not be needed, and is only here because IE's submit returns too
+    // soon.
 
     waitFor(WaitingConditions.elementTextToEqual(driver, By.xpath("//p"), "Success!"));
     assertThat(driver.findElement(By.xpath("//p")).getText(), equalTo("Success!"));
   }
 
   @Ignore(value = {ANDROID, OPERA}, reason = "Android does not detect that the select frame has disappeared")
-  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() throws Exception {
+  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage()
+      throws Exception {
     driver.get(pages.framesetPage);
 
     driver.switchTo().frame(0);
@@ -261,7 +263,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
 
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
     assertThat(driver.findElement(By.xpath("/html/head/title")).getText(),
-               equalTo("XHTML Test Page"));
+        equalTo("XHTML Test Page"));
   }
 
   @Ignore(ANDROID)
@@ -309,7 +311,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToClickInASubFrame() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("sixth")
-          .switchTo().frame("iframe1");
+        .switchTo().frame("iframe1");
 
     // This should replaxe frame "iframe1" inside frame "sixth" ...
     driver.findElement(By.id("submitButton")).click();
@@ -382,7 +384,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
 
   @Ignore(value = {IE, HTMLUNIT, OPERA, ANDROID},
       reason = "Appears to uncover an HtmlUnit bug" +
-      "Opera: Original runtime still exists inside Opera")
+          "Opera: Original runtime still exists inside Opera")
   @JavascriptEnabled
   public void testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs() {
     driver.get(pages.deletingFrame);
@@ -392,7 +394,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     WebElement killIframe = driver.findElement(By.id("killIframe"));
     killIframe.click();
     driver.switchTo().defaultContent();
-    
+
     assertFrameNotPresent(driver, "iframe1");
 
     WebElement addIFrame = driver.findElement(By.id("addBackFrame"));

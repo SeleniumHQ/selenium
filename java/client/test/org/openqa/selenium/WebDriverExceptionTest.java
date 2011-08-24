@@ -13,13 +13,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package org.openqa.selenium;
 
 import junit.framework.TestCase;
 
 /**
  * Small test for name extraction
+ * 
  * @author eran.mes@gmail.com
  */
 public class WebDriverExceptionTest extends TestCase {
@@ -36,7 +37,8 @@ public class WebDriverExceptionTest extends TestCase {
   public void testExtractsMostSpecificDriverName() {
     StackTraceElement[] stackTrace = new StackTraceElement[3];
     stackTrace[0] = new StackTraceElement("SomeClass", "someMethod", "SomeClass.java", 5);
-    stackTrace[1] = new StackTraceElement("RemoteWebDriver", "someMethod", "RemoteWebDriver.java", 5);
+    stackTrace[1] =
+        new StackTraceElement("RemoteWebDriver", "someMethod", "RemoteWebDriver.java", 5);
     stackTrace[2] = new StackTraceElement("FirefoxDriver", "someMethod", "FirefoxDriver.java", 5);
 
     String gotName = WebDriverException.getDriverName(stackTrace);

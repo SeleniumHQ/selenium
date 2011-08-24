@@ -67,11 +67,14 @@ public class Build {
     public void run() {
       BufferedReader buildOutput = null;
       try {
-        buildOutput = new BufferedReader(new InputStreamReader(buildProcess.getInputStream()), 8192);
-        for (String s = buildOutput.readLine(); s != null && !interrupted(); s = buildOutput.readLine()) {
+        buildOutput =
+            new BufferedReader(new InputStreamReader(buildProcess.getInputStream()), 8192);
+        for (String s = buildOutput.readLine(); s != null && !interrupted(); s =
+            buildOutput.readLine()) {
           try {
             System.out.println(">>> " + s);
-          } catch (Throwable ignored) {}
+          } catch (Throwable ignored) {
+          }
         }
       } catch (Throwable e) {
         System.err.print("ERROR: Could not read from stdout of " + buildProcess + ":");
@@ -80,7 +83,8 @@ public class Build {
         if (buildOutput != null) {
           try {
             buildOutput.close();
-          } catch (Throwable ignored) {}
+          } catch (Throwable ignored) {
+          }
         }
       }
     }

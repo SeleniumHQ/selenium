@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -160,8 +160,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
   /**
    * @throws Exception If the test fails.
-   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=208">
-   *     Issue 208</a>
+   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=208"> Issue 208</a>
    */
   @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID}, reason = "Untested user-agents")
   @JavascriptEnabled

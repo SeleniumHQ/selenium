@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -78,10 +78,10 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
   // It's methods like this that make me think we need a "HasCapabilities" interface
   private String getBrowserName(WebDriver driver) {
     try {
-    // is there a "getCababilities" method?
-    Method getCapabilities = driver.getClass().getMethod("getCapabilities");
-    Object capabilities = getCapabilities.invoke(driver);
-    return (String) capabilities.getClass().getMethod("getBrowserName") .invoke(capabilities);
+      // is there a "getCababilities" method?
+      Method getCapabilities = driver.getClass().getMethod("getCapabilities");
+      Object capabilities = getCapabilities.invoke(driver);
+      return (String) capabilities.getClass().getMethod("getBrowserName").invoke(capabilities);
     } catch (NoSuchMethodException e) {
       // Fall through
     } catch (IllegalAccessException e) {

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -70,7 +70,7 @@ public class AlertsTest extends AbstractDriverTestCase {
     // If we can perform any action, we're good to go
     assertEquals("Testing Alerts", driver.getTitle());
   }
-  
+
   @JavascriptEnabled
   public void testShouldAllowUsersToAcceptAnAlertWithNoTextManually() {
     driver.findElement(By.id("empty-alert")).click();
@@ -125,7 +125,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
     waitFor(elementTextToEqual(driver, By.id("text"), "cheese"));
   }
-  
+
   @JavascriptEnabled
   public void testSettingTheValueOfAnAlertThrows() {
     driver.findElement(By.id("alert")).click();
@@ -160,7 +160,8 @@ public class AlertsTest extends AbstractDriverTestCase {
 
     try {
       alert.getText();
-    } catch (NoAlertPresentException expected) {}
+    } catch (NoAlertPresentException expected) {
+    }
   }
 
   @Ignore(ANDROID)
@@ -192,17 +193,17 @@ public class AlertsTest extends AbstractDriverTestCase {
     // But the next call should be good.
     assertEquals("Testing Alerts", driver.getTitle());
   }
-  
+
   @JavascriptEnabled
   public void testSwitchingToMissingAlertThrows() throws Exception {
     try {
       alertToBePresent(driver).call();
       fail("Expected exception");
     } catch (NoAlertPresentException expected) {
-      //Expected
+      // Expected
     }
   }
-  
+
   @JavascriptEnabled
   public void testPromptShouldUseDefaultValueIfNoKeysSent() {
     driver.findElement(By.id("prompt-with-default")).click();
@@ -212,7 +213,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
     waitFor(elementTextToEqual(driver, By.id("text"), "This is a default value"));
   }
-  
+
   @JavascriptEnabled
   @Ignore(ANDROID)
   public void testPromptShouldHaveNullValueIfDismissed() {
@@ -223,7 +224,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
     waitFor(elementTextToEqual(driver, By.id("text"), "null"));
   }
-  
+
   @JavascriptEnabled
   public void testHandlesTwoAlertsFromOneInteraction() {
     driver.findElement(By.id("double-prompt")).click();
@@ -234,7 +235,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
     Alert alert2 = waitFor(alertToBePresent(driver));
     alert2.sendKeys("cheddar");
-    alert2.accept();    
+    alert2.accept();
 
     waitFor(elementTextToEqual(driver, By.id("text1"), "brie"));
     waitFor(elementTextToEqual(driver, By.id("text2"), "cheddar"));

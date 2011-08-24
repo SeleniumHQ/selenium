@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -200,8 +200,8 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-    @Ignore({ANDROID, CHROME, IPHONE, OPERA, REMOTE, SELENESE})
-    public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
+  @Ignore({ANDROID, CHROME, IPHONE, OPERA, REMOTE, SELENESE})
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
     driver.get(pages.formPage);
 
     WebElement body = driver.findElement(By.tagName("body"));

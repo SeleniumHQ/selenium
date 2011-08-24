@@ -27,7 +27,7 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
   @Override
   protected void tearDown() throws Exception {
     driver.manage().timeouts().implicitlyWait(0, MILLISECONDS);
-    
+
     super.tearDown();
   }
 
@@ -40,7 +40,7 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
     driver.manage().timeouts().implicitlyWait(3000, MILLISECONDS);
 
     add.click();
-    driver.findElement(By.id("box0"));  // All is well if this doesn't throw.
+    driver.findElement(By.id("box0")); // All is well if this doesn't throw.
   }
 
   @Test

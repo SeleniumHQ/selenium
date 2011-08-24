@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium;
@@ -62,7 +62,7 @@ public class WaitingConditions {
   }
 
   public static Callable<String> elementTextToEqual(
-     final WebDriver driver, final By locator, final String value) {
+      final WebDriver driver, final By locator, final String value) {
     return new Callable<String>() {
 
       public String call() throws Exception {
@@ -87,7 +87,7 @@ public class WaitingConditions {
       final WebElement element, final String value) {
     return new ElementTextContainsCallable(value, element);
   }
-  
+
   private static final class ElementTextContainsCallable implements Callable<String> {
     private final String value;
     private final WebElement element;
@@ -112,7 +112,7 @@ public class WaitingConditions {
       return String.format("element text (%s) to contain: %s", actualText, value);
     }
   }
-  
+
 
   public static Callable<String> elementValueToEqual(
       final WebElement element, final String expectedValue) {

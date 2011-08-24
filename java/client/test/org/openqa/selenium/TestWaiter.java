@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 
 package org.openqa.selenium;
@@ -25,8 +25,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This helper class duplicates the functionality of the Wait class
- * in the support classes. This class is not thread-safe.
+ * This helper class duplicates the functionality of the Wait class in the support classes. This
+ * class is not thread-safe.
  */
 public class TestWaiter {
 
@@ -34,9 +34,9 @@ public class TestWaiter {
   private static final TimeUnit DEFAULT_UNIT = SECONDS;
 
   /**
-   * Wait for the callable to return either "not null" or "true". Exceptions are
-   * caught and only rethrown if we time out.
-   *
+   * Wait for the callable to return either "not null" or "true". Exceptions are caught and only
+   * rethrown if we time out.
+   * 
    * @param until Condition that we're waiting for.
    * @return Whatever the condition returns.
    */
@@ -45,9 +45,9 @@ public class TestWaiter {
   }
 
   /**
-   * Wait for the callable to return either "not null" or "true". Exceptions are
-   * caught and only rethrown if we time out.
-   *
+   * Wait for the callable to return either "not null" or "true". Exceptions are caught and only
+   * rethrown if we time out.
+   * 
    * @param until Condition that we're waiting for.
    * @param duration How long to wait.
    * @param in Unit in which duration is measured.

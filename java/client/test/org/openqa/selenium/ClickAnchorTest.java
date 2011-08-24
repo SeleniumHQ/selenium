@@ -28,8 +28,8 @@ public class ClickAnchorTest extends AbstractDriverTestCase {
     long yOffset = (Long) ((JavascriptExecutor) driver)
         .executeScript(scrollScript);
 
-    //Focusing on to click, but not actually following,
-    //the link will scroll it in to view, which is a few pixels further than 0 
+    // Focusing on to click, but not actually following,
+    // the link will scroll it in to view, which is a few pixels further than 0
     assertThat("Did not scroll", yOffset, is(greaterThan(300L)));
 
   }

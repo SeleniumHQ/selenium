@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -43,9 +43,9 @@ public class TakesScreenshotTest extends AbstractDriverTestCase {
     String screenshot = getScreenshot().getScreenshotAs(BASE64);
     assertTrue(screenshot.length() > 0);
   }
-  
+
   public TakesScreenshot getScreenshot() {
-    return (TakesScreenshot)driver;
+    return (TakesScreenshot) driver;
   }
 
   private boolean isAbleToTakeScreenshots(WebDriver driver) throws Exception {

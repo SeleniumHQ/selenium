@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -114,7 +114,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     expectedResult.add("one");
     expectedResult.add("two");
     Object result = ((JavascriptExecutor) driver).executeScript(
-    "return ['zero', 'one', 'two'];");
+        "return ['zero', 'one', 'two'];");
 
     ExecutingJavascriptTest.compareLists(expectedResult, (List<Object>) result);
   }
@@ -180,14 +180,18 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
     driver.get(pages.javascriptPage);
 
-    Map<String, Object> expectedResult = new HashMap<String, Object>(){{
-      put("foo", "bar");
-      put("baz", Arrays.asList("a", "b", "c"));
-      put("person", new HashMap<String, String>(){{
-        put("first", "John");
-        put("last", "Doe");
-      }});
-    }};
+    Map<String, Object> expectedResult = new HashMap<String, Object>() {
+      {
+        put("foo", "bar");
+        put("baz", Arrays.asList("a", "b", "c"));
+        put("person", new HashMap<String, String>() {
+          {
+            put("first", "John");
+            put("last", "Doe");
+          }
+        });
+      }
+    };
 
     Object result = executeScript(
         "return {foo:'bar', baz: ['a', 'b', 'c'], " +
@@ -240,7 +244,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     Long expectedResult = 1L;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertTrue("Expected result to be an Integer or Long but was a " +
-               result.getClass(), result instanceof Integer || result instanceof Long);
+        result.getClass(), result instanceof Integer || result instanceof Long);
     assertEquals(expectedResult.longValue(), result);
   }
 
@@ -254,7 +258,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     Double expectedResult = 1.2;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertTrue("Expected result to be a Double or Float but was a " +
-               result.getClass(), result instanceof Float || result instanceof Double);
+        result.getClass(), result instanceof Float || result instanceof Double);
     assertEquals(expectedResult.doubleValue(), result);
   }
 
@@ -299,8 +303,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     driver.get(pages.javascriptPage);
-    String
-        value =
+    String value =
         (String) executeScript("return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish");
 
     assertEquals("fish", value);
@@ -339,9 +342,10 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
     driver.get(pages.javascriptPage);
     WebElement button = driver.findElement(By.id("plainButton"));
-    String value = (String) executeScript(
-        "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];",
-        button);
+    String value =
+        (String) executeScript(
+            "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];",
+            button);
 
     assertEquals("plainButton", value);
   }
@@ -354,7 +358,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     driver.get(pages.javascriptPage);
-    Object[] array = new Object[]{"zero", 1, true, 3.14159, false};
+    Object[] array = new Object[] {"zero", 1, true, 3.14159, false};
     String value = (String) executeScript("return arguments[0]", array);
     assertEquals(array[0], value);
   }
@@ -367,7 +371,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     driver.get(pages.javascriptPage);
-    Object[] array = new Object[]{"zero", 1, true, 3.14159, false};
+    Object[] array = new Object[] {"zero", 1, true, 3.14159, false};
     long length = (Long) executeScript("return arguments[1].length", "string", array);
     assertEquals(array.length, length);
   }
@@ -468,9 +472,9 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
 
     File jqueryFile = new File("common/src/web/jquery-1.3.2.js");
-    if(!jqueryFile.isFile()) {
+    if (!jqueryFile.isFile()) {
       jqueryFile = new File("../common/src/web/jquery-1.3.2.js");
-      if(!jqueryFile.isFile()) {
+      if (!jqueryFile.isFile()) {
         jqueryFile = new File("../../common/src/web/jquery-1.3.2.js");
       }
     }
@@ -486,9 +490,9 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
     driver.get(pages.formPage);
     String scriptToExec = "return document.getElementsByName('snack');";
-    
+
     List<WebElement> resultsList = (List<WebElement>) ((JavascriptExecutor) driver)
-      .executeScript(scriptToExec);
+        .executeScript(scriptToExec);
 
     assertFalse(resultsList.isEmpty());
   }
@@ -496,13 +500,14 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore //Reason for ignore: Failure indicates hang condition,
-          //which would break the test suite.  Really needs a timeout set.
+  @Ignore
+  // Reason for ignore: Failure indicates hang condition,
+  // which would break the test suite. Really needs a timeout set.
   public void testShouldThrowExceptionIfExecutingOnNoPage() {
     try {
-      ((JavascriptExecutor)driver).executeScript("return 1;");
+      ((JavascriptExecutor) driver).executeScript("return 1;");
     } catch (WebDriverException e) {
-      //Expected
+      // Expected
       return;
     }
     fail("Expected exception to be thrown");
@@ -525,7 +530,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     driver.get(pages.formPage);
 
     List<WebElement> forms = driver.findElements(By.tagName("form"));
-    Object[] args = new Object[] { forms };
+    Object[] args = new Object[] {forms};
 
     String name = (String) ((JavascriptExecutor) driver).executeScript(
         "return arguments[0][0].tagName", args);

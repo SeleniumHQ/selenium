@@ -15,13 +15,13 @@ import junit.framework.TestSuite;
 
 public class ServerTestSuite extends TestCase {
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite(ServerTestSuite.class.getName());
-        if (WindowsUtils.thisIsWindows()) {
-            suite.addTestSuite(WindowsHTMLRunnerFunctionalTest.class);
-        } else {
-            suite.addTestSuite(LinuxHTMLRunnerFunctionalTest.class);
-        }
-        return suite;
+  public static Test suite() {
+    TestSuite suite = new TestSuite(ServerTestSuite.class.getName());
+    if (WindowsUtils.thisIsWindows()) {
+      suite.addTestSuite(WindowsHTMLRunnerFunctionalTest.class);
+    } else {
+      suite.addTestSuite(LinuxHTMLRunnerFunctionalTest.class);
     }
+    return suite;
+  }
 }

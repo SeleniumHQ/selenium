@@ -7,7 +7,7 @@ import junit.framework.TestCase;
  * Test WebDriver's Dimensions class.
  */
 public class DimensionTest extends TestCase {
-    public void testSimpleAssignment() {
+  public void testSimpleAssignment() {
     Dimension d1 = new Dimension(100, 200);
     assertEquals(200, d1.getHeight());
     assertEquals(100, d1.getWidth());

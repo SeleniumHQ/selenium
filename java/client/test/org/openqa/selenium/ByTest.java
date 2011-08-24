@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium;
 
@@ -31,9 +31,11 @@ public class ByTest extends MockTestBase {
   public void shouldUseFindsByNameToLocateElementsByName() {
     final AllDriver driver = mock(AllDriver.class);
 
-    checking(new Expectations() {{
-      one(driver).findElementByName("cheese");
-    }});
+    checking(new Expectations() {
+      {
+        one(driver).findElementByName("cheese");
+      }
+    });
 
     By by = By.name("cheese");
     by.findElement(driver);
@@ -44,9 +46,11 @@ public class ByTest extends MockTestBase {
   public void xtestShouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName() {
     final OnlyXPath driver = mock(OnlyXPath.class);
 
-    checking(new Expectations() {{
-      one(driver).findElementByXPath("//*[@name='cheese']");
-    }});
+    checking(new Expectations() {
+      {
+        one(driver).findElementByXPath("//*[@name='cheese']");
+      }
+    });
 
     By by = By.name("cheese");
 
