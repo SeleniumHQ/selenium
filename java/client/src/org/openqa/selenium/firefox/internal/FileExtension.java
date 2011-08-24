@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox.internal;
 
@@ -69,7 +69,7 @@ public class FileExtension implements Extension {
 
     FileHandler.createDir(extensionDirectory);
     FileHandler.makeWritable(extensionDirectory);
-    FileHandler.copy(root, extensionDirectory );
+    FileHandler.copy(root, extensionDirectory);
     TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(root);
   }
 

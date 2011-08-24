@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox;
 
@@ -24,7 +24,7 @@ public class NotConnectedException extends IOException {
   public NotConnectedException(URL url, long timeToWaitInMilliSeconds) {
     super(getMessage(url, timeToWaitInMilliSeconds));
   }
-  
+
   private static String getMessage(URL url, long timeToWaitInMilliSeconds) {
     return String.format("Unable to connect to host %s on port %d after %d ms",
         url.getHost(), url.getPort(), timeToWaitInMilliSeconds);

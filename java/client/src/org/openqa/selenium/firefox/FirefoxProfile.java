@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox;
 
@@ -48,8 +48,8 @@ public class FirefoxProfile {
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";
 
   /**
-   * Profile preferences that are essential to the FirefoxDriver operating
-   * correctly. Users are not permitted to override these values.
+   * Profile preferences that are essential to the FirefoxDriver operating correctly. Users are not
+   * permitted to override these values.
    */
   private static final ImmutableMap<String, Object> FROZEN_PREFERENCES =
       ImmutableMap.<String, Object>builder()
@@ -92,15 +92,17 @@ public class FirefoxProfile {
           .build();
 
   /**
-   * The maximum amount of time scripts should be permitted to run. The user
-   * may increase this timeout, but may not set it below the default value.
+   * The maximum amount of time scripts should be permitted to run. The user may increase this
+   * timeout, but may not set it below the default value.
    */
   private static final String MAX_SCRIPT_RUN_TIME_KEY = "dom.max_script_run_time";
   private static final int DEFAULT_MAX_SCRIPT_RUN_TIME = 30;
 
-  private Preferences additionalPrefs = new Preferences() {{
-    setPreference(MAX_SCRIPT_RUN_TIME_KEY, DEFAULT_MAX_SCRIPT_RUN_TIME);
-  }};
+  private Preferences additionalPrefs = new Preferences() {
+    {
+      setPreference(MAX_SCRIPT_RUN_TIME_KEY, DEFAULT_MAX_SCRIPT_RUN_TIME);
+    }
+  };
 
   private Map<String, Extension> extensions = Maps.newHashMap();
   private boolean enableNativeEvents;
@@ -119,9 +121,9 @@ public class FirefoxProfile {
   /**
    * Constructs a firefox profile from an existing profile directory.
    * <p/>
-   * <p>Users who need this functionality should consider using a named
-   * profile.
-   *
+   * <p>
+   * Users who need this functionality should consider using a named profile.
+   * 
    * @param profileDir The profile directory to use as a model.
    */
   public FirefoxProfile(File profileDir) {
@@ -200,7 +202,7 @@ public class FirefoxProfile {
 
   /**
    * Attempt to add an extension to install into this instance.
-   *
+   * 
    * @param extensionToInstall
    * @throws IOException
    */
@@ -222,12 +224,12 @@ public class FirefoxProfile {
   }
 
   /**
-   * Set a preference for this particular profile. The value will be properly quoted
-   * before use. Note that if a value looks as if it is a quoted string (that is, starts
-   * with a quote character and ends with one too) an IllegalArgumentException is thrown:
-   * Firefox fails to start properly when some values are set to this.
-   *
-   * @param key   The key
+   * Set a preference for this particular profile. The value will be properly quoted before use.
+   * Note that if a value looks as if it is a quoted string (that is, starts with a quote character
+   * and ends with one too) an IllegalArgumentException is thrown: Firefox fails to start properly
+   * when some values are set to this.
+   * 
+   * @param key The key
    * @param value The new value.
    */
   public void setPreference(String key, String value) {
@@ -237,8 +239,8 @@ public class FirefoxProfile {
 
   /**
    * Set a preference for this particular profile.
-   *
-   * @param key   The key
+   * 
+   * @param key The key
    * @param value The new value.
    */
   public void setPreference(String key, boolean value) {
@@ -248,8 +250,8 @@ public class FirefoxProfile {
 
   /**
    * Set a preference for this particular profile.
-   *
-   * @param key   The key
+   * 
+   * @param key The key
    * @param value The new value.
    */
   public void setPreference(String key, int value) {
@@ -270,7 +272,7 @@ public class FirefoxProfile {
         n = (Integer) value;
       } else {
         throw new IllegalArgumentException(String.format(
-          "%s value must be a number: %s", MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
+            "%s value must be a number: %s", MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
       }
       checkArgument(n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
           "%s must be == 0 || >= %s", MAX_SCRIPT_RUN_TIME_KEY, DEFAULT_MAX_SCRIPT_RUN_TIME);
@@ -279,7 +281,7 @@ public class FirefoxProfile {
 
   /**
    * Set proxy preferences for this profile.
-   *
+   * 
    * @param proxy The proxy preferences.
    * @return The profile, for further settings.
    */
@@ -410,11 +412,10 @@ public class FirefoxProfile {
   }
 
   /**
-   * Returns whether the no focus library should be loaded for Firefox
-   * profiles launched on Linux, even if native events are disabled.
-   *
-   * @return Whether the no focus library should always be loaded for Firefox
-   *         on Linux.
+   * Returns whether the no focus library should be loaded for Firefox profiles launched on Linux,
+   * even if native events are disabled.
+   * 
+   * @return Whether the no focus library should always be loaded for Firefox on Linux.
    */
   public boolean alwaysLoadNoFocusLib() {
     return loadNoFocusLib;
@@ -422,7 +423,7 @@ public class FirefoxProfile {
 
   /**
    * Sets whether the no focus library should always be loaded on Linux.
-   *
+   * 
    * @param loadNoFocusLib Whether to always load the no focus library.
    */
   public void setAlwaysLoadNoFocusLib(boolean loadNoFocusLib) {
@@ -430,12 +431,10 @@ public class FirefoxProfile {
   }
 
   /**
-   * Sets whether Firefox should accept SSL certificates which have expired,
-   * signed by an unknown authority or are generally untrusted.
-   * This is set to true by default.
-   *
-   * @param acceptUntrustedSsl Whether untrusted SSL certificates should be
-   *                           accepted.
+   * Sets whether Firefox should accept SSL certificates which have expired, signed by an unknown
+   * authority or are generally untrusted. This is set to true by default.
+   * 
+   * @param acceptUntrustedSsl Whether untrusted SSL certificates should be accepted.
    */
 
   public void setAcceptUntrustedCertificates(boolean acceptUntrustedSsl) {
@@ -443,21 +442,17 @@ public class FirefoxProfile {
   }
 
   /**
-   * By default, when accepting untrusted SSL certificates, assume that
-   * these certificates will come from an untrusted issuer or will be self
-   * signed.
-   * Due to limitation within Firefox, it is easy to find out if the
-   * certificate has expired or does not match the host it was served for,
-   * but hard to find out if the issuer of the certificate is untrusted.
+   * By default, when accepting untrusted SSL certificates, assume that these certificates will come
+   * from an untrusted issuer or will be self signed. Due to limitation within Firefox, it is easy
+   * to find out if the certificate has expired or does not match the host it was served for, but
+   * hard to find out if the issuer of the certificate is untrusted.
    * <p/>
-   * By default, it is assumed that the certificates were not be issued from
-   * a trusted CA.
+   * By default, it is assumed that the certificates were not be issued from a trusted CA.
    * <p/>
-   * If you are receive an "untrusted site" prompt on Firefox when using a
-   * certificate that was issued by valid issuer, but has expired or
-   * is being served served for a different host (e.g. production certificate
-   * served in a testing environment) set this to false.
-   *
+   * If you are receive an "untrusted site" prompt on Firefox when using a certificate that was
+   * issued by valid issuer, but has expired or is being served served for a different host (e.g.
+   * production certificate served in a testing environment) set this to false.
+   * 
    * @param untrustedIssuer whether to assume untrusted issuer or not.
    */
   public void setAssumeUntrustedCertificateIssuer(boolean untrustedIssuer) {
@@ -490,32 +485,31 @@ public class FirefoxProfile {
   }
 
   /**
-   * Call this to cause the current profile to be written to disk. The profile
-   * directory is returned. Note that this profile directory is a temporary one
-   * and will be deleted when the JVM exists (at the latest)
-   *
-   * This method should be called immediately before starting to use the profile
-   * and should only be called once per instance of the
-   * {@link org.openqa.selenium.firefox.FirefoxDriver}.
-   *
+   * Call this to cause the current profile to be written to disk. The profile directory is
+   * returned. Note that this profile directory is a temporary one and will be deleted when the JVM
+   * exists (at the latest)
+   * 
+   * This method should be called immediately before starting to use the profile and should only be
+   * called once per instance of the {@link org.openqa.selenium.firefox.FirefoxDriver}.
+   * 
    * @return The directory containing the profile.
    */
   public File layoutOnDisk() {
-      try {
-        File profileDir = TemporaryFilesystem.getDefaultTmpFS()
-            .createTempDir("anonymous", "webdriver-profile");
-        File userPrefs = new File(profileDir, "user.js");
+    try {
+      File profileDir = TemporaryFilesystem.getDefaultTmpFS()
+          .createTempDir("anonymous", "webdriver-profile");
+      File userPrefs = new File(profileDir, "user.js");
 
-        copyModel(model, profileDir);
-        installExtensions(profileDir);
-        deleteLockFiles(profileDir);
-        deleteExtensionsCacheIfItExists(profileDir);
-        updateUserPrefs(userPrefs);
-        return profileDir;
-      } catch (IOException e) {
-        throw new UnableToCreateProfileException(e);
-      }
+      copyModel(model, profileDir);
+      installExtensions(profileDir);
+      deleteLockFiles(profileDir);
+      deleteExtensionsCacheIfItExists(profileDir);
+      updateUserPrefs(userPrefs);
+      return profileDir;
+    } catch (IOException e) {
+      throw new UnableToCreateProfileException(e);
     }
+  }
 
   protected void copyModel(File sourceDir, File profileDir) throws IOException {
     if (sourceDir == null || !sourceDir.exists()) {

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox.internal;
 
@@ -34,68 +34,68 @@ import java.util.Map;
 
 public class ProfilesIni {
   private Map<String, File> profiles = Maps.newHashMap();
-  
+
   public ProfilesIni() {
     File appData = locateAppDataDirectory(Platform.getCurrent());
     profiles = readProfiles(appData);
   }
-  
+
   protected Map<String, File> readProfiles(File appData) {
     Map<String, File> toReturn = Maps.newHashMap();
 
     File profilesIni = new File(appData, "profiles.ini");
     if (!profilesIni.exists()) {
-        // Fine. No profiles.ini file
-        return toReturn;
+      // Fine. No profiles.ini file
+      return toReturn;
     }
-    
+
     boolean isRelative = true;
     String name = null;
     String path = null;
-    
+
     BufferedReader reader = null;
     try {
-        reader = new BufferedReader(new FileReader(profilesIni));
+      reader = new BufferedReader(new FileReader(profilesIni));
 
-        String line = reader.readLine();
+      String line = reader.readLine();
 
-        while (line != null) {
-          if (line.startsWith("[Profile")) {
-            File profile = newProfile(name, appData, path, isRelative);
-            if (profile != null) 
-              toReturn.put(name, profile);
-            
-            name = null;
-            path = null;
-          } else if (line.startsWith("Name=")) {
-              name = line.substring("Name=".length());
-          } else if (line.startsWith("IsRelative=")) {
-            isRelative = line.endsWith("1");
-          } else if (line.startsWith("Path=")) {
-            path = line.substring("Path=".length()); 
-          }
-          
-          line = reader.readLine();
+      while (line != null) {
+        if (line.startsWith("[Profile")) {
+          File profile = newProfile(name, appData, path, isRelative);
+          if (profile != null)
+            toReturn.put(name, profile);
+
+          name = null;
+          path = null;
+        } else if (line.startsWith("Name=")) {
+          name = line.substring("Name=".length());
+        } else if (line.startsWith("IsRelative=")) {
+          isRelative = line.endsWith("1");
+        } else if (line.startsWith("Path=")) {
+          path = line.substring("Path=".length());
         }
+
+        line = reader.readLine();
+      }
     } catch (IOException e) {
-        throw new WebDriverException(e);
+      throw new WebDriverException(e);
     } finally {
-        try {
-            if (reader != null) {
-              File profile = newProfile(name, appData, path, isRelative);
-              if (profile != null) 
-                toReturn.put(name, profile);
-              
-              reader.close();
-            }
-        } catch (IOException e) {
-            // Nothing that can be done sensibly. Swallowing.
+      try {
+        if (reader != null) {
+          File profile = newProfile(name, appData, path, isRelative);
+          if (profile != null)
+            toReturn.put(name, profile);
+
+          reader.close();
         }
-     }
-    
+      } catch (IOException e) {
+        // Nothing that can be done sensibly. Swallowing.
+      }
+    }
+
     return toReturn;
   }
-  
+
   protected File newProfile(String name, File appData, String path, boolean isRelative) {
     if (name != null && path != null) {
       File profileDir = isRelative ? new File(appData, path) : new File(path);
@@ -127,37 +127,38 @@ public class ProfilesIni {
 
     return new FirefoxProfile(tempDir);
   }
-  
+
   protected File locateAppDataDirectory(Platform os) {
     File appData;
     switch (os) {
-        case WINDOWS:
-        case VISTA:
-        case XP:
-            appData = new File(MessageFormat.format("{0}\\Mozilla\\Firefox", System.getenv("APPDATA")));
-            break;
+      case WINDOWS:
+      case VISTA:
+      case XP:
+        appData = new File(MessageFormat.format("{0}\\Mozilla\\Firefox", System.getenv("APPDATA")));
+        break;
 
-        case MAC:
-            appData = new File(MessageFormat.format("{0}/Library/Application Support/Firefox", System.getenv("HOME")));
-            break;
+      case MAC:
+        appData =
+            new File(MessageFormat.format("{0}/Library/Application Support/Firefox",
+                System.getenv("HOME")));
+        break;
 
-        default:
-            appData = new File(MessageFormat.format("{0}/.mozilla/firefox", System.getenv("HOME")));
-            break;
+      default:
+        appData = new File(MessageFormat.format("{0}/.mozilla/firefox", System.getenv("HOME")));
+        break;
     }
 
     if (!appData.exists()) {
-        // It's possible we're being run as part of an automated build.
-        // Assume the user knows what they're doing
-        return null;
+      // It's possible we're being run as part of an automated build.
+      // Assume the user knows what they're doing
+      return null;
     }
 
     if (!appData.isDirectory()) {
-        throw new WebDriverException("The discovered user firefox data directory " +
-                "(which normally contains the profiles) isn't a directory: " + appData.getAbsolutePath());
+      throw new WebDriverException("The discovered user firefox data directory " +
+          "(which normally contains the profiles) isn't a directory: " + appData.getAbsolutePath());
     }
 
     return appData;
   }
 }
-

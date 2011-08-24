@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox;
 
@@ -48,15 +48,16 @@ import java.io.IOException;
 
 
 /**
- * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a firefox extension,
- * which gets installed automatically if necessary. Important system variables are:
+ * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a
+ * firefox extension, which gets installed automatically if necessary. Important system variables
+ * are:
  * <ul>
  * <li><b>webdriver.firefox.bin</b> - Which firefox binary to use (normally "firefox" on the PATH).</li>
  * <li><b>webdriver.firefox.profile</b> - The name of the profile to use (normally "WebDriver").</li>
  * </ul>
  * <p/>
- * When the driver starts, it will make a copy of the profile it is using, rather than using that profile directly.
- * This allows multiple instances of firefox to be started.
+ * When the driver starts, it will make a copy of the profile it is using, rather than using that
+ * profile directly. This allows multiple instances of firefox to be started.
  */
 public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
   public static final String BINARY = "firefox_binary";
@@ -157,8 +158,8 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
     if (profileToUse == null && suggestedProfile != null) {
       profileToUse = new ProfilesIni().getProfile(suggestedProfile);
       if (profileToUse == null) {
-        throw new WebDriverException("Firefox profile '" + suggestedProfile 
-                + "' named in system property 'webdriver.firefox.profile' not found");	
+        throw new WebDriverException("Firefox profile '" + suggestedProfile
+            + "' named in system property 'webdriver.firefox.profile' not found");
       }
     } else if (profileToUse == null) {
       profileToUse = new FirefoxProfile();
@@ -167,11 +168,11 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
   }
 
   protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile,
-                                          String host) {
+      String host) {
     Lock lock = obtainLock();
     try {
       FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
-      
+
       return new NewProfileExtensionConnection(lock, bin, profile, host);
     } catch (Exception e) {
       throw new WebDriverException(e);
@@ -203,7 +204,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
 
   /**
    * Saves a screenshot of the current page into the given file.
-   *
+   * 
    * @deprecated Use getScreenshotAs(file), which returns a temporary file.
    */
   @Deprecated
@@ -243,7 +244,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
     public void quit() {
       if (connection != null) {
         connection.quit();
-        connection = null;        
+        connection = null;
       }
     }
 

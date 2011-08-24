@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox.internal;
 
@@ -44,7 +44,7 @@ import java.net.URL;
 public class NewProfileExtensionConnection implements CommandExecutor, ExtensionConnection {
   private final static int BUFFER_SIZE = 4096;
 
-  private static final NetworkUtils networkUtils =  new NetworkUtils();
+  private static final NetworkUtils networkUtils = new NetworkUtils();
   private final long connectTimeout;
   private final FirefoxBinary process;
   private final FirefoxProfile profile;
@@ -56,7 +56,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
   private HttpCommandExecutor delegate;
 
   public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile,
-                                       String host) throws Exception {
+      String host) throws Exception {
     this.host = host;
     this.connectTimeout = binary.getTimeout();
     this.lock = lock;
@@ -83,10 +83,11 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
 
       process.startProfile(profile, profileDir);
 
-      // Just for the record; the critical section is all along while firefox is starting with the profile. 
+      // Just for the record; the critical section is all along while firefox is starting with the
+      // profile.
 
       // There is currently no mechanism for the profile to notify us when it has started
-      // successfully and is ready for requests.  Instead, we must loop until we're able to
+      // successfully and is ready for requests. Instead, we must loop until we're able to
       // open a connection with the server, at which point it should be safe to continue
       // (since the extension shouldn't accept connections until it is ready for requests).
       long waitUntil = System.currentTimeMillis() + connectTimeout;
@@ -98,7 +99,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
 
         try {
           Thread.sleep(100);
-        } catch(InterruptedException ignored) {
+        } catch (InterruptedException ignored) {
           // Do nothing
         }
       }
@@ -159,10 +160,9 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
   }
 
   /**
-   * Builds the URL for the Firefox extension running on the given host and
-   * port. If the host is {@code localhost}, an attempt will be made to find the
-   * correct loopback address.
-   *
+   * Builds the URL for the Firefox extension running on the given host and port. If the host is
+   * {@code localhost}, an attempt will be made to find the correct loopback address.
+   * 
    * @param host The hostname the extension is running on.
    * @param port The port the extension is listening on.
    * @return The URL of the Firefox extension.

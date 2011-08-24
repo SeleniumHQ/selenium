@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox;
 
@@ -64,12 +64,14 @@ public class FirefoxBinary {
     return Platform.getCurrent().is(Platform.LINUX);
   }
 
-  public void startProfile(FirefoxProfile profile, File profileDir, String... commandLineFlags) throws IOException {
+  public void startProfile(FirefoxProfile profile, File profileDir, String... commandLineFlags)
+      throws IOException {
     String profileAbsPath = profileDir.getAbsolutePath();
     setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
     setEnvironmentProperty("MOZ_NO_REMOTE", "1");
     setEnvironmentProperty("MOZ_CRASHREPORTER_DISABLE", "1"); // Disable Breakpad
-    setEnvironmentProperty("NO_EM_RESTART", "1"); // Prevent the binary from detaching from the console
+    setEnvironmentProperty("NO_EM_RESTART", "1"); // Prevent the binary from detaching from the
+                                                  // console
 
     if (isOnLinux()
         && (profile.enableNativeEvents() || profile.alwaysLoadNoFocusLib())) {
@@ -120,8 +122,12 @@ public class FirefoxBinary {
 
     String existingLdLibPath = System.getenv("LD_LIBRARY_PATH");
     // The returned new ld lib path is terminated with ':'
-    String newLdLibPath = extractAndCheck(profileDir, NO_FOCUS_LIBRARY_NAME, PATH_PREFIX + "x86", PATH_PREFIX + "amd64");
-    newLdLibPath += extractAndCheck(profileDir, IME_IBUS_HANDLER_LIBRARY_NAME, PATH_PREFIX + "x86", PATH_PREFIX + "amd64");
+    String newLdLibPath =
+        extractAndCheck(profileDir, NO_FOCUS_LIBRARY_NAME, PATH_PREFIX + "x86", PATH_PREFIX +
+            "amd64");
+    newLdLibPath +=
+        extractAndCheck(profileDir, IME_IBUS_HANDLER_LIBRARY_NAME, PATH_PREFIX + "x86",
+            PATH_PREFIX + "amd64");
     if (existingLdLibPath != null && !existingLdLibPath.equals("")) {
       newLdLibPath += existingLdLibPath;
     }
@@ -133,12 +139,12 @@ public class FirefoxBinary {
   }
 
   protected String extractAndCheck(File profileDir, String noFocusSoName,
-                                   String jarPath32Bit, String jarPath64Bit) {
+      String jarPath32Bit, String jarPath64Bit) {
 
     // 1. Extract x86/x_ignore_nofocus.so to profile.getLibsDir32bit
     // 2. Extract amd64/x_ignore_nofocus.so to profile.getLibsDir64bit
     // 3. Create a new LD_LIB_PATH string to contain:
-    //   profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
+    // profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
 
     Set<String> pathsSet = new HashSet<String>();
     pathsSet.add(jarPath32Bit);
@@ -165,7 +171,7 @@ public class FirefoxBinary {
       File file = new File(outSoPath, noFocusSoName);
       if (!file.exists()) {
         throw new WebDriverException("Could not locate " + path + ": "
-                                     + "native events will not work.");
+            + "native events will not work.");
       }
 
       builtPath.append(outSoPath).append(":");
@@ -238,19 +244,20 @@ public class FirefoxBinary {
   }
 
   /**
-   * Waits for the process to execute, returning the command output taken from the profile's execution.
-   *
+   * Waits for the process to execute, returning the command output taken from the profile's
+   * execution.
+   * 
    * @throws InterruptedException if we are interrupted while waiting for the process to launch
-   * @throws IOException          if there is a problem with reading the input stream of the launching process
+   * @throws IOException if there is a problem with reading the input stream of the launching
+   *         process
    */
   public void waitFor() throws InterruptedException, IOException {
     process.waitFor();
   }
 
   /**
-   * Gets all console output of the binary.
-   * Output retrieval is non-destructive and non-blocking.
-   *
+   * Gets all console output of the binary. Output retrieval is non-destructive and non-blocking.
+   * 
    * @return the console output of the executed binary.
    * @throws IOException
    */
@@ -346,7 +353,8 @@ public class FirefoxBinary {
         } while (n != -1);
       } catch (IOException e) {
         if ("Stream closed".equals(e.getMessage())) {
-          // We can and should ignore this IOException, see http://code.google.com/p/selenium/issues/detail?id=1159
+          // We can and should ignore this IOException, see
+          // http://code.google.com/p/selenium/issues/detail?id=1159
         } else {
           System.err.print("ERROR: Could not read from stdout of " + process + ": ");
           e.printStackTrace(System.err);
@@ -355,7 +363,8 @@ public class FirefoxBinary {
         if (stdoutOfWatchedProcess != null) {
           try {
             stdoutOfWatchedProcess.close();
-          } catch (IOException ignored) {}
+          } catch (IOException ignored) {
+          }
         }
       }
     }

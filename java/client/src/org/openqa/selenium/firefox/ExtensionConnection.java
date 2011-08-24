@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.firefox;
 
@@ -28,6 +28,7 @@ public interface ExtensionConnection extends CommandExecutor {
 
   /**
    * Establishes a connection to the extension.
+   * 
    * @throws IOException If an I/O error occurs.
    */
   void start() throws IOException;
