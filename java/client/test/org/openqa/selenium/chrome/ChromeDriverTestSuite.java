@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.chrome;
 
@@ -53,10 +53,9 @@ public class ChromeDriverTestSuite extends TestCase {
   }
 
   /**
-   * Customized RemoteWebDriver that will communicate with a service that
-   * lives and dies with the entire test suite. We do not use
-   * {@link ChromeDriver} since that starts and stops the service with
-   * each instance (and that is too expensive for our purposes).
+   * Customized RemoteWebDriver that will communicate with a service that lives and dies with the
+   * entire test suite. We do not use {@link ChromeDriver} since that starts and stops the service
+   * with each instance (and that is too expensive for our purposes).
    */
   public static class DriverForTest extends RemoteWebDriver {
     public DriverForTest() {

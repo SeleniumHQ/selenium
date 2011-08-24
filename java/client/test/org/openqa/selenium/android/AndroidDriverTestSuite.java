@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.android;
 
@@ -32,10 +32,10 @@ import junit.framework.TestCase;
  * Unit tests suite for Android driver.
  */
 public class AndroidDriverTestSuite extends TestCase {
-  
+
   public static Test suite() throws Exception {
     TestEnvironment env = GlobalTestEnvironment.get();
-    if (env != null){
+    if (env != null) {
       env.stop();
     }
     GlobalTestEnvironment.set(new AndroidTestEnvironment());

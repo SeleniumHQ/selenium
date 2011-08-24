@@ -7,90 +7,90 @@ import junit.framework.TestCase;
  */
 public class SingleBrowserLocatorUnitTest extends TestCase {
 
-    public void testHumanFriendlyLauncherFileNamesReturnsEmptyStringWhenThereIsNoStandardFileNames() {
-        final SingleBrowserLocator locator;
+  public void testHumanFriendlyLauncherFileNamesReturnsEmptyStringWhenThereIsNoStandardFileNames() {
+    final SingleBrowserLocator locator;
 
-        locator = new SingleBrowserLocator() {
-            protected String[] standardlauncherFilenames() {
-                return new String[0];
-            }
+    locator = new SingleBrowserLocator() {
+      protected String[] standardlauncherFilenames() {
+        return new String[0];
+      }
 
-            protected String browserName() {
-                return null;
-            }
+      protected String browserName() {
+        return null;
+      }
 
-            protected String seleniumBrowserName() {
-                return null;
-            }
+      protected String seleniumBrowserName() {
+        return null;
+      }
 
-            protected String browserPathOverridePropertyName() {
-                return null;
-            }
+      protected String browserPathOverridePropertyName() {
+        return null;
+      }
 
-            protected String[] usualLauncherLocations() {
-                return new String[0];
-            }
+      protected String[] usualLauncherLocations() {
+        return new String[0];
+      }
 
-        };
-        assertEquals("", locator.humanFriendlyLauncherFileNames());
-    }
+    };
+    assertEquals("", locator.humanFriendlyLauncherFileNames());
+  }
 
-    public void testHumanFriendlyLauncherFileNamesReturnsQuotedFileNameWhenThereIsASingleFileName() {
-        final SingleBrowserLocator locator;
+  public void testHumanFriendlyLauncherFileNamesReturnsQuotedFileNameWhenThereIsASingleFileName() {
+    final SingleBrowserLocator locator;
 
-        locator = new SingleBrowserLocator() {
+    locator = new SingleBrowserLocator() {
 
-            protected String[] standardlauncherFilenames() {
-                return new String[] { "a-single-browser"};
-            }
+      protected String[] standardlauncherFilenames() {
+        return new String[] {"a-single-browser"};
+      }
 
-            protected String browserName() {
-                return null;
-            }
+      protected String browserName() {
+        return null;
+      }
 
-            protected String seleniumBrowserName() {
-                return null;
-            }
+      protected String seleniumBrowserName() {
+        return null;
+      }
 
-            protected String browserPathOverridePropertyName() {
-                return null;
-            }
+      protected String browserPathOverridePropertyName() {
+        return null;
+      }
 
-            protected String[] usualLauncherLocations() {
-                return new String[0];
-            }
+      protected String[] usualLauncherLocations() {
+        return new String[0];
+      }
 
-        };
-        assertEquals("'a-single-browser'", locator.humanFriendlyLauncherFileNames());
-    }
+    };
+    assertEquals("'a-single-browser'", locator.humanFriendlyLauncherFileNames());
+  }
 
-    public void testHumanFriendlyLauncherFileNamesReturnsAllFileNamesOrSeperatedWhenThereIsMoreThanOneFileName() {
-        final SingleBrowserLocator locator;
+  public void testHumanFriendlyLauncherFileNamesReturnsAllFileNamesOrSeperatedWhenThereIsMoreThanOneFileName() {
+    final SingleBrowserLocator locator;
 
-        locator = new SingleBrowserLocator() {
+    locator = new SingleBrowserLocator() {
 
-            protected String[] standardlauncherFilenames() {
-                return new String[] { "a-browser", "another-one"};
-            }
+      protected String[] standardlauncherFilenames() {
+        return new String[] {"a-browser", "another-one"};
+      }
 
-            protected String browserName() {
-                return null;
-            }
+      protected String browserName() {
+        return null;
+      }
 
-            protected String seleniumBrowserName() {
-                return null;
-            }
+      protected String seleniumBrowserName() {
+        return null;
+      }
 
-            protected String browserPathOverridePropertyName() {
-                return null;
-            }
+      protected String browserPathOverridePropertyName() {
+        return null;
+      }
 
-            protected String[] usualLauncherLocations() {
-                return new String[0];
-            }
+      protected String[] usualLauncherLocations() {
+        return new String[0];
+      }
 
-        };
-        assertEquals("'a-browser' or 'another-one'", locator.humanFriendlyLauncherFileNames());
-    }
+    };
+    assertEquals("'a-browser' or 'another-one'", locator.humanFriendlyLauncherFileNames());
+  }
 
 }
