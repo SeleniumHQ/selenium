@@ -106,6 +106,10 @@ public class Actions {
     return this;
   }
 
+  public Actions doubleClick() {
+    return this.click(null);
+  }
+
   public Actions moveToElement(WebElement toElement) {
     action.addAction(new MoveMouseAction(mouse, (Locatable) toElement));
     return this;
