@@ -1,3 +1,7 @@
+v2.5.1
+======
+  * No functional changes, providing .NET 4.0 binaries and updates to NuGet packaging only.
+
 v2.5.0
 ======
   * Bringing .NET SelectElement support class in line with Java Select class
