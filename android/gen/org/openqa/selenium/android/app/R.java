@@ -26,8 +26,24 @@ public final class R {
         public static final int single_session_layout=0x7f030000;
     }
     public static final class raw {
-        public static final int is_displayed_android=0x7f050000;
-        public static final int javascript_xpath=0x7f050001;
+        public static final int active_element_android=0x7f050000;
+        public static final int clear_android=0x7f050001;
+        public static final int default_content_android=0x7f050002;
+        public static final int execute_script_android=0x7f050003;
+        public static final int find_element_android=0x7f050004;
+        public static final int find_elements_android=0x7f050005;
+        public static final int frame_by_id_or_name_android=0x7f050006;
+        public static final int frame_by_index_android=0x7f050007;
+        public static final int get_attribute_value_android=0x7f050008;
+        public static final int get_size_android=0x7f050009;
+        public static final int get_text_android=0x7f05000a;
+        public static final int get_top_left_coordinates_android=0x7f05000b;
+        public static final int get_value_of_css_property_android=0x7f05000c;
+        public static final int is_displayed_android=0x7f05000d;
+        public static final int is_enabled_android=0x7f05000e;
+        public static final int is_selected_android=0x7f05000f;
+        public static final int javascript_xpath=0x7f050010;
+        public static final int submit_android=0x7f050011;
     }
     public static final class string {
         public static final int ctx_menu_navigate=0x7f060001;
