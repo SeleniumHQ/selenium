@@ -107,7 +107,7 @@ public class Actions {
   }
 
   public Actions doubleClick() {
-    return this.click(null);
+    return this.doubleClick(null);
   }
 
   public Actions moveToElement(WebElement toElement) {
