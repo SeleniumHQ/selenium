@@ -46,9 +46,10 @@ class VisualStudioMappings
 
     fun.add_mapping("dotnet_library", CrazyFunDotNet::DotNetLibrary.new)
     fun.add_mapping("dotnet_library", CrazyFunDotNet::CreateShortTaskName.new)
-    fun.add_mapping("dotnet_library", CrazyFunDotNet::CreateNuSpec.new)
-    fun.add_mapping("dotnet_library", CrazyFunDotNet::PackNuGetPackage.new)
-    fun.add_mapping("dotnet_library", CrazyFunDotNet::PublishNuGetPackage.new)
+
+    fun.add_mapping("dotnet_package", CrazyFunDotNet::CreateNuSpec.new)
+    fun.add_mapping("dotnet_package", CrazyFunDotNet::PackNuGetPackage.new)
+    fun.add_mapping("dotnet_package", CrazyFunDotNet::PublishNuGetPackage.new)
 
     fun.add_mapping("dotnet_docs", CrazyFunDotNet::GenerateDotNetDocs.new)
     fun.add_mapping("dotnet_docs", CrazyFunDotNet::MoveDotNetHelpFile.new)
@@ -63,9 +64,16 @@ end
 module CrazyFunDotNet
   class DotNetLibrary < Tasks
     def handle(fun, dir, args)
-      output_dir = 'build/dotnet'
-      full_path = args[:out].gsub("/", Platform.dir_separator)
-      desc "Build #{full_path}"
+      base_dir = "build/dotnet"
+      framework_ver = "net35"
+      unless args[:framework_ver].nil?
+        framework_ver = args[:framework_ver]
+      end
+
+      output_dir = File.join(base_dir, framework_ver)
+      full_path = File.join(output_dir, args[:out])
+      desc_path = full_path.gsub("/", Platform.dir_separator)
+      desc "Build #{desc_path}"
 
       task_name = task_name(dir, args[:name])
 
@@ -83,13 +91,8 @@ module CrazyFunDotNet
       buildable_references = resolve_buildable_targets(args[:refs])
       buildable_resources = resolve_buildable_targets(args[:resources])
       target = csc task_name do |csc_task|
-        puts "Compiling: #{task_name} as #{full_path}"
+        puts "Compiling: #{task_name} as #{desc_path}"
         FileUtils.mkdir_p output_dir
-
-        framework_ver = "3.5"
-        unless args[:framework_ver].nil?
-          framework_ver = args[:framework_ver]
-        end
 
         to_copy = []
         references = resolve_references(dir, args[:refs], framework_ver, to_copy)
@@ -113,9 +116,11 @@ module CrazyFunDotNet
         csc_task.use :net40
         csc_task.parameters params
         csc_task.compile FileList[[dir, args[:srcs]].join(File::SEPARATOR)]
-        csc_task.output = args[:out]
+        csc_task.output = full_path
         csc_task.target = :library
-        csc_task.doc = args[:doc]
+        if args[:omitdocxml].nil?
+          csc_task.doc = full_path.chomp(File.extname(args[:out])) + ".xml"
+        end
         csc_task.optimize = true
         csc_task.debug = :pdbonly
         csc_task.references references
@@ -132,7 +137,7 @@ module CrazyFunDotNet
       add_dependencies(target, dir, buildable_resources)
       add_dependencies(target, dir, args[:deps])
 
-      target.out = args[:out]
+      target.out = full_path
     end
 
     private
@@ -175,15 +180,15 @@ module CrazyFunDotNet
     end
 
     def resolve_framework_reference(ref, version)
-      if version == "3.5"
-        assembly = File.join(get_reference_assemblies_dir(), "v" + version, ref)
+      if version == "net35"
+        assembly = File.join(get_reference_assemblies_dir(), "v3.5", ref)
         unless File.exists? assembly
           assembly = File.join(get_framework_dir(), "v2.0.50727", ref)
         end
 
         return assembly.to_s
       end
-      return File.join(get_reference_assemblies_dir(), '.NETFramework', "v" + version, ref).to_s
+      return File.join(get_reference_assemblies_dir(), '.NETFramework', "v4.0", ref).to_s
     end
 
     def find_environment_variable(possible_vars, fallback)
@@ -220,7 +225,7 @@ module CrazyFunDotNet
   class RunDotNetTests < Tasks
     def handle(fun, dir, args)
       base_output_dir = 'build'
-      output_dir = base_output_dir + '/dotnet'
+      output_dir = base_output_dir + '/dotnet/net35'
       test_log_dir = base_output_dir + '/test_logs'
 
       task_name = task_name(dir, args[:name])
@@ -322,10 +327,10 @@ module CrazyFunDotNet
   class CreateNuSpec < Tasks
     def handle(fun, dir, args)
       output_dir = "build/dotnet"
-      spec_file = "#{output_dir}/nuget/#{File.basename(args[:out], File.extname(args[:out]))}.nuspec"
+      spec_file = "#{output_dir}/nuget/#{args[:packageid]}.nuspec"
       task_name = task_name(dir, args[:name])
       desc "Creates and optionally publishes the NuGet package for #{args[:out]}"
-      target = nuspec "#{task_name}:package" do |nuspec_task|
+      target = nuspec "#{task_name}" do |nuspec_task|
         mkdir_p "#{output_dir}/nuget"
         puts "Creating .nuspec for: #{task_name}"
         nuspec_task.output_file = spec_file
@@ -342,14 +347,32 @@ module CrazyFunDotNet
         nuspec_task.requireLicenseAcceptance = "false"
         nuspec_task.tags = args[:tags] unless args[:tags].nil?
 
-        nuspec_task.file File.basename(args[:out]), "lib"
-        nuspec_task.file File.basename(args[:doc]), "lib"
+        args[:deps].each do |dependency|
+          file_dependency_task = task_name(dir, dependency)
+          if Rake::Task.task_defined? file_dependency_task
+            relative_output_file = Rake::Task[file_dependency_task].out.sub(output_dir + "/", "").gsub("/", Platform.dir_separator)
+            output_subdir = File.dirname(relative_output_file)
+            dest_dir = "lib"
+            if output_subdir.length > 0
+              dest_dir << "/#{output_subdir}"
+            end
+            nuspec_task.file relative_output_file, dest_dir
+            nuspec_task.file relative_output_file.chomp(File.extname(relative_output_file)) + ".xml", dest_dir
+          end
+        end
 
-        packagedeps = resolve_package_dependencies(dir, args[:packagedeps], args[:refs])
-        packagedeps.each do |dep|
-          package_id = dep.keys[0]
-          package_version = dep.fetch(package_id)
-          nuspec_task.dependency package_id, package_version
+        unless args[:packagedeps].nil?
+          args[:packagedeps].each do |dep|
+            package_id = dep.keys[0]
+            package_version = version
+            package_dependency_task = task_name(dir, package_id)
+		    if Rake::Task.task_defined? package_dependency_task
+              package_id = Rake::Task[package_dependency_task].out
+            else
+              package_version = dep.fetch(package_id)
+            end
+            nuspec_task.dependency package_id, package_version
+          end
         end
 
         unless args[:assemblies].nil?
@@ -361,42 +384,17 @@ module CrazyFunDotNet
         end
       end
 
-      # Overwrite the out attribute with the package id so that dependent
-      # tasks can access it. This is okay because the actual task contains
-      # its own output information.
       target.out = args[:packageid]
-      add_dependencies(target, dir, ["#{task_name}"])
-    end
-
-    def resolve_package_dependencies(dir, packagedeps, references)
-      deps = []
-      # Walk the references list, and if we find a reference to a project
-      # that is built by the build process, add it as a dependent package.
-      unless references.nil?
-        references.each do |reference|
-          if reference.is_a? Symbol
-            reference_task_name = task_name(dir, reference) + ":package"
-            if Rake::Task.task_defined? reference_task_name
-              deps << {Rake::Task[reference_task_name].out => version}
-            end
-          end
-        end
-      end
-      unless packagedeps.nil?
-        packagedeps.each do |packagedep|
-          deps << packagedep
-        end
-      end
-      return deps
+      add_dependencies(target, dir, args[:deps])
     end
   end
 
   class PackNuGetPackage < Tasks
     def handle(fun, dir, args)
       output_dir = "build/dotnet"
-      spec_file = "#{output_dir}/nuget/#{File.basename(args[:out], File.extname(args[:out]))}.nuspec"
+      spec_file = "#{output_dir}/nuget/#{args[:packageid]}.nuspec"
       task_name = task_name(dir, args[:name])
-      target = nugetpack "#{task_name}:package" do |nugetpack_task|
+      target = nugetpack "#{task_name}" do |nugetpack_task|
         puts "Packaging: #{task_name}"
         nugetpack_task.command = "third_party/csharp/nuget/NuGet.exe"
         nugetpack_task.nuspec = spec_file
@@ -412,7 +410,7 @@ module CrazyFunDotNet
       package_file = "#{output_dir}/nuget/#{args[:packageid]}.#{version}.nupkg"
       task_name = task_name(dir, args[:name])
       desc "Publishes NuGet package for #{task_name} to NuGet Gallery"
-      target = task "#{task_name}:package" do
+      target = task "#{task_name}" do
         if ENV["apikey"].nil?
           puts "No API key specified. NuGet packages will not be published."
         else
@@ -446,8 +444,8 @@ module CrazyFunDotNet
         end
         tmp_dir = File.join(output_dir, "temp")
         mkdir_p tmp_dir
-        lst = Dir.glob(File.join(output_dir, "*.*"))
-        cp lst, tmp_dir
+        lst = FileList[output_dir + "/*"].exclude(/.*(nuget|temp).*/)
+        cp_r lst, tmp_dir
         zip(tmp_dir, output_file)
         rm_rf tmp_dir
       end

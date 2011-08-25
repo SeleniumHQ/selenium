@@ -16,7 +16,8 @@ dotnet_library(name = "common",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
     "third_party/csharp/nunit-2.5.9/framework/nunit.mocks.dll"
   ],
-  out = "build/dotnet/WebDriver.Common.Tests.dll"
+  out = "WebDriver.Common.Tests.dll",
+  omitdocxml = "true"
 )
 
 dotnet_test(name = "remote",
@@ -34,12 +35,13 @@ dotnet_test(name = "remote",
     ":common",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
   ],
-  out = "build/dotnet/WebDriver.Remote.Tests.dll",
+  out = "WebDriver.Remote.Tests.dll",
   files = [
     "WebDriver.Remote.Tests/WebDriver.Remote.Tests.config",
     "WebDriver.Remote.Tests/WebDriver.Remote.Tests.nunit"
   ],
-  project = "WebDriver.Remote.Tests.nunit"
+  project = "WebDriver.Remote.Tests.nunit",
+  omitdocxml = "true"
 )
 
 dotnet_test(name = "ie",
@@ -54,12 +56,13 @@ dotnet_test(name = "ie",
     ":common",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
   ],
-  out = "build/dotnet/WebDriver.IE.Tests.dll",
+  out = "WebDriver.IE.Tests.dll",
   files = [
     "WebDriver.IE.Tests/WebDriver.IE.Tests.config",
     "WebDriver.IE.Tests/WebDriver.IE.Tests.nunit"
   ],
-  project = "WebDriver.IE.Tests.nunit"
+  project = "WebDriver.IE.Tests.nunit",
+  omitdocxml = "true"
 )
 
 dotnet_test(name = "firefox",
@@ -74,12 +77,13 @@ dotnet_test(name = "firefox",
     ":common",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
   ],
-  out = "build/dotnet/WebDriver.Firefox.Tests.dll",
+  out = "WebDriver.Firefox.Tests.dll",
   files = [
     "WebDriver.Firefox.Tests/WebDriver.Firefox.Tests.config",
     "WebDriver.Firefox.Tests/WebDriver.Firefox.Tests.nunit"
   ],
-  project = "WebDriver.Firefox.Tests.nunit"
+  project = "WebDriver.Firefox.Tests.nunit",
+  omitdocxml = "true"
 )
 
 dotnet_test(name = "chrome",
@@ -94,12 +98,13 @@ dotnet_test(name = "chrome",
     ":common",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
   ],
-  out = "build/dotnet/WebDriver.Chrome.Tests.dll",
+  out = "WebDriver.Chrome.Tests.dll",
   files = [
     "WebDriver.Chrome.Tests/WebDriver.Chrome.Tests.config",
     "WebDriver.Chrome.Tests/WebDriver.Chrome.Tests.nunit"
   ],
-  project = "WebDriver.Chrome.Tests.nunit"
+  project = "WebDriver.Chrome.Tests.nunit",
+  omitdocxml = "true"
 )
 
 dotnet_test(name = "android",
@@ -113,12 +118,13 @@ dotnet_test(name = "android",
     ":common",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
   ],
-  out = "build/dotnet/WebDriver.Android.Tests.dll",
+  out = "WebDriver.Android.Tests.dll",
   files = [
     "WebDriver.Android.Tests/WebDriver.Android.Tests.config",
     "WebDriver.Android.Tests/WebDriver.Android.Tests.nunit"
   ],
-  project = "WebDriver.Android.Tests.nunit"
+  project = "WebDriver.Android.Tests.nunit",
+  omitdocxml = "true"
 )
 
 dotnet_test(name = "support",
@@ -135,12 +141,13 @@ dotnet_test(name = "support",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
     "third_party/nmock/NMock2.dll"
   ],
-  out = "build/dotnet/WebDriver.Support.Tests.dll",
+  out = "WebDriver.Support.Tests.dll",
   files = [
     "WebDriver.Support.Tests/WebDriver.Support.Tests.config",
     "WebDriver.Support.Tests/WebDriver.Support.Tests.nunit"
   ],
-  project = "WebDriver.Support.Tests.nunit"
+  project = "WebDriver.Support.Tests.nunit",
+  omitdocxml = "true"
 )
 
 dotnet_test(name = "core",
@@ -155,8 +162,9 @@ dotnet_test(name = "core",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
     "third_party/nmock/nmock.dll"
   ],
-  out = "build/dotnet/Selenium.Core.Tests.dll",
-  project = "Selenium.Core.Tests.dll"
+  out = "Selenium.Core.Tests.dll",
+  project = "Selenium.Core.Tests.dll",
+  omitdocxml = "true"
 )
 
 dotnet_test(name = "webdriverbackedselenium",
@@ -177,12 +185,13 @@ dotnet_test(name = "webdriverbackedselenium",
     "//dotnet:webdriverbackedselenium",
     "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll",
   ],
-  out = "build/dotnet/Selenium.WebDriverBackedSelenium.Tests.dll",
+  out = "Selenium.WebDriverBackedSelenium.Tests.dll",
   files = [
     "Selenium.WebDriverBackedSelenium.Tests/testHelpers.js",
     "Selenium.WebDriverBackedSelenium.Tests/Selenium.WebDriverBackedSelenium.Tests.config",
     "Selenium.WebDriverBackedSelenium.Tests/Selenium.WebDriverBackedSelenium.Tests.nunit"
   ],
-  project = "Selenium.WebDriverBackedSelenium.Tests.nunit"
+  project = "Selenium.WebDriverBackedSelenium.Tests.nunit",
+  omitdocxml = "true"
 )
 
