@@ -142,7 +142,12 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
       case STOP_SESSION:
         session = getSession();
         if (session == null) {
-          throw new GridException("Session not available - " + registry.getActiveSessions());
+          String sessionKey = null;
+          try {
+            sessionKey = extractSession();
+          } catch (RuntimeException ignore) {
+          }
+          throw new GridException("Session [" + sessionKey + "] not available - " + registry.getActiveSessions());
         }
         try {
           forwardRequest(session, this);
