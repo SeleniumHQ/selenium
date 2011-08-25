@@ -90,7 +90,6 @@
             <arg value="//${webdriver.atoms.inject}:get_size:android"/>
             <arg value="//${webdriver.atoms.inject}:get_text:android"/>
             <arg value="//${webdriver.atoms.inject}:get_top_left_coordinates:android"/>
-            <arg value="//${webdriver.atoms.inject}:get_top_left_coordinates_in_top_window:android"/>
             <arg value="//${webdriver.atoms.inject}:get_value_of_css_property:android"/>
             <arg value="//${webdriver.atoms.inject}:is_displayed:android"/>
             <arg value="//${webdriver.atoms.inject}:is_enabled:android"/>
