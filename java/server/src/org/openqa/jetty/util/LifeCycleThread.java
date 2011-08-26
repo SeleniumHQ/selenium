@@ -30,7 +30,7 @@ public abstract class LifeCycleThread implements LifeCycle, Runnable
 {
     private static Log log = LogFactory.getLog(LifeCycleThread.class);
 
-    private boolean _running;
+    private volatile boolean _running;
     private boolean _daemon ;
     private Thread _thread;
     
@@ -70,7 +70,7 @@ public abstract class LifeCycleThread implements LifeCycle, Runnable
         _running=true;
         if (_thread==null)
         {
-            _thread=new Thread(this);
+            _thread=new Thread(this); // Thread safety reviewed
             _thread.setDaemon(_daemon);
         }
         _thread.start();
