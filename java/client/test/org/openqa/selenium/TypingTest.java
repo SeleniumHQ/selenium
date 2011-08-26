@@ -548,7 +548,8 @@ public class TypingTest extends AbstractDriverTestCase {
     element.sendKeys(paste);
     assertThat(element.getAttribute("value"), is(paste));
 
-    element.sendKeys("" + Keys.HOME + Keys.SHIFT + Keys.END);
+    element.sendKeys(Keys.HOME);
+    element.sendKeys("" + Keys.SHIFT + Keys.END);
     assertThat(result.getText().trim(), containsString(" up: 16"));
 
     element.sendKeys(Keys.CONTROL, "x");
@@ -557,9 +558,15 @@ public class TypingTest extends AbstractDriverTestCase {
     element.sendKeys(Keys.CONTROL, "v");
     assertThat(element.getAttribute("value"), is(paste));
 
+    // Cut the last 3 letters.
     element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +
         Keys.SHIFT + Keys.END);
-    element.sendKeys(Keys.CONTROL, "x" + "v");
+
+    element.sendKeys(Keys.CONTROL, "x");
+    assertThat(element.getAttribute("value"), is(paste.substring(0, paste.length() - 3)));
+
+    // Paste the last 3 letters.
+    element.sendKeys(Keys.CONTROL, "v");
     assertThat(element.getAttribute("value"), is(paste));
 
     element.sendKeys(Keys.HOME);

@@ -201,6 +201,8 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
     use = element.ownerDocument.getElementsByTagName("html")[0];
   }
 
+  var originalDriver = this;
+
   // We may need a beat for firefox to hand over focus.
   this.jsTimer.setTimeout(function() {
     // Unless the element already had focus, set the cursor location to the end of the line
@@ -210,7 +212,7 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
     }
 
     Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
-        this.enableNativeEvents, this.jsTimer);
+        originalDriver.enableNativeEvents, originalDriver.jsTimer);
 
     respond.send();
   }, 0);
