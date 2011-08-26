@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 
@@ -43,7 +45,9 @@ public class DriverTestDecorator extends TestSetup {
     super.setUp();
 
     if (driver != null && freshDriver) {
-      driver.quit();
+      if (GlobalTestEnvironment.shouldLeaveDriverRunning()) {
+        driver.quit();
+      }
       driver = null;
     }
 
@@ -62,7 +66,9 @@ public class DriverTestDecorator extends TestSetup {
   protected void tearDown() throws Exception {
     if (!keepDriver || restartDriver) {
       try {
-        driver.quit();
+        if (!GlobalTestEnvironment.shouldLeaveDriverRunning()) {
+          driver.quit();
+        }
 
       } catch (Exception e) {
         // this is okay --- the driver could be quit by the test

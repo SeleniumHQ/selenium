@@ -55,4 +55,8 @@ public class GlobalTestEnvironment {
     }
     environment = null;
   }
+
+  public static boolean shouldLeaveDriverRunning() {
+    return Boolean.getBoolean("webdriver.singletestsuite.leaverunning");
+  }
 }
