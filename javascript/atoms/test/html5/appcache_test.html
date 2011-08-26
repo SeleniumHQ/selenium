@@ -6,8 +6,8 @@
   <script type="text/javascript">
     goog.require('bot.appcache');
     goog.require('bot.html5');
-    goog.require('goog.testing.jsunit');    
-  </script>  
+    goog.require('goog.testing.jsunit');
+  </script>
 
   <script type="text/javascript">
     function testGetStatusWithHtmlManifest() {
@@ -16,10 +16,8 @@
       }
 
       var win = bot.getWindow();
-      // Assumption: The test begins without the appcache manifest being in
-      // the browser cache.
       assertEquals(win.applicationCache.IDLE, bot.appcache.getStatus());
-    }    
+    }
   </script>
 </head>
 <body>

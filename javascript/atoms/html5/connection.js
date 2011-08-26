@@ -25,8 +25,8 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.html5');
 
+
 /**
- * Returns the connection state of the browser.
  * @return {boolean} Whether the browser currently has an internet
  *     connection.
  */

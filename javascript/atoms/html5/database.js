@@ -19,11 +19,13 @@
  */
 
 goog.provide('bot.storage.database');
+goog.provide('bot.storage.database.ResultSet');
 
 goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.html5');
+
 
 /**
  * Opens the database to access its contents. This function will create the
@@ -31,14 +33,14 @@ goog.require('bot.html5');
  * @see http://www.w3.org/TR/webdatabase/#databases
  *
  * @param {string} databaseName The name of the database.
- * @param {string} version The expected database version to be opened; default
- *     value is the empty string.
+ * @param {string=} opt_version The expected database version to be opened;
+ *     defaults to the empty string.
  * @param {string=} opt_displayName The name to be displayed to the user;
- *     default value is the databaseName.
+ *     defaults to the databaseName.
  * @param {number=} opt_size The estimated initial quota size of the database;
  *     default value is 5MB.
- * @param {!Window=} opt_window The window associated with the database;
- *     default is the main window.
+ * @param {Window=} opt_window The window associated with the database;
+ *     defaults to the main window.
  * @return {Database} The object to access the web database.
  *
  */
@@ -50,29 +52,24 @@ bot.storage.database.openOrCreate = function(databaseName, opt_version,
   var win = opt_window || bot.getWindow();
   var db;
 
-  if (bot.html5.isSupported(bot.html5.API.DATABASE, win)) {
-    db = win.openDatabase(databaseName, version, displayName, size);
-  } else {
-    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
-        'window.openDatabase undefined');
-  }
-
-  return db;
+  return win.openDatabase(databaseName, version, displayName, size);
 };
+
 
 /**
  * It executes a single SQL query on a given web database storage.
+ *
  * @param {string} databaseName The name of the database.
  * @param {string} query The SQL statement.
- * @param {Array<*>} args Arguments needed for the SQL statement.
+ * @param {Array.<*>} args Arguments needed for the SQL statement.
  * @param {!function(!SQLTransaction, !bot.storage.database.ResultSet)}
  *     queryResultCallback Callback function to be invoked on successful query
  *     statement execution.
- * @param {!function(!SQLError)} txErrorCallback
+ * @param {!function(SQLError)} txErrorCallback
  *     Callback function to be invoked on transaction (commit) failure.
  * @param {!function()=} opt_txSuccessCallback
  *     Callback function to be invoked on successful transaction execution.
- * @param {!function(!SQLTransaction, !SQLError)=} opt_queryErrorCallback
+ * @param {function(!SQLTransaction, !SQLError)=} opt_queryErrorCallback
  *     Callback function to be invoked on successful query statement execution.
  * @see http://www.w3.org/TR/webdatabase/#executing-sql-statements
  */
@@ -88,18 +85,20 @@ bot.storage.database.executeSql = function(databaseName, query, args,
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR, e.message);
   }
 
-  function queryCallback(tx, result) {
+  var queryCallback = function(tx, result) {
     var wrappedResult = new bot.storage.database.ResultSet(result);
     queryResultCallback(tx, wrappedResult);
   }
 
-  function transactionCallback(tx) {
+  var transactionCallback = function(tx) {
     tx.executeSql(query, args, queryCallback, opt_queryErrorCallback);
   }
 
   db.transaction(transactionCallback, txErrorCallback,
       opt_txSuccessCallback);
 };
+
+
 
 /**
  * A wrapper of the SQLResultSet object returned by the SQL statement.
@@ -111,7 +110,7 @@ bot.storage.database.ResultSet = function(sqlResultSet) {
 
   /**
    * The database rows retuned from the SQL query.
-   * @type {!Array<*>}
+   * @type {!Array.<*>}
    */
   this.rows = [];
   for (var i = 0; i < sqlResultSet.rows.length; i++) {

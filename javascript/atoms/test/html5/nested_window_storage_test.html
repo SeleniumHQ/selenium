@@ -10,18 +10,18 @@
     goog.require('bot.html5');
     goog.require('goog.testing.jsunit');
   </script>
-  
+
   <script type="text/javascript">
     function testNestedFrameLocalStorage() {
       if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
         return;
       }
 
-      var window = bot.frame.findFrameByNameOrId('frame_a');
-      assertNotNull(window);
+      var win = bot.frame.findFrameByNameOrId('frame_a');
+      assertNotNull(win);
 
-      var localStorage_ = bot.storage.getLocalStorage(window);
-      assertEquals('bar11', localStorage_.getItem('foo1'));      
+      var localStorage = bot.storage.getLocalStorage(win);
+      assertEquals('bar11', localStorage.getItem('foo1'));
     }
 
     function testUniqueWindowLocalStorage() {
@@ -29,9 +29,9 @@
         return;
       }
 
-      var localStorage_ = bot.storage.getLocalStorage();
-      assertEquals('bar11', localStorage_.getItem('foo1'));
-      assertEquals('bar_b11', localStorage_.getItem('foo_b1'));
+      var localStorage = bot.storage.getLocalStorage();
+      assertEquals('bar11', localStorage.getItem('foo1'));
+      assertEquals('bar_b11', localStorage.getItem('foo_b1'));
     }
 
     function testNestedFrameSessionStorage() {
@@ -39,11 +39,12 @@
         return;
       }
 
-      var window = bot.frame.findFrameByNameOrId('frame_a');
-      assertNotNull(window);
+      var win = bot.frame.findFrameByNameOrId('frame_a');
+      assertNotNull(win);
 
-      var sessionStorage_ = bot.storage.getSessionStorage(window);
-      assertEquals('bar22', sessionStorage_.getItem('foo2'));      
+      var sessionStorage = bot.storage.getSessionStorage(win);
+      //assertEquals('bar22', sessionStorage.getItem('foo2'));
+      assertEquals('bar22', win.sessionStorage.getItem('foo2'));
     }
 
     function testUniqueWindowSessionStorage() {
@@ -51,13 +52,13 @@
         return;
       }
 
-      var sessionStorage_ = bot.storage.getSessionStorage();
-      assertEquals('bar22', sessionStorage_.getItem('foo2'));
-      assertEquals('bar_b22', sessionStorage_.getItem('foo_b2'));
+      var sessionStorage = bot.storage.getSessionStorage();
+      assertEquals('bar22', sessionStorage.getItem('foo2'));
+      assertEquals('bar_b22', sessionStorage.getItem('foo_b2'));
     }
   </script>
 </head>
 <body>
-<iframe id="frame_a" src="frame_a.html"></iframe>
+<iframe id="frame_a" src="testdata/frame_a.html"></iframe>
 </body>
 </html>

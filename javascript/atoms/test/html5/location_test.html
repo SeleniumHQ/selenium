@@ -8,7 +8,7 @@
     goog.require('bot.geolocation');
     goog.require('bot.html5');
     goog.require('goog.testing.AsyncTestCase');
-    goog.require('goog.testing.jsunit');    
+    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent.product.isVersion');
   </script>
 
@@ -16,7 +16,7 @@
     var asyncTestCase = null;
 
     /**
-     * Tested with Chrome and Firefox. This method checks if the device location
+     * This method checks if the device location
      * can be retrieved, i.e. non-null value of Position within the timeout
      * period.
      */
@@ -35,7 +35,7 @@
         asyncTestCase.continueTesting();
         fail('When enabled, location should be known within 10s');
       }
-      
+
       try {
         bot.geolocation.getCurrentPosition(onSuccess, onError);
         asyncTestCase.waitForAsync('geolocation.getCurrentPosition');
@@ -57,13 +57,6 @@
       if (!bot.html5.isSupported(bot.html5.API.GEOLOCATION)) {
         return;
       }
-
-      // Adding an additional checking for Firefox.
-      //TODO: Testing required on other browser in this case.
-      if (goog.userAgent.product.FIREFOX) {
-        return;
-      }
-
       var posOptions = {
         enableHighAccuracy: true,
         maximumAge:0,
@@ -87,7 +80,7 @@
       }
     };
 
-    // TODO: Tests required to check the returned value.
+    // TODO(user): Add more tests to check the returned value.
   </script>
 </head>
 <body>

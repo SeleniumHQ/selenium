@@ -28,7 +28,8 @@ goog.require('bot.html5');
 
 /**
  * Returns the current state of the application cache.
- * @param {!Window=} opt_window The window object whose cache is checked;
+ *
+ * @param {Window=} opt_window The window object whose cache is checked;
  *     defaults to the main window.
  * @return {number} The state.
  */

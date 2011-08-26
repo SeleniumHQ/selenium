@@ -2,16 +2,16 @@
 <html>
 <head>
   <title>Web database storage</title>
-  <script src="../test_bootstrap.js"></script>
-  <script type="text/javascript">
+  <script src='../test_bootstrap.js'></script>
+  <script type='text/javascript'>
     goog.require('bot');
     goog.require('bot.html5');
     goog.require('bot.storage.database');
     goog.require('goog.testing.AsyncTestCase');
-    goog.require('goog.testing.jsunit');        
+    goog.require('goog.testing.jsunit');
   </script>
-  
-  <script type="text/javascript">
+
+  <script type='text/javascript'>
     var asyncTestCase = null;
 
     /**
@@ -20,8 +20,6 @@
      * This function must not fail or throw error for of the test functions.
      */
     function setUpPage() {
-      // Web SQL database is not supported on limited browsers, e.g. Firefox
-      // does not yet support it.
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
         return;
       }
@@ -30,7 +28,7 @@
         var win = bot.getWindow();
         var db = win.openDatabase('testDB', '1.0', 'db name', 5*1024*1024);
         db.transaction(transactionCallback, errorCallback, successCallback);
-        asyncTestCase.waitForAsync('testExecuteSqlWithSelectAll');        
+        asyncTestCase.waitForAsync('testExecuteSqlWithSelectAll');
       } catch (e) {
         throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR, e.message);
       }
@@ -61,14 +59,14 @@
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
         return;
       }
-      
+
       var db;
       try {
         db = bot.storage.database.openOrCreate('testDB', '1.0');
       } catch (e) {
         fail(e.message);
       }
-      
+
       assertNotNull(db);
       assertEquals(db.version, '1.0');
     }
@@ -78,14 +76,14 @@
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
         return;
       }
-      
+
       var db;
       try {
         db = bot.storage.database.openOrCreate('testDB');
-      } catch (e) {        
+      } catch (e) {
         fail(e.message);
       }
-      
+
       assertNotNull(db);
       assertEquals(db.version, '1.0');
     }
@@ -95,7 +93,7 @@
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
         return;
       }
-      
+
       try {
         var db = bot.storage.database.open('testDB', '2.0');
       } catch (e) {
@@ -103,7 +101,7 @@
         // version.
         return;
       }
-      
+
       fail('Database should fail to open.');
     }
 
@@ -112,11 +110,11 @@
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
         return;
       }
-      
+
       try {
         // WITH is errorneously used instead of WHERE
         bot.storage.database.executeSql('testDB',
-            "SELECT * from docids WITH id = 1", [], queryResultCallback,
+            'SELECT * from docids WITH id = 1', [], queryResultCallback,
             txErrorCallback, txSuccessCallback);
       } catch (e) {
         var errMsg = 'No exception should be raised on opening the database; ' +
@@ -141,17 +139,17 @@
         fail('Transaction should not succeed with invalid SQL statement');
       }
     }
-    
+
 
     function testExecuteSqlWithValidArgument() {
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
         return;
       }
-      
+
       try {
         bot.storage.database.executeSql('testDB',
-            "SELECT id from docids WHERE owner = ? AND name = ?",
-            ["Eng-A", "aabb"], queryResultCallback, txErrorCallback,
+            'SELECT id from docids WHERE owner = ? AND name = ?',
+            ['Eng-A', 'aabb'], queryResultCallback, txErrorCallback,
             txSuccessCallback);
       } catch (e) {
         var errMsg = 'No exception should be raised on opening the database; ' +
@@ -184,7 +182,7 @@
       if (!bot.html5.isSupported(bot.html5.API.DATABASE)) {
         return;
       }
-      
+
       //Grouping insert and delete together to keep no side-effect later.
       executeSqlInsert();
       executeSqlDelete();
@@ -193,8 +191,8 @@
     function executeSqlInsert() {
       try {
         bot.storage.database.executeSql('testDB',
-            "INSERT OR REPLACE INTO docids (id, name, owner) VALUES (?, ?, ?)",
-            [999, "file1", "Eng-L"], queryResultCallback, txErrorCallback,
+            'INSERT OR REPLACE INTO docids (id, name, owner) VALUES (?, ?, ?)',
+            [999, 'file1', 'Eng-L'], queryResultCallback, txErrorCallback,
             txSuccessCallback);
       } catch (e) {
         var errMsg = 'No exception should be raised on opening the database; ' +
@@ -223,7 +221,7 @@
     function executeSqlDelete() {
       try {
         bot.storage.database.executeSql('testDB',
-            "DELETE FROM docids WHERE id=999",
+            'DELETE FROM docids WHERE id=999',
             [], queryResultCallback, txErrorCallback,
             txSuccessCallback);
       } catch (e) {
@@ -254,7 +252,7 @@
 <body>
 <script>
   asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-  asyncTestCase.stepTimeout = 15 * 1000;  
+  asyncTestCase.stepTimeout = 15 * 1000;
 </script>
 </body>
 </html>

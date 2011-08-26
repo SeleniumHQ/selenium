@@ -158,8 +158,8 @@ goog.addDependency("../../../javascript/atoms/locators/locators.js", ['bot.locat
 goog.addDependency("../../../javascript/atoms/locators/xpath.js", ['bot.locators.xpath'], ['bot', 'bot.Error', 'bot.ErrorCode', 'goog.array', 'goog.dom', 'goog.dom.NodeType']);
 goog.addDependency("../../../javascript/atoms/locators/name.js", ['bot.locators.name'], ['bot.dom', 'goog.array', 'goog.dom']);
 goog.addDependency("../../../javascript/atoms/html5/location.js", ['bot.geolocation'], ['bot', 'bot.html5']);
-goog.addDependency("../../../javascript/atoms/html5/storage.js", ['bot.storage'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.html5']);
-goog.addDependency("../../../javascript/atoms/html5/html5_browser.js", ['bot.html5'], ['bot', 'bot.Error', 'bot.ErrorCode']);
+goog.addDependency("../../../javascript/atoms/html5/storage.js", ['bot.storage', 'bot.storage.Storage'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.html5']);
+goog.addDependency("../../../javascript/atoms/html5/html5_browser.js", ['bot.html5'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.userAgent', 'goog.userAgent']);
 goog.addDependency("../../../javascript/atoms/html5/connection.js", ['bot.connection'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.html5']);
 goog.addDependency("../../../javascript/atoms/html5/appcache.js", ['bot.appcache'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.html5']);
-goog.addDependency("../../../javascript/atoms/html5/database.js", ['bot.storage.database'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.html5']);
+goog.addDependency("../../../javascript/atoms/html5/database.js", ['bot.storage.database', 'bot.storage.database.ResultSet'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.html5']);
