@@ -34,7 +34,7 @@ goog.require('bot.inject.cache');
  *     the wire protocol.
  */
 webdriver.inject.frame.findFrameByIdOrName = function(idOrName, opt_root) {
-  return bot.inject.executeScript(bot.frame.findFrameByIdOrName,
+  return bot.inject.executeScript(bot.frame.findFrameByNameOrId,
       [idOrName, opt_root], true);
 };
 

@@ -20,62 +20,63 @@ limitations under the License.
     <title>frame_test.html</title>
     <script src="test_bootstrap.js"></script>
     <script type="text/javascript">
-        goog.require('goog.testing.jsunit');
+        goog.require('bot');
         goog.require('bot.frame');
+        goog.require('goog.testing.jsunit');
     </script>
 
     <script>
         function testFindFrameByName() {
-            var first = bot.frame.findFrameByIdOrName("first");
+            var first = bot.frame.findFrameByNameOrId("first");
             assertEquals(window.frames[0], first);
         }
 
         function testFindNestedFrameByNameFromTopWindowReturnsNull() {
-            var nested = bot.frame.findFrameByIdOrName("first.withadot");
+            var nested = bot.frame.findFrameByNameOrId("first.withadot");
             assertNull(nested);
         }
 
         function testFindFrameByNameShouldReturnNullIfFrameDoesNotExists() {
-            var notThere = bot.frame.findFrameByIdOrName("notThere");
+            var notThere = bot.frame.findFrameByNameOrId("notThere");
             assertNull(notThere);
         }
 
         function testFindNestedFrameByName() {
             var frame = document.getElementById("embedded");
-            var nested = bot.frame.findFrameByIdOrName("secondName", bot.frame.getFrameWindow(frame));
+            var nested = bot.frame.findFrameByNameOrId("secondName", bot.frame.getFrameWindow(frame));
             assertEquals(window.frames[2].frames[1], nested);
         }
 
         function testFindParentFrameReturnsNull() {
             var frame = document.getElementById("embedded");
-            var parent = bot.frame.findFrameByIdOrName("firstName", bot.frame.getFrameWindow(frame));
+            var parent = bot.frame.findFrameByNameOrId("firstName", bot.frame.getFrameWindow(frame));
             assertNull(parent);
         }
 
         function testFindFrameById() {
-            var second = bot.frame.findFrameByIdOrName("second");
+            var second = bot.frame.findFrameByNameOrId("second");
             assertEquals(window.frames[1], second);
         }
 
         function testFindNestedFrameByIdFailsToFindNestedFrames() {
-            var nested = bot.frame.findFrameByIdOrName("embed1.withadot");
+            var nested = bot.frame.findFrameByNameOrId("embed1.withadot");
             assertNull(nested);
         }
 
         function testFindFrameDoesNotFindParentFrames() {
             var embedded = window.frames[2];
-            var nested = bot.frame.findFrameByIdOrName("first", embedded);
+            var nested = bot.frame.findFrameByNameOrId("first", embedded);
             assertNull(nested);
         }
 
         function testFindNestedFrameById() {
             var embedded = window.frames[2];
-            var nested = bot.frame.findFrameByIdOrName("second", embedded);
+            var nested = bot.frame.findFrameByNameOrId("second", embedded);
             assertEquals(embedded.frames[1], nested);
         }
 
         function testFindFrameByIdReturnsNull() {
-            var notThere = bot.frame.findFrameByIdOrName("notThere");
+            var notThere = bot.frame.findFrameByNameOrId("notThere");
             assertNull(notThere);
         }
 
@@ -92,42 +93,42 @@ limitations under the License.
         }
 
         function testFindIFrameByName() {
-            var iframe = bot.frame.findFrameByIdOrName("iframename1", window.frames[1]);
+            var iframe = bot.frame.findFrameByNameOrId("iframename1", window.frames[1]);
             assertEquals(window.frames[1].frames[0], iframe);
         }
 
         function testFindNestedIFrameByNameFromTopWindowReturnsNull() {
-            var iframe = bot.frame.findFrameByIdOrName("iframename1");
+            var iframe = bot.frame.findFrameByNameOrId("iframename1");
             assertNull(iframe);
         }
 
         function testFindNestedIFrameByName() {
-            var nested = bot.frame.findFrameByIdOrName("iframename1", window.frames[1].frames[1]);
+            var nested = bot.frame.findFrameByNameOrId("iframename1", window.frames[1].frames[1]);
             assertEquals(window.frames[1].frames[1].frames[0], nested);
         }
 
         function testFindIFrameByNameDoesNotFindParentFrame() {
-            var parent = bot.frame.findFrameByIdOrName("iframename2", window.frames[1].frames[1].frames[0]);
+            var parent = bot.frame.findFrameByNameOrId("iframename2", window.frames[1].frames[1].frames[0]);
             assertNull(parent);
         }
 
         function testFindIFrameById() {
-            var second = bot.frame.findFrameByIdOrName("iframe2", window.frames[1]);
+            var second = bot.frame.findFrameByNameOrId("iframe2", window.frames[1]);
             assertEquals(window.frames[1].frames[1], second);
         }
 
         function testFindNestedIFrameByIdFailsToFindNestedFrames() {
-            var nested = bot.frame.findFrameByIdOrName("iframe1");
+            var nested = bot.frame.findFrameByNameOrId("iframe1");
             assertNull(nested);
         }
 
         function testFindIFrameByIdDoesNotFindParentFrame() {
-            var nested = bot.frame.findFrameByIdOrName("iframe2", window.frames[1].frames[1].frames[0]);
+            var nested = bot.frame.findFrameByNameOrId("iframe2", window.frames[1].frames[1].frames[0]);
             assertNull(nested);
         }
 
         function testFindIFrameByIdReturnsNull() {
-            var notThere = bot.frame.findFrameByIdOrName("notThere");
+            var notThere = bot.frame.findFrameByNameOrId("notThere");
             assertNull(notThere);
         }
     </script>

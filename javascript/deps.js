@@ -2,7 +2,7 @@
 goog.addDependency("../../../javascript/webdriver-bootstrap.js", [], []);
 goog.addDependency("../../../javascript/webdriver-atoms/interactions.js", ['webdriver.interactions'], ['bot.action']);
 goog.addDependency("../../../javascript/webdriver-atoms/web_element.js", ['webdriver.element'], ['bot.dom', 'goog.dom', 'goog.dom.TagName', 'goog.math', 'goog.string', 'goog.style']);
-goog.addDependency("../../../javascript/webdriver-atoms/inject/action.js", ['webdriver.inject.action'], ['bot.action', 'bot.inject']);
+goog.addDependency("../../../javascript/webdriver-atoms/inject/action.js", ['webdriver.inject.action'], ['bot.action', 'bot.inject', 'goog.dom.selection']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/frame.js", ['webdriver.inject.frame'], ['bot.frame', 'bot.inject', 'bot.inject.cache']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/execute_script.js", ['webdriver.inject'], ['bot.inject', 'bot.inject.cache']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/find_element.js", ['webdriver.inject.locators'], ['bot.inject', 'bot.locators']);

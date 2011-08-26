@@ -51,7 +51,8 @@ bot.frame.activeElement = function() {
  */
 bot.frame.getFrameWindow = function(element) {
   if (/^i?frame$/i.test(element.tagName)) {
-    return goog.dom.getFrameContentWindow(element);
+    var frame = /** @type {HTMLFrameElement|HTMLIFrameElement} */ element;
+    return goog.dom.getFrameContentWindow(frame);
   }
   throw new bot.Error(bot.ErrorCode.NO_SUCH_FRAME,
       "The given element isn't a frame or an iframe.");
@@ -63,40 +64,37 @@ bot.frame.getFrameWindow = function(element) {
  * under the given root. If no frame was found, we look for an
  * iframe by name or id.
  *
- * @param {string} id The frame id or the frame name.
+ * @param {string} nameOrId The frame's name or the frame's id.
  * @param {!Window=} opt_root The window to perform the search under.
- *     Defaults to {@code bot.getWindow()}
+ *     Defaults to {@code bot.getWindow()}.
  * @return {Window} The window if found, null otherwise.
  */
-bot.frame.findFrameByIdOrName = function(idOrName, opt_root) {
+bot.frame.findFrameByNameOrId = function(nameOrId, opt_root) {
   var domWindow = opt_root || bot.getWindow();
 
   // Lookup frame by name
-  var frame = domWindow.frames[idOrName];
+  var frame = domWindow.frames[nameOrId];
   if (frame) {
+    // This is needed because Safari 4 returns
+    // an HTMLFrameElement instead of a Window object.
     if (frame.document) {
       return frame;
     } else {
       return goog.dom.getFrameContentWindow(frame);
     }
   }
+
   // Lookup frame by id
-  var frames = bot.locators.findElements({tagName: 'frame'},
-      domWindow.document);
-  for (var i = 0; i < frames.length; i++) {
-    if (frames[i].id == idOrName){
-      return goog.dom.getFrameContentWindow(frames[i]);
-    }
+  var isFrame = function(element) {
+    return bot.dom.isElement(element, goog.dom.TagName.FRAME) ||
+        bot.dom.isElement(element, goog.dom.TagName.IFRAME);
   }
-
-  // Lookup iframe by id or name
-  var iframes = bot.locators.findElements({tagName: 'iframe'},
+  var elements = bot.locators.findElements({id: nameOrId},
       domWindow.document);
-  for (var i = 0; i < iframes.length; i++) {
-    if (iframes[i].id == idOrName) {
-      return goog.dom.getFrameContentWindow(iframes[i]);
+  for (var i = 0; i < elements.length; i++) {
+    if (isFrame(elements[i])) {
+      return goog.dom.getFrameContentWindow(elements[i]);
     }
-
   }
   return null;
 };

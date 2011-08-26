@@ -17,7 +17,7 @@
         return;
       }
 
-      var window = bot.frame.findFrameByIdOrName('frame_a');
+      var window = bot.frame.findFrameByNameOrId('frame_a');
       assertNotNull(window);
 
       var localStorage_ = bot.storage.getLocalStorage(window);
@@ -39,7 +39,7 @@
         return;
       }
 
-      var window = bot.frame.findFrameByIdOrName('frame_a');
+      var window = bot.frame.findFrameByNameOrId('frame_a');
       assertNotNull(window);
 
       var sessionStorage_ = bot.storage.getSessionStorage(window);
