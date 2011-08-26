@@ -88,7 +88,7 @@ public class WebDriverPriorityDemo {
   @Test(dependsOnMethods = "test")
   public void sendMoreRequests() throws MalformedURLException {
     for (int i = 0; i < 5; i++) {
-      new Thread(new Runnable() {
+      new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
           DesiredCapabilities ff = DesiredCapabilities.firefox();
           try {
@@ -101,8 +101,8 @@ public class WebDriverPriorityDemo {
     }
   }
 
-  WebDriver importantOne;
-  boolean importantOneStarted = false;
+  volatile WebDriver importantOne;
+  volatile boolean importantOneStarted = false;
 
   // adding a request with high priority at the end of the queue
   @Test(dependsOnMethods = "sendMoreRequests", timeOut = 30000)
@@ -117,7 +117,7 @@ public class WebDriverPriorityDemo {
     final DesiredCapabilities ff = DesiredCapabilities.firefox();
     ff.setCapability("_important", true);
 
-    new Thread(new Runnable() {
+    new Thread(new Runnable() { // Thread safety reviewed
       public void run() {
         try {
           importantOne = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
@@ -135,7 +135,7 @@ public class WebDriverPriorityDemo {
   @Test(dependsOnMethods = "sendTheImportantOne")
   public void sendMoreRequests2() throws MalformedURLException {
     for (int i = 0; i < 5; i++) {
-      new Thread(new Runnable() {
+      new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
           DesiredCapabilities ff = DesiredCapabilities.firefox();
           try {

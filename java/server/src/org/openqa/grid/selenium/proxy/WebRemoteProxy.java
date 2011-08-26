@@ -86,9 +86,8 @@ public abstract class WebRemoteProxy extends RemoteProxy
   /*
    * Self Healing part.Polls the remote, and marks it down if it cannot be reached twice in a row.
    */
-  private boolean down = false;
-  private boolean poll = true;
-  int nbFailedPoll = 0;
+  private volatile boolean down = false;
+  private volatile boolean poll = true;
   // TODO freynaud
   private List<RemoteException> errors = new CopyOnWriteArrayList<RemoteException>();
   private Thread pollingThread = null;
@@ -113,6 +112,8 @@ public abstract class WebRemoteProxy extends RemoteProxy
 
   public void startPolling() {
     pollingThread = new Thread(new Runnable() {
+      int nbFailedPoll = 0;
+
       public void run() {
         while (poll) {
           try {
