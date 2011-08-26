@@ -1,3 +1,17 @@
+v2.5.0
+======
+
+WebDriver
+  * Firefox 7 support without Native Events
+  * Implementing scrolling past the viewport for Firefox
+  * FIXED: 1020: Clicking on a link over multiple lines in Firefox
+  * Minor cleanups of code
+
+Grid
+  * FIXED: Thread Safety Issues
+  
+
+
 v2.4.0
 ======
 
