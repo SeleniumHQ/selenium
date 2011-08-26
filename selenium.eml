@@ -13,26 +13,26 @@
 	<lib name="easymockclassextension-2.4.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/easymock/easymockclassextension-2.4.jar!/"/>
 	</lib>
-	<lib name="htmlunit-core-js-2.8.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.8.jar!/"/>
+	<lib name="htmlunit-core-js-2.9.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.9.jar!/"/>
 	</lib>
 	<lib name="bcprov-jdk15-135.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/bcprov/bcprov-jdk15-135.jar!/"/>
 	</lib>
-	<lib name="htmlunit-2.8.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.8.jar!/"/>
+	<lib name="htmlunit-2.9.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.9.jar!/"/>
 	</lib>
 	<lib name="easymock-2.4.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/easymock/easymock-2.4.jar!/"/>
 	</lib>
-	<lib name="httpclient-4.0.2.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpclient-4.0.2.jar!/"/>
+	<lib name="httpclient-4.1.2.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpclient-4.1.2.jar!/"/>
 	</lib>
-	<lib name="httpcore-4.0.1.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpcore-4.0.1.jar!/"/>
+	<lib name="httpcore-4.1.2.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpcore-4.1.2.jar!/"/>
 	</lib>
-	<lib name="httpmime-4.0.1.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpmime-4.0.1.jar!/"/>
+	<lib name="httpmime-4.1.2.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/apache-httpclient/httpmime-4.1.2.jar!/"/>
 	</lib>
 	<lib name="cglib-nodep-2.1_3.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/cglib/cglib-nodep-2.1_3.jar!/"/>
@@ -43,8 +43,8 @@
 	<lib name="commons-io-2.0.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-io/commons-io-2.0.1.jar!/"/>
 	</lib>
-	<lib name="commons-lang-2.4.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-lang/commons-lang-2.4.jar!/"/>
+	<lib name="commons-lang-2.6.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-lang/commons-lang-2.6.jar!/"/>
 	</lib>
 	<lib name="commons-codec-1.4.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-codec/commons-codec-1.4.jar!/"/>
@@ -55,8 +55,8 @@
 	<lib name="commons-logging-1.1.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-logging/commons-logging-1.1.1.jar!/"/>
 	</lib>
-	<lib name="jna.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jna/jna.jar!/"/>
+	<lib name="jna-3.3.0.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jna/jna-3.3.0.jar!/"/>
 	</lib>
 	<lib name="jetty-lite-7.2.0-repackaged-for-android.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar!/"/>
@@ -93,14 +93,8 @@
 	<lib name="jetty-io-7.2.0.v20101020.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-io-7.2.0.v20101020.jar!/"/>
 	</lib>
-	<lib name="jmock-2.4.0.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-2.4.0.jar!/"/>
-	</lib>
 	<lib name="jetty-servlets-7.2.0.v20101020.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlets-7.2.0.v20101020.jar!/"/>
-	</lib>
-	<lib name="jmock-junit3-2.4.0.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-junit3-2.4.0.jar!/"/>
 	</lib>
 	<lib name="jetty-security-7.2.0.v20101020.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-security-7.2.0.v20101020.jar!/"/>
@@ -146,13 +140,22 @@
 	<lib name="cssparser-0.9.5.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/cssparser/cssparser-0.9.5.jar!/"/>
 	</lib>
-	<lib name="nekohtml-1.9.14.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/nekohtml/nekohtml-1.9.14.jar!/"/>
+	<lib name="nekohtml-1.9.15.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/nekohtml/nekohtml-1.9.15.jar!/"/>
 	</lib>
 	<lib name="xalan-2.7.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/xml/xalan-2.7.1.jar!/"/>
 	</lib>
-	<lib name="webdriver-opera-v0.4.3.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/webdriver-opera-v0.4.3.jar!/"/>
+	<lib name="operadriver-v0.6.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-v0.6.jar!/"/>
+	</lib>
+	<lib name="jmock-junit4-2.5.1.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-junit4-2.5.1.jar!/"/>
+	</lib>
+	<lib name="jmock-2.5.1.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-2.5.1.jar!/"/>
+	</lib>
+	<lib name="protobuf-java-2.3.0.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/google-protobuffers/protobuf-java-2.3.0.jar!/"/>
 	</lib>
 </component>

@@ -1,16 +1,16 @@
 package org.openqa.grid.e2e.wd;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
@@ -42,7 +42,7 @@ public class WebDriverPriorityDemo {
     hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
 
     SelfRegisteringRemote remote =
-        GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+            GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
     remote.addBrowser(DesiredCapabilities.firefox(), 1);
 
     remote.startRemoteServer();
@@ -55,11 +55,11 @@ public class WebDriverPriorityDemo {
     hub.getRegistry().setPrioritizer(new Prioritizer() {
       public int compareTo(Map<String, Object> a, Map<String, Object> b) {
         boolean aImportant =
-            a.get("_important") == null ? false : Boolean.parseBoolean(a.get("_important")
-                .toString());
+                a.get("_important") == null ? false : Boolean.parseBoolean(a.get("_important")
+                        .toString());
         boolean bImportant =
-            b.get("_important") == null ? false : Boolean.parseBoolean(b.get("_important")
-                .toString());
+                b.get("_important") == null ? false : Boolean.parseBoolean(b.get("_important")
+                        .toString());
         if (aImportant == bImportant) {
           return 0;
         }
@@ -165,7 +165,7 @@ public class WebDriverPriorityDemo {
 
       // validating new expected state
       while (!(hub.getRegistry().getActiveSessions().size() == 1 && hub.getRegistry()
-          .getNewSessionRequestCount() == 10)) {
+              .getNewSessionRequestCount() == 10)) {
         Thread.sleep(250);
         Reporter.log("waiting for correct state.");
       }
@@ -180,7 +180,7 @@ public class WebDriverPriorityDemo {
     } finally {
       // cleaning the queue to avoid having some browsers left over after
       // the test
-      hub.getRegistry().getNewSessionRequests().clear();
+      hub.getRegistry().clearNewSessionRequests();
       importantOne.quit();
     }
 

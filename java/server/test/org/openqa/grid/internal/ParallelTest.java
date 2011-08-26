@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ParallelTest {
 
@@ -60,12 +61,11 @@ public class ParallelTest {
 
   }
 
-  static boolean started = false;
-  static boolean processed = false;
+  static volatile boolean processed = false;
 
   /**
    * cannot reserve 2 app2
-   * 
+   *
    * @throws InterruptedException
    */
   @Test
@@ -76,19 +76,17 @@ public class ParallelTest {
       registry.add(p1);
       MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
       newSessionRequest.process();
-      new Thread(new Runnable() {
+
+      TestThreadCounter testThreadCounter = new TestThreadCounter();
+      testThreadCounter.start(new Runnable() {
         public void run() {
-          MockedRequestHandler newSessionRequest =
-              new MockedNewSessionRequestHandler(registry, app2);
-          started = true;
+          MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
           newSessionRequest.process();
           processed = true;
         }
-      }).start();
-      // give it time
-      Thread.sleep(250);
-      Assert.assertTrue(started);
-      Assert.assertFalse(processed);
+      });
+      testThreadCounter.waitUntilStarted(1);
+      Assert.assertFalse(processed);  // Can race, but should *never* fail
     } finally {
       registry.stop();
     }
@@ -112,15 +110,10 @@ public class ParallelTest {
     }
   }
 
-  static int cpt = 0;
-
-  static synchronized void inc() {
-    cpt++;
-  }
 
   /**
    * cannot get 6 app1
-   * 
+   *
    * @throws InterruptedException
    */
   @Test(timeout = 1000)
@@ -129,26 +122,27 @@ public class ParallelTest {
     RemoteProxy p1 = new RemoteProxy(req, registry);
     try {
       registry.add(p1);
+      final AtomicInteger count = new AtomicInteger();
+      TestThreadCounter testThreadCounter = new TestThreadCounter();
       for (int i = 0; i < 6; i++) {
-        new Thread(new Runnable() {
+        testThreadCounter.start(new Runnable() {
           public void run() {
             MockedRequestHandler newSessionRequest =
-                new MockedNewSessionRequestHandler(registry, app1);
+                    new MockedNewSessionRequestHandler(registry, app1);
             newSessionRequest.process();
-            inc();
+            count.incrementAndGet();
           }
-        }).start();
+        });
       }
-
-      Thread.sleep(250);
-      Assert.assertEquals(5, cpt);
+      testThreadCounter.waitUntilDone(5);
+      Assert.assertEquals(5, count.get());
     } finally {
       registry.stop();
     }
   }
 
 
-  static int cpt2 = 0;
+  static volatile int cpt2 = 0;
 
   static synchronized void inc2() {
     cpt2++;
@@ -158,7 +152,7 @@ public class ParallelTest {
 
   /**
    * cannot get app2 if 5 app1 are reserved.
-   * 
+   *
    * @throws InterruptedException
    */
   @Test(timeout = 1000)
@@ -168,32 +162,29 @@ public class ParallelTest {
     try {
       registry.add(p1);
 
+      TestThreadCounter testThreadCounter = new TestThreadCounter();
       for (int i = 0; i < 5; i++) {
-        new Thread(new Runnable() {
+        testThreadCounter.start(new Runnable() {
           public void run() {
             MockedRequestHandler newSessionRequest =
-                new MockedNewSessionRequestHandler(registry, app1);
+                    new MockedNewSessionRequestHandler(registry, app1);
             newSessionRequest.process();
-            inc2();
           }
-        }).start();
+        });
       }
+      testThreadCounter.waitUntilDone(5);
 
-      while (cpt2 != 5) {
-        Thread.sleep(100);
-      }
-
-      new Thread(new Runnable() {
+      testThreadCounter.start(new Runnable() {
         public void run() {
           MockedRequestHandler newSessionRequest =
-              new MockedNewSessionRequestHandler(registry, app2);
+                  new MockedNewSessionRequestHandler(registry, app2);
           newSessionRequest.process();
           app6Done = true;
         }
-      }).start();
+      });
 
-      Thread.sleep(250);
-      Assert.assertFalse(app6Done);
+      testThreadCounter.waitUntilStarted(6);
+      Assert.assertFalse(app6Done); // May race, but will never be true
     } finally {
       registry.stop();
     }

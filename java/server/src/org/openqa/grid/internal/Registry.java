@@ -467,15 +467,29 @@ public class Registry {
   /*
    * May race.
    */
-  public int getNewSessionRequestCount() {
-    return getNewSessionRequests().size();
+  public int getNewSessionRequestCount(){
+     try {
+       lock.lock();
+       return newSessionRequests.size();
+     } finally {
+        lock.unlock();
+     }
+  }
+
+  public List<RequestHandler> clearNewSessionRequests() {
+    try {
+      lock.lock();
+      return newSessionRequests;
+    } finally {
+      lock.unlock();
+    }
   }
 
   public List<RequestHandler> getNewSessionRequests() {
     try {
       lock.lock();
-      return newSessionRequests;
-    } finally {
+      return new ArrayList<RequestHandler>(newSessionRequests);
+   } finally {
       lock.unlock();
     }
   }
