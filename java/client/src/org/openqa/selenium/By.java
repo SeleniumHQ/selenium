@@ -27,8 +27,6 @@ import org.openqa.selenium.internal.FindsByXPath;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
-
 /**
  * Mechanism used to locate elements within a document. In order to create your own locating
  * mechanisms, it is possible to subclass this class and override the protected methods as required,
@@ -153,43 +151,6 @@ public abstract class By {
   }
 
   /**
-   * Finds elements by the presence of an attribute name irrespective
-   * of element name. Currently implemented via XPath.
-   */
-  public static By attribute(final String name) {
-    return attribute(name, null);
-  }
-
-  /**
-   * Finds elements by an named attribute matching a given value,
-   * irrespective of element name. Currently implemented via XPath.
-   */
-  public static By attribute(final String name, final String value) {
-    if (name == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the attribute name is null");
-
-    return new ByAttribute(name, value);
-
-  }
-
-  /**
-   * Finds elements a composite of other By strategies
-   */
-  public static By composite(final By... bys) {
-    if (bys == null)
-      throw new IllegalArgumentException("Cannot make composite with no varargs of Bys");
-    if (bys.length != 2
-            || !(bys[0] instanceof ByTagName)
-            || !(bys[1] instanceof ByClassName | bys[1] instanceof ByAttribute)) {
-      throw new IllegalArgumentException("can only do this with By.tagName " +
-              "followed one of By.className or By.attribute");
-    }
-
-    return new ByComposite(bys);
-  }
-
-  /**
    * Find a single element. Override this method if necessary.
    * 
    * @param context A context to use to find the element
@@ -211,10 +172,6 @@ public abstract class By {
    */
   public abstract List<WebElement> findElements(SearchContext context);
 
-  public By with(By by) {
-      return this;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o)
@@ -230,49 +187,6 @@ public abstract class By {
   @Override
   public int hashCode() {
     return toString().hashCode();
-  }
-
-  // Until WebDriver supports a composite in browser implementations, only
-  // TagName + ClassName is allowed as it can easily map to XPath.
-  private static class ByComposite extends By {
-
-    private final By[] bys;
-
-    public ByComposite(By... bys) {
-      this.bys = bys;
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context) {
-      return makeByXPath().findElements(context);
-    }
-
-    private ByXPath makeByXPath() {
-      String xpathExpression = ".//"
-              + ((ByTagName) bys[0]).name;
-
-      if (bys[1] instanceof ByClassName) {
-        ByClassName by = (ByClassName) bys[1];
-        xpathExpression = xpathExpression + "[" + by.classAmongstClasses() + "]";
-      }
-
-      if (bys[1] instanceof ByAttribute) {
-        ByAttribute by = (ByAttribute) bys[1];
-        xpathExpression = xpathExpression + "[" + by.nameAndValue() + "]";
-      }
-
-      return new ByXPath(xpathExpression);
-    }
-
-    @Override
-    public WebElement findElement(SearchContext context) {
-      return makeByXPath().findElement(context);
-    }
-
-    @Override
-    public String toString() {
-      return "composite(" + asList(bys) + ")";
-    }
   }
 
   private static class ById extends By {
@@ -442,7 +356,7 @@ public abstract class By {
       if (context instanceof FindsByClassName)
         return ((FindsByClassName) context).findElementsByClassName(className);
       return ((FindsByXPath) context).findElementsByXPath(".//*["
-          + classAmongstClasses() + "]");
+          + containingWord("class", className) + "]");
     }
 
     @Override
@@ -450,11 +364,7 @@ public abstract class By {
       if (context instanceof FindsByClassName)
         return ((FindsByClassName) context).findElementByClassName(className);
       return ((FindsByXPath) context).findElementByXPath(".//*["
-          + classAmongstClasses() + "]");
-    }
-
-    private String classAmongstClasses() {
-      return containingWord("class", className);
+          + containingWord("class", className) + "]");
     }
 
     /**
@@ -509,43 +419,6 @@ public abstract class By {
     @Override
     public String toString() {
       return "By.selector: " + selector;
-    }
-  }
-
-  private static class ByAttribute extends By {
-    private final String name;
-    private final String value;
-
-    public ByAttribute(String name, String value) {
-      this.name = name;
-      this.value = value;
-    }
-
-    @Override
-    public WebElement findElement(SearchContext context) {
-      return makeXPath().findElement(context);
-    }
-
-    private ByXPath makeXPath() {
-      return new ByXPath(".//*[" + nameAndValue() + "]");
-    }
-
-    private String nameAndValue() {
-      return "@" + name + val();
-    }
-
-    private String val() {
-      return value == null ? "" : " = '" + value + "'";
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context) {
-      return makeXPath().findElements(context);
-    }
-
-    @Override
-    public String toString() {
-      return "By.attribute: " + name + val();
     }
   }
 }

@@ -17,20 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.jmock.Expectations;
-import org.junit.Test;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import org.jmock.Expectations;
+import org.junit.Test;
 
 public class ByTest extends MockTestBase {
 
   @Test
-  public void shouldUseFindsByNameToLocateElementByName() {
+  public void shouldUseFindsByNameToLocateElementsByName() {
     final AllDriver driver = mock(AllDriver.class);
 
     checking(new Expectations() {
@@ -41,163 +39,6 @@ public class ByTest extends MockTestBase {
 
     By by = By.name("cheese");
     by.findElement(driver);
-  }
-
-  @Test
-  public void shouldUseFindsByNameToLocateElementsByName() {
-    final AllDriver driver = mock(AllDriver.class);
-
-    checking(new Expectations() {
-      {
-        one(driver).findElementsByName("cheese");
-      }
-    });
-
-    By by = By.name("cheese");
-    by.findElements(driver);
-  }
-
-  @Test
-  public void shouldMakeXPathForAttributeMatchWithValue() {
-    final AllDriver driver = mock(AllDriver.class);
-
-    checking(new Expectations() {{
-      one(driver).findElementByXPath(".//*[@foo = 'bar']");
-    }});
-
-    By by = By.attribute("foo", "bar");
-
-    by.findElement(driver);
-  }
-
-  @Test
-  public void shouldMakeXPathForAttributeMatchWithValueForMultipleElements() {
-    final AllDriver driver = mock(AllDriver.class);
-
-    checking(new Expectations() {{
-      one(driver).findElementsByXPath(".//*[@foo = 'bar']");
-    }});
-
-    By by = By.attribute("foo", "bar");
-
-    by.findElements(driver);
-  }
-
-  @Test
-  public void shouldMakeXPathForAttributeMatch() {
-    final AllDriver driver = mock(AllDriver.class);
-
-    checking(new Expectations() {{
-      one(driver).findElementByXPath(".//*[@foo]");
-    }});
-
-    By by = By.attribute("foo");
-
-    by.findElement(driver);
-  }
-
-  @Test
-  public void shouldMakeXPathForAttributeMatchForMultipleElements() {
-    final AllDriver driver = mock(AllDriver.class);
-
-    checking(new Expectations() {{
-      one(driver).findElementsByXPath(".//*[@foo]");
-    }});
-
-    By by = By.attribute("foo");
-
-    by.findElements(driver);
-  }
-
-  @Test
-  public void shouldMakeXpathFromCompositeOfTagNameAndClassName() {
-    final AllDriver driver = mock(AllDriver.class);
-
-    checking(new Expectations() {{
-      one(driver).findElementByXPath(".//foo[contains(concat(' ',normalize-space(@class),' '),' bar ')]");
-    }});
-
-    By by = By.composite(By.tagName("foo"), By.className("bar"));
-
-    by.findElement(driver);
-  }
-
-  @Test
-  public void shouldMakeXpathFromCompositeOfTagNameAndClassNameForMultipleElements() {
-    final AllDriver driver = mock(AllDriver.class);
-
-    checking(new Expectations() {{
-      one(driver).findElementsByXPath(".//foo[contains(concat(' ',normalize-space(@class),' '),' bar ')]");
-    }});
-
-    By by = By.composite(By.tagName("foo"), By.className("bar"));
-
-    by.findElements(driver);
-  }
-
-  @Test
-  public void shouldMakeXpathFromCompositeOfTagNameAndAttribute() {
-    final AllDriver driver = mock(AllDriver.class);
-
-    checking(new Expectations() {{
-      one(driver).findElementByXPath(".//foo[@bar = 'baz']");
-    }});
-
-    By by = By.composite(By.tagName("foo"), By.attribute("bar", "baz"));
-
-    by.findElement(driver);
-  }
-
-  @Test
-  public void shouldMakeXpathFromCompositeOfTagNameAndAttributeForMultipleElements() {
-    final AllDriver driver = mock(AllDriver.class);
-
-    checking(new Expectations() {{
-      one(driver).findElementsByXPath(".//foo[@bar]");
-    }});
-
-    By by = By.composite(By.tagName("foo"), By.attribute("bar"));
-
-    by.findElements(driver);
-  }
-
-  @Test
-  public void shouldBarfIfNotCompositeOfTagNameAndClassName() {
-
-    try {
-      By.composite(null);
-    } catch (IllegalArgumentException e) {
-      assertThat(e.getMessage(),
-              is("Cannot make composite with no varargs of Bys"));
-    }
-
-    try {
-      By.composite(new By[0]);
-    } catch (IllegalArgumentException e) {
-      assertThat(e.getMessage(),
-              is("can only do this with By.tagName followed one of By.className or By.attribute"));
-    }
-
-    try {
-      By.composite(By.tagName("foo"), By.xpath("bar"));
-    } catch (IllegalArgumentException e) {
-      assertThat(e.getMessage(),
-              is("can only do this with By.tagName followed one of By.className or By.attribute"));
-    }
-
-    try {
-      By.composite(By.tagName("foo"), By.className("bar"), By.className("baz"));
-    } catch (IllegalArgumentException e) {
-      assertThat(e.getMessage(),
-              is("can only do this with By.tagName followed one of By.className or By.attribute"));
-    }
-
-    try {
-      By.composite(By.tagName("foo"));
-    } catch (IllegalArgumentException e) {
-      assertThat(e.getMessage(),
-              is("can only do this with By.tagName followed one of By.className or By.attribute"));
-    }
   }
 
   @Test
