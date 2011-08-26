@@ -714,11 +714,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     List<WebElement> elements = findElementsByLinkText(linkText);
-    if (elements.size() == 0) {
-      throw new NoSuchElementException(
-          "Unable to find element with linkText " + linkText);
+    if (elements.isEmpty()) {
+      throw new NoSuchElementException("Unable to find element with linkText " + linkText);
     }
-    return elements.size() > 0 ? elements.get(0) : null;
+    return elements.get(0);
   }
 
   public List<WebElement> findElementsByLinkText(String linkText) {
@@ -727,8 +726,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     List<? extends HtmlElement> htmlElements = element.getHtmlElementsByTagName("a");
     List<WebElement> webElements = new ArrayList<WebElement>();
     for (HtmlElement e : htmlElements) {
-      if (e.getTextContent().equals(linkText)
-          && e.getAttribute("href") != null) {
+      if (e.getTextContent().equals(linkText) && e.getAttribute("href") != null) {
         webElements.add(getParent().newHtmlUnitWebElement(e));
       }
     }
