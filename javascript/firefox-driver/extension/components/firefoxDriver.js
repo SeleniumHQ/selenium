@@ -275,7 +275,11 @@ FirefoxDriver.prototype.executeAsyncScript = function(respond, parameters) {
 
 
 FirefoxDriver.prototype.getCurrentUrl = function(respond) {
-  var url = respond.session.getWindow().location;
+  var url;
+  var window = respond.session.getWindow();
+  if (window) {
+    url = window.location;
+  }
   if (!url) {
     url = respond.session.getBrowser().contentWindow.location;
   }
