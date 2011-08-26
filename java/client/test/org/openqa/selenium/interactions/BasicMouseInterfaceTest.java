@@ -243,7 +243,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
           "compensate for accessibility-provided offsets on Firefox 3.0 or 3.5");
       return;
     }
-    // Note: For some reason, the Accessibilyt API in Firefox will not be available before we
+    // Note: For some reason, the Accessibility API in Firefox will not be available before we
     // click on something. As a work-around, click on a different element just to get going.
     driver.findElement(By.id("linkToAnchorOnThisPage")).click();
 
