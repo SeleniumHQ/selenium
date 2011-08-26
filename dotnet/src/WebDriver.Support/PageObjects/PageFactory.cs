@@ -36,6 +36,8 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
         }
 
+        private static ProxyGenerator generator = new ProxyGenerator();
+
         /// <summary>
         /// Initializes the elements in the Page Object.
         /// </summary>
@@ -65,8 +67,6 @@ namespace OpenQA.Selenium.Support.PageObjects
                     {
                         castedAttribute.Using = member.Name;
                     }
-
-                    var generator = new ProxyGenerator();
 
                     var cacheAttributeType = typeof(CacheLookupAttribute);
                     var cache = member.GetCustomAttributes(cacheAttributeType, true).Length != 0 || member.DeclaringType.GetCustomAttributes(cacheAttributeType, true).Length != 0;
