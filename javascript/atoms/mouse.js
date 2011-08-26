@@ -278,7 +278,7 @@ bot.Mouse.prototype.clickElement_ = function() {
     return;
   }
 
-  if (targetLink && bot.Mouse.isFollowingHref_(targetLink)) {
+  if (targetLink && bot.Mouse.shouldFollowHref_(targetLink)) {
     bot.Mouse.followHref_(targetLink);
   }
 
@@ -439,26 +439,34 @@ bot.Mouse.isFormSubmitElement_ = function(element) {
 
 
 /**
+ * @return {boolean} Whether synthesized events are trusted to trigger click actions
+ * @private
+ */
+bot.Mouse.areSynthesisedEventsTrusted_ = function() {
+  return !goog.userAgent.IE &&
+      (goog.userAgent.GECKO &&
+       bot.isFirefoxExtension());
+};
+
+
+/**
+ * Indicates whether we should manually follow the href of the element we're clicking.
+ * 
  * Versions of firefox from 4+ will handle links properly when this is used in
  * an extension. Versions of Firefox prior to this may or may not do the right
  * thing depending on whether a target window is opened and whether the click
  * has caused a change in just the hash part of the URL.
  *
  * @param {!Element} element The element to consider.
- * @return {boolean} Whether following an href should be skipped.
+ * @return {boolean} Whether we should manually follow the href.
  * @private
  */
-bot.Mouse.isFollowingHref_ = function(element) {
+bot.Mouse.shouldFollowHref_ = function(element) {
   if (!(element && element.href)) {
     return false;
   }
 
-  if (goog.userAgent.IE ||
-      (goog.userAgent.GECKO && !bot.isFirefoxExtension())) {
-    return true;
-  }
-
-  if (!bot.isFirefoxExtension() || bot.userAgent.isVersion(4)) {
+  if (bot.Mouse.areSynthesisedEventsTrusted_()) {
     return false;
   }
 

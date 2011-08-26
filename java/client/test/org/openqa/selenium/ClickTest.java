@@ -26,6 +26,9 @@ import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 public class ClickTest extends AbstractDriverTestCase {
   @Override
   protected void setUp() throws Exception {
@@ -148,6 +151,16 @@ public class ClickTest extends AbstractDriverTestCase {
     } else {
       assertEquals("parent matches? true", log);
     }
+  }
+  
+  @JavascriptEnabled
+  @NoDriverAfterTest
+  public void testShouldOnlyFollowHrefOnce() {
+    driver.get(pages.clicksPage);
+    int windowHandlesBefore = driver.getWindowHandles().size();
+    
+    driver.findElement(By.id("new-window")).click();
+    assertThat(driver.getWindowHandles().size(), equalTo(windowHandlesBefore + 1));
   }
 
   @Ignore
