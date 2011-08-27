@@ -99,27 +99,18 @@ module Selenium
         end
 
         def create_driver
-          case driver
-          when :remote
-            begin
-              require 'selenium/webdriver/remote/http/persistent'
-              STDERR.puts "INFO: using net-http-persistent"
-              http_client = Selenium::WebDriver::Remote::Http::Persistent.new
-            rescue LoadError # net-http-persistent not available
-              http_client = Selenium::WebDriver::Remote::Http::Default.new
-            end
-
-            instance = WebDriver::Driver.for(:remote,
-              :desired_capabilities => remote_capabilities,
-              :url                  => remote_server.webdriver_url,
-              :http_client          => http_client
-            )
-          when :opera
-            ENV['SELENIUM_SERVER_JAR'] = remote_server_jar
-            instance = WebDriver::Driver.for :opera
-          else
-            instance = WebDriver::Driver.for driver
-          end
+          instance = case driver
+                     when :remote
+                       create_remote_driver
+                     when :opera
+                       create_opera_driver
+                     when :firefox
+                       create_firefox_driver
+                     when :chrome
+                       create_chrome_driver
+                     else
+                       WebDriver::Driver.for driver
+                     end
 
           @create_driver_error_count -= 1 unless @create_driver_error_count == 0
           instance
@@ -150,6 +141,42 @@ module Selenium
           msg << " (#{@create_driver_error.message})"
 
           raise DriverInstantiationError, msg, @create_driver_error.backtrace
+        end
+
+        def create_remote_driver
+          begin
+            require 'selenium/webdriver/remote/http/persistent'
+            STDERR.puts "INFO: using net-http-persistent"
+            http_client = Selenium::WebDriver::Remote::Http::Persistent.new
+          rescue LoadError # net-http-persistent not available
+            http_client = Selenium::WebDriver::Remote::Http::Default.new
+          end
+
+          WebDriver::Driver.for(:remote,
+            :desired_capabilities => remote_capabilities,
+            :url                  => remote_server.webdriver_url,
+            :http_client          => http_client
+          )
+        end
+
+        def create_opera_driver
+          ENV['SELENIUM_SERVER_JAR'] = remote_server_jar
+          WebDriver::Driver.for :opera
+        end
+
+        def create_firefox_driver
+          if ENV['native']
+            profile = WebDriver::Firefox::Profile.new
+            profile.native_events = true
+
+            WebDriver::Driver.for :firefox, :profile => profile
+          else
+            WebDriver::Driver.for :firefox
+          end
+        end
+
+        def create_chrome_driver
+          WebDriver::Driver.for :chrome, :native_events => !!ENV['native']
         end
 
       end # TestEnvironment
