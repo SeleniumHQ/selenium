@@ -507,9 +507,10 @@ end
 
 
 iphone_test(:name => "webdriver-iphone-client-test",
-            :srcs => [ "iphone/test/java/**/*.java" ],
+            :srcs => [ "java/client/test/org/openqa/selenium/iphone/**/*.java" ],
             :deps => [
-                       :test_common,
+                       "//java/client/test/org/openqa/selenium:tests",
+                       "//third_party/java/junit",
                        :iphone_server,
                        :iphone_client
                      ])
