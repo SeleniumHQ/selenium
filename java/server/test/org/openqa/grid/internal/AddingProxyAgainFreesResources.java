@@ -55,7 +55,7 @@ public class AddingProxyAgainFreesResources {
 
     // add the request to the queue
     final MockedRequestHandler req = request;
-    new Thread(new Runnable() {
+    new Thread(new Runnable() { // Thread safety reviewed
       public void run() {
         req.process();
       }

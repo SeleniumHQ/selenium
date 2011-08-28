@@ -65,7 +65,7 @@ public class DefaultToFIFOPriorityTest {
     // fill the queue with MAX requests.
     for (MockedRequestHandler h : requests) {
       final MockedRequestHandler req = h;
-      new Thread(new Runnable() {
+      new Thread(new Runnable() {  // Thread safety reviewed
         public void run() {
           req.process();
         }

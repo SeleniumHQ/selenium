@@ -10,6 +10,7 @@ import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +30,6 @@ public class ConcurrencyLock {
   private static Map<String, Object> ie = new HashMap<String, Object>();
   private static Map<String, Object> ff = new HashMap<String, Object>();
 
-  private static RemoteProxy p1;
-  private static RemoteProxy p2;
-
   /**
    * create a hub with 1 IE and 1 FF
    */
@@ -41,15 +39,15 @@ public class ConcurrencyLock {
     ie.put(APP, "IE");
     ff.put(APP, "FF");
 
-    p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ie, "http://machine1:4444", registry);
-    p2 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine2:4444", registry);
+    RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ie, "http://machine1:4444", registry);
+    RemoteProxy p2 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine2:4444", registry);
     registry.add(p1);
     registry.add(p2);
 
   }
 
 
-  private List<String> results = new ArrayList<String>();
+  private List<String> results = Collections.synchronizedList(new ArrayList<String>());
 
   @Test(timeout = 10000)
   public void runTest() throws InterruptedException {
@@ -61,7 +59,7 @@ public class ConcurrencyLock {
 
     List<Thread> threads = new ArrayList<Thread>();
     for (final Map<String, Object> cap : caps) {
-      Thread t = new Thread(new Runnable() {
+      Thread t = new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
           try {
             runTests2(cap);

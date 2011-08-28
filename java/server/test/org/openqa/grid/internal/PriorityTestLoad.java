@@ -70,7 +70,7 @@ public class PriorityTestLoad {
     // and keep adding request in the queue.
     for (MockedRequestHandler h : requests) {
       final MockedRequestHandler req = h;
-      new Thread(new Runnable() {
+      new Thread(new Runnable() {  // Thread safety reviewed
         public void run() {
           req.process();
           reqDone = true;
@@ -87,7 +87,7 @@ public class PriorityTestLoad {
     session.terminateSynchronousFOR_TEST_ONLY();
   }
 
-  private static boolean reqDone = false;
+  private static volatile boolean reqDone = false;
 
 
   // validate that the one with priority MAX has been assigned a proxy
