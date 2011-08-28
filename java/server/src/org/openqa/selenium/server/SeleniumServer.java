@@ -483,7 +483,7 @@ public class SeleniumServer implements SslCertificateGenerator {
   }
 
   private class ShutDownHook implements Runnable {
-    SeleniumServer selenium;
+    private final SeleniumServer selenium;
 
     ShutDownHook(SeleniumServer selenium) {
       this.selenium = selenium;

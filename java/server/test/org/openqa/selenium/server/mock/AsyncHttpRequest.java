@@ -31,7 +31,7 @@ public abstract class AsyncHttpRequest {
   protected static <T extends AsyncHttpRequest> T constructRequest(T request, String name,
       String url, String body, int timeoutInMillis) {
     request.runner = new _AsyncRunnable(url, body, timeoutInMillis);
-    request.thread = new Thread(request.runner);
+    request.thread = new Thread(request.runner);  // Thread safety reviewed
     request.thread.setName(name);
     request.thread.start();
     return request;
@@ -56,11 +56,12 @@ public abstract class AsyncHttpRequest {
   /** Performs the actual request, usually in a spawned thread */
   protected static class _AsyncRunnable implements Runnable {
 
-    String url, requestBody, resultBody;
-    int timeoutInMillis;
+    String url, requestBody; // Happens-before the thread
+    volatile String resultBody;
+    final int timeoutInMillis;
     // if an exception is thrown, put it here
-    IOException ioex;
-    RuntimeException rtex;
+    volatile IOException ioex;
+    volatile RuntimeException rtex;
 
     public _AsyncRunnable(String url, String body, int timeoutInMillis) {
       this.url = url;

@@ -29,8 +29,8 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
   static Logger log = Logger.getLogger(MockBrowserLauncher.class.getName());
   private final String sessionId;
   private Thread browser;
-  private boolean interrupted = false;
-  private String uniqueId;
+  private volatile boolean interrupted = false;
+  private final String uniqueId;
   private int sequenceNumber = 0;
   private final RemoteControlConfiguration configuration;
   private final Capabilities browserOptions;
@@ -175,7 +175,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
    * supported for IE
    */
   public void launchRemoteSession(String url) {
-    browser = new Thread(this);
+    browser = new Thread(this); // Thread safety reviewed
     browser.setName("mockbrowser");
     if (null != url) {
       browser.start();
