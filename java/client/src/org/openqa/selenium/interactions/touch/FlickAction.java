@@ -33,6 +33,9 @@ public class FlickAction extends TouchAction implements Action {
   private int xSpeed;
   private int ySpeed;
 
+  public static final int SPEED_NORMAL = 0;
+  public static final int SPEED_FAST = 1;
+
   public FlickAction(TouchScreen touchScreen, Locatable locationProvider, int x, int y, int speed) {
     super(touchScreen, locationProvider);
     xOffset = x;
