@@ -56,7 +56,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     
     x = link.getLocation().x;
     // After flicking, the element should now be visible on the screen.
-    assertTrue(x < 1000);
+    assertTrue(x < 2000);
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
@@ -77,7 +77,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     flick.perform();
     x = link.getLocation().x;
     // After flicking, the element should now be visible on the screen.
-    assertTrue(x < 1900);
+    assertTrue(x < 3000);
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
@@ -122,7 +122,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
       reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
-  public void testCanFlickVerticall() {
+  public void testCanFlickVerticallyFromWebElement() {
     driver.get(pages.touchLongContentPage);
 
     WebElement link = driver.findElement(By.id("link3"));
@@ -137,7 +137,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     flick.perform();
     y = link.getLocation().y;
     // After flicking, the element should now be visible on the screen.
-    assertTrue(y < 1900);
+    assertTrue(y < 3000);
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
@@ -158,7 +158,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     flick.perform();
     y = link.getLocation().y;
     // After flicking, the element should now be visible on the screen.
-    assertTrue(y < 3000);
+    assertTrue(y < 4000);
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
@@ -197,6 +197,6 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     flick.perform();
     y = link.getLocation().y;
     // After flicking, the element should now be visible on the screen.
-    assertTrue(y < 3000);
+    assertTrue(y < 4000);
   }
 }
