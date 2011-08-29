@@ -28,12 +28,13 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Ignore;
+import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 
 /**
- * Tests the basic scroll operations.
+ * Tests the basic scroll operations on touch enabled devices..
  */
 public class TouchScrollTest extends AbstractDriverTestCase {
 
@@ -43,25 +44,83 @@ public class TouchScrollTest extends AbstractDriverTestCase {
 
   @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
       reason = "TouchScreen operations not supported")
-  public void testCanScrollWithWebElement() {
-    // Load a page before loading the long page so that we're sure that the
-    // second load happens and that the page isn't already scrolled.
-    driver.get(pages.formPage);
-    driver.get(pages.touchScrollPage);
-    WebElement toScrollDown = driver.findElement(By.id("image_reference"));
-    Action scrollDown = getBuilder(driver).scroll(toScrollDown, 0, -150).build();
-    scrollDown.perform();
+  @NeedsFreshDriver
+  public void testCanScrollVerticallyFromWebElement() {
+    driver.get(pages.touchLongContentPage);
+
+    WebElement link = driver.findElement(By.id("link3"));
+    int y = link.getLocation().y;
+    // The element is located at the right of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(y > 4200);
+
+    WebElement toScroll = driver.findElement(By.id("imagestart"));
+    Action scroll = getBuilder(driver).scroll(toScroll, 0, -800).build();
+    scroll.perform();
+
+    y = link.getLocation().y;
+    // After scrolling, the location of the element should change accordingly.
+    assertTrue(y < 3500);
   }
 
   @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
       reason = "TouchScreen operations not supported")
-  public void testCanScrollWithXAndYOffsetsOnly() {
-    // Load a page before loading the long page so that we're sure that the
-    // second load happens and that the page isn't already scrolled.
-    driver.get(pages.formPage);
-    driver.get(pages.touchScrollPage);
-    WebElement toScrollDown = driver.findElement(By.id("image_reference"));
-    Action scrollDown = getBuilder(driver).scroll(0, -150).build();
+  @NeedsFreshDriver
+  public void testCanScrollHorizontallyFromWebElement() {
+    driver.get(pages.touchLongContentPage);
+
+    WebElement link = driver.findElement(By.id("link1"));
+    int x = link.getLocation().x;
+    // The element is located at the right of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(x > 2000);
+
+    WebElement toScroll = driver.findElement(By.id("imagestart"));
+    Action scroll = getBuilder(driver).scroll(toScroll, -400, 0).build();
+    scroll.perform();
+
+    x = link.getLocation().x;
+    // After scrolling, the location of the element should change accordingly.
+    assertTrue(x < 2000);
+  }
+
+  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
+      reason = "TouchScreen operations not supported")
+  @NeedsFreshDriver
+  public void testCanScrollVertically() {
+    driver.get(pages.touchLongContentPage);
+
+    WebElement link = driver.findElement(By.id("link3"));
+    int y = link.getLocation().y;
+    // The element is located at the right of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(y > 4200);
+
+    Action scrollDown = getBuilder(driver).scroll(0, 800).build();
     scrollDown.perform();
+
+    y = link.getLocation().y;
+    // After scrolling, the location of the element should change accordingly.
+    assertTrue(y < 3500);
+  }
+
+  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
+      reason = "TouchScreen operations not supported")
+  @NeedsFreshDriver
+  public void testCanScrollHorizontally() {
+    driver.get(pages.touchLongContentPage);
+
+    WebElement link = driver.findElement(By.id("link1"));
+    int x = link.getLocation().x;
+    // The element is located at the right of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(x > 2000);
+
+    Action scrollDown = getBuilder(driver).scroll(400, 0).build();
+    scrollDown.perform();
+
+    x = link.getLocation().y;
+    // After scrolling, the location of the element should change accordingly.
+    assertTrue(x < 1800);
   }
 }

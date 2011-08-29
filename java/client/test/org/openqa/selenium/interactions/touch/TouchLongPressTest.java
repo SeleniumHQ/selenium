@@ -25,30 +25,54 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
-import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.By;
+import org.junit.Test;
 import org.openqa.selenium.Ignore;
+import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.StubRenderedWebElement;
+import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
+
+import org.jmock.Expectations;
+
+import org.junit.Before;
 
 /**
- * Tests the basic long press operations.
+ * Tests the long press action.
  */
-public class TouchLongPressTest extends AbstractDriverTestCase {
+public class TouchLongPressTest extends MockTestBase {
+
+  private TouchScreen dummyTouch;
+  private Locatable locatableElement;
+  private Coordinates dummyCoordinates;
 
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen operations not supported")
-  public void testCanLongPress() {
-    driver.get(pages.clicksPage);
+  @Before
+  public void setUp() {
+    dummyTouch = mock(TouchScreen.class);
+    dummyCoordinates = mock(Coordinates.class);
 
-    WebElement toLongPress = driver.findElement(By.id("normal"));
-    Action longPress = getBuilder(driver).longPress(toLongPress).build();
-    longPress.perform();
-
+    locatableElement = new StubRenderedWebElement() {
+      @Override
+      public Coordinates getCoordinates() {
+        return dummyCoordinates;
+      }
+    };
   }
 
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+      reason = "TouchScreen operations not supported")
+  @Test
+  public void testCanLongPress() {
+    checking(new Expectations() {{
+      one(dummyTouch).longPress(dummyCoordinates);
+    }});
+
+    LongPressAction longPress = new LongPressAction(dummyTouch, locatableElement);
+    longPress.perform();
+  }
 }

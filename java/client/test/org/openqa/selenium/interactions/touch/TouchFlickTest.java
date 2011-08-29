@@ -25,48 +25,178 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
-import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Ignore;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Action;
 
 /**
- * Tests the basic flick operations.
+ * Tests the basic flick operations on touch enabled devices.
  */
 public class TouchFlickTest extends AbstractDriverTestCase {
-
+  
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
-      + "operations not supported")
-  public void testCanFlickHorizontally() {
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+      reason = "TouchScreen operations not supported")
+  @NeedsFreshDriver
+  public void testCanFlickHorizontallyFromWebElement() {
     driver.get(pages.touchLongContentPage);
+
     WebElement toFlick = driver.findElement(By.id("imagestart"));
-    Action flick = getBuilder(driver).flick(toFlick, -150, 0, 0).build();
+    WebElement link = driver.findElement(By.id("link1"));
+    int x = link.getLocation().x;
+    // The element is located at the right of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(x > 2000);
+
+    Action flick = getBuilder(driver).flick(toFlick, -400, 0, FlickAction.SPEED_NORMAL)
+        .build();
     flick.perform();
+    
+    x = link.getLocation().x;
+    // After flicking, the element should now be visible on the screen.
+    assertTrue(x < 1000);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
-      + "operations not supported")
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+      reason = "TouchScreen operations not supported")
+  @NeedsFreshDriver
+  public void testCanFlickHorizontallyFastFromWebElement() {
+    driver.get(pages.touchLongContentPage);
+
+    WebElement toFlick = driver.findElement(By.id("imagestart"));
+    WebElement link = driver.findElement(By.id("link2"));
+    int x = link.getLocation().x;
+    // The element is located at the right of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(x > 3500);
+
+    Action flick = getBuilder(driver).flick(toFlick, -400, 0, FlickAction.SPEED_FAST)
+        .build();
+    flick.perform();
+    x = link.getLocation().x;
+    // After flicking, the element should now be visible on the screen.
+    assertTrue(x < 1900);
+  }
+
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+      reason = "TouchScreen operations not supported")
+  @NeedsFreshDriver
+  public void testCanFlickHorizontally() {
+    driver.get(pages.clicksPage);
+    driver.get(pages.touchLongContentPage);
+
+    WebElement link = driver.findElement(By.id("link1"));
+    int x = link.getLocation().x;
+    // The element is located at the right of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(x > 2000);
+
+    Action flick = getBuilder(driver).flick(750, 0).build();
+    flick.perform();
+    x = link.getLocation().y;
+    // After flicking, the element should now be visible on the screen.
+    assertTrue(x < 1000);
+  }
+
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+      reason = "TouchScreen operations not supported")
+  @NeedsFreshDriver
+  public void testCanFlickHorizontallyFast() {
+    driver.get(pages.touchLongContentPage);
+
+    WebElement link = driver.findElement(By.id("link2"));
+    int x = link.getLocation().x;
+    // The element is located at the right of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(x > 3500);
+
+    Action flick = getBuilder(driver).flick(1500, 0).build();
+    flick.perform();
+    x = link.getLocation().y;
+    // After flicking, the element should now be visible on the screen.
+    assertTrue(x < 1900);
+  }
+
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+      reason = "TouchScreen operations not supported")
+  @NeedsFreshDriver
+  public void testCanFlickVerticall() {
+    driver.get(pages.touchLongContentPage);
+
+    WebElement link = driver.findElement(By.id("link3"));
+    int y = link.getLocation().y;
+    // The element is located at the bottom of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(y > 4200);
+
+    WebElement toFlick = driver.findElement(By.id("imagestart"));
+    Action flick = getBuilder(driver).flick(toFlick, 0, -600, FlickAction.SPEED_NORMAL)
+        .build();
+    flick.perform();
+    y = link.getLocation().y;
+    // After flicking, the element should now be visible on the screen.
+    assertTrue(y < 1900);
+  }
+
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+      reason = "TouchScreen operations not supported")
+  @NeedsFreshDriver
+  public void testCanFlickVerticallyFastFromWebElement() {
+    driver.get(pages.touchLongContentPage);
+
+    WebElement link = driver.findElement(By.id("link4"));
+    int y = link.getLocation().y;
+    // The element is located at the bottom of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(y > 8700);
+
+    WebElement toFlick = driver.findElement(By.id("imagestart"));
+    Action flick = getBuilder(driver).flick(toFlick, 0, -600, FlickAction.SPEED_FAST)
+        .build();
+    flick.perform();
+    y = link.getLocation().y;
+    // After flicking, the element should now be visible on the screen.
+    assertTrue(y < 3000);
+  }
+
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+      reason = "TouchScreen operations not supported")
+  @NeedsFreshDriver
   public void testCanFlickVertically() {
     driver.get(pages.touchLongContentPage);
-    driver.navigate().refresh();
-    WebElement toFlick = driver.findElement(By.id("imagestart"));
-    Action flick = getBuilder(driver).flick(toFlick, 0, -150, 0).build();
+
+    WebElement link = driver.findElement(By.id("link3"));
+    int y = link.getLocation().y;
+    // The element is located at the bottom of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(y > 4200);
+
+    Action flick = getBuilder(driver).flick(0, 750).build();
     flick.perform();
+    y = link.getLocation().y;
+    
+    // After flicking, the element should now be visible on the screen.
+    assertTrue(y < 4200);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
-      + "operations not supported")
-  public void testCanFlickFast() {
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+      reason = "TouchScreen operations not supported")
+  @NeedsFreshDriver
+  public void testCanFlickVerticallyFast() {
     driver.get(pages.touchLongContentPage);
-    driver.navigate().refresh();
 
-    Action flick = getBuilder(driver).flick(0, 4000).build();
+    WebElement link = driver.findElement(By.id("link4"));
+    int y = link.getLocation().y;
+    // The element is located at the bottom of the page,
+    // so it is not initially visible on the screen.
+    assertTrue(y > 8700);
+
+    Action flick = getBuilder(driver).flick(0, 1500).build();
     flick.perform();
+    y = link.getLocation().y;
+    // After flicking, the element should now be visible on the screen.
+    assertTrue(y < 3000);
   }
 }

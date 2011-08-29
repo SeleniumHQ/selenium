@@ -33,7 +33,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 
 /**
- * Tests the basic double tap operations
+ * Tests the basic double tap operations.
  */
 public class TouchDoubleTapTest extends AbstractDriverTestCase {
 
@@ -47,12 +47,21 @@ public class TouchDoubleTapTest extends AbstractDriverTestCase {
     doubleTap.perform();
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
-      + "operations not supported")
-  public void testCanDoubleTapOnALinkAndFollowIt() {
-    driver.get(pages.clicksPage);
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+      reason = "TouchScreen operations not supported")
+  public void testCanDoubleTapOnAnImageAndAlterLocationOfElementsInScreen() {
+    driver.get(pages.touchLongContentPage);
 
-    doubleTapOnElement("normal");
+    WebElement image = driver.findElement(By.id("imagestart"));
+    int y = image.getLocation().y;
+    // The element is located at a certain point, after double tapping,
+    // the y coordinate must change.
+    assertTrue(y > 100);
+
+    doubleTapOnElement("imagestart");
+
+    y = image.getLocation().y;
+    assertTrue(y < 50);
   }
 
 }
