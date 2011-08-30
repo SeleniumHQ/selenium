@@ -22,6 +22,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
@@ -120,7 +121,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE})
+  @Ignore({IPHONE, SELENESE}) //IPHONE BUG
   public void testArrowKeysShouldNotBePrintable() {
     driver.get(pages.javascriptPage);
 
@@ -130,7 +131,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
-  @Ignore({HTMLUNIT, SELENESE})
+  @Ignore({HTMLUNIT, IPHONE, SELENESE}) //IPHONE BUG
   public void testShouldBeAbleToUseArrowKeys() {
     driver.get(pages.javascriptPage);
 
@@ -235,7 +236,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, SELENESE, ANDROID},
+  @Ignore(value = {HTMLUNIT, IE, IPHONE, SELENESE, ANDROID}, //IPHONE BUG
       reason = "firefox-specific. Android uses prev/next.")
   public void testShouldReportKeyCodeOfArrowKeys() {
     driver.get(pages.javascriptPage);
@@ -266,7 +267,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID}, //IPHONE BUG
       reason = "untested user agents")
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     driver.get(pages.javascriptPage);
@@ -369,7 +370,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID}, //IPHONE BUG
       reason = "untested user agents")
   public void testArrowKeysAndPageUpAndDown() {
     driver.get(pages.javascriptPage);
@@ -401,7 +402,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID}, //IPHONE BUG
       reason = "untested user agents")
   public void testDeleteAndBackspaceKeys() {
     driver.get(pages.javascriptPage);
@@ -419,7 +420,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE}, reason = "untested user agents")
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE}, reason = "untested user agents") //IPHONE BUG
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -430,7 +431,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID}, //IPHONE BUG
       reason = "untested user agents")
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
@@ -445,7 +446,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, ANDROID},
+  @Ignore(value = {IPHONE, SELENESE, ANDROID}, //IPHONE BUG
       reason = "untested user agents")
   public void testFunctionKeys() {
     driver.get(pages.javascriptPage);
@@ -458,7 +459,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA},
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID, OPERA}, //IPHONE BUG
       reason = "untested user agents. Opera: F2 focuses location bar")
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
@@ -592,7 +593,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE}, reason = "untested user agents")
+  @Ignore(value = {IPHONE, SELENESE}, reason = "untested user agents") //IPHONE BUG
   public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
     driver.get(pages.javascriptPage);
 
