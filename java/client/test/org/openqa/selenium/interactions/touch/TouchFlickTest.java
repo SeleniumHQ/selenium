@@ -95,9 +95,9 @@ public class TouchFlickTest extends AbstractDriverTestCase {
 
     Action flick = getBuilder(driver).flick(750, 0).build();
     flick.perform();
-    x = link.getLocation().y;
+    int y = link.getLocation().y;
     // After flicking, the element should now be visible on the screen.
-    assertTrue(x < 1000);
+    assertTrue(y < 1000);
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
