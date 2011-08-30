@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.html.Block;
 import org.openqa.jetty.html.Break;
 import org.openqa.jetty.html.Composite;
@@ -50,6 +49,7 @@ import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.http.HttpServer;
 import org.openqa.jetty.http.PathMap;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
+import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.LifeCycle;
 import org.openqa.jetty.util.LogSupport;
 import org.openqa.jetty.util.URI;
@@ -86,7 +86,7 @@ public class AdminServlet extends HttpServlet
         String action=request.getParameter("A");
         if ("exit all servers".equalsIgnoreCase(action))
         {
-            new Thread(new Runnable()
+            new Thread(new Runnable() // Thread safety reviewed
                 {
                     public void run()
                     {

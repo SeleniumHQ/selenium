@@ -29,8 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.http.HttpFields;
+import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.IO;
 import org.openqa.jetty.util.LineInput;
 import org.openqa.jetty.util.LogSupport;
@@ -255,7 +255,7 @@ public class CGI extends HttpServlet
         final OutputStream outToCgi=p.getOutputStream();
         final int inputLength = req.getContentLength();
 
-        new Thread(new Runnable()
+        new Thread(new Runnable()  // Thread safety reviewed
             {
                 public void run()
                 {

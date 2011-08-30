@@ -16,11 +16,6 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet;
 
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,6 +24,11 @@ import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 
 /**
  * entry point for the registration API the grid provides. The {@link RegistrationRequest} sent to
@@ -83,7 +83,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
     final RemoteProxy proxy = RemoteProxy.getNewInstance(server, getRegistry());
     reply(response, "ok");
 
-    new Thread(new Runnable() {
+    new Thread(new Runnable() {  // Thread safety reviewed
       public void run() {
         getRegistry().add(proxy);
         log.fine("proxy added " + proxy.getRemoteURL());

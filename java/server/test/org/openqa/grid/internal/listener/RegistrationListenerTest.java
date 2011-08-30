@@ -3,6 +3,9 @@ package org.openqa.grid.internal.listener;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,15 +17,12 @@ import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 
-import java.util.HashMap;
-import java.util.Map;
-
 
 public class RegistrationListenerTest {
 
   private static boolean serverUp = false;
 
-  class MyRemoteProxy extends RemoteProxy implements RegistrationListener {
+  static class MyRemoteProxy extends RemoteProxy implements RegistrationListener {
 
     public MyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -72,7 +72,7 @@ public class RegistrationListenerTest {
    * 
    * @author François Reynaud
    */
-  class MyBuggyRemoteProxy extends RemoteProxy implements RegistrationListener {
+  static class MyBuggyRemoteProxy extends RemoteProxy implements RegistrationListener {
     public MyBuggyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
     }
@@ -101,7 +101,7 @@ public class RegistrationListenerTest {
 
   static boolean slowRemoteUp = false;
 
-  class MySlowRemoteProxy extends RemoteProxy implements RegistrationListener {
+  static class MySlowRemoteProxy extends RemoteProxy implements RegistrationListener {
     public MySlowRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
     }
@@ -125,7 +125,7 @@ public class RegistrationListenerTest {
   @Test(timeout = 2000)
   public void registerSomeSlow() {
     registry.add(new RemoteProxy(req, registry));
-    new Thread(new Runnable() {
+    new Thread(new Runnable() { // Thread safety reviewed
       public void run() {
         registry.add(new MySlowRemoteProxy(req, registry));
       }

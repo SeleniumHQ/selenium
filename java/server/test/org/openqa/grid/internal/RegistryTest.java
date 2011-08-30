@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RegistryTest {
 
@@ -150,7 +151,7 @@ public class RegistryTest {
 
     try {
       for (int i = 0; i < TOTAL_THREADS; i++) {
-        new Thread(new Runnable() {
+        new Thread(new Runnable() { // Thread safety reviewed
 
           public void run() {
             registry.add(new RemoteProxy(req, registry));
@@ -195,19 +196,22 @@ public class RegistryTest {
   @Test(timeout = 2000)
   public void registerAtTheSameTimeWithListener() throws InterruptedException {
     final Registry registry = Registry.newInstance();
-    final CountDownLatch cdn = new CountDownLatch(TOTAL_THREADS);
+    final AtomicInteger counter = new AtomicInteger();
 
     try {
       for (int i = 0; i < TOTAL_THREADS; i++) {
-        new Thread(new Runnable() {
+        new Thread(new Runnable() { // Thread safety reviewed
 
           public void run() {
             registry.add(new MyRemoteProxy(req, registry));
-            cdn.countDown();
+            counter.incrementAndGet();
           }
         }).start();
       }
-      cdn.await();
+      while (counter.get() != TOTAL_THREADS) {
+        Thread.sleep(250);
+      }
+      Assert.assertEquals(counter.get(), TOTAL_THREADS);
       Assert.assertEquals(registry.getAllProxies().size(), 1);
     } finally {
       registry.stop();

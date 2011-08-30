@@ -5,6 +5,11 @@ import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,14 +21,9 @@ import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 public class SessionListenerTest {
 
-  class MyRemoteProxy extends RemoteProxy implements TestSessionListener {
+  static class MyRemoteProxy extends RemoteProxy implements TestSessionListener {
 
     public MyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -41,7 +41,6 @@ public class SessionListenerTest {
 
   static RegistrationRequest req = null;
   static Map<String, Object> app1 = new HashMap<String, Object>();
-  static Map<String, Object> app2 = new HashMap<String, Object>();
 
   @BeforeClass
   public static void prepare() {
@@ -76,7 +75,7 @@ public class SessionListenerTest {
    * 
    * @author Fran�ois Reynaud
    */
-  class MyBuggyBeforeRemoteProxy extends RemoteProxy implements TestSessionListener {
+  static class MyBuggyBeforeRemoteProxy extends RemoteProxy implements TestSessionListener {
 
     private boolean firstCall = true;
 
@@ -129,7 +128,7 @@ public class SessionListenerTest {
    * 
    * @author Fran�ois Reynaud
    */
-  class MyBuggyAfterRemoteProxy extends RemoteProxy implements TestSessionListener {
+  static class MyBuggyAfterRemoteProxy extends RemoteProxy implements TestSessionListener {
 
     public MyBuggyAfterRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -143,7 +142,7 @@ public class SessionListenerTest {
     }
   }
 
-  static boolean processed = false;
+  static volatile boolean processed = false;
 
   /**
    * if after throws an exception, the resources are NOT released got other tests to use.
@@ -169,7 +168,7 @@ public class SessionListenerTest {
 
     final MockedNewSessionRequestHandler req2 = new MockedNewSessionRequestHandler(registry, app1);
 
-    new Thread(new Runnable() {
+    new Thread(new Runnable() {  // Thread safety reviewed
 
       public void run() {
         req2.process();

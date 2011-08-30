@@ -4,15 +4,8 @@ package org.openqa.selenium.chrome;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-
-import static org.openqa.selenium.os.CommandLine.findExecutable;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
-
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.net.UrlChecker;
+import static org.openqa.selenium.os.CommandLine.findExecutable;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +14,11 @@ import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.net.UrlChecker;
 
 /**
  * Manages the life and death of a chromedriver server.
@@ -154,7 +152,7 @@ public class ChromeDriverService {
 
   // http://stackoverflow.com/questions/60302
   private static void pipe(final InputStream src, final PrintStream dest) {
-    new Thread(new Runnable() {
+    new Thread(new Runnable() { // Thread safety reviewed
       public void run() {
         try {
           byte[] buffer = new byte[1024];

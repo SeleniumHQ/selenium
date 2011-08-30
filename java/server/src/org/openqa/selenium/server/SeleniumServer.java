@@ -17,10 +17,29 @@
 
 package org.openqa.selenium.server;
 
+import static java.lang.String.format;
 import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
-import static java.lang.String.format;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.BindException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.openqa.jetty.http.HashUserRealm;
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.http.SecurityConstraint;
+import org.openqa.jetty.http.SocketListener;
+import org.openqa.jetty.http.handler.SecurityHandler;
+import org.openqa.jetty.jetty.Server;
+import org.openqa.jetty.jetty.servlet.ServletHandler;
+import org.openqa.jetty.util.MultiException;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.net.NetworkUtils;
@@ -33,27 +52,6 @@ import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
 import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
 import org.openqa.selenium.server.log.LoggingManager;
-
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.http.HashUserRealm;
-import org.openqa.jetty.http.HttpContext;
-import org.openqa.jetty.http.SecurityConstraint;
-import org.openqa.jetty.http.SocketListener;
-import org.openqa.jetty.http.handler.SecurityHandler;
-import org.openqa.jetty.jetty.Server;
-import org.openqa.jetty.jetty.servlet.ServletHandler;
-import org.openqa.jetty.util.MultiException;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.BindException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Properties;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands
@@ -469,7 +467,7 @@ public class SeleniumServer implements SslCertificateGenerator {
       throw e;
     }
 
-    shutDownHook = new Thread(new ShutDownHook(this));
+    shutDownHook = new Thread(new ShutDownHook(this)); // Thread safety reviewed
     shutDownHook.setName("SeleniumServerShutDownHook");
     Runtime.getRuntime().addShutdownHook(shutDownHook);
   }
@@ -661,7 +659,7 @@ public class SeleniumServer implements SslCertificateGenerator {
       final URL url =
           new URL("http://localhost:" + configuration.getPort() + "/selenium-server/driver?" +
               userInput);
-      Thread t = new Thread(new Runnable() {
+      Thread t = new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
           try {
             LOGGER.info("---> Requesting " + url.toString());

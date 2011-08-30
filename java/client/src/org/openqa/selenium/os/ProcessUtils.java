@@ -1,10 +1,10 @@
 package org.openqa.selenium.os;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.io.IOUtils;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
+
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.io.IOUtils;
 
 public class ProcessUtils {
   /**
@@ -16,7 +16,7 @@ public class ProcessUtils {
    */
   public static int waitForProcessDeath(Process p, long timeout) {
     ProcessWaiter pw = new ProcessWaiter(p);
-    Thread waiter = new Thread(pw);
+    Thread waiter = new Thread(pw);  // Thread safety reviewed
     waiter.start();
     try {
       waiter.join(timeout);
