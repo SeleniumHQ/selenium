@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
 using OpenQA.Selenium.Internal;
@@ -61,14 +62,19 @@ namespace OpenQA.Selenium.IE
         }
 
         #region Private delegates
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate IntPtr StartServerFunction(int port);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void StopServerFunction(IntPtr serverHandle);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate int GetServerSessionCountFunction();
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate int GetServerPortFunction();
-        
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate bool ServerIsRunningFunction();
         #endregion
 
