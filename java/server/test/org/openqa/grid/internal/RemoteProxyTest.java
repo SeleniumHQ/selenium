@@ -1,17 +1,17 @@
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
 public class RemoteProxyTest {
 
@@ -36,6 +36,12 @@ public class RemoteProxyTest {
     caps.add(app2Capability);
     p2 = RemoteProxyFactory.getNewBasicRemoteProxy(caps, "http://machine4:4444/", registry);
 
+  }
+
+
+  @Test
+  public void callSetterBecauseItsUnusedButPartOfPublicApi(){
+      p1.setCapabilityHelper(  null );
   }
 
   @Test

@@ -16,14 +16,15 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import org.openqa.grid.internal.listeners.TestSessionListener;
-import org.openqa.grid.internal.utils.CapabilityMatcher;
-
 import java.security.InvalidParameterException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
+
+import org.openqa.grid.internal.listeners.TestSessionListener;
+import org.openqa.grid.internal.utils.CapabilityMatcher;
 
 /**
  * The entity on a proxy that can host a test session. A test slot has only 1 desired capabilities (
@@ -33,6 +34,12 @@ import java.util.logging.Logger;
  * The listener ({@link TestSessionListener} attached to the test session of this test slot is
  * thread safe. If 2 threads are trying to execute the before / after session, only 1 will be
  * executed.The other one will be discarded.
+ *
+ * This class sees multiple threads but is currently sort-of protected by the lock in
+ * Registry. Unfortunately the CleanUpThread also messes around in here, so it should
+ * be thread safe on its own. Which probably means the lock in the registry is just
+ * nonsense.
+ *
  */
 public class TestSlot {
 
@@ -41,10 +48,10 @@ public class TestSlot {
   private final Map<String, Object> capabilities;
   private final RemoteProxy proxy;
   private final CapabilityMatcher matcher;
-  private TestSession currentSession;
+  private volatile TestSession currentSession;
 
   private final Lock lock = new ReentrantLock();
-  boolean beingReleased = false;
+  volatile boolean beingReleased = false;
 
   public TestSlot(RemoteProxy proxy, Map<String, Object> capabilities) {
     this.proxy = proxy;
@@ -59,7 +66,7 @@ public class TestSlot {
   }
 
   public Map<String, Object> getCapabilities() {
-    return capabilities;
+    return Collections.unmodifiableMap(capabilities);
   }
 
   /**

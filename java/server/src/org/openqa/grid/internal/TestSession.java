@@ -15,8 +15,20 @@ limitations under the License.
  */
 package org.openqa.grid.internal;
 
-import com.google.common.io.ByteStreams;
-
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -39,26 +51,13 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
-import org.openqa.grid.internal.listeners.CommandListener;
-import org.openqa.grid.web.Hub;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.common.io.ByteStreams;
+import org.openqa.grid.internal.listeners.CommandListener;
+import org.openqa.grid.web.Hub;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
@@ -72,11 +71,11 @@ public class TestSession {
 
   private final String internalKey;
   private final TestSlot slot;
-  private String externalKey = null;
-  private long sessionCreatedAt;
-  private long lastActivity;
+  private volatile String externalKey = null;
+  private volatile long sessionCreatedAt;
+  private volatile long lastActivity;
   private final Map<String, Object> requestedCapabilities;
-  private Map<String, Object> objects = new HashMap<String, Object>();
+  private Map<String, Object> objects = new ConcurrentHashMap<String, Object>();
   private volatile boolean ignoreTimeout = false;
 
   public String getInternalKey() {
@@ -193,12 +192,14 @@ public class TestSession {
     forward(request, response, null, false);
   }
 
-  private static ThreadSafeClientConnManager connManager;
-  private static HttpParams params;
+  private static final ThreadSafeClientConnManager connManager;
+  private static final HttpParams params;
 
-  private DefaultHttpClient getClient() {
-    synchronized (TestSession.class) {
-      if (connManager == null) {
+
+    // Todo: According to more modern docs, DefaultHttpClient is now thread safe
+    // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/httpagent.html
+    // Review usage and update all usage accordingly
+  static {
         params = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
         HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
@@ -208,8 +209,10 @@ public class TestSession {
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
 
         connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
-      }
-    }
+  }
+
+  private DefaultHttpClient getClient() {
+    synchronized (TestSession.class) {
     DefaultHttpClient client = new DefaultHttpClient(connManager, params);
     client.setRedirectHandler(new RedirectHandler() {
       public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
@@ -222,6 +225,7 @@ public class TestSession {
       }
     });
     return client;
+    }
   }
 
   /**
@@ -401,7 +405,7 @@ public class TestSession {
   /**
    * Allows you to store an object on the test session.
    * 
-   * @param key
+   * @param key a non-null string
    * @param value
    */
   public void put(String key, Object value) {
@@ -443,7 +447,7 @@ public class TestSession {
     String uri = remoteURL.toString() + "/session/" + externalKey;
     HttpRequest request = new BasicHttpRequest("DELETE", uri);
     DefaultHttpClient client = new DefaultHttpClient();
-    boolean ok = false;
+    boolean ok;
     try {
       HttpResponse response =
           client.execute(new HttpHost(remoteURL.getHost(), remoteURL.getPort()), request);
@@ -472,7 +476,7 @@ public class TestSession {
     HttpHost host = new HttpHost(url.getHost(), url.getPort());
     HttpResponse response = client.execute(host, req);
 
-    boolean ok = false;
+    boolean ok;
     try {
       int code = response.getStatusLine().getStatusCode();
       ok = (code >= 200) && (code <= 299);

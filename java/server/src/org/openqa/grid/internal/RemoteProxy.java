@@ -16,9 +16,6 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
-
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,6 +34,9 @@ import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
 /**
  * Proxy to a remote server executing the tests.
@@ -70,7 +70,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   private final int maxConcurrentSession;
   private final Registry registry;
 
-  private CapabilityMatcher capabilityHelper = new DefaultCapabilityMatcher();
+  private volatile CapabilityMatcher capabilityHelper = new DefaultCapabilityMatcher();
 
   private String id;
 
