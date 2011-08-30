@@ -226,7 +226,6 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
     String style = driver.findElement(By.id("red-item")).getAttribute("style");
 
-    System.out.println("style = " + style);
     assertTrue(style.toLowerCase().contains("background-color"));
   }
 
