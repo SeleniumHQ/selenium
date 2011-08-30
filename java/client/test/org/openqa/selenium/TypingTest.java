@@ -121,7 +121,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE, SELENESE}) //IPHONE BUG
+  @Ignore({IPHONE, SELENESE})
   public void testArrowKeysShouldNotBePrintable() {
     driver.get(pages.javascriptPage);
 
@@ -131,7 +131,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
-  @Ignore({HTMLUNIT, IPHONE, SELENESE}) //IPHONE BUG
+  @Ignore({HTMLUNIT, IPHONE, SELENESE})
   public void testShouldBeAbleToUseArrowKeys() {
     driver.get(pages.javascriptPage);
 
@@ -236,7 +236,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, IPHONE, SELENESE, ANDROID}, //IPHONE BUG
+  @Ignore(value = {HTMLUNIT, IE, IPHONE, SELENESE, ANDROID},
       reason = "firefox-specific. Android uses prev/next.")
   public void testShouldReportKeyCodeOfArrowKeys() {
     driver.get(pages.javascriptPage);
@@ -267,7 +267,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID}, //IPHONE BUG
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID},
       reason = "untested user agents")
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     driver.get(pages.javascriptPage);
@@ -370,7 +370,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
-  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID}, //IPHONE BUG
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID},
       reason = "untested user agents")
   public void testArrowKeysAndPageUpAndDown() {
     driver.get(pages.javascriptPage);
@@ -402,7 +402,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID}, //IPHONE BUG
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID},
       reason = "untested user agents")
   public void testDeleteAndBackspaceKeys() {
     driver.get(pages.javascriptPage);
@@ -420,7 +420,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE}, reason = "untested user agents") //IPHONE BUG
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE}, reason = "untested user agents")
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -431,7 +431,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID}, //IPHONE BUG
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID},
       reason = "untested user agents")
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
@@ -446,7 +446,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, ANDROID}, //IPHONE BUG
+  @Ignore(value = {IPHONE, SELENESE, ANDROID},
       reason = "untested user agents")
   public void testFunctionKeys() {
     driver.get(pages.javascriptPage);
@@ -459,7 +459,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID, OPERA}, //IPHONE BUG
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID, OPERA},
       reason = "untested user agents. Opera: F2 focuses location bar")
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
@@ -593,7 +593,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE}, reason = "untested user agents") //IPHONE BUG
+  @Ignore(value = {IPHONE, SELENESE}, reason = "untested user agents")
   public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
     driver.get(pages.javascriptPage);
 
