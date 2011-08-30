@@ -3,15 +3,15 @@ package org.openqa.grid.internal;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RemoteProxyTest {
 
@@ -54,7 +54,7 @@ public class RemoteProxyTest {
   public void create() {
     Map<String, Object> cap = new HashMap<String, Object>();
     cap.put(APP, "corrupted");
-                                                   Thread
+
     Map<String, Object> config = new HashMap<String, Object>();
     config.put(REMOTE_URL, "ebay.com");
 
