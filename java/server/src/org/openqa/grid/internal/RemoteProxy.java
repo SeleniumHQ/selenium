@@ -19,7 +19,16 @@ package org.openqa.grid.internal;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
+import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.TimeoutListener;
@@ -27,16 +36,7 @@ import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
 import org.openqa.grid.internal.utils.HtmlRenderer;
-
-import java.lang.reflect.Constructor;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
  * Proxy to a remote server executing the tests.
@@ -49,33 +49,34 @@ import java.util.logging.Logger;
  */
 public class RemoteProxy implements Comparable<RemoteProxy> {
 
-  private RegistrationRequest request;
-  private String id;
+  private final RegistrationRequest request;
   // how many ms between 2 cycle checking if there are some session that have
   // timed out. -1 means we never run the cleanup cycle. By default there is
   // no timeout
-  private int cleanUpCycle = -1;
-  private int timeOut = -1;
+  private final int cleanUpCycle;
+  private final int timeOut;
 
   private static final Logger log = Logger.getLogger(RemoteProxy.class.getName());
 
   // the URL the remote listen on.
-  protected URL remoteURL;
+  protected final URL remoteURL;
 
-  private Map<String, Object> config;
+  private final Map<String, Object> config;
 
   // list of the type of test the remote can run.
-  private List<TestSlot> testSlots = new ArrayList<TestSlot>();
+  private final List<TestSlot> testSlots = Collections.synchronizedList(new ArrayList<TestSlot>());
+
+  // maximum number of tests that can run at a given time on the remote.
+  private final int maxConcurrentSession;
+  private final Registry registry;
+
+  private CapabilityMatcher capabilityHelper = new DefaultCapabilityMatcher();
+
+  private String id;
 
   public List<TestSlot> getTestSlots() {
     return testSlots;
   }
-
-  // maximum number of tests that can run at a given time on the remote.
-  private int maxConcurrentSession = 0;
-  private Registry registry;
-
-  private CapabilityMatcher capabilityHelper = new DefaultCapabilityMatcher();
 
   public Registry getRegistry() {
     return registry;
@@ -99,7 +100,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
    * each capability running at a time will be 1. maxInstances for firefox can be > 1. IE won't
    * support it.
    * 
-   * @param request
+   * @param request The request
+   * @param registry The registry to use
    */
   public RemoteProxy(RegistrationRequest request, Registry registry) {
     this.request = request;
@@ -146,7 +148,9 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
         testSlots.add(new TestSlot(this, c));
       }
     }
+  }
 
+  public void setupTimeoutListener() {
     if (this instanceof TimeoutListener) {
       if (cleanUpCycle > 0 && timeOut > 0) {
         log.fine("starting cleanup thread");
@@ -158,9 +162,9 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   /**
    * merge the param from config 1 and 2. If a param is present in both, config2 value is used.
    * 
-   * @param configuration1
-   * @param configuration2
-   * @return
+   * @param configuration1 The first configuration to merge (recessive)
+   * @param configuration2 The second configuration to merge (dominant)
+   * @return The merged collection
    */
   private Map<String, Object> mergeConfig(Map<String, Object> configuration1,
       Map<String, Object> configuration2) {
@@ -176,7 +180,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
    * get the unique id for the node. Usually the url it listen on is a good id. If the network keeps
    * changing and the IP of the node is updated, you need to define nodes with a different id.
    * 
-   * @return
+   * @return  the id
    */
   public String getId() {
     if (id == null) {
@@ -246,7 +250,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   /**
    * return the registration request that created the proxy in the first place.
    * 
-   * @return
+   * @return  a  RegistrationRequest, doh!
    */
   public RegistrationRequest getOriginalRegistrationRequest() {
     return request;
@@ -254,6 +258,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
   /**
    * return the max number of tests that can run on this remote at a given time.
+   * @return an int, doh!
    */
   public int getMaxNumberOfConcurrentTestSessions() {
     return maxConcurrentSession;
@@ -269,7 +274,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   /**
    * return a new test session if the current proxy has the resources and is ready to run the test.
    * 
-   * @param requestedCapability
+   * @param requestedCapability .
    * @return a new TestSession if possible, null otherwise
    */
   public TestSession getNewSession(Map<String, Object> requestedCapability) {
@@ -294,7 +299,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   /**
    * returns the total number of test slots used on this proxy
    * 
-   * @return
+   * @return an int
    */
   public int getTotalUsed() {
     int totalUsed = 0;
@@ -314,8 +319,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
    * hasCapability = true doesn't mean the test cast start just now, only that the proxy will be
    * able to run a test requireing that capability at some point.
    * 
-   * @param requestedCapability
-   * @return
+   * @param requestedCapability The requestedCapability
+   * @return true if present
    */
   boolean hasCapability(Map<String, Object> requestedCapability) {
     for (TestSlot slot : testSlots) {
@@ -338,12 +343,12 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
    * Takes a registration request and return the RemoteProxy associated to it. It can be any class
    * extending RemoteProxy.
    * 
-   * @param <T>
-   * @param request
+   * @param request The request
+   * @param registry The registry to use
    * @return a new instance built from the request.
    */
   @SuppressWarnings("unchecked")
-  public static final <T extends RemoteProxy> T getNewInstance(RegistrationRequest request,
+  public static <T extends RemoteProxy> T getNewInstance(RegistrationRequest request,
       Registry registry) {
     try {
       String proxyClass = request.getRemoteProxyClass();
@@ -358,6 +363,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
       Constructor<?> c = clazz.getConstructor(argsClass);
       Object proxy = c.newInstance(args);
       if (proxy instanceof RemoteProxy) {
+        ((RemoteProxy)proxy).setupTimeoutListener();
         return (T) proxy;
       } else {
         throw new InvalidParameterException("Error:" + proxy.getClass() + " isn't a remote proxy");
@@ -415,7 +421,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   /**
    * im millis
    * 
-   * @return
+   * @return  an int
    */
   public int getTimeOut() {
     return timeOut;

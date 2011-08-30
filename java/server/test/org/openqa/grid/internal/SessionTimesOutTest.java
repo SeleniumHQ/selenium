@@ -4,6 +4,9 @@ import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
 import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -11,9 +14,6 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class SessionTimesOutTest {
 
@@ -57,6 +57,7 @@ public class SessionTimesOutTest {
 
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = new MyRemoteProxyTimeout(req, registry);
+    p1.setupTimeoutListener();
 
 
     try {
@@ -101,6 +102,7 @@ public class SessionTimesOutTest {
   public void testTimeoutSlow() throws InterruptedException {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = new MyRemoteProxyTimeoutSlow(req, registry);
+    p1.setupTimeoutListener();
 
 
     try {
@@ -152,6 +154,7 @@ public class SessionTimesOutTest {
   public void testTimeoutBug() throws InterruptedException {
     final Registry registry = Registry.newInstance();
     RemoteProxy p1 = new MyBuggyRemoteProxyTimeout(req, registry);
+    p1.setupTimeoutListener();
 
 
     try {
@@ -215,7 +218,9 @@ public class SessionTimesOutTest {
 
       req.setConfiguration(config);
 
-      registry.add(new MyStupidConfig(req, registry));
+      final MyStupidConfig proxy = new MyStupidConfig(req, registry);
+      proxy.setupTimeoutListener();
+      registry.add(proxy);
       MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
       newSessionRequest.process();
       TestSession session = newSessionRequest.getTestSession();

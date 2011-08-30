@@ -1,20 +1,20 @@
 package org.openqa.grid.internal;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import org.openqa.grid.common.RegistrationRequest;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+@SuppressWarnings({"JavaDoc"})
 public class RemoteProxyFactory {
 
   /**
    * Create a simple proxy with 1 capability : {"browserName=appName"} and the configuration
    * {"url=url"}
    * 
-   * @param appName
+   * @param browser
    * @param url
    * @param registry
    * @return
@@ -31,7 +31,7 @@ public class RemoteProxyFactory {
     Map<String, Object> config = new HashMap<String, Object>();
     config.put("url", url);
     req.setConfiguration(config);
-    return new RemoteProxy(req, registry);
+    return createProxy(registry, req);
 
   }
 
@@ -50,7 +50,7 @@ public class RemoteProxyFactory {
     req.getCapabilities().clear();
     req.addDesiredCapabilitiy(cap);
     req.getConfiguration().put(RegistrationRequest.REMOTE_URL, url);
-    return new RemoteProxy(req, registry);
+    return createProxy(registry, req);
 
   }
 
@@ -73,8 +73,14 @@ public class RemoteProxyFactory {
     }
 
     req.getConfiguration().put(RegistrationRequest.REMOTE_URL, url);
-    return new RemoteProxy(req, registry);
+    return createProxy(registry, req);
 
+  }
+
+  private static RemoteProxy createProxy(Registry registry, RegistrationRequest req) {
+    final RemoteProxy remoteProxy = new RemoteProxy(req, registry);
+    remoteProxy.setupTimeoutListener();
+    return remoteProxy;
   }
 
 }

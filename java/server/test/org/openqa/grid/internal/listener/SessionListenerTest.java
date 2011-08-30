@@ -239,7 +239,9 @@ public class SessionListenerTest {
     req.setConfiguration(config);
 
     Registry registry = Registry.newInstance();
-    registry.add(new SlowAfterSession(req, registry));
+    final SlowAfterSession proxy = new SlowAfterSession(req, registry);
+    proxy.setupTimeoutListener();
+    registry.add(proxy);
 
     MockedNewSessionRequestHandler r = new MockedNewSessionRequestHandler(registry, app1);
     r.process();
