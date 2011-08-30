@@ -158,4 +158,7 @@
 	<lib name="protobuf-java-2.3.0.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/google-protobuffers/protobuf-java-2.3.0.jar!/"/>
 	</lib>
+	<lib name="jcip-annotations-1.0.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jcip-annotations/jcip-annotations-1.0.jar!/"/>
+	</lib>
 </component>

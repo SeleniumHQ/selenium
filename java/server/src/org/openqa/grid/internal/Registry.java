@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import net.jcip.annotations.ThreadSafe;
 import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.RegistrationListener;
@@ -42,6 +43,7 @@ import java.util.logging.Logger;
  * Kernel of the grid. Keeps track of what's happening, what's free/used and assigned resources to
  * incoming requests.
  */
+@ThreadSafe
 public class Registry {
 
   public static final String KEY = Registry.class.getName();
