@@ -116,7 +116,7 @@ module Android
       if (args[:binary])
         task t_name => [args[:binary]]
       end
-      desc "Compile an adroid apk"
+      desc "Compile an android apk"
       task t_name => [artifact_name]
       Rake::Task[t_name].out = artifact_name
     end
