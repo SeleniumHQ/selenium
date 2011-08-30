@@ -15,6 +15,9 @@
 
 package org.openqa.jetty.util;
 
+import org.apache.commons.logging.Log;
+import org.openqa.jetty.log.LogFactory;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
@@ -28,9 +31,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
-
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 
 /* ------------------------------------------------------------ */
 /** A File OutputStream that rolls overs.
@@ -264,9 +264,9 @@ public class RolloverFileOutputStream extends FilterOutputStream
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    private class Rollover extends Thread
+    private class Rollover extends Thread  // Thread safety reviewed
     {
-        private boolean timeToStop = false;
+        private volatile boolean timeToStop = false;
         
         Rollover()
         {

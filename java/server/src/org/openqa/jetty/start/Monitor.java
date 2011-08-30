@@ -27,7 +27,7 @@ import java.net.Socket;
  * system parameter (defaults to "mortbay") for admin requests. Commands "stop" and
  * "status" are currently supported.
  */
-public class Monitor extends Thread
+public class Monitor extends Thread   // Thread safety reviewed
 {
     private int _port = Integer.getInteger("STOP.PORT",8079).intValue();
     private String _key = System.getProperty("STOP.KEY","mortbay");

@@ -117,7 +117,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
       throw new WebDriverException(e);
     }
 
-    Thread cleanupThread = new Thread() {
+    Thread cleanupThread = new Thread() { // Thread safety reviewed
       @Override
       public void run() {
         proxyManager.restoreRegistrySettings(true);

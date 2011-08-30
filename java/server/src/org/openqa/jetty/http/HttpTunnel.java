@@ -15,16 +15,16 @@
 
 package org.openqa.jetty.http;
 
+import org.apache.commons.logging.Log;
+import org.openqa.jetty.log.LogFactory;
+import org.openqa.jetty.util.IO;
+import org.openqa.jetty.util.LogSupport;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.net.Socket;
-
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.jetty.util.IO;
-import org.openqa.jetty.util.LogSupport;
 
 /* ------------------------------------------------------------ */
 /** HTTP Tunnel.
@@ -223,7 +223,7 @@ public class HttpTunnel
     /** Copy thread.
      * Helper thread to copy from the HTTP input to the sockets output
      */
-    private class Copy extends Thread
+    private class Copy extends Thread   // Thread safety reviewed
     {
         public void run()
         {

@@ -31,7 +31,7 @@ public class RobotRetriever {
     }
     robotRetriever = new FutureTask<Robot>(new Retriever());
     log.info("Creating Robot");
-    retrieverThread = new Thread(robotRetriever, "robotRetriever");
+    retrieverThread = new Thread(robotRetriever, "robotRetriever");  // Thread safety reviewed
     retrieverThread.start();
     robot = robotRetriever.get(10, TimeUnit.SECONDS);
 

@@ -28,7 +28,7 @@ public class ParallelTestRunner {
     void run() throws Exception;
   }
 
-  private static class WorkerThread extends Thread {
+  private static class WorkerThread extends Thread {  // Thread safety reviewed
     private final Worker _worker;
     private volatile Throwable _throwable;
 

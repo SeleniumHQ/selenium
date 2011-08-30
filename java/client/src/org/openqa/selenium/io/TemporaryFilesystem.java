@@ -32,7 +32,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class TemporaryFilesystem {
   private final Set<File> temporaryFiles = new CopyOnWriteArraySet<File>();
   private final File baseDir;
-  private final Thread shutdownHook = new Thread() {
+  private final Thread shutdownHook = new Thread() {  // Thread safety reviewed
     @Override
     public void run() {
       deleteTemporaryFiles();

@@ -57,7 +57,7 @@ public class Build {
   }
 
   private static class BuildWatcher extends Thread {
-    private Process buildProcess;
+    private final Process buildProcess;
 
     private BuildWatcher(Process buildProcess) {
       super("BuildWatcher");

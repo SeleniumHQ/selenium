@@ -36,7 +36,7 @@ public class UrlChecker {
   private static final ExecutorService THREAD_POOL = Executors
       .newCachedThreadPool(new ThreadFactory() {
         public Thread newThread(Runnable r) {
-          Thread t = new Thread(r, "UrlChecker-" + THREAD_COUNTER.incrementAndGet());
+          Thread t = new Thread(r, "UrlChecker-" + THREAD_COUNTER.incrementAndGet()); // Thread safety reviewed
           t.setDaemon(true);
           return t;
         }

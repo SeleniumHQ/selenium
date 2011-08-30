@@ -5,6 +5,7 @@ import org.openqa.selenium.server.BrowserResponseSequencer;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -21,7 +22,7 @@ public class BrowserResponseSequencerUnitTest extends TestCase {
 
   public void setUp() {
     seq = new BrowserResponseSequencer(getName());
-    numbers = new ArrayList<Integer>();
+    numbers = Collections.synchronizedList( new ArrayList<Integer>());
   }
 
   public void testBrowserResponseSequencer() throws InterruptedException, ExecutionException {
@@ -73,7 +74,7 @@ public class BrowserResponseSequencerUnitTest extends TestCase {
 
     public FutureTask<Void> launchThread() {
       FutureTask<Void> ft = new FutureTask<Void>(this);
-      new Thread(ft, NumberWriter.class.getName() + '-' + num).start();
+      new Thread(ft, NumberWriter.class.getName() + '-' + num).start();  // Thread safety reviewed
       return ft;
     }
 

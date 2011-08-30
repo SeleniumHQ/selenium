@@ -18,6 +18,36 @@
 package org.openqa.selenium.server;
 
 
+import com.google.common.base.Throwables;
+import com.google.common.io.Resources;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
+import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
+import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
+import org.openqa.selenium.server.commands.CaptureEntirePageScreenshotToStringCommand;
+import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
+import org.openqa.selenium.server.commands.CaptureScreenshotCommand;
+import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
+import org.openqa.selenium.server.commands.RetrieveLastRemoteControlLogsCommand;
+import org.openqa.selenium.server.commands.SeleniumCoreCommand;
+import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
+import org.openqa.selenium.server.log.LoggingManager;
+
+import org.apache.commons.logging.Log;
+import org.openqa.jetty.http.HttpConnection;
+import org.openqa.jetty.http.HttpException;
+import org.openqa.jetty.http.HttpFields;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
+import org.openqa.jetty.http.handler.ResourceHandler;
+import org.openqa.jetty.log.LogFactory;
+import org.openqa.jetty.util.StringUtil;
+
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,35 +70,6 @@ import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.google.common.base.Throwables;
-import com.google.common.io.Resources;
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.http.HttpConnection;
-import org.openqa.jetty.http.HttpException;
-import org.openqa.jetty.http.HttpFields;
-import org.openqa.jetty.http.HttpRequest;
-import org.openqa.jetty.http.HttpResponse;
-import org.openqa.jetty.http.handler.ResourceHandler;
-import org.openqa.jetty.log.LogFactory;
-import org.openqa.jetty.util.StringUtil;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
-import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
-import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
-import org.openqa.selenium.server.commands.CaptureEntirePageScreenshotToStringCommand;
-import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
-import org.openqa.selenium.server.commands.CaptureScreenshotCommand;
-import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
-import org.openqa.selenium.server.commands.RetrieveLastRemoteControlLogsCommand;
-import org.openqa.selenium.server.commands.SeleniumCoreCommand;
-import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
-import org.openqa.selenium.server.log.LoggingManager;
 
 /**
  * A Jetty handler that takes care of remote Selenium requests.

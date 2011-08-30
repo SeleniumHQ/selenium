@@ -62,11 +62,11 @@ public class Registry {
   private final Set<RemoteProxy> proxies = new CopyOnWriteArraySet<RemoteProxy>();
   private final Set<TestSession> activeTestSessions = new CopyOnWriteArraySet<TestSession>();
   private Matcher matcherThread = new Matcher();
-  private boolean stop = false;
+  private volatile boolean stop = false;
   private boolean throwOnCapabilityNotPresent = true;
   private int newSessionWaitTimeout;
 
-  private GridHubConfiguration configuration;
+  private final GridHubConfiguration configuration;
 
 
   private Registry(Hub hub, GridHubConfiguration config) {
@@ -126,8 +126,8 @@ public class Registry {
    * iterates the queue of incoming new session request and assign them to proxy after they've been
    * sorted by priority, with priority defined by the prioritizer.
    */
-  class Matcher extends Thread {
-    private boolean cleanState = true;
+  class Matcher extends Thread { // Thread safety reviewed
+    private volatile boolean cleanState = true;
 
     @Override
     public void run() {

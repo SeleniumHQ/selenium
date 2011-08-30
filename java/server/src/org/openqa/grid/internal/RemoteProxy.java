@@ -16,6 +16,18 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
+
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.listeners.TimeoutListener;
+import org.openqa.grid.internal.utils.CapabilityMatcher;
+import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
+import org.openqa.grid.internal.utils.HtmlRenderer;
+
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,17 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.listeners.TimeoutListener;
-import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
-import org.openqa.grid.internal.utils.HtmlRenderer;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
 /**
  * Proxy to a remote server executing the tests.
@@ -154,7 +155,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     if (this instanceof TimeoutListener) {
       if (cleanUpCycle > 0 && timeOut > 0) {
         log.fine("starting cleanup thread");
-        new Thread(new CleanUpThread(this)).start();
+        new Thread(new CleanUpThread(this)).start();  // Thread safety reviewed (hopefully ;)
       }
     }
   }

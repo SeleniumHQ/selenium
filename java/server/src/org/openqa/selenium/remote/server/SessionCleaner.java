@@ -21,7 +21,7 @@ import org.openqa.selenium.remote.server.handler.DeleteSession;
 
 import java.util.logging.Logger;
 
-class SessionCleaner extends Thread {
+class SessionCleaner extends Thread {   // Thread safety reviewed
 
   private final DriverSessions driverSessions;
   private final int timeoutMs;

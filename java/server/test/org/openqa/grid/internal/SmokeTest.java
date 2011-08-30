@@ -56,7 +56,7 @@ public class SmokeTest {
     final List<TestSession> sessions = new CopyOnWriteArrayList<TestSession>();
 
     for (int i = 0; i < MAX; i++) {
-      new Thread(new Runnable() {
+      new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
           MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, ie);
           newSessionRequest.process();
@@ -68,7 +68,7 @@ public class SmokeTest {
     }
 
     for (int i = 0; i < MAX; i++) {
-      new Thread(new Runnable() {
+      new Thread(new Runnable() {  // Thread safety reviewed
         public void run() {
           MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, ff);
           newSessionRequest.process();

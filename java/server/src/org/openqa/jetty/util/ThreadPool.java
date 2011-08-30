@@ -14,10 +14,10 @@
 // ========================================================================
 package org.openqa.jetty.util;
 
-import java.io.Serializable;
-
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+
+import java.io.Serializable;
 /* ------------------------------------------------------------ */
 /**
  * A pool of threads.
@@ -420,7 +420,7 @@ public class ThreadPool implements LifeCycle,Serializable
      * Pool Thread class. The PoolThread allows the threads job to be retrieved and active status
      * to be indicated.
      */
-    public static class PoolThread extends Thread implements Pool.PondLife
+    public static class PoolThread extends Thread implements Pool.PondLife  // Thread safety reviewed
     {
         Pool _pool;
         ThreadPool _jobPool;

@@ -115,7 +115,7 @@ public class SingleEntryAsyncQueueUnitTest extends TestCase {
   }
 
   public void testCanPollContentThatWhatPutByADifferentThread() throws Throwable {
-    new Thread(new AsyncCommandSender(testCommand), "launching sender").start();
+    new Thread(new AsyncCommandSender(testCommand), "launching sender").start();  // Thread safety reviewed
     assertEquals(testCommand, queue.pollToGetContentUntilTimeout());
     assertNull(queue.peek());
   }

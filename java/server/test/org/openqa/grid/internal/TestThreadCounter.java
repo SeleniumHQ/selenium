@@ -30,13 +30,13 @@ public class TestThreadCounter {
 
   public Thread start(Runnable runnable) {
     final RunnableWrapper wrapper = new RunnableWrapper(runnable);
-    final Thread thread = new Thread(wrapper);
+    final Thread thread = new Thread(wrapper); // Thread safety reviewed
     thread.start();
     return thread;
   }
 
 
-  final class RunnableWrapper extends Thread {
+  final class RunnableWrapper extends Thread {  // Thread safety reviewed
     private final Runnable target;
 
     RunnableWrapper(Runnable target) {

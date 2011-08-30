@@ -171,7 +171,7 @@ public class CommandLine {
   public Process executeAsync() {
     createProcess();
 
-    new Thread() {
+    new Thread() {   // Thread safety reviewed
       @Override
       public void run() {
         setupDrainer();
@@ -179,7 +179,7 @@ public class CommandLine {
       }
     }.start();
 
-    cleanup = new Thread() {
+    cleanup = new Thread() {   // Thread safety reviewed
       @Override
       public void run() {
         if (proc != null) {
@@ -213,7 +213,7 @@ public class CommandLine {
   private void setupDrainer() {
     try {
       drainer = new StreamDrainer(proc, drainTo);
-      drainerThread = new Thread(drainer, "Command line drainer: " + commandAndArgs[0]);
+      drainerThread = new Thread(drainer, "Command line drainer: " + commandAndArgs[0]);  // Thread safety reviewed
       drainerThread.start();
 
       if (allInput != null) {

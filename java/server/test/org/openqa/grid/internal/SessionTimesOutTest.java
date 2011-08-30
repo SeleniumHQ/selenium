@@ -4,9 +4,6 @@ import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
 import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,6 +11,9 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SessionTimesOutTest {
 
@@ -165,11 +165,13 @@ public class SessionTimesOutTest {
 
       final MockedRequestHandler newSessionRequest2 =
           new MockedNewSessionRequestHandler(registry, app1);
-      new Thread(new Runnable() {
+      new Thread(new Runnable() {  // Thread safety reviewed
         public void run() {
           // the request should never be processed because the
           // resource is not released by the buggy proxy
-          newSessionRequest2.process();
+           synchronized (  newSessionRequest2){
+                newSessionRequest2.process();
+           }
         }
       }).start();
 
@@ -177,8 +179,9 @@ public class SessionTimesOutTest {
       Thread.sleep(500);
       // should throw illegal access. getTestSession cannot be called
       // because the request has not been processed yet.
-      newSessionRequest2.getTestSession();
-
+      synchronized (  newSessionRequest2){
+          newSessionRequest2.getTestSession();
+      }
     } finally {
       registry.stop();
     }

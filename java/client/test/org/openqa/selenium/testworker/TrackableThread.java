@@ -2,9 +2,9 @@ package org.openqa.selenium.testworker;
 
 import java.util.concurrent.TimeoutException;
 
-public class TrackableThread extends Thread {
+public class TrackableThread extends Thread { // Thread safety reviewed
 
-  private TrackableRunnable trackedTarget;
+  private final TrackableRunnable trackedTarget;
 
   public TrackableThread(TrackableRunnable target, String name) {
     super(target, name);

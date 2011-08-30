@@ -26,12 +26,12 @@ public class RemoteProxySlowSetup {
   // the first onRegistration should be executed, but the 2nd shouldn't.
   @Test
   public void addDup() throws InterruptedException {
-    new Thread(new Runnable() {
+    new Thread(new Runnable() { // Thread safety reviewed
       public void run() {
         registry.add(p1);
       }
     }).start();
-    new Thread(new Runnable() {
+    new Thread(new Runnable() { // Thread safety reviewed
       public void run() {
         registry.add(p2);
       }

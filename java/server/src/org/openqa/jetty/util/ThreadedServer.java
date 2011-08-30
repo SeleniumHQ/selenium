@@ -617,7 +617,7 @@ abstract public class ThreadedServer extends ThreadPool
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    private class Acceptor extends Thread
+    private class Acceptor extends Thread    // Thread safety reviewed
     {
         /* ------------------------------------------------------------ */
         public void run()

@@ -27,13 +27,13 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.http.HttpConnection;
 import org.openqa.jetty.http.HttpHandler;
 import org.openqa.jetty.http.HttpListener;
 import org.openqa.jetty.http.HttpMessage;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpServer;
+import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.LineInput;
 import org.openqa.jetty.util.LogSupport;
 import org.openqa.jetty.util.ThreadPool;
@@ -395,7 +395,7 @@ public class SocketChannelListener extends ThreadPool implements HttpListener
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    private class SelectorThread extends Thread
+    private class SelectorThread extends Thread  // Thread safety reviewed
     {
         boolean _running= false;
 
