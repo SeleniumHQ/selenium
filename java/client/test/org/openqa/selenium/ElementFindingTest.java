@@ -473,7 +473,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   // TODO(danielwh): Add extensive CSS selector tests
 
   @JavascriptEnabled
-  @Ignore({SELENESE, ANDROID})
+  @Ignore({SELENESE, ANDROID, IPHONE})
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     String url = appServer.whereIs("missedJsReference.html");
     driver.get(url);

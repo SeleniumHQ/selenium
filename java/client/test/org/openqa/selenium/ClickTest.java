@@ -155,6 +155,7 @@ public class ClickTest extends AbstractDriverTestCase {
   
   @JavascriptEnabled
   @NoDriverAfterTest
+  @Ignore(value = IPHONE, reason = "Doesn't support multiple windows")
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);
     int windowHandlesBefore = driver.getWindowHandles().size();

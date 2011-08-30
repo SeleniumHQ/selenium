@@ -100,7 +100,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
     assertEquals("#item7", reportingElement.getText());
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, IPHONE})
   public void testCanClickOnLinks() {
     driver.get(appServer.whereIs("clicks.html"));
 
@@ -115,7 +115,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
   }
 
   @Ignore(
-      value = {HTMLUNIT, SELENESE},
+      value = {HTMLUNIT, IPHONE, SELENESE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(appServer.whereIs("clicks.html"));
