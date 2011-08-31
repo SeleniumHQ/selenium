@@ -39,7 +39,16 @@ public class DeleteSession extends WebDriverHandler {
     // Yes, this is funky. See javadocs on PerSessionLogHandler#clearThreadTempLogs for details.
     final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
     if (logHandler != null) {
-      logHandler.clearThreadTempLogs(Thread.currentThread().getId());
+      /*
+          We may be storing logging information on 2 different threads, the servlet container
+          thread and the thread executing commands
+          All this ugliness would go away if we just handled create and delete of sessions fully
+          inside ResultConfig because then we could avoid switching threads and there will
+          not be logevents that do not have a session present
+          Additionally; if we ever get non-session bound logging here, it will come in
+          the incorrect order. But that should only happen on create/delete, right ?
+       */
+      logHandler.transferThreadTempLogsToSessionLogs(getSessionId());
     }
     return ResultType.SUCCESS;
   }

@@ -47,6 +47,7 @@ import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.http.handler.ResourceHandler;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.StringUtil;
+import org.openqa.selenium.server.log.PerSessionLogHandler;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
@@ -120,6 +121,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   @Override
   public void handle(String pathInContext, String pathParams, HttpRequest req, HttpResponse res)
       throws HttpException, IOException {
+    final PerSessionLogHandler perSessionLogHandler = LoggingManager.perSessionLogHandler();
     try {
       res.setField(HttpFields.__ContentType, "text/plain");
       setNoCacheHeaders(res);
@@ -139,8 +141,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
       boolean closing = "true".equals(closingParam);
 
       if (sessionId != null) {
-        LoggingManager.perSessionLogHandler()
-            .setThreadToSessionMapping(Thread.currentThread().getId(), sessionId);
+        perSessionLogHandler.attachToCurrentThread(sessionId);
       }
       log.fine("req: " + req);
       // If this is a browser requesting work for the first time...
@@ -168,8 +169,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
       }
       throw e;
     } finally {
-      LoggingManager.perSessionLogHandler()
-          .clearThreadToSessionMapping(Thread.currentThread().getId());
+      perSessionLogHandler.detachFromCurrentThread();
     }
   }
 
@@ -434,6 +434,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         try {
           sessionId = getNewBrowserSession(browserString, values.get(1), extensionJs,
               BrowserOptions.newBrowserOptions(browserConfigurations));
+          LoggingManager.perSessionLogHandler().attachToCurrentThread(sessionId);
+
           setDomain(sessionId, values.get(1));
           results = "OK," + sessionId;
         } catch (RemoteCommandException rce) {

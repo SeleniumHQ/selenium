@@ -141,12 +141,16 @@ public class SessionLogsToFileRepository {
     return logRecords;
   }
 
-  public void removeLogFile(String sessionId) throws IOException {
+  public void removeLogFile(String sessionId) {
     LogFile logFile = sessionToLogFileMap.get(sessionId);
     sessionToLogFileMap.remove(sessionId);
     if (logFile == null) {
       return;
     }
-    logFile.removeLogFile();
+    try {
+      logFile.removeLogFile();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

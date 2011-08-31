@@ -6,8 +6,8 @@ import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
 import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.server.log.PerSessionLogHandler;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -211,11 +211,7 @@ public class BrowserSessionFactory {
           availableSessions.add(sessionInfo);
         }
       } finally {
-        try {
-          LoggingManager.perSessionLogHandler().clearSessionLogRecords(sessionId);
-        } catch (IOException ex) {
-          // ignore
-        }
+        LoggingManager.perSessionLogHandler().removeSessionLogs(sessionId);
         if (ensureClean) {
           // need to add this to the launcher API.
           // sessionInfo.launcher.restoreOriginalSessionData();
@@ -229,11 +225,7 @@ public class BrowserSessionFactory {
           availableSessions.remove(sessionInfo);
           shutdownBrowserAndClearSessionData(sessionInfo);
         } finally {
-          try {
-            LoggingManager.perSessionLogHandler().clearSessionLogRecords(sessionId);
-          } catch (IOException e) {
-            // ignore
-          }
+          LoggingManager.perSessionLogHandler().removeSessionLogs(sessionId);
           if (ensureClean) {
             // sessionInfo.launcher.restoreOriginalSessionData();
           }
@@ -376,11 +368,8 @@ public class BrowserSessionFactory {
     SeleniumDriverResourceHandler.setLastSessionId(sessionId);
     log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
-    LoggingManager.perSessionLogHandler().setThreadToSessionMapping(Thread.currentThread().getId(),
-        sessionId);
-    LoggingManager.perSessionLogHandler().copyThreadTempLogsToSessionLogs(sessionId,
-        Thread.currentThread().getId());
-
+    final PerSessionLogHandler perSessionLogHandler = LoggingManager.perSessionLogHandler();
+    perSessionLogHandler.attachToCurrentThread(sessionId);
     try {
       launcher.launchRemoteSession(startURL);
       queueSet.waitForLoad(configuration.getTimeoutInSeconds() * 1000l);
@@ -402,6 +391,8 @@ public class BrowserSessionFactory {
           "Failed to start new browser session, shutdown browser and clear all session data", e);
       shutdownBrowserAndClearSessionData(sessionInfo);
       throw new RemoteCommandException("Error while launching browser", "", e);
+    } finally {
+      perSessionLogHandler.detachFromCurrentThread();
     }
   }
 

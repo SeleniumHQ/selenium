@@ -28,10 +28,7 @@ public class PerSessionLogHandlerUnitTest extends TestCase {
     LogRecord secondRecord = new LogRecord(Level.INFO, "Second Log Record");
 
     handler.publish(firstRecord);
-    handler.copyThreadTempLogsToSessionLogs("session-1", Thread
-        .currentThread().getId());
-    handler.setThreadToSessionMapping(Thread.currentThread().getId(),
-        "session-1");
+    handler.attachToCurrentThread("session-1");
     handler.publish(secondRecord);
     String logs = handler.getLog("session-1");
 
@@ -54,23 +51,15 @@ public class PerSessionLogHandlerUnitTest extends TestCase {
     LogRecord firstRecord = new LogRecord(Level.INFO, "First Log Record");
     LogRecord secondRecord = new LogRecord(Level.INFO, "Second Log Record");
 
-    LogRecord anotherRecord = new LogRecord(Level.INFO,
-        "Another Log Record");
-    LogRecord oneMoreRecord = new LogRecord(Level.INFO,
-        "One More Log Record");
+    LogRecord anotherRecord = new LogRecord(Level.INFO, "Another Log Record");
+    LogRecord oneMoreRecord = new LogRecord(Level.INFO, "One More Log Record");
 
     handler.publish(firstRecord);
-    handler.copyThreadTempLogsToSessionLogs("session-1", Thread
-        .currentThread().getId());
-    handler.setThreadToSessionMapping(Thread.currentThread().getId(),
-        "session-1");
+    handler.attachToCurrentThread("session-1");
     handler.publish(secondRecord);
-    handler.clearThreadToSessionMapping(Thread.currentThread().getId());
+    handler.detachFromCurrentThread();
     handler.publish(anotherRecord);
-    handler.copyThreadTempLogsToSessionLogs("session-2", Thread
-        .currentThread().getId());
-    handler.setThreadToSessionMapping(Thread.currentThread().getId(),
-        "session-2");
+    handler.attachToCurrentThread("session-2");
     handler.publish(oneMoreRecord);
     String logs = handler.getLog("session-1");
     assertEquals(
@@ -94,21 +83,21 @@ public class PerSessionLogHandlerUnitTest extends TestCase {
 
     handler = new PerSessionLogHandler(CAPACITY, Level.INFO, formatter);
     LogRecord firstSessionLog = new LogRecord(Level.INFO,
-        "First Session Related Log Record");
+                                              "First Session Related Log Record");
     LogRecord secondSessionLog = new LogRecord(Level.INFO,
-        "Second Session Related Log Record");
+                                               "Second Session Related Log Record");
 
     // set logs for session-1
-    handler.setThreadToSessionMapping(Thread.currentThread().getId(),
+    handler.attachToCurrentThread(
         "session-one");
     handler.publish(firstSessionLog);
-    handler.clearThreadToSessionMapping(Thread.currentThread().getId());
+    handler.detachFromCurrentThread();
 
     // set logs for session-2
-    handler.setThreadToSessionMapping(Thread.currentThread().getId(),
+    handler.attachToCurrentThread(
         "session-two");
     handler.publish(secondSessionLog);
-    handler.clearThreadToSessionMapping(Thread.currentThread().getId());
+    handler.detachFromCurrentThread();
 
     // assert logs for session-1
     assertEquals(
