@@ -95,6 +95,20 @@
             <arg value="//${webdriver.atoms.inject}:is_enabled:android"/>
             <arg value="//${webdriver.atoms.inject}:is_selected:android"/>
             <arg value="//${webdriver.atoms.inject}:submit:android"/>
+
+            <arg value="//${webdriver.atoms.inject}:get_local_storage_keys:android"/>
+            <arg value="//${webdriver.atoms.inject}:set_local_storage_item:android"/>
+            <arg value="//${webdriver.atoms.inject}:get_local_storage_item:android"/>
+            <arg value="//${webdriver.atoms.inject}:remove_local_storage_item:android"/>
+            <arg value="//${webdriver.atoms.inject}:clear_local_storage:android"/>
+            <arg value="//${webdriver.atoms.inject}:get_local_storage_size:android"/>
+
+            <arg value="//${webdriver.atoms.inject}:get_session_storage_keys:android"/>
+            <arg value="//${webdriver.atoms.inject}:set_session_storage_item:android"/>
+            <arg value="//${webdriver.atoms.inject}:get_session_storage_item:android"/>
+            <arg value="//${webdriver.atoms.inject}:remove_session_storage_item:android"/>
+            <arg value="//${webdriver.atoms.inject}:clear_session_storage:android"/>
+            <arg value="//${webdriver.atoms.inject}:get_session_storage_size:android"/>
         </exec>
        
         <copy file="${build.location}/${webdriver.atoms.inject}/active_element_android.js" todir="${res.raw}"/>
@@ -114,6 +128,20 @@
         <copy file="${build.location}/${webdriver.atoms.inject}/is_enabled_android.js" todir="${res.raw}"/>
         <copy file="${build.location}/${webdriver.atoms.inject}/is_selected_android.js" todir="${res.raw}"/>
         <copy file="${build.location}/${webdriver.atoms.inject}/submit_android.js" todir="${res.raw}"/>
+
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_local_storage_keys_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/set_local_storage_item_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_local_storage_item_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/remove_local_storage_item_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/clear_local_storage_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_local_storage_size_android.js" todir="${res.raw}"/>
+
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_session_storage_keys_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/set_session_storage_item_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_session_storage_item_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/remove_session_storage_item_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/clear_session_storage_android.js" todir="${res.raw}"/>
+        <copy file="${build.location}/${webdriver.atoms.inject}/get_session_storage_size_android.js" todir="${res.raw}"/>
     </target>
 
     <target name="shouldBuildAtoms" unless="atomsBuild.notRequired">
