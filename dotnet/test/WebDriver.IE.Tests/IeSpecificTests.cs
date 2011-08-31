@@ -105,5 +105,13 @@ namespace OpenQA.Selenium.IE
             Assert.AreEqual(1, windowHandles.Count);
             driver.SwitchTo().Window(originalWindowHandle);
         }
+
+        [Test]
+        public void ScrollTest()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll.html");
+            driver.FindElement(By.Id("line8")).Click();
+            Assert.AreEqual("line8", driver.FindElement(By.Id("clicked")).Text);
+        }
     }
 }
