@@ -27,11 +27,16 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.BrowserConnection;
+import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.SessionStorage;
+import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.html5.RemoteLocalStorage;
+import org.openqa.selenium.remote.html5.RemoteSessionStorage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,9 +45,11 @@ import java.net.URL;
  * A driver for running tests on an Android device or emulator.
  */
 public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, Rotatable,
-    BrowserConnection, HasTouchScreen {
+    BrowserConnection, HasTouchScreen, WebStorage {
 
   private TouchScreen touch;
+  private RemoteLocalStorage localStorage;
+  private RemoteSessionStorage sessionStorage;
 
   /**
    * The default constructor assumes the remote server is listening at http://localhost:8080/wd/hub
@@ -55,17 +62,24 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
     this(new URL(remoteAddress));
   }
 
+  public AndroidDriver(DesiredCapabilities caps) {
+    this(getDefaultUrl(), caps);
+  }
+
   public AndroidDriver(URL remoteAddress) {
     super(remoteAddress, getAndroidCapabilities(null));
-    touch = new RemoteTouchScreen(getExecuteMethod());
+    init();
   }
 
   public AndroidDriver(URL url, DesiredCapabilities caps) {
     super(url, getAndroidCapabilities(caps));
+    init();
   }
 
-  public AndroidDriver(DesiredCapabilities caps) {
-    this(getDefaultUrl(), caps);
+  private void init() {
+    touch = new RemoteTouchScreen(getExecuteMethod());
+    localStorage = new RemoteLocalStorage(getExecuteMethod());
+    sessionStorage = new RemoteSessionStorage(getExecuteMethod());
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
@@ -111,5 +125,13 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
 
   public TouchScreen getTouch() {
     return touch;
+  }
+
+  public LocalStorage getLocalStorage() {
+    return localStorage;
+  }
+
+  public SessionStorage getSessionStorage() {
+    return sessionStorage;
   }
 }
