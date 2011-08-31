@@ -4,9 +4,11 @@ goog.addDependency("../../../javascript/webdriver-atoms/interactions.js", ['webd
 goog.addDependency("../../../javascript/webdriver-atoms/web_element.js", ['webdriver.element'], ['bot.dom', 'goog.dom', 'goog.dom.TagName', 'goog.math', 'goog.string', 'goog.style']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/action.js", ['webdriver.inject.action'], ['bot.action', 'bot.inject', 'goog.dom.selection']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/frame.js", ['webdriver.inject.frame'], ['bot.frame', 'bot.inject', 'bot.inject.cache']);
+goog.addDependency("../../../javascript/webdriver-atoms/inject/local_storage.js", ['webdriver.inject.storage.local'], ['bot.inject', 'webdriver.storage.local']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/execute_script.js", ['webdriver.inject'], ['bot.inject', 'bot.inject.cache']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/find_element.js", ['webdriver.inject.locators'], ['bot.inject', 'bot.locators']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/dom.js", ['webdriver.inject.dom'], ['bot.action', 'bot.dom', 'bot.inject', 'webdriver.element']);
+goog.addDependency("../../../javascript/webdriver-atoms/inject/session_storage.js", ['webdriver.inject.storage.session'], ['bot.inject', 'webdriver.storage.session']);
 goog.addDependency("../../../javascript/webdriver-atoms/html5/local_storage.js", ['webdriver.storage.local'], ['bot.storage']);
 goog.addDependency("../../../javascript/webdriver-atoms/html5/session_storage.js", ['webdriver.storage.session'], ['bot.storage']);
 goog.addDependency("../../../javascript/jsunit/app/jsUnitTracer.js", [], []);
