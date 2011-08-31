@@ -49,6 +49,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
@@ -62,11 +63,11 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
- * available for a test.
- * <p/>
- * The session is destroyed when the test ends ( ended by the client or timed out)
+ * available for a test. <p/> The session is destroyed when the test ends ( ended by the client or
+ * timed out)
  */
 public class TestSession {
+
   private static final Logger log = Logger.getLogger(TestSession.class.getName());
   private static final int MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED = 5000;
 
@@ -85,8 +86,6 @@ public class TestSession {
 
   /**
    * Creates a test session on the specified testSlot.
-   * 
-   * @param slot
    */
   TestSession(TestSlot slot, Map<String, Object> requestedCapabilities) {
     internalKey = UUID.randomUUID().toString();
@@ -98,8 +97,6 @@ public class TestSession {
   /**
    * the capabilities the client requested. It will match the TestSlot capabilities, but is not
    * equals.
-   * 
-   * @return
    */
   public Map<String, Object> getRequestedCapabilities() {
     return requestedCapabilities;
@@ -108,7 +105,7 @@ public class TestSession {
   /**
    * Get the session key from the remote. It's up to the remote to guarantee the key is unique. If 2
    * remotes return the same session key, the tests will overwrite each other.
-   * 
+   *
    * @return the key that was provided by the remote when the POST /session command was sent.
    */
   public String getExternalKey() {
@@ -117,8 +114,6 @@ public class TestSession {
 
   /**
    * associate this session to the session provided by the remote.
-   * 
-   * @param externalKey
    */
   public void setExternalKey(String externalKey) {
     this.externalKey = externalKey;
@@ -128,7 +123,7 @@ public class TestSession {
   /**
    * give the time in milliseconds since the last access to this test session, or 0 is ignore time
    * out has been set to true.
-   * 
+   *
    * @return time in millis
    * @see TestSession#setIgnoreTimeout(boolean)
    */
@@ -146,7 +141,8 @@ public class TestSession {
     // The session needs to have been open for at least the time interval and we need to have not
     // seen any new
     // commands during that time frame.
-    return (((now - sessionCreatedAt) > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED) && (sessionCreatedAt == lastActivity));
+    return (((now - sessionCreatedAt) > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED) && (
+        sessionCreatedAt == lastActivity));
   }
 
   /**
@@ -166,12 +162,15 @@ public class TestSession {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     TestSession other = (TestSession) obj;
     return internalKey.equals(other.internalKey);
   }
@@ -179,15 +178,11 @@ public class TestSession {
   @Override
   public String toString() {
     return externalKey != null ? "ext. key " + externalKey : internalKey +
-        " (int. key, remote not contacted yet.)";
+                                                             " (int. key, remote not contacted yet.)";
   }
 
   /**
    * Forward the request to the remote, execute the TestSessionListeners if applicable.
-   * 
-   * @param request
-   * @param response
-   * @throws IOException
    */
   public void forward(HttpServletRequest request, HttpServletResponse response) throws IOException {
     forward(request, response, null, false);
@@ -197,51 +192,49 @@ public class TestSession {
   private static final HttpParams params;
 
 
-    // Todo: According to more modern docs, DefaultHttpClient is now thread safe
-    // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/httpagent.html
-    // Review usage and update all usage accordingly
+  // Todo: According to more modern docs, DefaultHttpClient is now thread safe
+  // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/httpagent.html
+  // Review usage and update all usage accordingly
   static {
-        params = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
-        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+    params = new BasicHttpParams();
+    HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
+    HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
 
-        // Create and initialize scheme registry
-        SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+    // Create and initialize scheme registry
+    SchemeRegistry schemeRegistry = new SchemeRegistry();
+    schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
 
-        connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
+    connManager = new ThreadSafeClientConnManager(params, schemeRegistry);
   }
 
   private DefaultHttpClient getClient() {
     synchronized (TestSession.class) {
-    DefaultHttpClient client = new DefaultHttpClient(connManager, params);
-    client.setRedirectHandler(new RedirectHandler() {
-      public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
-        return false;
-      }
+      DefaultHttpClient client = new DefaultHttpClient(connManager, params);
+      client.setRedirectHandler(new RedirectHandler() {
+        public boolean isRedirectRequested(HttpResponse response, HttpContext context) {
+          return false;
+        }
 
-      public URI getLocationURI(HttpResponse response, HttpContext context)
-          throws ProtocolException {
-        return null;
-      }
-    });
-    return client;
+        public URI getLocationURI(HttpResponse response, HttpContext context)
+            throws ProtocolException {
+          return null;
+        }
+      });
+      return client;
     }
   }
 
   /**
    * Forward the request to the remote.
-   * 
-   * @param request
-   * @param response
-   * @param content Overwrite the body. Useful when the body of the request was already read.
+   *
+   * @param content               Overwrite the body. Useful when the body of the request was
+   *                              already read.
    * @param interceptResponseBody for selenium1 protocol, you need to read the content of the
-   *        response to find the session.
+   *                              response to find the session.
    * @return the content of the response if interceptResponseBody=true. null otherwise
-   * @throws IOException
    */
   public String forward(HttpServletRequest request, HttpServletResponse response, String content,
-      boolean interceptResponseBody) throws IOException {
+                        boolean interceptResponseBody) throws IOException {
     String res = null;
 
     if (slot.getProxy() instanceof CommandListener) {
@@ -253,9 +246,10 @@ public class TestSession {
 
     String pathSpec = request.getServletPath() + request.getContextPath();
     String path = request.getRequestURI();
-    if (!path.startsWith(pathSpec))
+    if (!path.startsWith(pathSpec)) {
       throw new IllegalStateException("Expected path " + path + " to start with pathSpec " +
-          pathSpec);
+                                      pathSpec);
+    }
     String end = path.substring(pathSpec.length());
     String ok = remoteURL + end;
     String uri = new URL(remoteURL, ok).toExternalForm();
@@ -280,7 +274,7 @@ public class TestSession {
       proxyRequest = new BasicHttpRequest(request.getMethod(), uri);
     }
 
-    for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
+    for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements(); ) {
       String headerName = (String) e.nextElement();
 
       if ("Content-Length".equalsIgnoreCase(headerName)) {
@@ -292,13 +286,93 @@ public class TestSession {
 
     DefaultHttpClient client = getClient();
 
-    HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
-    HttpResponse proxyResponse = client.execute(host, proxyRequest);
-    lastActivity = System.currentTimeMillis();
+    try {
+      HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
 
-    response.setStatus(proxyResponse.getStatusLine().getStatusCode());
-    HttpEntity responseBody = proxyResponse.getEntity();
+      HttpResponse proxyResponse = client.execute(host, proxyRequest);
+      lastActivity = System.currentTimeMillis();
 
+      response.setStatus(proxyResponse.getStatusLine().getStatusCode());
+      HttpEntity responseBody = proxyResponse.getEntity();
+
+      processResponseHeaders(response, remoteURL, pathSpec, proxyResponse);
+
+      if (responseBody != null) {
+        InputStream in = responseBody.getContent();
+
+        if (interceptResponseBody) {
+          res = getResponseUtf8Content(in);
+          in = new ByteArrayInputStream(res.getBytes("UTF-8"));
+        }
+
+        writeRawBody(response, in);
+      }
+
+      if (slot.getProxy() instanceof CommandListener) {
+        ((CommandListener) slot.getProxy()).afterCommand(this, request, response);
+      }
+      return res;
+    } finally {
+      client.getConnectionManager().shutdown();
+    }
+  }
+
+  private void writeRawBody(HttpServletResponse response, InputStream in) throws IOException {
+    try {
+      OutputStream out = response.getOutputStream();
+      try {
+        byte[] rawBody = ByteStreams.toByteArray(in);
+
+        // We need to set the Content-Length header before we write to the output stream. Usually
+        // the
+        // Content-Length header is already set because we take it from the proxied request. But,
+        // it won't
+        // be set when we consume chunked content, since that doesn't use Content-Length. As we're
+        // not
+        // going to send a chunked response, we need to set the Content-Length in order for the
+        // response
+        // to be valid.
+        if (!response.containsHeader("Content-Length")) {
+          response.setIntHeader("Content-Length", rawBody.length);
+        }
+
+        out.write(rawBody);
+      } finally {
+        try {
+          out.close();
+        } catch (IOException e) {
+        }
+      }
+    } finally {
+      try {
+        in.close();
+      } catch (IOException e) {
+      }
+    }
+  }
+
+  private String getResponseUtf8Content(InputStream in) {
+    String res;
+    StringBuilder sb = new StringBuilder();
+    String line;
+    try {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+      while ((line = reader.readLine()) != null) {
+        // TODO freynaud bug ?
+        sb.append(line);/* .append("\n") */
+      }
+      in.close();
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    res = sb.toString();
+    return res;
+  }
+
+  private void processResponseHeaders(HttpServletResponse response, URL remoteURL, String pathSpec,
+                                      HttpResponse proxyResponse) throws MalformedURLException {
     for (Header header : proxyResponse.getAllHeaders()) {
       String name = header.getName();
       String value = header.getValue();
@@ -331,72 +405,11 @@ public class TestSession {
         response.setHeader(name, value);
       }
     }
-
-    if (responseBody != null) {
-      InputStream in = responseBody.getContent();
-
-      if (interceptResponseBody) {
-        StringBuilder sb = new StringBuilder();
-        String line;
-        try {
-          BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-          while ((line = reader.readLine()) != null) {
-            // TODO freynaud bug ?
-            sb.append(line);/* .append("\n") */
-          }
-          in.close();
-        } catch (UnsupportedEncodingException e) {
-          throw new RuntimeException(e);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-        res = sb.toString();
-        in = new ByteArrayInputStream(res.getBytes("UTF-8"));
-      }
-
-      try {
-        OutputStream out = response.getOutputStream();
-        try {
-          byte[] rawBody = ByteStreams.toByteArray(in);
-
-          // We need to set the Content-Length header before we write to the output stream. Usually
-          // the
-          // Content-Length header is already set because we take it from the proxied request. But,
-          // it won't
-          // be set when we consume chunked content, since that doesn't use Content-Length. As we're
-          // not
-          // going to send a chunked response, we need to set the Content-Length in order for the
-          // response
-          // to be valid.
-          if (!response.containsHeader("Content-Length")) {
-            response.setIntHeader("Content-Length", rawBody.length);
-          }
-
-          out.write(rawBody);
-        } finally {
-          try {
-            out.close();
-          } catch (IOException e) {
-          }
-        }
-      } finally {
-        try {
-          in.close();
-        } catch (IOException e) {
-        }
-      }
-    }
-
-    if (slot.getProxy() instanceof CommandListener) {
-      ((CommandListener) slot.getProxy()).afterCommand(this, request, response);
-    }
-    return res;
   }
 
   /**
    * Allow you to retrieve an object previously stored on the test session.
-   * 
-   * @param key
+   *
    * @return the object you stored
    */
   public Object get(String key) {
@@ -405,9 +418,8 @@ public class TestSession {
 
   /**
    * Allows you to store an object on the test session.
-   * 
+   *
    * @param key a non-null string
-   * @param value
    */
   public void put(String key, Object value) {
     objects.put(key, value);
@@ -425,10 +437,8 @@ public class TestSession {
 
   /**
    * shouldn't be use other than in unit tests for the grid. Tests are not supposed to care about
-   * the grid state.
-   * <p/>
-   * use instead
-   * 
+   * the grid state. <p/> use instead
+   *
    * @see TestSession#terminate()
    */
   void terminateSynchronousFOR_TEST_ONLY() {
@@ -437,7 +447,7 @@ public class TestSession {
 
   /**
    * Sends a DELETE session command to the remote, following web driver protocol.
-   * 
+   *
    * @return true is the remote replied successfully to the request.
    */
   public boolean sendDeleteSessionRequest() {
@@ -458,33 +468,37 @@ public class TestSession {
       ok = false;
       // corrupted or the something else already sent the DELETE.
       log.severe("Error releasing. Server corrupted ?");
+    }  finally {
+      client.getConnectionManager().shutdown();
     }
     return ok;
   }
 
   /**
    * Sends a cmd=testComplete command to the remote, following selenium1 protocol.
-   * 
+   *
    * @return true is the remote replied successfully to the request.
    */
   public boolean sendSelenium1TestComplete(TestSession session) throws IOException {
     URL url = slot.getProxy().getRemoteURL();
     BasicHttpRequest req =
         new BasicHttpRequest("POST", url.toExternalForm() + "/?cmd=testComplete&sessionId=" +
-            session.getExternalKey());
+                                     session.getExternalKey());
     DefaultHttpClient client = new DefaultHttpClient();
 
     HttpHost host = new HttpHost(url.getHost(), url.getPort());
-    HttpResponse response = client.execute(host, req);
 
     boolean ok;
     try {
+      HttpResponse response = client.execute(host, req);
       int code = response.getStatusLine().getStatusCode();
       ok = (code >= 200) && (code <= 299);
     } catch (Throwable e) {
       ok = false;
       // corrupted or the something else already sent the DELETE.
       log.severe("Error releasing. Server corrupted ?");
+    } finally {
+      client.getConnectionManager().shutdown();
     }
     return ok;
   }
@@ -492,8 +506,6 @@ public class TestSession {
   /**
    * allow to bypass time out for this session. ignore = true => the session will not time out.
    * setIgnoreTimeout(true) also update the lastActivity to now.
-   * 
-   * @param ignore
    */
   public void setIgnoreTimeout(boolean ignore) {
     if (!ignore) {

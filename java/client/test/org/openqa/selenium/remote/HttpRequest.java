@@ -39,14 +39,16 @@ public class HttpRequest {
 
       post.setEntity(new StringEntity(content, "UTF-8"));
 
+      final DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
       try {
-        HttpResponse res = new DefaultHttpClient().execute(post);
+        HttpResponse res = defaultHttpClient.execute(post);
         HttpEntity httpEntity = res.getEntity();
         if (httpEntity != null) {
           this.response = EntityUtils.toString(httpEntity);
         }
       } finally {
         post.abort();
+        defaultHttpClient.getConnectionManager().shutdown();
       }
     } else {
       throw new UnsupportedOperationException("Unsupported method: " + method);
