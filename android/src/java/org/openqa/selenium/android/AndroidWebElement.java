@@ -18,9 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import android.os.SystemClock;
 import android.view.MotionEvent;
 
@@ -42,6 +39,8 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
+
+import com.google.common.collect.Lists;
 
 import java.util.List;
 import java.util.Map;

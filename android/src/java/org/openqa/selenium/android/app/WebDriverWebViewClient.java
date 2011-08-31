@@ -18,7 +18,7 @@ limitations under the License.
 package org.openqa.selenium.android.app;
 
 import org.openqa.selenium.android.ActivityController;
-import org.openqa.selenium.android.Logger;
+import org.openqa.selenium.android.util.Logger;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 

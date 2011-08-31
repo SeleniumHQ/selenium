@@ -17,17 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
-
 import android.content.Context;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.android.events.AndroidTouchScreen;
+import org.openqa.selenium.android.html5.AndroidLocalStorage;
+import org.openqa.selenium.android.html5.AndroidSessionStorage;
+import org.openqa.selenium.android.util.SimpleTimer;
+import org.openqa.selenium.android.util.Sleeper;
+import org.openqa.selenium.android.util.XPathInstaller;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.HasTouchScreen;
@@ -44,9 +42,10 @@ import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.android.util.SimpleTimer;
-import org.openqa.selenium.android.util.XPathInstaller;
 import org.openqa.selenium.html5.BrowserConnection;
+import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.SessionStorage;
+import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -55,6 +54,15 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.ErrorCodes;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,7 +74,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByName, FindsByXPath, TakesScreenshot,
-    Rotatable, BrowserConnection, HasTouchScreen {
+    Rotatable, BrowserConnection, HasTouchScreen, WebStorage {
 
   private static final String ELEMENT_KEY = "ELEMENT";
   private static final String WINDOW_KEY = "WINDOW";
@@ -76,7 +84,7 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private Long asyncScriptTimeout;
   private static Context context;
   private final SimpleTimer timer;
-  private final AndroidWebElement element;
+  private final org.openqa.selenium.android.AndroidWebElement element;
   private final Atoms atoms;
   private DomWindow currentWindowOrFrame;
   private long implicitWait = 0;
@@ -86,6 +94,8 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
   private final AndroidTouchScreen touchScreen;
   private final AndroidNavigation navigation;
   private final AndroidOptions options;
+  private final AndroidLocalStorage localStorage;
+  private final AndroidSessionStorage sessionStorage;
 
   private AndroidWebElement getOrCreateWebElement(String id) {
     if (store.get(id) != null) {
@@ -109,7 +119,9 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
     options = new AndroidOptions();
     asyncScriptTimeout = 0L;
     element = getOrCreateWebElement("");
-
+    localStorage = new AndroidLocalStorage(this);
+    sessionStorage= new AndroidSessionStorage(this);
+    
     // Create a new view and delete existing windows.
     controller.newWebView( /*Delete existing windows*/true);
   }
@@ -225,6 +237,14 @@ public class AndroidDriver implements WebDriver, SearchContext, FindsByTagName, 
 
   public TargetLocator switchTo() {
     return new AndroidTargetLocator();
+  }
+
+  public LocalStorage getLocalStorage() {
+    return localStorage;
+  }
+
+  public SessionStorage getSessionStorage() {
+    return sessionStorage;
   }
 
   private class AndroidTargetLocator implements TargetLocator {

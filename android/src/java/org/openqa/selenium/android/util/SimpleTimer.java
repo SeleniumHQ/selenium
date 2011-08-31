@@ -19,7 +19,7 @@ package org.openqa.selenium.android.util;
 
 import android.util.Log;
 
-import org.openqa.selenium.android.Logger;
+import org.openqa.selenium.android.util.Logger;
 
 /**
  * Simple timer class used to time actions executed.

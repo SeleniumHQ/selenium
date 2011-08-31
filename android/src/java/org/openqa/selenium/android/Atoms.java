@@ -1,6 +1,5 @@
 /*
 Copyright 2011 WebDriver committers
-
 Copyright 2011 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +35,6 @@ public class Atoms {
   public static String findElementJs;
   public static String findElementsJs;
   public static String getLocationJs;
-  public static String getLocationInTopWindowJs;
   public static String getSizeJs;
   public static String getCssPropJs;
   public static String isDisplayedJs;
@@ -48,6 +46,22 @@ public class Atoms {
   public static String frameByIdOrNameJs;
   public static String frameByIndexJs;
   public static String activeElementJs;
+
+  // Local Storage Atoms
+  public static String getLocalStorageKeysJs;
+  public static String getLocalStorageItemJs;
+  public static String setLocalStorageItemJs;
+  public static String removeLocalStorageItemJs;
+  public static String clearLocalStorageJs;
+  public static String getLocalStorageSizeJs;
+
+  // Session Storage Atoms
+  public static String getSessionStorageKeysJs;
+  public static String getSessionStorageItemJs;
+  public static String setSessionStorageItemJs;
+  public static String removeSessionStorageItemJs;
+  public static String clearSessionStorageJs;
+  public static String getSessionStorageSizeJs;
 
   private Atoms() {
     getAttributeJs = AndroidDriver.getResourceAsString(R.raw.get_attribute_value_android);
@@ -68,6 +82,29 @@ public class Atoms {
     frameByIdOrNameJs = AndroidDriver.getResourceAsString(R.raw.frame_by_id_or_name_android);
     frameByIndexJs = AndroidDriver.getResourceAsString(R.raw.frame_by_index_android);
     activeElementJs = AndroidDriver.getResourceAsString(R.raw.active_element_android);
+
+    // Local Storage Atoms
+    getLocalStorageKeysJs = AndroidDriver.getResourceAsString(R.raw.get_local_storage_keys_android);
+    getLocalStorageItemJs = AndroidDriver.getResourceAsString(R.raw.get_local_storage_item_android);
+    setLocalStorageItemJs = AndroidDriver.getResourceAsString(R.raw.set_local_storage_item_android);
+    removeLocalStorageItemJs = AndroidDriver.getResourceAsString(
+        R.raw.remove_local_storage_item_android);
+    clearLocalStorageJs = AndroidDriver.getResourceAsString(R.raw.clear_local_storage_android);
+    getLocalStorageSizeJs = AndroidDriver.getResourceAsString(R.raw.get_local_storage_size_android);
+
+    // Session Storage Atoms
+    getSessionStorageKeysJs = AndroidDriver.getResourceAsString(
+        R.raw.get_session_storage_keys_android);
+    getSessionStorageItemJs = AndroidDriver.getResourceAsString(
+        R.raw.get_session_storage_item_android);
+    setSessionStorageItemJs = AndroidDriver.getResourceAsString(
+        R.raw.set_session_storage_item_android);
+    removeSessionStorageItemJs = AndroidDriver.getResourceAsString(
+        R.raw.remove_session_storage_item_android);
+    clearSessionStorageJs = AndroidDriver.getResourceAsString(R.raw.clear_session_storage_android);
+    getSessionStorageSizeJs = AndroidDriver.getResourceAsString(
+        R.raw.get_session_storage_size_android);
+
   }
 
   public static Atoms getInstance() {

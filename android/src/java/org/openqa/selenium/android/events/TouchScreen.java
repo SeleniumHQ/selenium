@@ -20,11 +20,10 @@ package org.openqa.selenium.android.events;
 
 import com.google.common.collect.Lists;
 
-import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 
-import org.openqa.selenium.android.Platform;
+import org.openqa.selenium.android.util.Platform;
 
 import java.util.List;
 

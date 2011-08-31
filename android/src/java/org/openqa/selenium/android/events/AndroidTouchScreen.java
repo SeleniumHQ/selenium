@@ -16,17 +16,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.android;
-
-import com.google.common.collect.Lists;
+package org.openqa.selenium.android.events;
 
 import android.os.SystemClock;
 import android.view.MotionEvent;
 
+import org.openqa.selenium.android.ActivityController;
+import org.openqa.selenium.android.AndroidDriver;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.android.app.WebDriverWebView;
 import org.openqa.selenium.interactions.internal.Coordinates;
+
+import com.google.common.collect.Lists;
 
 import java.util.List;
 

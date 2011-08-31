@@ -24,7 +24,7 @@ import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.webkit.WebView;
 
-import org.openqa.selenium.android.Platform;
+import org.openqa.selenium.android.util.Platform;
 
 import java.util.Arrays;
 import java.util.LinkedList;

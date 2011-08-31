@@ -29,7 +29,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.android.ActivityController;
-import org.openqa.selenium.android.Logger;
+import org.openqa.selenium.android.util.Logger;
 import org.openqa.selenium.android.events.TouchScreen;
 import org.openqa.selenium.android.events.WebViewAction;
 import org.openqa.selenium.android.server.JettyService;
