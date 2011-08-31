@@ -106,7 +106,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({ANDROID, CHROME, IPHONE, OPERA, REMOTE, SELENESE})
+  @Ignore({ANDROID, CHROME, IPHONE, REMOTE, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
 
@@ -119,7 +119,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({ANDROID, CHROME, IPHONE, OPERA, REMOTE, SELENESE})
+  @Ignore({ANDROID, CHROME, IPHONE, REMOTE, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     driver.get(pages.formPage);
 

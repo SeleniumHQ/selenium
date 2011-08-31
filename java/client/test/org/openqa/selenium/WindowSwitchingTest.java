@@ -93,7 +93,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     assertEquals(3, allWindowHandles.size());
   }
 
-  @Ignore({IE, SELENESE, OPERA})
+  @Ignore({IE, SELENESE})
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
 
@@ -113,7 +113,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({IE, SELENESE, OPERA})
+  @Ignore({IE, SELENESE})
   @JavascriptEnabled
   public void testCanCallGetWindowHandlesAfterClosingAWindow() {
     driver.get(pages.xhtmlTestPage);
@@ -134,7 +134,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({OPERA, SELENESE})
+  @Ignore({SELENESE})
   public void testCanObtainAWindowHandle() {
     driver.get(pages.xhtmlTestPage);
 
@@ -143,7 +143,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     assertNotNull(currentHandle);
   }
 
-  @Ignore({OPERA, SELENESE})
+  @Ignore({SELENESE})
   public void testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
@@ -162,7 +162,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = {IE, SELENESE, OPERA})
+  @Ignore(value = {IE, SELENESE})
   public void testCanCloseWindowWhenMultipleWindowsAreOpen() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
