@@ -41,7 +41,7 @@ public class ExecuteMethod {
   public Object execute(String commandName, Map<String, ?> parameters) {
     Response response;
 
-    if (parameters == null || parameters.size() == 0) {
+    if (parameters == null || parameters.isEmpty()) {
       response = driver.execute(commandName);
     } else {
       response = driver.execute(commandName, parameters);

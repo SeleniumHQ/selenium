@@ -169,7 +169,7 @@ public class SeleneseTestBase {
   /** Like assertEquals, but fails at the end of the test (during tearDown) */
   public void verifyEquals(boolean s1, boolean s2) {
     try {
-      assertEquals(new Boolean(s1), new Boolean(s2));
+      assertEquals(Boolean.valueOf(s1), Boolean.valueOf(s2));
     } catch (Error e) {
       verificationErrors.append(throwableToString(e));
     }

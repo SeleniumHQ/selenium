@@ -638,7 +638,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     allElements = findChildNodes(allElements);
 
-    if (allElements.size() == 0) {
+    if (allElements.isEmpty()) {
       throw new NoSuchElementException("Cannot find child element using css: " + using);
     }
 
@@ -737,7 +737,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     List<WebElement> elements = findElementsByPartialLinkText(linkText);
-    if (elements.size() == 0) {
+    if (elements.isEmpty()) {
       throw new NoSuchElementException(
           "Unable to find element with linkText " + linkText);
     }
@@ -762,7 +762,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     List<WebElement> elements = findElementsByTagName(name);
-    if (elements.size() == 0) {
+    if (elements.isEmpty()) {
       throw new NoSuchElementException("Cannot find element with tag name: " + name);
     }
     return elements.get(0);

@@ -101,14 +101,14 @@ public class TestSuiteBuilder {
   private void applySystemProperties() {
     // Add the test case rules defined in the system properties only if there
     // were no other test cases specified in the test suite specification.
-    if (onlyRun.size() == 0) {
+    if (onlyRun.isEmpty()) {
       String onlyRunProperty = System.getProperty("only_run", "");
       if (!onlyRunProperty.equals("")) {
         onlyRun(onlyRunProperty);
       }
     }
 
-    if (testMethodNames.size() == 0) {
+    if (testMethodNames.isEmpty()) {
       String methodProperty = System.getProperty("method", "");
       if (!methodProperty.equals("")) {
         method(methodProperty);
@@ -181,7 +181,7 @@ public class TestSuiteBuilder {
       return;
     }
 
-    if (onlyRun.size() > 0 && !onlyRun.contains(rawClass.getSimpleName())) {
+    if (!onlyRun.isEmpty() && !onlyRun.contains(rawClass.getSimpleName())) {
       return;
     }
 
@@ -200,7 +200,7 @@ public class TestSuiteBuilder {
     }
 
     boolean include = true;
-    if (patterns.size() > 0) {
+    if (!patterns.isEmpty()) {
       include = false;
       for (String pattern : patterns) {
         include |= clazz.getName().matches(pattern);

@@ -251,7 +251,7 @@ public class Augmenter {
     }
 
     public boolean isNeedingApplication() {
-      return interfaces.size() > 0;
+      return !interfaces.isEmpty();
     }
 
     public Object intercept(Object self, Method method, Object[] args, MethodProxy methodProxy)

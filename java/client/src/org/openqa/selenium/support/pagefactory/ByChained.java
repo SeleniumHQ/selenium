@@ -46,7 +46,7 @@ public class ByChained extends By {
   @Override
   public WebElement findElement(SearchContext context) {
     List<WebElement> elements = findElements(context);
-    if (elements.size() == 0)
+    if (elements.isEmpty())
       throw new NoSuchElementException("Cannot locate an element using " + toString());
     return elements.get(0);
   }

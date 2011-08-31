@@ -121,7 +121,7 @@ public class Select {
       matched = true;
     }
 
-    if (options.size() == 0 && text.contains(" ")) {
+    if (options.isEmpty() && text.contains(" ")) {
       String subStringWithoutSpace = getLongestSubstringWithoutSpace(text);
       List<WebElement> candidates;
       if ("".equals(subStringWithoutSpace)) {
