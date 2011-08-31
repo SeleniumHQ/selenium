@@ -131,7 +131,7 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
                 // Fine
             }
 
-            Assert.AreEqual(exception.Message, log.ToString());
+            Assert.IsTrue(log.ToString().Contains(exception.Message));
         }
 
         [Test]

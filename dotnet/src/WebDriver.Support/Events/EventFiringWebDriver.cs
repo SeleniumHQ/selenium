@@ -147,15 +147,34 @@ namespace OpenQA.Selenium.Support.Events
         {
             get
             {
-                return this.driver.Url;
+                string url = string.Empty;
+                try
+                {
+                    url = this.driver.Url;
+                }
+                catch (Exception ex)
+                {
+                    this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                    throw;
+                }
+
+                return url;
             }
 
             set
             {
-                WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.driver, value);
-                this.OnNavigating(e);
-                this.driver.Url = value;
-                this.OnNavigated(e);
+                try
+                {
+                    WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.driver, value);
+                    this.OnNavigating(e);
+                    this.driver.Url = value;
+                    this.OnNavigated(e);
+                }
+                catch (Exception ex)
+                {
+                    this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                    throw;
+                }
             }
         }
 
@@ -164,7 +183,21 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public string Title
         {
-            get { return this.driver.Title; }
+            get
+            {
+                string title = string.Empty;
+                try
+                {
+                    title = this.driver.Title;
+                }
+                catch (Exception ex)
+                {
+                    this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                    throw;
+                }
+
+                return title; 
+            }
         }
 
         /// <summary>
@@ -181,7 +214,21 @@ namespace OpenQA.Selenium.Support.Events
         /// </remarks>
         public string PageSource
         {
-            get { return this.driver.PageSource; }
+            get
+            {
+                string source = string.Empty;
+                try
+                {
+                    source = this.driver.PageSource;
+                }
+                catch (Exception ex)
+                {
+                    this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                    throw;
+                }
+
+                return source;
+            }
         }
 
         /// <summary>
@@ -190,7 +237,21 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public string CurrentWindowHandle
         {
-            get { return this.driver.CurrentWindowHandle; }
+            get
+            {
+                string handle = string.Empty;
+                try
+                {
+                    handle = this.driver.CurrentWindowHandle;
+                }
+                catch (Exception ex)
+                {
+                    this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                    throw;
+                }
+
+                return handle; 
+            }
         }
 
         /// <summary>
@@ -198,7 +259,21 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public ReadOnlyCollection<string> WindowHandles
         {
-            get { return this.driver.WindowHandles; }
+            get 
+            {
+                ReadOnlyCollection<string> handles = null;
+                try
+                {
+                    handles = this.driver.WindowHandles;
+                }
+                catch (Exception ex)
+                {
+                    this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                    throw;
+                }
+
+                return handles; 
+            }
         }
 
         /// <summary>
@@ -206,7 +281,15 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public void Close()
         {
-            this.driver.Close();
+            try
+            {
+                this.driver.Close();
+            }
+            catch (Exception ex)
+            {
+                this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                throw;
+            }
         }
 
         /// <summary>
@@ -214,7 +297,15 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public void Quit()
         {
-            this.driver.Quit();
+            try
+            {
+                this.driver.Quit();
+            }
+            catch (Exception ex)
+            {
+                this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                throw;
+            }
         }
 
         /// <summary>
@@ -257,11 +348,21 @@ namespace OpenQA.Selenium.Support.Events
         /// <exception cref="NoSuchElementException">If no element matches the criteria.</exception>
         public IWebElement FindElement(By by)
         {
-            FindElementEventArgs e = new FindElementEventArgs(this.driver, by);
-            this.OnFindingElement(e);
-            IWebElement element = this.driver.FindElement(by);
-            this.OnFindElementCompleted(e);
-            IWebElement wrappedElement = this.WrapElement(element);
+            IWebElement wrappedElement = null;
+            try
+            {
+                FindElementEventArgs e = new FindElementEventArgs(this.driver, by);
+                this.OnFindingElement(e);
+                IWebElement element = this.driver.FindElement(by);
+                this.OnFindElementCompleted(e);
+                wrappedElement = this.WrapElement(element);
+            }
+            catch (Exception ex)
+            {
+                this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                throw;
+            }
+
             return wrappedElement;
         }
 
@@ -275,14 +376,22 @@ namespace OpenQA.Selenium.Support.Events
         public ReadOnlyCollection<IWebElement> FindElements(By by)
         {
             List<IWebElement> wrappedElementList = new List<IWebElement>();
-            FindElementEventArgs e = new FindElementEventArgs(this.driver, by);
-            this.OnFindingElement(e);
-            ReadOnlyCollection<IWebElement> elements = this.driver.FindElements(by);
-            this.OnFindElementCompleted(e);
-            foreach (IWebElement element in elements)
+            try
             {
-                IWebElement wrappedElement = this.WrapElement(element);
-                wrappedElementList.Add(wrappedElement);
+                FindElementEventArgs e = new FindElementEventArgs(this.driver, by);
+                this.OnFindingElement(e);
+                ReadOnlyCollection<IWebElement> elements = this.driver.FindElements(by);
+                this.OnFindElementCompleted(e);
+                foreach (IWebElement element in elements)
+                {
+                    IWebElement wrappedElement = this.WrapElement(element);
+                    wrappedElementList.Add(wrappedElement);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                throw;
             }
 
             return wrappedElementList.AsReadOnly();
@@ -343,11 +452,21 @@ namespace OpenQA.Selenium.Support.Events
                 throw new NotSupportedException("Underlying driver instance does not support executing javascript");
             }
 
-            object[] unwrappedArgs = UnwrapElementArguments(args);
-            WebDriverScriptEventArgs e = new WebDriverScriptEventArgs(this.driver, script);
-            this.OnScriptExecuting(e);
-            object scriptResult = javascriptDriver.ExecuteScript(script, unwrappedArgs);
-            this.OnScriptExecuted(e);
+            object scriptResult = null;
+            try
+            {
+                object[] unwrappedArgs = UnwrapElementArguments(args);
+                WebDriverScriptEventArgs e = new WebDriverScriptEventArgs(this.driver, script);
+                this.OnScriptExecuting(e);
+                scriptResult = javascriptDriver.ExecuteScript(script, unwrappedArgs);
+                this.OnScriptExecuted(e);
+            }
+            catch (Exception ex)
+            {
+                this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                throw;
+            }
+
             return scriptResult;
         }
 
@@ -359,17 +478,27 @@ namespace OpenQA.Selenium.Support.Events
         /// <returns>The value returned by the script.</returns>
         public object ExecuteAsyncScript(string script, params object[] args)
         {
+            object scriptResult = null;
             IJavaScriptExecutor javascriptDriver = this.driver as IJavaScriptExecutor;
             if (javascriptDriver == null)
             {
                 throw new NotSupportedException("Underlying driver instance does not support executing javascript");
             }
 
-            object[] unwrappedArgs = UnwrapElementArguments(args);
-            WebDriverScriptEventArgs e = new WebDriverScriptEventArgs(this.driver, script);
-            this.OnScriptExecuting(e);
-            object scriptResult = javascriptDriver.ExecuteAsyncScript(script, unwrappedArgs);
-            this.OnScriptExecuted(e);
+            try
+            {
+                object[] unwrappedArgs = UnwrapElementArguments(args);
+                WebDriverScriptEventArgs e = new WebDriverScriptEventArgs(this.driver, script);
+                this.OnScriptExecuting(e);
+                scriptResult = javascriptDriver.ExecuteAsyncScript(script, unwrappedArgs);
+                this.OnScriptExecuted(e);
+            }
+            catch (Exception ex)
+            {
+                this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                throw;
+            }
+
             return scriptResult;
         }
         #endregion
@@ -636,10 +765,18 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public void Back()
             {
-                WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver);
-                this.parentDriver.OnNavigatingBack(e);
-                this.wrappedNavigation.Back();
-                this.parentDriver.OnNavigatedBack(e);
+                try
+                {
+                    WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver);
+                    this.parentDriver.OnNavigatingBack(e);
+                    this.wrappedNavigation.Back();
+                    this.parentDriver.OnNavigatedBack(e);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
             }
 
             /// <summary>
@@ -647,10 +784,18 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public void Forward()
             {
-                WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver);
-                this.parentDriver.OnNavigatingForward(e);
-                this.wrappedNavigation.Forward();
-                this.parentDriver.OnNavigatedForward(e);
+                try
+                {
+                    WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver);
+                    this.parentDriver.OnNavigatingForward(e);
+                    this.wrappedNavigation.Forward();
+                    this.parentDriver.OnNavigatedForward(e);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
             }
 
             /// <summary>
@@ -659,10 +804,18 @@ namespace OpenQA.Selenium.Support.Events
             /// <param name="url">String of where you want the browser to go to</param>
             public void GoToUrl(string url)
             {
-                WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver, url);
-                this.parentDriver.OnNavigating(e);
-                this.wrappedNavigation.GoToUrl(url);
-                this.parentDriver.OnNavigated(e);
+                try
+                {
+                    WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver, url);
+                    this.parentDriver.OnNavigating(e);
+                    this.wrappedNavigation.GoToUrl(url);
+                    this.parentDriver.OnNavigated(e);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
             }
 
             /// <summary>
@@ -676,10 +829,18 @@ namespace OpenQA.Selenium.Support.Events
                     throw new ArgumentNullException("url", "url cannot be null");
                 }
 
-                WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver, url.ToString());
-                this.parentDriver.OnNavigating(e);
-                this.wrappedNavigation.GoToUrl(url);
-                this.parentDriver.OnNavigated(e);
+                try
+                {
+                    WebDriverNavigationEventArgs e = new WebDriverNavigationEventArgs(this.parentDriver, url.ToString());
+                    this.parentDriver.OnNavigating(e);
+                    this.wrappedNavigation.GoToUrl(url);
+                    this.parentDriver.OnNavigated(e);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
             }
 
             /// <summary>
@@ -687,7 +848,15 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public void Refresh()
             {
-                this.wrappedNavigation.Refresh();
+                try
+                {
+                    this.wrappedNavigation.Refresh();
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
             }
 
             #endregion
@@ -736,6 +905,7 @@ namespace OpenQA.Selenium.Support.Events
         private class EventFiringTargetLocator : ITargetLocator
         {
             private ITargetLocator wrappedLocator;
+            private EventFiringWebDriver parentDriver;
 
             /// <summary>
             /// Initializes a new instance of the EventFiringTargetLocator class
@@ -743,7 +913,8 @@ namespace OpenQA.Selenium.Support.Events
             /// <param name="driver">The driver that is currently in use</param>
             public EventFiringTargetLocator(EventFiringWebDriver driver)
             {
-                this.wrappedLocator = driver.WrappedDriver.SwitchTo();
+                this.parentDriver = driver;
+                this.wrappedLocator = this.parentDriver.WrappedDriver.SwitchTo();
             }
 
             #region ITargetLocator Members
@@ -754,7 +925,18 @@ namespace OpenQA.Selenium.Support.Events
             /// <returns>A WebDriver instance that is currently in use</returns>
             public IWebDriver Frame(int frameIndex)
             {
-                return this.wrappedLocator.Frame(frameIndex);
+                IWebDriver driver = null;
+                try
+                {
+                    driver = this.wrappedLocator.Frame(frameIndex);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return driver;
             }
 
             /// <summary>
@@ -764,7 +946,18 @@ namespace OpenQA.Selenium.Support.Events
             /// <returns>A WebDriver instance that is currently in use</returns>
             public IWebDriver Frame(string frameName)
             {
-                return this.wrappedLocator.Frame(frameName);
+                IWebDriver driver = null;
+                try
+                {
+                    driver = this.wrappedLocator.Frame(frameName);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return driver;
             }
 
             /// <summary>
@@ -774,7 +967,18 @@ namespace OpenQA.Selenium.Support.Events
             /// <returns>A WebDriver instance that is currently in use.</returns>
             public IWebDriver Frame(IWebElement frameElement)
             {
-                return this.wrappedLocator.Frame(frameElement);
+                IWebDriver driver = null;
+                try
+                {
+                    driver = this.wrappedLocator.Frame(frameElement);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return driver;
             }
 
             /// <summary>
@@ -784,7 +988,18 @@ namespace OpenQA.Selenium.Support.Events
             /// <returns>A WebDriver instance that is currently in use</returns>
             public IWebDriver Window(string windowName)
             {
-                return this.wrappedLocator.Window(windowName);
+                IWebDriver driver = null;
+                try
+                {
+                    driver = this.wrappedLocator.Window(windowName);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return driver;
             }
 
             /// <summary>
@@ -793,7 +1008,18 @@ namespace OpenQA.Selenium.Support.Events
             /// <returns>Element of the default</returns>
             public IWebDriver DefaultContent()
             {
-                return this.wrappedLocator.DefaultContent();
+                IWebDriver driver = null;
+                try
+                {
+                    driver = this.wrappedLocator.DefaultContent();
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return driver;
             }
 
             /// <summary>
@@ -802,7 +1028,18 @@ namespace OpenQA.Selenium.Support.Events
             /// <returns>Element that is active</returns>
             public IWebElement ActiveElement()
             {
-                return this.wrappedLocator.ActiveElement();
+                IWebElement element = null;
+                try
+                {
+                    element = this.wrappedLocator.ActiveElement();
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return element;
             }
 
             /// <summary>
@@ -811,7 +1048,18 @@ namespace OpenQA.Selenium.Support.Events
             /// <returns>A handle to the dialog.</returns>
             public IAlert Alert()
             {
-                return this.wrappedLocator.Alert();
+                IAlert alert = null;
+                try
+                {
+                    alert = this.wrappedLocator.Alert();
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return alert;
             }
 
             #endregion
@@ -905,7 +1153,21 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public string TagName
             {
-                get { return this.underlyingElement.TagName; }
+                get
+                {
+                    string tagName = string.Empty;
+                    try
+                    {
+                        tagName = this.underlyingElement.TagName;
+                    }
+                    catch (Exception ex)
+                    {
+                        this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                        throw;
+                    }
+
+                    return tagName; 
+                }
             }
 
             /// <summary>
@@ -913,7 +1175,21 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public string Text
             {
-                get { return this.underlyingElement.Text; }
+                get
+                {
+                    string text = string.Empty;
+                    try
+                    {
+                        text = this.underlyingElement.Text;
+                    }
+                    catch (Exception ex)
+                    {
+                        this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                        throw;
+                    }
+
+                    return text; 
+                }
             }
 
             /// <summary>
@@ -921,7 +1197,21 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public bool Enabled
             {
-                get { return this.underlyingElement.Enabled; }
+                get 
+                {
+                    bool enabled = false;
+                    try
+                    {
+                        enabled = this.underlyingElement.Enabled;
+                    }
+                    catch (Exception ex)
+                    {
+                        this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                        throw;
+                    }
+
+                    return enabled; 
+                }
             }
 
             /// <summary>
@@ -929,7 +1219,21 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public bool Selected
             {
-                get { return this.underlyingElement.Selected; }
+                get
+                {
+                    bool selected = false;
+                    try
+                    {
+                        selected = this.underlyingElement.Selected; 
+                    }
+                    catch (Exception ex)
+                    {
+                        this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                        throw;
+                    }
+
+                    return selected;
+                }
             }
 
             /// <summary>
@@ -937,7 +1241,21 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public Point Location
             {
-                get { return this.underlyingElement.Location; }
+                get 
+                {
+                    Point location = new Point();
+                    try
+                    {
+                        location = this.underlyingElement.Location; 
+                    }
+                    catch (Exception ex)
+                    {
+                        this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                        throw;
+                    }
+
+                    return location;
+                }
             }
 
             /// <summary>
@@ -945,7 +1263,21 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public Size Size
             {
-                get { return this.underlyingElement.Size; }
+                get 
+                {
+                    Size size = new Size();
+                    try
+                    {
+                        size = this.underlyingElement.Size;
+                    }
+                    catch (Exception ex)
+                    {
+                        this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                        throw;
+                    }
+
+                    return size;
+                }
             }
 
             /// <summary>
@@ -953,7 +1285,21 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public bool Displayed
             {
-                get { return this.underlyingElement.Displayed; }
+                get 
+                {
+                    bool displayed = false;
+                    try
+                    {
+                        displayed = this.underlyingElement.Displayed; 
+                    }
+                    catch (Exception ex)
+                    {
+                        this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                        throw;
+                    }
+
+                    return displayed;
+                }
             }
             #endregion
 
@@ -971,10 +1317,18 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public void Clear()
             {
-                WebElementEventArgs e = new WebElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement);
-                this.parentDriver.OnElementValueChanging(e);
-                this.underlyingElement.Clear();
-                this.parentDriver.OnElementValueChanged(e);
+                try
+                {
+                    WebElementEventArgs e = new WebElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement);
+                    this.parentDriver.OnElementValueChanging(e);
+                    this.underlyingElement.Clear();
+                    this.parentDriver.OnElementValueChanged(e);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
             }
 
             /// <summary>
@@ -983,10 +1337,18 @@ namespace OpenQA.Selenium.Support.Events
             /// <param name="text">String containing what you would like to type onto the screen</param>
             public void SendKeys(string text)
             {
-                WebElementEventArgs e = new WebElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement);
-                this.parentDriver.OnElementValueChanging(e);
-                this.underlyingElement.SendKeys(text);
-                this.parentDriver.OnElementValueChanged(e);
+                try
+                {
+                    WebElementEventArgs e = new WebElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement);
+                    this.parentDriver.OnElementValueChanging(e);
+                    this.underlyingElement.SendKeys(text);
+                    this.parentDriver.OnElementValueChanged(e);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
             }
 
             /// <summary>
@@ -995,7 +1357,15 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public void Submit()
             {
-                this.underlyingElement.Submit();
+                try
+                {
+                    this.underlyingElement.Submit();
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
             }
 
             /// <summary>
@@ -1005,10 +1375,18 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public void Click()
             {
-                WebElementEventArgs e = new WebElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement);
-                this.parentDriver.OnElementClicking(e);
-                this.underlyingElement.Click();
-                this.parentDriver.OnElementClicked(e);
+                try
+                {
+                    WebElementEventArgs e = new WebElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement);
+                    this.parentDriver.OnElementClicking(e);
+                    this.underlyingElement.Click();
+                    this.parentDriver.OnElementClicked(e);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
             }
 
             /// <summary>
@@ -1018,7 +1396,18 @@ namespace OpenQA.Selenium.Support.Events
             /// <returns>The attribute's current value or null if the value is not set.</returns>
             public string GetAttribute(string attributeName)
             {
-                return this.underlyingElement.GetAttribute(attributeName);
+                string attribute = string.Empty;
+                try
+                {
+                    attribute = this.underlyingElement.GetAttribute(attributeName);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return attribute;
             }
 
             /// <summary>
@@ -1028,7 +1417,18 @@ namespace OpenQA.Selenium.Support.Events
             /// <returns>string value of the CSS property</returns>
             public string GetCssValue(string propertyName)
             {
-                return this.underlyingElement.GetCssValue(propertyName);
+                string cssValue = string.Empty;
+                try
+                {
+                    cssValue = this.underlyingElement.GetCssValue(propertyName);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return cssValue;
             }
             #endregion
 
@@ -1040,11 +1440,21 @@ namespace OpenQA.Selenium.Support.Events
             /// <returns>IWebElement object so that you can interction that object</returns>
             public IWebElement FindElement(By by)
             {
-                FindElementEventArgs e = new FindElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement, by);
-                this.parentDriver.OnFindingElement(e);
-                IWebElement element = this.underlyingElement.FindElement(by);
-                this.parentDriver.OnFindElementCompleted(e);
-                IWebElement wrappedElement = this.parentDriver.WrapElement(element);
+                IWebElement wrappedElement = null;
+                try
+                {
+                    FindElementEventArgs e = new FindElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement, by);
+                    this.parentDriver.OnFindingElement(e);
+                    IWebElement element = this.underlyingElement.FindElement(by);
+                    this.parentDriver.OnFindElementCompleted(e);
+                    wrappedElement = this.parentDriver.WrapElement(element);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
                 return wrappedElement;
             }
 
@@ -1056,19 +1466,26 @@ namespace OpenQA.Selenium.Support.Events
             public ReadOnlyCollection<IWebElement> FindElements(By by)
             {
                 List<IWebElement> wrappedElementList = new List<IWebElement>();
-                FindElementEventArgs e = new FindElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement, by);
-                this.parentDriver.OnFindingElement(e);
-                ReadOnlyCollection<IWebElement> elements = this.underlyingElement.FindElements(by);
-                this.parentDriver.OnFindElementCompleted(e);
-                foreach (IWebElement element in elements)
+                try
                 {
-                    IWebElement wrappedElement = this.parentDriver.WrapElement(element);
-                    wrappedElementList.Add(wrappedElement);
+                    FindElementEventArgs e = new FindElementEventArgs(this.parentDriver.WrappedDriver, this.underlyingElement, by);
+                    this.parentDriver.OnFindingElement(e);
+                    ReadOnlyCollection<IWebElement> elements = this.underlyingElement.FindElements(by);
+                    this.parentDriver.OnFindElementCompleted(e);
+                    foreach (IWebElement element in elements)
+                    {
+                        IWebElement wrappedElement = this.parentDriver.WrapElement(element);
+                        wrappedElementList.Add(wrappedElement);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
                 }
 
                 return wrappedElementList.AsReadOnly();
             }
-
             #endregion
         }
     }
