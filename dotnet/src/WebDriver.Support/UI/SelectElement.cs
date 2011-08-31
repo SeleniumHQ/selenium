@@ -125,13 +125,18 @@ namespace OpenQA.Selenium.Support.UI
         /// <exception cref="NoSuchElementException">Thrown if there is no element with the given text present.</exception>
         public void SelectByText(string text)
         {
+            if (text == null)
+            {
+                throw new ArgumentNullException("text", "text must not be null");
+            }
+
             // try to find the option via XPATH ...
-            IList<IWebElement> options = element.FindElements(By.XPath(".//option[. = " + this.EscapeQuotes(text) + "]"));
+            IList<IWebElement> options = this.element.FindElements(By.XPath(".//option[. = " + EscapeQuotes(text) + "]"));
 
             bool matched = false;
             foreach (IWebElement option in options)
             {
-                this.SetSelected(option);
+                SetSelected(option);
                 if (!this.IsMultiple)
                 {
                     return;
@@ -142,25 +147,29 @@ namespace OpenQA.Selenium.Support.UI
 
             if (options.Count == 0 && text.Contains(" "))
             {
-                string substringWithoutSpace = this.GetLongestSubstringWithoutSpace(text);
+                string substringWithoutSpace = GetLongestSubstringWithoutSpace(text);
                 IList<IWebElement> candidates;
-                if (substringWithoutSpace == string.Empty)
+                if (string.IsNullOrEmpty(substringWithoutSpace))
                 {
                     // hmm, text is either empty or contains only spaces - get all options ...
-                    candidates = element.FindElements(By.TagName("option"));
+                    candidates = this.element.FindElements(By.TagName("option"));
                 }
                 else
                 {
                     // get candidates via XPATH ...
-                    candidates = element.FindElements(By.XPath(".//option[contains(., " + this.EscapeQuotes(substringWithoutSpace) + ")]"));
+                    candidates = this.element.FindElements(By.XPath(".//option[contains(., " + EscapeQuotes(substringWithoutSpace) + ")]"));
                 }
 
                 foreach (IWebElement option in candidates)
                 {
                     if (text == option.Text)
                     {
-                        this.SetSelected(option);
-                        if (!this.IsMultiple) { return; }
+                        SetSelected(option);
+                        if (!this.IsMultiple)
+                        {
+                            return; 
+                        }
+
                         matched = true;
                     }
                 }
@@ -185,14 +194,14 @@ namespace OpenQA.Selenium.Support.UI
         public void SelectByValue(string value)
         {
             StringBuilder builder = new StringBuilder(".//option[@value = ");
-            builder.Append(this.EscapeQuotes(value));
+            builder.Append(EscapeQuotes(value));
             builder.Append("]");
-            IList<IWebElement> options = element.FindElements(By.XPath(builder.ToString()));
+            IList<IWebElement> options = this.element.FindElements(By.XPath(builder.ToString()));
 
             bool matched = false;
             foreach (IWebElement option in options)
             {
-                this.SetSelected(option);
+                SetSelected(option);
                 if (!this.IsMultiple)
                 {
                     return;
@@ -221,7 +230,7 @@ namespace OpenQA.Selenium.Support.UI
             {
                 if (option.GetAttribute("index") == match)
                 {
-                    this.SetSelected(option);
+                    SetSelected(option);
                     if (!this.IsMultiple)
                     {
                         return;
@@ -270,9 +279,9 @@ namespace OpenQA.Selenium.Support.UI
         public void DeselectByText(string text)
         {
             StringBuilder builder = new StringBuilder(".//option[. = ");
-            builder.Append(this.EscapeQuotes(text));
+            builder.Append(EscapeQuotes(text));
             builder.Append("]");
-            IList<IWebElement> options = element.FindElements(By.XPath(builder.ToString()));
+            IList<IWebElement> options = this.element.FindElements(By.XPath(builder.ToString()));
             foreach (IWebElement option in options)
             {
                 if (option.Selected)
@@ -294,9 +303,9 @@ namespace OpenQA.Selenium.Support.UI
         public void DeselectByValue(string value)
         {
             StringBuilder builder = new StringBuilder(".//option[@value = ");
-            builder.Append(this.EscapeQuotes(value));
+            builder.Append(EscapeQuotes(value));
             builder.Append("]");
-            IList<IWebElement> options = element.FindElements(By.XPath(builder.ToString()));
+            IList<IWebElement> options = this.element.FindElements(By.XPath(builder.ToString()));
             foreach (IWebElement option in options)
             {
                 if (option.Selected)
@@ -322,13 +331,13 @@ namespace OpenQA.Selenium.Support.UI
             }
         }
 
-        private string EscapeQuotes(string toEscape)
+        private static string EscapeQuotes(string toEscape)
         {
             // Convert strings with both quotes and ticks into: foo'"bar -> concat("foo'", '"', "bar")
-            if (toEscape.IndexOf("\"") > -1 && toEscape.IndexOf("'") > -1)
+            if (toEscape.IndexOf("\"", StringComparison.OrdinalIgnoreCase) > -1 && toEscape.IndexOf("'", StringComparison.OrdinalIgnoreCase) > -1)
             {
                 bool quoteIsLast = false;
-                if (toEscape.IndexOf("\"") == toEscape.Length - 1)
+                if (toEscape.IndexOf("\"", StringComparison.OrdinalIgnoreCase) == toEscape.Length - 1)
                 {
                     quoteIsLast = true;
                 }
@@ -355,28 +364,21 @@ namespace OpenQA.Selenium.Support.UI
                         quoted.Append(", '\"', ");
                     }
                 }
+
                 return quoted.ToString();
             }
 
             // Escape string with just a quote into being single quoted: f"oo -> 'f"oo'
-            if (toEscape.IndexOf("\"") > -1)
+            if (toEscape.IndexOf("\"", StringComparison.OrdinalIgnoreCase) > -1)
             {
-                return string.Format("'{0}'", toEscape);
+                return string.Format(CultureInfo.InvariantCulture, "'{0}'", toEscape);
             }
 
             // Otherwise return the quoted string
-            return string.Format("\"{0}\"", toEscape);
+            return string.Format(CultureInfo.InvariantCulture, "\"{0}\"", toEscape);
         }
 
-        private void SetSelected(IWebElement option)
-        {
-            if (!option.Selected)
-            {
-                option.Click();
-            }
-        }
-
-        private string GetLongestSubstringWithoutSpace(string s)
+        private static string GetLongestSubstringWithoutSpace(string s)
         {
             string result = string.Empty;
             string[] substrings = s.Split(' ');
@@ -387,7 +389,16 @@ namespace OpenQA.Selenium.Support.UI
                     result = substring;
                 }
             }
+
             return result;
+        }
+
+        private static void SetSelected(IWebElement option)
+        {
+            if (!option.Selected)
+            {
+                option.Click();
+            }
         }
     }
 }

@@ -29,14 +29,14 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// </summary>
     public sealed class PageFactory
     {
+        private static ProxyGenerator generator = new ProxyGenerator();
+
         /// <summary>
         /// Prevents a default instance of the PageFactory class from being created.
         /// </summary>
         private PageFactory()
         {
         }
-
-        private static ProxyGenerator generator = new ProxyGenerator();
 
         /// <summary>
         /// Initializes the elements in the Page Object.
