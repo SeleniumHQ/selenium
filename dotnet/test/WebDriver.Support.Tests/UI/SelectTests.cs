@@ -106,7 +106,7 @@ namespace OpenQA.Selenium.Support.UI
 
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            Expect.Once.On(option1).GetProperty("Text").Will(Return.Value("Select Me"));
+            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(option1).Method("Click");
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
@@ -124,7 +124,7 @@ namespace OpenQA.Selenium.Support.UI
 
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            Expect.Once.On(option1).Method("GetAttribute").With("value").Will(Return.Value("Select Me"));
+            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(option1).Method("Click");
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
@@ -143,6 +143,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
             Expect.Once.On(option1).Method("GetAttribute").Will(Return.Value("2"));
+            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(option1).Method("Click");
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
@@ -162,9 +163,9 @@ namespace OpenQA.Selenium.Support.UI
 
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Expect.Once.On(option1).GetProperty("Text").Will(Return.Value("Select Me"));
+            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(option2).GetProperty("Text").Will(Return.Value("Select Me"));
+            Expect.Once.On(option2).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(option2).Method("Click");
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
@@ -184,9 +185,9 @@ namespace OpenQA.Selenium.Support.UI
 
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Expect.Once.On(option1).Method("GetAttribute").With("value").Will(Return.Value("Select Me"));
+            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(option2).Method("GetAttribute").With("value").Will(Return.Value("Select Me"));
+            Expect.Once.On(option2).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(option2).Method("Click");
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
@@ -207,8 +208,10 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
             Expect.Once.On(option1).Method("GetAttribute").Will(Return.Value("2"));
+            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(option1).Method("Click");
             Expect.Once.On(option2).Method("GetAttribute").Will(Return.Value("2"));
+            Expect.Once.On(option2).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(option2).Method("Click");
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
@@ -226,7 +229,6 @@ namespace OpenQA.Selenium.Support.UI
 
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            Expect.Once.On(option1).GetProperty("Text").Will(Return.Value("Deselect Me"));
             Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(true));
             Expect.Once.On(option1).Method("Click");
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
@@ -245,7 +247,6 @@ namespace OpenQA.Selenium.Support.UI
 
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            Expect.Once.On(option1).Method("GetAttribute").With("value").Will(Return.Value("Deselect Me"));
             Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(true));
             Expect.Once.On(option1).Method("Click");
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
@@ -285,10 +286,8 @@ namespace OpenQA.Selenium.Support.UI
 
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Expect.Once.On(option1).GetProperty("Text").Will(Return.Value("Deselect Me"));
             Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(true));
             Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(option2).GetProperty("Text").Will(Return.Value("Deselect Me"));
             Expect.Once.On(option2).GetProperty("Selected").Will(Return.Value(true));
             Expect.Once.On(option2).Method("Click");
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
@@ -309,10 +308,8 @@ namespace OpenQA.Selenium.Support.UI
 
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Expect.Once.On(option1).Method("GetAttribute").With("value").Will(Return.Value("Deselect Me"));
             Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(true));
             Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(option2).Method("GetAttribute").With("value").Will(Return.Value("Deselect Me"));
             Expect.Once.On(option2).GetProperty("Selected").Will(Return.Value(true));
             Expect.Once.On(option2).Method("Click");
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
@@ -347,7 +344,8 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        public void ShouldReturnNullWhenNoOptionSelected()
+        [ExpectedException(typeof(NoSuchElementException))]
+        public void SelectedOptionPropertyShouldThrowExceptionWhenNoOptionSelected()
         {
             IWebElement selected = mocks.NewMock<IWebElement>();
             IWebElement notSelected = mocks.NewMock<IWebElement>();
@@ -360,7 +358,7 @@ namespace OpenQA.Selenium.Support.UI
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
             SelectElement element = new SelectElement(webElement);
-            Assert.IsNull(element.SelectedOption);
+            IWebElement selectedOption = element.SelectedOption;
         }
     }
 }
