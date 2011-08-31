@@ -1,3 +1,10 @@
+Selenium 2.6
+* Documentation fixes
+
+Selenium 2.5
+* Fixed x64 IE Support
+* Bug Fixes
+
 Selenium 2.4
 * Bug Fixes
 * x64 IE Support

@@ -58,25 +58,34 @@ class NoSuchAttributeException(WebDriverException):
     pass
 
 class StaleElementReferenceException(WebDriverException):
+    """Indicates that a reference to an element is now "stale" --- the
+    element no longer appears on the DOM of the page."""
     pass
 
 class InvalidElementStateException(WebDriverException):
     pass
 
 class ElementNotVisibleException(InvalidElementStateException):
+    """Thrown to indicate that although an element is present on the
+    DOM, it is not visible, and so is not able to be interacted
+    with."""
     pass
 
 class ElementNotSelectableException(InvalidElementStateException):
     pass
 
 class InvalidCookieDomainException(WebDriverException):
+    """Thrown when attempting to add a cookie under a different domain
+    than the current URL."""
     pass
 
 class UnableToSetCookieException(WebDriverException):
+    """Thrown when a driver fails to set a cookie."""
     pass
 
 class RemoteDriverServerException(WebDriverException):
     pass
 
 class TimeoutException(WebDriverException):
+    """Thrown when a command does not complete in enough time."""
     pass
