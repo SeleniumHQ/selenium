@@ -16,6 +16,21 @@ limitations under the License.
 
 package org.openqa.grid.internal.utils;
 
+import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.InvalidParameterException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.servlet.Servlet;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.StringEntity;
@@ -36,21 +51,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.SeleniumServer;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.InvalidParameterException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.servlet.Servlet;
-
-import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
-
 public class SelfRegisteringRemote {
 
   private static final Logger log = Logger.getLogger(SelfRegisteringRemote.class.getName());
@@ -63,7 +63,7 @@ public class SelfRegisteringRemote {
 
   public URL getRemoteURL() {
     String base = "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HOST) + ":"
-                  + nodeConfig.getConfiguration().get(RegistrationRequest.PORT);
+        + nodeConfig.getConfiguration().get(RegistrationRequest.PORT);
     String url;
     switch (nodeConfig.getRole()) {
       case REMOTE_CONTROL:
@@ -74,7 +74,7 @@ public class SelfRegisteringRemote {
         break;
       default:
         throw new GridConfigurationException("Cannot launch a node with role " +
-                                             nodeConfig.getRole());
+            nodeConfig.getRole());
     }
     try {
       return new URL(url);
@@ -111,8 +111,8 @@ public class SelfRegisteringRemote {
             String clazz = servletClass.getCanonicalName();
             handler.addServlet(path, clazz);
             log.info("started extra node servlet visible at : http://xxx:" +
-                     nodeConfig.getConfiguration().get(RegistrationRequest.PORT)
-                     + "/extra" + path);
+                nodeConfig.getConfiguration().get(RegistrationRequest.PORT)
+                + "/extra" + path);
           }
         }
         extra.addHandler(handler);
@@ -153,9 +153,11 @@ public class SelfRegisteringRemote {
   }
 
   /**
-   * register the hub following the configuration : <p/> - check if the proxy is already registered
-   * before sending a reg request. <p/> - register again every X ms is specified in the config of
-   * the node.
+   * register the hub following the configuration :
+   * <p/>
+   * - check if the proxy is already registered before sending a reg request.
+   * <p/>
+   * - register again every X ms is specified in the config of the node.
    */
   public void startRegistrationProcess() {
     log.info("using the json request : " + nodeConfig.toJSON());
@@ -218,9 +220,8 @@ public class SelfRegisteringRemote {
     if (ok) {
       String tmp =
           "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
-          + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/register";
+              + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/register";
 
-      DefaultHttpClient client = new DefaultHttpClient();
       try {
         URL registration = new URL(tmp);
         log.info("Registering the node to hub :" + registration);
@@ -230,6 +231,7 @@ public class SelfRegisteringRemote {
         String json = nodeConfig.toJSON();
         r.setEntity(new StringEntity(json));
 
+        DefaultHttpClient client = new DefaultHttpClient();
         HttpHost host = new HttpHost(registration.getHost(), registration.getPort());
         HttpResponse response = client.execute(host, r);
         if (response.getStatusLine().getStatusCode() != 200) {
@@ -237,8 +239,6 @@ public class SelfRegisteringRemote {
         }
       } catch (Exception e) {
         throw new GridException("Error sending the registration request.", e);
-      } finally {
-        client.getConnectionManager().shutdown();
       }
     } else {
       log.fine("hub is already present on the hub. Skipping registration.");
@@ -248,16 +248,15 @@ public class SelfRegisteringRemote {
 
   private static boolean isAlreadyRegistered(RegistrationRequest node) {
 
-    DefaultHttpClient client = new DefaultHttpClient();
     try {
       String tmp = "http://" + node.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
-                   + node.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/api/proxy";
+          + node.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/api/proxy";
       URL api = new URL(tmp);
       HttpHost host = new HttpHost(api.getHost(), api.getPort());
 
+      DefaultHttpClient client = new DefaultHttpClient();
       BasicHttpRequest r = new BasicHttpRequest("GET", api.toExternalForm() + "?id="
-                                                       + node.getConfiguration()
-          .get(RegistrationRequest.REMOTE_URL));
+          + node.getConfiguration().get(RegistrationRequest.REMOTE_URL));
 
       HttpResponse response = client.execute(host, r);
       if (response.getStatusLine().getStatusCode() != 200) {
@@ -267,8 +266,6 @@ public class SelfRegisteringRemote {
       return (Boolean) o.get("success");
     } catch (Exception e) {
       throw new GridException("hub down or not responding.");
-    } finally {
-      client.getConnectionManager().shutdown();
     }
   }
 
