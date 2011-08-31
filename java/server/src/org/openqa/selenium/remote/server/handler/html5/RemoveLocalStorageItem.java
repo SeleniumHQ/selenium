@@ -20,24 +20,25 @@ package org.openqa.selenium.remote.server.handler.html5;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.handler.WebDriverHandler;
+import org.openqa.selenium.remote.server.handler.ResponseAwareWebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class RemoveLocalStorageItem extends WebDriverHandler implements JsonParametersAware {
+public class RemoveLocalStorageItem extends ResponseAwareWebDriverHandler {
   private volatile String key;
 
   public RemoveLocalStorageItem(Session session) {
     super(session);
   }
 
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    key = (String) allParameters.get("key");
+  public void setKey(String key) {
+    this.key = key;
   }
 
   public ResultType call() throws Exception {
     Object value = ((WebStorage) getUnwrappedDriver()).getLocalStorage().removeItem(key);
+    response.setValue(value);
     return ResultType.SUCCESS;
   }
 
@@ -45,5 +46,4 @@ public class RemoveLocalStorageItem extends WebDriverHandler implements JsonPara
   public String toString() {
     return String.format("[remove local storage item for key: %s]", key);
   }
-
 }

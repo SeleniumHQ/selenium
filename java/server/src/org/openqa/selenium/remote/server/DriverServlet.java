@@ -335,9 +335,9 @@ public class DriverServlet extends HttpServlet {
     getMapper.bind("/session/:sessionId/browser_connection", IsBrowserOnline.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
 
-    getMapper.bind("/session/:sessionId/local_storage/:key", GetLocalStorageItem.class)
+    getMapper.bind("/session/:sessionId/local_storage/key/:key", GetLocalStorageItem.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
-    deleteMapper.bind("/session/:sessionId/local_storage/:key", RemoveLocalStorageItem.class)
+    deleteMapper.bind("/session/:sessionId/local_storage/key/:key", RemoveLocalStorageItem.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/local_storage", GetLocalStorageKeys.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
@@ -348,9 +348,9 @@ public class DriverServlet extends HttpServlet {
     getMapper.bind("/session/:sessionId/local_storage/size", GetLocalStorageSize.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
 
-    getMapper.bind("/session/:sessionId/session_storage/:key", GetSessionStorageItem.class)
+    getMapper.bind("/session/:sessionId/session_storage/key/:key", GetSessionStorageItem.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
-    deleteMapper.bind("/session/:sessionId/session_storage/:key", RemoveSessionStorageItem.class)
+    deleteMapper.bind("/session/:sessionId/session_storage/key/:key", RemoveSessionStorageItem.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/session_storage", GetSessionStorageKeys.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));

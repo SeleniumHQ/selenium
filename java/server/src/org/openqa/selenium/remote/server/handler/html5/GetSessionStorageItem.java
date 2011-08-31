@@ -25,23 +25,21 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class GetSessionStorageItem extends ResponseAwareWebDriverHandler
-    implements
-      JsonParametersAware {
+public class GetSessionStorageItem extends ResponseAwareWebDriverHandler {
   private volatile String key;
 
   public GetSessionStorageItem(Session session) {
     super(session);
   }
 
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    key = (String) allParameters.get("key");
-  }
-
   public ResultType call() throws Exception {
     Object value = ((WebStorage) getUnwrappedDriver()).getSessionStorage().getItem(key);
     response.setValue(value);
     return ResultType.SUCCESS;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
   }
 
   @Override

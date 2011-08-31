@@ -25,8 +25,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class GetLocalStorageItem extends ResponseAwareWebDriverHandler
-    implements JsonParametersAware {
+public class GetLocalStorageItem extends ResponseAwareWebDriverHandler {
   private volatile String key;
 
   public GetLocalStorageItem(Session session) {
@@ -39,8 +38,8 @@ public class GetLocalStorageItem extends ResponseAwareWebDriverHandler
     return ResultType.SUCCESS;
   }
 
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    key = (String) allParameters.get("key");
+  public void setKey(String key) {
+    this.key = key;
   }
 
   @Override
