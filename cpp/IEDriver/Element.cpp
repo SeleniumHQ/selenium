@@ -198,7 +198,8 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
   long top = 0, left = 0, element_width = 0, element_height = 0;
   result = this->GetLocation(&left, &top, &element_width, &element_height);
   if (result != SUCCESS ||
-      !this->IsClickPointInViewPort(left, top, element_width, element_height)) {
+      !this->IsClickPointInViewPort(left, top, element_width, element_height) ||
+      !this->IsInOverflow()) {
     // Scroll the element into view
     LOG(DEBUG) << "Will need to scroll element into view";
     hr = this->element_->scrollIntoView(CComVariant(VARIANT_TRUE));
@@ -227,6 +228,31 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
   *width = element_width;
   *height = element_height;
   return SUCCESS;
+}
+
+bool Element::IsInOverflow() {
+  bool isOverflow = false;
+
+  // Use JavaScript for this rather than COM calls to avoid dependency
+  // on the IHTMLWindow7 interface, which is IE9-specific.
+  std::wstring script_source = L"var o = arguments[0];\n";
+  script_source += L"var p = o.parentNode;\n";
+  script_source += L"var s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
+  script_source += L"while (p != null && s.overflow != 'auto' && s.overflow != 'scroll') {\n";
+  script_source += L"  p = p.parentNode;\n";
+  script_source += L"  s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
+  script_source += L"}";
+  script_source += L"return p != null;";
+
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+  Script script_wrapper(doc, script_source, 2);
+  script_wrapper.AddArgument(this->element_);
+  int status_code = script_wrapper.Execute();
+  if (status_code == SUCCESS) {
+    isOverflow = script_wrapper.result().boolVal == VARIANT_TRUE;
+  }
+  return isOverflow;
 }
 
 bool Element::IsSelected() {

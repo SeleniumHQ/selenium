@@ -50,6 +50,7 @@ class Element {
                               const long y,
                               const long width,
                               const long height);
+  bool IsInOverflow(void);
   int GetFrameOffset(long* x, long* y);
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetParentDocument(IHTMLWindow2* parent_window,
