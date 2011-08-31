@@ -291,15 +291,20 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(IS_BROWSER_ONLINE, get("/session/:sessionId/browser_connection"))
         .put(SET_BROWSER_ONLINE, post("/session/:sessionId/browser_connection"))
 
-        .put(GET_LOCAL_STORAGE_ITEM, get("/session/:sessionId/local_storage/:key"))
-        .put(REMOVE_LOCAL_STORAGE_ITEM, delete("/session/:sessionId/local_storage/:key"))
+
+         // TODO (user): Would it be better to combine this command with
+         // GET_LOCAL_STORAGE_SIZE? 
+        .put(GET_LOCAL_STORAGE_ITEM, get("/session/:sessionId/local_storage/key/:key"))
+        .put(REMOVE_LOCAL_STORAGE_ITEM, delete("/session/:sessionId/local_storage/key/:key"))
         .put(GET_LOCAL_STORAGE_KEYS, get("/session/:sessionId/local_storage"))
         .put(SET_LOCAL_STORAGE_ITEM, post("/session/:sessionId/local_storage"))
         .put(CLEAR_LOCAL_STORAGE, delete("/session/:sessionId/local_storage"))
         .put(GET_LOCAL_STORAGE_SIZE, get("/session/:sessionId/local_storage/size"))
 
-        .put(GET_SESSION_STORAGE_ITEM, get("/session/:sessionId/session_storage/:key"))
-        .put(REMOVE_SESSION_STORAGE_ITEM, delete("/session/:sessionId/session_storage/:key"))
+         // TODO (user): Would it be better to combine this command with
+         // GET_SESSION_STORAGE_SIZE?
+        .put(GET_SESSION_STORAGE_ITEM, get("/session/:sessionId/session_storage/key/:key"))
+        .put(REMOVE_SESSION_STORAGE_ITEM, delete("/session/:sessionId/session_storage/key/:key"))
         .put(GET_SESSION_STORAGE_KEYS, get("/session/:sessionId/session_storage"))
         .put(SET_SESSION_STORAGE_ITEM, post("/session/:sessionId/session_storage"))
         .put(CLEAR_SESSION_STORAGE, delete("/session/:sessionId/session_storage"))
