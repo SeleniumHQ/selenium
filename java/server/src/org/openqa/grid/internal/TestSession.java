@@ -39,10 +39,11 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,7 +65,7 @@ public class TestSession {
   private volatile long sessionCreatedAt;
   private volatile long lastActivity;
   private final Map<String, Object> requestedCapabilities;
-  private Map<String, Object> objects = new ConcurrentHashMap<String, Object>();
+  private Map<String, Object> objects = Collections.synchronizedMap(new HashMap<String, Object>());
   private volatile boolean ignoreTimeout = false;
 
   public String getInternalKey() {

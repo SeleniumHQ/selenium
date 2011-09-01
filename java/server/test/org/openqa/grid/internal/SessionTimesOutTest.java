@@ -191,6 +191,8 @@ public class SessionTimesOutTest {
 
     public void beforeRelease(TestSession session) {
       session.put("FLAG", true);
+      session.put("MustSupportNullValue", null);
+      session.put(null, "MustSupportNullKey");
     }
   }
 
