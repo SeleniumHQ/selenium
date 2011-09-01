@@ -60,5 +60,20 @@ describe Selenium::Rake::ServerTask do
     task.opts.should == ["-some", "args"]
   end
 
+  it "lets the user specify a version to use which it will automatically download" do
+    required_version = '10.2.0'
+    jar_file = "selenium-server-standalone-#{required_version}.jar"
+
+    Selenium::Server.should_receive(:new).
+                     with(jar_file, anything()).
+                     and_return(mock_server)
+
+    Selenium::Server.should_receive(:download).
+                     with(required_version).
+                     and_return(jar_file)
+
+    Selenium::Rake::ServerTask.new { |t| t.version = required_version }
+  end
+
 
 end

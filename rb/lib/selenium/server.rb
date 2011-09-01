@@ -7,8 +7,86 @@ module Selenium
   #
   # Wraps the remote server jar
   #
+  # Usage:
+  #
+  #   server = Selenium::Server.new('/path/to/selenium-server-standalone.jar')
+  #   server.start
+  #
+  # Automatically download the given version:
+  #
+  #   server = Selenium::Server.get '2.6.0'
+  #   server.start
+  #
+  # or the latest version:
+  #
+  #   server = Selenium::Server.get :latest
+  #   server.start
+  #
 
   class Server
+    CL_RESET = WebDriver::Platform.windows? ? '' : "\r\e[0K"
+
+    def self.get(required_version, opts = {})
+      new(download(required_version), opts)
+    end
+
+    #
+    # Download the given version of the selenium-server-standalone jar.
+    #
+
+    def self.download(required_version)
+      required_version = latest if required_version == :latest
+      download_file_name = "selenium-server-standalone-#{required_version}.jar"
+
+      if File.exists? download_file_name
+        return download_file_name
+      end
+
+      begin
+        open(download_file_name, "wb") do |destination|
+          net_http.start("selenium.googlecode.com") do |http|
+            resp = http.request_get("/files/#{download_file_name}") do |response|
+              total = response.content_length
+              progress = 0
+              segment_count = 0
+
+              response.read_body do |segment|
+                progress += segment.length
+                segment_count += 1
+
+                if segment_count % 15 == 0
+                  percent = (progress.to_f / total.to_f) * 100
+                  print "#{CL_RESET}Downloading #{download_file_name}: #{percent.to_i}% (#{progress} / #{total})"
+                  segment_count = 0
+                end
+
+                destination.write(segment)
+              end
+            end
+
+            unless resp.kind_of? Net::HTTPSuccess
+              raise "#{resp.code} for #{download_file_name}"
+            end
+          end
+        end
+      rescue
+        FileUtils.rm download_file_name if File.exists? download_file_name
+        raise
+      end
+
+      download_file_name
+    end
+
+    #
+    # Ask Google Code what the latest selenium-server-standalone version is.
+    #
+
+    def self.latest
+      net_http.start("code.google.com") do |http|
+        resp = http.get("/p/selenium/downloads/list")
+        resp.body.to_s[/selenium-server-standalone-(\d+.\d+.\d+).jar/, 1]
+      end
+    end
 
     def initialize(jar, opts = {})
       raise Errno::ENOENT, jar unless File.exist?(jar)
@@ -61,6 +139,18 @@ module Selenium
     end
 
     private
+
+    def self.net_http
+      if ENV['http_proxy']
+        http_proxy = ENV['http_proxy']
+        http_proxy = "http://#{http_proxy}" unless http_proxy =~ /^http:\/\//i
+        uri = URI.parse(http_proxy)
+
+        Net::HTTP::Proxy(uri.host, uri.port)
+      else
+        Net::HTTP
+      end
+    end
 
     def stop_process
       return unless @process.alive?

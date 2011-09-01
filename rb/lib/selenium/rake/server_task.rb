@@ -20,6 +20,19 @@ module Selenium
     #     t.opts = %w[-some options]
     #   end
     #
+    # Alternatively, you can have the task download a specific version of the server:
+    #
+    #   Selenium::Rake::ServerTask.new(:server) do |t|
+    #    t.version = '2.6.0'
+    #   end
+    #
+    # or the latest version
+    #
+    #   Selenium::Rake::ServerTask.new(:server) do |t|
+    #    t.version = :latest
+    #   end
+    #
+    #
     # Tasks defined:
     #
     #   rake selenium:server:start
@@ -76,6 +89,12 @@ module Selenium
 
       attr_accessor :opts
 
+      #
+      # Specify the version of the server jar to download
+      #
+
+      attr_accessor :version
+
 
       def initialize(prefix = "selenium:server")
         @jar = nil
@@ -85,8 +104,13 @@ module Selenium
         @background = true
         @log = true
         @opts = []
+        @version = nil
 
         yield self if block_given?
+
+        if @version
+          @jar = Selenium::Server.download(@version)
+        end
 
         unless @jar
           raise MissingJarFileError, "must provide path to the selenium server jar"

@@ -117,6 +117,7 @@ class RubyMappings
         rubyzip.jar
         childprocess.jar
         rack.jar
+        webmock.jar
       ].map { |jar| File.join("third_party/jruby", jar) }
 
       args[:require] ||= []
@@ -133,14 +134,14 @@ class RubyMappings
       desc 'Generate Ruby API docs'
       task "//#{dir}:docs" do |t|
         raise "yard is not installed, unable to generate docs" unless have_yard?
-        t = YARD::Rake::YardocTask.new { |t|
+        task = YARD::Rake::YardocTask.new { |t|
           t.files = Array(files).map { |glob| Dir[glob] }.flatten
           t.options << "--verbose"
           t.options << "--readme" << args[:readme] if args.has_key?(:readme)
           t.options << "--output-dir" << output_dir
         }
 
-        Rake::Task[t.name].invoke
+        Rake::Task[task.name].invoke
       end
     end
 

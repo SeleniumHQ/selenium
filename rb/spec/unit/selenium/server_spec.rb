@@ -7,7 +7,7 @@ describe Selenium::Server do
 
   it "raises an error if the jar file does not exist" do
     lambda {
-      Selenium::Server.new("selenium-server-test.jar")
+      Selenium::Server.new("doesnt-exist.jar")
     }.should raise_error(Errno::ENOENT)
   end
 
@@ -39,4 +39,67 @@ describe Selenium::Server do
     server.start
   end
 
+  it "downloads the specified version from the selenium site" do
+    required_version = '10.2.0'
+    expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
+
+    stub_request(:get, "http://selenium.googlecode.com/files/#{expected_download_file_name}").to_return(:body => "this is pretending to be a jar file for testing purposes")
+
+    begin
+      actual_download_file_name = Selenium::Server.download(required_version)
+      actual_download_file_name.should == expected_download_file_name
+      File.should exist(expected_download_file_name)
+    ensure
+      FileUtils.rm_rf expected_download_file_name
+    end
+  end
+
+  it "gets a server instance and downloads the specified version" do
+    required_version = '10.4.0'
+    expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
+    expected_options = {:port => 5555}
+    fake_server = Object.new
+
+    Selenium::Server.should_receive(:download).with(required_version).and_return(expected_download_file_name)
+    Selenium::Server.should_receive(:new).with(expected_download_file_name, expected_options).and_return(fake_server)
+    server = Selenium::Server.get required_version, expected_options
+    server.should == fake_server
+  end
+
+  it "automatically repairs http_proxy settings that do not start with http://" do
+    ENV['http_proxy'] = 'proxy.com'
+    Selenium::Server.net_http.proxy_address.should == 'proxy.com'
+  end
+
+  it "only downloads a jar if it is not present in the current directory" do
+    required_version = '10.2.0'
+    expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
+
+    File.should_receive(:exists?).with(expected_download_file_name).and_return true
+
+    Selenium::Server.download required_version
+  end
+
+  it "should know what the latest version available is" do
+    latest_version = '10.2.0'
+    stub_request(:get, "http://code.google.com/p/selenium/downloads/list").to_return(:body => "web page containing jar selenium-server-standalone-#{latest_version}.jar")
+
+    Selenium::Server.latest.should == latest_version
+  end
+
+  it "should download the latest version if that has been specified" do
+    required_version = '10.6.0'
+    expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
+
+    Selenium::Server.should_receive(:latest).and_return required_version
+    stub_request(:get, "http://selenium.googlecode.com/files/#{expected_download_file_name}").to_return(:body => "this is pretending to be a jar file for testing purposes")
+
+    begin
+      actual_download_file_name = Selenium::Server.download(:latest)
+      actual_download_file_name.should == expected_download_file_name
+      File.should exist(expected_download_file_name)
+    ensure
+      FileUtils.rm_rf expected_download_file_name
+    end
+  end
 end
