@@ -51,8 +51,8 @@ public class HttpClientFactory {
     registry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
     registry.register(new Scheme("https", 443, SSLSocketFactory.getSocketFactory()));
     ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(registry);
-    cm.setMaxTotal(200);
-    cm.setDefaultMaxPerRoute(200);
+    cm.setMaxTotal(2000);
+    cm.setDefaultMaxPerRoute(2000);
     return cm;
   }
 
