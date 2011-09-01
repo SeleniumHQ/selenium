@@ -60,7 +60,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   private static final Logger log = Logger.getLogger(RemoteProxy.class.getName());
 
   // the URL the remote listen on.
-  protected final URL remoteURL;
+  protected volatile URL remoteURL;
 
   private final Map<String, Object> config;
 
