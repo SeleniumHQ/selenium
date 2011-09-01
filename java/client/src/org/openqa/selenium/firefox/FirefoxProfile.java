@@ -62,6 +62,7 @@ public class FirefoxProfile {
           .put("browser.link.open_newwindow", 2)
           .put("browser.offline", false)
           .put("browser.safebrowsing.enabled", false)
+          .put("browser.safebrowsing.malware.enabled", false)
           .put("browser.search.update", false)
           .put("browser.sessionstore.resume_from_crash", false)
           .put("browser.shell.checkDefaultBrowser", false)
