@@ -18,6 +18,8 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
+import java.util.concurrent.TimeUnit;
+
 /*
 Copyright 2007-2011 WebDriver committers
 
@@ -36,14 +38,15 @@ limitations under the License.
 public class HttpClientFactory {
 
   private final DefaultHttpClient httpClient;
-  private final DefaultHttpClient nonRedirecting;
+  private final DefaultHttpClient gridClient;
 
   public HttpClientFactory() {
     httpClient = new DefaultHttpClient(getClientConnectionManager());
     httpClient.setParams(getHttpParams());
-    nonRedirecting = new DefaultHttpClient(getClientConnectionManager());
-    nonRedirecting.setRedirectStrategy(new MyRedirectHandler());
-    nonRedirecting.setParams(getHttpParams());
+    gridClient = new DefaultHttpClient(getClientConnectionManager());
+    gridClient.setRedirectStrategy(new MyRedirectHandler());
+    gridClient.setParams(getGridHttpParams());
+    gridClient.getConnectionManager().closeIdleConnections(100, TimeUnit.MILLISECONDS);
   }
 
   private static ClientConnectionManager getClientConnectionManager() {
@@ -60,19 +63,27 @@ public class HttpClientFactory {
     return httpClient;
   }
 
-  public HttpClient getNonRedirectingHttpClient() {
-    return nonRedirecting;
+  public HttpClient getGridHttpClient() {
+    return gridClient;
   }
 
   public HttpParams getHttpParams() {
     HttpParams params = new BasicHttpParams();
     HttpConnectionParams.setSoReuseaddr(params, true);
+    HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
+    HttpConnectionParams.setStaleCheckingEnabled(params, true);
+    return params;
+  }
+
+  public HttpParams getGridHttpParams(){
+    final HttpParams params = getHttpParams();
+    HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
     return params;
   }
 
   public void close() {
     httpClient.getConnectionManager().shutdown();
-    nonRedirecting.getConnectionManager().shutdown();
+    gridClient.getConnectionManager().shutdown();
   }
 
   static class MyRedirectHandler implements RedirectStrategy {

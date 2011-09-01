@@ -177,9 +177,7 @@ public class TestSession {
   }
 
   private HttpClient getClient() {
-    synchronized (TestSession.class) {
-      return slot.getHttpClientFactory().getNonRedirectingHttpClient();
-    }
+     return slot.getHttpClientFactory().getGridHttpClient();
   }
 
   /**
