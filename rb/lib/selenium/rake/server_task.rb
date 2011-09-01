@@ -23,13 +23,13 @@ module Selenium
     # Alternatively, you can have the task download a specific version of the server:
     #
     #   Selenium::Rake::ServerTask.new(:server) do |t|
-    #    t.version = '2.6.0'
+    #     t.version = '2.6.0'
     #   end
     #
     # or the latest version
     #
     #   Selenium::Rake::ServerTask.new(:server) do |t|
-    #    t.version = :latest
+    #     t.version = :latest
     #   end
     #
     #
