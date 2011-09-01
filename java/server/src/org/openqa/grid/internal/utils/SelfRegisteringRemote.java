@@ -16,7 +16,26 @@ limitations under the License.
 
 package org.openqa.grid.internal.utils;
 
-import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.apache.http.message.BasicHttpRequest;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.common.exception.GridException;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.grid.web.servlet.ResourceServlet;
+import org.openqa.grid.web.utils.ExtraServletUtil;
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.jetty.Server;
+import org.openqa.jetty.jetty.servlet.ServletHandler;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.server.SeleniumServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,25 +50,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpRequest;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.common.exception.GridException;
-import org.openqa.grid.web.servlet.ResourceServlet;
-import org.openqa.grid.web.utils.ExtraServletUtil;
-import org.openqa.jetty.http.HttpContext;
-import org.openqa.jetty.jetty.Server;
-import org.openqa.jetty.jetty.servlet.ServletHandler;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.server.SeleniumServer;
+import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
 public class SelfRegisteringRemote {
 
@@ -57,13 +58,16 @@ public class SelfRegisteringRemote {
 
   private RegistrationRequest nodeConfig;
 
+  private final HttpClientFactory httpClientFactory;
+
   public SelfRegisteringRemote(RegistrationRequest config) {
     this.nodeConfig = config;
+    this.httpClientFactory = new HttpClientFactory();
   }
 
   public URL getRemoteURL() {
     String base = "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HOST) + ":"
-        + nodeConfig.getConfiguration().get(RegistrationRequest.PORT);
+                  + nodeConfig.getConfiguration().get(RegistrationRequest.PORT);
     String url;
     switch (nodeConfig.getRole()) {
       case REMOTE_CONTROL:
@@ -74,7 +78,7 @@ public class SelfRegisteringRemote {
         break;
       default:
         throw new GridConfigurationException("Cannot launch a node with role " +
-            nodeConfig.getRole());
+                                             nodeConfig.getRole());
     }
     try {
       return new URL(url);
@@ -111,8 +115,8 @@ public class SelfRegisteringRemote {
             String clazz = servletClass.getCanonicalName();
             handler.addServlet(path, clazz);
             log.info("started extra node servlet visible at : http://xxx:" +
-                nodeConfig.getConfiguration().get(RegistrationRequest.PORT)
-                + "/extra" + path);
+                     nodeConfig.getConfiguration().get(RegistrationRequest.PORT)
+                     + "/extra" + path);
           }
         }
         extra.addHandler(handler);
@@ -153,11 +157,9 @@ public class SelfRegisteringRemote {
   }
 
   /**
-   * register the hub following the configuration :
-   * <p/>
-   * - check if the proxy is already registered before sending a reg request.
-   * <p/>
-   * - register again every X ms is specified in the config of the node.
+   * register the hub following the configuration : <p/> - check if the proxy is already registered
+   * before sending a reg request. <p/> - register again every X ms is specified in the config of
+   * the node.
    */
   public void startRegistrationProcess() {
     log.info("using the json request : " + nodeConfig.toJSON());
@@ -220,8 +222,9 @@ public class SelfRegisteringRemote {
     if (ok) {
       String tmp =
           "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
-              + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/register";
+          + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/register";
 
+      HttpClient client = httpClientFactory.getHttpClient();
       try {
         URL registration = new URL(tmp);
         log.info("Registering the node to hub :" + registration);
@@ -231,7 +234,6 @@ public class SelfRegisteringRemote {
         String json = nodeConfig.toJSON();
         r.setEntity(new StringEntity(json));
 
-        DefaultHttpClient client = new DefaultHttpClient();
         HttpHost host = new HttpHost(registration.getHost(), registration.getPort());
         HttpResponse response = client.execute(host, r);
         if (response.getStatusLine().getStatusCode() != 200) {
@@ -246,17 +248,18 @@ public class SelfRegisteringRemote {
 
   }
 
-  private static boolean isAlreadyRegistered(RegistrationRequest node) {
+  private boolean isAlreadyRegistered(RegistrationRequest node) {
 
+    HttpClient client = httpClientFactory.getHttpClient();
     try {
       String tmp = "http://" + node.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
-          + node.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/api/proxy";
+                   + node.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/api/proxy";
       URL api = new URL(tmp);
       HttpHost host = new HttpHost(api.getHost(), api.getPort());
 
-      DefaultHttpClient client = new DefaultHttpClient();
       BasicHttpRequest r = new BasicHttpRequest("GET", api.toExternalForm() + "?id="
-          + node.getConfiguration().get(RegistrationRequest.REMOTE_URL));
+                                                       + node.getConfiguration()
+          .get(RegistrationRequest.REMOTE_URL));
 
       HttpResponse response = client.execute(host, r);
       if (response.getStatusLine().getStatusCode() != 200) {

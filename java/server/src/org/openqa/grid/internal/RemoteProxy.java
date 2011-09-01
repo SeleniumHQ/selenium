@@ -23,6 +23,7 @@ import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
@@ -427,4 +428,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     return timeOut;
   }
 
+
+  public HttpClientFactory getHttpClientFactory() {
+    return getRegistry().getHttpClientFactory();
+  }
 }

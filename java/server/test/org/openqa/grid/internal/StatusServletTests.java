@@ -1,14 +1,11 @@
 package org.openqa.grid.internal;
 
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.CapabilityType;
-
 import junit.framework.Assert;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
 import org.json.JSONException;
@@ -21,6 +18,9 @@ import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestType;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,12 +33,8 @@ import java.util.Map;
 public class StatusServletTests {
 
   private static Hub hub;
-  private static Registry registry;
   private static RemoteProxy p1;
-  private static RemoteProxy p2;
-  private static RemoteProxy p3;
-  private static RemoteProxy p4;
-  private static RemoteProxy customProxy;
+  private static HttpClientFactory httpClientFactory;
 
   private static URL proxyApi;
   private static URL testSessionApi;
@@ -50,7 +46,8 @@ public class StatusServletTests {
     GridHubConfiguration c = new GridHubConfiguration();
     c.setPort(PortProber.findFreePort());
     hub = new Hub(c);
-    registry = hub.getRegistry();
+    Registry registry = hub.getRegistry();
+    httpClientFactory = new HttpClientFactory();
     proxyApi = new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/proxy");
     testSessionApi =
         new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/testsession");
@@ -60,9 +57,12 @@ public class StatusServletTests {
     hub.start();
 
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
-    p2 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/", registry);
-    p3 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/", registry);
-    p4 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/", registry);
+    RemoteProxy p2 =
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/", registry);
+    RemoteProxy p3 =
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/", registry);
+    RemoteProxy p4 =
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/", registry);
 
     RegistrationRequest req = new RegistrationRequest();
     Map<String, Object> capability = new HashMap<String, Object>();
@@ -72,7 +72,7 @@ public class StatusServletTests {
     Map<String, Object> config = new HashMap<String, Object>();
     config.put("url", "http://machine5:4444/");
     req.setConfiguration(config);
-    customProxy = new MyCustomProxy(req, registry);
+    RemoteProxy customProxy = new MyCustomProxy(req, registry);
 
     registry.add(p1);
     registry.add(p2);
@@ -93,9 +93,9 @@ public class StatusServletTests {
   }
 
   @Test
-  public void testget() throws ClientProtocolException, IOException, JSONException {
+  public void testget() throws IOException, JSONException {
     String id = "http://machine1:4444/";
-    DefaultHttpClient client = new DefaultHttpClient();
+    HttpClient client = httpClientFactory.getHttpClient();
 
     BasicHttpRequest r = new BasicHttpRequest("GET", proxyApi.toExternalForm() + "?id=" + id);
 
@@ -107,9 +107,9 @@ public class StatusServletTests {
   }
 
   @Test
-  public void testGetNegative() throws ClientProtocolException, IOException, JSONException {
+  public void testGetNegative() throws IOException, JSONException {
     String id = "http://wrongOne:4444/";
-    DefaultHttpClient client = new DefaultHttpClient();
+    HttpClient client = httpClientFactory.getHttpClient();
 
     BasicHttpRequest r = new BasicHttpRequest("GET", proxyApi.toExternalForm() + "?id=" + id);
 
@@ -123,9 +123,9 @@ public class StatusServletTests {
   }
 
   @Test
-  public void testpost() throws ClientProtocolException, IOException, JSONException {
+  public void testpost() throws IOException, JSONException {
     String id = "http://machine1:4444/";
-    DefaultHttpClient client = new DefaultHttpClient();
+    HttpClient client =  httpClientFactory.getHttpClient();
 
     JSONObject o = new JSONObject();
     o.put("id", id);
@@ -142,9 +142,9 @@ public class StatusServletTests {
   }
 
   @Test
-  public void testpostReflection() throws ClientProtocolException, IOException, JSONException {
+  public void testpostReflection() throws IOException, JSONException {
     String id = "http://machine5:4444/";
-    DefaultHttpClient client = new DefaultHttpClient();
+    HttpClient client =  httpClientFactory.getHttpClient();
 
     JSONObject o = new JSONObject();
     o.put("id", id);
@@ -168,9 +168,9 @@ public class StatusServletTests {
   }
 
   @Test
-  public void testSessionApi() throws ClientProtocolException, IOException, JSONException {
+  public void testSessionApi() throws IOException, JSONException {
     String s = session.getExternalKey();
-    DefaultHttpClient client = new DefaultHttpClient();
+    HttpClient client =  httpClientFactory.getHttpClient();
 
     JSONObject o = new JSONObject();
     o.put("session", s);
@@ -191,10 +191,10 @@ public class StatusServletTests {
   }
 
   @Test
-  public void testSessionget() throws ClientProtocolException, IOException, JSONException {
+  public void testSessionget() throws IOException, JSONException {
     String s = session.getExternalKey();
 
-    DefaultHttpClient client = new DefaultHttpClient();
+    HttpClient client =  httpClientFactory.getHttpClient();
 
     String url = testSessionApi.toExternalForm() + "?session=" + URLEncoder.encode(s, "UTF-8");
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
@@ -213,9 +213,9 @@ public class StatusServletTests {
   }
 
   @Test
-  public void testSessionApiNeg() throws ClientProtocolException, IOException, JSONException {
+  public void testSessionApiNeg() throws IOException, JSONException {
     String s = "non-existing session";
-    DefaultHttpClient client = new DefaultHttpClient();
+    HttpClient client =  httpClientFactory.getHttpClient();
 
     JSONObject o = new JSONObject();
     o.put("session", s);
@@ -234,11 +234,12 @@ public class StatusServletTests {
   @AfterClass
   public static void teardown() throws Exception {
     hub.stop();
+    httpClientFactory.close();
   }
 
   private JSONObject extractObject(HttpResponse resp) throws IOException, JSONException {
     BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-    StringBuffer s = new StringBuffer();
+    StringBuilder s = new StringBuilder();
     String line;
     while ((line = rd.readLine()) != null) {
       s.append(line);

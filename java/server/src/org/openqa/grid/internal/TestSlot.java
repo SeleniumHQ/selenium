@@ -18,6 +18,7 @@ package org.openqa.grid.internal;
 
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.security.InvalidParameterException;
 import java.util.Collections;
@@ -240,4 +241,7 @@ public class TestSlot {
     return currentSession == null ? "no session" : currentSession.toString();
   }
 
+  public HttpClientFactory getHttpClientFactory() {
+    return getProxy().getHttpClientFactory();
+  }
 }

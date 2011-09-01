@@ -17,6 +17,49 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.BindException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Map;
+
+import static org.apache.http.protocol.ExecutionContext.HTTP_TARGET_HOST;
 import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_APP_CACHE;
@@ -112,50 +155,6 @@ import static org.openqa.selenium.remote.DriverCommand.TOUCH_SCROLL;
 import static org.openqa.selenium.remote.DriverCommand.TOUCH_SINGLE_TAP;
 import static org.openqa.selenium.remote.DriverCommand.TOUCH_UP;
 
-import static org.apache.http.protocol.ExecutionContext.HTTP_TARGET_HOST;
-
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.net.Urls;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.SingleClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreConnectionPNames;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.BindException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Map;
-
 public class HttpCommandExecutor implements CommandExecutor {
 
   private static final int MAX_REDIRECTS = 10;
@@ -164,6 +163,8 @@ public class HttpCommandExecutor implements CommandExecutor {
   private final URL remoteServer;
   private final Map<String, CommandInfo> nameToUrl;
   private final HttpClient client;
+
+  private static final HttpClientFactory httpClientFactory = new HttpClientFactory();
 
   private enum HttpVerb {
     GET() {
@@ -206,7 +207,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     params.setParameter(CoreConnectionPNames.SO_LINGER, -1);
     HttpClientParams.setRedirecting(params, false);
 
-    client = new DefaultHttpClient(getClientConnectionManager(params), params);
+    client = httpClientFactory.getHttpClient();
     if (addressOfRemoteServer.getUserInfo() != null) {
       // Use HTTP Basic auth
       UsernamePasswordCredentials credentials = new

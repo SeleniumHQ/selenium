@@ -19,10 +19,11 @@ package org.openqa.selenium.remote;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 
 public class HttpRequest {
@@ -39,14 +40,17 @@ public class HttpRequest {
 
       post.setEntity(new StringEntity(content, "UTF-8"));
 
+      HttpClientFactory httpClientFactory = new HttpClientFactory();
+      final HttpClient defaultHttpClient = httpClientFactory.getHttpClient();
       try {
-        HttpResponse res = new DefaultHttpClient().execute(post);
+        HttpResponse res = defaultHttpClient.execute(post);
         HttpEntity httpEntity = res.getEntity();
         if (httpEntity != null) {
           this.response = EntityUtils.toString(httpEntity);
         }
       } finally {
         post.abort();
+        httpClientFactory.close();
       }
     } else {
       throw new UnsupportedOperationException("Unsupported method: " + method);

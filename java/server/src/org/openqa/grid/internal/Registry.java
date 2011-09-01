@@ -24,6 +24,7 @@ import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,6 +70,7 @@ public class Registry {
   private int newSessionWaitTimeout;
 
   private final GridHubConfiguration configuration;
+  private final HttpClientFactory httpClientFactory;
 
 
   private Registry(Hub hub, GridHubConfiguration config) {
@@ -79,6 +81,7 @@ public class Registry {
     this.prioritizer = config.getPrioritizer();
 
     this.configuration = config;
+    this.httpClientFactory = new HttpClientFactory();
 
   }
 
@@ -170,6 +173,8 @@ public class Registry {
     for (RemoteProxy proxy : proxies) {
       proxy.teardown();
     }
+
+    httpClientFactory.close();
 
   }
 
@@ -520,4 +525,7 @@ public class Registry {
     return null;
   }
 
+  HttpClientFactory getHttpClientFactory() {
+    return httpClientFactory;
+  }
 }
