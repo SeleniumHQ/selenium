@@ -92,7 +92,9 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
   private LogRecord[] records(String sessionId) throws IOException {
     List<LogRecord> logFileRecords = logFileRepository.getLogRecords(sessionId);
     List<LogRecord> records = perSessionRecords.get(sessionId);
-    logFileRecords.addAll(records);
+    if (records != null) {
+      logFileRecords.addAll(records);
+    }
     return logFileRecords.toArray(new LogRecord[logFileRecords.size()]);
   }
 
