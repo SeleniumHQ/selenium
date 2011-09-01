@@ -9,6 +9,7 @@ goog.addDependency("../../../javascript/webdriver-atoms/inject/execute_script.js
 goog.addDependency("../../../javascript/webdriver-atoms/inject/find_element.js", ['webdriver.inject.locators'], ['bot.inject', 'bot.locators']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/dom.js", ['webdriver.inject.dom'], ['bot.action', 'bot.dom', 'bot.inject', 'webdriver.element']);
 goog.addDependency("../../../javascript/webdriver-atoms/inject/session_storage.js", ['webdriver.inject.storage.session'], ['bot.inject', 'webdriver.storage.session']);
+goog.addDependency("../../../javascript/webdriver-atoms/inject/sql_database.js", ['webdriver.inject.storage.database'], ['bot.Error', 'bot.ErrorCode', 'bot.inject', 'bot.storage.database']);
 goog.addDependency("../../../javascript/webdriver-atoms/html5/local_storage.js", ['webdriver.storage.local'], ['bot.storage']);
 goog.addDependency("../../../javascript/webdriver-atoms/html5/session_storage.js", ['webdriver.storage.session'], ['bot.storage']);
 goog.addDependency("../../../javascript/jsunit/app/jsUnitTracer.js", [], []);
