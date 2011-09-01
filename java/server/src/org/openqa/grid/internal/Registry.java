@@ -17,6 +17,7 @@ limitations under the License.
 package org.openqa.grid.internal;
 
 import net.jcip.annotations.ThreadSafe;
+
 import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.RegistrationListener;
@@ -29,7 +30,6 @@ import org.openqa.selenium.remote.internal.HttpClientFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -62,7 +62,7 @@ public class Registry {
   private final ReentrantLock lock = new ReentrantLock();
   private final Condition testSessionAvailable = lock.newCondition();
 
-  private final Set<RemoteProxy> proxies = new CopyOnWriteArraySet<RemoteProxy>();
+  private final ProxySet proxies = new ProxySet();
   private final Set<TestSession> activeTestSessions = new CopyOnWriteArraySet<TestSession>();
   private Matcher matcherThread = new Matcher();
   private volatile boolean stop = false;
@@ -85,6 +85,7 @@ public class Registry {
 
   }
 
+  @SuppressWarnings({"NullableProblems"})
   public static Registry newInstance() {
     return newInstance(null, new GridHubConfiguration());
   }
@@ -117,7 +118,7 @@ public class Registry {
   /**
    * how long a session can remains in the newSession queue before being quicked out
    * 
-   * @return
+   * @return the new session wait timeout
    */
   public int getNewSessionWaitTimeout() {
     return newSessionWaitTimeout;
@@ -149,7 +150,7 @@ public class Registry {
      * iteration of incoming new session request should be stop to take the change into account. The
      * change could be either a new Proxy added, or a session released
      * 
-     * @param ok
+     * @param ok true to indicate registry modification
      */
     public void registryHasBeenModified(boolean ok) {
       this.cleanState = ok;
@@ -168,12 +169,7 @@ public class Registry {
   public void stop() {
     stop = true;
     matcherThread.interrupt();
-
-    // killing the timeout detection threads.
-    for (RemoteProxy proxy : proxies) {
-      proxy.teardown();
-    }
-
+    proxies.teardown();
     httpClientFactory.close();
 
   }
@@ -182,6 +178,7 @@ public class Registry {
     return hub;
   }
 
+  @SuppressWarnings({"UnusedDeclaration"})
   public void setHub(Hub hub) {
     this.hub = hub;
   }
@@ -198,7 +195,7 @@ public class Registry {
         }
 
       }
-      if (!contains(request.getDesiredCapabilities())) {
+      if (!proxies.hasCapability(request.getDesiredCapabilities())) {
 
         if (throwOnCapabilityNotPresent) {
           throw new CapabilityNotPresentOnTheGridException(request.getDesiredCapabilities());
@@ -250,8 +247,7 @@ public class Registry {
           // sort the proxies first, by default by total number of
           // test running, to avoid putting all the load of the first
           // proxies.
-          List<RemoteProxy> sorted = new ArrayList<RemoteProxy>(proxies);
-          Collections.sort(sorted);
+          List<RemoteProxy> sorted = proxies.getSorted();
 
           for (RemoteProxy proxy : sorted) {
             if (!matcherThread.isRegistryClean()) {
@@ -295,7 +291,7 @@ public class Registry {
    * mark the session as finished for the registry. The resources that were associated to it are now
    * free to be reserved by other tests
    * 
-   * @param session
+   * @param session The session
    */
   private void release(TestSession session) {
     try {
@@ -324,28 +320,13 @@ public class Registry {
         " but couldn't find it.");
   }
 
-  /**
-   * check if the current proxy pool contains at least one proxy matching the requested capability
-   * 
-   * @param requestedCapability
-   * @return
-   */
-  private boolean contains(Map<String, Object> requestedCapability) {
-    for (RemoteProxy proxy : proxies) {
-      if (proxy.hasCapability(requestedCapability)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   private List<RemoteProxy> registeringProxies = new CopyOnWriteArrayList<RemoteProxy>();
 
   /**
    * Add a proxy to the list of proxy available for the grid to managed and link the proxy to the
    * registry.
-   * 
-   * @param proxy
+   *
+   * @param proxy The proxy to add
    */
   public void add(RemoteProxy proxy) {
     if (proxy == null) {
@@ -355,26 +336,7 @@ public class Registry {
     try {
       lock.lock();
 
-      if (proxies.contains(proxy)) {
-        log.warning(String.format(
-            "Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
-
-        // Find the original proxy. While the supplied one is logically
-        // equivalent, it's a fresh object with
-        // an empty TestSlot list. Thus there's a disconnection between
-        // this proxy and the one associated with
-        // any active test sessions.
-        for (RemoteProxy p : proxies) {
-          if (p.equals(proxy)) {
-            proxies.remove(p);
-            for (TestSlot slot : p.getTestSlots()) {
-              slot.forceRelease();
-            }
-
-          }
-        }
-        // return;
-      }
+      proxies.removeIfPresent( proxy);
 
       if (registeringProxies.contains(proxy)) {
         log.warning(String.format("Proxy '%s' is already queued for registration.", proxy));
@@ -424,7 +386,7 @@ public class Registry {
    * If set to false, the test will be queued hoping a new proxy will register later offering that
    * capability.
    * 
-   * @param throwOnCapabilityNotPresent
+   * @param throwOnCapabilityNotPresent true to throw if capability not present
    */
   public void setThrowOnCapabilityNotPresent(boolean throwOnCapabilityNotPresent) {
     this.throwOnCapabilityNotPresent = throwOnCapabilityNotPresent;
@@ -438,25 +400,19 @@ public class Registry {
     testSessionAvailable.signalAll();
   }
 
-  public Set<RemoteProxy> getAllProxies() {
+  public ProxySet getAllProxies() {
     return proxies;
   }
 
   public List<RemoteProxy> getUsedProxies() {
-    List<RemoteProxy> res = new ArrayList<RemoteProxy>();
-    for (RemoteProxy proxy : proxies) {
-      if (proxy.isBusy()) {
-        res.add(proxy);
-      }
-    }
-    return res;
+    return proxies.getBusyProxies();
   }
 
   /**
    * gets the test session associated to this external key. The external key is the session used by
    * webdriver.
    * 
-   * @param externalKey
+   * @param externalKey the external session key
    * @return null if the hub doesn't have a node associated to the provided externalKey
    */
   public TestSession getSession(String externalKey) {
