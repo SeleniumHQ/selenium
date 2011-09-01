@@ -28,7 +28,8 @@ module Selenium
                 puts "     > #{headers.inspect}"
               end
             elsif verb == :post
-              headers["Content-Length"] = "0"
+              payload = "{}" # work around http://code.google.com/p/selenium/issues/detail?id=1396
+              headers["Content-Length"] = "2"
             end
 
             request verb, url, headers, payload

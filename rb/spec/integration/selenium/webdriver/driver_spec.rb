@@ -19,7 +19,7 @@ describe "Driver" do
     driver.find_element(:id, 'dynamo').text.should == "What's for dinner?"
   end
 
-  not_compliant_on :browser => :opera do
+  not_compliant_on :browser => [:opera, :iphone] do
     it "should save a screenshot" do
       driver.navigate.to url_for("xhtmlTest.html")
       path = "screenshot_tmp.png"
@@ -223,7 +223,7 @@ describe "Driver" do
     end
   end
 
-  not_compliant_on :browser => [:opera] do
+  not_compliant_on :browser => [:opera, :iphone] do
     describe "execute async script" do
       before {
         driver.manage.timeouts.script_timeout = 0
