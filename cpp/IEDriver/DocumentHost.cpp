@@ -248,7 +248,7 @@ int DocumentHost::AddCookie(const std::string& cookie) {
     return ENOSUCHDOCUMENT;
   }
 
-  if (!SUCCEEDED(doc->put_cookie(cookie_bstr))) {
+  if (FAILED(doc->put_cookie(cookie_bstr))) {
     return EUNHANDLEDERROR;
   }
 
