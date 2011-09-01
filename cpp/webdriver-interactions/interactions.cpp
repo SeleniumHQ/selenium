@@ -61,8 +61,16 @@ void backgroundUnicodeKeyPress(HWND ieWindow, wchar_t c, int pause)
 {
   pause = pause / 3;
 
+  // IE can crash if keyscan < 0. It's unclear this will
+  // do anything unless the correct keyboard layout is active,
+  // as the unicode character 'c' will already have its
+  // appropriate capitalization.
+  SHORT keyscan = VkKeyScanW(c);
+  if (keyscan < 0) { 
+    keyscan = 0;
+  }
   pressed = false;
-  PostMessage(ieWindow, WM_KEYDOWN, VkKeyScanW(c), 0);
+  PostMessage(ieWindow, WM_KEYDOWN, keyscan, 0);
   PostMessage(ieWindow, WM_USER, 1234, 5678);
   wait(pause);
 
@@ -76,7 +84,7 @@ void backgroundUnicodeKeyPress(HWND ieWindow, wchar_t c, int pause)
 
   wait(pause);
 
-  PostMessage(ieWindow, WM_KEYUP, VkKeyScanW(c), 0);
+  PostMessage(ieWindow, WM_KEYUP, keyscan, 0);
 
   wait(pause);
 }
