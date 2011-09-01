@@ -94,7 +94,7 @@ bot.events.newMouseEvent_ = function(element, type, opt_args) {
   var meta = !!args['meta'];
 
   var event;
-  if (goog.userAgent.IE) {
+  if (goog.userAgent.IE && !doc['createEvent']) {
     event = doc.createEventObject();
     event.altKey = alt;
     event.controlKey = control;
@@ -180,7 +180,7 @@ bot.events.newKeyEvent_ = function(element, type, opt_args) {
                        meta,
                        keyCode,
                        charCode);
-  } else if (goog.userAgent.IE) {
+  } else if (goog.userAgent.IE && !doc['createEvent']) {
     event = doc.createEventObject();
     event.keyCode = keyCode;
     event.altKey = alt;
@@ -255,7 +255,7 @@ bot.events.newHtmlEvent_ = function(element, type, opt_args) {
   var meta = !!args['meta'];
 
   var event;
-  if (element['fireEvent'] && doc && doc['createEventObject']) {
+  if (element['fireEvent'] && doc && doc['createEventObject'] && !doc['createEvent']) {
     event = doc.createEventObject();
     event.altKey = alt;
     event.ctrl = control;
@@ -322,7 +322,7 @@ bot.events.fire = function(target, type, opt_args) {
     event.isTrusted = false;
   }
 
-  if (goog.userAgent.IE) {
+  if (goog.userAgent.IE && !target['dispatchEvent']) {
     return target.fireEvent('on' + type, event);
   } else {
     return target.dispatchEvent(event);

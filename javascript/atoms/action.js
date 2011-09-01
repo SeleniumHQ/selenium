@@ -137,8 +137,16 @@ bot.action.selectOptionElement_ = function(element, selected) {
     return;  // Already in the desired state.
   }
 
+  if (goog.userAgent.IE) {
+    select.focus();
+  }
+
   element.selected = selected;
   bot.events.fire(select, goog.events.EventType.CHANGE);
+
+  if (goog.userAgent.IE) {
+    select.blur();
+  }
 };
 
 
