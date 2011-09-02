@@ -667,9 +667,12 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     return (/** @type {string|undefined} */ goog.array.peek(lines)) || '';
   }
 
-  // TODO(user): Add cases here for <title> and textual form elements.
+  // TODO(user): Add case here for textual form elements.
   if (bot.dom.isElement(elem, goog.dom.TagName.BR)) {
     lines.push('');
+  } else if (bot.dom.isElement(elem, goog.dom.TagName.TITLE)
+      && bot.dom.isElement(bot.dom.getParentElement(elem), goog.dom.TagName.HEAD)) {
+    // Don't consider head > title as a visible text in the document.
   } else {
     // TODO: properly handle display:run-in
     var isTD = bot.dom.isElement(elem, goog.dom.TagName.TD);
