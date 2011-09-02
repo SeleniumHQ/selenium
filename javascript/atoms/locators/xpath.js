@@ -97,18 +97,19 @@ bot.locators.xpath.single = function(target, root) {
   // (XPathResult isn't defined as well).
   function selectSingleNode(node, path) {
     var doc = goog.dom.getOwnerDocument(node);
-    if (node.selectSingleNode) {
-      if (doc.setProperty) {
-        doc.setProperty('SelectionLanguage', 'XPath');
-      }
-      return node.selectSingleNode(path);
-    }
+
     try {
+      if (node.selectSingleNode) {
+        if (doc.setProperty) {
+          doc.setProperty('SelectionLanguage', 'XPath');
+        }
+        return node.selectSingleNode(path);
+      }
+
       var result = bot.locators.xpath.evaluate_(node, path,
           bot.locators.XPathResult_.FIRST_ORDERED_NODE_TYPE);
       return result ? result.singleNodeValue : null;
-    }
-    catch (ex) {
+    } catch (ex) {
       // The error is caused most likely by an invalid xpath expression
       // TODO: catch the exception more precise
       throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
@@ -149,15 +150,16 @@ bot.locators.xpath.many = function(target, root) {
   // defined either).
   function selectNodes(node, path) {
     var doc = goog.dom.getOwnerDocument(node);
-
-    if (node.selectNodes) {
-      if (doc.setProperty) {
-        doc.setProperty('SelectionLanguage', 'XPath');
-      }
-      return node.selectNodes(path);
-    }
     var nodes;
+
     try {
+      if (node.selectNodes) {
+        if (doc.setProperty) {
+          doc.setProperty('SelectionLanguage', 'XPath');
+        }
+        return node.selectNodes(path);
+      }
+
       nodes = bot.locators.xpath.evaluate_(node, path,
           bot.locators.XPathResult_.ORDERED_NODE_SNAPSHOT_TYPE);
     } catch (ex) {
