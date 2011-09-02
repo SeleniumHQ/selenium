@@ -6,7 +6,7 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="../third_party/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar"/>
+	<classpathentry kind="lib" path="../third_party/java/jetty/jetty-lite-7.4.5-repackaged-for-android.jar"/>
 	<classpathentry kind="lib" path="../third_party/java/json/json-20080701.jar"/>
 	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/base.jar"/>
 	<classpathentry kind="lib" path="../build/java/client/src/org/openqa/selenium/internal/codecs.jar"/>
