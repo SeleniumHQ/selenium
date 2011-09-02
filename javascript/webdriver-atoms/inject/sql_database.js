@@ -34,10 +34,10 @@ goog.require('bot.storage.database');
  *     according to the wire protocol, will be passed to this callback.
  */
 webdriver.inject.storage.database.executeSql = function (databaseName, query, args, onDone) {
-  var onSuccessCallback = function() {
-    onDone(bot.inject.executeScript(function() {
-      return;
-    }, [], true));
+  var onSuccessCallback = function(tx, result) {
+    onDone(bot.inject.executeScript(function(res) {
+      return result;
+    }, [result], true));
   }
 
   var onErrorCallback = function(error) {

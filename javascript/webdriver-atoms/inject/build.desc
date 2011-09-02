@@ -167,3 +167,8 @@ js_fragment(name = "get_session_storage_size",
   module = "webdriver.inject.storage.session",
   function = "webdriver.inject.storage.session.size",
   deps = [":deps"])
+
+js_fragment(name = "execute_sql",
+  module = "webdriver.inject.storage.database",
+  function = "webdriver.inject.storage.database.executeSql",
+  deps = [":deps"])
