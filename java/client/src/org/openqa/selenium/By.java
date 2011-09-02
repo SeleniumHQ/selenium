@@ -189,7 +189,7 @@ public abstract class By {
     return toString().hashCode();
   }
 
-  private static class ById extends By {
+  public static class ById extends By {
     private final String id;
 
     public ById(String id) {
@@ -218,7 +218,7 @@ public abstract class By {
     }
   }
 
-  private static class ByLinkText extends By {
+  public static class ByLinkText extends By {
     private final String linkText;
 
     public ByLinkText(String linkText) {
@@ -241,7 +241,7 @@ public abstract class By {
     }
   }
 
-  private static class ByPartialLinkText extends By {
+  public static class ByPartialLinkText extends By {
     private final String linkText;
 
     public ByPartialLinkText(String linkText) {
@@ -265,7 +265,7 @@ public abstract class By {
     }
   }
 
-  private static class ByName extends By {
+  public static class ByName extends By {
     private final String name;
 
     public ByName(String name) {
@@ -294,7 +294,7 @@ public abstract class By {
     }
   }
 
-  private static class ByTagName extends By {
+  public static class ByTagName extends By {
     private final String name;
 
     public ByTagName(String name) {
@@ -321,7 +321,7 @@ public abstract class By {
     }
   }
 
-  private static class ByXPath extends By {
+  public static class ByXPath extends By {
     private final String xpathExpression;
 
     public ByXPath(String xpathExpression) {
@@ -344,7 +344,7 @@ public abstract class By {
     }
   }
 
-  private static class ByClassName extends By {
+  public static class ByClassName extends By {
     private final String className;
 
     public ByClassName(String className) {
@@ -387,7 +387,7 @@ public abstract class By {
     }
   }
 
-  private static class ByCssSelector extends By {
+  public static class ByCssSelector extends By {
     private final String selector;
 
     public ByCssSelector(String selector) {
