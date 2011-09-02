@@ -437,6 +437,7 @@ namespace OpenQA.Selenium.Firefox
             AddDefaultPreference(prefs, "browser.link.open_newwindow", "2");
             AddDefaultPreference(prefs, "browser.offline", "false");
             AddDefaultPreference(prefs, "browser.safebrowsing.enabled", "false");
+			AddDefaultPreference(prefs, "browser.safebrowsing.malware.enabled", "false");
             AddDefaultPreference(prefs, "browser.search.update", "false");
             AddDefaultPreference(prefs, "browser.sessionstore.resume_from_crash", "false");
             AddDefaultPreference(prefs, "browser.shell.checkDefaultBrowser", "false");
