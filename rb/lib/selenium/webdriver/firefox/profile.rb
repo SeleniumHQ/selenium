@@ -270,6 +270,7 @@ module Selenium
           "browser.link.open_external"                => '2',
           "browser.link.open_newwindow"               => '2',
           "browser.safebrowsing.enabled"              => 'false',
+          "browser.safebrowsing.malware.enabled"      => 'false',
           "browser.search.update"                     => 'false',
           "browser.sessionstore.resume_from_crash"    => 'false',
           "browser.shell.checkDefaultBrowser"         => 'false',
