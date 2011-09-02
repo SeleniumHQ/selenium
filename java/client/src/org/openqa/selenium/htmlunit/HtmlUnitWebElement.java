@@ -227,11 +227,11 @@ public class HtmlUnitWebElement implements WrapsDriver,
     });
 
     if (displayed == null || !displayed.booleanValue()) {
-      throw new ElementNotVisibleException("You may only sendKeys to visible elements");
+      throw new ElementNotVisibleException("You may only interact with visible elements");
     }
 
     if (!isEnabled()) {
-      throw new InvalidElementStateException("You may only sendKeys to enabled elements");
+      throw new InvalidElementStateException("You may only interact with enabled elements");
     }
   }
 
