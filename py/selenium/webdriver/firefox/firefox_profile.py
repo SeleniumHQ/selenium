@@ -46,6 +46,7 @@ class FirefoxProfile(object):
         "browser.tabs.warnOnClose": "false",
         "browser.tabs.warnOnOpen": "false",
         "browser.startup.page": "0",
+        "browser.safebrowsing.malware.enabled": "false",
         "startup.homepage_welcome_url": "\"about:blank\"",
         "devtools.errorconsole.enabled": "true",
         "dom.disable_open_during_load": "false",
@@ -74,7 +75,7 @@ class FirefoxProfile(object):
         "browser.dom.window.dump.enabled": "true",
         "webdriver_accept_untrusted_certs": "true",
         "webdriver_enable_native_events": "true",
-        "dom.max_script_run_time": "30"
+        "dom.max_script_run_time": "30",
         }
 
     def __init__(self,profile_directory=None):
