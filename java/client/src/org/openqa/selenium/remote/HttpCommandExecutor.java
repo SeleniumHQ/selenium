@@ -164,7 +164,7 @@ public class HttpCommandExecutor implements CommandExecutor {
   private final Map<String, CommandInfo> nameToUrl;
   private final HttpClient client;
 
-  private static final HttpClientFactory httpClientFactory = new HttpClientFactory();
+  private static HttpClientFactory httpClientFactory;
 
   private enum HttpVerb {
     GET() {
@@ -196,8 +196,8 @@ public class HttpCommandExecutor implements CommandExecutor {
   public HttpCommandExecutor(URL addressOfRemoteServer) {
     try {
       remoteServer = addressOfRemoteServer == null ?
-          new URL(System.getProperty("webdriver.remote.server")) :
-          addressOfRemoteServer;
+                     new URL(System.getProperty("webdriver.remote.server")) :
+                     addressOfRemoteServer;
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);
     }
@@ -207,6 +207,11 @@ public class HttpCommandExecutor implements CommandExecutor {
     params.setParameter(CoreConnectionPNames.SO_LINGER, -1);
     HttpClientParams.setRedirecting(params, false);
 
+    synchronized (HttpCommandExecutor.class) {
+      if (httpClientFactory == null) {
+        httpClientFactory = new HttpClientFactory();
+      }
+    }
     client = httpClientFactory.getHttpClient();
     if (addressOfRemoteServer.getUserInfo() != null) {
       // Use HTTP Basic auth
@@ -231,7 +236,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_WINDOW_HANDLES, get("/session/:sessionId/window_handles"))
         .put(GET, post("/session/:sessionId/url"))
 
-        // The Alert API is still experimental and should not be used.
+            // The Alert API is still experimental and should not be used.
         .put(GET_ALERT, get("/session/:sessionId/alert"))
         .put(DISMISS_ALERT, post("/session/:sessionId/dismiss_alert"))
         .put(ACCEPT_ALERT, post("/session/:sessionId/accept_alert"))
@@ -267,7 +272,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(HOVER_OVER_ELEMENT, post("/session/:sessionId/element/:id/hover"))
         .put(GET_ELEMENT_LOCATION, get("/session/:sessionId/element/:id/location"))
         .put(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-            get("/session/:sessionId/element/:id/location_in_view"))
+             get("/session/:sessionId/element/:id/location_in_view"))
         .put(GET_ELEMENT_SIZE, get("/session/:sessionId/element/:id/size"))
         .put(GET_ELEMENT_ATTRIBUTE, get("/session/:sessionId/element/:id/attribute/:name"))
         .put(ELEMENT_EQUALS, get("/session/:sessionId/element/:id/equals/:other"))
@@ -280,7 +285,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(CLOSE, delete("/session/:sessionId/window"))
         .put(DRAG_ELEMENT, post("/session/:sessionId/element/:id/drag"))
         .put(GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-            get("/session/:sessionId/element/:id/css/:propertyName"))
+             get("/session/:sessionId/element/:id/css/:propertyName"))
         .put(IMPLICITLY_WAIT, post("/session/:sessionId/timeouts/implicit_wait"))
         .put(SET_SCRIPT_TIMEOUT, post("/session/:sessionId/timeouts/async_script"))
         .put(EXECUTE_SQL, post("/session/:sessionId/execute_sql"))
@@ -292,9 +297,8 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(IS_BROWSER_ONLINE, get("/session/:sessionId/browser_connection"))
         .put(SET_BROWSER_ONLINE, post("/session/:sessionId/browser_connection"))
 
-
-         // TODO (user): Would it be better to combine this command with
-         // GET_LOCAL_STORAGE_SIZE? 
+            // TODO (user): Would it be better to combine this command with
+            // GET_LOCAL_STORAGE_SIZE?
         .put(GET_LOCAL_STORAGE_ITEM, get("/session/:sessionId/local_storage/key/:key"))
         .put(REMOVE_LOCAL_STORAGE_ITEM, delete("/session/:sessionId/local_storage/key/:key"))
         .put(GET_LOCAL_STORAGE_KEYS, get("/session/:sessionId/local_storage"))
@@ -302,8 +306,8 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(CLEAR_LOCAL_STORAGE, delete("/session/:sessionId/local_storage"))
         .put(GET_LOCAL_STORAGE_SIZE, get("/session/:sessionId/local_storage/size"))
 
-         // TODO (user): Would it be better to combine this command with
-         // GET_SESSION_STORAGE_SIZE?
+            // TODO (user): Would it be better to combine this command with
+            // GET_SESSION_STORAGE_SIZE?
         .put(GET_SESSION_STORAGE_ITEM, get("/session/:sessionId/session_storage/key/:key"))
         .put(REMOVE_SESSION_STORAGE_ITEM, delete("/session/:sessionId/session_storage/key/:key"))
         .put(GET_SESSION_STORAGE_KEYS, get("/session/:sessionId/session_storage"))
@@ -314,7 +318,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_SCREEN_ORIENTATION, get("/session/:sessionId/orientation"))
         .put(SET_SCREEN_ORIENTATION, post("/session/:sessionId/orientation"))
 
-        // Interactions-related commands.
+            // Interactions-related commands.
         .put(CLICK, post("/session/:sessionId/click"))
         .put(DOUBLE_CLICK, post("/session/:sessionId/doubleclick"))
         .put(MOUSE_DOWN, post("/session/:sessionId/buttondown"))
@@ -322,15 +326,15 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(MOVE_TO, post("/session/:sessionId/moveto"))
         .put(SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT, post("/session/:sessionId/modifier"))
 
-        // IME related commands.
+            // IME related commands.
         .put(IME_GET_AVAILABLE_ENGINES, get("/session/:sessionId/ime/available_engines"))
         .put(IME_GET_ACTIVE_ENGINE, get("/session/:sessionId/ime/active_engine"))
         .put(IME_IS_ACTIVATED, get("/session/:sessionId/ime/activated"))
         .put(IME_DEACTIVATE, post("/session/:sessionId/ime/deactivate"))
         .put(IME_ACTIVATE_ENGINE, post("/session/:sessionId/ime/activate"))
 
-        // Advanced Touch API commands
-        // TODO(berrada): Refactor single tap with mouse click.
+            // Advanced Touch API commands
+            // TODO(berrada): Refactor single tap with mouse click.
         .put(TOUCH_SINGLE_TAP, post("/session/:sessionId/touch/click"))
         .put(TOUCH_DOWN, post("/session/:sessionId/touch/down"))
         .put(TOUCH_UP, post("/session/:sessionId/touch/up"))
@@ -449,10 +453,11 @@ public class HttpCommandExecutor implements CommandExecutor {
     int code = response.getStatusLine().getStatusCode();
 
     return (code == 301 || code == 302 || code == 303 || code == 307)
-        && response.containsHeader("location");
+           && response.containsHeader("location");
   }
 
   class EntityWithEncoding {
+
     private final String charSet;
     private final byte[] content;
 
@@ -484,9 +489,8 @@ public class HttpCommandExecutor implements CommandExecutor {
   }
 
 
-
   private Response createResponse(HttpResponse httpResponse, HttpContext context,
-      EntityWithEncoding entityWithEncoding) throws IOException {
+                                  EntityWithEncoding entityWithEncoding) throws IOException {
     final Response response;
 
     Header header = httpResponse.getFirstHeader("Content-Type");
@@ -537,7 +541,6 @@ public class HttpCommandExecutor implements CommandExecutor {
           response.setStatus(ErrorCodes.UNHANDLED_ERROR);
         }
       }
-
 
       if (response.getValue() instanceof String) {
         // We normalise to \n because Java will translate this to \r\n
