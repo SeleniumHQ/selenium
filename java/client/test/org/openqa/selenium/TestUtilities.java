@@ -28,16 +28,22 @@ public class TestUtilities {
     return ((HasCapabilities) driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS);
   }
 
-  public static String getUserAgent(WebDriver driver) {
-    return (String) ((JavascriptExecutor) driver).executeScript(
+  private static String getUserAgent(WebDriver driver) {
+    try {
+      return (String) ((JavascriptExecutor) driver).executeScript(
         "return navigator.userAgent;");
+    } catch (WebDriverException e) {
+      // some drivers will only execute JS once a page has been loaded. Since those
+      // drivers aren't Firefox, we don't worry about that here.
+      return "";
+    }
   }
 
   public static boolean isFirefox(WebDriver driver) {
     return getUserAgent(driver).contains("Firefox");
   }
 
-  public static boolean isFirefox30(WebDriver driver) {
+  public  static boolean isFirefox30(WebDriver driver) {
     return getUserAgent(driver).contains("Firefox/3.0.");
   }
 
