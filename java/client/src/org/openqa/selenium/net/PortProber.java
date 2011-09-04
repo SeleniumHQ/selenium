@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.net;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.ServerSocket;
@@ -28,8 +26,11 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 @SuppressWarnings({"UtilityClass"})
 public class PortProber {
+
   private static final Random random = new Random();
 
   private PortProber() {
@@ -49,7 +50,8 @@ public class PortProber {
   public static Callable<Integer> freeLocalPort(final int port) {
     return new Callable<Integer>() {
 
-      public Integer call() throws Exception {
+      public Integer call()
+          throws Exception {
         if (checkPortIsFree(port) != -1) {
           return port;
         }
@@ -59,31 +61,29 @@ public class PortProber {
   }
 
   /**
-   * Returns a port that is within a probable free range.
-   * 
-   * Based on the ports in http://en.wikipedia.org/wiki/Ephemeral_ports, this method stays away from
-   * all well-known ephemeral port ranges, since they can arbitrarily race with the operating system
-   * in allocations. Due to the port-greedy nature of selenium this happens fairly frequently.
+   * Returns a port that is within a probable free range. <p/> Based on the ports in
+   * http://en.wikipedia.org/wiki/Ephemeral_ports, this method stays away from all well-known
+   * ephemeral port ranges, since they can arbitrarily race with the operating system in
+   * allocations. Due to the port-greedy nature of selenium this happens fairly frequently.
    * Staying within the known safe range increases the probability tests will run green quite
    * significantly.
-   * 
+   *
    * @return a random port number
    */
   private static int createAcceptablePort() {
     synchronized (random) {
-      int seed = random.nextInt();
-      // avoid protected ports
+      // avoid protected ports. Ideally this should be platform-specific
 
       final int FIRST_PORT = 5001;
       final int LAST_PORT = 32767;
-      final int randomInt = Math.abs(random.nextInt());
-      seed = (randomInt % (LAST_PORT - FIRST_PORT + 1)) + FIRST_PORT;
-      return seed;
+      final int randomInt = random.nextInt();
+      final int portWithoutOffset = Math.abs(randomInt % (LAST_PORT - FIRST_PORT + 1));
+      return portWithoutOffset + FIRST_PORT;
     }
   }
 
   private static int checkPortIsFree(int port) {
-    ServerSocket socket = null;
+    ServerSocket socket;
     try {
       socket = new ServerSocket(port);
       int localPort = socket.getLocalPort();
