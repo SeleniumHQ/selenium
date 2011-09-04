@@ -42,6 +42,18 @@ java_test(name = "firefox-emulation-test",
     ":rc-tests",
   ])
 
+java_test(name = "chrome-emulation-test",
+  test_suite = "com.thoughtworks.selenium.WebDriverSeleniumTestSuite",
+  deps = [
+    ":rc-tests",
+  ],
+  sysproperties = [
+    { "selenium.browser" : "org.openqa.selenium.chrome.ChromeDriver" },
+  ],
+  deps = [
+    ":rc-tests",
+  ])
+
 java_test(name = "ie-emulation-test",
   test_suite = "com.thoughtworks.selenium.WebDriverSeleniumTestSuite",
   deps = [
