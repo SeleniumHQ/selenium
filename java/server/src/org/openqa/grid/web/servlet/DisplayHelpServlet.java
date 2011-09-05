@@ -52,9 +52,11 @@ public class DisplayHelpServlet extends HttpServlet {
     builder.append("</head>");
 
     builder.append("<body>");
-    builder.append("You are using grid ").append(coreRevision).append(coreRevision);
+    builder.append("You are using grid ").append(coreVersion).append(coreRevision);
     builder
-        .append("Find help on the official selenium wiki : <a href='http://code.google.com/p/selenium/wiki/Grid2' >more help here</a>");
+        .append("<br>Find help on the official selenium wiki : <a href='http://code.google.com/p/selenium/wiki/Grid2' >more help here</a>");
+    builder.append("<br>default monitoring page : <a href='/grid/console' >console</a>");
+    
     builder.append("</body>");
     builder.append("</html>");
 
