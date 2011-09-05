@@ -21,6 +21,7 @@ java_library(name = "common",
     "PropertyMunger.java",
     "Response.java",
     "SessionId.java",
+    "internal/HttpClientFactory.java",
     "SimplePropertyDescriptor.java",
   ],
   deps = [
@@ -29,6 +30,7 @@ java_library(name = "common",
     "//java/client/src/org/openqa/selenium/interactions",
     "//java/client/src/org/openqa/selenium/browserlaunchers",
     "//third_party/java/guava-libraries",
+    "//third_party/java/apache-httpclient",
     "//third_party/java/json",
   ])
 
