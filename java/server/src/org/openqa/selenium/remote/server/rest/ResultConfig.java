@@ -205,10 +205,8 @@ public class ResultConfig {
       if (handler instanceof DeleteSession) {
         // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
         final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
-        if (logHandler != null) {
-          logHandler.transferThreadTempLogsToSessionLogs(sessionId);
-          logHandler.removeSessionLogs(sessionId);
-        }
+        logHandler.transferThreadTempLogsToSessionLogs(sessionId);
+        logHandler.removeSessionLogs(sessionId);
         sessions.deleteSession(sessId);
       }
 

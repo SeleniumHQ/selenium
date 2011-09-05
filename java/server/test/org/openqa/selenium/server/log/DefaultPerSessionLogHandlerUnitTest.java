@@ -10,7 +10,7 @@ import java.util.logging.LogRecord;
 /**
  * {@link org.openqa.selenium.server.log.PerSessionLogHandler} unit test class.
  */
-public class PerSessionLogHandlerUnitTest extends TestCase {
+public class DefaultPerSessionLogHandlerUnitTest extends TestCase {
 
   private static final int CAPACITY = 1;
 
@@ -112,11 +112,11 @@ public class PerSessionLogHandlerUnitTest extends TestCase {
 
   private void assertNoMessageLoggedForSessionId(
       PerSessionLogHandler handler, String sessionId) throws IOException {
-    assertMessagesLoggedForSessionId(handler, sessionId, new String[0]);
+    assertMessagesLoggedForSessionId(handler, sessionId);
   }
 
   private PerSessionLogHandler createPerSessionLogHandler() {
-    return new PerSessionLogHandler(CAPACITY, Level.INFO,
+    return new DefaultPerSessionLogHandler(CAPACITY, Level.INFO,
                                     new FormatterStub());
   }
 

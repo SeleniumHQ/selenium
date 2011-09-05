@@ -1,9 +1,8 @@
 package org.openqa.selenium.server.log;
 
-import org.openqa.selenium.server.RemoteControlConfiguration;
-
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +26,7 @@ public class LoggingManager {
   private static Map<Handler, Level> originalLogLevels;
   private static Map<File, FileHandler> seleniumFileHandlers = new HashMap<File, FileHandler>();
   private static ShortTermMemoryHandler shortTermMemoryHandler;
-  private static PerSessionLogHandler perSessionLogHandler;
+  private static PerSessionLogHandler perSessionLogHandler = new NoOpSessionLogHandler();
 
 
   public static synchronized Log configureLogging(RemoteControlConfiguration configuration,
@@ -61,6 +60,10 @@ public class LoggingManager {
     return shortTermMemoryHandler;
   }
 
+  /**
+   * Provides a PerSessionLogHandler
+   * @return a PerSessionLogHandler, never null. May be a NoOpSessionLogHandler
+   */
   public static synchronized PerSessionLogHandler perSessionLogHandler() {
     return perSessionLogHandler;
   }
@@ -75,11 +78,11 @@ public class LoggingManager {
       RemoteControlConfiguration configuration, boolean debugMode) {
     if (debugMode) {
       perSessionLogHandler =
-          new PerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
+          new DefaultPerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
               Level.FINE, new TerseFormatter(true));
     } else {
       perSessionLogHandler =
-          new PerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
+          new DefaultPerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
               Level.INFO, new TerseFormatter(true));
     }
     logger.addHandler(perSessionLogHandler);

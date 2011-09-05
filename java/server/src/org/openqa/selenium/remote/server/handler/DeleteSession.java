@@ -38,7 +38,6 @@ public class DeleteSession extends WebDriverHandler {
 
     // Yes, this is funky. See javadocs on PerSessionLogHandler#clearThreadTempLogs for details.
     final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
-    if (logHandler != null) {
       /*
           We may be storing logging information on 2 different threads, the servlet container
           thread and the thread executing commands
@@ -48,8 +47,7 @@ public class DeleteSession extends WebDriverHandler {
           Additionally; if we ever get non-session bound logging here, it will come in
           the incorrect order. But that should only happen on create/delete, right ?
        */
-      logHandler.transferThreadTempLogsToSessionLogs(getSessionId());
-    }
+    logHandler.transferThreadTempLogsToSessionLogs(getSessionId());
     return ResultType.SUCCESS;
   }
 
