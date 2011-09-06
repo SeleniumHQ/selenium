@@ -53,12 +53,24 @@ bot.locators.strategy;
  */
 bot.locators.STRATEGIES_ = {
   'className': bot.locators.className,
+  'class name': bot.locators.className,
+
   'css': bot.locators.css,
+  'css selector': bot.locators.css,
+
   'id': bot.locators.id,
+
   'linkText': bot.locators.linkText,
+  'link text': bot.locators.linkText,
+
   'name': bot.locators.name,
+
   'partialLinkText': bot.locators.partialLinkText,
+  'partial link text': bot.locators.partialLinkText,
+
   'tagName': bot.locators.tagName,
+  'tag name': bot.locators.tagName,
+
   'xpath': bot.locators.xpath
 };
 
