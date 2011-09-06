@@ -17,17 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.Ignore.Driver.OPERA;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementToExist;
-
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Ignore;
@@ -38,6 +27,17 @@ import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
+
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementToExist;
 
 /**
  * Tests combined input actions.
@@ -131,7 +131,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, HTMLUNIT})
   public void testChordControlCutAndPaste() {
     // FIXME: macs don't have CONRTROL key
     if (Platform.getCurrent().is(Platform.MAC)) {
