@@ -150,6 +150,7 @@ goog.addDependency("../../../javascript/atoms/error.js", ['bot.Error', 'bot.Erro
 goog.addDependency("../../../javascript/atoms/window.js", ['bot.window'], ['bot', 'bot.Error', 'bot.ErrorCode', 'goog.userAgent']);
 goog.addDependency("../../../javascript/atoms/inject.js", ['bot.inject', 'bot.inject.cache'], ['bot', 'bot.Error', 'bot.ErrorCode', 'goog.array', 'goog.dom', 'goog.dom.NodeType', 'goog.events', 'goog.json', 'goog.object']);
 goog.addDependency("../../../javascript/atoms/test/text_util.js", [], ['bot.dom', 'goog.array', 'goog.dom', 'goog.testing.TestCase']);
+goog.addDependency("../../../javascript/atoms/test/jquery-1.6.2.min.js", [], []);
 goog.addDependency("../../../javascript/atoms/test/window_focus.js", [], []);
 goog.addDependency("../../../javascript/atoms/test/test_bootstrap.js", [], []);
 goog.addDependency("../../../javascript/atoms/locators/css.js", ['bot.locators.css'], ['goog.array', 'goog.dom', 'goog.dom.NodeType', 'goog.object', 'goog.string', 'goog.userAgent']);

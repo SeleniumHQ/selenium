@@ -143,7 +143,7 @@ bot.inject.wrapValue = function(value) {
 /**
  * Unwraps any DOM element's encoded in the given {@code value}.
  * @param {*} value The value to unwrap.
- * @param {Document} opt_doc The document whose cache to retrieve wrapped
+ * @param {Document=} opt_doc The document whose cache to retrieve wrapped
  *     elements from. Defaults to the current document.
  * @return {*} The unwrapped value.
  * @private
@@ -153,6 +153,10 @@ bot.inject.unwrapValue_ = function(value, opt_doc) {
     return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
         function(v) { return bot.inject.unwrapValue_(v, opt_doc); });
   } else if (goog.isObject(value)) {
+    if (typeof value == 'function') {
+      return value;
+    }
+
     if (goog.object.containsKey(value, bot.inject.ELEMENT_KEY)) {
       return bot.inject.cache.getElement(value[bot.inject.ELEMENT_KEY],
           opt_doc);
@@ -397,7 +401,7 @@ bot.inject.cache.ELEMENT_KEY_PREFIX = ':wdc:';
 /**
  * Retrieves the cache object for the given window. Will initialize the cache
  * if it does not yet exist.
- * @param {Document} opt_doc The document whose cache to retrieve. Defaults to
+ * @param {Document=} opt_doc The document whose cache to retrieve. Defaults to
  *     the current document.
  * @return {Object.<string, (Element|Window)>} The cache object.
  * @private
@@ -443,7 +447,7 @@ bot.inject.cache.addElement = function(el) {
  * Retrieves an element from the cache. Will verify that the element is
  * still attached to the DOM before returning.
  * @param {string} key The element's key in the cache.
- * @param {Document} opt_doc The document whose cache to retrieve the element
+ * @param {Document=} opt_doc The document whose cache to retrieve the element
  *     from. Defaults to the current document.
  * @return {Element|Window} The cached element.
  */

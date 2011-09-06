@@ -490,6 +490,30 @@ limitations under the License.
       assertEquals(jsonResult, 'number', value['typeof window.top.MY_GLOBAL_CONSTANT']);
     }
 
+    function testCorrectlyUnwrapsFunctionArgsForInjectedScripts() {
+      var result = bot.inject.executeScript(function() {
+        return arguments[0]();
+      }, [function(){return 1}], false);
+      assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+      assertEquals(1, result['value']);
+    }
+
+    function testCorrectlyUnwrapsFunctionArgsForInjectedAsyncScripts() {
+      function onDone(result) {
+        asyncTestCase.continueTesting();
+
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+        assertEquals(1, result['value']);
+      }
+ 
+      asyncTestCase.waitForAsync('bot.inject.executeAsyncScript');
+
+      var result = bot.inject.executeAsyncScript(function() {
+        var callback = arguments[arguments.length - 1];
+        callback(arguments[0]());
+      }, [function(){return 1}], 0, onDone, false);
+    }
+
     function testCorrectlyUnwrapsArgsForInjectedScripts() {
       if (goog.userAgent.IE) {
         // TODO(user): Don't skip this.
