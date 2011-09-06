@@ -281,6 +281,15 @@ namespace OpenQA.Selenium.Interactions
         {
             this.Build().Perform();
         }
+
+        /// <summary>
+        /// Adds an action to current list of actions to be performed.
+        /// </summary>
+        /// <param name="actionToAdd">The <see cref="IAction"/> to be added.</param>
+        protected void AddAction(IAction actionToAdd)
+        {
+            this.action.AddAction(actionToAdd);
+        }
         #endregion
     }
 }
