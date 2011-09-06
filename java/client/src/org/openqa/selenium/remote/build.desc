@@ -21,7 +21,6 @@ java_library(name = "common",
     "PropertyMunger.java",
     "Response.java",
     "SessionId.java",
-    "internal/HttpClientFactory.java",
     "SimplePropertyDescriptor.java",
   ],
   deps = [
