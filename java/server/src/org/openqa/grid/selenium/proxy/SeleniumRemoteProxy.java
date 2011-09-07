@@ -37,22 +37,24 @@ public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListen
 
   @Override
   public void beforeRelease(TestSession session) {
-    // release the resources remotely.
-    if (session.getExternalKey() == null) {
-      throw new IllegalStateException("No internal key yet. Did the app start properly?");
-    }
-    System.err.println("timing out " + session);
-    boolean ok;
+   log.info("timing out " + session);
+
+    boolean ok = true;
     try {
-      ok = session.sendSelenium1TestComplete(session);
+      // release the resources remotely.
+      if (session.getExternalKey() == null) {
+        log.warning("No external key yet. Did the app start properly?");
+      } else {
+        ok = session.sendSelenium1TestComplete(session);
+      }
     } catch (Throwable t) {
       t.printStackTrace();
       ok = false;
     }
+    
     if (!ok) {
       log.warning("Error releasing the resources on timeout for session " + session);
     }
-
   }
 
   private CapabilityMatcher matchFFprofileToo;
