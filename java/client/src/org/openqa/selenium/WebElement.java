@@ -129,20 +129,32 @@ public interface WebElement extends SearchContext {
    * aware that webdriver follows standard conventions: a search prefixed with "//" will search the
    * entire document, not just the children of this current node. Use ".//" to limit your search to
    * the children of this WebElement.
+   * This method is affected by the 'implicit wait' times in force at the time of execution.
+   * For example, that is 5 seconds, the findElements(..) after its first attempt to collect 
+   * matching WebElements if there is at least one.  If there were no matching WebElements
+   * after the first attempt, then the method will wait in line with the interval specified,
+   * then try again.  It will keep going until it finds at least one WebElement in a pass,
+   * or the configured timeout is reached.
    * 
    * @param by The locating mechanism to use
    * @return A list of all {@link WebElement}s, or an empty list if nothing matches.
    * @see org.openqa.selenium.By
+   * @see org.openqa.selenium.WebDriver.Timeouts
    */
   List<WebElement> findElements(By by);
 
   /**
    * Find the first {@link WebElement} using the given method. See the note in
    * {@link #findElement(By)} about finding via XPath.
+   * This method is affected by the 'implicit wait' times in force at the time of execution.
+   * The findElement(..) invocation will return a matching row, or try again repeatedly until 
+   * the configured timeout is reached.
    * 
    * @param by The locating mechanism
    * @return The first matching element on the current context.
    * @throws NoSuchElementException If no matching elements are found
+   * @see org.openqa.selenium.By
+   * @see org.openqa.selenium.WebDriver.Timeouts
    */
   WebElement findElement(By by);
 
