@@ -37,7 +37,7 @@ public class SeleniumRemoteProxy extends WebRemoteProxy implements CommandListen
 
   @Override
   public void beforeRelease(TestSession session) {
-   log.info("timing out " + session);
+   log.info("Releasing session: " + session);
 
     boolean ok = true;
     try {
