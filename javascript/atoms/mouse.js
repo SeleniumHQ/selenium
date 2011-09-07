@@ -17,6 +17,7 @@
  * @fileoverview The file contains an abstraction of a mouse for
  * simulating the mouse actions.
  *
+ * @author wmyaoyao@google.com (Wei-Min Yao)
  */
 
 goog.provide('bot.Mouse');
@@ -162,6 +163,30 @@ bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function() {
 
 
 /**
+ * Whether synthesized events are trusted to trigger click actions.
+ *
+ * @type{boolean}
+ * @private
+ * @const
+ */
+bot.Mouse.CAN_SYNTHESISED_EVENTS_FOLLOW_LINKS_ =
+  (goog.userAgent.GECKO &&
+   bot.isFirefoxExtension() &&
+   bot.userAgent.isVersion(4));
+
+
+/**
+ * Whether synthesized events can cause new windows to open.
+ *
+ * @type{boolean}
+ * @const
+ * @private
+ */
+bot.Mouse.SYNTHESISED_EVENTS_CAN_OPEN_JAVASCRIPT_WINDOWS_ =
+  goog.userAgent.GECKO && bot.isFirefoxExtension();
+
+
+/**
  * On some browsers, a mouse down event on an OPTION or SELECT element cause
  * the SELECT to open, blocking further JS execution. This is undesirable, and
  * so needs to be detected.
@@ -194,7 +219,7 @@ bot.Mouse.prototype.pressButton = function(button) {
   this.elementPressed_ = this.element_;
 
   var performFocus = true;
-  // TODO(user): This is a nasty way to avoid locking the browser
+  // TODO(simon): This is a nasty way to avoid locking the browser
   if (!this.blocksOnMouseDown_(this.element_)) {
     performFocus = this.fireEvent_(goog.events.EventType.MOUSEDOWN);
   }
@@ -214,13 +239,13 @@ bot.Mouse.prototype.releaseButton = function() {
 
   this.fireEvent_(goog.events.EventType.MOUSEUP);
 
-  // TODO(user): Middle button can also trigger click.
+  // TODO(wmyaoyao): Middle button can also trigger click.
   if (this.buttonPressed_ == bot.Mouse.Button.LEFT &&
       this.element_ == this.elementPressed_) {
     this.clickElement_();
     this.maybeDoubleClickElement_();
 
-  // TODO(user): In Linux, this fires after mousedown event.
+  // TODO(wmyaoyao): In Linux, this fires after mousedown event.
   } else if (this.buttonPressed_ == bot.Mouse.Button.RIGHT) {
     this.fireEvent_(goog.events.EventType.CONTEXTMENU);
   }
@@ -257,7 +282,7 @@ bot.Mouse.prototype.clickElement_ = function() {
   var selectable = bot.dom.isSelectable(this.element_);
   var originallySelected = selectable && bot.dom.isSelected(this.element_);
 
-  // NOTE(user): Clicking on a form submit button is a little broken:
+  // NOTE(wmyaoyao): Clicking on a form submit button is a little broken:
   // (1) When clicking a form submit button in IE, firing a click event or
   // calling Form.submit() will not by itself submit the form, so we call
   // Element.click() explicitly, but as a result, the coordinates of the click
@@ -266,7 +291,7 @@ bot.Mouse.prototype.clickElement_ = function() {
   // (2) When clicking a form submit button in GECKO, while the coordinates of
   // the click event are correct, those submitted with the form are always (0,0)
   // .
-  // TODO(user): See if either of these can be resolved, perhaps by adding
+  // TODO(wmyaoyao): See if either of these can be resolved, perhaps by adding
   // hidden form elements with the coordinates before the form is submitted.
   if (goog.userAgent.IE && targetButton) {
     targetButton.click();
@@ -306,7 +331,7 @@ bot.Mouse.prototype.clickElement_ = function() {
     }
   }
 
-  // TODO(user): Should not call stuff in bot.action since we're not
+  // TODO(gdennis): Should not call stuff in bot.action since we're not
   // including it in mouse.js
   bot.action.setSelected(this.element_, !originallySelected);
 };
@@ -360,7 +385,7 @@ bot.Mouse.prototype.move = function(element, coords) {
  * @private
  */
 bot.Mouse.prototype.fireEvent_ = function(type, opt_related) {
-  // TODO(user): Event if the element is not interactable, the mouse event
+  // TODO(wmyaoyao): Event if the element is not interactable, the mouse event
   // should still fire on another element (offset parent?).
   if (!bot.dom.isInteractable(this.element_)) {
     return false;
@@ -437,28 +462,17 @@ bot.Mouse.isFormSubmitElement_ = function(element) {
   return false;
 };
 
-
 /**
- * @return {boolean} Whether synthesized events are trusted to trigger click actions
- * @private
- */
-bot.Mouse.areSynthesisedEventsTrusted_ = function() {
-  return !goog.userAgent.IE &&
-      (goog.userAgent.GECKO &&
-       bot.isFirefoxExtension());
-};
-
-
-/**
- * Indicates whether we should manually follow the href of the element we're clicking.
- * 
+ * Indicates whether we should manually follow the href of the element we're
+ * clicking.
+ *
  * Versions of firefox from 4+ will handle links properly when this is used in
  * an extension. Versions of Firefox prior to this may or may not do the right
  * thing depending on whether a target window is opened and whether the click
  * has caused a change in just the hash part of the URL.
  *
  * @param {!Element} element The element to consider.
- * @return {boolean} Whether we should manually follow the href.
+ * @return {boolean} Whether following an href should be skipped.
  * @private
  */
 bot.Mouse.shouldFollowHref_ = function(element) {
@@ -466,8 +480,18 @@ bot.Mouse.shouldFollowHref_ = function(element) {
     return false;
   }
 
-  if (bot.Mouse.areSynthesisedEventsTrusted_()) {
+  if (goog.userAgent.IE ||
+      (goog.userAgent.GECKO && !bot.isFirefoxExtension())) {
+    return true;
+  }
+
+  if (bot.Mouse.CAN_SYNTHESISED_EVENTS_FOLLOW_LINKS_) {
     return false;
+  }
+
+  if (element.target ||
+      element.href.trim().toLowerCase().indexOf("javascript") == 0) {
+    return !bot.Mouse.SYNTHESISED_EVENTS_CAN_OPEN_JAVASCRIPT_WINDOWS_;
   }
 
   var owner = goog.dom.getWindow(goog.dom.getOwnerDocument(element));
@@ -476,7 +500,7 @@ bot.Mouse.shouldFollowHref_ = function(element) {
   var isOnlyHashChange =
       sourceUrl.split('#')[0] === destinationUrl.split('#')[0];
 
-  return !(element.target) && !isOnlyHashChange;
+  return !isOnlyHashChange;
 };
 
 
