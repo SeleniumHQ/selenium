@@ -59,9 +59,13 @@ public class ProxySet implements Iterable<RemoteProxy> {
   }
 
   private void forceRelease(RemoteProxy proxy) {
+    // Find the original proxy. While the supplied one is logically equivalent, it may be a fresh object with
+    // an empty TestSlot list, which doesn't figure into the proxy equivalence check.  Since we want to free up
+    // those test sessions, we need to operate on that original object.
     for (RemoteProxy p : proxies) {
       if (p.equals(proxy)) {
         proxies.remove(p);
+
         for (TestSlot slot : p.getTestSlots()) {
           slot.forceRelease();
         }
@@ -74,12 +78,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
       log.warning(String.format(
           "Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
 
-      // Find the original proxy. While the supplied one is logically
-      // equivalent, it's a fresh object with
-      // an empty TestSlot list. Thus there's a disconnection between
-      // this proxy and the one associated with
-      // any active test sessions.
-      forceRelease( proxy);
+      forceRelease(proxy);
     }
   }
 
