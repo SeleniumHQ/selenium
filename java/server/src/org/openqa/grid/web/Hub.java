@@ -85,9 +85,9 @@ public class Hub {
       try {
         Handler logFile = new FileHandler(new File(logFilename).getAbsolutePath(), true);
         logFile.setFormatter(new TerseFormatter(true));
-        logFile.setLevel(Level.FINE);
+        logFile.setLevel(Level.INFO);
 
-        Logger.getLogger("").setLevel(Level.FINE);
+        Logger.getLogger("").setLevel(Level.INFO);
         Logger.getLogger("").addHandler(logFile);
       } catch (IOException e) {
         throw new RuntimeException(e);
