@@ -23,7 +23,11 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.util.logging.Logger;
+
 public class Type extends SeleneseCommand<Void> {
+  private final static Logger log = Logger.getLogger(Type.class.getName());
+
   private final AlertOverride alertOverride;
   private final JavascriptLibrary js;
   private final ElementFinder finder;
@@ -51,11 +55,11 @@ public class Type extends SeleneseCommand<Void> {
 
     WebElement element = finder.findElement(driver, locator);
 
-    // TODO(simon): Log a warning that people should be using "attachFile"
     String tagName = element.getTagName();
     String elementType = element.getAttribute("type");
     if ("input".equals(tagName.toLowerCase()) &&
         elementType != null && "file".equals(elementType.toLowerCase())) {
+      log.warning("You should be using attachFile to set the value of a file input element");
       element.sendKeys(valueToUse);
       return null;
     }
@@ -68,6 +72,7 @@ public class Type extends SeleneseCommand<Void> {
     if (driver instanceof JavascriptExecutor) {
       js.executeScript(driver, type, element, valueToUse);
     } else {
+      element.clear();
       element.sendKeys(valueToUse);
     }
 
