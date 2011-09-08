@@ -189,10 +189,10 @@ task :test_java => [
   :test_support,
   :test_java_webdriver,
   :test_selenium,
-  "test_grid"
+  "test_grid",
   # Android should be installed and the tests should be ran
   # before commits.
-  :test_android,
+  :test_android
 ]
 
 task :test_rb => [
