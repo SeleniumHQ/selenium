@@ -115,7 +115,7 @@ public class RegistryTest {
 
   }
 
-  @Test(expected = CapabilityNotPresentOnTheGridException.class)
+  @Test(expected = RuntimeException.class)
   public void CapabilityNotPresentRegistry() throws Throwable {
     Registry registry = Registry.newInstance();
     try {
