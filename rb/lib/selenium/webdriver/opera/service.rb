@@ -20,12 +20,13 @@ module Selenium
           @selenium_server_jar = path
         end
 
-        def self.default_service
-          new selenium_server_jar
+        def self.default_service(opts = {})
+          new selenium_server_jar, opts
         end
 
         def initialize(jar, opts = {})
-          opts.merge! :background => true, :port => PortProber.random, :log => !!$DEBUG
+          opts.merge! :background => true, :port => PortProber.random
+          opts.merge! :log => !!$DEBUG if $DEBUG
           @server = Selenium::Server.new File.expand_path(jar), opts
         end
 

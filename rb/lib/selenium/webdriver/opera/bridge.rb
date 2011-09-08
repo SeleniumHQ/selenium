@@ -11,11 +11,11 @@ module Selenium
       class Bridge < Remote::Bridge
 
         def initialize(opts = {})
+          @service = Service.default_service :log => (opts[:logging_level] ? true : false)
+          @service.start
+
           http_client = opts.delete(:http_client)
           caps        = create_capabilities(opts)
-
-          @service = Service.default_service
-          @service.start
 
           remote_opts = {
             :url                  => @service.uri,
@@ -83,7 +83,6 @@ module Selenium
             end
 
             caps.merge! 'opera.logging.level' => logging_level.to_s.upcase
-            $DEBUG = true  # FIXME Just enable driver output?
           end
 
           caps.merge! 'opera.logging.file' => logging_file if logging_file
@@ -91,7 +90,7 @@ module Selenium
           caps.merge! 'opera.host'         => host if host
           caps.merge! 'opera.port'         => port.to_i if port
           caps.merge! 'opera.launcher'     => launcher if launcher
-          caps.merge! 'opera.profile'      => profile if profile
+          caps.merge! 'opera.profile'      => profile
           caps.merge! 'opera.idle'         => !!idle unless idle.nil?
           caps.merge! 'opera.display'      => display.to_i if display
           caps.merge! 'opera.autostart'    => !!autostart unless autostart.nil?
