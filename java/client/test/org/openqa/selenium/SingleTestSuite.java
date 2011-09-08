@@ -66,7 +66,7 @@ public class SingleTestSuite extends TestCase {
       };
 
   public static Test suite() throws Exception {
-    String driver = OPERA;
+    String driver = FIREFOX_TEST;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -79,7 +79,9 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FrameSwitchingTest")
+//        .onlyRun("BasicMouseInterfaceTest")
+//        .onlyRun("CombinedInputActionsTest")
+//        .onlyRun("DragAndDropTest")
         // .method("testShouldBeAbleToFindAnElementByCssSelector")
         .exclude(ALL)
         .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
