@@ -87,18 +87,16 @@ public class RegistryTest {
     req.setConfiguration(config);
   }
 
-  @Test(expected = GridException.class)
+  @Test
   public void emptyRegistry() throws Throwable {
     Registry registry = Registry.newInstance();
     System.out.println(registry);
     try {
       MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
       newSessionRequest.process();
-    } finally {
-
+    } catch (Exception e) {
+      Assert.assertEquals(GridException.class, e.getCause().getClass());
     }
-
-
   }
 
   // @Test(timeout=2000) excepted timeout here.How to specify that in junit ?
@@ -115,7 +113,7 @@ public class RegistryTest {
 
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void CapabilityNotPresentRegistry() throws Throwable {
     Registry registry = Registry.newInstance();
     try {
@@ -124,6 +122,8 @@ public class RegistryTest {
       System.out.println(newSessionRequest.getDesiredCapabilities());
       newSessionRequest.process();
       System.out.println("new " + newSessionRequest.getTestSession());
+    } catch (Exception e) {
+      Assert.assertEquals(CapabilityNotPresentOnTheGridException.class, e.getCause().getClass());
     } finally {
       registry.stop();
     }
