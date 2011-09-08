@@ -59,7 +59,7 @@ module Selenium
           display       = opts.delete(:display)
           autostart     = opts.delete(:autostart)
           no_restart    = opts.delete(:no_restart)
-          detach        = opts.delete(:detach)
+          no_quit       = opts.delete(:no_quit)
           product       = opts.delete(:product)
 
           unless opts.empty?
@@ -96,7 +96,7 @@ module Selenium
           caps.merge! 'opera.display'      => display.to_i if display
           caps.merge! 'opera.autostart'    => !!autostart unless autostart.nil?
           caps.merge! 'opera.no_restart'   => !!no_restart unless no_restart.nil?
-          caps.merge! 'opera.no_quit'      => !!no_quit unless detach.nil?
+          caps.merge! 'opera.no_quit'      => !!no_quit unless no_quit.nil?
           caps.merge! 'opera.product'      => product if product
 
           caps
