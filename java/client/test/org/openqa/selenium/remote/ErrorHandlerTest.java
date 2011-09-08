@@ -17,27 +17,18 @@
 
 package org.openqa.selenium.remote;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertThat;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.InvalidElementStateException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.UnsupportedCommandException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.XPathLookupException;
+import junit.framework.TestCase;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 
-import junit.framework.TestCase;
-
 import java.util.Map;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for {@link ErrorHandler}.
@@ -54,7 +45,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   public void testShouldNotThrowIfResponseWasASuccess() {
-    handler.throwIfResponseFailed(createResponse(ErrorCodes.SUCCESS));
+    handler.throwIfResponseFailed(createResponse(ErrorCodes.SUCCESS), 100);
     // All is well if this doesn't throw.
   }
 
@@ -81,10 +72,10 @@ public class ErrorHandlerTest extends TestCase {
   private void assertThrowsCorrectExceptionType(
       int status, Class<? extends RuntimeException> type) {
     try {
-      handler.throwIfResponseFailed(createResponse(status));
+      handler.throwIfResponseFailed(createResponse(status), 123);
       fail("Should have a " + type.getName());
     } catch (RuntimeException e) {
-      assertTrue("Exepected:<" + type.getName() + ">, but was:<" + e.getClass().getName() + ">",
+      assertTrue("Expected:<" + type.getName() + ">, but was:<" + e.getClass().getName() + ">",
           type.isAssignableFrom(e.getClass()));
     }
   }
@@ -98,18 +89,21 @@ public class ErrorHandlerTest extends TestCase {
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   public void testShouldThrowAVanillaWebDriverExceptionIfServerDoesNotProvideAValue() {
     try {
-      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR));
+        Response response = createResponse(ErrorCodes.UNHANDLED_ERROR);
+        handler.throwIfResponseFailed(response, 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
       assertDoesNotHaveACause(expected);
-      assertThat(expected.getMessage(), containsString(new WebDriverException().getMessage()));
+      String message = expected.getMessage();
+      assertThat(message, containsString(new WebDriverException().getMessage()));
+      assertThat(message, not(containsString("duration"))); // no duration message
     }
   }
 
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   public void testShouldNotSetCauseIfResponseValueIsJustAString() {
     try {
-      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, "boom"));
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, "boom"), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
       assertEquals(WebDriverException.class, expected.getClass());
@@ -123,7 +117,7 @@ public class ErrorHandlerTest extends TestCase {
   public void testCauseShouldBeAnUnknownServerExceptionIfServerOnlyReturnsAMessage() {
     try {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR,
-          ImmutableMap.of("message", "boom")));
+          ImmutableMap.of("message", "boom")), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
       assertDoesNotHaveACause(expected);
@@ -147,10 +141,10 @@ public class ErrorHandlerTest extends TestCase {
     try {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR,
           ImmutableMap.of("message", "boom",
-              "class", NullPointerException.class.getName())));
+              "class", NullPointerException.class.getName())), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("boom").getMessage(),
+      assertEquals(new WebDriverException("boom; duration or timeout: 123 milliseconds").getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -165,10 +159,10 @@ public class ErrorHandlerTest extends TestCase {
     try {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR,
           ImmutableMap.of("message", "boom",
-              "class", NullPointerException.class.getName())));
+              "class", NullPointerException.class.getName())), 1234);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("boom").getMessage(),
+      assertEquals(new WebDriverException("boom; duration or timeout: 1.23 seconds").getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -181,15 +175,18 @@ public class ErrorHandlerTest extends TestCase {
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   public void testShouldBeAbleToRebuildASerializedException() throws Exception {
-    RuntimeException serverError = new RuntimeException("foo bar baz!");
+    RuntimeException serverError = new RuntimeException("foo bar baz!; duration or timeout: 123 milliseconds");
 
     try {
       handler.throwIfResponseFailed(
-          createResponse(ErrorCodes.UNHANDLED_ERROR, toMap(serverError)));
+          createResponse(ErrorCodes.UNHANDLED_ERROR, toMap(serverError)), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException(serverError.getMessage()).getMessage(),
-          expected.getMessage());
+        WebDriverException webDriverException = new WebDriverException(serverError.getMessage());
+        String message = webDriverException.getMessage();
+        String message1 = expected.getMessage();
+        assertEquals(message,
+                message1);
 
       Throwable cause = expected.getCause();
       assertNotNull("Should have a cause", cause);
@@ -206,10 +203,10 @@ public class ErrorHandlerTest extends TestCase {
     data.put("screen", "screenGrabText");
 
     try {
-      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data));
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException(serverError.getMessage()).getMessage(),
+      assertEquals(new WebDriverException(serverError.getMessage() + "; duration or timeout: 123 milliseconds").getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -233,10 +230,10 @@ public class ErrorHandlerTest extends TestCase {
     data.remove("class");
 
     try {
-      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data));
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException(serverError.getMessage()).getMessage(),
+      assertEquals(new WebDriverException(serverError.getMessage() + "; duration or timeout: 123 milliseconds").getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -259,10 +256,10 @@ public class ErrorHandlerTest extends TestCase {
                 "fileName", "Resource.m")));
 
     try {
-      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data));
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("some error message").getMessage(),
+      assertEquals(new WebDriverException("some error message; duration or timeout: 123 milliseconds").getMessage(),
           expected.getMessage());
 
       StackTraceElement[] expectedTrace = {
@@ -290,7 +287,7 @@ public class ErrorHandlerTest extends TestCase {
 
     try {
       handler.throwIfResponseFailed(createResponse(
-          ErrorCodes.UNHANDLED_ERROR, toMap(serverError)));
+          ErrorCodes.UNHANDLED_ERROR, toMap(serverError)), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
       assertDoesNotHaveACause(expected);
@@ -310,7 +307,7 @@ public class ErrorHandlerTest extends TestCase {
 
     try {
       handler.throwIfResponseFailed(createResponse(
-          ErrorCodes.UNHANDLED_ERROR, data));
+          ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
       assertThat(expected.getMessage(), startsWith("foo bar baz!"));

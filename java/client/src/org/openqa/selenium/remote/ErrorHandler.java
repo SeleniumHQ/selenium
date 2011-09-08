@@ -1,17 +1,18 @@
 package org.openqa.selenium.remote;
 
-import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
-
 import org.openqa.selenium.WebDriverException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+
+import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
 /**
  * Maps exceptions to status codes for sending over the wire.
@@ -57,7 +58,7 @@ public class ErrorHandler {
   }
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
-  public Response throwIfResponseFailed(Response response) throws RuntimeException {
+  public Response throwIfResponseFailed(Response response, long duration) throws RuntimeException {
     if (response.getStatus() == SUCCESS) {
       return response;
     }
@@ -103,6 +104,12 @@ public class ErrorHandler {
       message = String.valueOf(value);
     }
 
+    String duration1 = duration(duration);
+
+    if (message != null && message.indexOf(duration1) == -1) {
+      message = message + duration1;
+    }
+
     Throwable toThrow = createThrowable(outerErrorType,
         new Class<?>[] {String.class, Throwable.class},
         new Object[] {message, cause});
@@ -124,7 +131,15 @@ public class ErrorHandler {
     }
   }
 
-  @SuppressWarnings({"ErrorNotRethrown"})
+  private String duration(long duration) {
+    String prefix = "; duration or timeout: ";
+    if (duration < 1000) {
+      return prefix + duration + " milliseconds";
+    }
+    return prefix + (new BigDecimal(duration).divide(new BigDecimal(1000)).setScale(2, RoundingMode.HALF_UP)) + " seconds";
+  }
+
+    @SuppressWarnings({"ErrorNotRethrown"})
   private <T extends Throwable> T createThrowable(
       Class<T> clazz, Class<?>[] parameterTypes, Object[] parameters) {
     try {

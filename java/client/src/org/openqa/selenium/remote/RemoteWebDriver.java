@@ -22,20 +22,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.Mouse;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -382,6 +369,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     Response response;
 
+    long start = System.currentTimeMillis();
+
+
     try {
       log(sessionId, command.getName(), command);
       response = executor.execute(command);
@@ -404,7 +394,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       throw new WebDriverException(e);
     }
 
-    return errorHandler.throwIfResponseFailed(response);
+    return errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
   }
 
   protected Response execute(String command) {
