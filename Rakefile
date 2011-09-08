@@ -190,8 +190,9 @@ task :test_java => [
   :test_java_webdriver,
   :test_selenium,
   "test_grid"
-# Can't be sure that android is installed.
-#  :test_android,
+  # Android should be installed and the tests should be ran
+  # before commits.
+  :test_android,
 ]
 
 task :test_rb => [
