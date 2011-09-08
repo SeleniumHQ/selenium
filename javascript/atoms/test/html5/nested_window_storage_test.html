@@ -17,10 +17,10 @@
         return;
       }
 
-      var win = bot.frame.findFrameByNameOrId('frame_a');
-      assertNotNull(win);
+      var window = bot.frame.findFrameByNameOrId('frame_a');
+      assertNotNull(window);
 
-      var localStorage = bot.storage.getLocalStorage(win);
+      var localStorage = bot.storage.getLocalStorage(window);
       assertEquals('bar11', localStorage.getItem('foo1'));
     }
 

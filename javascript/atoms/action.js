@@ -48,7 +48,7 @@ goog.require('goog.userAgent');
  * @see bot.dom.isShown.
  * @private
  */
-bot.dom.checkShown_ = function(element) {
+bot.action.checkShown_ = function(element) {
   if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
 
     throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
@@ -64,7 +64,7 @@ bot.dom.checkShown_ = function(element) {
  * @see bot.dom.isInteractable.
  * @private
  */
-bot.dom.checkInteractable_ = function(element) {
+bot.action.checkInteractable_ = function(element) {
   if (!bot.dom.isInteractable(element)) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
         'Element is not currently interactable and may not be manipulated');
@@ -163,7 +163,7 @@ bot.action.selectOptionElement_ = function(element, selected) {
  */
 bot.action.setSelected = function(element, selected) {
   // TODO(user): Fire more than just change events: mousemove, keydown, etc?
-  bot.dom.checkInteractable_(element);
+  bot.action.checkInteractable_(element);
 
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     bot.action.selectInputElement_(element, selected);
@@ -185,7 +185,7 @@ bot.action.setSelected = function(element, selected) {
  * @see bot.dom.isSelected
  */
 bot.action.toggle = function(element) {
-  bot.dom.checkShown_(element);
+  bot.action.checkShown_(element);
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
       'radio' == element.type) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
@@ -207,7 +207,7 @@ bot.action.toggle = function(element) {
  */
 
 bot.action.focusOnElement = function(element, opt_activeElement) {
-  bot.dom.checkInteractable_(element);
+  bot.action.checkInteractable_(element);
   var activeElement = opt_activeElement || bot.dom.getActiveElement(element);
 
   if (element != activeElement) {
@@ -250,7 +250,7 @@ bot.action.focusOnElement = function(element, opt_activeElement) {
  * @param {!Element} element The element to clear.
  */
 bot.action.clear = function(element) {
-  bot.dom.checkInteractable_(element);
+  bot.action.checkInteractable_(element);
   if (!bot.dom.isEditable(element)) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
         'Element cannot contain user-editable text');
@@ -280,7 +280,7 @@ bot.action.clear = function(element) {
  *    element, either strings or members of bot.Keyboard.Key.
  */
 bot.action.type = function(element, var_args) {
-  bot.dom.checkShown_(element);
+  bot.action.checkShown_(element);
   bot.action.focusOnElement(element);
   var keyboard = new bot.Keyboard(element);
 
@@ -578,7 +578,7 @@ bot.action.pressAndReleaseButton_ =
  *   element.
  */
 bot.action.drag = function(element, dx, dy, opt_coords) {
-  bot.dom.checkShown_(element);
+  bot.action.checkShown_(element);
 
   var mouse = new bot.Mouse();
   if (!opt_coords) {

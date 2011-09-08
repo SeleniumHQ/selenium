@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Expire" content="0"/>
+  <title>touch_test</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.Touchscreen');
+    goog.require('bot.action');
+    goog.require('goog.math.Coordinate');
+    goog.require('goog.testing.jsunit');
+  </script>
+  <script type="text/javascript">
+    var target;
+    var touchscreen;
+
+    function setUpPage() {
+      target = document.getElementById('target');
+      touchscreen = new bot.Touchscreen();
+    }
+
+    function testTouchScreenPress() {
+      touchscreen.move(target, new goog.math.Coordinate(0, 0));
+      touchscreen.press();
+    }
+
+    function testTouchScreenRelease() {
+      touchscreen.move(target, new goog.math.Coordinate(0, 0));
+      touchscreen.press();
+      touchscreen.release();
+    }
+
+    function testTouchScreenMove() {
+      touchscreen.move(target, new goog.math.Coordinate(0, 0));
+    }
+  </script>
+</head>
+<body>
+  Simple placeholder form.<br>
+  <div id="target">touch here</div>
+</body>
+</html>

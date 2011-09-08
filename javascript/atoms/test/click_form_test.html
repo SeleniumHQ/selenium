@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>click_async_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('bot.locators');
+    goog.require('goog.Uri');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.testing.jsunit');
+  </script>
+</head>
+<body>
+  <iframe id="iframe" src="testdata/click_iframe.html">
+  </iframe>
+
+  <script type="text/javascript">
+    /**
+    * This test is in a separate file because AsyncTestCase seems to conflict
+    * with the existing tests.
+    */
+
+    var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+    var findElement = bot.locators.findElement;
+
+    function setUp() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      goog.events.listen(iframe, 'load', function() {
+        asyncTestCase.continueTesting();
+      });
+
+      iframeWindow.location = buildAbsoluteUrl('/testdata/click_iframe.html');
+      asyncTestCase.waitForAsync('Waiting for the page to load');
+    }
+
+    function testClickOnFormSubmitExecutesDefaultHandler() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+      var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
+
+      // As the iframe loads asyncronously we need to wait to check out
+      // if the url matches the expected one.
+      goog.events.listenOnce(iframe, 'load', function() {
+        assertContains(targetHref, iframeWindow.location.href);
+        asyncTestCase.continueTesting();
+      });
+
+      bot.action.click(clickTarget);
+
+      asyncTestCase.waitForAsync('Waiting for the target frame to load');
+    }
+
+    function testClickOnFormSubmitButtonTag() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'buttonText'}, iframeDoc);
+      var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
+
+      goog.events.listenOnce(iframe, 'load', function() {
+        assertContains(targetHref, iframeWindow.location.href);
+        asyncTestCase.continueTesting();
+      });
+
+      bot.action.click(clickTarget);
+
+      asyncTestCase.waitForAsync('Waiting for the target frame to load');
+    }
+
+    function testClickOnFormWithCorrectSubmitButton() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+
+      // As the iframe loads asyncronously we need to wait to check out
+      // if the url matches the expected one.
+      goog.events.listenOnce(iframe, 'load', function() {
+        assertContains('submitButton=Submit', iframeWindow.location.href);
+        asyncTestCase.continueTesting();
+      });
+
+      bot.action.click(clickTarget);
+
+      asyncTestCase.waitForAsync('Waiting for the target frame to load');
+    }
+
+
+    function buildAbsoluteUrl(url) {
+      var loc = location.href;
+      return loc.substring(0, loc.lastIndexOf('/')) + url;
+    }
+  </script>
+</body>
+</html>

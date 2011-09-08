@@ -186,6 +186,22 @@
       WEBKIT: {downUp: {key: 0, char: 0}, press: {key: chCode, char: chCode}}
     });
   }
+
+  function testEventCancel() {
+    var cancelEvent = function(event) {
+      if (event.keyCode == 69) {
+        event.preventDefault();
+      }
+    };
+    var cancelKeydownId = goog.events.listen(target, 'keydown', cancelEvent);
+    assertKeyEvents(bot.Keyboard.Keys.E, false, {
+      GECKO:  {downUp: {key: 69, char: 0}, press: U},
+      IE:     {downUp: {key: 69, char: U}, press: U},
+      OPERA:  {downUp: {key: 69, char: U}, press: U},
+      WEBKIT: {downUp: {key: 69, char: 0}, press: U}
+    });
+    goog.events.unlistenByKey(cancelKeydownId);
+  }
 </script>
 </body>
 </html>

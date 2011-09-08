@@ -17,8 +17,6 @@
  * @fileoverview The file contains an abstraction of a keyboad
  * for simulating the presing and releasing of keys.
  *
- *
- *
  */
 
 goog.provide('bot.Keyboard');
@@ -359,28 +357,29 @@ bot.Keyboard.prototype.pressKey = function(key) {
         'Cannot press a modifier key that is already pressed.');
   }
 
-  if (!goog.isNull(key.code)) {
-    this.fireKeyEvent_(goog.events.EventType.KEYDOWN, key);
-    if (this.requiresKeyPress_(key)) {
-      this.fireKeyEvent_(goog.events.EventType.KEYPRESS, key);
-    }
-
-    if (this.editable_) {
-      if (key.character) {
-        this.updateOnCharacter_(key);
-      } else {
-        switch (key) {
-          case bot.Keyboard.Keys.ENTER:
-            this.updateOnEnter_();
-            break;
-          case bot.Keyboard.Keys.BACKSPACE:
-          case bot.Keyboard.Keys.DELETE:
-            this.updateOnBackspaceOrDelete_(key);
-            break;
-          case bot.Keyboard.Keys.LEFT:
-          case bot.Keyboard.Keys.RIGHT:
-            this.updateOnLeftOrRight_(key);
-            break;
+  // Fires keydown and stops if unsuccessful.
+  if (!goog.isNull(key.code) &&
+      this.fireKeyEvent_(goog.events.EventType.KEYDOWN, key)) {
+    // Fires keypress if required and stops if unsuccessful.
+    if (!this.requiresKeyPress_(key) ||
+        this.fireKeyEvent_(goog.events.EventType.KEYPRESS, key)) {
+      if (this.editable_) {
+        if (key.character) {
+          this.updateOnCharacter_(key);
+        } else {
+          switch (key) {
+            case bot.Keyboard.Keys.ENTER:
+              this.updateOnEnter_();
+              break;
+            case bot.Keyboard.Keys.BACKSPACE:
+            case bot.Keyboard.Keys.DELETE:
+              this.updateOnBackspaceOrDelete_(key);
+              break;
+            case bot.Keyboard.Keys.LEFT:
+            case bot.Keyboard.Keys.RIGHT:
+              this.updateOnLeftOrRight_(key);
+              break;
+          }
         }
       }
     }
@@ -565,6 +564,7 @@ bot.Keyboard.prototype.updateOnLeftOrRight_ = function(key) {
 /**
  * @param {string} type Event type.
  * @param {!bot.Keyboard.Key} key Key.
+ * @return {boolean} Whether the event fired successfully or was cancelled.
  * @private
  */
 bot.Keyboard.prototype.fireKeyEvent_ = function(type, key) {
@@ -590,5 +590,5 @@ bot.Keyboard.prototype.fireKeyEvent_ = function(type, key) {
   }
 
   args = /** @type {bot.events.KeyboardArgs} */ args;
-  bot.events.fire(this.element_, type, args);
+  return bot.events.fire(this.element_, type, args);
 };

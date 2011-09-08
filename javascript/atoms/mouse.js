@@ -16,6 +16,7 @@
 /**
  * @fileoverview The file contains an abstraction of a mouse for
  * simulating the mouse actions.
+ *
  */
 
 goog.provide('bot.Mouse');
@@ -329,7 +330,7 @@ bot.Mouse.prototype.clickElement_ = function() {
     }
   }
 
-  // TODO(gdennis): Should not call stuff in bot.action since we're not
+  // TODO(user): Should not call stuff in bot.action since we're not
   // including it in mouse.js
   bot.action.setSelected(this.element_, !originallySelected);
 };
