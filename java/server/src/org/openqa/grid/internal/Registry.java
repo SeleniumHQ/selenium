@@ -269,7 +269,7 @@ public class Registry {
           }
         }
         for (RequestHandler req : matched) {
-          boolean ok = newSessionRequests.remove(req);
+          boolean ok = removeNewSessionRequest(req);
           if (!ok) {
             log.severe("Bug removing request " + req);
           }
@@ -443,6 +443,15 @@ public class Registry {
     try {
       lock.lock();
       return newSessionRequests;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  public boolean removeNewSessionRequest(RequestHandler request) {
+    try {
+      lock.lock();
+      return newSessionRequests.remove(request);
     } finally {
       lock.unlock();
     }
