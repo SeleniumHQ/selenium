@@ -189,25 +189,15 @@ SyntheticMouse.prototype.contextClick = function(target) {
 };
 
 SyntheticMouse.prototype.doubleClick = function(target) {
-  var element = target ? webdriver.firefox.utils.unwrap(target) : this.lastElement;
-  
+  var element = target ? target : this.lastElement;
+
   var error = this.isElementShown(element);
   if (error) {
     return error;
   }
 
-  if (goog.isFunction(element.scrollIntoView)) {
-    element.scrollIntoView();
-  }
-
-  // TODO(simon): This implementation isn't good enough.
-  var size = goog.style.getSize(element);
-  var botCoords = {
-    clientX: Math.floor(size.width / 2),
-    clientY: Math.floor(size.height / 2),
-    button: bot.Mouse.Button.LEFT
-  };
-  bot.events.fire(element, goog.events.EventType.DBLCLICK, botCoords);
+  Logger.dumpn("About to do a bot.action.doubleClick on " + element);
+  bot.action.doubleClick(element);
 
   return this.newResponse(ErrorCode.SUCCESS, "ok");
 };

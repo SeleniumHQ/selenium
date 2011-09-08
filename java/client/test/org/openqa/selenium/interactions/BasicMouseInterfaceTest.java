@@ -152,15 +152,6 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({ANDROID, REMOTE, IPHONE, SELENESE})
   public void testDoubleClick() {
-
-    if (isFirefox(driver) &&
-        (!isNativeEventsEnabled(driver) ||
-        !Platform.getCurrent().is(Platform.LINUX))) {
-      System.out.println("Skipping double click test: only implemented on Linux" +
-          " with native events.");
-      return;
-    }
-
     driver.get(pages.javascriptPage);
 
     WebElement toDoubleClick = driver.findElement(By.id("doubleClickField"));
