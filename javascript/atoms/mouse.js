@@ -488,8 +488,8 @@ bot.Mouse.shouldFollowHref_ = function(element) {
     return false;
   }
 
-  if (element.target ||
-      element.href.trim().toLowerCase().indexOf("javascript") == 0) {
+  var href = element.href + ''; // coerce to a string.
+  if (element.target || href.toLowerCase().indexOf("javascript") == 0) {
     return !bot.Mouse.SYNTHESISED_EVENTS_CAN_OPEN_JAVASCRIPT_WINDOWS_;
   }
 
