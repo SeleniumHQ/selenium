@@ -33,18 +33,26 @@ module Selenium
             )
           end
 
+          MAX_RETRIES = 3
+
           def request(verb, url, headers, payload, redirects = 0)
             request = new_request_for(verb, url, headers, payload)
 
-            retried = false
+            retries = 0
             begin
               response = response_for(request)
-            rescue Errno::ECONNABORTED, Errno::ECONNRESET
-              # this happens sometimes on windows?!
-              raise if retried
+            rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EADDRINUSE
+              # a retry is sometimes needed on Windows XP where we may quickly
+              # run out of ephemeral ports
+              #
+              # A more robust solution is bumping the MaxUserPort setting
+              # as described here:
+              #
+              # http://msdn.microsoft.com/en-us/library/aa560610%28v=bts.20%29.aspx
+              raise if retries >= MAX_RETRIES
 
               request = new_request_for(verb, url, headers, payload)
-              retried = true
+              retries += 1
 
               retry
             end
