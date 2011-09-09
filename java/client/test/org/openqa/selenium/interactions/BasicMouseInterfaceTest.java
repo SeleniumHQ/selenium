@@ -168,12 +168,6 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({ANDROID, HTMLUNIT, IPHONE, REMOTE, SELENESE})
   public void testContextClick() {
-
-    if (!Platform.getCurrent().is(Platform.LINUX)) {
-      System.out.println("Skipping test: not implemented for Windows");
-      return;
-    }
-
     driver.get(pages.javascriptPage);
 
     WebElement toContextClick = driver.findElement(By.id("doubleClickField"));
