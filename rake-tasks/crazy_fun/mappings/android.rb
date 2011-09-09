@@ -179,10 +179,10 @@ module Android
       file apk do
         if (android_installed?)
           android_target = $properties["androidtarget"].to_s
-          sh "#{$android} update project -p android/ --target #{android_target}"
-          sh "cd android; ant debug; cd ../;"
-          apk = File.join('build', 'android', 'android-server.apk')
-          sh "cp android/bin/MainActivity-debug.apk #{apk}"
+          sh "#{$android} update project -p android/app/ --target #{android_target}"
+          sh "cd android/app; ant debug; cd ../../;"
+          apk = File.join('build', 'android', 'app', 'android-server.apk')
+          sh "cp android/app/bin/MainActivity-debug.apk #{apk}"
           copy_to_prebuilt(apk, fun)
         else
           puts apk

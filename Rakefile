@@ -69,7 +69,7 @@ VisualStudioMappings.new.add_all(crazy_fun)
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
 # a directory structure identical to that used in the "build" folder, but
 # rooted at one of the following locations:
-["android/prebuilt", "cpp/prebuilt", "ide/main/prebuilt", "javascript/firefox-driver/prebuilt"].each do |pre|
+["android/app/prebuilt", "cpp/prebuilt", "ide/main/prebuilt", "javascript/firefox-driver/prebuilt"].each do |pre|
   crazy_fun.prebuilt_roots << pre
 end
 
@@ -150,7 +150,7 @@ task :test_iphone_client => [:'webdriver-iphone-client-test']
 task :test_iphone => [:test_iphone_server, :test_iphone_client]
 task :android => [:android_client, :android_server]
 task :android_client => ['//java/client/src/org/openqa/selenium/android']
-task :android_server => ['//android:android-server']
+task :android_server => ['//android/app:android-server']
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
 task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-selenium-backed-webdriver', :'test-core']
@@ -228,9 +228,9 @@ desc 'Clean build artifacts.'
 task :clean do
   rm_rf 'build/'
   rm_rf 'iphone/build/'
-  rm_rf 'android/bin/'
-  rm_rf 'android/build/'
-  rm_rf 'android/libs/'
+  rm_rf 'android/app/bin/'
+  rm_rf 'android/app/build/'
+  rm_rf 'android/app/libs/'
   rm_rf 'android/client/bin/'
   Android::Clean.new()
 end

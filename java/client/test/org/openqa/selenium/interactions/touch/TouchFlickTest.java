@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
@@ -25,7 +26,12 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Ignore;
+import org.openqa.selenium.NeedsFreshDriver;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 
 /**
@@ -100,8 +106,9 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     assertTrue("Got: " + x, x < 1500);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
-      reason = "TouchScreen operations not supported")
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE, ANDROID},
+      reason = "TouchScreen operations not supported, Android flick's can result in different "
+          + "offsets")
   @NeedsFreshDriver
   public void testCanFlickHorizontallyFast() {
     driver.get(pages.touchLongContentPage);

@@ -1,7 +1,7 @@
 
 android_test(name = "android-test",
   srcs = [ "AndroidDriverTestSuite.java" ],
-  binary = "//android:android-server",
+  binary = "//android/app:android-server",
   deps = [
    ":base",
   ])
