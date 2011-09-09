@@ -44,12 +44,20 @@
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/cglib/cglib-nodep-2.1_3.jar!/"/>
 	</lib>
 	<lib name="commons-collections-3.2.1.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/commons-collections/commons-collections-3.2.1-sources.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/commons-collections/commons-collections-3.2.1-sources.jar!/"/>
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-collections/commons-collections-3.2.1.jar!/"/>
 	</lib>
 	<lib name="commons-io-2.0.1.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/commons-io/commons-io-2.0.1-src.zip!/commons-io-2.0.1-src/src/main/java"/>
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/commons-io/commons-io-2.0.1-src.zip!/commons-io-2.0.1-src/src/test/java"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/commons-io/commons-io-2.0.1-src.zip!/commons-io-2.0.1-src/src/main/java"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/commons-io/commons-io-2.0.1-src.zip!/commons-io-2.0.1-src/src/test/java"/>
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-io/commons-io-2.0.1.jar!/"/>
 	</lib>
 	<lib name="commons-lang-2.6.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/commons-lang/commons-lang-2.6-sources.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/commons-lang/commons-lang-2.6-sources.jar!/"/>
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-lang/commons-lang-2.6.jar!/"/>
 	</lib>
 	<lib name="commons-codec-1.4.jar" scope="COMPILE">
