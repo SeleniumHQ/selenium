@@ -624,3 +624,9 @@ desc 'Build and package Selenium IDE'
 task :release_ide  => [:ide] do
   cp 'build/ide/selenium-ide.xpi', "build/ide/selenium-ide-#{ide_version}.xpi"
 end
+
+at_exit do
+  if File.exist?(".git") && !Platform.windows?
+    sh "sh .git-fixfiles"
+  end
+end

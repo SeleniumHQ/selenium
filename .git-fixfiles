@@ -1,1 +1,2 @@
+#!/bin/sh
 git update-index --assume-unchanged cpp/prebuilt/**/*.so
