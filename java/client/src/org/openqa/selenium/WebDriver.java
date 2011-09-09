@@ -84,12 +84,9 @@ public interface WebDriver extends SearchContext {
 
   /**
    * Find all elements within the current page using the given mechanism.
-   * This method is affected by the 'implicit wait' times in force at the time of execution.
-   * For example, that is 5 seconds, the findElements(..) after its first attempt to collect 
-   * matching WebElements if there is at least one.  If there were no matching WebElements
-   * after the first attempt, then the method will wait in line with the interval specified,
-   * then try again.  It will keep going until it finds at least one WebElement in a pass,
-   * or the configured timeout is reached.
+   * This method is affected by the 'implicit wait' times in force at the time of execution. When
+   * implicitly waiting, this method will return as soon as there are more than 0 items in the
+   * found collection, or will return an empty list if the timeout is reached.
    * 
    * @param by The locating mechanism to use
    * @return A list of all {@link WebElement}s, or an empty list if nothing matches
