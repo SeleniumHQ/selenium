@@ -64,7 +64,7 @@ webdriver.modals.dismissAlert = function(driver) {
 
 
 webdriver.modals.getText = function(driver) {
-  return driver.modalOpen
+  return driver.modalOpen;
 };
 
 webdriver.modals.setValue = function(driver, value) {
