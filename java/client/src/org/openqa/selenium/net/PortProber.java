@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.net;
 
+import org.openqa.selenium.Platform;
+
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.ServerSocket;
@@ -32,8 +34,18 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class PortProber {
 
   private static final Random random = new Random();
+  private static final EphemeralPortRangeDetector ephemeralRangeDetector;
 
-  private PortProber() {
+  static {
+    final Platform current = Platform.getCurrent();
+
+    if (current.is(Platform.LINUX)) {
+       ephemeralRangeDetector = LinuxEphemeralPortRangeDetector.getInstance();
+     } else if (current.is(Platform.XP)){
+       ephemeralRangeDetector = new OlderWindowsVersionEphemeralPortDetector();
+    } else {
+       ephemeralRangeDetector = new FixedIANAPortRange();
+    }
   }
 
   public static int findFreePort() {
@@ -72,10 +84,16 @@ public class PortProber {
    */
   private static int createAcceptablePort() {
     synchronized (random) {
-      // avoid protected ports. Ideally this should be platform-specific
 
-      final int FIRST_PORT = 5001;
-      final int LAST_PORT = 32767;
+      final int FIRST_PORT;
+      final int LAST_PORT;
+      if (ephemeralRangeDetector.getHighestEphemeralPort() < 32768){
+        FIRST_PORT = ephemeralRangeDetector.getHighestEphemeralPort() + 1;
+        LAST_PORT = 65535;
+      } else {
+        FIRST_PORT = 1024;
+        LAST_PORT = ephemeralRangeDetector.getLowestEphemeralPort() - 1;
+      }
       final int randomInt = random.nextInt();
       final int portWithoutOffset = Math.abs(randomInt % (LAST_PORT - FIRST_PORT + 1));
       return portWithoutOffset + FIRST_PORT;
