@@ -43,8 +43,14 @@
       <pathelement path="${sdk.dir}/tools/lib/jarutils.jar" />
     </path>
 
-    <property name="third_party.location" value="../third_party"/>
-    <property name="build.location" value="../build" />
+    <property name="root.dir" value="../../"/>
+    <property name="third_party.location" value="${root.dir}/third_party"/>
+    <property name="build.location" value="${root.dir}/build" />
+    <property name="javascript.atoms" value="javascript/atoms"/>
+    <property name="webdriver.atoms.inject" value="javascript/webdriver-atoms/inject"/>
+    <property name="webdriver.atoms" value="javascript/webdriver-atoms"/>
+    <property name="go" value="./go"/>
+    <property name="res.raw" value="res/raw"/>
 
     <copy file="${build.location}/java/server/src/org/openqa/jetty/jetty.jar" tofile="libs/jetty.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/base.jar" tofile="libs/base.jar" />
@@ -65,16 +71,7 @@
         classname="com.android.ant.SetupTask"
         classpathref="android.antlibs" />
 
-    <!-- Building the atoms before the apk
-    compile all gos at once
-    -->
-    <property name="javascript.atoms" value="javascript/atoms"/>
-    <property name="webdriver.atoms.inject" value="javascript/webdriver-atoms/inject"/>
-    <property name="webdriver.atoms" value="javascript/webdriver-atoms"/>
-    <property name="root.dir" value="../"/>
-    <property name="go" value="./go"/>
-    <property name="res.raw" value="res/raw"/>
-
+    <!-- Building the atoms before the apk compile all gos at once -->
     <target name="-pre-compile" depends="shouldBuildAtoms" unless="atomsBuild.notRequired">
         <exec executable="${go}" dir="${root.dir}">
             <arg value="//${webdriver.atoms.inject}:webdriver-inject"/>
@@ -110,7 +107,7 @@
             <arg value="//${webdriver.atoms.inject}:clear_session_storage:android"/>
             <arg value="//${webdriver.atoms.inject}:get_session_storage_size:android"/>
         </exec>
-       
+
         <copy file="${build.location}/${webdriver.atoms.inject}/active_element_android.js" todir="${res.raw}"/>
         <copy file="${build.location}/${webdriver.atoms.inject}/clear_android.js" todir="${res.raw}"/>
         <copy file="${build.location}/${webdriver.atoms.inject}/default_content_android.js" todir="${res.raw}"/>
