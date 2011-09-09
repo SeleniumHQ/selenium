@@ -19,6 +19,7 @@
 #include <mshtml.h>
 #include <mshtmdid.h>
 #include "DocumentHost.h"
+#include "messages.h"
 
 using namespace std;
 
@@ -68,6 +69,7 @@ public:
 
 private:
   static BOOL CALLBACK FindChildDialogWindow(HWND hwnd, LPARAM arg);
+  HWND FindContentWindowHandle(HWND top_level_window_handle);
 
   void AttachEvents(void);
   void DetachEvents(void);

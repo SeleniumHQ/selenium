@@ -55,17 +55,50 @@ void HtmlDialog::Close() {
 }
 
 bool HtmlDialog::Wait() {
-  // If the window handle is no longer valid, the wait is completed,
-  // and we must post the quit message. Otherwise, we wait until
-  // navigation is complete.
+  // If the window handle is no longer valid, the window is closing,
+  // the wait is completed, and we must post the quit message.
   if (!::IsWindow(this->GetTopLevelWindowHandle())) {
     this->is_navigating_ = false;
+    this->set_is_closing(true);
     this->PostQuitMessage();
     return true;
   }
 
+  // If we're not navigating to a new location, we should check to see if
+  // a new modal dialog has been opened. If one has, the wait is complete,
+  // so we must set the flag indicating to the message loop not to call wait
+  // anymore.
+  if (!this->is_navigating_) {
+    HWND child_dialog_handle = this->GetActiveDialogWindowHandle();
+    if (child_dialog_handle != NULL) {
+      HWND content_window_handle = this->FindContentWindowHandle(child_dialog_handle);
+      ::PostMessage(this->executor_handle(),
+                    WD_NEW_HTML_DIALOG,
+                    NULL,
+                    reinterpret_cast<LPARAM>(content_window_handle));
+      this->set_wait_required(false);
+      return true;
+    }
+  }
+
+  // Otherwise, we wait until navigation is complete.
   ::Sleep(250);
   return !this->is_navigating_;
+}
+
+HWND HtmlDialog::FindContentWindowHandle(HWND top_level_window_handle) {
+  ProcessWindowInfo process_window_info;
+  process_window_info.pBrowser = NULL;
+  process_window_info.hwndBrowser = NULL;
+
+  DWORD process_id;
+  ::GetWindowThreadProcessId(top_level_window_handle, &process_id);
+  process_window_info.dwProcessId = process_id;
+
+  ::EnumChildWindows(top_level_window_handle,
+                     &BrowserFactory::FindChildWindowForProcess,
+                     reinterpret_cast<LPARAM>(&process_window_info));
+  return process_window_info.hwndBrowser;
 }
 
 HWND HtmlDialog::GetWindowHandle() {
@@ -141,8 +174,14 @@ int HtmlDialog::Refresh() {
 BOOL CALLBACK HtmlDialog::FindChildDialogWindow(HWND hwnd, LPARAM arg) {
   DialogWindowInfo* window_info = reinterpret_cast<DialogWindowInfo*>(arg);
   if (::GetWindow(hwnd, GW_OWNER) == window_info->hwndOwner) {
-    window_info->hwndDialog = hwnd;
-    return FALSE;
+    vector<char> window_class_name(34);
+    if (GetClassNameA(hwnd, &window_class_name[0], 34)) {
+      if (strcmp("Internet Explorer_TridentDlgFrame",
+          &window_class_name[0]) == 0) {
+        window_info->hwndDialog = hwnd;
+        return FALSE;
+      }
+    }
   }
   return TRUE;
 }
