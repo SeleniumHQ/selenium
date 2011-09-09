@@ -132,6 +132,11 @@ js_fragment(name = "type",
   function = "bot.action.type",
   deps = [ "//javascript/atoms:deps" ])
 
+js_fragment(name = "get_frame_index",
+  module = "bot.frame",
+  function = "bot.frame.getFrameIndex",
+  deps = [ "//javascript/atoms:deps" ])
+
 # TODO(simon): Consider pulling in the cookie functions from closure
 
 # HTML5 atoms

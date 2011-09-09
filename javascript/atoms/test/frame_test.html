@@ -131,6 +131,35 @@ limitations under the License.
             var notThere = bot.frame.findFrameByNameOrId("notThere");
             assertNull(notThere);
         }
+
+        function testGetFrameIndex() {
+          var el = document.getElementById("second");
+          var index = bot.frame.getFrameIndex(el);
+          assertEquals(1, index);
+
+          el = document.getElementById("embedded");
+          index = bot.frame.getFrameIndex(el);
+          assertEquals(2, index);
+        }
+
+        function testGetFrameIndexNotFrame() {
+          var el = document.body;
+          var index = bot.frame.getFrameIndex(el);
+          assertNull(index);
+        }
+
+        function testGetFrameIndexNotAttached() {
+          var el = document.createElement("frame");
+          var index = bot.frame.getFrameIndex(el);
+          assertNull(index);
+        }
+
+        function testGetFrameIndexDifferentWindow() {
+          var frameWin = document.getElementById("second").contentWindow;
+          var el = frameWin.document.getElementById("iframe2");
+          var index = bot.frame.getFrameIndex(el, frameWin);
+          assertEquals(1, index);
+        }
     </script>
 </head>
 <frameset rows="*,*,*" >

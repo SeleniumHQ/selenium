@@ -112,3 +112,26 @@ bot.frame.findFrameByIndex = function(index, opt_root) {
   var domWindow = opt_root || bot.getWindow();
   return domWindow.frames[index] || null;
 };
+
+/**
+ * Gets the index of a frame in the given window. Note that the element must
+ * be a frame or an iframe.
+ *
+ * @param {Element} element The iframe or frame element.
+ * @param {!Window=} opt_root The window to perform
+ *     the search under. Defaults to {@code bot.getWindow()}.
+ * @return {number} The index of the frame if found, null otherwise.
+ */
+bot.frame.getFrameIndex = function(element, opt_root) {
+  var domWindow = opt_root || bot.getWindow();
+
+  if (element.nodeType != 1 || !/^i?frame$/i.test(element.tagName)) {
+    return null;
+  }
+  for (var i = 0; i < domWindow.frames.length; i++) {
+    if (element.contentWindow == domWindow.frames[i]) {
+      return i;
+    }
+  }
+  return null;
+};
