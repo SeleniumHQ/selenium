@@ -460,19 +460,4 @@ void Browser::CheckDialogType(HWND dialog_window_handle) {
   }
 }
 
-HWND Browser::FindContentWindowHandle(HWND top_level_window_handle) {
-  ProcessWindowInfo process_window_info;
-  process_window_info.pBrowser = NULL;
-  process_window_info.hwndBrowser = NULL;
-
-  DWORD process_id;
-  ::GetWindowThreadProcessId(top_level_window_handle, &process_id);
-  process_window_info.dwProcessId = process_id;
-
-  ::EnumChildWindows(top_level_window_handle,
-                     &BrowserFactory::FindChildWindowForProcess,
-                     reinterpret_cast<LPARAM>(&process_window_info));
-  return process_window_info.hwndBrowser;
-}
-
 } // namespace webdriver

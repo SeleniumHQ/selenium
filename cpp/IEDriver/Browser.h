@@ -115,7 +115,6 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   bool IsDocumentNavigating(IHTMLDocument2* doc);
   bool GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc);
   HWND GetTabWindowHandle(void);
-  HWND FindContentWindowHandle(HWND top_level_window);
   void CheckDialogType(HWND dialog_window_handle);
 
   CComPtr<IWebBrowser2> browser_;

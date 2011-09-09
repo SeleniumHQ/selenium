@@ -69,7 +69,6 @@ public:
 
 private:
   static BOOL CALLBACK FindChildDialogWindow(HWND hwnd, LPARAM arg);
-  HWND FindContentWindowHandle(HWND top_level_window_handle);
 
   void AttachEvents(void);
   void DetachEvents(void);

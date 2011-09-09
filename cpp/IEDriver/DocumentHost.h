@@ -68,6 +68,7 @@ class DocumentHost {
 
  protected:
   void PostQuitMessage(void);
+  HWND FindContentWindowHandle(HWND top_level_window_handle);
 
   HWND window_handle(void) const { return this->window_handle_; }
   void set_window_handle(const HWND window_handle) { 
