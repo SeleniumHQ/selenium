@@ -18,10 +18,8 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -106,7 +104,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({ANDROID, CHROME, IPHONE, REMOTE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
 
@@ -119,7 +117,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({ANDROID, CHROME, IPHONE, REMOTE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     driver.get(pages.formPage);
 
@@ -132,7 +130,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({ANDROID, CHROME, IPHONE, OPERA, REMOTE, SELENESE})
+  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
@@ -145,7 +143,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({ANDROID, CHROME, IPHONE, OPERA, REMOTE, SELENESE})
+  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
@@ -159,7 +157,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
 
-  @Ignore({ANDROID, CHROME, IPHONE, OPERA, REMOTE, SELENESE})
+  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
     driver.get(pages.formPage);
 
@@ -172,7 +170,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({ANDROID, CHROME, IPHONE, OPERA, REMOTE, SELENESE})
+  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
     driver.get(pages.formPage);
 
@@ -185,7 +183,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({ANDROID, CHROME, IPHONE, OPERA, REMOTE, SELENESE})
+  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
     driver.get(pages.formPage);
 
@@ -200,7 +198,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({ANDROID, CHROME, IPHONE, OPERA, REMOTE, SELENESE})
+  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
     driver.get(pages.formPage);
 
