@@ -1,5 +1,6 @@
-require "net/http"
-require "uri"
+require 'uri'
+require 'net/http'
+require 'net/ftp'
 require 'digest/md5'
 
 class Downloader
@@ -31,6 +32,21 @@ class Downloader
   end
 
   def download!
+    case @url.scheme
+    when 'ftp'
+      ftp_download!
+    when 'http', 'https'
+      http_download!
+    else
+      raise Error, "unknown scheme: #{@url.scheme}"
+    end
+
+    complete_progress
+  end
+
+  private
+
+  def http_download!
     resp = Net::HTTP.get_response(@url) do |response|
       total = response.content_length
       progress = 0
@@ -52,11 +68,31 @@ class Downloader
     unless resp.kind_of? Net::HTTPSuccess
       raise Error, "#{resp.code} for #{@url}"
     end
-
-    complete_progress
   end
 
-  private
+  def ftp_download!
+    raise Error, "no #path for #{@destination.inspect}" unless @destination.respond_to?(:path)
+
+    Net::FTP.open(@url.host) do |ftp|
+     ftp.login
+
+     filename = @url.path
+     total = ftp.size(filename)
+
+     progress = 0
+     segment_count = 0
+
+     ftp.getbinaryfile(filename, @destination.path, 2048) do |segment|
+       progress += segment.length
+       segment_count += 1
+
+       if segment_count % 15 == 0
+         report_progress(progress, total)
+         segment_count = 0
+       end
+     end
+    end
+  end
 
   def report_progress(progress, total)
     percent = (progress.to_f / total.to_f) * 100
@@ -90,9 +126,5 @@ class CachingDownloader < Downloader
     end
 
     super(url, cached_path)
-  end
-
-  def self.digest(path)
-
   end
 end
