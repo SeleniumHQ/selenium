@@ -1,5 +1,5 @@
 
-goog.require('webdriver.firefox.events');
+goog.require('fxdriver.events');
 
-var EXPORTED_SYMBOLS = [ 'webdriver', 'goog', 'bot' ];
+var EXPORTED_SYMBOLS = [ 'webdriver', 'fxdriver', 'goog', 'bot' ];
 

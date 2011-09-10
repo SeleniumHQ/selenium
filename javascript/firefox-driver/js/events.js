@@ -16,7 +16,7 @@
  */
 
 
-goog.provide('webdriver.firefox.events');
+goog.provide('fxdriver.events');
 
 
 goog.require('Logger');
@@ -37,7 +37,7 @@ var CI = Components.interfaces;
  *
  * @param {object} parameters The parameters to extract the coordinates from.
  */
-webdriver.firefox.events.buildCoordinates = function(parameters, doc) {
+fxdriver.events.buildCoordinates = function(parameters, doc) {
   Logger.dump(parameters);
   var element = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
 

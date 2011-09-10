@@ -145,12 +145,12 @@ goog.addDependency("../../../javascript/firefox-driver/extension/components/scre
 goog.addDependency("../../../javascript/firefox-driver/js/errorcode.js", ['ErrorCode'], []);
 goog.addDependency("../../../javascript/firefox-driver/js/evaluate.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/js/utils_exports.js", [], []);
-goog.addDependency("../../../javascript/firefox-driver/js/events.js", ['webdriver.firefox.events'], ['Logger', 'Utils', 'goog.style', 'webdriver.firefox.utils']);
+goog.addDependency("../../../javascript/firefox-driver/js/events.js", ['fxdriver.events'], ['Logger', 'Utils', 'goog.style', 'webdriver.firefox.utils']);
 goog.addDependency("../../../javascript/firefox-driver/js/modals.js", ['webdriver.modals'], ['ErrorCode', 'Logger', 'Timer', 'webdriver.firefox.utils']);
 goog.addDependency("../../../javascript/firefox-driver/js/logging.js", ['Logger', 'webdriver.debug', 'webdriver.debug.ConsoleFormatter'], ['goog.debug.Formatter', 'goog.debug.Logger', 'goog.debug.LogRecord', 'goog.debug.TextFormatter']);
 goog.addDependency("../../../javascript/firefox-driver/js/locators.js", ['webdriver.firefox.locators'], ['bot.locators', 'bot.userAgent', 'goog.dom', 'webdriver.firefox.utils']);
 goog.addDependency("../../../javascript/firefox-driver/js/timer.js", ['Timer'], []);
-goog.addDependency("../../../javascript/firefox-driver/js/exported_symbols.js", [], ['webdriver.firefox.events']);
+goog.addDependency("../../../javascript/firefox-driver/js/exported_symbols.js", [], ['fxdriver.events']);
 goog.addDependency("../../../javascript/firefox-driver/js/utils.js", ['Utils'], ['bot.dom', 'bot.userAgent', 'goog.dom.TagName', 'goog.style', 'ErrorCode', 'Logger']);
 goog.addDependency("../../../javascript/firefox-driver/js/preconditions.js", ['webdriver.preconditions'], ['bot.dom', 'Utils']);
 goog.addDependency("../../../javascript/firefox-driver/js/firefox-utils.js", ['webdriver.firefox.utils'], ['bot.userAgent', 'bot.Error', 'bot.ErrorCode', 'goog.array', 'Logger']);

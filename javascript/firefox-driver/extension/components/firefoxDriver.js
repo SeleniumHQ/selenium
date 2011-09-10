@@ -1144,7 +1144,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
   };
 
-  var coords = webdriver.firefox.events.buildCoordinates(parameters, doc);
+  var coords = fxdriver.events.buildCoordinates(parameters, doc);
   mouseMoveTo(coords, this.enableNativeEvents, this.jsTimer);
 
   respond.send();
