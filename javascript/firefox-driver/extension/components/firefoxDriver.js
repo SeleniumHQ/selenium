@@ -227,7 +227,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
     var handler = function(event) {
         doc.removeEventListener('webdriver-evaluate-response', handler, true);
 
-        var unwrapped = webdriver.firefox.utils.unwrap(doc);
+        var unwrapped = fxdriver.utils.unwrap(doc);
         var result = unwrapped.getUserData('webdriver-evaluate-result');
         respond.value = Utils.wrapResult(result, doc);
         respond.status = doc.getUserData('webdriver-evaluate-code');
@@ -535,7 +535,7 @@ FirefoxDriver.prototype.findChildElements = function(respond, parameters) {
  *     specifying which frame to switch to.
  */
 FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
-  var currentWindow = webdriver.firefox.utils.unwrapXpcOnly(respond.session.getWindow());
+  var currentWindow = fxdriver.utils.unwrapXpcOnly(respond.session.getWindow());
 
   var switchingToDefault = !goog.isDef(parameters.id) || goog.isNull(parameters.id);
   if ((!currentWindow || currentWindow.closed) && !switchingToDefault) {
@@ -954,7 +954,7 @@ function getElementFromLocation(mouseLocation, doc) {
     elementForNode = doc.getElementsByTagName("body")[0];
   }
 
-  return webdriver.firefox.utils.unwrap(elementForNode);
+  return fxdriver.utils.unwrap(elementForNode);
 }
 
 function generateErrorForNativeEvents(nativeEventsEnabled, nativeEventsObj, nodeForInteraction) {
@@ -1049,7 +1049,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
     if (coordinates.auxiliary) {
-      var element = webdriver.firefox.utils.unwrap(coordinates.auxiliary);
+      var element = fxdriver.utils.unwrap(coordinates.auxiliary);
 
       var loc = Utils.getLocationOnceScrolledIntoView(element);
       var accessibleLocation = Utils.getLocationViaAccessibilityInterface(element);
@@ -1152,7 +1152,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
 FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
   if (!this.enableNativeEvents) {
-    var coords = webdriver.firefox.utils.newCoordinates(null, 0, 0);
+    var coords = fxdriver.utils.newCoordinates(null, 0, 0);
     var result = this.mouse.down(coords);
     
     respond['status'] = result['status'];
@@ -1189,7 +1189,7 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
 
 FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
   if (!this.enableNativeEvents) {
-    var coords = webdriver.firefox.utils.newCoordinates(null, 0, 0);
+    var coords = fxdriver.utils.newCoordinates(null, 0, 0);
     var result = this.mouse.up(coords);
     
     respond['status'] = result['status'];

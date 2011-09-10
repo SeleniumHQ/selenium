@@ -228,9 +228,9 @@ Utils.getStyleProperty = function(element, propertyName) {
 
 Utils.addToKnownElements = function(element, rawDoc) {
   var owner = new XPCNativeWrapper(element.ownerDocument);
-  var doc = webdriver.firefox.utils.unwrapFor4(rawDoc);
+  var doc = fxdriver.utils.unwrapFor4(rawDoc);
   if (owner != new XPCNativeWrapper(rawDoc)) {
-    doc = webdriver.firefox.utils.unwrap(owner);
+    doc = fxdriver.utils.unwrap(owner);
   }
 
   // Right. This is ugly. Sorry. The reasoning goes:
@@ -267,14 +267,14 @@ Utils.addToKnownElements = function(element, rawDoc) {
 
 
 Utils.getElementAt = function(index, rawDoc) {
-  var doc = webdriver.firefox.utils.unwrapFor4(rawDoc);
+  var doc = fxdriver.utils.unwrapFor4(rawDoc);
 
   // There's a chance that previous "addToKnownElements" had to use the
   // unwrapped document in versions of firefox prior to 4. This won't work as
   // expected and so we need to check for its presence, copy it into the right
   // place and then remove it. This will break element equality in some cases.
 
-  var unwrapped = webdriver.firefox.utils.unwrap(rawDoc);
+  var unwrapped = fxdriver.utils.unwrap(rawDoc);
   if (unwrapped.fxdriver_elements) {
     var existing = doc.fxdriver_elements || {};
     for (var i in unwrapped.fxdriver_elements) {
@@ -299,7 +299,7 @@ Utils.getElementAt = function(index, rawDoc) {
         'Element not found in the cache');
   }
 
-  return webdriver.firefox.utils.unwrapFor4(e);
+  return fxdriver.utils.unwrapFor4(e);
 };
 
 
@@ -1049,7 +1049,7 @@ Utils.isHtmlCollection_ = function(obj) {
 
 
 Utils.wrapResult = function(result, doc) {
-  result = webdriver.firefox.utils.unwrap(result);
+  result = fxdriver.utils.unwrap(result);
 
   // Sophisticated.
   switch (typeof result) {

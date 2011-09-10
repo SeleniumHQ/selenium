@@ -22,7 +22,7 @@
 
 // Large parts of this file are derived from Mozilla's MozMill tool.
 
-goog.provide('webdriver.firefox.utils');
+goog.provide('fxdriver.utils');
 
 goog.require('bot.userAgent');
 goog.require('bot.Error');
@@ -36,7 +36,7 @@ var CI = Components.interfaces;
 var CR = Components.results;
 
 
-webdriver.firefox.utils.queryInterface = function(self, iids) {
+fxdriver.utils.queryInterface = function(self, iids) {
   return function(iid) {
     if (!iid) {
       return CR.NS_ERROR_NO_INTERFACE;
@@ -62,7 +62,7 @@ webdriver.firefox.utils.queryInterface = function(self, iids) {
 };
 
 
-webdriver.firefox.utils.windowMediator = function() {
+fxdriver.utils.windowMediator = function() {
   var clazz = CC['@mozilla.org/appshell/window-mediator;1'];
   if (!clazz) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_COMMAND);
@@ -72,7 +72,7 @@ webdriver.firefox.utils.windowMediator = function() {
 };
 
 
-webdriver.firefox.utils.getChromeWindow = function(win) {
+fxdriver.utils.getChromeWindow = function(win) {
   return win
       .QueryInterface(CI.nsIInterfaceRequestor)
       .getInterface(CI.nsIWebNavigation)
@@ -91,7 +91,7 @@ webdriver.firefox.utils.getChromeWindow = function(win) {
  * @param {!Object} thing The "something" to unwrap.
  * @returns {!Object} The object, unwrapped if possible.
  */
-webdriver.firefox.utils.unwrap = function(thing) {
+fxdriver.utils.unwrap = function(thing) {
   // TODO(simon): This is identical to the same function in firefox-chrome
   if (!goog.isDefAndNotNull(thing)) {
     return thing;
@@ -131,7 +131,7 @@ webdriver.firefox.utils.unwrap = function(thing) {
  * frames array. Remove this wrapping.
  * See: https://developer.mozilla.org/en/XPCNativeWrapper
  */
-webdriver.firefox.utils.unwrapXpcOnly = function(thing) {
+fxdriver.utils.unwrapXpcOnly = function(thing) {
   if (XPCNativeWrapper && "unwrap" in XPCNativeWrapper) {
     try {
       return XPCNativeWrapper.unwrap(thing);
@@ -147,9 +147,9 @@ webdriver.firefox.utils.unwrapXpcOnly = function(thing) {
 };
 
 
-webdriver.firefox.utils.unwrapFor4 = function(doc) {
+fxdriver.utils.unwrapFor4 = function(doc) {
   if (bot.userAgent.isFirefox4()) {
-    return webdriver.firefox.utils.unwrap(doc);
+    return fxdriver.utils.unwrap(doc);
   }
   return doc;
 };
@@ -160,7 +160,7 @@ webdriver.firefox.utils.unwrapFor4 = function(doc) {
  * @param {int} x X coordinate
  * @param {int} y Y coordinate
  */
-webdriver.firefox.utils.newCoordinates = function(element, x, y) {
+fxdriver.utils.newCoordinates = function(element, x, y) {
   return {
     QueryInterface: function(iid) {
       if (iid.equals(Components.interfaces.wdICoorinate) ||

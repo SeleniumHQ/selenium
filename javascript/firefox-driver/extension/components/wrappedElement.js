@@ -183,7 +183,7 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
 
   var alreadyFocused = true;
   var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
-  var unwrappedActive = webdriver.firefox.utils.unwrapFor4(currentlyActive);
+  var unwrappedActive = fxdriver.utils.unwrapFor4(currentlyActive);
   if (unwrappedActive != element) {
     alreadyFocused = false;
     currentlyActive.blur();

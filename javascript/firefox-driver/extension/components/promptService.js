@@ -46,7 +46,7 @@ function ObservingAlert(parentWindow, delegate) {
   addInterfaces(this, delegate, interfaces);
 
   this.delegate_ = delegate;
-  this.QueryInterface = webdriver.firefox.utils.queryInterface(this, interfaces);
+  this.QueryInterface = fxdriver.utils.queryInterface(this, interfaces);
 }
 
 ObservingAlert.prototype.alert = function(dialogTitle, text) {
@@ -153,7 +153,7 @@ function DrivenPromptService() {
   var interfaces = [CI.nsIPromptFactory, CI.nsIPromptService, CI.nsIPromptService2];
   addInterfaces(this, this.delegate_, interfaces);
 
-  this.QueryInterface = webdriver.firefox.utils.queryInterface(this,
+  this.QueryInterface = fxdriver.utils.queryInterface(this,
     [CI.nsIPromptFactory, CI.nsIPromptService, CI.nsIPromptService2]);
 
   Logger.dumpn("Finished initializing spoofed prompt service");

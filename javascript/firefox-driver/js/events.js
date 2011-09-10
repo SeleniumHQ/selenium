@@ -18,11 +18,10 @@
 
 goog.provide('fxdriver.events');
 
-
 goog.require('Logger');
 goog.require('Utils');
+goog.require('fxdriver.utils');
 goog.require('goog.style');
-goog.require('webdriver.firefox.utils');
 
 
 /**
@@ -64,7 +63,7 @@ fxdriver.events.buildCoordinates = function(parameters, doc) {
     y: y,
     auxiliary: auxiliaryToReturn,
 
-    QueryInterface: webdriver.firefox.utils.queryInterface(this,
+    QueryInterface: fxdriver.utils.queryInterface(this,
       [CI.nsISupports, CI.wdICoordinate])
   };
 };
