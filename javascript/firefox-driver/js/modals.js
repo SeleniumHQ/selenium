@@ -19,7 +19,7 @@
  * @fileoverview Methods for dealing with modal dialogs
  */
 
-goog.provide('webdriver.modals');
+goog.provide('fxdriver.modals');
 
 goog.require('ErrorCode');
 goog.require('Logger');
@@ -31,44 +31,44 @@ var CI = Components.interfaces;
 var CC = Components.classes;
 
 
-webdriver.modals.isModalPresent = function(callback, timeout) {
+fxdriver.modals.isModalPresent = function(callback, timeout) {
   var timer = new Timer();
   timer.runWhenTrue(
-    function() { return webdriver.modals.find_() },
+    function() { return fxdriver.modals.find_() },
     function() { callback(true) },
     timeout,
     function() { callback(false) });
 };
 
 
-webdriver.modals.acceptAlert = function(driver) {
-  var modal = webdriver.modals.find_();
-  var button = webdriver.modals.findButton_(modal, "accept");
+fxdriver.modals.acceptAlert = function(driver) {
+  var modal = fxdriver.modals.find_();
+  var button = fxdriver.modals.findButton_(modal, "accept");
   button.click();
-  webdriver.modals.clearFlag_(driver);
+  fxdriver.modals.clearFlag_(driver);
 };
 
 
-webdriver.modals.dismissAlert = function(driver) {
-  var modal = webdriver.modals.find_();
-  var button = webdriver.modals.findButton_(modal, "cancel");
+fxdriver.modals.dismissAlert = function(driver) {
+  var modal = fxdriver.modals.find_();
+  var button = fxdriver.modals.findButton_(modal, "cancel");
 
   if (!button) {
     Logger.dumpn('No cancel button Falling back to the accept button');
-    button = webdriver.modals.findButton_(modal, "accept");
+    button = fxdriver.modals.findButton_(modal, "accept");
   }
 
   button.click();
-  webdriver.modals.clearFlag_(driver);
+  fxdriver.modals.clearFlag_(driver);
 };
 
 
-webdriver.modals.getText = function(driver) {
+fxdriver.modals.getText = function(driver) {
   return driver.modalOpen;
 };
 
-webdriver.modals.setValue = function(driver, value) {
-  var modal = webdriver.modals.find_();
+fxdriver.modals.setValue = function(driver, value) {
+  var modal = fxdriver.modals.find_();
   var textbox = modal.document.getElementById('loginTextbox');
   try {
     var trueIfTextboxExists = textbox.selectionStart > -1;
@@ -81,7 +81,7 @@ webdriver.modals.setValue = function(driver, value) {
 };
 
 
-webdriver.modals.find_ = function() {
+fxdriver.modals.find_ = function() {
   var window = fxdriver.utils.windowMediator().getMostRecentWindow('');
   window = fxdriver.utils.unwrap(window);
 
@@ -100,24 +100,24 @@ webdriver.modals.find_ = function() {
 };
 
 
-webdriver.modals.findButton_ = function(modal, value) {
+fxdriver.modals.findButton_ = function(modal, value) {
   var doc = modal.document;
   var dialog = doc.getElementsByTagName("dialog")[0];
   return dialog.getButton(value);
 };
 
 
-webdriver.modals.setFlag = function(driver, flagValue) {
+fxdriver.modals.setFlag = function(driver, flagValue) {
   driver.modalOpen = flagValue;
 };
 
 
-webdriver.modals.clearFlag_ = function(driver) {
-  webdriver.modals.setFlag(driver, false);
+fxdriver.modals.clearFlag_ = function(driver) {
+  fxdriver.modals.setFlag(driver, false);
 };
 
 
-webdriver.modals.findAssociatedDriver_ = function(window) {
+fxdriver.modals.findAssociatedDriver_ = function(window) {
   var ww = CC["@mozilla.org/embedcomp/window-watcher;1"].getService(CI["nsIWindowWatcher"]);
 
   var parent = window ? window : ww.activeWindow;
@@ -143,12 +143,12 @@ webdriver.modals.findAssociatedDriver_ = function(window) {
   return undefined;
 };
 
-webdriver.modals.signalOpenModal = function(parent, text) {
+fxdriver.modals.signalOpenModal = function(parent, text) {
   Logger.dumpn("signalOpenModal");
   // Try to grab the top level window
-  var driver = webdriver.modals.findAssociatedDriver_(parent);
+  var driver = fxdriver.modals.findAssociatedDriver_(parent);
   if (driver && driver.response_) {
-    webdriver.modals.setFlag(driver, text);
+    fxdriver.modals.setFlag(driver, text);
     var res = driver.response_;
     res.value = {
       text: text

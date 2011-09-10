@@ -36,13 +36,13 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   // This really shouldn't be here, but the firefoxdriver isn't compiled with closure, so the atoms
   // aren't exported into global scope
   FirefoxDriver.prototype.dismissAlert.preconditions =
-      [ function() { atoms.webdriver.preconditions.alertPresent(this) } ];
+      [ function() { atoms.fxdriver.preconditions.alertPresent(this) } ];
   FirefoxDriver.prototype.acceptAlert.preconditions =
-      [ function() { atoms.webdriver.preconditions.alertPresent(this) } ];
+      [ function() { atoms.fxdriver.preconditions.alertPresent(this) } ];
   FirefoxDriver.prototype.getAlertText.preconditions =
-      [ function() { atoms.webdriver.preconditions.alertPresent(this) } ];
+      [ function() { atoms.fxdriver.preconditions.alertPresent(this) } ];
   FirefoxDriver.prototype.setAlertValue.preconditions =
-      [ function() { atoms.webdriver.preconditions.alertPresent(this) } ];
+      [ function() { atoms.fxdriver.preconditions.alertPresent(this) } ];
 
 
   var utils = {};
@@ -824,7 +824,7 @@ FirefoxDriver.prototype.screenshot = function(respond) {
 
 
 FirefoxDriver.prototype.getAlert = function(respond) {
-  webdriver.modals.isModalPresent(
+  fxdriver.modals.isModalPresent(
       function(present) {
         if (!present) {
           respond.status = ErrorCode.NO_MODAL_DIALOG_OPEN;
@@ -836,22 +836,22 @@ FirefoxDriver.prototype.getAlert = function(respond) {
 
 
 FirefoxDriver.prototype.dismissAlert = function(respond) {
-  webdriver.modals.dismissAlert(this);
+  fxdriver.modals.dismissAlert(this);
   respond.send();
 };
 
 FirefoxDriver.prototype.acceptAlert = function(respond) {
-  webdriver.modals.acceptAlert(this);
+  fxdriver.modals.acceptAlert(this);
   respond.send();
 };
 
 
 FirefoxDriver.prototype.getAlertText = function(respond) {
   var driver = this;
-  webdriver.modals.isModalPresent(
+  fxdriver.modals.isModalPresent(
     function(present) {
       if (present) {
-        respond.value = webdriver.modals.getText(driver)
+        respond.value = fxdriver.modals.getText(driver)
       } else {
         respond.status = ErrorCode.NO_MODAL_DIALOG_OPEN;
         respond.value = { message: 'No alert is present' };
@@ -862,7 +862,7 @@ FirefoxDriver.prototype.getAlertText = function(respond) {
 
 
 FirefoxDriver.prototype.setAlertValue = function(respond, parameters) {
-  webdriver.modals.setValue(this, parameters['text']);
+  fxdriver.modals.setValue(this, parameters['text']);
   respond.send();
 };
 

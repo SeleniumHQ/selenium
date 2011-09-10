@@ -50,52 +50,52 @@ function ObservingAlert(parentWindow, delegate) {
 }
 
 ObservingAlert.prototype.alert = function(dialogTitle, text) {
-  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  fxdriver.modals.signalOpenModal(this.parentWindow_, text);
   this.delegate_.alert(dialogTitle, text);
 };
 
 ObservingAlert.prototype.alertCheck = function(dialogTitle, text, checkMsg, checkValue) {
-  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  fxdriver.modals.signalOpenModal(this.parentWindow_, text);
   this.delegate_.alertCheck(dialogTitle, text, checkMsg,  checkValue);
 };
 
 ObservingAlert.prototype.confirm = function(dialogTitle, text) {
-  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  fxdriver.modals.signalOpenModal(this.parentWindow_, text);
   return this.delegate_.confirm(dialogTitle, text);
 };
 
 ObservingAlert.prototype.confirmCheck = function(dialogTitle, text, checkMsg, checkValue) {
-  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  fxdriver.modals.signalOpenModal(this.parentWindow_, text);
   return this.delegate_.confirmCheck(dialogTitle, text, checkMsg,  checkValue);
 };
 
 ObservingAlert.prototype.confirmEx = function(dialogTitle, text,
     buttonFlags, button0Title, button1Title, button2Title,
     checkMsg, checkValue) {
-  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  fxdriver.modals.signalOpenModal(this.parentWindow_, text);
   return this.delegate_.confirmEx(dialogTitle, text,
       buttonFlags, button0Title, button1Title, button2Title,
       checkMsg, checkValue);
 };
 
 ObservingAlert.prototype.prompt = function(dialogTitle, text, value, checkMsg, checkValue) {
-  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  fxdriver.modals.signalOpenModal(this.parentWindow_, text);
   return this.delegate_.prompt(dialogTitle, text, value, checkMsg, checkValue);
 };
 
 ObservingAlert.prototype.promptPassword = function(dialogTitle, text, password, checkMsg, checkValue) {
-  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  fxdriver.modals.signalOpenModal(this.parentWindow_, text);
   return this.delegate_.promptPassword(dialogTitle, text, password, checkMsg, checkValue);
 };
 
 ObservingAlert.prototype.promptUsernameAndPassword = function(dialogTitle, text, username, password, checkMsg, checkValue) {
-  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  fxdriver.modals.signalOpenModal(this.parentWindow_, text);
 
   return this.delegate_.promptUsernameAndPassword(dialogTitle, text, username, password, checkMsg, checkValue);
 };
 
 ObservingAlert.prototype.select = function(dialogTitle, text, count, selectList, outSelection) {
-  webdriver.modals.signalOpenModal(this.parentWindow_, text);
+  fxdriver.modals.signalOpenModal(this.parentWindow_, text);
 
   return this.delegate_.select(dialogTitle, text, count, selectList, outSelection);
 };
@@ -198,7 +198,7 @@ DrivenPromptService.prototype = {
 
 
 DrivenPromptService.prototype.alert = function(aParent, aDialogTitle, aText) {
-  webdriver.modals.signalOpenModal(aParent, aText);
+  fxdriver.modals.signalOpenModal(aParent, aText);
 
   var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
   return service.alert(aParent, aDialogTitle, aText);
@@ -206,14 +206,14 @@ DrivenPromptService.prototype.alert = function(aParent, aDialogTitle, aText) {
 
 DrivenPromptService.prototype.alertCheck =
 function(aParent, aDialogTitle, aText, aCheckMsg, aCheckState) {
-  webdriver.modals.signalOpenModal(aParent, aText);
+  fxdriver.modals.signalOpenModal(aParent, aText);
 
   var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
   return service.alertCheck(aParent, aDialogTitle, aText, aCheckMsg, aCheckState);
 };
 
 DrivenPromptService.prototype.confirm = function(aParent, aDialogTitle, aText) {
-  webdriver.modals.signalOpenModal(aParent, aText);
+  fxdriver.modals.signalOpenModal(aParent, aText);
 
   var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
   return service.confirm(aParent, aDialogTitle, aText);
@@ -221,7 +221,7 @@ DrivenPromptService.prototype.confirm = function(aParent, aDialogTitle, aText) {
 
 DrivenPromptService.prototype.confirmCheck =
 function(aParent, aDialogTitle, aText, aCheckMsg, aCheckState) {
-  webdriver.modals.signalOpenModal(aParent, aText);
+  fxdriver.modals.signalOpenModal(aParent, aText);
 
   var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
   return service.confirmCheck(aParent, aDialogTitle, aText, aCheckMsg, aCheckState);
@@ -229,7 +229,7 @@ function(aParent, aDialogTitle, aText, aCheckMsg, aCheckState) {
 
 DrivenPromptService.prototype.confirmEx =
 function(aParent, aDialogTitle, aText, aButtonFlags, aButton0Title, aButton1Title, aButton2Title, aCheckMsg, aCheckState) {
-  webdriver.modals.signalOpenModal(aParent, aText);
+  fxdriver.modals.signalOpenModal(aParent, aText);
 
   var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
   return service.confirmEx(aParent, aDialogTitle, aText, aButtonFlags, aButton0Title, aButton1Title, aButton2Title, aCheckMsg, aCheckState);
@@ -237,7 +237,7 @@ function(aParent, aDialogTitle, aText, aButtonFlags, aButton0Title, aButton1Titl
 
 DrivenPromptService.prototype.prompt =
 function(aParent, aDialogTitle, aText, aValue, aCheckMsg, aCheckState) {
-  webdriver.modals.signalOpenModal(aParent, aText);
+  fxdriver.modals.signalOpenModal(aParent, aText);
 
   var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
   return service.prompt(aParent, aDialogTitle, aText, aValue, aCheckMsg, aCheckState);
@@ -264,14 +264,14 @@ function(aParent, aDialogTitle, aText, aCount, aSelectList, aOutSelection) {
 
 // nsIPromptService2 functions
 DrivenPromptService.prototype.promptAuth = function(aParent, aChannel, level, authInfo, checkboxLabel, checkValue) {
-  webdriver.modals.signalOpenModal(aParent, aText);
+  fxdriver.modals.signalOpenModal(aParent, aText);
 
   var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
   return service.promptAuth(aParent, aChannel, level, authInfo, checkboxLabel, checkValue);
 };
 
 DrivenPromptService.prototype.asyncPromptAuth = function(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel,checkValue) {
-  webdriver.modals.signalOpenModal(aParent, aText);
+  fxdriver.modals.signalOpenModal(aParent, aText);
 
   var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
   return service.asyncPromptAuth(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel,checkValue)

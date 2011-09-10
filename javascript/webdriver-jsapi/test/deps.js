@@ -104,5 +104,5 @@ goog.addDependency("../../../javascript/selenium-atoms/se_element.js", ['core.el
 goog.addDependency("../../../javascript/selenium-atoms/se_locators.js", ['core.locators', 'core.locators.Locator'], ['core.Error', 'core.LocatorStrategies', 'goog.dom.NodeType', 'goog.string']);
 goog.addDependency("../../../javascript/selenium-atoms/testbase.js", [], []);
 goog.addDependency("../../../javascript/selenium-atoms/text.js", ['core.text'], ['bot.dom', 'core.locators', 'core.patternMatcher', 'goog.dom.NodeType', 'goog.string', 'goog.userAgent']);
-goog.addDependency("../../../javascript/webdriver-atoms/logging.js", ['webdriver.debug.Console'], ['goog.debug.LogManager', 'goog.debug.Logger.Level', 'goog.debug.TextFormatter']);
+goog.addDependency("../../../javascript/webdriver-atoms/logging.js", ['fxdriver.debug.Console'], ['goog.debug.LogManager', 'goog.debug.Logger.Level', 'goog.debug.TextFormatter']);
 goog.addDependency("../../../javascript/webdriver-atoms/web_element.js", ['webdriver.element'], ['bot.dom', 'goog.dom', 'goog.dom.TagName', 'goog.math', 'goog.string', 'goog.style']);

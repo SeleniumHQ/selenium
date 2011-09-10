@@ -18,7 +18,7 @@
  * executor should execute commands.
  */
 
-goog.provide('webdriver.preconditions');
+goog.provide('fxdriver.preconditions');
 
 goog.require('bot.dom');
 goog.require('Utils');
@@ -29,7 +29,7 @@ goog.require('Utils');
  * @param {!Element} element The element to use.
  * @return {boolean} Whether the element is in the HEAD of the document.
  */
-webdriver.preconditions.isInHead_ = function(element) {
+fxdriver.preconditions.isInHead_ = function(element) {
   while (element) {
     if (element.tagName && element.tagName.toLowerCase() == "head") {
       return true;
@@ -52,10 +52,10 @@ webdriver.preconditions.isInHead_ = function(element) {
  * @param {!Document} doc The document to locate the element on.
  * @param {!Object} parameters The arguments to use.
  */
-webdriver.preconditions.visible = function(doc, parameters) {
+fxdriver.preconditions.visible = function(doc, parameters) {
   var element = Utils.getElementAt(parameters.id, doc);
 
-  if (webdriver.preconditions.isInHead_(element)) {
+  if (fxdriver.preconditions.isInHead_(element)) {
     return new WebDriverError(ErrorCode.UNKNOWN_COMMAND,
         'Element is in the document HEAD and so may not be interacted with');
   }
@@ -72,7 +72,7 @@ webdriver.preconditions.visible = function(doc, parameters) {
  * @param {!Document} doc The document to locate the element on.
  * @param {!Object} parameters The arguments to use.
  */
-webdriver.preconditions.enabled = function(doc, parameters) {
+fxdriver.preconditions.enabled = function(doc, parameters) {
   var element = Utils.getElementAt(parameters.id, doc);
 
   if (!!element.disabled) {
@@ -87,7 +87,7 @@ webdriver.preconditions.enabled = function(doc, parameters) {
  *
  * @param {!Object} driver A WebDriver instance.
  */
-webdriver.preconditions.noAlertPresent = function(driver) {
+fxdriver.preconditions.noAlertPresent = function(driver) {
   if (driver.modalOpen) {
     return new WebDriverError(ErrorCode.MODAL_DIALOG_OPENED,
         'A modal dialog, such as an alert, is open.');
@@ -100,7 +100,7 @@ webdriver.preconditions.noAlertPresent = function(driver) {
  *
  * @param {!Object} driver A WebDriver instance.
  */
-webdriver.preconditions.alertPresent = function(driver) {
+fxdriver.preconditions.alertPresent = function(driver) {
   if (!driver.modalOpen) {
     return new WebDriverError(ErrorCode.NO_MODAL_DIALOG_OPEN,
         'A modal dialog, such as an alert, is not open.');

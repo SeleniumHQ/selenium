@@ -139,7 +139,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   respond.value = res.message;
 };
 FirefoxDriver.prototype.clickElement.preconditions =
-    [ webdriver.preconditions.visible ];
+    [ fxdriver.preconditions.visible ];
 
 
 FirefoxDriver.prototype.getElementText = function(respond, parameters) {
@@ -218,7 +218,7 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
   }, 0);
 };
 FirefoxDriver.prototype.sendKeysToElement.preconditions =
-    [ webdriver.preconditions.visible, webdriver.preconditions.enabled ];
+    [ fxdriver.preconditions.visible, fxdriver.preconditions.enabled ];
 
 
 FirefoxDriver.prototype.clearElement = function(respond, parameters) {
@@ -253,7 +253,7 @@ FirefoxDriver.prototype.clearElement = function(respond, parameters) {
   respond.send();
 };
 FirefoxDriver.prototype.clearElement.preconditions =
-    [ webdriver.preconditions.visible ];
+    [ fxdriver.preconditions.visible ];
 
 
 FirefoxDriver.prototype.getElementTagName = function(respond, parameters) {
@@ -309,7 +309,7 @@ FirefoxDriver.prototype.hoverOverElement = function(respond, parameters) {
   respond.send();
 };
 FirefoxDriver.prototype.hoverOverElement.preconditions =
-    [ webdriver.preconditions.visible ];
+    [ fxdriver.preconditions.visible ];
 
 
 FirefoxDriver.prototype.submitElement = function(respond, parameters) {
@@ -465,7 +465,7 @@ FirefoxDriver.prototype.dragElement = function(respond, parameters) {
   respond.send();
 };
 FirefoxDriver.prototype.dragElement.preconditions = 
-    [ webdriver.preconditions.visible ];
+    [ fxdriver.preconditions.visible ];
 
 
 FirefoxDriver.prototype.getElementValueOfCssProperty = function(respond,

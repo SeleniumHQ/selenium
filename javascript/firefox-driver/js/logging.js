@@ -16,8 +16,8 @@
  */
 
 goog.provide('Logger');
-goog.provide('webdriver.debug');
-goog.provide('webdriver.debug.ConsoleFormatter');
+goog.provide('fxdriver.debug');
+goog.provide('fxdriver.debug.ConsoleFormatter');
 
 goog.require('goog.debug.Formatter');
 goog.require('goog.debug.Logger');
@@ -27,7 +27,7 @@ goog.require('goog.debug.TextFormatter');
 /**
  * @private
  */
-webdriver.debug.initialized_ = false;
+fxdriver.debug.initialized_ = false;
 
 /**
  * Formatter that returns formatted text for display on Firefox's error console.
@@ -35,10 +35,10 @@ webdriver.debug.initialized_ = false;
  * @constructor
  * @extends {goog.debug.Formatter}
  */
-webdriver.debug.ConsoleFormatter = function() {
+fxdriver.debug.ConsoleFormatter = function() {
   goog.debug.Formatter.call(this);
 };
-goog.inherits(webdriver.debug.ConsoleFormatter, goog.debug.Formatter);
+goog.inherits(fxdriver.debug.ConsoleFormatter, goog.debug.Formatter);
 
 /**
  * Formats a record as text.
@@ -46,7 +46,7 @@ goog.inherits(webdriver.debug.ConsoleFormatter, goog.debug.Formatter);
  * @param {goog.debug.LogRecord} logRecord the logRecord to format.
  * @return {string} The formatted string.
  */
-webdriver.debug.ConsoleFormatter.prototype.formatRecord = function(logRecord) {
+fxdriver.debug.ConsoleFormatter.prototype.formatRecord = function(logRecord) {
   // Build message html
   var sb = [];
 
@@ -77,12 +77,12 @@ webdriver.debug.ConsoleFormatter.prototype.formatRecord = function(logRecord) {
  * @param {!goog.debug.Logger} logger The logger to use.
  * @private
  */
-webdriver.debug.addErrorConsoleLogger_ = function(logger) {
+fxdriver.debug.addErrorConsoleLogger_ = function(logger) {
   if (!Components) {
     return;
   }
 
-  var formatter = new webdriver.debug.ConsoleFormatter();
+  var formatter = new fxdriver.debug.ConsoleFormatter();
   formatter.showSeverityLevel = true;
 
   var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
@@ -102,7 +102,7 @@ webdriver.debug.addErrorConsoleLogger_ = function(logger) {
  * @param {string?} opt_path The path to the file to use for logging.
  * @private
  */
-webdriver.debug.addFileLogger_ = function(logger, opt_path) {
+fxdriver.debug.addFileLogger_ = function(logger, opt_path) {
   if (!opt_path) {
     return;
   }
@@ -141,27 +141,27 @@ webdriver.debug.addFileLogger_ = function(logger, opt_path) {
  * Initialize the goog.debug logging infrastructure with the pieces needed to
  * log on Firefox.
  */
-webdriver.debug.initialize = function() {
-  if (webdriver.debug.initialized_) {
+fxdriver.debug.initialize = function() {
+  if (fxdriver.debug.initialized_) {
     return;
   }
 
   var rootLogger = goog.debug.Logger.getLogger('');
-  webdriver.debug.addErrorConsoleLogger_(rootLogger);
+  fxdriver.debug.addErrorConsoleLogger_(rootLogger);
 
   var prefs = Components.classes["@mozilla.org/preferences-service;1"]
      .getService(Components.interfaces["nsIPrefBranch"]);
 
   var file = prefs.prefHasUserValue("webdriver.log.file") &&
       prefs.getCharPref("webdriver.log.file");
-  webdriver.debug.addFileLogger_(rootLogger, file);
+  fxdriver.debug.addFileLogger_(rootLogger, file);
 
-  webdriver.debug.initialized_ = true;
+  fxdriver.debug.initialized_ = true;
 };
 
 
 Logger.dumpn = function(text) {
-  webdriver.debug.initialize();
+  fxdriver.debug.initialize();
 
   var logger = goog.debug.Logger.getLogger('webdriver');
   logger.info(text);
@@ -174,7 +174,7 @@ Logger.dump = function(element) {
 
 
 Logger.dump = function(element) {
-  webdriver.debug.initialize();
+  fxdriver.debug.initialize();
   var dump = "=============\n";
 
   var rows = [];
@@ -208,7 +208,7 @@ Logger.dump = function(element) {
 
 
 Logger.dumpProperties_ = function(view, rows) {
-  webdriver.debug.initialize();
+  fxdriver.debug.initialize();
   for (var i in view) {
     var value = "\t" + i + ": ";
     try {
@@ -227,7 +227,7 @@ Logger.dumpProperties_ = function(view, rows) {
 
 
 Logger.stackTrace = function() {
-  webdriver.debug.initialize();
+  fxdriver.debug.initialize();
   var stack = Components.stack;
   var i = 5;
   var dump = "";
