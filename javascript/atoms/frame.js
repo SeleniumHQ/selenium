@@ -46,7 +46,7 @@ bot.frame.activeElement = function() {
  * Returns a reference to the window object corresponding to the given element.
  * Note that the element must be a frame or an iframe.
  *
- * @param {!HTMLIFrameElement|!HTMLFrameElement} element The iframe or frame
+ * @param {!(HTMLIFrameElement|HTMLFrameElement)} element The iframe or frame
  *     element.
  * @return {Window} The window reference for the given iframe or frame element.
  */
@@ -66,7 +66,7 @@ bot.frame.getFrameWindow = function(element) {
  * iframe by name or id.
  *
  * @param {(string|number)} nameOrId The frame's name or the frame's id.
- * @param {Window} opt_root The window to perform the search under.
+ * @param {!Window=} opt_root The window to perform the search under.
  *     Defaults to {@code bot.getWindow()}.
  * @return {Window} The window if found, null otherwise.
  */
@@ -105,7 +105,7 @@ bot.frame.findFrameByNameOrId = function(nameOrId, opt_root) {
  * Looks for a frame by its index under the given root.
  *
  * @param {number} index The frame's index.
- * @param {Window} opt_root The window to perform
+ * @param {!Window=} opt_root The window to perform
  *     the search under. Defaults to {@code bot.getWindow()}.
  * @return {Window} The frame if found, null otherwise.
  */
@@ -118,11 +118,11 @@ bot.frame.findFrameByIndex = function(index, opt_root) {
  * Gets the index of a frame in the given window. Note that the element must
  * be a frame or an iframe.
  *
- * @param {!HTMLIFrameElement|!HTMLFrameElement} element The iframe or frame
+ * @param {!(HTMLIFrameElement|HTMLFrameElement)} element The iframe or frame
  *     element.
- * @param {Window} opt_root The window to perform
+ * @param {!Window=} opt_root The window to perform
  *     the search under. Defaults to {@code bot.getWindow()}.
- * @return {number=} The index of the frame if found, null otherwise.
+ * @return {number} The index of the frame if found, null otherwise.
  */
 bot.frame.getFrameIndex = function(element, opt_root) {
   var domWindow = opt_root || bot.getWindow();
