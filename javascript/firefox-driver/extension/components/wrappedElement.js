@@ -53,7 +53,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   var isOption = "option" == element.tagName.toLowerCase();
 
   if (!isOption && this.enableNativeEvents && nativeEvents && node && useNativeClick && thmgr_cls) {
-    Logger.dumpn("Using native events for click");
+    fxdriver.Logger.dumpn("Using native events for click");
     var loc = Utils.getLocationOnceScrolledIntoView(element, element.tagName == "A");
     var x = loc.x + (loc.width ? loc.width / 2 : 0);
     var y = loc.y + (loc.height ? loc.height / 2 : 0);
@@ -109,7 +109,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
       // the error returned from the native call indicates it's not
       // implemented.
 
-      Logger.dumpn("Detected error when clicking: " + e.name);
+      fxdriver.Logger.dumpn("Detected error when clicking: " + e.name);
 
       if (e.name != "NS_ERROR_NOT_IMPLEMENTED") {
         throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE, e);
@@ -119,7 +119,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
     }
   }
 
-  Logger.dumpn("Falling back to synthesized click");
+  fxdriver.Logger.dumpn("Falling back to synthesized click");
 
   // TODO(simon): Delete the above and sink most of it into a "nativeMouse"
   Utils.installWindowCloseListener(respond);
@@ -510,7 +510,7 @@ FirefoxDriver.prototype.getElementLocationOnceScrolledIntoView = function(
     // Element doesn't have an accessibility node. Fall through
   }
 
-  Logger.dumpn("Guessing location once scrolled into view");
+  fxdriver.Logger.dumpn("Guessing location once scrolled into view");
   // Fine. Come up with a good guess. This should be the element location
   // added to the current window location. It'll probably be off
   var x = theDoc.defaultView.screenX;

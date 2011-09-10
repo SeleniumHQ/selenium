@@ -230,7 +230,7 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
     }
 
     if (numPending && !hasOnLoadBlocker) {
-      Logger.dumpn('Ignoring pending about:document-onload-blocker request');
+      fxdriver.Logger.dumpn('Ignoring pending about:document-onload-blocker request');
       // If we only have one pending request and it is not a
       // document-onload-blocker, we need to wait.  We do not wait for
       // document-onload-blocker requests since these are created when
@@ -286,14 +286,14 @@ DelayedCommand.prototype.executeInternal_ = function() {
       this.driver_.response_ = this.response_;
 
       var response = this.response_;
-      var timer = new Timer();
+      var timer = new fxdriver.Timer();
       var startTime = new Date().getTime();
       var endTime = startTime + this.response_.session.getImplicitWait();
       var name = this.command_.name;
       var driverFunction = this.driver_[name];
       var parameters = this.command_.parameters;
 
-      Logger.dumpn('Executing: ' + name);
+      fxdriver.Logger.dumpn('Executing: ' + name);
 
       var func = goog.bind(driverFunction, this.driver_,
           this.response_, parameters);
@@ -309,7 +309,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
             timer.setTimeout(toExecute, 100);
           } else {
             if (!e.isWebDriverError) {
-              Logger.dumpn(
+              fxdriver.Logger.dumpn(
                   'Exception caught by driver: ' + name +
                       '(' + parameters + ')\n' + e);
             }
@@ -320,7 +320,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
       toExecute();
     } catch (e) {
       if (!e.isWebDriverError) {
-        Logger.dumpn(
+        fxdriver.Logger.dumpn(
             'Exception caught by driver: ' + this.command_.name +
             '(' + this.command_.parameters + ')\n' + e);
       }
@@ -367,7 +367,7 @@ nsCommandProcessor.prototype.implementationLanguage =
  */
 nsCommandProcessor.logError = function(message) {
   // TODO(jleyba): This should log an error and not a generic message.
-  Logger.dumpn(message);
+  fxdriver.Logger.dumpn(message);
   throw Components.results.NS_ERROR_FAILURE;
 };
 
@@ -677,7 +677,7 @@ nsCommandProcessor.prototype.quit = function(response) {
           quit(Components.interfaces.nsIAppStartup.eForceQuit);
   };
 
-  this.nstimer = new Timer();
+  this.nstimer = new fxdriver.Timer();
   this.nstimer.setTimeout(event, 500);
 };
 

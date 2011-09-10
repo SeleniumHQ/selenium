@@ -165,7 +165,7 @@ SyntheticMouse.prototype.click = function(target) {
     }
   }
 
-  Logger.dumpn("About to do a bot.action.click on " + element);
+  fxdriver.Logger.dumpn("About to do a bot.action.click on " + element);
   bot.action.click(element);
 
   return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
@@ -182,7 +182,7 @@ SyntheticMouse.prototype.contextClick = function(target) {
     return error;
   }
 
-  Logger.dumpn("About to do a bot.action.rightClick on " + element);
+  fxdriver.Logger.dumpn("About to do a bot.action.rightClick on " + element);
   bot.action.rightClick(element);
 
   return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
@@ -196,7 +196,7 @@ SyntheticMouse.prototype.doubleClick = function(target) {
     return error;
   }
 
-  Logger.dumpn("About to do a bot.action.doubleClick on " + element);
+  fxdriver.Logger.dumpn("About to do a bot.action.doubleClick on " + element);
   bot.action.doubleClick(element);
 
   return this.newResponse(bot.ErrorCode.SUCCESS, "ok");

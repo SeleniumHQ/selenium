@@ -39,7 +39,7 @@ function WebDriverServer() {
   try {
     this.server_ = Utils.newInstance("@mozilla.org/server/jshttp;1", "nsIHttpServer");
   } catch (e) {
-      Logger.dumpn(e);
+      fxdriver.Logger.dumpn(e);
   }
 
   this.server_.registerGlobHandler(".*/hub/.*", { handle: function(request, response) {
@@ -54,12 +54,12 @@ WebDriverServer.prototype.newDriver = function(window) {
     var prefs =
         Utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
     if (!prefs.prefHasUserValue("webdriver_enable_native_events")) {
-      Logger.dumpn('webdriver_enable_native_events not set; defaulting to false');
+      fxdriver.Logger.dumpn('webdriver_enable_native_events not set; defaulting to false');
     }
     this.enableNativeEvents =
     prefs.prefHasUserValue("webdriver_enable_native_events") ?
       prefs.getBoolPref("webdriver_enable_native_events") : false;
-    Logger.dumpn('Using native events: ' + this.enableNativeEvents);
+    fxdriver.Logger.dumpn('Using native events: ' + this.enableNativeEvents);
   }
   window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents, window);
   return window.fxdriver;

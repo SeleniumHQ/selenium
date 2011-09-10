@@ -52,7 +52,7 @@ function FirefoxDriver(server, enableNativeEvents, win) {
 
   FirefoxDriver.listenerScript = Utils.loadUrl("resource://fxdriver/evaluate.js");
 
-  this.jsTimer = new Timer();
+  this.jsTimer = new fxdriver.Timer();
   this.mouse = Utils.newInstance("@googlecode.com/webdriver/syntheticmouse;1", "wdIMouse");
 }
 
@@ -106,7 +106,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   respond.session.getBrowser().loadURI(url);
 
   if (!loadEventExpected) {
-    Logger.dumpn("No load event expected");
+    fxdriver.Logger.dumpn("No load event expected");
     respond.send();
   }
 };
@@ -142,7 +142,7 @@ FirefoxDriver.prototype.close = function(respond) {
         appService.quit(forceQuit);
     };
 
-    this.nstimer = new Timer();
+    this.nstimer = new fxdriver.Timer();
     this.nstimer.setTimeout(event, 500);
     
     return;  // The client should catch the fact that the socket suddenly closes
@@ -154,7 +154,7 @@ FirefoxDriver.prototype.close = function(respond) {
     createSwitchFile("close:" + browser.id);
     browser.contentWindow.close();
   } catch(e) {
-    Logger.dump(e);
+    fxdriver.Logger.dump(e);
   }
 
   // Send the response so the client doesn't get a connection refused socket
@@ -181,7 +181,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
     }
 
     // See https://developer.mozilla.org/en/rich-text_editing_in_mozilla#Internet_Explorer_Differences
-    Logger.dumpn("Window in design mode, falling back to sandbox: " + doc.designMode);
+    fxdriver.Logger.dumpn("Window in design mode, falling back to sandbox: " + doc.designMode);
     var window = respond.session.getWindow();
     window = window.wrappedJSObject;
     var sandbox = new Components.utils.Sandbox(window);
@@ -198,7 +198,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
       respond.send();
       return;
     } catch (e) {
-      Logger.dumpn(JSON.stringify(e));
+      fxdriver.Logger.dumpn(JSON.stringify(e));
       throw new WebDriverError(bot.ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR, e);
     }
   }
@@ -545,10 +545,10 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
 
   var newWindow = null;
   if (switchingToDefault) {
-    Logger.dumpn("Switching to default content (topmost frame)");
+    fxdriver.Logger.dumpn("Switching to default content (topmost frame)");
     newWindow = respond.session.getBrowser().contentWindow;
   } else if (goog.isString(parameters.id)) {
-    Logger.dumpn("Switching to frame with name or ID: " + parameters.id);
+    fxdriver.Logger.dumpn("Switching to frame with name or ID: " + parameters.id);
     var foundById;
     var numFrames = currentWindow.frames.length;
     for (var i = 0; i < numFrames; i++) {
@@ -566,10 +566,10 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
       newWindow = foundById;
     }
   } else if (goog.isNumber(parameters.id)) {
-    Logger.dumpn("Switching to frame by index: " + parameters.id);
+    fxdriver.Logger.dumpn("Switching to frame by index: " + parameters.id);
     newWindow = currentWindow.frames[parameters.id];
   } else if (goog.isObject(parameters.id) && 'ELEMENT' in parameters.id) {
-    Logger.dumpn("Switching to frame by element: " + parameters.id['ELEMENT']);
+    fxdriver.Logger.dumpn("Switching to frame by element: " + parameters.id['ELEMENT']);
     var element = Utils.getElementAt(parameters.id['ELEMENT'],
         currentWindow.document);
 
@@ -948,9 +948,9 @@ function getElementFromLocation(mouseLocation, doc) {
 
   if (mouseLocation.initialized) {
     elementForNode = doc.elementFromPoint(locationX, locationY);
-    Logger.dumpn("Element from (" + locationX + "," + locationY + ") :" + elementForNode);
+    fxdriver.Logger.dumpn("Element from (" + locationX + "," + locationY + ") :" + elementForNode);
   } else {
-    Logger.dumpn("Mouse coordinates were not set - using body");
+    fxdriver.Logger.dumpn("Mouse coordinates were not set - using body");
     elementForNode = doc.getElementsByTagName("body")[0];
   }
 
@@ -982,7 +982,7 @@ getBrowserSpecificOffset_ = function(inBrowser) {
       var rect = inBrowser.getBoundingClientRect();
       browserSpecificYOffset += rect.top;
       browserSpecificXOffset += rect.left;
-      Logger.dumpn("Browser-specific offset (X,Y): " + browserSpecificXOffset
+      fxdriver.Logger.dumpn("Browser-specific offset (X,Y): " + browserSpecificXOffset
           + ", " + browserSpecificYOffset);
     }
 
@@ -1035,7 +1035,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   if (!this.enableNativeEvents) {
     var raw = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
     var target = raw ? new XPCNativeWrapper(raw) : null;
-    Logger.dumpn("Calling move with: " + parameters['xoffset'] + ', ' + parameters['yoffset'] + ", " + target);
+    fxdriver.Logger.dumpn("Calling move with: " + parameters['xoffset'] + ', ' + parameters['yoffset'] + ", " + target);
     var result = this.mouse.move(target, parameters['xoffset'], parameters['yoffset']);
     
     respond['status'] = result['status'];

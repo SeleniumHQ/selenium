@@ -167,7 +167,7 @@ wdSession.prototype.getWindow = function() {
   var win = this.window_.get();
 
   if (!win) {
-    Logger.dumpn("Unable to find window. This generally means that it has been closed.");
+    fxdriver.Logger.dumpn("Unable to find window. This generally means that it has been closed.");
     return null;
   }
 

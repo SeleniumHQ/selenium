@@ -17,7 +17,7 @@
 
 /**
  * @fileoverview An implementation of a timer that can be used without an
- * assocuated window.
+ * associated window.
  *
  * Please note that the client must hold onto the reference
  * to this timer class for the full duration of the timeout,
@@ -25,10 +25,10 @@
  *
  */
 
-goog.provide('Timer');
+goog.provide('fxdriver.Timer');
 
 
-Timer = function() {
+fxdriver.Timer = function() {
   this.timer = null;
 };
 
@@ -42,7 +42,7 @@ Timer = function() {
  * @param {!function(*=): *} callback The callback to use.
  * @param {number=} opt_timeout An optional timeout to use.
  */
-Timer.prototype.setTimeout = function(callback, opt_timeout) {
+fxdriver.Timer.prototype.setTimeout = function(callback, opt_timeout) {
   var CC = Components.classes;
   var CI = Components.interfaces;
 
@@ -72,7 +72,7 @@ Timer.prototype.setTimeout = function(callback, opt_timeout) {
  * @param {function():undefined} ontimeout Called if condition doesn't become
  *    true.
  */
-Timer.prototype.runWhenTrue = function(condition, callback, timeout, ontimeout) {
+fxdriver.Timer.prototype.runWhenTrue = function(condition, callback, timeout, ontimeout) {
   var remaining = timeout;
   var interval = 100;
   var me = this;

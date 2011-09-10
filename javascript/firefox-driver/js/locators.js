@@ -26,7 +26,7 @@ goog.require('goog.dom');
 
 
 if (!bot.userAgent.isVersion('3.5')) {
-  Logger.dumpn("Replacing CSS lookup mechanism with Sizzle");
+  fxdriver.Logger.dumpn("Replacing CSS lookup mechanism with Sizzle");
   bot.locators.add('css', (function() {
     var sizzle = [
         'var originalSizzle = window.Sizzle;',

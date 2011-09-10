@@ -105,7 +105,7 @@ ObservingAlert.prototype.select = function(dialogTitle, text, count, selectList,
 function DrivenPromptService() {
   Components.utils.import('resource://fxdriver/modules/utils.js');
 
-  Logger.dumpn("Spoofing prompt service");
+  fxdriver.Logger.dumpn("Spoofing prompt service");
 
   // @mozilla.org/prompter;1
   var prompters = [
@@ -128,7 +128,7 @@ function DrivenPromptService() {
 
       try {
         var toReturn = service.QueryInterface(interfaceName);
-        Logger.dumpn("Found implementation at: " + cids[i]);
+        fxdriver.Logger.dumpn("Found implementation at: " + cids[i]);
         return toReturn;
       } catch (ignored) {}
     }
@@ -141,11 +141,11 @@ function DrivenPromptService() {
   var originalPrompter_ = findImplementation(CI.nsIPromptFactory, prompters);
 
   if (!originalPromptService_) {
-    Logger.dumpn("Unable to locate original prompt service");
+    fxdriver.Logger.dumpn("Unable to locate original prompt service");
   }
 
   if (!originalPrompter_) {
-    Logger.dumpn("Unable to locate original prompter");
+    fxdriver.Logger.dumpn("Unable to locate original prompter");
   }
 
   this.delegate_ = originalPrompter_ ? originalPrompter_ : originalPromptService_;
@@ -156,7 +156,7 @@ function DrivenPromptService() {
   this.QueryInterface = fxdriver.utils.queryInterface(this,
     [CI.nsIPromptFactory, CI.nsIPromptService, CI.nsIPromptService2]);
 
-  Logger.dumpn("Finished initializing spoofed prompt service");
+  fxdriver.Logger.dumpn("Finished initializing spoofed prompt service");
 }
 
 // Constants from nsIPromtService.idl
@@ -328,7 +328,7 @@ PromptServiceSpoofModule.prototype.registerSelf = function(aCompMgr, aFileSpec, 
 };
 
 PromptServiceSpoofModule.prototype.unregisterSelf = function(aCompMgr, aLocation, aType) {
-  Logger.dumpn("Unregistering\n");
+  fxdriver.Logger.dumpn("Unregistering\n");
   aCompMgr =
   aCompMgr.QueryInterface(CI.nsIComponentRegistrar);
   aCompMgr.unregisterFactoryLocation(DRIVEN_PROMPT_SERVICE_CLASS_ID, aLocation);

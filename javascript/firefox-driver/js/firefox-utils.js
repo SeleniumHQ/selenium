@@ -27,8 +27,8 @@ goog.provide('fxdriver.utils');
 goog.require('bot.userAgent');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('fxdriver.Logger');
 goog.require('goog.array');
-goog.require('Logger');
 
 
 var CC = Components.classes;
@@ -138,7 +138,7 @@ fxdriver.utils.unwrapXpcOnly = function(thing) {
     } catch(e) {
       //Unwrapping will fail for JS literals - numbers, for example. Catch
       // the exception and proceed, it will eventually be returend as-is.
-      Logger.dumpn("Unwrap From XPC only failed: " + e);
+      fxdriver.Logger.dumpn("Unwrap From XPC only failed: " + e);
     }
 
   }

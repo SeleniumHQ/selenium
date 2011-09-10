@@ -15,7 +15,7 @@
  limitations under the License.
  */
 
-goog.provide('Logger');
+goog.provide('fxdriver.Logger');
 goog.provide('fxdriver.debug');
 goog.provide('fxdriver.debug.ConsoleFormatter');
 
@@ -23,6 +23,7 @@ goog.require('goog.debug.Formatter');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.LogRecord');
 goog.require('goog.debug.TextFormatter');
+
 
 /**
  * @private
@@ -160,7 +161,7 @@ fxdriver.debug.initialize = function() {
 };
 
 
-Logger.dumpn = function(text) {
+fxdriver.Logger.dumpn = function(text) {
   fxdriver.debug.initialize();
 
   var logger = goog.debug.Logger.getLogger('webdriver');
@@ -168,12 +169,12 @@ Logger.dumpn = function(text) {
 };
 
 
-Logger.dump = function(element) {
+fxdriver.Logger.dump = function(element) {
   // no-op
 };
 
 
-Logger.dump = function(element) {
+fxdriver.Logger.dump = function(element) {
   fxdriver.debug.initialize();
   var dump = "=============\n";
 
@@ -191,7 +192,7 @@ Logger.dump = function(element) {
   dump += "\n------------\n";
 
   try {
-    Logger.dumpProperties_(element, rows);
+    fxdriver.Logger.dumpProperties_(element, rows);
   } catch (ignored) {
   }
 
@@ -207,7 +208,7 @@ Logger.dump = function(element) {
 };
 
 
-Logger.dumpProperties_ = function(view, rows) {
+fxdriver.Logger.dumpProperties_ = function(view, rows) {
   fxdriver.debug.initialize();
   for (var i in view) {
     var value = "\t" + i + ": ";
@@ -226,7 +227,7 @@ Logger.dumpProperties_ = function(view, rows) {
 };
 
 
-Logger.stackTrace = function() {
+fxdriver.Logger.stackTrace = function() {
   fxdriver.debug.initialize();
   var stack = Components.stack;
   var i = 5;
@@ -236,5 +237,5 @@ Logger.stackTrace = function() {
     dump += stack + "\n";
   }
 
-  Logger.log_(dump);
+  fxdriver.Logger.log_(dump);
 };

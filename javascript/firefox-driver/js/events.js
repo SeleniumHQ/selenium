@@ -18,8 +18,8 @@
 
 goog.provide('fxdriver.events');
 
-goog.require('Logger');
 goog.require('Utils');
+goog.require('fxdriver.Logger');
 goog.require('fxdriver.utils');
 goog.require('goog.style');
 
@@ -37,7 +37,7 @@ var CI = Components.interfaces;
  * @param {object} parameters The parameters to extract the coordinates from.
  */
 fxdriver.events.buildCoordinates = function(parameters, doc) {
-  Logger.dump(parameters);
+  fxdriver.Logger.dump(parameters);
   var element = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
 
   var x = parameters['xoffset'] || null;

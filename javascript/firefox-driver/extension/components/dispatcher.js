@@ -341,7 +341,7 @@ Dispatcher.prototype.dispatch = function(request, response) {
       bestMatchResource.setRequestAttributes(request);
       bestMatchResource.handle(request, response);
     } catch (ex) {
-      Logger.dump(ex);
+      fxdriver.Logger.dump(ex);
       response.sendError(Response.INTERNAL_ERROR, JSON.stringify({
         status: bot.ErrorCode.UNHANDLED_ERROR,
         value: fxdriver.error.toJSON(ex)
