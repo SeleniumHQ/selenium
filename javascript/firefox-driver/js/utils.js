@@ -22,7 +22,7 @@ goog.require('bot.dom');
 goog.require('bot.userAgent');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
-goog.require('ErrorCode');
+goog.require('bot.ErrorCode');
 goog.require('Logger');
 
 
@@ -291,11 +291,11 @@ Utils.getElementAt = function(index, rawDoc) {
   if (e) {
     if (!Utils.isAttachedToDom(e)) {
       delete doc.fxdriver_elements[index];
-      throw new WebDriverError(ErrorCode.STALE_ELEMENT_REFERENCE,
+      throw new WebDriverError(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
           'Element is no longer attached to the DOM');
     }
   } else {
-    throw new WebDriverError(ErrorCode.STALE_ELEMENT_REFERENCE,
+    throw new WebDriverError(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
         'Element not found in the cache');
   }
 

@@ -199,17 +199,17 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
       return;
     } catch (e) {
       Logger.dumpn(JSON.stringify(e));
-      throw new WebDriverError(ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR, e);
+      throw new WebDriverError(bot.ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR, e);
     }
   }
 
   var docBodyLoadTimeOut = function() {
-    respond.sendError(new WebDriverError(ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR,
+    respond.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR,
         "waiting for doc.body failed"));
   };
 
   var scriptLoadTimeOut = function() {
-    respond.sendError(new WebDriverError(ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR,
+    respond.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR,
         "waiting for evaluate.js load failed"));
   };
 
@@ -385,7 +385,7 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
   } else {
     var wait = respond.session.getImplicitWait();
     if (wait == 0 || new Date().getTime() - startTime > wait) {
-      respond.sendError(new WebDriverError(ErrorCode.NO_SUCH_ELEMENT,
+      respond.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_ELEMENT,
           'Unable to locate element: ' + JSON.stringify({
               method: method,
               selector: selector
@@ -540,7 +540,7 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
   var switchingToDefault = !goog.isDef(parameters.id) || goog.isNull(parameters.id);
   if ((!currentWindow || currentWindow.closed) && !switchingToDefault) {
     // By definition there will be no child frames.
-    respond.sendError(new WebDriverError(ErrorCode.NO_SUCH_FRAME, "Current window is closed"));
+    respond.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_FRAME, "Current window is closed"));
   }
 
   var newWindow = null;
@@ -583,7 +583,7 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
         return frame == element.contentWindow;
       });
     } else {
-      throw new WebDriverError(ErrorCode.NO_SUCH_FRAME,
+      throw new WebDriverError(bot.ErrorCode.NO_SUCH_FRAME,
           'Element is not a frame element: ' + element.tagName);
     }
   }
@@ -592,7 +592,7 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
     respond.session.setWindow(newWindow);
     respond.send();
   } else {
-    throw new WebDriverError(ErrorCode.NO_SUCH_FRAME,
+    throw new WebDriverError(bot.ErrorCode.NO_SUCH_FRAME,
         'Unable to locate frame: ' + parameters.id);
   }
 };
@@ -657,7 +657,7 @@ FirefoxDriver.prototype.addCookie = function(respond, parameters) {
     var currLocation = respond.session.getBrowser().contentWindow.location;
     var currDomain = currLocation.host;
     if (currDomain.indexOf(cookie.domain) == -1) {  // Not quite right, but close enough
-      throw new WebDriverError(ErrorCode.INVALID_COOKIE_DOMAIN,
+      throw new WebDriverError(bot.ErrorCode.INVALID_COOKIE_DOMAIN,
           "You may only set cookies for the current domain");
     }
   }
@@ -671,7 +671,7 @@ FirefoxDriver.prototype.addCookie = function(respond, parameters) {
 
   var document = respond.session.getDocument();
   if (!document || !document.contentType.match(/html/i)) {
-    throw new WebDriverError(ErrorCode.UNABLE_TO_SET_COOKIE,
+    throw new WebDriverError(bot.ErrorCode.UNABLE_TO_SET_COOKIE,
         "You may only set cookies on html documents");
   }
 
@@ -799,11 +799,11 @@ FirefoxDriver.prototype.saveScreenshot = function(respond, pngFile) {
     try {
       Screenshooter.save(canvas, pngFile);
     } catch(e) {
-      throw new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+      throw new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
           'Could not save screenshot to ' + pngFile + ' - ' + e);
     }
   } catch(e) {
-    throw new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+    throw new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
         'Could not take screenshot of current page - ' + e);
   }
   respond.send();
@@ -816,7 +816,7 @@ FirefoxDriver.prototype.screenshot = function(respond) {
     var canvas = Screenshooter.grab(window);
     respond.value = Screenshooter.toBase64(canvas);
   } catch (e) {
-    throw new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+    throw new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
         'Could not take screenshot of current page - ' + e);
   }         
   respond.send();
@@ -827,7 +827,7 @@ FirefoxDriver.prototype.getAlert = function(respond) {
   fxdriver.modals.isModalPresent(
       function(present) {
         if (!present) {
-          respond.status = ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
           respond.value = { message: 'No alert is present' };
         }
         respond.send();
@@ -853,7 +853,7 @@ FirefoxDriver.prototype.getAlertText = function(respond) {
       if (present) {
         respond.value = fxdriver.modals.getText(driver)
       } else {
-        respond.status = ErrorCode.NO_MODAL_DIALOG_OPEN;
+        respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
         respond.value = { message: 'No alert is present' };
       }
       respond.send();
@@ -878,7 +878,7 @@ FirefoxDriver.prototype.imeGetAvailableEngines = function(respond) {
 
     respond.value = returnArray;
   } catch (e) {
-    throw new WebDriverError(ErrorCode.IME_NOT_AVAILABLE,
+    throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
         "IME not available on the host: " + e);
   }
   respond.send();
@@ -891,7 +891,7 @@ FirefoxDriver.prototype.imeGetActiveEngine = function(respond) {
     obj.imeGetActiveEngine(activeEngine);
     respond.value = activeEngine.value;
   } catch (e) {
-    throw new WebDriverError(ErrorCode.IME_NOT_AVAILABLE,
+    throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
         "IME not available on the host: " + e);
   }    
   respond.send();
@@ -904,7 +904,7 @@ FirefoxDriver.prototype.imeIsActivated = function(respond) {
     obj.imeIsActivated(isActive);
     respond.value = isActive.value;
   } catch (e) {
-    throw new WebDriverError(ErrorCode.IME_NOT_AVAILABLE,
+    throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
         "IME not available on the host: " + e);
   }
   respond.send();
@@ -915,7 +915,7 @@ FirefoxDriver.prototype.imeDeactivate = function(respond) {
   try {
     obj.imeDeactivate();
   } catch (e) {
-    throw new WebDriverError(ErrorCode.IME_NOT_AVAILABLE,
+    throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
         "IME not available on the host: " + e);
   }
   
@@ -929,12 +929,12 @@ FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
   try {
     obj.imeActivateEngine(engineToActivate, successfulActivation);
   } catch (e) {
-    throw new WebDriverError(ErrorCode.IME_NOT_AVAILABLE,
+    throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
         "IME not available on the host: " + e);
   }
 
   if (! successfulActivation.value) {
-    throw new WebDriverError(ErrorCode.IME_ENGINE_ACTIVATION_FAILED,
+    throw new WebDriverError(bot.ErrorCode.IME_ENGINE_ACTIVATION_FAILED,
         "Activation of engine failed: " + engineToActivate);
   } 
   respond.send();
@@ -968,7 +968,7 @@ function generateErrorForNativeEvents(nativeEventsEnabled, nativeEventsObj, node
     nativeEventFailureCause = "Could not get node for element - cannot interact.";
   }
  // TODO: use the correct error type here.
-  return new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+  return new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
       "Cannot perform native interaction: " + nativeEventFailureCause);
 }
 

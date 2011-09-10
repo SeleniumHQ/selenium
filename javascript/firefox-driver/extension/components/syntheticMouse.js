@@ -55,7 +55,7 @@ SyntheticMouse.prototype.newResponse = function(status, message) {
 
 SyntheticMouse.prototype.isElementShown = function(element) {
   if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
-    return this.newResponse(ErrorCode.ELEMENT_NOT_VISIBLE,
+    return this.newResponse(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and so may not be interacted with')
   }
 };
@@ -131,12 +131,12 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   proceed = fireAndCheck(element, goog.events.EventType.MOUSEMOVE, botCoords);
 
   if (!proceed || !bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
-    return this.newResponse(ErrorCode.SUCCESS, "ok");
+    return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
   }
 
   bot.events.fire(element, goog.events.EventType.MOUSEOVER, botCoords);
 
-  return this.newResponse(ErrorCode.SUCCESS, "ok");
+  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 
@@ -168,7 +168,7 @@ SyntheticMouse.prototype.click = function(target) {
   Logger.dumpn("About to do a bot.action.click on " + element);
   bot.action.click(element);
 
-  return this.newResponse(ErrorCode.SUCCESS, "ok");
+  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 SyntheticMouse.prototype.contextClick = function(target) {
@@ -185,7 +185,7 @@ SyntheticMouse.prototype.contextClick = function(target) {
   Logger.dumpn("About to do a bot.action.rightClick on " + element);
   bot.action.rightClick(element);
 
-  return this.newResponse(ErrorCode.SUCCESS, "ok");
+  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 SyntheticMouse.prototype.doubleClick = function(target) {
@@ -199,7 +199,7 @@ SyntheticMouse.prototype.doubleClick = function(target) {
   Logger.dumpn("About to do a bot.action.doubleClick on " + element);
   bot.action.doubleClick(element);
 
-  return this.newResponse(ErrorCode.SUCCESS, "ok");
+  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 
@@ -218,7 +218,7 @@ SyntheticMouse.prototype.down = function(coordinates) {
   };
   bot.events.fire(element, goog.events.EventType.MOUSEDOWN, botCoords);
 
-  return this.newResponse(ErrorCode.SUCCESS, "ok");
+  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 
@@ -240,7 +240,7 @@ SyntheticMouse.prototype.up = function(coordinates) {
 
   this.buttonDown = null;
 
-  return this.newResponse(ErrorCode.SUCCESS, "ok");
+  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 

@@ -112,7 +112,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
       Logger.dumpn("Detected error when clicking: " + e.name);
 
       if (e.name != "NS_ERROR_NOT_IMPLEMENTED") {
-        throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE, e);
+        throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE, e);
       }
 
       // Fall through to the synthesized click code.
@@ -127,7 +127,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
 
   var wrapped = XPCNativeWrapper(element);
   var res = this.mouse.move(wrapped, null, null);
-  if (res.status != ErrorCode.SUCCESS) {
+  if (res.status != bot.ErrorCode.SUCCESS) {
     respond.status = res.status;
     respond.value = res.message;
     respond.send();
@@ -172,7 +172,7 @@ FirefoxDriver.prototype.getElementValue = function(respond, parameters) {
     return;
   }
 
-  throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+  throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
       'Element does not have a value attribute');
 };
 
@@ -302,7 +302,7 @@ FirefoxDriver.prototype.hoverOverElement = function(respond, parameters) {
     respond.session.setMousePosition(x, y);
   } else {
     // TODO: use the correct error type here.
-    throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+    throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
         "Unable to hover over element");
   }
 
@@ -333,7 +333,7 @@ FirefoxDriver.prototype.submitElement = function(respond, parameters) {
         return;
       }
     } else {
-      throw new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+      throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
           "Element was not in a form so couldn't submit");
     }
   } else {

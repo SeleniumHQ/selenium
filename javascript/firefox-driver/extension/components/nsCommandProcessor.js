@@ -69,7 +69,7 @@ var Response = function(command, responseHandler) {
   this.json_ = {
     name: command ? command.name : 'Unknown command',
     sessionId: command['sessionId'],
-    status: ErrorCode.SUCCESS,
+    status: bot.ErrorCode.SUCCESS,
     value: ''
   };
   if (this.json_['sessionId'] && this.json_['sessionId']['value']) {
@@ -120,8 +120,8 @@ Response.prototype = {
     // WebDriverError is defined in the utils.js subscript which is
     // loaded independently in this component and in the main driver
     // component.
-    this.status = e.isWebDriverError ? e.code : ErrorCode.UNHANDLED_ERROR;
-    this.value = ErrorCode.toJSON(e);
+    this.status = e.isWebDriverError ? e.code : bot.ErrorCode.UNHANDLED_ERROR;
+    this.value = fxdriver.error.toJSON(e);
     this.send();
   },
 
@@ -386,7 +386,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     command = JSON.parse(jsonCommandString);
   } catch (ex) {
     response = JSON.stringify({
-      'status': ErrorCode.UNHANDLED_ERROR,
+      'status': bot.ErrorCode.UNHANDLED_ERROR,
       'value': 'Error parsing command: "' + jsonCommandString + '"'
     });
     responseHandler.handleResponse(response);
@@ -410,7 +410,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
 
   var sessionId = command.sessionId;
   if (!sessionId) {
-    response.sendError(new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+    response.sendError(new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
         'No session ID specified'));
     return;
   }
@@ -424,7 +424,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
       getSession(sessionId).
       wrappedJSObject;
   } catch (ex) {
-    response.sendError(new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+    response.sendError(new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
         'Session not found: ' + sessionId));
     return;
   }
@@ -438,13 +438,13 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
   var sessionWindow = response.session.getChromeWindow();
   var driver = sessionWindow.fxdriver;  // TODO(jmleyba): We only need to store an ID on the window!
   if (!driver) {
-    response.sendError(new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+    response.sendError(new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
         'Session has no driver: ' + response.session.getId()));
     return;
   }
 
   if (typeof driver[command.name] != 'function') {
-    response.sendError(new WebDriverError(ErrorCode.UNKNOWN_COMMAND,
+    response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_COMMAND,
         'Unrecognised command: ' + command.name));
     return;
   }
@@ -485,7 +485,7 @@ nsCommandProcessor.prototype.switchToWindow = function(response, parameters,
         response.value = response.session.getId();
         response.send();
       } else {
-        response.sendError(new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+        response.sendError(new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
             'No driver found attached to top window!'));
       }
       // Found the desired window, stop the search.
@@ -503,7 +503,7 @@ nsCommandProcessor.prototype.switchToWindow = function(response, parameters,
     // one is still loading vs. a brute force "try again"
     var searchAttempt = opt_searchAttempt || 0;
     if (searchAttempt > 3) {
-      response.sendError(new WebDriverError(ErrorCode.NO_SUCH_WINDOW,
+      response.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_WINDOW,
           'Unable to locate window "' + lookFor + '"'));
     } else {
       var self = this;
@@ -599,7 +599,7 @@ nsCommandProcessor.prototype.newSession = function(response) {
   var win = this.wm.getMostRecentWindow("navigator:browser");
   var driver = win.fxdriver;
   if (!driver) {
-    response.sendError(new WebDriverError(ErrorCode.UNHANDLED_ERROR,
+    response.sendError(new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
         'No drivers associated with the window'));
   } else {
     var sessionStore = Components.

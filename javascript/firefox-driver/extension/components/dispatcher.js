@@ -70,7 +70,7 @@ Dispatcher.executeAs = function(name) {
     var callback = function(jsonResponseString) {
       var jsonResponse = JSON.parse(jsonResponseString);
       // Going to need more granularity here I think.
-      if (jsonResponse.status != ErrorCode.SUCCESS) {
+      if (jsonResponse.status != bot.ErrorCode.SUCCESS) {
         response.setStatus(Response.INTERNAL_ERROR);
       }
 
@@ -343,8 +343,8 @@ Dispatcher.prototype.dispatch = function(request, response) {
     } catch (ex) {
       Logger.dump(ex);
       response.sendError(Response.INTERNAL_ERROR, JSON.stringify({
-        status: ErrorCode.UNHANDLED_ERROR,
-        value: ErrorCode.toJSON(ex)
+        status: bot.ErrorCode.UNHANDLED_ERROR,
+        value: fxdriver.error.toJSON(ex)
       }), 'application/json');
     }
   } else {

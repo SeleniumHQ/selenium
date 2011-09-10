@@ -56,12 +56,12 @@ fxdriver.preconditions.visible = function(doc, parameters) {
   var element = Utils.getElementAt(parameters.id, doc);
 
   if (fxdriver.preconditions.isInHead_(element)) {
-    return new WebDriverError(ErrorCode.UNKNOWN_COMMAND,
+    return new WebDriverError(bot.ErrorCode.UNKNOWN_COMMAND,
         'Element is in the document HEAD and so may not be interacted with');
   }
   
   if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
-    return new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE,
+    return new WebDriverError(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and so may not be interacted with');
   }
 };
@@ -76,7 +76,7 @@ fxdriver.preconditions.enabled = function(doc, parameters) {
   var element = Utils.getElementAt(parameters.id, doc);
 
   if (!!element.disabled) {
-    return new WebDriverError(ErrorCode.INVALID_ELEMENT_STATE,
+    return new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
         'Element is disabled and so may not be used for actions');
   }
 };
@@ -89,7 +89,7 @@ fxdriver.preconditions.enabled = function(doc, parameters) {
  */
 fxdriver.preconditions.noAlertPresent = function(driver) {
   if (driver.modalOpen) {
-    return new WebDriverError(ErrorCode.MODAL_DIALOG_OPENED,
+    return new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
         'A modal dialog, such as an alert, is open.');
   }
 };
@@ -102,7 +102,7 @@ fxdriver.preconditions.noAlertPresent = function(driver) {
  */
 fxdriver.preconditions.alertPresent = function(driver) {
   if (!driver.modalOpen) {
-    return new WebDriverError(ErrorCode.NO_MODAL_DIALOG_OPEN,
+    return new WebDriverError(bot.ErrorCode.NO_MODAL_DIALOG_OPEN,
         'A modal dialog, such as an alert, is not open.');
   }
 };

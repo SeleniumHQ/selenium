@@ -21,7 +21,7 @@
 
 goog.provide('fxdriver.modals');
 
-goog.require('ErrorCode');
+goog.require('bot.ErrorCode');
 goog.require('Logger');
 goog.require('Timer');
 goog.require('fxdriver.utils');
@@ -76,7 +76,7 @@ fxdriver.modals.setValue = function(driver, value) {
       textbox.value = value;
     }
   } catch (e) {
-    throw new WebDriverError(ErrorCode.ELEMENT_NOT_VISIBLE, 'Alert did not have a text box');
+    throw new WebDriverError(bot.ErrorCode.ELEMENT_NOT_VISIBLE, 'Alert did not have a text box');
   }
 };
 
@@ -153,7 +153,7 @@ fxdriver.modals.signalOpenModal = function(parent, text) {
     res.value = {
       text: text
     };
-    res.statusCode = ErrorCode.MODAL_DIALOG_OPENED;
+    res.statusCode = bot.ErrorCode.MODAL_DIALOG_OPENED;
     res.send();
   }
 };

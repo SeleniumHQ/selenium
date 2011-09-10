@@ -3,7 +3,6 @@ var EXPORTED_SYMBOLS = [
   'fxdriver',
   'goog',
   'webdriver',
-  'ErrorCode',
   'Logger',
   'Timer',
   'Utils',

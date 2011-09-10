@@ -16,47 +16,17 @@
  limitations under the License.
  */
 
-goog.provide('ErrorCode');
-
-/**
- * Error codes used by the remote wire protocol.
- * @enum {number}
- */
-var ErrorCode = {
-  // Keep in sync with codes in org.openqa.selenium.remote.ErrorCodes
-
-  SUCCESS: 0,
-  NO_SUCH_ELEMENT: 7,
-  NO_SUCH_FRAME: 8,
-  UNKNOWN_COMMAND: 9,
-  STALE_ELEMENT_REFERENCE: 10,
-  ELEMENT_NOT_VISIBLE: 11,
-  INVALID_ELEMENT_STATE: 12,
-  UNHANDLED_ERROR: 13,
-  ELEMENT_NOT_SELECTABLE: 15,
-  UNEXPECTED_JAVASCRIPT_ERROR: 17,
-  XPATH_LOOKUP_ERROR: 19,
-  TIMEOUT: 21,
-  NO_SUCH_WINDOW: 23,
-  INVALID_COOKIE_DOMAIN: 24,
-  UNABLE_TO_SET_COOKIE: 25,
-  MODAL_DIALOG_OPENED: 26,
-  NO_MODAL_DIALOG_OPEN: 27,
-  ASYNC_SCRIPT_TIMEOUT: 28,
-  INVALID_ELEMENT_COORDINATES: 29,
-  IME_NOT_AVAILABLE: 30,
-  IME_ENGINE_ACTIVATION_FAILED: 31,
-  INVALID_SELECTOR_ERROR: 32
-};
+goog.provide('fxdriver.error');
 
 
 /**
  * Converts an Error object to a JSON object compatible with WebDriver's remote
  * wire protocol.
+ *
  * @param {Error} ex The thrown error to convert.
  * @return {Object} The converted object.
  */
-ErrorCode.toJSON = function(ex) {
+fxdriver.error.toJSON = function(ex) {
   var stackFrames = [];
   var json = {
     'message': ex.message ? ex.message : ex.toString(),
