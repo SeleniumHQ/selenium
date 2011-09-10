@@ -155,6 +155,31 @@ fxdriver.utils.unwrapFor4 = function(doc) {
 };
 
 
+fxdriver.utils.getService = function(className, serviceName) {
+  var clazz = Components.classes[className];
+  if (clazz == undefined) {
+    throw new Exception();
+  }
+
+  return clazz.getService(Components.interfaces[serviceName]);
+};
+
+
+/**
+ * Generate a unique id.
+ *
+ * @return {string} A new, unique id.
+ */
+fxdriver.utils.getUniqueId = function() {
+  // TODO(simon): initialize this statically.
+  if (!fxdriver.utils._generator) {
+    fxdriver.utils._generator =
+    fxdriver.utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
+  }
+  return fxdriver.utils._generator.generateUUID().toString();
+};
+
+
 /**
  * @param {!Element} element The element to use
  * @param {int} x X coordinate

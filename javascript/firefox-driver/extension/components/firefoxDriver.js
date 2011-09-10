@@ -78,7 +78,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   // with a different anchor tag.
   var current = respond.session.getWindow().location;
   var ioService =
-      Utils.getService("@mozilla.org/network/io-service;1", "nsIIOService");
+      fxdriver.utils.getService("@mozilla.org/network/io-service;1", "nsIIOService");
   var currentUri = ioService.newURI(current, "", null);
   var futureUri = ioService.newURI(url, "", currentUri);
 
@@ -114,9 +114,9 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
 
 FirefoxDriver.prototype.close = function(respond) {
   // Grab all the references we'll need. Once we call close all this might go away
-  var wm = Utils.getService(
+  var wm = fxdriver.utils.getService(
       "@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
-  var appService = Utils.getService(
+  var appService = fxdriver.utils.getService(
       "@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
   var forceQuit = Components.interfaces.nsIAppStartup.eForceQuit;
 
@@ -676,7 +676,7 @@ FirefoxDriver.prototype.addCookie = function(respond, parameters) {
   }
 
   var cookieManager =
-      Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager2");
+      fxdriver.utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager2");
 
   // The signature for "add" is different in firefox 3 and 2. We should sniff
   // the browser version and call the right version of the method, but for now
@@ -700,7 +700,7 @@ function getVisibleCookies(location) {
   var isForCurrentPath = function(aPath) {
     return currentPath.indexOf(aPath) != -1;
   };
-  var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
+  var cm = fxdriver.utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
   var e = cm.enumerator;
   while (e.hasMoreElements()) {
     var cookie = e.getNext().QueryInterface(Components.interfaces["nsICookie"]);
@@ -751,7 +751,7 @@ FirefoxDriver.prototype.getCookies = function(respond) {
 // doesn't always do The Right Thing
 FirefoxDriver.prototype.deleteCookie = function(respond, parameters) {
   var toDelete = parameters.name;
-  var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
+  var cm = fxdriver.utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
 
   var cookies = getVisibleCookies(respond.session.getBrowser().
       contentWindow.location);
@@ -767,7 +767,7 @@ FirefoxDriver.prototype.deleteCookie = function(respond, parameters) {
 
 
 FirefoxDriver.prototype.deleteAllCookies = function(respond) {
-  var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
+  var cm = fxdriver.utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
   var cookies = getVisibleCookies(respond.session.getBrowser().
       contentWindow.location);
 

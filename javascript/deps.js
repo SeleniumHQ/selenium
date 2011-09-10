@@ -61,7 +61,7 @@ goog.addDependency("../../../javascript/firefox-driver/js/logging.js", ['fxdrive
 goog.addDependency("../../../javascript/firefox-driver/js/modals.js", ['fxdriver.modals'], ['bot.ErrorCode', 'fxdriver.Logger', 'fxdriver.Timer', 'fxdriver.utils']);
 goog.addDependency("../../../javascript/firefox-driver/js/preconditions.js", ['fxdriver.preconditions'], ['bot.dom', 'Utils']);
 goog.addDependency("../../../javascript/firefox-driver/js/timer.js", ['fxdriver.Timer'], []);
-goog.addDependency("../../../javascript/firefox-driver/js/utils.js", ['Utils'], ['bot.ErrorCode', 'bot.dom', 'bot.userAgent', 'fxdriver.Logger', 'goog.dom.TagName', 'goog.style']);
+goog.addDependency("../../../javascript/firefox-driver/js/utils.js", ['Utils'], ['bot.ErrorCode', 'bot.dom', 'bot.userAgent', 'fxdriver.Logger', 'fxdriver.utils', 'goog.dom.TagName', 'goog.style']);
 goog.addDependency("../../../javascript/firefox-driver/js/utils_exports.js", [], []);
 goog.addDependency("../../../javascript/iphone-driver/script.js", ['webdriver.iphone'], ['bot.inject']);
 goog.addDependency("../../../javascript/jsunit/app/jsUnitCore.js", [], []);

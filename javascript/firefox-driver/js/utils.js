@@ -22,6 +22,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.userAgent');
 goog.require('fxdriver.Logger');
+goog.require('fxdriver.utils');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
 
@@ -107,14 +108,6 @@ function createSwitchFile(file_content) {
   }
 }
 
-Utils.getUniqueId = function() {
-  if (!Utils._generator) {
-    Utils._generator =
-    Utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
-  }
-  return Utils._generator.generateUUID().toString();
-};
-
 
 Utils.newInstance = function(className, interfaceName) {
   var clazz = Components.classes[className];
@@ -126,16 +119,6 @@ Utils.newInstance = function(className, interfaceName) {
   var iface = Components.interfaces[interfaceName];
 
   return clazz.createInstance(iface);
-};
-
-
-Utils.getService = function(className, serviceName) {
-  var clazz = Components.classes[className];
-  if (clazz == undefined) {
-    throw new Exception();
-  }
-
-  return clazz.getService(Components.interfaces[serviceName]);
 };
 
 
@@ -259,7 +242,7 @@ Utils.addToKnownElements = function(element, rawDoc) {
     }
   }
 
-  var id = Utils.getUniqueId();
+  var id = fxdriver.utils.getUniqueId();
   doc.fxdriver_elements[id] = toCompareWith;
 
   return id;
@@ -368,7 +351,7 @@ Utils.getNodeForNativeEvents = function(element) {
 
 Utils.useNativeEvents = function() {
   var prefs =
-    Utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
+    fxdriver.utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
   var enableNativeEvents =
     prefs.prefHasUserValue("webdriver_enable_native_events") ?
     prefs.getBoolPref("webdriver_enable_native_events") : false;
@@ -1132,7 +1115,7 @@ Utils.getElementIndexForXPath_ = function (element) {
 
 Utils.loadUrl = function(url) {
   fxdriver.Logger.dumpn("Loading: " + url);
-  var ioService = Utils.getService("@mozilla.org/network/io-service;1", "nsIIOService");
+  var ioService = fxdriver.utils.getService("@mozilla.org/network/io-service;1", "nsIIOService");
   var channel = ioService.newChannel(url, null, null);
   var channelStream = channel.open();
 
@@ -1187,7 +1170,7 @@ Utils.installWindowCloseListener = function (respond) {
     }
   };
 
-  var mediator = Utils.getService('@mozilla.org/embedcomp/window-watcher;1', 'nsIWindowWatcher');
+  var mediator = fxdriver.utils.getService('@mozilla.org/embedcomp/window-watcher;1', 'nsIWindowWatcher');
   mediator.registerNotification(observer);
 };
 
