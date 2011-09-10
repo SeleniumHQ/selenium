@@ -35,7 +35,9 @@ module Selenium
           Zip::ZipFile.open(zip_path, Zip::ZipFile::CREATE) { |zip|
             ::Find.find(path) do |file|
               next if File.directory?(file)
-              entry = file.sub("#{path}/", '')
+
+              entry = Zip::ZipEntry.new(zip_path, file.sub("#{path}/", ''))
+              entry.follow_symlinks = true
 
               zip.add entry, file
             end
