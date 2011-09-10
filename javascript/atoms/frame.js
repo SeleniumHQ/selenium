@@ -122,7 +122,7 @@ bot.frame.findFrameByIndex = function(index, opt_root) {
  *     element.
  * @param {!Window=} opt_root The window to perform
  *     the search under. Defaults to {@code bot.getWindow()}.
- * @return {number} The index of the frame if found, null otherwise.
+ * @return {?number} The index of the frame if found, null otherwise.
  */
 bot.frame.getFrameIndex = function(element, opt_root) {
   var domWindow = opt_root || bot.getWindow();
