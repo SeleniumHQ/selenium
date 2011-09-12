@@ -42,7 +42,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   public void testDragAndDrop() throws Exception {
     if (Platform.getCurrent().is(Platform.MAC)) {
-      System.out.println("Skipping testElementInDiv on Mac: See issue 2281.");
+      System.out.println("Skipping testDragAndDrop on Mac: See issue 2281.");
       return;
     }
 
@@ -95,7 +95,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     // Image ends up on a negative offset because its top-left corner is
     // hidden.
     Point newLocation = img.getLocation();
-    assertTrue("Top-left corner of the element should have negative offset",
+    assertTrue("Top-left corner of the element should have negative offset. It was: " + newLocation,
         newLocation.getX() < 0 && newLocation.getY() < 0);
 
     actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
