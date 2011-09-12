@@ -30,7 +30,9 @@ import static org.openqa.selenium.TestUtilities.isFirefox30;
 import static org.openqa.selenium.TestUtilities.isFirefox35;
 import static org.openqa.selenium.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
@@ -160,7 +162,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
     dblClick.perform();
     String testFieldContent = TestWaiter.waitFor(
-        WaitingConditions.elementValueToEqual(toDoubleClick, "DoubleClicked"), 5, TimeUnit.SECONDS);
+        elementValueToEqual(toDoubleClick, "DoubleClicked"), 5, TimeUnit.SECONDS);
     assertEquals("Value should change to DoubleClicked.", "DoubleClicked",
         testFieldContent);
   }
@@ -218,7 +220,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE},
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, FIREFOX},
       reason = "Behaviour not finalized yet regarding linked images.")
   public void testMovingIntoAnImageEnclosedInALink() {
     driver.get(pages.linkedImage);
@@ -240,7 +242,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     // For this reason, this action will fail.
     new Actions(driver).moveToElement(linkElement, 500, 30).click().perform();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "We Arrive Here"));
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME},
@@ -280,22 +282,22 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
     WebElement resultArea = driver.findElement(By.id("result"));
     String expectedEvents = "First";
-    assertEquals(expectedEvents, resultArea.getText());
+    waitFor(elementTextToEqual(resultArea, expectedEvents));
 
     // Move to element with id 'r2', at (2500, 50) to (2580, 100)
     new Actions(driver).moveByOffset(2540 - 150, 75 - 125).click().perform();
     expectedEvents += " Second";
-    assertEquals(expectedEvents, resultArea.getText());
+    waitFor(elementTextToEqual(resultArea, expectedEvents));
 
     // Move to element with id 'r3' at (60, 1500) to (140, 1550)
     new Actions(driver).moveByOffset(100 - 2540, 1525 - 75).click().perform();
     expectedEvents += " Third";
-    assertEquals(expectedEvents, resultArea.getText());
+    waitFor(elementTextToEqual(resultArea, expectedEvents));
 
     // Move to element with id 'r4' at (220,180) to (320, 230)
     new Actions(driver).moveByOffset(270 - 100, 205 - 1525).click().perform();
     expectedEvents += " Fourth";
-    assertEquals(expectedEvents, resultArea.getText());
+    waitFor(elementTextToEqual(resultArea, expectedEvents));
   }
 
 }

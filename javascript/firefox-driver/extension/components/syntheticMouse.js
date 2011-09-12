@@ -74,8 +74,17 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
       fxdriver.utils.unwrap(target) : this.lastElement;
 
    if (goog.isFunction(element.scrollIntoView)) {
-    element.scrollIntoView();
+     element.scrollIntoView();
   }
+
+  // The following code assumes xOffset, yOffset are absolute in the DOM.
+  // If the page was scrolled, the scroll offset should be substracted
+  // from the provided offset since the movement events are generated
+  // relative to the viewport.
+  var doc = goog.dom.getOwnerDocument(element);
+  var currentScroll = goog.dom.getDomHelper(doc).getDocumentScroll();
+  xOffset -= currentScroll.x;
+  yOffset -= currentScroll.y;
 
   if (this.lastElement && element && this.lastElement != element) {
     var currLoc = Utils.getElementLocation(this.lastElement);
@@ -84,7 +93,6 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
     yOffset += targetLoc['y'] - currLoc['y'];
   }
 
-  this.lastElement = element;
   this.lastElement = element;
   var pos = Utils.getElementLocation(element);
   var owner = goog.dom.getOwnerDocument(element);

@@ -994,14 +994,14 @@ FirefoxDriver.prototype.getBrowserSpecificOffset_ = function(inBrowser) {
   return getBrowserSpecificOffset_(inBrowser);
 };
 
-calculateViewportScrolling_ = function(moveOffset, viewportDimension, pageCurrentOffset) {
+calculateViewportScrolling_ = function(moveOffset, viewportDimension) {
   // Offset from the border of the viewport (in pixels) we're willing to move
   // the mouse to. If, after scrolling, the mouse ends up witha 0 X or Y coordinates
   // clicking may fail - so make sure it's at most in this offset.
-  var MIN_BORDER_OFFSET = 20;
+  var MIN_BORDER_OFFSET = 1;
 
   // Mouse movement will be outside the viewport - we need to scroll
-  if ((moveOffset > viewportDimension) || (moveOffset < 0)) {
+  if ((moveOffset >= viewportDimension) || (moveOffset < 0)) {
     var scrollOffset = 0;
     var newMoveOffset = moveOffset;
     var shouldScroll = true;
@@ -1012,14 +1012,8 @@ calculateViewportScrolling_ = function(moveOffset, viewportDimension, pageCurren
       scrollOffset = moveOffset - viewportDimension + MIN_BORDER_OFFSET;
       newMoveOffset = viewportDimension - MIN_BORDER_OFFSET;
     } else { // Negative move offset - scroll back.
-      scrollOffset = moveOffset - MIN_BORDER_OFFSET;
-      newMoveOffset = MIN_BORDER_OFFSET;
-      // The page is currently scrolled to the beginning of the page - do not
-      // attempt to scroll further. This is a special-case handling for when
-      // a negative offset is provided and we cannot scroll further.
-      if (pageCurrentOffset == 0) {
-        shouldScroll = false;
-      }
+      scrollOffset = moveOffset;
+      newMoveOffset = 0;
     }
 
     return {moveTo: newMoveOffset, scroll: scrollOffset, shouldScroll: shouldScroll};
@@ -1052,38 +1046,6 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
       var element = fxdriver.utils.unwrap(coordinates.auxiliary);
 
       var loc = Utils.getLocationOnceScrolledIntoView(element);
-      var accessibleLocation = Utils.getLocationViaAccessibilityInterface(element);
-
-      // Don't use accessibility information for Firefox 3.5 and below.
-      if ((bot.userAgent.isVersion('3.6')) && accessibleLocation) {
-        var browserToolbarAddedPixelsX = browserOffset.x;
-        var browserToolbarAddedPixelsY = browserOffset.y;
-        // For Firefox 3.6, use the mosInnerScreenX, as we cannot get the browser-specific offset
-        // by calling getBoundingClientRect on the browser object.
-        if (! bot.userAgent.isFirefox4()) {
-          browserToolbarAddedPixelsX = element.ownerDocument.defaultView.mozInnerScreenX;
-          browserToolbarAddedPixelsY = element.ownerDocument.defaultView.mozInnerScreenY;
-          Logger.dumpn("Adjusted browser-specific offset: (" + browserToolbarAddedPixelsX + ", " +
-            browserToolbarAddedPixelsY + ")");
-        }
-
-        // Adjust according to browser-specific offset.
-        accessibleLocation.x = accessibleLocation.x - browserToolbarAddedPixelsX;
-        accessibleLocation.y = accessibleLocation.y - browserToolbarAddedPixelsY;
-
-        var useAccessibleLocation = !Utils.locationsEqual(loc, accessibleLocation) &&
-            (!isNaN(accessibleLocation.x));
-
-        Logger.dumpn("Location provided by Accessibility API: (" + accessibleLocation.x + ", " +
-            accessibleLocation.y + ") h: " + accessibleLocation.height + " w: " +
-            accessibleLocation.width + " was used? " + useAccessibleLocation);
-
-        if (useAccessibleLocation) {
-          // Location obtained via the Accessibility API differs from the location we got via
-          // getBoundingClientRect. Prefer the one provided by the accessibility API.
-          loc = accessibleLocation;
-        }
-      }
 
       toX = loc.x + coordinates.x;
       toY = loc.y + coordinates.y;
@@ -1102,16 +1064,14 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
     // If toX or toY are outside the viewport, scroll.
     var currentWindow = respond.session.getWindow();
-    var xScrolling = calculateViewportScrolling_(toX, currentWindow.innerWidth,
-      currentWindow.pageXOffset);
-    var yScrolling = calculateViewportScrolling_(toY, currentWindow.innerHeight,
-      currentWindow.pageYOffset);
+    var xScrolling = calculateViewportScrolling_(toX, currentWindow.innerWidth - 15);
+    var yScrolling = calculateViewportScrolling_(toY, currentWindow.innerHeight - 15);
 
     if (xScrolling.shouldScroll || yScrolling.shouldScroll) {
       toX = xScrolling.moveTo;
       toY = yScrolling.moveTo;
 
-      Logger.dumpn("Scroll offset not zero - scrolling by (" + xScrolling.scroll + ", " +
+      fxdriver.Logger.dumpn("Scroll offset not zero - scrolling by (" + xScrolling.scroll + ", " +
         yScrolling.scroll + ") new toX, toY: (" + toX + ", " + toY + ")");
 
       currentWindow.scrollBy(xScrolling.scroll, yScrolling.scroll);
@@ -1125,7 +1085,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
     if (nativeEventsEnabled && events && node) {
       var currentPosition = respond.session.getMousePosition();
-      Logger.dumpn("Moving from (" + currentPosition.x + ", " + currentPosition.y + ") to (" +
+      fxdriver.Logger.dumpn("Moving from (" + currentPosition.x + ", " + currentPosition.y + ") to (" +
         toX + ", " + toY + ")");
       events.mouseMove(node,
           currentPosition.x + browserOffset.x, currentPosition.y + browserOffset.y,

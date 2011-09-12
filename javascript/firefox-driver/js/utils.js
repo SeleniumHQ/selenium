@@ -930,7 +930,7 @@ Utils.getLocation = function(element, opt_onlyFirstRect) {
     // Firefox 3.5
     if (clientRect['width']) {
       return {
-        x : clientRect.left + 3,
+        x : clientRect.left,
         y : clientRect.top,
         width: clientRect.width,
         height: clientRect.height
@@ -952,7 +952,7 @@ Utils.getLocation = function(element, opt_onlyFirstRect) {
     // Firefox 3.0, but lacking client rect
     fxdriver.Logger.dumpn("Falling back to firefox3 mechanism");
     var accessibleLocation = Utils.getLocationViaAccessibilityInterface(element);
-    accessibleLocation.x = clientRect.left + 3;
+    accessibleLocation.x = clientRect.left;
     accessibleLocation.y = clientRect.top;
     return accessibleLocation;
   } catch(e) {
