@@ -1,12 +1,23 @@
+V2.6.0
+======
+  * Issue 2349: Fixed memory leak in PageFactory
+  * Issue 2356: Fixed P/Invoke signatures for native .NET 4.0 projects
+  * Disabled Firefox profile setting "browser.safebrowsing.malware.enabled" by
+    default
+  * Issue 2385: Added protected AddAction method on Actions class to allow
+    subclasses to insert IAction implementations into action chain.
+
 v2.5.1
 ======
-  * No functional changes, providing .NET 4.0 binaries and updates to NuGet packaging only.
+  * No functional changes, providing .NET 4.0 binaries and updates to NuGet
+    packaging only.
 
 v2.5.0
 ======
   * Bringing .NET SelectElement support class in line with Java Select class
   * WebDriver.SwitchTo().Alert() now throws an exception when no alert present.
-  * InvalidSelectorException now thrown when XPath selector syntax is incorrect.
+  * InvalidSelectorException now thrown when XPath selector syntax is
+    incorrect.
 
 v2.4.1
 ======
@@ -16,15 +27,18 @@ v2.4.0
 ======
   * Adding InvalidSelector error code.
   * Default to field/property name if no Using is specified in PageFactory.
-  * Replaced reference to Ionic.Zip.Reduced.dll with Ionic.Zip.dll to match up NuGet packages.
+  * Replaced reference to Ionic.Zip.Reduced.dll with Ionic.Zip.dll to match up
+    NuGet packages.
 
 v2.3.0
 ======
-  * Added protected constructors and properties to make it easier to subclass By for custom element finders.
+  * Added protected constructors and properties to make it easier to subclass
+    By for custom element finders.
 
 v2.2.0
 ======
   * Adding first pass at .NET implementation of proxy management.
   * Modifying .NET build process to sign assemblies. Building the .NET bindings
-    through the IDE or through the command line will now produce signed assemblies.
+    through the IDE or through the command line will now produce signed
+	assemblies.
   * Updating .NET bindings JSON.NET from 3.5 to 4.0.
