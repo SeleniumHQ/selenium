@@ -17,6 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Ignore;
+import org.openqa.selenium.JavascriptEnabled;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TestWaiter;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -25,27 +38,14 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestUtilities.isFirefox;
 import static org.openqa.selenium.TestUtilities.isFirefox30;
 import static org.openqa.selenium.TestUtilities.isFirefox35;
 import static org.openqa.selenium.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
-
-import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Ignore;
-import org.openqa.selenium.JavascriptEnabled;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.TestWaiter;
-import org.openqa.selenium.WaitingConditions;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Tests operations that involve mouse and keyboard.
@@ -245,6 +245,15 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
+  private Map<String, Object> getElementSize(WebElement element) {
+    return (Map<String, Object>) ((JavascriptExecutor) driver).executeScript(
+        "return arguments[0].getBoundingClientRect()", element);
+  }
+
+  private int getFieldValue(Map<String, Object> sizeRect, String fieldName) {
+    return (int) Double.parseDouble(sizeRect.get(fieldName).toString());
+  }
+
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME},
       reason = "Not implemented yet.")
   public void testMovingMousePastViewPort() {
@@ -258,12 +267,30 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     WebElement keyUpArea = driver.findElement(By.id("keyPressArea"));
     new Actions(driver).moveToElement(keyUpArea).click().perform();
 
-    // Move by 1015 pixels down - we should be hitting the element with id 'parent'
-    new Actions(driver).moveByOffset(10, 1015).perform();
+    Map<String, Object> keyUpSize = getElementSize(keyUpArea);
+
+    // Since the keyUpArea was scrolled into view, it is assumed that its distance from the
+    // top is (almost) 0 and the mouse was moved to the middle of the element, so the mouse
+    // ends up at 0 + height / 2. In practice the 'top' value of getBoundingClientRect is
+    // 0.43 pixels or so.
+    int assumedMouseY = getFieldValue(keyUpSize, "height") / 2;
+
+    // Calculate the scroll offset by adding to the mouse position the distance of the parent
+    // from the top + half it's height.
+    // Regarding width, the event attached to this element will only be triggered if the mouse
+    // hovers over the text in this element. Use a simple negative offset for this.
+    Map<String, Object> parentSize = getElementSize(driver.findElement(By.id("parent")));
+
+
+    int verticalMove = assumedMouseY + getFieldValue(parentSize, "top") +
+        getFieldValue(parentSize, "height") / 2;
+
+    // Move by verticalMove pixels down and -50 pixels left:
+    // we should be hitting the element with id 'parent'
+    new Actions(driver).moveByOffset(-50, verticalMove).perform();
 
     WebElement resultArea = driver.findElement(By.id("result"));
-    assertTrue("Result area contained: " + resultArea.getText(),
-        resultArea.getText().contains("parent matches"));
+    waitFor(elementTextToContain(resultArea, "parent matches"));
   }
 
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME},

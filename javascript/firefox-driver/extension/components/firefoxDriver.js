@@ -1064,8 +1064,11 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
     // If toX or toY are outside the viewport, scroll.
     var currentWindow = respond.session.getWindow();
-    var xScrolling = calculateViewportScrolling_(toX, currentWindow.innerWidth - 15);
-    var yScrolling = calculateViewportScrolling_(toY, currentWindow.innerHeight - 15);
+    // Use the viewportSize, *not* window.innerWidth since window.innerWidth
+    // includes the scrollbar.
+    var vpSize = goog.dom.getViewportSize(currentWindow);
+    var xScrolling = calculateViewportScrolling_(toX, vpSize.width);
+    var yScrolling = calculateViewportScrolling_(toY, vpSize.height);
 
     if (xScrolling.shouldScroll || yScrolling.shouldScroll) {
       toX = xScrolling.moveTo;
