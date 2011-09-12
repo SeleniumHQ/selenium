@@ -72,9 +72,13 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
     pressShift.perform();
 
     WebElement keyLoggingElement = driver.findElement(By.id("result"));
+    String logText = keyLoggingElement.getText();
 
-    assertTrue("Key down event not isolated, got: " + keyLoggingElement.getText(),
-        keyLoggingElement.getText().endsWith("keydown"));
+    Action releaseShift = getBuilder(driver).keyUp(keysEventInput, Keys.SHIFT).build();
+    releaseShift.perform();
+
+    assertTrue("Key down event not isolated, got: " + logText,
+        logText.endsWith("keydown"));
   }
 
   @JavascriptEnabled
