@@ -205,8 +205,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     WebElement checkbox = driver.findElement(By.id("checkbox"));
 
     checkbox.click();
-    assertThat(driver.findElement(By.id("result")).getText(),
-        equalTo("checkbox thing"));
+    WebElement result = driver.findElement(By.id("result"));
+    waitFor(elementTextToEqual(result, "checkbox thing"));
   }
 
   @JavascriptEnabled
