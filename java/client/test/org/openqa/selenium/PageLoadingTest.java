@@ -169,6 +169,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     driver.get(pages.documentWrite);
 
     // If this command succeeds, then all is well.
-    driver.findElement(By.xpath("//body"));
+    WebElement body = driver.findElement(By.tagName("body"));
+    waitFor(WaitingConditions.elementTextToContain(body, "world"));
   }
 }

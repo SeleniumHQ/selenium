@@ -978,7 +978,9 @@ Utils.getLocationOnceScrolledIntoView = function(element, opt_onlyFirstRect) {
   // Some elements may not a scrollIntoView function - for example,
   // elements under an SVG element. Call those only if they exist.
   if (typeof element.scrollIntoView == 'function') {
-    element.scrollIntoView(true);
+    // This method does the scrolling as a side-effect. This is less than
+    // ideal, which is why I document it here.
+    bot.dom.getLocationInView(element);
   }
 
   return Utils.getLocation(element, opt_onlyFirstRect);
