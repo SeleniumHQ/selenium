@@ -195,7 +195,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(REMOTE)
   public void testShouldBeAbleToFindAnElementByCssSelector() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("form2"));
@@ -206,7 +205,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {REMOTE})
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("form2"));
