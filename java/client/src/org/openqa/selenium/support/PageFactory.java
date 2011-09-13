@@ -60,16 +60,16 @@ public class PageFactory {
    * </code>
    * 
    * By default, the element is looked up each and every time a method is called upon it. To change
-   * this behaviour, simply annnotate the field with the {@link
-   * @org.openqa.selenium.support.CacheLookup}. To change how the element is located, use the
-   * {@link @org.openqa.selenium.support.FindBy} annotation.
+   * this behaviour, simply annnotate the field with the {@link CacheLookup
+   * }. To change how the element is located, use the
+   * {@link FindBy} annotation.
    * 
    * This method will attempt to instantiate the class given to it, preferably using a constructor
    * which takes a WebDriver instance as its only argument or falling back on a no-arg constructor.
    * An exception will be thrown if the class cannot be instantiated.
    * 
-   * @see @org.openqa.selenium.support.FindBy
-   * @see @org.openqa.selenium.support.CacheLookup
+   * @see FindBy
+   * @see CacheLookup
    * @param driver The driver that will be used to look up the elements
    * @param pageClassToProxy A class which will be initialised.
    * @return An instantiated instance of the class with WebElement fields proxied
