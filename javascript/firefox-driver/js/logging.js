@@ -170,11 +170,6 @@ fxdriver.Logger.dumpn = function(text) {
 
 
 fxdriver.Logger.dump = function(element) {
-  // no-op
-};
-
-
-fxdriver.Logger.dump = function(element) {
   fxdriver.debug.initialize();
   var dump = "=============\n";
 

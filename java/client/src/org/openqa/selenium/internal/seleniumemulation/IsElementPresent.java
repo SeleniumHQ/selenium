@@ -35,6 +35,9 @@ public class IsElementPresent extends SeleneseCommand<Boolean> {
       return true;
     } catch (SeleniumException e) {
       return false;
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      return false;
     }
   }
 }

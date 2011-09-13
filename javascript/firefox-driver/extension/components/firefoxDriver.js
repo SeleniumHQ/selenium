@@ -364,8 +364,7 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
   var element;
   try {
     element = bot.locators.findElement(target, rootNode);
-  }
-  catch(ex) {
+  } catch(ex) {
     if(ex.code == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
       // We send the INVALID_SELECTOR_ERROR immediately because it will occur in
       // every retry.
@@ -374,6 +373,16 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
         ' in a WebElement. The following error occurred:\n' + ex));
       return;
     } else {
+      try {
+        var converted = ex.QueryInterface(Components.interfaces['nsIException']);
+        fxdriver.Logger.dumpn("Converted the exception: " + converted.name);
+        if ("NS_ERROR_DOM_SYNTAX_ERR" == converted.name) {
+          respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+              'The given selector ' + selector + ' is either invalid or does not result' +
+              ' in a WebElement. The following error occurred:\n' + ex));
+          return;
+        }
+      } catch (ignored) {}
       // this is not the exception we are interested in, so we propagate it.
       throw ex;
     }
@@ -470,6 +479,16 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
         'in a Webelement. The following error occurred:\n' + ex));
       return;
     } else {
+      try {
+        var converted = ex.QueryInterface(Components.interfaces['nsIException']);
+        fxdriver.Logger.dumpn("Converted the exception: " + converted.name);
+        if ("NS_ERROR_DOM_SYNTAX_ERR" == converted.name) {
+          respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+              'The given selector ' + selector + ' is either invalid or does not result' +
+              ' in a WebElement. The following error occurred:\n' + ex));
+          return;
+        }
+      } catch (ignored) {}
       // this is not the exception we are interested in, so we propagate it.
       throw ex;
     }
