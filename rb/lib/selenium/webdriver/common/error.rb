@@ -74,7 +74,8 @@ module Selenium
 
       class << self
         def for_code(code)
-          return if code.to_i == 0
+          return if code == 0
+          return WebDriverError if code.nil?
 
           Errors[code - 1] || WebDriverError
         end
