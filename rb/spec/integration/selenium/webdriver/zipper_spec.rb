@@ -11,7 +11,7 @@ module Selenium
         File.symlink(filename, File.join(dir, "link")) unless Platform.windows?
 
         @zip_file = File.join(Dir.tmpdir, "test.zip")
-        File.open(@zip_file, "w") do |io|
+        File.open(@zip_file, "wb") do |io|
           io << Base64.decode64(Zipper.zip(dir))
         end
       end
