@@ -1236,7 +1236,8 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
 
     var callback = function() {
       fxdriver.Logger.dumpn("Done native event wait.");
-      doneNativeEventWait = true; };
+      doneNativeEventWait = true;
+    };
 
     jsTimer.setTimeout(callback, 100);
 
