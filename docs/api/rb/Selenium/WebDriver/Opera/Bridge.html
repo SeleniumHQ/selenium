@@ -59,7 +59,7 @@
     <div id="content"><h1>Class: Selenium::WebDriver::Opera::Bridge
   
   
-  <span class="private note title">Private</span>
+  
 </h1>
 
 <dl class="box">
@@ -94,19 +94,7 @@
 </dl>
 <div class="clear"></div>
 
-<div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This class is part of a private API.</strong> 
-  You should avoid using this class if possible, as it may be removed or be changed in the future.
-</p>
 
-
-  </div>
-</div>
-<div class="tags">
-  
-</div>
   <h2>Constant Summary</h2>
   
 
@@ -157,7 +145,7 @@
   
   
   
-  <span class="private note title">Private</span>
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -178,7 +166,7 @@
   
   
   
-  <span class="private note title">Private</span>
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -199,7 +187,7 @@
   
   
   
-  <span class="private note title">Private</span>
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -222,7 +210,7 @@
   
   
   
-  <span class="private note title">Private</span>
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -246,7 +234,7 @@ A new instance of Bridge.
   
   
   
-  <span class="private note title">Private</span>
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -289,11 +277,7 @@ A new instance of Bridge.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong> 
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-<p>
+    <p>
 A new instance of Bridge
 </p>
 
@@ -308,8 +292,6 @@ A new instance of Bridge
       <pre class="lines">
 
 
-11
-12
 13
 14
 15
@@ -325,36 +307,27 @@ A new instance of Bridge
 25
 26
 27
-28
-29
-30
-31</pre>
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 13</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='http_client identifier id'>http_client</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:http_client</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='ivar'>@service</span> <span class='op'>=</span> <span class='const'>Service</span><span class='period'>.</span><span class='id default_service'>default_service</span> <span class='symbol'>:log</span> <span class='op'>=&gt;</span> <span class='lparen'>(</span><span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:logging_level</span><span class='rbracket'>]</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='kw'>false</span><span class='rparen'>)</span>
+  <span class='ivar'>@service</span><span class='period'>.</span><span class='id start'>start</span>
 
-  <span class='unless unless kw'>unless</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
-    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown option#{'s' if opts.size != 1}: #{opts.inspect}&quot;</span>
-  <span class='end end kw'>end</span>
+  <span class='id http_client'>http_client</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:http_client</span><span class='rparen'>)</span>
+  <span class='id caps'>caps</span>        <span class='op'>=</span> <span class='id create_capabilities'>create_capabilities</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span>
 
-  <span class='caps identifier id'>caps</span> <span class='assign token'>=</span> <span class='Remote constant id'>Remote</span><span class='colon2 op'>::</span><span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='opera identifier id'>opera</span>
+  <span class='id remote_opts'>remote_opts</span> <span class='op'>=</span> <span class='lbrace'>{</span>
+    <span class='symbol'>:url</span>                  <span class='op'>=&gt;</span> <span class='ivar'>@service</span><span class='period'>.</span><span class='id uri'>uri</span><span class='comma'>,</span>
+    <span class='symbol'>:desired_capabilities</span> <span class='op'>=&gt;</span> <span class='id caps'>caps</span>
+  <span class='rbrace'>}</span>
 
-  <span class='@service ivar id'>@service</span> <span class='assign token'>=</span> <span class='Service constant id'>Service</span><span class='dot token'>.</span><span class='default_service identifier id'>default_service</span>
-  <span class='@service ivar id'>@service</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
+  <span class='id remote_opts'>remote_opts</span><span class='period'>.</span><span class='id merge!'>merge!</span><span class='lparen'>(</span><span class='symbol'>:http_client</span> <span class='op'>=&gt;</span> <span class='id http_client'>http_client</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id http_client'>http_client</span>
 
-  <span class='remote_opts identifier id'>remote_opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
-    <span class='symbol val'>:url</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@service ivar id'>@service</span><span class='dot token'>.</span><span class='uri identifier id'>uri</span><span class='comma token'>,</span>
-    <span class='symbol val'>:desired_capabilities</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='caps identifier id'>caps</span>
-  <span class='rbrace token'>}</span>
-
-  <span class='remote_opts identifier id'>remote_opts</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span><span class='lparen token'>(</span><span class='symbol val'>:http_client</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='http_client identifier id'>http_client</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='http_client identifier id'>http_client</span>
-
-  <span class='super super kw'>super</span><span class='lparen token'>(</span><span class='remote_opts identifier id'>remote_opts</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>super</span><span class='lparen'>(</span><span class='id remote_opts'>remote_opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -374,35 +347,22 @@ A new instance of Bridge
   
 
   
-</p><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong> 
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
+</p><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-33
-34
-35</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 30</span>
 
-<span class='def def kw'>def</span> <span class='browser identifier id'>browser</span>
-  <span class='symbol val'>:opera</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id browser'>browser</span>
+  <span class='symbol'>:opera</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -415,35 +375,22 @@ A new instance of Bridge
   
 
   
-</p><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong> 
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
+</p><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-41
-42
-43</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 38</span>
 
-<span class='def def kw'>def</span> <span class='capabilities identifier id'>capabilities</span>
-  <span class='@capabilities ivar id'>@capabilities</span> <span class='opasgn op'>||=</span> <span class='Remote constant id'>Remote</span><span class='colon2 op'>::</span><span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='opera identifier id'>opera</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id capabilities'>capabilities</span>
+  <span class='ivar'>@capabilities</span> <span class='op'>||=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id opera'>opera</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -456,35 +403,22 @@ A new instance of Bridge
   
 
   
-</p><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong> 
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
+</p><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-37
-38
-39</pre>
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 34</span>
 
-<span class='def def kw'>def</span> <span class='driver_extensions identifier id'>driver_extensions</span>
-  <span class='lbrack token'>[</span><span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='TakesScreenshot constant id'>TakesScreenshot</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id driver_extensions'>driver_extensions</span>
+  <span class='lbracket'>[</span><span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -497,39 +431,26 @@ A new instance of Bridge
   
 
   
-</p><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong> 
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-</div><table class="source_code">
+</p><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+42
+43
+44
 45
-46
-47
-48
-49</pre>
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 42</span>
 
-<span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
-  <span class='super super kw'>super</span>
-<span class='ensure ensure kw'>ensure</span>
-  <span class='@service ivar id'>@service</span><span class='dot token'>.</span><span class='stop identifier id'>stop</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id quit'>quit</span>
+  <span class='kw'>super</span>
+<span class='kw'>ensure</span>
+  <span class='ivar'>@service</span><span class='period'>.</span><span class='id stop'>stop</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -540,9 +461,9 @@ A new instance of Bridge
 </div>
     
     <div id="footer">
-  Generated on Tue Aug 23 21:28:27 2011 by 
+  Generated on Tue Sep 13 23:35:10 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>
