@@ -1,3 +1,21 @@
+2.6.0 (2011-09-13)
+==================
+
+* Rescue and retry on Errno::EADDRINUSE to work around ephemeral ports issue on Windows.
+* Use correct default URL for the Android driver.
+* Profile zipping now follows symlinks (#2416).
+* Firefox
+  - Disable malware check
+  - Various #click improvements
+  - Don't scroll if element is already in view
+* IE:
+  - improve scrolling to elements with 'overflow: sroll'
+  - properly trigger jQuery change events (#2207)
+  - improve handling of nested modal dialogs
+* Opera:
+  - capabilities exposed as options to Selenium::WebDriver.for
+* Various iPhone driver fixes (e.g. #1396)
+
 2.5.0 (2011-08-23)
 ==================
 
