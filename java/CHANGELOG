@@ -1,3 +1,35 @@
+v2.6.0
+======
+
+WebDriver
+  * Better handling of the case where emphemeral sockets are exhausted.
+  * More widespread use of the InvalidSelectorError in Chrome and Remote.
+  * When using native events, prevent firefox from scrolling if an element is
+    already in the view.
+  * Improvements in the mouse emulation (movement, click, double click, context
+    click)
+  * Bumped included version of OperaDriver to 0.7.1.
+  * Attempt to address issue #1443 (the infamous "getWindow() == null" problem)
+  * Added timing information to WebDriver exceptions resulting from command
+    invocations in the remote driver.
+  * Added an ExpectedConditions class with common ExpectedCondition
+    implementations.
+  * Better usage of sockets in the remote webdriver
+
+RC
+  * WebDriver-backed Seleniums will now clear text fields before typing.
+
+Grid
+  * Significantly improved thread safety.
+  * Improved information on the index page of the hub.
+
+Automation Atoms
+  * bot.inject.executeScript* handles function arguments better.
+  * Add atom to get the frame index of a frame element (bot.frame.getFrameIndex)
+  * Added emulation of touch devices and events
+  * Use DOM Events level 2 and 3 for events IE if available
+
+
 v2.5.0
 ======
 
