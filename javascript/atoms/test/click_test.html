@@ -199,20 +199,6 @@
       assertArrayEquals(expectedEvents, events);
     }
 
-    function testClickExecutesDefaultHandler() {
-      var clickTarget = findElement({id: 'clickTarget'});
-      // Make sure no other event listeners are interfering.
-      goog.events.removeAll(clickTarget);
-
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var targetHref = '#' + Math.random();
-      clickTarget.href = targetHref;
-
-      bot.action.click(clickTarget);
-      assertEquals(targetHref, window.location.hash);
-    }
-
     // http://code.google.com/p/selenium/issues/detail?id=1207
     function testShouldRespondCorrectlyIfElementIsHiddenMidClickSequence() {
       if (goog.userAgent.IE) {
@@ -294,113 +280,6 @@
       assertArrayEquals(expectedEvents, events);
     }
 
-
-    function testClickOnANestedElementExecutesDefaultHandler() {
-      var parent = findElement({id: 'clickTargetWithAChild'});
-
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var targetHref = '#' + Math.random();
-      parent.href = targetHref;
-
-      var clickTarget = goog.dom.getFirstElementChild(parent);
-      bot.action.click(clickTarget);
-      assertEquals(targetHref, window.location.hash);
-    }
-
-    function testClickCorrectlyResolvesEmptyFragment() {
-      // A bug in the closure goog.Uri module once prevented this from working.
-      var clickTarget = findElement({id: 'clickTarget'});
-      // Make sure no other event listeners are interfering.
-      goog.events.removeAll(clickTarget);
-
-      clickTarget.href = '#';
-      bot.action.click(clickTarget);
-      var windowHref = window.location.href;
-      assertEquals('#', windowHref.charAt(windowHref.length - 1));
-    }
-
-    function testClickOnAnAbsoluteUrlInAnIframeExecutesDefaultHandler() {
-      var iframe = findElement({id: 'iframe'});
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      var domHelper = goog.dom.getDomHelper(iframeWindow);
-      var clickTarget = domHelper.getElement('iframeClickTarget');
-
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var targetHref = goog.Uri.resolve(iframeWindow.location,
-          '#' + Math.random()).toString();
-
-      // Let's make sure it is an absolute url.
-      assertContains('http', targetHref);
-
-      clickTarget.href = targetHref;
-      bot.action.click(clickTarget);
-      assertEquals(targetHref, iframeWindow.location.href);
-    }
-
-
-    function testClickOnAnAbsoluteServerPathAnchorInAnIframeExecutesDefaultHandler() {
-      var iframe = findElement({id: 'iframe'});
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      var domHelper = goog.dom.getDomHelper(iframeWindow);
-      var clickTarget = domHelper.getElement('iframeClickTarget');
-
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var testPath = window.location.pathname;
-      var targetHref = testPath.substring(0, testPath.lastIndexOf('/')) +
-          '/testdata/click_iframe.html#' + Math.random();
-      clickTarget.href = targetHref;
-      bot.action.click(clickTarget);
-      assertContains(targetHref, iframeWindow.location.href);
-    }
-
-
-    function testClickOnAnRelativeServerPathAnchorInAnIframeExecutesDefaultHandler() {
-      var iframe = findElement({id: 'iframe'});
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      var domHelper = goog.dom.getDomHelper(iframeWindow);
-      var clickTarget = domHelper.getElement('iframeClickTarget');
-
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var targetHref = 'click_iframe.html#' + Math.random();
-      clickTarget.href = targetHref;
-      bot.action.click(clickTarget);
-      assertContains(targetHref, iframeWindow.location.href);
-    }
-
-
-    function testClickOnAnHashOnlyAnchorInAnIframeExecutesDefaultHandler() {
-      var iframe = findElement({id: 'iframe'});
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      var domHelper = goog.dom.getDomHelper(iframeWindow);
-      var clickTarget = domHelper.getElement('iframeClickTarget');
-
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var targetHref = '#' + Math.random();
-      clickTarget.href = targetHref;
-      bot.action.click(clickTarget);
-      assertEquals(targetHref, iframeWindow.location.hash);
-    }
-
-
-    function testClickOnAnNestedElementInAnIframeExecutesDefaultHandler() {
-      var iframe = findElement({id: 'iframe'});
-      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
-      var domHelper = goog.dom.getDomHelper(iframeWindow);
-      var parent = domHelper.getElement('iframeClickTargetWithAChild');
-      var clickTarget = goog.dom.getFirstElementChild(parent);
-
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var targetHref = '#' + Math.random();
-      parent.href = targetHref;
-      bot.action.click(clickTarget);
-      assertEquals(targetHref, iframeWindow.location.hash);
-    }
 
     function testClickDoesNotFollowLinkWhenEventDefaultPrevented() {
       var clickTarget = findElement({id: 'clickTarget'});
