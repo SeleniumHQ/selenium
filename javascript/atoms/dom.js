@@ -828,6 +828,110 @@ bot.dom.getOpacity = function(elem) {
 
 
 /**
+ * This function calculates the amount of scrolling necessary to bring the
+ * target location into view.
+ *
+ * @param {number} targetLocation The target location relative to the current
+ *     viewport.
+ * @param {number} viewportDimension The size of the current viewport.
+ * @return {number} Returns the scroll offset necessary to bring the given
+ *     target location into view.
+ * @private
+ */
+bot.dom.calculateViewportScrolling_ =
+    function(targetLocation, viewportDimension) {
+
+  if (targetLocation >= viewportDimension) {
+    // Scroll until the target location appears on the right/bottom side of
+    // the viewport.
+    return targetLocation - (viewportDimension - 1);
+  }
+
+  if (targetLocation < 0) {
+    // Scroll until the target location appears on the left/top side of the
+    // viewport.
+    return targetLocation;
+  }
+
+  // The location is already within the viewport. No scrolling necessary.
+  return 0;
+};
+
+
+/**
+ * This function takes a relative location according to the current viewport. If
+ * this location is not visible in the viewport, it scrolls the location into
+ * view. The function returns the new relative location after scrolling.
+ *
+ * @param {!goog.math.Coordinate} targetLocation The target location relative
+ *     to (0, 0) coordinate of the viewport.
+ * @param {!Window=} opt_currentWindow The current browser window.
+ * @return {!goog.math.Coordinate} The target location within the viewport
+ *     after scrolling.
+ */
+bot.dom.getInViewLocation =
+    function(targetLocation, opt_currentWindow) {
+  var currentWindow = opt_currentWindow || bot.getWindow();
+  var viewportSize = goog.dom.getViewportSize(currentWindow);
+
+  var xScrolling = bot.dom.calculateViewportScrolling_(
+      targetLocation.x,
+      viewportSize.width);
+
+  var yScrolling = bot.dom.calculateViewportScrolling_(
+      targetLocation.y,
+      viewportSize.height);
+
+  var scrollOffset =
+      goog.dom.getDomHelper(currentWindow.document).getDocumentScroll();
+
+  if (xScrolling != 0 || yScrolling != 0) {
+    currentWindow.scrollBy(xScrolling, yScrolling);
+  }
+
+  // It is difficult to determine the size of the web page in some browsers.
+  // We check if the scrolling we intended to do really happened. If not we
+  // assume that the target location is not on the web page.
+  var newScrollOffset =
+      goog.dom.getDomHelper(currentWindow.document).getDocumentScroll();
+
+  if ((scrollOffset.x + xScrolling != newScrollOffset.x) ||
+      (scrollOffset.y + yScrolling != newScrollOffset.y)) {
+    throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
+        'The target location (' + (targetLocation.x + scrollOffset.x) +
+        ', ' + (targetLocation.y + scrollOffset.y) + ') is not on the ' +
+        'webpage.');
+  }
+
+  var inViewLocation = new goog.math.Coordinate(
+      targetLocation.x - xScrolling,
+      targetLocation.y - yScrolling);
+
+  // The target location should be within the viewport after scrolling.
+  // This is assertion code. We do not expect them ever to become true.
+  if (0 > inViewLocation.x || inViewLocation.x >= viewportSize.width) {
+    throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
+        'The target location (' +
+        inViewLocation.x + ', ' + inViewLocation.y +
+        ') should be within the viewport (' +
+        viewportSize.width + ':' + viewportSize.height +
+        ') after scrolling.');
+  }
+
+  if (0 > inViewLocation.y || inViewLocation.y >= viewportSize.height) {
+    throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
+        'The target location (' +
+        inViewLocation.x + ', ' + inViewLocation.y +
+        ') should be within the viewport (' +
+        viewportSize.width + ':' + viewportSize.height +
+        ') after scrolling.');
+  }
+
+  return inViewLocation;
+};
+
+
+/**
  * Implementation of getOpacity for browsers that do support
  * the "opacity" style.
  *

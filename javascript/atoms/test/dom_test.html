@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>mouse_test</title>
+<script src="test_bootstrap.js"></script>
+<script type="text/javascript">
+  goog.require('bot.dom');
+  goog.require('goog.dom');
+  goog.require('goog.math.Coordinate');
+  goog.require('goog.testing.jsunit');
+</script>
+<body>
+<script type="text/javascript">
+
+  function setUp() {
+    window.scrollTo(0,0);
+  }
+
+  function testGetInViewLocationWithPositiveOffset() {
+    // Scroll with positive offsets.
+    var inViewLocation = bot.dom.getInViewLocation(
+        new goog.math.Coordinate(2000, 1000),
+        window);
+
+    assertTrue(goog.dom.getDocumentScroll().x < 2000 &&
+        goog.dom.getDocumentScroll().x + goog.dom.getViewportSize().width >
+        2000);
+
+    assertEquals(2000, inViewLocation.x + goog.dom.getDocumentScroll().x);
+
+    assertTrue(goog.dom.getDocumentScroll().y < 1000 &&
+        goog.dom.getDocumentScroll().y + goog.dom.getViewportSize().height >
+        1000);
+
+    assertEquals(1000, inViewLocation.y + goog.dom.getDocumentScroll().y);
+  }
+
+  function testGetInViewLocationwithNegativeOffsetX() {
+    // Scroll down so that we can scroll up afterwards.
+    bot.dom.getInViewLocation(new goog.math.Coordinate(2000, 0), window);
+    var oldPageXOffset = goog.dom.getDocumentScroll().x;
+
+    // Scroll to a location with negative offset.
+    var inViewLocation = bot.dom.getInViewLocation(
+        new goog.math.Coordinate(-500, 0),
+        window);
+
+    assertTrue(goog.dom.getDocumentScroll().x <= oldPageXOffset - 500 &&
+        goog.dom.getDocumentScroll().x + goog.dom.getViewportSize().width >
+        oldPageXOffset - 500);
+    assertEquals(oldPageXOffset - 500, inViewLocation.x +
+        goog.dom.getDocumentScroll().x);
+  }
+
+  function testGetInViewLocationwithNegativeOffsetY() {
+    // Scroll down so that we can scroll up afterwards.
+    bot.dom.getInViewLocation(new goog.math.Coordinate(0, 2000), window);
+    var oldPageYOffset = goog.dom.getDocumentScroll().y;
+
+    // Scroll to a location with negative offset.
+    var inViewLocation = bot.dom.getInViewLocation(
+        new goog.math.Coordinate(0, -500),
+        window);
+
+    assertTrue(goog.dom.getDocumentScroll().y <= oldPageYOffset - 500 &&
+        goog.dom.getDocumentScroll().y + goog.dom.getViewportSize().height >
+        oldPageYOffset - 500);
+    assertEquals(oldPageYOffset - 500, inViewLocation.y +
+        goog.dom.getDocumentScroll().y);
+  }
+
+  function testShouldThrowAnErrorIfScrollingTooFar() {
+    try {
+      bot.dom.getInViewLocation(new goog.math.Coordinate(20000, 0),
+          window);
+      assertFalse('Should fail because the target is not on the page.');
+    }
+    catch (error) {
+      assertEquals(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, error.code);
+    }
+
+    try {
+      bot.dom.getInViewLocation(new goog.math.Coordinate(-20000, 0),
+          window);
+      assertFalse('Should fail because the target is not on the page.');
+    }
+    catch (error) {
+      assertEquals(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, error.code);
+    }
+
+    try {
+      bot.dom.getInViewLocation(new goog.math.Coordinate(0, 20000),
+          window);
+      assertFalse('Should fail because the target is not on the page.');
+    }
+    catch (error) {
+      assertEquals(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, error.code);
+    }
+
+    try {
+      bot.dom.getInViewLocation(new goog.math.Coordinate(0, -20000),
+          window);
+      assertFalse('Should fail because the target is not on the page.');
+    }
+    catch (error) {
+      assertEquals(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, error.code);
+    }
+  }
+</script>
+<div id="green" style="background-color:green; width:100px; height:50px">
+<div id="red" style="background-color:red; width:50px; height:25px; position:
+  relative; top:3000px;
+  left:3000px;">
+Red</div>
+</div>
+</body>
+</html>

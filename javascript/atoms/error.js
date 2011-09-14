@@ -54,7 +54,8 @@ bot.ErrorCode = {
   SCRIPT_TIMEOUT: 28,
   INVALID_ELEMENT_COORDINATES: 29,
   INVALID_SELECTOR_ERROR: 32,
-  SQL_DATABASE_ERROR: 33
+  SQL_DATABASE_ERROR: 33,
+  MOVE_TARGET_OUT_OF_BOUNDS: 34
 };
 
 
@@ -65,7 +66,7 @@ bot.ErrorCode = {
  * http://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes
  *
  * @param {!bot.ErrorCode} code The error's status code.
- * @param {string} opt_message Optional error message.
+ * @param {string=} opt_message Optional error message.
  * @constructor
  * @extends {goog.debug.Error}
  */
@@ -107,7 +108,9 @@ bot.Error.NAMES_ = goog.object.transpose({
   'ModalDialogOpenedError': bot.ErrorCode.MODAL_DIALOG_OPENED,
   'NoModalDialogOpenError': bot.ErrorCode.NO_MODAL_DIALOG_OPEN,
   'ScriptTimeoutError': bot.ErrorCode.SCRIPT_TIMEOUT,
-  'InvalidSelectorError': bot.ErrorCode.INVALID_SELECTOR_ERROR
+  'InvalidSelectorError': bot.ErrorCode.INVALID_SELECTOR_ERROR,
+  'SqlDatabaseError': bot.ErrorCode.SQL_DATABASE_ERROR,
+  'MoveTargetOutOfBoundsError': bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS
 });
 
 
