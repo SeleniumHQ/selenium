@@ -38,6 +38,7 @@ function Editor(window) {
                 if (self.view){
                     self.view.refresh();
                 }
+        LocatorBuilders.setPreferredOrder(self.app.options.locatorBuildersOrder);
                 //Samit: Enh: now sync other UI elements with the options
                 self.updateDeveloperTools(self.app.getBooleanOption('showDeveloperTools'));
                 self.updateExperimentalFeatures(self.app.getBooleanOption('enableExperimentalFeatures'));
@@ -136,6 +137,12 @@ function Editor(window) {
             }
         });
 
+  LocatorBuilders.addObserver({
+          preferredOrderChanged: function(preferredOrder) {
+            self.app.options.locatorBuildersOrder = preferredOrder.join(',');
+            Preferences.save(self.app.options, 'locatorBuildersOrder');
+          }
+      });
 	this.document = document;
     this.recordButton = document.getElementById("record-button");
     this.recordMenuItem = document.getElementById("menu_record");

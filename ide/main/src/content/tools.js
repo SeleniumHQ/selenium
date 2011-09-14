@@ -233,8 +233,10 @@ Array.prototype["delete"] = function(value) {
     return false;
 }
 
+// Samit: Ref: Split the fn to allow both objects of a class as well as the class itself to be notifiable as required
 function observable(clazz) {
-    clazz.prototype.addObserver = function(observer) {
+  classObservable(clazz.prototype);
+/*    clazz.prototype.addObserver = function(observer) {
         if (!this.observers) this.observers = [];
         this.observers.push(observer);
     }
@@ -263,7 +265,40 @@ function observable(clazz) {
                 }
             }
         }
-    }
+    }*/
+}
+
+function classObservable(clazz) {
+    clazz.addObserver = function(observer) {
+        if (!this.observers) this.observers = [];
+        this.observers.push(observer);
+    };
+
+    clazz.removeObserver = function(observer) {
+        if (!this.observers) return;
+        this.observers["delete"](observer);
+    };
+
+    clazz.notify = function(event) {
+        if (this.log) {
+            this.log.debug("notify " + event);
+        }
+        if (!this.observers) return;
+        var args = [];
+        for (var i = 1; i < arguments.length; i++) {
+            args.push(arguments[i]);
+        }
+        for (var i = 0; i < this.observers.length; i++) {
+            var observer = this.observers[i];
+            if (observer[event]) {
+                try {
+                    observer[event].apply(observer, args);
+                } catch(e) {
+                    //continue with the rest even if one observer fails
+                }
+            }
+        }
+    };
 }
 
 function defineEnum(clazz, names) {

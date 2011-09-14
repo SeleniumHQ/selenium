@@ -163,6 +163,9 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
     currentVersion:
     "",
 
+  locatorBuildersOrder:
+  "ui,id,link,name,css,dom:name,xpath:link,xpath:img,xpath:attributes,xpath:idRelative,xpath:href,dom:index,xpath:position",
+
     recordOnOpen:
     "true"
 };
