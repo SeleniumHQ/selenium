@@ -74,6 +74,7 @@ js_fragment_cpp(name = "atoms",
     "//javascript/webdriver-atoms:set_selected:chrome",
     "//javascript/webdriver-atoms:submit:chrome",
     "//javascript/webdriver-atoms:toggle:chrome",
+    "//javascript/webdriver-atoms:get_in_view_location:chrome",
   ],
   extension = "cc",
   utf8 = "true")
