@@ -8,6 +8,7 @@
 #endif
 
 #include <xpcom-config.h>
+#undef HAVE_CPP_CHAR16_T
 
 #else // Gecko 1.9
 #ifdef BUILD_ON_UNIX
