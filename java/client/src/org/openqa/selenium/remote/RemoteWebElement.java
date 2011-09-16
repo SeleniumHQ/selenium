@@ -258,8 +258,8 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     Response response =
         parent.execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id));
     Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
-    int x = ((Long) rawPoint.get("x")).intValue();
-    int y = ((Long) rawPoint.get("y")).intValue();
+    int x = ((Number) rawPoint.get("x")).intValue();
+    int y = ((Number) rawPoint.get("y")).intValue();
     return new Point(x, y);
   }
 
@@ -267,8 +267,8 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   public Dimension getSize() {
     Response response = parent.execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
     Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
-    int width = ((Long) rawSize.get("width")).intValue();
-    int height = ((Long) rawSize.get("height")).intValue();
+    int width = ((Number) rawSize.get("width")).intValue();
+    int height = ((Number) rawSize.get("height")).intValue();
     return new Dimension(width, height);
   }
 
