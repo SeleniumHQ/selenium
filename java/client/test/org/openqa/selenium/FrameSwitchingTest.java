@@ -120,8 +120,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.tagName("body")).getText(), containsString("Page number 3"));
   }
 
-  @Ignore(value = {SELENESE, OPERA}, reason = "switchTo().frame(WebElement) not supported with Selenium"
-      + "Opera: Unsupported")
+  @Ignore(value = {SELENESE}, reason = "switchTo().frame(WebElement) not supported with Selenium")
   public void testShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.framesetPage);
     WebElement frame = driver.findElement(By.tagName("frame"));
@@ -131,7 +130,6 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
   }
 
   // @Ignore(value = SELENESE, reason = "switchTo().frame(WebElement) not supported with Selenium")
-  @Ignore(value = OPERA, reason = "Opera: Unsupported")
   public void testShouldBeAbleToSwitchToAnIFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.iframePage);
     WebElement frame = driver.findElement(By.tagName("iframe"));
@@ -141,8 +139,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(element.getAttribute("value"), equalTo("name"));
   }
 
-  @Ignore(value = {SELENESE, OPERA}, reason = "switchTo().frame(WebElement) not supported with Selenium "
-      + "Opera: Unsupported")
+  @Ignore(value = {SELENESE}, reason = "switchTo().frame(WebElement) not supported with Selenium")
   public void testShouldEnsureElementIsAFrameBeforeSwitching() {
     driver.get(pages.framesetPage);
     WebElement frame = driver.findElement(By.tagName("frameset"));
@@ -184,7 +181,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
   }
 
-  @Ignore({OPERA, ANDROID})
+  @Ignore({ANDROID})
   public void testShouldSelectChildFramesByChainedCalls() {
     driver.get(pages.framesetPage);
 
@@ -382,9 +379,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.getCurrentUrl(), equalTo(url));
   }
 
-  @Ignore(value = {IE, HTMLUNIT, OPERA, ANDROID},
-      reason = "Appears to uncover an HtmlUnit bug" +
-          "Opera: Original runtime still exists inside Opera")
+  @Ignore(value = {IE, HTMLUNIT, ANDROID}, reason = "Appears to uncover an HtmlUnit bug")
   @JavascriptEnabled
   public void testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs() {
     driver.get(pages.deletingFrame);
