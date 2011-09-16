@@ -123,10 +123,11 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.findElement(By.name("windowThree")).click();
 
     driver.switchTo().window("result");
+    int currentWindowHandles = driver.getWindowHandles().size();
 
     try {
       driver.findElement(By.id("close")).click();
-      Set<String> allHandles = waitFor(windowHandleCountToBe(1));
+      Set<String> allHandles = waitFor(windowHandleCountToBe(currentWindowHandles - 1));
 
       assertEquals(1, allHandles.size());
     } finally {
