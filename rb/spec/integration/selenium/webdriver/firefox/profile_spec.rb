@@ -40,6 +40,13 @@ module Selenium
           string.should include('user_pref("app.update.enabled", false)')
         end
 
+        it "should properly handle escaped characters" do
+          profile['foo'] = 'C:\\r\\n'
+
+          string = read_generated_prefs
+          string.should include('user_pref("foo", "C:\\\\r\\\\n");')
+        end
+
         it "should let the user override some specific prefs" do
           profile["browser.startup.page"] = "http://example.com"
 

@@ -87,7 +87,7 @@ module Selenium
               raise ArgumentError, "preference values must be plain strings: #{key.inspect} => #{value.inspect}"
             end
 
-            value = %{"#{value}"}
+            value = value.to_json
           when TrueClass, FalseClass, Integer, Float
             value = value.to_s
           else
