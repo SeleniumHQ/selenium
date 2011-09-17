@@ -22,6 +22,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.userAgent');
 goog.require('fxdriver.Logger');
+goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
@@ -211,9 +212,9 @@ Utils.getStyleProperty = function(element, propertyName) {
 
 Utils.addToKnownElements = function(element, rawDoc) {
   var owner = new XPCNativeWrapper(element.ownerDocument);
-  var doc = fxdriver.utils.unwrapFor4(rawDoc);
+  var doc = fxdriver.moz.unwrapFor4(rawDoc);
   if (owner != new XPCNativeWrapper(rawDoc)) {
-    doc = fxdriver.utils.unwrap(owner);
+    doc = fxdriver.moz.unwrap(owner);
   }
 
   // Right. This is ugly. Sorry. The reasoning goes:
@@ -250,14 +251,14 @@ Utils.addToKnownElements = function(element, rawDoc) {
 
 
 Utils.getElementAt = function(index, rawDoc) {
-  var doc = fxdriver.utils.unwrapFor4(rawDoc);
+  var doc = fxdriver.moz.unwrapFor4(rawDoc);
 
   // There's a chance that previous "addToKnownElements" had to use the
   // unwrapped document in versions of firefox prior to 4. This won't work as
   // expected and so we need to check for its presence, copy it into the right
   // place and then remove it. This will break element equality in some cases.
 
-  var unwrapped = fxdriver.utils.unwrap(rawDoc);
+  var unwrapped = fxdriver.moz.unwrap(rawDoc);
   if (unwrapped.fxdriver_elements) {
     var existing = doc.fxdriver_elements || {};
     for (var i in unwrapped.fxdriver_elements) {
@@ -282,7 +283,7 @@ Utils.getElementAt = function(index, rawDoc) {
         'Element not found in the cache');
   }
 
-  return fxdriver.utils.unwrapFor4(e);
+  return fxdriver.moz.unwrapFor4(e);
 };
 
 
@@ -351,7 +352,7 @@ Utils.getNodeForNativeEvents = function(element) {
 
 Utils.useNativeEvents = function() {
   var prefs =
-    fxdriver.utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
+    fxdriver.moz.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
   var enableNativeEvents =
     prefs.prefHasUserValue("webdriver_enable_native_events") ?
     prefs.getBoolPref("webdriver_enable_native_events") : false;
@@ -1034,7 +1035,7 @@ Utils.isHtmlCollection_ = function(obj) {
 
 
 Utils.wrapResult = function(result, doc) {
-  result = fxdriver.utils.unwrap(result);
+  result = fxdriver.moz.unwrap(result);
 
   // Sophisticated.
   switch (typeof result) {
@@ -1117,7 +1118,7 @@ Utils.getElementIndexForXPath_ = function (element) {
 
 Utils.loadUrl = function(url) {
   fxdriver.Logger.dumpn("Loading: " + url);
-  var ioService = fxdriver.utils.getService("@mozilla.org/network/io-service;1", "nsIIOService");
+  var ioService = fxdriver.moz.getService("@mozilla.org/network/io-service;1", "nsIIOService");
   var channel = ioService.newChannel(url, null, null);
   var channelStream = channel.open();
 
@@ -1172,7 +1173,7 @@ Utils.installWindowCloseListener = function (respond) {
     }
   };
 
-  var mediator = fxdriver.utils.getService('@mozilla.org/embedcomp/window-watcher;1', 'nsIWindowWatcher');
+  var mediator = fxdriver.moz.getService('@mozilla.org/embedcomp/window-watcher;1', 'nsIWindowWatcher');
   mediator.registerNotification(observer);
 };
 

@@ -26,7 +26,7 @@ function WebDriverServer() {
   this.serverSocket =
   Components.classes["@mozilla.org/network/server-socket;1"].
       createInstance(Components.interfaces.nsIServerSocket);
-  this.generator = fxdriver.utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
+  this.generator = fxdriver.moz.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
   this.enableNativeEvents = null;
 
   // Force our cert override service to be loaded - otherwise, it will not be
@@ -52,7 +52,7 @@ function WebDriverServer() {
 WebDriverServer.prototype.newDriver = function(window) {
   if (null == this.useNativeEvents) {
     var prefs =
-        fxdriver.utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
+        fxdriver.moz.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
     if (!prefs.prefHasUserValue("webdriver_enable_native_events")) {
       fxdriver.Logger.dumpn('webdriver_enable_native_events not set; defaulting to false');
     }
@@ -74,7 +74,7 @@ WebDriverServer.prototype.getNextId = function() {
 WebDriverServer.prototype.startListening = function(port) {
   if (!port) {
     var prefs =
-        fxdriver.utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
+        fxdriver.moz.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
 
     port = prefs.prefHasUserValue("webdriver_firefox_port") ?
            prefs.getIntPref("webdriver_firefox_port") : 7055;

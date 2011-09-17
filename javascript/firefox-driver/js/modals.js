@@ -24,6 +24,7 @@ goog.provide('fxdriver.modals');
 goog.require('bot.ErrorCode');
 goog.require('fxdriver.Logger');
 goog.require('fxdriver.Timer');
+goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 
 
@@ -83,7 +84,7 @@ fxdriver.modals.setValue = function(driver, value) {
 
 fxdriver.modals.find_ = function() {
   var window = fxdriver.utils.windowMediator().getMostRecentWindow('');
-  window = fxdriver.utils.unwrap(window);
+  window = fxdriver.moz.unwrap(window);
 
   // Get the WebBrowserChrome and check if it's a modal window
   var chrome = window.QueryInterface(CI.nsIInterfaceRequestor).

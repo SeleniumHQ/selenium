@@ -21,7 +21,7 @@ goog.provide('webdriver.firefox.locators');
 
 goog.require('bot.locators');
 goog.require('bot.userAgent');
-goog.require('fxdriver.utils');
+goog.require('fxdriver.moz');
 goog.require('goog.dom');
 
 
@@ -37,19 +37,19 @@ if (!bot.userAgent.isVersion('3.5')) {
 
     function compileScript(script, root) {
       var win = goog.dom.getOwnerDocument(root).defaultView;
-      win = fxdriver.utils.unwrap(win);
+      win = fxdriver.moz.unwrap(win);
       return new win.Function(script);
     }
 
     return {
       single: function(target, root) {
         var fn = compileScript(sizzle + ' return results[0] || null;', root);
-        root = fxdriver.utils.unwrap(root);
+        root = fxdriver.moz.unwrap(root);
         return fn.call(null, target, root);
       },
       many: function(target, root) {
         var fn = compileScript(sizzle + ' return results;', root);
-        root = fxdriver.utils.unwrap(root);
+        root = fxdriver.moz.unwrap(root);
         return fn.call(null, target, root);
       }
     };

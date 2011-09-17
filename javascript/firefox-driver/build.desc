@@ -60,12 +60,16 @@ js_binary(name = "atoms",
   srcs = [
     "js/events.js",
     "js/firefox-utils.js",
+    "js/moz.js",
     "js/preconditions.js",
     "js/exported_symbols.js",
     "js/locators.js",
   ],
   defines = [
     "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
   ],
   deps = [ "//javascript/webdriver-atoms:deps" ])
 
@@ -76,12 +80,16 @@ js_binary(name = "utils",
     "js/firefox-utils.js",
     "js/logging.js",
     "js/modals.js",
+    "js/moz.js",
     "js/timer.js",
     "js/utils.js",
     "js/utils_exports.js"
   ],
   defines = [
     "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
   ],
   deps = [
     "//javascript/webdriver-atoms:deps"

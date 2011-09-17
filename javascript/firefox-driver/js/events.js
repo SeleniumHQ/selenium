@@ -20,7 +20,7 @@ goog.provide('fxdriver.events');
 
 goog.require('Utils');
 goog.require('fxdriver.Logger');
-goog.require('fxdriver.utils');
+goog.require('fxdriver.moz');
 goog.require('goog.style');
 
 
@@ -63,7 +63,7 @@ fxdriver.events.buildCoordinates = function(parameters, doc) {
     y: y,
     auxiliary: auxiliaryToReturn,
 
-    QueryInterface: fxdriver.utils.queryInterface(this,
+    QueryInterface: fxdriver.moz.queryInterface(this,
       [CI.nsISupports, CI.wdICoordinate])
   };
 };

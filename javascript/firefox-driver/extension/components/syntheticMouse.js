@@ -30,7 +30,7 @@ function SyntheticMouse() {
 
   this.wrappedJSObject = this;
 
-  this.QueryInterface = fxdriver.utils.queryInterface(this,
+  this.QueryInterface = fxdriver.moz.queryInterface(this,
       [CI.nsISupports, CI.wdIMouse]);
 
   // Declare the state we'll be using
@@ -63,7 +63,7 @@ SyntheticMouse.prototype.isElementShown = function(element) {
 
 SyntheticMouse.prototype.getElement_ = function(coords) {
   return coords.auxiliary ?
-      fxdriver.utils.unwrap(coords.auxiliary) : this.lastElement;
+      fxdriver.moz.unwrap(coords.auxiliary) : this.lastElement;
 };
 
 // wdIMouse
@@ -71,7 +71,7 @@ SyntheticMouse.prototype.getElement_ = function(coords) {
 SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   // TODO(simon): find the current "body" element iff element == null
   var element = target ? 
-      fxdriver.utils.unwrap(target) : this.lastElement;
+      fxdriver.moz.unwrap(target) : this.lastElement;
 
    if (goog.isFunction(element.scrollIntoView)) {
      element.scrollIntoView();

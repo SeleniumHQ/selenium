@@ -252,6 +252,12 @@ module Javascript
            " -p third_party/closure/goog -p " <<
            dirs.join(" -p ")
 
+        if (args[:externs])
+          args[:externs].each do |extern|
+            cmd << " -f \"--externs=#{File.join(dir, extern)}\" "
+          end
+        end
+
         mkdir_p File.dirname(output)
 
         execute cmd
