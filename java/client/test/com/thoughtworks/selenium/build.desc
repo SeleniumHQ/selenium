@@ -78,6 +78,15 @@ java_test(name = "opera-emulation-test",
     ":rc-tests",
   ])
 
+java_test(name = "chrome-rc-test",
+  test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
+  sysproperties = [
+    { "selenium.browser" : "*googlechrome" },
+  ],
+  deps = [
+    ":rc-tests",
+  ])
+
 java_test(name = "firefox-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
