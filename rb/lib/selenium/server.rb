@@ -24,6 +24,8 @@ module Selenium
   #
 
   class Server
+    class Error < StandardError; end
+
     CL_RESET = WebDriver::Platform.windows? ? '' : "\r\e[0K"
 
     def self.get(required_version, opts = {})
@@ -65,7 +67,7 @@ module Selenium
             end
 
             unless resp.kind_of? Net::HTTPSuccess
-              raise "#{resp.code} for #{download_file_name}"
+              raise Error, "#{resp.code} for #{download_file_name}"
             end
           end
         end
@@ -186,13 +188,13 @@ module Selenium
 
     def poll_for_service
       unless socket.connected?
-        raise "remote server not launched in #{@timeout} seconds"
+        raise Error, "remote server not launched in #{@timeout} seconds"
       end
     end
 
     def poll_for_shutdown
       unless socket.closed?
-        raise "remote server not stopped in #{@timeout} seconds"
+        raise Error, "remote server not stopped in #{@timeout} seconds"
       end
     end
 

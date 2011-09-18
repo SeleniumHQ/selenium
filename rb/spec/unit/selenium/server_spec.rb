@@ -102,4 +102,16 @@ describe Selenium::Server do
       FileUtils.rm_rf expected_download_file_name
     end
   end
+
+  it "raises Selenium::Server::Error if the server is not launched within the timeout" do
+    File.should_receive(:exist?).with("selenium-server-test.jar").and_return(true)
+
+    poller = mock('SocketPoller')
+    poller.should_receive(:connected?).and_return(false)
+
+    server = Selenium::Server.new("selenium-server-test.jar", :background => true)
+    server.stub!(:socket).and_return(poller)
+
+    lambda { server.start }.should raise_error(Selenium::Server::Error)
+  end
 end
