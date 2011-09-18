@@ -19,6 +19,17 @@ goog.provide('fxdriver.moz');
 
 
 /**
+ * Import an existing jsm. We need this function because otherwise the closure
+ * compiler will choke on the 'import' method. *sigh*
+ *
+ * @param {string} module The full path to the module to import.
+ */
+fxdriver.moz.load = function(module) {
+  Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
+}
+
+
+/**
  * Obtain a new instance of an XPCOM service.
  *
  * @param {string} className The class name to look up.

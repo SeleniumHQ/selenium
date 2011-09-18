@@ -119,7 +119,13 @@ Utils.newInstance = function(className, interfaceName) {
   }
   var iface = Components.interfaces[interfaceName];
 
-  return clazz.createInstance(iface);
+  try {
+    return clazz.createInstance(iface);
+  } catch (e) {
+    fxdriver.Logger.dumpn("Cannot create: " + className + " from " + interfaceName);
+    fxdriver.Logger.dumpn(e);
+    throw e;
+  }
 };
 
 

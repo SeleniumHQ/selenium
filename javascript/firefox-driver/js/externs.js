@@ -25,5 +25,11 @@ Components.interfaces;
 Components.resources;
 Components.results;
 Components.stack;
+Components.utils;
+Components.utils['import'];
 
 var XPCNativeWrapper;
+
+var XPCOMUtils;
+XPCOMUtils.generateNSGetFactory;
+XPCOMUtils.generateNSGetModule;

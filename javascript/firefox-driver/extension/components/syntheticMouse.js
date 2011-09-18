@@ -15,19 +15,23 @@
  limitations under the License.
  */
 
+goog.provide('SyntheticMouse');
+
+goog.require('Utils');
+goog.require('bot.ErrorCode');
+goog.require('bot.Mouse');
+goog.require('bot.action');
+goog.require('bot.dom');
+goog.require('bot.events');
+goog.require('fxdriver.moz');
+goog.require('fxdriver.utils');
+
+
 var CC = Components.classes;
 var CI = Components.interfaces;
-var CU = Components.utils;
-
-CU.import("resource://gre/modules/XPCOMUtils.jsm");
 
 
-function SyntheticMouse() {
-  // Get the wonder of the events
-  CU.import('resource://fxdriver/modules/atoms.js');
-  // And the utility methods we may need
-  CU.import('resource://fxdriver/modules/utils.js');
-
+SyntheticMouse = function() {
   this.wrappedJSObject = this;
 
   this.QueryInterface = fxdriver.moz.queryInterface(this,
@@ -39,7 +43,7 @@ function SyntheticMouse() {
 }
 
 
-SyntheticMouse.prototype.newResponse = function(status, message) {
+SyntheticMouse.newResponse = function(status, message) {
   return {
     status: status,
     message: message,
@@ -55,7 +59,7 @@ SyntheticMouse.prototype.newResponse = function(status, message) {
 
 SyntheticMouse.prototype.isElementShown = function(element) {
   if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
-    return this.newResponse(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
+    return SyntheticMouse.newResponse(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and so may not be interacted with')
   }
 };
@@ -139,12 +143,12 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   proceed = fireAndCheck(element, goog.events.EventType.MOUSEMOVE, botCoords);
 
   if (!proceed || !bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
-    return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
+    return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
   }
 
   bot.events.fire(element, goog.events.EventType.MOUSEOVER, botCoords);
 
-  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 
@@ -176,7 +180,7 @@ SyntheticMouse.prototype.click = function(target) {
   fxdriver.Logger.dumpn("About to do a bot.action.click on " + element);
   bot.action.click(element);
 
-  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 SyntheticMouse.prototype.contextClick = function(target) {
@@ -193,7 +197,7 @@ SyntheticMouse.prototype.contextClick = function(target) {
   fxdriver.Logger.dumpn("About to do a bot.action.rightClick on " + element);
   bot.action.rightClick(element);
 
-  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 SyntheticMouse.prototype.doubleClick = function(target) {
@@ -207,7 +211,7 @@ SyntheticMouse.prototype.doubleClick = function(target) {
   fxdriver.Logger.dumpn("About to do a bot.action.doubleClick on " + element);
   bot.action.doubleClick(element);
 
-  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 
@@ -226,7 +230,7 @@ SyntheticMouse.prototype.down = function(coordinates) {
   };
   bot.events.fire(element, goog.events.EventType.MOUSEDOWN, botCoords);
 
-  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 
@@ -248,7 +252,7 @@ SyntheticMouse.prototype.up = function(coordinates) {
 
   this.buttonDown = null;
 
-  return this.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
 
@@ -257,10 +261,23 @@ SyntheticMouse.prototype.classDescription = "Pure JS implementation of a mouse";
 SyntheticMouse.prototype.contractID = '@googlecode.com/webdriver/syntheticmouse;1';
 SyntheticMouse.prototype.classID = Components.ID('{E8F9FEFE-C513-4097-98BE-BE00A41D3645}');
 
-const components = [SyntheticMouse];
+/** @const */ var components = [SyntheticMouse];
 var NSGetFactory, NSGetModule;
+
+fxdriver.moz.load('resource://gre/modules/XPCOMUtils.jsm');
+
 if (XPCOMUtils.generateNSGetFactory) {
   NSGetFactory = XPCOMUtils.generateNSGetFactory(components);
 } else {
   NSGetModule = XPCOMUtils.generateNSGetModule(components);
 }
+
+goog.exportSymbol('SyntheticMouse', SyntheticMouse);
+goog.exportSymbol('SyntheticMouse.prototype.down', SyntheticMouse.prototype.down);
+goog.exportSymbol('SyntheticMouse.prototype.up', SyntheticMouse.prototype.up);
+
+goog.exportSymbol('SyntheticMouse.prototype.move', SyntheticMouse.prototype.move);
+
+goog.exportSymbol('SyntheticMouse.prototype.click', SyntheticMouse.prototype.click);
+goog.exportSymbol('SyntheticMouse.prototype.doubleClick', SyntheticMouse.prototype.doubleClick);
+goog.exportSymbol('SyntheticMouse.prototype.contextClick', SyntheticMouse.prototype.contextClick);
