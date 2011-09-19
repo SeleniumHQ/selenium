@@ -48,6 +48,8 @@ module Selenium
       private
 
         def create_capabilities(opts)
+          original_opts = opts.dup
+
           arguments     = opts.delete(:arguments)
           logging_level = opts.delete(:logging_level)
           logging_file  = opts.delete(:logging_file)
@@ -90,7 +92,7 @@ module Selenium
           caps.merge! 'opera.host'         => host if host
           caps.merge! 'opera.port'         => port.to_i if port
           caps.merge! 'opera.launcher'     => launcher if launcher
-          caps.merge! 'opera.profile'      => profile
+          caps.merge! 'opera.profile'      => profile if original_opts.has_key?(:profile)
           caps.merge! 'opera.idle'         => !!idle unless idle.nil?
           caps.merge! 'opera.display'      => display.to_i if display
           caps.merge! 'opera.autostart'    => !!autostart unless autostart.nil?
