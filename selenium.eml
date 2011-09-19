@@ -160,8 +160,8 @@
 	<lib name="xalan-2.7.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/xml/xalan-2.7.1.jar!/"/>
 	</lib>
-	<lib name="operadriver-v0.7.2.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-v0.7.2.jar!/"/>
+	<lib name="operadriver-v0.7.3.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-v0.7.3.jar!/"/>
 	</lib>
 	<lib name="jmock-junit4-2.5.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-junit4-2.5.1.jar!/"/>
@@ -169,8 +169,8 @@
 	<lib name="jmock-2.5.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-2.5.1.jar!/"/>
 	</lib>
-	<lib name="protobuf-java-2.3.0.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/google-protobuffers/protobuf-java-2.3.0.jar!/"/>
+	<lib name="protobuf-java-2.4.1.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/google-protobuffers/protobuf-java-2.4.1.jar!/"/>
 	</lib>
 	<lib name="jcip-annotations-1.0.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jcip-annotations/jcip-annotations-1.0.jar!/"/>
