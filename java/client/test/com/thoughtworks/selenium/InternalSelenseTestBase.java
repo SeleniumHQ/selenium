@@ -50,11 +50,36 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
   }
 
   @Before
+  public void focusOnMainWindow() {
+    if (selenium == null) {
+      return;
+    }
+    selenium.windowFocus();
+  }
+
+  @Before
   public void returnFocusToMainWindow() {
     if (selenium == null) {
       return;
     }
-    selenium.selectWindow("");
+
+    try {
+      selenium.selectWindow("");
+    } catch (SeleniumException e) {
+      // TODO(simon): Window switching in Opera is picky.
+      if (!isOperaDriver(selenium)) {
+        throw e;
+      }
+    }
+  }
+
+  private boolean isOperaDriver(Selenium selenium) {
+    if (!(selenium instanceof WrapsDriver)) {
+      return false;
+    }
+
+    WebDriver driver = ((WrapsDriver) selenium).getWrappedDriver();
+    return "OperaDriver".equals(driver.getClass().getSimpleName());
   }
 
   @Before

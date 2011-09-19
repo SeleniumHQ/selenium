@@ -39,9 +39,8 @@ public class Windows {
   }
 
   public void selectWindow(WebDriver driver, String windowID) {
-    if ("null".equals(windowID)) {
-      driver.switchTo()
-          .window(originalWindowHandle);
+    if ("null".equals(windowID) || "".equals(windowID)) {
+      driver.switchTo().window(originalWindowHandle);
     } else if ("_blank".equals(windowID)) {
       selectBlankWindow(driver);
     } else {
