@@ -41,3 +41,7 @@ third_party/gecko-6
 cpp/IEDriver/Generated/atoms.h
 chromedriver.log
 *.rbc
+android/libs
+android/bin
+android/local.properties
+android/proguard.cfg

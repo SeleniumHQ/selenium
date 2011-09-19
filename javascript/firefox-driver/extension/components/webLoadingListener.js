@@ -23,6 +23,7 @@ function WebLoadingListener(browser, toCall) {
   var listener = this;
 
   this.handler = {
+    active: true,
     QueryInterface: function(iid) {
       if (iid.equals(Components.interfaces.nsIWebProgressListener) ||
           iid.equals(Components.interfaces.nsISupportsWeakReference) ||
@@ -33,8 +34,8 @@ function WebLoadingListener(browser, toCall) {
 
     onStateChange: function(webProgress, request, flags, status) {
       if (flags & STATE_STOP) {
-        if (request.URI) {
-          WebLoadingListener.removeListener(browser, listener);
+        if (request.URI &&  this.active) {
+          this.active = false;
           toCall(webProgress);
         }
       }

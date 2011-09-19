@@ -117,6 +117,20 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE})
+  public void testDoubleClickThenGet() {
+      // Fails in ff3 if WebLoadingListener removes browser listener
+      driver.get(pages.javascriptPage);
+
+      WebElement toClick = driver.findElement(By.id("clickField"));
+
+      Action dblClick = getBuilder(driver).doubleClick(toClick).build();
+      dblClick.perform();
+
+      driver.get(pages.droppableItems);
+    }
+
+  @JavascriptEnabled
+  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE})
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
 
