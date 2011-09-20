@@ -164,7 +164,7 @@ bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function() {
 /**
  * Whether synthesized events are trusted to trigger click actions.
  *
- * @type{boolean}
+ * @type {boolean}
  * @private
  * @const
  */
@@ -177,7 +177,7 @@ bot.Mouse.CAN_SYNTHESISED_EVENTS_FOLLOW_LINKS_ =
 /**
  * Whether synthesized events can cause new windows to open.
  *
- * @type{boolean}
+ * @type {boolean}
  * @const
  * @private
  */
@@ -489,7 +489,7 @@ bot.Mouse.shouldFollowHref_ = function(element) {
   }
 
   var href = element.href + ''; // coerce to a string.
-  if (element.target || href.toLowerCase().indexOf("javascript") == 0) {
+  if (element.target || href.toLowerCase().indexOf('javascript') == 0) {
     return !bot.Mouse.SYNTHESISED_EVENTS_CAN_OPEN_JAVASCRIPT_WINDOWS_;
   }
 
