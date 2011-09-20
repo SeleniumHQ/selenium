@@ -30,22 +30,25 @@ goog.require('bot.storage.database');
  * @param {string} databaseName The name of the database.
  * @param {string} query The SQL statement.
  * @param {Array.<*>} args Arguments to pass to the query.
- * @param {!function(string)} The callback to invoke when done. The result,
- *     according to the wire protocol, will be passed to this callback.
+ * @param {!function(string)} onDone The callback to invoke when done. The
+ *     result, according to the wire protocol, will be passed to this callback.
  */
-webdriver.inject.storage.database.executeSql = function (databaseName, query, args, onDone) {
+webdriver.inject.storage.database.executeSql =
+    function(databaseName, query, args, onDone) {
   var onSuccessCallback = function(tx, result) {
     onDone(bot.inject.executeScript(function(res) {
       return result;
     }, [result], true));
-  }
+  };
 
   var onErrorCallback = function(error) {
     onDone(bot.inject.executeScript(function() {
       throw new bot.Error(bot.ErrorCode.SQL_DATABASE_ERROR,
-              + 'SQL Error Code: ' + error.code + '. SQL Error Message: ' + error.message)
+              + 'SQL Error Code: ' + error.code + '. SQL Error Message: ' +
+              error.message);
     }, [], true));
-  }
+  };
 
-  bot.storage.database.executeSql(databaseName, query, args, onSuccessCallback, onErrorCallback);
+  bot.storage.database.executeSql(
+      databaseName, query, args, onSuccessCallback, onErrorCallback);
 };

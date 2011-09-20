@@ -14,7 +14,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Atoms-based implementation of the webelement interface
+ * @fileoverview Atoms-based implementation of the webelement interface.
  */
 
 goog.provide('webdriver.interactions');

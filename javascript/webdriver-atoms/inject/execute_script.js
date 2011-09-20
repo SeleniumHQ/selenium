@@ -26,28 +26,50 @@ goog.require('bot.inject.cache');
 /**
  * Wrapper to allow passing a seliazed window object to executeScript.
  *
- * @param fn {!string} The function to execute
- * @param args {Array.<*>} Array of arguments to pass to fn.
- * @param opt_window {!{bot.inject.WINDOW_KEY:string}=} The serialized window
- * object to be read from the cache.
+ * @param {!(string|function)} fn The function to execute.
+ * @param {Array.<*>} args Array of arguments to pass to fn.
+ * @param {!{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
+ *     object to be read from the cache.
+ * @return {!(string|bot.inject.Response)} The response object. If
+ *     opt_stringify is true, the result will be serialized and returned in
+ *     string format.
  */
 webdriver.inject.executeScript = function(fn, args, opt_window) {
-  return bot.inject.executeScript(fn, args, true, webdriver.inject.getWindow_(opt_window));
+  return bot.inject.executeScript(
+      fn, args, true, webdriver.inject.getWindow_(opt_window));
 };
 
-
-webdriver.inject.executeAsyncScript = function(fn, args, timeout, onDone, opt_window) {
+/**
+ *
+ * @param {!(string|function)} fn The function to execute.
+ * @param {Array.<*>} args Array of arguments to pass to fn.
+ * @param {int} timeout The timeout to wait up to in millis.
+ * @param {!{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
+ * object to be read from the cache.
+ * @return {!(string|bot.inject.Response)} The response object. If
+ *     opt_stringify is true, the result will be serialized and returned in
+ *     string format.
+ */
+webdriver.inject.executeAsyncScript =
+    function(fn, args, timeout, onDone, opt_window) {
   return bot.inject.executeScript(fn, args, timeout, onDone, true,
           webdriver.inject.getWindow_(opt_window));
 };
 
 
-webdriver.inject.getWindow_ = function(a_window) {
+/**
+ * Get the window to use.
+ *
+ * @param {!Window=} opt_window An optional window to use.
+ * @return {!Window} A reference to a window.
+ * @private
+ */
+webdriver.inject.getWindow_ = function(opt_window) {
   var win;
-    if (a_window) {
-      win = bot.inject.cache.getElement(a_window['WINDOW']);
-    } else {
-      win = window;
-    }
-    return win;
-}
+  if (opt_window) {
+    win = bot.inject.cache.getElement(opt_window['WINDOW']);
+  } else {
+    win = window;
+  }
+  return win;
+};

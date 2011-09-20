@@ -14,7 +14,7 @@
 // limitations under the License.
 
 /**
- * @fileOverview Ready to inject atoms to find elements in the page.
+ * @fileoverview Ready to inject atoms to find elements in the page.
  */
 
 goog.provide('webdriver.inject.locators');
@@ -25,7 +25,7 @@ goog.require('bot.locators');
 
 /**
  * Finds an element by using the given lookup strategy.
- * @param {string} stategy The strategy to use to locate the element.
+ * @param {string} strategy The strategy to use to locate the element.
  * @param {string} using The locator to use.
  * @param {(Document|Element)=} opt_root The document or element to perform
  *     the search under. If not specified, will use {@code document}
@@ -34,15 +34,15 @@ goog.require('bot.locators');
  *     in a JSON string as defined by the WebDriver wire protocol.
  */
 webdriver.inject.locators.findElement = function(strategy, using, opt_root) {
-  var locator = {}
+  var locator = {};
   locator[strategy] = using;
   return bot.inject.executeScript(bot.locators.findElement,
                            [locator, opt_root], true);
-}
+};
 
 /**
  * Finds all elements by using the given lookup strategy.
- * @param {string} stategy The strategy to use to locate the element.
+ * @param {string} strategy The strategy to use to locate the element.
  * @param {string} using The locator to use.
  * @param {(Document|Element)=} opt_root The document or element to perform
  *     the search under. If not specified, will use {@code document}
@@ -51,8 +51,8 @@ webdriver.inject.locators.findElement = function(strategy, using, opt_root) {
  *     in a JSON string as defined by the WebDriver wire protocol.
  */
 webdriver.inject.locators.findElements = function(strategy, using, opt_root) {
-  var locator = {}
+  var locator = {};
   locator[strategy] = using;
   return bot.inject.executeScript(bot.locators.findElements,
                                   [locator, opt_root], true);
-}
+};

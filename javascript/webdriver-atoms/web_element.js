@@ -15,7 +15,7 @@
 
 
 /**
- * @fileoverview Atoms-based implementation of the webelement interface
+ * @fileoverview Atoms-based implementation of the webelement interface.
  */
 
 goog.provide('webdriver.element');
@@ -111,15 +111,16 @@ webdriver.element.getAttribute = function(element, attribute) {
     return value;
   }
 
-  if ('selected' == name || 'checked' == name && webdriver.element.isSelectable_(element)) {
-    return webdriver.element.isSelected(element) ? "true" : null;
+  if ('selected' == name || 'checked' == name &&
+      webdriver.element.isSelectable_(element)) {
+    return webdriver.element.isSelected(element) ? 'true' : null;
   }
 
   // Our tests suggest that returning the attribute is desirable for
   // the href attribute of <a> tags and the src attribute of <img> tags,
   // but we normally attempt to get the property value before the attribute.
-  var isLink = element.tagName && goog.dom.TagName.A == element.tagName.toUpperCase();
-  var isImg = element.tagName && goog.dom.TagName.IMG == element.tagName.toUpperCase();
+  var isLink = bot.dom.isElement(element, goog.dom.TagName.A);
+  var isImg = bot.dom.isElement(element, goog.dom.TagName.IMG);
 
   // Although the attribute matters, the property is consistent. Return that in
   // preference to the attribute for links and images.
@@ -177,6 +178,7 @@ webdriver.element.getLocation = function(element) {
 /**
  * @param {Element} element The element to use.
  * @return {boolean} Whether the element is in the HEAD tag.
+ * @private
  */
 webdriver.element.isInHead_ = function(element) {
   while (element) {

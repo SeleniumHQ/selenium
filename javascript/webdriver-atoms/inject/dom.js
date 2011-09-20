@@ -14,7 +14,7 @@
 // limitations under the License.
 
 /**
- *@fileOverview Ready to inject atoms for querying the DOM.
+ *@fileoverview Ready to inject atoms for querying the DOM.
  */
 
 goog.provide('webdriver.inject.dom');
@@ -31,7 +31,7 @@ goog.require('webdriver.element');
  *     WebDriver wire protocol.
  */
 webdriver.inject.dom.getText = function(element) {
-  return bot.inject.executeScript(bot.dom.getVisibleText,[element], true)
+  return bot.inject.executeScript(bot.dom.getVisibleText, [element], true);
 };
 
 
@@ -58,12 +58,13 @@ webdriver.inject.dom.getTopLeftCoordinates = function(element) {
 
 /**
  * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
+ * @param {string} attribute The attribute to look up.
  * @return {string} The requested attribute value in a JSON string
  *     as defined by the wire protocol.
  */
 webdriver.inject.dom.getAttributeValue = function(element, attribute) {
-  return bot.inject.executeScript(webdriver.element.getAttribute, [element, attribute],
-                                  true);
+  return bot.inject.executeScript(
+      webdriver.element.getAttribute, [element, attribute], true);
 };
 
 
@@ -79,12 +80,13 @@ webdriver.inject.dom.getSize = function(element) {
 
 /**
  * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
+ * @param {string} property The property to look up.
  * @return {string} The value of the requested CSS property in a JSON
  *     string as defined by the wire protocol.
  */
 webdriver.inject.dom.getValueOfCssProperty = function(element, property) {
   return bot.inject.executeScript(bot.dom.getCascadedStyle_,
-                                  [element, property], true)
+      [element, property], true);
 };
 
 
@@ -105,6 +107,7 @@ webdriver.inject.dom.isEnabled = function(element) {
  *     protocol.
  */
 webdriver.inject.dom.isDisplayed = function(element) {
-  return bot.inject.executeScript(bot.dom.isShown, [element, /*ignoreOpacity=*/true], true)
+  return bot.inject.executeScript(
+      bot.dom.isShown, [element, /*ignoreOpacity=*/true], true);
 };
 

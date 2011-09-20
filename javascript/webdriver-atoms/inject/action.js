@@ -14,7 +14,7 @@
 // limitations under the License.
 
 /**
- * @fileOverview Ready to inject atoms for manipulating the DOM.
+ * @fileoverview Ready to inject atoms for manipulating the DOM.
  */
 
 goog.provide('webdriver.inject.action');
@@ -33,7 +33,12 @@ webdriver.inject.action.submit = function(element) {
   bot.inject.executeScript(bot.action.submit, [element], true);
 };
 
-
+/**
+ * Clear an element.
+ *
+ * @param {bot.inject.ELEMENT_KEY:string} element The element to clear.
+ * @see bot.action.clear
+ */
 webdriver.inject.action.clear = function(element) {
   bot.inject.executeScript(bot.action.clear, [element], true);
 };
