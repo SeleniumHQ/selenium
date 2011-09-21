@@ -162,7 +162,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
         try {
           forwardRequest(session, this);
         } catch (Throwable t) {
-          log.log(Level.WARNING, "cannot forward the request " + t.getMessage(), t);
+          log.log(Level.SEVERE, "cannot forward the request " + t.getMessage(), t);
           session.terminate();
           throw new GridException("cannot forward the request " + t.getMessage(), t);
         }

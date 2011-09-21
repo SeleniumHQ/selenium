@@ -44,6 +44,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -275,14 +276,10 @@ public class TestSession {
       try {
         byte[] rawBody = ByteStreams.toByteArray(in);
 
-        // We need to set the Content-Length header before we write to the output stream. Usually
-        // the
-        // Content-Length header is already set because we take it from the proxied request. But,
-        // it won't
-        // be set when we consume chunked content, since that doesn't use Content-Length. As we're
-        // not
-        // going to send a chunked response, we need to set the Content-Length in order for the
-        // response
+        // We need to set the Content-Length header before we write to the output stream. Usually the
+        // Content-Length header is already set because we take it from the proxied request. But, it won't
+        // be set when we consume chunked content, since that doesn't use Content-Length. As we're not
+        // going to send a chunked response, we need to set the Content-Length in order for the response
         // to be valid.
         if (!response.containsHeader("Content-Length")) {
           response.setIntHeader("Content-Length", rawBody.length);
@@ -293,12 +290,14 @@ public class TestSession {
         try {
           out.close();
         } catch (IOException e) {
+          log.log(Level.SEVERE, "Problem closing response's output stream.", e);
         }
       }
     } finally {
       try {
         in.close();
       } catch (IOException e) {
+        log.log(Level.SEVERE, "Problem closing proxied response's input stream.", e);
       }
     }
   }
@@ -330,14 +329,10 @@ public class TestSession {
       String value = header.getValue();
 
       // HttpEntity#getContent() chews up the chunk-size octet (i.e., the InputStream does not
-      // actually map 1:1
-      // to the underlying response body). This breaks any client expecting the chunk size. We could
-      // try to
-      // recreate it, but since the chunks are already read in and decoded, you'd end up with a
-      // single chunk, which
-      // isn't all that useful. So, we return the response as a traditional response with a
-      // Content-Length header,
-      // obviating the need for the Transfer-Encoding header.
+      // actually map 1:1 to the underlying response body). This breaks any client expecting the chunk size. We could
+      // try to recreate it, but since the chunks are already read in and decoded, you'd end up with a
+      // single chunk, which isn't all that useful. So, we return the response as a traditional response with a
+      // Content-Length header, obviating the need for the Transfer-Encoding header.
       if (name.equalsIgnoreCase("Transfer-Encoding") && value.equalsIgnoreCase("chunked")) {
         continue;
       }
