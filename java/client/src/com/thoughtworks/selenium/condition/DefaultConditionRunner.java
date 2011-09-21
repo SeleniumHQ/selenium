@@ -26,12 +26,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * {@inheritDoc}
- * <p/>
- * <p>
- * This implementation throws a simple {@link RuntimeException} when the condition is not met in the
- * {@link #waitFor(Condition)} method. More specific runners are preferred for different testing
- * frameworks. E.g. JUnit tests would prefer to use {@link JUnitConditionRunner}.
+ * This ConditionRunner throws a simple {@link RuntimeException} when the
+ * condition is not met in the {@link #waitFor(Condition)} method. More specific
+ * runners are preferred for different testing frameworks. E.g. JUnit tests
+ * would prefer to use {@link JUnitConditionRunner}.
  */
 public class DefaultConditionRunner implements ConditionRunner {
 
