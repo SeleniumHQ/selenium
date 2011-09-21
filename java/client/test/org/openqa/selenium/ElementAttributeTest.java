@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import com.google.common.base.Throwables;
+
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -36,6 +38,14 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
   public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
     driver.get(pages.simpleTestPage);
+    //TODO(eran): This fails consistently on Linux machines due to issue #2099. Remove
+    // the sleep after it's fixed.
+    try {
+      Thread.sleep(500);
+    } catch (InterruptedException e) {
+      Throwables.propagate(e);
+    }
+
     WebElement head = driver.findElement(By.xpath("/html"));
     String attribute = head.getAttribute("cheese");
     assertThat(attribute, is(nullValue()));
