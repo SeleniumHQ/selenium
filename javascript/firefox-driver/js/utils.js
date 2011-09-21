@@ -987,7 +987,9 @@ Utils.getLocationOnceScrolledIntoView = function(element, opt_onlyFirstRect) {
   if (typeof element.scrollIntoView == 'function') {
     // This method does the scrolling as a side-effect. This is less than
     // ideal, which is why I document it here.
-    bot.dom.getLocationInView(element);
+    //TODO: Fix bot.dom.getLocationInView(element) so that it scrolls elements
+    // which are in iframes as well. See issue 2497.
+    element.scrollIntoView();
   }
 
   return Utils.getLocation(element, opt_onlyFirstRect);
