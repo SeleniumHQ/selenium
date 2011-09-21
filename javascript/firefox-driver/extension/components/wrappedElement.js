@@ -181,14 +181,25 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
+  var browser = respond.session.getBrowser();
+  var dispatcher = browser.ownerDocument.commandDispatcher;
+  var currentDocument =
+      dispatcher.focusedElement && goog.dom.getOwnerDocument(dispatcher.focusedElement);
+  currentDocument = currentDocument ? new XPCNativeWrapper(currentDocument) : null;
+
   var alreadyFocused = true;
   var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
   var unwrappedActive = fxdriver.moz.unwrapFor4(currentlyActive);
-  if (unwrappedActive != element) {
+  var newDocument = goog.dom.getOwnerDocument(unwrappedActive);
+
+  if (unwrappedActive != element || currentDocument != new XPCNativeWrapper(newDocument)) {
+    fxdriver.Logger.dumpn("Need to switch focus");
     alreadyFocused = false;
     currentlyActive.blur();
     element.focus();
     element.ownerDocument.defaultView.focus();
+  } else {
+    fxdriver.Logger.dumpn("No need to switch focus");
   }
 
   var use = element;

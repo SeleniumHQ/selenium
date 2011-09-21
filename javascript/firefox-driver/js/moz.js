@@ -26,7 +26,7 @@ goog.provide('fxdriver.moz');
  */
 fxdriver.moz.load = function(module) {
   Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
-}
+};
 
 
 /**
