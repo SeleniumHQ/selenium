@@ -31,6 +31,8 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
 public class TypingTest extends AbstractDriverTestCase {
 
@@ -557,7 +559,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(element.getAttribute("value"), is(""));
 
     element.sendKeys(Keys.CONTROL, "v");
-    assertThat(element.getAttribute("value"), is(paste));
+    waitFor(elementValueToEqual(element, paste));
 
     // Cut the last 3 letters.
     element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +
