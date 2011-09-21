@@ -35,7 +35,7 @@ require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/gecko_sdks'
 
 def version
-  "2.6.0"
+  "2.7.0"
 end
 ide_version = "1.0.12"
 
@@ -134,7 +134,7 @@ task :test_grid => [
 ]
 task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
-task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test:run", "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
+task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test:run" ] #, "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test:run" ]
 task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:common-tests:run',
@@ -335,6 +335,7 @@ task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome
    p sourcepath
    cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
    cmd << " -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal"
+
    if (windows?)
      cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";")
    end
