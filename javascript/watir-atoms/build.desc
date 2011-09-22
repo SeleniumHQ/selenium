@@ -18,3 +18,7 @@ js_fragment(name = "selectText",
   function = "watir.selectText",
   deps = ["//third_party/closure"])
   
+js_fragment(name = "getAttribute",
+  module = "bot.dom",
+  function = "bot.dom.getAttribute",
+  deps = ["//javascript/atoms:deps"])
