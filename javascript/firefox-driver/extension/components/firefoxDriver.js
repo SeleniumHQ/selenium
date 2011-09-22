@@ -198,18 +198,17 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
       respond.send();
       return;
     } catch (e) {
-      fxdriver.Logger.dumpn(JSON.stringify(e));
-      throw new WebDriverError(bot.ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR, e);
+      throw new WebDriverError(bot.ErrorCode.JAVASCRIPT_ERROR, e);
     }
   }
 
   var docBodyLoadTimeOut = function() {
-    respond.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR,
+    respond.sendError(new WebDriverError(bot.ErrorCode.JAVASCRIPT_ERROR,
         "waiting for doc.body failed"));
   };
 
   var scriptLoadTimeOut = function() {
-    respond.sendError(new WebDriverError(bot.ErrorCode.UNEXPECTED_JAVASCRIPT_ERROR,
+    respond.sendError(new WebDriverError(bot.ErrorCode.JAVASCRIPT_ERROR,
         "waiting for evaluate.js load failed"));
   };
 
