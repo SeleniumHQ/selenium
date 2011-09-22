@@ -92,7 +92,7 @@ public class RemoteControlLauncher {
     configuration.setPort(RemoteControlConfiguration.getDefaultPort());
     for (int i = 0; i < args.length; i++) {
       String arg = args[i];
-      if ("-help".equalsIgnoreCase(arg)) {
+      if ("-h".equalsIgnoreCase(arg) || "-help".equalsIgnoreCase(arg)) {
         usage(null);
         System.exit(1);
       } else if ("-defaultBrowserString".equalsIgnoreCase(arg)) {
