@@ -96,10 +96,28 @@ java_test(name = "firefox-rc-test",
     ":rc-tests",
   ])
 
+java_test(name = "firefox-singlewindow-rc-test",
+  test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
+  sysproperties = [
+    { "selenium.browser" : "*firefox", "singlewindow": "true" },
+  ],
+  deps = [
+    ":rc-tests",
+  ])
+
 java_test(name = "ie-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
     { "selenium.browser" : "*iexplore" },
+  ],
+  deps = [
+    ":rc-tests",
+  ])
+
+java_test(name = "ie-singlewindow-rc-test",
+  test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
+  sysproperties = [
+    { "selenium.browser" : "*iexplore", "singlewindow": "true" },
   ],
   deps = [
     ":rc-tests",
