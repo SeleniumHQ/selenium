@@ -95,7 +95,7 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
         "Please add the directory containing '" + humanFriendlyLauncherFileNames() +
         "' to your PATH environment\n" +
         "variable, or explicitly specify a path to " + browserName() + " like this:\n" +
-        "*" + seleniumBrowserName() + fakeLauncherPath();
+        "*" + seleniumBrowserName() + " " + fakeLauncherPath();
   }
 
   protected String fakeLauncherPath() {
