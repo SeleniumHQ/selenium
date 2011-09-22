@@ -373,7 +373,7 @@ public class SeleneseTestBase {
   /** Like assertNotEquals, but fails at the end of the test (during tearDown) */
   public void verifyNotEquals(boolean s1, boolean s2) {
     try {
-      assertNotEquals(new Boolean(s1), new Boolean(s2));
+      assertNotEquals(Boolean.valueOf(s1),Boolean.valueOf(s2));
     } catch (AssertionError e) {
       verificationErrors.append(throwableToString(e));
     }
@@ -409,7 +409,7 @@ public class SeleneseTestBase {
 
   /** Asserts that two booleans are not the same */
   public static void assertNotEquals(boolean b1, boolean b2) {
-    assertNotEquals(new Boolean(b1), new Boolean(b2));
+    assertNotEquals(Boolean.valueOf(b1), Boolean.valueOf(b2));
   }
 
   /** Sleeps for the specified number of milliseconds */

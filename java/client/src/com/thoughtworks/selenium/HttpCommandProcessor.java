@@ -326,7 +326,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     }
     if (n instanceof Long && n.intValue() == n.longValue()) {
       // SRC-315 we should return Integers if possible
-      return new Integer(n.intValue());
+      return Integer.valueOf(n.intValue());
     }
     return n;
   }
