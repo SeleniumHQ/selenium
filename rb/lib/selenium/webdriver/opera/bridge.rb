@@ -12,10 +12,11 @@ module Selenium
 
         def initialize(opts = {})
           @service = Service.default_service :log => (opts[:logging_level] ? true : false)
-          @service.start
 
           http_client = opts.delete(:http_client)
           caps        = create_capabilities(opts)
+
+          @service.start
 
           remote_opts = {
             :url                  => @service.uri,
@@ -32,7 +33,10 @@ module Selenium
         end
 
         def driver_extensions
-          [DriverExtensions::TakesScreenshot]
+          [
+            DriverExtensions::HasInputDevices,
+            DriverExtensions::TakesScreenshot
+          ]
         end
 
         def capabilities
