@@ -482,7 +482,9 @@ public class FirefoxProfile {
 
     new Zip().unzip(json, dir);
 
-    return new FirefoxProfile(dir);
+    FirefoxProfile firefoxProfile = new FirefoxProfile(dir);
+    TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(dir);
+    return firefoxProfile;
   }
 
   /**
