@@ -218,7 +218,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       if (htmlInput.isDisabled()) {
         throw new InvalidElementStateException("You may only interact with enabled elements");
       }
-      ((HtmlInput) element).setValueAttribute("");
+      htmlInput.setValueAttribute("");
     } else if (element instanceof HtmlTextArea) {
       HtmlTextArea htmlTextArea = (HtmlTextArea) element;
       if (htmlTextArea.isReadOnly()) {
@@ -227,7 +227,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       if (htmlTextArea.isDisabled()) {
         throw new InvalidElementStateException("You may only interact with enabled elements");
       }
-      ((HtmlTextArea) element).setText("");
+      htmlTextArea.setText("");
     }
   }
 
