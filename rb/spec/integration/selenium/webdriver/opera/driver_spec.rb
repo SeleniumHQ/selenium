@@ -25,7 +25,7 @@ module Selenium
 
         it 'accepts a valid logging level' do
           begin
-            driver = Selenium::WebDriver.for :opera, :logging_level => :finest
+            driver = Selenium::WebDriver.for :opera, :logging_level => :config
             # TODO(andreastt): Validate output to console
           ensure
             driver.quit if driver
