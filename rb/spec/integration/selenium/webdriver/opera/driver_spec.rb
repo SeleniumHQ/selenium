@@ -3,6 +3,9 @@ module Selenium
     module Opera
 
       describe Driver do
+
+        before(:all) { GlobalTestEnv.quit_driver rescue nil }
+
         it 'raises ArgumentError if sent an unknown capability as an argument' do
           lambda {
             Selenium::WebDriver.for :opera, :foo => 'bar'
