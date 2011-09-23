@@ -161,7 +161,7 @@ module Selenium
 
         def create_opera_driver
           ENV['SELENIUM_SERVER_JAR'] = remote_server_jar
-          WebDriver::Driver.for :opera
+          WebDriver::Driver.for :opera, :logging_level => ENV['log'] ? :config : :severe
         end
 
         def create_firefox_driver
