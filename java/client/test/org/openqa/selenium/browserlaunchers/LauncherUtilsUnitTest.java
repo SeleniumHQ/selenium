@@ -32,6 +32,7 @@ public class LauncherUtilsUnitTest extends TestCase {
       throws IOException {
     File tempDir = File.createTempFile("LauncherUtilsUnitTest", "dir");
     tempDir.delete();
+    tempDir.deleteOnExit();
 
     File parentDir = new File(tempDir, parentDirName);
     parentDir.deleteOnExit();
