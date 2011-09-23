@@ -25,7 +25,7 @@ describe "Element" do
     key_reporter.attribute('value').should == "Test"
   end
 
-  not_compatible_on :opera do
+  not_compliant_on :browser => :opera do
     it "should handle file uploads" do
       driver.navigate.to url_for("formPage.html")
 
