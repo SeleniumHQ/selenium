@@ -25,19 +25,21 @@ describe "Element" do
     key_reporter.attribute('value').should == "Test"
   end
 
-  it "should handle file uploads" do
-    driver.navigate.to url_for("formPage.html")
+  not_compatible_on :opera do
+    it "should handle file uploads" do
+      driver.navigate.to url_for("formPage.html")
 
-    element = driver.find_element(:id, 'upload')
-    element.attribute('value').should be_empty
+      element = driver.find_element(:id, 'upload')
+      element.attribute('value').should be_empty
 
-    file = Tempfile.new('file-upload')
-    path = file.path
-    path.gsub!("/", "\\") if WebDriver::Platform.windows?
+      file = Tempfile.new('file-upload')
+      path = file.path
+      path.gsub!("/", "\\") if WebDriver::Platform.windows?
 
-    element.send_keys path
+      element.send_keys path
 
-    element.attribute('value').should include(File.basename(path))
+      element.attribute('value').should include(File.basename(path))
+    end
   end
 
   it "should get attribute value" do
@@ -126,7 +128,7 @@ describe "Element" do
     end
   end
 
-  not_compliant_on :browser => :chrome do
+  not_compliant_on :browser => [:chrome, :opera] do
     it "should get css property" do
       driver.navigate.to url_for("javascriptPage.html")
       driver.find_element(:id, "green-parent").style("background-color").should == "#008000"
