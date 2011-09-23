@@ -1,3 +1,16 @@
+2.7.0 (2011-09-23)
+==================
+
+* Firefox
+  - no longer types in the URL bar (#2487)
+  - fixed native events click() issue when element is out of view
+  - double click + get no longer hangs firefox (#2456)
+  - make sure escaped backslashes are properly escaped when serializing a Firefox profile (#2485)
+* IE
+  - fix event firing issue (#2516)
+* Opera
+  - don't start the remote service if the driver is passed bad arguments
+
 2.6.0 (2011-09-13)
 ==================
 
