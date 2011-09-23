@@ -1,3 +1,25 @@
+v2.7.0
+======
+
+WebDriver
+  * FIXED: 2487: FirefoxDriver no longer types in the URL bar.
+  * FIXED: Issues to do with not clicking on elements out of view when using
+    native events.
+  * FIXED: 2456: Double click and get no longer hangs Firefox.
+  * Improved emulation of Selenium RC when using Opera in the
+    WebDriverBackedSelenium.
+  * FIXED: 2421: Chrome returns doubles instead of ints because it supports
+    sub-pixel rendering.
+
+RC
+  * FIXED: #2413: "Missing space between browser name and custom path in error
+    message"
+  * FIXED: 2390, 2477: Make -h a synonym for -help
+
+Automation Atoms
+  * Allow bot.dom.getInViewLocation to scroll a specified location into view.
+
+
 v2.6.0
 ======
 
@@ -114,7 +136,3 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
-
-
-
-
