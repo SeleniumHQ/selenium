@@ -431,7 +431,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     if (element instanceof HtmlInput) {
       return ((HtmlInput) element).isChecked();
     } else if (element instanceof HtmlOption) {
-      return ((HtmlOption) element).hasAttribute("selected");
+      return ((HtmlOption) element).isSelected();
     }
 
     throw new UnsupportedOperationException(

@@ -82,4 +82,20 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
           is(true));
     }
   }
+
+  @Ignore({SELENESE, ANDROID})
+  public void testShouldSelectFirstOptionByDefaultIfNoneIsSelected() {
+    driver.get(pages.formPage);
+    WebElement selectBox = driver.findElement(By.xpath("//select[@name='select-default']"));
+    List<WebElement> options = selectBox.findElements(By.tagName("option"));
+    WebElement one = options.get(0);
+    WebElement two = options.get(1);
+    assertThat(one.isSelected(), is(true));
+    assertThat(two.isSelected(), is(false));
+
+    two.click();
+    assertThat(one.isSelected(), is(false));
+    assertThat(two.isSelected(), is(true));
+  }
+
 }
