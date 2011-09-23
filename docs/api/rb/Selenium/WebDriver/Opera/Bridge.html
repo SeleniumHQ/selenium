@@ -307,17 +307,19 @@ A new instance of Bridge
 25
 26
 27
-28</pre>
+28
+29</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='ivar'>@service</span> <span class='op'>=</span> <span class='const'>Service</span><span class='period'>.</span><span class='id default_service'>default_service</span> <span class='symbol'>:log</span> <span class='op'>=&gt;</span> <span class='lparen'>(</span><span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:logging_level</span><span class='rbracket'>]</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='kw'>false</span><span class='rparen'>)</span>
-  <span class='ivar'>@service</span><span class='period'>.</span><span class='id start'>start</span>
 
   <span class='id http_client'>http_client</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:http_client</span><span class='rparen'>)</span>
   <span class='id caps'>caps</span>        <span class='op'>=</span> <span class='id create_capabilities'>create_capabilities</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span>
+
+  <span class='ivar'>@service</span><span class='period'>.</span><span class='id start'>start</span>
 
   <span class='id remote_opts'>remote_opts</span> <span class='op'>=</span> <span class='lbrace'>{</span>
     <span class='symbol'>:url</span>                  <span class='op'>=&gt;</span> <span class='ivar'>@service</span><span class='period'>.</span><span class='id uri'>uri</span><span class='comma'>,</span>
@@ -353,12 +355,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-30
 31
-32</pre>
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id browser'>browser</span>
   <span class='symbol'>:opera</span>
@@ -381,12 +383,12 @@ A new instance of Bridge
       <pre class="lines">
 
 
-38
-39
-40</pre>
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id capabilities'>capabilities</span>
   <span class='ivar'>@capabilities</span> <span class='op'>||=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id opera'>opera</span>
@@ -409,15 +411,21 @@ A new instance of Bridge
       <pre class="lines">
 
 
-34
 35
-36</pre>
+36
+37
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id driver_extensions'>driver_extensions</span>
-  <span class='lbracket'>[</span><span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span><span class='rbracket'>]</span>
+  <span class='lbracket'>[</span>
+    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasInputDevices</span><span class='comma'>,</span>
+    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span>
+  <span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -437,14 +445,14 @@ A new instance of Bridge
       <pre class="lines">
 
 
-42
-43
-44
-45
-46</pre>
+46
+47
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/bridge.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id quit'>quit</span>
   <span class='kw'>super</span>
@@ -461,7 +469,7 @@ A new instance of Bridge
 </div>
     
     <div id="footer">
-  Generated on Tue Sep 13 23:35:10 2011 by 
+  Generated on Fri Sep 23 15:53:35 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.2 (ruby-1.9.2).
 </div>
