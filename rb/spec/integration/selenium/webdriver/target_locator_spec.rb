@@ -107,16 +107,15 @@ describe "WebDriver::TargetLocator" do
       end
     end
 
-    not_compliant_on :browser => :opera do
-      not_compliant_on :browser => :chrome, :platform => :macosx do # http://code.google.com/p/chromium/issues/detail?id=90519
-        it "allows the user to dismiss an alert" do
-          driver.navigate.to url_for("alerts.html")
-          driver.find_element(:id => "alert").click
+    not_compliant_on({:browser => :chrome, :platform => :macosx}, # http://code.google.com/p/chromium/issues/detail?id=90519
+                     {:browser => :opera}) do 
+      it "allows the user to dismiss an alert" do
+        driver.navigate.to url_for("alerts.html")
+        driver.find_element(:id => "alert").click
 
-          driver.switch_to.alert.dismiss
+        driver.switch_to.alert.dismiss
 
-          driver.title.should == "Testing Alerts"
-        end
+        driver.title.should == "Testing Alerts"
       end
     end
 
