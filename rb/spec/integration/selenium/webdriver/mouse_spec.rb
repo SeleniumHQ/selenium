@@ -26,12 +26,14 @@ module Selenium
         text.should == "Dropped!"
       end
 
-      it "double clicks an element" do
-        driver.navigate.to url_for("javascriptPage.html")
-        element = driver.find_element(:id, 'doubleClickField')
+      not_compliant_on :browser => :firefox, :platform => :windows do
+        it "double clicks an element" do
+          driver.navigate.to url_for("javascriptPage.html")
+          element = driver.find_element(:id, 'doubleClickField')
 
-        driver.mouse.double_click element
-        element.attribute(:value).should == 'DoubleClicked'
+          driver.mouse.double_click element
+          element.attribute(:value).should == 'DoubleClicked'
+        end
       end
 
       it "context clicks an element" do
