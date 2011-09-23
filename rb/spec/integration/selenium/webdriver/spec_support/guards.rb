@@ -33,28 +33,37 @@ module Selenium
             {:browser => GlobalTestEnv.browser, :driver => GlobalTestEnv.driver, :platform => Platform.os}
           end
 
-          def env_matches?(env)
-            env.all? do |key, value|
-              if value.kind_of?(Array)
-                value.include? current_env[key]
-              else
-                value == current_env[key]
-              end
-            end
+          #
+          # not_compliant_on :browser => [:firefox, :chrome]
+          #   - guard this spec for both firefox and chrome
+          #
+          # not_compliant_on {:browser => :chrome, :platform => :macosx}, {:browser => :opera}
+          #   - guard this spec for Chrome on OSX and Opera on any OS
+
+          def env_matches?(opts)
+            opts.any? {
+              env.all? { |key, value|
+                if value.kind_of?(Array)
+                  value.include? current_env[key]
+                else
+                  value == current_env[key]
+                end
+              }
+            }
           end
         end
 
-        def not_compliant_on(opts = {}, &blk)
+        def not_compliant_on(*opts, &blk)
           Guards.record(:not_compliant, opts, :file => caller.first)
           yield unless Guards.env_matches?(opts)
         end
 
-        def deviates_on(opts = {}, &blk)
+        def deviates_on(*opts, &blk)
           Guards.record(:deviates, opts, :file => caller.first)
           yield unless Guards.env_matches?(opts)
         end
 
-        def compliant_on(opts = {}, &blk)
+        def compliant_on(*opts, &blk)
           Guards.record(:compliant_on, opts, :file => caller.first)
           yield if Guards.env_matches?(opts)
         end
