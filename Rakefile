@@ -333,7 +333,7 @@ task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome
      sourcepath += File::PATH_SEPARATOR + m
    end
    p sourcepath
-   cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
+   cmd = "javadoc -notimestamp -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
    cmd << " -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal"
 
    if (windows?)
