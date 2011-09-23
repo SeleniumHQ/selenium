@@ -41,7 +41,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
     htaCommandPath = browserLaunchLocation;
     this.sessionId = sessionId;
     this.configuration = configuration;
-    this.browserOptions = browserOptions;
+    this.browserOptions = configuration.copySettingsIntoBrowserOptions(browserOptions);
   }
 
   private static String findHTALaunchLocation() {
@@ -157,10 +157,6 @@ public class HTABrowserLauncher implements BrowserLauncher {
     return configuration.getPortDriversShouldContact();
   }
 
-  /**
-   * Note that the browserConfigurationOptions object is ignored; This browser configuration is not
-   * supported for IE
-   */
   public void launchRemoteSession(String url) {
     launch(
         LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId,
