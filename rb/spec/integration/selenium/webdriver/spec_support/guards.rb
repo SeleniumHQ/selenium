@@ -8,10 +8,12 @@ module Selenium
             @guards ||= Hash.new { |hash, key| hash[key] = [] }
           end
 
-          def record(guard_name, opts, data)
-            opts = current_env.merge(opts)
-            key = "#{opts[:browser]}/#{opts[:driver]}/#{opts[:platform]}"
-            guards[key] << [guard_name, data]
+          def record(guard_name, options, data)
+            options.each do |opts|
+              opts = current_env.merge(opts)
+              key = "#{opts[:browser]}/#{opts[:driver]}/#{opts[:platform]}"
+              guards[key] << [guard_name, data]
+            end
           end
 
           def report
@@ -41,7 +43,7 @@ module Selenium
           #   - guard this spec for Chrome on OSX and Opera on any OS
 
           def env_matches?(opts)
-            opts.any? {
+            opts.any? { |env|
               env.all? { |key, value|
                 if value.kind_of?(Array)
                   value.include? current_env[key]
