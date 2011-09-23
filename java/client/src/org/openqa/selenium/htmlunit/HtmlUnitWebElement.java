@@ -211,8 +211,22 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     if (element instanceof HtmlInput) {
+      HtmlInput htmlInput = (HtmlInput) element;
+      if (htmlInput.isReadOnly()) {
+        throw new InvalidElementStateException("You may only edit editable elements");
+      }
+      if (htmlInput.isDisabled()) {
+        throw new InvalidElementStateException("You may only interact with enabled elements");
+      }
       ((HtmlInput) element).setValueAttribute("");
     } else if (element instanceof HtmlTextArea) {
+      HtmlTextArea htmlTextArea = (HtmlTextArea) element;
+      if (htmlTextArea.isReadOnly()) {
+        throw new InvalidElementStateException("You may only edit editable elements");
+      }
+      if (htmlTextArea.isDisabled()) {
+        throw new InvalidElementStateException("You may only interact with enabled elements");
+      }
       ((HtmlTextArea) element).setText("");
     }
   }

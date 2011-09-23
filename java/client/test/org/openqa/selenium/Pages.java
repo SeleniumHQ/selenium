@@ -65,6 +65,7 @@ public class Pages {
   public String selectPage;
   public String touchLongContentPage;
   public String veryLargeCanvas;
+  public String readOnlyPage;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -112,5 +113,6 @@ public class Pages {
     selectPage = appServer.whereIs("selectPage.html");
     touchLongContentPage = appServer.whereIs("longContentPage.html");
     veryLargeCanvas = appServer.whereIs("veryLargeCanvas.html");
+    readOnlyPage = appServer.whereIs("readOnlyPage.html");
   }
 }
