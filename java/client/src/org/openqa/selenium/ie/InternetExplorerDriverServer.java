@@ -93,6 +93,9 @@ public class InternetExplorerDriverServer {
           sourcePaths.add("build\\cpp\\" + arch + "\\Debug");
           sourcePaths.add("..\\build\\cpp\\" + arch + "\\Debug");
           sourcePaths.add("..\\..\\build\\cpp\\" + arch + "\\Debug");
+          sourcePaths.add("build\\cpp\\" + arch + "\\Release");
+          sourcePaths.add("..\\build\\cpp\\" + arch + "\\Release");
+          sourcePaths.add("..\\..\\build\\cpp\\" + arch + "\\Release");
           boolean copied = false;
           for (String path : sourcePaths) {
             File sourceFile = new File(path, "IEDriver.dll");
