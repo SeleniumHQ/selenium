@@ -251,7 +251,7 @@ public class TestSuiteBuilder {
 
     if (isIgnored(method)) {
       System.err.println("Ignoring: "
-          + method.getDeclaringClass() + ""
+          + method.getDeclaringClass() + "."
           + method.getName() + ": "
           + method.getAnnotation(Ignore.class).reason());
       return false;
