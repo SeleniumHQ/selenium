@@ -108,14 +108,23 @@ public class HtmlUnitWebElement implements WrapsDriver,
       // element not visible either
     }
 
-    // TODO(simon): It appears as if clicking on html options doesn't toggle state
     if (element instanceof HtmlOption) {
-      boolean currentlySelected = isSelected();
-      ((HtmlOption) element).setSelected(!currentlySelected);
-      if (currentlySelected) {
-        element.removeAttribute("selected");
-      } else {
-        element.setAttribute("selected", "true");
+      HtmlOption option = (HtmlOption) element;
+      HtmlSelect select = option.getEnclosingSelect();
+      if (select.isMultipleSelectEnabled()) {
+          if (option.isSelected()) {
+            // HtmlUnit cannot unselect options of a multiselect list.
+            // We emulate 'unselecting', but we should not call mouse.click after that,
+            // if we do click the option will go back to selected.
+            // May be we should do something else, fire some events, etc.
+            // But at least this implementation passes all the current tests.
+            option.setSelected(false);
+            element.removeAttribute("selected");
+            return;
+            // yes, return, don't do mouse.click!
+          } else {
+            element.setAttribute("selected", "true");
+          }
       }
       // Now fall through
     }
