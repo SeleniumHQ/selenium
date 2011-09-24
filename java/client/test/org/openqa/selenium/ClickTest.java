@@ -179,4 +179,29 @@ public class ClickTest extends AbstractDriverTestCase {
         "Should be selected",
         driver.findElement(By.id("checkbox-with-label")).isSelected());
   }
+
+  public void testCanClickOnALinkWithEnclosedImage() {
+    driver.findElement(By.id("link-with-enclosed-image")).click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
+  public void testCanClickOnAnImageEnclosedInALink() {
+    driver.findElement(By.id("link-with-enclosed-image")).findElement(By.tagName("img")).click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
+  public void testCanClickOnALinkThatContainsTextWrappedInASpan() {
+    driver.findElement(By.id("link-with-enclosed-span")).click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
+  public void testCanClickOnAnElementEnclosedInALink() {
+    driver.findElement(By.id("link-with-enclosed-span")).findElement(By.tagName("span")).click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
 }
