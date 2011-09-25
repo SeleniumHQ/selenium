@@ -87,9 +87,17 @@ public class Actions {
     return this;
   }
 
+  public Actions clickAndHold() {
+    return this.clickAndHold(null);
+  }
+
   public Actions release(WebElement onElement) {
     action.addAction(new ButtonReleaseAction(mouse, (Locatable) onElement));
     return this;
+  }
+
+  public Actions release() {
+    return this.release(null);
   }
 
   public Actions click(WebElement onElement) {
