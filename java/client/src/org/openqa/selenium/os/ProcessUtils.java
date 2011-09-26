@@ -1,6 +1,7 @@
 package org.openqa.selenium.os;
 
-import java.io.Closeable;
+import com.google.common.io.Closeables;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 
@@ -164,18 +165,10 @@ public class ProcessUtils {
   }
 
   public static void closeAllStreamsAndDestroyProcess(Process process) {
-    closeQuietly(process.getInputStream());
-    closeQuietly(process.getErrorStream());
-    closeQuietly(process.getOutputStream());
+    Closeables.closeQuietly(process.getInputStream());
+    Closeables.closeQuietly(process.getErrorStream());
+    Closeables.closeQuietly(process.getOutputStream());
     process.destroy();
   }
 
-  private static void closeQuietly(Closeable closeable) {
-    if (closeable != null) {
-      try {
-        closeable.close();
-      } catch (IOException ignored) {
-      }
-    }
-  }
 }

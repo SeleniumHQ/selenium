@@ -19,6 +19,8 @@ limitations under the License.
 
 package org.openqa.selenium.io;
 
+import com.google.common.io.Closeables;
+
 import org.openqa.selenium.WebDriverException;
 
 import java.io.BufferedReader;
@@ -58,7 +60,7 @@ public class FileHandler {
       try {
         zip.unzipFile(outputDir, is, name);
       } finally {
-        Cleanly.close(is);
+        Closeables.closeQuietly(is);
       }
     }
   }
@@ -194,8 +196,8 @@ public class FileHandler {
         throw new IOException("Could not transfer all bytes.");
       }
     } finally {
-      Cleanly.close(out);
-      Cleanly.close(in);
+      Closeables.closeQuietly(out);
+      Closeables.closeQuietly(in);
     }
   }
 
@@ -272,7 +274,7 @@ public class FileHandler {
 
       return builder.toString();
     } finally {
-      Cleanly.close(reader);
+      Closeables.closeQuietly(reader);
     }
   }
 }

@@ -1,5 +1,7 @@
 package org.openqa.selenium.io;
 
+import com.google.common.io.Closeables;
+
 import org.openqa.selenium.internal.Base64Encoder;
 
 import java.io.BufferedOutputStream;
@@ -28,7 +30,7 @@ public class Zip {
       fos = new FileOutputStream(output);
       zip(inputDir, fos);
     } finally {
-      Cleanly.close(fos);
+      Closeables.closeQuietly(fos);
     }
   }
 
@@ -39,7 +41,7 @@ public class Zip {
       zip(inputDir, bos);
       return new Base64Encoder().encode(bos.toByteArray());
     } finally {
-      Cleanly.close(bos);
+      Closeables.closeQuietly(bos);
     }
   }
 
@@ -49,7 +51,7 @@ public class Zip {
       zos = new ZipOutputStream(writeTo);
       addToZip(inputDir.getAbsolutePath(), zos, inputDir);
     } finally {
-      Cleanly.close(zos);
+      Closeables.closeQuietly(zos);
     }
   }
 
@@ -84,7 +86,7 @@ public class Zip {
       bis = new ByteArrayInputStream(bytes);
       unzip(bis, outputDir);
     } finally {
-      Cleanly.close(bis);
+      Closeables.closeQuietly(bis);
     }
   }
 
@@ -95,7 +97,7 @@ public class Zip {
       fis = new FileInputStream(source);
       unzip(fis, outputDir);
     } finally {
-      Cleanly.close(fis);
+      Closeables.closeQuietly(fis);
     }
   }
 
@@ -114,7 +116,7 @@ public class Zip {
         unzipFile(outputDir, zis, entry.getName());
       }
     } finally {
-      Cleanly.close(zis);
+      Closeables.closeQuietly(zis);
     }
   }
 

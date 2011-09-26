@@ -1,5 +1,7 @@
 package org.openqa.selenium.io;
 
+import com.google.common.io.Closeables;
+
 import org.openqa.selenium.internal.InProject;
 
 import junit.framework.TestCase;
@@ -118,7 +120,7 @@ public class ZipTest extends TestCase {
     }
     FileOutputStream fos = new FileOutputStream(file);
     fos.write("".getBytes());
-    Cleanly.close(fos);
+    Closeables.closeQuietly(fos);
 
     assertTrue(file.exists());
   }

@@ -19,10 +19,10 @@ package org.openqa.selenium.firefox;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
+import com.google.common.io.Closeables;
 import com.google.common.io.LineReader;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.Cleanly;
 
 import java.io.File;
 import java.io.FileReader;
@@ -60,7 +60,7 @@ class Preferences {
     } catch (IOException e) {
       throw new WebDriverException(e);
     } finally {
-      Cleanly.close(reader);
+      Closeables.closeQuietly(reader);
     }
   }
 
@@ -70,7 +70,7 @@ class Preferences {
     } catch (IOException e) {
       throw new WebDriverException(e);
     } finally {
-      Cleanly.close(reader);
+      Closeables.closeQuietly(reader);
     }
   }
 

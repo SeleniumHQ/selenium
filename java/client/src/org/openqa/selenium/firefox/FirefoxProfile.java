@@ -26,6 +26,7 @@ import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_ENABLE_NATIVE_EV
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.io.Closeables;
 
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
@@ -33,7 +34,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
-import org.openqa.selenium.io.Cleanly;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 
@@ -386,7 +386,7 @@ public class FirefoxProfile {
     } catch (IOException e) {
       throw new WebDriverException(e);
     } finally {
-      Cleanly.close(writer);
+      Closeables.closeQuietly(writer);
     }
   }
 
