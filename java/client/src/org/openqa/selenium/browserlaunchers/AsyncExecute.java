@@ -69,6 +69,7 @@ public class AsyncExecute {
     int exitValue;
     try {
       exitValue = ProcessUtils.waitForProcessDeath(process, 10000);
+      ProcessUtils.closeAllStreamsAndDestroyProcess( process);
     } catch (ProcessUtils.ProcessStillAliveException ex) {
       if (WindowsUtils.thisIsWindows()) {
         throw ex;
@@ -77,6 +78,7 @@ public class AsyncExecute {
         log.info("Process didn't die after 10 seconds");
         UnixUtils.kill9(process);
         exitValue = ProcessUtils.waitForProcessDeath(process, 10000);
+        ProcessUtils.closeAllStreamsAndDestroyProcess( process);
       } catch (Exception e) {
         log.log(Level.SEVERE, "Process refused to die after 10 seconds, and couldn't kill9 it", e);
         throw new RuntimeException(

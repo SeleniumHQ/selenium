@@ -360,12 +360,7 @@ public class FirefoxBinary {
           e.printStackTrace(System.err);
         }
       } finally {
-        if (stdoutOfWatchedProcess != null) {
-          try {
-            stdoutOfWatchedProcess.close();
-          } catch (IOException ignored) {
-          }
-        }
+          ProcessUtils.closeAllStreamsAndDestroyProcess(process);
       }
     }
   }

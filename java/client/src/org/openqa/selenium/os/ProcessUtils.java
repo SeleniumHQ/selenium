@@ -1,5 +1,6 @@
 package org.openqa.selenium.os;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
@@ -35,8 +36,8 @@ public class ProcessUtils {
     if (ie != null) {
       throw new ProcessStillAliveException("Timeout waiting for process to die", ie);
     }
-    return p.exitValue();
 
+    return p.exitValue();
   }
 
   /**
@@ -52,6 +53,7 @@ public class ProcessUtils {
     // the process to kill itself just before calling this method
     try {
       exitValue = waitForProcessDeath(process, 1000);
+      closeAllStreamsAndDestroyProcess( process);
       if (exitValue == 0) {
         return exitValue;
       }
@@ -62,6 +64,7 @@ public class ProcessUtils {
     process.destroy();
     try {
       exitValue = waitForProcessDeath(process, 10000);
+      closeAllStreamsAndDestroyProcess( process);
     } catch (ProcessStillAliveException ex) {
       if (Platform.getCurrent().is(Platform.WINDOWS)) {
         throw ex;
@@ -70,6 +73,7 @@ public class ProcessUtils {
         System.out.println("Process didn't die after 10 seconds");
         kill9(process);
         exitValue = waitForProcessDeath(process, 10000);
+        closeAllStreamsAndDestroyProcess( process);
       } catch (Exception e) {
         System.out.println("Process refused to die after 10 seconds, and couldn't kill9 it");
         e.printStackTrace();
@@ -116,6 +120,7 @@ public class ProcessUtils {
       String output = IOUtils.readFully(p.getInputStream());
       throw new RuntimeException("kill return code " + code + ": " + output);
     }
+      closeAllStreamsAndDestroyProcess(p);
   }
 
   /**
@@ -155,6 +160,22 @@ public class ProcessUtils {
 
     public ProcessStillAliveException(String message, Throwable cause) {
       super(message, cause);
+    }
+  }
+
+  public static void closeAllStreamsAndDestroyProcess(Process process) {
+    closeQuietly(process.getInputStream());
+    closeQuietly(process.getErrorStream());
+    closeQuietly(process.getOutputStream());
+    process.destroy();
+  }
+
+  private static void closeQuietly(Closeable closeable) {
+    if (closeable != null) {
+      try {
+        closeable.close();
+      } catch (IOException ignored) {
+      }
     }
   }
 }
