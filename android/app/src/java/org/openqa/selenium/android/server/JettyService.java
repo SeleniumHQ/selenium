@@ -182,7 +182,7 @@ public class JettyService extends Service {
   }
 
   public void startServer() {
-    if (server!= null && server.isRunning()) {
+    if (server != null && server.isRunning()) {
       Toast.makeText(JettyService.this, R.string.jetty_already_started, Toast.LENGTH_SHORT).show();
       return;
     }
