@@ -33,13 +33,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
@@ -186,13 +181,6 @@ public class HttpCommandExecutor implements CommandExecutor {
     public abstract HttpUriRequest createMethod(String url);
   }
 
-  private static ClientConnectionManager getClientConnectionManager(HttpParams httpParams) {
-    SchemeRegistry registry = new SchemeRegistry();
-    registry.register(new Scheme("http", ReusingSocketSocketFactory.getSocketFactory(), 80));
-    registry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
-    return new SingleClientConnManager(httpParams, registry);
-  }
-
   public HttpCommandExecutor(URL addressOfRemoteServer) {
     try {
       remoteServer = addressOfRemoteServer == null ?
@@ -213,7 +201,7 @@ public class HttpCommandExecutor implements CommandExecutor {
       }
     }
     client = httpClientFactory.getHttpClient();
-    if (addressOfRemoteServer.getUserInfo() != null) {
+    if (addressOfRemoteServer != null && addressOfRemoteServer.getUserInfo() != null) {
       // Use HTTP Basic auth
       UsernamePasswordCredentials credentials = new
           UsernamePasswordCredentials(addressOfRemoteServer.getUserInfo());
@@ -416,7 +404,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     }
 
     String location = response.getFirstHeader("location").getValue();
-    URI uri = null;
+    URI uri;
     try {
       uri = buildUri(context, location);
 
