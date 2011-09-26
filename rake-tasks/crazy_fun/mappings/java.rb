@@ -53,7 +53,7 @@ module CrazyFunJava
   def self.ant
     @ant ||= (
       require 'third_party/java/eclipse_compiler/ecj-3.5.2.jar'
-      require 'third_party/java/junit/junit-dep-4.8.1.jar'
+      require 'third_party/java/junit/junit-dep-4.9.jar'
 
       Ant.load_bundled
 

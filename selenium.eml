@@ -7,8 +7,8 @@
 		<excludeFolder url="file://$MODULE_DIR$/build"/>
 		<excludeFolder url="file://$MODULE_DIR$/common/build"/>
 	</contentEntry>
-	<lib name="junit-dep-4.8.1.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/junit/junit-dep-4.8.1.jar!/"/>
+	<lib name="junit-dep-4.9.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/junit/junit-dep-4.9.jar!/"/>
 	</lib>
 	<lib name="easymockclassextension-2.4.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/easymock/easymockclassextension-2.4.jar!/"/>
@@ -174,5 +174,8 @@
 	</lib>
 	<lib name="jcip-annotations-1.0.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jcip-annotations/jcip-annotations-1.0.jar!/"/>
+	</lib>
+	<lib name="commons-jxpath-1.3.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-jxpath/commons-jxpath-1.3.jar!/"/>
 	</lib>
 </component>
