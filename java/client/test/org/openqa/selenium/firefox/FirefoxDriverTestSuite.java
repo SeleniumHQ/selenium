@@ -50,6 +50,7 @@ public class FirefoxDriverTestSuite extends TestCase {
 
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
+//        .addSourceDir("java/client/test/org/openqa/selenium/firefox") Haven't been running for a while, apparently, and some of them don't pass now...
         .usingDriver(FirefoxDriver.class)
         .exclude(FIREFOX)
         .keepDriverInstance()

@@ -118,15 +118,7 @@ public class FirefoxProfileTest extends TestCase {
   public void testShouldSetBooleanPreferences() throws Exception {
     profile.setPreference("cheese", false);
 
-    List<String> props = readGeneratedProperties(profile);
-    boolean seenCheese = false;
-    for (String line : props) {
-      if (line.contains("cheese") && line.contains(", false)")) {
-        seenCheese = true;
-      }
-    }
-
-    assertTrue("Did not see integer value being set correctly", seenCheese);
+    assertPreferenceValueEquals("cheese", false);
   }
 
   public void testShouldInstallExtensionFromZip() throws IOException {
@@ -185,6 +177,12 @@ public class FirefoxProfileTest extends TestCase {
           expected.getMessage());
     }
   }
+  
+  public void testCanOverrideAFrozenPreferenceWithTheFrozenValue() throws Exception {
+    profile.setPreference("app.update.auto", false);
+    
+    assertPreferenceValueEquals("app.update.auto", false);
+  }
 
   public void testCanOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
     FirefoxProfile profile = new FirefoxProfile();
@@ -228,6 +226,18 @@ public class FirefoxProfileTest extends TestCase {
     Preferences parsedPrefs = parseUserPrefs(rebuilt);
 
     assertEquals("http://www.example.com", parsedPrefs.getPreference("browser.startup.homepage"));
+  }
+  
+  private void assertPreferenceValueEquals(String key, Object value) throws Exception {
+    List<String> props = readGeneratedProperties(profile);
+    boolean seenKey = false;
+    for (String line : props) {
+      if (line.contains(key) && line.contains(", " + value + ")")) {
+        seenKey = true;
+      }
+    }
+
+    assertTrue("Did not see value being set correctly", seenKey);
   }
 
   private Preferences parseUserPrefs(FirefoxProfile profile) throws IOException {

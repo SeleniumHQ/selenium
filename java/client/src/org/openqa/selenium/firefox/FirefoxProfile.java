@@ -262,7 +262,8 @@ public class FirefoxProfile {
 
   private static void checkPreference(String key, Object value) {
     checkNotNull(value);
-    checkArgument(!FROZEN_PREFERENCES.containsKey(key),
+    checkArgument(!FROZEN_PREFERENCES.containsKey(key) ||
+      (FROZEN_PREFERENCES.containsKey(key) && value.equals(FROZEN_PREFERENCES.get(key))),
         "Preference %s may not be overridden: frozen value=%s, requested value=%s",
         key, FROZEN_PREFERENCES.get(key), value);
     if (MAX_SCRIPT_RUN_TIME_KEY.equals(key)) {
