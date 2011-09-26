@@ -18,7 +18,7 @@ public class TemporaryFilesystemTest extends TestCase {
     File baseForTest = new File(System.getProperty("java.io.tmpdir"), "tmpTest");
     baseForTest.mkdir();
 
-    tmpFs = TemporaryFilesystem.getTmpFsBasedOn(baseForTest.getAbsolutePath());
+    tmpFs = TemporaryFilesystem.getTmpFsBasedOn(baseForTest);
   }
 
   @Test

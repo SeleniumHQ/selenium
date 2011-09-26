@@ -5,7 +5,7 @@
 	<classpathentry kind="src" path="java/client/src"/>
 	<classpathentry kind="src" path="java/client/test"/>
 	<classpathentry kind="src" path="java/server/test"/>
-	<classpathentry kind="var" path="USER_HOME/src/update-webdriver/third_party/java/junit/junit-dep-4.9.jar"/>
+	<classpathentry kind="lib" path="third_party/java/junit/junit-dep-4.9.jar"/>
 	<classpathentry kind="lib" path="third_party/java/easymock/easymockclassextension-2.4.jar"/>
 	<classpathentry kind="lib" path="third_party/java/htmlunit/htmlunit-core-js-2.9.jar"/>
 	<classpathentry kind="lib" path="third_party/java/bcprov/bcprov-jdk15-135.jar"/>
@@ -56,5 +56,7 @@
 	<classpathentry kind="lib" path="third_party/java/google-protobuffers/protobuf-java-2.4.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jcip-annotations/jcip-annotations-1.0.jar"/>
 	<classpathentry kind="lib" path="third_party/java/commons-jxpath/commons-jxpath-1.3.jar"/>
+	<classpathentry kind="lib" path="third_party/java/jmock/jmock-legacy-2.5.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/objenesis-1.0"/>
 	<classpathentry kind="output" path="out/production/selenium"/>
 </classpath>

@@ -42,10 +42,13 @@ public class TemporaryFilesystem {
   private static TemporaryFilesystem instance;
 
   public static TemporaryFilesystem getDefaultTmpFS() {
+    File sysTemp = new File(System.getProperty("java.io.tmpdir"));
+
     if (instance == null) {
       synchronized (TemporaryFilesystem.class) {
         if (instance == null) {
-          instance = new TemporaryFilesystem(System.getProperty("java.io.tmpdir"));
+
+          instance = new TemporaryFilesystem(sysTemp);
         }
       }
     }
@@ -55,16 +58,17 @@ public class TemporaryFilesystem {
 
   public static void setTemporaryDirectory(File directory) {
     synchronized (TemporaryFilesystem.class) {
-      instance = new TemporaryFilesystem(directory.getAbsolutePath());
+      instance = new TemporaryFilesystem(directory);
     }
   }
 
-  public static TemporaryFilesystem getTmpFsBasedOn(String directory) {
+  public static TemporaryFilesystem getTmpFsBasedOn(File directory) {
     return new TemporaryFilesystem(directory);
   }
 
-  private TemporaryFilesystem(String baseTempDir) {
-    baseDir = new File(baseTempDir);
+
+  private TemporaryFilesystem(File baseDir) {
+    this.baseDir = baseDir;
 
     Runtime.getRuntime().addShutdownHook(shutdownHook);
 

@@ -178,4 +178,7 @@
 	<lib name="commons-jxpath-1.3.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-jxpath/commons-jxpath-1.3.jar!/"/>
 	</lib>
+	<lib name="jmock-legacy-2.5.1.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-legacy-2.5.1.jar!/"/>
+	</lib>
 </component>

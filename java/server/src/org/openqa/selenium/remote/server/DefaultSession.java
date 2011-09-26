@@ -23,18 +23,21 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.html5.DatabaseStorage;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.FindsByCssSelector;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
+import java.io.File;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -67,17 +70,30 @@ public class DefaultSession implements Session {
   private volatile String base64EncodedImage;
   private volatile long lastAccess;
   private final BrowserCreator browserCreator;
+  private TemporaryFilesystem tempFs;
 
   // This method is to avoid constructor escape of partially constructed session object
-  public static Session createSession(final DriverFactory factory,
-      SessionId sessionId, final Capabilities capabilities) throws Exception {
-    return new DefaultSession(factory, sessionId, capabilities);
+  public static Session createSession(DriverFactory factory,
+      SessionId sessionId, Capabilities capabilities) throws Exception {
+    File tmpDir = new File(System.getProperty("java.io.tmpdir"), sessionId.toString());
+    if (!tmpDir.mkdir()) {
+      throw new WebDriverException("Cannot create temp directory: " + tmpDir);
+    }
+    TemporaryFilesystem tempFs = TemporaryFilesystem.getTmpFsBasedOn(tmpDir);
+
+    return new DefaultSession(factory, tempFs, sessionId, capabilities);
   }
 
-  private DefaultSession(final DriverFactory factory, SessionId sessionId,
-      final Capabilities capabilities) throws Exception {
+  protected static Session createSession(DriverFactory factory, TemporaryFilesystem tempFs,
+      SessionId sessionId, Capabilities capabilities) throws Exception {
+    return new DefaultSession(factory, tempFs, sessionId, capabilities);
+  }
+
+  private DefaultSession(final DriverFactory factory, TemporaryFilesystem tempFs,
+      SessionId sessionId, final Capabilities capabilities) throws Exception {
     this.knownElements = new KnownElements();
     this.sessionId = sessionId;
+    this.tempFs = tempFs;
     browserCreator = new BrowserCreator(factory, capabilities);
     final FutureTask<EventFiringWebDriver> webDriverFutureTask =
         new FutureTask<EventFiringWebDriver>(browserCreator);
@@ -111,6 +127,7 @@ public class DefaultSession implements Session {
 
   public void close() {
     executor.shutdown();
+    tempFs.deleteTemporaryFiles();
   }
 
   public <X> X execute(FutureTask<X> future) throws Exception {

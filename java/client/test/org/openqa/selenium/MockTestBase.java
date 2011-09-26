@@ -7,7 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 
 public abstract class MockTestBase {
-  private JUnit4Mockery context;
+  protected JUnit4Mockery context;
 
   @Before
   public void createContext() {

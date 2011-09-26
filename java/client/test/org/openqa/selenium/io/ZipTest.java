@@ -23,7 +23,7 @@ public class ZipTest extends TestCase {
 
     File baseForTest = new File(System.getProperty("java.io.tmpdir"), "tmpTest");
     baseForTest.mkdir();
-    tmpFs = TemporaryFilesystem.getTmpFsBasedOn(baseForTest.getAbsolutePath());
+    tmpFs = TemporaryFilesystem.getTmpFsBasedOn(baseForTest);
 
     inputDir = tmpFs.createTempDir("input", "ziptest");
     outputDir = tmpFs.createTempDir("output", "ziptest");

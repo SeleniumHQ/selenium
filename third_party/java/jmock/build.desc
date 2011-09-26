@@ -2,4 +2,6 @@ java_library(name = "jmock",
   deps = [
     "jmock-2.5.1.jar",
     "jmock-junit4-2.5.1.jar",
+    "jmock-legacy-2.5.1.jar",
+    "//third_party/java/objenesis",
   ])
