@@ -24,25 +24,24 @@ import org.openqa.selenium.remote.SessionId;
 import java.util.concurrent.FutureTask;
 
 public interface Session {
-    void close();
 
-    <X> X execute(FutureTask<X> future) throws Exception;
+  void close();
 
-    WebDriver getDriver();
+  <X> X execute(FutureTask<X> future) throws Exception;
 
-    KnownElements getKnownElements();
+  WebDriver getDriver();
 
-    Capabilities getCapabilities();
+  KnownElements getKnownElements();
 
-    void attachScreenshot(String base64EncodedImage);
+  Capabilities getCapabilities();
 
-    String getAndClearScreenshot();
+  void attachScreenshot(String base64EncodedImage);
 
-    boolean isTimedOut(int timeout);
+  String getAndClearScreenshot();
 
-    void updateLastAccessTime();
+  boolean isTimedOut(int timeout);
 
-    SessionId getSessionId();
+  void updateLastAccessTime();
 
-
+  SessionId getSessionId();
 }
