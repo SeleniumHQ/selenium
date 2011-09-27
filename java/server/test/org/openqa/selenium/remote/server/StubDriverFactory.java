@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2011 WebDriver committers
-Copyright 2007-2011 Google Inc.
+Copyright 2011 WebDriver committers
+Copyright 2011 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,33 +18,19 @@ limitations under the License.
 package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.DriverFactory;
 
-import java.util.concurrent.FutureTask;
+public class StubDriverFactory implements DriverFactory {
+  public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> impl) {
+  }
 
-public interface Session {
+  public WebDriver newInstance(Capabilities capabilities) {
+    return new StubDriver();
+  }
 
-  void close();
-
-  <X> X execute(FutureTask<X> future) throws Exception;
-
-  WebDriver getDriver();
-
-  KnownElements getKnownElements();
-
-  Capabilities getCapabilities();
-
-  void attachScreenshot(String base64EncodedImage);
-
-  String getAndClearScreenshot();
-
-  boolean isTimedOut(int timeout);
-
-  void updateLastAccessTime();
-
-  SessionId getSessionId();
-
-  TemporaryFilesystem getTemporaryFileSystem();
+  public boolean hasMappingFor(Capabilities capabilities) {
+    return true;
+  }
 }

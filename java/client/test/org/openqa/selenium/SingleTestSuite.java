@@ -66,7 +66,7 @@ public class SingleTestSuite extends TestCase {
       };
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX_TEST;
+    String driver = REMOTE;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -79,9 +79,9 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("TypingTest")
-        .method("testGenerateKeyPressEventEvenWhenElementPreventsDefault")
-        .method("testTypingIntoAnIFrameWithContentEditableOrDesignModeSet")
+        .onlyRun("UploadTest")
+//        .method("testGenerateKeyPressEventEvenWhenElementPreventsDefault")
+//        .method("testTypingIntoAnIFrameWithContentEditableOrDesignModeSet")
         .exclude(ALL)
         .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
         .outputTestNames()

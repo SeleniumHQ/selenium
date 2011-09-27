@@ -76,6 +76,7 @@ import org.openqa.selenium.remote.server.handler.Status;
 import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
+import org.openqa.selenium.remote.server.handler.UploadFile;
 import org.openqa.selenium.remote.server.handler.html5.ClearAppCache;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
 import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
@@ -263,6 +264,8 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/element/:id/submit", SubmitElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
 
+    postMapper.bind("/session/:sessionId/file", UploadFile.class)
+        .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     postMapper.bind("/session/:sessionId/element/:id/value", SendKeys.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/modifier", SendModifierKey.class)

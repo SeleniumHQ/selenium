@@ -1,5 +1,6 @@
 package org.openqa.selenium.io;
 
+import com.google.common.base.Preconditions;
 import com.google.common.io.Closeables;
 
 import org.openqa.selenium.internal.Base64Encoder;
@@ -16,6 +17,8 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class Zip {
   private static final int BUF_SIZE = 16384; // "big"
@@ -43,6 +46,22 @@ public class Zip {
     } finally {
       Closeables.closeQuietly(bos);
     }
+  }
+
+  public String zipFile(File baseDir, File fileToCompress) throws IOException {
+    checkArgument(fileToCompress.isFile(), "File should be a file: " + fileToCompress);
+
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    ZipOutputStream zos = new ZipOutputStream(bos);
+
+    try {
+      addToZip(baseDir.getAbsolutePath(), zos, fileToCompress);
+      return new Base64Encoder().encode(bos.toByteArray());
+    } finally {
+      Closeables.closeQuietly(zos);
+      Closeables.closeQuietly(bos);
+    }
+
   }
 
   private void zip(File inputDir, OutputStream writeTo) throws IOException {

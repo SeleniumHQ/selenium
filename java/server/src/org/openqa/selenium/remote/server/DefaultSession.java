@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
@@ -84,7 +86,8 @@ public class DefaultSession implements Session {
     return new DefaultSession(factory, tempFs, sessionId, capabilities);
   }
 
-  protected static Session createSession(DriverFactory factory, TemporaryFilesystem tempFs,
+  @VisibleForTesting
+  public static Session createSession(DriverFactory factory, TemporaryFilesystem tempFs,
       SessionId sessionId, Capabilities capabilities) throws Exception {
     return new DefaultSession(factory, tempFs, sessionId, capabilities);
   }
@@ -221,5 +224,9 @@ public class DefaultSession implements Session {
 
   public SessionId getSessionId() {
     return sessionId;
+  }
+
+  public TemporaryFilesystem getTemporaryFileSystem() {
+    return tempFs;
   }
 }

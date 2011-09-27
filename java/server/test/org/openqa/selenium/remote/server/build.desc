@@ -1,7 +1,8 @@
 
 java_test(name = "test",
   srcs = [
-    "*.java",   
+    "*.java",
+    "handler/*.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/chrome",

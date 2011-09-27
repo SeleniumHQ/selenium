@@ -100,6 +100,30 @@ public class ZipTest extends TestCase {
     }
   }
 
+  public void testCanZipASingleFile() throws IOException {
+    File input = new File(inputDir, "foo.txt");
+    File unwanted = new File(inputDir, "nay.txt");
+    touch(input);
+    touch(unwanted);
+
+    String zipped = zip.zipFile(inputDir, input);
+
+    zip.unzip(zipped, outputDir);
+    File unzipped = new File(outputDir, "foo.txt");
+    File notThere = new File(outputDir, "nay.txt");
+
+    assertTrue(unzipped.exists());
+    assertFalse(notThere.exists());
+  }
+
+  public void testZippingASingleFileWillThrowIfInputIsNotAFile() throws IOException {
+    try {
+      zip.zipFile(inputDir.getParentFile(), inputDir);
+      fail("Should have failed");
+    } catch (IllegalArgumentException ignored) {
+    }
+  }
+
   private void assertZipContains(File output, String s) throws IOException {
     FileInputStream fis = new FileInputStream(output);
     ZipInputStream zis = new ZipInputStream(fis);
