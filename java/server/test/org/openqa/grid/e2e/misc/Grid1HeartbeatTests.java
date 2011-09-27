@@ -9,13 +9,11 @@ import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -30,10 +28,7 @@ public class Grid1HeartbeatTests {
 
   @BeforeClass(alwaysRun = true)
   public void setup() throws Exception {
-    GridHubConfiguration config = new GridHubConfiguration();
-    config.setPort(PortProber.findFreePort());
-    hub = new Hub(config);
-    hub.start();
+    hub = GridTestHelper.getHub();
   }
 
   @Test

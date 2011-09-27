@@ -1,14 +1,11 @@
 package org.openqa.grid.e2e.wd;
 
-import org.openqa.selenium.net.PortProber;
-
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.WebRemoteProxy;
 import org.openqa.grid.web.Hub;
@@ -28,11 +25,8 @@ public class NodeGoingDownAndUpTest {
 
   @BeforeClass(alwaysRun = false)
   public void prepare() throws Exception {
-    GridHubConfiguration config = new GridHubConfiguration();
-    config.setPort(PortProber.findFreePort());
-    hub = new Hub(config);
+    hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
-    hub.start();
 
 
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
@@ -47,7 +41,7 @@ public class NodeGoingDownAndUpTest {
     remote.sendRegistrationRequest();
     remote2.sendRegistrationRequest();
 
-    RegistryTestHelper.waitForNode(hub.getRegistry(), 2);
+    RegistryTestHelper.waitForNode(registry, 2);
   }
 
   @Test

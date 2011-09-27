@@ -27,9 +27,8 @@ public class HubRestart {
   public void prepare() throws Exception {
 
     config.setPort(PortProber.findFreePort());
-    hub = new Hub(config);
+    hub = GridTestHelper.getHub(config);
     registry = hub.getRegistry();
-    hub.start();
 
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
     remote2 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);

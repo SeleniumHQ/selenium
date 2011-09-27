@@ -1,17 +1,14 @@
 package org.openqa.grid.e2e.wd;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -24,20 +21,15 @@ import java.net.URL;
 public class SmokeTest {
 
   private Hub hub;
-  private URL hubURL;
 
   @BeforeClass(alwaysRun = false)
   public void prepare() throws Exception {
-    GridHubConfiguration config = new GridHubConfiguration();
-    config.setPort(PortProber.findFreePort());
-    hub = new Hub(config);
-    hubURL = hub.getUrl();
 
-    hub.start();
+    hub = GridTestHelper.getHub();
 
 
     SelfRegisteringRemote remote =
-        GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+        GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
     remote.addBrowser(DesiredCapabilities.firefox(), 1);
 
     remote.startRemoteServer();
@@ -52,8 +44,8 @@ public class SmokeTest {
     WebDriver driver = null;
     try {
       DesiredCapabilities ff = DesiredCapabilities.firefox();
-      driver = new RemoteWebDriver(new URL(hubURL + "/wd/hub"), ff);
-      driver.get(hubURL + "/grid/console");
+      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), ff);
+      driver.get(hub.getUrl() + "/grid/console");
       Assert.assertEquals(driver.getTitle(), "Grid overview");
     } finally {
       if (driver != null) {
