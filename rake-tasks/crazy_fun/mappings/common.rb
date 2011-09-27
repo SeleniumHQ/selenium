@@ -50,8 +50,25 @@ module Platform
   end
 end
 
+module FileCopyHack
+  def cp_r(src, dest, opts = {})
+    super
+  rescue => ex
+    raise unless ex.message =~ /operation not permitted/i
+    Dir["#{dest}/**/.svn"].each { |file| rm_rf file }
+
+    # virtual box shared folders has a problem with some of the .svn files
+    if ENV['USER'] == "vagrant" && opts.empty?
+      sh "cp", "-r", src, dest
+    else
+      super(src, dest, opts)
+    end
+  end
+end
+
 class Tasks
   include Platform
+  include FileCopyHack
 
   def task_name(dir, name)
     if name.to_s.start_with? "//"
@@ -107,17 +124,12 @@ class Tasks
             mkdir_p "#{out_dir}/#{tdir}"
             src = find_file(File.join(dir, from))
 
-            begin
-              if File.directory? src
-                mkdir_p "#{out_dir}/#{to}"
-              else
-                mkdir_p File.join(out_dir, File.dirname(to))
-              end
-              cp_r src, "#{out_dir}/#{to}"
-            rescue
-              Dir["#{out_dir}/**/.svn"].each { |file| rm_rf file }
-              cp_r src, "#{out_dir}/#{to}"
+            if File.directory? src
+              mkdir_p "#{out_dir}/#{to}"
+            else
+              mkdir_p File.join(out_dir, File.dirname(to))
             end
+            cp_r src, "#{out_dir}/#{to}"
           end
         end
 
