@@ -137,6 +137,22 @@ public class TestSuiteBuilder {
 
     if (suite.countTestCases() == 0) {
       System.err.println("No test cases found");
+      
+    if (!onlyRun.isEmpty()) {      
+      System.err.println("The following class names are enabled but may not exist: ");
+      for(String className : onlyRun) {
+        System.err.println("*** " + className);
+      }
+    }
+    
+    if (!testMethodNames.isEmpty()) {
+      System.err.println("The following method names are enabled but may not exist: ");
+      for(String methodName : testMethodNames) {
+        System.err.println("*** " + methodName);
+      }
+    }
+      
+      throw new IllegalArgumentException("No test cases found");
     }
     return decorate(toReturn);
   }
