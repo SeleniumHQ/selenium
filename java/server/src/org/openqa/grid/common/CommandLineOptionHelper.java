@@ -43,7 +43,12 @@ public class CommandLineOptionHelper {
       throw new GridConfigurationException("The parameter " + name +
           " doesn't have a value specified.");
     }
-    return args[index + 1];
+
+    if (((index + 1) < args.length) && !args[index + 1].startsWith("-")) {
+      return args[index + 1];
+    } else {
+      return "";
+    }
   }
 
   public List<String> getParamValues(String name) {

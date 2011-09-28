@@ -554,7 +554,10 @@ public class RegistrationRequest {
     List<String> params = new ArrayList<String>();
     for (String key : configuration.keySet()) {
       params.add("-" + key);
-      params.add("" + configuration.get(key));
+
+      if (! configuration.get(key).toString().trim().isEmpty()) {
+        params.add("" + configuration.get(key));
+      }
     }
     return RemoteControlLauncher.parseLauncherOptions(params
         .toArray(new String[params.size()]));
