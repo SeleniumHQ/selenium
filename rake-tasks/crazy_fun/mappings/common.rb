@@ -54,7 +54,7 @@ module FileCopyHack
   def cp_r(src, dest, opts = {})
     super
   rescue => ex
-    raise unless ex.message =~ /operation not permitted/i
+    raise unless ex.message =~ /operation not permitted|Permission denied/i
     Dir["#{dest}/**/.svn"].each { |file| rm_rf file }
 
     # virtual box shared folders has a problem with some of the .svn files
