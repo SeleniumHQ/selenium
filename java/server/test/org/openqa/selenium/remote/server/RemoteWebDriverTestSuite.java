@@ -29,6 +29,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
+import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import junit.extensions.TestSetup;
@@ -73,6 +74,8 @@ public class RemoteWebDriverTestSuite extends TestCase {
   public static class RemoteWebDriverForTest extends RemoteWebDriver {
     public RemoteWebDriverForTest() throws Exception {
       super(new URL("http://localhost:6000/common/hub"), DesiredCapabilities.firefox());
+      // Use the local file detector so that we exercise the file upload paths
+      setFileDetector(new LocalFileDetector());
     }
   }
 

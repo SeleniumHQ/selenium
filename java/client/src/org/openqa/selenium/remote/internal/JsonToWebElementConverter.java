@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 
@@ -51,6 +52,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
       if (resultAsMap.containsKey("ELEMENT")) {
         RemoteWebElement element = newRemoteWebElement();
         element.setId(String.valueOf(resultAsMap.get("ELEMENT")));
+        element.setFileDetector(driver.getFileDetector());
         return element;
       } else {
         return Maps.transformValues(resultAsMap, this);

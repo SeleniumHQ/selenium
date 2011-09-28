@@ -23,6 +23,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsByClassName;
@@ -35,7 +36,11 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.io.Zip;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Driver;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +50,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   protected String id;
   protected RemoteWebDriver parent;
   protected RemoteMouse mouse;
+  protected FileDetector fileDetector;
 
   public void setParent(RemoteWebDriver parent) {
     this.parent = parent;
@@ -59,6 +65,10 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     this.id = id;
   }
 
+  public void setFileDetector(FileDetector detector) {
+    fileDetector = detector;
+  }
+
   public void click() {
     execute(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", id));
   }
@@ -68,7 +78,29 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void sendKeys(CharSequence... keysToSend) {
-    execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keysToSend));
+    File localFile = fileDetector.getLocalFile(keysToSend);
+    if (localFile == null) {
+      execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keysToSend));
+      return;
+    }
+    
+    String remotePath = upload(localFile);
+    CharSequence[] keys = new CharSequence[] { remotePath };
+    execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keys));
+  }
+
+  private String upload(File localFile) {
+    if (!localFile.isFile()) {
+      throw new WebDriverException("You may only upload files: " + localFile);
+    }
+
+    try {
+      String zip = new Zip().zipFile(localFile.getParentFile(), localFile);
+      Response response = execute(DriverCommand.UPLOAD_FILE, ImmutableMap.of("file", zip));
+      return (String) response.getValue();
+    } catch (IOException e) {
+      throw new WebDriverException("Cannot upload " + localFile, e);
+    }
   }
 
   public void clear() {
@@ -93,15 +125,6 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   public boolean isSelected() {
     return (Boolean) execute(DriverCommand.IS_ELEMENT_SELECTED, ImmutableMap.of("id", id))
         .getValue();
-  }
-
-  private boolean isSelectable() {
-    String tagName = getTagName().toLowerCase();
-    String type = getAttribute("type");
-    type = type == null ? "" : type.toLowerCase();
-
-    return "option".equals(tagName) ||
-        ("input".equals(tagName) && ("radio".equals(type) || "checkbox".equals(type)));
   }
 
   public boolean isEnabled() {

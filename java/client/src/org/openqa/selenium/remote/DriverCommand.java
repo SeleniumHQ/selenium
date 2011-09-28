@@ -51,6 +51,7 @@ public interface DriverCommand {
   String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
   String SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT = "sendModifierKeyToActiveElement";
   String SUBMIT_ELEMENT = "submitElement";
+  String UPLOAD_FILE = "uploadFile";
 
   String GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle";
   String GET_WINDOW_HANDLES = "getWindowHandles";

@@ -85,7 +85,8 @@ public class SingleTestSuite extends TestCase {
         .exclude(ALL)
         .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
         .outputTestNames()
-        .leaveRunning(); // Yeah, this look strange :)
+        .leaveRunning()
+        ; // Yeah, this look strange :)
 
     if (REMOTE.equals(driver) || REMOTE_IE.equals(driver)) {
       builder.addSuiteDecorator(

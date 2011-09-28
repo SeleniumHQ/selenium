@@ -149,6 +149,7 @@ import static org.openqa.selenium.remote.DriverCommand.TOUCH_MOVE;
 import static org.openqa.selenium.remote.DriverCommand.TOUCH_SCROLL;
 import static org.openqa.selenium.remote.DriverCommand.TOUCH_SINGLE_TAP;
 import static org.openqa.selenium.remote.DriverCommand.TOUCH_UP;
+import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 
 public class HttpCommandExecutor implements CommandExecutor {
 
@@ -252,6 +253,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(SUBMIT_ELEMENT, post("/session/:sessionId/element/:id/submit"))
         .put(GET_ELEMENT_TEXT, get("/session/:sessionId/element/:id/text"))
         .put(SEND_KEYS_TO_ELEMENT, post("/session/:sessionId/element/:id/value"))
+        .put(UPLOAD_FILE, post("/session/:sessionId/file"))
         .put(GET_ELEMENT_VALUE, get("/session/:sessionId/element/:id/value"))
         .put(GET_ELEMENT_TAG_NAME, get("/session/:sessionId/element/:id/name"))
         .put(IS_ELEMENT_SELECTED, get("/session/:sessionId/element/:id/selected"))

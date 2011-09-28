@@ -17,11 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import com.google.common.collect.Lists;
+
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -37,7 +38,7 @@ public class SendKeys extends WebElementHandler implements JsonParametersAware {
   @SuppressWarnings({"unchecked"})
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     List<String> rawKeys = (List<String>) allParameters.get("value");
-    List<String> temp = new ArrayList<String>();
+    List<String> temp = Lists.newArrayList();
     for (String key : rawKeys) {
       temp.add(key);
     }

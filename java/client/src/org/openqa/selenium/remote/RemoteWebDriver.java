@@ -52,6 +52,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   private CommandExecutor executor;
   private Capabilities capabilities;
   private SessionId sessionId;
+  private FileDetector fileDetector = new UselessFileDetector();
   private ExecuteMethod executeMethod;
 
   private JsonToWebElementConverter converter;
@@ -84,6 +85,23 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   private void init() {
     converter = new JsonToWebElementConverter(this);
     executeMethod = new ExecuteMethod(this);
+  }
+
+  /**
+   * Set the file detector to be used when sending keyboard input. By default,
+   * this is set to a file detector that does nothing.
+   *
+   * @see FileDetector
+   * @see LocalFileDetector
+   * @see UselessFileDetector
+   *
+   * @param detector The detector to use. Must not be null.
+   */
+  public void setFileDetector(FileDetector detector) {
+    if (detector == null) {
+      throw new WebDriverException("You may not set a file detector that is null");
+    }
+    fileDetector = detector;
   }
 
   public SessionId getSessionId() {
@@ -422,6 +440,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    */
   protected void log(SessionId sessionId, String commandName, Object toLog) {
     // By default do nothing
+  }
+
+  public FileDetector getFileDetector() {
+    return fileDetector;
   }
 
   protected class RemoteWebDriverOptions implements Options {
