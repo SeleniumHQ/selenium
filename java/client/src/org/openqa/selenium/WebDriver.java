@@ -339,6 +339,7 @@ public interface WebDriver extends SearchContext {
      * Switches to the currently active modal dialog for this particular driver instance.
      * 
      * @return A handle to the dialog.
+     * @throws NoAlertPresentException If the dialog cannot be found
      */
     Alert alert();
   }
