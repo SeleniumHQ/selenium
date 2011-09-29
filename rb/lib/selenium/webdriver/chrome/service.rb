@@ -15,7 +15,11 @@ module Selenium
 
         def self.executable_path
           @executable_path ||= (
-            Platform.find_binary "chromedriver" or raise Error::WebDriverError, MISSING_TEXT
+            path = Platform.find_binary "chromedriver"
+            path or raise Error::WebDriverError, MISSING_TEXT
+            Platform.assert_executable path
+
+            path
           )
         end
 
