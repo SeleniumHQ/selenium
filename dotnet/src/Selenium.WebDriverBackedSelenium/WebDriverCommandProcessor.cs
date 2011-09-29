@@ -238,6 +238,7 @@ namespace Selenium
             this.seleneseMethods.Add("attachFile", new AttachFile(this.elementFinder));
             this.seleneseMethods.Add("captureScreenshotToString", new CaptureScreenshotToString());
             this.seleneseMethods.Add("click", new Click(this.alertOverride, this.elementFinder));
+            this.seleneseMethods.Add("clickAt", new ClickAt(this.alertOverride, this.elementFinder));
             this.seleneseMethods.Add("check", new Check(this.alertOverride, this.elementFinder));
             this.seleneseMethods.Add("chooseCancelOnNextConfirmation", new SetNextConfirmationState(false));
             this.seleneseMethods.Add("chooseOkOnNextConfirmation", new SetNextConfirmationState(true));

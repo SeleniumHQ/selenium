@@ -109,6 +109,7 @@
     <Compile Include="Internal\AlertOverride.cs" />
     <Compile Include="Internal\CommandTimer.cs" />
     <Compile Include="Internal\SeleniumEmulation\CompoundMutator.cs" />
+    <Compile Include="Internal\SeleniumEmulation\ClickAt.cs" />
     <Compile Include="Internal\SeleniumEmulation\FunctionDeclaration.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetExpression.cs" />
     <Compile Include="Internal\SeleniumEmulation\IsConfirmationPresent.cs" />
