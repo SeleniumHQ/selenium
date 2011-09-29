@@ -201,13 +201,13 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
     WebElement input = driver.findElement(By.id("changeable"));
     input.sendKeys("test");
-    driver.findElement(By.id("clickField")).click(); // move focus
+    moveFocus();
     assertThat(driver.findElement(By.id("result")).getText().trim(),
         either(is("focus change blur")).or(is("focus blur change")));
 
     input.sendKeys(Keys.BACK_SPACE, "t");
-    driver.findElement(By.xpath("//body")).click(); // move focus
-
+    moveFocus();
+    
     // I weep.
     assertThat(driver.findElement(By.id("result")).getText().trim(),
         either(is("focus change blur focus blur"))
@@ -276,5 +276,9 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     driver.switchTo().window(handle);
 
     // If we haven't seen an exception or hung the test has passed
+  }
+
+  private void moveFocus() {
+    driver.findElement(By.id("clickField")).click();
   }
 }
