@@ -220,7 +220,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @NeedsFreshDriver
-  @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {CHROME, HTMLUNIT}, reason = "Advanced mouse actions only implemented in rendered browsers")
   public void testMoveRelativeToBody() {
     if (!hasInputDevices() || !supportsNativeEvents()) {
       System.out.println(
