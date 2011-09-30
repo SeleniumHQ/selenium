@@ -25,6 +25,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support.ui import WebDriverWait
 
 class AdvancedUserInteractionTest(unittest.TestCase):
     def performDragAndDropWithMouse(self):
@@ -195,6 +196,45 @@ class AdvancedUserInteractionTest(unittest.TestCase):
         actionsBuilder = ActionChains(self.driver)
         actionsBuilder.click(listItems[6]).perform()
         self.assertEqual("#item7", reportingElement.text)
+
+    def testMovingMouseBackAndForthPastViewPort(self):
+        self._loadPage("veryLargeCanvas")
+
+        firstTarget = self.driver.find_element_by_id("r1")
+        ActionChains(self.driver) \
+          .move_to_element(firstTarget) \
+          .click() \
+          .perform()
+        resultArea = self.driver.find_element_by_id("result")
+        expectedEvents = "First"
+        wait = WebDriverWait(resultArea, 15)
+        expectedEventsFired = lambda e : e.text == expectedEvents;
+        wait.until(expectedEventsFired)
+
+        # Move to element with id 'r2', at (2500, 50) to (2580, 100).
+        ActionChains(self.driver) \
+          .move_by_offset(2540 - 150, 75 - 125) \
+          .click() \
+          .perform()
+
+        expectedEvents += " Second";
+        wait.until(expectedEventsFired)
+
+        # Move to element with id 'r3' at (60, 1500) to (140, 1550).
+        ActionChains(self.driver) \
+          .move_by_offset(100 - 2540, 1525 - 75) \
+          .click() \
+          .perform()
+        expectedEvents += " Third"
+        wait.until(expectedEventsFired)
+
+        # Move to element with id 'r4' at (220,180) to (320, 230).
+        ActionChains(self.driver) \
+          .move_by_offset(270 - 100, 205 - 1525) \
+          .click() \
+          .perform()
+        expectedEvents += " Fourth"
+        wait.until(expectedEventsFired)
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
