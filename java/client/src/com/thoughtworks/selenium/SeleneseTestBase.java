@@ -158,60 +158,60 @@ public class SeleneseTestBase {
   }
 
   /** Like assertEquals, but fails at the end of the test (during tearDown) */
-  public void verifyEquals(Object s1, Object s2) {
+  public void verifyEquals(Object expected, Object actual) {
     try {
-      assertEquals(s1, s2);
+      assertEquals(expected, actual);
     } catch (Error e) {
       verificationErrors.append(throwableToString(e));
     }
   }
 
   /** Like assertEquals, but fails at the end of the test (during tearDown) */
-  public void verifyEquals(boolean s1, boolean s2) {
+  public void verifyEquals(boolean expected, boolean actual) {
     try {
-      assertEquals(Boolean.valueOf(s1), Boolean.valueOf(s2));
+      assertEquals(Boolean.valueOf(expected), Boolean.valueOf(actual));
     } catch (Error e) {
       verificationErrors.append(throwableToString(e));
     }
   }
 
   /** Like JUnit's Assert.assertEquals, but knows how to compare string arrays */
-  public static void assertEquals(Object s1, Object s2) {
-    if (s1 instanceof String && s2 instanceof String) {
-      assertEquals((String) s1, (String) s2);
-    } else if (s1 instanceof String && s2 instanceof String[]) {
-      assertEquals((String) s1, (String[]) s2);
-    } else if (s1 instanceof String && s2 instanceof Number) {
-      assertEquals((String) s1, s2.toString());
-    } else if (s1 instanceof Number && s2 instanceof String) {
-      assertEquals(s1.toString(), (String) s2);
-    } else if (s1 instanceof String[] && s2 instanceof String[]) {
-      String[] sa1 = (String[]) s1;
-      String[] sa2 = (String[]) s2;
+  public static void assertEquals(Object expected, Object actual) {
+    if (expected instanceof String && actual instanceof String) {
+      assertEquals((String) expected, (String) actual);
+    } else if (expected instanceof String && actual instanceof String[]) {
+      assertEquals((String) expected, (String[]) actual);
+    } else if (expected instanceof String && actual instanceof Number) {
+      assertEquals((String) expected, actual.toString());
+    } else if (expected instanceof Number && actual instanceof String) {
+      assertEquals(expected.toString(), (String) actual);
+    } else if (expected instanceof String[] && actual instanceof String[]) {
+      String[] sa1 = (String[]) expected;
+      String[] sa2 = (String[]) actual;
       if (sa1.length != sa2.length) {
         throw new Error("Expected " + sa1 + " but saw " + sa2);
       }
       for (int j = 0; j < sa1.length; j++) {
         assertEquals(sa1[j], sa2[j]);
       }
-    } else if (s1 == null) {
-      assertTrue(s2 == null);
+    } else if (expected == null) {
+      assertTrue(actual == null);
     } else {
-      assertTrue(s1.equals(s2));
+      assertTrue(expected.equals(actual));
     }
   }
 
   /** Like JUnit's Assert.assertEquals, but handles "regexp:" strings like HTML Selenese */
-  public static void assertEquals(String s1, String s2) {
-    assertTrue("Expected \"" + s1 + "\" but saw \"" + s2 + "\" instead", seleniumEquals(s1, s2));
+  public static void assertEquals(String expected, String actual) {
+    assertTrue("Expected \"" + expected + "\" but saw \"" + actual + "\" instead", seleniumEquals(expected, actual));
   }
 
   /**
    * Like JUnit's Assert.assertEquals, but joins the string array with commas, and handles "regexp:"
    * strings like HTML Selenese
    */
-  public static void assertEquals(String s1, String[] s2) {
-    assertEquals(s1, join(s2, ','));
+  public static void assertEquals(String expected, String[] actual) {
+    assertEquals(expected, join(actual, ','));
   }
 
   /**
@@ -296,8 +296,8 @@ public class SeleneseTestBase {
   }
 
   /** Asserts that two string arrays have identical string contents */
-  public static void assertEquals(String[] s1, String[] s2) {
-    String comparisonDumpIfNotEqual = verifyEqualsAndReturnComparisonDumpIfNot(s1, s2);
+  public static void assertEquals(String[] expected, String[] actual) {
+    String comparisonDumpIfNotEqual = verifyEqualsAndReturnComparisonDumpIfNot(expected, actual);
     if (comparisonDumpIfNotEqual != null) {
       throw new AssertionError(comparisonDumpIfNotEqual);
     }
@@ -307,26 +307,26 @@ public class SeleneseTestBase {
    * Asserts that two string arrays have identical string contents (fails at the end of the test,
    * during tearDown)
    */
-  public void verifyEquals(String[] s1, String[] s2) {
-    String comparisonDumpIfNotEqual = verifyEqualsAndReturnComparisonDumpIfNot(s1, s2);
+  public void verifyEquals(String[] expected, String[] actual) {
+    String comparisonDumpIfNotEqual = verifyEqualsAndReturnComparisonDumpIfNot(expected, actual);
     if (comparisonDumpIfNotEqual != null) {
       verificationErrors.append(comparisonDumpIfNotEqual);
     }
   }
 
-  private static String verifyEqualsAndReturnComparisonDumpIfNot(String[] s1, String[] s2) {
+  private static String verifyEqualsAndReturnComparisonDumpIfNot(String[] expected, String[] actual) {
     boolean misMatch = false;
-    if (s1.length != s2.length) {
+    if (expected.length != actual.length) {
       misMatch = true;
     }
-    for (int j = 0; j < s1.length; j++) {
-      if (!seleniumEquals(s1[j], s2[j])) {
+    for (int j = 0; j < expected.length; j++) {
+      if (!seleniumEquals(expected[j], actual[j])) {
         misMatch = true;
         break;
       }
     }
     if (misMatch) {
-      return "Expected " + stringArrayToString(s1) + " but saw " + stringArrayToString(s2);
+      return "Expected " + stringArrayToString(expected) + " but saw " + stringArrayToString(actual);
     }
     return null;
   }
@@ -362,27 +362,27 @@ public class SeleneseTestBase {
   }
 
   /** Like assertNotEquals, but fails at the end of the test (during tearDown) */
-  public void verifyNotEquals(Object s1, Object s2) {
+  public void verifyNotEquals(Object expected, Object actual) {
     try {
-      assertNotEquals(s1, s2);
+      assertNotEquals(expected, actual);
     } catch (AssertionError e) {
       verificationErrors.append(throwableToString(e));
     }
   }
 
   /** Like assertNotEquals, but fails at the end of the test (during tearDown) */
-  public void verifyNotEquals(boolean s1, boolean s2) {
+  public void verifyNotEquals(boolean expected, boolean actual) {
     try {
-      assertNotEquals(Boolean.valueOf(s1),Boolean.valueOf(s2));
+      assertNotEquals(Boolean.valueOf(expected),Boolean.valueOf(actual));
     } catch (AssertionError e) {
       verificationErrors.append(throwableToString(e));
     }
   }
 
   /** Asserts that two objects are not the same (compares using .equals()) */
-  public static void assertNotEquals(Object obj1, Object obj2) {
-    if (obj1.equals(obj2)) {
-      fail("did not expect values to be equal (" + obj1.toString() + ")");
+  public static void assertNotEquals(Object expected, Object actual) {
+    if (expected.equals(actual)) {
+      fail("did not expect (" + actual.toString() + ") to be equal to (" + expected.toString() + ")");
     }
   }
 
@@ -408,8 +408,8 @@ public class SeleneseTestBase {
   }
 
   /** Asserts that two booleans are not the same */
-  public static void assertNotEquals(boolean b1, boolean b2) {
-    assertNotEquals(Boolean.valueOf(b1), Boolean.valueOf(b2));
+  public static void assertNotEquals(boolean expected, boolean actual) {
+    assertNotEquals(Boolean.valueOf(expected), Boolean.valueOf(actual));
   }
 
   /** Sleeps for the specified number of milliseconds */
