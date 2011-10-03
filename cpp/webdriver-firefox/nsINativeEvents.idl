@@ -6,8 +6,9 @@
 [scriptable, uuid(5A86850B-F376-4ae6-860D-53A441CAFCE4)]
 interface nsINativeEvents : nsISupports
 {
-/* Send keyboard input to the window of this element */
-void sendKeys(in nsISupports aNode, in wstring value);
+/* Send keyboard input to the window of this element. May release
+ * the modifier keys, depending on the last parameter. */
+void sendKeys(in nsISupports aNode, in wstring value, in boolean releaseModifiers);
 
 /* Move the mouse from start to end */
 void mouseMove(in nsISupports aNode, in long startX, in long startY, in long endX, in long endY);

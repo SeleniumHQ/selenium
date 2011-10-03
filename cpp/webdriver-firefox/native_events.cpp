@@ -44,13 +44,9 @@
 
 
 #ifdef BUILD_ON_WINDOWS
-#define EXPORT __declspec(dllexport)
 #define WD_RESULT LRESULT
-#define BOOL_TYPE boolean
 #else
-#define EXPORT
 #define WD_RESULT int
-#define BOOL_TYPE bool
 #endif
 
 NS_IMPL_ISUPPORTS1(nsNativeEvents, nsINativeEvents)
@@ -66,7 +62,8 @@ nsNativeEvents::~nsNativeEvents()
 
 /* void SendKeys (in nsISupports aNode, in wstring value); */
 NS_IMETHODIMP nsNativeEvents::SendKeys(nsISupports *aNode,
-                                       const PRUnichar *value)
+                                       const PRUnichar *value,
+                                       PRBool releaseModifiers)
 {
         LOG(DEBUG) << "---------- Got to start of callback. aNode: " << aNode
                    << " ----------";
@@ -100,6 +97,11 @@ NS_IMETHODIMP nsNativeEvents::SendKeys(nsISupports *aNode,
         const PRUnichar* valuePtr = value;
 #endif
         sendKeys(windowHandle, valuePtr, 0);
+
+        if (releaseModifiers) {
+          LOG(DEBUG) << "Also releasing modifiers.";
+          releaseModifierKeys(windowHandle, 0);
+        }
 
         LOG(DEBUG) << "Sent keys sucessfully.";
 

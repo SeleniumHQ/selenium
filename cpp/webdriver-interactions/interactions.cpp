@@ -660,6 +660,11 @@ void sendKeyRelease(WINDOW_HANDLE windowHandle, const wchar_t* value) {
   detachInputFromIEThread(directInputTo);
 }
 
+void releaseModifierKeys(WINDOW_HANDLE windowHandle, int timePerKey)
+{
+  // Does nothing on Windows, for now.
+}
+
 bool isSameThreadAs(HWND other) 
 {
 	DWORD currThreadId = GetCurrentThreadId();

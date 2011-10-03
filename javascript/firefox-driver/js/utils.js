@@ -397,7 +397,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer) {
     var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(element);
 
     // Now do the native thing.
-    obj.sendKeys(node, text);
+    obj.sendKeys(node, text, true);
 
     Utils.waitForNativeEventsProcessing(element, obj, pageUnloadedIndicator, jsTimer);
 

@@ -47,7 +47,8 @@ class XModifierKey
  public:
   // Stores the key associated with this modifier and the bit-mask
   // to set when this key was toggled.
-  XModifierKey(const guint& associated_gdk_key, const GdkModifierType& gdk_mod);
+  XModifierKey(const guint& associated_gdk_key, const GdkModifierType& gdk_mod,
+    const guint32& stored_state);
   // if a_key matches the associated gdk key, toggeles the modifier
   // key state.
   void ToggleIfKeyMatches(const guint a_key);
@@ -63,6 +64,8 @@ class XModifierKey
   guint get_associated_key() const;
   // Returns true if the modifier is set, false otherwise.
   bool get_toggle() const;
+  // Store the current state of the modifier key into the provided int.
+  void StoreState(guint32* state_store) const;
  private:
   bool toggle_;
   guint associated_key_;
@@ -70,9 +73,11 @@ class XModifierKey
 };
 
 XModifierKey::XModifierKey(const guint& associated_gdk_key,
-                           const GdkModifierType& gdk_mod) :
-  toggle_(false), associated_key_(associated_gdk_key), gdk_mod_mask_(gdk_mod)
+                           const GdkModifierType& gdk_mod,
+                           const guint32& stored_state) :
+  toggle_(stored_state & gdk_mod), associated_key_(associated_gdk_key), gdk_mod_mask_(gdk_mod)
 {
+  LOG(DEBUG) << "Restored state for " << gdk_mod_mask_ << " : " << toggle_;
 }
 
 bool XModifierKey::KeyMatches(const guint a_key) const
@@ -110,6 +115,16 @@ bool XModifierKey::get_toggle() const
   return toggle_;
 }
 
+void XModifierKey::StoreState(guint32* state_store) const
+{
+  guint32 non_mask_bits = ~gdk_mod_mask_;
+  guint32 toggle_bit = (toggle_ ? gdk_mod_mask_ : 0);
+
+  *state_store = (*state_store & non_mask_bits) | toggle_bit;
+  LOG(DEBUG) << "Storing state for " << gdk_mod_mask_ << " toggled? " << toggle_ <<
+    " state store: " << *state_store << " non-mask bits: " << std::hex << non_mask_bits;
+}
+
 // Definition of a key press, release events pair.
 typedef std::pair<GdkEvent*, GdkEvent*> KeyEventsPair;
 enum KeyEventType { kKeyPress, kKeyRelease };
@@ -119,7 +134,7 @@ enum KeyEventType { kKeyPress, kKeyRelease };
 class KeypressEventsHandler
 {
 public:
-  KeypressEventsHandler(GdkDrawable* win_handle);
+  KeypressEventsHandler(GdkDrawable* win_handle, guint32 modifiers_state);
   virtual ~KeypressEventsHandler();
 
   // Create a series of key release events that were left on at the end of
@@ -137,6 +152,8 @@ public:
   list<GdkEvent*> CreateEventsForKey(wchar_t key_to_emulate);
   // Returns the time of the latest event.
   guint32 get_last_event_time();
+  // Returns the state of modifier keys, to be stored between calls.
+  guint32 getModifierKeysState();
 
 
 private:
@@ -167,6 +184,8 @@ private:
   // Creates XModifierKey instances for a list of known, hard-coded
   // modifier keys.
   void InitModifiers();
+  // Stores the state of all modifier keys into the static field.
+  void StoreModifiersState();
   // Given a mask, add bits representing all of the relevant set modifiers
   // to it.
   void AddModifiersToMask(guint& mask_to_modifiy);
@@ -185,6 +204,8 @@ private:
   GdkDrawable* win_handle_;
   // Time of the most recent event created.
   guint32 last_event_time_;
+  // State of modifier keys - initialized from a global
+  guint32 modifiers_state_;
 };
 
 // Sets the is_modifier field of the GdkEvent according to the supplied
@@ -195,8 +216,9 @@ static void SetIsModifierEvent(GdkEvent* p_ev, bool is_modifier)
   p_ev->key.is_modifier = (int) is_modifier;
 }
 
-KeypressEventsHandler::KeypressEventsHandler(GdkDrawable* win_handle) :
-  modifiers_(), win_handle_(win_handle), last_event_time_(TimeSinceBootMsec())
+KeypressEventsHandler::KeypressEventsHandler(GdkDrawable* win_handle, guint32 modifiers_state) :
+  modifiers_(), win_handle_(win_handle), last_event_time_(TimeSinceBootMsec()),
+  modifiers_state_(modifiers_state)
 {
   InitModifiers();
 }
@@ -214,9 +236,16 @@ void KeypressEventsHandler::InitModifiers()
     modifiers_.clear();
   }
 
-  modifiers_.push_back(XModifierKey(GDK_Shift_L, GDK_SHIFT_MASK));
-  modifiers_.push_back(XModifierKey(GDK_Control_L, GDK_CONTROL_MASK));
-  modifiers_.push_back(XModifierKey(GDK_Alt_L, GDK_MOD1_MASK));
+  modifiers_.push_back(XModifierKey(GDK_Shift_L, GDK_SHIFT_MASK, modifiers_state_));
+  modifiers_.push_back(XModifierKey(GDK_Control_L, GDK_CONTROL_MASK, modifiers_state_));
+  modifiers_.push_back(XModifierKey(GDK_Alt_L, GDK_MOD1_MASK, modifiers_state_));
+}
+
+void KeypressEventsHandler::StoreModifiersState()
+{
+  for_each(modifiers_.begin(), modifiers_.end(),
+           bind2nd(mem_fun_ref(&XModifierKey::StoreState), &modifiers_state_));
+  LOG(DEBUG) << "Stored modifiers: " << modifiers_state_;
 }
 
 bool KeypressEventsHandler::IsModifierKey(wchar_t key)
@@ -249,6 +278,7 @@ void KeypressEventsHandler::StoreModifierKeyState(guint gdk_mod_key)
   for_each(modifiers_.begin(), modifiers_.end(),
            bind2nd(mem_fun_ref(&XModifierKey::ToggleIfKeyMatches),
                    gdk_mod_key));
+  StoreModifiersState();
 }
 
 void KeypressEventsHandler::AddModifiersToMask(guint& mask_to_modifiy)
@@ -276,6 +306,12 @@ guint32 KeypressEventsHandler::get_last_event_time()
 {
   return last_event_time_;
 }
+
+guint32 KeypressEventsHandler::getModifierKeysState()
+{
+  return modifiers_state_;
+}
+
 
 GdkEvent* KeypressEventsHandler::CreateEmptyKeyEvent(KeyEventType ev_type)
 {
@@ -403,8 +439,11 @@ list<GdkEvent*> KeypressEventsHandler::CreateModifierReleaseEvents()
       GdkEvent* rel_event =
           CreateGenericModifierKeyEvent(it->get_associated_key(), kKeyRelease);
       ret_list.push_back(rel_event);
+      it->ClearModifier();
     }
   }
+
+  StoreModifiersState();
 
   return ret_list;
 }
@@ -500,7 +539,6 @@ list<GdkEvent*> KeypressEventsHandler::CreateEventsForKey(
 
 KeypressEventsHandler::~KeypressEventsHandler()
 {
-  ClearModifiers();
   modifiers_.clear();
 }
 
@@ -522,15 +560,31 @@ static void submit_and_free_events_list(list<GdkEvent*>& events_list,
     events_list.clear();
 }
 
+// global variable declared here so it is not used beforehand.
+guint32 gModifiersState = 0;
+
+int getTimePerKey(int proposedTimePerKey)
+{
+  const int minTimePerKey = 10 /* ms */;
+  if (proposedTimePerKey < minTimePerKey) {
+    return minTimePerKey;
+  }
+
+  return proposedTimePerKey;
+}
+
+void updateLastEventTime(const guint32 lastEventTime) {
+  if (gLatestEventTime < lastEventTime) {
+    gLatestEventTime = lastEventTime;
+  }
+}
+
 extern "C"
 {
-void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
+void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int requestedTimePerKey)
 {
   init_logging();
-  const int minTimePerKey = 10 /* ms */;
-  if (timePerKey < minTimePerKey) {
-    timePerKey = 10;
-  }
+  int timePerKey = getTimePerKey(requestedTimePerKey);
 
   LOG(DEBUG) << "---------- starting sendKeys: " << windowHandle << " tpk: " <<
      timePerKey << "---------";
@@ -538,7 +592,7 @@ void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 
   // The keyp_handler will remember the state of modifier keys and
   // will be used to generate the events themselves.
-  KeypressEventsHandler keyp_handler(hwnd);
+  KeypressEventsHandler keyp_handler(hwnd, gModifiersState);
 
   struct timespec sleep_time;
   sleep_time.tv_sec = timePerKey / 1000;
@@ -556,17 +610,37 @@ void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
     i++;
   }
 
-  // Free the remaining modifiers that are still set.
-  list<GdkEvent*> modifier_release_events =
-      keyp_handler.CreateModifierReleaseEvents();
-
-  submit_and_free_events_list(modifier_release_events, timePerKey);
-  if (gLatestEventTime < keyp_handler.get_last_event_time()) {
-    gLatestEventTime = keyp_handler.get_last_event_time();
-  }
+  updateLastEventTime(keyp_handler.get_last_event_time());
+  gModifiersState = keyp_handler.getModifierKeysState();
 
   LOG(DEBUG) << "---------- Ending sendKeys. Total keys: " << i
             << "  ----------";
+}
+
+void releaseModifierKeys(WINDOW_HANDLE windowHandle, int requestedTimePerKey)
+{
+  init_logging();
+  int timePerKey = getTimePerKey(requestedTimePerKey);
+
+  LOG(DEBUG) << "---------- starting releaseModifierKeys: " << windowHandle << " tpk: " <<
+     timePerKey << "---------";
+  GdkDrawable* hwnd = (GdkDrawable*) windowHandle;
+
+  // The state of the modifier keys is stored - just calling release will work.
+  KeypressEventsHandler keyp_handler(hwnd, gModifiersState);
+
+  // Free the remaining modifiers that are still set.
+  list<GdkEvent*> modifier_release_events =
+      keyp_handler.CreateModifierReleaseEvents();
+  int num_released = modifier_release_events.size();
+
+  submit_and_free_events_list(modifier_release_events, timePerKey);
+
+  updateLastEventTime(keyp_handler.get_last_event_time());
+  gModifiersState = keyp_handler.getModifierKeysState();
+
+  LOG(DEBUG) << "---------- Ending releaseModifierKeys. Released: " << num_released
+    << "  ----------";
 }
 
 }
