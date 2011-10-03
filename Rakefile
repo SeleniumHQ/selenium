@@ -285,7 +285,7 @@ GeckoSDKs.new do |sdks|
            'adcfee3407988f0b4d9aaa1a7d099f88'
 
   sdks.add 'third_party/gecko-5/win32',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.win32.sdk.zip',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/nightly/5.0-candidates/build1/sdk/xulrunner-5.0.en-US.win32.sdk.zip',
            '8894612028e1e28e428d748d50e9bc70'
 
   sdks.add 'third_party/gecko-6/linux',
