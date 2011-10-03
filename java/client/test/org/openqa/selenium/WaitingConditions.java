@@ -118,10 +118,12 @@ public class WaitingConditions {
       final WebElement element, final String expectedValue) {
     return new Callable<String>() {
 
+      public String lastValue = "";
+
       public String call() throws Exception {
-        String value = element.getAttribute("value");
-        if (expectedValue.equals(value)) {
-          return value;
+        lastValue = element.getAttribute("value");
+        if (expectedValue.equals(lastValue)) {
+          return lastValue;
         }
 
         return null;
@@ -129,7 +131,7 @@ public class WaitingConditions {
 
       @Override
       public String toString() {
-        return "element value to equal: " + expectedValue;
+        return "element value to equal: " + expectedValue + " was: " + lastValue;
       }
     };
   }
