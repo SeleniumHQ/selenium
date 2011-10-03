@@ -66,6 +66,7 @@
     <copy file="${third_party.location}/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar" todir="libs/" />
     <copy file="${third_party.location}/java/json/json-20080701.jar" todir="libs/" />
     <copy file="${third_party.location}/java/junit/junit-dep-4.9.jar" todir="libs/" />
+    <copy file="${build.location}/java/client/src/org/openqa/selenium/io/io.jar" todir="libs" />
 
     <taskdef name="setup"
         classname="com.android.ant.SetupTask"
