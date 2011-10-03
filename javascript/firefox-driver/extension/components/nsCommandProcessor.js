@@ -120,7 +120,7 @@ Response.prototype = {
     // WebDriverError is defined in the utils.js subscript which is
     // loaded independently in this component and in the main driver
     // component.
-    this.status = e.isWebDriverError ? e.code : bot.ErrorCode.UNHANDLED_ERROR;
+    this.status = e.isWebDriverError ? e.code : bot.ErrorCode.UNKNOWN_ERROR;
     this.value = fxdriver.error.toJSON(e);
     this.send();
   },
@@ -386,7 +386,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     command = JSON.parse(jsonCommandString);
   } catch (ex) {
     response = JSON.stringify({
-      'status': bot.ErrorCode.UNHANDLED_ERROR,
+      'status': bot.ErrorCode.UNKNOWN_ERROR,
       'value': 'Error parsing command: "' + jsonCommandString + '"'
     });
     responseHandler.handleResponse(response);
@@ -410,7 +410,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
 
   var sessionId = command.sessionId;
   if (!sessionId) {
-    response.sendError(new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
+    response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
         'No session ID specified'));
     return;
   }
@@ -424,7 +424,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
       getSession(sessionId).
       wrappedJSObject;
   } catch (ex) {
-    response.sendError(new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
+    response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
         'Session not found: ' + sessionId));
     return;
   }
@@ -438,7 +438,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
   var sessionWindow = response.session.getChromeWindow();
   var driver = sessionWindow.fxdriver;  // TODO(jmleyba): We only need to store an ID on the window!
   if (!driver) {
-    response.sendError(new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
+    response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
         'Session has no driver: ' + response.session.getId()));
     return;
   }
@@ -485,7 +485,7 @@ nsCommandProcessor.prototype.switchToWindow = function(response, parameters,
         response.value = response.session.getId();
         response.send();
       } else {
-        response.sendError(new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
+        response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
             'No driver found attached to top window!'));
       }
       // Found the desired window, stop the search.
@@ -599,7 +599,7 @@ nsCommandProcessor.prototype.newSession = function(response) {
   var win = this.wm.getMostRecentWindow("navigator:browser");
   var driver = win.fxdriver;
   if (!driver) {
-    response.sendError(new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
+    response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
         'No drivers associated with the window'));
   } else {
     var sessionStore = Components.

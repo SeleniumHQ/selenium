@@ -343,7 +343,7 @@ Dispatcher.prototype.dispatch = function(request, response) {
     } catch (ex) {
       fxdriver.Logger.dump(ex);
       response.sendError(Response.INTERNAL_ERROR, JSON.stringify({
-        status: bot.ErrorCode.UNHANDLED_ERROR,
+        status: bot.ErrorCode.UNKNOWN_ERROR,
         value: fxdriver.error.toJSON(ex)
       }), 'application/json');
     }

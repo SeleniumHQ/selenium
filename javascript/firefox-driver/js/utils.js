@@ -404,7 +404,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer) {
     return;
   }
 
-  fxdriver.Logger.dumpn("Doing sendKeys in a non-native way...")
+  fxdriver.Logger.dumpn("Doing sendKeys in a non-native way...");
   var controlKey = false;
   var shiftKey = false;
   var altKey = false;

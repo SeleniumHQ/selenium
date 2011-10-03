@@ -306,7 +306,7 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
   respond.value = new XMLSerializer().serializeToString(win.document);
   respond.send();
 
-  // The command & response attributes we removed are on-shots, we only
+  // The command & response attributes we removed are one-shots, we only
   // need to add back the webdriver attribute.
   docElement.setAttribute('webdriver', 'true');
 };
@@ -817,11 +817,11 @@ FirefoxDriver.prototype.saveScreenshot = function(respond, pngFile) {
     try {
       Screenshooter.save(canvas, pngFile);
     } catch(e) {
-      throw new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
+      throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
           'Could not save screenshot to ' + pngFile + ' - ' + e);
     }
   } catch(e) {
-    throw new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
+    throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
         'Could not take screenshot of current page - ' + e);
   }
   respond.send();
@@ -834,7 +834,7 @@ FirefoxDriver.prototype.screenshot = function(respond) {
     var canvas = Screenshooter.grab(window);
     respond.value = Screenshooter.toBase64(canvas);
   } catch (e) {
-    throw new WebDriverError(bot.ErrorCode.UNHANDLED_ERROR,
+    throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
         'Could not take screenshot of current page - ' + e);
   }         
   respond.send();
