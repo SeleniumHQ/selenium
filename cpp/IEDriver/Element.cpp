@@ -241,7 +241,11 @@ bool Element::IsInOverflow() {
   script_source += L"var s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
   script_source += L"while (p != null && s.overflow != 'auto' && s.overflow != 'scroll') {\n";
   script_source += L"  p = p.parentNode;\n";
-  script_source += L"  s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
+  script_source += L"  if (p === document) {\n";
+  script_source += L"    p = null;\n";
+  script_source += L"  } else {\n";
+  script_source += L"    s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
+  script_source += L"  }\n";
   script_source += L"}";
   script_source += L"return p != null;";
   script_source += L"};})();";
