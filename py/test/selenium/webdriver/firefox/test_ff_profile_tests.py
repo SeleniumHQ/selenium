@@ -29,6 +29,9 @@ class TestFirefoxProfile:
         self.webserver.start()
 
     def test_that_we_can_accept_a_profile(self):
+        # The setup gave us a browser but we dont need it since we are doing our own thing
+        self.driver.quit() 
+        
         self.profile1 = webdriver.FirefoxProfile()
         self.profile1.set_preference("startup.homepage_welcome_url", 
             "%s" % "http://localhost:%d/%s.html" % (self.webserver.port, "simpleTest"))
