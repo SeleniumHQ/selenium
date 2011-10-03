@@ -257,30 +257,32 @@ GeckoSDKs.new do |sdks|
            '6c1c3a990495baacc2bb40aef3b54025'
 
   sdks.add 'third_party/gecko-2/linux',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/nightly/2.0-candidates/build3/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2',
            '1ec6039ee99596551845f27d4bc83436'
 
   sdks.add 'third_party/gecko-2/linux64',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.linux-x86_64.sdk.tar.bz2',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/nightly/2.0-candidates/build3/sdk/xulrunner-2.0.en-US.linux-x86_64.sdk.tar.bz2',
            '101eb57d3f76f77e9c94d3cb25a8d56c'
 
   sdks.add 'third_party/gecko-2/mac',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.mac-x86_64.sdk.tar.bz2'
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/nightly/2.0-candidates/build3/sdk/xulrunner-2.0.en-US.mac-x86_64.sdk.tar.bz2',
+           'ac2ddb114107680fe75ee712cddf1ab4'
 
   sdks.add 'third_party/gecko-2/win32',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.win32.sdk.zip',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/nightly/2.0-candidates/build3/sdk/xulrunner-2.0.en-US.win32.sdk.zip',
            '5cfa95a2d46334ce6283a772eff19382'
 
   sdks.add 'third_party/gecko-5/linux',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.linux-i686.sdk.tar.bz2',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/nightly/5.0-candidates/build1/sdk/xulrunner-5.0.en-US.linux-i686.sdk.tar.bz2',
            '1c980270364eedea841b471578ebe4d8'
 
   sdks.add 'third_party/gecko-5/linux64',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.linux-x86_64.sdk.tar.bz2',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/nightly/5.0-candidates/build1/sdk/xulrunner-5.0.en-US.linux-x86_64.sdk.tar.bz2',
            'fd193614e8dbe8f574e36c9f24eedf7a'
 
   sdks.add 'third_party/gecko-5/mac',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.mac-i386.sdk.tar.bz2'
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/nightly/5.0-candidates/build1/sdk/xulrunner-5.0.en-US.mac-x86_64.sdk.tar.bz2',
+           'adcfee3407988f0b4d9aaa1a7d099f88'
 
   sdks.add 'third_party/gecko-5/win32',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/5.0/sdk/xulrunner-5.0.en-US.win32.sdk.zip',
