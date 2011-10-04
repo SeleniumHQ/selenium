@@ -89,7 +89,7 @@ class ActionChains(object):
         self.release(target)
         return self
 
-    def drag_and_drop_by(self, source, xoffset, yoffset):
+    def drag_and_drop_by_offset(self, source, xoffset, yoffset):
         """Holds down the left mouse button on the source element,
            then moves to the target element and releases the mouse button.
         Args:
