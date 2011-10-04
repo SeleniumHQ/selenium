@@ -22,10 +22,13 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.fail;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
+import org.openqa.selenium.support.FindAllBy;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.How;
@@ -34,12 +37,19 @@ import org.junit.Test;
 
 public class AnnotationsTest extends MockTestBase {
   public WebElement default_field;
+  public List<WebElement> defaultList_field;
 
   @FindBy(how = How.NAME, using = "cheese")
   public WebElement longFindBy_field;
 
+  @FindAllBy(how = How.NAME, using = "cheese")
+  public List<WebElement> longFindAllBy_field;
+
   @FindBy(name = "cheese")
   public WebElement shortFindBy_field;
+
+  @FindAllBy(name = "cheese")
+  public List<WebElement> shortFindAllBy_field;
 
   @FindBys({@FindBy(how = How.NAME, using = "cheese"),
       @FindBy(id = "fruit")})
@@ -53,6 +63,9 @@ public class AnnotationsTest extends MockTestBase {
   @FindBy(id = "cheese", name = "fruit")
   public WebElement findByMultipleHows_field;
 
+  @FindAllBy(id = "cheese", name = "fruit")
+  public List<WebElement> findAllByMultipleHows_field;
+
   @FindBys({@FindBy(id = "cheese", name = "fruit"),
       @FindBy(id = "crackers")})
   public WebElement findBysMultipleHows_field;
@@ -64,14 +77,32 @@ public class AnnotationsTest extends MockTestBase {
   }
 
   @Test
+  public void testDefaultList() throws Exception {
+    assertThat(new Annotations(getClass().getField("defaultList_field")).buildBy(),
+        equalTo((By) new ByIdOrName("defaultList_field")));
+  }
+
+  @Test
   public void longFindBy() throws Exception {
     assertThat(new Annotations(getClass().getField("longFindBy_field")).buildBy(),
         equalTo(By.name("cheese")));
   }
 
   @Test
+  public void longFindAllBy() throws Exception {
+    assertThat(new Annotations(getClass().getField("longFindAllBy_field")).buildBy(),
+        equalTo(By.name("cheese")));
+  }
+
+  @Test
   public void shortFindBy() throws Exception {
     assertThat(new Annotations(getClass().getField("shortFindBy_field")).buildBy(),
+        equalTo(By.name("cheese")));
+  }
+
+  @Test
+  public void shortFindAllBy() throws Exception {
+    assertThat(new Annotations(getClass().getField("shortFindAllBy_field")).buildBy(),
         equalTo(By.name("cheese")));
   }
 
@@ -97,6 +128,16 @@ public class AnnotationsTest extends MockTestBase {
     try {
       new Annotations(getClass().getField("findByMultipleHows_field")).buildBy();
       fail("Expected field annotated with invalid @FindBy to throw error");
+    } catch (IllegalArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  public void findAllByMultipleHows() throws Exception {
+    try {
+      new Annotations(getClass().getField("findAllByMultipleHows_field")).buildBy();
+      fail("Expected field annotated with @FindAllBy containing bad @FindAllBy to throw error");
     } catch (IllegalArgumentException e) {
       // Expected exception
     }

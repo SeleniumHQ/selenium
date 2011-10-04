@@ -21,10 +21,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler;
+import org.openqa.selenium.support.pagefactory.internal.LocatingElementListHandler;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.List;
 
 /**
  * Default decorator for use with PageFactory. Will decorate all of the WebElement fields with a
@@ -39,7 +41,8 @@ public class DefaultFieldDecorator implements FieldDecorator {
   }
 
   public Object decorate(ClassLoader loader, Field field) {
-    if (!WebElement.class.isAssignableFrom(field.getType())) {
+    if (!(WebElement.class.isAssignableFrom(field.getType())
+          || List.class.isAssignableFrom(field.getType()))) {
       return null;
     }
 
@@ -48,11 +51,16 @@ public class DefaultFieldDecorator implements FieldDecorator {
       return null;
     }
 
-    return proxyForLocator(loader, locator);
+    if (WebElement.class.isAssignableFrom(field.getType())) {
+      return proxyForLocator(loader, locator);
+    } else if (List.class.isAssignableFrom(field.getType())) {
+      return proxyForListLocator(loader, locator);
+    } else {
+      return null;
+    }
   }
 
-  protected WebElement proxyForLocator(ClassLoader loader,
-      ElementLocator locator) {
+  protected WebElement proxyForLocator(ClassLoader loader, ElementLocator locator) {
     InvocationHandler handler = new LocatingElementHandler(locator);
 
     WebElement proxy;
@@ -61,4 +69,13 @@ public class DefaultFieldDecorator implements FieldDecorator {
     return proxy;
   }
 
+  protected List<WebElement> proxyForListLocator(ClassLoader loader, ElementLocator locator) {
+    InvocationHandler handler = new LocatingElementListHandler(locator);
+
+    List<WebElement> proxy;
+    proxy = (List<WebElement>) Proxy.newProxyInstance(
+        loader, new Class[] {List.class}, handler);
+    return proxy;
+  }
+  
 }

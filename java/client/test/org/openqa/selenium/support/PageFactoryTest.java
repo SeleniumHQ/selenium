@@ -32,6 +32,7 @@ import org.openqa.selenium.support.pagefactory.FieldDecorator;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class PageFactoryTest extends MockTestBase {
 
@@ -42,10 +43,12 @@ public class PageFactoryTest extends MockTestBase {
     PublicPage page = new PublicPage();
 
     assertThat(page.q, is(nullValue()));
+    assertThat(page.list, is(nullValue()));
 
     PageFactory.initElements(driver, page);
 
     assertThat(page.q, is(notNullValue()));
+    assertThat(page.list, is(notNullValue()));
   }
 
   @Test
@@ -53,6 +56,7 @@ public class PageFactoryTest extends MockTestBase {
     PublicPage page = PageFactory.initElements(driver, PublicPage.class);
 
     assertThat(page.q, is(notNullValue()));
+    assertThat(page.list, is(notNullValue()));
   }
 
   @Test
@@ -62,6 +66,7 @@ public class PageFactoryTest extends MockTestBase {
     PageFactory.initElements(driver, page);
 
     assertThat(page.q, is(notNullValue()));
+    assertThat(page.list, is(notNullValue()));
     assertThat(page.submit, is(notNullValue()));
   }
 
@@ -79,6 +84,7 @@ public class PageFactoryTest extends MockTestBase {
     PageFactory.initElements(driver, page);
 
     assertThat(page.getField(), is(notNullValue()));
+    assertThat(page.getList(), is(notNullValue()));
   }
 
   @Test
@@ -149,6 +155,9 @@ public class PageFactoryTest extends MockTestBase {
     @FindBy(name = "q")
     public WebElement q;
 
+    @FindBy(name = "q")
+    public List<WebElement> list;
+
     public WebElement rendered;
   }
 
@@ -169,9 +178,14 @@ public class PageFactoryTest extends MockTestBase {
   public static class PrivatePage {
 
     private WebElement allMine = null;
+    private List<WebElement> list = null;
 
     public WebElement getField() {
       return allMine;
+    }
+
+    public List<WebElement> getList() {
+      return list;
     }
   }
 

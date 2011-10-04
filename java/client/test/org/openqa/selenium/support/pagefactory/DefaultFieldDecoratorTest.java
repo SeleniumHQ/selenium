@@ -43,15 +43,18 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  */
 public class DefaultFieldDecoratorTest extends MockTestBase {
 
   // Unusued fields are used by tests. Do not remove!
-  private WebElement element1;
-  private WebElement element2;
-  private Integer num;
+  @SuppressWarnings("unused") private WebElement element1;
+  @SuppressWarnings("unused") private WebElement element2;
+  @SuppressWarnings("unused") private List<WebElement> list1;
+  @SuppressWarnings("unused") private List<WebElement> list2;
+  @SuppressWarnings("unused") private Integer num;
 
   private FieldDecorator createDecoratorWithNullLocator() {
     return new DefaultFieldDecorator(new ElementLocatorFactory() {
@@ -73,7 +76,18 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
         getClass().getDeclaredField("element1")),
         is(notNullValue()));
     assertThat(decorator.decorate(getClass().getClassLoader(),
-        getClass().getDeclaredField("element1")),
+        getClass().getDeclaredField("element2")),
+        is(notNullValue()));
+  }
+
+  @Test
+  public void decoratesWebElementList() throws Exception {
+    FieldDecorator decorator = createDecoratorWithDefaultLocator();
+    assertThat(decorator.decorate(getClass().getClassLoader(),
+        getClass().getDeclaredField("list1")),
+        is(notNullValue()));
+    assertThat(decorator.decorate(getClass().getClassLoader(),
+        getClass().getDeclaredField("list2")),
         is(notNullValue()));
   }
 
@@ -92,7 +106,13 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
         getClass().getDeclaredField("element1")),
         is(nullValue()));
     assertThat(decorator.decorate(getClass().getClassLoader(),
-        getClass().getDeclaredField("element1")),
+        getClass().getDeclaredField("element2")),
+        is(nullValue()));
+    assertThat(decorator.decorate(getClass().getClassLoader(),
+        getClass().getDeclaredField("list1")),
+        is(nullValue()));
+    assertThat(decorator.decorate(getClass().getClassLoader(),
+        getClass().getDeclaredField("list2")),
         is(nullValue()));
     assertThat(decorator.decorate(getClass().getClassLoader(),
         getClass().getDeclaredField("num")),

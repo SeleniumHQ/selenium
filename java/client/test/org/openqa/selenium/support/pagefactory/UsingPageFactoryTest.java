@@ -18,12 +18,20 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.JUnit4TestBase;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.CacheLookup;
+import org.openqa.selenium.support.FindAllBy;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
@@ -44,9 +52,26 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
 
     assertEquals("form", tagName.toLowerCase());
   }
+  
+  @Test
+  public void canListDecoratedElements() {
+    driver.get(pages.xhtmlTestPage);
+
+    Page page = new Page();
+    PageFactory.initElements(driver, page);
+
+    assertThat(page.links.size(), equalTo(12));
+    for (WebElement link : page.links) {
+      assertThat(link.getTagName(), equalTo("a"));
+    }
+  }
 
   public static class Page {
     @FindBy(name = "someForm")
     WebElement formElement;
+
+    @FindAllBy(tagName = "a")
+    @CacheLookup
+    List<WebElement> links;
   }
 }

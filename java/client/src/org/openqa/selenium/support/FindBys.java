@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * 
  * Eg:
  * 
- * @FindBy({@FindBy(how = How.ID, using = "foo"),
+ * @FindBys({@FindBy(how = How.ID, using = "foo"),
  * @FindBy(how = How.CLASS_NAME, using = "bar")})
  */
 @Retention(RetentionPolicy.RUNTIME)

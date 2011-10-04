@@ -23,6 +23,7 @@ import org.openqa.selenium.support.pagefactory.ByChainedTest;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorTest;
 import org.openqa.selenium.support.pagefactory.DefaultFieldDecoratorTest;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandlerTest;
+import org.openqa.selenium.support.pagefactory.internal.LocatingElementListHandlerTest;
 import org.openqa.selenium.support.ui.FluentWaitTest;
 import org.openqa.selenium.support.ui.LoadableComponentTest;
 import org.openqa.selenium.support.ui.SelectTest;
@@ -43,6 +44,7 @@ import org.junit.runners.Suite;
     FluentWaitTest.class,
     LoadableComponentTest.class,
     LocatingElementHandlerTest.class,
+    LocatingElementListHandlerTest.class,
     PageFactoryTest.class,
     SelectTest.class,
     SlowLoadableComponentTest.class,

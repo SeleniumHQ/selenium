@@ -22,11 +22,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
- * The default element locator, which will lazily locate an element on a page. This class is
+ * The default element locator, which will lazily locate an element or an element list on a page. This class is
  * designed for use with the {@link org.openqa.selenium.support.PageFactory} and understands the
- * annotations {@link org.openqa.selenium.support.FindBy} and
+ * annotations {@link org.openqa.selenium.support.FindBy}, {@link org.openqa.selenium.support.FindAllBy} and
  * {@link org.openqa.selenium.support.CacheLookup}.
  */
 public class DefaultElementLocator implements ElementLocator {
@@ -34,6 +35,7 @@ public class DefaultElementLocator implements ElementLocator {
   private final boolean cacheElement;
   private final By by;
   private WebElement cachedElement;
+  private List<WebElement> cachedElements;
 
   /**
    * Creates a new element locator.
@@ -62,5 +64,21 @@ public class DefaultElementLocator implements ElementLocator {
     }
 
     return element;
+  }
+
+  /**
+   * Find the element list.
+   */
+  public List<WebElement> findElements() {
+    if (cachedElements != null && cacheElement) {
+      return cachedElements;
+    }
+
+    List<WebElement> elements = driver.findElements(by);
+    if (cacheElement) {
+      cachedElements = elements;
+    }
+
+    return elements;
   }
 }

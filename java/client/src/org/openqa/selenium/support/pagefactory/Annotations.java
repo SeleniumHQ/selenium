@@ -20,11 +20,16 @@ package org.openqa.selenium.support.pagefactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.CacheLookup;
+import org.openqa.selenium.support.FindAllBy;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.How;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,6 +60,11 @@ public class Annotations {
       ans = buildByFromFindBy(findBy);
     }
 
+    FindAllBy findAllBy = field.getAnnotation(FindAllBy.class);
+    if (ans == null && findAllBy != null) {
+      ans = buildByFromFindBy(convert(findAllBy));
+    }
+
     if (ans == null) {
       ans = buildByFromDefault();
     }
@@ -64,6 +74,26 @@ public class Annotations {
     }
 
     return ans;
+  }
+
+  private FindBy convert(final FindAllBy findAllBy) {
+    return (FindBy) Proxy.newProxyInstance(this.getClass().getClassLoader(),
+        new Class[] {FindBy.class}, new InvocationHandler() {
+      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if ("annotationType".equals(method.getName())) {
+          return FindAllBy.class;
+        }
+        
+        Method m2 = FindAllBy.class.getMethod(method.getName());
+        
+        try {
+          return m2.invoke(findAllBy, args);
+        } catch (InvocationTargetException e) {
+          // Unwrap the underlying exception
+          throw e.getCause();
+        }
+      }
+    });
   }
 
   protected By buildByFromDefault() {
@@ -162,11 +192,18 @@ public class Annotations {
   }
 
   private void assertValidAnnotations() {
-    FindBys findBys = field.getAnnotation(FindBys.class);
-    FindBy findBy = field.getAnnotation(FindBy.class);
-    if (findBys != null && findBy != null) {
-      throw new IllegalArgumentException("If you use a '@FindBys' annotation, "
-          + "you must not also use a '@FindBy' annotation");
+    int count = 0;
+    if (field.getAnnotation(FindBys.class) != null) {
+      count += 1;
+    }
+    if (field.getAnnotation(FindBy.class) != null) {
+      count += 1;
+    }
+    if (field.getAnnotation(FindAllBy.class) != null) {
+      count += 1;
+    }
+    if (count > 1) {
+      throw new IllegalArgumentException("You may use only one of '@FindBy', '@FindBys' and '@FindAllBy' annotations");
     }
   }
 

@@ -120,6 +120,7 @@ public class LocatingElementHandlerTest extends MockTestBase {
     protected WebElement query;
 
     @SuppressWarnings("unused")
+    @FindBy(how = How.XPATH, using = "//input[@name='q']")
     @CacheLookup
     private WebElement staysTheSame;
 
