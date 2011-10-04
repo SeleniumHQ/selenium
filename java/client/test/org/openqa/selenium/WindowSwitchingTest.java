@@ -25,6 +25,7 @@ import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
+import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -127,7 +128,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
     try {
       driver.findElement(By.id("close")).click();
-      Set<String> allHandles = waitFor(windowHandleCountToBe(currentWindowHandles - 1));
+      Set<String> allHandles = waitFor(windowHandleCountToBe(driver, currentWindowHandles - 1));
 
       assertEquals(1, allHandles.size());
     } finally {
@@ -195,18 +196,5 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
     driver.close();
-  }
-
-  private Callable<Set<String>> windowHandleCountToBe(final int count) {
-    return new Callable<Set<String>>() {
-      public Set<String> call() throws Exception {
-        Set<String> handles = driver.getWindowHandles();
-
-        if (handles.size() == count) {
-          return handles;
-        }
-        return null;
-      }
-    };
   }
 }

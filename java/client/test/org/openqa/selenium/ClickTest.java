@@ -25,6 +25,7 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -161,7 +162,7 @@ public class ClickTest extends AbstractDriverTestCase {
     int windowHandlesBefore = driver.getWindowHandles().size();
     
     driver.findElement(By.id("new-window")).click();
-    assertThat(driver.getWindowHandles().size(), equalTo(windowHandlesBefore + 1));
+    waitFor(windowHandleCountToBe(driver, windowHandlesBefore + 1));
   }
 
   @Ignore

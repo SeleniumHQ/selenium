@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 public class WaitingConditions {
@@ -185,6 +186,20 @@ public class WaitingConditions {
           return element;
         }
 
+        return null;
+      }
+    };
+  }
+
+  public static Callable<Set<String>> windowHandleCountToBe(final WebDriver driver,
+                                                            final int count) {
+    return new Callable<Set<String>>() {
+      public Set<String> call() throws Exception {
+        Set<String> handles = driver.getWindowHandles();
+
+        if (handles.size() == count) {
+          return handles;
+        }
         return null;
       }
     };
