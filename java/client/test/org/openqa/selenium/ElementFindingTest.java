@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -473,7 +474,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   // TODO(danielwh): Add extensive CSS selector tests
 
   @JavascriptEnabled
-  @Ignore({SELENESE, ANDROID, IPHONE})
+  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     String url = appServer.whereIs("missedJsReference.html");
     driver.get(url);

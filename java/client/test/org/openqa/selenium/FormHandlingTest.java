@@ -190,7 +190,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(value, is("Some text"));
   }
 
-  @Ignore(value = {ANDROID, IPHONE, SELENESE},
+  @Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE},
       reason = "iPhone: sendKeys implemented incorrectly. Selenium: just because")
   public void testSendingKeyboardEventsShouldAppendTextInInputsWithExistingValue() {
     driver.get(pages.formPage);

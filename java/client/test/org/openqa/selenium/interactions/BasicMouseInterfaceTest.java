@@ -36,6 +36,7 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestUtilities.isFirefox30;
@@ -166,7 +167,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IPHONE, OPERA, REMOTE, SELENESE})
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 
