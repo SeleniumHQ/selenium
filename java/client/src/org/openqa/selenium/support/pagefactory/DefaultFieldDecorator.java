@@ -29,8 +29,9 @@ import java.lang.reflect.Proxy;
 import java.util.List;
 
 /**
- * Default decorator for use with PageFactory. Will decorate all of the WebElement fields with a
- * proxy that locates the elements using the passed in ElementLocatorFactory.
+ * Default decorator for use with PageFactory. Will decorate all of the WebElement and 
+ * List<WebElement> fields with a proxy that locates the elements using the passed
+ * in ElementLocatorFactory.
  */
 public class DefaultFieldDecorator implements FieldDecorator {
 
