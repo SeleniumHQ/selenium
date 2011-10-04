@@ -138,7 +138,7 @@ FirefoxDriver.prototype.close = function(respond) {
     var event = function(timer) {
         // Create a switch file so the native events library will
         // let all events through in case of a close.
-        createSwitchFile("close:<ALL>");
+        notifyOfCloseWindow();
         appService.quit(forceQuit);
     };
 
@@ -151,7 +151,7 @@ FirefoxDriver.prototype.close = function(respond) {
   // Here we go!
   try {
     var browser = respond.session.getBrowser();
-    createSwitchFile("close:" + browser.id);
+    notifyOfCloseWindow(browser.id);
     browser.contentWindow.close();
   } catch(e) {
     fxdriver.Logger.dump(e);

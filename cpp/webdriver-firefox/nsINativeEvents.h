@@ -75,6 +75,12 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   /* void doubleClick (in nsISupports aNode, in long x, in long y); */
   NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y) = 0;
 
+  /* void notifyOfSwitchToWindow (in long windowId); */
+  NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) = 0;
+
+  /* void notifyOfCloseWindow (in long windowId); */
+  NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId) = 0;
+
 };
 
   NS_DEFINE_STATIC_IID_ACCESSOR(nsINativeEvents, NS_INATIVEEVENTS_IID)
@@ -92,7 +98,9 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive NS_OUTPARAM); \
   NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine NS_OUTPARAM); \
   NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void); \
-  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y); 
+  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y); \
+  NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId); \
+  NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSINATIVEEVENTS(_to) \
@@ -107,7 +115,9 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive NS_OUTPARAM) { return _to ImeIsActivated(isActive); } \
   NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine NS_OUTPARAM) { return _to ImeGetActiveEngine(activeEngine); } \
   NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void) { return _to ImeDeactivate(); } \
-  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y) { return _to DoubleClick(aNode, x, y); } 
+  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y) { return _to DoubleClick(aNode, x, y); } \
+  NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) { return _to NotifyOfSwitchToWindow(windowId); } \
+  NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId) { return _to NotifyOfCloseWindow(windowId); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSINATIVEEVENTS(_to) \
@@ -122,7 +132,9 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeIsActivated(isActive); } \
   NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeGetActiveEngine(activeEngine); } \
   NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeDeactivate(); } \
-  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y) { return !_to ? NS_ERROR_NULL_POINTER : _to->DoubleClick(aNode, x, y); } 
+  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y) { return !_to ? NS_ERROR_NULL_POINTER : _to->DoubleClick(aNode, x, y); } \
+  NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) { return !_to ? NS_ERROR_NULL_POINTER : _to->NotifyOfSwitchToWindow(windowId); } \
+  NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId) { return !_to ? NS_ERROR_NULL_POINTER : _to->NotifyOfCloseWindow(windowId); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
@@ -224,6 +236,18 @@ NS_IMETHODIMP nsNativeEvents::ImeDeactivate()
 
 /* void doubleClick (in nsISupports aNode, in long x, in long y); */
 NS_IMETHODIMP nsNativeEvents::DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void notifyOfSwitchToWindow (in long windowId); */
+NS_IMETHODIMP nsNativeEvents::NotifyOfSwitchToWindow(PRInt32 windowId)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void notifyOfCloseWindow (in long windowId); */
+NS_IMETHODIMP nsNativeEvents::NotifyOfCloseWindow(PRInt32 windowId)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }

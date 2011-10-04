@@ -75,40 +75,24 @@ function WebDriverError(code, messageOrError) {
   this.isWebDriverError = true;
 }
 
-
-function createSwitchFile(file_content) {
-  var filename = "/tmp/switch_window_started";
-  var cc = Components.classes;
-  var ci = Components.interfaces;
-
-  try {
-    // TODO(eran): Look at the OS and only do this where it makes sense.
-    var tmpdir = cc['@mozilla.org/file/local;1'].createInstance(ci.nsILocalFile);
-    tmpdir.initWithPath("/tmp");
-
-    // Do not create a switch file on systems that do not have a /tmp directory
-    // - this serves to prevent creation of a switch file on Windows systems.
-    if (!tmpdir.exists()) {
-      return;
+function notifyOfCloseWindow(windowId) {
+  windowId = windowId || 0;
+  if (Utils.useNativeEvents()) {
+    var events = Utils.getNativeEvents();
+    if (events) {
+      events.notifyOfCloseWindow(windowId);
     }
-
-    var file = cc['@mozilla.org/file/local;1'].createInstance(ci.nsILocalFile);
-    file.initWithPath(filename);
-    var fileOutputStream = cc['@mozilla.org/network/safe-file-output-stream;1'].createInstance(ci.nsIFileOutputStream);
-    fileOutputStream.init(file, -1, -1, null);
-
-    fileOutputStream.write(file_content, file_content.length);
-    if (fileOutputStream instanceof ci.nsISafeOutputStream) {
-        fileOutputStream.finish();
-    } else {
-        fileOutputStream.close();
-    }
-  } catch (e) {
-    // Fine. Log it and continue
-    fxdriver.Logger.dumpn(e);
   }
 }
 
+function notifyOfSwitchToWindow(windowId) {
+  if (Utils.useNativeEvents()) {
+    var events = Utils.getNativeEvents();
+    if (events) {
+      events.notifyOfSwitchToWindow(windowId);
+    }
+  }
+}
 
 Utils.newInstance = function(className, interfaceName) {
   var clazz = Components.classes[className];

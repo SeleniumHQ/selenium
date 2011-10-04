@@ -477,8 +477,7 @@ nsCommandProcessor.prototype.switchToWindow = function(response, parameters,
       // Create a switch indicator file so the native events library
       // will know a window switch is in progress and will indeed
       // switch focus.
-      createSwitchFile("switch: " + win.top.fxdriver.id);
-
+      notifyOfSwitchToWindow(win.top.fxdriver.id);
       win.focus();
       if (win.top.fxdriver) {
         response.session.setChromeWindow(win.top);
@@ -671,7 +670,7 @@ nsCommandProcessor.prototype.quit = function(response) {
   var event = function(timer) {
       // Create a switch file so the native events library will
       // let all events through in case of a close.
-      createSwitchFile("close:<ALL>");
+      notifyOfCloseWindow();
       Components.classes['@mozilla.org/toolkit/app-startup;1'].
           getService(Components.interfaces.nsIAppStartup).
           quit(Components.interfaces.nsIAppStartup.eForceQuit);

@@ -44,4 +44,10 @@ void imeDeactivate();
 
 /* Double click the mouse at this point */
 void doubleClick(in nsISupports aNode, in long x, in long y);
+
+/* Notifies the x_ignore_nofocus library of switch window events. */
+void notifyOfSwitchToWindow(in long windowId);
+
+/* Notifies the x_ignore_nofocus library of close window events. */
+void notifyOfCloseWindow(in long windowId);
 };

@@ -49,6 +49,20 @@
 #define WD_RESULT int
 #endif
 
+#ifdef BUILD_ON_UNIX
+#ifdef __cplusplus
+extern "C" {
+#endif
+// include the function declarations to the ignore-no-focus library for Linux.
+void notify_of_switch_to_window(PRInt32 windowId);
+void notify_of_close_window(PRInt32 windowId);
+
+#ifdef __cplusplus
+}
+#endif
+#endif // BUILD_ON_UNIX
+
+
 NS_IMPL_ISUPPORTS1(nsNativeEvents, nsINativeEvents)
 
 nsNativeEvents::nsNativeEvents()
@@ -165,6 +179,26 @@ NS_IMETHODIMP nsNativeEvents::DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32
 
   return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
 }
+
+/* void notifyOfSwitchToWindow (); */
+NS_IMETHODIMP nsNativeEvents::NotifyOfSwitchToWindow(PRInt32 windowId)
+{
+  // This code is only needed for Linux.
+#ifdef BUILD_ON_UNIX
+  notify_of_switch_to_window(windowId);
+#endif // BUILD_ON_UNIX
+  return NS_OK;
+}
+
+/* void notifyOfCloseWindow (); */
+NS_IMETHODIMP nsNativeEvents::NotifyOfCloseWindow(PRInt32 windowId)
+{
+#ifdef BUILD_ON_UNIX
+  notify_of_close_window(windowId);
+#endif // BUILD_ON_UNIX
+  return NS_OK;
+}
+
 
 /* void mousePress(in nsISupports aNode, in long x, in long y, in long button); */
 NS_IMETHODIMP nsNativeEvents::MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)

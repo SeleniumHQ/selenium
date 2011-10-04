@@ -42,6 +42,8 @@ int g_library_inited = FALSE;
 struct _FocusKeepStatus {
   Window active_window;
   Window new_window;
+  int start_switch_window;
+  int start_close_window;
   int during_switch;
   int during_close;
   int should_steal_focus;
@@ -55,6 +57,8 @@ void init_focus_keep_struct(FocusKeepStatus* stat)
 {
   stat->active_window = 0;
   stat->new_window = 0;
+  stat->start_switch_window = FALSE;
+  stat->start_close_window = FALSE;
   stat->during_switch = FALSE;
   stat->during_close = FALSE;
   stat->should_steal_focus = FALSE;
@@ -211,23 +215,22 @@ int event_on_active_or_adj_window(Display* dpy, XEvent* ev, Window active_win)
 
 void identify_switch_situation(FocusKeepStatus* stat)
 {
-  char switch_data[MAX_BUFFER_SIZE];
-  FILE* switch_fp = fopen("/tmp/switch_window_started", "r");
-
-  if (switch_fp != NULL) {
+  if (stat->start_switch_window || stat->start_close_window) {
     // In the middle of a window switch.
     Window old_active = get_active_window(stat);
     stat->active_window = 0;
     stat->during_switch = TRUE;
-    memset(switch_data, '\0', MAX_BUFFER_SIZE);
-    fread(switch_data, sizeof(char), MAX_BUFFER_SIZE, switch_fp);
-    fclose(switch_fp);
-    unlink("/tmp/switch_window_started");
-    if (strstr(switch_data, "close:") == switch_data) {
+
+    if (stat->start_close_window) {
       stat->during_close = TRUE;
     }
-    LOG("Window switching detected, active was: %#lx info: %s close: %d\n",
-        old_active, switch_data, stat->during_close);
+
+    LOG("Window switching detected, active was: %#lx close: %d\n",
+        old_active, stat->during_close);
+
+    // Reset the the flags.
+    stat->start_switch_window = FALSE;
+    stat->start_close_window = FALSE;
   }
 }
 
@@ -241,7 +244,8 @@ void set_active_window(FocusKeepStatus* stat, XEvent* ev)
   }
   stat->encountered_focus_in_event = FALSE;
   stat->during_switch = FALSE;
-  unlink("/tmp/switch_window_started");
+  stat->start_switch_window = FALSE;
+  stat->start_close_window = FALSE;
   LOG("Setting Active Window due to FocusIn: %#lx (from close: %d)\n",
       get_active_window(stat), stat->active_window_from_close);
 }
@@ -541,6 +545,15 @@ void print_event_to_log(Display* dpy, XEvent* ev)
 // of the functions will act on it as a parameter.
 FocusKeepStatus g_focus_status;
 
+void initFocusStatusAndXQueryTree() {
+  if (g_library_inited == FALSE) {
+    LOG("Library initialized.\n");
+    g_library_inited = TRUE;
+    init_cached_xquerytree();
+    init_focus_keep_struct(&g_focus_status);
+  }
+}
+
 int XNextEvent(Display *display, XEvent *outEvent) {
   // Code to pull the real function handle from X11 library.
   void *handle = NULL;
@@ -563,13 +576,7 @@ int XNextEvent(Display *display, XEvent *outEvent) {
 
   OPEN_LOGGING_FILE;
 
-  if (g_library_inited == FALSE) {
-    LOG("Library initialized.\n");
-    g_library_inited = TRUE;
-    init_cached_xquerytree();
-    init_focus_keep_struct(&g_focus_status);
-  }
-
+  initFocusStatusAndXQueryTree();
 
   // This display object will be used to inquire X server
   // about inferior and parent windows.
@@ -621,4 +628,24 @@ int XNextEvent(Display *display, XEvent *outEvent) {
   dlclose(handle);
   CLOSE_LOGGING_FILE;
   return rf_ret;
+}
+
+void notify_of_switch_to_window(long window_id) {
+  initFocusStatusAndXQueryTree();
+  g_focus_status.start_switch_window = TRUE;
+  OPEN_LOGGING_FILE;
+  LOG("Notify of switch-to-window with id %d\n", window_id);
+  CLOSE_LOGGING_FILE;
+}
+
+void notify_of_close_window(long window_id) {
+  initFocusStatusAndXQueryTree();
+  g_focus_status.start_close_window = TRUE;
+  OPEN_LOGGING_FILE;
+  if (0 == window_id) {
+    LOG("Notify of close-all-windows.\n");
+  } else {
+    LOG("Notify of close-window with id %n", window_id);
+  }
+  CLOSE_LOGGING_FILE;
 }

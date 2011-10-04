@@ -1,5 +1,6 @@
 var EXPORTED_SYMBOLS = [
-  'createSwitchFile',
+  'notifyOfCloseWindow',
+  'notifyOfSwitchToWindow',
   'fxdriver',
   'goog',
   'webdriver',
