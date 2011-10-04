@@ -7,8 +7,10 @@
 		<excludeFolder url="file://$MODULE_DIR$/build"/>
 		<excludeFolder url="file://$MODULE_DIR$/common/build"/>
 	</contentEntry>
-	<lib name="junit-dep-4.9.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/junit/junit-dep-4.9.jar!/"/>
+	<lib name="junit-dep-4.10.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/junit/junit-dep-4.10-src.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/junit/junit-dep-4.10-src.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/junit/junit-dep-4.10.jar!/"/>
 	</lib>
 	<lib name="easymockclassextension-2.4.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/easymock/easymockclassextension-2.4.jar!/"/>
