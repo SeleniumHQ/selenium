@@ -299,6 +299,14 @@ GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-6/win32',
            'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/6.0.2/sdk/xulrunner-6.0.2.en-US.win32.sdk.zip',
            '0505cfcc6316fadc3d35f196711e7624'
+
+  sdks.add 'third_party/gecko-7/linux',
+           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/7.0.1/sdk/xulrunner-7.0.1.en-US.linux-i686.sdk.tar.bz2',
+           'fbcbb1d2958eca9cd9b458468ddd7526'
+
+  sdks.add 'third_party/gecko-7/linux64',
+           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/7.0.1/sdk/xulrunner-7.0.1.en-US.linux-x86_64.sdk.tar.bz2',
+           '6c4f4283650fe5d998f6450a5bd1817b'
 end
 
 task :'selenium-server_zip' do
