@@ -89,6 +89,19 @@ class ActionChains(object):
         self.release(target)
         return self
 
+    def drag_and_drop_by(self, source, xoffset, yoffset):
+        """Holds down the left mouse button on the source element,
+           then moves to the target element and releases the mouse button.
+        Args:
+            source: The element to mouse down.
+            xoffset: X offset to move to.
+            yoffset: Y offset to move to.
+        """
+        self.click_and_hold(source)
+        self.move_by_offset(xoffset, yoffset)
+        self.release(source)
+        return self
+
     def key_down(self, key, element=None):
         """Sends a key press only, without releasing it.
         Should only be used with modifier keys (Control, Alt and Shift).
