@@ -50,6 +50,8 @@ public class ErrorCodes {
   public static final int IME_NOT_AVAILABLE = 30;
   public static final int IME_ENGINE_ACTIVATION_FAILED = 31;
   public static final int INVALID_SELECTOR_ERROR = 32;
+  public static final int INVALID_XPATH_SELECTOR = 51;
+  public static final int INVALID_XPATH_SELECTOR_RETURN_TYPER = 52;
   // The following error codes are derived straight from HTTP return codes.
   public static final int METHOD_NOT_ALLOWED = 405;
 
@@ -74,6 +76,8 @@ public class ErrorCodes {
       case NO_SUCH_ELEMENT:
         return NoSuchElementException.class;
       case INVALID_SELECTOR_ERROR:
+      case INVALID_XPATH_SELECTOR:
+      case INVALID_XPATH_SELECTOR_RETURN_TYPER:
         return InvalidSelectorException.class;
       case NO_SUCH_FRAME:
         return NoSuchFrameException.class;
