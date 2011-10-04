@@ -40,25 +40,25 @@ public class Proxy {
   }
 
   public Proxy(Map<String, ?> raw) {
-    if (raw.containsKey("proxyType")) {
+    if (raw.containsKey("proxyType") && raw.get("proxyType") != null) {
       setProxyType(ProxyType.valueOf((String) raw.get("proxyType")));
     }
-    if (raw.containsKey("ftpProxy")) {
+    if (raw.containsKey("ftpProxy") && raw.get("ftpProxy") != null) {
       setFtpProxy((String) raw.get("ftpProxy"));
     }
-    if (raw.containsKey("httpProxy")) {
+    if (raw.containsKey("httpProxy") && raw.get("httpProxy") != null) {
       setHttpProxy((String) raw.get("httpProxy"));
     }
-    if (raw.containsKey("noProxy")) {
+    if (raw.containsKey("noProxy") && raw.get("noProxy") != null) {
       setNoProxy((String) raw.get("noProxy"));
     }
-    if (raw.containsKey("proxyAutoconfigUrl")) {
+    if (raw.containsKey("proxyAutoconfigUrl") && raw.get("proxyAutoconfigUrl") != null) {
       setProxyAutoconfigUrl((String) raw.get("proxyAutoconfigUrl"));
     }
-    if (raw.containsKey("sslProxy")) {
+    if (raw.containsKey("sslProxy") && raw.get("sslProxy") != null) {
       setSslProxy((String) raw.get("sslProxy"));
     }
-    if (raw.containsKey("autodetect")) {
+    if (raw.containsKey("autodetect") && raw.get("autodetect") != null) {
       setAutodetect((Boolean) raw.get("autodetect"));
     }
   }
@@ -148,8 +148,10 @@ public class Proxy {
   }
 
   private void verifyProxyTypeCompatilibily(ProxyType compatibleProxy) {
-    if (this.proxyType != ProxyType.UNSPECIFIED && this.proxyType != compatibleProxy) {
-      throw new IllegalStateException("Proxy autodetect is incompatible with manual settings");
+    if (proxyType != ProxyType.UNSPECIFIED && proxyType != compatibleProxy) {
+      throw new IllegalStateException(String.format(
+          "Specified proxy type (%s) not compatible with current setting (%s)",
+          compatibleProxy, proxyType));
     }
   }
 }
