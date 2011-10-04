@@ -136,6 +136,15 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
+        /// Clicks and holds the mouse button at the last known mouse coordinates.
+        /// </summary>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions ClickAndHold()
+        {
+            return this.ClickAndHold(null);
+        }
+
+        /// <summary>
         /// Releases the mouse button on the specified element.
         /// </summary>
         /// <param name="onElement">The element on which to release the button.</param>
@@ -145,6 +154,15 @@ namespace OpenQA.Selenium.Interactions
             ILocatable target = onElement as ILocatable;
             this.action.AddAction(new ButtonReleaseAction(this.mouse, target));
             return this;
+        }
+
+        /// <summary>
+        /// Releases the mouse button at the last known mouse coordinates.
+        /// </summary>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions Release()
+        {
+            return this.Release(null);
         }
 
         /// <summary>
@@ -178,6 +196,15 @@ namespace OpenQA.Selenium.Interactions
             ILocatable target = onElement as ILocatable;
             this.action.AddAction(new DoubleClickAction(this.mouse, target));
             return this;
+        }
+
+        /// <summary>
+        /// Double-clicks the mouse at the last known mouse coordinates.
+        /// </summary>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions DoubleClick()
+        {
+            return this.DoubleClick(null);
         }
 
         /// <summary>
