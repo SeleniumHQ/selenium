@@ -19,6 +19,14 @@ visualc_library(name = "firefox6_dll",
   out = "Win32/Release/webdriver-firefox-6.dll"
 )
 
+visualc_library(name = "firefox7_dll",
+  platform = "Win32",
+  project = "webdriver-firefox/webdriver-firefox-7.vcxproj",
+  file_deps = "third_party/gecko-7/win32",
+  out = "Win32/Release/webdriver-firefox-7.dll"
+)
+
+
 mozilla_xpt(name = "native_events_xpt",
   srcs = [ "webdriver-firefox/nsINativeEvents.idl" ])
 

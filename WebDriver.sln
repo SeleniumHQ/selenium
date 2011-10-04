@@ -68,6 +68,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-server", "cpp\web
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-6", "cpp\webdriver-firefox\webdriver-firefox-6.vcxproj", "{705CA982-A18B-4BCA-80B7-1F6DE6883BE8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-7", "cpp\webdriver-firefox\webdriver-firefox-7.vcxproj", "{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -408,6 +410,22 @@ Global
 		{705CA982-A18B-4BCA-80B7-1F6DE6883BE8}.Release|Win32.Build.0 = Release|Win32
 		{705CA982-A18B-4BCA-80B7-1F6DE6883BE8}.Release|x64.ActiveCfg = Release|x64
 		{705CA982-A18B-4BCA-80B7-1F6DE6883BE8}.Release|x64.Build.0 = Release|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Debug|.NET.ActiveCfg = Debug|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Debug|Win32.Build.0 = Debug|Win32
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Debug|x64.ActiveCfg = Debug|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Debug|x64.Build.0 = Debug|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Release|.NET.ActiveCfg = Release|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Release|Any CPU.ActiveCfg = Release|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Release|Mixed Platforms.Build.0 = Release|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Release|Win32.ActiveCfg = Release|Win32
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Release|Win32.Build.0 = Release|Win32
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Release|x64.ActiveCfg = Release|x64
+		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
