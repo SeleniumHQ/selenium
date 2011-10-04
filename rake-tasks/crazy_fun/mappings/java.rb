@@ -163,6 +163,10 @@ module CrazyFunJava
       CrazyFunJava.ant.java :classname => classname, :fork => true do
         arg :line => args
 
+        if (ENV['debug'])
+          jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005")
+        end
+
         classpath do
           cp.all.each do |jar|
             pathelement :location => jar
