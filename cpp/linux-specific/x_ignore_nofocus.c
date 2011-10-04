@@ -517,7 +517,14 @@ void* get_xlib_handle()
   // If we're not emulating a 32 bit mode (which is either native 32 bit
   // or native 64 bit) - use the ordinary path for libX11
   if (is_emulated_32bit() == FALSE) {
-    snprintf(library, MAX_LIBRARY_PATH, "/usr/lib/libX11.so.6");
+    const char default_x11_location[] = "/usr/lib/libX11.so.6";
+    // Usually, libX11 will reside in /usr/lib. On some 64-bit Linux
+    // distributions, it will reside in /usr/lib64.
+    if (access(default_x11_location, F_OK) == 0) {
+      snprintf(library, MAX_LIBRARY_PATH, default_x11_location);
+    } else {
+      snprintf(library, MAX_LIBRARY_PATH, "/usr/lib64/libX11.so.6");
+    }
   } else {
     // Use a path that usually contains the 32 bit libs in a 64 bit system.
     snprintf(library, MAX_LIBRARY_PATH, "/usr/lib32/libX11.so.6");
