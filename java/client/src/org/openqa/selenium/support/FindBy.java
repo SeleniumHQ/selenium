@@ -44,7 +44,7 @@ import java.lang.annotation.Target;
  * 
  * <pre class="code">
  * @FindBy(tagName = "a") List<WebElement> links;
- * @FindBy(how = How.TAG_NAME, using = "a") WebElement links;
+ * @FindBy(how = How.TAG_NAME, using = "a") List<WebElement> links;
  * </pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
