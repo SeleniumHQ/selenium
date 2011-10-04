@@ -69,6 +69,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
     return proxy;
   }
 
+  @SuppressWarnings("unchecked")
   protected List<WebElement> proxyForListLocator(ClassLoader loader, ElementLocator locator) {
     InvocationHandler handler = new LocatingElementListHandler(locator);
 

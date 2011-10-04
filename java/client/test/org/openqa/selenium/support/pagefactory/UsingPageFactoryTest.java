@@ -25,13 +25,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JUnit4TestBase;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
-import org.openqa.selenium.support.FindAllBy;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
@@ -70,7 +68,7 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
     @FindBy(name = "someForm")
     WebElement formElement;
 
-    @FindAllBy(tagName = "a")
+    @FindBy(tagName = "a")
     @CacheLookup
     List<WebElement> links;
   }

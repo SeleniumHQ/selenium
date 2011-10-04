@@ -27,15 +27,14 @@ import java.util.List;
 /**
  * The default element locator, which will lazily locate an element or an element list on a page. This class is
  * designed for use with the {@link org.openqa.selenium.support.PageFactory} and understands the
- * annotations {@link org.openqa.selenium.support.FindBy}, {@link org.openqa.selenium.support.FindAllBy} and
- * {@link org.openqa.selenium.support.CacheLookup}.
+ * annotations {@link org.openqa.selenium.support.FindBy} and {@link org.openqa.selenium.support.CacheLookup}.
  */
 public class DefaultElementLocator implements ElementLocator {
   private final WebDriver driver;
-  private final boolean cacheElement;
+  private final boolean shouldCache;
   private final By by;
   private WebElement cachedElement;
-  private List<WebElement> cachedElements;
+  private List<WebElement> cachedElementList;
 
   /**
    * Creates a new element locator.
@@ -46,7 +45,7 @@ public class DefaultElementLocator implements ElementLocator {
   public DefaultElementLocator(WebDriver driver, Field field) {
     this.driver = driver;
     Annotations annotations = new Annotations(field);
-    cacheElement = annotations.isLookupCached();
+    shouldCache = annotations.isLookupCached();
     by = annotations.buildBy();
   }
 
@@ -54,12 +53,12 @@ public class DefaultElementLocator implements ElementLocator {
    * Find the element.
    */
   public WebElement findElement() {
-    if (cachedElement != null && cacheElement) {
+    if (cachedElement != null && shouldCache) {
       return cachedElement;
     }
 
     WebElement element = driver.findElement(by);
-    if (cacheElement) {
+    if (shouldCache) {
       cachedElement = element;
     }
 
@@ -70,13 +69,13 @@ public class DefaultElementLocator implements ElementLocator {
    * Find the element list.
    */
   public List<WebElement> findElements() {
-    if (cachedElements != null && cacheElement) {
-      return cachedElements;
+    if (cachedElementList != null && shouldCache) {
+      return cachedElementList;
     }
 
     List<WebElement> elements = driver.findElements(by);
-    if (cacheElement) {
-      cachedElements = elements;
+    if (shouldCache) {
+      cachedElementList = elements;
     }
 
     return elements;

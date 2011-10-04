@@ -28,7 +28,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
-import org.openqa.selenium.support.FindAllBy;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.How;
@@ -42,13 +41,13 @@ public class AnnotationsTest extends MockTestBase {
   @FindBy(how = How.NAME, using = "cheese")
   public WebElement longFindBy_field;
 
-  @FindAllBy(how = How.NAME, using = "cheese")
+  @FindBy(how = How.NAME, using = "cheese")
   public List<WebElement> longFindAllBy_field;
 
   @FindBy(name = "cheese")
   public WebElement shortFindBy_field;
 
-  @FindAllBy(name = "cheese")
+  @FindBy(name = "cheese")
   public List<WebElement> shortFindAllBy_field;
 
   @FindBys({@FindBy(how = How.NAME, using = "cheese"),
@@ -63,7 +62,7 @@ public class AnnotationsTest extends MockTestBase {
   @FindBy(id = "cheese", name = "fruit")
   public WebElement findByMultipleHows_field;
 
-  @FindAllBy(id = "cheese", name = "fruit")
+  @FindBy(id = "cheese", name = "fruit")
   public List<WebElement> findAllByMultipleHows_field;
 
   @FindBys({@FindBy(id = "cheese", name = "fruit"),
