@@ -51,12 +51,24 @@ bot.frame.activeElement = function() {
  * @return {Window} The window reference for the given iframe or frame element.
  */
 bot.frame.getFrameWindow = function(element) {
-  if (/^i?frame$/i.test(element.tagName)) {
+  if (bot.frame.isFrame_(element)) {
     var frame = /** @type {HTMLFrameElement|HTMLIFrameElement} */ element;
     return goog.dom.getFrameContentWindow(frame);
   }
   throw new bot.Error(bot.ErrorCode.NO_SUCH_FRAME,
       "The given element isn't a frame or an iframe.");
+};
+
+
+/**
+ * Returns whether an element is a frame (or iframe).
+ *
+ * @param {!Element} element The element to check.
+ * @return {boolean} Whether the element is a frame (or iframe).
+ */
+bot.frame.isFrame_ = function(element) {
+  return bot.dom.isElement(element, goog.dom.TagName.FRAME) ||
+         bot.dom.isElement(element, goog.dom.TagName.IFRAME);
 };
 
 
@@ -86,14 +98,14 @@ bot.frame.findFrameByNameOrId = function(nameOrId, opt_root) {
   }
 
   // Lookup frame by id
-  var isFrame = function(element) {
-    return bot.dom.isElement(element, goog.dom.TagName.FRAME) ||
-        bot.dom.isElement(element, goog.dom.TagName.IFRAME);
-  }
+
+
+
+
   var elements = bot.locators.findElements({id: nameOrId},
       domWindow.document);
   for (var i = 0; i < elements.length; i++) {
-    if (isFrame(elements[i])) {
+    if (bot.frame.isFrame_(elements[i])) {
       return goog.dom.getFrameContentWindow(elements[i]);
     }
   }
