@@ -265,6 +265,14 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
         "return arguments[0].getBoundingClientRect()", element);
   }
 
+  private int getHeight(Map<String, Object> sizeRect) {
+    if (sizeRect.containsKey("height")) {
+      return getFieldValue(sizeRect, "height"); 
+    } else {
+      return getFieldValue(sizeRect, "bottom") - getFieldValue(sizeRect, "top");
+    }
+  }
+
   private int getFieldValue(Map<String, Object> sizeRect, String fieldName) {
     return (int) Double.parseDouble(sizeRect.get(fieldName).toString());
   }
@@ -288,7 +296,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     // top is (almost) 0 and the mouse was moved to the middle of the element, so the mouse
     // ends up at 0 + height / 2. In practice the 'top' value of getBoundingClientRect is
     // 0.43 pixels or so.
-    int assumedMouseY = getFieldValue(keyUpSize, "height") / 2;
+    int assumedMouseY = getHeight(keyUpSize) / 2;
 
     // Calculate the scroll offset by adding to the mouse position the distance of the parent
     // from the top + half it's height.
@@ -298,7 +306,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
 
     int verticalMove = assumedMouseY + getFieldValue(parentSize, "top") +
-        getFieldValue(parentSize, "height") / 2;
+        getHeight(parentSize) / 2;
 
     // Move by verticalMove pixels down and -50 pixels left:
     // we should be hitting the element with id 'parent'
