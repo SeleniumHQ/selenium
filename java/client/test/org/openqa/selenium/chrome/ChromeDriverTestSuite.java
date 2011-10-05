@@ -23,6 +23,8 @@ import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.util.Arrays;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -59,7 +61,13 @@ public class ChromeDriverTestSuite extends TestCase {
    */
   public static class DriverForTest extends RemoteWebDriver {
     public DriverForTest() {
-      super(chromeDriverService.getUrl(), DesiredCapabilities.chrome());
+      super(chromeDriverService.getUrl(), chromeWithExtensionsDisabled());
+    }
+    
+    private static DesiredCapabilities chromeWithExtensionsDisabled() {
+      DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+      capabilities.setCapability("chrome.switches", Arrays.asList("--disable-extensions"));
+      return capabilities;
     }
   }
 
