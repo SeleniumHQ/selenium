@@ -344,7 +344,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
     uploadElement.sendKeys(file.getAbsolutePath());
     // Shift focus to something else because send key doesn't make the focus leave
-    driver.findElement(By.tagName("id-name1")).click();
+    driver.findElement(By.id("id-name1")).click();
 
     assertThat(result.getText(), equalTo("changed"));
   }
