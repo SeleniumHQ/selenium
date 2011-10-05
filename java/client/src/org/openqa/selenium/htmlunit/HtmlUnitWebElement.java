@@ -746,10 +746,11 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public List<WebElement> findElementsByLinkText(String linkText) {
     assertElementNotStale();
 
+    String expectedText = linkText.trim();
     List<? extends HtmlElement> htmlElements = element.getHtmlElementsByTagName("a");
     List<WebElement> webElements = new ArrayList<WebElement>();
     for (HtmlElement e : htmlElements) {
-      if (e.getTextContent().equals(linkText) && e.getAttribute("href") != null) {
+      if (expectedText.equals(e.getTextContent().trim()) && e.getAttribute("href") != null) {
         webElements.add(getParent().newHtmlUnitWebElement(e));
       }
     }
