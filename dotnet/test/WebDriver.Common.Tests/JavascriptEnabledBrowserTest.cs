@@ -181,7 +181,7 @@ namespace OpenQA.Selenium
             Assert.That(driver.FindElement(By.Id("result")).Text.Trim(), firstConstraint | secondConstraint);
 
             input.SendKeys(Keys.Backspace + "t");
-            driver.FindElement(By.XPath("//body")).Click();  // move focus
+            driver.FindElement(By.Id("clickField")).Click();  // move focus
 
             firstConstraint = new EqualConstraint("focus change blur focus blur");
             secondConstraint = new EqualConstraint("focus blur change focus blur");
