@@ -141,10 +141,10 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
         } catch (Exception e) {
           // Make sure we yank the session from the request queue, since
           // any returned error will propagate to the
-				  // client, so there's no chance of this request ever succeeding.
-				  registry.removeNewSessionRequest(this);
+                  // client, so there's no chance of this request ever succeeding.
+                  registry.removeNewSessionRequest(this);
 
-				  throw (new RuntimeException(e));
+                  throw (new RuntimeException(e));
         }
 
         break;
