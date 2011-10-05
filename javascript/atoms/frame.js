@@ -125,15 +125,20 @@ bot.frame.findFrameByIndex = function(index, opt_root) {
  * @return {?number} The index of the frame if found, null otherwise.
  */
 bot.frame.getFrameIndex = function(element, opt_root) {
-  var domWindow = opt_root || bot.getWindow();
-
-  if (!bot.dom.isElement(element, goog.dom.TagName.FRAME) &&
-      !bot.dom.isElement(element, goog.dom.TagName.IFRAME)
-  ) {
+  try {
+    var elementWindow = element.contentWindow;
+  } catch (e) {
+    // Happens in IE{7,8} if a frame doesn't have an enclosing frameset.
     return null;
   }
+
+  if (!bot.frame.isFrame_(element)) {
+    return null;
+  }
+
+  var domWindow = opt_root || bot.getWindow();
   for (var i = 0; i < domWindow.frames.length; i++) {
-    if (element.contentWindow == domWindow.frames[i]) {
+    if (elementWindow == domWindow.frames[i]) {
       return i;
     }
   }
