@@ -86,7 +86,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome collapses non-breaking spaces");
+        [IgnoreBrowser(Browser.Chrome, "Chrome collapses non-breaking spaces")]
         public void ShouldNotCollapseANonBreakingSpaces()
         {
             driver.Url = (simpleTestPage);
