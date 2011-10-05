@@ -58,9 +58,9 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
     Page page = new Page();
     PageFactory.initElements(driver, page);
 
-    assertThat(page.links.size(), equalTo(12));
-    for (WebElement link : page.links) {
-      assertThat(link.getTagName(), equalTo("a"));
+    assertThat(page.divs.size(), equalTo(10));
+    for (WebElement link : page.divs) {
+      assertThat(link.getTagName(), equalTo("div"));
     }
   }
 
@@ -68,8 +68,8 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
     @FindBy(name = "someForm")
     WebElement formElement;
 
-    @FindBy(tagName = "a")
+    @FindBy(tagName = "div")
     @CacheLookup
-    List<WebElement> links;
+    List<WebElement> divs;
   }
 }
