@@ -80,9 +80,11 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
   /**
    * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService default}
    * server configuration.
+   *
+   * @see ChromeDriver(ChromeDriverService, Capabilities)
    */
   public ChromeDriver() {
-    this(ChromeDriverService.createDefaultService());
+    this(ChromeDriverService.createDefaultService(), DesiredCapabilities.chrome());
   }
 
   /**
@@ -90,9 +92,10 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    * and shutdown upon calling {@link #quit()}.
    * 
    * @param service The service to use.
+   * @see ChromeDriver(ChromeDriverService, Capabilities)
    */
   public ChromeDriver(ChromeDriverService service) {
-    super(new ChromeCommandExecutor(service), DesiredCapabilities.chrome());
+    this(service, DesiredCapabilities.chrome());
   }
 
   /**
@@ -100,11 +103,22 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    * chromedriver service.
    * 
    * @param capabilities The capabilities required from the ChromeDriver.
+   * @see ChromeDriver(ChromeDriverService, Capabilities)
    */
   public ChromeDriver(Capabilities capabilities) {
-    super(new ChromeCommandExecutor(ChromeDriverService.createDefaultService()), capabilities);
+    this(ChromeDriverService.createDefaultService(), capabilities);
   }
 
+  /**
+   * Creates a new ChromeDriver instance. The {@code service} will be started along with the
+   * driver, and shutdown upon calling {@link #quit()}.
+   *
+   * @param service The service to use.
+   * @param capabilities The capabilities required from the ChromeDriver.
+   */
+  public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
+    super(new ChromeCommandExecutor(service), capabilities);
+  }
 
   public <X> X getScreenshotAs(OutputType<X> target) {
     // Get the screenshot as base64.
