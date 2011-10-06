@@ -29,6 +29,7 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.regex.Matcher;
@@ -88,9 +89,11 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
-
+    Point imgLocation = img.getLocation();
     Actions actions = new Actions(driver);
-    actions.dragAndDropBy(img, Integer.MIN_VALUE, Integer.MIN_VALUE).perform();
+    // Drag the element one pixel further than its location so that its new
+    // location has negative coordinates.
+    actions.dragAndDropBy(img, -(imgLocation.getX() + 1), -(imgLocation.getY() + 1)).perform();
 
     // Image ends up on a negative offset because its top-left corner is
     // hidden.
@@ -98,9 +101,13 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     assertTrue("Top-left corner of the element should have negative offset. It was: " + newLocation,
         newLocation.getX() < 0 && newLocation.getY() < 0);
 
-    actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
-    // We don't know where the img is dragged to , but we know it's not too
-    // far, otherwise this function will not return for a long long time
+    try {
+      // We don't know where the img is dragged to , but we know it's not too
+      // far, otherwise this function will not return for a long long time
+      actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
+      fail("These coordinates are outside the page - expected to fail.");
+    } catch (MoveTargetOutOfBoundsException expected) {
+    }
   }
 
   @JavascriptEnabled

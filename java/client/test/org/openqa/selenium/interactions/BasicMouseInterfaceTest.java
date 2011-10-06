@@ -39,6 +39,7 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestUtilities.isFirefox;
 import static org.openqa.selenium.TestUtilities.isFirefox30;
 import static org.openqa.selenium.TestUtilities.isFirefox35;
 import static org.openqa.selenium.TestUtilities.isNativeEventsEnabled;
@@ -319,7 +320,8 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME},
       reason = "Not implemented yet.")
   public void testMovingMouseBackAndForthPastViewPort() {
-    if (!isNativeEventsEnabled(driver)) {
+
+    if (isFirefox(driver) && !isNativeEventsEnabled(driver)) {
       System.out.println("Skipping testMovingMouseBackAndForthPastViewPort: " +
           "Native events are disabled.");
       return;

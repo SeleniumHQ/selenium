@@ -1012,34 +1012,6 @@ FirefoxDriver.prototype.getBrowserSpecificOffset_ = function(inBrowser) {
   return getBrowserSpecificOffset_(inBrowser);
 };
 
-calculateViewportScrolling_ = function(moveOffset, viewportDimension) {
-  // Offset from the border of the viewport (in pixels) we're willing to move
-  // the mouse to. If, after scrolling, the mouse ends up witha 0 X or Y coordinates
-  // clicking may fail - so make sure it's at most in this offset.
-  var MIN_BORDER_OFFSET = 1;
-
-  // Mouse movement will be outside the viewport - we need to scroll
-  if ((moveOffset >= viewportDimension) || (moveOffset < 0)) {
-    var scrollOffset = 0;
-    var newMoveOffset = moveOffset;
-    var shouldScroll = true;
-
-    // Positive offset - scroll as much as needed and adjust
-    // the new mouse move offset to be MIN_BORDER_OFFSET above the border.
-    if (moveOffset > 0) {
-      scrollOffset = moveOffset - viewportDimension + MIN_BORDER_OFFSET;
-      newMoveOffset = viewportDimension - MIN_BORDER_OFFSET;
-    } else { // Negative move offset - scroll back.
-      scrollOffset = moveOffset;
-      newMoveOffset = 0;
-    }
-
-    return {moveTo: newMoveOffset, scroll: scrollOffset, shouldScroll: shouldScroll};
-  }
-
-  return {moveTo: moveOffset, scroll: 0, shouldScroll: false};
-}
-
 FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   var doc = respond.session.getDocument();
   
@@ -1049,10 +1021,11 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     var target = raw ? new XPCNativeWrapper(raw) : null;
     fxdriver.Logger.dumpn("Calling move with: " + parameters['xoffset'] + ', ' + parameters['yoffset'] + ", " + target);
     var result = this.mouse.move(target, parameters['xoffset'], parameters['yoffset']);
-    
+
     respond['status'] = result['status'];
-    respond['result'] = result['message'];
+    respond['value'] = result['message'];
     respond.send();
+
     return;
   }
   
@@ -1077,40 +1050,33 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
       toY = mousePosition.y + coordinates.y;
     }
 
+    // The function bot.dom.getInViewLocation does not work coordinates that are
+    // not integers. The mouse positions can be doubles so we need to cut off
+    // the decimals.
+    var to;
+    try {
+      to = bot.dom.getInViewLocation(
+          new goog.math.Coordinate(Math.floor(toX), Math.floor(toY)), respond.session.getWindow());
+    } catch (ex) {
+      if (ex.code == bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS) {
+        respond.sendError(new WebDriverError(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
+          "Given coordinates (" + toX + ", " + toY + ") are outside the document. Error: " + ex));
+        return;
+      }
+      else {
+        throw ex;
+      }
+    }
     var events = Utils.getNativeEvents();
     var node = Utils.getNodeForNativeEvents(elementForNode);
-
-    // If toX or toY are outside the viewport, scroll.
-    var currentWindow = respond.session.getWindow();
-    // Use the viewportSize, *not* window.innerWidth since window.innerWidth
-    // includes the scrollbar.
-    var vpSize = goog.dom.getViewportSize(currentWindow);
-    var xScrolling = calculateViewportScrolling_(toX, vpSize.width);
-    var yScrolling = calculateViewportScrolling_(toY, vpSize.height);
-
-    if (xScrolling.shouldScroll || yScrolling.shouldScroll) {
-      toX = xScrolling.moveTo;
-      toY = yScrolling.moveTo;
-
-      fxdriver.Logger.dumpn("Scroll offset not zero - scrolling by (" + xScrolling.scroll + ", " +
-        yScrolling.scroll + ") new toX, toY: (" + toX + ", " + toY + ")");
-
-      currentWindow.scrollBy(xScrolling.scroll, yScrolling.scroll);
-    } else {
-      // The scrolling calculation code also calculates correct X, Y coordinates
-      // for the mouse. If no scrolling takes place, make sure the destination
-      // coordinates are not negative.
-      toX = Math.max(toX, 0);
-      toY = Math.max(toY, 0);
-    }
 
     if (nativeEventsEnabled && events && node) {
       var currentPosition = respond.session.getMousePosition();
       fxdriver.Logger.dumpn("Moving from (" + currentPosition.x + ", " + currentPosition.y + ") to (" +
-        toX + ", " + toY + ")");
+        to.x + ", " + to.y + ")");
       events.mouseMove(node,
           currentPosition.x + browserOffset.x, currentPosition.y + browserOffset.y,
-          toX + browserOffset.x, toY + browserOffset.y);
+          to.x + browserOffset.x, to.y + browserOffset.y);
 
       var dummyIndicator = {
         wasUnloaded: false
@@ -1118,7 +1084,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
       Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, jsTimer);
 
-      respond.session.setMousePosition(toX, toY);
+      respond.session.setMousePosition(to.x, to.y);
     } else {
       throw generateErrorForNativeEvents(nativeEventsEnabled, events, node);
     }

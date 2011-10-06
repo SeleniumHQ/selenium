@@ -77,6 +77,8 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   var element = target ? 
       fxdriver.moz.unwrap(target) : this.lastElement;
 
+  var origXOffset = xOffset !== undefined ? xOffset : 0;
+  var origYOffset = yOffset !== undefined ? yOffset : 0;
    if (goog.isFunction(element.scrollIntoView)) {
      element.scrollIntoView();
   }
@@ -136,11 +138,22 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
       proceed = fireAndCheck(element, goog.events.EventType.MOUSEMOVE, botCoords);
   }
 
-
   botCoords['clientX'] = (pos.x + xOffset);
   botCoords['clientY'] = (pos.y + yOffset);
 
   proceed = fireAndCheck(element, goog.events.EventType.MOUSEMOVE, botCoords);
+
+  var newPos = Utils.getElementLocation(this.lastElement);
+  var xDifference = Math.abs(botCoords['clientX'] - newPos.x);
+  var yDifference = Math.abs(botCoords['clientY'] - newPos.y);
+  // Allow a 3-pixel deviation, since synthetic events are not as accurate
+  // as native ones.
+  if (((origXOffset != 0) || (origYOffset != 0)) &&
+      ((xDifference > 3) || (yDifference > 3))) {
+    return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
+        'Move could not be performed as far as requested: (' + newPos.x + ' ' +
+        newPos.y + ') targeted  (' + botCoords['clientX'] + ' ' + botCoords['clientY'] + ')');
+  }
 
   if (!proceed || !bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
     return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");

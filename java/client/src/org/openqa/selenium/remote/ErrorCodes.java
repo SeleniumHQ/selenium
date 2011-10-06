@@ -17,6 +17,7 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.XPathLookupException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
 /**
  * Defines common error codes for the wire protocol.
@@ -50,6 +51,7 @@ public class ErrorCodes {
   public static final int IME_NOT_AVAILABLE = 30;
   public static final int IME_ENGINE_ACTIVATION_FAILED = 31;
   public static final int INVALID_SELECTOR_ERROR = 32;
+  public static final int MOVE_TARGET_OUT_OF_BOUNDS = 34;
   public static final int INVALID_XPATH_SELECTOR = 51;
   public static final int INVALID_XPATH_SELECTOR_RETURN_TYPER = 52;
   // The following error codes are derived straight from HTTP return codes.
@@ -79,6 +81,8 @@ public class ErrorCodes {
       case INVALID_XPATH_SELECTOR:
       case INVALID_XPATH_SELECTOR_RETURN_TYPER:
         return InvalidSelectorException.class;
+      case MOVE_TARGET_OUT_OF_BOUNDS:
+        return MoveTargetOutOfBoundsException.class;
       case NO_SUCH_FRAME:
         return NoSuchFrameException.class;
       case UNKNOWN_COMMAND:
