@@ -96,7 +96,7 @@ public class TemporaryFilesystem {
 
       // Create it as a directory.
       File dir = new File(file.getAbsolutePath());
-      if (dir == null || !dir.mkdirs()) {
+      if (!dir.mkdirs()) {
         throw new WebDriverException("Cannot create profile directory at " + dir.getAbsolutePath());
       }
 

@@ -266,9 +266,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         if (fileLockException != null) {
           log.log(Level.SEVERE, "Couldn't delete custom Firefox profile directory", e);
           log.severe("Perhaps caused by this exception:");
-          if (fileLockException != null) {
-            log.log(Level.SEVERE, "Perhaps caused by this exception:", fileLockException);
-          }
+          log.log(Level.SEVERE, "Perhaps caused by this exception:", fileLockException);
           throw new RuntimeException("Couldn't delete custom Firefox " +
               "profile directory, presumably because task kill failed; " +
               "see error LOGGER!", e);

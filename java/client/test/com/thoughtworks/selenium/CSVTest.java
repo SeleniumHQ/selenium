@@ -30,7 +30,7 @@ public class CSVTest extends TestCase {
     System.out.print(input + ": ");
     String[] output;
     try {
-      output = (String[]) CSV.invoke(null, new String[] {input});
+      output = (String[]) CSV.invoke(null, input);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

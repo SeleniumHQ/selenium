@@ -32,7 +32,6 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher {
@@ -157,7 +156,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     InternetExplorerCustomProxyLauncher.alwaysChangeMaxConnections = changeMaxConnections;
   }
 
-  private void setupSystemProxy() throws IOException {
+  private void setupSystemProxy() {
     wpm.backupRegistrySettings();
     changeRegistrySettings();
   }

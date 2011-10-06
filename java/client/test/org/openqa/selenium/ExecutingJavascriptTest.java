@@ -218,12 +218,8 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
     for (int i = 0; i < first.size(); ++i) {
       if (first.get(i) instanceof List<?>) {
-        if (!(second instanceof List<?>)) {
+        if (!compareLists((List<?>) first.get(i), (List<?>) second.get(i))) {
           return false;
-        } else {
-          if (!compareLists((List<?>) first.get(i), (List<?>) second.get(i))) {
-            return false;
-          }
         }
       } else {
         if (!first.get(i).equals(second.get(i))) {

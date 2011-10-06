@@ -343,8 +343,8 @@ public class BeanToJsonConverterTest extends TestCase {
     }
   }
 
+  @SuppressWarnings("unused")
   private static class BeanWithArray {
-
     public String[] getNames() {
       return new String[] {"peter", "paul", "mary"};
     }

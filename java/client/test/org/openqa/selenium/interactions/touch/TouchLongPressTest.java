@@ -30,7 +30,6 @@ import org.openqa.selenium.Ignore;
 import org.openqa.selenium.MockTestBase;
 import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.TouchScreen;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 

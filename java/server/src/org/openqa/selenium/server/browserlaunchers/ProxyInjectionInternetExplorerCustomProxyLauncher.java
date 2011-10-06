@@ -4,9 +4,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
-import java.io.IOException;
-
-
 /**
  * launcher for IE under proxy injection mode
  * <p/>

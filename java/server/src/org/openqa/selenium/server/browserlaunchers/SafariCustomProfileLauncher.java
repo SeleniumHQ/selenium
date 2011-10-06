@@ -84,19 +84,15 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
   @Override
   protected void launch(String url) {
-    try {
-      if (!browserConfigurationOptions.is("honorSystemProxy")) {
-        setupSystemProxy();
-      }
-
-      if (browserConfigurationOptions.is(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION)) {
-        ensureCleanSession();
-      }
-
-      launchSafari(url);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    if (!browserConfigurationOptions.is("honorSystemProxy")) {
+      setupSystemProxy();
     }
+
+    if (browserConfigurationOptions.is(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION)) {
+      ensureCleanSession();
+    }
+
+    launchSafari(url);
   }
 
   protected void launchSafari(String url) {
@@ -227,7 +223,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     return process;
   }
 
-  private void setupSystemProxy() throws IOException {
+  private void setupSystemProxy() {
     if (WindowsUtils.thisIsWindows()) {
       wpm.backupRegistrySettings();
       changeRegistrySettings();

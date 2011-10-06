@@ -30,7 +30,6 @@ import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
-import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -180,13 +179,5 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     } catch (InterruptedException e) {
       throw new RuntimeException("Interrupted: " + e.toString());
     }
-  }
-
-  private boolean isNativeEventsEnabled() {
-    if (!(driver instanceof HasCapabilities)) {
-      return false;
-    }
-
-    return ((HasCapabilities) driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS);
   }
 }

@@ -183,8 +183,7 @@ public class JsonToBeanConverter {
       return (T) new Date(Long.valueOf(String.valueOf(text)));
     }
 
-    if (text != null && text instanceof String && !((String) text).startsWith("{") && Object.class
-        .equals(clazz)) {
+    if (text instanceof String && !((String) text).startsWith("{") && Object.class.equals(clazz)) {
       return (T) text;
     }
 
@@ -197,7 +196,7 @@ public class JsonToBeanConverter {
     }
 
     if (depth == 0) {
-      if (text != null && text instanceof String) {
+      if (text instanceof String) {
         if (((String) text).startsWith("[")) {
           text = new JSONArray((String) text);
         } else {

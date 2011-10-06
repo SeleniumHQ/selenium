@@ -32,8 +32,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
-import java.io.IOException;
-
 public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
   /**
    * Setting this capability will make your tests unstable and hard to debug.
