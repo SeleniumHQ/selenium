@@ -1,4 +1,14 @@
-V2.6.0
+v2.8.0
+======
+  * Added interactions methods for .Release(), ClickAndHold(), and 
+    DoubleClick() which take no arguments
+  * Added ClickAt() implementation in WebDriverBackedSelenium
+
+v2.7.0
+======
+  * No functional changes
+
+v2.6.0
 ======
   * Issue 2349: Fixed memory leak in PageFactory
   * Issue 2356: Fixed P/Invoke signatures for native .NET 4.0 projects
