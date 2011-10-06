@@ -95,10 +95,12 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     }
   }
 
+  @Override
   public void flush() {
     /* NOOP */
   }
 
+  @Override
   public synchronized void close() throws SecurityException {
     perSessionRecords.clear();
     perThreadTempRecords.clear();
@@ -123,6 +125,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     return writer.toString();
   }
 
+  @Override
   public synchronized void attachToCurrentThread(String sessionId) {
     ThreadKey threadId = new ThreadKey();
     if (threadToSessionMap.get(threadId) == null
@@ -133,6 +136,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     transferThreadTempLogsToSessionLogs(sessionId);
   }
 
+  @Override
   public void transferThreadTempLogsToSessionLogs(String sessionId) {
     ThreadKey threadId = new ThreadKey();
     List<LogRecord> threadRecords = perThreadTempRecords.get(threadId);
@@ -148,6 +152,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     clearThreadTempLogs();
   }
 
+  @Override
   public synchronized void detachFromCurrentThread() {
     ThreadKey threadId = new ThreadKey();
     String sessionId = threadToSessionMap.get(threadId);
@@ -158,6 +163,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     }
   }
 
+  @Override
   public synchronized void removeSessionLogs(String sessionId) {
     ThreadKey threadId = sessionToThreadMap.get(sessionId);
     String sessionIdForThread = threadToSessionMap.get(threadId);
@@ -181,6 +187,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
    * attach the pre-session logging to the request instead of the logging. Unfortunately this is no
    * small task.
    */
+  @Override
   public synchronized void clearThreadTempLogs() {
     ThreadKey threadId = new ThreadKey();
     perThreadTempRecords.remove(threadId);
@@ -193,6 +200,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
    * @return String RC logs for the sessionId
    * @throws IOException when the elves go bad
    */
+  @Override
   public synchronized String getLog(String sessionId) throws IOException {
     // TODO(chandra): Provide option to clear logs after getLog()
     String logs = formattedRecords(sessionId);

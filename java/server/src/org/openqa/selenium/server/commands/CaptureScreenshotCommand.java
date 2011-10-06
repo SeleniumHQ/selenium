@@ -40,6 +40,7 @@ public class CaptureScreenshotCommand extends Command {
     }
   }
 
+  @Override
   public String execute() {
     try {
       captureSystemScreenshot();

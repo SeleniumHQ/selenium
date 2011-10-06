@@ -178,6 +178,7 @@ public class ProxyHandler extends AbstractHttpHandler {
   /* ------------------------------------------------------------ */
   /*
   */
+  @Override
   public void start() throws Exception {
     _chained = System.getProperty("http.proxyHost") != null || forceProxyChain;
     super.start();
@@ -955,6 +956,7 @@ public class ProxyHandler extends AbstractHttpHandler {
       this.nukeDirOrFile = nukeDirOrFile;
     }
 
+    @Override
     protected void customizeRequest(Socket socket, HttpRequest request) {
       super.customizeRequest(socket, request);
       URI uri = request.getURI();
@@ -969,6 +971,7 @@ public class ProxyHandler extends AbstractHttpHandler {
           .setURI(new URI("https://" + _addr.getHost() + ":" + _addr.getPort() + uri.toString()));
     }
 
+    @Override
     public void stop() throws InterruptedException {
       super.stop();
 

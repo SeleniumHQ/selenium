@@ -27,17 +27,19 @@ import org.openqa.selenium.remote.Response;
 
 import java.util.List;
 
-public class InternetExplorerElement extends RemoteWebElement implements WebElement {
+public class InternetExplorerElement extends RemoteWebElement {
   public InternetExplorerElement(InternetExplorerDriver parent) {
     setParent(parent);
   }
 
+  @Override
   protected WebElement findElement(String using, String value) {
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
         ImmutableMap.of("id", id, "using", using, "value", value));
     return (WebElement) response.getValue();
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   protected List<WebElement> findElements(String using, String value) {
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,

@@ -61,6 +61,7 @@ public class DefaultRemoteCommand implements RemoteCommand {
     return sb.toString();
   }
 
+  @Override
   public String toString() {
     return getCommandURLString();
   }

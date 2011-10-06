@@ -93,6 +93,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
 
   private Wait getReadyStateUsingWait(final WebDriver driver) {
     return new Wait() {
+      @Override
       public boolean until() {
         try {
           Object result = ((JavascriptExecutor) driver).executeScript(

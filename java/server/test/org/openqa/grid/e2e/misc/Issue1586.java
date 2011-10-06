@@ -37,7 +37,7 @@ public class Issue1586 {
   }
 
   @Test
-  public void test() throws MalformedURLException, InterruptedException {
+  public void test() throws MalformedURLException {
     DesiredCapabilities ff = DesiredCapabilities.firefox();
     WebDriver driver = null;
     try {

@@ -60,6 +60,7 @@ public class SeleneseTestCase extends TestCase {
    * 
    * @see #setUp(String)
    */
+  @Override
   public void setUp() throws Exception {
     stb.setUp();
     selenium = stb.selenium;
@@ -107,6 +108,7 @@ public class SeleneseTestCase extends TestCase {
   }
 
   /** checks for verification errors and stops the browser */
+  @Override
   public void tearDown() throws Exception {
     stb.tearDown();
   }
@@ -241,6 +243,7 @@ public class SeleneseTestCase extends TestCase {
    * @exception Throwable if any exception is thrown
    */
   // @Override
+  @Override
   public void runBare() throws Throwable {
     if (!isCaptureScreenShotOnFailure()) {
       super.runBare();

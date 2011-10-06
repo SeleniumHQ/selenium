@@ -19,7 +19,6 @@ package org.openqa.selenium.net;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -214,7 +213,7 @@ public class NetworkUtils {
   }
 
   @SuppressWarnings({"UseOfSystemOutOrSystemErr"})
-  public static void main(String[] args) throws SocketException {
+  public static void main(String[] args) {
     System.out.println(getNetWorkDiags());
   }
 

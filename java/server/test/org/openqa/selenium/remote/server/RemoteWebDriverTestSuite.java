@@ -89,6 +89,7 @@ public class RemoteWebDriverTestSuite extends TestCase {
     @Override
     protected void setUp() throws Exception {
       appServer = new Jetty7AppServer() {
+        @Override
         protected File findRootOfWebApp() {
           File file = InProject.locate("remote/server/src/web");
           System.out.println(

@@ -58,7 +58,7 @@ public class EndToEndWebDriver {
   }
 
   @Test(invocationCount = 10, threadPoolSize = 10)
-  public void test() throws MalformedURLException, InterruptedException {
+  public void test() throws MalformedURLException {
     DesiredCapabilities ff = DesiredCapabilities.firefox();
     WebDriver driver = null;
     try {

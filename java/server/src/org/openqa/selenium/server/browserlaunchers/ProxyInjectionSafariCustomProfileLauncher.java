@@ -4,8 +4,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
-import java.io.IOException;
-
 
 /**
  * launcher for Safari under proxy injection mode
@@ -28,7 +26,7 @@ public class ProxyInjectionSafariCustomProfileLauncher extends SafariCustomProfi
   }
 
   @Override
-  protected void changeRegistrySettings() throws IOException {
+  protected void changeRegistrySettings() {
     wpm.setChangeMaxConnections(alwaysChangeMaxConnections);
     wpm.changeRegistrySettings(browserConfigurationOptions);
   }

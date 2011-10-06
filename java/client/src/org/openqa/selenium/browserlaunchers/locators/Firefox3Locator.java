@@ -25,14 +25,17 @@ public class Firefox3Locator extends FirefoxLocator {
   private String[] usualLauncherLocations;
 
 
+  @Override
   protected String browserName() {
     return "Firefox 3";
   }
 
+  @Override
   protected String seleniumBrowserName() {
     return "firefox3";
   }
 
+  @Override
   protected String[] standardlauncherFilenames() {
     if (runningOnWindows()) {
       return new String[] {"firefox.exe"};
@@ -41,6 +44,7 @@ public class Firefox3Locator extends FirefoxLocator {
     }
   }
 
+  @Override
   protected synchronized String[] usualLauncherLocations() {
     if (null == usualLauncherLocations) {
       usualLauncherLocations =

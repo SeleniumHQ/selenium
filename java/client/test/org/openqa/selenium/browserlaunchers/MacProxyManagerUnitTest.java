@@ -22,6 +22,7 @@ public class MacProxyManagerUnitTest extends TestCase {
 
   MockableMacProxyManager mmpm;
 
+  @Override
   public void setUp() {
     mmpm = new MockableMacProxyManager("", 4444);
   }
@@ -99,7 +100,7 @@ public class MacProxyManagerUnitTest extends TestCase {
     assertEquals("wrong bypass", "1\t\t", networkSettings.bypassAsString());
   }
 
-  public void testBackupBlankDomain() throws IOException {
+  public void testBackupBlankDomain() {
     useBlankDomainMMPM();
     mmpm.backupNetworkSettings();
     assertEquals("wrong bypass", "1\t\t", mmpm.mockPrefs.internalPrefs.get("bypass"));
@@ -174,7 +175,7 @@ public class MacProxyManagerUnitTest extends TestCase {
         networkSettings.bypassAsString());
   }
 
-  public void testBackupProxyEnabled() throws IOException {
+  public void testBackupProxyEnabled() {
     mmpm.backupNetworkSettings();
 
     assertEquals("wrong backupready", "true", mmpm.mockPrefs.internalPrefs.get("backupready"));
@@ -188,7 +189,7 @@ public class MacProxyManagerUnitTest extends TestCase {
         mmpm.mockPrefs.internalPrefs.get("bypass"));
   }
 
-  public void testBackupProxyDisabled() throws IOException {
+  public void testBackupProxyDisabled() {
     useProxyDisabledMMPM();
     mmpm.backupNetworkSettings();
 

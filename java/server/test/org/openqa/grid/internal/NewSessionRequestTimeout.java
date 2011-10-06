@@ -32,7 +32,7 @@ public class NewSessionRequestTimeout {
   }
 
   @Test(timeout = 5000, expected = RuntimeException.class)
-  public void method() throws InterruptedException {
+  public void method() {
 
     // should work
     MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, ff);

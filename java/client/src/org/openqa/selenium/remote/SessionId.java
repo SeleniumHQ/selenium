@@ -25,14 +25,17 @@ public class SessionId {
     this.opaqueKey = opaqueKey;
   }
 
+  @Override
   public String toString() {
     return opaqueKey;
   }
 
+  @Override
   public int hashCode() {
     return opaqueKey.hashCode();
   }
 
+  @Override
   public boolean equals(Object obj) {
     if (obj instanceof SessionId) {
       return opaqueKey.equals(((SessionId) obj).opaqueKey);

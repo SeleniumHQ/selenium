@@ -87,6 +87,7 @@ public class CaptureScreenshotCommandUnitTest extends TestCase {
     assertNotNull(image);
   }
 
+  @Override
   public void tearDown() throws Exception {
     if (file.exists()) {
       file.delete();

@@ -2,15 +2,14 @@ package org.openqa.selenium.v1.thirdparty;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.SkipException;
 import org.testng.annotations.Test;
 
 public class VerizonTest extends InternalSelenseTestBase {
   private static final String TIMEOUT = "60000";
 
-  @Test(dataProvider = "system-properties")
+  @Test(dataProvider = "system-properties", enabled = false)
+  //Ignored because this test is too slow
   public void signUp() {
-    if (true) throw new SkipException("This test is too slow!");
     selenium.setTimeout(TIMEOUT);
     selenium.open("http://www22.verizon.com/");
     selenium.click("link=Set Up New Phone Service");

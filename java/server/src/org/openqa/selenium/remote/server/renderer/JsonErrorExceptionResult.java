@@ -38,6 +38,7 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
     this.errorCodes = new ErrorCodes();
   }
 
+  @Override
   public void render(HttpServletRequest request, HttpServletResponse response, Handler handler)
       throws Exception {
     Throwable thrown = (Throwable) request.getAttribute(exceptionName);

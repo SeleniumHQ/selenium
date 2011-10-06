@@ -48,7 +48,7 @@ public class RegistryStateTest {
 
 
   @Test
-  public void sessionIsRemoved() throws InterruptedException {
+  public void sessionIsRemoved() {
     Registry registry = Registry.newInstance();
 
     RemoteProxy p1 = new RemoteProxy(req, registry);
@@ -69,7 +69,7 @@ public class RegistryStateTest {
   }
 
   @Test(timeout = 5000)
-  public void basichecks() throws InterruptedException {
+  public void basichecks() {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = new RemoteProxy(req, registry);
 
@@ -98,7 +98,7 @@ public class RegistryStateTest {
   }
 
   @Test(timeout = 4000)
-  public void sessionIsRemoved2() throws InterruptedException {
+  public void sessionIsRemoved2() {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = new RemoteProxy(req, registry);
 
@@ -117,7 +117,7 @@ public class RegistryStateTest {
   }
 
   @Test(timeout = 4000)
-  public void sessionByExtKey() throws InterruptedException {
+  public void sessionByExtKey() {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = new RemoteProxy(req, registry);
 

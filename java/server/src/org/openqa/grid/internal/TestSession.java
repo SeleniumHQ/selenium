@@ -424,7 +424,7 @@ public class TestSession {
    *
    * @return true is the remote replied successfully to the request.
    */
-  public boolean sendSelenium1TestComplete(TestSession session) throws IOException {
+  public boolean sendSelenium1TestComplete(TestSession session) {
     URL url = slot.getProxy().getRemoteURL();
     BasicHttpRequest req =
         new BasicHttpRequest("POST", url.toExternalForm() + "/?cmd=testComplete&sessionId=" +

@@ -49,7 +49,7 @@ public class TimeoutWebDriver {
   }
 
   @Test
-  public void testOk() throws MalformedURLException, InterruptedException {
+  public void testOk() throws MalformedURLException {
     DesiredCapabilities ff = DesiredCapabilities.firefox();
     WebDriver driver = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
     Assert.assertTrue(hub.getRegistry().getActiveSessions().size() == 1);

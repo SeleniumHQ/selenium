@@ -28,6 +28,7 @@ public class CaptureNetworkTrafficCommand extends Command {
     this.type = type;
   }
 
+  @Override
   public String execute() {
     StringBuilder sb = new StringBuilder();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");

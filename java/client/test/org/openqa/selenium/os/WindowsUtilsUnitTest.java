@@ -28,6 +28,7 @@ public class WindowsUtilsUnitTest extends TestCase {
   private int minorVersion;
   private Pattern WIN_OS_VERSION = Pattern.compile("^(\\d)+\\.(\\d)+$");
 
+  @Override
   public void setUp() {
     if (!WindowsUtils.thisIsWindows()) return;
     String osVersion = System.getProperty("os.version");

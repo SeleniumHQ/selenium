@@ -34,6 +34,7 @@ public class ResourceServlet extends HttpServlet {
 
   private static final long serialVersionUID = 7253742807937667039L;
 
+  @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     process(request, response);

@@ -34,7 +34,7 @@ import java.lang.reflect.Proxy;
 
 public class LocatingElementHandlerTest extends MockTestBase {
   @Test
-  public void shouldAlwaysLocateTheElementPerCall() throws NoSuchFieldException {
+  public void shouldAlwaysLocateTheElementPerCall() {
     final ElementLocator locator = mock(ElementLocator.class);
     final WebElement element = mock(WebElement.class);
 

@@ -40,7 +40,6 @@ import org.openqa.selenium.io.Zip;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Driver;
 import java.util.List;
 import java.util.Map;
 

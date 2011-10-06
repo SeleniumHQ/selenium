@@ -314,7 +314,7 @@ public class ByChainedTest extends MockTestBase {
     // Place holder
   }
 
-  private interface AllElement extends WebElement, SearchContext {
+  private interface AllElement extends WebElement {
     // Place holder
   }
 }

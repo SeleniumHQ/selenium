@@ -20,12 +20,14 @@ public class StaticContentHandlerUnitTest extends TestCase {
   private StaticContentHandler handler;
   private boolean slowResourcesInitially;
 
+  @Override
   public void setUp() throws Exception {
     super.setUp();
     handler = new StaticContentHandler("", false);
     slowResourcesInitially = StaticContentHandler.getSlowResources();
   }
 
+  @Override
   public void tearDown() {
     StaticContentHandler.setSlowResources(slowResourcesInitially);
   }

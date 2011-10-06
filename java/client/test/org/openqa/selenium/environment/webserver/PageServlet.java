@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class PageServlet extends HttpServlet {
 
+  @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     try {

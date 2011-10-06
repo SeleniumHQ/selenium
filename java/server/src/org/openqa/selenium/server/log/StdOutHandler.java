@@ -20,7 +20,8 @@ public class StdOutHandler extends StreamHandler {
   }
 
 
-  public void publish(LogRecord record) {
+  @Override
+  public synchronized void publish(LogRecord record) {
     super.publish(record);
     flush();
   }

@@ -50,10 +50,12 @@ public class JUnitConditionRunner extends DefaultConditionRunner {
     super(selenium);
   }
 
+  @Override
   public void throwAssertionException(String message) {
     Assert.fail(message);
   }
 
+  @Override
   public void throwAssertionException(String message, Throwable cause) {
     String causeText = cause.getMessage();
     Assert.fail(message + (causeText == null ? "" : "; cause: " + causeText));

@@ -39,7 +39,7 @@ import java.util.List;
 
 public class LocatingElementListHandlerTest extends MockTestBase {
   @Test
-  public void shouldAlwaysLocateTheElementPerCall() throws NoSuchFieldException {
+  public void shouldAlwaysLocateTheElementPerCall() {
     final ElementLocator locator = mock(ElementLocator.class);
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");

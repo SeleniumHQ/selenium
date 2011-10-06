@@ -11,22 +11,27 @@ public class SingleBrowserLocatorUnitTest extends TestCase {
     final SingleBrowserLocator locator;
 
     locator = new SingleBrowserLocator() {
+      @Override
       protected String[] standardlauncherFilenames() {
         return new String[0];
       }
 
+      @Override
       protected String browserName() {
         return null;
       }
 
+      @Override
       protected String seleniumBrowserName() {
         return null;
       }
 
+      @Override
       protected String browserPathOverridePropertyName() {
         return null;
       }
 
+      @Override
       protected String[] usualLauncherLocations() {
         return new String[0];
       }
@@ -40,22 +45,27 @@ public class SingleBrowserLocatorUnitTest extends TestCase {
 
     locator = new SingleBrowserLocator() {
 
+      @Override
       protected String[] standardlauncherFilenames() {
         return new String[] {"a-single-browser"};
       }
 
+      @Override
       protected String browserName() {
         return null;
       }
 
+      @Override
       protected String seleniumBrowserName() {
         return null;
       }
 
+      @Override
       protected String browserPathOverridePropertyName() {
         return null;
       }
 
+      @Override
       protected String[] usualLauncherLocations() {
         return new String[0];
       }
@@ -69,22 +79,27 @@ public class SingleBrowserLocatorUnitTest extends TestCase {
 
     locator = new SingleBrowserLocator() {
 
+      @Override
       protected String[] standardlauncherFilenames() {
         return new String[] {"a-browser", "another-one"};
       }
 
+      @Override
       protected String browserName() {
         return null;
       }
 
+      @Override
       protected String seleniumBrowserName() {
         return null;
       }
 
+      @Override
       protected String browserPathOverridePropertyName() {
         return null;
       }
 
+      @Override
       protected String[] usualLauncherLocations() {
         return new String[0];
       }

@@ -37,5 +37,6 @@ public abstract class PerSessionLogHandler extends java.util.logging.Handler {
 
   public abstract String getLog(String sessionId) throws IOException;
 
+  @Override
   public abstract void publish(LogRecord record);
 }

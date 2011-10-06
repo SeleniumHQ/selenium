@@ -9,8 +9,7 @@ import junit.framework.TestCase;
 
 public class BrowserSessionFactoryFunctionalTest extends TestCase {
 
-  public void testBrowserIsAutomaticallyCloseWhenTimingOutOnBrowserLaunch()
-      throws RemoteCommandException {
+  public void testBrowserIsAutomaticallyCloseWhenTimingOutOnBrowserLaunch() {
     final BrowserSessionFactory factory;
     final RemoteControlConfiguration configuration;
     final Capabilities options = BrowserOptions.newBrowserOptions();

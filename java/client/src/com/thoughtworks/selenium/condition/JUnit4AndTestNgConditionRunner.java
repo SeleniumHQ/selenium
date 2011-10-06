@@ -50,11 +50,13 @@ public class JUnit4AndTestNgConditionRunner extends DefaultConditionRunner {
     super(selenium);
   }
 
+  @Override
   public void throwAssertionException(String message) {
     // same as Junit4's and TestNG's fail(..) methods.
     throw new AssertionError(message);
   }
 
+  @Override
   public void throwAssertionException(String message, Throwable cause) {
     // same as Junit4's and TestNG's fail(..) methods.
     throw new AssertionError(message + "; cause: " + cause.getMessage());

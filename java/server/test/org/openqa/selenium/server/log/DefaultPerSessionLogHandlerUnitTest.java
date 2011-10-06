@@ -122,6 +122,7 @@ public class DefaultPerSessionLogHandlerUnitTest extends TestCase {
 
   static class FormatterStub extends Formatter {
 
+    @Override
     public String format(LogRecord record) {
       return "[FORMATTED] " + record.getMessage();
     }

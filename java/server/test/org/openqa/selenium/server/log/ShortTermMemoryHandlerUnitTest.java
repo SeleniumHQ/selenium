@@ -152,6 +152,7 @@ public class ShortTermMemoryHandlerUnitTest extends TestCase {
     final Formatter formatter;
 
     formatter = new Formatter() {
+      @Override
       public String format(LogRecord record) {
         return "[FORMATTED] " + record.getMessage();
       }

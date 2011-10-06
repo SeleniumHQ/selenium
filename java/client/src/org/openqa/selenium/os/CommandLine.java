@@ -313,6 +313,7 @@ public class CommandLine {
     this.allInput = allInput;
   }
 
+  @Override
   public String toString() {
     StringBuilder buf = new StringBuilder();
     for (String s : commandAndArgs) {

@@ -72,10 +72,12 @@ public class SlowLoadableComponentTest extends TestCase {
       super(new SystemClock(), 1);
     }
 
+    @Override
     protected void load() {
       throw new RuntimeException("Should never be called");
     }
 
+    @Override
     protected void isLoaded() throws Error {
       // Does nothing
     }
@@ -91,10 +93,12 @@ public class SlowLoadableComponentTest extends TestCase {
       this.counts = counts;
     }
 
+    @Override
     protected void load() {
       // Does nothing
     }
 
+    @Override
     protected void isLoaded() throws Error {
       if (loopCount > counts) {
         throw new Error();
@@ -116,6 +120,7 @@ public class SlowLoadableComponentTest extends TestCase {
       super(clock, timeOutInSeconds, counts);
     }
 
+    @Override
     protected void load() {
       if (loadAlreadyCalled) {
         throw new Error();
@@ -134,10 +139,12 @@ public class SlowLoadableComponentTest extends TestCase {
       this.clock = clock;
     }
 
+    @Override
     protected void load() {
       // Does nothing
     }
 
+    @Override
     protected void isLoaded() throws Error {
       // Cheat and increment the clock here, because otherwise it's hard to
       // get to.
@@ -152,14 +159,17 @@ public class SlowLoadableComponentTest extends TestCase {
       super(new FakeClock(), 1000);
     }
 
+    @Override
     protected void load() {
       // does nothing
     }
 
+    @Override
     protected void isLoaded() throws Error {
       fail();
     }
 
+    @Override
     protected void isError() throws Error {
       throw new CustomError();
     }

@@ -69,6 +69,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
   protected void init() {
   }
 
+  @Override
   protected void launch(String url) {
     try {
 

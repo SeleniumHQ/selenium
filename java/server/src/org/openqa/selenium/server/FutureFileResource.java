@@ -137,6 +137,7 @@ public class FutureFileResource extends URLResource {
   }
 
   /* -------------------------------------------------------- */
+  @Override
   public Resource addPath(String path)
       throws IOException, MalformedURLException {
     FutureFileResource r = null;
@@ -168,6 +169,7 @@ public class FutureFileResource extends URLResource {
 
 
   /* ------------------------------------------------------------ */
+  @Override
   public URL getAlias() {
     if (__checkAliases && !_aliasChecked) {
       try {
@@ -196,6 +198,7 @@ public class FutureFileResource extends URLResource {
   /**
    * Returns true if the resource exists.
    */
+  @Override
   public boolean exists() {
     return _file.exists();
   }
@@ -205,6 +208,7 @@ public class FutureFileResource extends URLResource {
   /**
    * Returns the lastModified time, which is always in the distant future to prevent caching.
    */
+  @Override
   public long lastModified() {
     return System.currentTimeMillis() + (1000l * 3600l * 24l * 365l * 12l);
   }
@@ -214,6 +218,7 @@ public class FutureFileResource extends URLResource {
   /**
    * Returns true if the respresenetd resource is a container/directory.
    */
+  @Override
   public boolean isDirectory() {
     return _file.isDirectory();
   }
@@ -223,6 +228,7 @@ public class FutureFileResource extends URLResource {
   /**
    * Return the length of the resource
    */
+  @Override
   public long length() {
     return _file.length();
   }
@@ -233,6 +239,7 @@ public class FutureFileResource extends URLResource {
   /**
    * Returns the name of the resource
    */
+  @Override
   public String getName() {
     return _file.getAbsolutePath();
   }
@@ -242,6 +249,7 @@ public class FutureFileResource extends URLResource {
   /**
    * Returns an File representing the given resource or NULL if this is not possible.
    */
+  @Override
   public File getFile() {
     return _file;
   }
@@ -251,7 +259,8 @@ public class FutureFileResource extends URLResource {
   /**
    * Returns an input stream to the resource
    */
-  public InputStream getInputStream() throws IOException {
+  @Override
+  public synchronized InputStream getInputStream() throws IOException {
     return new FileInputStream(_file);
   }
 
@@ -260,6 +269,7 @@ public class FutureFileResource extends URLResource {
   /**
    * Returns an output stream to the resource
    */
+  @Override
   public OutputStream getOutputStream()
       throws java.io.IOException, SecurityException {
     return new FileOutputStream(_file);
@@ -270,6 +280,7 @@ public class FutureFileResource extends URLResource {
   /**
    * Deletes the given resource
    */
+  @Override
   public boolean delete()
       throws SecurityException {
     return _file.delete();
@@ -280,6 +291,7 @@ public class FutureFileResource extends URLResource {
   /**
    * Rename the given resource
    */
+  @Override
   public boolean renameTo(Resource dest)
       throws SecurityException {
     if (dest instanceof FutureFileResource) {
@@ -294,6 +306,7 @@ public class FutureFileResource extends URLResource {
   /**
    * Returns a list of resources contained in the given resource
    */
+  @Override
   public String[] list() {
     String[] list = _file.list();
     if (list == null)
@@ -314,6 +327,7 @@ public class FutureFileResource extends URLResource {
    * @param uri URI to encode.
    * @return The uri unchanged.
    */
+  @Override
   public String encode(String uri) {
     return uri;
   }
@@ -324,6 +338,7 @@ public class FutureFileResource extends URLResource {
    * @param o
    * @return
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o)
       return true;
@@ -340,6 +355,7 @@ public class FutureFileResource extends URLResource {
   /**
    * @return the hashcode.
    */
+  @Override
   public int hashCode() {
     return null == _file ? super.hashCode() : _file.hashCode();
   }

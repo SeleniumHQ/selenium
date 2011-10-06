@@ -30,6 +30,7 @@ public class ErrorJsonResult extends JsonResult {
     super(propertyName);
   }
 
+  @Override
   public void render(HttpServletRequest request, HttpServletResponse response, Handler handler)
       throws Exception {
     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

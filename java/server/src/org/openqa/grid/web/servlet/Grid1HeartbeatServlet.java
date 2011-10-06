@@ -41,6 +41,7 @@ public class Grid1HeartbeatServlet extends RegistryBasedServlet {
     super(registry);
   }
 
+  @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     response.setContentType("text/html");

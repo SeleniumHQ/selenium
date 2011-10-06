@@ -45,6 +45,7 @@ public class Text extends Condition {
     this.expectedText = expectedText;
   }
 
+  @Override
   public boolean isTrue(ConditionRunner.Context context) {
     if (null == locator) {
       return context.getSelenium().isTextPresent(expectedText);

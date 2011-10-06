@@ -14,8 +14,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.net.MalformedURLException;
-
 
 public class ConfigInheritanceTest {
   private Hub hub;
@@ -43,7 +41,7 @@ public class ConfigInheritanceTest {
   }
 
   @Test
-  public void test() throws MalformedURLException, InterruptedException {
+  public void test() {
 
     Assert.assertEquals(1, hub.getRegistry().getAllProxies().size());
     RemoteProxy p = hub.getRegistry().getAllProxies().iterator().next();

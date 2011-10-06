@@ -56,6 +56,7 @@ public class ExecuteSQL extends ResponseAwareWebDriverHandler implements JsonPar
         new ArgumentConverter(getKnownElements())));
   }
 
+  @Override
   public String toString() {
     return String.format("[execute SQL query: %s, %s, %s]", dbName, query, args);
   }

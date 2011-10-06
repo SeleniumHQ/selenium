@@ -20,6 +20,7 @@ public class BrowserResponseSequencerUnitTest extends TestCase {
     super(name);
   }
 
+  @Override
   public void setUp() {
     seq = new BrowserResponseSequencer(getName());
     numbers = Collections.synchronizedList( new ArrayList<Integer>());

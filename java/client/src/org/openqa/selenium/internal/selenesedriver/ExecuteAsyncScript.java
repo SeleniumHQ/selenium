@@ -59,16 +59,6 @@ public class ExecuteAsyncScript implements SeleneseFunction<Object> {
     return populateReturnValue(value);
   }
 
-  private String getArgumentValue(Object arg) {
-    if (arg == null) {
-      return null;
-    } else if (arg instanceof String) {
-      return String.format("'%s'", ((String) arg).replaceAll("'", "\\'"));
-    } else {
-      return String.valueOf(arg);
-    }
-  }
-
   private Object populateReturnValue(String value) {
     if ("__undefined__".equals(value)) {
       return null;

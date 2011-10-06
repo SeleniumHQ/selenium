@@ -36,6 +36,7 @@ public class I18nTest extends TestCase {
       this.launchServer = launchServer;
     }
 
+    @Override
     public void setUp() throws Exception {
       if (launchServer) {
         server = new SeleniumServer();
@@ -53,6 +54,7 @@ public class I18nTest extends TestCase {
       }
     }
 
+    @Override
     public void tearDown() throws Exception {
       sel.stop();
       if (launchServer) server.stop();

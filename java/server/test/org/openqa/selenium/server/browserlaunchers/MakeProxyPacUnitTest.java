@@ -23,11 +23,13 @@ public class MakeProxyPacUnitTest extends TestCase {
   private String httpProxyPort = null;
   private String httpNonProxyHosts = null;
 
+  @Override
   public void setUp() {
     parentDir = LauncherUtils.createCustomProfileDir("LauncherUtilsUnitTest");
     pacFile = new File(parentDir, "proxy.pac");
   }
 
+  @Override
   public void tearDown() {
     LauncherUtils.recursivelyDeleteDir(parentDir);
   }

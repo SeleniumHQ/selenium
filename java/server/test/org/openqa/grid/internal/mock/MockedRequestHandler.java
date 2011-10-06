@@ -37,6 +37,7 @@ public class MockedRequestHandler extends WebDriverRequestHandler {
   ;
 
 
+  @Override
   public void setSession(TestSession session) {
     super.setSession(session);
   }
@@ -45,10 +46,12 @@ public class MockedRequestHandler extends WebDriverRequestHandler {
     return super.getSession();
   }
 
+  @Override
   public void setDesiredCapabilities(Map<String, Object> desiredCapabilities) {
     super.setDesiredCapabilities(desiredCapabilities);
   }
 
+  @Override
   public void setRequestType(RequestType requestType) {
     super.setRequestType(requestType);
   }

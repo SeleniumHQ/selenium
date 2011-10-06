@@ -29,6 +29,7 @@ public class SingleTestSuiteResourceHandler extends ResourceHandler {
       "<html>\n<head>\n<title>{0} Suite</title>\n</head>\n<body>\n<table cellpadding=\"1\" cellspacing=\"1\" border=\"1\">\n<tbody>\n<tr><td><b>{0} Suite</b></td></tr>\n<tr><td><a href=\"{1}\">{0}</a></td></tr>\n</tbody>\n</table>\n</body>\n</html>";
 
   /** Handles the HTTP request and generates the suite table */
+  @Override
   public void handle(String pathInContext, String pathParams,
       HttpRequest request, HttpResponse response) throws HttpException,
       IOException {

@@ -65,7 +65,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     this.wpm = new WindowsProxyManager(true, sessionId, getPort(), getPort());
   }
 
-  protected void changeRegistrySettings() throws IOException {
+  protected void changeRegistrySettings() {
     wpm.changeRegistrySettings(browserConfigurationOptions);
   }
 
@@ -108,7 +108,6 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
   }
 
   public void close() {
-    Exception taskKillException = null;
     if (WindowsUtils.thisIsWindows()) {
       if (!browserConfigurationOptions.is("honorSystemProxy")) {
         restoreSystemProxy();
@@ -128,19 +127,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     }
     AsyncExecute.killProcess(process);
     if (customPACappropriate) {
-      try {
-        LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
-      } catch (RuntimeException e) {
-        if (taskKillException != null) {
-          log.log(Level.SEVERE, "Couldn't delete custom IE proxy directory", e);
-          log.log(Level.SEVERE, "Perhaps IE proxy delete error was caused by this exception",
-              taskKillException);
-          throw new RuntimeException("Couldn't delete custom IE " +
-              "proxy directory, presumably because task kill failed; " +
-              "see error log!", e);
-        }
-        throw e;
-      }
+      LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
     }
   }
 

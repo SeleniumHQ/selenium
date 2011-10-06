@@ -106,7 +106,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
+public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
     FindsByTagName, HasCapabilities, HasInputDevices {
 

@@ -47,10 +47,6 @@ public class TouchLongPressTest extends MockTestBase {
   private Locatable locatableElement;
   private Coordinates dummyCoordinates;
 
-  private TouchActions getBuilder(WebDriver driver) {
-    return new TouchActions(driver);
-  }
-
   @Before
   public void setUp() {
     dummyTouch = mock(TouchScreen.class);

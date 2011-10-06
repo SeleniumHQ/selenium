@@ -20,18 +20,16 @@ package org.openqa.selenium.firefox.internal;
 import junit.framework.TestCase;
 import org.junit.Test;
 
-import java.io.IOException;
-
 public class StreamsTest extends TestCase {
 
   @Test
-  public void testStreamExtraction() throws IOException {
+  public void testStreamExtraction() {
     // InputStream stream = new ByteArrayInputStream("foo".getBytes());
     // assertEquals("foo", new String(Streams.drainStream(stream)));
   }
 
   @Test
-  public void testNullStreamIsQuiet() throws IOException {
+  public void testNullStreamIsQuiet() {
     assertNull(Streams.drainStream(null));
   }
 }

@@ -183,7 +183,7 @@ public class FluentWaitTest extends MockTestBase {
   }
 
   @Test
-  public void timeoutMessageIncludesLastIgnoredException() throws InterruptedException {
+  public void timeoutMessageIncludesLastIgnoredException() {
     final NoSuchWindowException exception = new NoSuchWindowException("");
 
     checking(new Expectations() {{

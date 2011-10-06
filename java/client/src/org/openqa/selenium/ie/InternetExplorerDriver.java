@@ -93,10 +93,12 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
     startSession(capabilities);
   }
 
+  @Override
   protected void startClient() {
     server.start();
   }
 
+  @Override
   protected void stopClient() {
     if (server != null) {
       server.stop();
@@ -110,12 +112,8 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
 
     // Because of the way that the proxying is currently implemented,
     // we can only set a single host.
-    try {
-      proxyManager.backupRegistrySettings();
-      proxyManager.changeRegistrySettings(caps);
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
+    proxyManager.backupRegistrySettings();
+    proxyManager.changeRegistrySettings(caps);
 
     Thread cleanupThread = new Thread() { // Thread safety reviewed
       @Override

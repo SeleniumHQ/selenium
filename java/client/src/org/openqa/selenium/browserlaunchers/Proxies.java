@@ -32,7 +32,6 @@ import org.openqa.selenium.remote.CapabilityType.ForSeleniumServer;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -52,8 +51,7 @@ public class Proxies {
    * If proxySeleniumTrafficOnly is true, then the proxy applies only to URLs containing
    * "/selenium-server/". Otherwise the proxy applies to all URLs.
    */
-  public static File makeProxyPAC(File parentDir, int port, Capabilities capabilities)
-      throws FileNotFoundException {
+  public static File makeProxyPAC(File parentDir, int port, Capabilities capabilities) {
     return makeProxyPAC(parentDir, port,
         System.getProperty("http.proxyHost"),
         System.getProperty("http.proxyPort"),
@@ -61,8 +59,7 @@ public class Proxies {
   }
 
   public static File makeProxyPAC(File parentDir, int port, String configuredProxy,
-      String proxyPort, String nonProxyHosts, Capabilities capabilities)
-      throws FileNotFoundException {
+      String proxyPort, String nonProxyHosts, Capabilities capabilities) {
     DoNotUseProxyPac pac =
         newProxyPac(port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
 

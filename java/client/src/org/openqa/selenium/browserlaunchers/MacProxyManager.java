@@ -19,7 +19,6 @@ package org.openqa.selenium.browserlaunchers;
 import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -77,7 +76,7 @@ public class MacProxyManager {
   }
 
   /** change the network settings to enable use of our proxy */
-  public void changeNetworkSettings() throws IOException {
+  public void changeNetworkSettings() {
     if (networkService == null) {
       getCurrentNetworkSettings();
     }
@@ -346,7 +345,7 @@ public class MacProxyManager {
    * 
    * @see Preferences
    * */
-  public void backupNetworkSettings() throws IOException {
+  public void backupNetworkSettings() {
     // Don't clobber our old backup if we
     // never got the chance to restore for some reason
     if (backupIsReady()) return;

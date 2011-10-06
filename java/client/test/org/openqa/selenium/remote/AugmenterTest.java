@@ -41,7 +41,6 @@ import org.openqa.selenium.WebElement;
 
 import org.junit.Test;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -148,7 +147,7 @@ public class AugmenterTest {
   }
 
   @Test
-  public void shouldAllowReflexiveCalls() throws IOException {
+  public void shouldAllowReflexiveCalls() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
     StubExecutor executor = new StubExecutor(caps);
@@ -283,6 +282,7 @@ public class AugmenterTest {
       return caps;
     }
 
+    @Override
     public WebElement findElementById(String id) {
       throw new NoSuchElementException("Boom");
     }

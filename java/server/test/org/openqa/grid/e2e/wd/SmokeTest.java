@@ -40,7 +40,7 @@ public class SmokeTest {
   }
 
   @Test
-  public void test() throws MalformedURLException, InterruptedException {
+  public void test() throws MalformedURLException {
     WebDriver driver = null;
     try {
       DesiredCapabilities ff = DesiredCapabilities.firefox();

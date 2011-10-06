@@ -35,7 +35,6 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -104,7 +103,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
     return current;
   }
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) {
     new SeleniumTestEnvironment(4444);
   }
 

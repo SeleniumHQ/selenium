@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 public class HtmlIdentifierTest extends TestCase {
 
+  @Override
   public void setUp() throws Exception {
     LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
   }

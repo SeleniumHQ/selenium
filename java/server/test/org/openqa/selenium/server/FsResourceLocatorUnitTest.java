@@ -13,6 +13,7 @@ public class FsResourceLocatorUnitTest extends TestCase {
 
   private HttpContext context;
 
+  @Override
   public void setUp() throws Exception {
     super.setUp();
     tempFile = File.createTempFile("selenium-test-", "");

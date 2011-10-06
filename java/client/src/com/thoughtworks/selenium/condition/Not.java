@@ -29,6 +29,7 @@ public class Not extends Condition {
     this.positiveCondition = positiveCondition;
   }
 
+  @Override
   public boolean isTrue(ConditionRunner.Context context) {
     return !positiveCondition.isTrue(context);
   }

@@ -32,7 +32,6 @@ import static org.hamcrest.Matchers.equalTo;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 @Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends AbstractDriverTestCase {

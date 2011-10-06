@@ -11,6 +11,7 @@ public class Firefox3LocatorUnitTest extends TestCase {
     final Firefox3Locator locator;
 
     locator = new Firefox3Locator() {
+      @Override
       protected boolean runningOnWindows() {
         return true;
       }
@@ -26,6 +27,7 @@ public class Firefox3LocatorUnitTest extends TestCase {
     final Firefox3Locator locator;
 
     locator = new Firefox3Locator() {
+      @Override
       protected boolean runningOnWindows() {
         return false;
       }
@@ -45,6 +47,7 @@ public class Firefox3LocatorUnitTest extends TestCase {
     final Firefox3Locator locator;
 
     locator = new Firefox3Locator() {
+      @Override
       protected boolean runningOnWindows() {
         return false;
       }

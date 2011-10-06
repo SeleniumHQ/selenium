@@ -31,6 +31,7 @@ public class Presence extends Condition {
     this.locator = locator;
   }
 
+  @Override
   public boolean isTrue(ConditionRunner.Context context) {
     return context.getSelenium().isElementPresent(locator);
   }

@@ -25,6 +25,7 @@ public class SeleniumCoreCommand extends Command {
     this.sessionId = sessionId;
   }
 
+  @Override
   public String execute() {
     final FrameGroupCommandQueueSet queue;
     final String response;

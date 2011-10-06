@@ -123,6 +123,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
   static final Pattern JAVA_STYLE_UNC_URL = Pattern.compile("^file:////([^/]+/.*)$");
   static final Pattern JAVA_STYLE_LOCAL_URL = Pattern.compile("^file:/([A-Z]:/.*)$");
 
+  @Override
   protected void launch(String url) {
     try {
       File opera6ini = makeCustomProfile();

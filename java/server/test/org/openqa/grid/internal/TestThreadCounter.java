@@ -43,6 +43,7 @@ public class TestThreadCounter {
       this.target = target;
     }
 
+    @Override
     public void run() {
       started.incrementAndGet();
       try {
@@ -56,7 +57,7 @@ public class TestThreadCounter {
     }
   }
 
-  public void waitUntilDone(int done) throws InterruptedException {
+  public void waitUntilDone(int done) {
     int i = 0;
     while (done != completed.get() && i++ < 20){
       if (i > 20) throw new RuntimeException("Time out waiting for completion");
@@ -69,7 +70,7 @@ public class TestThreadCounter {
   }
 
 
-  public void waitUntilStarted(int num) throws InterruptedException {
+  public void waitUntilStarted(int num) {
     int i = 0;
     while (num != started.get() && i++ < 20){
       if (i > 20) throw new RuntimeException("Time out waiting for completion");

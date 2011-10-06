@@ -18,10 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 
-public class FirefoxWebElement extends RemoteWebElement implements WebElement {
+public class FirefoxWebElement extends RemoteWebElement {
 
   public FirefoxWebElement(FirefoxDriver parent) {
     setParent(parent);

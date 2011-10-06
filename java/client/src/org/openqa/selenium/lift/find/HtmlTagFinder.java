@@ -34,10 +34,12 @@ import java.util.Collection;
  */
 public abstract class HtmlTagFinder extends BaseFinder<WebElement, WebDriver> {
 
+  @Override
   protected Collection<WebElement> extractFrom(WebDriver context) {
     return context.findElements(By.xpath("//" + tagName()));
   }
 
+  @Override
   protected void describeTargetTo(Description description) {
     description.appendText(tagDescription());
   }

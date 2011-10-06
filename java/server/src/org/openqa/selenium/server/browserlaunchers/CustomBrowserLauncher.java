@@ -54,6 +54,7 @@ public class CustomBrowserLauncher extends AbstractBrowserLauncher {
     return process;
   }
 
+  @Override
   protected void launch(String url) {
     exec(commandPath + " " + url);
   }

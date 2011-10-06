@@ -28,6 +28,7 @@ public class HttpCommandProcessorUnitTest extends TestCase {
     final HttpCommandProcessor processor;
 
     processor = new HttpCommandProcessor("a Server", 1234, "", "a url") {
+      @Override
       public String doCommand(String commandName, String[] args) {
         assertEquals("testComplete", commandName);
         assertNull(args);
@@ -112,6 +113,7 @@ public class HttpCommandProcessorUnitTest extends TestCase {
       super(pathToServlet, browserStartCommand, browserURL);
     }
 
+    @Override
     protected HttpURLConnection getHttpUrlConnection(URL urlForServlet)
         throws IOException {
       if (throwIoeOnGetConnection) {
@@ -121,6 +123,7 @@ public class HttpCommandProcessorUnitTest extends TestCase {
       }
     }
 
+    @Override
     protected Writer getOutputStreamWriter(HttpURLConnection conn)
         throws IOException {
       if (throwIoeOnGetOutputStream) {
@@ -130,6 +133,7 @@ public class HttpCommandProcessorUnitTest extends TestCase {
       }
     }
 
+    @Override
     protected Reader getInputStreamReader(HttpURLConnection conn)
         throws IOException {
       if (throwIoeOnGetInputStream) {
@@ -139,11 +143,13 @@ public class HttpCommandProcessorUnitTest extends TestCase {
       }
     }
 
+    @Override
     protected int getResponseCode(HttpURLConnection conn)
         throws IOException {
       return HttpURLConnection.HTTP_OK;
     }
 
+    @Override
     protected void closeResources(HttpURLConnection conn, Writer wr,
         Reader rdr) {
       closedConn = conn;

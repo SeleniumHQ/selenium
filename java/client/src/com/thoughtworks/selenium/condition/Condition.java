@@ -114,6 +114,7 @@ public abstract class Condition {
     return toString();
   }
 
+  @Override
   public String toString() {
     return "Condition \"" + this.message + "\"";
   }

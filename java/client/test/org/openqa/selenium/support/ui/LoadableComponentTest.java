@@ -49,10 +49,12 @@ public class LoadableComponentTest extends TestCase {
 
   private static class DetonatingComponent extends LoadableComponent<DetonatingComponent> {
 
+    @Override
     protected void load() {
       throw new RuntimeException("I should never be called");
     }
 
+    @Override
     protected void isLoaded() throws Error {
       // Do nothing
     }
@@ -67,10 +69,12 @@ public class LoadableComponentTest extends TestCase {
       this.secondLoadCallPasses = secondLoadCallPasses;
     }
 
+    @Override
     protected void load() {
       loadCalled = true;
     }
 
+    @Override
     protected void isLoaded() throws Error {
       if (!callOfLoadMethodForced) {
         callOfLoadMethodForced = true;

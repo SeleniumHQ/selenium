@@ -29,6 +29,7 @@ public class SleepingServlet extends HttpServlet {
   private static final String RESPONSE_STRING_FORMAT =
       "<html><head><title>Done</title></head><body>Slept for %ss</body></html>";
 
+  @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     String duration = request.getParameter("time");

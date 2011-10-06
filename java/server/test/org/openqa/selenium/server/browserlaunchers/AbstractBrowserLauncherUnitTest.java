@@ -18,6 +18,7 @@ public class AbstractBrowserLauncherUnitTest extends TestCase {
     browserOptions = BrowserOptions.newBrowserOptions();
     AbstractBrowserLauncher launcher =
         new AbstractBrowserLauncher(null, theConfiguration, browserOptions) {
+          @Override
           protected void launch(String url) {
             throw new UnsupportedOperationException("Should never be called");
           }

@@ -9,7 +9,6 @@ import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -404,15 +403,10 @@ public class LauncherUtilsUnitTest extends TestCase {
     if (proxyPacFile.exists()) {
       proxyPacFile.delete();
     }
-    try {
-      DesiredCapabilities capabilities = new DesiredCapabilities();
-      capabilities.setCapability(AVOIDING_PROXY, avoidProxy);
-      capabilities.setCapability(ONLY_PROXYING_SELENIUM_TRAFFIC, proxySeleniumTrafficOnly);
-      Proxies
-          .makeProxyPAC(parentDir, port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
-    } catch (FileNotFoundException e) {
-      fail();
-    }
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setCapability(AVOIDING_PROXY, avoidProxy);
+    capabilities.setCapability(ONLY_PROXYING_SELENIUM_TRAFFIC, proxySeleniumTrafficOnly);
+    Proxies.makeProxyPAC(parentDir, port, configuredProxy, proxyPort, nonProxyHosts, capabilities);
     String actualContent = getFileContent(proxyPacPath);
     assertNotNull(actualContent);
     if (!"".equals(expectedProxyPac)) {

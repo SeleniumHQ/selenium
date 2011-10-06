@@ -327,6 +327,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("{\"id\":null}", payload);
   }
 
+  @SuppressWarnings("unused")
   private static class SimpleBean {
 
     public String getFoo() {
@@ -351,7 +352,7 @@ public class BeanToJsonConverterTest extends TestCase {
 
   private static class BeanWithCollection {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unused")
     public Set getSomething() {
       Set<Integer> integers = new HashSet<Integer>();
       integers.add(1);
@@ -362,7 +363,7 @@ public class BeanToJsonConverterTest extends TestCase {
 
   private static class BeanWithNullCollection {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unused")
     public List getList() {
       return null;
     }
@@ -378,11 +379,13 @@ public class BeanToJsonConverterTest extends TestCase {
   public static enum WithMethods {
 
     CHEESE() {
+      @Override
       public void eat(String foodStuff) {
         // Does nothing
       }
     },
     EGGS() {
+      @Override
       public void eat(String foodStuff) {
         // Does nothing too
       }

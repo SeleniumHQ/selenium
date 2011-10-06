@@ -82,6 +82,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
   }
 
+  @Override
   protected void launch(String url) {
     try {
       if (!browserConfigurationOptions.is("honorSystemProxy")) {
@@ -98,7 +99,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     }
   }
 
-  protected void launchSafari(String url) throws IOException {
+  protected void launchSafari(String url) {
     cmdarray = new String[] {browserInstallation.launcherFilePath()};
     if (Platform.getCurrent().is(MAC)) {
       final String redirectHtmlFileName;
@@ -245,7 +246,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     }
   }
 
-  protected void changeRegistrySettings() throws IOException {
+  protected void changeRegistrySettings() {
     wpm.changeRegistrySettings(browserConfigurationOptions);
   }
 

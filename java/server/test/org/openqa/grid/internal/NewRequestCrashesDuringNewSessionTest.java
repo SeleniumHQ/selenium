@@ -35,7 +35,7 @@ public class NewRequestCrashesDuringNewSessionTest {
    * check the normal scenario works
    */
   @Test(timeout = 1000)
-  public void basic() throws InterruptedException {
+  public void basic() {
     // should work
     MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, ff);
     newSessionRequest.process();

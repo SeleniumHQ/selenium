@@ -29,7 +29,6 @@ import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
@@ -41,7 +40,7 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 
-public class NewProfileExtensionConnection implements CommandExecutor, ExtensionConnection {
+public class NewProfileExtensionConnection implements ExtensionConnection {
   private final static int BUFFER_SIZE = 4096;
 
   private static final NetworkUtils networkUtils = new NetworkUtils();
@@ -123,7 +122,7 @@ public class NewProfileExtensionConnection implements CommandExecutor, Extension
     return delegate.execute(command);
   }
 
-  protected int determineNextFreePort(int port) throws IOException {
+  protected int determineNextFreePort(int port) {
     // Attempt to connect to the given port on the host
     // If we can't connect, then we're good to use it
     int newport;

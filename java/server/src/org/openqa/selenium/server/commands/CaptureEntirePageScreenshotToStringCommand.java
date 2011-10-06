@@ -42,6 +42,7 @@ public class CaptureEntirePageScreenshotToStringCommand extends Command {
    * 
    * @return a base 64 encoded PNG screenshot of of current page.
    */
+  @Override
   public String execute() {
     final String filePath;
     final byte[] encodedData;

@@ -7,7 +7,7 @@ import org.openqa.selenium.internal.Locatable;
 /**
  * Stub rendered web element.
  */
-public class StubRenderedWebElement extends StubElement implements Locatable, WebElement {
+public class StubRenderedWebElement extends StubElement implements Locatable {
 
   public Point getLocationOnScreenOnceScrolledIntoView() {
     return null;

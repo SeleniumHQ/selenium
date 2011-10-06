@@ -62,26 +62,32 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          @Override
           public void beforeNavigateTo(String url, WebDriver driver) {
             log.append("beforeNavigateTo ").append(url).append("\n");
           }
 
+          @Override
           public void afterNavigateTo(String url, WebDriver driver) {
             log.append("afterNavigateTo ").append(url).append("\n");
           }
 
+          @Override
           public void beforeNavigateBack(WebDriver driver) {
             log.append("beforeNavigateBack\n");
           }
 
+          @Override
           public void afterNavigateBack(WebDriver driver) {
             log.append("afterNavigateBack\n");
           }
 
+          @Override
           public void beforeNavigateForward(WebDriver driver) {
             log.append("beforeNavigateForward\n");
           }
 
+          @Override
           public void afterNavigateForward(WebDriver driver) {
             log.append("afterNavigateForward\n");
           }
@@ -118,10 +124,12 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          @Override
           public void beforeClickOn(WebElement element, WebDriver driver) {
             log.append("beforeClickOn\n");
           }
 
+          @Override
           public void afterClickOn(WebElement element, WebDriver driver) {
             log.append("afterClickOn\n");
           }
@@ -151,10 +159,12 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          @Override
           public void beforeChangeValueOf(WebElement element, WebDriver driver) {
             log.append("beforeChangeValueOf\n");
           }
 
+          @Override
           public void afterChangeValueOf(WebElement element, WebDriver driver) {
             log.append("afterChangeValueOf\n");
           }
@@ -188,11 +198,13 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          @Override
           public void beforeFindBy(By by, WebElement element, WebDriver driver) {
             log.append("beforeFindBy from ").append(element == null ? "WebDriver" : "WebElement")
                 .append(" ").append(by).append("\n");
           }
 
+          @Override
           public void afterFindBy(By by, WebElement element, WebDriver driver) {
             log.append("afterFindBy from ").append(element == null ? "WebDriver" : "WebElement")
                 .append(" ").append(by).append("\n");
@@ -230,6 +242,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          @Override
           public void onException(Throwable throwable, WebDriver driver) {
             log.append(throwable.getMessage());
           }
@@ -331,6 +344,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
         // Do nothing
       }
 
+      @SuppressWarnings("unused")
       public void fishy() {
       }
 

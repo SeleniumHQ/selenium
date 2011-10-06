@@ -15,7 +15,6 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 
 import java.io.File;
-import java.io.IOException;
 
 @SuppressWarnings({"UnusedDeclaration"})
 public class SeleniumServerStarter extends TestSetup {
@@ -52,7 +51,7 @@ public class SeleniumServerStarter extends TestSetup {
   }
 
   @SuppressWarnings({"UseOfSystemOutOrSystemErr"})
-  private String startSeleniumServer(File seleniumJar) throws IOException {
+  private String startSeleniumServer(File seleniumJar) {
 
     final String port = getPortString();
     command = new CommandLine("java", "-jar", seleniumJar.getAbsolutePath(), "-port", port);

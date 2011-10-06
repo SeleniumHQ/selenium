@@ -60,6 +60,7 @@ public class HtmlIdentifier {
                                                                            // containing <html>
                                                                            // fragments
     rules.add(new Rule("dojo catcher", -100000, 0) {
+      @Override
       public int score(String path, String contentType, String contentPreview) {
 
         if (path == null) {
@@ -105,6 +106,7 @@ public class HtmlIdentifier {
 
     abstract int score(String path, String contentType, String contentPreview);
 
+    @Override
     public String toString() {
       return "[" + name + " rule: match=" + score +
           (missingScore == 0 ? "" : (", failure to match -> " + missingScore))
@@ -128,6 +130,7 @@ public class HtmlIdentifier {
       name = "extension " + exts;
     }
 
+    @Override
     public int score(String path, String contentType, String contentPreview) {
       if (path == null || !path.contains(".")) {
         return 0;
@@ -151,6 +154,7 @@ public class HtmlIdentifier {
       this.contentInLowerCase = content.toLowerCase();
     }
 
+    @Override
     public int score(String path, String contentType, String contentPreview) {
       if (contentPreview == null) {
         return 0;
@@ -171,6 +175,7 @@ public class HtmlIdentifier {
       this.type = type;
     }
 
+    @Override
     public int score(String path, String contentType, String contentPreview) {
       if (contentType == null) {
         return 0;

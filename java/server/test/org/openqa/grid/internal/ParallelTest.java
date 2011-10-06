@@ -48,7 +48,7 @@ public class ParallelTest {
   }
 
   @Test
-  public void canGetApp2() throws InterruptedException {
+  public void canGetApp2() {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = new RemoteProxy(req, registry);
     try {
@@ -191,7 +191,7 @@ public class ParallelTest {
   }
 
   @Test(timeout = 10000)
-  public void releaseAndReserve() throws InterruptedException {
+  public void releaseAndReserve() {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = null;
     RegistrationRequest req = null;

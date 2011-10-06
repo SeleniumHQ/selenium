@@ -151,7 +151,7 @@ public class WindowsProxyManager {
     REG_KEY_BASE = base;
   }
 
-  public void changeRegistrySettings(Capabilities options) throws IOException {
+  public void changeRegistrySettings(Capabilities options) {
     log.info("Modifying registry settings...");
     HudsuckrSettings settings;
     if (oldSettings == null) {

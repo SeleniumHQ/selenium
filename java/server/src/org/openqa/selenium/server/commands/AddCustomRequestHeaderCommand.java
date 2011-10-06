@@ -14,6 +14,7 @@ public class AddCustomRequestHeaderCommand extends Command {
     this.value = value;
   }
 
+  @Override
   public String execute() {
     headers.put(key, value);
 

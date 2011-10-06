@@ -1,6 +1,5 @@
 package org.openqa.selenium.io;
 
-import com.google.common.base.Preconditions;
 import com.google.common.io.Closeables;
 
 import org.openqa.selenium.internal.Base64Encoder;

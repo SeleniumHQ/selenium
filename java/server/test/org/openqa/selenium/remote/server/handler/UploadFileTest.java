@@ -21,7 +21,6 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 
-import org.apache.http.annotation.Immutable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,13 +32,11 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DefaultSession;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.StubDriverFactory;
-import org.testng.collections.Maps;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 

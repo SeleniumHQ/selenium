@@ -26,6 +26,7 @@ public class StaticContentHandler extends ResourceHandler {
     this.proxyInjectionMode = proxyInjectionMode;
   }
 
+  @Override
   public void handle(String pathInContext, String pathParams, HttpRequest httpRequest,
       HttpResponse httpResponse)
       throws IOException {
@@ -78,6 +79,7 @@ public class StaticContentHandler extends ResourceHandler {
   }
 
 
+  @Override
   protected Resource getResource(final String pathInContext) throws IOException {
     delayIfNeed(pathInContext);
     // DGF go through the resource locators in reverse order, to prefer the classpath locator last
@@ -112,6 +114,7 @@ public class StaticContentHandler extends ResourceHandler {
     resourceLocators.add(locator);
   }
 
+  @Override
   public void sendData(HttpRequest request,
       HttpResponse response,
       String pathInContext,

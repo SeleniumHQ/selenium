@@ -2,15 +2,14 @@ package com.thoughtworks.selenium.thirdparty;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.SkipException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class DomainTourTest extends InternalSelenseTestBase
 {
-  @Test(dataProvider = "siteList")
+  @Test(dataProvider = "siteList", enabled = false)
+  //Disabled because this test is too long
   public void testOpenThirdPartySite(String site) throws Throwable {
-    if (true) throw new SkipException("This test is too long!");
     selenium.open(site);
   }
 

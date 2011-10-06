@@ -10,6 +10,7 @@ public class WaitTest extends TestCase {
   private long now;
   private int tries = 0;
 
+  @Override
   public void setUp() {
     now = System.currentTimeMillis();
   }
@@ -17,6 +18,7 @@ public class WaitTest extends TestCase {
   public void testUntil() {
     finished = now + 500l;
     new Wait() {
+      @Override
       public boolean until() {
         tries++;
         return System.currentTimeMillis() > finished;
@@ -29,6 +31,7 @@ public class WaitTest extends TestCase {
   public void testUntilWithWaitTakingString() {
     finished = now + 500l;
     new Wait("a message to be shown if wait times out") {
+      @Override
       public boolean until() {
         tries++;
         return System.currentTimeMillis() > finished;
@@ -41,6 +44,7 @@ public class WaitTest extends TestCase {
     finished = now + 5000l;
     try {
       new Wait() {
+        @Override
         public boolean until() {
           tries++;
           return System.currentTimeMillis() > finished;

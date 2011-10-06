@@ -27,9 +27,6 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
 public class ClickTest extends AbstractDriverTestCase {
   @Override
   protected void setUp() throws Exception {

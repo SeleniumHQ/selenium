@@ -101,7 +101,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     }
   }
 
-  private void populateCustomProfileDirectory(String profilePath) throws IOException {
+  private void populateCustomProfileDirectory(String profilePath) {
     /*
      * The first time we launch Firefox with an empty profile directory, Firefox will launch itself,
      * populate the profile directory, then kill/relaunch itself, so our process handle goes out of

@@ -87,6 +87,7 @@ public class ConditionTest extends TestCase {
     final int[] time = new int[1];
     JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 2000);
     conditionRunner1.waitFor(new Condition() {
+      @Override
       public boolean isTrue(ConditionRunner.Context runner) {
         return time[0]++ >= 12;
       }
@@ -102,6 +103,7 @@ public class ConditionTest extends TestCase {
     JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 5000);
     try {
       conditionRunner1.waitFor(new Condition() {
+        @Override
         public boolean isTrue(ConditionRunner.Context runner) {
           return time[0]++ == 52;
         }
@@ -126,6 +128,7 @@ public class ConditionTest extends TestCase {
     JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 5000);
     try {
       conditionRunner1.waitFor(new Condition() {
+        @Override
         public boolean isTrue(ConditionRunner.Context runner) {
           throw new SeleniumException("Yeehaa!");
         }
@@ -145,6 +148,7 @@ public class ConditionTest extends TestCase {
   public void testRuntimeExceptionInsideConditionIsWrapped() {
     final RuntimeException thrownException = new RuntimeException("ooops");
     Condition condition = new Condition("foo") {
+      @Override
       public boolean isTrue(ConditionRunner.Context runner) {
         throw thrownException;
       }
@@ -160,6 +164,7 @@ public class ConditionTest extends TestCase {
 
   public void testAssertionFailureInsideConditionIsNotWrapped() {
     Condition condition = new Condition() {
+      @Override
       public boolean isTrue(ConditionRunner.Context runner) {
         assertTrue("OMG", false);
         return false;
@@ -177,6 +182,7 @@ public class ConditionTest extends TestCase {
   public void testMessageWithArgs() {
     final RuntimeException thrownException = new RuntimeException();
     Condition condition = new Condition("foo %s baz", "bar") {
+      @Override
       public boolean isTrue(ConditionRunner.Context runner) {
         throw thrownException;
       }
@@ -195,6 +201,7 @@ public class ConditionTest extends TestCase {
       super("Sky should be blue");
     }
 
+    @Override
     public boolean isTrue(ConditionRunner.Context context) {
       context.info("sky is in fact pink");
       return false;
@@ -206,6 +213,7 @@ public class ConditionTest extends TestCase {
       super("Sky should be blue");
     }
 
+    @Override
     public boolean isTrue(ConditionRunner.Context context) {
       context.info("yes it is really is blue");
       return true;

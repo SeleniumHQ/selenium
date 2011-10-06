@@ -64,6 +64,7 @@ public class Build {
       this.buildProcess = buildProcess;
     }
 
+    @Override
     public void run() {
       BufferedReader buildOutput = null;
       try {

@@ -24,22 +24,27 @@ import org.openqa.selenium.os.WindowsUtils;
  */
 public class GoogleChromeLocator extends SingleBrowserLocator {
 
+  @Override
   protected String browserName() {
     return "Google Chrome";
   }
 
+  @Override
   protected String seleniumBrowserName() {
     return "googlechrome";
   }
 
+  @Override
   protected String[] standardlauncherFilenames() {
     return new String[] {"chrome.exe", "google-chrome", "Google Chrome"};
   }
 
+  @Override
   protected String browserPathOverridePropertyName() {
     return "googleChromeDefaultPath";
   }
 
+  @Override
   protected String[] usualLauncherLocations() {
     return WindowsUtils.thisIsWindows() ? usualWindowsLauncherLocations() :
         usualUnixLauncherLocations();

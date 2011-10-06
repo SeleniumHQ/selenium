@@ -233,7 +233,7 @@ public class MockPIFrameUnitTest extends TestCase {
   /**
    * click, then wait for page to load, but frame1 may send close before sending OK result
    */
-  public void testEvilClickThenWaitRaceCondition() throws InterruptedException {
+  public void testEvilClickThenWaitRaceCondition() {
     MockPIFrame frame1 = startSession();
     BrowserRequest browserRequest = frame1.getMostRecentRequest();
 

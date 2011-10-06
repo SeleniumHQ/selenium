@@ -25,14 +25,17 @@ public class Firefox2Locator extends FirefoxLocator {
   };
 
 
+  @Override
   protected String browserName() {
     return "Firefox 2";
   }
 
+  @Override
   protected String seleniumBrowserName() {
     return "*firefox2";
   }
 
+  @Override
   protected String[] standardlauncherFilenames() {
     if (WindowsUtils.thisIsWindows()) {
       return new String[] {"firefox.exe"};
@@ -41,6 +44,7 @@ public class Firefox2Locator extends FirefoxLocator {
     }
   }
 
+  @Override
   protected String[] usualLauncherLocations() {
     return WindowsUtils.thisIsWindows()
         ? USUAL_WINDOWS_LAUNCHER_LOCATIONS

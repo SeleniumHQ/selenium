@@ -43,6 +43,7 @@ public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResults
     super(name);
   }
 
+  @Override
   public void setUp() throws Exception {
     output = new File(getName() + "-results.html");
     System.out.println("Will print results to " + output.getAbsolutePath());
@@ -65,6 +66,7 @@ public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResults
   }
 
 
+  @Override
   public void tearDown() throws Exception {
     if (server != null) server.stop();
   }

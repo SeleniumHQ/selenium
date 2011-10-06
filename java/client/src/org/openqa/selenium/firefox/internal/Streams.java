@@ -19,7 +19,6 @@ package org.openqa.selenium.firefox.internal;
 
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 public class Streams {
@@ -30,7 +29,7 @@ public class Streams {
    * @param stream the stream to drain
    * @return the contents of the drained stream
    */
-  public static String drainStream(OutputStream stream) throws IOException {
+  public static String drainStream(OutputStream stream) {
     if (stream == null) {
       return null;
     }

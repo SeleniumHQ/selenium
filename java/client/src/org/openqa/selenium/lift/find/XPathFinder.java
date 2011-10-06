@@ -37,10 +37,12 @@ public class XPathFinder extends BaseFinder<WebElement, WebDriver> {
     this.xpath = xpath;
   }
 
+  @Override
   protected Collection<WebElement> extractFrom(WebDriver context) {
     return context.findElements(By.xpath(xpath));
   }
 
+  @Override
   protected void describeTargetTo(Description description) {
     description.appendText("XPath ");
     description.appendText(xpath);

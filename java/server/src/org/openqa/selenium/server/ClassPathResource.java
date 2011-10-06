@@ -57,17 +57,21 @@ public class ClassPathResource extends Resource {
   }
 
   /* ------------------------------------------------------------ */
+  @Override
   public Object getAssociate() {
     return super.getAssociate();
   }
 
+  @Override
   public void release() {
   }
 
+  @Override
   public boolean exists() {
     return os != null;
   }
 
+  @Override
   public boolean isDirectory() {
     return false;
   }
@@ -75,10 +79,12 @@ public class ClassPathResource extends Resource {
   /**
    * Returns the lastModified time, which is always in the distant future to prevent caching.
    */
+  @Override
   public long lastModified() {
     return System.currentTimeMillis() + 1000l * 3600l * 24l * 365l;
   }
 
+  @Override
   public long length() {
     if (os != null) {
       return os.size();
@@ -87,18 +93,22 @@ public class ClassPathResource extends Resource {
     return 0;
   }
 
+  @Override
   public URL getURL() {
     return null;
   }
 
+  @Override
   public File getFile() throws IOException {
     return null;
   }
 
+  @Override
   public String getName() {
     return path;
   }
 
+  @Override
   public InputStream getInputStream() throws IOException {
     if (os != null) {
       return new ByteArrayInputStream(os.toByteArray());
@@ -106,22 +116,27 @@ public class ClassPathResource extends Resource {
     return null;
   }
 
+  @Override
   public OutputStream getOutputStream() throws IOException, SecurityException {
     return null;
   }
 
+  @Override
   public boolean delete() throws SecurityException {
     return false;
   }
 
+  @Override
   public boolean renameTo(Resource dest) throws SecurityException {
     return false;
   }
 
+  @Override
   public String[] list() {
     return new String[0];
   }
 
+  @Override
   public Resource addPath(String pathParm) throws IOException,
       MalformedURLException {
     return new ClassPathResource(this.path + "/" + pathParm);

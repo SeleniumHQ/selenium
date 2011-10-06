@@ -30,7 +30,7 @@ public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
           CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION)) {
         ensureCleanSession();
       }
-      fileUrl = createExtractedFiles().toURL() + "?" + query;
+      fileUrl = createExtractedFiles().toURI().toURL() + "?" + query;
 
       launchSafari(fileUrl);
     } catch (IOException e) {

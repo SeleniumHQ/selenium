@@ -76,7 +76,7 @@ public class WebDriverPriorityDemo {
 
   // mark the grid 100% busy = having 1 firefox test running.
   @Test
-  public void test() throws MalformedURLException, InterruptedException {
+  public void test() throws MalformedURLException {
     DesiredCapabilities ff = DesiredCapabilities.firefox();
     runningOne = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
     runningOne.get(hubURL + "/grid/console");
@@ -86,7 +86,7 @@ public class WebDriverPriorityDemo {
 
   // queuing 5 requests on the grid.
   @Test(dependsOnMethods = "test")
-  public void sendMoreRequests() throws MalformedURLException {
+  public void sendMoreRequests() {
     for (int i = 0; i < 5; i++) {
       new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
@@ -106,7 +106,7 @@ public class WebDriverPriorityDemo {
 
   // adding a request with high priority at the end of the queue
   @Test(dependsOnMethods = "sendMoreRequests", timeOut = 30000)
-  public void sendTheImportantOne() throws MalformedURLException, InterruptedException {
+  public void sendTheImportantOne() throws InterruptedException {
     while (hub.getRegistry().getNewSessionRequestCount() != 5) {
       Thread.sleep(250);
       System.out.println(hub.getRegistry().getNewSessionRequestCount());
@@ -133,7 +133,7 @@ public class WebDriverPriorityDemo {
 
   // then 5 more non-important requests
   @Test(dependsOnMethods = "sendTheImportantOne")
-  public void sendMoreRequests2() throws MalformedURLException {
+  public void sendMoreRequests2() {
     for (int i = 0; i < 5; i++) {
       new Thread(new Runnable() { // Thread safety reviewed
         public void run() {

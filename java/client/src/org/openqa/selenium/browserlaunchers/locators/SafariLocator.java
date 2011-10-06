@@ -15,14 +15,17 @@ public class SafariLocator extends SingleBrowserLocator {
       WindowsUtils.getProgramFilesPath() + "\\Safari"
   };
 
+  @Override
   protected String browserName() {
     return "Safari";
   }
 
+  @Override
   protected String seleniumBrowserName() {
     return "safari";
   }
 
+  @Override
   protected String[] standardlauncherFilenames() {
     if (WindowsUtils.thisIsWindows()) {
       return new String[] {"Safari.exe"};
@@ -31,10 +34,12 @@ public class SafariLocator extends SingleBrowserLocator {
     }
   }
 
+  @Override
   protected String browserPathOverridePropertyName() {
     return "SafariDefaultPath";
   }
 
+  @Override
   protected String[] usualLauncherLocations() {
     return WindowsUtils.thisIsWindows()
         ? USUAL_WINDOWS_LAUNCHER_LOCATIONS

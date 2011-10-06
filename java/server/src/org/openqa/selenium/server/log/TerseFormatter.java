@@ -52,6 +52,7 @@ public class TerseFormatter extends Formatter {
    * @param record the log record to be formatted.
    * @return a formatted log record
    */
+  @Override
   public synchronized String format(final LogRecord record) {
     buffer.setLength(PREFIX.length());
     buffer.append(timestampFormatter.format(new Date(record.getMillis())));

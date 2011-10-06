@@ -61,6 +61,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
    * 
    * Will poll the interface on a regular basis until the element is present.
    */
+  @Override
   public WebElement findElement() {
     SlowLoadingElement loadingElement = new SlowLoadingElement(clock, timeOutInSeconds);
     try {
@@ -106,14 +107,17 @@ public class AjaxElementLocator extends DefaultElementLocator {
       super(clock, timeOutInSeconds);
     }
 
+    @Override
     protected void load() {
       // Does nothing
     }
 
+    @Override
     protected long sleepFor() {
       return AjaxElementLocator.this.sleepFor();
     }
 
+    @Override
     protected void isLoaded() throws Error {
       try {
         element = AjaxElementLocator.super.findElement();

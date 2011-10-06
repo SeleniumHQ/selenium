@@ -91,7 +91,7 @@ public class ZipTest extends TestCase {
     assertTrue(new File(outputDir, "subdir/foodyfun.txt").exists());
   }
 
-  public void testWillNotOverwriteAnExistingZip() throws IOException {
+  public void testWillNotOverwriteAnExistingZip() {
     try {
       zip.zip(inputDir, outputDir);
       fail("Should have thrown an exception");

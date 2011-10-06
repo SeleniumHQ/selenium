@@ -135,10 +135,12 @@ public class Finders {
         }
       }
 
+      @Override
       protected Collection<WebElement> extractFrom(WebDriver context) {
         return finder.findFrom(context);
       }
 
+      @Override
       protected void describeTargetTo(Description description) {
         description.appendText("first ");
         finder.describeTo(description);

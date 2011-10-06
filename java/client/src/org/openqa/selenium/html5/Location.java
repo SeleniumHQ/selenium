@@ -44,6 +44,7 @@ public class Location {
     return altitude;
   }
 
+  @Override
   public String toString() {
     return String.format("Latitude: %s, Longitude: %s, Altitude: %s",
         latitude, longitude, altitude);

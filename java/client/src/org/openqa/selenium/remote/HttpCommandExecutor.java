@@ -164,16 +164,19 @@ public class HttpCommandExecutor implements CommandExecutor {
 
   private enum HttpVerb {
     GET() {
+      @Override
       public HttpUriRequest createMethod(String url) {
         return new HttpGet(url);
       }
     },
     POST() {
+      @Override
       public HttpUriRequest createMethod(String url) {
         return new HttpPost(url);
       }
     },
     DELETE() {
+      @Override
       public HttpUriRequest createMethod(String url) {
         return new HttpDelete(url);
       }
