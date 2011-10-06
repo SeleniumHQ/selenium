@@ -32,9 +32,12 @@ module Selenium
       class NoAlertOpenError < WebDriverError; end               # 27
       class ScriptTimeOutError < WebDriverError; end             # 28
       class InvalidElementCoordinatesError < WebDriverError; end # 29
-                                                                 # 30
-                                                                 # 31
+      class IMENotAvailableError < WebDriverError; end           # 30
+      class IMEEngineActivationFailedError < WebDriverError; end # 31
       class InvalidSelectorError < WebDriverError; end           # 32
+                                                                 # 33
+      class MoveTargetOutOfBoundsError < WebDriverError; end     # 34
+      
       class UnsupportedOperationError < WebDriverError; end
 
       Errors = [
@@ -67,9 +70,11 @@ module Selenium
         NoAlertOpenError,               # 27
         ScriptTimeOutError,             # 28
         InvalidElementCoordinatesError, # 29
-        nil,                            # 30
-        nil,                            # 31
-        InvalidSelectorError            # 32
+        IMENotAvailableError,           # 30
+        IMEEngineActivationFailedError, # 31
+        InvalidSelectorError,           # 32
+        nil,                            # 33
+        MoveTargetOutOfBoundsError      # 34
       ]
 
       class << self
