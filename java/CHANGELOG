@@ -7,7 +7,7 @@ WebDriver
   * Disabled elements won't be cleared any more
   * FIXED: 2531: Allow setting frozen firefox profile preferences to their frozen values.
   * FIXED: 2509: Fixing error=24 too many open files bug
-  * Added setFileLocator to RemoteWebDriver to allow files to be uploaded to the remote server
+  * Added setFileDetector to RemoteWebDriver to allow files to be uploaded to the remote server
   * Faster error reporting if chromedriver isn't executable
   * FIXED: Occasional ClassCastExceptions
   * FIXED: Proxy configuration NullPointerException problem
