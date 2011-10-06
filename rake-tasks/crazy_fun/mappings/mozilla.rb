@@ -129,7 +129,9 @@ class Compile < BaseXpt
       cmd = "#{base_cmd} -I#{dir_name} -e #{xpt} #{src}"
 
       sh cmd do |ok, res|
-        if !ok
+        if ok
+          copy_to_prebuilt(xpt, fun)
+        else
           copy_prebuilt(fun, xpt)
         end
       end
