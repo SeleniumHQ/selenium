@@ -624,6 +624,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         || SeleniumCoreCommand.CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID.equals(cmd)) {
       return "Got result: [base64 encoded PNG] on session " + sessionId;
     }
+    if (SeleniumCoreCommand.GET_HTML_SOURCE_ID.equals(cmd)) {
+      return "Got result: [HTML source] on session " + sessionId;
+    }
     if (RetrieveLastRemoteControlLogsCommand.ID.equals(cmd)) {
       /* Trim logs to avoid Larsen effect (see remote control stability tests) */
       trucatedResults = results.length() > 30 ? results.substring(0, 30) : results;

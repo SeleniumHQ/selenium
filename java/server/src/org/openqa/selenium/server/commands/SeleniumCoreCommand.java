@@ -13,6 +13,7 @@ public class SeleniumCoreCommand extends Command {
 
 
   public static final String CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID = "captureEntirePageScreenshot";
+  public static final String GET_HTML_SOURCE_ID = "getHtmlSource";
   private static final Logger log = Logger.getLogger(SeleniumCoreCommand.class.getName());
   private final String id;
   private final List<String> values;
