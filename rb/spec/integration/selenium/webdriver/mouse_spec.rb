@@ -26,14 +26,15 @@ module Selenium
         text.should == "Dropped!"
       end
 
-      not_compliant_on :browser => :firefox, :platform => :windows do
-        it "double clicks an element" do
-          driver.navigate.to url_for("javascriptPage.html")
-          element = driver.find_element(:id, 'doubleClickField')
+      it "double clicks an element" do
+        driver.navigate.to url_for("javascriptPage.html")
+        element = driver.find_element(:id, 'doubleClickField')
 
-          driver.mouse.double_click element
-          element.attribute(:value).should == 'DoubleClicked'
-        end
+        driver.mouse.double_click element
+
+        wait(5).until {
+          element.attribute(:value) == 'DoubleClicked'
+        }
       end
 
       it "context clicks an element" do
@@ -41,7 +42,10 @@ module Selenium
         element = driver.find_element(:id, 'doubleClickField')
 
         driver.mouse.context_click element
-        element.attribute(:value).should == 'ContextClicked'
+
+        wait(5).until {
+          element.attribute(:value) == 'ContextClicked'
+        }
       end
 
     end
