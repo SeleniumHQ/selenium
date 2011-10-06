@@ -6,7 +6,7 @@ require 'digest/md5'
 class Downloader
   class Error < StandardError; end
 
-  CL_RESET = Platform.windows? ? '' : "\r\e[0K"
+  CL_RESET = Platform.windows? ? "\n" : "\r\e[0K"
 
   def self.fetch(source_url, destination_path = nil)
     if destination_path
