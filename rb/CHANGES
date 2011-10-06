@@ -1,3 +1,18 @@
+2.8.0 (2011-10-06)
+==================
+
+* Firefox
+  - Avoid telemetry prompt on Firefox 7
+  - Allow parallel execution with native events on Linux (#1326)
+  - Added native events support for Firefox 7 on Linux/Windows
+  - Improve search for libX11 for native events on Linux (#384)
+  - Fix double click with native events
+* Chrome
+  - Fail fast if the chromedriver server is not executable.
+* IE
+  - Fix find_element bug (#2563)
+
+
 2.7.0 (2011-09-23)
 ==================
 
