@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
@@ -161,8 +162,11 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   /**
    * @throws Exception If the test fails.
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=208"> Issue 208</a>
+   * 
+   * This test often causes the subsequent test to fail, in Firefox, on Linux.
+   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=2282">Issue 2282</a>
    */
-  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID}, reason = "Untested user-agents")
+  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID, FIREFOX}, reason = "Untested user-agents")
   @JavascriptEnabled
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
       throws Exception {
