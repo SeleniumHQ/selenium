@@ -1,3 +1,29 @@
+v2.8.0
+======
+
+WebDriver
+  * FIXED: 1967,1934: Temporary directories no longer fill up disk.
+  * FIXED: 2295,1899: Better handling of select/option tags in HtmlUnit
+  * Disabled elements won't be cleared any more
+  * FIXED: 2531: Allow setting frozen firefox profile preferences to their frozen values.
+  * FIXED: 2509: Fixing error=24 too many open files bug
+  * Added setFileLocator to RemoteWebDriver to allow files to be uploaded to the remote server
+  * Faster error reporting if chromedriver isn't executable
+  * FIXED: Occasional ClassCastExceptions
+  * FIXED: Proxy configuration NullPointerException problem
+  * FIXED: 1326: Allow parallel execution of FirefoxDriver on Linux with native events
+  * FIXED: 384: Fixed native FirefoxDriver crash on some 64-bit linux systems
+  * FIXED: 417: Allow @FindBy annotations to be put on List<WebElement> as well as just WebElement fields
+  * Added native event support for Firefox 7
+  * Added constructor to ChromeDriver that lets you specify the ChromeDriverService as well as the DesiredCapabilities
+  * FIXED: By.linkText now always trims leading and trailing whitespace
+  * FIXED: Issues with doubleClick in Firefox
+
+RC
+  * FIXED: 1934: -singleWindow works for *iexplore
+  * Selenium Server params work with RC Grid configuration
+  * Adding support for Firefox 8
+
 v2.7.0
 ======
 
