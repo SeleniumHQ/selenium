@@ -61,6 +61,7 @@ class Selenium::WebDriver::Remote::Bridge
   command :setVisible,                             :post,    "session/:session_id/visible"
   command :getScreenOrientation,                   :get,     "session/:session_id/orientation"
   command :setScreenOrientation,                   :post,    "session/:session_id/orientation"
+  command :uploadFile,                             :post,    "session/:session_id/file"
 
   # interactions API
   command :click,                                  :post,    "session/:session_id/click"

@@ -29,7 +29,7 @@ module Selenium
           COMMANDS[name] = [verb, url.freeze]
         end
 
-        attr_accessor :context, :http
+        attr_accessor :context, :http, :file_detector
         attr_reader :capabilities
 
         #
@@ -64,8 +64,8 @@ module Selenium
 
           http_client.server_url = uri
 
-          @http         = http_client
-          @capabilities = create_session(desired_capabilities)
+          @http          = http_client
+          @capabilities  = create_session(desired_capabilities)
         end
 
         def browser
@@ -73,7 +73,11 @@ module Selenium
         end
 
         def driver_extensions
-          [DriverExtensions::HasInputDevices, DriverExtensions::TakesScreenshot]
+          [
+            DriverExtensions::HasInputDevices,
+            DriverExtensions::UploadsFiles,
+            DriverExtensions::TakesScreenshot
+          ]
         end
 
         #
@@ -110,7 +114,7 @@ module Selenium
         #
         # alerts
         #
-        
+
         def getAlert
           execute :getAlert
         end
@@ -305,7 +309,19 @@ module Selenium
         end
 
         def sendKeysToElement(element, keys)
-          execute :sendKeysToElement, {:id => element}, {:value => keys}
+          if @file_detector && local_file = @file_detector.call(keys)
+            keys = upload(local_file)
+          end
+
+          execute :sendKeysToElement, {:id => element}, {:value => Array(keys)}
+        end
+
+        def upload(local_file)
+          unless File.file?(local_file)
+            raise WebDriverError::Error, "you may only upload files: #{local_file.inspect}"
+          end
+
+          execute :uploadFile, {}, :file => Zipper.zip_file(local_file)
         end
 
         def clearElement(element)

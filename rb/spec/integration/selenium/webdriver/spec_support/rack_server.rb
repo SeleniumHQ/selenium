@@ -10,7 +10,7 @@ module Selenium
 
         def initialize(path, port = nil)
           @path = path
-          @app  = Rack::File.new(path)
+          @app  = TestApp.new(path)
 
           @host = "127.0.0.1"
           @port = Integer(port || PortProber.above(8180))
@@ -31,7 +31,7 @@ module Selenium
         end
 
         def run
-          handler.run(@app, :Host => @host, :Port => @port)
+          handler.run @app, :Host => @host, :Port => @port
         end
 
         def where_is(file)
@@ -89,6 +89,27 @@ module Selenium
             @process = ChildProcess.build("ruby", "-r", "rubygems", __FILE__, @path, @port).start
           else
             start_threaded
+          end
+        end
+
+        class TestApp
+          def initialize(file_root)
+            @static = Rack::File.new(file_root)
+          end
+
+          def call(env)
+            case env['REQUEST_PATH']
+            when "/common/upload"
+              req = Rack::Request.new(env)
+
+              status = 200
+              header = {"Content-Type" => "text/html"}
+              body   = req['upload'][:tempfile].read
+
+              [status, header, body]
+            else
+              @static.call env
+            end
           end
         end
 
