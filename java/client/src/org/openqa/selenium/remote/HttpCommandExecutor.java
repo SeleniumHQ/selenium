@@ -416,7 +416,7 @@ public class HttpCommandExecutor implements CommandExecutor {
       // Make sure that the previous connection is freed.
       HttpEntity httpEntity = response.getEntity();
       if (httpEntity != null) {
-        httpEntity.consumeContent();
+        EntityUtils.consume(httpEntity);
       }
 
       HttpGet get = new HttpGet(uri);
@@ -459,7 +459,7 @@ public class HttpCommandExecutor implements CommandExecutor {
       if (entity != null) {
         content = EntityUtils.toByteArray(entity);
         charSet = EntityUtils.getContentCharSet(entity);
-        entity.consumeContent();
+        EntityUtils.consume(entity);
       } else {
         content = new byte[0];
         charSet = null;

@@ -21,6 +21,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.util.EntityUtils;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.RemoteException;
 import org.openqa.grid.common.exception.RemoteNotReachableException;
@@ -100,7 +101,7 @@ public abstract class WebRemoteProxy extends RemoteProxy
     HttpResponse response;
     try {
       response = client.execute(host, r);
-      response.getEntity().consumeContent();
+      EntityUtils.consume(response.getEntity());
     } catch (ClientProtocolException e) {
       return false;
     } catch (IOException e) {
