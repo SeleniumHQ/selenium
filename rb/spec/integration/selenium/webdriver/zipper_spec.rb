@@ -4,26 +4,60 @@ module Selenium
   module WebDriver
     describe Zipper do
 
-      before do
-        dir = Dir.mktmpdir("zipper")
-        filename = File.join(dir, "file.txt")
-        File.open(filename, "w") { |io| io << "content" }
-        File.symlink(filename, File.join(dir, "link")) unless Platform.windows?
+      #
+      # TODO: clean this spec up
+      #
 
-        @zip_file = File.join(Dir.tmpdir, "test.zip")
-        File.open(@zip_file, "wb") do |io|
-          io << Base64.decode64(Zipper.zip(dir))
-        end
+      let(:base_file_name)    { "file.txt" }
+      let(:file_content) { "content" }
+      let(:zip_file)     { File.join(Dir.tmpdir, "test.zip") }
+      let(:dir_to_zip)   { Dir.mktmpdir("zipper")            }
+
+      def create_file
+        filename = File.join(dir_to_zip, base_file_name)
+        File.open(filename, "w") { |io| io << file_content }
+
+        filename
       end
 
-      after { FileUtils.rm_rf @zip_file if @zip_file }
+      after {
+        FileUtils.rm_rf zip_file
+      }
 
       it "zips and unzips a folder" do
-        unzipped = Zipper.unzip(@zip_file)
-        File.read(File.join(unzipped, "file.txt")).should == "content"
+        create_file
 
-        unless Platform.windows?
-          File.read(File.join(unzipped, "link")).should == "content"
+        File.open(zip_file, "wb") do |io|
+          io << Base64.decode64(Zipper.zip(dir_to_zip))
+        end
+
+        unzipped = Zipper.unzip(zip_file)
+        File.read(File.join(unzipped, base_file_name)).should == file_content
+      end
+
+      it "zips and unzips a single file" do
+        file_to_zip = create_file
+
+        File.open(zip_file, "wb") do |io|
+          io << Base64.decode64(Zipper.zip_file(file_to_zip))
+        end
+
+        unzipped = Zipper.unzip(zip_file)
+        File.read(File.join(unzipped, base_file_name)).should == file_content
+      end
+
+      not_compliant_on :platform => :windows do
+        it "follows symlinks when zipping" do
+          filename = create_file
+          File.symlink(filename, File.join(dir_to_zip, "link"))
+
+          zip_file = File.join(Dir.tmpdir, "test.zip")
+          File.open(zip_file, "wb") do |io|
+            io << Base64.decode64(Zipper.zip(dir_to_zip))
+          end
+
+          unzipped = Zipper.unzip(zip_file)
+          File.read(File.join(unzipped, "link")).should == file_content
         end
       end
 
