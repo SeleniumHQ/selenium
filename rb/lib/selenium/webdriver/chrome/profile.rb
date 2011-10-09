@@ -10,7 +10,16 @@ module Selenium
         include ProfileHelper
 
         def initialize(model = nil)
-          @model = verify_model(model)
+          @model      = verify_model(model)
+          @extensions = []
+        end
+
+        def add_extension(path)
+          unless File.file?(path)
+            raise Error::WebDriverError, "could not find extension at #{path.inspect}"
+          end
+
+          @extensions << path
         end
 
         #
@@ -36,6 +45,14 @@ module Selenium
           write_prefs_to dir
 
           dir
+        end
+
+        def as_json(opts = nil)
+          extensions = @extensions.map do |crx_path|
+            Base64.strict_encode64 File.read(crx_path)
+          end
+
+          super.merge('extensions' => extensions)
         end
 
         private

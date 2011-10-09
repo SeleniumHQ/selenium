@@ -46,6 +46,22 @@ module Selenium
         it "raises an ArgumentError if switches is not an Array" do
           lambda { Bridge.new(:switches => "--foo=bar")}.should raise_error(ArgumentError)
         end
+
+        it "uses the given profile" do
+          profile = Profile.new
+
+          profile['some_pref'] = true
+          profile.add_extension(__FILE__)
+
+          profile_data = profile.as_json
+
+          caps.should_receive(:merge!).with(
+            'chrome.profile'    => profile_data['zip'],
+            'chrome.extensions' => profile_data['extensions']
+          )
+
+          Bridge.new(:http_client => http, :profile => profile)
+        end
       end
 
     end # Chrome

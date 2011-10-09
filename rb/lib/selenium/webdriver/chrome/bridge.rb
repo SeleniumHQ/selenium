@@ -66,10 +66,17 @@ module Selenium
             caps.merge! 'chrome.switches' => switches.map { |e| e.to_s }
           end
 
+          if profile
+            data = profile.as_json
+
+            caps.merge! 'chrome.profile'    => data['zip'],
+                        'chrome.extensions' => data['extensions']
+          end
+
+
           caps.merge! 'chrome.binary'       => Chrome.path if Chrome.path
           caps.merge! 'chrome.nativeEvents' => true if native_events
           caps.merge! 'chrome.verbose'      => true if verbose
-          caps.merge! 'chrome.profile'      => profile.as_json['zip'] if profile
           caps.merge! 'chrome.detach'       => detach.nil? || !!detach
         end
 
