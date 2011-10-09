@@ -158,8 +158,8 @@ public class Executable {
         // Do nothing
     }
 
-    return binary != null && binary.exists() ? binary : findBinary("firefox3", "firefox2",
-        "firefox");
+    return binary != null && binary.exists() ? binary : findBinary("firefox", "firefox3",
+        "firefox2");
   }
 
   private static File findExistingBinary(final ImmutableList<String> paths) {
