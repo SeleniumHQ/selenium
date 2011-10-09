@@ -55,6 +55,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
 import com.gargoylesoftware.htmlunit.html.HtmlHtml;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlLabel;
 import com.gargoylesoftware.htmlunit.html.HtmlOption;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
@@ -127,6 +128,14 @@ public class HtmlUnitWebElement implements WrapsDriver,
           }
       }
       // Now fall through
+    }
+    
+    if (element instanceof HtmlLabel) {
+      try {
+        element.click();
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
     }
 
     HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
