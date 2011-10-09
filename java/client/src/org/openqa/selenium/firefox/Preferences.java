@@ -115,7 +115,7 @@ class Preferences {
   public void writeTo(Writer writer) throws IOException {
     for (Map.Entry<String, Object> pref : allPrefs.entrySet()) {
       writer.append("user_pref(\"").append(pref.getKey()).append("\", ");
-      writer.append(valueAsPreference(pref.getValue()));
+      writer.append(valueAsPreference(pref.getValue()).replaceAll("\\\\", "\\\\\\\\"));
       writer.append(");\n");
     }
   }
@@ -130,7 +130,7 @@ class Preferences {
 
   private Object preferenceAsValue(String toConvert) {
     if (toConvert.startsWith("\"") && toConvert.endsWith("\"")) {
-      return toConvert.substring(1, toConvert.length() - 1);
+      return toConvert.substring(1, toConvert.length() - 1).replaceAll("\\\\\\\\", "\\\\");
     }
 
     if ("false".equals(toConvert) || "true".equals(toConvert)) {

@@ -228,6 +228,19 @@ public class FirefoxProfileTest extends TestCase {
     assertEquals("http://www.example.com", parsedPrefs.getPreference("browser.startup.homepage"));
   }
   
+  public void testBackslashedCharsArePreservedWhenConvertingToAndFromJson() throws IOException {
+    String dir = "c:\\aaa\\bbb\\ccc\\ddd\\eee\\fff\\ggg\\hhh\\iii\\jjj\\kkk\\lll\\mmm\\nnn\\ooo\\ppp\\qqq\\rrr\\sss\\ttt\\uuu\\vvv\\www\\xxx\\yyy\\zzz";
+    profile.setPreference("browser.download.dir", dir);
+
+    String json = profile.toJson();
+    FirefoxProfile rebuilt = FirefoxProfile.fromJson(json);
+    Preferences parsedPrefs = parseUserPrefs(rebuilt);
+
+    assertEquals(dir, parsedPrefs.getPreference("browser.download.dir"));
+    File layoutOnDisk = rebuilt.layoutOnDisk();
+    System.out.println(layoutOnDisk);
+  }
+	  
   private void assertPreferenceValueEquals(String key, Object value) throws Exception {
     List<String> props = readGeneratedProperties(profile);
     boolean seenKey = false;
