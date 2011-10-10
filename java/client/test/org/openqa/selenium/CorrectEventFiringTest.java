@@ -220,7 +220,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertThat(clicker.getAttribute("value"), equalTo("Clicked"));
   }
 
-  @Ignore(ANDROID)
+  @Ignore({ANDROID, IE})
   @JavascriptEnabled
   public void testShouldFireTwoClickEventsWhenClickingOnALabel() {
     driver.get(pages.javascriptPage);
