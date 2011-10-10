@@ -93,6 +93,8 @@ java_library(name = "selenium-api",
     "//java/client/src/org/openqa/selenium/chrome",
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/ie",
+    "//java/client/src/org/openqa/selenium/htmlunit",
+    "//third_party/java/opera-driver",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
   ])
