@@ -33,6 +33,7 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.openqa.selenium.WaitingConditions.trimmedElementTextToEqual;
 
 import java.io.File;
 import java.io.IOException;
@@ -220,7 +221,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertThat(clicker.getAttribute("value"), equalTo("Clicked"));
   }
 
-  @Ignore({ANDROID, IE})
+  @Ignore({ANDROID})
   @JavascriptEnabled
   public void testShouldFireTwoClickEventsWhenClickingOnALabel() {
     driver.get(pages.javascriptPage);
@@ -234,7 +235,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     driver.findElement(By.id("labelForCheckbox")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    assertNotNull(waitFor(elementTextToEqual(result, "labelclick chboxclick")));
+    assertNotNull(waitFor(trimmedElementTextToEqual(result, "labelclick chboxclick")));
   }
 
   @Ignore(ANDROID)

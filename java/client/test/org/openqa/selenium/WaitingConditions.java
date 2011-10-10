@@ -42,22 +42,61 @@ public class WaitingConditions {
     };
   }
 
-  public static Callable<String> elementTextToEqual(
-      final WebElement element, final String value) {
-    return new Callable<String>() {
+  private static abstract class ElementTextComperator implements Callable<String> {
+    private String lastText = "";
+    private WebElement element;
+    private String expectedValue;
+    ElementTextComperator(WebElement element, String expectedValue) {
+      this.element = element;
+      this.expectedValue = expectedValue;
+    }
 
-      public String call() throws Exception {
-        String text = element.getText();
-        if (value.equals(text)) {
-          return text;
-        }
-
-        return null;
+    public String call() throws Exception {
+      lastText = element.getText();
+      if (compareText(expectedValue, lastText)) {
+        return lastText;
       }
 
+      return null;
+    }
+
+    abstract boolean compareText(String expectedValue, String actualValue);
+
+    @Override
+    public String toString() {
+      return "Element text mismatch: expected: " + expectedValue + " but was: '" + lastText + "'";
+    }
+  }
+
+  public static Callable<String> elementTextToEqual(
+      final WebElement element, final String value) {
+    return new ElementTextComperator(element, value) {
+
       @Override
-      public String toString() {
-        return "element text did not equal: " + value;
+      boolean compareText(String expectedValue, String actualValue) {
+        return expectedValue.equals(actualValue);
+      }
+    };
+  }
+
+  public static Callable<String> trimmedElementTextToEqual(
+      final WebElement element, final String value) {
+    return new ElementTextComperator(element, value) {
+
+      @Override
+      boolean compareText(String expectedValue, String actualValue) {
+        return expectedValue.trim().equals(actualValue.trim());
+      }
+    };
+  }
+
+  public static Callable<String> elementTextToContain(
+      final WebElement element, final String value) {
+    return new ElementTextComperator(element, value) {
+
+      @Override
+      boolean compareText(String expectedValue, String actualValue) {
+        return actualValue.contains(expectedValue);
       }
     };
   }
@@ -75,45 +114,13 @@ public class WaitingConditions {
         return null;
       }
 
+
       @Override
       public String toString() {
         return "element text did not equal: " + value;
       }
     };
   }
-
-
-
-  public static Callable<String> elementTextToContain(
-      final WebElement element, final String value) {
-    return new ElementTextContainsCallable(value, element);
-  }
-
-  private static final class ElementTextContainsCallable implements Callable<String> {
-    private final String value;
-    private final WebElement element;
-    private String actualText;
-
-    private ElementTextContainsCallable(String value, WebElement element) {
-      this.value = value;
-      this.element = element;
-    }
-
-    public String call() throws Exception {
-      actualText = element.getText();
-      if (actualText.contains(value)) {
-        return actualText;
-      }
-
-      return null;
-    }
-
-    @Override
-    public String toString() {
-      return String.format("element text (%s) to contain: %s", actualText, value);
-    }
-  }
-
 
   public static Callable<String> elementValueToEqual(
       final WebElement element, final String expectedValue) {
