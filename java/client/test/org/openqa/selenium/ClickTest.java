@@ -167,7 +167,6 @@ public class ClickTest extends AbstractDriverTestCase {
     fail("Must. Write. Meamingful. Test (but we don't fire mouse outs synthetically");
   }
 
-  //@Ignore(HTMLUNIT)
   public void testClickingLabelShouldSetCheckbox() {
     driver.get(pages.formPage);
 

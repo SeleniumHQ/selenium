@@ -175,7 +175,8 @@
     <button type="button" id="jsSubmitButton" onclick="javascript:document.getElementById('on-form').submit();">Submitomatic</button>
 
     <button type="button" id="switchFocus" onclick="document.getElementById('theworks').focus();">Switch focus</button>
-    <button type="button" onclick="var element = document.getElementById('switchFocus'); var clickEvent = document.createEvent('MouseEvents'); clickEvent.initMouseEvent('click', true, true, null, 0, 0, 0, 0, 0,false, false, false, false, 0, element);element.dispatchEvent(clickEvent);">Do magic</button>
+    <button type="button" onclick="var element = document.getElementById('switchFocus'); var clickEvent = document.createEvent('MouseEvents'); clickEvent.initMouseEvent('click', true, true, null, 0, 0, 0, 0, 0,false, false, false, false, 0, element);element.dispatchEvent(clickEvent);">Do magic</button><br/>
+    <label id="labelForCheckbox" for="labeledCheckbox" onclick="appendMessage('labelclick')">Toggle checkbox</label><input type="checkbox" id="labeledCheckbox" onclick="appendMessage('chboxclick')"/>
   </form>
   
   <form action="javascriptPage.html" id="submitListeningForm" onsubmit="appendMessage('form-onsubmit '); return false;">

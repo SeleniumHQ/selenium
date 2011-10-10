@@ -130,16 +130,16 @@ public class HtmlUnitWebElement implements WrapsDriver,
       // Now fall through
     }
     
+    HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
+    mouse.click(getCoordinates());
+
     if (element instanceof HtmlLabel) {
-      try {
-        element.click();
-      } catch (IOException e) {
-        throw new WebDriverException(e);
+      HtmlElement referencedElement = ((HtmlLabel)element).getReferencedElement();
+      if (referencedElement != null) {
+        new HtmlUnitWebElement(parent, referencedElement).click();
       }
     }
 
-    HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
-    mouse.click(getCoordinates());
   }
 
   public void submit() {
@@ -410,39 +410,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return null;
   }
 
-  public boolean toggle() {
-    assertElementNotStale();
-
-    if (!isDisplayed())
-      throw new ElementNotVisibleException("You may only toggle visible elements");
-
-    if (!isEnabled())
-      throw new InvalidElementStateException("You may only toggle enabled elements");
-
-
-    try {
-      if (element instanceof HtmlCheckBoxInput) {
-        element.click();
-        return isSelected();
-      }
-
-      if (element instanceof HtmlOption) {
-        HtmlOption option = (HtmlOption) element;
-        HtmlSelect select = option.getEnclosingSelect();
-        if (select.isMultipleSelectEnabled()) {
-          click();
-          return isSelected();
-        }
-      }
-
-      throw new InvalidElementStateException(
-          "You may only toggle checkboxes or options in a select which allows multiple selections: "
-              + getTagName());
-    } catch (IOException e) {
-      throw new WebDriverException("Unexpected exception: " + e);
-    }
-  }
-
   public boolean isSelected() {
     assertElementNotStale();
 
@@ -454,30 +421,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     throw new UnsupportedOperationException(
         "Unable to determine if element is selected. Tag name is: " + element.getTagName());
-  }
-
-  public void setSelected() {
-    assertElementNotStale();
-
-    if (!isDisplayed())
-      throw new ElementNotVisibleException("You may only select visible elements");
-
-
-    String disabledValue = element.getAttribute("disabled");
-    if (disabledValue.length() > 0) {
-      throw new InvalidElementStateException("You may not select a disabled element");
-    }
-
-    if (element instanceof HtmlInput) {
-      ((HtmlInput) element).setChecked(true);
-    } else if (element instanceof HtmlOption) {
-      if (!isSelected()) {
-        click();
-      }
-    } else {
-      throw new InvalidElementStateException(
-          "Unable to select element. Tag name is: " + element.getTagName());
-    }
   }
 
   public boolean isEnabled() {

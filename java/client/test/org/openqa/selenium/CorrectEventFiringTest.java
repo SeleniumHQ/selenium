@@ -222,6 +222,23 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
   @Ignore(ANDROID)
   @JavascriptEnabled
+  public void testShouldFireTwoClickEventsWhenClickingOnALabel() {
+    driver.get(pages.javascriptPage);
+
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    driver.findElement(By.id("labelForCheckbox")).click();
+
+    WebElement result = driver.findElement(By.id("result"));
+    assertNotNull(waitFor(elementTextToEqual(result, "labelclick chboxclick")));
+  }
+
+  @Ignore(ANDROID)
+  @JavascriptEnabled
   public void testClearingAnElementShouldCauseTheOnChangeHandlerToFire() {
     driver.get(pages.javascriptPage);
 
