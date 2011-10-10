@@ -87,20 +87,24 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   private void moveOutIfNeeded(HtmlElement element) {
-    if ((currentActiveElement != element)) {
-      if (currentActiveElement != null) {
-        currentActiveElement.mouseOver(keyboard.isShiftPressed(),
-            keyboard.isCtrlPressed(), keyboard.isAltPressed(), MouseEvent.BUTTON_LEFT);
-
-        currentActiveElement.mouseOut(keyboard.isShiftPressed(),
-            keyboard.isCtrlPressed(), keyboard.isAltPressed(), MouseEvent.BUTTON_LEFT);
-
-        currentActiveElement.blur();
+    try {
+      if ((currentActiveElement != element)) {
+        if (currentActiveElement != null) {
+          currentActiveElement.mouseOver(keyboard.isShiftPressed(),
+              keyboard.isCtrlPressed(), keyboard.isAltPressed(), MouseEvent.BUTTON_LEFT);
+  
+          currentActiveElement.mouseOut(keyboard.isShiftPressed(),
+              keyboard.isCtrlPressed(), keyboard.isAltPressed(), MouseEvent.BUTTON_LEFT);
+  
+          currentActiveElement.blur();
+        }
+  
+        if (element != null) {
+          mouseMove(element);
+        }
       }
-
-      if (element != null) {
-        mouseMove(element);
-      }
+    } catch (ScriptException ignored) {
+      System.out.println(ignored.getMessage());
     }
   }
 

@@ -104,9 +104,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(
-      value = {SELENESE, HTMLUNIT},
-      reason = "HtmlUnit: See issue 2187")
+  @Ignore(SELENESE)
   public void testShouldNotThrowIfEventHandlerThrows() {
     driver.get(pages.javascriptPage);
 
