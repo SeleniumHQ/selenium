@@ -181,6 +181,29 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     assertEquals(1, allWindowHandles.size());
   }
 
+  @NeedsFreshDriver
+  @NoDriverAfterTest
+  @Ignore(value = {SELENESE})
+  public void testCanCloseWindowAndSwitchBackToMainWindow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.name("windowOne")).click();
+
+    sleepBecauseWindowsTakeTimeToOpen();
+
+    Set<String> allWindowHandles = driver.getWindowHandles();
+
+    // There should be two windows. We should also see each of the window titles at least once.
+    assertEquals(2, allWindowHandles.size());
+    String mainHandle = (String) allWindowHandles.toArray()[0];
+    String handle1 = (String) allWindowHandles.toArray()[1];
+    driver.switchTo().window(handle1);
+    driver.close();
+    driver.switchTo().window(mainHandle);
+
+    String newHandle = driver.getWindowHandle();
+    assertEquals(mainHandle, newHandle);
+  }
+
   private void sleepBecauseWindowsTakeTimeToOpen() {
     try {
       Thread.sleep(1000);

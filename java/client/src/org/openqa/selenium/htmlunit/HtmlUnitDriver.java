@@ -115,7 +115,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   private boolean enableJavascript;
   private ProxyConfig proxyConfig;
-  private final BrowserVersion version;
   private long implicitWait = 0;
   private long scriptTimeout = 0;
   private HtmlUnitKeyboard keyboard;
@@ -127,7 +126,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
 
   public HtmlUnitDriver(BrowserVersion version) {
-    this.version = version;
     webClient = createWebClient(version);
     currentWindow = webClient.getCurrentWindow();
 
@@ -417,8 +415,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     if (currentWindow != null) {
       ((TopLevelWindow) currentWindow.getTopWindow()).close();
     }
-
-    webClient = createWebClient(version);
+    if (webClient.getWebWindows().size() == 0) {
+      quit();
+    }
   }
 
   public void quit() {
