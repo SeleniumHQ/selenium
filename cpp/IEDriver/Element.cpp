@@ -118,8 +118,9 @@ int Element::Click() {
   int status_code = this->GetLocationOnceScrolledIntoView(&x, &y, &w, &h);
 
   if (status_code == SUCCESS) {
-    long click_x = x + (w ? w / 2 : 0);
-    long click_y = y + (h ? h / 2 : 0);
+    long click_x;
+    long click_y;
+    GetClickPoint(x, y, w, h, &click_x, &click_y);
 
     // Create a mouse move, mouse down, mouse up OS event
     LRESULT result = mouseMoveTo(this->containing_window_handle_,
@@ -197,9 +198,12 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
 
   long top = 0, left = 0, element_width = 0, element_height = 0;
   result = this->GetLocation(&left, &top, &element_width, &element_height);
+  long click_x, click_y;
+  GetClickPoint(left, top, element_width, element_height, &click_x, &click_y);
+
   if (result != SUCCESS ||
       !this->IsClickPointInViewPort(left, top, element_width, element_height) ||
-      this->IsInOverflow()) {
+      this->IsHiddenByOverflow(click_x, click_y)) {
     // Scroll the element into view
     LOG(DEBUG) << "Will need to scroll element into view";
     hr = this->element_->scrollIntoView(CComVariant(VARIANT_TRUE));
@@ -230,7 +234,7 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
   return SUCCESS;
 }
 
-bool Element::IsInOverflow() {
+bool Element::IsHiddenByOverflow(long click_x, long click_y) {
   bool isOverflow = false;
 
   // Use JavaScript for this rather than COM calls to avoid dependency
@@ -247,13 +251,17 @@ bool Element::IsInOverflow() {
   script_source += L"    s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
   script_source += L"  }\n";
   script_source += L"}";
-  script_source += L"return p != null;";
+  script_source += L"return p != null && ";
+  script_source += L"(arguments[1] < p.scrollLeft || arguments[1] > p.scrollLeft + parseInt(s.width) || ";
+  script_source += L"arguments[2] < p.scrollTop || arguments[2] > p.scrollTop + parseInt(s.height));";
   script_source += L"};})();";
 
   CComPtr<IHTMLDocument2> doc;
   this->GetContainingDocument(false, &doc);
-  Script script_wrapper(doc, script_source, 2);
+  Script script_wrapper(doc, script_source, 3);
   script_wrapper.AddArgument(this->element_);
+  script_wrapper.AddArgument(click_x);
+  script_wrapper.AddArgument(click_y);
   int status_code = script_wrapper.Execute();
   if (status_code == SUCCESS) {
     isOverflow = script_wrapper.result().boolVal == VARIANT_TRUE;
@@ -427,12 +435,17 @@ int Element::GetFrameOffset(long* x, long* y) {
   return SUCCESS;
 }
 
+void Element::GetClickPoint(const long x, const long y, const long width, const long height, long* click_x, long* click_y) {
+  *click_x = x + (width / 2);
+  *click_y = y + (height / 2);
+}
+
 bool Element::IsClickPointInViewPort(const long x,
                                      const long y,
                                      const long width,
                                      const long height) {
-  long click_x = x + (width / 2);
-  long click_y = y + (height / 2);
+  long click_x, click_y;
+  GetClickPoint(x, y, width, height, &click_x, &click_y);
 
   WINDOWINFO window_info;
   if (!::GetWindowInfo(this->containing_window_handle_, &window_info)) {

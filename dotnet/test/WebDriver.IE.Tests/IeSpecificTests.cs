@@ -1,3 +1,4 @@
+using System.Threading;
 using NUnit.Framework;
 using OpenQA.Selenium.IE;
 using System;
@@ -112,6 +113,17 @@ namespace OpenQA.Selenium.IE
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll.html");
             driver.FindElement(By.Id("line8")).Click();
             Assert.AreEqual("line8", driver.FindElement(By.Id("clicked")).Text);
+        }
+
+        [Test]
+        public void ShouldNotScrollOverflowElementsWhichAreVisible()
+        {
+            Thread.Sleep(TimeSpan.FromSeconds(10));
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll2.html");
+            var list = driver.FindElement(By.TagName("ul"));
+            var item = list.FindElement(By.Id("desired"));
+            item.Click();
+            Assert.AreEqual(0, ((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].scrollTop;", list), "Should not have scrolled");
         }
     }
 }

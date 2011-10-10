@@ -46,11 +46,12 @@ class Element {
 
  private:
   int GetLocation(long* x, long* y, long* width, long* height);
+  void GetClickPoint(const long x, const long y, const long width, const long height, long* click_x, long* click_y);
   bool IsClickPointInViewPort(const long x,
                               const long y,
                               const long width,
                               const long height);
-  bool IsInOverflow(void);
+  bool IsHiddenByOverflow(long click_x, long click_y);
   int GetFrameOffset(long* x, long* y);
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetParentDocument(IHTMLWindow2* parent_window,
