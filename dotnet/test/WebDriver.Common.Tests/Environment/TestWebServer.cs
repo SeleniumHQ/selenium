@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Diagnostics;
 
@@ -21,6 +22,15 @@ namespace OpenQA.Selenium.Environment
         {
             if (webserverProcess == null || webserverProcess.HasExited)
             {
+                if (!File.Exists(standaloneTestJar))
+                {
+                    throw new FileNotFoundException(
+                        string.Format(
+                            "Standalone test jar at {0} didn't exist - please build it using something like {1}",
+                            standaloneTestJar,
+                            "go //java/client/test/org/openqa/selenium:tests:uber"));
+                }
+
                 webserverProcess = new Process();
                 webserverProcess.StartInfo.FileName = "java.exe";
                 webserverProcess.StartInfo.Arguments = "-cp " + standaloneTestJar + " " + webserverClassName;
