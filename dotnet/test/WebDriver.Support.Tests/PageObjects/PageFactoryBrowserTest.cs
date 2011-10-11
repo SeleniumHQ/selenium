@@ -21,21 +21,10 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
         
         [Test]
-        public void FindsRenderedElement()
-        {
-            driver.Url = xhtmlTestPage;
-            var page = new RenderedPage();
-
-            PageFactory.InitElements(driver, page);
-
-            Assert.True(page.formElement.Displayed);
-        }
-
-        [Test]
         public void LooksUpAgainAfterPageNavigation()
         {
             driver.Url = xhtmlTestPage;
-            var page = new RenderedPage();
+            var page = new Page();
 
             PageFactory.InitElements(driver, page);
 
@@ -75,7 +64,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         #region Page classes for tests
         #pragma warning disable 649 //We set fields through reflection, so expect an always-null warning
 
-        private class RenderedPage
+        private class Page
         {
             [FindsBy(How = How.Name, Using = "someForm")]
             public IWebElement formElement;

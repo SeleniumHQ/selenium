@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
@@ -45,17 +46,23 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <param name="page">The Page Object to be populated with elements.</param>
         public static void InitElements(ISearchContext driver, object page)
         {
-            const BindingFlags BindingOptions = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
             if (page == null)
             {
                 throw new ArgumentNullException("page", "page cannot be null");
             }
 
             var type = page.GetType();
-            var fields = type.GetFields(BindingOptions);
-            var properties = type.GetProperties(BindingOptions);
-            var members = new List<MemberInfo>(fields);
-            members.AddRange(properties);
+            var members = new List<MemberInfo>();
+            const BindingFlags PublicBindingOptions = BindingFlags.Instance | BindingFlags.Public;
+            members.AddRange(type.GetFields(PublicBindingOptions));
+            members.AddRange(type.GetProperties(PublicBindingOptions));
+            while (type != null)
+            {
+                const BindingFlags NonPublicBindingOptions = BindingFlags.Instance | BindingFlags.NonPublic;
+                members.AddRange(type.GetFields(NonPublicBindingOptions));
+                members.AddRange(type.GetProperties(NonPublicBindingOptions));
+                type = type.BaseType;
+            }
             
             foreach (var member in members)
             {

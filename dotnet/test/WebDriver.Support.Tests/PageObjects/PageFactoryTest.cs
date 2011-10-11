@@ -102,6 +102,13 @@ namespace OpenQA.Selenium.Support.PageObjects
             AssertFoundElement(page.childElement, "body");
         }
 
+        [Test]
+        public void LooksUpPrivateFieldInSuperClass()
+        {
+            var page = new SubClassToPrivatePage();
+            AssertFindsElementByExactlyOneLookup(page, page.GetField);
+        }
+
         //TODO: Implement FindBys
         //[Test]
         //public void FallsBackOnOtherLocatorsOnFailure()
@@ -236,6 +243,11 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             [FindsBy(How = How.TagName, Using = "body")]
             public IWebElement childElement;
+        }
+
+        private class SubClassToPrivatePage : PrivatePage
+        {
+            
         }
 
         //private class FallsbackPage
