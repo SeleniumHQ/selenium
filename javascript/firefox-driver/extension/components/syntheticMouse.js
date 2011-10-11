@@ -25,6 +25,7 @@ goog.require('bot.dom');
 goog.require('bot.events');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
+goog.require('fxdriver.Logger');
 
 
 var CC = Components.classes;
@@ -92,7 +93,12 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   xOffset -= currentScroll.x;
   yOffset -= currentScroll.y;
 
-  if (this.lastElement && element && this.lastElement != element) {
+  // If the mouse was already moved within this document, assume the last
+  // coordinates of the mouse are the location of lastElement.
+  // This only makes sense, of course, if the last element and the current
+  // element belong to the same document.
+  if (this.lastElement && element && this.lastElement != element &&
+      (this.lastElement.ownerDocument == element.ownerDocument)) {
     var currLoc = Utils.getElementLocation(this.lastElement);
     var targetLoc = Utils.getElementLocation(element);
     xOffset += targetLoc['x'] - currLoc['x'];

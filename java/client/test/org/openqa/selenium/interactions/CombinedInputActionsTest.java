@@ -100,8 +100,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
     assertEquals("#item7", reportingElement.getText());
   }
 
-  @Ignore({SELENESE, IPHONE})
-  public void testCanClickOnLinks() {
+  private void navigateToClicksPageAndClickLink() {
     driver.get(appServer.whereIs("clicks.html"));
 
     waitFor(elementToExist(driver, "normal"));
@@ -112,6 +111,11 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
         .perform();
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
+  @Ignore({SELENESE, IPHONE})
+  public void testCanClickOnLinks() {
+    navigateToClicksPageAndClickLink();
   }
 
   @Ignore(
@@ -129,6 +133,24 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
         .perform();
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
+  /**
+   * This test demonstrates the following problem: When the representation of
+   * the mouse in the driver keeps the wrong state, mouse movement will end
+   * up at the wrong coordinates.
+   */
+  @Ignore({SELENESE, IPHONE})
+  public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
+    navigateToClicksPageAndClickLink();
+
+    WebElement linkId = driver.findElement(By.id("linkId"));
+    new Actions(driver)
+        .moveToElement(linkId, 1, 1)
+        .click()
+        .perform();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "We Arrive Here"));
   }
 
   @Ignore({SELENESE, HTMLUNIT})
