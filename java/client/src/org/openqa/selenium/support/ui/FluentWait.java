@@ -17,21 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * An implementation of the {@link Wait} interface that may have its timeout and polling interval
@@ -132,20 +131,20 @@ public class FluentWait<T> implements Wait<T> {
    * @param types The types of exceptions to ignore.
    * @return A self reference.
    */
-  public FluentWait<T> ignoreAll(Iterable<Class<? extends RuntimeException>> types) {
-    ignoredExceptions.addAll(Lists.newArrayList(types));
+  public FluentWait<T> ignoreAll(Collection<Class<? extends RuntimeException>> types) {
+    ignoredExceptions.addAll(types);
     return this;
   }
 
   /**
-   * @see #ignoreAll(Iterable)
+   * @see #ignoreAll(Collection)
    */
   public FluentWait<T> ignoring(Class<? extends RuntimeException> exceptionType) {
     return this.ignoreAll(ImmutableList.<Class<? extends RuntimeException>>of(exceptionType));
   }
 
   /**
-   * @see #ignoreAll(Iterable)
+   * @see #ignoreAll(Collection)
    */
   public FluentWait<T> ignoring(Class<? extends RuntimeException> firstType,
                                 Class<? extends RuntimeException> secondType) {
