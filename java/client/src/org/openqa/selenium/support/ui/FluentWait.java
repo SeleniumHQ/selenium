@@ -24,6 +24,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import org.openqa.selenium.TimeoutException;
@@ -127,13 +128,29 @@ public class FluentWait<T> implements Wait<T> {
   /**
    * Configures this instance to ignore specific types of exceptions while waiting for a condition.
    * Any exceptions not whitelisted will be allowed to propagate, terminating the wait.
-   * 
+   *
    * @param types The types of exceptions to ignore.
    * @return A self reference.
    */
-  public FluentWait<T> ignoring(Class<? extends RuntimeException>... types) {
+  public FluentWait<T> ignoreAll(Iterable<Class<? extends RuntimeException>> types) {
     ignoredExceptions.addAll(Lists.newArrayList(types));
     return this;
+  }
+
+  /**
+   * @see #ignoreAll(Iterable)
+   */
+  public FluentWait<T> ignoring(Class<? extends RuntimeException> exceptionType) {
+    return this.ignoreAll(ImmutableList.<Class<? extends RuntimeException>>of(exceptionType));
+  }
+
+  /**
+   * @see #ignoreAll(Iterable)
+   */
+  public FluentWait<T> ignoring(Class<? extends RuntimeException> firstType,
+                                Class<? extends RuntimeException> secondType) {
+
+    return this.ignoreAll(ImmutableList.<Class<? extends RuntimeException>>of(firstType, secondType));
   }
 
   /**
