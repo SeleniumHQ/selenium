@@ -237,8 +237,6 @@ public class FirefoxProfileTest extends TestCase {
     Preferences parsedPrefs = parseUserPrefs(rebuilt);
 
     assertEquals(dir, parsedPrefs.getPreference("browser.download.dir"));
-    File layoutOnDisk = rebuilt.layoutOnDisk();
-    System.out.println(layoutOnDisk);
   }
 	  
   private void assertPreferenceValueEquals(String key, Object value) throws Exception {
