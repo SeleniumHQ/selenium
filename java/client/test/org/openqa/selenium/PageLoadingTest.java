@@ -163,10 +163,12 @@ public class PageLoadingTest extends AbstractDriverTestCase {
    * @throws Exception If the test fails.
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=208"> Issue 208</a>
    * 
-   * This test often causes the subsequent test to fail, in Firefox, on Linux.
+   * This test often causes the subsequent test to fail, in Firefox, on Linux, so we need
+   * a new driver after it.
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=2282">Issue 2282</a>
    */
-  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID, FIREFOX}, reason = "Untested user-agents")
+  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID}, reason = "Untested user-agents")
+  @NoDriverAfterTest
   @JavascriptEnabled
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
       throws Exception {
