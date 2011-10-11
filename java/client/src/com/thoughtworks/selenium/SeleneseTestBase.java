@@ -177,7 +177,9 @@ public class SeleneseTestBase {
 
   /** Like JUnit's Assert.assertEquals, but knows how to compare string arrays */
   public static void assertEquals(Object expected, Object actual) {
-    if (expected instanceof String && actual instanceof String) {
+    if (expected == null) {
+      assertTrue("Expected \"" + expected + "\" but saw \"" + actual + "\" instead", actual == null);
+    } else if (expected instanceof String && actual instanceof String) {
       assertEquals((String) expected, (String) actual);
     } else if (expected instanceof String && actual instanceof String[]) {
       assertEquals((String) expected, (String[]) actual);
@@ -186,18 +188,9 @@ public class SeleneseTestBase {
     } else if (expected instanceof Number && actual instanceof String) {
       assertEquals(expected.toString(), (String) actual);
     } else if (expected instanceof String[] && actual instanceof String[]) {
-      String[] sa1 = (String[]) expected;
-      String[] sa2 = (String[]) actual;
-      if (sa1.length != sa2.length) {
-        throw new Error("Expected " + sa1 + " but saw " + sa2);
-      }
-      for (int j = 0; j < sa1.length; j++) {
-        assertEquals(sa1[j], sa2[j]);
-      }
-    } else if (expected == null) {
-      assertTrue(actual == null);
+      assertEquals((String[]) expected, (String[]) actual);
     } else {
-      assertTrue(expected.equals(actual));
+      assertTrue("Expected \"" + expected + "\" but saw \"" + actual + "\" instead", expected.equals(actual));
     }
   }
 
@@ -222,6 +215,9 @@ public class SeleneseTestBase {
    * @return true if actual matches the expectedPattern, or false otherwise
    */
   public static boolean seleniumEquals(String expectedPattern, String actual) {
+    if (expectedPattern == null || actual == null) {
+      return expectedPattern == null && actual == null;
+    }
     if (actual.startsWith("regexp:") || actual.startsWith("regex:") ||
         actual.startsWith("regexpi:") || actual.startsWith("regexi:")) {
       // swap 'em
@@ -289,6 +285,9 @@ public class SeleneseTestBase {
    * @return true if actual matches the expectedPattern, or false otherwise
    */
   public static boolean seleniumEquals(Object expected, Object actual) {
+    if (expected == null) {
+      return actual == null;
+    }
     if (expected instanceof String && actual instanceof String) {
       return seleniumEquals((String) expected, (String) actual);
     }
@@ -381,8 +380,10 @@ public class SeleneseTestBase {
 
   /** Asserts that two objects are not the same (compares using .equals()) */
   public static void assertNotEquals(Object expected, Object actual) {
-    if (expected.equals(actual)) {
-      fail("did not expect (" + actual.toString() + ") to be equal to (" + expected.toString() + ")");
+    if (expected == null) {
+      assertFalse("did not expect null to be null", actual == null);
+    } else if (expected.equals(actual)) {
+      fail("did not expect (" + actual + ") to be equal to (" + expected + ")");
     }
   }
 
