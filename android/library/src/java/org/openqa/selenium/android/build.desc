@@ -1,0 +1,10 @@
+
+java_library(name = "android_library",
+  srcs = ["*.java"],
+  deps = [
+          "//java/client/src/org/openqa/selenium:webdriver-api",
+          "//java/client/src/org/openqa/selenium/remote:common",
+          "//third_party/java/android",
+          "//third_party/java/guava-libraries",
+          ]
+)

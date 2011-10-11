@@ -30,9 +30,9 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.openqa.selenium.android.AndroidDriver;
-import org.openqa.selenium.android.util.Logger;
-import org.openqa.selenium.android.util.Platform;
+import org.openqa.selenium.android.Logger;
+import org.openqa.selenium.android.Platform;
+import org.openqa.selenium.android.server.WebDriverBinder;
 import org.openqa.selenium.android.app.R;
 
 import android.app.NotificationManager;
@@ -146,36 +146,10 @@ public class JettyService extends Service {
         new org.eclipse.jetty.servlet.ServletContextHandler(server, "/wd/hub/status",
             org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
       healthz.addServlet(new ServletHolder(new HealthzServlet()), "/*");
-
-      org.eclipse.jetty.servlet.ServletContextHandler resources =
-        new org.eclipse.jetty.servlet.ServletContextHandler(server, "/resources",
-            org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
-      resources.addServlet(new ServletHolder(new HttpServlet() {
-        @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-          long a=System.currentTimeMillis();
-          response.setContentType("text/plain");
-          InputStream in = null;
-          try {
-            in = JettyService.this.getResources().openRawResource(R.raw.javascript_xpath);
-            ByteStreams.copy(in, response.getOutputStream());
-          } catch (Exception e) {
-            Logger.log(Log.ERROR, LOG_TAG, "Could not open resources" + e.getMessage());
-          } finally {
-            if (in != null) {
-              in.close();
-            }
-          }
-          Logger.log(Log.DEBUG, LOG_TAG,
-              "Loading resource took " + (System.currentTimeMillis()-a) + " ms");
-        }
-      }), "/*");
       
       HandlerList handlers = new HandlerList();
       handlers.setHandlers(
-          new org.eclipse.jetty.server.Handler[] {healthz,
-              resources, root, new DefaultHandler()});
+          new org.eclipse.jetty.server.Handler[] {healthz, root, new DefaultHandler()});
       server.setHandler(handlers);
 
     }
@@ -193,7 +167,7 @@ public class JettyService extends Service {
       wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "IJetty");
       wakeLock.acquire();
 
-      AndroidDriver.setContext(this);
+      //AndroidDriver.setContext(this);
 
       System.setProperty("org.mortbay.log.class", "org.mortbay.log.AndroidLog");
       server = new Server();
