@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
@@ -52,7 +53,7 @@ public class TouchScrollTest extends AbstractDriverTestCase {
     int y = link.getLocation().y;
     // The element is located at the right of the page,
     // so it is not initially visible on the screen.
-    assertTrue(y > 4200);
+    assertTrue("Expected y > 4200, but got y = " + y, y > 4200);
 
     WebElement toScroll = driver.findElement(By.id("imagestart"));
     Action scroll = getBuilder(driver).scroll(toScroll, 0, -800).build();
@@ -60,7 +61,7 @@ public class TouchScrollTest extends AbstractDriverTestCase {
 
     y = link.getLocation().y;
     // After scrolling, the location of the element should change accordingly.
-    assertTrue(y < 3500);
+    assertTrue("Expected y < 3500, but got y = " + y, y < 3500);
   }
 
   @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
