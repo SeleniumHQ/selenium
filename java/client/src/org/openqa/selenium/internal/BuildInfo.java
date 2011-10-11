@@ -48,6 +48,7 @@ public class BuildInfo {
     } catch (NullPointerException ignored) {
     } catch (URISyntaxException ignored) {
     } catch (IOException ignored) {
+    } catch (IllegalArgumentException ignored) {
     }
 
     if (manifest == null) {
