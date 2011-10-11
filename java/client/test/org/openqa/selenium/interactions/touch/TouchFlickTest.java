@@ -83,7 +83,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     flick.perform();
     x = link.getLocation().x;
     // After flicking, the element should now be visible on the screen.
-    assertTrue("Got: " + x, x < 3000);
+    assertTrue("Expected x < 3500, but got: " + x, x < 3500);
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
@@ -144,7 +144,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     flick.perform();
     y = link.getLocation().y;
     // After flicking, the element should now be visible on the screen.
-    assertTrue("Got: " + y, y < 3000);
+    assertTrue("Expected y < 4000, but got: " + y, y < 4000);
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
@@ -165,7 +165,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     flick.perform();
     y = link.getLocation().y;
     // After flicking, the element should now be visible on the screen.
-    assertTrue("Got: " + y, y < 4000);
+    assertTrue("Expected y < 8700, but got: " + y, y < 8700);
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
