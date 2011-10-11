@@ -94,6 +94,9 @@ public class PortProber {
         FIRST_PORT = 1024;
         LAST_PORT = ephemeralRangeDetector.getLowestEphemeralPort() - 1;
       }
+      if (FIRST_PORT == LAST_PORT) {
+        return FIRST_PORT;
+      }
       final int randomInt = random.nextInt();
       final int portWithoutOffset = Math.abs(randomInt % (LAST_PORT - FIRST_PORT + 1));
       return portWithoutOffset + FIRST_PORT;
