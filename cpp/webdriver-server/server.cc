@@ -500,7 +500,7 @@ void Server::PopulateCommandRepository() {
   this->commands_["/session/:sessionid/alert_text"]["GET"] = GetAlertText;
   this->commands_["/session/:sessionid/alert_text"]["POST"] = SendKeysToAlert;
 
-  this->commands_["/session/:sessionid/modifier"]["POST"] = SendModifierKey;
+  this->commands_["/session/:sessionid/keys"]["POST"] = SendKeysToActiveElement;
   this->commands_["/session/:sessionid/moveto"]["POST"] = MouseMoveTo;
   this->commands_["/session/:sessionid/click"]["POST"] = MouseClick;
   this->commands_["/session/:sessionid/doubleclick"]["POST"] = MouseDoubleClick;
@@ -512,6 +512,15 @@ void Server::PopulateCommandRepository() {
   this->commands_["/session/:sessionid/ime/activated"]["GET"] = IsImeActivated;
   this->commands_["/session/:sessionid/ime/activate"]["POST"] = ActivateImeEngine;
   this->commands_["/session/:sessionid/ime/deactivate"]["POST"] = DeactivateImeEngine;
+
+  this->commands_["/session/:sessionId/touch/click"]["POST"] = TouchClick;
+  this->commands_["/session/:sessionId/touch/down"]["POST"] = TouchDown;
+  this->commands_["/session/:sessionId/touch/up"]["POST"] = TouchUp;
+  this->commands_["/session/:sessionId/touch/move"]["POST"] = TouchMove;
+  this->commands_["/session/:sessionId/touch/scroll"]["POST"] = TouchScroll;
+  this->commands_["/session/:sessionId/touch/doubleclick"]["POST"] = TouchDoubleClick;
+  this->commands_["/session/:sessionId/touch/longclick"]["POST"] = TouchLongClick;
+  this->commands_["/session/:sessionId/touch/flick"]["POST"] = TouchFlick;
 }
 
 }  // namespace webdriver

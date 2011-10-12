@@ -75,7 +75,7 @@ enum CommandType {
   GetAlertText,
   SendKeysToAlert,
 
-  SendModifierKey,
+  SendKeysToActiveElement,
   MouseMoveTo,
   MouseClick,
   MouseDoubleClick,
@@ -86,7 +86,16 @@ enum CommandType {
   GetActiveImeEngine,
   IsImeActivated,
   ActivateImeEngine,
-  DeactivateImeEngine
+  DeactivateImeEngine,
+
+  TouchClick,
+  TouchDown,
+  TouchUp,
+  TouchMove,
+  TouchScroll,
+  TouchDoubleClick,
+  TouchLongClick,
+  TouchFlick
 };
 
 }  // namespace webdriver
