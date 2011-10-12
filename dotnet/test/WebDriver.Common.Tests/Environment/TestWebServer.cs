@@ -22,7 +22,7 @@ namespace OpenQA.Selenium.Environment
         {
             if (webserverProcess == null || webserverProcess.HasExited)
             {
-                if (!File.Exists(standaloneTestJar))
+                if (!File.Exists(Path.Combine(projectRootPath, standaloneTestJar)))
                 {
                     throw new FileNotFoundException(
                         string.Format(
