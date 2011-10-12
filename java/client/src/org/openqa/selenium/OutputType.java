@@ -1,7 +1,7 @@
 /*
 Copyright 2007-2009 WebDriver committers
 Copyright 2007-2009 Google Inc.
-Portions copyright 2007 ThoughtWorks, Inc
+Portions copyright 2011 Software Freedom Conservatory
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
