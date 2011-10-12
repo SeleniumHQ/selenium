@@ -18,9 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
-import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
-import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -39,6 +36,9 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+
+import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
+import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
 
 public class NewProfileExtensionConnection implements ExtensionConnection {
   private final static int BUFFER_SIZE = 4096;
@@ -93,7 +93,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection {
       while (!isConnected()) {
         if (waitUntil < System.currentTimeMillis()) {
           throw new NotConnectedException(
-              delegate.getAddressOfRemoteServer(), connectTimeout);
+              delegate.getAddressOfRemoteServer(), connectTimeout, process.getConsoleOutput());
         }
 
         try {
