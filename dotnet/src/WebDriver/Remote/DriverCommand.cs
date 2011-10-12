@@ -344,13 +344,8 @@ namespace OpenQA.Selenium.Remote
         MouseMoveTo,
 
         /// <summary>
-        /// Represents the SendModifierKeyToActiveElement command.
+        /// Represents the SendKeysToActiveElement command.
         /// </summary>
-        SendModifierKeyToActiveElement,
-
-        /// <summary>
-        /// Represents the SendKeysToSession command.
-        /// </summary>
-        SendKeysToSession
+        SendKeysToActiveElement
     }
 }
