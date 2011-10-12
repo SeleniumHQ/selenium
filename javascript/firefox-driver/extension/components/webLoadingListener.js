@@ -36,11 +36,15 @@ function WebLoadingListener(browser, toCall) {
       if (flags & STATE_STOP) {
         if (request.URI &&  this.active) {
           this.active = false;
-          if (bot.userAgent.isVersion('4')){ // Removing is dangerous on ff3 since it
-                                             // may skip subsequent listeners. So we leak memory instead.
+          // On versions of firefox prior to 4 removing a listener may cause
+          // subsequent listeners to be skipped. Favouring a memory leak over
+          // not working properly.
+          if (bot.userAgent.isVersion('4')) {
              WebLoadingListener.removeListener(browser, listener);
           }
           toCall(webProgress);
+          // Neuter the toCall so that it's never used again.
+          toCall = function() {};
         }
       }
       return 0;
