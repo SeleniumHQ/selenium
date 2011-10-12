@@ -23,7 +23,6 @@ HtmlDialog::HtmlDialog(IHTMLWindow2* window, HWND hwnd, HWND session_handle) : D
 }
 
 HtmlDialog::~HtmlDialog(void) {
-  this->DetachEvents();
 }
 
 void HtmlDialog::AttachEvents() {
@@ -51,15 +50,26 @@ void HtmlDialog::GetDocument(IHTMLDocument2** doc) {
 }
 
 void HtmlDialog::Close() {
-  this->window_->close();
+  if (!this->is_closing()) {
+    this->is_navigating_ = false;
+    this->DetachEvents();
+    this->window_->close();
+
+    // Must manually release the CComPtr<IHTMLWindow> so that the
+    // destructor will not try to release a no-longer-valid object.
+    this->window_.Release();
+    this->window_ = NULL;
+
+    this->PostQuitMessage();
+  }
 }
 
 bool HtmlDialog::Wait() {
   // If the window handle is no longer valid, the window is closing,
   // the wait is completed, and we must post the quit message.
-  if (!::IsWindow(this->GetTopLevelWindowHandle())) {
+  if (!this->is_closing() && !::IsWindow(this->GetTopLevelWindowHandle())) {
     this->is_navigating_ = false;
-    this->set_is_closing(true);
+    this->DetachEvents();
     this->PostQuitMessage();
     return true;
   }
@@ -72,12 +82,16 @@ bool HtmlDialog::Wait() {
     HWND child_dialog_handle = this->GetActiveDialogWindowHandle();
     if (child_dialog_handle != NULL) {
       HWND content_window_handle = this->FindContentWindowHandle(child_dialog_handle);
-      ::PostMessage(this->executor_handle(),
-                    WD_NEW_HTML_DIALOG,
-                    NULL,
-                    reinterpret_cast<LPARAM>(content_window_handle));
-      this->set_wait_required(false);
-      return true;
+      if (content_window_handle != NULL) {
+        // Must have a sleep here to give IE a chance to draw the window.
+        ::Sleep(250);
+        ::PostMessage(this->executor_handle(),
+                      WD_NEW_HTML_DIALOG,
+                      NULL,
+                      reinterpret_cast<LPARAM>(content_window_handle));
+        this->set_wait_required(false);
+        return true;
+      }
     }
   }
 

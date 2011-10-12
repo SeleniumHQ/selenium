@@ -65,12 +65,12 @@ class DocumentHost {
   bool is_closing(void) const { return this->is_closing_; }
 
   std::string browser_id(void) const { return this->browser_id_; }
+  HWND window_handle(void) const { return this->window_handle_; }
 
  protected:
   void PostQuitMessage(void);
   HWND FindContentWindowHandle(HWND top_level_window_handle);
 
-  HWND window_handle(void) const { return this->window_handle_; }
   void set_window_handle(const HWND window_handle) { 
     this->window_handle_ = window_handle; 
   }

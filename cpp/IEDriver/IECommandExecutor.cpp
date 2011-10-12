@@ -118,6 +118,7 @@ LRESULT IECommandExecutor::OnClose(UINT uMsg,
                                    WPARAM wParam,
                                    LPARAM lParam,
                                    BOOL& bHandled) {
+  this->managed_elements_.clear();
   this->DestroyWindow();
   return 0;
 }
@@ -246,9 +247,16 @@ LRESULT IECommandExecutor::OnNewHtmlDialog(UINT uMsg,
                                            LPARAM lParam,
                                            BOOL& bHandles) {
   HWND dialog_handle = reinterpret_cast<HWND>(lParam);
+  BrowserMap::const_iterator it = this->managed_browsers_.begin();
+  for (; it != this->managed_browsers_.end(); ++it) {
+    if (dialog_handle == it->second->window_handle()) {
+      return 0;
+    }
+  }
+
   CComPtr<IHTMLDocument2> document;
   if (this->factory_.GetDocumentFromWindowHandle(dialog_handle, &document)) {
-    IHTMLWindow2* window;
+    CComPtr<IHTMLWindow2> window;
     document->get_parentWindow(&window);
     this->AddManagedBrowser(BrowserHandle(new HtmlDialog(window,
                                                          dialog_handle,
