@@ -934,16 +934,20 @@ at the end of the sequence.
                        'string to be typed.'))
 
   resources.append(
-      SessionResource('/session/:sessionId/modifier').
-      Post('Send an event to the active element to depress or release a '
-           'modifier key.').
-      AddJsonParameter('value', '{string}',
-                       'The modifier key event to be sent. This key must be one'
-                       ' Ctrl, Shift, Alt, or Command/Meta, as defined by the '
+      SessionResource('/session/:sessionId/keys').
+      Post('Send a sequence of key strokes to the active element. This '
+           'command is similar to the '
+           '[JsonWireProtocol#/session/:sessionId/element/:id/value'
+           ' send keys] command in every aspect except the implicit '
+           'termination: The modifiers are *not* released at the end of the '
+           'call. Rather, the state of the modifier keys is kept between '
+           'calls, so mouse interactions can be performed while modifier '
+           'keys are depressed.').
+      AddJsonParameter('value', '{Array.<string>}',
+                       'The keys sequence to be sent. The sequence is defined '
+                       'in the'
                        '[JsonWireProtocol#/session/:sessionId/element/:id/value'
-                       ' send keys] command.').
-      AddJsonParameter('isdown', '{boolean}',
-                       'Whether to generate a key down or key up.'))
+                       ' send keys] command.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/name').

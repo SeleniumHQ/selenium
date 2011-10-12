@@ -36,6 +36,8 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestUtilities.isFirefox;
+import static org.openqa.selenium.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 
@@ -160,6 +162,13 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
       return;
     }
 
+    if (Platform.getCurrent().is(Platform.WINDOWS) &&
+        (isInternetExplorer(driver) || isFirefox(driver))) {
+      System.out.println("Skipping testChordControlCutAndPaste on Windows: native events library" +
+          " does not support storing modifiers state yet.");
+      return;
+    }
+
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("keyReporter"));
@@ -170,17 +179,23 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
     assertEquals("abc def", element.getAttribute("value"));
 
+    //TODO: Figure out why calling sendKey(Key.CONTROL + "a") and then
+    //sendKeys("x") does not work on Linux.
     new Actions(driver)
-        .sendKeys(Keys.CONTROL + "a")
-        .sendKeys(Keys.CONTROL + "x")
+        .sendKeys(Keys.CONTROL + "a" + "x")
         .perform();
+
+    // Release keys before next step.
+    new Actions(driver).sendKeys(Keys.NULL).perform();
 
     assertEquals("", element.getAttribute("value"));
 
     new Actions(driver)
         .sendKeys(Keys.CONTROL + "v")
-        .sendKeys(Keys.CONTROL + "v")
+        .sendKeys("v")
         .perform();
+
+    new Actions(driver).sendKeys(Keys.NULL).perform();
 
     assertEquals("abc defabc def", element.getAttribute("value"));
   }

@@ -477,8 +477,7 @@ list<GdkEvent*> KeypressEventsHandler::CreateEventsForKey(
   // First case - is it the NULL symbol? If so, reset modifiers and exit.
   if (key_to_emulate == gNullKey) {
     LOG(DEBUG) << "Null key - clearing modifiers.";
-    ClearModifiers();
-    return ret_list;
+    return CreateModifierReleaseEvents();
   }
 
   // Now: The key is either a modifier key or character key.

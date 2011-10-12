@@ -223,7 +223,7 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
     }
 
     Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
-        originalDriver.enableNativeEvents, originalDriver.jsTimer);
+        originalDriver.enableNativeEvents, originalDriver.jsTimer, true /*release modifiers*/);
 
     respond.send();
   }, 0);

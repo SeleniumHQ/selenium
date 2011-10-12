@@ -354,7 +354,8 @@ Utils.useNativeEvents = function() {
   return false;
 }
 
-Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer) {
+Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseModifiers,
+    opt_keysState) {
 
   // For consistency between native and synthesized events, convert common
   // escape sequences to their Key enum aliases.
@@ -381,7 +382,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer) {
     var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(element);
 
     // Now do the native thing.
-    obj.sendKeys(node, text, true);
+    obj.sendKeys(node, text, releaseModifiers);
 
     Utils.waitForNativeEventsProcessing(element, obj, pageUnloadedIndicator, jsTimer);
 
@@ -393,6 +394,12 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer) {
   var shiftKey = false;
   var altKey = false;
   var metaKey = false;
+  if (opt_keysState) {
+    controlKey = opt_keysState.control;
+    shiftKey = opt_keysState.shiftKey;
+    altKey = opt_keysState.alt;
+    metaKey = opt_keysState.meta;
+  }
 
   Utils.shiftCount = 0;
 
@@ -669,29 +676,36 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer) {
 
   // exit cleanup: keyup active modifier keys
 
-  if (controlKey) {
+  if (controlKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
     Utils.keyEvent(doc, element, "keyup", kCode, 0,
         controlKey = false, shiftKey, altKey, metaKey);
   }
 
-  if (shiftKey) {
+  if (shiftKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
     Utils.keyEvent(doc, element, "keyup", kCode, 0,
         controlKey, shiftKey = false, altKey, metaKey);
   }
 
-  if (altKey) {
+  if (altKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
     Utils.keyEvent(doc, element, "keyup", kCode, 0,
         controlKey, shiftKey, altKey = false, metaKey);
   }
 
-  if (metaKey) {
+  if (metaKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
     Utils.keyEvent(doc, element, "keyup", kCode, 0,
         controlKey, shiftKey, altKey, metaKey = false);
   }
+
+  return {
+    shiftKey: shiftKey,
+    alt: altKey,
+    meta: metaKey,
+    control: controlKey
+  };
 };
 
 

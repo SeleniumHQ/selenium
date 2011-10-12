@@ -54,6 +54,8 @@ function FirefoxDriver(server, enableNativeEvents, win) {
 
   this.jsTimer = new fxdriver.Timer();
   this.mouse = Utils.newInstance("@googlecode.com/webdriver/syntheticmouse;1", "wdIMouse");
+  // Current state of modifier keys (for synthenized events).
+  this.modifierKeysState = undefined;
 }
 
 
@@ -1254,4 +1256,34 @@ FirefoxDriver.prototype.mouseDoubleClick = function(respond, parameters) {
   } else {
     throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
   }
+};
+
+FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) {
+  Utils.installWindowCloseListener(respond);
+
+  var currentlyActiveElement = Utils.getActiveElement(respond.session.getDocument());
+
+  if(bot.dom.isEditable(currentlyActiveElement)) {
+      goog.dom.selection.setCursorPosition(
+          currentlyActiveElement, currentlyActiveElement.value.length);
+  }
+
+  var useElement = currentlyActiveElement;
+  var tagName = useElement.tagName.toLowerCase();
+  if (tagName == "body" && useElement.ownerDocument.defaultView.frameElement) {
+    useElement.ownerDocument.defaultView.focus();
+
+    // Turns out, this is what we should be using as the target
+    // to send events to
+    useElement = useElement.ownerDocument.getElementsByTagName("html")[0];
+  }
+
+  // In case Utils.type performs non-native typing, it will return the state of the
+  // modifier keys to be used in subsequent typing. This is a stop-gap solution until
+  // a syntheticKeyboard class will be extracted.
+  var newState = Utils.type(respond.session.getDocument(), useElement, parameters.value.join(''),
+      this.enableNativeEvents, this.jsTimer, false /*release modifiers*/, this.modifierKeysState);
+  this.modifierKeysState = newState;
+
+  respond.send();
 };

@@ -647,17 +647,18 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   private class RemoteKeyboard implements Keyboard {
     public void sendKeys(CharSequence... keysToSend) {
-      switchTo().activeElement().sendKeys(keysToSend);
+      execute(DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT,
+          ImmutableMap.of("value", keysToSend));
     }
 
     public void pressKey(Keys keyToPress) {
-      execute(DriverCommand.SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT,
-          ImmutableMap.of("value", keyToPress, "isdown", true));
+      execute(DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT,
+          ImmutableMap.of("value", keyToPress));
     }
 
     public void releaseKey(Keys keyToRelease) {
-      execute(DriverCommand.SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT,
-          ImmutableMap.of("value", keyToRelease, "isdown", false));
+      execute(DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT,
+          ImmutableMap.of("value", keyToRelease));
 
     }
   }

@@ -129,7 +129,7 @@ import static org.openqa.selenium.remote.DriverCommand.REMOVE_LOCAL_STORAGE_ITEM
 import static org.openqa.selenium.remote.DriverCommand.REMOVE_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_BROWSER_ONLINE;
 import static org.openqa.selenium.remote.DriverCommand.SET_BROWSER_VISIBLE;
@@ -317,7 +317,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(MOUSE_DOWN, post("/session/:sessionId/buttondown"))
         .put(MOUSE_UP, post("/session/:sessionId/buttonup"))
         .put(MOVE_TO, post("/session/:sessionId/moveto"))
-        .put(SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT, post("/session/:sessionId/modifier"))
+        .put(SEND_KEYS_TO_ACTIVE_ELEMENT, post("/session/:sessionId/keys"))
 
             // IME related commands.
         .put(IME_GET_AVAILABLE_ENGINES, get("/session/:sessionId/ime/available_engines"))
