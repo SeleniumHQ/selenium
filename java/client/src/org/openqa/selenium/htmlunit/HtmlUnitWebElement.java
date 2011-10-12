@@ -476,11 +476,20 @@ public class HtmlUnitWebElement implements WrapsDriver,
     StringBuffer toReturn = new StringBuffer();
     StringBuffer textSoFar = new StringBuffer();
 
-    getTextFromNode(element, toReturn, textSoFar, element instanceof HtmlPreformattedText);
+    boolean isPreformatted = element instanceof HtmlPreformattedText;
+    getTextFromNode(element, toReturn, textSoFar, isPreformatted);
 
     String text = toReturn.toString() + collapseWhitespace(textSoFar);
 
-    return text.trim().replace(nbspChar, ' ');
+    if (!isPreformatted) {
+      text = text.trim();
+    } else {
+      if (text.endsWith("\n")) {
+        text = text.substring(0, text.length()-1);
+      }
+    }
+
+    return text.replace(nbspChar, ' ');
   }
 
   protected HtmlUnitDriver getParent() {
@@ -498,30 +507,31 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
     if (isPreformatted) {
       getPreformattedText(node, toReturn);
-    }
 
-    for (DomNode child : node.getChildren()) {
-      // Do we need to collapse the text so far?
-      if (child instanceof HtmlPreformattedText) {
-        if (child.isDisplayed()) {
-          toReturn.append(collapseWhitespace(textSoFar));
-          textSoFar.delete(0, textSoFar.length());
+    } else {
+      for (DomNode child : node.getChildren()) {
+        // Do we need to collapse the text so far?
+        if (child instanceof HtmlPreformattedText) {
+          if (child.isDisplayed()) {
+            toReturn.append(collapseWhitespace(textSoFar));
+            textSoFar.delete(0, textSoFar.length());
+          }
+          getTextFromNode(child, toReturn, textSoFar, true);
+          continue;
         }
-        getTextFromNode(child, toReturn, textSoFar, true);
-        continue;
-      }
 
-      // Or is this just plain text?
-      if (child instanceof DomText) {
-        if (child.isDisplayed()) {
-          String textToAdd = ((DomText) child).getData();
-          textSoFar.append(textToAdd);
+        // Or is this just plain text?
+        if (child instanceof DomText) {
+          if (child.isDisplayed()) {
+            String textToAdd = ((DomText) child).getData();
+            textSoFar.append(textToAdd);
+          }
+          continue;
         }
-        continue;
-      }
 
-      // Treat as another child node.
-      getTextFromNode(child, toReturn, textSoFar, false);
+        // Treat as another child node.
+        getTextFromNode(child, toReturn, textSoFar, false);
+      }
     }
 
     if (isBlockLevel(node)) {
@@ -559,8 +569,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   private void getPreformattedText(DomNode node, StringBuffer toReturn) {
     if (node.isDisplayed()) {
-      String xmlText = node.asXml();
-      toReturn.append(xmlText.replaceAll("^<pre.*?>", "").replaceAll("</pre.*>$", ""));
+      toReturn.append(node.getTextContent());
     }
   }
 
