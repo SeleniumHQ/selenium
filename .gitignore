@@ -38,6 +38,7 @@ third_party/gecko-5/linux
 third_party/gecko-5/linux64
 third_party/gecko-5/win32
 third_party/gecko-6
+third_party/gecko-7
 cpp/IEDriver/Generated/atoms.h
 chromedriver.log
 *.rbc

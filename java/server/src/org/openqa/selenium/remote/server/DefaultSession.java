@@ -131,6 +131,7 @@ public class DefaultSession implements Session {
   public void close() {
     executor.shutdown();
     tempFs.deleteTemporaryFiles();
+    tempFs.deleteBaseDir();
   }
 
   public <X> X execute(FutureTask<X> future) throws Exception {

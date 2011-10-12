@@ -26,10 +26,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * A wrapper around temporary filesystem behaviour.
- * 
+ *
  * @author gblock@google.com (Gregory Block)
  */
 public class TemporaryFilesystem {
+
   private final Set<File> temporaryFiles = new CopyOnWriteArraySet<File>();
   private final File baseDir;
   private final Thread shutdownHook = new Thread() {  // Thread safety reviewed
@@ -83,7 +84,7 @@ public class TemporaryFilesystem {
 
   /**
    * Create a temporary directory, and track it for deletion.
-   * 
+   *
    * @param prefix the prefix to use when creating the temporary directory
    * @param suffix the suffix to use when creating the temporary directory
    * @return the temporary directory to create
@@ -113,7 +114,7 @@ public class TemporaryFilesystem {
 
   /**
    * Delete a temporary directory that we were responsible for creating.
-   * 
+   *
    * @param file the file to delete
    * @throws WebDriverException if interrupted
    */
@@ -147,11 +148,15 @@ public class TemporaryFilesystem {
 
   /**
    * Returns true if we should be reaping profiles. Used to control tempfile deletion.
-   * 
+   *
    * @return true if reaping is enabled.
    */
   boolean shouldReap() {
     String reap = System.getProperty("webdriver.reap_profile", "true");
     return Boolean.valueOf(reap);
+  }
+
+  public boolean deleteBaseDir() {
+    return baseDir.delete();
   }
 }
