@@ -57,8 +57,7 @@ function WebLoadingListener(browser, toCall) {
     onLinkIconAvailable: function() { return 0; }
   };
 
-  browser.addProgressListener(this.handler,
-      Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);
+  browser.addProgressListener(this.handler);
 }
 
 WebLoadingListener.removeListener = function(browser, listener) {
