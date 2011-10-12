@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
@@ -177,5 +176,23 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     // If this command succeeds, then all is well.
     WebElement body = driver.findElement(By.tagName("body"));
     waitFor(WaitingConditions.elementTextToContain(body, "world"));
+  }
+
+  @Ignore
+  public void testShouldNotWaitIndefinitelyIfAnExternalResourceFailsToLoad() {
+    String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
+
+    long start = System.currentTimeMillis();
+    driver.get(slowPage);
+    System.out.println("Proceeding: " + (System.currentTimeMillis() - start));
+    // We discard the element, but want a check to make sure the GET actually
+    // completed.
+    driver.findElement(By.id("peas"));
+    long end = System.currentTimeMillis();
+
+    // The slow loading resource on that page takes 6 seconds to return. If we
+    // waited for it, our load time should be over 6 seconds.
+    long duration = end - start;
+    assertTrue("Took too long to load page: " + duration, duration < 5*1000);
   }
 }
