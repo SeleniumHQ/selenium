@@ -232,5 +232,5 @@ fxdriver.Logger.stackTrace = function() {
     dump += stack + "\n";
   }
 
-  fxdriver.Logger.log_(dump);
+  fxdriver.Logger.dumpn(dump);
 };
