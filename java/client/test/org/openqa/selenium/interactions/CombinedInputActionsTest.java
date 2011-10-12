@@ -142,7 +142,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
    * the mouse in the driver keeps the wrong state, mouse movement will end
    * up at the wrong coordinates.
    */
-  @Ignore({SELENESE, IPHONE})
+  @Ignore({SELENESE, IPHONE,HTMLUNIT})
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
 
