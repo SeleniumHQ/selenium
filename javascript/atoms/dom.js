@@ -653,10 +653,7 @@ bot.dom.getVisibleText = function(elem) {
       bot.dom.trimExcludingNonBreakingSpaceCharacters_);
   var joined = lines.join('\n');
   var trimmed = bot.dom.trimExcludingNonBreakingSpaceCharacters_(joined);
-  
-  // Replace non-breakable spaces with regular ones and remove zero-width
-  // spaces used to mark borders of preformatted text fragments.
-  return trimmed.replace(/\xa0/g, ' ').replace(/\u200b/g, '');
+  return trimmed.replace(/\xa0/g, ' ');
 };
 
 
@@ -796,15 +793,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
       goog.string.startsWith(text, ' ')) {
     text = text.substr(1);
   }
-  
-  if (whitespace == 'pre' || whitespace == 'pre-wrap') {
-    // The trick is to use zero-width spaces to mark borders of preformatted
-    //  text fragments to protect them from trimming.
-    // They should be removed later (see bot.dom.getVisibleText)
-    lines.push('\u200b' + currLine + text + '\u200b');
-  } else {
-    lines.push(currLine + text);
-  }
+  lines.push(currLine + text);
 };
 
 

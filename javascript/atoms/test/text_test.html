@@ -210,18 +210,6 @@ limitations under the License.
       assertEquals("Some text", text);
     }
 
-    function testShouldRetainTheFormatingOfTextWithinAPreElement() {
-      var text = getVisibleTextByElementId("preformatted");
-
-      assertEquals("   This section has a preformatted\n    text block    \n  split in four lines\n         ", text);
-    }
-
-    function testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
-      var text = getVisibleTextByElementId("div-with-pre");
-
-      assertEquals("before pre\n   This section has a preformatted\n    text block    \n  split in four lines\n         \nafter pre", text);
-    }
-
     function getVisibleTextByElementId(id) {
       var e = bot.locators.findElement({id: id});
       return bot.dom.getVisibleText(e);
@@ -298,14 +286,11 @@ limitations under the License.
   <p id="inline">This <span id="inlinespan">    line has <em>text</em>  </span> within elements that are meant to be displayed
       <!-- not as a block but --> inline</p>
 
-  <div id="div-with-pre">
-  <p>before pre</p>
-  <pre id="preformatted">   This section has a preformatted
-    text block    
-  split in four lines
-         </pre>
-  <p>after pre</p>
-  </div>
+  <p id="preformatted">This section has a <pre>preformatted
+      text block
+    within in
+          </pre>
+  </p>
 
   <div id="twoblocks"><p>Some text</p><p>Some more text</p></div>
 
