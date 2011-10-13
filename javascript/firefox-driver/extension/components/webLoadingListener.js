@@ -18,12 +18,20 @@
 
 var STATE_STOP = Components.interfaces.nsIWebProgressListener.STATE_STOP;
 
-function PatientListener(onComplete) {
-  this.active = true;
+function DoNothing(browser, onComplete, opt_window) {
+  this.browser = browser;
   this.onComplete = onComplete;
+  this.win = opt_window;
+  this.active = true;
 }
+DoNothing.prototype.onLocationChange = function() { return 0; };
+DoNothing.prototype.onProgressChange = function() { return 0; };
+DoNothing.prototype.onStateChange = function() { return 0; };
+DoNothing.prototype.onStatusChange = function() { return 0; };
+DoNothing.prototype.onSecurityChange = function() { return 0; };
+DoNothing.prototype.onLinkIconAvailable = function() { return 0; };
 
-PatientListener.prototype.QueryInterface = function(iid) {
+DoNothing.prototype.QueryInterface = function(iid) {
   if (iid.equals(Components.interfaces.nsIWebProgressListener) ||
       iid.equals(Components.interfaces.nsISupportsWeakReference) ||
       iid.equals(Components.interfaces.nsISupports)) {
@@ -31,6 +39,16 @@ PatientListener.prototype.QueryInterface = function(iid) {
   }
   throw Components.results.NS_NOINTERFACE;
 };
+
+
+function PatientListener(browser, onComplete, opt_window) {
+  this.browser = browser;
+  this.onComplete = onComplete;
+  this.win = opt_window;
+  this.active = true;
+}
+PatientListener.prototype = new DoNothing();
+
 
 PatientListener.prototype.onStateChange = function(webProgress, request, flags) {
   if (!this.active) {
@@ -45,7 +63,7 @@ PatientListener.prototype.onStateChange = function(webProgress, request, flags) 
       // subsequent listeners to be skipped. Favouring a memory leak over
       // not working properly.
       if (bot.userAgent.isVersion('4')) {
-        WebLoadingListener.removeListener(browser, this);
+        WebLoadingListener.removeListener(this.browser, this);
       }
       this.onComplete(webProgress);
     }
@@ -54,12 +72,56 @@ PatientListener.prototype.onStateChange = function(webProgress, request, flags) 
 };
 
 
-function buildHandler(toCall, opt_window) {
-  return new PatientListener(toCall);
+function ImpatientListener(browser, onComplete, opt_window) {
+  this.broser = browser;
+  this.browserProgress = browser.webProgress;
+  this.active = true;
+  this.onComplete = onComplete;
+  this.win = opt_window || null;
+}
+ImpatientListener.prototype = new PatientListener();
+
+ImpatientListener.prototype.onProgressChange = function(webProgress) {
+  if (!this.active) {
+    return 0;
+  }
+
+  // The expected webProgress is not always given to this method:
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=693970
+  // Consequently, we'll need to iterate over the browser's load group
+  // looking for what we want to find. Or do we....
+
+  if (!this.win || this.win.closed) {
+    return 0;
+  }
+
+  var readyState = this.win.document && this.win.document.readyState;
+  var location = this.win.document.location;
+
+  if (('complete' == readyState || 'interactive' == readyState) &&
+      (location != 'about:blank')) {
+    this.active = false;
+
+    // On versions of firefox prior to 4 removing a listener may cause
+    // subsequent listeners to be skipped. Favouring a memory leak over
+    // not working properly.
+    if (bot.userAgent.isVersion('4')) {
+      WebLoadingListener.removeListener(this.browser, listener);
+    }
+    this.onComplete(webProgress || this.browserProgress);
+  }
+
+  return 0;
+};
+
+
+function buildHandler(browser, toCall, opt_window) {
+//  return new ImpatientListener(browser, toCall, opt_window);
+  return new PatientListener(browser, toCall, opt_window);
 }
 
 function WebLoadingListener(browser, toCall, opt_window) {
-  this.handler = buildHandler(toCall, opt_window);
+  this.handler = buildHandler(browser, toCall, opt_window);
   browser.addProgressListener(this.handler);
 }
 
