@@ -102,7 +102,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
       respond.session.setWindow(respond.session.getBrowser().contentWindow);
       respond.value = responseText;
       respond.send();
-    });
+    }, respond.session.getWindow());
   }
 
   respond.session.getBrowser().loadURI(url);
