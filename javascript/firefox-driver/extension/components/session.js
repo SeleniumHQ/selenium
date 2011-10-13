@@ -204,7 +204,7 @@ wdSession.prototype.setChromeWindow = function(win) {
  * @param {nsIDOMWindow} win The new window.
  */
 wdSession.prototype.setWindow = function(win) {
-  this.window_ =  Components.utils.getWeakReference(win);
+  this.window_ = Components.utils.getWeakReference(win);
 };
 
 

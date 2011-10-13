@@ -1188,11 +1188,10 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
   var currentWindow = respond.session.getWindow();
 
   var clickListener = new WebLoadingListener(browser, function(webProgress) {
-    fxdriver.Logger.dumpn("New page loading.");
-    if (webProgress.DOMWindow != currentWindow
-        && webProgress.DOMWindow == browser.contentWindow) {
-      fxdriver.Logger.dumpn("Detected page load in top window; changing session focus from " +
-                   "frame to new top window.");
+    fxdriver.Logger.dumpn('New page loading.');
+    if (currentWindow.closed) {
+      fxdriver.Logger.dumpn('Detected page load in top window; changing session focus from ' +
+                   'frame to new top window.');
       respond.session.setWindow(browser.contentWindow);
     }
     respond.send();
