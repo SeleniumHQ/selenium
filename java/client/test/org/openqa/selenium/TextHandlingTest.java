@@ -167,7 +167,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         "         "));
   }
 
-  @Ignore({SELENESE, IPHONE, ANDROID, CHROME, OPERA})
+  @Ignore({SELENESE, IPHONE, ANDROID, CHROME, HTMLUNIT, OPERA})
   public void testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("div-with-pre")).getText();
