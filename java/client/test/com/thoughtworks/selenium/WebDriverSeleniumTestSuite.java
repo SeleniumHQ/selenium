@@ -39,6 +39,7 @@ import com.thoughtworks.selenium.corebased.TestGettingValueOfCheckbox;
 import com.thoughtworks.selenium.corebased.TestGoBack;
 import com.thoughtworks.selenium.corebased.TestHtmlSource;
 import com.thoughtworks.selenium.corebased.TestImplicitLocators;
+import com.thoughtworks.selenium.corebased.TestLocators;
 import com.thoughtworks.selenium.corebased.TestMultiSelect;
 import com.thoughtworks.selenium.corebased.TestOpen;
 import com.thoughtworks.selenium.corebased.TestOpenInTargetFrame;
@@ -80,6 +81,7 @@ import org.junit.runners.Suite;
     TestGoBack.class,
     TestHtmlSource.class,
     TestImplicitLocators.class,
+    TestLocators.class,
     TestMultiSelect.class,
     TestOpen.class,
     TestOpenInTargetFrame.class,

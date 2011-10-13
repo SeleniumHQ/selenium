@@ -136,10 +136,6 @@ public class ElementFinder {
       }
     }
 
-    if (locator.startsWith("link=")) {
-
-    }
-
     return null;
   }
 
