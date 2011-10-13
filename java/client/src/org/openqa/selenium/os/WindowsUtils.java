@@ -438,7 +438,7 @@ public class WindowsUtils {
 
     String output = executeCommand(findReg(), "/?");
     boolean version1 = output.indexOf("version 1.0") != -1;
-    regVersion1 = new Boolean(version1);
+    regVersion1 = Boolean.valueOf(version1);
     return version1;
   }
 
@@ -486,8 +486,8 @@ public class WindowsUtils {
       throw new WindowsRegistryException(
           r.value + " was not a REG_SZ or a REG_EXPAND_SZ (String): " + type);
     }
-    String value = m.group(2);
-    return value;
+    
+    return m.group(2);
   }
 
   public static int readIntRegistryValue(String key) {

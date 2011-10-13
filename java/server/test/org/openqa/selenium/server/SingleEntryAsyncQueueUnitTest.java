@@ -177,7 +177,7 @@ public class SingleEntryAsyncQueueUnitTest extends TestCase {
     public Object go() throws Throwable {
       boolean result = queue.putContent(content);
       logger.debug(Thread.currentThread().getName() + " got result: " + result);
-      return new Boolean(result);
+      return Boolean.valueOf(result);
     }
   }
 
