@@ -131,12 +131,15 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     driver.get(pages.formPage);
 
     driver.findElement(By.id("imageButton")).submit();
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
     driver.navigate().back();
+    waitFor(pageTitleToBe(driver, "We Leave From Here"));
     assertThat(driver.getTitle(), equalTo("We Leave From Here"));
 
     driver.navigate().forward();
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
