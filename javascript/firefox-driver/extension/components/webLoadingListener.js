@@ -18,44 +18,48 @@
 
 var STATE_STOP = Components.interfaces.nsIWebProgressListener.STATE_STOP;
 
-function WebLoadingListener(browser, toCall, opt_window) {
-  var listener = this;
+function PatientListener(onComplete) {
+  this.active = true;
+  this.onComplete = onComplete;
+}
 
-  this.handler = {
-    active: true,
-    QueryInterface: function(iid) {
-      if (iid.equals(Components.interfaces.nsIWebProgressListener) ||
-          iid.equals(Components.interfaces.nsISupportsWeakReference) ||
-          iid.equals(Components.interfaces.nsISupports))
-        return this;
-      throw Components.results.NS_NOINTERFACE;
-    },
+PatientListener.prototype.QueryInterface = function(iid) {
+  if (iid.equals(Components.interfaces.nsIWebProgressListener) ||
+      iid.equals(Components.interfaces.nsISupportsWeakReference) ||
+      iid.equals(Components.interfaces.nsISupports)) {
+    return this;
+  }
+  throw Components.results.NS_NOINTERFACE;
+};
 
-    onStateChange: function(webProgress, request, flags, status) {
-      if (flags & STATE_STOP) {
-        if (request.URI &&  this.active) {
-          this.active = false;
-          // On versions of firefox prior to 4 removing a listener may cause
-          // subsequent listeners to be skipped. Favouring a memory leak over
-          // not working properly.
-          if (bot.userAgent.isVersion('4')) {
-             WebLoadingListener.removeListener(browser, listener);
-          }
-          toCall(webProgress);
-          // Neuter the toCall so that it's never used again.
-          toCall = function() {};
-        }
+PatientListener.prototype.onStateChange = function(webProgress, request, flags) {
+  if (!this.active) {
+    return 0;
+  }
+
+  if (flags & STATE_STOP) {
+    if (request.URI) {
+      this.active = false;
+
+      // On versions of firefox prior to 4 removing a listener may cause
+      // subsequent listeners to be skipped. Favouring a memory leak over
+      // not working properly.
+      if (bot.userAgent.isVersion('4')) {
+        WebLoadingListener.removeListener(browser, this);
       }
-      return 0;
-    },
+      this.onComplete(webProgress);
+    }
+  }
+  return 0;
+};
 
-    onLocationChange: function(aProgress, aRequest, aURI) { return 0; },
-    onProgressChange: function() { return 0; },
-    onStatusChange: function() { return 0; },
-    onSecurityChange: function() { return 0; },
-    onLinkIconAvailable: function() { return 0; }
-  };
 
+function buildHandler(toCall, opt_window) {
+  return new PatientListener(toCall);
+}
+
+function WebLoadingListener(browser, toCall, opt_window) {
+  this.handler = buildHandler(toCall, opt_window);
   browser.addProgressListener(this.handler);
 }
 
