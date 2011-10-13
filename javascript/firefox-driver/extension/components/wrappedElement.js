@@ -335,7 +335,7 @@ FirefoxDriver.prototype.submitElement = function(respond, parameters) {
       if (Utils.fireHtmlEvent(element, "submit")) {
         new WebLoadingListener(respond.session.getBrowser(), function() {
           respond.send();
-        });
+        }, respond.session.getWindow());
         element.submit();
         return;
       } else {

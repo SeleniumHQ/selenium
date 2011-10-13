@@ -1185,7 +1185,7 @@ Utils.installWindowCloseListener = function (respond) {
 
 Utils.installClickListener = function(respond, WebLoadingListener) {
   var browser = respond.session.getBrowser();
-  var currentWindow = respond.session.getWindow()
+  var currentWindow = respond.session.getWindow();
 
   var clickListener = new WebLoadingListener(browser, function(webProgress) {
     fxdriver.Logger.dumpn("New page loading.");
@@ -1196,7 +1196,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
       respond.session.setWindow(browser.contentWindow);
     }
     respond.send();
-  });
+  }, currentWindow);
 
   var contentWindow = browser.contentWindow;
 
