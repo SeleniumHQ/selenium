@@ -80,11 +80,13 @@ class FirefoxProfile(object):
         }
 
     def __init__(self,profile_directory=None):
-        """ Initialises a new instance of a Firefox Profile
-            args:
-                profile_directory: Directory of profile that you want to use.
-                                This defaults to None and will create a new
-                                directory when object is created.
+        """
+        Initialises a new instance of a Firefox Profile
+
+        :args:
+         - profile_directory: Directory of profile that you want to use. 
+           This defaults to None and will create a new
+           directory when object is created.
         """
         self.default_preferences = copy.deepcopy(FirefoxProfile.DEFAULT_PREFERENCES)
         self.profile_dir = profile_directory
@@ -100,7 +102,9 @@ class FirefoxProfile(object):
 
     #Public Methods
     def set_preference(self, key, value):
-        """ sets the preference that we want in the profile."""
+        """
+        sets the preference that we want in the profile.
+        """
         clean_value = ''
         if value is True:
             clean_value = 'true'
@@ -121,17 +125,23 @@ class FirefoxProfile(object):
 
     @property
     def path(self):
-        """ Gets the profile directory that is currently being used"""
+        """
+        Gets the profile directory that is currently being used
+        """
         return self.profile_dir
 
     @property
     def port(self):
-        """ Gets the port that WebDriver is working on"""
+        """
+        Gets the port that WebDriver is working on
+        """
         return self._port
 
     @port.setter
     def port(self, port):
-        """ Sets the port that WebDriver will be running on """
+        """
+        Sets the port that WebDriver will be running on
+        """
         self._port = port
         self.default_preferences["webdriver_firefox_port"] =  str(self._port)
 
@@ -171,11 +181,15 @@ class FirefoxProfile(object):
     #Private Methods
 
     def _create_tempfolder(self):
-        """ Creates a temp folder to store User.js and the extension """
+        """
+        Creates a temp folder to store User.js and the extension
+        """
         return tempfile.mkdtemp()
 
     def _write_user_prefs(self, user_prefs):
-        """ writes the current user prefs dictionary to disk """
+        """
+        writes the current user prefs dictionary to disk
+        """
         f = open(self.userPrefs, "w")
         for pref in user_prefs.keys():
             f.write('user_pref("%s", %s);\n' % (pref, user_prefs[pref]))

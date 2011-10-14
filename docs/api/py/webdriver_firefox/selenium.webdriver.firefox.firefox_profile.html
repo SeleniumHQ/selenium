@@ -1,0 +1,182 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>selenium.webdriver.firefox.firefox_profile &mdash; Selenium v2.8.1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Selenium v2.8.1 documentation" href="../index.html" />
+    <link rel="up" title="Selenium Documentation" href="../api.html" />
+    <link rel="next" title="selenium.webdriver.firefox.webdriver" href="selenium.webdriver.firefox.webdriver.html" />
+    <link rel="prev" title="selenium.webdriver.firefox.firefox_binary" href="selenium.webdriver.firefox.firefox_binary.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="selenium.webdriver.firefox.webdriver.html" title="selenium.webdriver.firefox.webdriver"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="selenium.webdriver.firefox.firefox_binary.html" title="selenium.webdriver.firefox.firefox_binary"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Selenium v2.8.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-selenium.webdriver.firefox.firefox_profile">
+<span id="selenium-webdriver-firefox-firefox-profile"></span><h1>selenium.webdriver.firefox.firefox_profile<a class="headerlink" href="#module-selenium.webdriver.firefox.firefox_profile" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile">
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.firefox.firefox_profile.</tt><tt class="descname">FirefoxProfile</tt><big>(</big><em>profile_directory=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialises a new instance of a Firefox Profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>profile_directory: Directory of profile that you want to use. 
+This defaults to None and will create a new
+directory when object is created.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.accept_untrusted_certs">
+<tt class="descname">accept_untrusted_certs</tt><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile.accept_untrusted_certs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.accept_untrusted_certs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.add_extension">
+<tt class="descname">add_extension</tt><big>(</big><em>extension='webdriver.xpi'</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile.add_extension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.add_extension" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.encoded">
+<tt class="descname">encoded</tt><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile.encoded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.encoded" title="Permalink to this definition">¶</a></dt>
+<dd><p>A zipped, base64 encoded string of profile directory
+for use with remote WebDriver JSON wire protocol</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.native_events_enabled">
+<tt class="descname">native_events_enabled</tt><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile.native_events_enabled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.native_events_enabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.path">
+<tt class="descname">path</tt><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile.path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the profile directory that is currently being used</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.port">
+<tt class="descname">port</tt><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile.port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the port that WebDriver is working on</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.set_preference">
+<tt class="descname">set_preference</tt><big>(</big><em>key</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile.set_preference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.set_preference" title="Permalink to this definition">¶</a></dt>
+<dd><p>sets the preference that we want in the profile.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.update_preferences">
+<tt class="descname">update_preferences</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile.update_preferences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.update_preferences" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="selenium.webdriver.firefox.firefox_binary.html"
+                        title="previous chapter">selenium.webdriver.firefox.firefox_binary</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="selenium.webdriver.firefox.webdriver.html"
+                        title="next chapter">selenium.webdriver.firefox.webdriver</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/webdriver_firefox/selenium.webdriver.firefox.firefox_profile.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="selenium.webdriver.firefox.webdriver.html" title="selenium.webdriver.firefox.webdriver"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="selenium.webdriver.firefox.firefox_binary.html" title="selenium.webdriver.firefox.firefox_binary"
+             >previous</a> |</li>
+        <li><a href="../index.html">Selenium v2.8.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

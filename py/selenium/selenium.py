@@ -23,9 +23,8 @@ class selenium(object):
     """
     Defines an object that runs Selenium commands.
     
-    Element Locators
-    ~~~~~~~~~~~~~~~~
-    
+    **Element Locators**
+
     Element Locators tell Selenium which HTML element a command refers to.
     The format of a locator is:
     
@@ -110,8 +109,7 @@ class selenium(object):
     *   \ **xpath**\ , for locators starting with "//"
     *   \ **identifier**\ , otherwise
     
-    Element Filters
-    ~~~~~~~~~~~~~~~
+    **Element Filters**
     
     Element filters can be used with a locator to refine a list of candidate elements.  They are currently used only in the 'name' element-locator.
     
@@ -131,8 +129,7 @@ class selenium(object):
     
     Selects a single element based on its position in the list (offset from zero).
     
-    String-match Patterns
-    ~~~~~~~~~~~~~~~~~~~~~
+    **String-match Patterns**
     
     Various Pattern syntaxes are available for matching string values:
     
@@ -1897,11 +1894,25 @@ class selenium(object):
         http://www.screengrab.org and http://snapsie.sourceforge.net/ for
         details.
         
-        'filename' is the path to the file to persist the screenshot as. No                  filename extension will be appended by default.                  Directories will not be created if they do not exist,                    and an exception will be thrown, possibly by native                  code.
-        'kwargs' is a kwargs string that modifies the way the screenshot                  is captured. Example: "background=#CCFFDD" .                  Currently valid options:                  
-        *    background
-            the background CSS for the HTML document. This                     may be useful to set for capturing screenshots of                     less-than-ideal layouts, for example where absolute                     positioning causes the calculation of the canvas                     dimension to fail and a black background is exposed                     (possibly obscuring black text).
+        'filename' is the path to the file to persist the screenshot as. No
+        filename extension will be appended by default. Directories will not be 
+        created if they do not exist, and an exception will be thrown, possibly 
+        by native code. 
+
+        'kwargs' is a kwargs string that modifies the way the 
+        screenshot is captured. 
+
+            Example: "background=#CCFFDD"
+
+        Currently valid options:                  
         
+        * background
+
+        the background CSS for the HTML document. 
+        This may be useful to set for capturing screenshots of 
+        less-than-ideal layouts, for example where absolute positioning 
+        causes the calculation of the canvas dimension to fail and a black 
+        background is exposed (possibly obscuring black text).
         
         """
         self.do_command("captureEntirePageScreenshot", [filename,kwargs,])

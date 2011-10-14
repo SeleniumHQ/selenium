@@ -28,7 +28,9 @@ from selenium.common.exceptions import WebDriverException
 
 
 class ErrorCode(object):
-    """Error codes defined in the WebDriver wire protocol."""
+    """
+    Error codes defined in the WebDriver wire protocol.
+    """
     # Keep in sync with org.openqa.selenium.remote.ErrorCodes and errorcodes.h
     SUCCESS = 0
     NO_SUCH_ELEMENT = 7
@@ -53,15 +55,18 @@ class ErrorCode(object):
 
 
 class ErrorHandler(object):
-    """Handles errors returned by the WebDriver server."""
+    """
+    Handles errors returned by the WebDriver server.
+    """
     def check_response(self, response):
         """
         Checks that a JSON response from the WebDriver does not have an error.
-        Args:
-        response - The JSON response from the WebDriver server as a dictionary
-                object.
-        Raises:
-        If the response contains an error message.
+        
+        :Args:
+         - response - The JSON response from the WebDriver server as a dictionary
+           object.
+        
+        :Raises: If the response contains an error message.
         """
         status = response['status']
         if status == ErrorCode.SUCCESS:

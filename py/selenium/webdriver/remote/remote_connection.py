@@ -25,14 +25,17 @@ import utils
 LOGGER = logging.getLogger(__name__)
 
 class Request(urllib2.Request):
-    """Extends the urllib2.Request to support all HTTP request types."""
+    """
+    Extends the urllib2.Request to support all HTTP request types.
+    """
 
     def __init__(self, url, data=None, method=None):
-        """Initialise a new HTTP request.
+        """
+        Initialise a new HTTP request.
 
-        Args:
-          url - String for the URL to send the request to.
-          data - Data to send with the request.
+        :Args:
+         - url - String for the URL to send the request to.
+         - data - Data to send with the request.
         """
         if method is None:
             method = data is not None and 'POST' or 'GET'
@@ -42,28 +45,26 @@ class Request(urllib2.Request):
         urllib2.Request.__init__(self, url, data=data)
 
     def get_method(self):
-        """Returns the HTTP method used by this request."""
+        """
+        Returns the HTTP method used by this request.
+        """
         return self._method
 
 
 class Response(object):
-    """Represents an HTTP response.
-
-    Attributes:
-      fp - File object for the response body.
-      code - The HTTP status code returned by the server.
-      headers - A dictionary of headers returned by the server.
-      url - URL of the retrieved resource represented by this Response.
+    """
+    Represents an HTTP response.
     """
 
     def __init__(self, fp, code, headers, url):
-        """Initialise a new Response.
+        """
+        Initialise a new Response.
 
-        Args:
-          fp - The response body file object.
-          code - The HTTP status code returned by the server.
-          headers - A dictionary of headers returned by the server.
-          url - URL of the retrieved resource represented by this Response.
+        :Args:
+         - fp - The response body file object.
+         - code - The HTTP status code returned by the server.
+         - headers - A dictionary of headers returned by the server.
+         - url - URL of the retrieved resource represented by this Response.
         """
         self.fp = fp
         self.read = fp.read
@@ -72,43 +73,52 @@ class Response(object):
         self.url = url
 
     def close(self):
-        """Close the response body file object."""
+        """
+        Close the response body file object.
+        """
         self.read = None
         self.fp = None
 
     def info(self):
-        """Returns the response headers."""
+        """
+        Returns the response headers.
+        """
         return self.headers
 
     def geturl(self):
-        """Returns the URL for the resource returned in this response."""
+        """
+        Returns the URL for the resource returned in this response.
+        """
         return self.url
 
 
 class HttpErrorHandler(urllib2.HTTPDefaultErrorHandler):
-    """A custom HTTP error handler.
+    """
+    A custom HTTP error handler.
 
     Used to return Response objects instead of raising an HTTPError exception.
     """
 
     def http_error_default(self, req, fp, code, msg, headers):
-        """Default HTTP error handler.
+        """
+        Default HTTP error handler.
 
-        Args:
-          req - The original Request object.
-          fp - The response body file object.
-          code - The HTTP status code returned by the server.
-          msg - The HTTP status message returned by the server.
-          headers - The response headers.
+        :Args:
+         - req - The original Request object.
+         - fp - The response body file object.
+         - code - The HTTP status code returned by the server.
+         - msg - The HTTP status message returned by the server.
+         - headers - The response headers.
 
-        Returns:
+        :Returns:
           A new Response object.
         """
         return Response(fp, code, headers, req.get_full_url())
 
 
 class RemoteConnection(object):
-    """A connection with the Remote WebDriver server.
+    """
+    A connection with the Remote WebDriver server.
 
     Communicates with the server using the WebDriver wire protocol:
     http://code.google.com/p/selenium/wiki/JsonWireProtocol
@@ -238,15 +248,16 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/moveto')}
 
     def execute(self, command, params):
-        """Send a command to the remote server.
+        """
+        Send a command to the remote server.
 
         Any path subtitutions required for the URL mapped to the command should be
         included in the command parameters.
 
-        Args:
-          command - A string specifying the command to execute.
-          params - A dictionary of named parameters to send with the command as
-              its JSON payload.
+        :Args:
+         - command - A string specifying the command to execute.
+         - params - A dictionary of named parameters to send with the command as
+           its JSON payload.
         """
         command_info = self._commands[command]
         assert command_info is not None, 'Unrecognised command %s' % command
@@ -256,14 +267,15 @@ class RemoteConnection(object):
         return self._request(url, method=command_info[0], data=data)
 
     def _request(self, url, data=None, method=None):
-        """Send an HTTP request to the remote server.
+        """
+        Send an HTTP request to the remote server.
 
-        Args:
-          method - A string for the HTTP method to send the request with.
-          url - The URL to send the request to.
-          body - The message body to send.
+        :Args:
+         - method - A string for the HTTP method to send the request with.
+         - url - The URL to send the request to.
+         - body - The message body to send.
 
-        Returns:
+        :Returns:
           A dictionary with the server's parsed JSON response.
         """
         LOGGER.debug('%s %s %s' % (method, url, data))

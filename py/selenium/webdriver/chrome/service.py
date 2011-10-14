@@ -23,13 +23,17 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 
 class Service(object):
-    """ Object that manages the starting and stopping of the ChromeDriver """
+    """
+    Object that manages the starting and stopping of the ChromeDriver
+    """
 
     def __init__(self, executable_path, port=0):
-        """ Creates a new instance of the Service
-            Args:
-                executable_path : Path to the ChromeDriver
-                port : Port the service is running on """
+        """
+        Creates a new instance of the Service
+        
+        :Args:
+         - executable_path : Path to the ChromeDriver
+         - port : Port the service is running on """
 
         self.port = port
         self.path = executable_path
@@ -37,10 +41,13 @@ class Service(object):
             self.port = utils.free_port()
 
     def start(self):
-        """ Starts the ChromeDriver Service. 
-            @Exceptions
-                WebDriverException : Raised either when it can't start the service
-                    or when it can't connect to the service"""
+        """
+        Starts the ChromeDriver Service. 
+        
+        :Exceptions:
+         - WebDriverException : Raised either when it can't start the service
+           or when it can't connect to the service
+        """
         try:
             self.process = subprocess.Popen([self.path, "--port=%d" % self.port],
                     stdout=PIPE, stderr=PIPE)
@@ -58,11 +65,15 @@ class Service(object):
                 
     @property
     def service_url(self):
-        """ Gets the url of the ChromeDriver Service """
+        """
+        Gets the url of the ChromeDriver Service
+        """
         return "http://localhost:%d" % self.port
 
     def stop(self):
-        """ Tells the ChromeDriver to stop and cleans up the process """
+        """ 
+        Tells the ChromeDriver to stop and cleans up the process
+        """
         #If its dead dont worry
         if self.process is None:
             return

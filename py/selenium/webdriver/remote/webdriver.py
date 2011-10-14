@@ -12,7 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""The WebDriver implementation."""
+"""
+The WebDriver implementation.
+"""
 import base64
 from command import Command
 from webelement import WebElement
@@ -24,30 +26,27 @@ from selenium.webdriver.common.alert import Alert
 from selenium.common.exceptions import WebDriverException
 
 class WebDriver(object):
-    """Controls a browser by sending commands to a remote server.
+    """
+    Controls a browser by sending commands to a remote server.
     This server is expected to be running the WebDriver wire protocol as defined
     here: http://code.google.com/p/selenium/wiki/JsonWireProtocol
 
-    Attributes:
-      command_executor - The command.CommandExecutor object used to execute
-          commands.
-      error_handler - errorhandler.ErrorHandler object used to verify that the
-          server did not return an error.
-      session_id - The session ID to send with every command.
-      capabilities - A dictionary of capabilities of the underlying browser for
-          this instance's session."""
+    :Attributes:
+     - command_executor - The command.CommandExecutor object used to execute commands.
+     - error_handler - errorhandler.ErrorHandler object used to verify that the server did not return an error.
+     - session_id - The session ID to send with every command.
+     - capabilities - A dictionary of capabilities of the underlying browser for this instance's session.
+    """
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
         desired_capabilities=None, browser_profile=None):
-        """Create a new driver that will issue commands using the wire protocol.
-        Args:
-          command_executor - Either a command.CommandExecutor object or a string
-              that specifies the URL of a remote server to send commands to.
-          desired_capabilities - Dictionary holding predefined values for
-              starting a browser
-          browser_profile:
-              A selenium.webdriver.firefox.firefox_profile.FirefoxProfile
-              object.  Only used if Firefox is requested.
+        """
+        Create a new driver that will issue commands using the wire protocol.
+        
+        :Args:
+         - command_executor - Either a command.CommandExecutor object or a string that specifies the URL of a remote server to send commands to.
+         - desired_capabilities - Dictionary holding predefined values for starting a browser
+         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object.  Only used if Firefox is requested.
         """
         if desired_capabilities is None:
             raise WebDriverException("Desired Capabilities can't be None")
@@ -63,8 +62,9 @@ class WebDriver(object):
     @property
     def name(self):
         """Returns the name of the underlying browser for this instance.
-        Usage:
-            driver.name
+        
+        :Usage:
+         - driver.name
         """
         if 'browserName' in self.capabilities:
             return self.capabilities['browserName']
@@ -72,25 +72,29 @@ class WebDriver(object):
             raise KeyError('browserName not specified in session capabilities')
 
     def start_client(self):
-        """Called before starting a new session. This method may be overridden
-        to define custom startup behavior."""
+        """
+        Called before starting a new session. This method may be overridden
+        to define custom startup behavior.
+        """
         pass
 
     def stop_client(self):
-        """Called after executing a quit command. This method may be overridden
-        to define custom shutdown behavior."""
+        """
+        Called after executing a quit command. This method may be overridden
+        to define custom shutdown behavior.
+        """
         pass
 
     def start_session(self, desired_capabilities, browser_profile=None):
-        """Creates a new session with the desired capabilities.
-        Args:
-          browser_name: The name of the browser to request.
-          version: Which browser version to request.
-          platform: Which platform to request the browser on.
-          javascript_enabled: Whether the new session should support JavaScript.
-          browser_profile:
-              A selenium.webdriver.firefox.firefox_profile.FirefoxProfile
-              object.  Only used if Firefox is requested.
+        """
+        Creates a new session with the desired capabilities.
+        
+        :Args:
+         - browser_name - The name of the browser to request.
+         - version - Which browser version to request.
+         - platform - Which platform to request the browser on.
+         - javascript_enabled - Whether the new session should support JavaScript.
+         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.
         """
         if browser_profile:
             desired_capabilities['firefox_profile'] = browser_profile.encoded
@@ -114,7 +118,9 @@ class WebDriver(object):
             return value
 
     def create_web_element(self, element_id):
-        """Creates a web element with the specified element_id."""
+        """
+        Creates a web element with the specified element_id.
+        """
         return WebElement(self, element_id)
 
     def _unwrap_value(self, value):
@@ -126,11 +132,14 @@ class WebDriver(object):
             return value
 
     def execute(self, driver_command, params=None):
-        """Sends a command to be executed by a command.CommandExecutor.
-        Args:
-          driver_command: The name of the command to execute as a string.
-          params: A dictionary of named parameters to send with the command.
-        Returns:
+        """
+        Sends a command to be executed by a command.CommandExecutor.
+        
+        :Args:
+         - driver_command: The name of the command to execute as a string.
+         - params: A dictionary of named parameters to send with the command.
+        
+        :Returns:
           The command's JSON response loaded into a dictionary object.
         """
         if not params:
@@ -150,13 +159,16 @@ class WebDriver(object):
         return {'success': 0, 'value': None, 'sessionId': self.session_id}
 
     def get(self, url):
-        """Loads a web page in the current browser session."""
+        """
+        Loads a web page in the current browser session.
+        """
         self.execute(Command.GET, {'url': url})
 
     @property
     def title(self):
         """Returns the title of the current page.
-        Usage:
+        
+        :Usage:
             driver.title
         """
         resp = self.execute(Command.GET_TITLE)
@@ -164,154 +176,204 @@ class WebDriver(object):
 
     def find_element_by_id(self, id_):
         """Finds an element by id.
-        Args:
-            id_: The id of the element to be found.
-        Usage:
+        
+        :Args:
+         - id\_ - The id of the element to be found.
+        
+        :Usage:
             driver.find_element_by_id('foo')
         """
         return self.find_element(by=By.ID, value=id_)
 
     def find_elements_by_id(self, id_):
-        """Finds multiple elements by id.
-        Args:
-            id_: The id of the elements to be found.
-        Usage:
+        """
+        Finds multiple elements by id.
+        
+        :Args:
+         - id\_ - The id of the elements to be found.
+
+        :Usage:
             driver.find_element_by_id('foo')
         """
         return self.find_elements(by=By.ID, value=id_)
 
     def find_element_by_xpath(self, xpath):
-        """Finds an element by xpath.
-        Args:
-            xpath: The xpath locator of the element to find.
-        Usage:
+        """
+        Finds an element by xpath.
+        
+        :Args:
+         - xpath - The xpath locator of the element to find.
+
+        :Usage:
             driver.find_element_by_xpath('//div/td[1]')
         """
         return self.find_element(by=By.XPATH, value=xpath)
 
     def find_elements_by_xpath(self, xpath):
-        """Finds multiple elements by xpath.
-        Args:
-            xpath: The xpath locator of the elements to be found.
-        Usage:
+        """
+        Finds multiple elements by xpath.
+        
+        :Args:
+         - xpath - The xpath locator of the elements to be found.
+        
+        :Usage:
             driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
         """
         return self.find_elements(by=By.XPATH, value=xpath)
 
     def find_element_by_link_text(self, link_text):
-        """Finds an element by link text.
-        Args:
-            link_text: The text of the element to be found.
-        Usage:
+        """
+        Finds an element by link text.
+        
+        :Args:
+         - link_text: The text of the element to be found.
+        
+        :Usage:
             driver.find_element_by_link_text('Sign In')
         """
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
     def find_elements_by_link_text(self, text):
-        """Finds elements by link text.
-        Args:
-            link_text: The text of the elements to be found.
-        Usage:
+        """
+        Finds elements by link text.
+        
+        :Args:
+         - link_text: The text of the elements to be found.
+        
+        :Usage:
             driver.find_elements_by_link_text('Sign In')
         """
         return self.find_elements(by=By.LINK_TEXT, value=text)
 
     def find_element_by_partial_link_text(self, link_text):
-        """Finds an element by a partial match of its link text.
-        Args:
-            link_text: The text of the element to partially match on.
-        Usage:
+        """
+        Finds an element by a partial match of its link text.
+        
+        :Args:
+         - link_text: The text of the element to partially match on.
+        
+        :Usage:
             driver.find_element_by_partial_link_text('Sign')
         """
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
-        """Finds elements by a partial match of their link text.
-        Args:
-            link_text: The text of the element to partial match on.
-        Usage:
+        """
+        Finds elements by a partial match of their link text.
+        
+        :Args:
+         - link_text: The text of the element to partial match on.
+        
+        :Usage:
             driver.find_element_by_partial_link_text('Sign')
         """
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_element_by_name(self, name):
-        """Finds an element by name.
-        Args:
-            name: The name of the element to find.
-        Usage:
+        """
+        Finds an element by name.
+        
+        :Args:
+         - name: The name of the element to find.
+        
+        :Usage:
             driver.find_element_by_name('foo')
         """
         return self.find_element(by=By.NAME, value=name)
 
     def find_elements_by_name(self, name):
-        """Finds elements by name.
-        Args:
-            name: The name of the elements to find.
-        Usage:
+        """
+        Finds elements by name.
+        
+        :Args:
+         - name: The name of the elements to find.
+        
+        :Usage:
             driver.find_elements_by_name('foo')
         """
         return self.find_elements(by=By.NAME, value=name)
 
     def find_element_by_tag_name(self, name):
-        """Finds an element by tag name.
-        Args:
-            name: The tag name of the element to find.
-        Usage:
+        """
+        Finds an element by tag name.
+        
+        :Args:
+         - name: The tag name of the element to find.
+        
+        :Usage:
             driver.find_element_by_tag_name('foo')
         """
         return self.find_element(by=By.TAG_NAME, value=name)
 
     def find_elements_by_tag_name(self, name):
-        """Finds elements by tag name.
-        Args:
-            name: The tag name the use when finding elements.
-        Usage:
+        """
+        Finds elements by tag name.
+        
+        :Args:
+         - name: The tag name the use when finding elements.
+        
+        :Usage:
             driver.find_elements_by_tag_name('foo')
         """
         return self.find_elements(by=By.TAG_NAME, value=name)
 
     def find_element_by_class_name(self, name):
-        """Finds an element by class name.
-        Args:
-            name: The class name of the element to find.
-        Usage:
+        """
+        Finds an element by class name.
+        
+        :Args:
+         - name: The class name of the element to find.
+        
+        :Usage:
             driver.find_element_by_class_name('foo')
         """
         return self.find_element(by=By.CLASS_NAME, value=name)
 
     def find_elements_by_class_name(self, name):
-        """Finds elements by class name.
-        Args:
-            name: The class name of the elements to find.
-        Usage:
+        """
+        Finds elements by class name.
+        
+        :Args:
+         - name: The class name of the elements to find.
+        
+        :Usage:
             driver.find_elements_by_class_name('foo')
         """
         return self.find_elements(by=By.CLASS_NAME, value=name)
 
     def find_element_by_css_selector(self, css_selector):
-        """Finds an element by css selector.
-        Args:
-            css_selector: The css selector to use when finding elements.
-        Usage:
+        """
+        Finds an element by css selector.
+        
+        :Args:
+         - css_selector: The css selector to use when finding elements.
+        
+        :Usage:
             driver.find_element_by_css_selector('#foo')
         """
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
     def find_elements_by_css_selector(self, css_selector):
-        """Finds elements by css selector.
-        Args:
-            css_selector: The css selector to use when finding elements.
-        Usage:
+        """
+        Finds elements by css selector.
+        
+        :Args:
+         - css_selector: The css selector to use when finding elements.
+        
+        :Usage:
             driver.find_element_by_css_selector('#foo')
         """
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
     def execute_script(self, script, *args):
-        """Synchronously Executes JavaScript in the current window/frame.
-        Args:
-            script: The JavaScript to execute.
-            *args: Any applicable arguments for your JavaScript.
-        Usage:
+        """
+        Synchronously Executes JavaScript in the current window/frame.
+        
+        :Args:
+         - script: The JavaScript to execute.
+         - \*args: Any applicable arguments for your JavaScript.
+        
+        :Usage:
             driver.execute_script('document.title')
         """
         if len(args) == 1:
@@ -323,11 +385,14 @@ class WebDriver(object):
             {'script': script, 'args':converted_args})['value']
 
     def execute_async_script(self, script, *args):
-        """Asynchronously Executes JavaScript in the current window/frame.
-        Args:
-            script: The JavaScript to execute.
-            args: Any applicable arguments for your JavaScript.
-        Usage:
+        """
+        Asynchronously Executes JavaScript in the current window/frame.
+        
+        :Args:
+         - script: The JavaScript to execute.
+         - \*args: Any applicable arguments for your JavaScript.
+        
+        :Usage:
             driver.execute_async_script('document.title')
         """
         if len(args) == 1:
@@ -340,30 +405,38 @@ class WebDriver(object):
 
     @property
     def current_url(self):
-        """Gets the URL of the current page.
-        Usage:
+        """
+        Gets the URL of the current page.
+        
+        :Usage:
             driver.current_url
         """
         return self.execute(Command.GET_CURRENT_URL)['value']
 
     @property
     def page_source(self):
-        """Gets the source of the current page.
-        Usage:
+        """
+        Gets the source of the current page.
+        
+        :Usage:
             driver.page_source
         """
         return self.execute(Command.GET_PAGE_SOURCE)['value']
 
     def close(self):
-        """Closes the current window.
-        Usage:
+        """
+        Closes the current window.
+        
+        :Usage:
             driver.close()
         """
         self.execute(Command.CLOSE)
 
     def quit(self):
-        """Quits the driver and closes every associated window.
-        Usage:
+        """
+        Quits the driver and closes every associated window.
+        
+        :Usage:
             driver.quit()
         """
         try:
@@ -373,96 +446,120 @@ class WebDriver(object):
 
     @property
     def current_window_handle(self):
-        """Returns the handle of the current window.
-        Usage:
+        """
+        Returns the handle of the current window.
+        
+        :Usage:
             driver.current_window_handle
         """
         return self.execute(Command.GET_CURRENT_WINDOW_HANDLE)['value']
 
     @property
     def window_handles(self):
-        """Returns the handles of all windows within the current session.
-        Usage:
+        """
+        Returns the handles of all windows within the current session.
+        
+        :Usage:
             driver.window_handles
         """
         return self.execute(Command.GET_WINDOW_HANDLES)['value']
 
     #Target Locators
     def switch_to_active_element(self):
-        """Returns the element with focus, or BODY if nothing has focus.
-        Usage:
+        """
+        Returns the element with focus, or BODY if nothing has focus.
+        
+        :Usage:
             driver.switch_to_active_element()
         """
         return self.execute(Command.GET_ACTIVE_ELEMENT)['value']
 
     def switch_to_window(self, window_name):
-        """Switches focus to the specified window.
-        Args:
-            window_name: The name of the window to switch to.
-        Usage:
+        """
+        Switches focus to the specified window.
+        
+        :Args:
+         - window_name: The name of the window to switch to.
+        
+        :Usage:
             driver.switch_to_window('main')
         """
         self.execute(Command.SWITCH_TO_WINDOW, {'name': window_name})
 
     def switch_to_frame(self, index_or_name):
-        """Switches focus to the specified frame, by index or name.
-        Args:
-            index_or_name: The name of the window to switch to, or
-            an integer representing the index to switch to.
-        Usage:
+        """
+        Switches focus to the specified frame, by index or name.
+        
+        :Args:
+         - index_or_name: The name of the window to switch to, or an integer representing the index to switch to.
+
+        :Usage:
             driver.switch_to_frame('frame_name')
             driver.switch_to_frame(1)
         """
         self.execute(Command.SWITCH_TO_FRAME, {'id': index_or_name})
 
     def switch_to_default_content(self):
-        """Switch focus to the default frame.
-        Usage:
+        """
+        Switch focus to the default frame.
+        
+        :Usage:
             driver.switch_to_default_content()
         """
         self.execute(Command.SWITCH_TO_FRAME, {'id': None})
 
     def switch_to_alert(self):
-        """Switches focus to an alert on the page.
-        Usage:
+        """
+        Switches focus to an alert on the page.
+        
+        :Usage:
             driver.switch_to_alert()
         """
         return Alert(self)
 
     #Navigation
     def back(self):
-        """Goes one step backward in the browser history.
-        Usage:
+        """
+        Goes one step backward in the browser history.
+        
+        :Usage:
             driver.back()
         """
         self.execute(Command.GO_BACK)
 
     def forward(self):
-        """Goes one step forward in the browser history.
-        Usage:
+        """
+        Goes one step forward in the browser history.
+        
+        :Usage:
             driver.forward()
         """
         self.execute(Command.GO_FORWARD)
 
     def refresh(self):
-        """Refreshes the current page.
-        Usage:
+        """
+        Refreshes the current page.
+        
+        :Usage:
             driver.refresh()
         """
         self.execute(Command.REFRESH)
 
     # Options
     def get_cookies(self):
-        """Returns a set of dictionaries, corresponding to cookies visible in the
-           current session.
-        Usage:
+        """
+        Returns a set of dictionaries, corresponding to cookies visible in the current session.
+        
+        :Usage:
             driver.get_cookies()
         """
         return self.execute(Command.GET_ALL_COOKIES)['value']
 
     def get_cookie(self, name):
-        """Get a single cookie by name. Returns the cookie if found, None if not.
-        Usage:
+        """
+        Get a single cookie by name. Returns the cookie if found, None if not.
+        
+        :Usage:
             driver.get_cookie('my_cookie')
         """
         cookies = self.get_cookies()
@@ -472,76 +569,98 @@ class WebDriver(object):
         return None
 
     def delete_cookie(self, name):
-        """Deletes a single cookie with the given name.
-        Usage:
+        """
+        Deletes a single cookie with the given name.
+        
+        :Usage:
             driver.delete_cookie('my_cookie')
         """
         self.execute(Command.DELETE_COOKIE, {'name': name})
 
     def delete_all_cookies(self):
-        """Delete all cookies in the scope of the session.
-        Usage:
+        """
+        Delete all cookies in the scope of the session.
+        
+        :Usage:
             driver.delete_all_cookies()
         """
         self.execute(Command.DELETE_ALL_COOKIES)
 
     def add_cookie(self, cookie_dict):
-        """Adds a cookie to your current session.
-        Args:
-            cookie_dict: A dictionary object, with the desired cookie name as the key, and
+        """
+        Adds a cookie to your current session.
+        
+        :Args:
+         - cookie_dict: A dictionary object, with the desired cookie name as the key, and
             the value being the desired contents.
-        Usage:
+
+        :Usage:
             driver.add_cookie({'foo': 'bar',})
         """
         self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
 
     # Timeouts
     def implicitly_wait(self, time_to_wait):
-        """Sets a sticky timeout to implicitly wait for an element to be found,
+        """
+        Sets a sticky timeout to implicitly wait for an element to be found,
            or a command to complete. This method only needs to be called one time per session.
-        Args:
-            time_to_wait: Amount of time to wait
-        Usage:
+        
+        :Args:
+         - time_to_wait: Amount of time to wait
+
+        :Usage:
             driver.implicitly_wait(30)
         """
         self.execute(Command.IMPLICIT_WAIT, {'ms': float(time_to_wait) * 1000})
 
     def set_script_timeout(self, time_to_wait):
-        """Set the amount of time that the script should wait before throwing an
+        """
+        Set the amount of time that the script should wait before throwing an
            error.
-        Args:
-            time_to_wait: The amount of time to wait
-        Usage:
+        
+        :Args:
+         - time_to_wait: The amount of time to wait
+        
+        :Usage:
             driver.set_script_timeout(30)
         """
         self.execute(Command.SET_SCRIPT_TIMEOUT, {'ms': float(time_to_wait) * 1000})
 
     def find_element(self, by=By.ID, value=None):
-        """'Private' method used by the find_element_by_* methods.
-        Usage:
+        """
+        'Private' method used by the find_element_by_* methods.
+        
+        :Usage:
             Use the corresponding find_element_by_* instead of this.
         """
         return self.execute(Command.FIND_ELEMENT,
                              {'using': by, 'value': value})['value']
 
     def find_elements(self, by=By.ID, value=None):
-        """'Private' method used by the find_elements_by_* methods.
-        Usage:
+        """
+        'Private' method used by the find_elements_by_* methods.
+        
+        :Usage:
             Use the corresponding find_elements_by_* instead of this.
         """
         return self.execute(Command.FIND_ELEMENTS,
                              {'using': by, 'value': value})['value']
     @property
     def desired_capabilities(self):
-        """ returns the drivers current desired capabilities being used"""
+        """
+        returns the drivers current desired capabilities being used
+        """
         return self.capabilities
 
     def get_screenshot_as_file(self, filename):
-        """Gets the screenshot of the current window. Returns False if there is
+        """
+        Gets the screenshot of the current window. Returns False if there is
            any IOError, else returns True. Use full paths in your filename.
-        Args:
-            filename: The full path you wish to save your screenshot to.
-        Usage:
+        
+        :Args:
+         - filename: The full path you wish to save your screenshot to.
+        
+        :Usage:
             driver.get_screenshot_as_file('/Screenshots/foo.png')
         """
         png = self.execute(Command.SCREENSHOT)['value']
@@ -554,9 +673,11 @@ class WebDriver(object):
         return True
 
     def get_screenshot_as_base64(self):
-        """Gets the screenshot of the current window as a base64 encoded string
+        """
+        Gets the screenshot of the current window as a base64 encoded string
            which is useful in embedded images in HTML.
-        Usage:
+        
+        :Usage:
             driver.get_screenshot_as_base64()
         """
         return self.execute(Command.SCREENSHOT)['value']

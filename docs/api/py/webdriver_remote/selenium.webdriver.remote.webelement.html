@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>selenium.webdriver.remote.webelement &mdash; Selenium v2.8.1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Selenium v2.8.1 documentation" href="../index.html" />
+    <link rel="up" title="Selenium Documentation" href="../api.html" />
+    <link rel="prev" title="selenium.webdriver.remote.webdriver" href="selenium.webdriver.remote.webdriver.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="selenium.webdriver.remote.webdriver.html" title="selenium.webdriver.remote.webdriver"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Selenium v2.8.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-selenium.webdriver.remote.webelement">
+<span id="selenium-webdriver-remote-webelement"></span><h1>selenium.webdriver.remote.webelement<a class="headerlink" href="#module-selenium.webdriver.remote.webelement" title="Permalink to this headline">¶</a></h1>
+<p>WebElement implementation.</p>
+<dl class="class">
+<dt id="selenium.webdriver.remote.webelement.WebElement">
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.webelement.</tt><tt class="descname">WebElement</tt><big>(</big><em>parent</em>, <em>id_</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an HTML element.</p>
+<p>Generally, all interesting operations to do with interacting with a page
+will be performed through this interface.</p>
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.clear">
+<tt class="descname">clear</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the text if it&#8217;s a text entry element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.click">
+<tt class="descname">click</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clicks the element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_element">
+<tt class="descname">find_element</tt><big>(</big><em>by='id'</em>, <em>value=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_element_by_class_name">
+<tt class="descname">find_element_by_class_name</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element_by_class_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element_by_class_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds an element by their class name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_element_by_css_selector">
+<tt class="descname">find_element_by_css_selector</tt><big>(</big><em>css_selector</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element_by_css_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element_by_css_selector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and return an element by CSS selector.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_element_by_id">
+<tt class="descname">find_element_by_id</tt><big>(</big><em>id_</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds element by id.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_element_by_link_text">
+<tt class="descname">find_element_by_link_text</tt><big>(</big><em>link_text</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element_by_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element_by_link_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds element by link text.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_element_by_name">
+<tt class="descname">find_element_by_name</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find element by name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_element_by_partial_link_text">
+<tt class="descname">find_element_by_partial_link_text</tt><big>(</big><em>link_text</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element_by_partial_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element_by_partial_link_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_element_by_tag_name">
+<tt class="descname">find_element_by_tag_name</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element_by_tag_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element_by_tag_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_element_by_xpath">
+<tt class="descname">find_element_by_xpath</tt><big>(</big><em>xpath</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element_by_xpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element_by_xpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds element by xpath.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_elements">
+<tt class="descname">find_elements</tt><big>(</big><em>by='id'</em>, <em>value=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_elements_by_class_name">
+<tt class="descname">find_elements_by_class_name</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements_by_class_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements_by_class_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds elements by their class name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_elements_by_css_selector">
+<tt class="descname">find_elements_by_css_selector</tt><big>(</big><em>css_selector</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements_by_css_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements_by_css_selector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and return list of multiple elements by CSS selector.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_elements_by_id">
+<tt class="descname">find_elements_by_id</tt><big>(</big><em>id_</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements_by_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_elements_by_link_text">
+<tt class="descname">find_elements_by_link_text</tt><big>(</big><em>link_text</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements_by_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements_by_link_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_elements_by_name">
+<tt class="descname">find_elements_by_name</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements_by_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_elements_by_partial_link_text">
+<tt class="descname">find_elements_by_partial_link_text</tt><big>(</big><em>link_text</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements_by_partial_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements_by_partial_link_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_elements_by_tag_name">
+<tt class="descname">find_elements_by_tag_name</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements_by_tag_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements_by_tag_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.find_elements_by_xpath">
+<tt class="descname">find_elements_by_xpath</tt><big>(</big><em>xpath</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements_by_xpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements_by_xpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds elements within the elements by xpath.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.get_attribute">
+<tt class="descname">get_attribute</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.get_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.get_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the attribute value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.webelement.WebElement.id">
+<tt class="descname">id</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.is_displayed">
+<tt class="descname">is_displayed</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.is_displayed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.is_displayed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the element would be visible to a user</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.is_enabled">
+<tt class="descname">is_enabled</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.is_enabled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.is_enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the element is enabled.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.is_selected">
+<tt class="descname">is_selected</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.is_selected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.is_selected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the element is selected.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.webelement.WebElement.location">
+<tt class="descname">location</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the location of the element in the renderable canvas</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.webelement.WebElement.parent">
+<tt class="descname">parent</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.parent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.send_keys">
+<tt class="descname">send_keys</tt><big>(</big><em>*value</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.send_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulates typing into the element.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.webelement.WebElement.size">
+<tt class="descname">size</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of the element</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.submit">
+<tt class="descname">submit</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.submit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submits a form.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.webelement.WebElement.tag_name">
+<tt class="descname">tag_name</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.tag_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.tag_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets this element&#8217;s tagName property.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.webelement.WebElement.text">
+<tt class="descname">text</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the text of the element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.value_of_css_property">
+<tt class="descname">value_of_css_property</tt><big>(</big><em>property_name</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.value_of_css_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.value_of_css_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value of a CSS property</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="selenium.webdriver.remote.webdriver.html"
+                        title="previous chapter">selenium.webdriver.remote.webdriver</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/webdriver_remote/selenium.webdriver.remote.webelement.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="selenium.webdriver.remote.webdriver.html" title="selenium.webdriver.remote.webdriver"
+             >previous</a> |</li>
+        <li><a href="../index.html">Selenium v2.8.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

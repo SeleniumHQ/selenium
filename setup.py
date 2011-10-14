@@ -21,7 +21,6 @@ from os.path import dirname, join, isfile
 from shutil import copy
 import sys
 
-
 def setup_python3():
     # Taken from "distribute" setup.py
     from distutils.filelist import FileList
@@ -48,30 +47,17 @@ def setup_python3():
 
     return tmp_src
 
-
-def find_longdesc():
-    for path in ("docs/api/py/index.rst", "docs/index.rst"):
-        try:
-            index = join(dirname(__file__), path)
-            return open(index).read()
-        except IOError:
-            pass
-
-    print("WARNING: Can't find index.rst")
-    return ""
-
 if sys.version_info >= (3,):
     src_root = setup_python3()
 else:
     src_root = "."
-
 
 setup(
     cmdclass={'install': install},
     name='selenium',
     version="2.9.0",
     description='Python bindings for Selenium',
-    long_description=find_longdesc(),
+    long_description=open(join(abspath(dirname(__file__)), "py", "README")).read(),
     url='http://code.google.com/p/selenium/',
     src_root=src_root,
     classifiers=['Development Status :: 5 - Production/Stable',

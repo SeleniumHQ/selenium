@@ -23,24 +23,24 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from service import Service
 
 class WebDriver(RemoteWebDriver):
-    """ Controls the ChromeDriver and allows you to drive the browser.
-        You will need to download the ChromeDriver executable from
-        http://code.google.com/p/selenium/downloads/list"""
+    """
+    Controls the ChromeDriver and allows you to drive the browser.
+    
+    You will need to download the ChromeDriver executable from
+    http://code.google.com/p/selenium/downloads/list
+    """
 
     def __init__(self, executable_path="chromedriver", port=0,
                  desired_capabilities=DesiredCapabilities.CHROME):
-        """Creates a new instance of the chrome driver.
+        """
+        Creates a new instance of the chrome driver.
 
         Starts the service and then creates new instance of chrome driver.
 
-        Args:
-            executable_path : path to the executable. If the default
-                is used it assumes the executable is in the $PATH
-            port : port you would like the service to run, if left
-                as 0, a free port will be found.
-            desired_capabilities: Dictionary object with desired
-                capabilities (Can be used to provide various chrome
-                switches).
+        :Args:
+         - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
+         - port - port you would like the service to run, if left as 0, a free port will be found.
+         - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various chrome switches).
         """
         self.service = Service(executable_path, port=port)
         self.service.start()
@@ -50,8 +50,10 @@ class WebDriver(RemoteWebDriver):
             desired_capabilities=desired_capabilities)
 
     def quit(self):
-        """ Closes the browser and shuts down the ChromeDriver executable
-            that is started when starting the ChromeDriver """
+        """
+        Closes the browser and shuts down the ChromeDriver executable
+        that is started when starting the ChromeDriver
+        """
         try:
             RemoteWebDriver.quit(self)
         except httplib.BadStatusLine:

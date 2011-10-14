@@ -1,7 +1,7 @@
 ============
 Introduction
 ============
-:Author: David Burns 
+:Author: David Burns
 
 Selenium Python Client Driver is a Python language binding for Selenium Remote
 Control (version 1.0 and 2.0).
@@ -26,10 +26,10 @@ Python Client
 Java Server
 -----------
 
-Download the server from http://selenium.googlecode.com/files/selenium-server-standalone-2.9.0.jar
+Download the server from http://selenium.googlecode.com/files/selenium-server-standalone-2.0b3.jar
 ::
 
-    java -jar selenium-server-standalone-2.9.0.jar
+    java -jar selenium-server-standalone-2.0b3.jar
 
 Example
 =======
@@ -54,6 +54,11 @@ Example
 
 Documentation
 =============
-Coming soon, in the meantime - `"Use the source Luke"`_
 
-..  _"Use the source Luke": http://code.google.com/p/selenium/source/browse/trunk/py/selenium/webdriver/remote/webdriver.py
+.. toctree::
+
+    Auto Generated API <api>
+
+Use The Source Luke!
+====================
+http://code.google.com/p/selenium/source/browse/trunk/py/selenium/webdriver/remote/webdriver.py

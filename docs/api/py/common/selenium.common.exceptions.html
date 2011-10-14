@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>selenium.common.exceptions &mdash; Selenium v2.8.1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Selenium v2.8.1 documentation" href="../index.html" />
+    <link rel="up" title="Selenium Documentation" href="../api.html" />
+    <link rel="next" title="selenium.webdriver.common.action_chains" href="../webdriver/selenium.webdriver.common.action_chains.html" />
+    <link rel="prev" title="selenium.selenium" href="../selenium/selenium.selenium.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../webdriver/selenium.webdriver.common.action_chains.html" title="selenium.webdriver.common.action_chains"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../selenium/selenium.selenium.html" title="selenium.selenium"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Selenium v2.8.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-selenium.common.exceptions">
+<span id="selenium-common-exceptions"></span><h1>selenium.common.exceptions<a class="headerlink" href="#module-selenium.common.exceptions" title="Permalink to this headline">¶</a></h1>
+<p>Exceptions that may happen in all the webdriver code.</p>
+<dl class="exception">
+<dt id="selenium.common.exceptions.ElementNotSelectableException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ElementNotSelectableException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotSelectableException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotSelectableException" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.ElementNotVisibleException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ElementNotVisibleException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotVisibleException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotVisibleException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown to indicate that although an element is present on the
+DOM, it is not visible, and so is not able to be interacted
+with.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.ErrorInResponseException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ErrorInResponseException</tt><big>(</big><em>response</em>, <em>msg</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ErrorInResponseException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ErrorInResponseException" title="Permalink to this definition">¶</a></dt>
+<dd><p>An error has occurred on the server side.</p>
+<p>This may happen when communicating with the firefox extension
+or the remote driver server.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InvalidCookieDomainException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">InvalidCookieDomainException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidCookieDomainException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidCookieDomainException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when attempting to add a cookie under a different domain
+than the current URL.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InvalidElementStateException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">InvalidElementStateException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidElementStateException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidElementStateException" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InvalidSwitchToTargetException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">InvalidSwitchToTargetException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidSwitchToTargetException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidSwitchToTargetException" title="Permalink to this definition">¶</a></dt>
+<dd><p>The frame or window target to be switched doesn&#8217;t exist.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.NoSuchAttributeException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchAttributeException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchAttributeException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchAttributeException" title="Permalink to this definition">¶</a></dt>
+<dd><p>find_element_by_* can&#8217;t find the element.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.NoSuchElementException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchElementException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchElementException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchElementException" title="Permalink to this definition">¶</a></dt>
+<dd><p>find_element_by_* can&#8217;t find the element.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.NoSuchFrameException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchFrameException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchFrameException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchFrameException" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.NoSuchWindowException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchWindowException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchWindowException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchWindowException" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.RemoteDriverServerException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">RemoteDriverServerException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#RemoteDriverServerException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.RemoteDriverServerException" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.StaleElementReferenceException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">StaleElementReferenceException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#StaleElementReferenceException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.StaleElementReferenceException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates that a reference to an element is now &#8220;stale&#8221; &#8212; the
+element no longer appears on the DOM of the page.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.TimeoutException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">TimeoutException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#TimeoutException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.TimeoutException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when a command does not complete in enough time.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.UnableToSetCookieException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">UnableToSetCookieException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnableToSetCookieException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.UnableToSetCookieException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when a driver fails to set a cookie.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.WebDriverException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">WebDriverException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#WebDriverException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.WebDriverException" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../selenium/selenium.selenium.html"
+                        title="previous chapter">selenium.selenium</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../webdriver/selenium.webdriver.common.action_chains.html"
+                        title="next chapter">selenium.webdriver.common.action_chains</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/common/selenium.common.exceptions.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../webdriver/selenium.webdriver.common.action_chains.html" title="selenium.webdriver.common.action_chains"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../selenium/selenium.selenium.html" title="selenium.selenium"
+             >previous</a> |</li>
+        <li><a href="../index.html">Selenium v2.8.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -14,11 +14,13 @@
 # limitations under the License.
 
 class Command(object):
-    """Defines constants for the standard WebDriver commands.
+    """
+    Defines constants for the standard WebDriver commands.
 
     While these constants have no meaning in and of themselves, they are
     used to marshal commands through a service that implements WebDriver's
     remote wire protocol:
+    
         http://code.google.com/p/selenium/wiki/JsonWireProtocol
     """
 

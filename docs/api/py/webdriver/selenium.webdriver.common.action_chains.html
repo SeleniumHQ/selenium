@@ -1,0 +1,406 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>selenium.webdriver.common.action_chains &mdash; Selenium v2.8.1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.8.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Selenium v2.8.1 documentation" href="../index.html" />
+    <link rel="up" title="Selenium Documentation" href="../api.html" />
+    <link rel="next" title="selenium.webdriver.common.alert" href="selenium.webdriver.common.alert.html" />
+    <link rel="prev" title="selenium.common.exceptions" href="../common/selenium.common.exceptions.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="selenium.webdriver.common.alert.html" title="selenium.webdriver.common.alert"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../common/selenium.common.exceptions.html" title="selenium.common.exceptions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Selenium v2.8.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-selenium.webdriver.common.action_chains">
+<span id="selenium-webdriver-common-action-chains"></span><h1>selenium.webdriver.common.action_chains<a class="headerlink" href="#module-selenium.webdriver.common.action_chains" title="Permalink to this headline">¶</a></h1>
+<p>The ActionChains implementation</p>
+<dl class="class">
+<dt id="selenium.webdriver.common.action_chains.ActionChains">
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.common.action_chains.</tt><tt class="descname">ActionChains</tt><big>(</big><em>driver</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate user actions.
+All actions are stored in the ActionChains object. Call perform() to fire
+stored actions.</p>
+<p>Creates a new ActionChains.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>driver: The WebDriver instance which performs user actions.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.click">
+<tt class="descname">click</tt><big>(</big><em>on_element=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clicks an element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>on_element: The element to click.
+If None, clicks on current mouse position.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.click_and_hold">
+<tt class="descname">click_and_hold</tt><big>(</big><em>on_element</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.click_and_hold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.click_and_hold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Holds down the left mouse button on an element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>on_element: The element to mouse down.
+If None, clicks on current mouse position.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.context_click">
+<tt class="descname">context_click</tt><big>(</big><em>on_element</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.context_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.context_click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a context-click (right click) on an element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>on_element: The element to context-click.
+If None, clicks on current mouse position.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.double_click">
+<tt class="descname">double_click</tt><big>(</big><em>on_element</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.double_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.double_click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Double-clicks an element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>on_element: The element to double-click.
+If None, clicks on current mouse position.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.drag_and_drop">
+<tt class="descname">drag_and_drop</tt><big>(</big><em>source</em>, <em>target</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.drag_and_drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Holds down the left mouse button on the source element,</dt>
+<dd>then moves to the target element and releases the mouse button.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>source: The element to mouse down.</li>
+<li>target: The element to mouse up.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.drag_and_drop_by_offset">
+<tt class="descname">drag_and_drop_by_offset</tt><big>(</big><em>source</em>, <em>xoffset</em>, <em>yoffset</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.drag_and_drop_by_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop_by_offset" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Holds down the left mouse button on the source element,</dt>
+<dd>then moves to the target element and releases the mouse button.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>source: The element to mouse down.</li>
+<li>xoffset: X offset to move to.</li>
+<li>yoffset: Y offset to move to.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.key_down">
+<tt class="descname">key_down</tt><big>(</big><em>key</em>, <em>element=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.key_down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.key_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a key press only, without releasing it.
+Should only be used with modifier keys (Control, Alt and Shift).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>key: The modifier key to send. Values are defined in Keys class.</li>
+<li>target: The element to send keys.
+If None, sends a key to current focused element.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.key_up">
+<tt class="descname">key_up</tt><big>(</big><em>key</em>, <em>element=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.key_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.key_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Releases a modifier key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>key: The modifier key to send. Values are defined in Keys class.</li>
+<li>target: The element to send keys.
+If None, sends a key to current focused element.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.move_by_offset">
+<tt class="descname">move_by_offset</tt><big>(</big><em>xoffset</em>, <em>yoffset</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_by_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_by_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moving the mouse to an offset from current mouse position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>xoffset: X offset to move to.</li>
+<li>yoffset: Y offset to move to.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.move_to_element">
+<tt class="descname">move_to_element</tt><big>(</big><em>to_element</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_to_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_to_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moving the mouse to the middle of an element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>to_element: The element to move to.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset">
+<tt class="descname">move_to_element_with_offset</tt><big>(</big><em>to_element</em>, <em>xoffset</em>, <em>yoffset</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_to_element_with_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the mouse by an offset of the specificed element.
+Offsets are relative to the top-left corner of the element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>to_element: The element to move to.</li>
+<li>xoffset: X offset to move to.</li>
+<li>yoffset: Y offset to move to.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.perform">
+<tt class="descname">perform</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.perform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.perform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs all stored actions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.release">
+<tt class="descname">release</tt><big>(</big><em>on_element</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.release"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Releasing a held mouse button.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>on_element: The element to mouse up.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.send_keys">
+<tt class="descname">send_keys</tt><big>(</big><em>*keys_to_send</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.send_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends keys to current focused element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>keys_to_send: The keys to send.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.send_keys_to_element">
+<tt class="descname">send_keys_to_element</tt><big>(</big><em>element</em>, <em>*keys_to_send</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.send_keys_to_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.send_keys_to_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends keys to an element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>element: The element to send keys.</li>
+<li>keys_to_send: The keys to send.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../common/selenium.common.exceptions.html"
+                        title="previous chapter">selenium.common.exceptions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="selenium.webdriver.common.alert.html"
+                        title="next chapter">selenium.webdriver.common.alert</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/webdriver/selenium.webdriver.common.action_chains.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="selenium.webdriver.common.alert.html" title="selenium.webdriver.common.alert"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../common/selenium.common.exceptions.html" title="selenium.common.exceptions"
+             >previous</a> |</li>
+        <li><a href="../index.html">Selenium v2.8.1 documentation</a> &raquo;</li>
+          <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
