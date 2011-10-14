@@ -28,4 +28,11 @@ public class MoveTargetOutOfBoundsException extends WebDriverException {
     super(message);
   }
 
+  public MoveTargetOutOfBoundsException(Throwable cause) {
+    super(cause);
+  }
+
+  public MoveTargetOutOfBoundsException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }
