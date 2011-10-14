@@ -35,6 +35,7 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
 
   }
 
+  @Ignore
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
     driver.findElement(By.id("button1")).click();
