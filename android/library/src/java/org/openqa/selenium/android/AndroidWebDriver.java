@@ -28,7 +28,6 @@ import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.location.LocationManager;
 import android.os.Environment;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
@@ -127,7 +126,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   static final long RESPONSE_TIMEOUT = 10000L;
   private static final long FOCUS_TIMEOUT = 1000L;
   private static final long POLLING_INTERVAL = 50L;
-  private static final long UI_TIMEOUT = 3000L;
+  static final long UI_TIMEOUT = 3000L;
 
   private boolean acceptSslCerts;  
   private volatile boolean pageStartedLoading;
@@ -176,17 +175,14 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     localStorage = new AndroidLocalStorage(this);
     sessionStorage = new AndroidSessionStorage(this);
     targetLocator = new AndroidTargetLocator();
-
     viewManager = new WebViewManager();
     // Create a new view and delete existing windows.
     newWebView( /*Delete existing windows*/true);
-
     // Needs to be called before CookieMAnager::getInstance()
     CookieSyncManager.createInstance(activity);
     sessionCookieManager = new SessionCookieManager();
     CookieManager cookieManager = CookieManager.getInstance();
     cookieManager.removeAllCookie();
-
     networkHandler = new NetworkStateHandler(activity, webview);
   }
 
@@ -274,6 +270,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     }
     long start = System.currentTimeMillis();
     long end = start + UI_TIMEOUT;
+    done = false;
     activity.runOnUiThread(new Runnable() {
        public void run() {
         synchronized (syncObject) {
@@ -338,14 +335,12 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   public void quit() {
-
     activity.runOnUiThread(new Runnable() {
       public void run() {
         viewManager.closeAll();
         webview = null;
       }
     });
-
   }
 
   public WebElement findElement(By by) {
