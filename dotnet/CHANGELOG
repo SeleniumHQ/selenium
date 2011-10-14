@@ -1,3 +1,9 @@
+v2.9.0
+======
+  * Look up private parent fields when using the support classes PageFactory.
+  * Preparing RemoteWebDriver to understand upcoming URI changes to JSON wire
+  * protocol.
+
 v2.8.0
 ======
   * Added interactions methods for .Release(), ClickAndHold(), and 
