@@ -32,6 +32,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsById;
@@ -57,6 +58,8 @@ public class AndroidWebElement implements WebElement,
   private final String elementId;
   private AndroidCoordinates coordinates;
   private FindByImpl findsBy;
+  private Object syncObject = new Object();
+  private volatile boolean done;
 
   private static final String LOCATOR_ID = "id";
   private static final String LOCATOR_LINK_TEXT = "linkText";
@@ -177,11 +180,26 @@ public class AndroidWebElement implements WebElement,
         this);
 
     final WebView view = driver.getWebView();
+    done = false;
+    long end = System.currentTimeMillis() + AndroidWebDriver.UI_TIMEOUT;
     driver.getActivity().runOnUiThread(new Runnable() {
       public void run() {
-        WebViewAction.sendKeys(view, keys);
+        synchronized (syncObject) {
+          WebViewAction.sendKeys(view, keys);
+          done = true;
+          syncObject.notify();
+        }
       }
     });
+    while (!done && System.currentTimeMillis() < end) {
+      synchronized (syncObject) {
+        try {
+          syncObject.wait();
+        } catch (InterruptedException e) {
+          throw new WebDriverException("Error while sending keys.", e);
+        }
+      }
+    }
   }
 
   public String getTagName() {
