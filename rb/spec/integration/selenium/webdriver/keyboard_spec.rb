@@ -16,6 +16,7 @@ module Selenium
           driver.find_element(:id => "result").text.strip.should be_empty
         end
 
+        # this spec needs focus with firefox.
         it "can send keys with shift pressed" do
           driver.navigate.to url_for("javascriptPage.html")
 

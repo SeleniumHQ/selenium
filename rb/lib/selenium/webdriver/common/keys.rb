@@ -76,8 +76,32 @@ module Selenium
         :command      => "\xEE\x80\xBD" # alias
       }
 
+      #
+      # @api private
+      #
+
       def self.[](key)
-        KEYS[key] || raise(Error::UnsupportedOperationError, "no such key #{key.inspect}")
+        KEYS[key] or raise Error::UnsupportedOperationError, "no such key #{key.inspect}"
+      end
+
+      #
+      # @api private
+      #
+
+      def self.encode(keys)
+        keys.map do |arg|
+          case arg
+          when Symbol
+            Keys[arg]
+          when Array
+            arg = arg.map { |e| e.kind_of?(Symbol) ? Keys[e] : e }.join
+            arg << Keys[:null]
+
+            arg
+          else
+            arg.to_s
+          end
+        end
       end
 
     end # Keys
