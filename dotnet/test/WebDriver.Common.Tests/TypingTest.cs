@@ -236,6 +236,7 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "Firefox-specific test. IE does not report key press event.")]
         [IgnoreBrowser(Browser.HtmlUnit, "firefox-specific")]
+        [IgnoreBrowser(Browser.Chrome, "Firefox-specific test. Chrome does not report key press event.")]
         public void ShouldReportKeyCodeOfArrowKeys()
         {
             driver.Url = javascriptPage;

@@ -32,6 +32,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(BeforeTest = true)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome may refresh to within 10 milliseconds")]
         public void RefreshShouldBlockUntilPageLoads()
         {
             DateTime start = DateTime.Now;
