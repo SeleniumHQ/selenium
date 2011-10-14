@@ -115,8 +115,14 @@ ImpatientListener.prototype.onProgressChange = function(webProgress) {
 };
 
 
+var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces["nsIPrefBranch"]);
+
 function buildHandler(browser, toCall, opt_window) {
-//  return new ImpatientListener(browser, toCall, opt_window);
+  if (prefs.prefHasUserValue('webdriver.load.strategy')) {
+    if ('fast' == prefs.getCharPref('webdriver.load.strategy')) {
+      return new ImpatientListener(browser, toCall, opt_window);
+    }
+  }
   return new PatientListener(browser, toCall, opt_window);
 }
 
