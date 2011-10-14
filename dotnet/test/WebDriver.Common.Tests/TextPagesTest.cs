@@ -23,7 +23,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [ExpectedException(typeof(NoSuchElementException))]
         public void FindingAnElementOnAPlainTextPageWillNeverWork()
         {
@@ -33,7 +32,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE allows addition of cookie on text pages")]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome allows addition of cookie on text pages")]
         [ExpectedException(typeof(WebDriverException))]
         public void ShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml()
         {

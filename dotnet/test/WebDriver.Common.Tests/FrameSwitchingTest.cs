@@ -390,7 +390,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Browser returns frame title")]
         public void ShouldReturnWindowTitleInAFrameset()
         {
             driver.Url = framesetPage;

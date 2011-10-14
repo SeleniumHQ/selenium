@@ -314,7 +314,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "Does not yet support file uploads")]
         [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
         [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
         public void UploadingFileShouldFireOnChangeEvent()

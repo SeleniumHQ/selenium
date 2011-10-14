@@ -220,7 +220,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "event firing broken.")]
         [IgnoreBrowser(Browser.Firefox, "Firefox demands to have the focus on the window already.")]
         public void ShouldFireFocusKeyEventsInTheRightOrder()
         {
@@ -235,7 +234,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "firefox-specific")]
         [IgnoreBrowser(Browser.IE, "Firefox-specific test. IE does not report key press event.")]
         [IgnoreBrowser(Browser.HtmlUnit, "firefox-specific")]
         public void ShouldReportKeyCodeOfArrowKeys()
@@ -356,7 +354,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void AllPrintableKeys()
         {
@@ -659,7 +656,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Chrome, "See crbug 20773")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;

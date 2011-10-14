@@ -86,7 +86,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome collapses non-breaking spaces")]
         public void ShouldNotCollapseANonBreakingSpaces()
         {
             driver.Url = (simpleTestPage);
@@ -180,7 +179,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldNotTrimSpacesWhenLineWraps()
         {
             driver.Url = simpleTestPage;
@@ -203,7 +201,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Firefox, "Difference in DOM rendering engines. Firefox places new line characters for paragraph elements only after the element.")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IE, "Difference in DOM rendering engines. IE preserves trailing space on first line")]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldHandleNestedBlockLevelElements()
         {
             driver.Url = (simpleTestPage);

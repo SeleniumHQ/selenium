@@ -112,7 +112,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldBeAbleToToggleEnabledMultiSelectOption()
         {
             driver.Url = formsPage;

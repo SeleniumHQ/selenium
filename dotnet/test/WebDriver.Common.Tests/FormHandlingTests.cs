@@ -121,7 +121,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver does not yet support file uploads")]
         public void ShouldBeAbleToAlterTheContentsOfAFileUploadInputElement()
         {
             driver.Url = formsPage;
@@ -141,7 +140,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver does not yet support file uploads")]
         public void ShouldBeAbleToUploadTheSameFileTwice()
         {
             System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
@@ -181,7 +179,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "Not implemented going to the end of the line first")]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented going to the end of the line first")]
         public void SendingKeyboardEventsShouldAppendTextInTextAreas()
         {
             driver.Url = formsPage;

@@ -64,7 +64,6 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldAllowUsersToHoverOverElements()
         {
             driver.Url = javascriptPage;

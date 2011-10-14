@@ -29,7 +29,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "File input elements are not supported yet")]
         public void ShouldAllowFileUploading()
         {
             driver.Url = uploadPage;
