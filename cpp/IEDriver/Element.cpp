@@ -203,7 +203,7 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
 
   if (result != SUCCESS ||
       !this->IsClickPointInViewPort(left, top, element_width, element_height) ||
-      this->IsHiddenByOverflow(click_x, click_y)) {
+      this->IsHiddenByOverflow()) {
     // Scroll the element into view
     LOG(DEBUG) << "Will need to scroll element into view";
     hr = this->element_->scrollIntoView(CComVariant(VARIANT_TRUE));
@@ -234,7 +234,7 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
   return SUCCESS;
 }
 
-bool Element::IsHiddenByOverflow(long click_x, long click_y) {
+bool Element::IsHiddenByOverflow() {
   bool isOverflow = false;
 
   // Use JavaScript for this rather than COM calls to avoid dependency
@@ -246,7 +246,9 @@ bool Element::IsHiddenByOverflow(long click_x, long click_y) {
   script_source += L"var x = e.offsetLeft + (e.clientWidth / 2);\n";
   script_source += L"var y = e.offsetTop + (e.clientHeight / 2);\n";
   script_source += L"var s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
-  script_source += L"while (p != null && s.overflow != 'auto' && s.overflow != 'scroll') {\n";
+  //Note: In the case that the parent has overflow=hidden, and the element is out of sight,
+  //this will force the IEDriver to scroll the element in to view.  This is a bug.
+  script_source += L"while (p != null && s.overflow != 'auto' && s.overflow != 'scroll' && s.overflow != 'hidden') {\n";
   script_source += L"  p = p.parentNode;\n";
   script_source += L"  s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
   script_source += L"}";
