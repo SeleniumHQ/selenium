@@ -78,8 +78,7 @@ public class ClickTest extends AbstractDriverTestCase {
     driver.findElement(By.id("otherframe")).click();
     driver.switchTo().defaultContent().switchTo().frame("target");
 
-    assertTrue("Target did not reload",
-        driver.getPageSource().contains("Hello WebDriver"));
+    waitFor(WaitingConditions.pageSourceToContain(driver, "Hello WebDriver"));
   }
 
   @JavascriptEnabled

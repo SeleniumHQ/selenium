@@ -144,6 +144,27 @@ public class WaitingConditions {
     };
   }
 
+  public static Callable<String> pageSourceToContain(
+      final WebDriver driver, final String expectedText) {
+    return new Callable<String>() {
+
+      public String call() throws Exception {
+        String source = driver.getPageSource();
+
+        if (source.contains(expectedText)) {
+          return source;
+        }
+
+        return null;
+      }
+
+      @Override
+      public String toString() {
+        return "Page source to contain: " + expectedText;
+      }
+    };
+  }
+
   public static Callable<String> pageTitleToBe(
       final WebDriver driver, final String expectedTitle) {
     return new Callable<String>() {
