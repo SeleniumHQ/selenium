@@ -54,6 +54,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
+        [IgnoreBrowser(Browser.IE)]
         //[IgnoreBrowser(Browser.Firefox)]
         public void ShouldBeAbleToIterateOverAllOpenWindows()
         {
