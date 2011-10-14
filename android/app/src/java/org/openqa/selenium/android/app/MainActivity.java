@@ -67,8 +67,6 @@ public class MainActivity extends Activity {
         bindService(jettyIntent, mConnection, Context.BIND_AUTO_CREATE);
       }
     }).start();
-
-    org.openqa.selenium.android.Logger.log(android.util.Log.DEBUG, "MAINACTIVITY", "Thread: " + Thread.currentThread().getName());
     thisActivity = this;
   }
 
