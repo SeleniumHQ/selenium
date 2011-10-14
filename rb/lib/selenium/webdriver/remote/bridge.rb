@@ -274,6 +274,10 @@ module Selenium
           execute :sendModifierKeyToActiveElement, {}, :value => key, :isdown => down
         end
 
+        def sendKeysToActiveElement(key)
+          execute :sendKeysToActiveElement, {}, :value => key
+        end
+
         def getElementTagName(element)
           execute :getElementTagName, :id => element
         end

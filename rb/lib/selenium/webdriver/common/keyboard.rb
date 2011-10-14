@@ -9,6 +9,7 @@ module Selenium
       end
 
       def send_keys(*keys)
+        # TODO: use sendKeysToActiveElement
         @bridge.getActiveElement.send_keys(*keys)
       end
 
@@ -20,7 +21,9 @@ module Selenium
 
       def press(key)
         assert_modifier key
-        @bridge.sendModifierKeyToActiveElement Keys[key], true
+
+        # TODO: use sendKeysToActiveElement
+        @bridge.sendModifierKeyToActiveElement Keys.encode([key]), true
       end
 
       #
@@ -31,7 +34,9 @@ module Selenium
 
       def release(key)
         assert_modifier key
-        @bridge.sendModifierKeyToActiveElement Keys[key], false
+
+        # TODO: use sendKeysToActiveElement
+        @bridge.sendModifierKeyToActiveElement Keys.encode([key]), false
       end
 
       private
