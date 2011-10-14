@@ -242,26 +242,25 @@ bool Element::IsHiddenByOverflow(long click_x, long click_y) {
   std::wstring script_source = L"(function() { return function(){";
   script_source += L"var e = arguments[0];\n";
   script_source += L"var p = e.parentNode;\n";
+  //Note: This logic duplicates Element::GetClickPoint
+  script_source += L"var x = e.offsetLeft + (e.clientWidth / 2);\n";
+  script_source += L"var y = e.offsetTop + (e.clientHeight / 2);\n";
   script_source += L"var s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
   script_source += L"while (p != null && s.overflow != 'auto' && s.overflow != 'scroll') {\n";
   script_source += L"  p = p.parentNode;\n";
-  script_source += L"  if (p === document) {\n";
-  script_source += L"    p = null;\n";
-  script_source += L"  } else {\n";
-  script_source += L"    s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
-  script_source += L"  }\n";
+  script_source += L"  s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
   script_source += L"}";
+  script_source += L"var containerTop = p.scrollTop;";
+  script_source += L"var containerLeft = p.scrollLeft;";
   script_source += L"return p != null && ";
-  script_source += L"(arguments[1] < p.scrollLeft || arguments[1] > p.scrollLeft + parseInt(s.width) || ";
-  script_source += L"arguments[2] < p.scrollTop || arguments[2] > p.scrollTop + parseInt(s.height));";
+  script_source += L"(x < containerLeft || x > containerLeft + p.clientWidth || ";
+  script_source += L"y < containerTop || y > containerTop + p.clientHeight);";
   script_source += L"};})();";
 
   CComPtr<IHTMLDocument2> doc;
   this->GetContainingDocument(false, &doc);
-  Script script_wrapper(doc, script_source, 3);
+  Script script_wrapper(doc, script_source, 1);
   script_wrapper.AddArgument(this->element_);
-  script_wrapper.AddArgument(click_x);
-  script_wrapper.AddArgument(click_y);
   int status_code = script_wrapper.Execute();
   if (status_code == SUCCESS) {
     isOverflow = script_wrapper.result().boolVal == VARIANT_TRUE;
@@ -436,6 +435,7 @@ int Element::GetFrameOffset(long* x, long* y) {
 }
 
 void Element::GetClickPoint(const long x, const long y, const long width, const long height, long* click_x, long* click_y) {
+  //Note: This logic is duplicated in javascript in Element::IsHiddenByOverflow
   *click_x = x + (width / 2);
   *click_y = y + (height / 2);
 }

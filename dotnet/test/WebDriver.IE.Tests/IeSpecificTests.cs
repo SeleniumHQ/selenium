@@ -122,5 +122,20 @@ namespace OpenQA.Selenium.IE
             item.Click();
             Assert.AreEqual(0, ((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].scrollTop;", list), "Should not have scrolled");
         }
+
+        [Test]
+        public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
+            driver.FindElement(By.Id("button1")).Click();
+            var scrollTop = GetScrollTop();
+            driver.FindElement(By.Id("button2")).Click();
+            Assert.AreEqual(scrollTop, GetScrollTop());
+        }
+
+        private long GetScrollTop()
+        {
+            return (long)((IJavaScriptExecutor)driver).ExecuteScript("return document.body.scrollTop;");
+        }
     }
 }
