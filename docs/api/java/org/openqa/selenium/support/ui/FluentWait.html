@@ -193,10 +193,27 @@ An implementation of the <A HREF="../../../../../org/openqa/selenium/support/ui/
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</A>&lt;<A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring(java.lang.Class...)">ignoring</A></B>(java.lang.Class&lt;? extends java.lang.RuntimeException&gt;...&nbsp;types)</CODE>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoreAll(java.util.Collection)">ignoreAll</A></B>(java.util.Collection&lt;java.lang.Class&lt;? extends java.lang.RuntimeException&gt;&gt;&nbsp;types)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Configures this instance to ignore specific types of exceptions while waiting for a condition.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</A>&lt;<A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring(java.lang.Class)">ignoring</A></B>(java.lang.Class&lt;? extends java.lang.RuntimeException&gt;&nbsp;exceptionType)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</A>&lt;<A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring(java.lang.Class, java.lang.Class)">ignoring</A></B>(java.lang.Class&lt;? extends java.lang.RuntimeException&gt;&nbsp;firstType,
+         java.lang.Class&lt;? extends java.lang.RuntimeException&gt;&nbsp;secondType)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -371,10 +388,10 @@ public <A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" t
 </DL>
 <HR>
 
-<A NAME="ignoring(java.lang.Class...)"><!-- --></A><H3>
-ignoring</H3>
+<A NAME="ignoreAll(java.util.Collection)"><!-- --></A><H3>
+ignoreAll</H3>
 <PRE>
-public <A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</A>&lt;<A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</A>&gt; <B>ignoring</B>(java.lang.Class&lt;? extends java.lang.RuntimeException&gt;...&nbsp;types)</PRE>
+public <A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</A>&lt;<A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</A>&gt; <B>ignoreAll</B>(java.util.Collection&lt;java.lang.Class&lt;? extends java.lang.RuntimeException&gt;&gt;&nbsp;types)</PRE>
 <DL>
 <DD>Configures this instance to ignore specific types of exceptions while waiting for a condition.
  Any exceptions not whitelisted will be allowed to propagate, terminating the wait.
@@ -385,6 +402,35 @@ public <A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" t
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>types</CODE> - The types of exceptions to ignore.
 <DT><B>Returns:</B><DD>A self reference.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="ignoring(java.lang.Class)"><!-- --></A><H3>
+ignoring</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</A>&lt;<A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</A>&gt; <B>ignoring</B>(java.lang.Class&lt;? extends java.lang.RuntimeException&gt;&nbsp;exceptionType)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoreAll(java.util.Collection)"><CODE>ignoreAll(Collection)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="ignoring(java.lang.Class, java.lang.Class)"><!-- --></A><H3>
+ignoring</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</A>&lt;<A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</A>&gt; <B>ignoring</B>(java.lang.Class&lt;? extends java.lang.RuntimeException&gt;&nbsp;firstType,
+                              java.lang.Class&lt;? extends java.lang.RuntimeException&gt;&nbsp;secondType)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoreAll(java.util.Collection)"><CODE>ignoreAll(Collection)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
