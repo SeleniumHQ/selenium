@@ -58,7 +58,7 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("value", keyToPress);
             parameters.Add("isdown", true);
-            this.driver.InternalExecute(DriverCommand.SendKeysToActiveElement, parameters);
+            this.driver.InternalExecute(DriverCommand.SendModifierKey, parameters);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("value", keyToRelease);
             parameters.Add("isdown", false);
-            this.driver.InternalExecute(DriverCommand.SendKeysToActiveElement, parameters);
+            this.driver.InternalExecute(DriverCommand.SendModifierKey, parameters);
         }
         #endregion
     }

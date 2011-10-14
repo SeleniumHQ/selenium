@@ -252,7 +252,7 @@ int Server::SendResponseToClient(struct mg_connection* conn,
     } else if (return_code == 501) {
       this->SendHttpNotImplemented(conn,
                                    request_info,
-                                   response.value().asString());
+                                   "");
       return_code = 501;
     } else {
       this->SendHttpInternalError(conn, request_info, serialized_response);
@@ -352,10 +352,7 @@ void Server::SendHttpNotImplemented(struct mg_connection* connection,
                                     const struct mg_request_info* request_info,
                                     const std::string& body) {
   std::ostringstream out;
-  out << "HTTP/1.1 501 Not Implemented\r\n"
-    << "Content-Type: text/html\r\n"
-    << "Content-Length: 0\r\n"
-    << "Allow: " << body << "\r\n\r\n";
+  out << "HTTP/1.1 501 Not Implemented\r\n\r\n";
 
   mg_write(connection, out.str().c_str(), out.str().size());
 }
@@ -500,6 +497,9 @@ void Server::PopulateCommandRepository() {
   this->commands_["/session/:sessionid/alert_text"]["GET"] = GetAlertText;
   this->commands_["/session/:sessionid/alert_text"]["POST"] = SendKeysToAlert;
 
+  // TODO(JimEvans): Remove the SendModifierKey URI when all platforms support
+  // the SendKeysToActiveElement command.
+  this->commands_["/session/:sessionid/modifier"]["POST"] = SendModifierKey;
   this->commands_["/session/:sessionid/keys"]["POST"] = SendKeysToActiveElement;
   this->commands_["/session/:sessionid/moveto"]["POST"] = MouseMoveTo;
   this->commands_["/session/:sessionid/click"]["POST"] = MouseClick;

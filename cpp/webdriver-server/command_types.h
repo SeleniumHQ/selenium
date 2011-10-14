@@ -75,6 +75,10 @@ enum CommandType {
   GetAlertText,
   SendKeysToAlert,
 
+
+  // TODO(JimEvans): Remove the SendModifierKey type when all platforms support
+  // the SendKeysToActiveElement command.
+  SendModifierKey,
   SendKeysToActiveElement,
   MouseMoveTo,
   MouseClick,

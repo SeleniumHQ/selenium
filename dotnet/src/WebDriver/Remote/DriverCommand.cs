@@ -346,6 +346,12 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Represents the SendKeysToActiveElement command.
         /// </summary>
-        SendKeysToActiveElement
+        SendKeysToActiveElement,
+
+        // TODO: Remove this when Windows supports SendKeysToActiveElement
+        /// <summary>
+        /// Represents the SendModifierKey command.
+        /// </summary>
+        SendModifierKey
     }
 }
