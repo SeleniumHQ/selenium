@@ -17,7 +17,7 @@
 from setuptools import setup
 from setuptools.command.install import install
 
-from os.path import dirname, join, isfile
+from os.path import dirname, join, isfile, abspath
 from shutil import copy
 import sys
 
