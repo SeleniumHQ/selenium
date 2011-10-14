@@ -591,7 +591,8 @@ task :calcdeps => "javascript/deps.js"
 task :release => [
     '//java/server/src/org/openqa/selenium/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium:zip',
-    '//java/client/src/org/openqa/selenium:client-combined:zip'
+    '//java/client/src/org/openqa/selenium:client-combined:zip',
+    '//android/app:android-server'
   ] do |t|
   # Unzip each of the deps and rename the pieces that need renaming
   renames = {
