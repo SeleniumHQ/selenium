@@ -3,6 +3,7 @@ java_library(name = "base",
   srcs = [
     "CapabilityType.java",
     "DesiredCapabilities.java",
+    "BrowserType.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:webdriver-api",

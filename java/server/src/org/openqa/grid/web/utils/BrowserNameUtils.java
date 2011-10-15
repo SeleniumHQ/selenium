@@ -20,6 +20,7 @@ import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.BrowserType;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
@@ -90,11 +91,11 @@ public class BrowserNameUtils {
       }
 
     } else if (browserString.startsWith("*safari")) {
-      ret = "safari";
+      ret = BrowserType.SAFARI;
     } else if (browserString.startsWith("*googlechrome")) {
       ret = "chrome";
     } else if (browserString.startsWith("opera")) {
-      ret = "opera";
+      ret = BrowserType.OPERA;
     }
 
     return ret;

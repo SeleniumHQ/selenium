@@ -18,6 +18,7 @@
 package org.openqa.selenium.browserlaunchers.locators;
 
 import org.openqa.selenium.os.WindowsUtils;
+import org.openqa.selenium.remote.BrowserType;
 
 /**
  * Discovers a valid Google Chrome installation on local system.
@@ -31,7 +32,7 @@ public class GoogleChromeLocator extends SingleBrowserLocator {
 
   @Override
   protected String seleniumBrowserName() {
-    return "googlechrome";
+    return BrowserType.GOOGLECHROME;
   }
 
   @Override

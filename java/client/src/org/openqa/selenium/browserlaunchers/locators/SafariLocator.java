@@ -1,6 +1,7 @@
 package org.openqa.selenium.browserlaunchers.locators;
 
 import org.openqa.selenium.os.WindowsUtils;
+import org.openqa.selenium.remote.BrowserType;
 
 /**
  * Discovers a valid Internet Explorer installation on local system.
@@ -22,7 +23,7 @@ public class SafariLocator extends SingleBrowserLocator {
 
   @Override
   protected String seleniumBrowserName() {
-    return "safari";
+    return BrowserType.SAFARI;
   }
 
   @Override

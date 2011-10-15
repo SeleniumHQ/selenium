@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
+import org.openqa.selenium.remote.BrowserType;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -32,7 +33,7 @@ public class Firefox3Locator extends FirefoxLocator {
 
   @Override
   protected String seleniumBrowserName() {
-    return "firefox3";
+    return BrowserType.FIREFOX_3;
   }
 
   @Override

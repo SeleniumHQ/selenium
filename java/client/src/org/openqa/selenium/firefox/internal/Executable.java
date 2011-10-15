@@ -6,6 +6,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
 import java.io.File;
@@ -158,7 +159,7 @@ public class Executable {
         // Do nothing
     }
 
-    return binary != null && binary.exists() ? binary : findBinary("firefox", "firefox3");
+    return binary != null && binary.exists() ? binary : findBinary(BrowserType.FIREFOX, BrowserType.FIREFOX_3);
   }
 
   private static File findExistingBinary(final ImmutableList<String> paths) {

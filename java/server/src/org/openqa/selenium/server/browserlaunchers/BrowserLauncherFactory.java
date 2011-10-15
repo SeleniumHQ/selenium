@@ -18,6 +18,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.lang.reflect.Constructor;
@@ -43,25 +44,25 @@ public class BrowserLauncherFactory {
       new HashMap<String, Class<? extends BrowserLauncher>>();
 
   static {
-    supportedBrowsers.put("firefoxproxy", FirefoxCustomProfileLauncher.class);
-    supportedBrowsers.put("firefox", FirefoxLauncher.class);
-    supportedBrowsers.put("chrome", FirefoxChromeLauncher.class);
-    supportedBrowsers.put("firefoxchrome", FirefoxChromeLauncher.class);
-    supportedBrowsers.put("firefox2", Firefox2Launcher.class);
-    supportedBrowsers.put("firefox3", Firefox3Launcher.class);
-    supportedBrowsers.put("iexploreproxy", InternetExplorerCustomProxyLauncher.class);
-    supportedBrowsers.put("safari", SafariLauncher.class);
-    supportedBrowsers.put("safariproxy", SafariCustomProfileLauncher.class);
-    supportedBrowsers.put("iehta", HTABrowserLauncher.class);
-    supportedBrowsers.put("iexplore", InternetExplorerLauncher.class);
-    supportedBrowsers.put("opera", OperaCustomProfileLauncher.class);
+    supportedBrowsers.put(BrowserType.FIREFOX_PROXY, FirefoxCustomProfileLauncher.class);
+    supportedBrowsers.put(BrowserType.FIREFOX, FirefoxLauncher.class);
+    supportedBrowsers.put(BrowserType.CHROME, FirefoxChromeLauncher.class);
+    supportedBrowsers.put(BrowserType.FIREFOX_CHROME, FirefoxChromeLauncher.class);
+    supportedBrowsers.put(BrowserType.FIREFOX_2, Firefox2Launcher.class);
+    supportedBrowsers.put(BrowserType.FIREFOX_3, Firefox3Launcher.class);
+    supportedBrowsers.put(BrowserType.IEXPLORE_PROXY, InternetExplorerCustomProxyLauncher.class);
+    supportedBrowsers.put(BrowserType.SAFARI, SafariLauncher.class);
+    supportedBrowsers.put(BrowserType.SAFARI_PROXY, SafariCustomProfileLauncher.class);
+    supportedBrowsers.put(BrowserType.IE_HTA, HTABrowserLauncher.class);
+    supportedBrowsers.put(BrowserType.IEXPLORE, InternetExplorerLauncher.class);
+    supportedBrowsers.put(BrowserType.OPERA, OperaCustomProfileLauncher.class);
     supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
     supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);
     // DGF pisafari isn't working yet
     // supportedBrowsers.put("pisafari", ProxyInjectionSafariCustomProfileLauncher.class);
-    supportedBrowsers.put("konqueror", KonquerorLauncher.class);
-    supportedBrowsers.put("mock", MockBrowserLauncher.class);
-    supportedBrowsers.put("googlechrome", GoogleChromeLauncher.class);
+    supportedBrowsers.put(BrowserType.KONQUEROR, KonquerorLauncher.class);
+    supportedBrowsers.put(BrowserType.MOCK, MockBrowserLauncher.class);
+    supportedBrowsers.put(BrowserType.GOOGLECHROME, GoogleChromeLauncher.class);
   }
 
   public BrowserLauncherFactory() {

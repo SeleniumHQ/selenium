@@ -8,6 +8,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.FrameGroupCommandQueueSet;
@@ -206,7 +207,7 @@ public class HTMLLauncher implements HTMLResultsListener {
     String[] browsers;
     if (args.length == 4) {
       log.info("Running self tests");
-      browsers = new String[] {"firefox", "iexploreproxy", "opera", "chrome"};
+      browsers = new String[] {BrowserType.FIREFOX, BrowserType.IEXPLORE_PROXY, BrowserType.OPERA, BrowserType.CHROME};
     } else {
       browsers = new String[] {args[4]};
     }
