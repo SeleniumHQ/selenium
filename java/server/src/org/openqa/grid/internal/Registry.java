@@ -16,6 +16,8 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import com.google.common.base.Predicate;
+
 import net.jcip.annotations.ThreadSafe;
 
 import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
@@ -25,10 +27,9 @@ import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -49,11 +50,11 @@ public class Registry {
 
   public static final String KEY = Registry.class.getName();
 
-  private Prioritizer prioritizer = null;
+  private Prioritizer prioritizer;
 
   private static final Logger log = Logger.getLogger(Registry.class.getName());
 
-  private List<RequestHandler> newSessionRequests = new ArrayList<RequestHandler>();
+  private final NewSessionRequestQueue newSessionQueue;
 
   private Hub hub;
 
@@ -79,7 +80,7 @@ public class Registry {
     this.newSessionWaitTimeout = config.getNewSessionWaitTimeout();
     this.throwOnCapabilityNotPresent = config.isThrowOnCapabilityNotPresent();
     this.prioritizer = config.getPrioritizer();
-
+    this.newSessionQueue = new NewSessionRequestQueue();
     this.configuration = config;
     this.httpClientFactory = new HttpClientFactory();
 
@@ -205,14 +206,15 @@ public class Registry {
         }
 
       }
-      newSessionRequests.add(request);
-      fireEventNewSessionAvailable();
+      newSessionQueue.add(request);
+      testSessionAvailable.signalAll();
     } finally {
       lock.unlock();
     }
+
   }
 
-  class QueueIsStateException extends Exception {
+  class QueueIsStateException extends RuntimeException {
 
     /**
      *
@@ -238,43 +240,11 @@ public class Registry {
         } else {
           testSessionAvailable.await(5, TimeUnit.SECONDS);
         }
-        if (prioritizer != null) {
-          Collections.sort(newSessionRequests);
-        }
-        List<RequestHandler> matched = new ArrayList<RequestHandler>();
-        for (RequestHandler request : newSessionRequests) {
-
-          // sort the proxies first, by default by total number of
-          // test running, to avoid putting all the load of the first
-          // proxies.
-          List<RemoteProxy> sorted = proxies.getSorted();
-
-          for (RemoteProxy proxy : sorted) {
-            if (!matcherThread.isRegistryClean()) {
-              throw new QueueIsStateException();
-            }
-            TestSession session = proxy.getNewSession(request.getDesiredCapabilities());
-            if (session != null) {
-              if (!matcherThread.isRegistryClean()) {
-                throw new QueueIsStateException();
-              }
-              matched.add(request);
-              boolean ok = activeTestSessions.add(session);
-              request.bindSession(session);
-              if (!ok) {
-                log.severe("Error adding session : " + session);
-              }
-              break;
-            }
+        newSessionQueue.processQueue( new Predicate<RequestHandler>() {
+          public boolean apply(RequestHandler input) {
+            return canTakeRequestHandler( input);
           }
-        }
-        for (RequestHandler req : matched) {
-          boolean ok = removeNewSessionRequest(req);
-          if (!ok) {
-            log.severe("Bug removing request " + req);
-          }
-        }
-
+        }, prioritizer);
       } catch (InterruptedException e) {
         log.info("Shutting down registry.");
       } catch (QueueIsStateException q) {
@@ -285,6 +255,32 @@ public class Registry {
       }
     }
 
+  }
+
+  private boolean canTakeRequestHandler(RequestHandler request) {
+    // sort the proxies first, by default by total number of
+    // test running, to avoid putting all the load of the first
+    // proxies.
+    List<RemoteProxy> sorted = proxies.getSorted();
+
+    for (RemoteProxy proxy : sorted) {
+      if (!matcherThread.isRegistryClean()) {
+        throw new QueueIsStateException();
+      }
+      TestSession session = proxy.getNewSession(request.getDesiredCapabilities());
+      if (session != null) {
+        if (!matcherThread.isRegistryClean()) {
+          throw new QueueIsStateException();
+        }
+        boolean ok = activeTestSessions.add(session);
+        request.bindSession(session);
+        if (!ok) {
+          log.severe("Error adding session : " + session);
+        }
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -431,39 +427,19 @@ public class Registry {
    * May race.
    */
   public int getNewSessionRequestCount(){
-     try {
-       lock.lock();
-       return newSessionRequests.size();
-     } finally {
-        lock.unlock();
-     }
+    return newSessionQueue.getNewSessionRequestCount();
   }
 
-  public List<RequestHandler> clearNewSessionRequests() {
-    try {
-      lock.lock();
-      return newSessionRequests;
-    } finally {
-      lock.unlock();
-    }
+  public void clearNewSessionRequests() {
+    newSessionQueue.clearNewSessionRequests();
   }
 
   public boolean removeNewSessionRequest(RequestHandler request) {
-    try {
-      lock.lock();
-      return newSessionRequests.remove(request);
-    } finally {
-      lock.unlock();
-    }
+    return newSessionQueue.removeNewSessionRequest(request);
   }
 
-  public List<RequestHandler> getNewSessionRequests() {
-    try {
-      lock.lock();
-      return new ArrayList<RequestHandler>(newSessionRequests);
-   } finally {
-      lock.unlock();
-    }
+  public Iterable<DesiredCapabilities> getDesiredCapabilities() {
+    return newSessionQueue.getDesiredCapabilities();
   }
 
   public Set<TestSession> getActiveSessions() {

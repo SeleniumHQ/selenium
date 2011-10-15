@@ -21,7 +21,7 @@ import org.openqa.grid.common.GridDocHelper;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -113,15 +113,15 @@ public class ConsoleServlet extends RegistryBasedServlet {
       builder.append(proxy.getHtmlRender().renderSummary());
     }
 
-    List<RequestHandler> l = getRegistry().getNewSessionRequests();
+    int numUnprocessedRequests = getRegistry().getNewSessionRequestCount();
 
-    if (!l.isEmpty()) {
-      builder.append(String.format("%d requests waiting for a slot to be free.", l.size()));
+    if (numUnprocessedRequests > 0) {
+      builder.append(String.format("%d requests waiting for a slot to be free.", numUnprocessedRequests));
     }
 
     builder.append("<ul>");
-    for (RequestHandler req : l) {
-      builder.append("<li>").append(req.getDesiredCapabilities()).append("</li>");
+    for (DesiredCapabilities req : getRegistry().getDesiredCapabilities()) {
+      builder.append("<li>").append(req.asMap()).append("</li>");
     }
     builder.append("</ul>");
 
