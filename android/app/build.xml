@@ -67,7 +67,7 @@
     <copy file="${third_party.location}/java/json/json-20080701.jar" todir="libs/" />
     <copy file="${build.location}/android/library/src/java/org/openqa/selenium/android/android_library.jar" todir="libs" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/io/io.jar" todir="libs" />
-    <copy file="${third_party.location}/java/junit/junit-dep-4.9.jar" todir="libs/" />
+    <copy file="${third_party.location}/java/junit/junit-dep-4.10.jar" todir="libs/" />
 
     <taskdef name="setup"
         classname="com.android.ant.SetupTask"
