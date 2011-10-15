@@ -241,37 +241,30 @@ public class FirefoxChromeLauncherUnitTest {
 
     @Override
     public void destroy() {
-      // TODO Auto-generated method stub
-
     }
 
     @Override
     public int exitValue() {
-      // TODO Auto-generated method stub
       return 0;
     }
 
     @Override
     public InputStream getErrorStream() {
-      // TODO Auto-generated method stub
       return null;
     }
 
     @Override
     public InputStream getInputStream() {
-      // TODO Auto-generated method stub
       return null;
     }
 
     @Override
     public OutputStream getOutputStream() {
-      // TODO Auto-generated method stub
       return null;
     }
 
     @Override
     public int waitFor() throws InterruptedException {
-      // TODO Auto-generated method stub
       return 0;
     }
 

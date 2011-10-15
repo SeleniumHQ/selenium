@@ -113,31 +113,26 @@ public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
 
     @Override
     public int exitValue() {
-      // TODO Auto-generated method stub
       return 0;
     }
 
     @Override
     public InputStream getErrorStream() {
-      // TODO Auto-generated method stub
       return null;
     }
 
     @Override
     public InputStream getInputStream() {
-      // TODO Auto-generated method stub
       return null;
     }
 
     @Override
     public OutputStream getOutputStream() {
-      // TODO Auto-generated method stub
       return null;
     }
 
     @Override
     public int waitFor() throws InterruptedException {
-      // TODO Auto-generated method stub
       return 0;
     }
 
