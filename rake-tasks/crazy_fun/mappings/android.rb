@@ -75,7 +75,7 @@ end
 module Android
   $sys_properties = SysProperties::AndroidSdk.new
   $properties = $sys_properties.read_properties()
-  $sdk_path = $properties["androidsdkpath"]
+  $sdk_path = ENV['androidsdkpath'] || $properties["androidsdkpath"]
   $platform =  $properties["androidplatform"]
   $adb = Platform.path_for(File.join($sdk_path, "platform-tools", "adb"))
   $aapt = get_binary("aapt")
