@@ -45,6 +45,10 @@ import javax.servlet.http.HttpServletResponse;
  * <p/>
  * {@link Selenium1RequestHandler} for the part specific to selenium1 protocol
  * {@link WebDriverRequestHandler} for the part specific to webdriver protocol
+ *
+ * Threading notes; RequestHandlers are instantiated per-request, run on the servlet
+ * container thread. The instance is also accessed by the matcher thread.
+ *
  */
 public abstract class RequestHandler implements Comparable<RequestHandler> {
   private final Registry registry;
@@ -54,9 +58,9 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 
   private String body = null;
   private boolean bodyHasBeenRead = false;
-  private Map<String, Object> desiredCapabilities = null;
+  private volatile Map<String, Object> desiredCapabilities = null;
   private RequestType requestType = null;
-  private TestSession session = null;
+  private volatile TestSession session = null;
 
   private boolean showWarning = true;
 
@@ -199,15 +203,23 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
       // a request.
       if (registry.getNewSessionWaitTimeout() != -1) {
         long startTime = System.currentTimeMillis();
-        sessionHasBeenAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS);
+        long expectedMaxEndTime = startTime + registry.getNewSessionWaitTimeout();
+
+        do {
+          sessionHasBeenAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS);
+        } while (session==null && System.currentTimeMillis() < expectedMaxEndTime);
+
         long endTime = System.currentTimeMillis();
 
-        if ((session == null) && ((endTime - startTime) >= registry.getNewSessionWaitTimeout())) {
+        if (session == null && endTime > expectedMaxEndTime) {
           throw new RuntimeException("Request timed out waiting for a node to become available.");
         }
       } else {
         // Wait until a proxy becomes available to handle the request.
-        sessionHasBeenAssigned.await();
+        do {
+          sessionHasBeenAssigned.await();
+        } while (session==null);
+
       }
     } catch (InterruptedException e) {
       e.printStackTrace();

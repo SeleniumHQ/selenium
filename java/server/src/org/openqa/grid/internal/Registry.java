@@ -135,6 +135,10 @@ public class Registry {
   class Matcher extends Thread { // Thread safety reviewed
     private volatile boolean cleanState = true;
 
+    Matcher() {
+      super("Matcher thread");
+    }
+
     @Override
     public void run() {
       try {

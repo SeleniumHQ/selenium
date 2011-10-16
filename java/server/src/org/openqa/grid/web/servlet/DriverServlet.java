@@ -36,6 +36,8 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * entry point for all communication request sent by the clients to the remotes managed by the grid.
+ *
+ * Runs on the socketListener threads of the servlet container
  */
 public class DriverServlet extends RegistryBasedServlet {
 
