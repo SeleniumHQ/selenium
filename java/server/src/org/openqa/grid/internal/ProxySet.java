@@ -100,6 +100,19 @@ public class ProxySet implements Iterable<RemoteProxy> {
     return res;
   }
 
+  public RemoteProxy getProxyById(String id) {
+    if (id == null) {
+      return null;
+    }
+    for (RemoteProxy p : proxies) {
+      if (id.equals(p.getId())) {
+        return p;
+      }
+    }
+    return null;
+  }
+
+
   public boolean isEmpty() {
     return proxies.isEmpty();
   }

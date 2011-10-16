@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * Registry and is tightly coupled to the registry
  */
 @ThreadSafe
-public class NewSessionRequestQueue {
+class NewSessionRequestQueue {
 
   private static final Logger log = Logger.getLogger(NewSessionRequestQueue.class.getName());
 

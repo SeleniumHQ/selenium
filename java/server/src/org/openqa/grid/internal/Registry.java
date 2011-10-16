@@ -33,7 +33,6 @@ import org.openqa.selenium.remote.internal.HttpClientFactory;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -64,7 +63,7 @@ public class Registry {
   private final Condition testSessionAvailable = lock.newCondition();
 
   private final ProxySet proxies = new ProxySet();
-  private final Set<TestSession> activeTestSessions = new CopyOnWriteArraySet<TestSession>();
+  private final ActiveTestSessions activeTestSessions = new ActiveTestSessions();
   private Matcher matcherThread = new Matcher();
   private volatile boolean stop = false;
   private boolean throwOnCapabilityNotPresent = true;
@@ -306,11 +305,10 @@ public class Registry {
     if (internalKey == null) {
       return;
     }
-    for (TestSession session : activeTestSessions) {
-      if (internalKey.equals(session.getInternalKey())) {
-        release(session);
-        return;
-      }
+    final TestSession session1 = activeTestSessions.findSessionByInternalKey(internalKey);
+    if (session1 != null){
+      release(session1);
+      return;
     }
     log.warning("Tried to release session with internal key " + internalKey +
         " but couldn't find it.");
@@ -412,15 +410,7 @@ public class Registry {
    * @return null if the hub doesn't have a node associated to the provided externalKey
    */
   public TestSession getSession(String externalKey) {
-    if (externalKey == null) {
-      return null;
-    }
-    for (TestSession session : activeTestSessions) {
-      if (externalKey.equals(session.getExternalKey())) {
-        return session;
-      }
-    }
-    return null;
+    return activeTestSessions.findSessionByExternalKey(externalKey);
   }
 
   /*
@@ -443,7 +433,7 @@ public class Registry {
   }
 
   public Set<TestSession> getActiveSessions() {
-    return activeTestSessions;
+    return activeTestSessions.unmodifiableSet();
   }
 
   public void setPrioritizer(Prioritizer prioritizer) {
@@ -455,15 +445,7 @@ public class Registry {
   }
 
   public RemoteProxy getProxyById(String id) {
-    if (id == null) {
-      return null;
-    }
-    for (RemoteProxy p : getAllProxies()) {
-      if (id.equals(p.getId())) {
-        return p;
-      }
-    }
-    return null;
+    return proxies.getProxyById( id);
   }
 
   HttpClientFactory getHttpClientFactory() {
