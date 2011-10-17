@@ -21,6 +21,7 @@ import org.openqa.selenium.Platform;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -106,7 +107,9 @@ public class PortProber {
   private static int checkPortIsFree(int port) {
     ServerSocket socket;
     try {
-      socket = new ServerSocket(port);
+      socket = new ServerSocket();
+      socket.setReuseAddress(true);
+      socket.bind(new InetSocketAddress("localhost", port));
       int localPort = socket.getLocalPort();
       socket.close();
       return localPort;
@@ -123,7 +126,9 @@ public class PortProber {
     long end = System.currentTimeMillis() + unit.toMillis(timeout);
     while (System.currentTimeMillis() < end) {
       try {
-        Socket socket = new Socket("localhost", port);
+        Socket socket = new Socket();
+        socket.setReuseAddress(true);
+        socket.bind(new InetSocketAddress("localhost", port));
         socket.close();
         return true;
       } catch (ConnectException e) {
