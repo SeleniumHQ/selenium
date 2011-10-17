@@ -56,6 +56,7 @@ class Element {
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetParentDocument(IHTMLWindow2* parent_window,
                         IHTMLDocument2** parent_doc);
+  static bool Element::RectHasNonZeroDimensions(const CComPtr<IHTMLRect> rect);
 
   std::string element_id_;
   CComPtr<IHTMLElement> element_;

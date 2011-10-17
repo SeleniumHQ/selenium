@@ -131,6 +131,12 @@ public class ClickTest extends AbstractDriverTestCase {
     assertEquals("click", log);
   }
 
+  @Ignore //TODO(danielwh): Unignore
+  public void testShouldClickOnFirstBoundingClientRectWithNonZeroSize() {
+    driver.findElement(By.id("twoClientRects")).click();
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
   @JavascriptEnabled
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, OPERA, SELENESE}, reason = "Not implemented")
   public void testShouldSetRelatedTargetForMouseOver() {

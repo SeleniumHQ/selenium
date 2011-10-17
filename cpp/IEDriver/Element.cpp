@@ -311,11 +311,16 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
     long rect_count;
     rects->get_length(&rect_count);
     if (rect_count > 1) {
-      CComVariant index(0);
-      CComVariant rect_variant;
-      hr = rects->item(&index, &rect_variant);
-      if (SUCCEEDED(hr) && rect_variant.pdispVal) {
-        hr = rect_variant.pdispVal->QueryInterface(&rect);
+      for (long i = 0; i < rect_count; ++i) {
+        CComVariant index(i);
+        CComVariant rect_variant;
+        hr = rects->item(&index, &rect_variant);
+        if (SUCCEEDED(hr) && rect_variant.pdispVal) {
+          hr = rect_variant.pdispVal->QueryInterface(&rect);
+          if (SUCCEEDED(hr) && RectHasNonZeroDimensions(rect)) {
+            break;
+          }
+        }
       }
     } else {
       hr = element2->getBoundingClientRect(&rect);
@@ -328,6 +333,8 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
     return EUNHANDLEDERROR;
   }
 
+  if (!RectHasNonZeroDimensions(rect)) { return EELEMENTNOTDISPLAYED; }
+
   long top = 0, bottom = 0, left = 0, right = 0;
 
   rect->get_top(&top);
@@ -335,14 +342,12 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
   rect->get_bottom(&bottom);
   rect->get_right(&right);
 
+  long w = right - left;
+  long h = bottom - top;
+
   // On versions of IE prior to 8 on Vista, if the element is out of the 
   // viewport this would seem to return 0,0,0,0. IE 8 returns position in 
   // the DOM regardless of whether it's in the browser viewport.
-
-  // Handle the easy case first: does the element have size
-  long w = right - left;
-  long h = bottom - top;
-  if (w <= 0 || h <= 0) { return EELEMENTNOTDISPLAYED; }
 
   long scroll_left, scroll_top = 0;
   element2->get_scrollLeft(&scroll_left);
@@ -361,6 +366,19 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
   *height = h;
 
   return SUCCESS;
+}
+
+bool Element::RectHasNonZeroDimensions(const CComPtr<IHTMLRect> rect) {
+  long top = 0, bottom = 0, left = 0, right = 0;
+
+  rect->get_top(&top);
+  rect->get_left(&left);
+  rect->get_bottom(&bottom);
+  rect->get_right(&right);
+
+  long w = right - left;
+  long h = bottom - top;
+  return w > 0 && h > 0;
 }
 
 int Element::GetFrameOffset(long* x, long* y) {
