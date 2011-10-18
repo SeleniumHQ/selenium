@@ -1256,6 +1256,8 @@ FirefoxDriver.prototype.mouseDoubleClick = function(respond, parameters) {
   } else {
     throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
   }
+
+  respond.send();
 };
 
 FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) {
