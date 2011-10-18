@@ -106,7 +106,6 @@ namespace OpenQA.Selenium
             Assert.AreEqual("1", driver.FindElement(By.Id("pageNumber")).Text);
         }
 
-        //  @Ignore(value = SELENESE, reason = "switchTo().frame(WebElement) not supported with Selenium")
         [Test]
         public void ShouldBeAbleToSwitchToAnIFrameUsingAPreviouslyLocatedWebElement()
         {

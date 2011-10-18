@@ -102,6 +102,15 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [Ignore] // TODO(jimevans): Unignore
+        public void ShouldClickOnFirstBoundingClientRectWithNonZeroSize()
+        {
+            driver.FindElement(By.Id("twoClientRects")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
+
+        [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
@@ -127,13 +136,18 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "Firefox has not corrected")]
-        [IgnoreBrowser(Browser.Chrome, "Chrome has not corrected")]
-        public void ShouldBeAbleToClickLinkContainingLineBreak()
+        [Category("JavaScript")]
+        [NeedsFreshDriver(AfterTest = true)]
+        [IgnoreBrowser(Browser.IPhone, "Doesn't support multiple windows")]
+        [IgnoreBrowser(Browser.Opera, "Doesn't support multiple windows")]
+        public void ShouldOnlyFollowHrefOnce()
         {
-            driver.Url = simpleTestPage;
-            driver.FindElement(By.Id("multilinelink")).Click();
-            Assert.AreEqual("We Arrive Here", driver.Title);
+            driver.Url = clicksPage;
+            int windowHandlesBefore = driver.WindowHandles.Count;
+
+            driver.FindElement(By.Id("new-window")).Click();
+            WaitFor(() => { return driver.WindowHandles.Count >= windowHandlesBefore + 1; });
+            Assert.AreEqual(windowHandlesBefore + 1, driver.WindowHandles.Count);
         }
 
         [Test]
@@ -141,6 +155,48 @@ namespace OpenQA.Selenium
         public void ShouldSetRelatedTargetForMouseOut()
         {
             Assert.Fail("Must. Write. Meamingful. Test (but we don't fire mouse outs synthetically");
+        }
+
+        [Test]
+        public void CanClickOnALinkWithEnclosedImage()
+        {
+            driver.FindElement(By.Id("link-with-enclosed-image")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
+
+        [Test]
+        public void CanClickOnAnImageEnclosedInALink()
+        {
+            driver.FindElement(By.Id("link-with-enclosed-image")).FindElement(By.TagName("img")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
+
+        [Test]
+        public void CanClickOnALinkThatContainsTextWrappedInASpan()
+        {
+            driver.FindElement(By.Id("link-with-enclosed-span")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
+
+        [Test]
+        public void CanClickOnAnElementEnclosedInALink()
+        {
+            driver.FindElement(By.Id("link-with-enclosed-span")).FindElement(By.TagName("span")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Firefox, "Firefox has not corrected")]
+        [IgnoreBrowser(Browser.Chrome, "Chrome has not corrected")]
+        public void ShouldBeAbleToClickLinkContainingLineBreak()
+        {
+            driver.Url = simpleTestPage;
+            driver.FindElement(By.Id("multilinelink")).Click();
+            Assert.AreEqual("We Arrive Here", driver.Title);
         }
 
         private bool IsNativeEventsEnabled(IWebDriver driver)

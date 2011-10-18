@@ -207,6 +207,20 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.Android)]
+        public void ShouldFireTwoClickEventsWhenClickingOnALabel()
+        {
+            driver.Url = javascriptPage;
+
+            driver.FindElement(By.Id("labelForCheckbox")).Click();
+
+            IWebElement result = driver.FindElement(By.Id("result"));
+            Assert.IsTrue(WaitFor(() => { return result.Text.Contains("labelclick chboxclick"); }));
+        }
+
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.Android)]
         public void ClearingAnElementShouldCauseTheOnChangeHandlerToFire()
         {
             driver.Url = javascriptPage;
@@ -221,6 +235,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IPhone, "SendKeys implementation is incorrect.")]
+        [IgnoreBrowser(Browser.Android)]
         public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFire()
         {
             driver.Url = javascriptPage;

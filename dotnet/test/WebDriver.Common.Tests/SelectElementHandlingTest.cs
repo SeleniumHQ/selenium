@@ -65,5 +65,21 @@ namespace OpenQA.Selenium
                 Assert.IsTrue(option.Selected, "Option at index is not selected but should be: " + i.ToString());
             }
         }
+
+        [Test]
+        public void ShouldSelectFirstOptionByDefaultIfNoneIsSelected()
+        {
+            driver.Url = formsPage;
+            IWebElement selectBox = driver.FindElement(By.XPath("//select[@name='select-default']"));
+            IList<IWebElement> options = selectBox.FindElements(By.TagName("option"));
+            IWebElement one = options[0];
+            IWebElement two = options[1];
+            Assert.IsTrue(one.Selected);
+            Assert.IsFalse(two.Selected);
+
+            two.Click();
+            Assert.IsFalse(one.Selected);
+            Assert.IsTrue(two.Selected);
+        }
     }
 }

@@ -231,7 +231,7 @@ namespace OpenQA.Selenium
             Point point = ((ILocatable)element).LocationOnScreenOnceScrolledIntoView;
 
             Assert.Greater(point.X, 1);
-            Assert.Greater(point.Y, 1);
+            Assert.GreaterOrEqual(point.Y, 0);
         }
 
         [Test]

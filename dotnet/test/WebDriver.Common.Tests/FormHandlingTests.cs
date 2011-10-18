@@ -178,6 +178,17 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void SendingKeyboardEventsShouldAppendTextInInputsWithExistingValue()
+        {
+            driver.Url = formsPage;
+            IWebElement element = driver.FindElement(By.Id("inputWithText"));
+            element.SendKeys(". Some text");
+            string value = element.GetAttribute("value");
+
+            Assert.AreEqual("Example text. Some text", value);
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "Not implemented going to the end of the line first")]
         public void SendingKeyboardEventsShouldAppendTextInTextAreas()
         {
