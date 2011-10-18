@@ -17,6 +17,7 @@ limitations under the License.
  */
 
 import net.jcip.annotations.ThreadSafe;
+
 import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 
@@ -40,13 +41,13 @@ public class ProxySet implements Iterable<RemoteProxy> {
   private final Set<RemoteProxy> proxies = new CopyOnWriteArraySet<RemoteProxy>();
 
   private static final Logger log = Logger.getLogger(ProxySet.class.getName());
-    private volatile boolean throwOnCapabilityNotPresent = true;
+  private volatile boolean throwOnCapabilityNotPresent = true;
 
-    public ProxySet(boolean throwOnCapabilityNotPresent) {
-        this.throwOnCapabilityNotPresent = throwOnCapabilityNotPresent;
-    }
+  public ProxySet(boolean throwOnCapabilityNotPresent) {
+    this.throwOnCapabilityNotPresent = throwOnCapabilityNotPresent;
+  }
 
-    /**
+  /**
    * killing the timeout detection threads.
    */
   public void teardown() {
@@ -79,7 +80,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
     }
   }
 
-  public void removeIfPresent(RemoteProxy proxy){
+  public void removeIfPresent(RemoteProxy proxy) {
     if (proxies.contains(proxy)) {
       log.warning(String.format(
           "Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
@@ -137,27 +138,27 @@ public class ProxySet implements Iterable<RemoteProxy> {
     return proxies.size();
   }
 
-    public void verifyNewSessionRequest(RequestHandler request) {
-        if (proxies.isEmpty()) {
-          if (throwOnCapabilityNotPresent) {
-            throw new GridException("Empty pool of VM for setup " + request.getDesiredCapabilities());
-          } else {
-            log.warning("Empty pool of nodes.");
-          }
+  public void verifyNewSessionRequest(RequestHandler request) {
+    if (proxies.isEmpty()) {
+      if (throwOnCapabilityNotPresent) {
+        throw new GridException("Empty pool of VM for setup " + request.getDesiredCapabilities());
+      } else {
+        log.warning("Empty pool of nodes.");
+      }
 
-        }
-        if (!hasCapability(request.getDesiredCapabilities())) {
-          if (throwOnCapabilityNotPresent) {
-            throw new CapabilityNotPresentOnTheGridException(request.getDesiredCapabilities());
-          } else {
-            log.warning("grid doesn't contain " + request.getDesiredCapabilities() +
-                " at the moment.");
-          }
-
-        }
     }
+    if (!hasCapability(request.getDesiredCapabilities())) {
+      if (throwOnCapabilityNotPresent) {
+        throw new CapabilityNotPresentOnTheGridException(request.getDesiredCapabilities());
+      } else {
+        log.warning("grid doesn't contain " + request.getDesiredCapabilities() +
+                    " at the moment.");
+      }
 
-    public void setThrowOnCapabilityNotPresent(boolean throwOnCapabilityNotPresent) {
-        this.throwOnCapabilityNotPresent = throwOnCapabilityNotPresent;
     }
+  }
+
+  public void setThrowOnCapabilityNotPresent(boolean throwOnCapabilityNotPresent) {
+    this.throwOnCapabilityNotPresent = throwOnCapabilityNotPresent;
+  }
 }
