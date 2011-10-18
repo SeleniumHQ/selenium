@@ -147,8 +147,15 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
     Action releaseShift = getBuilder(driver).keyUp(keysEventInput, Keys.SHIFT).build();
     releaseShift.perform();
 
+    String expectedEvents = "focus keydown keydown keypress keyup keydown keypress keyup keyup";
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      // On Mac, by default the Firefox instances spawned for testing do not have focus.
+      // when Firefox doesn't have focus, it will not issue focus events when an element
+      // is clicked. So don't expect it.
+      expectedEvents = expectedEvents.replace("focus ", "");
+    }
     assertThatFormEventsFiredAreExactly("Shift key not held",
-        "focus keydown keydown keypress keyup keydown keypress keyup keyup");
+        expectedEvents);
 
     assertThat(keysEventInput.getAttribute("value"), is("AB"));
   }
