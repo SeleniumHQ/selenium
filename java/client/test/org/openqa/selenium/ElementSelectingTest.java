@@ -10,7 +10,6 @@ import static org.openqa.selenium.WaitingConditions.elementSelectionToBe;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-//TODO(dawagner): Ignored tests are for issue 1468
 public class ElementSelectingTest extends AbstractDriverTestCase {
   private static final boolean UNSELECTED = false;
   private static final boolean SELECTED = true;
@@ -114,25 +113,25 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
   }
 
 
-  @Ignore(IE)
+//  @Ignore(IE)
   public void testClickingDisabledSelectedCheckboxShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(randomlyDisabledSelectedCheckbox());
   }
 
-  @Ignore(IE)
+//  @Ignore(IE)
   public void testClickingDisabledUnselectedCheckboxShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledUnselectedCheckbox());
   }
 
-  @Ignore(IE)
+//  @Ignore(IE)
   public void testClickingDisabledSelectedRadioButtonShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledSelectedRadioButton());
   }
 
-  @Ignore(IE)
+//  @Ignore(IE)
   public void testClickingDisabledUnselectedRadioButtonShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledUnselectedRadioButton());
