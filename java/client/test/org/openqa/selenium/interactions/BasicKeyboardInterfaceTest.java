@@ -46,7 +46,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, REMOTE, IPHONE, SELENESE})
   public void testBasicKeyboardInput() {
     driver.get(pages.javascriptPage);
 
@@ -61,7 +61,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, REMOTE, IPHONE, SELENESE})
   public void testSendingKeyDownOnly() {
     driver.get(pages.javascriptPage);
 

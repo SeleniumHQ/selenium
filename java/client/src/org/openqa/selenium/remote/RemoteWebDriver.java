@@ -652,13 +652,17 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public void pressKey(Keys keyToPress) {
+      // The wire protocol requires an array of keys.
+      CharSequence[] sequence = {keyToPress};
       execute(DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT,
-          ImmutableMap.of("value", keyToPress));
+          ImmutableMap.of("value", sequence));
     }
 
     public void releaseKey(Keys keyToRelease) {
+      // The wire protocol requires an array of keys.
+      CharSequence[] sequence = {keyToRelease};
       execute(DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT,
-          ImmutableMap.of("value", keyToRelease));
+          ImmutableMap.of("value", sequence));
 
     }
   }
