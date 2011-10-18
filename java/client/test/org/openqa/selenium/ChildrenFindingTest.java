@@ -156,7 +156,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(children.size(), is(2));
   }
 
-  @Ignore(IE)
   public void testShouldFindChildElementsByClassName() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("classes"));
@@ -166,7 +165,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertEquals("Find me", element.getText());
   }
 
-  @Ignore(IE)
   public void testShouldFindChildrenByClassName() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("classes"));
