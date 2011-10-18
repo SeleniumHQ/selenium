@@ -32,11 +32,13 @@ import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 public class SeleniumTestEnvironment implements TestEnvironment {
   private static ThreadLocal<Selenium> instance = new ThreadLocal<Selenium>();
@@ -65,6 +67,9 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       command.executeAsync();
 
       PortProber.pollPort(port);
+
+      URL status = new URL("http://localhost:" + port + "/wd/hub/status");
+      new UrlChecker().waitUntilAvailable(60, TimeUnit.SECONDS, status);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
