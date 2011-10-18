@@ -155,7 +155,7 @@ public class Registry {
      * change could be either a new Proxy added, or a session requested/released
      */
     public void setDirty() {
-      this.cleanState = true;
+      this.cleanState = false;
     }
 
     /**
