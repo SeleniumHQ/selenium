@@ -1,9 +1,9 @@
 package org.openqa.selenium.io;
 
-import org.openqa.selenium.WebDriverException;
-
 import junit.framework.TestCase;
+
 import org.junit.Test;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,6 +96,15 @@ public class TemporaryFilesystemTest extends TestCase {
     }
 
     assertTrue(tmpFs.shouldReap());
+  }
+
+  @Test
+  public void testShouldDeleteTempDir() {
+    final File tempDir = tmpFs.createTempDir("foo", "bar");
+    assertTrue(tempDir.exists());
+    tmpFs.deleteTemporaryFiles();
+    tmpFs.deleteBaseDir();
+    assertFalse(tempDir.exists());
   }
 
   @Test
