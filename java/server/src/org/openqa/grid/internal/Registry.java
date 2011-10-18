@@ -65,7 +65,7 @@ public class Registry {
   private final ActiveTestSessions activeTestSessions = new ActiveTestSessions();
   private Matcher matcherThread = new Matcher();
   private volatile boolean stop = false;
-    private int newSessionWaitTimeout;
+  private int newSessionWaitTimeout;
 
   private final GridHubConfiguration configuration;
   private final HttpClientFactory httpClientFactory;
@@ -113,7 +113,7 @@ public class Registry {
 
   /**
    * how long a session can remains in the newSession queue before being quicked out
-   * 
+   *
    * @return the new session wait timeout
    */
   public int getNewSessionWaitTimeout() {
@@ -145,15 +145,17 @@ public class Registry {
       }
     }
 
+    public void setCleanState() {
+      this.cleanState = true;
+    }
+
     /**
      * let the matcher know that something has been modified in the registry, and that the current
      * iteration of incoming new session request should be stop to take the change into account. The
-     * change could be either a new Proxy added, or a session released
-     *
-     * @param ok true to indicate registry modification
+     * change could be either a new Proxy added, or a session requested/released
      */
-    public void registryHasBeenModified(boolean ok) {
-      this.cleanState = ok;
+    public void setDirty() {
+      this.cleanState = true;
     }
 
     /**
@@ -189,19 +191,10 @@ public class Registry {
 
       proxies.verifyNewSessionRequest(request);
       newSessionQueue.add(request);
-      testSessionAvailable.signalAll();
+      fireMatcherStateChanged();
     } finally {
       lock.unlock();
     }
-
-  }
-
-  class QueueIsStateException extends RuntimeException {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
 
   }
 
@@ -216,22 +209,24 @@ public class Registry {
     boolean force = false;
     while (!stop) {
       try {
-        matcherThread.registryHasBeenModified(true);
+        matcherThread.setCleanState();
         if (force) {
           force = false;
         } else {
           testSessionAvailable.await(5, TimeUnit.SECONDS);
         }
-        newSessionQueue.processQueue( new Predicate<RequestHandler>() {
-          public boolean apply(RequestHandler input) {
-            return canTakeRequestHandler( input);
-          }
-        }, prioritizer);
+
+        if (matcherThread.isRegistryClean()) {
+          newSessionQueue.processQueue(new Predicate<RequestHandler>() {
+            public boolean apply(RequestHandler input) {
+              return canTakeRequestHandler(input);
+            }
+          }, prioritizer);
+        } else {
+          force = true;
+        }
       } catch (InterruptedException e) {
         log.info("Shutting down registry.");
-      } catch (QueueIsStateException q) {
-        log.fine("something modified the queue while the matcher was looking at it.Restarting the iteration from 0.");
-        force = true;
       } catch (Throwable t) {
         log.log(Level.SEVERE, "Unhandled exception in Matcher thread.", t);
       }
@@ -246,14 +241,8 @@ public class Registry {
     List<RemoteProxy> sorted = proxies.getSorted();
 
     for (RemoteProxy proxy : sorted) {
-      if (!matcherThread.isRegistryClean()) {
-        throw new QueueIsStateException();
-      }
       TestSession session = proxy.getNewSession(request.getDesiredCapabilities());
       if (session != null) {
-        if (!matcherThread.isRegistryClean()) {
-          throw new QueueIsStateException();
-        }
         boolean ok = activeTestSessions.add(session);
         request.bindSession(session);
         if (!ok) {
@@ -268,16 +257,16 @@ public class Registry {
   /**
    * mark the session as finished for the registry. The resources that were associated to it are now
    * free to be reserved by other tests
-   * 
+   *
    * @param session The session
    */
   private void release(TestSession session) {
     try {
       lock.lock();
-      matcherThread.registryHasBeenModified(false);
+      matcherThread.setDirty();
       boolean removed = activeTestSessions.remove(session);
       if (removed) {
-        fireEventNewSessionAvailable();
+        fireMatcherStateChanged();
       }
     } finally {
       lock.unlock();
@@ -289,12 +278,12 @@ public class Registry {
       return;
     }
     final TestSession session1 = activeTestSessions.findSessionByInternalKey(internalKey);
-    if (session1 != null){
+    if (session1 != null) {
       release(session1);
       return;
     }
     log.warning("Tried to release session with internal key " + internalKey +
-        " but couldn't find it.");
+                " but couldn't find it.");
   }
 
   private List<RemoteProxy> registeringProxies = new CopyOnWriteArrayList<RemoteProxy>();
@@ -313,7 +302,7 @@ public class Registry {
     try {
       lock.lock();
 
-      proxies.removeIfPresent( proxy);
+      proxies.removeIfPresent(proxy);
 
       if (registeringProxies.contains(proxy)) {
         log.warning(String.format("Proxy '%s' is already queued for registration.", proxy));
@@ -322,8 +311,8 @@ public class Registry {
       }
 
       registeringProxies.add(proxy);
-      matcherThread.registryHasBeenModified(false);
-      fireEventNewSessionAvailable();
+      matcherThread.setDirty();
+      fireMatcherStateChanged();
     } finally {
       lock.unlock();
     }
@@ -347,7 +336,7 @@ public class Registry {
           ((SelfHealingProxy) proxy).startPolling();
         }
         proxies.add(proxy);
-        fireEventNewSessionAvailable();
+        fireMatcherStateChanged();
       }
     } finally {
       lock.unlock();
@@ -358,22 +347,20 @@ public class Registry {
   /**
    * If throwOnCapabilityNotPresent is set to true, the hub will reject test request for a
    * capability that is not on the grid. No exception will be thrown if the capability is present
-   * but busy.
-   * <p/>
-   * If set to false, the test will be queued hoping a new proxy will register later offering that
-   * capability.
-   * 
+   * but busy. <p/> If set to false, the test will be queued hoping a new proxy will register later
+   * offering that capability.
+   *
    * @param throwOnCapabilityNotPresent true to throw if capability not present
    */
   public void setThrowOnCapabilityNotPresent(boolean throwOnCapabilityNotPresent) {
-    proxies.setThrowOnCapabilityNotPresent( throwOnCapabilityNotPresent);
+    proxies.setThrowOnCapabilityNotPresent(throwOnCapabilityNotPresent);
   }
 
   public Lock getLock() {
     return lock;
   }
 
-  void fireEventNewSessionAvailable() {
+  void fireMatcherStateChanged() {
     testSessionAvailable.signalAll();
   }
 
@@ -388,7 +375,7 @@ public class Registry {
   /**
    * gets the test session associated to this external key. The external key is the session used by
    * webdriver.
-   * 
+   *
    * @param externalKey the external session key
    * @return null if the hub doesn't have a node associated to the provided externalKey
    */
@@ -399,7 +386,7 @@ public class Registry {
   /*
    * May race.
    */
-  public int getNewSessionRequestCount(){
+  public int getNewSessionRequestCount() {
     return newSessionQueue.getNewSessionRequestCount();
   }
 
@@ -428,7 +415,7 @@ public class Registry {
   }
 
   public RemoteProxy getProxyById(String id) {
-    return proxies.getProxyById( id);
+    return proxies.getProxyById(id);
   }
 
   HttpClientFactory getHttpClientFactory() {

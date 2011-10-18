@@ -185,8 +185,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
    * allocate a new TestSession for the test, forward the request and update the resource used.
    */
   private void handleNewSession() {
-    // registry.addNewSessionRequest(this);
-
     try {
       lock.lock();
       // in the lock on purpose. Need to be stuck on the await first, so
