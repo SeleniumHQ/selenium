@@ -334,7 +334,7 @@ module Javascript
             "-f \"--third_party=true\" " <<
             "-f \"--js_output_file=#{output}\" " <<
             "-f \"--output_wrapper='#{wrapper}'\" " <<
-            "-f \"--compilation_level=ADVANCED_OPTIMIZATIONS\" " <<
+            "-f \"--compilation_level=#{compilation_level}\" " <<
             "-f \"--define=goog.NATIVE_ARRAY_PROTOTYPES=false\" " <<
             "#{defines} " <<
             "-p third_party/closure/goog/ " <<
@@ -352,6 +352,10 @@ module Javascript
       desc "Compile and optimize #{output}"
       task name => [output]
       Rake::Task[name].out = output
+    end
+
+    def compilation_level
+      ENV['minify'] == 'false' ? 'WHITESPACE_ONLY' : 'ADVANCED_OPTIMIZATIONS'
     end
   end
 
