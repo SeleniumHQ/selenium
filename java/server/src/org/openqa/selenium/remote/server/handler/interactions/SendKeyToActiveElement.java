@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2007-2011 WebDriver committers
+Copyright 2007-2011 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,52 +19,45 @@ package org.openqa.selenium.remote.server.handler.interactions;
 
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class SendModifierKey extends WebDriverHandler implements JsonParametersAware {
+public class SendKeyToActiveElement extends WebDriverHandler implements JsonParametersAware {
+  private final List<CharSequence> keys = new CopyOnWriteArrayList<CharSequence>();
 
-  private String key;
-  private boolean isDown;
-
-  public SendModifierKey(Session session) {
+  public SendKeyToActiveElement(Session session) {
     super(session);
   }
 
   @SuppressWarnings({"unchecked"})
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    key = (String) allParameters.get("value");
-    isDown = (Boolean) allParameters.get("isdown");
+    //TODO: merge this code with the code in the SendKeys handler.
+    List<String> rawKeys = (List<String>) allParameters.get("value");
+    List<String> temp = new ArrayList<String>();
+    for (String key : rawKeys) {
+      temp.add(key);
+    }
+    keys.addAll(temp);
   }
 
   public ResultType call() throws Exception {
     Keyboard keyboard = ((HasInputDevices) getDriver()).getKeyboard();
 
-    Keys[] modifiers = {Keys.SHIFT, Keys.CONTROL, Keys.ALT};
-    Keys keyToSend = null;
-
-    for (Keys modifier : modifiers) {
-      if (key.equals(modifier.toString())) {
-        keyToSend = modifier;
-      }
-    }
-
-    if (isDown) {
-      keyboard.pressKey(keyToSend);
-    } else {
-      keyboard.releaseKey(keyToSend);
-    }
+    String[] keysToSend = keys.toArray(new String[0]);
+    keyboard.sendKeys(keysToSend);
 
     return ResultType.SUCCESS;
   }
 
   @Override
   public String toString() {
-    return String.format("[send modifier key: %s, %s]", key, isDown);
+    return String.format("[send keys to active: %s]", keys.toArray());
   }
 }

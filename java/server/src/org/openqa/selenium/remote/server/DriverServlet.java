@@ -102,7 +102,7 @@ import org.openqa.selenium.remote.server.handler.interactions.DoubleClickInSessi
 import org.openqa.selenium.remote.server.handler.interactions.MouseDown;
 import org.openqa.selenium.remote.server.handler.interactions.MouseMoveToLocation;
 import org.openqa.selenium.remote.server.handler.interactions.MouseUp;
-import org.openqa.selenium.remote.server.handler.interactions.SendModifierKey;
+import org.openqa.selenium.remote.server.handler.interactions.SendKeyToActiveElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.DoubleTapOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Down;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Flick;
@@ -268,8 +268,6 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     postMapper.bind("/session/:sessionId/element/:id/value", SendKeys.class)
         .on(ResultType.SUCCESS, new EmptyResult());
-    postMapper.bind("/session/:sessionId/modifier", SendModifierKey.class)
-        .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/element/:id/value", GetElementValue.class)
         .on(ResultType.SUCCESS, new JsonResult(RESPONSE));
     getMapper.bind("/session/:sessionId/element/:id/name", GetTagName.class)
@@ -378,6 +376,8 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/buttondown", MouseDown.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/buttonup", MouseUp.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/keys", SendKeyToActiveElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
 
     getMapper.bind("/session/:sessionId/ime/available_engines", ImeGetAvailableEngines.class)

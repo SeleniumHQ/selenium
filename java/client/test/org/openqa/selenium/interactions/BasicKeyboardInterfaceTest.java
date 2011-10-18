@@ -46,7 +46,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE})
   public void testBasicKeyboardInput() {
     driver.get(pages.javascriptPage);
 
@@ -61,7 +61,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE})
   public void testSendingKeyDownOnly() {
     driver.get(pages.javascriptPage);
 
@@ -82,7 +82,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, FIREFOX, IPHONE, SELENESE})
   public void testSendingKeyUp() {
     driver.get(pages.javascriptPage);
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
@@ -106,7 +106,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, FIREFOX, IPHONE, SELENESE})
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
 
@@ -130,7 +130,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, FIREFOX, IPHONE, SELENESE})
   public void testSendingKeysToActiveElement() {
     driver.get(pages.bodyTypingPage);
 
@@ -141,7 +141,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
     assertThatFormEventsFiredAreExactly("");
   }
 
-  @Ignore({ANDROID, FIREFOX, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, FIREFOX, IPHONE, SELENESE})
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
 
