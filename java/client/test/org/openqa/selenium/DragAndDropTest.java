@@ -84,22 +84,13 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   @Ignore({CHROME, IE})
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
-    WebElement img = driver.findElement(By.id("test1"));
-    Point imgLocation = img.getLocation();
     Actions actions = new Actions(driver);
-    // Drag the element one pixel further than its location so that its new
-    // location has negative coordinates.
-    actions.dragAndDropBy(img, -(imgLocation.getX() + 1), -(imgLocation.getY() + 1)).perform();
-
-    // Image ends up on a negative offset because its top-left corner is
-    // hidden.
-    Point newLocation = img.getLocation();
-    assertTrue("Top-left corner of the element should have negative offset. It was: " + newLocation,
-        newLocation.getX() < 0 && newLocation.getY() < 0);
 
     try {
-      // We don't know where the img is dragged to , but we know it's not too
-      // far, otherwise this function will not return for a long long time
+      WebElement img = driver.findElement(By.id("test1"));
+
+      // Attempt to drag the image outside of the bounds of the page.
+
       actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
       fail("These coordinates are outside the page - expected to fail.");
     } catch (MoveTargetOutOfBoundsException expected) {
