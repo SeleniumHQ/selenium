@@ -25,7 +25,7 @@ public class ProxySetTest {
   @Test
   public void removeIfPresent() {
     Registry registry = Registry.newInstance();
-    ProxySet set = new ProxySet();
+    ProxySet set = new ProxySet(true);
     RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
 
     set.add(p1);

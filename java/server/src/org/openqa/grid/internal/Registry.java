@@ -20,7 +20,6 @@ import com.google.common.base.Predicate;
 
 import net.jcip.annotations.ThreadSafe;
 
-import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
@@ -62,12 +61,11 @@ public class Registry {
   private final ReentrantLock lock = new ReentrantLock();
   private final Condition testSessionAvailable = lock.newCondition();
 
-  private final ProxySet proxies = new ProxySet();
+  private final ProxySet proxies;
   private final ActiveTestSessions activeTestSessions = new ActiveTestSessions();
   private Matcher matcherThread = new Matcher();
   private volatile boolean stop = false;
-  private boolean throwOnCapabilityNotPresent = true;
-  private int newSessionWaitTimeout;
+    private int newSessionWaitTimeout;
 
   private final GridHubConfiguration configuration;
   private final HttpClientFactory httpClientFactory;
@@ -75,14 +73,12 @@ public class Registry {
 
   private Registry(Hub hub, GridHubConfiguration config) {
     this.hub = hub;
-
     this.newSessionWaitTimeout = config.getNewSessionWaitTimeout();
-    this.throwOnCapabilityNotPresent = config.isThrowOnCapabilityNotPresent();
     this.prioritizer = config.getPrioritizer();
     this.newSessionQueue = new NewSessionRequestQueue();
     this.configuration = config;
     this.httpClientFactory = new HttpClientFactory();
-
+    proxies = new ProxySet(config.isThrowOnCapabilityNotPresent());
   }
 
   @SuppressWarnings({"NullableProblems"})
@@ -153,7 +149,7 @@ public class Registry {
      * let the matcher know that something has been modified in the registry, and that the current
      * iteration of incoming new session request should be stop to take the change into account. The
      * change could be either a new Proxy added, or a session released
-     * 
+     *
      * @param ok true to indicate registry modification
      */
     public void registryHasBeenModified(boolean ok) {
@@ -191,24 +187,7 @@ public class Registry {
     try {
       lock.lock();
 
-      if (proxies.isEmpty()) {
-        if (throwOnCapabilityNotPresent) {
-          throw new GridException("Empty pool of VM for setup " + request.getDesiredCapabilities());
-        } else {
-          log.warning("Empty pool of nodes.");
-        }
-
-      }
-      if (!proxies.hasCapability(request.getDesiredCapabilities())) {
-
-        if (throwOnCapabilityNotPresent) {
-          throw new CapabilityNotPresentOnTheGridException(request.getDesiredCapabilities());
-        } else {
-          log.warning("grid doesn't contain " + request.getDesiredCapabilities() +
-              " at the moment.");
-        }
-
-      }
+      proxies.verifyNewSessionRequest(request);
       newSessionQueue.add(request);
       testSessionAvailable.signalAll();
     } finally {
@@ -387,7 +366,7 @@ public class Registry {
    * @param throwOnCapabilityNotPresent true to throw if capability not present
    */
   public void setThrowOnCapabilityNotPresent(boolean throwOnCapabilityNotPresent) {
-    this.throwOnCapabilityNotPresent = throwOnCapabilityNotPresent;
+    proxies.setThrowOnCapabilityNotPresent( throwOnCapabilityNotPresent);
   }
 
   public Lock getLock() {
