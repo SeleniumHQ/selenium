@@ -60,8 +60,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = FIREFOX, reason = "Currently broken in Firefox," +
-      " fix tracked in issue 1771.")
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
     WebElement img1 = driver.findElement(By.id("test1"));
@@ -110,7 +108,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, FIREFOX}, reason = "See issue 1771.")
+  @NoDriverAfterTest
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
@@ -139,7 +137,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
 
