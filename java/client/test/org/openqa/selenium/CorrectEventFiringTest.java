@@ -198,7 +198,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, IE})
+  @Ignore(value = {SELENESE, IE},
+      reason = "IE: Only fires the onchange event when the checkbox loses the focus")
   public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
     driver.get(pages.javascriptPage);
     WebElement checkbox = driver.findElement(By.id("checkbox"));
@@ -313,7 +314,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE})
+  @Ignore({SELENESE})
   public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement formElement = driver.findElement(By.id("submitListeningForm"));
@@ -322,7 +323,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE, ANDROID})
+  @Ignore({SELENESE, ANDROID})
   public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
@@ -331,7 +332,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE, ANDROID})
+  @Ignore({SELENESE, ANDROID})
   public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
@@ -363,8 +364,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     return waitFor(elementToExist(driver, elementId)).getText();
   }
 
-  @Ignore(
-      value = {HTMLUNIT, SELENESE, ANDROID},
+  @JavascriptEnabled
+  @Ignore(value = {SELENESE, ANDROID},
       reason = "Not implemented")
   public void testShouldReportTheXAndYCoordinatesWhenClicking() {
     driver.get(pages.javascriptPage);
