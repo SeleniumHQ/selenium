@@ -501,37 +501,13 @@ FirefoxDriver.prototype.getElementLocationOnceScrolledIntoView = function(
 
   var theDoc = element.ownerDocument;
   theDoc.body.focus();
-  element.scrollIntoView(true);
+  var elementLocation = Utils.getLocationOnceScrolledIntoView(element);
 
-  var retrieval = Utils.newInstance(
-      "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
-
-  try {
-    var accessible = retrieval.getAccessibleFor(element);
-    var x = {}, y = {}, width = {}, height = {};
-    accessible.getBounds(x, y, width, height);
-
-    respond.value = {
-      x : x.value,
-      y : y.value
-    };
-    respond.send();
-    return;
-  } catch(e) {
-    // Element doesn't have an accessibility node. Fall through
-  }
-
-  fxdriver.Logger.dumpn("Guessing location once scrolled into view");
-  // Fine. Come up with a good guess. This should be the element location
-  // added to the current window location. It'll probably be off
-  var x = theDoc.defaultView.screenX;
-  var y = theDoc.defaultView.screenY;
-
-  var rect = element.getBoundingClientRect();
   respond.value = {
-    x : x + rect.left,
-    y : y + rect.top  
+    x : Math.round(elementLocation.x),
+    y : Math.round(elementLocation.y)
   };
+
   respond.send();
 };
 

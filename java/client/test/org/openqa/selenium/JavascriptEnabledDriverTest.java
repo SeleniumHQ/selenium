@@ -249,8 +249,11 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
     Point point = ((Locatable) element).getLocationOnScreenOnceScrolledIntoView();
 
-    assertTrue(point.getX() > 1);
-    assertTrue(point.getY() > 1);
+    assertTrue(String.format("Non-positive X coordinates: %d", point.getX()),
+        point.getX() > 1);
+    // Element's Y coordinates can be 0, as the element is scrolled right to the top of the window.
+    assertTrue(String.format("Negative Y coordinates: %d", point.getY()),
+        point.getY() >= 0);
   }
 
 
