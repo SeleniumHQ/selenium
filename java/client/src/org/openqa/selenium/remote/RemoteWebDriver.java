@@ -57,18 +57,20 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   private JsonToWebElementConverter converter;
 
-  private final RemoteKeyboard keyboard = new RemoteKeyboard();
+  private final RemoteKeyboard keyboard;
   private final RemoteMouse mouse;
 
   // For cglib
   protected RemoteWebDriver() {
     init();
+    keyboard = new RemoteKeyboard(executeMethod);
     mouse = new RemoteMouse(executeMethod);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
     this.executor = executor;
     init();
+    keyboard = new RemoteKeyboard(executeMethod);
     mouse = new RemoteMouse(executeMethod);
     startClient();
     startSession(desiredCapabilities);
@@ -642,28 +644,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     public void sendKeys(String keysToSend) {
       execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
-    }
-  }
-
-  private class RemoteKeyboard implements Keyboard {
-    public void sendKeys(CharSequence... keysToSend) {
-      execute(DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT,
-          ImmutableMap.of("value", keysToSend));
-    }
-
-    public void pressKey(Keys keyToPress) {
-      // The wire protocol requires an array of keys.
-      CharSequence[] sequence = {keyToPress};
-      execute(DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT,
-          ImmutableMap.of("value", sequence));
-    }
-
-    public void releaseKey(Keys keyToRelease) {
-      // The wire protocol requires an array of keys.
-      CharSequence[] sequence = {keyToRelease};
-      execute(DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT,
-          ImmutableMap.of("value", sequence));
-
     }
   }
 }
