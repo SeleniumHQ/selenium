@@ -18,10 +18,9 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -123,7 +122,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, IPHONE, SELENESE})
   public void testSendingKeysWithShiftPressed() {
     if (Platform.getCurrent().is(Platform.WINDOWS) &&
         (isInternetExplorer(driver) || isFirefox(driver))) {
