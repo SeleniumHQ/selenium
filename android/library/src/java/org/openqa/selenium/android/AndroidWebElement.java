@@ -236,7 +236,7 @@ public class AndroidWebElement implements WebElement,
     return findsBy;
   }
 
-  class FindByImpl implements SearchContext, FindsById, FindsByLinkText,
+  private class FindByImpl implements SearchContext, FindsById, FindsByLinkText,
       FindsByXPath, FindsByTagName {
 
     public WebElement findElement(By by) {
