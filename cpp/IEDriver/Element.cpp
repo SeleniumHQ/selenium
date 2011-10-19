@@ -302,10 +302,8 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
     return EOBSOLETEELEMENT;
   }
 
-  CComPtr<IHTMLAnchorElement> anchor;
-  hr = element2->QueryInterface(&anchor);
   CComPtr<IHTMLRect> rect;
-  if (anchor) {
+  if (this->IsInline()) {
     CComPtr<IHTMLRectCollection> rects;
     hr = element2->getClientRects(&rects);
     long rect_count;
@@ -366,6 +364,25 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
   *height = h;
 
   return SUCCESS;
+}
+
+bool Element::IsInline() {
+  // TODO(jimevans): Clean up this extreme lameness.
+  // We should be checking styles here for whether the
+  // element is inline or not.
+  CComPtr<IHTMLAnchorElement> anchor;
+  HRESULT hr = this->element_->QueryInterface(&anchor);
+  if (anchor) {
+    return true;
+  }
+
+  CComPtr<IHTMLSpanElement> span;
+  hr = this->element_->QueryInterface(&span);
+  if (span) {
+    return true;
+  }
+
+  return false;
 }
 
 bool Element::RectHasNonZeroDimensions(const CComPtr<IHTMLRect> rect) {
