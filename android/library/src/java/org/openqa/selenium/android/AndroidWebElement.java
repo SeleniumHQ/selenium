@@ -35,6 +35,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -69,6 +70,7 @@ public class AndroidWebElement implements WebElement,
   private static final String LOCATOR_TAG_NAME = "tagName";
   private static final String LOCATOR_XPATH = "xpath";
   private static final String LOCATOR_CSS_SELECTOR = "css";
+  private static final String LOCATOR_CLASS_NAME = "className";
 
    AndroidWebElement(AndroidWebDriver driver, String elementId) {
     this.driver = driver;
@@ -239,7 +241,7 @@ public class AndroidWebElement implements WebElement,
   }
 
   class FindByImpl implements SearchContext, FindsById, FindsByLinkText,
-      FindsByXPath, FindsByTagName, FindsByCssSelector {
+      FindsByXPath, FindsByTagName, FindsByCssSelector, FindsByClassName {
 
     public WebElement findElement(By by) {
       return by.findElement(findsBy);
@@ -304,13 +306,21 @@ public class AndroidWebElement implements WebElement,
     public List<WebElement> findElementsByCssSelector(String using) {
       return lookupElements(LOCATOR_CSS_SELECTOR, using);
     }
+
+    public WebElement findElementByClassName(String using) {
+      return lookupElement(LOCATOR_CLASS_NAME, using);
+    }
+
+    public List<WebElement> findElementsByClassName(String using) {
+      return lookupElements(LOCATOR_CLASS_NAME, using);
+    }
   }
 
   private List<WebElement> lookupElements(String strategy, String locator) {
     // If the Id is empty, this reffers to the window document context.
     if (elementId.equals("")) {
       return (List<WebElement>) driver
-          .executeAtom(AndroidAtoms.FIND_ELEMENTS.getValue(), strategy, locator);
+          .executeAtom(org.openqa.selenium.android.AndroidAtoms.FIND_ELEMENTS.getValue(), strategy, locator);
     } else {
       return (List<WebElement>) driver
           .executeAtom(AndroidAtoms.FIND_ELEMENTS.getValue(), strategy, locator, this);
