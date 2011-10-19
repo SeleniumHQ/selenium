@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.android.server.handler;
 
 import org.openqa.selenium.android.AndroidWebElement;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;

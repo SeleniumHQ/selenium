@@ -320,7 +320,7 @@ public class AndroidWebElement implements WebElement,
     // If the Id is empty, this reffers to the window document context.
     if (elementId.equals("")) {
       return (List<WebElement>) driver
-          .executeAtom(org.openqa.selenium.android.AndroidAtoms.FIND_ELEMENTS.getValue(), strategy, locator);
+          .executeAtom(AndroidAtoms.FIND_ELEMENTS.getValue(), strategy, locator);
     } else {
       return (List<WebElement>) driver
           .executeAtom(AndroidAtoms.FIND_ELEMENTS.getValue(), strategy, locator, this);

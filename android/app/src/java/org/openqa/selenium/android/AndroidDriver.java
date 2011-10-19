@@ -16,8 +16,6 @@
 
 package org.openqa.selenium.android;
 
-import android.util.Log;
-
 import org.openqa.selenium.WebDriver;
 
 import org.openqa.selenium.android.AndroidWebDriver;

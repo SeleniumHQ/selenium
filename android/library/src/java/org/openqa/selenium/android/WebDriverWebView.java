@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
