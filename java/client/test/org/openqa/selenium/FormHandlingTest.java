@@ -20,7 +20,6 @@ package org.openqa.selenium;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -101,8 +100,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(textarea.getAttribute("value"), equalTo(cheesey));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, IE, ANDROID},
-      reason = "IE: New failure for IE.")
+  @Ignore(value = {SELENESE, IPHONE, ANDROID})
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -112,7 +110,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
   }
 
-  @Ignore({SELENESE, IPHONE, IE, ANDROID})
+  @Ignore({SELENESE, IPHONE, ANDROID})
   public void testShouldSubmitAFormUsingTheEnterKey() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -138,7 +136,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(newFormValue, equalTo("some text"));
   }
 
-  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, IE, OPERA},
+  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},
       reason = "Does not yet support file uploads")
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
@@ -201,7 +199,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(value, is("Example text. Some text"));
   }
 
-  @Ignore(value = {IE, HTMLUNIT, SELENESE, IPHONE, ANDROID},
+  @Ignore(value = {HTMLUNIT, SELENESE, IPHONE, ANDROID},
       reason = "Not implemented going to the end of the line first;\n"
           + "  iPhone: sendKeys not implemented correctly")
   public void testSendingKeyboardEventsShouldAppendTextinTextAreas() {

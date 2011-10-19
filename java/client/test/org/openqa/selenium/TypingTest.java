@@ -618,7 +618,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, IPHONE, SELENESE, OPERA, ANDROID})
+  @Ignore(value = {IPHONE, SELENESE, OPERA, ANDROID})
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 
@@ -639,7 +639,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, SELENESE, OPERA, ANDROID})
+  @Ignore(value = {HTMLUNIT, SELENESE, OPERA, ANDROID})
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 

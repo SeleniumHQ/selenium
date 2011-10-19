@@ -9,7 +9,7 @@ public class SlowLoadingPageTest extends AbstractDriverTestCase {
 
   private static final long LOAD_TIME_IN_SECONDS = 3;
 
-  @Ignore(value = {IE, IPHONE}, reason = "Untested browsers")
+  @Ignore(value = {IPHONE}, reason = "Untested browsers")
   public void testShouldBlockUnitlPageLoads() throws Exception {
     long start = System.currentTimeMillis();
     driver.get(pages.sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);
@@ -26,7 +26,7 @@ public class SlowLoadingPageTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {IE, IPHONE, SELENESE, OPERA},
-      reason = "Selenium: refresh is unsupported; Others: untested")
+      reason = "Selenium: refresh is unsupported; IE: fails in IE 6,7,8, works in IE 9, Others: untested")
   public void testRefreshShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();
     driver.get(pages.sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);
