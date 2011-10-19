@@ -131,7 +131,10 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     switch (getRequestType()) {
       case START_SESSION:
         try {
-          handleNewSession();
+          registry.addNewSessionRequest(this);
+          waitForSessionBound();
+          beforeSessionEvent();
+          forwardAndGetRemoteKey();
         } catch (Exception e) {
           // Make sure we yank the session from the request queue, since
           // any returned error will propagate to the
@@ -175,40 +178,20 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   /**
    * allocate a new TestSession for the test, forward the request and update the resource used.
    */
-  private void handleNewSession() {
-    try {
-      // in the lock on purpose. Need to be stuck on the await first, so
-      // that the signal of bindSession is done AFTER await is in waiting
-      // mode.
-      // if addNewSessionRequest(this) is out of the lock and everythung
-      // goes fast, there is a chance that bindSession get the lock first,
-      // signal, and only after that await will be reached, never
-      // signalled
-      registry.addNewSessionRequest(this);
-
-      // Maintain compatibility with Grid 1.x, which had the ability to
-      // specify how long to wait before canceling
-      // a request.
-      if (registry.getNewSessionWaitTimeout() != -1) {
-        if (sessionAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS)) {
-          throw new RuntimeException("Request timed out waiting for a node to become available.");
-        }
-      } else {
-        // Wait until a proxy becomes available to handle the request.
-        sessionAssigned.await();
-
-      }
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+  private void forwardAndGetRemoteKey() {
+    String externalKey = forwardNewSessionRequest(session);
+    if (externalKey == null) {
+      session.terminate();
+      // TODO (kmenard 04/10/11): We should indicate what the requested
+      // session type is.
+      throw new GridException("Error getting a new session from the remote." +
+                              registry.getAllProxies());
+    } else {
+      session.setExternalKey(externalKey);
     }
+  }
 
-    if (session == null) {
-      throw new RuntimeException(
-          "implementation error or you closed the grid while some tests were still queued on it.");
-    }
-
-    // if the session is on a proxy that implements BeforeSessionListener,
-    // run the listener first.
+  private void beforeSessionEvent() {
     RemoteProxy p = session.getSlot().getProxy();
     if (p instanceof TestSessionListener) {
       if (showWarning && p.getMaxNumberOfConcurrentTestSessions() != 1) {
@@ -224,17 +207,30 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
         session.terminate();
       }
     }
+  }
 
-    String externalKey = forwardNewSessionRequest(session);
-    if (externalKey == null) {
-      session.terminate();
-      // TODO (kmenard 04/10/11): We should indicate what the requested
-      // session type is.
-      throw new GridException("Error getting a new session from the remote." +
-                              registry.getAllProxies());
-    } else {
-      session.setExternalKey(externalKey);
+  public void waitForSessionBound() {
+    try {
+      // Maintain compatibility with Grid 1.x, which had the ability to
+      // specify how long to wait before canceling
+      // a request.
+      if (registry.getNewSessionWaitTimeout() != -1) {
+        if (sessionAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS)) {
+          throw new RuntimeException("Request timed out waiting for a node to become available.");
+        }
+      } else {
+        // Wait until a proxy becomes available to handle the request.
+        sessionAssigned.await();
+
+      }
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
+    if (session == null) {
+      throw new RuntimeException(
+          "implementation error or you closed the grid while some tests were still queued on it.");
+    }
+
   }
 
   /**
