@@ -122,7 +122,9 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   var targetX = pos.x + xOffset;
   var targetY = pos.y + yOffset;
 
-  if (targetX > maxWidth || targetY > maxHeight) {
+  // It turns out that OPTION elements are problematic.
+  var requiresCheck = !bot.dom.isElement(element, goog.dom.TagName.OPTION);
+  if (requiresCheck && (targetX > maxWidth || targetY > maxHeight)) {
     return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
         'Requested location (' + targetX + ', ' + targetY +
         ') is outside the bounds of the document (' + maxWidth + ', ' + maxHeight + ')');
