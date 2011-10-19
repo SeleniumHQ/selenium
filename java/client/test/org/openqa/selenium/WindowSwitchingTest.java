@@ -36,12 +36,15 @@ import java.util.Set;
 @Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends AbstractDriverTestCase {
 
-  @Ignore({IE, SELENESE})
+  @Ignore({SELENESE})
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
 
     driver.findElement(By.linkText("Open new window")).click();
+
+    sleepBecauseWindowsTakeTimeToOpen();
+
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
 
     driver.switchTo().window("result");
@@ -93,7 +96,8 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     assertEquals(3, allWindowHandles.size());
   }
 
-  @Ignore({IE, SELENESE})
+  @Ignore(value = {IE, SELENESE},
+      reason = "IE: can show a dialog 'The web page you are viewing is trying to close the window'")
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
 
@@ -163,7 +167,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = {IE, SELENESE})
+  @Ignore(value = {SELENESE})
   public void testCanCloseWindowWhenMultipleWindowsAreOpen() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
