@@ -9,12 +9,15 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import org.openqa.selenium.Build;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 
 import java.io.File;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings({"UnusedDeclaration"})
 public class SeleniumServerStarter extends TestSetup {
@@ -47,6 +50,9 @@ public class SeleniumServerStarter extends TestSetup {
       throw new RuntimeException("Unable to start selenium server");
     }
 
+    URL status = new URL("http://localhost:" + port + "/wd/hub/status");
+    new UrlChecker().waitUntilAvailable(60, TimeUnit.SECONDS, status);
+
     super.setUp();
   }
 
@@ -70,7 +76,8 @@ public class SeleniumServerStarter extends TestSetup {
   }
 
   private String getPortString() {
-    return System.getProperty("webdriver.selenium.server.port", "5555");
+    int defaultPort = PortProber.findFreePort();
+    return System.getProperty("webdriver.selenium.server.port", String.valueOf(defaultPort));
   }
 
   private File findSeleniumJar() {
