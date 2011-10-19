@@ -105,7 +105,7 @@ GdkEvent* MouseEventsHandler::CreateMouseMotionEvent(long x, long y)
     p_ev->motion.is_hint = 0;
     // It is necessary to provide a device. any device.
     p_ev->motion.device = getSomeDevice();
-    //TODO: Support state of modifier keys.
+    p_ev->motion.state = gModifiersState;
 
     // Also update the latest event time
     last_event_time_ = p_ev->motion.time;
@@ -129,6 +129,7 @@ GdkEvent* MouseEventsHandler::CreateMouseButtonEvent(MouseEventType ev_type, lon
     p_ev->button.y = y;
     p_ev->button.button = button;
     p_ev->button.device = getSomeDevice();
+    p_ev->button.state = gModifiersState;
 
     // Also update the latest event time
     last_event_time_ = p_ev->motion.time;

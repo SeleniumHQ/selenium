@@ -32,6 +32,7 @@ bool is_gdk_mouse_event(GdkEvent* ev);
 void print_key_event(GdkEvent* p_ev);
 
 void init_logging();
+extern guint32 gModifiersState;
 
 extern "C"
 {
