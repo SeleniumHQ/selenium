@@ -156,19 +156,32 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo("An inline element"));
   }
 
-  @Ignore
+  @Ignore({SELENESE, IPHONE, ANDROID, CHROME, OPERA})
   public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("preformatted")).getText();
-
-    assertThat(text, equalTo("This section has a\npreformatted\n   text block\n" +
-        "  within in\n" +
-        "        "));
+    
+    assertThat(text, equalTo("   This section has a preformatted\n" +
+        "    text block    \n" +
+        "  split in four lines\n" +
+        "         "));
   }
-  
+
+  @Ignore({SELENESE, IPHONE, ANDROID, CHROME, HTMLUNIT, OPERA})
+  public void testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
+    driver.get(pages.simpleTestPage);
+    String text = driver.findElement(By.id("div-with-pre")).getText();
+    assertThat(text, equalTo("before pre\n" +
+        "   This section has a preformatted\n" +
+        "    text block    \n" +
+        "  split in four lines\n" +
+        "         \n" + 
+        "after pre"));
+  }
+
   @Ignore(value = {SELENESE, IPHONE, CHROME, IE, OPERA}, reason = "iPhone: sendKeys is broken;"
       + " Chrome: not handling a space character properly."
-      + " Opera: inserts \r\n instead of \n.")
+      + " Opera,IE: inserts \r\n instead of \n.")
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
@@ -217,7 +230,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo(""));
   }
 
-  @Ignore({HTMLUNIT, IE, SELENESE})
+  @Ignore({HTMLUNIT, SELENESE})
   public void testShouldNotTrimSpacesWhenLineWraps() {
     driver.get(pages.simpleTestPage);
 
@@ -233,7 +246,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, is("Some text" + newLine + "Some more text"));
   }
 
-  @Ignore({FIREFOX, HTMLUNIT, IE, SELENESE, OPERA})
+  @Ignore({FIREFOX, HTMLUNIT, SELENESE, OPERA})
   public void testShouldHandleNestedBlockLevelElements() {
     driver.get(pages.simpleTestPage);
 
