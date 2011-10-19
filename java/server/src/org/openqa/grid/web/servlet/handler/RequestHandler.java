@@ -140,7 +140,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
           // any returned error will propagate to the
           // client, so there's no chance of this request ever succeeding.
           registry.removeNewSessionRequest(this);
-
           throw (new RuntimeException(e));
         }
 
@@ -215,7 +214,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
       // specify how long to wait before canceling
       // a request.
       if (registry.getNewSessionWaitTimeout() != -1) {
-        if (sessionAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS)) {
+        if (!sessionAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS)) {
           throw new RuntimeException("Request timed out waiting for a node to become available.");
         }
       } else {
