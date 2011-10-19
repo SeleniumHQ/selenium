@@ -227,7 +227,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     driver.findElement(By.id("labelForCheckbox")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    assertNotNull(waitFor(trimmedElementTextToEqual(result, "labelclick chboxclick")));
+    assertNotNull(waitFor(elementTextToContain(result, "labelclick chboxclick")));
   }
 
   @Ignore(ANDROID)
