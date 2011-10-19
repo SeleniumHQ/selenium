@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -192,7 +191,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(ANDROID)
   public void testShouldBeAbleToFindAnElementByCssSelector() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("form2"));
@@ -203,7 +201,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(ANDROID)  
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("form2"));
