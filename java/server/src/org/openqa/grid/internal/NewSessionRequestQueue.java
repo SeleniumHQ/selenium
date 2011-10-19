@@ -120,4 +120,10 @@ class NewSessionRequestQueue {
   public synchronized int getNewSessionRequestCount() {
     return newSessionRequests.size();
   }
+
+  public synchronized void stop(){
+    for (RequestHandler newSessionRequest : newSessionRequests) {
+      newSessionRequest.stop();
+    }
+  }
 }

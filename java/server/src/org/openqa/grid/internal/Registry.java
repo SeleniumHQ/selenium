@@ -171,6 +171,7 @@ public class Registry {
   public void stop() {
     stop = true;
     matcherThread.interrupt();
+    newSessionQueue.stop();
     proxies.teardown();
     httpClientFactory.close();
 

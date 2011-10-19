@@ -65,6 +65,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   private final CountDownLatch sessionAssigned = new CountDownLatch(1);
 
   private static final Logger log = Logger.getLogger(RequestHandler.class.getName());
+  private final Thread waitingThread;
 
   /**
    * Detect what kind of protocol ( selenium1 vs webdriver ) is used by the request and create the
@@ -85,6 +86,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     this.response = response;
     this.registry = registry;
     this.created = System.currentTimeMillis();
+    this.waitingThread = Thread.currentThread();
   }
 
   /**
@@ -135,6 +137,8 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
           waitForSessionBound();
           beforeSessionEvent();
           forwardAndGetRemoteKey();
+        } catch (InterruptedException e) {
+          registry.removeNewSessionRequest(this);
         } catch (Exception e) {
           // Make sure we yank the session from the request queue, since
           // any returned error will propagate to the
@@ -208,8 +212,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     }
   }
 
-  public void waitForSessionBound() {
-    try {
+  public void waitForSessionBound() throws InterruptedException {
       // Maintain compatibility with Grid 1.x, which had the ability to
       // specify how long to wait before canceling
       // a request.
@@ -220,18 +223,8 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
       } else {
         // Wait until a proxy becomes available to handle the request.
         sessionAssigned.await();
-
       }
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-    if (session == null) {
-      throw new RuntimeException(
-          "implementation error or you closed the grid while some tests were still queued on it.");
-    }
-
   }
-
   /**
    * return true is the request is using the selenium1 protocol, false if that's a web driver
    * protocol.
@@ -346,6 +339,10 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     } else {
       return session.getExternalKey();
     }
+  }
+
+  public void stop(){
+    waitingThread.interrupt();
   }
 
   @Override

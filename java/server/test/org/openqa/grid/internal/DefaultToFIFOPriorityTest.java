@@ -1,8 +1,7 @@
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-
 import junit.framework.Assert;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,6 +15,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.openqa.grid.common.RegistrationRequest.APP;
 
 // TODO freynaud copy paste from PriorityTestLoad ....
 
@@ -54,6 +55,7 @@ public class DefaultToFIFOPriorityTest {
       MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, cap);
       requests.add(req);
     }
+
 
     // use all the spots ( so 1 ) of the grid so that a queue buils up
     MockedRequestHandler newSessionRequest = new MockedRequestHandler(registry);
