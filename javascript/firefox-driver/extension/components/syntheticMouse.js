@@ -41,7 +41,7 @@ SyntheticMouse = function() {
   // Declare the state we'll be using
   this.buttonDown = null;
   this.lastElement = null;
-}
+};
 
 
 SyntheticMouse.newResponse = function(status, message) {
@@ -77,16 +77,16 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   // TODO(simon): find the current "body" element iff element == null
   var element = target ? 
       fxdriver.moz.unwrap(target) : this.lastElement;
+  var doc = goog.dom.getOwnerDocument(element);
 
-   if (goog.isFunction(element.scrollIntoView)) {
-     element.scrollIntoView();
+  if (goog.isFunction(element.scrollIntoView)) {
+     goog.style.scrollIntoContainerView(element, doc.documentElement);
   }
 
   // The following code assumes xOffset, yOffset are absolute in the DOM.
   // If the page was scrolled, the scroll offset should be subtracted
   // from the provided offset since the movement events are generated
   // relative to the viewport.
-  var doc = goog.dom.getOwnerDocument(element);
   var currentScroll = goog.dom.getDomHelper(doc).getDocumentScroll();
   xOffset -= currentScroll.x;
   yOffset -= currentScroll.y;
@@ -114,9 +114,11 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
 
   var viewportSize = goog.dom.getViewportSize(win);
   var docHeight = helper.getDocumentHeight();
+  var scrollHeight = owner.body.scrollHeight;
   var docWidth = owner.body.scrollWidth;
 
   var maxHeight = docHeight < viewportSize.height ? viewportSize.height : docHeight;
+  maxHeight = maxHeight < scrollHeight ? scrollHeight : maxHeight;
   var maxWidth = docWidth < viewportSize.width ? viewportSize.width : docWidth;
 
   var targetX = pos.x + xOffset;
@@ -169,17 +171,7 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
 
   proceed = fireAndCheck(element, goog.events.EventType.MOUSEMOVE, botCoords);
 
-  var newPos = Utils.getElementLocation(this.lastElement);
-  var xDifference = Math.abs(botCoords['clientX'] - newPos.x);
-  var yDifference = Math.abs(botCoords['clientY'] - newPos.y);
-  // Allow a 3-pixel deviation, since synthetic events are not as accurate
-  // as native ones.
-//  if (((origXOffset != 0) || (origYOffset != 0)) &&
-//      ((xDifference > 3) || (yDifference > 3))) {
-//    return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-//        'Move could not be performed as far as requested: (' + newPos.x + ' ' +
-//        newPos.y + ') targeted  (' + botCoords['clientX'] + ' ' + botCoords['clientY'] + ')');
-//  }
+  Utils.getElementLocation(this.lastElement);
 
   if (!proceed || !bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
     return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
