@@ -367,7 +367,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     return found;
   }
 
-  class AndroidFindBy implements SearchContext, FindsByTagName, FindsById,
+  private class AndroidFindBy implements SearchContext, FindsByTagName, FindsById,
       FindsByLinkText, FindsByName, FindsByXPath {
 
     public WebElement findElement(By by) {
@@ -829,7 +829,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     return res;
   }
 
-  protected List<Object> convertJsonArray2List(JSONArray arr) throws JSONException {
+  private List<Object> convertJsonArray2List(JSONArray arr) throws JSONException {
     List<Object> list = new ArrayList<Object>();
     for (int i = 0; i < arr.length(); i++) {
       list.add(processJsonObject(arr.get(i)));
@@ -902,7 +902,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     }
   }
 
-  class AndroidTimeouts implements Timeouts {
+  private class AndroidTimeouts implements Timeouts {
 
     public Timeouts implicitlyWait(long time, TimeUnit unit) {
       implicitWait = TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
@@ -1001,7 +1001,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     return touchScreen;
   }
 
-  class AndroidNavigation implements Navigation {
+  private class AndroidNavigation implements Navigation {
 
     public void back() {
       if (webview == null) {
