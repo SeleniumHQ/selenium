@@ -114,7 +114,7 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
 
   var viewportSize = goog.dom.getViewportSize(win);
   var docHeight = helper.getDocumentHeight();
-  var docWidth = owner.body.offsetWidth;
+  var docWidth = owner.body.scrollWidth;
 
   var maxHeight = docHeight < viewportSize.height ? viewportSize.height : docHeight;
   var maxWidth = docWidth < viewportSize.width ? viewportSize.width : docWidth;
