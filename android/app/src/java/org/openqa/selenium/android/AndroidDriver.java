@@ -21,16 +21,17 @@ import android.util.Log;
 import org.openqa.selenium.WebDriver;
 
 import org.openqa.selenium.android.AndroidWebDriver;
+import org.openqa.selenium.HasTouchScreen;
+import org.openqa.selenium.html5.BrowserConnection;
+import org.openqa.selenium.html5.LocationContext;
+import org.openqa.selenium.html5.WebStorage;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Rotatable;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.android.app.MainActivity;
 
-/**
- * @author berrada@google.com (Dounia Berrada)
- */
-public class AndroidDriver implements WebDriver, org.openqa.selenium.JavascriptExecutor,
-    org.openqa.selenium.TakesScreenshot,
-    org.openqa.selenium.Rotatable, org.openqa.selenium.html5.BrowserConnection,
-    org.openqa.selenium.HasTouchScreen, org.openqa.selenium.html5.WebStorage,
-    org.openqa.selenium.html5.LocationContext {
+public class AndroidDriver implements BrowserConnection, HasTouchScreen, JavascriptExecutor,
+    LocationContext, Rotatable, TakesScreenshot, WebDriver, WebStorage{
 
   private AndroidWebDriver driver;
 
