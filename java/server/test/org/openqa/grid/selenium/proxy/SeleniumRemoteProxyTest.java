@@ -31,6 +31,7 @@ import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
 public class SeleniumRemoteProxyTest {
   private SeleniumRemoteProxy proxy;
+  private Registry registry;
 
   @Before
   public void setup() {
@@ -45,7 +46,8 @@ public class SeleniumRemoteProxyTest {
     req.addDesiredCapabilitiy(app1);
     req.setConfiguration(config);
 
-    proxy = new SeleniumRemoteProxy(req, Registry.newInstance());
+    registry = Registry.newInstance();
+    proxy = new SeleniumRemoteProxy(req, registry);
   }
 
   @Test
@@ -54,6 +56,7 @@ public class SeleniumRemoteProxyTest {
     session.setExternalKey("abc123");
 
     proxy.beforeRelease(session);
+    registry.stop();
   }
 
   @Test
@@ -62,5 +65,6 @@ public class SeleniumRemoteProxyTest {
     session.setExternalKey(null);
 
     proxy.beforeRelease(session);
+    registry.stop();
   }
 }

@@ -8,6 +8,7 @@ import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,8 +50,6 @@ public class SessionTimesOutTest {
 
   /**
    * check that the proxy is freed after it times out.
-   * 
-   * @throws InterruptedException
    */
   @Test(timeout = 2000)
   public void testTimeout() throws InterruptedException {
@@ -58,7 +57,6 @@ public class SessionTimesOutTest {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = new MyRemoteProxyTimeout(req, registry);
     p1.setupTimeoutListener();
-
 
     try {
       registry.add(p1);
@@ -103,7 +101,6 @@ public class SessionTimesOutTest {
     Registry registry = Registry.newInstance();
     RemoteProxy p1 = new MyRemoteProxyTimeoutSlow(req, registry);
     p1.setupTimeoutListener();
-
 
     try {
       registry.add(p1);
@@ -156,7 +153,6 @@ public class SessionTimesOutTest {
     RemoteProxy p1 = new MyBuggyRemoteProxyTimeout(req, registry);
     p1.setupTimeoutListener();
 
-
     try {
       registry.add(p1);
 
@@ -198,43 +194,51 @@ public class SessionTimesOutTest {
 
   @Test(timeout = 4000)
   public void stupidConfig() throws InterruptedException {
-    Object[][] configs = new Object[][] {
+    Object[][] configs = new Object[][]{
         // correct config, just to check something happens
         {5, 5},
         // and invalid ones
         {-1, 5}, {5, -1}, {-1, -1}, {0, 0}};
-    for (Object[] c : configs) {
-      int timeout = (Integer) c[0];
-      int cycle = (Integer) c[1];
-      Registry registry = Registry.newInstance();
+    java.util.List<Registry> registryList = new ArrayList<Registry>();
+    try {
+      for (Object[] c : configs) {
+        int timeout = (Integer) c[0];
+        int cycle = (Integer) c[1];
+        Registry registry = Registry.newInstance();
+        registryList.add(registry);
 
-      RegistrationRequest req = new RegistrationRequest();
-      Map<String, Object> app1 = new HashMap<String, Object>();
-      app1.put(APP, "app1");
-      req.addDesiredCapabilitiy(app1);
-      Map<String, Object> config = new HashMap<String, Object>();
+        RegistrationRequest req = new RegistrationRequest();
+        Map<String, Object> app1 = new HashMap<String, Object>();
+        app1.put(APP, "app1");
+        req.addDesiredCapabilitiy(app1);
+        Map<String, Object> config = new HashMap<String, Object>();
 
-      config.put(TIME_OUT, timeout);
-      config.put(CLEAN_UP_CYCLE, cycle);
+        config.put(TIME_OUT, timeout);
+        config.put(CLEAN_UP_CYCLE, cycle);
 
-      req.setConfiguration(config);
+        req.setConfiguration(config);
 
-      final MyStupidConfig proxy = new MyStupidConfig(req, registry);
-      proxy.setupTimeoutListener();
-      registry.add(proxy);
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
-      newSessionRequest.process();
-      TestSession session = newSessionRequest.getTestSession();
-      // wait -> timed out and released.
-      Thread.sleep(500);
-      boolean shouldTimeout = timeout > 0 && cycle > 0;
+        final MyStupidConfig proxy = new MyStupidConfig(req, registry);
+        proxy.setupTimeoutListener();
+        registry.add(proxy);
+        MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+        newSessionRequest.process();
+        TestSession session = newSessionRequest.getTestSession();
+        // wait -> timed out and released.
+        Thread.sleep(500);
+        boolean shouldTimeout = timeout > 0 && cycle > 0;
 
-      if (shouldTimeout) {
-        Assert.assertEquals(session.get("FLAG"), true);
-        Assert.assertNull(session.getSlot().getSession());
-      } else {
-        Assert.assertNull(session.get("FLAG"));
-        Assert.assertNotNull(session.getSlot().getSession());
+        if (shouldTimeout) {
+          Assert.assertEquals(session.get("FLAG"), true);
+          Assert.assertNull(session.getSlot().getSession());
+        } else {
+          Assert.assertNull(session.get("FLAG"));
+          Assert.assertNotNull(session.getSlot().getSession());
+        }
+      }
+    } finally {
+      for (Registry registry : registryList) {
+        registry.stop();
       }
     }
 

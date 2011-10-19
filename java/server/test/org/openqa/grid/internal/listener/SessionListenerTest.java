@@ -1,15 +1,5 @@
 package org.openqa.grid.internal.listener;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,6 +10,16 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
+import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
+import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
 public class SessionListenerTest {
 
@@ -72,7 +72,7 @@ public class SessionListenerTest {
 
   /**
    * buggy proxy that will throw an exception the first time beforeSession is called.
-   * 
+   *
    * @author Fran�ois Reynaud
    */
   static class MyBuggyBeforeRemoteProxy extends RemoteProxy implements TestSessionListener {
@@ -96,8 +96,6 @@ public class SessionListenerTest {
 
   /**
    * if before throws an exception, the resources are released for other tests to use.
-   * 
-   * @throws InterruptedException
    */
   @Test(timeout = 5000)
   public void buggyBefore() throws InterruptedException {
@@ -125,7 +123,7 @@ public class SessionListenerTest {
 
   /**
    * buggy proxy that will throw an exception the first time beforeSession is called.
-   * 
+   *
    * @author Fran�ois Reynaud
    */
   static class MyBuggyAfterRemoteProxy extends RemoteProxy implements TestSessionListener {
@@ -146,38 +144,43 @@ public class SessionListenerTest {
 
   /**
    * if after throws an exception, the resources are NOT released got other tests to use.
-   * 
-   * @throws InterruptedException
    */
   @Test(timeout = 1000)
   public void buggyAfter() throws InterruptedException {
     Registry registry = Registry.newInstance();
-    registry.add(new MyBuggyAfterRemoteProxy(req, registry));
-
-    MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, app1);
-    req.process();
-    TestSession session = req.getTestSession();
-    Assert.assertEquals(registry.getActiveSessions().size(), 1);
-    Assert.assertNotNull(session);
-    session.terminate();
     try {
-      Thread.sleep(250);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
+      registry.add(new MyBuggyAfterRemoteProxy(req, registry));
 
-    final MockedNewSessionRequestHandler req2 = new MockedNewSessionRequestHandler(registry, app1);
-
-    new Thread(new Runnable() {  // Thread safety reviewed
-
-      public void run() {
-        req2.process();
-        processed = true;
+      MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, app1);
+      req.process();
+      TestSession session = req.getTestSession();
+      Assert.assertEquals(registry.getActiveSessions().size(), 1);
+      Assert.assertNotNull(session);
+      session.terminate();
+      try {
+        Thread.sleep(250);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
       }
-    }).start();
 
-    Thread.sleep(100);
-    Assert.assertFalse(processed);
+      final
+      MockedNewSessionRequestHandler
+          req2 =
+          new MockedNewSessionRequestHandler(registry, app1);
+
+      new Thread(new Runnable() {  // Thread safety reviewed
+
+        public void run() {
+          req2.process();
+          processed = true;
+        }
+      }).start();
+
+      Thread.sleep(100);
+      Assert.assertFalse(processed);
+    } finally {
+      registry.stop();
+    }
   }
 
   class SlowAfterSession extends RemoteProxy implements TestSessionListener, TimeoutListener {
@@ -221,8 +224,6 @@ public class SessionListenerTest {
   /**
    * using a proxy that times out instantly and spends a long time in the after method. check
    * aftermethod cannot be excecuted twice for a session.
-   * 
-   * @throws InterruptedException
    */
   @Test
   public void doubleRelease() throws InterruptedException {
@@ -239,24 +240,28 @@ public class SessionListenerTest {
     req.setConfiguration(config);
 
     Registry registry = Registry.newInstance();
-    final SlowAfterSession proxy = new SlowAfterSession(req, registry);
-    proxy.setupTimeoutListener();
-    registry.add(proxy);
+    try {
+      final SlowAfterSession proxy = new SlowAfterSession(req, registry);
+      proxy.setupTimeoutListener();
+      registry.add(proxy);
 
-    MockedNewSessionRequestHandler r = new MockedNewSessionRequestHandler(registry, app1);
-    r.process();
-    TestSession session = r.getTestSession();
+      MockedNewSessionRequestHandler r = new MockedNewSessionRequestHandler(registry, app1);
+      r.process();
+      TestSession session = r.getTestSession();
 
-    Thread.sleep(150);
-    // the session has timed out -> doing the long after method.
-    Assert.assertEquals(session.get("after"), true);
+      Thread.sleep(150);
+      // the session has timed out -> doing the long after method.
+      Assert.assertEquals(session.get("after"), true);
 
-    // manually closing the session, starting a 2nd release process.
-    session.terminate();
+      // manually closing the session, starting a 2nd release process.
+      session.terminate();
 
-    // the 2nd release process shouldn't be executed as one is already
-    // processed.
-    Assert.assertNull(session.get("ERROR"));
+      // the 2nd release process shouldn't be executed as one is already
+      // processed.
+      Assert.assertNull(session.get("ERROR"));
+    } finally {
+      registry.stop();
+    }
 
   }
 

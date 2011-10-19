@@ -22,24 +22,31 @@ import org.junit.Test;
 import java.util.HashMap;
 
 public class ProxySetTest {
+
   @Test
   public void removeIfPresent() {
     Registry registry = Registry.newInstance();
-    ProxySet set = new ProxySet(true);
-    RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
+    try {
+      ProxySet set = new ProxySet(true);
+      RemoteProxy
+          p1 =
+          RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
 
-    set.add(p1);
+      set.add(p1);
 
-    p1.getTestSlots().get(0).getNewSession(new HashMap<String, Object>());
+      p1.getTestSlots().get(0).getNewSession(new HashMap<String, Object>());
 
-    // Make sure the proxy and its test session show up in the registry.
-    Assert.assertEquals(1, set.size());
-    Assert.assertNotNull(p1.getTestSlots().get(0).getSession());
+      // Make sure the proxy and its test session show up in the registry.
+      Assert.assertEquals(1, set.size());
+      Assert.assertNotNull(p1.getTestSlots().get(0).getSession());
 
-    set.removeIfPresent(p1);
+      set.removeIfPresent(p1);
 
-    // Make sure both the proxy and the test session assigned to it are removed from the registry.
-    Assert.assertEquals(0, set.size());
-    Assert.assertNull(p1.getTestSlots().get(0).getSession());
+      // Make sure both the proxy and the test session assigned to it are removed from the registry.
+      Assert.assertEquals(0, set.size());
+      Assert.assertNull(p1.getTestSlots().get(0).getSession());
+    } finally {
+      registry.stop();
+    }
   }
 }

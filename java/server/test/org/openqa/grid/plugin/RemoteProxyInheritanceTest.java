@@ -1,8 +1,6 @@
 package org.openqa.grid.plugin;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.PROXY_CLASS;
-
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
@@ -12,6 +10,9 @@ import org.openqa.grid.internal.RemoteProxy;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.PROXY_CLASS;
 
 
 public class RemoteProxyInheritanceTest {
@@ -113,4 +114,9 @@ public class RemoteProxyInheritanceTest {
   }
 
 
+  @After
+  public void tearDown(){
+    registry.stop();
+  }
+  
 }

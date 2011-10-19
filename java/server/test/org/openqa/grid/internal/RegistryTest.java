@@ -1,10 +1,5 @@
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
-
-import org.openqa.selenium.remote.CapabilityType;
-
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,12 +8,16 @@ import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
 public class RegistryTest {
 
@@ -90,12 +89,13 @@ public class RegistryTest {
   @Test
   public void emptyRegistry() throws Throwable {
     Registry registry = Registry.newInstance();
-    System.out.println(registry);
     try {
       MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
       newSessionRequest.process();
     } catch (Exception e) {
       Assert.assertEquals(GridException.class, e.getCause().getClass());
+    } finally {
+      registry.stop();
     }
   }
 
@@ -172,10 +172,11 @@ public class RegistryTest {
   /**
    * try to simulate a real proxy. The proxy registration takes up to 1 sec to register, and crashes
    * in 10% of the case.
-   * 
+   *
    * @author Fran�ois Reynaud
    */
   class MyRemoteProxy extends RemoteProxy implements RegistrationListener {
+
     public MyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
 

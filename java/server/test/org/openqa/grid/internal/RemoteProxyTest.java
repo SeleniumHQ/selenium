@@ -1,8 +1,6 @@
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
-
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,6 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
 
 public class RemoteProxyTest {
 
@@ -96,6 +97,11 @@ public class RemoteProxyTest {
 
     Assert.assertEquals("A2", p.getConfig().get("A"));
 
+  }
+
+  @AfterClass
+  public static void teardown() {
+    registry.stop();
   }
 
 }
