@@ -97,7 +97,7 @@ public class SessionListenerTest {
   /**
    * if before throws an exception, the resources are released for other tests to use.
    */
-  @Test(timeout = 5000)
+  @Test(timeout = 500000)
   public void buggyBefore() throws InterruptedException {
     Registry registry = Registry.newInstance();
     registry.add(new MyBuggyBeforeRemoteProxy(req, registry));
@@ -113,9 +113,10 @@ public class SessionListenerTest {
 
     Assert.assertEquals(registry.getActiveSessions().size(), 0);
 
-    req.process();
+    MockedNewSessionRequestHandler req2 = new MockedNewSessionRequestHandler(registry, app1);
+    req2.process();
 
-    TestSession session = req.getTestSession();
+    TestSession session = req2.getTestSession();
     Assert.assertNotNull(session);
     Assert.assertEquals(registry.getActiveSessions().size(), 1);
 

@@ -29,10 +29,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,16 +39,16 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Base stuff to handle the request coming from a remote. Ideally, there should be only 1 concrete
- * class, but to support both legacy selenium1 and web driver, 2 classes are needed.
- * <p/>
- * {@link Selenium1RequestHandler} for the part specific to selenium1 protocol
- * {@link WebDriverRequestHandler} for the part specific to webdriver protocol
+ * class, but to support both legacy selenium1 and web driver, 2 classes are needed. <p/> {@link
+ * Selenium1RequestHandler} for the part specific to selenium1 protocol {@link
+ * WebDriverRequestHandler} for the part specific to webdriver protocol
  *
- * Threading notes; RequestHandlers are instantiated per-request, run on the servlet
- * container thread. The instance is also accessed by the matcher thread.
- *
+ * Threading notes; RequestHandlers are instantiated per-request, run on the servlet container
+ * thread. The instance is also accessed by the matcher thread.
  */
+@SuppressWarnings("JavaDoc")
 public abstract class RequestHandler implements Comparable<RequestHandler> {
+
   private final Registry registry;
   private final HttpServletRequest request;
   private final HttpServletResponse response;
@@ -64,22 +62,16 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 
   private boolean showWarning = true;
 
-  private final Lock lock = new ReentrantLock();
-  private final Condition sessionHasBeenAssigned = lock.newCondition();
+  private final CountDownLatch sessionAssigned = new CountDownLatch(1);
 
   private static final Logger log = Logger.getLogger(RequestHandler.class.getName());
 
   /**
    * Detect what kind of protocol ( selenium1 vs webdriver ) is used by the request and create the
    * associated handler.
-   * 
-   * @param request
-   * @param response
-   * @param registry
-   * @return
    */
   public static RequestHandler createHandler(HttpServletRequest request,
-      HttpServletResponse response, Registry registry) {
+                                             HttpServletResponse response, Registry registry) {
     if (isSeleniumProtocol(request)) {
       return new Selenium1RequestHandler(request, response, registry);
     } else {
@@ -88,7 +80,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   }
 
   protected RequestHandler(HttpServletRequest request, HttpServletResponse response,
-      Registry registry) {
+                           Registry registry) {
     this.request = request;
     this.response = response;
     this.registry = registry;
@@ -103,7 +95,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   /**
    * Extract the session from the request. This only works for a request that has a session already
    * assigned. It shouldn't be called for a new session request.
-   * 
+   *
    * @return the external session id sent by the remote. Null is the session cannot be found.
    */
   public abstract String extractSession();
@@ -111,7 +103,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   /**
    * Parse the request to extract the desiredCapabilities. For non web driver protocol ( selenium1 )
    * some mapping will be necessary
-   * 
+   *
    * @return the desired capabilities requested by the client.
    */
   public abstract Map<String, Object> extractDesiredCapability();
@@ -119,10 +111,8 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   /**
    * Forward the new session request to the TestSession that has been assigned, and parse the
    * response to extract and return the external key assigned by the remote.
-   * 
-   * @param session
+   *
    * @return the external key sent by the remote, null is something went wrong.
-   * @throws IOException
    */
   public abstract String forwardNewSessionRequest(TestSession session);
 
@@ -145,10 +135,10 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
         } catch (Exception e) {
           // Make sure we yank the session from the request queue, since
           // any returned error will propagate to the
-                  // client, so there's no chance of this request ever succeeding.
-                  registry.removeNewSessionRequest(this);
+          // client, so there's no chance of this request ever succeeding.
+          registry.removeNewSessionRequest(this);
 
-                  throw (new RuntimeException(e));
+          throw (new RuntimeException(e));
         }
 
         break;
@@ -161,7 +151,8 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
             sessionKey = extractSession();
           } catch (RuntimeException ignore) {
           }
-          throw new GridException("Session [" + sessionKey + "] not available - " + registry.getActiveSessions());
+          throw new GridException(
+              "Session [" + sessionKey + "] not available - " + registry.getActiveSessions());
         }
         try {
           forwardRequest(session, this);
@@ -186,7 +177,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
    */
   private void handleNewSession() {
     try {
-      lock.lock();
       // in the lock on purpose. Need to be stuck on the await first, so
       // that the signal of bindSession is done AFTER await is in waiting
       // mode.
@@ -200,29 +190,16 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
       // specify how long to wait before canceling
       // a request.
       if (registry.getNewSessionWaitTimeout() != -1) {
-        long startTime = System.currentTimeMillis();
-        long expectedMaxEndTime = startTime + registry.getNewSessionWaitTimeout();
-
-        do {
-          sessionHasBeenAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS);
-        } while (session==null && System.currentTimeMillis() < expectedMaxEndTime);
-
-        long endTime = System.currentTimeMillis();
-
-        if (session == null && endTime > expectedMaxEndTime) {
+        if (sessionAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS)) {
           throw new RuntimeException("Request timed out waiting for a node to become available.");
         }
       } else {
         // Wait until a proxy becomes available to handle the request.
-        do {
-          sessionHasBeenAssigned.await();
-        } while (session==null);
+        sessionAssigned.await();
 
       }
     } catch (InterruptedException e) {
       e.printStackTrace();
-    } finally {
-      lock.unlock();
     }
 
     if (session == null) {
@@ -236,7 +213,8 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     if (p instanceof TestSessionListener) {
       if (showWarning && p.getMaxNumberOfConcurrentTestSessions() != 1) {
         showWarning = false;
-        log.warning("WARNING : using a beforeSession on a proxy that can support multiple tests is risky.");
+        log.warning(
+            "WARNING : using a beforeSession on a proxy that can support multiple tests is risky.");
       }
       try {
         ((TestSessionListener) p).beforeSession(session);
@@ -253,7 +231,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
       // TODO (kmenard 04/10/11): We should indicate what the requested
       // session type is.
       throw new GridException("Error getting a new session from the remote." +
-          registry.getAllProxies());
+                              registry.getAllProxies());
     } else {
       session.setExternalKey(externalKey);
     }
@@ -262,9 +240,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   /**
    * return true is the request is using the selenium1 protocol, false if that's a web driver
    * protocol.
-   * 
-   * @param request
-   * @return
    */
   private static boolean isSeleniumProtocol(HttpServletRequest request) {
     return "/selenium-server/driver".equals(request.getServletPath());
@@ -272,8 +247,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 
   /**
    * reads the input stream of the request and returns its content.
-   * 
-   * @return
    */
   protected String getRequestBody() {
     if (!bodyHasBeenRead) {
@@ -304,8 +277,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 
   /**
    * the HttpServletRequest this hanlder is processing.
-   * 
-   * @return
    */
   public HttpServletRequest getRequest() {
     return request;
@@ -313,8 +284,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 
   /**
    * the HttpServletResponse the handler is writing to.
-   * 
-   * @return
    */
   public HttpServletResponse getResponse() {
     return response;
@@ -356,13 +325,8 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   }
 
   public void bindSession(TestSession session) {
-    try {
-      lock.lock();
-      this.session = session;
-      sessionHasBeenAssigned.signalAll();
-    } finally {
-      lock.unlock();
-    }
+    this.session = session;
+    sessionAssigned.countDown();
   }
 
   protected TestSession getSession() {
@@ -380,8 +344,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
    * return the session from the server ( = opaque handle used by the server to determine where to
    * route session-specific commands fro mthe JSON wire protocol ). will be null until the request
    * has been processed.
-   * 
-   * @return
    */
   public String getServerSession() {
     if (session == null) {
@@ -419,18 +381,23 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     RequestHandler other = (RequestHandler) obj;
     if (session == null) {
-      if (other.session != null)
+      if (other.session != null) {
         return false;
-    } else if (!session.equals(other.session))
+      }
+    } else if (!session.equals(other.session)) {
       return false;
+    }
     return true;
   }
 
