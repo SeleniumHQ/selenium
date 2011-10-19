@@ -364,7 +364,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     List<WebElement> found = by.findElements(findBy);
     while (found.isEmpty() && (System.currentTimeMillis() - start <= implicitWait)) {
       sleepQuietly(100);
-      found = by.findElements(this);
+      found = by.findElements(findBy);
     }
     return found;
   }
