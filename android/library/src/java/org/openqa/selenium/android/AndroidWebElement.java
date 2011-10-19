@@ -35,6 +35,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
@@ -67,6 +68,7 @@ public class AndroidWebElement implements WebElement,
   private static final String LOCATOR_NAME = "name";
   private static final String LOCATOR_TAG_NAME = "tagName";
   private static final String LOCATOR_XPATH = "xpath";
+  private static final String LOCATOR_CSS_SELECTOR = "css";
 
    AndroidWebElement(AndroidWebDriver driver, String elementId) {
     this.driver = driver;
@@ -236,8 +238,8 @@ public class AndroidWebElement implements WebElement,
     return findsBy;
   }
 
-  private class FindByImpl implements SearchContext, FindsById, FindsByLinkText,
-      FindsByXPath, FindsByTagName {
+  class FindByImpl implements SearchContext, FindsById, FindsByLinkText,
+      FindsByXPath, FindsByTagName, FindsByCssSelector {
 
     public WebElement findElement(By by) {
       return by.findElement(findsBy);
@@ -293,6 +295,14 @@ public class AndroidWebElement implements WebElement,
 
     public List<WebElement> findElementsByName(String using) {
       return lookupElements(LOCATOR_NAME, using);
+    }
+
+    public WebElement findElementByCssSelector(String using) {
+      return lookupElement(LOCATOR_CSS_SELECTOR, using);
+    }
+
+    public List<WebElement> findElementsByCssSelector(String using) {
+      return lookupElements(LOCATOR_CSS_SELECTOR, using);
     }
   }
 

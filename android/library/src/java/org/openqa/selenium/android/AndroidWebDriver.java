@@ -61,6 +61,7 @@ import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Base64Encoder;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -368,7 +369,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   private class AndroidFindBy implements SearchContext, FindsByTagName, FindsById,
-      FindsByLinkText, FindsByName, FindsByXPath {
+      FindsByLinkText, FindsByName, FindsByXPath, FindsByCssSelector {
 
     public WebElement findElement(By by) {
       long start = System.currentTimeMillis();
@@ -440,6 +441,14 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
 
     public List<WebElement> findElementsByPartialLinkText(String using) {
       return element.getFinder().findElementsByPartialLinkText(using);
+    }
+
+    public WebElement findElementByCssSelector(String using) {
+      return element.getFinder().findElementByCssSelector(using);
+    }
+
+    public List<WebElement> findElementsByCssSelector(String using) {
+      return element.getFinder().findElementsByCssSelector(using);
     }
   }
 
