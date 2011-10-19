@@ -584,7 +584,8 @@ public class HttpCommandExecutor implements CommandExecutor {
 
     public HttpUriRequest getMethod(URL base, Command command) {
       StringBuilder urlBuilder = new StringBuilder();
-      urlBuilder.append(base.toExternalForm());
+
+      urlBuilder.append(base.toExternalForm().replaceAll("/$", ""));
       for (String part : url.split("/")) {
         if (part.length() == 0) {
           continue;
