@@ -98,16 +98,16 @@ Static variable in class org.openqa.selenium.firefox.<A HREF="./org/openqa/selen
 <DT><A HREF="./org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions"><B>Action</B></A> - Interface in <A HREF="./org/openqa/selenium/interactions/package-summary.html">org.openqa.selenium.interactions</A><DD>Interface representing a single user-interaction action.<DT><A HREF="./org/openqa/selenium/interactions/Actions.html#action"><B>action</B></A> - 
 Variable in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
 <DD>&nbsp;
-<DT><A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions"><B>Actions</B></A> - Class in <A HREF="./org/openqa/selenium/interactions/package-summary.html">org.openqa.selenium.interactions</A><DD>Implements the builder pattern: Builds a CompositeAction containing all actions specified by the
- method calls.<DT><A HREF="./org/openqa/selenium/interactions/Actions.html#Actions(org.openqa.selenium.WebDriver)"><B>Actions(WebDriver)</B></A> - 
+<DT><A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions"><B>Actions</B></A> - Class in <A HREF="./org/openqa/selenium/interactions/package-summary.html">org.openqa.selenium.interactions</A><DD>The user-facing API for emulating complex user gestures.<DT><A HREF="./org/openqa/selenium/interactions/Actions.html#Actions(org.openqa.selenium.WebDriver)"><B>Actions(WebDriver)</B></A> - 
 Constructor for class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Default constructor - uses the default keyboard, mouse implemented by the driver.
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#Actions(org.openqa.selenium.Keyboard, org.openqa.selenium.Mouse)"><B>Actions(Keyboard, Mouse)</B></A> - 
 Constructor for class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>A constructor that should only be used when the keyboard or mouse were extended to provide
+ additional functionality (for example, dragging-and-dropping from the desktop).
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#Actions(org.openqa.selenium.Keyboard)"><B>Actions(Keyboard)</B></A> - 
 Constructor for class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Only used by the TouchActions class.
 <DT><A HREF="./org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteInputMethodManager.html#activateEngine(java.lang.String)"><B>activateEngine(String)</B></A> - 
 Method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteInputMethodManager.html" title="class in org.openqa.selenium.remote">RemoteWebDriver.RemoteWebDriverOptions.RemoteInputMethodManager</A>
 <DD>&nbsp;
@@ -629,7 +629,7 @@ Method in class org.openqa.selenium.browserlaunchers.locators.<A HREF="./org/ope
 <DT><A HREF="./org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html#browserPathOverridePropertyName()"><B>browserPathOverridePropertyName()</B></A> - 
 Method in class org.openqa.selenium.browserlaunchers.locators.<A HREF="./org/openqa/selenium/browserlaunchers/locators/SingleBrowserLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SingleBrowserLocator</A>
 <DD>&nbsp;
-<DT><A HREF="./org/openqa/selenium/chrome/ChromeDriverService.Builder.html#build()"><B>build()</B></A> - 
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote"><B>BrowserType</B></A> - Interface in <A HREF="./org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</A><DD>All the browsers supported by selenium<DT><A HREF="./org/openqa/selenium/chrome/ChromeDriverService.Builder.html#build()"><B>build()</B></A> - 
 Method in class org.openqa.selenium.chrome.<A HREF="./org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</A>
 <DD>Creates a new binary to manage the chromedriver server.
 <DT><A HREF="./org/openqa/selenium/Cookie.Builder.html#build()"><B>build()</B></A> - 
@@ -637,7 +637,9 @@ Method in class org.openqa.selenium.<A HREF="./org/openqa/selenium/Cookie.Builde
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#build()"><B>build()</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Generates a composite action containinig all actions so far, ready to be performed (and
+ resets the internal builder state, so subsequent calls to build() will contain fresh
+ sequences).
 <DT><A HREF="./org/openqa/selenium/support/pagefactory/Annotations.html#buildBy()"><B>buildBy()</B></A> - 
 Method in class org.openqa.selenium.support.pagefactory.<A HREF="./org/openqa/selenium/support/pagefactory/Annotations.html" title="class in org.openqa.selenium.support.pagefactory">Annotations</A>
 <DD>&nbsp;
@@ -802,6 +804,9 @@ Method in interface com.thoughtworks.selenium.<A HREF="./com/thoughtworks/seleni
 <DT><A HREF="./org/openqa/selenium/Keys.html#chord(java.lang.CharSequence...)"><B>chord(CharSequence...)</B></A> - 
 Static method in enum org.openqa.selenium.<A HREF="./org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>
 <DD>Simulate pressing many keys at once in a "chord".
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#CHROME"><B>CHROME</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/remote/DesiredCapabilities.html#chrome()"><B>chrome()</B></A> - 
 Static method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</A>
 <DD>&nbsp;
@@ -896,10 +901,10 @@ Method in class org.openqa.selenium.htmlunit.<A HREF="./org/openqa/selenium/html
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#click(org.openqa.selenium.WebElement)"><B>click(WebElement)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Clicks in the middle of the given element.
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#click()"><B>click()</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Clicks at the current mouse location.
 <DT><A HREF="./org/openqa/selenium/Mouse.html#click(org.openqa.selenium.interactions.internal.Coordinates)"><B>click(Coordinates)</B></A> - 
 Method in interface org.openqa.selenium.<A HREF="./org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</A>
 <DD>&nbsp;
@@ -923,10 +928,10 @@ Constructor for class org.openqa.selenium.interactions.<A HREF="./org/openqa/sel
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#clickAndHold(org.openqa.selenium.WebElement)"><B>clickAndHold(WebElement)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Clicks (without releasing) in the middle of the given element.
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#clickAndHold()"><B>clickAndHold()</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Clicks (without releasing) at the current mouse location.
 <DT><A HREF="./org/openqa/selenium/interactions/ClickAndHoldAction.html" title="class in org.openqa.selenium.interactions"><B>ClickAndHoldAction</B></A> - Class in <A HREF="./org/openqa/selenium/interactions/package-summary.html">org.openqa.selenium.interactions</A><DD>Presses the left mouse button without releasing it.<DT><A HREF="./org/openqa/selenium/interactions/ClickAndHoldAction.html#ClickAndHoldAction(org.openqa.selenium.Mouse, org.openqa.selenium.internal.Locatable)"><B>ClickAndHoldAction(Mouse, Locatable)</B></A> - 
 Constructor for class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/ClickAndHoldAction.html" title="class in org.openqa.selenium.interactions">ClickAndHoldAction</A>
 <DD>&nbsp;
@@ -1068,7 +1073,7 @@ Method in class org.openqa.selenium.htmlunit.<A HREF="./org/openqa/selenium/html
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#contextClick(org.openqa.selenium.WebElement)"><B>contextClick(WebElement)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Performs a context-click at middle of the given element.
 <DT><A HREF="./org/openqa/selenium/Mouse.html#contextClick(org.openqa.selenium.interactions.internal.Coordinates)"><B>contextClick(Coordinates)</B></A> - 
 Method in interface org.openqa.selenium.<A HREF="./org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</A>
 <DD>&nbsp;
@@ -1512,10 +1517,10 @@ Method in class org.openqa.selenium.htmlunit.<A HREF="./org/openqa/selenium/html
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#doubleClick(org.openqa.selenium.WebElement)"><B>doubleClick(WebElement)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Performs a double-click at middle of the given element.
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#doubleClick()"><B>doubleClick()</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Performs a double-click at the current mouse location.
 <DT><A HREF="./org/openqa/selenium/Mouse.html#doubleClick(org.openqa.selenium.interactions.internal.Coordinates)"><B>doubleClick(Coordinates)</B></A> - 
 Method in interface org.openqa.selenium.<A HREF="./org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</A>
 <DD>&nbsp;
@@ -1572,10 +1577,12 @@ Method in interface com.thoughtworks.selenium.<A HREF="./com/thoughtworks/seleni
 <DD>Drags an element a certain distance and then drops it
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#dragAndDrop(org.openqa.selenium.WebElement, org.openqa.selenium.WebElement)"><B>dragAndDrop(WebElement, WebElement)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>A convenience method that performs click-and-hold at the location of the source element,
+ moves to the location of the target element, then releases the mouse.
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#dragAndDropBy(org.openqa.selenium.WebElement, int, int)"><B>dragAndDropBy(WebElement, int, int)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>A convenience method that performs click-and-hold at the location of the source element,
+ moves by a given offset, then releases the mouse.
 <DT><A HREF="./com/thoughtworks/selenium/DefaultSelenium.html#dragAndDropToObject(java.lang.String, java.lang.String)"><B>dragAndDropToObject(String, String)</B></A> - 
 Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</A>
 <DD>&nbsp;
@@ -1786,6 +1793,9 @@ Method in class org.openqa.selenium.support.events.<A HREF="./org/openqa/seleniu
 <DT><A HREF="./org/openqa/selenium/html5/DatabaseStorage.html#executeSQL(java.lang.String, java.lang.String, java.lang.Object...)"><B>executeSQL(String, String, Object...)</B></A> - 
 Method in interface org.openqa.selenium.html5.<A HREF="./org/openqa/selenium/html5/DatabaseStorage.html" title="interface in org.openqa.selenium.html5">DatabaseStorage</A>
 <DD>Executes an SQL statement on the given database name.
+<DT><A HREF="./org/openqa/selenium/remote/RemoteKeyboard.html#executor"><B>executor</B></A> - 
+Variable in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteKeyboard.html" title="class in org.openqa.selenium.remote">RemoteKeyboard</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui"><B>ExpectedCondition</B></A>&lt;<A HREF="./org/openqa/selenium/support/ui/ExpectedCondition.html" title="type parameter in ExpectedCondition">T</A>&gt; - Interface in <A HREF="./org/openqa/selenium/support/ui/package-summary.html">org.openqa.selenium.support.ui</A><DD>Models a condition that might reasonably be expected to eventually evaluate to something that is
  neither null nor false.<DT><A HREF="./org/openqa/selenium/support/ui/ExpectedConditions.html" title="class in org.openqa.selenium.support.ui"><B>ExpectedConditions</B></A> - Class in <A HREF="./org/openqa/selenium/support/ui/package-summary.html">org.openqa.selenium.support.ui</A><DD>Canned <A HREF="./org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui"><CODE>ExpectedCondition</CODE></A>s which are generally useful within webdriver
  tests.<DT><A HREF="./org/openqa/selenium/Cookie.Builder.html#expiresOn(java.util.Date)"><B>expiresOn(Date)</B></A> - 
@@ -2287,6 +2297,9 @@ Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/D
 <DT><A HREF="./com/thoughtworks/selenium/Selenium.html#fireEvent(java.lang.String, java.lang.String)"><B>fireEvent(String, String)</B></A> - 
 Method in interface com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/Selenium.html" title="interface in com.thoughtworks.selenium">Selenium</A>
 <DD>Explicitly simulate an event, to trigger the corresponding "on<em>event</em>" handler.
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#FIREFOX"><B>FIREFOX</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/remote/DesiredCapabilities.html#firefox()"><B>firefox()</B></A> - 
 Static method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</A>
 <DD>&nbsp;
@@ -2295,6 +2308,18 @@ Constructor for class org.openqa.selenium.browserlaunchers.locators.<A HREF="./o
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/browserlaunchers/locators/Firefox3Locator.html" title="class in org.openqa.selenium.browserlaunchers.locators"><B>Firefox3Locator</B></A> - Class in <A HREF="./org/openqa/selenium/browserlaunchers/locators/package-summary.html">org.openqa.selenium.browserlaunchers.locators</A><DD>Discovers a valid Firefox 2.x or 3.x installation on local system.<DT><A HREF="./org/openqa/selenium/browserlaunchers/locators/Firefox3Locator.html#Firefox3Locator()"><B>Firefox3Locator()</B></A> - 
 Constructor for class org.openqa.selenium.browserlaunchers.locators.<A HREF="./org/openqa/selenium/browserlaunchers/locators/Firefox3Locator.html" title="class in org.openqa.selenium.browserlaunchers.locators">Firefox3Locator</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#FIREFOX_2"><B>FIREFOX_2</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#FIREFOX_3"><B>FIREFOX_3</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#FIREFOX_CHROME"><B>FIREFOX_CHROME</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#FIREFOX_PROXY"><B>FIREFOX_PROXY</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox"><B>FirefoxBinary</B></A> - Class in <A HREF="./org/openqa/selenium/firefox/package-summary.html">org.openqa.selenium.firefox</A><DD>&nbsp;<DT><A HREF="./org/openqa/selenium/firefox/FirefoxBinary.html#FirefoxBinary()"><B>FirefoxBinary()</B></A> - 
 Constructor for class org.openqa.selenium.firefox.<A HREF="./org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</A>
@@ -3749,6 +3774,9 @@ Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/D
 <DT><A HREF="./com/thoughtworks/selenium/Selenium.html#goBack()"><B>goBack()</B></A> - 
 Method in interface com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/Selenium.html" title="interface in com.thoughtworks.selenium">Selenium</A>
 <DD>Simulates the user clicking the "back" button on their browser.
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#GOOGLECHROME"><B>GOOGLECHROME</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/browserlaunchers/locators/GoogleChromeLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators"><B>GoogleChromeLocator</B></A> - Class in <A HREF="./org/openqa/selenium/browserlaunchers/locators/package-summary.html">org.openqa.selenium.browserlaunchers.locators</A><DD>Discovers a valid Google Chrome installation on local system.<DT><A HREF="./org/openqa/selenium/browserlaunchers/locators/GoogleChromeLocator.html#GoogleChromeLocator()"><B>GoogleChromeLocator()</B></A> - 
 Constructor for class org.openqa.selenium.browserlaunchers.locators.<A HREF="./org/openqa/selenium/browserlaunchers/locators/GoogleChromeLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">GoogleChromeLocator</A>
 <DD>&nbsp;
@@ -3880,8 +3908,17 @@ Static method in class org.openqa.selenium.<A HREF="./org/openqa/selenium/By.htm
 <DT><A HREF="./org/openqa/selenium/remote/RemoteWebElement.html#id"><B>id</B></A> - 
 Variable in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</A>
 <DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#IE_HTA"><B>IE_HTA</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/ie/IeReturnTypes.html" title="class in org.openqa.selenium.ie"><B>IeReturnTypes</B></A> - Class in <A HREF="./org/openqa/selenium/ie/package-summary.html">org.openqa.selenium.ie</A><DD>&nbsp;<DT><A HREF="./org/openqa/selenium/ie/IeReturnTypes.html#IeReturnTypes()"><B>IeReturnTypes()</B></A> - 
 Constructor for class org.openqa.selenium.ie.<A HREF="./org/openqa/selenium/ie/IeReturnTypes.html" title="class in org.openqa.selenium.ie">IeReturnTypes</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#IEXPLORE"><B>IEXPLORE</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#IEXPLORE_PROXY"><B>IEXPLORE_PROXY</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/support/ui/FluentWait.html#ignoreAll(java.util.Collection)"><B>ignoreAll(Collection&lt;Class&lt;? extends RuntimeException&gt;&gt;)</B></A> - 
 Method in class org.openqa.selenium.support.ui.<A HREF="./org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</A>
@@ -4543,10 +4580,10 @@ Method in interface com.thoughtworks.selenium.<A HREF="./com/thoughtworks/seleni
 <DD>Simulates a user pressing a key (without releasing it yet).
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#keyDown(org.openqa.selenium.Keys)"><B>keyDown(Keys)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Performs a modifier key press.
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#keyDown(org.openqa.selenium.WebElement, org.openqa.selenium.Keys)"><B>keyDown(WebElement, Keys)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Performs a modifier key press after focusing on an element.
 <DT><A HREF="./org/openqa/selenium/interactions/KeyDownAction.html" title="class in org.openqa.selenium.interactions"><B>KeyDownAction</B></A> - Class in <A HREF="./org/openqa/selenium/interactions/package-summary.html">org.openqa.selenium.interactions</A><DD>Emulates key press only, without the release.<DT><A HREF="./org/openqa/selenium/interactions/KeyDownAction.html#KeyDownAction(org.openqa.selenium.Keyboard, org.openqa.selenium.Mouse, org.openqa.selenium.internal.Locatable, org.openqa.selenium.Keys)"><B>KeyDownAction(Keyboard, Mouse, Locatable, Keys)</B></A> - 
 Constructor for class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/KeyDownAction.html" title="class in org.openqa.selenium.interactions">KeyDownAction</A>
 <DD>&nbsp;
@@ -4595,10 +4632,10 @@ Method in interface com.thoughtworks.selenium.<A HREF="./com/thoughtworks/seleni
 <DD>Simulates a user releasing a key.
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#keyUp(org.openqa.selenium.Keys)"><B>keyUp(Keys)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Performs a modifier key release.
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#keyUp(org.openqa.selenium.WebElement, org.openqa.selenium.Keys)"><B>keyUp(WebElement, Keys)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Performs a modifier key release after focusing on an element.
 <DT><A HREF="./org/openqa/selenium/interactions/KeyUpAction.html" title="class in org.openqa.selenium.interactions"><B>KeyUpAction</B></A> - Class in <A HREF="./org/openqa/selenium/interactions/package-summary.html">org.openqa.selenium.interactions</A><DD>Emulates key release only, without the press.<DT><A HREF="./org/openqa/selenium/interactions/KeyUpAction.html#KeyUpAction(org.openqa.selenium.Keyboard, org.openqa.selenium.Mouse, org.openqa.selenium.internal.Locatable, org.openqa.selenium.Keys)"><B>KeyUpAction(Keyboard, Mouse, Locatable, Keys)</B></A> - 
 Constructor for class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/KeyUpAction.html" title="class in org.openqa.selenium.interactions">KeyUpAction</A>
 <DD>&nbsp;
@@ -4635,6 +4672,9 @@ Static method in class org.openqa.selenium.browserlaunchers.<A HREF="./org/openq
 <DT><A HREF="./org/openqa/selenium/os/ProcessUtils.html#killProcess(java.lang.Process)"><B>killProcess(Process)</B></A> - 
 Static method in class org.openqa.selenium.os.<A HREF="./org/openqa/selenium/os/ProcessUtils.html" title="class in org.openqa.selenium.os">ProcessUtils</A>
 <DD>Forcibly kills a process, using OS tools like "kill" as a last resort
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#KONQUEROR"><B>KONQUEROR</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
 </DL>
 <HR>
 <A NAME="_L_"><!-- --></A><H2>
@@ -4826,6 +4866,9 @@ Method in interface com.thoughtworks.selenium.<A HREF="./com/thoughtworks/seleni
 <DT><A HREF="./org/openqa/selenium/remote/ErrorCodes.html#METHOD_NOT_ALLOWED"><B>METHOD_NOT_ALLOWED</B></A> - 
 Static variable in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</A>
 <DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#MOCK"><B>MOCK</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/firefox/FirefoxBinary.html#modifyLinkLibraryPath(java.io.File)"><B>modifyLinkLibraryPath(File)</B></A> - 
 Method in class org.openqa.selenium.firefox.<A HREF="./org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</A>
 <DD>&nbsp;
@@ -4999,7 +5042,7 @@ Method in class org.openqa.selenium.<A HREF="./org/openqa/selenium/Point.html" t
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#moveByOffset(int, int)"><B>moveByOffset(int, int)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Moves the mouse from its current position (or 0,0) by the given offset.
 <DT><A HREF="./org/openqa/selenium/interactions/MoveMouseAction.html" title="class in org.openqa.selenium.interactions"><B>MoveMouseAction</B></A> - Class in <A HREF="./org/openqa/selenium/interactions/package-summary.html">org.openqa.selenium.interactions</A><DD>Moves the mouse to an element.<DT><A HREF="./org/openqa/selenium/interactions/MoveMouseAction.html#MoveMouseAction(org.openqa.selenium.Mouse, org.openqa.selenium.internal.Locatable)"><B>MoveMouseAction(Mouse, Locatable)</B></A> - 
 Constructor for class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/MoveMouseAction.html" title="class in org.openqa.selenium.interactions">MoveMouseAction</A>
 <DD>&nbsp;
@@ -5007,12 +5050,18 @@ Constructor for class org.openqa.selenium.interactions.<A HREF="./org/openqa/sel
  the size of the window.<DT><A HREF="./org/openqa/selenium/interactions/MoveTargetOutOfBoundsException.html#MoveTargetOutOfBoundsException(java.lang.String)"><B>MoveTargetOutOfBoundsException(String)</B></A> - 
 Constructor for exception org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/MoveTargetOutOfBoundsException.html" title="class in org.openqa.selenium.interactions">MoveTargetOutOfBoundsException</A>
 <DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/interactions/MoveTargetOutOfBoundsException.html#MoveTargetOutOfBoundsException(java.lang.Throwable)"><B>MoveTargetOutOfBoundsException(Throwable)</B></A> - 
+Constructor for exception org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/MoveTargetOutOfBoundsException.html" title="class in org.openqa.selenium.interactions">MoveTargetOutOfBoundsException</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/interactions/MoveTargetOutOfBoundsException.html#MoveTargetOutOfBoundsException(java.lang.String, java.lang.Throwable)"><B>MoveTargetOutOfBoundsException(String, Throwable)</B></A> - 
+Constructor for exception org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/MoveTargetOutOfBoundsException.html" title="class in org.openqa.selenium.interactions">MoveTargetOutOfBoundsException</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#moveToElement(org.openqa.selenium.WebElement)"><B>moveToElement(WebElement)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Moves the mouse to the middle of the element.
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#moveToElement(org.openqa.selenium.WebElement, int, int)"><B>moveToElement(WebElement, int, int)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Moves the mouse to an offset from the top-left corner of the element.
 <DT><A HREF="./org/openqa/selenium/interactions/internal/MouseAction.html#moveToLocation()"><B>moveToLocation()</B></A> - 
 Method in class org.openqa.selenium.interactions.internal.<A HREF="./org/openqa/selenium/interactions/internal/MouseAction.html" title="class in org.openqa.selenium.interactions.internal">MouseAction</A>
 <DD>&nbsp;
@@ -5212,6 +5261,9 @@ Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/D
 <DT><A HREF="./com/thoughtworks/selenium/Selenium.html#openWindow(java.lang.String, java.lang.String)"><B>openWindow(String, String)</B></A> - 
 Method in interface com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/Selenium.html" title="interface in com.thoughtworks.selenium">Selenium</A>
 <DD>Opens a popup window (if a window with that ID isn't already open).
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#OPERA"><B>OPERA</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/remote/DesiredCapabilities.html#opera()"><B>opera()</B></A> - 
 Static method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</A>
 <DD>&nbsp;
@@ -5255,7 +5307,7 @@ Method in interface org.openqa.selenium.interactions.<A HREF="./org/openqa/selen
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#perform()"><B>perform()</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>A convenience method for performing the actions without calling build() first.
 <DT><A HREF="./org/openqa/selenium/interactions/ButtonReleaseAction.html#perform()"><B>perform()</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/ButtonReleaseAction.html" title="class in org.openqa.selenium.interactions">ButtonReleaseAction</A>
 <DD>Releases the mouse button currently left held.
@@ -5357,6 +5409,9 @@ Method in class org.openqa.selenium.htmlunit.<A HREF="./org/openqa/selenium/html
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/Keyboard.html#pressKey(org.openqa.selenium.Keys)"><B>pressKey(Keys)</B></A> - 
 Method in interface org.openqa.selenium.<A HREF="./org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/RemoteKeyboard.html#pressKey(org.openqa.selenium.Keys)"><B>pressKey(Keys)</B></A> - 
+Method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteKeyboard.html" title="class in org.openqa.selenium.remote">RemoteKeyboard</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/support/events/internal/EventFiringKeyboard.html#pressKey(org.openqa.selenium.Keys)"><B>pressKey(Keys)</B></A> - 
 Method in class org.openqa.selenium.support.events.internal.<A HREF="./org/openqa/selenium/support/events/internal/EventFiringKeyboard.html" title="class in org.openqa.selenium.support.events.internal">EventFiringKeyboard</A>
@@ -5511,20 +5566,26 @@ Static variable in class org.openqa.selenium.os.<A HREF="./org/openqa/selenium/o
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#release(org.openqa.selenium.WebElement)"><B>release(WebElement)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Releases the depressed left mouse button, in the middle of the given element.
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#release()"><B>release()</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Releases the depressed left mouse button at the current mouse location.
 <DT><A HREF="./org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#releaseKey(org.openqa.selenium.Keys)"><B>releaseKey(Keys)</B></A> - 
 Method in class org.openqa.selenium.htmlunit.<A HREF="./org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitKeyboard</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/Keyboard.html#releaseKey(org.openqa.selenium.Keys)"><B>releaseKey(Keys)</B></A> - 
 Method in interface org.openqa.selenium.<A HREF="./org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A>
 <DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/RemoteKeyboard.html#releaseKey(org.openqa.selenium.Keys)"><B>releaseKey(Keys)</B></A> - 
+Method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteKeyboard.html" title="class in org.openqa.selenium.remote">RemoteKeyboard</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/support/events/internal/EventFiringKeyboard.html#releaseKey(org.openqa.selenium.Keys)"><B>releaseKey(Keys)</B></A> - 
 Method in class org.openqa.selenium.support.events.internal.<A HREF="./org/openqa/selenium/support/events/internal/EventFiringKeyboard.html" title="class in org.openqa.selenium.support.events.internal">EventFiringKeyboard</A>
 <DD>&nbsp;
-<DT><A HREF="./com/thoughtworks/selenium/RemoteCommand.html" title="interface in com.thoughtworks.selenium"><B>RemoteCommand</B></A> - Interface in <A HREF="./com/thoughtworks/selenium/package-summary.html">com.thoughtworks.selenium</A><DD>Represents a single remote action<DT><A HREF="./org/openqa/selenium/remote/html5/RemoteLocalStorage.html" title="class in org.openqa.selenium.remote.html5"><B>RemoteLocalStorage</B></A> - Class in <A HREF="./org/openqa/selenium/remote/html5/package-summary.html">org.openqa.selenium.remote.html5</A><DD>Executes the commands to access HTML5 localStorage on the remote webdriver server.<DT><A HREF="./org/openqa/selenium/remote/html5/RemoteLocalStorage.html#RemoteLocalStorage(org.openqa.selenium.remote.ExecuteMethod)"><B>RemoteLocalStorage(ExecuteMethod)</B></A> - 
+<DT><A HREF="./com/thoughtworks/selenium/RemoteCommand.html" title="interface in com.thoughtworks.selenium"><B>RemoteCommand</B></A> - Interface in <A HREF="./com/thoughtworks/selenium/package-summary.html">com.thoughtworks.selenium</A><DD>Represents a single remote action<DT><A HREF="./org/openqa/selenium/remote/RemoteKeyboard.html" title="class in org.openqa.selenium.remote"><B>RemoteKeyboard</B></A> - Class in <A HREF="./org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</A><DD>An implementation of the keyboard for use with the remote webdriver.<DT><A HREF="./org/openqa/selenium/remote/RemoteKeyboard.html#RemoteKeyboard(org.openqa.selenium.remote.ExecuteMethod)"><B>RemoteKeyboard(ExecuteMethod)</B></A> - 
+Constructor for class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteKeyboard.html" title="class in org.openqa.selenium.remote">RemoteKeyboard</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/html5/RemoteLocalStorage.html" title="class in org.openqa.selenium.remote.html5"><B>RemoteLocalStorage</B></A> - Class in <A HREF="./org/openqa/selenium/remote/html5/package-summary.html">org.openqa.selenium.remote.html5</A><DD>Executes the commands to access HTML5 localStorage on the remote webdriver server.<DT><A HREF="./org/openqa/selenium/remote/html5/RemoteLocalStorage.html#RemoteLocalStorage(org.openqa.selenium.remote.ExecuteMethod)"><B>RemoteLocalStorage(ExecuteMethod)</B></A> - 
 Constructor for class org.openqa.selenium.remote.html5.<A HREF="./org/openqa/selenium/remote/html5/RemoteLocalStorage.html" title="class in org.openqa.selenium.remote.html5">RemoteLocalStorage</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/remote/html5/RemoteSessionStorage.html" title="class in org.openqa.selenium.remote.html5"><B>RemoteSessionStorage</B></A> - Class in <A HREF="./org/openqa/selenium/remote/html5/package-summary.html">org.openqa.selenium.remote.html5</A><DD>Executes the commands to access HTML5 sessionStorage on the remote webdriver server.<DT><A HREF="./org/openqa/selenium/remote/html5/RemoteSessionStorage.html#RemoteSessionStorage(org.openqa.selenium.remote.ExecuteMethod)"><B>RemoteSessionStorage(ExecuteMethod)</B></A> - 
@@ -5694,6 +5755,12 @@ Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/S
 <A NAME="_S_"><!-- --></A><H2>
 <B>S</B></H2>
 <DL>
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#SAFARI"><B>SAFARI</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/BrowserType.html#SAFARI_PROXY"><B>SAFARI_PROXY</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">BrowserType</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/browserlaunchers/locators/SafariLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators"><B>SafariLocator</B></A> - Class in <A HREF="./org/openqa/selenium/browserlaunchers/locators/package-summary.html">org.openqa.selenium.browserlaunchers.locators</A><DD>Discovers a valid Internet Explorer installation on local system.<DT><A HREF="./org/openqa/selenium/browserlaunchers/locators/SafariLocator.html#SafariLocator()"><B>SafariLocator()</B></A> - 
 Constructor for class org.openqa.selenium.browserlaunchers.locators.<A HREF="./org/openqa/selenium/browserlaunchers/locators/SafariLocator.html" title="class in org.openqa.selenium.browserlaunchers.locators">SafariLocator</A>
 <DD>&nbsp;
@@ -5898,12 +5965,18 @@ Method in class org.openqa.selenium.htmlunit.<A HREF="./org/openqa/selenium/html
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#sendKeys(java.lang.CharSequence...)"><B>sendKeys(CharSequence...)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Sends keys to the active element.
 <DT><A HREF="./org/openqa/selenium/interactions/Actions.html#sendKeys(org.openqa.selenium.WebElement, java.lang.CharSequence...)"><B>sendKeys(WebElement, CharSequence...)</B></A> - 
 Method in class org.openqa.selenium.interactions.<A HREF="./org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A>
-<DD>&nbsp;
+<DD>Equivalent to calling:
+ <i>Actions.click(element).sendKeys(keysToSend).</i>
+ This method is different from <A HREF="./org/openqa/selenium/WebElement.html#sendKeys(java.lang.CharSequence...)"><CODE>WebElement.sendKeys(CharSequence...)</CODE></A> - see
+ <A HREF="./org/openqa/selenium/interactions/Actions.html#sendKeys(java.lang.CharSequence...)"><CODE>Actions.sendKeys(CharSequence...)</CODE></A> for details how.
 <DT><A HREF="./org/openqa/selenium/Keyboard.html#sendKeys(java.lang.CharSequence...)"><B>sendKeys(CharSequence...)</B></A> - 
 Method in interface org.openqa.selenium.<A HREF="./org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/RemoteKeyboard.html#sendKeys(java.lang.CharSequence...)"><B>sendKeys(CharSequence...)</B></A> - 
+Method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteKeyboard.html" title="class in org.openqa.selenium.remote">RemoteKeyboard</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/remote/RemoteWebElement.html#sendKeys(java.lang.CharSequence...)"><B>sendKeys(CharSequence...)</B></A> - 
 Method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</A>

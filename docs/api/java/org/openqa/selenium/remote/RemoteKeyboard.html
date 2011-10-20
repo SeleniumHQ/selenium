@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-PropertyMunger
+RemoteKeyboard
 </TITLE>
 
 
@@ -13,7 +13,7 @@ PropertyMunger
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="PropertyMunger";
+        parent.document.title="RemoteKeyboard";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/LocalFileDetector.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/PropertyMunger.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteTouchScreen.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/PropertyMunger.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="PropertyMunger.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/remote/RemoteKeyboard.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="RemoteKeyboard.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -87,21 +87,45 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <FONT SIZE="-1">
 org.openqa.selenium.remote</FONT>
 <BR>
-Class PropertyMunger</H2>
+Class RemoteKeyboard</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.PropertyMunger</B>
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.RemoteKeyboard</B>
 </PRE>
+<DL>
+<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A></DD>
+</DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>PropertyMunger</B><DT>extends java.lang.Object</DL>
+<DT><PRE>public class <B>RemoteKeyboard</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A></DL>
 </PRE>
+
+<P>
+An implementation of the keyboard for use with the remote webdriver.
+<P>
 
 <P>
 <HR>
 
 <P>
+<!-- =========== FIELD SUMMARY =========== -->
 
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Field Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected &nbsp;<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="class in org.openqa.selenium.remote">ExecuteMethod</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html#executor">executor</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 
 <A NAME="constructor_summary"><!-- --></A>
@@ -111,7 +135,7 @@ java.lang.Object
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/PropertyMunger.html#PropertyMunger()">PropertyMunger</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html#RemoteKeyboard(org.openqa.selenium.remote.ExecuteMethod)">RemoteKeyboard</A></B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="class in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executor)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -128,19 +152,24 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.Object</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/PropertyMunger.html#get(java.lang.String, java.lang.Object)">get</A></B>(java.lang.String&nbsp;name,
-    java.lang.Object&nbsp;on)</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html#pressKey(org.openqa.selenium.Keys)">pressKey</A></B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;keyToPress)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/PropertyMunger.html#set(java.lang.String, java.lang.Object, java.lang.Object)">set</A></B>(java.lang.String&nbsp;name,
-    java.lang.Object&nbsp;on,
-    java.lang.Object&nbsp;value)</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html#releaseKey(org.openqa.selenium.Keys)">releaseKey</A></B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;keyToRelease)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html#sendKeys(java.lang.CharSequence...)">sendKeys</A></B>(java.lang.CharSequence...&nbsp;keysToSend)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -158,6 +187,25 @@ java.lang.Object
 &nbsp;
 <P>
 
+<!-- ============ FIELD DETAIL =========== -->
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="executor"><!-- --></A><H3>
+executor</H3>
+<PRE>
+protected final <A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="class in org.openqa.selenium.remote">ExecuteMethod</A> <B>executor</B></PRE>
+<DL>
+<DL>
+</DL>
+</DL>
+
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 
 <A NAME="constructor_detail"><!-- --></A>
@@ -168,10 +216,10 @@ java.lang.Object
 </TR>
 </TABLE>
 
-<A NAME="PropertyMunger()"><!-- --></A><H3>
-PropertyMunger</H3>
+<A NAME="RemoteKeyboard(org.openqa.selenium.remote.ExecuteMethod)"><!-- --></A><H3>
+RemoteKeyboard</H3>
 <PRE>
-public <B>PropertyMunger</B>()</PRE>
+public <B>RemoteKeyboard</B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="class in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executor)</PRE>
 <DL>
 </DL>
 
@@ -185,33 +233,44 @@ public <B>PropertyMunger</B>()</PRE>
 </TR>
 </TABLE>
 
-<A NAME="get(java.lang.String, java.lang.Object)"><!-- --></A><H3>
-get</H3>
+<A NAME="sendKeys(java.lang.CharSequence...)"><!-- --></A><H3>
+sendKeys</H3>
 <PRE>
-public static java.lang.Object <B>get</B>(java.lang.String&nbsp;name,
-                                   java.lang.Object&nbsp;on)
-                            throws java.lang.Exception</PRE>
+public void <B>sendKeys</B>(java.lang.CharSequence...&nbsp;keysToSend)</PRE>
 <DL>
 <DD><DL>
-
-<DT><B>Throws:</B>
-<DD><CODE>java.lang.Exception</CODE></DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html#sendKeys(java.lang.CharSequence...)">sendKeys</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
 </DD>
 </DL>
 <HR>
 
-<A NAME="set(java.lang.String, java.lang.Object, java.lang.Object)"><!-- --></A><H3>
-set</H3>
+<A NAME="pressKey(org.openqa.selenium.Keys)"><!-- --></A><H3>
+pressKey</H3>
 <PRE>
-public static void <B>set</B>(java.lang.String&nbsp;name,
-                       java.lang.Object&nbsp;on,
-                       java.lang.Object&nbsp;value)
-                throws java.lang.Exception</PRE>
+public void <B>pressKey</B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;keyToPress)</PRE>
 <DL>
 <DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html#pressKey(org.openqa.selenium.Keys)">pressKey</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
 
-<DT><B>Throws:</B>
-<DD><CODE>java.lang.Exception</CODE></DL>
+<A NAME="releaseKey(org.openqa.selenium.Keys)"><!-- --></A><H3>
+releaseKey</H3>
+<PRE>
+public void <B>releaseKey</B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;keyToRelease)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html#releaseKey(org.openqa.selenium.Keys)">releaseKey</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -244,11 +303,11 @@ public static void <B>set</B>(java.lang.String&nbsp;name,
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/LocalFileDetector.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/PropertyMunger.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteTouchScreen.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/PropertyMunger.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="PropertyMunger.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/remote/RemoteKeyboard.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="RemoteKeyboard.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -265,9 +324,9 @@ public static void <B>set</B>(java.lang.String&nbsp;name,
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>

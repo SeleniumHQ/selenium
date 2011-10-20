@@ -101,7 +101,10 @@ java.lang.Object
 </PRE>
 
 <P>
-Implements the builder pattern: Builds a CompositeAction containing all actions specified by the
+The user-facing API for emulating complex user gestures. Use this class rather than using the
+ Keyboard or Mouse directly.
+
+ Implements the builder pattern: Builds a CompositeAction containing all actions specified by the
  method calls.
 <P>
 
@@ -155,20 +158,21 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#Actions(org.openqa.selenium.Keyboard)">Actions</A></B>(<A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A>&nbsp;keyboard)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Only used by the TouchActions class.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#Actions(org.openqa.selenium.Keyboard, org.openqa.selenium.Mouse)">Actions</A></B>(<A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A>&nbsp;keyboard,
         <A HREF="../../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</A>&nbsp;mouse)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A constructor that should only be used when the keyboard or mouse were extended to provide
+ additional functionality (for example, dragging-and-dropping from the desktop).</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#Actions(org.openqa.selenium.WebDriver)">Actions</A></B>(<A HREF="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>&nbsp;driver)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default constructor - uses the default keyboard, mouse implemented by the driver.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -186,7 +190,9 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#build()">build</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generates a composite action containinig all actions so far, ready to be performed (and
+ resets the internal builder state, so subsequent calls to build() will contain fresh
+ sequences).</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -194,7 +200,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#click()">click</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clicks at the current mouse location.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -202,7 +208,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#click(org.openqa.selenium.WebElement)">click</A></B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;onElement)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clicks in the middle of the given element.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -210,7 +216,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#clickAndHold()">clickAndHold</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clicks (without releasing) at the current mouse location.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -218,7 +224,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#clickAndHold(org.openqa.selenium.WebElement)">clickAndHold</A></B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;onElement)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clicks (without releasing) in the middle of the given element.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -226,7 +232,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#contextClick(org.openqa.selenium.WebElement)">contextClick</A></B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;onElement)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Performs a context-click at middle of the given element.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -234,7 +240,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#doubleClick()">doubleClick</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Performs a double-click at the current mouse location.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -242,7 +248,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#doubleClick(org.openqa.selenium.WebElement)">doubleClick</A></B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;onElement)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Performs a double-click at middle of the given element.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -251,7 +257,8 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
             <A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;target)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A convenience method that performs click-and-hold at the location of the source element,
+ moves to the location of the target element, then releases the mouse.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -261,7 +268,8 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
               int&nbsp;yOffset)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A convenience method that performs click-and-hold at the location of the source element,
+ moves by a given offset, then releases the mouse.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -269,7 +277,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#keyDown(org.openqa.selenium.Keys)">keyDown</A></B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;theKey)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Performs a modifier key press.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -278,7 +286,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
         <A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;theKey)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Performs a modifier key press after focusing on an element.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -286,7 +294,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#keyUp(org.openqa.selenium.Keys)">keyUp</A></B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;theKey)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Performs a modifier key release.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -295,7 +303,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
       <A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;theKey)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Performs a modifier key release after focusing on an element.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -304,7 +312,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
              int&nbsp;yOffset)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Moves the mouse from its current position (or 0,0) by the given offset.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -312,7 +320,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#moveToElement(org.openqa.selenium.WebElement)">moveToElement</A></B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;toElement)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Moves the mouse to the middle of the element.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -322,7 +330,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
               int&nbsp;yOffset)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Moves the mouse to an offset from the top-left corner of the element.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -330,7 +338,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#perform()">perform</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A convenience method for performing the actions without calling build() first.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -338,7 +346,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#release()">release</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Releases the depressed left mouse button at the current mouse location.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -346,7 +354,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#release(org.openqa.selenium.WebElement)">release</A></B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;onElement)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Releases the depressed left mouse button, in the middle of the given element.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -354,7 +362,7 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys(java.lang.CharSequence...)">sendKeys</A></B>(java.lang.CharSequence...&nbsp;keysToSend)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sends keys to the active element.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -363,7 +371,10 @@ Implements the builder pattern: Builds a CompositeAction containing all actions 
          java.lang.CharSequence...&nbsp;keysToSend)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Equivalent to calling:
+ <i>Actions.click(element).sendKeys(keysToSend).</i>
+ This method is different from <A HREF="../../../../org/openqa/selenium/WebElement.html#sendKeys(java.lang.CharSequence...)"><CODE>WebElement.sendKeys(CharSequence...)</CODE></A> - see
+ <A HREF="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys(java.lang.CharSequence...)"><CODE>sendKeys(CharSequence...)</CODE></A> for details how.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -432,6 +443,10 @@ Actions</H3>
 <PRE>
 public <B>Actions</B>(<A HREF="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>&nbsp;driver)</PRE>
 <DL>
+<DD>Default constructor - uses the default keyboard, mouse implemented by the driver.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>driver</CODE> - the driver providing the implementations to use.</DL>
 </DL>
 <HR>
 
@@ -441,6 +456,11 @@ Actions</H3>
 public <B>Actions</B>(<A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A>&nbsp;keyboard,
                <A HREF="../../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</A>&nbsp;mouse)</PRE>
 <DL>
+<DD>A constructor that should only be used when the keyboard or mouse were extended to provide
+ additional functionality (for example, dragging-and-dropping from the desktop).
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>keyboard</CODE> - the <A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium"><CODE>Keyboard</CODE></A> implementation to delegate to.<DD><CODE>mouse</CODE> - the <A HREF="../../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium"><CODE>Mouse</CODE></A> implementation to delegate to.</DL>
 </DL>
 <HR>
 
@@ -449,6 +469,10 @@ Actions</H3>
 <PRE>
 public <B>Actions</B>(<A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A>&nbsp;keyboard)</PRE>
 <DL>
+<DD>Only used by the TouchActions class.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>keyboard</CODE> - implementation to delegate to.</DL>
 </DL>
 
 <!-- ============ METHOD DETAIL ========== -->
@@ -466,8 +490,15 @@ keyDown</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>keyDown</B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;theKey)</PRE>
 <DL>
+<DD>Performs a modifier key press. Does not release the modifier key - subsequent interactions
+ may assume it's kept pressed.
+ Note that the modifier key is <b>never</b> released implicitly - either
+ <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i>
+ must be called to release the modifier.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>theKey</CODE> - Either <A HREF="../../../../org/openqa/selenium/Keys.html#SHIFT"><CODE>Keys.SHIFT</CODE></A>, <A HREF="../../../../org/openqa/selenium/Keys.html#ALT"><CODE>Keys.ALT</CODE></A> or <A HREF="../../../../org/openqa/selenium/Keys.html#CONTROL"><CODE>Keys.CONTROL</CODE></A>.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -478,8 +509,12 @@ keyDown</H3>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>keyDown</B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;element,
                        <A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;theKey)</PRE>
 <DL>
+<DD>Performs a modifier key press after focusing on an element. Equivalent to:
+ <i>Actions.click(element).sendKeys(theKey);</i>
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>theKey</CODE> - Either <A HREF="../../../../org/openqa/selenium/Keys.html#SHIFT"><CODE>Keys.SHIFT</CODE></A>, <A HREF="../../../../org/openqa/selenium/Keys.html#ALT"><CODE>Keys.ALT</CODE></A> or <A HREF="../../../../org/openqa/selenium/Keys.html#CONTROL"><CODE>Keys.CONTROL</CODE></A>.
+<DT><B>Returns:</B><DD>A self reference.<DT><B>See Also:</B><DD><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#keyDown(org.openqa.selenium.Keys)"><CODE>keyDown(org.openqa.selenium.Keys)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -489,8 +524,12 @@ keyUp</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>keyUp</B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;theKey)</PRE>
 <DL>
+<DD>Performs a modifier key release. Releasing a non-depressed modifier key will yield undefined
+ behaviour.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>theKey</CODE> - Either <A HREF="../../../../org/openqa/selenium/Keys.html#SHIFT"><CODE>Keys.SHIFT</CODE></A>, <A HREF="../../../../org/openqa/selenium/Keys.html#ALT"><CODE>Keys.ALT</CODE></A> or <A HREF="../../../../org/openqa/selenium/Keys.html#CONTROL"><CODE>Keys.CONTROL</CODE></A>.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -501,8 +540,12 @@ keyUp</H3>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>keyUp</B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;element,
                      <A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;theKey)</PRE>
 <DL>
+<DD>Performs a modifier key release after focusing on an element. Equivalent to:
+ <i>Actions.click(element).sendKeys(theKey);</i>
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>theKey</CODE> - Either <A HREF="../../../../org/openqa/selenium/Keys.html#SHIFT"><CODE>Keys.SHIFT</CODE></A>, <A HREF="../../../../org/openqa/selenium/Keys.html#ALT"><CODE>Keys.ALT</CODE></A> or <A HREF="../../../../org/openqa/selenium/Keys.html#CONTROL"><CODE>Keys.CONTROL</CODE></A>.
+<DT><B>Returns:</B><DD>A self reference.<DT><B>See Also:</B><DD><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#keyUp(org.openqa.selenium.Keys)"><CODE>on behaviour regarding non-depressed modifier keys.</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -512,8 +555,17 @@ sendKeys</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>sendKeys</B>(java.lang.CharSequence...&nbsp;keysToSend)</PRE>
 <DL>
+<DD>Sends keys to the active element. This differs from calling
+ <A HREF="../../../../org/openqa/selenium/WebElement.html#sendKeys(java.lang.CharSequence...)"><CODE>WebElement.sendKeys(CharSequence...)</CODE></A> on the active element in two ways:
+ <ul>
+ <li>The modifier keys included in this call are not released.</li>
+ <li>There is no attempt to re-focus the element - so sendKeys(Keys.TAB) for switching
+ elements should work. </li>
+ </ul>
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>keysToSend</CODE> - The keys.
+<DT><B>Returns:</B><DD>A self reference.<DT><B>See Also:</B><DD><A HREF="../../../../org/openqa/selenium/WebElement.html#sendKeys(java.lang.CharSequence...)"><CODE>WebElement.sendKeys(CharSequence...)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -524,8 +576,14 @@ sendKeys</H3>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>sendKeys</B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;element,
                         java.lang.CharSequence...&nbsp;keysToSend)</PRE>
 <DL>
+<DD>Equivalent to calling:
+ <i>Actions.click(element).sendKeys(keysToSend).</i>
+ This method is different from <A HREF="../../../../org/openqa/selenium/WebElement.html#sendKeys(java.lang.CharSequence...)"><CODE>WebElement.sendKeys(CharSequence...)</CODE></A> - see
+ <A HREF="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys(java.lang.CharSequence...)"><CODE>sendKeys(CharSequence...)</CODE></A> for details how.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>element</CODE> - element to focus on.<DD><CODE>keysToSend</CODE> - The keys.
+<DT><B>Returns:</B><DD>A self reference.<DT><B>See Also:</B><DD><CODE>#sendKeys(CharSequence...)}</CODE></DL>
 </DD>
 </DL>
 <HR>
@@ -535,8 +593,12 @@ clickAndHold</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>clickAndHold</B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;onElement)</PRE>
 <DL>
+<DD>Clicks (without releasing) in the middle of the given element. This is equivalent to:
+ <i>Actions.moveToElement(onElement).clickAndHold()</i>
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>onElement</CODE> - Element to move to and click.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -546,8 +608,11 @@ clickAndHold</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>clickAndHold</B>()</PRE>
 <DL>
+<DD>Clicks (without releasing) at the current mouse location.
+<P>
 <DD><DL>
-</DL>
+
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -557,8 +622,16 @@ release</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>release</B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;onElement)</PRE>
 <DL>
+<DD>Releases the depressed left mouse button, in the middle of the given element.
+ This is equivalent to:
+ <i>Actions.moveToElement(onElement).release()</i>
+
+ Invoking this action without invoking <A HREF="../../../../org/openqa/selenium/interactions/Actions.html#clickAndHold()"><CODE>clickAndHold()</CODE></A> first will result in
+ undefined behaviour.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>onElement</CODE> - Element to release the mouse button above.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -568,8 +641,11 @@ release</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>release</B>()</PRE>
 <DL>
+<DD>Releases the depressed left mouse button at the current mouse location.
+<P>
 <DD><DL>
-</DL>
+
+<DT><B>Returns:</B><DD>A self reference.<DT><B>See Also:</B><DD><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#release(org.openqa.selenium.WebElement)"><CODE>release(org.openqa.selenium.WebElement)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -579,8 +655,12 @@ click</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>click</B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;onElement)</PRE>
 <DL>
+<DD>Clicks in the middle of the given element. Equivalent to:
+ <i>Actions.moveToElement(onElement).click()</i>
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>onElement</CODE> - Element to click.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -590,8 +670,13 @@ click</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>click</B>()</PRE>
 <DL>
+<DD>Clicks at the current mouse location. Useful when combined with
+ <A HREF="../../../../org/openqa/selenium/interactions/Actions.html#moveToElement(org.openqa.selenium.WebElement, int, int)"><CODE>moveToElement(org.openqa.selenium.WebElement, int, int)</CODE></A> or
+ <A HREF="../../../../org/openqa/selenium/interactions/Actions.html#moveByOffset(int, int)"><CODE>moveByOffset(int, int)</CODE></A>.
+<P>
 <DD><DL>
-</DL>
+
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -601,8 +686,12 @@ doubleClick</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>doubleClick</B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;onElement)</PRE>
 <DL>
+<DD>Performs a double-click at middle of the given element. Equivalent to:
+ <i>Actions.moveToElement(element).doubleClick()</i>
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>onElement</CODE> - Element to move to.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -612,8 +701,11 @@ doubleClick</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>doubleClick</B>()</PRE>
 <DL>
+<DD>Performs a double-click at the current mouse location.
+<P>
 <DD><DL>
-</DL>
+
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -623,8 +715,12 @@ moveToElement</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>moveToElement</B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;toElement)</PRE>
 <DL>
+<DD>Moves the mouse to the middle of the element. The element is scrolled into view and its
+ location is calculated using getBoundingClientRect.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>toElement</CODE> - element to move to.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -636,8 +732,12 @@ public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title
                              int&nbsp;xOffset,
                              int&nbsp;yOffset)</PRE>
 <DL>
+<DD>Moves the mouse to an offset from the top-left corner of the element.
+ The element is scrolled into view and its location is calculated using getBoundingClientRect.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>toElement</CODE> - element to move to.<DD><CODE>xOffset</CODE> - Offset from the top-left corner.<DD><CODE>yOffset</CODE> - Offset from the top-left corner.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -648,8 +748,16 @@ moveByOffset</H3>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>moveByOffset</B>(int&nbsp;xOffset,
                             int&nbsp;yOffset)</PRE>
 <DL>
+<DD>Moves the mouse from its current position (or 0,0) by the given offset. If the coordinates
+ provided are outside the viewport (the mouse will end up outside the browser window) then
+ the viewport is scrolled to match.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>xOffset</CODE> - horizontal offset.<DD><CODE>yOffset</CODE> - vertical offset.
+<DT><B>Returns:</B><DD>A self reference.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../../org/openqa/selenium/interactions/MoveTargetOutOfBoundsException.html" title="class in org.openqa.selenium.interactions">MoveTargetOutOfBoundsException</A></CODE> - if the provided offset is outside the document's
+ boundaries.</DL>
 </DD>
 </DL>
 <HR>
@@ -659,8 +767,12 @@ contextClick</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>contextClick</B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;onElement)</PRE>
 <DL>
+<DD>Performs a context-click at middle of the given element. First performs a mouseMove
+ to the location of the element.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>onElement</CODE> - Element to move to.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -671,8 +783,12 @@ dragAndDrop</H3>
 public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</A> <B>dragAndDrop</B>(<A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;source,
                            <A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;target)</PRE>
 <DL>
+<DD>A convenience method that performs click-and-hold at the location of the source element,
+ moves to the location of the target element, then releases the mouse.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>source</CODE> - element to emulate button down at.<DD><CODE>target</CODE> - element to move to and release the mouse at.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -684,8 +800,12 @@ public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title
                              int&nbsp;xOffset,
                              int&nbsp;yOffset)</PRE>
 <DL>
+<DD>A convenience method that performs click-and-hold at the location of the source element,
+ moves by a given offset, then releases the mouse.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>source</CODE> - element to emulate button down at.<DD><CODE>xOffset</CODE> - horizontal move offset.<DD><CODE>yOffset</CODE> - vertical move offset.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -695,8 +815,13 @@ build</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</A> <B>build</B>()</PRE>
 <DL>
+<DD>Generates a composite action containinig all actions so far, ready to be performed (and
+ resets the internal builder state, so subsequent calls to build() will contain fresh
+ sequences).
+<P>
 <DD><DL>
-</DL>
+
+<DT><B>Returns:</B><DD>the composite action</DL>
 </DD>
 </DL>
 <HR>
@@ -706,6 +831,8 @@ perform</H3>
 <PRE>
 public void <B>perform</B>()</PRE>
 <DL>
+<DD>A convenience method for performing the actions without calling build() first.
+<P>
 <DD><DL>
 </DL>
 </DD>

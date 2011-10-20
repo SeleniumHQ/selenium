@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-CapabilityType
+BrowserType
 </TITLE>
 
 
@@ -13,7 +13,7 @@ CapabilityType
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="CapabilityType";
+        parent.document.title="BrowserType";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/CapabilityType.ForSeleniumServer.html" title="interface in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/BeanToJsonConverter.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/CapabilityType.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="CapabilityType.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/remote/BrowserType.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="BrowserType.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,7 +73,7 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;METHOD</FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;METHOD</FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
 DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;METHOD</FONT></TD>
 </TR>
@@ -87,38 +87,21 @@ DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;ME
 <FONT SIZE="-1">
 org.openqa.selenium.remote</FONT>
 <BR>
-Interface CapabilityType</H2>
+Interface BrowserType</H2>
 <HR>
 <DL>
-<DT><PRE>public interface <B>CapabilityType</B></DL>
+<DT><PRE>public interface <B>BrowserType</B></DL>
 </PRE>
 
 <P>
-Commonly seen remote webdriver capabilities.
+All the browsers supported by selenium
 <P>
 
 <P>
 <HR>
 
 <P>
-<!-- ======== NESTED CLASS SUMMARY ======== -->
-
-<A NAME="nested_class_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Nested Class Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;interface</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.ForSeleniumServer.html" title="interface in org.openqa.selenium.remote">CapabilityType.ForSeleniumServer</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;<!-- =========== FIELD SUMMARY =========== -->
+<!-- =========== FIELD SUMMARY =========== -->
 
 <A NAME="field_summary"><!-- --></A>
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
@@ -129,7 +112,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#ACCEPT_SSL_CERTS">ACCEPT_SSL_CERTS</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#CHROME">CHROME</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -137,7 +120,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#BROWSER_NAME">BROWSER_NAME</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#FIREFOX">FIREFOX</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -145,7 +128,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#HAS_NATIVE_EVENTS">HAS_NATIVE_EVENTS</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#FIREFOX_2">FIREFOX_2</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -153,7 +136,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#PLATFORM">PLATFORM</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#FIREFOX_3">FIREFOX_3</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -161,7 +144,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#PROXY">PROXY</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#FIREFOX_CHROME">FIREFOX_CHROME</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -169,7 +152,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#ROTATABLE">ROTATABLE</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#FIREFOX_PROXY">FIREFOX_PROXY</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -177,7 +160,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_ALERTS">SUPPORTS_ALERTS</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#GOOGLECHROME">GOOGLECHROME</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -185,7 +168,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_APPLICATION_CACHE">SUPPORTS_APPLICATION_CACHE</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#IE_HTA">IE_HTA</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -193,7 +176,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_BROWSER_CONNECTION">SUPPORTS_BROWSER_CONNECTION</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#IEXPLORE">IEXPLORE</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -201,7 +184,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_FINDING_BY_CSS">SUPPORTS_FINDING_BY_CSS</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#IEXPLORE_PROXY">IEXPLORE_PROXY</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -209,7 +192,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_JAVASCRIPT">SUPPORTS_JAVASCRIPT</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#KONQUEROR">KONQUEROR</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -217,7 +200,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_LOCATION_CONTEXT">SUPPORTS_LOCATION_CONTEXT</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#MOCK">MOCK</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -225,7 +208,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_SQL_DATABASE">SUPPORTS_SQL_DATABASE</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#OPERA">OPERA</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -233,7 +216,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_WEB_STORAGE">SUPPORTS_WEB_STORAGE</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#SAFARI">SAFARI</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -241,15 +224,7 @@ Commonly seen remote webdriver capabilities.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#TAKES_SCREENSHOT">TAKES_SCREENSHOT</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html#VERSION">VERSION</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/BrowserType.html#SAFARI_PROXY">SAFARI_PROXY</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -268,163 +243,153 @@ Commonly seen remote webdriver capabilities.
 </TR>
 </TABLE>
 
-<A NAME="BROWSER_NAME"><!-- --></A><H3>
-BROWSER_NAME</H3>
+<A NAME="FIREFOX"><!-- --></A><H3>
+FIREFOX</H3>
 <PRE>
-static final java.lang.String <B>BROWSER_NAME</B></PRE>
+static final java.lang.String <B>FIREFOX</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.BROWSER_NAME">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.FIREFOX">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="PLATFORM"><!-- --></A><H3>
-PLATFORM</H3>
+<A NAME="FIREFOX_2"><!-- --></A><H3>
+FIREFOX_2</H3>
 <PRE>
-static final java.lang.String <B>PLATFORM</B></PRE>
+static final java.lang.String <B>FIREFOX_2</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.PLATFORM">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.FIREFOX_2">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="SUPPORTS_JAVASCRIPT"><!-- --></A><H3>
-SUPPORTS_JAVASCRIPT</H3>
+<A NAME="FIREFOX_3"><!-- --></A><H3>
+FIREFOX_3</H3>
 <PRE>
-static final java.lang.String <B>SUPPORTS_JAVASCRIPT</B></PRE>
+static final java.lang.String <B>FIREFOX_3</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.FIREFOX_3">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="TAKES_SCREENSHOT"><!-- --></A><H3>
-TAKES_SCREENSHOT</H3>
+<A NAME="FIREFOX_PROXY"><!-- --></A><H3>
+FIREFOX_PROXY</H3>
 <PRE>
-static final java.lang.String <B>TAKES_SCREENSHOT</B></PRE>
+static final java.lang.String <B>FIREFOX_PROXY</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.TAKES_SCREENSHOT">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.FIREFOX_PROXY">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="VERSION"><!-- --></A><H3>
-VERSION</H3>
+<A NAME="FIREFOX_CHROME"><!-- --></A><H3>
+FIREFOX_CHROME</H3>
 <PRE>
-static final java.lang.String <B>VERSION</B></PRE>
+static final java.lang.String <B>FIREFOX_CHROME</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.VERSION">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.FIREFOX_CHROME">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="SUPPORTS_ALERTS"><!-- --></A><H3>
-SUPPORTS_ALERTS</H3>
+<A NAME="GOOGLECHROME"><!-- --></A><H3>
+GOOGLECHROME</H3>
 <PRE>
-static final java.lang.String <B>SUPPORTS_ALERTS</B></PRE>
+static final java.lang.String <B>GOOGLECHROME</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.SUPPORTS_ALERTS">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.GOOGLECHROME">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="SUPPORTS_SQL_DATABASE"><!-- --></A><H3>
-SUPPORTS_SQL_DATABASE</H3>
+<A NAME="SAFARI"><!-- --></A><H3>
+SAFARI</H3>
 <PRE>
-static final java.lang.String <B>SUPPORTS_SQL_DATABASE</B></PRE>
+static final java.lang.String <B>SAFARI</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.SUPPORTS_SQL_DATABASE">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.SAFARI">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="SUPPORTS_LOCATION_CONTEXT"><!-- --></A><H3>
-SUPPORTS_LOCATION_CONTEXT</H3>
+<A NAME="OPERA"><!-- --></A><H3>
+OPERA</H3>
 <PRE>
-static final java.lang.String <B>SUPPORTS_LOCATION_CONTEXT</B></PRE>
+static final java.lang.String <B>OPERA</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.OPERA">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="SUPPORTS_APPLICATION_CACHE"><!-- --></A><H3>
-SUPPORTS_APPLICATION_CACHE</H3>
+<A NAME="IEXPLORE"><!-- --></A><H3>
+IEXPLORE</H3>
 <PRE>
-static final java.lang.String <B>SUPPORTS_APPLICATION_CACHE</B></PRE>
+static final java.lang.String <B>IEXPLORE</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.SUPPORTS_APPLICATION_CACHE">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.IEXPLORE">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="SUPPORTS_BROWSER_CONNECTION"><!-- --></A><H3>
-SUPPORTS_BROWSER_CONNECTION</H3>
+<A NAME="IEXPLORE_PROXY"><!-- --></A><H3>
+IEXPLORE_PROXY</H3>
 <PRE>
-static final java.lang.String <B>SUPPORTS_BROWSER_CONNECTION</B></PRE>
+static final java.lang.String <B>IEXPLORE_PROXY</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.SUPPORTS_BROWSER_CONNECTION">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.IEXPLORE_PROXY">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="SUPPORTS_FINDING_BY_CSS"><!-- --></A><H3>
-SUPPORTS_FINDING_BY_CSS</H3>
+<A NAME="SAFARI_PROXY"><!-- --></A><H3>
+SAFARI_PROXY</H3>
 <PRE>
-static final java.lang.String <B>SUPPORTS_FINDING_BY_CSS</B></PRE>
+static final java.lang.String <B>SAFARI_PROXY</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.SAFARI_PROXY">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="PROXY"><!-- --></A><H3>
-PROXY</H3>
+<A NAME="CHROME"><!-- --></A><H3>
+CHROME</H3>
 <PRE>
-static final java.lang.String <B>PROXY</B></PRE>
+static final java.lang.String <B>CHROME</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.PROXY">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.CHROME">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="SUPPORTS_WEB_STORAGE"><!-- --></A><H3>
-SUPPORTS_WEB_STORAGE</H3>
+<A NAME="KONQUEROR"><!-- --></A><H3>
+KONQUEROR</H3>
 <PRE>
-static final java.lang.String <B>SUPPORTS_WEB_STORAGE</B></PRE>
+static final java.lang.String <B>KONQUEROR</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.KONQUEROR">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="ROTATABLE"><!-- --></A><H3>
-ROTATABLE</H3>
+<A NAME="MOCK"><!-- --></A><H3>
+MOCK</H3>
 <PRE>
-static final java.lang.String <B>ROTATABLE</B></PRE>
+static final java.lang.String <B>MOCK</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.ROTATABLE">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.MOCK">Constant Field Values</A></DL>
 </DL>
 <HR>
 
-<A NAME="ACCEPT_SSL_CERTS"><!-- --></A><H3>
-ACCEPT_SSL_CERTS</H3>
+<A NAME="IE_HTA"><!-- --></A><H3>
+IE_HTA</H3>
 <PRE>
-static final java.lang.String <B>ACCEPT_SSL_CERTS</B></PRE>
+static final java.lang.String <B>IE_HTA</B></PRE>
 <DL>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS">Constant Field Values</A></DL>
-</DL>
-<HR>
-
-<A NAME="HAS_NATIVE_EVENTS"><!-- --></A><H3>
-HAS_NATIVE_EVENTS</H3>
-<PRE>
-static final java.lang.String <B>HAS_NATIVE_EVENTS</B></PRE>
-<DL>
-<DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.BrowserType.IE_HTA">Constant Field Values</A></DL>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
 <HR>
@@ -456,11 +421,11 @@ static final java.lang.String <B>HAS_NATIVE_EVENTS</B></PRE>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/CapabilityType.ForSeleniumServer.html" title="interface in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/BeanToJsonConverter.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/CapabilityType.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="CapabilityType.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/remote/BrowserType.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="BrowserType.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -477,7 +442,7 @@ static final java.lang.String <B>HAS_NATIVE_EVENTS</B></PRE>
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;METHOD</FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;METHOD</FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
 DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;METHOD</FONT></TD>
 </TR>
