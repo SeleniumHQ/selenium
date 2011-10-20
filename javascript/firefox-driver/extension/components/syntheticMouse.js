@@ -26,6 +26,7 @@ goog.require('bot.events');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 goog.require('fxdriver.Logger');
+goog.require('goog.math.Coordinate');
 
 
 var CC = Components.classes;
@@ -71,113 +72,61 @@ SyntheticMouse.prototype.getElement_ = function(coords) {
       fxdriver.moz.unwrap(coords.auxiliary) : this.lastElement;
 };
 
+SyntheticMouse.prototype.calculateWindowSize = function(win, doc) {
+  var helper = new goog.dom.DomHelper(doc);
+
+  var viewportSize = goog.dom.getViewportSize(win);
+  var docHeight = helper.getDocumentHeight();
+  var scrollHeight = doc.body.scrollHeight;
+  var docWidth = doc.body.scrollWidth;
+
+  var maxHeight = docHeight < viewportSize.height ? viewportSize.height : docHeight;
+  maxHeight = maxHeight < scrollHeight ? scrollHeight : maxHeight;
+  var maxWidth = docWidth < viewportSize.width ? viewportSize.width : docWidth;
+
+  return new goog.math.Coordinate(maxWidth, maxHeight);
+
+//
+//  return (targetX <= maxWidth && targetY <= maxHeight);
+};
+
 // wdIMouse
 
 SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   // TODO(simon): find the current "body" element iff element == null
   var element = target ? 
       fxdriver.moz.unwrap(target) : this.lastElement;
+  this.lastElement = element;
+
+  xOffset = xOffset || 0;
+  yOffset = yOffset || 0;
+
   var doc = goog.dom.getOwnerDocument(element);
+  var win = goog.dom.getWindow(doc);
+  bot.setWindow(goog.dom.getWindow(doc));
+  var mouse = new bot.Mouse();
 
   if (goog.isFunction(element.scrollIntoView)) {
      goog.style.scrollIntoContainerView(element, doc.documentElement);
   }
 
-  // The following code assumes xOffset, yOffset are absolute in the DOM.
-  // If the page was scrolled, the scroll offset should be subtracted
-  // from the provided offset since the movement events are generated
-  // relative to the viewport.
-  var currentScroll = goog.dom.getDomHelper(doc).getDocumentScroll();
-  xOffset -= currentScroll.x;
-  yOffset -= currentScroll.y;
-
-  // If the mouse was already moved within this document, assume the last
-  // coordinates of the mouse are the location of lastElement.
-  // This only makes sense, of course, if the last element and the current
-  // element belong to the same document.
-  if (this.lastElement && element && this.lastElement != element &&
-      (this.lastElement.ownerDocument == element.ownerDocument)) {
-    var currLoc = Utils.getElementLocation(this.lastElement);
-    var targetLoc = Utils.getElementLocation(element);
-    xOffset += targetLoc['x'] - currLoc['x'];
-    yOffset += targetLoc['y'] - currLoc['y'];
-  }
-
-  this.lastElement = element;
-  var pos = Utils.getElementLocation(element);
-  var owner = goog.dom.getOwnerDocument(element);
-  var win = goog.dom.getWindow(owner);
-  bot.setWindow(win);
-
+  // Check to see if the given positions and offsets are outside of the window
   // Are we about to be dragged out of the window?
-  var helper = new goog.dom.DomHelper(owner);
-
-  var viewportSize = goog.dom.getViewportSize(win);
-  var docHeight = helper.getDocumentHeight();
-  var scrollHeight = owner.body.scrollHeight;
-  var docWidth = owner.body.scrollWidth;
-
-  var maxHeight = docHeight < viewportSize.height ? viewportSize.height : docHeight;
-  maxHeight = maxHeight < scrollHeight ? scrollHeight : maxHeight;
-  var maxWidth = docWidth < viewportSize.width ? viewportSize.width : docWidth;
-
+  var windowSize = this.calculateWindowSize(win, doc);
+  var isOption = bot.dom.isElement(element, goog.dom.TagName.OPTION);
+  var pos = Utils.getElementLocation(element);
   var targetX = pos.x + xOffset;
   var targetY = pos.y + yOffset;
 
-  // It turns out that OPTION elements are problematic.
-  var requiresCheck = !bot.dom.isElement(element, goog.dom.TagName.OPTION);
-  if (requiresCheck && (targetX > maxWidth || targetY > maxHeight)) {
+  if (!isOption && (targetX > windowSize.x || targetY > windowSize.y)) {
     return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
         'Requested location (' + targetX + ', ' + targetY +
-        ') is outside the bounds of the document (' + maxWidth + ', ' + maxHeight + ')');
+        ') is outside the bounds of the document (' + windowSize.x + ', ' +
+        windowSize.y + ')');
   }
 
-  // Which element shall we pretend to be leaving?
-  var parent = bot.dom.getParentElement(element);
-
-  // TODO(simon): if no offset is specified, use the centre of the element    
-  var fireAndCheck = function(e, eventName, opt_coordinates) {
-    if (!e) {
-      return false;
-    }
-    bot.events.fire(e, eventName, opt_coordinates);
-    return true;
-  };
-
-  var button = this.buttonDown;
-  var botCoords = {
-    'clientX': pos.x,
-    'clientY': pos.y,
-    'button': button,
-    'related': parent
-  };
-
-  var intermediateSteps = 3;
-  var xInc = Math.floor(xOffset / intermediateSteps);
-  var yInc = Math.floor(yOffset / intermediateSteps);
-  var currX = pos.x;
-  var currY = pos.y;
-
-  var proceed = fireAndCheck(parent, goog.events.EventType.MOUSEOUT, {'related': element}) &&
-      fireAndCheck(element, goog.events.EventType.MOUSEOVER, botCoords);
-    for (var i = 0; i < intermediateSteps && proceed; i++) {
-      botCoords['clientX'] = xInc + currX;  currX += xInc;
-      botCoords['clientY'] = yInc + currY;  currY += yInc;
-      proceed = fireAndCheck(element, goog.events.EventType.MOUSEMOVE, botCoords);
-  }
-
-  botCoords['clientX'] = (pos.x + xOffset);
-  botCoords['clientY'] = (pos.y + yOffset);
-
-  proceed = fireAndCheck(element, goog.events.EventType.MOUSEMOVE, botCoords);
-
-  Utils.getElementLocation(this.lastElement);
-
-  if (!proceed || !bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
-    return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
-  }
-
-  bot.events.fire(element, goog.events.EventType.MOUSEOVER, botCoords);
+  var coords = new goog.math.Coordinate(xOffset, yOffset);
+  mouse.move(element, coords);
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
