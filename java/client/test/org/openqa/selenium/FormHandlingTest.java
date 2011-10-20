@@ -95,7 +95,18 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By
         .id("keyUpArea"));
-    String cheesey = "Brie and cheddar";
+    String cheesey = "brie and cheddar";
+    textarea.sendKeys(cheesey);
+    assertThat(textarea.getAttribute("value"), equalTo(cheesey));
+  }
+
+  @Ignore(value = {ANDROID}, reason = "Android: capitalizatin bug in ICS keeps"
+      + "caps on after a capital letter is sent.")
+  public void testSendKeysKeepsCapitalization() {
+    driver.get(pages.javascriptPage);
+    WebElement textarea = driver.findElement(By
+        .id("keyUpArea"));
+    String cheesey = "BrIe And CheDdar";
     textarea.sendKeys(cheesey);
     assertThat(textarea.getAttribute("value"), equalTo(cheesey));
   }
