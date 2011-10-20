@@ -74,15 +74,15 @@ public class TouchScrollTest extends AbstractDriverTestCase {
     int x = link.getLocation().x;
     // The element is located at the right of the page,
     // so it is not initially visible on the screen.
-    assertTrue(x > 2000);
+    assertTrue("Expected x > 1500, but got x = " + x, x > 1500);
 
     WebElement toScroll = driver.findElement(By.id("imagestart"));
-    Action scroll = getBuilder(driver).scroll(toScroll, -400, 0).build();
+    Action scroll = getBuilder(driver).scroll(toScroll, -1000, 0).build();
     scroll.perform();
 
     x = link.getLocation().x;
     // After scrolling, the location of the element should change accordingly.
-    assertTrue(x < 2000);
+    assertTrue("Expected x < 1500, but got x = " + x, x < 1500);
   }
 
   @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
@@ -115,13 +115,13 @@ public class TouchScrollTest extends AbstractDriverTestCase {
     int x = link.getLocation().x;
     // The element is located at the right of the page,
     // so it is not initially visible on the screen.
-    assertTrue(x > 2000);
+    assertTrue("Expected x > 1500, but got x = " + x, x > 1500);
 
     Action scrollDown = getBuilder(driver).scroll(400, 0).build();
     scrollDown.perform();
 
     x = link.getLocation().y;
     // After scrolling, the location of the element should change accordingly.
-    assertTrue(x < 1800);
+    assertTrue("Expected x < 1500, but got x = " + x, x < 1500);
   }
 }
