@@ -155,7 +155,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore(value = {ANDROID, SELENESE}, reason = "Android: triggers mouse click instead.")
   public void testShouldIssueMouseUpEvents() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mouseup")).click();
