@@ -23,11 +23,21 @@ var FirefoxDriver = FirefoxDriver || function(){};
 
 
 FirefoxDriver.prototype.elementEquals = function(respond, parameters) {
-  var elementA = Utils.getElementAt(parameters.id,
-                                    respond.session.getDocument());
-  var elementB = Utils.getElementAt(parameters.other,
-                                    respond.session.getDocument());
-  respond.value = elementA == elementB;
+  try {
+    var elementA = Utils.getElementAt(parameters.id,
+                                      respond.session.getDocument());
+    var elementB = Utils.getElementAt(parameters.other,
+                                      respond.session.getDocument());
+    respond.value = elementA == elementB;
+  } catch (e) {
+    if (e.code && e.code == bot.ErrorCode.STALE_ELEMENT_REFERENCE) {
+      // Assume any style elements are not equal to any others.
+      // Users shouldn't care about equality of stale elements.
+      respond.value = false;
+    } else {
+      throw e;
+    }
+  }
   respond.send();
 };
 
