@@ -16,6 +16,7 @@
 package org.openqa.selenium.android;
 
 import android.app.Activity;
+import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -51,6 +52,7 @@ class EventSender {
           float zoom = view.getScale();
           for (MotionEvent event : events) {
             event.setLocation(zoom * event.getX(), zoom * event.getY());
+            event.setSource(InputDevice.SOURCE_CLASS_POINTER);
             view.dispatchTouchEvent(event);
             synchronized (syncObject) {
               done = true;
