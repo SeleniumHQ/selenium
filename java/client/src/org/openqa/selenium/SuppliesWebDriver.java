@@ -19,12 +19,10 @@ package org.openqa.selenium;
 
 import com.google.common.base.Supplier;
 
-import com.opera.core.systems.OperaDriver;
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -44,10 +42,6 @@ class SuppliesWebDriver implements Supplier<WebDriver> {
       return new InternetExplorerDriver();
     } else if (DesiredCapabilities.chrome().getBrowserName().equals(browser)) {
       return new ChromeDriver();
-    } else if (DesiredCapabilities.opera().getBrowserName().equals(browser)) {
-      return new OperaDriver();
-    } else if (DesiredCapabilities.htmlUnit().getBrowserName().equals(browser)) {
-      return new HtmlUnitDriver(true);
     }
 
     throw new SeleniumException("Unable to determine which driver to use: " + capabilities);
