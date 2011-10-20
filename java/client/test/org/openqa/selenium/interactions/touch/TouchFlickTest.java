@@ -54,15 +54,15 @@ public class TouchFlickTest extends AbstractDriverTestCase {
     int x = link.getLocation().x;
     // The element is located at the right of the page,
     // so it is not initially visible on the screen.
-    assertTrue(x > 2000);
+    assertTrue("Expected x > 1500, but got x = " + x, x > 1500);
 
-    Action flick = getBuilder(driver).flick(toFlick, -400, 0, FlickAction.SPEED_NORMAL)
+    Action flick = getBuilder(driver).flick(toFlick, -1000, 0, FlickAction.SPEED_NORMAL)
         .build();
     flick.perform();
     
     x = link.getLocation().x;
     // After flicking, the element should now be visible on the screen.
-    assertTrue("Got: " + x, x < 2000);
+    assertTrue("Expected x < 1500, but got x = " + x, x < 1500);
   }
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
