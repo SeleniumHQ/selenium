@@ -19,6 +19,7 @@ package org.openqa.selenium.android;
 
 import com.google.common.collect.HashBiMap;
 
+import android.app.Activity;
 import android.webkit.WebView;
 
 import org.openqa.selenium.WebDriverException;
@@ -32,6 +33,11 @@ class WebViewManager implements JavascriptResultNotifier {
   private volatile boolean done;
   private volatile String result;
   private Object syncObject = new Object();
+  private Activity activity;
+
+  public WebViewManager(Activity activity) {
+    this.activity = activity;
+  }
 
   public WebView getView(String nameOrHandle) {
     synchronized (syncObject) {
@@ -85,7 +91,7 @@ class WebViewManager implements JavascriptResultNotifier {
       for (WebView view : map.inverse().keySet()) {
         done = false;
         JavascriptExecutor.executeJs(
-            view, this, "window.webdriver.resultMethod(window.name);");
+            view, activity, this, "window.webdriver.resultMethod(window.name);");
         long timeout = System.currentTimeMillis() + AndroidWebDriver.RESPONSE_TIMEOUT;
         while (!done && (System.currentTimeMillis() < timeout)) {
           try {

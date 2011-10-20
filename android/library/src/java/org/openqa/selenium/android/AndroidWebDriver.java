@@ -177,7 +177,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     localStorage = new AndroidLocalStorage(this);
     sessionStorage = new AndroidSessionStorage(this);
     targetLocator = new AndroidTargetLocator();
-    viewManager = new WebViewManager();
+    viewManager = new WebViewManager(activity);
     // Create a new view and delete existing windows.
     newWebView( /*Delete existing windows*/true);
     // Needs to be called before CookieMAnager::getInstance()
@@ -264,7 +264,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     return webview;
   }
 
-   void newWebView(boolean newDriver) {
+  void newWebView(boolean newDriver) {
     // If we are requesting a new driver, then close all
     // existing window before opening a new one.
     if (newDriver) {
@@ -274,7 +274,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     long end = start + UI_TIMEOUT;
     done = false;
     activity.runOnUiThread(new Runnable() {
-       public void run() {
+      public void run() {
         synchronized (syncObject) {
           final WebView newView = WebDriverWebView.create(AndroidWebDriver.this);
           webview = newView;
@@ -285,12 +285,16 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
         }
       }
     });
+    waitForDone(end, UI_TIMEOUT, "Failed to create WebView.");
+  }
+
+  private void waitForDone(long end, long timeout, String error) {
     synchronized (syncObject) {
       while (!done && System.currentTimeMillis() < end) {
         try {
-          syncObject.wait(UI_TIMEOUT);
+          syncObject.wait(timeout);
         } catch (InterruptedException e) {
-          throw new WebDriverException("Failed to create WebView.", e);
+          throw new WebDriverException(error, e);
         }
       }
     }
@@ -308,14 +312,41 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     if (webview == null) {
       throw new WebDriverException("No open windows.");
     }
-    return webview.getUrl();
+    done = false;
+
+    long end = System.currentTimeMillis() + UI_TIMEOUT;
+    final String[] url = new String[1];
+    synchronized (syncObject) {
+      activity.runOnUiThread(new Runnable() {
+        public void run() {
+          url[0] = webview.getUrl();
+          done = true;
+          syncObject.notify();
+        }
+      });
+    }
+    waitForDone(end, UI_TIMEOUT, "Failed to get current url.");
+    return url[0];
   }
 
   public String getTitle() {
     if (webview == null) {
       throw new WebDriverException("No open windows.");
     }
-    return webview.getTitle();
+    long end = System.currentTimeMillis() + UI_TIMEOUT;
+    final String[] title = new String[1];
+    done = false;
+    synchronized (syncObject) {
+      activity.runOnUiThread(new Runnable() {
+        public void run() {
+          title[0] = webview.getTitle();
+          done = true;
+          syncObject.notify();
+        }
+      });
+    }
+    waitForDone(end, UI_TIMEOUT, "Failed to get title");
+    return title[0];
   }
 
   public void get(String url) {
@@ -331,7 +362,11 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     if (webview == null) {
       throw new WebDriverException("No open windows.");
     }
-    webview.destroy();
+    activity.runOnUiThread(new Runnable() {
+      public void run() {
+        webview.destroy();
+      }
+    });
     viewManager.removeView(webview);
     webview = null;
   }
@@ -823,7 +858,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       activity.runOnUiThread(new Runnable() {
         public void run() {
           org.openqa.selenium.android.JavascriptExecutor.executeJs(
-              webview, notifier, script);
+              webview, activity, notifier, script);
         }
       });
       long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;
@@ -873,42 +908,42 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       if (webview == null) {
         throw new WebDriverException("No open windows.");
       }
-      sessionCookieManager.addCookie(webview.getUrl(), cookie);
+      sessionCookieManager.addCookie(getCurrentUrl(), cookie);
     }
 
     public void deleteCookieNamed(String name) {
       if (webview == null) {
         throw new WebDriverException("No open windows.");
       }
-      sessionCookieManager.remove(webview.getUrl(), name);
+      sessionCookieManager.remove(getCurrentUrl(), name);
     }
 
     public void deleteCookie(Cookie cookie) {
       if (webview == null) {
         throw new WebDriverException("No open windows.");
       }
-      sessionCookieManager.remove(webview.getUrl(), cookie.getName());
+      sessionCookieManager.remove(getCurrentUrl(), cookie.getName());
     }
 
     public void deleteAllCookies() {
       if (webview == null) {
         throw new WebDriverException("No open windows.");
       }
-      sessionCookieManager.removeAllCookies(webview.getUrl());
+      sessionCookieManager.removeAllCookies(getCurrentUrl());
     }
 
     public Set<Cookie> getCookies() {
       if (webview == null) {
         throw new WebDriverException("No open windows.");
       }
-      return sessionCookieManager.getAllCookies(webview.getUrl());
+      return sessionCookieManager.getAllCookies(getCurrentUrl());
     }
 
     public Cookie getCookieNamed(String name) {
       if (webview == null) {
         throw new WebDriverException("No open windows.");
       }
-      return sessionCookieManager.getCookie(webview.getUrl(), name);
+      return sessionCookieManager.getCookie(getCurrentUrl(), name);
     }
 
     public Timeouts timeouts() {
@@ -948,38 +983,50 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     if (webview == null) {
       throw new WebDriverException("No open windows.");
     }
-    Picture pic = webview.capturePicture();
-    // Bitmap of the entire document
-    Bitmap raw = Bitmap.createBitmap(
-        pic.getWidth(),
-        pic.getHeight(),
-        Bitmap.Config.RGB_565);
-    // Drawing on a canvas
-    Canvas cv = new Canvas(raw);
-    cv.drawPicture(pic);
-    // Cropping to what's actually displayed on screen
-    Bitmap cropped = Bitmap.createBitmap(raw,
-        webview.getScrollX(),
-        webview.getScrollY(),
-        webview.getWidth() - webview.getVerticalScrollbarWidth(),
-        webview.getHeight());
+    done = false;
+    long end = System.currentTimeMillis() + RESPONSE_TIMEOUT;
+    final byte[][] rawPng = new byte[1][1];
+    synchronized (syncObject) {
+      activity.runOnUiThread(new Runnable() {
+        public void run() {
+          Picture pic = webview.capturePicture();
+          // Bitmap of the entire document
+          Bitmap raw = Bitmap.createBitmap(
+              pic.getWidth(),
+              pic.getHeight(),
+              Bitmap.Config.RGB_565);
+          // Drawing on a canvas
+          Canvas cv = new Canvas(raw);
+          cv.drawPicture(pic);
+          // Cropping to what's actually displayed on screen
+          Bitmap cropped = Bitmap.createBitmap(raw,
+              webview.getScrollX(),
+              webview.getScrollY(),
+              webview.getWidth() - webview.getVerticalScrollbarWidth(),
+              webview.getHeight());
 
-    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-    if (!cropped.compress(Bitmap.CompressFormat.PNG, 100, stream)) {
-      throw new RuntimeException(
-          "Error while compressing screenshot image.");
+          ByteArrayOutputStream stream = new ByteArrayOutputStream();
+          if (!cropped.compress(Bitmap.CompressFormat.PNG, 100, stream)) {
+            throw new RuntimeException(
+                "Error while compressing screenshot image.");
+          }
+          try {
+            stream.flush();
+            stream.close();
+          } catch (IOException e) {
+            throw new RuntimeException(
+                "I/O Error while capturing screenshot: " + e.getMessage());
+          } finally {
+            Closeables.closeQuietly(stream);
+          }
+          rawPng[0] = stream.toByteArray();
+          done = true;
+          syncObject.notify();
+        }
+      });
     }
-    try {
-      stream.flush();
-      stream.close();
-    } catch (IOException e) {
-      throw new RuntimeException(
-          "I/O Error while capturing screenshot: " + e.getMessage());
-    } finally {
-      Closeables.closeQuietly(stream);
-    }
-    byte[] rawPng = stream.toByteArray();
-    return rawPng;
+    waitForDone(end, RESPONSE_TIMEOUT, "Failed to take screenshot.");
+    return rawPng[0];
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
@@ -1027,7 +1074,11 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       }
       synchronized (syncObject) {
         pageDoneLoading = false;
-        webview.goBack();
+        activity.runOnUiThread(new Runnable() {
+          public void run() {
+            webview.goBack();
+          }
+        });
         waitForPageLoadToComplete();
       }
     }
@@ -1038,7 +1089,11 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       }
       synchronized (syncObject) {
         pageDoneLoading = false;
-        webview.goForward();
+        activity.runOnUiThread(new Runnable() {
+          public void run() {
+            webview.goForward();
+          }
+        });
         waitForPageLoadToComplete();
       }
     }
@@ -1068,7 +1123,11 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       }
       synchronized (syncObject) {
         pageDoneLoading = false;
-        webview.reload();
+        activity.runOnUiThread(new Runnable() {
+          public void run() {
+            webview.reload();
+          }
+        });
         waitForPageLoadToComplete();
       }
     }

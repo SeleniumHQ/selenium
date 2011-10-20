@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
+import android.app.Activity;
 import android.webkit.WebView;
 
 /**
@@ -32,12 +33,17 @@ class JavascriptExecutor {
    *
    * @param jsCode JavaScript code to execute.
    */
-  public static void executeJs(WebView webview, JavascriptResultNotifier notifier, String jsCode) {
+  public static void executeJs(final WebView webview, Activity activity,
+      JavascriptResultNotifier notifier, final String jsCode) {
     resNotifier = notifier;
-    if (webview.getUrl() == null) {
-      return;
-    }
-    webview.loadUrl("javascript:" + jsCode);
+    activity.runOnUiThread(new Runnable() {
+      public void run() {
+        if (webview.getUrl() == null) {
+          return;
+        }
+        webview.loadUrl("javascript:" + jsCode);
+      }
+    });
   }
 
   /**
