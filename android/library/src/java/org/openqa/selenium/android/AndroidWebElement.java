@@ -138,7 +138,7 @@ public class AndroidWebElement implements WebElement,
 
     driver.resetPageIsLoading();
 
-    MotionEventSender.send(events, driver.getWebView(), driver.getActivity());
+    EventSender.sendMotion(events, driver.getWebView(), driver.getActivity());
 
     // If the page started loading we should wait
     // until the page is done loading.
@@ -189,7 +189,7 @@ public class AndroidWebElement implements WebElement,
     driver.getActivity().runOnUiThread(new Runnable() {
       public void run() {
         synchronized (syncObject) {
-          WebViewAction.sendKeys(view, keys);
+          EventSender.sendKeys(view, driver.getActivity(), keys);
           done = true;
           syncObject.notify();
         }

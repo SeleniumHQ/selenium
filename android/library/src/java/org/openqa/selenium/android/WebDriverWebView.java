@@ -42,7 +42,6 @@ class WebDriverWebView {
     final float zoom = view.getScale();
 
     view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
       public void onFocusChange(View view, boolean focused) {
         // When a text area is focused, webview's focus is false
         if (!focused) {
@@ -50,7 +49,7 @@ class WebDriverWebView {
         }
       }
     });
-
+    
     view.addJavascriptInterface(jsInterface, "webdriver");
 
     initWebViewSettings(view);

@@ -175,7 +175,7 @@ class AndroidTouchScreen implements TouchScreen {
 
   private void sendMotionEvents(final List<MotionEvent> eventsToSend) {
         driver.setEditAreaHasFocus(false);
-        MotionEventSender.send(eventsToSend, driver.getWebView(), driver.getActivity());
+        EventSender.sendMotion(eventsToSend, driver.getWebView(), driver.getActivity());
         // If the page started loading we should wait until the page is done loading.
         driver.waitForPageToLoad();
   }
