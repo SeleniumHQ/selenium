@@ -31,27 +31,27 @@ class AndroidLocalStorage implements LocalStorage {
   }
 
   public String getItem(String key) {
-    return (String) driver.executeAtom(AndroidAtoms.GET_LOCAL_STORAGE_ITEM.getValue(), false, key);
+    return (String) driver.executeAtom(AndroidAtoms.GET_LOCAL_STORAGE_ITEM.getValue(), key);
   }
 
   public Set<String> keySet() {
     return new HashSet<String>
-        ((Collection<String>) driver.executeAtom(AndroidAtoms.GET_LOCAL_STORAGE_KEYS.getValue(), false));
+        ((Collection<String>) driver.executeAtom(AndroidAtoms.GET_LOCAL_STORAGE_KEYS.getValue()));
   }
 
   public void setItem(String key, String value) {
-    driver.executeAtom(AndroidAtoms.SET_LOCAL_STORAGE_ITEM.getValue(), false, key, value);
+    driver.executeAtom(AndroidAtoms.SET_LOCAL_STORAGE_ITEM.getValue(), key, value);
   }
 
   public String removeItem(String key) {
-    return (String) driver.executeAtom(AndroidAtoms.REMOVE_LOCAL_STORAGE_ITEM.getValue(), false, key);
+    return (String) driver.executeAtom(AndroidAtoms.REMOVE_LOCAL_STORAGE_ITEM.getValue(), key);
   }
 
   public void clear() {
-    driver.executeAtom(AndroidAtoms.CLEAR_LOCAL_STORAGE.getValue(), false);
+    driver.executeAtom(AndroidAtoms.CLEAR_LOCAL_STORAGE.getValue());
   }
 
   public int size() {
-    return ((Long) driver.executeAtom(AndroidAtoms.GET_LOCAL_STORAGE_SIZE.getValue(), false)).intValue();
+    return ((Long) driver.executeAtom(AndroidAtoms.GET_LOCAL_STORAGE_SIZE.getValue())).intValue();
   }
 }
