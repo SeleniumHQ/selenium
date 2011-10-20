@@ -133,7 +133,10 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
-  @Ignore({HTMLUNIT, IPHONE, SELENESE})
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID},
+      reason = "Android has a capitalization bug where the meta shift key"
+          + "stays on after the first upper case letter is sent."
+          + " It sends 'TEST' instead of 'test'.")
   public void testShouldBeAbleToUseArrowKeys() {
     driver.get(pages.javascriptPage);
 
