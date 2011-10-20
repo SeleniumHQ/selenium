@@ -246,10 +246,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       return false;
     }
 
-    Response response = execute(DriverCommand.ELEMENT_EQUALS,
-        ImmutableMap.of("id", id, "other", ((RemoteWebElement) other).id));
-    Object value = response.getValue();
-    return value != null && value instanceof Boolean && (Boolean) value;
+    return id.equals(((RemoteWebElement)other).id);
   }
 
   /**
