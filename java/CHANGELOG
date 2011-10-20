@@ -1,3 +1,33 @@
+v2.9.0
+======
+
+Project:
+  * ThoughtWorks code grant to the Software Freedom Conservancy complete.
+
+WebDriver:
+  * Support for Ice Cream Sandwich in the AndroidDriver
+  * CSS Selector support enabled for Android
+  * Remote webdriver server log now contains '[HTML source]' instead of full
+    source.
+  * Better respect for preformatted text in WebElement.getText()
+  * Adding better error message when failing to connect to the FirefoxDriver.
+  * Reduced scrolling during tests for IE and Firefox.
+  * Preserve the state of modified keys when using native events on Linux.
+  * Support for experimental page load detection in firefox. Set the
+    "webdriver.load.strategy" to "fast" in the FirefoxProfile to enable less
+    conservative page loading detection at the risk of greater test
+    instability.
+  * FIXED: 2031: Shielding backslashes when writing preferences to a file.
+    There is an issue with Firefox: it drops \n and \r when it moves user
+    preferences to prefs.js. This patch is a workaround.
+  * FIXED: 2223: Clicks on labels are now propagated to the referenced element.
+  * FIXED: 2646: PortProber no longer attempts to divide by zero.
+  * FIXED: 2675: Better detection of where to click on links.
+
+RC:
+  * FIXED: 569: Making assert and verify methods NPE-safe.
+
+
 v2.8.0
 ======
 
