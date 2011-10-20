@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
 import org.openqa.selenium.WebDriverException;
@@ -183,19 +186,12 @@ public class ResultConfig {
       request.setAttribute("exception", e);
     }
 
-    Set<Result> results = resultToRender.get(result);
-    Result tempToUse = null;
-    for (Result res : results) {
-      if (tempToUse == null || res.isExactMimeTypeMatch(request.getHeader("Accept"))) {
-        tempToUse = res;
-      }
-    }
-    final Result toUse = tempToUse;
+    final Renderer renderer = getRenderer(result, request);
 
     if (handler instanceof WebDriverHandler) {
       FutureTask<ResultType> task = new FutureTask<ResultType>(new Callable<ResultType>() {
         public ResultType call() throws Exception {
-          toUse.getRenderer().render(request, response, handler);
+          renderer.render(request, response, handler);
           return null;
         }
       });
@@ -212,8 +208,20 @@ public class ResultConfig {
 
 
     } else {
-      toUse.getRenderer().render(request, response, handler);
+      renderer.render(request, response, handler);
     }
+  }
+
+  @VisibleForTesting
+  Renderer getRenderer(ResultType resultType, HttpServletRequest request) {
+    Set<Result> results = checkNotNull(resultToRender.get(resultType));
+    Result tempToUse = null;
+    for (Result res : results) {
+      if (tempToUse == null || res.isExactMimeTypeMatch(request.getHeader("Accept"))) {
+        tempToUse = res;
+      }
+    }
+    return checkNotNull(tempToUse).getRenderer();
   }
 
   @SuppressWarnings("unchecked")

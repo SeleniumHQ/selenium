@@ -15,28 +15,43 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote.server.rest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.rest.Handler;
-import org.openqa.selenium.remote.server.rest.ResultConfig;
-import org.openqa.selenium.remote.server.rest.ResultType;
-import org.openqa.selenium.remote.server.rest.UrlMapper;
+import org.openqa.selenium.remote.server.DefaultDriverSessions;
+import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.StubHandler;
 
 import junit.framework.TestCase;
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnit4Mockery;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.logging.Logger;
 
 public class UrlMapperTest extends TestCase {
   private final static Logger log = Logger.getLogger(UrlMapperTest.class.getName());
 
-  public void testShouldBePossibleToBindAHandler() throws Exception {
-    UrlMapper mapper = new UrlMapper(new DefaultDriverSessions(), log);
+  private JUnit4Mockery context;
+  private UrlMapper mapper;
 
+  @Override
+  protected void setUp() {
+    context = new JUnit4Mockery();
+    mapper = new UrlMapper(new DefaultDriverSessions(), log);
+  }
+
+  @Override
+  protected void tearDown() {
+    context.assertIsSatisfied();
+  }
+
+  public void testShouldBePossibleToBindAHandler() throws Exception {
     mapper.bind("/foo", StubHandler.class);
 
     ResultConfig config = mapper.getConfig("/foo");
@@ -45,14 +60,34 @@ public class UrlMapperTest extends TestCase {
   }
 
   public void testShouldInjectDependenciesViaTheConstructor() throws Exception {
-    DriverSessions sessions = new DefaultDriverSessions();
-    UrlMapper mapper = new UrlMapper(sessions, log);
     mapper.bind("/example", SessionHandler.class);
 
     ResultConfig config = mapper.getConfig("/example");
     SessionHandler handler = (SessionHandler) config.getHandler("/example", new SessionId("test"));
 
     assertThat(handler.getSessions(), is(notNullValue()));
+  }
+
+  public void testAppliesGlobalHandlersToNewConfigs() {
+    Renderer renderer = new StubRenderer();
+    HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+
+    mapper.addGlobalHandler(ResultType.SUCCESS, renderer);
+    mapper.bind("/example", SessionHandler.class);
+
+    ResultConfig config = mapper.getConfig("/example");
+    assertEquals(renderer, config.getRenderer(ResultType.SUCCESS, mockRequest));
+  }
+
+  public void testAppliesNewGlobalHandlersToExistingConfigs() {
+    Renderer renderer = new StubRenderer();
+    HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+
+    mapper.bind("/example", SessionHandler.class);
+    mapper.addGlobalHandler(ResultType.SUCCESS, renderer);
+
+    ResultConfig config = mapper.getConfig("/example");
+    assertEquals(renderer, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
   public static class SessionHandler implements Handler {
@@ -69,6 +104,11 @@ public class UrlMapperTest extends TestCase {
 
     public ResultType handle() {
       return ResultType.SUCCESS;
+    }
+  }
+
+  private static class StubRenderer implements Renderer {
+    public void render(HttpServletRequest request, HttpServletResponse response, Handler handler) throws Exception {
     }
   }
 }

@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote.server.rest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -25,12 +25,13 @@ import static org.hamcrest.Matchers.nullValue;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.rest.Handler;
-import org.openqa.selenium.remote.server.rest.ResultConfig;
-import org.openqa.selenium.remote.server.rest.ResultType;
+import org.openqa.selenium.remote.server.StubHandler;
 
 import junit.framework.TestCase;
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnit4Mockery;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.ExecutionException;
@@ -111,6 +112,56 @@ public class ResultConfigTest extends TestCase {
     ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
     Throwable toClient = config.getRootExceptionCause(undeclared);
     assertEquals(noElement, toClient);
+  }
+
+  public void testFailsWhenUnableToDetermineResultTypeForRequest_noHandlersRegistered() {
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
+    JUnit4Mockery context = new JUnit4Mockery();
+    final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+
+    context.checking(new Expectations());
+
+    try {
+      config.getRenderer(ResultType.EXCEPTION, mockRequest);
+      fail("Should have thrown a NPE");
+    } catch (NullPointerException expected) {
+    }
+  }
+
+  public void testSelectsFirstAvailableRendererWhenThereAreNoMimeTypesSpecified() {
+    JUnit4Mockery context = new JUnit4Mockery();
+    Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
+    Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
+    final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+
+    context.checking(new Expectations() {{
+      one(mockRequest).getHeader("Accept");
+      will(returnValue("application/json"));
+    }});
+
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
+        .on(ResultType.SUCCESS, mockRenderer1)
+        .on(ResultType.SUCCESS, mockRenderer2);
+
+    assertEquals(mockRenderer1, config.getRenderer(ResultType.SUCCESS, mockRequest));
+  }
+
+  public void testSelectsRenderWithMimeTypeMatch() {
+    JUnit4Mockery context = new JUnit4Mockery();
+    Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
+    Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
+    final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+
+    context.checking(new Expectations() {{
+      one(mockRequest).getHeader("Accept");
+      will(returnValue("application/json"));
+    }});
+
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
+        .on(ResultType.SUCCESS, mockRenderer1)
+        .on(ResultType.SUCCESS, mockRenderer2, "application/json");
+
+    assertEquals(mockRenderer2, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
   private void exceptionWasExpected() {
