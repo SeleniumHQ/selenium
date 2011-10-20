@@ -590,8 +590,8 @@ public class TypingTest extends AbstractDriverTestCase {
 
     WebElement element = driver.findElement(By.id("no-type"));
 
-    element.sendKeys("Should Say Cheese");
-    assertThat(element.getAttribute("value"), is("Should Say Cheese"));
+    element.sendKeys("should say cheese");
+    assertThat(element.getAttribute("value"), is("should say cheese"));
   }
 
   @JavascriptEnabled
