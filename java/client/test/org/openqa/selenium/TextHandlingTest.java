@@ -179,9 +179,11 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         "after pre"));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, CHROME, IE, OPERA}, reason = "iPhone: sendKeys is broken;"
+  @Ignore(value = {ANDROID, SELENESE, IPHONE, CHROME, IE, OPERA}, reason =
+      "iPhone: sendKeys is broken;"
       + " Chrome: not handling a space character properly."
-      + " Opera,IE: inserts \r\n instead of \n.")
+      + " Opera,IE: inserts \r\n instead of \n."
+      + " Android: The meta shift key on Android stays blocked and send everything upper case.")
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
