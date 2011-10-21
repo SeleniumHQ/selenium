@@ -124,10 +124,25 @@ public class ProxySet implements Iterable<RemoteProxy> {
     return proxies.isEmpty();
   }
 
-  public List<RemoteProxy> getSorted() {
+  private List<RemoteProxy> getSorted() {
     List<RemoteProxy> sorted = new ArrayList<RemoteProxy>(proxies);
     Collections.sort(sorted);
     return sorted;
+  }
+
+  public TestSession getNewSession(Map<String, Object> desiredCapabilities) {
+    // sort the proxies first, by default by total number of
+    // test running, to avoid putting all the load of the first
+    // proxies.
+    List<RemoteProxy> sorted = getSorted();
+
+    for (RemoteProxy proxy : sorted) {
+      TestSession session = proxy.getNewSession(desiredCapabilities);
+      if (session != null) {
+        return session;
+      }
+    }
+    return null;
   }
 
   public Iterator<RemoteProxy> iterator() {

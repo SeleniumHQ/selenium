@@ -220,7 +220,7 @@ public class Registry {
         if (matcherThread.isRegistryClean()) {
           newSessionQueue.processQueue(new Predicate<RequestHandler>() {
             public boolean apply(RequestHandler input) {
-              return canTakeRequestHandler(input);
+              return takeRequestHandler(input);
             }
           }, prioritizer);
         } else {
@@ -235,15 +235,9 @@ public class Registry {
 
   }
 
-  private boolean canTakeRequestHandler(RequestHandler request) {
-    // sort the proxies first, by default by total number of
-    // test running, to avoid putting all the load of the first
-    // proxies.
-    List<RemoteProxy> sorted = proxies.getSorted();
-
-    for (RemoteProxy proxy : sorted) {
-      TestSession session = proxy.getNewSession(request.getDesiredCapabilities());
-      if (session != null) {
+  private boolean takeRequestHandler(RequestHandler request) {
+    final TestSession session = proxies.getNewSession(request.getDesiredCapabilities());
+    if (session != null) {
         boolean ok = activeTestSessions.add(session);
         request.bindSession(session);
         if (!ok) {
@@ -251,7 +245,6 @@ public class Registry {
         }
         return true;
       }
-    }
     return false;
   }
 
